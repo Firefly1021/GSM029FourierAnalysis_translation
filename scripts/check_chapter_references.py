@@ -47,10 +47,15 @@ def kind_for(label: str) -> str:
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("chapter_id", help="For example: chapter-01")
+    parser.add_argument(
+        "--tex",
+        action="append",
+        help="Optional TeX file; repeat to audit a chapter assembled from multiple files",
+    )
     args = parser.parse_args()
     driver = ROOT / "tex" / "chapters" / f"{args.chapter_id}.tex"
-    files = [driver, *sorted((ROOT / "tex" / "chapters" / args.chapter_id).glob("*.tex"))]
-    if not driver.is_file() or len(files) == 1:
+    files = [ROOT / path for path in args.tex] if args.tex else [driver, *sorted((ROOT / "tex" / "chapters" / args.chapter_id).glob("*.tex"))]
+    if not all(path.is_file() for path in files) or (not args.tex and len(files) == 1):
         raise FileNotFoundError("Chapter driver or section files are missing")
 
     labels: list[tuple[str, str, int]] = []
@@ -111,7 +116,8 @@ def main() -> int:
         f"# {args.chapter_id} cross-reference report",
         "",
         f"- Files checked: {len(files)}",
-        f"- Labels: {len(labels)} ({len(defined)} unique)",
+        f"- Chapter/batch labels: {len(labels)} ({len({label for label, _, _ in labels})} unique)",
+        f"- Project-wide unique labels: {len(defined)}",
         f"- LaTeX reference commands: {len(references)}",
         f"- Explicit unresolved source references: {len(unresolved)}",
         f"- Duplicate labels: {len(duplicates)}",

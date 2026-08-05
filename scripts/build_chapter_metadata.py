@@ -32,10 +32,10 @@ def write_jsonl(path: Path, records: list[dict]) -> None:
             handle.write(json.dumps(record, ensure_ascii=False) + "\n")
 
 
-def collect_displays(chapter_number: str, section_files: list[Path]) -> list[dict]:
+def collect_displays(chapter_number: str, section_files: list[Path], starting_numbered_index: int = 0) -> list[dict]:
     records: list[dict] = []
     current_page: int | None = None
-    numbered_index = 0
+    numbered_index = starting_numbered_index
     page_index: defaultdict[int, int] = defaultdict(int)
     for path in section_files:
         text = path.read_text(encoding="utf-8")
