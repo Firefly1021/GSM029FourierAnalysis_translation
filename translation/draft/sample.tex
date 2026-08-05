@@ -1,0 +1,613 @@
+% First-pass mathematical-faithfulness draft.
+% Representative translation sample only: source PDF pages 37--51.
+% Formula transcriptions remain blocking-needs-review against registered crops.
+\setcounter{section}{1}
+\section{Hardy--Littlewood 极大函数}
+\label{chap:hardy-littlewood-maximal-function}
+
+\hypertarget{sample-page-037}{}
+\subsection{恒等逼近}
+\label{sec:ch2-identity-approximations}
+
+设 $\varphi$ 是 $\mathbb{R}^n$ 上的可积函数,满足 $\int\varphi=1$;对 $t>0$,定义
+$\varphi_t(x)=t^{-n}\varphi(t^{-1}x)$.当 $t\to0$ 时,$\varphi_t$ 在 $\mathcal S'$ 中收敛到原点处的 Dirac 测度 $\delta$:若 $g\in\mathcal S$,则
+\[
+ \varphi_t(g)=\int_{\mathbb R^n}t^{-n}\varphi(t^{-1}x)g(x)\,dx
+ =\int_{\mathbb R^n}\varphi(x)g(tx)\,dx,
+\]
+因而由控制收敛定理,
+\[
+ \lim_{t\to0}\varphi_t(g)=g(0)=\delta(g).
+\]
+由于 $\delta*g=g$,对 $g\in\mathcal S$ 有逐点极限
+\[
+ \lim_{t\to0}\varphi_t*g(x)=g(x).
+\]
+正因如此,我们称 $\{\varphi_t:t>0\}$ 为一个恒等逼近.
+
+上一章的可和方法可以看作恒等逼近.对 Cesàro 可和法,$\varphi=F_1$ 且 $F_R=\varphi_{1/R}$(见 \MBUnresolvedReference{equation}{(1.24)});对 Abel--Poisson 可和法,$\varphi=P_1$(见 \MBUnresolvedReference{equation}{(1.30)});对 Gauss--Weierstrass 可和法,$\varphi=W_1$(见 \MBUnresolvedReference{equation}{(1.31)}).由下述结果可见,这些可和方法在 $L^p$ 范数下收敛.
+
+\begin{Theorem}
+\label{thm:ch2-approximation-identity-lp}
+设 $\{\varphi_t:t>0\}$ 是恒等逼近.若 $f\in L^p$,$1\le p<\infty$,则
+\[
+ \lim_{t\to0}\|\varphi_t*f-f\|_p=0;
+\]
+若 $f\in C_0(\mathbb R^n)$,则上述收敛是一致收敛(即取 $p=\infty$).
+\end{Theorem}
+
+\hypertarget{sample-page-038}{}
+\begin{Proof}
+因为 $\varphi$ 的积分为 $1$,
+\[
+ \varphi_t*f(x)-f(x)=\int_{\mathbb R^n}\varphi(y)[f(x-ty)-f(x)]\,dy.
+\]
+给定 $\varepsilon>0$,取 $\delta>0$,使得当 $|h|<\delta$ 时,
+\[
+ \|f(\cdot+h)-f(\cdot)\|_p<\frac{\varepsilon}{2\|\varphi\|_1}.
+\]
+(注意 $\delta$ 依赖于 $f$.)固定 $\delta$ 后,当 $t$ 足够小时,
+\[
+ \int_{|y|\ge\delta/t}|\varphi(y)|\,dy<\frac{\varepsilon}{4\|f\|_p}.
+\]
+因此,由 Minkowski 不等式,
+\[
+\begin{aligned}
+ \|\varphi_t*f-f\|_p
+ &\le \int_{|y|<\delta/t}|\varphi(y)|\,
+       \|f(\cdot-ty)-f(\cdot)\|_p\,dy\\
+ &\quad+2\|f\|_p\int_{|y|\ge\delta/t}|\varphi(y)|\,dy
+ <\varepsilon.
+\end{aligned}
+\]
+\end{Proof}
+
+由该定理可知,存在一个依赖于 $f$ 的序列 $\{t_k\}$,使 $t_k\to0$ 且
+\[
+ \lim_{k\to\infty}\varphi_{t_k}*f(x)=f(x)\quad\text{a.e.}
+\]
+所以,如果 $\lim_{t\to0}\varphi_t*f(x)$ 存在,它几乎处处必等于 $f(x)$.第~\ref{sec:ch2-hl-maximal-function}~节将研究这个极限的存在性.
+
+\subsection{弱型不等式与几乎处处收敛}
+\label{sec:ch2-weak-type-ae}
+
+设 $(X,\mu)$ 和 $(Y,\nu)$ 为测度空间,$T$ 是从 $L^p(X,\mu)$ 到 $Y$ 上复值可测函数空间的算子.若 $q<\infty$ 且
+\[
+ \nu\bigl(\{y\in Y:|Tf(y)|>\lambda\}\bigr)
+ \le \left(\frac{C\|f\|_p}{\lambda}\right)^q,
+\]
+则称 $T$ 为弱 $(p,q)$ 型;若 $T$ 是从 $L^p(X,\mu)$ 到 $L^\infty(Y,\nu)$ 的有界算子,则称其为弱 $(p,\infty)$ 型.若 $T$ 从 $L^p(X,\mu)$ 有界地映入 $L^q(Y,\nu)$,则称其为强 $(p,q)$ 型.
+
+若 $T$ 为强 $(p,q)$ 型,则它为弱 $(p,q)$ 型.事实上,令 $E_\lambda=\{y\in Y:|Tf(y)|>\lambda\}$,则
+\[
+ \nu(E_\lambda)=\int_{E_\lambda}d\nu
+ \le \int_{E_\lambda}\frac{|Tf(y)|^q}{\lambda^q}\,d\nu
+ \le \frac{\|Tf\|_q^q}{\lambda^q}
+ \le \left(\frac{C\|f\|_p}{\lambda}\right)^q.
+\]
+
+\hypertarget{sample-page-039}{}
+当 $(X,\mu)=(Y,\nu)$ 且 $T$ 为恒等算子时,弱 $(p,p)$ 不等式就是经典的 Chebyshev 不等式.
+
+弱 $(p,q)$ 不等式与几乎处处收敛之间的关系由下述结果给出;其中假设 $(X,\mu)=(Y,\nu)$.
+
+\begin{Theorem}
+\label{thm:ch2-closed-ae-convergence-set}
+设 $\{T_t\}$ 是 $L^p(X,\mu)$ 上的一族线性算子,并定义
+\[
+ T^*f(x)=\sup_t|T_tf(x)|.
+\]
+若 $T^*$ 为弱 $(p,q)$ 型,则集合
+\[
+ \{f\in L^p(X,\mu):\lim_{t\to t_0}T_tf(x)=f(x)\ \text{a.e.}\}
+\]
+在 $L^p(X,\mu)$ 中闭.
+\end{Theorem}
+
+$T^*$ 称为与算子族 $\{T_t\}$ 相伴的极大算子.
+
+\begin{Proof}
+设 $\{f_n\}$ 在 $L^p(X,\mu)$ 范数下收敛到 $f$,且 $T_tf_n(x)$ 几乎处处收敛到 $f_n(x)$.则
+\[
+\begin{aligned}
+ &\mu\{x:\limsup_{t\to t_0}|T_tf(x)-f(x)|>\lambda\}\\
+ &\le \mu\{x:T^*(f-f_n)(x)>\lambda/2\}
+ +\mu\{x:|f(x)-f_n(x)|>\lambda/2\}\\
+ &\le \left(\frac{2C\|f-f_n\|_p}{\lambda}\right)^q
+ +\left(\frac{2\|f-f_n\|_p}{\lambda}\right)^p,
+\end{aligned}
+\]
+末项在 $n\to\infty$ 时趋于 $0$.因此
+\[
+ \mu\{x:\limsup_{t\to t_0}|T_tf(x)-f(x)|>0\}
+ \le\sum_{k=1}^{\infty}\mu\{x:\limsup_{t\to t_0}|T_tf(x)-f(x)|>1/k\}=0.
+\]
+\end{Proof}
+
+用同样方法还可证明集合
+\[
+ \{f\in L^p(X,\mu):\lim_{t\to t_0}T_tf(x)\text{ 存在 a.e.}\}
+\]
+在 $L^p(X,\mu)$ 中闭.只需证明
+\[
+ \mu\{x:\limsup_{t\to t_0}T_tf(x)-\liminf_{t\to t_0}T_tf(x)>\lambda\}=0.
+\]
+
+\hypertarget{sample-page-040}{}
+这可如上推出,因为
+\[
+ \limsup_{t\to t_0}T_tf(x)-\liminf_{t\to t_0}T_tf(x)\le2T^*f(x).
+\]
+(若 $T_tf(x)$ 为复数,分别对其实部和虚部应用该论证.)
+
+由于恒等逼近对 $f\in\mathcal S$ 逐点收敛到 $f$,若能证明极大算子 $\sup_{t>0}|\varphi_t*f(x)|$ 具有弱型有界性,便可应用该定理,对 $f\in L^p$($1\le p<\infty$)或 $f\in C_0$ 得到几乎处处逐点收敛.
+
+\subsection{Marcinkiewicz 插值定理}
+\label{sec:ch2-marcinkiewicz-interpolation}
+
+设 $(X,\mu)$ 为测度空间,$f:X\to\mathbb C$ 为可测函数.称函数 $a_f:(0,\infty)\to[0,\infty]$,
+\[
+ a_f(\lambda)=\mu\{x\in X:|f(x)|>\lambda\},
+\]
+为 $f$(相对于 $\mu$)的分布函数.
+
+\begin{Proposition}
+\label{prop:ch2-distribution-function-integral}
+设 $\phi:[0,\infty)\to[0,\infty)$ 可微且递增,并满足 $\phi(0)=0$.则
+\[
+ \int_X\phi(|f(x)|)\,d\mu=\int_0^\infty\phi'(\lambda)a_f(\lambda)\,d\lambda.
+\]
+\end{Proposition}
+为证明此式,只需注意左端等于
+\[
+ \int_X\int_0^{|f(x)|}\phi'(\lambda)\,d\lambda\,d\mu,
+\]
+然后交换积分次序.特别地,若 $\phi(\lambda)=\lambda^p$,则
+\begin{equation}
+\label{eq:ch2-distribution-layer-cake}
+ \|f\|_p^p=p\int_0^\infty\lambda^{p-1}a_f(\lambda)\,d\lambda.
+\end{equation}
+
+由于弱型不等式度量分布函数的大小,这个 $L^p$ 范数表示最适合用来证明下面的插值定理.该定理使我们能从弱型不等式推出 $L^p$ 有界性,而且适用于比线性算子更大的类(注意极大算子不是线性的):若从可测函数向量空间到可测函数空间的算子 $T$ 满足
+\[
+ |T(f_0+f_1)(x)|\le|Tf_0(x)|+|Tf_1(x)|,
+ \qquad |T(\lambda f)|=|\lambda|\,|Tf|\quad(\lambda\in\mathbb C),
+\]
+则称 $T$ 为次线性算子.
+
+\hypertarget{sample-page-041}{}
+\begin{Theorem}[Marcinkiewicz 插值]
+\label{thm:ch2-marcinkiewicz-interpolation}
+设 $(X,\mu)$ 和 $(Y,\nu)$ 为测度空间,$1\le p_0<p_1\le\infty$,$T$ 是从 $L^{p_0}(X,\mu)+L^{p_1}(X,\mu)$ 到 $Y$ 上可测函数空间的次线性算子,并且 $T$ 为弱 $(p_0,p_0)$ 型和弱 $(p_1,p_1)$ 型.则对 $p_0<p<p_1$,$T$ 为强 $(p,p)$ 型.
+\end{Theorem}
+
+\begin{Proof}
+给定 $f\in L^p$,对每个 $\lambda>0$ 将 $f$ 分解为 $f_0+f_1$,其中
+\[
+ f_0=f\chi_{\{x:|f(x)|>c\lambda\}},\qquad
+ f_1=f\chi_{\{x:|f(x)|\le c\lambda\}};
+\]
+常数 $c$ 稍后确定.于是 $f_0\in L^{p_0}(\mu)$,$f_1\in L^{p_1}(\mu)$.又有
+\[
+ |Tf(x)|\le|Tf_0(x)|+|Tf_1(x)|,
+\]
+故 $a_{Tf}(\lambda)\le a_{Tf_0}(\lambda/2)+a_{Tf_1}(\lambda/2)$.分两种情形.
+
+情形 1:$p_1=\infty$.取 $c=1/(2A_1)$,其中 $\|Tg\|_\infty\le A_1\|g\|_\infty$,则 $a_{Tf_1}(\lambda/2)=0$.由弱 $(p_0,p_0)$ 不等式,
+\[
+ a_{Tf_0}(\lambda/2)\le
+ \left(\frac{2A_0\|f_0\|_{p_0}}{\lambda}\right)^{p_0}.
+\]
+因而
+\[
+\begin{aligned}
+ \|Tf\|_p^p
+ &\le p\int_0^\infty\lambda^{p-1-p_0}(2A_0)^{p_0}
+ \int_{\{|f(x)|>c\lambda\}}|f(x)|^{p_0}\,d\mu\,d\lambda\\
+ &=\frac{p}{p-p_0}(2A_0)^{p_0}(2A_1)^{p-p_0}\|f\|_p^p.
+\end{aligned}
+\]
+
+情形 2:$p_1<\infty$.现在对 $i=0,1$ 有
+\[
+ a_{Tf_i}(\lambda/2)\le
+ \left(\frac{2A_i\|f_i\|_{p_i}}{\lambda}\right)^{p_i}.
+\]
+照上面的论证可得
+\[
+ \|Tf\|_p^p\le
+ \left(\frac{p2^{p_0}A_0^{p_0}}{p-p_0}c^{p_0-p}
+ +\frac{p2^{p_1}A_1^{p_1}}{p_1-p}c^{p_1-p}\right)\|f\|_p^p.
+\]
+\end{Proof}
+
+\hypertarget{sample-page-042}{}
+该定理中的强 $(p,p)$ 范数不等式可以更精确地写为
+\begin{equation}
+\label{eq:ch2-marcinkiewicz-strong-bound}
+ \|Tf\|_p\le 2p^{1/p}
+ \left(\frac{1}{p-p_0}+\frac{1}{p_1-p}\right)^{1/p}
+ A_0^{1-\theta}A_1^\theta\|f\|_p,
+\end{equation}
+其中
+\[
+ \frac1p=\frac{\theta}{p_1}+\frac{1-\theta}{p_0},\qquad0<\theta<1.
+\]
+当 $p_1=\infty$ 时,这就是证明中出现的常数;当 $p_1<\infty$ 时,只需选择 $c$ 使 $(2A_0c)^{p_0}=(2A_1c)^{p_1}$,再化简即可.
+
+\subsection{Hardy--Littlewood 极大函数}
+\label{sec:ch2-hl-maximal-function}
+
+令 $B_r=B(0,r)$ 为以原点为中心、半径为 $r$ 的 Euclidean 球.局部可积函数 $f$ 在 $\mathbb R^n$ 上的 Hardy--Littlewood 极大函数定义为
+\begin{equation}
+\label{eq:ch2-hl-maximal-ball}
+ Mf(x)=\sup_{r>0}\frac1{|B_r|}\int_{B_r}|f(x-y)|\,dy.
+\end{equation}
+(其值可以为 $+\infty$.)若令 $\varphi=|B_1|^{-1}\chi_{B_1}$,则对非负 $f$,\eqref{eq:ch2-hl-maximal-ball} 与定理~\ref{thm:ch2-closed-ae-convergence-set} 中恒等逼近 $\{\varphi_t\}$ 的相伴极大算子一致.
+
+有时用立方体代替球定义极大函数.若 $Q_r=[-r,r]^n$,定义
+\begin{equation}
+\label{eq:ch2-hl-maximal-centered-cube}
+ M'f(x)=\sup_{r>0}\frac1{(2r)^n}\int_{Q_r}|f(x-y)|\,dy.
+\end{equation}
+当 $n=1$ 时,$M$ 与 $M'$ 相同;若 $n>1$,则存在只依赖于 $n$ 的常数 $C_n,c_n$,使
+\begin{equation}
+\label{eq:ch2-ball-cube-equivalence}
+ c_nM'f(x)\le Mf(x)\le C_nM'f(x).
+\end{equation}
+因此 $M$ 与 $M'$ 本质上可以互换,我们将依情形使用更合适者.还可定义更一般的极大函数
+\begin{equation}
+\label{eq:ch2-hl-maximal-uncentered-cube}
+ M''f(x)=\sup_{Q\ni x}\frac1{|Q|}\int_Q|f(y)|\,dy,
+\end{equation}
+其中上确界遍历所有包含 $x$ 的立方体.$M''$ 仍与 $M$ 逐点等价.通常称 $M'$ 为中心极大算子,称 $M''$ 为非中心极大算子;也可用球而非立方体定义非中心极大函数.
+
+\hypertarget{sample-page-043}{}
+\begin{Theorem}
+\label{thm:ch2-hl-maximal-bounds}
+算子 $M$ 为弱 $(1,1)$ 型,并且对 $1<p<\infty$ 为强 $(p,p)$ 型.
+\end{Theorem}
+
+由 \eqref{eq:ch2-ball-cube-equivalence},同一结论对 $M'$(以及 $M''$)也成立.由定义立即有
+\begin{equation}
+\label{eq:ch2-hl-maximal-linfty}
+ \|Mf\|_\infty\le\|f\|_\infty.
+\end{equation}
+因此,由 Marcinkiewicz 插值定理,为证明定理~\ref{thm:ch2-hl-maximal-bounds},只需证明 $M$ 为弱 $(1,1)$ 型.这里先证明 $n=1$ 的情形;一般情形在第~\ref{sec:ch2-weak-11-maximal-function}~节证明.一维情形需要下列覆盖引理,其简单证明留给读者.
+
+\begin{Lemma}
+\label{lem:ch2-interval-covering}
+设 $\{I_\alpha\}_{\alpha\in A}$ 是 $\mathbb R$ 中的一族区间,紧集 $K$ 包含于这些区间的并中.则存在有限子族 $\{I_j\}$,使
+\[
+ K\subset\bigcup_jI_j,\qquad \sum_j\chi_{I_j}(x)\le2\quad(x\in\mathbb R).
+\]
+\end{Lemma}
+
+\begin{Proof}
+这里证明定理~\ref{thm:ch2-hl-maximal-bounds} 的 $n=1$ 情形.令 $E_\lambda=\{x\in\mathbb R:Mf(x)>\lambda\}$.若 $x\in E_\lambda$,则存在以 $x$ 为中心的区间 $I_x$,使
+\begin{equation}
+\label{eq:ch2-one-dimensional-average}
+ \frac1{|I_x|}\int_{I_x}|f|>\lambda.
+\end{equation}
+取紧集 $K\subset E_\lambda$.由引理~\ref{lem:ch2-interval-covering},存在有限区间族 $\{I_j\}$,使 $K\subset\bigcup_jI_j$ 且 $\sum_j\chi_{I_j}<2$.于是
+\[
+ |K|\le\sum_j|I_j|<\frac1\lambda\sum_j\int_{I_j}|f|
+ \le\frac2\lambda\|f\|_1.
+\]
+此式对每个紧集 $K\subset E_\lambda$ 都成立,故 $M$ 的弱 $(1,1)$ 不等式立即成立.
+\end{Proof}
+
+引理~\ref{lem:ch2-interval-covering} 在高于一维时不成立.虽可用类似结果替代,但这里不采用该途径(这种证明见 \MBUnresolvedReference{section}{第 8.6 节}).极大函数在研究恒等逼近时的重要性来自下述结果.
+
+\begin{Proposition}
+\label{prop:ch2-radial-majorization}
+设 $\varphi$ 为正的、径向的、递减的(视为 $(0,\infty)$ 上的函数)且可积的函数.则
+\[
+ \sup_{t>0}|\varphi_t*f(x)|\le\|\varphi\|_1Mf(x).
+\]
+\end{Proposition}
+
+\hypertarget{sample-page-044}{}
+\begin{Proof}
+先在已有假设之外假定 $\varphi$ 是简单函数,即
+\[
+ \varphi(x)=\sum_ja_j\chi_{B_{r_j}}(x),\qquad a_j>0.
+\]
+则
+\[
+ \varphi*f(x)=\sum_ja_j|B_{r_j}|\,|B_{r_j}|^{-1}\chi_{B_{r_j}}*f(x)
+ \le\|\varphi\|_1Mf(x),
+\]
+因为 $\|\varphi\|_1=\sum_ja_j|B_{r_j}|$.
+
+满足这些假设的任意 $\varphi$ 都可由单调递增到它的简单函数序列逼近.每个伸缩 $\varphi_t$ 仍是正的、径向的、递减的函数,且积分相同,故满足同一不等式.所需结论随即成立.
+\end{Proof}
+
+\begin{Corollary}
+\label{cor:ch2-kernel-maximal-bound}
+若 $|\varphi(x)|\le\psi(x)$ 几乎处处成立,其中 $\psi$ 为正的、径向的、递减且可积的函数,则极大函数 $\sup_t|\varphi_t*f(x)|$ 为弱 $(1,1)$ 型,并且对 $1<p<\infty$ 为强 $(p,p)$ 型.
+\end{Corollary}
+
+这是命题~\ref{prop:ch2-radial-majorization} 与定理~\ref{thm:ch2-hl-maximal-bounds} 的直接推论.将其与定理~\ref{thm:ch2-closed-ae-convergence-set} 合并可得:
+
+\begin{Corollary}
+\label{cor:ch2-approximation-ae-convergence}
+在前一推论的假设下,若 $f\in L^p$,$1\le p<\infty$,或 $f\in C_0$,则
+\[
+ \lim_{t\to0}\varphi_t*f(x)=\varphi(\mathbb R^n)f(x)\quad\text{a.e.}
+\]
+\end{Corollary}
+特别地,\MBUnresolvedReference{section}{第 1 章第 9 节} 讨论的 Cesàro、Abel--Poisson 与 Gauss--Weierstrass 可和法,对上述任一空间中的 $f$ 都几乎处处收敛到 $f(x)$.
+
+\begin{Proof}
+因为对 $f\in\mathcal S$ 已有收敛,由定理~\ref{thm:ch2-closed-ae-convergence-set},对 $f\in L^p$(若 $p=\infty$,则对 $f\in C_0$)也有收敛.Poisson 核 \MBUnresolvedReference{equation}{(1.30)} 与 Gauss--Weierstrass 核 \MBUnresolvedReference{equation}{(1.31)} 递减;Fejér 核 \MBUnresolvedReference{equation}{(1.24)} 不递减,但 $F_1(x)\le\min(1,(\pi x)^{-2})$.
+\end{Proof}
+
+\subsection{二进极大函数}
+\label{sec:ch2-dyadic-maximal-function}
+
+在 $\mathbb R^n$ 中,把右端开立方体 $[0,1)^n$ 称为单位立方体;令 $\mathcal Q_0$ 为与 $[0,1)^n$ 全等且顶点位于格点 $\mathbb Z^n$ 上的立方体族.将此立方体族按因子 $2^{-k}$ 伸缩,得到 $\mathcal Q_k$($k\in\mathbb Z$).
+
+\hypertarget{sample-page-045}{}
+$\mathcal Q_k$ 是顶点为格点 $(2^{-k}\mathbb Z)^n$ 的相邻点且右端开的立方体族.$\bigcup_k\mathcal Q_k$ 中的立方体称为二进立方体.由构造立即得到:
+
+\begin{enumerate}[label=(\arabic*)]
+\item 给定 $x\in\mathbb R^n$,每个 $\mathcal Q_k$ 中恰有一个包含 $x$ 的立方体;
+\item 任意两个二进立方体或不相交,或其中一个完全包含于另一个;
+\item $\mathcal Q_k$ 中的二进立方体包含于每个 $\mathcal Q_j$($j<k$)中的唯一立方体,并包含 $\mathcal Q_{k+1}$ 中的 $2^n$ 个二进立方体.
+\end{enumerate}
+
+给定 $f\in L^1_{\mathrm{loc}}(\mathbb R^n)$,定义
+\[
+ E_kf(x)=\sum_{Q\in\mathcal Q_k}\left(\frac1{|Q|}\int_Qf\right)\chi_Q(x).
+\]
+$E_kf$ 是 $f$ 关于由 $\mathcal Q_k$ 生成的 $\sigma$-代数的条件期望.若 $\Omega$ 是 $\mathcal Q_k$ 中若干立方体的并,则它满足基本恒等式
+\[
+ \int_\Omega E_kf=\int_\Omega f.
+\]
+$E_kf$ 是恒等逼近的离散类比.先定义二进极大函数
+\begin{equation}
+\label{eq:ch2-dyadic-maximal}
+ M_df(x)=\sup_k|E_kf(x)|.
+\end{equation}
+
+\begin{Theorem}
+\label{thm:ch2-dyadic-maximal}
+\begin{enumerate}[label=(\arabic*)]
+\item 二进极大函数为弱 $(1,1)$ 型;
+\item 若 $f\in L^1_{\mathrm{loc}}$,则 $\lim_{k\to\infty}E_kf(x)=f(x)$ 几乎处处成立.
+\end{enumerate}
+\end{Theorem}
+
+\begin{Proof}
+(1) 固定 $f\in L^1$.可设 $f$ 非负:实函数可分解为正部与负部,复函数可分解为实部与虚部.令
+\[
+ \{x\in\mathbb R^n:M_df(x)>\lambda\}=\bigcup_k\Omega_k,
+\]
+其中
+\[
+ \Omega_k=\{x\in\mathbb R^n:E_kf(x)>\lambda\text{，且若 }j<k\text{ 则 }E_jf(x)\le\lambda\}.
+\]
+也就是说,$x\in\Omega_k$ 恰当且仅当 $E_kf(x)$ 是第一个超过 $\lambda$ 的条件期望.(因为 $f\in L^1$,当 $k\to-\infty$ 时 $E_kf(x)\to0$,故这样的 $k$ 存在.)
+
+\hypertarget{sample-page-046}{}
+集合 $\Omega_k$ 显然两两不交,且每个都可写成 $\mathcal Q_k$ 中立方体的并.因此
+\[
+ \lambda\,|\{M_df>\lambda\}|
+ =\lambda\sum_k|\Omega_k|
+ <\sum_k\int_{\Omega_k}E_kf
+ =\sum_k\int_{\Omega_k}f\le\|f\|_1.
+\]
+
+(2) 对连续函数,该极限显然成立,所以由定理~\ref{thm:ch2-closed-ae-convergence-set},对 $f\in L^1$ 成立.最后,若 $f\in L^1_{\mathrm{loc}}$,则对任意 $Q\in\mathcal Q_0$,$f\chi_Q\in L^1$.故 (2) 对几乎每个 $x\in Q$ 成立,从而对 $\mathbb R^n$ 中几乎每个 $x$ 成立.
+\end{Proof}
+
+这个证明使用了一个非常有用的 $\mathbb R^n$ 分解,称为 Calderón--Zygmund 分解.准确陈述如下.
+
+\begin{Theorem}
+\label{thm:ch2-calderon-zygmund-decomposition}
+给定可积非负函数 $f$ 和正数 $\lambda$,存在一列两两不交的二进立方体 $\{Q_j\}$,使得
+\begin{enumerate}[label=(\arabic*)]
+\item 对几乎每个 $x\notin\bigcup_jQ_j$,有 $f(x)\le\lambda$;
+\item $\left|\bigcup_jQ_j\right|\le\lambda^{-1}\|f\|_1$;
+\item 对每个 $j$,$\lambda<|Q_j|^{-1}\int_{Q_j}f\le2^n\lambda$.
+\end{enumerate}
+\end{Theorem}
+
+\begin{Proof}
+如定理~\ref{thm:ch2-dyadic-maximal} 的证明那样构造集合 $\Omega_k$,并把每个集合分解为 $\mathcal Q_k$ 中两两不交的二进立方体;所有这些立方体合成族 $\{Q_j\}$.定理的 (2) 正是定理~\ref{thm:ch2-dyadic-maximal} 的弱 $(1,1)$ 不等式.
+
+若 $x\notin\bigcup_jQ_j$,则对每个 $k$ 都有 $E_kf(x)\le\lambda$,因而由定理~\ref{thm:ch2-dyadic-maximal} 的 (2),几乎每个这样的点都满足 $f(x)\le\lambda$.
+
+最后,由 $\Omega_k$ 的定义,$f$ 在 $Q_j$ 上的平均值大于 $\lambda$,这给出 (3) 中第一个不等式.若 $\widetilde Q_j$ 是包含 $Q_j$、边长为其两倍的二进立方体,则 $f$ 在 $\widetilde Q_j$ 上的平均值至多为 $\lambda$.
+
+\hypertarget{sample-page-047}{}
+因此
+\[
+ \frac1{|Q_j|}\int_{Q_j}f
+ \le\frac{|\widetilde Q_j|}{|Q_j|}\frac1{|\widetilde Q_j|}\int_{\widetilde Q_j}f
+ \le2^n\lambda.
+\]
+\end{Proof}
+
+\subsection{极大函数的弱 $(1,1)$ 不等式}
+\label{sec:ch2-weak-11-maximal-function}
+
+现在用定理~\ref{thm:ch2-dyadic-maximal} 证明定理~\ref{thm:ch2-hl-maximal-bounds}.它事实上是下列引理与 \eqref{eq:ch2-ball-cube-equivalence} 的直接推论(回忆 $M'$ 是 \eqref{eq:ch2-hl-maximal-centered-cube} 定义的立方体极大算子).
+
+\begin{Lemma}
+\label{lem:ch2-dyadic-to-cube-maximal}
+若 $f$ 非负,则
+\[
+ |\{x\in\mathbb R^n:M'f(x)>4^n\lambda\}|
+ \le2^n|\{x\in\mathbb R^n:M_df(x)>\lambda\}|.
+\]
+\end{Lemma}
+
+由该引理及定理~\ref{thm:ch2-dyadic-maximal} 所证 $M_d$ 的弱 $(1,1)$ 不等式,
+\[
+ |\{M'f>\lambda\}|\le2^n|\{M_df>4^{-n}\lambda\}|
+ \le\frac{8^n}{\lambda}\|f\|_1.
+\]
+(因为 $M'f=M'(|f|)$,可设 $f$ 非负.)
+
+\begin{Proof}
+这里证明引理~\ref{lem:ch2-dyadic-to-cube-maximal}.如前构造分解
+\[
+ \{x\in\mathbb R^n:M_df(x)>\lambda\}=\bigcup_jQ_j.
+\]
+令 $2Q_j$ 为与 $Q_j$ 同中心、边长为其两倍的立方体.只需证明
+\[
+ \{x\in\mathbb R^n:M'f(x)>4^n\lambda\}\subset\bigcup_j2Q_j.
+\]
+固定 $x\notin\bigcup_j2Q_j$,令 $Q$ 为任一以 $x$ 为中心的立方体.记其边长为 $\ell(Q)$,取 $k\in\mathbb Z$ 使 $2^{k-1}<\ell(Q)\le2^k$.则 $Q$ 与 $\mathcal Q_k$ 中至多 $2^n$ 个二进立方体 $R_1,\ldots,R_m$ 相交.这些立方体都不包含于任何 $Q_j$,否则 $x\in\bigcup_j2Q_j$.故 $f$ 在每个 $R_i$ 上的平均值至多为 $\lambda$,从而
+\[
+ \frac1{|Q|}\int_Qf\le4^n\lambda.
+\]
+\end{Proof}
+
+\hypertarget{sample-page-048}{}
+由弱 $(1,1)$ 不等式和定理~\ref{thm:ch2-closed-ae-convergence-set},得到定理~\ref{thm:ch2-dyadic-maximal} 后半部分的连续类比.
+
+\begin{Corollary}[Lebesgue 微分定理]
+\label{cor:ch2-lebesgue-differentiation}
+若 $f\in L^1_{\mathrm{loc}}(\mathbb R^n)$,则
+\[
+ \lim_{r\to0^+}\frac1{|B_r|}\int_{B_r}f(x-y)\,dy=f(x)\quad\text{a.e.}
+\]
+\end{Corollary}
+由此可见 $|f(x)|\le Mf(x)$ 几乎处处成立.将 $M$ 换成 $M'$ 或 $M''$ 也成立.还可加强推论~\ref{cor:ch2-lebesgue-differentiation} 的结论:
+\begin{equation}
+\label{eq:ch2-lebesgue-point}
+ \lim_{r\to0^+}\frac1{|B_r|}\int_{B_r}|f(x-y)-f(x)|\,dy=0\quad\text{a.e.}
+\end{equation}
+这是下式的直接推论:
+\[
+ \sup_{r>0}\frac1{|B_r|}\int_{B_r}|f(x-y)-f(x)|\,dy
+ \le Mf(x)+|f(x)|.
+\]
+
+使极限 \eqref{eq:ch2-lebesgue-point} 等于 $0$ 的点称为 $f$ 的 Lebesgue 点.若 $x$ 是 Lebesgue 点,且 $\{B_j\}$ 是球列,满足 $B_1\supset B_2\supset\cdots$ 且 $\bigcap_jB_j=\{x\}$(这些球不必以 $x$ 为中心),则
+\[
+ \lim_{j\to\infty}\frac1{|B_j|}\int_{B_j}f=f(x).
+\]
+这是包含关系 $B_j\subset B(x,2r_j)$ 的直接推论,其中 $r_j$ 是 $B_j$ 的半径.类似论证表明,用立方体代替球并不改变 $f$ 的 Lebesgue 点集合.
+
+$M$ 的弱 $(1,1)$ 不等式替代了并不成立的强 $(1,1)$ 不等式.事实上,后者从不成立:
+
+\begin{Proposition}
+\label{prop:ch2-maximal-not-l1}
+若 $f\in L^1$ 且不恒为 $0$,则 $Mf\notin L^1$.
+\end{Proposition}
+
+证明很简单.因 $f$ 不恒为 $0$,存在 $R>0$,使 $\varepsilon=\int_{B_R}|f|>0$.若 $|x|>R$,则 $B_R\subset B(x,2|x|)$,故
+\[
+ Mf(x)\ge\frac1{(2|x|)^n}\int_{B_R}|f|
+ =\frac{\varepsilon}{2^n|x|^n}.
+\]
+不过仍有下述结论.
+
+\hypertarget{sample-page-049}{}
+\begin{Theorem}
+\label{thm:ch2-local-l-log-l}
+若 $B$ 是 $\mathbb R^n$ 的有界子集,则
+\[
+ \int_BMf(x)\,dx\le 2|B|+C\int_{\mathbb R^n}|f(x)|\log^+|f(x)|\,dx,
+\]
+其中 $\log^+t=\max(\log t,0)$.
+\end{Theorem}
+
+\begin{Proof}
+\[
+ \int_BMf<2\int_0^\infty|\{x\in B:Mf(x)>2\lambda\}|\,d\lambda
+ \le2|B|+2\int_1^\infty|\{x\in B:Mf(x)>2\lambda\}|\,d\lambda.
+\]
+把 $f$ 分解为 $f_1+f_2$,其中 $f_1=f\chi_{\{x:|f(x)|>\lambda\}}$,$f_2=f-f_1$.则
+\[
+ \{x\in B:Mf(x)>2\lambda\}\subset\{x\in B:Mf_1(x)>\lambda\}.
+\]
+因此,由弱 $(1,1)$ 不等式,
+\[
+\begin{aligned}
+ \int_1^\infty|\{x\in B:Mf(x)>2\lambda\}|\,d\lambda
+ &\le C\int_1^\infty\frac1\lambda
+ \int_{\{|f(x)|>\lambda\}}|f(x)|\,dx\,d\lambda\\
+ &\le C\int_{\mathbb R^n}|f(x)|\log^+|f(x)|\,dx.
+\end{aligned}
+\]
+\end{Proof}
+
+\subsection{加权范数不等式}
+\label{sec:ch2-weighted-norm-inequality}
+
+\begin{Theorem}
+\label{thm:ch2-weighted-maximal}
+若 $w$ 为非负可测函数且 $1<p<\infty$,则存在常数 $C_p$,使
+\[
+ \int_{\mathbb R^n}|Mf(x)|^pw(x)\,dx
+ \le C_p\int_{\mathbb R^n}|f(x)|^pMw(x)\,dx.
+\]
+此外,
+\begin{equation}
+\label{eq:ch2-weighted-weak-bound}
+ \int_{\{x:Mf(x)>\lambda\}}w(x)\,dx
+ \le\frac{C}{\lambda}\int_{\mathbb R^n}|f(x)|Mw(x)\,dx.
+\end{equation}
+\end{Theorem}
+
+\begin{Proof}
+只需证明 $\|Mf\|_{L^\infty(w)}\le\|f\|_{L^\infty(Mw)}$ 以及弱 $(1,1)$ 不等式;强 $(p,p)$ 不等式随后由 Marcinkiewicz 插值定理得到.若对某个 $x$ 有 $Mw(x)=0$,则 $w(x)=0$ 几乎处处,没有什么需要证明.因此可设每个 $x$ 都有 $Mw(x)>0$.
+
+\hypertarget{sample-page-050}{}
+若 $a>\|f\|_{L^\infty(Mw)}$,则
+\[
+ \int_{\{x:|f(x)|>a\}}Mw(x)\,dx=0,
+\]
+故 $|\{x\in\mathbb R^n:|f(x)|>a\}|=0$,即 $|f(x)|\le a$ 几乎处处.于是 $Mf(x)\le a$ 几乎处处,进而 $\|Mf\|_{L^\infty(w)}\le a$.所以
+$\|Mf\|_{L^\infty(w)}\le\|f\|_{L^\infty(Mw)}$.
+
+为证明弱 $(1,1)$ 不等式,可设 $f$ 非负且 $f\in L^1(\mathbb R^n)$.(若 $f\in L^1(Mw)$,则 $f_j=f\chi_{B(0,j)}$ 是逐点递增到 $f$ 的可积函数序列.)设 $\{Q_j\}$ 是高度 $\lambda>0$ 处 $f$ 的 Calderón--Zygmund 分解.由引理~\ref{lem:ch2-dyadic-to-cube-maximal} 的证明,
+\[
+ \{x\in\mathbb R^n:M'f(x)>4^n\lambda\}\subset\bigcup_j2Q_j.
+\]
+因此
+\[
+\begin{aligned}
+ \int_{\{M'f>4^n\lambda\}}w(x)\,dx
+ &\le\sum_j\int_{2Q_j}w(x)\,dx\\
+ &\le\frac{2^n}{\lambda}\sum_j\int_{Q_j}f(y)
+ \left(\frac1{|2Q_j|}\int_{2Q_j}w(x)\,dx\right)dy\\
+ &\le\frac{2^n}{\lambda}\sum_j\int_{Q_j}f(y)M''w(y)\,dy.
+\end{aligned}
+\]
+由于 $M''w(y)\le C_nMw(y)$,得到所需不等式.
+\end{Proof}
+
+若 $w$ 满足 $Mw(x)\le Cw(x)$ 几乎处处成立,则这些不等式两端可使用同一权函数 $w$.满足此条件的函数称为 $A_1$ 权;\MBUnresolvedReference{chapter}{第 7 章} 将进一步研究它们.
+
+\subsection{注记与进一步结果}
+\label{sec:ch2-notes-further-results}
+\subsubsection{参考资料}
+\label{subsec:ch2-references}
+
+一维极大函数由 G. H. Hardy 与 J. E. Littlewood 引入(\emph{A maximal theorem with function-theoretic applications}, Acta Math. 54 (1930), 81--116),高维情形由 N. Wiener 引入(\emph{The ergodic theorem}, Duke Math. J. 5 (1939), 1--18).Hardy 与 Littlewood 在文中首先考虑离散情形,并说:“用板球或任何其他一名运动员积累一系列成绩并记录其平均数的运动来表述时,这个问题最容易把握.”
+
+\hypertarget{sample-page-051}{}
+他们使用递减重排的证明(见下文~\ref{subsec:ch2-hardy-operator})可见 Zygmund [21].我们的证明遵循 Calderón 与 Zygmund 的思路(\emph{On the existence of certain singular integrals}, Acta Math. 88 (1952), 85--139);以他们命名的分解也首次出现在该文中.\MBUnresolvedReference{chapter}{第 4 章} 讨论的旋转法使我们能从一维结果推出 $n>1$ 时的强 $(p,p)$ 不等式.
+
+关于定理~\ref{thm:ch2-closed-ae-convergence-set} 的相关问题,尤其是该定理中条件的必要性,见 de Guzmán [7].Marcinkiewicz 插值定理由 J. Marcinkiewicz 宣布(\emph{Sur l'interpolation d'opérations}, C. R. Acad. Sci. Paris 208 (1939), 1272--1273).然而,他在第二次世界大战中去世,完整证明最终由 A. Zygmund 给出(\emph{On a theorem of Marcinkiewicz concerning interpolation of operations}, J. Math. Pures Appl. 34 (1956), 223--248).Marcinkiewicz 插值与 \MBUnresolvedReference{chapter}{第 1 章} 的 Riesz--Thorin 插值都已得到相当大的推广,例如见 C. Bennett 与 R. Sharpley 的著作(\emph{Interpolation of Operators}, Academic Press, New York, 1988).极大算子的加权范数不等式源于 C. Fefferman 与 E. M. Stein(\emph{Some maximal inequalities}, Amer. J. Math. 93 (1971), 107--115).
+
+\subsubsection{Hardy 算子、单侧极大函数及函数的递减重排}
+\label{subsec:ch2-hardy-operator}
+
+给定 $\mathbb R^+=(0,\infty)$ 上的函数 $g$,作用于 $g$ 的 Hardy 算子定义为
+\[
+ Tg(t)=\frac1t\int_0^tg(s)\,ds,\qquad t\in\mathbb R^+.
+\]
+若 $g\in L^1(\mathbb R^+)$ 非负,则因 $Tg$ 连续,可以证明
+\begin{equation}
+\label{eq:ch2-hardy-level-set}
+ |E(\lambda)|=\frac1\lambda\int_{E(\lambda)}g(t)\,dt,
+\end{equation}
+其中 $E(\lambda)=\{t\in\mathbb R^+:Tg(t)>\lambda\}$.由此与 \eqref{eq:ch2-distribution-layer-cake} 得
+$\|Tg\|_p\le p'\|g\|_p$,$1<p<\infty$.该结果的其他证明以及该算子的推广,可见 G. H. Hardy、J. E. Littlewood 与 G. Pólya 的经典著作(\emph{Inequalities}, Cambridge Univ. Press, Cambridge, 1987;初版 1932),或上引 Bennett 与 Sharpley 一书第 2 章.

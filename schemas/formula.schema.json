@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/mathbook/formula.schema.json",
+  "title": "Formula Record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "source_latex", "tokens", "source_location", "confidence", "review_status"],
+  "properties": {
+    "id": {"type": "string", "pattern": "^formula-[0-9a-f]{16}$"},
+    "source_latex": {"type": "string"},
+    "tokens": {"type": "array", "items": {"type": "string"}},
+    "label": {"type": ["string", "null"]},
+    "number": {"type": ["string", "null"]},
+    "source_location": {"$ref": "#/$defs/sourceLocation"},
+    "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+    "review_status": {"enum": ["not-reviewed", "needs-review", "reviewed", "approved", "rejected"]}
+  },
+  "$defs": {
+    "sourceLocation": {
+      "type": "object", "additionalProperties": false, "required": ["page"],
+      "properties": {
+        "page": {"type": "integer", "minimum": 1},
+        "bbox": {"type": "array", "prefixItems": [{"type": "number"}, {"type": "number"}, {"type": "number"}, {"type": "number"}], "minItems": 4, "maxItems": 4}
+      }
+    }
+  }
+}
+

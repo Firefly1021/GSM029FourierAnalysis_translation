@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/mathbook/structure-block.schema.json",
+  "title": "Structure Block",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "type", "source_location", "confidence", "review_status"],
+  "properties": {
+    "id": {"type": "string", "minLength": 1},
+    "type": {"enum": ["chapter", "section", "subsection", "definition", "theorem", "lemma", "proposition", "corollary", "proof", "example", "remark", "exercise", "equation", "figure", "table", "footnote", "ordinary-paragraph", "unknown"]},
+    "parent_id": {"type": ["string", "null"]},
+    "title": {"type": ["string", "null"]},
+    "text_block_ids": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "source_location": {"$ref": "#/$defs/sourceLocation"},
+    "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+    "review_status": {"enum": ["not-reviewed", "needs-review", "reviewed", "approved", "rejected"]}
+  },
+  "$defs": {
+    "sourceLocation": {
+      "type": "object", "additionalProperties": false, "required": ["page"],
+      "properties": {
+        "page": {"type": "integer", "minimum": 1},
+        "bbox": {"type": "array", "prefixItems": [{"type": "number"}, {"type": "number"}, {"type": "number"}, {"type": "number"}], "minItems": 4, "maxItems": 4}
+      }
+    }
+  }
+}
+
