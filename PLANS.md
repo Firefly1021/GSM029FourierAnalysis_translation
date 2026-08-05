@@ -43,8 +43,8 @@ Translate every supplied source page in table-of-contents order, preserving the 
 
 ## Current position
 
-- Completed units: Chapters 1--2, PDF 13--59 / printed 1--47; QA and cumulative compilation passed.
-- Active unit: Chapter 3, *The Hilbert Transform*.
-- Active untranslated source range: PDF 61--80 / printed 49--68.
+- Completed units: Chapters 1--3, PDF 13--80 / printed 1--68; QA and cumulative compilation passed.
+- Active unit: Chapter 4, *Singular Integrals (I)*.
+- Active untranslated source range: PDF 81--102 / printed 69--90.
 - The accepted Chapter 2 range PDF 37--51 remains unchanged in wording; its former unresolved reference to Section 8.6 now resolves to the completed Chapter 2 label.
 - Remote pushes are not authorized for this workflow; completed chapters receive local commits only.
