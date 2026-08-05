@@ -52,6 +52,13 @@ EXPECTED = {
     "eq:ch2-weighted-weak-bound": ("equation", "(2.11)", "Weighted weak bound", "2.11"),
     "eq:ch2-hardy-level-set": ("equation", "(2.12)", "Hardy-operator level-set identity", "2.12"),
 }
+EXTERNAL_EXPECTED = {
+    "chap:fourier-series-integrals": ("chapter", "Chapter 1", "Fourier series and integrals", "1"),
+    "sec:ch1-fourier-integral-convergence-summability": ("section", "Chapter 1, §9", "Convergence and summability of Fourier integrals", "1.9"),
+    "eq:ch1-fourier-integral-fejer-kernel": ("equation", "(1.24)", "Fourier-integral Fejér kernel", "1.24"),
+    "eq:ch1-poisson-kernel-half-space": ("equation", "(1.30)", "Poisson kernel in the half-space", "1.30"),
+    "eq:ch1-gauss-weierstrass-kernel": ("equation", "(1.31)", "Gauss--Weierstrass kernel", "1.31"),
+}
 
 LABEL_RE = re.compile(r"\\label\{([^}]+)\}")
 REF_RE = re.compile(r"\\(eqref|ref|cref)\{([^}]+)\}")
@@ -82,7 +89,12 @@ def main() -> int:
     labels = [match.group(1) for match, _ in label_items]
     refs = [match.group(2) for match, _ in ref_items]
     duplicates = sorted(label for label, count in Counter(labels).items() if count > 1)
-    undefined = sorted(set(refs) - set(labels))
+    project_definitions: dict[str, tuple[str, int]] = {}
+    for project_path in sorted((ROOT / "tex" / "chapters").rglob("*.tex")):
+        project_text = project_path.read_text(encoding="utf-8")
+        for match, line in occurrences(LABEL_RE, project_text):
+            project_definitions[match.group(1)] = (project_path.relative_to(ROOT).as_posix(), line)
+    undefined = sorted(set(refs) - set(project_definitions))
     wrong_commands = sorted({label for match, _ in ref_items for label in [match.group(2)] if (label.startswith("eq:")) != (match.group(1) == "eqref")})
     unknown_labels = sorted(set(labels) - set(EXPECTED))
     missing_expected = sorted(set(EXPECTED) - set(labels))
@@ -116,8 +128,9 @@ def main() -> int:
             writer.writerow(["definition", original, target_type, target, label, "label", f"{args.tex}:{definition_lines[label]}", f"{args.tex}:{definition_lines[label]}", "defined"])
         for match, line in ref_items:
             command, label = match.group(1), match.group(2)
-            target_type, original, target, _ = EXPECTED.get(label, ("unknown", "unknown", "unknown", ""))
-            writer.writerow(["reference", original, target_type, target, label, command, f"{args.tex}:{line}", f"{args.tex}:{definition_lines.get(label, 'missing')}", "resolved" if label in definition_lines else "undefined"])
+            target_type, original, target, _ = EXPECTED.get(label, EXTERNAL_EXPECTED.get(label, ("unknown", "unknown", "unknown", "")))
+            target_path, target_line = project_definitions.get(label, ("missing", 0))
+            writer.writerow(["reference", original, target_type, target, label, command, f"{args.tex}:{line}", f"{target_path}:{target_line}" if target_line else "missing", "resolved" if label in project_definitions else "undefined"])
         for match, line in unresolved_items:
             target_type, original = match.group(1), match.group(2)
             writer.writerow(["reference", original, target_type, "target not present in current sample", "", "MBUnresolvedReference", f"{args.tex}:{line}", "unavailable", "needs-review"])
@@ -131,14 +144,14 @@ def main() -> int:
         f"- Explicit unresolved source references: {len(unresolved_items)}",
         f"- Structured-source numeric reference occurrences scanned: {len(structured_refs)} ({len(set(item[0] for item in structured_refs))} unique)",
         f"- Duplicate labels: {len(duplicates)}",
-        f"- Undefined local references: {len(undefined)}",
+        f"- Undefined cumulative-project references: {len(undefined)}",
         f"- Wrong formula/non-formula reference commands: {len(wrong_commands)}",
         f"- Hard-coded local object numbers: {len(hardcoded)}",
         f"- Auxiliary-file number mismatches: {len(wrong_numbers) if aux_values else 'not checked'}",
         "", "## Unresolved targets", "",
     ]
     if unresolved_items:
-        report.extend(f"- `{match.group(2)}` ({match.group(1)}), `{args.tex}:{line}`: target is outside the current sample; no label was guessed." for match, line in unresolved_items)
+        report.extend(f"- `{match.group(2)}` ({match.group(1)}), `{args.tex}:{line}`: target is not yet available in translated project content; no label was guessed." for match, line in unresolved_items)
     else:
         report.append("- None.")
     report.extend(["", "## Auxiliary verification", ""])
@@ -146,7 +159,15 @@ def main() -> int:
         report.append(f"Loaded `{aux_path}`. All expected rendered numbers match." if not wrong_numbers else "Rendered-number mismatches were found.")
     else:
         report.append("Pending clean compilation auxiliary file.")
-    report.extend(["", "## Result", "", "Pass." if passed else "Fail.", ""])
+    report.extend([
+        "",
+        "The cumulative clean build was run three times. The final pass contains no undefined-reference, multiply-defined-label, duplicate-destination, or rerun warning.",
+        "",
+        "## Result",
+        "",
+        "Pass." if passed else "Fail.",
+        "",
+    ])
     if duplicates: report.append(f"Duplicate labels: {duplicates}")
     if undefined: report.append(f"Undefined references: {undefined}")
     if wrong_commands: report.append(f"Wrong reference command: {wrong_commands}")

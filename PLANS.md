@@ -1,58 +1,50 @@
-# Phase 2 sample validation plan
+# Full-book translation plan
 
 ## Objective
 
-Diagnose the complete supplied PDF, establish a preliminary whole-book structure, and validate the workflow on one representative continuous sample of 15 pages. Do not translate the complete book.
+Translate every supplied source page in table-of-contents order, preserving the accepted Chapter 2 sample unchanged as the style and technical baseline. Continue automatically after each batch that passes QA. Stop only for a genuine blocking issue that cannot be resolved from the source, project data, or reliable context.
 
-## Implementation steps
+## Baseline
 
-1. Inventory read-only source files, hash them, and select the primary PDF with a recorded reason.
-2. Inspect every page for text layer, extraction quality, scan/mixed state, rotation, size, images, fonts, columns, recurring matter, formula density, and anomalies.
-3. Establish preliminary whole-book structural ranges and a table-of-contents outline.
-4. Select a continuous representative sample based on observed document elements.
-5. Preserve raw text and layout data; render and visually inspect the sample.
-6. Build structured source blocks and record automatic repairs.
-7. Register sample formula candidates with stable IDs and review metadata.
-8. Extract unapproved terminology and exact-form personal-name candidates.
-9. Produce draft and reviewed Chinese translations from structured source blocks only.
-10. Generate sample LaTeX with the user template, compile it, render it, and inspect the result.
-11. Run acceptance QA, recheck source hashes, and update project status.
+- Primary source: `input/source/GSM029 - Fourier Analysis.pdf` (228 PDF pages).
+- Read-only source SHA-256: `03baa3bf45ab43bf96ebf8c35dfb6bfb633c91c3106dee879a20f1fa08552fdf`.
+- Accepted translation baseline: Chapter 2, PDF pages 37--51 / printed pages 25--39.
+- Accepted sample file: `tex/chapters/sample.tex`; it must not be retranscribed or restyled. Reference-only maintenance is permitted when a previously unavailable target becomes available.
+- Announced but unavailable source: Bibliography from printed page 217 and Index from printed page 219.
 
-## Current progress
+## Batch order
 
-- Phase 2 sample validation deliverables are complete.
-- Cross-references, translated-prose punctuation, and theorem-like adapter environments have been repaired and regression-tested.
-- Stopped before later-chapter/full-book translation because the remaining review queues are outside this maintenance pass.
+1. Chapter 1, PDF 13--36 / printed 1--24.
+2. Complete Chapter 2 by adding only PDF 52--59 / printed 40--47 to the accepted sample.
+3. Chapter 3, PDF 61--80 / printed 49--68.
+4. Chapter 4, PDF 81--102 / printed 69--90.
+5. Chapter 5, PDF 103--126 / printed 91--114.
+6. Chapter 6, PDF 127--144 / printed 115--132.
+7. Chapter 7, PDF 145--168 / printed 133--156.
+8. Chapter 8, PDF 169--206 / printed 157--194. If needed, split only at complete section boundaries.
+9. Chapter 9, PDF 207--228 / printed 195--216.
+10. Front matter, PDF 1--12, after the mathematical chapter workflow is stable.
+11. Bibliography and Index only if the missing source pages are supplied.
 
-## Completed validation
+## Per-batch workflow
 
-- Phase 1 rules, configuration, translation style, template reports, glossary controls, and reference TeX were read before source processing.
-- The sole substantive PDF was selected without ambiguity and hashed.
-- All 228 PDF pages were individually diagnosed.
-- Title, contents, chapter openings, blank interstitial pages, and final page were visually checked.
-- Preliminary front-matter and nine-chapter ranges were mapped.
-- PDF pages 37--51 (printed pages 25--39) were selected as a continuous representative sample.
-- All sample pages were rendered, visually inspected, and extracted to raw text, word layout, and structured-source layers.
-- Display-formula candidates were assigned stable IDs and queued for manual review; OCR candidates were not accepted as final LaTeX.
-- Terminology and exact-form name candidates were added with `needs-review` status only.
-- Fifteen source page containers map one-to-one to fifteen draft and fifteen reviewed translation records.
-- The repaired sample compiled through the unchanged user style plus the authorized adapter to a 12-page PDF; every output page was rendered and visually checked.
-- Twenty-two unit tests passed and all source/template hashes remained unchanged.
-- Thirty-nine stable semantic labels, thirty-one local reference commands, and eleven explicitly unresolved external references are recorded in the cross-reference registry.
-- The final protected-region-aware punctuation scan reports zero forbidden full-width punctuation occurrences in translated Chinese prose.
+1. Preserve raw extraction and page renders.
+2. Restore complete structural blocks with stable IDs and source-page links.
+3. Register every display formula and any uncertain inline formula.
+4. Register labels, backward references, forward references, figures, tables, and footnotes.
+5. Update terminology and exact-form personal names without self-approving new entries.
+6. Produce a faithful draft from structured source, then a Chinese mathematical-style review.
+7. Generate one chapter file or section files included by a chapter driver.
+8. Run punctuation, names, terminology, formula, structure, and cross-reference QA.
+9. Compile the current batch and cumulative book from a clean directory with at least two LaTeX passes.
+10. Render and visually inspect the new output pages.
+11. Recheck all read-only input hashes and the accepted Chapter 2 sample hash.
+12. Update status files and create a local Git commit when the full chapter passes.
 
-## Issues found
+## Current position
 
-- Blocking: the supplied file ends at printed page 216; the contents announce a Bibliography at 217 and an Index at 219.
-- Blocking: hidden OCR substantially corrupts mathematical symbols; formula token-level verification is incomplete.
-- Major: heuristic source structure contains low-confidence blocks requiring manual review.
-- Resolved in this maintenance pass: source equation (2.2) was visually transcribed and labeled; broader formula-registry review remains open.
-- Resolved in this maintenance pass: the authorized adapter supplies referenceable, unified theorem-like environments without modifying the user's style file.
-- Resolved in this maintenance pass: translated output uses the Chinese proof heading with ASCII punctuation.
-
-## Pending human review
-
-- Confirm or supply the source tail containing the announced Bibliography and Index.
-- Review formula crops against every proposed LaTeX transcription, including subscripts, superscripts, relations, signs, brackets, integral domains, and summation ranges.
-- Confirm unresolved terminology and all low-confidence structure blocks.
-- Review the sample translation and compiled template behavior before authorizing full-book translation.
+- Completed unit: Chapter 1, PDF 13--36 / printed 1--24; QA and cumulative compilation passed.
+- Active unit: Chapter 2 completion.
+- Active untranslated source range: PDF 52--59 / printed 40--47.
+- Completed accepted Chapter 2 range: PDF 37--51 / printed 25--39; reference-only links to completed Chapter 1 were resolved without changing translation wording.
+- Remote pushes are not authorized for this workflow; completed chapters receive local commits only.

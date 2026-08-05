@@ -1,0 +1,120 @@
+\subsection{可和方法}
+\label{sec:ch1-summability-methods}
+
+为了从 Fourier 系数恢复函数 $f$, 最好能找到不同于取 Fourier 级数部分和极限的方法, 因为正如已经看到的, 后一种方法并不总是有效.
+
+一种这样的办法是 Cesàro 可和法, 即取部分和的算术平均的极限. 众所周知, 若 $\lim a_k$ 存在, 则
+\[
+ \lim_{k\to\infty}\frac{a_1+\cdots+a_k}{k}
+\]
+也存在且取相同的值. 定义
+\[
+\begin{aligned}
+ \sigma_Nf(x)
+ &=\frac1{N+1}\sum_{k=0}^{N}S_kf(x)\\
+ &=\int_0^1f(t)\frac1{N+1}\sum_{k=0}^{N}D_k(x-t)\,dt\\
+ &=\int_0^1f(t)F_N(x-t)\,dt,
+\end{aligned}
+\]
+其中 $F_N$ 是 Fejér 核,
+\[
+ F_N(t)=\frac1{N+1}\sum_{k=0}^{N}D_k(t)
+ =\frac1{N+1}\left(\frac{\sin(\pi(N+1)t)}{\sin(\pi t)}\right)^2.
+\]
+$F_N$ 具有下列性质:
+\[
+ F_N(t)\ge0,
+\]
+\hypertarget{chapter-01-page-022}{}
+\begin{equation}
+\label{eq:ch1-fejer-kernel-properties}
+ \|F_N\|_1=\int_0^1F_N(t)\,dt=1,
+ \qquad
+ \lim_{N\to\infty}\int_{\delta<|t|<1/2}F_N(t)\,dt=0
+ \quad\text{if }\delta>0.
+\end{equation}
+因为 $F_N$ 为正, 它的 $L^1$ 范数等于其积分, 即为 $1$. Dirichlet 核并非如此: 它的积分等于 $1$ 是因为正部与负部相消, 而它的 $L^1$ 范数随 $N$ 趋于无穷.
+
+\begin{Theorem}
+\label{thm:ch1-fejer-norm-convergence}
+若 $f\in L^p$, $1\le p<\infty$; 或者 $f$ 连续且 $p=\infty$, 则
+\[
+ \lim_{N\to\infty}\|\sigma_Nf-f\|_p=0.
+\]
+\end{Theorem}
+
+\begin{Proof}
+因为 $\int F_N=1$, 由 Minkowski 不等式,
+\[
+\begin{aligned}
+ \|\sigma_Nf-f\|_p
+ &=\int_{-1/2}^{1/2}\|f(\cdot-t)-f(\cdot)\|_pF_N(t)\,dt\\
+ &\le\int_{|t|<\delta}\|f(\cdot-t)-f(\cdot)\|_pF_N(t)\,dt
+ +2\|f\|_p\int_{\delta<|t|<1/2}F_N(t)\,dt.
+\end{aligned}
+\]
+当 $1\le p<\infty$ 时,
+\[
+ \lim_{t\to0}\|f(\cdot-t)-f(\cdot)\|_p=0;
+\]
+当 $p=\infty$ 且 $f$ 连续时, 同一极限也成立. 因而选择适当的 $\delta$, 可以使第一项任意小. 固定 $\delta$ 后, 由 \eqref{eq:ch1-fejer-kernel-properties}, 第二项趋于 $0$.
+\end{Proof}
+
+\begin{Corollary}
+\label{cor:ch1-trigonometric-density-uniqueness}
+\begin{enumerate}[label=(\arabic*)]
+\item 当 $1\le p<\infty$ 时, 三角多项式在 $L^p$ 中稠密;
+\item 若 $f$ 可积且对每个 $k$ 都有 $\widehat f(k)=0$, 则 $f$ 恒等于零.
+\end{enumerate}
+\end{Corollary}
+
+第二种可和方法是把 Fourier 级数看成单位圆(复平面中)上形式极限
+\begin{equation}
+\label{eq:ch1-fourier-series-unit-disk}
+ u(z)=\sum_{k=0}^{\infty}\widehat f(k)z^k
+ +\sum_{k=-\infty}^{-1}\widehat f(k)\overline z^{|k|},
+ \qquad z=re^{2\pi i\theta}.
+\end{equation}
+由于 $\{\widehat f(k)\}$ 是有界序列, 此函数在 $|z|<1$ 上有定义. 它可改写为
+\[
+ u(re^{2\pi i\theta})
+ =\sum_{k=-\infty}^{\infty}\widehat f(k)r^{|k|}e^{2\pi ik\theta}
+ =\int_{-1/2}^{1/2}f(t)P_r(\theta-t)\,dt,
+\]
+\hypertarget{chapter-01-page-023}{}
+其中
+\[
+ P_r(t)=\sum_{k=-\infty}^{\infty}r^{|k|}e^{2\pi ikt}
+ =\frac{1-r^2}{1-2r\cos(2\pi t)+r^2}
+\]
+是 Poisson 核. Poisson 核具有与 Fejér 核类似的性质:
+\[
+ P_r(t)\ge0,
+\]
+\begin{equation}
+\label{eq:ch1-poisson-kernel-properties}
+ \int_0^1P_r(t)\,dt=1,
+ \qquad
+ \lim_{r\to1^-}\int_{\delta<|t|<1/2}P_r(t)\,dt=0
+ \quad\text{if }\delta>0.
+\end{equation}
+因此可以证明一个与定理~\ref{thm:ch1-fejer-norm-convergence} 类似的结果.
+
+\begin{Theorem}
+\label{thm:ch1-poisson-norm-convergence}
+若 $f\in L^p$, $1\le p<\infty$; 或者 $f$ 连续且 $p=\infty$, 则
+\[
+ \lim_{r\to1^-}\|P_r*f-f\|_p=0.
+\]
+\end{Theorem}
+
+由于函数 $u$ 在 $|z|<1$ 上调和, 它是 Dirichlet 问题
+\[
+ \Delta u=0\quad\text{if }|z|<1,
+ \qquad
+ u=f\quad\text{if }|z|=1
+\]
+的解, 其中边界条件按定理~\ref{thm:ch1-poisson-norm-convergence} 的意义理解.
+
+在第~\ref{chap:hardy-littlewood-maximal-function}~章, 我们将研究 $\sigma_Nf(x)$ 和 $P_r*f(x)$ 的几乎处处收敛性.
+

@@ -37,3 +37,7 @@ Theorem no longer uses a separate `tcolorbox` title region. Its frame is hidden,
 ## Result
 
 Pass.
+
+## Chapter 1 cumulative regression
+
+The Chapter 1 cumulative build resolves 23 statement labels consecutively as `1.1` through `1.23`, on `thmcount` destinations. The final third XeLaTeX pass contains no undefined reference, multiply-defined label, duplicate destination, or rerun warning. Visual inspection confirmed that long statements and proofs remain breakable and that statement titles preserve the established number, optional name, ASCII-parenthesis, and ASCII-colon structure.

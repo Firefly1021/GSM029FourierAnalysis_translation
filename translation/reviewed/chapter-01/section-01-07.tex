@@ -1,0 +1,144 @@
+\subsection{Schwartz 类与缓增分布}
+\label{sec:ch1-schwartz-tempered-distributions}
+
+若函数 $f$ 无限次可微, 且它的所有导数在无穷远处都迅速衰减, 则称 $f$ 属于 Schwartz 类 $\mathcal S(\mathbb R^n)$. 也就是说, 对所有 $\alpha,\beta\in\mathbb N^n$,
+\[
+ \sup_x|x^\alpha D^\beta f(x)|=p_{\alpha,\beta}(f)<\infty.
+\]
+$C_c^\infty$ 中的函数属于 $\mathcal S$, 像 $e^{-|x|^2}$ 这样不具有紧支集的函数也属于 $\mathcal S$. 集合 $\{p_{\alpha,\beta}\}$ 是 $\mathcal S$ 上的可数半范数族, 可用它在 $\mathcal S$ 上定义一个拓扑: 序列 $\{\phi_k\}$ 收敛到 $0$, 当且仅当对所有 $\alpha,\beta\in\mathbb N^n$,
+\[
+ \lim_{k\to\infty}p_{\alpha,\beta}(\phi_k)=0.
+\]
+
+\hypertarget{chapter-01-page-025}{}
+在此拓扑下, $\mathcal S$ 是 Fréchet 空间(完备且可度量), 并且当 $1\le p<\infty$ 时在 $L^p(\mathbb R^n)$ 中稠密. 特别地, $\mathcal S\subset L^1$, 因而 \eqref{eq:ch1-fourier-transform-definition} 定义了 $\mathcal S$ 中函数的 Fourier 变换.
+
+$\mathcal S$ 上的有界线性泛函空间 $\mathcal S'$ 称为缓增分布空间. 从 $\mathcal S$ 到 $\mathbb C$ 的线性映射 $T$ 属于 $\mathcal S'$, 当且仅当
+\[
+ \lim_{k\to\infty}T(\phi_k)=0
+ \quad\text{只要}\quad
+ \lim_{k\to\infty}\phi_k=0\text{ 于 }\mathcal S.
+\]
+
+\begin{Theorem}
+\label{thm:ch1-schwartz-fourier-inversion}
+Fourier 变换是从 $\mathcal S$ 到 $\mathcal S$ 的连续映射, 并满足
+\begin{equation}
+\label{eq:ch1-fourier-pairing-symmetry}
+ \int_{\mathbb R^n}f\widehat g=\int_{\mathbb R^n}\widehat f g,
+\end{equation}
+以及
+\begin{equation}
+\label{eq:ch1-fourier-inversion}
+ f(x)=\int_{\mathbb R^n}\widehat f(\xi)e^{2\pi ix\cdot\xi}\,d\xi.
+\end{equation}
+\end{Theorem}
+
+等式 \eqref{eq:ch1-fourier-inversion} 称为反演公式.
+
+为证明定理~\ref{thm:ch1-schwartz-fourier-inversion}, 需要计算一个特殊函数的 Fourier 变换.
+
+\begin{Lemma}
+\label{lem:ch1-gaussian-fourier-transform}
+若 $f(x)=e^{-\pi|x|^2}$, 则 $\widehat f(\xi)=e^{-\pi|\xi|^2}$.
+\end{Lemma}
+
+\begin{Proof}
+可以在 $\mathbb C$ 中积分来直接证明这一结果, 但这里给出另一种证明. 只需证明一维情形, 因为在 $\mathbb R^n$ 中, $\widehat f$ 是 $n$ 个相同积分的乘积.
+
+函数 $f(x)=e^{-\pi x^2}$ 是微分方程
+\[
+ u'+2\pi xu=0,
+ \qquad u(0)=1
+\]
+的解. 由 \eqref{eq:ch1-fourier-derivative} 和 \eqref{eq:ch1-fourier-coordinate-multiplication}, $\widehat u$ 满足同一微分方程, 且初值为
+\[
+ \widehat u(0)=\int_{\mathbb R}u(x)\,dx
+ =\int_{\mathbb R}e^{-\pi x^2}\,dx=1.
+\]
+因此由唯一性, $\widehat f=f$.
+\end{Proof}
+
+\begin{Proof}
+这里证明定理~\ref{thm:ch1-schwartz-fourier-inversion}. 由 \eqref{eq:ch1-fourier-derivative} 和 \eqref{eq:ch1-fourier-coordinate-multiplication},
+\[
+ \xi^\alpha D^\beta\widehat f(\xi)
+ =C\widehat{(D^\alpha x^\beta f)}(\xi),
+\]
+所以
+\[
+ |\xi^\alpha D^\beta\widehat f(\xi)|
+ \le C\|D^\alpha x^\beta f\|_1.
+\]
+右端的 $L^1$ 范数可由 $f$ 的有限个半范数的线性组合控制, 这说明 Fourier 变换是从 $\mathcal S$ 到自身的连续映射.
+
+\hypertarget{chapter-01-page-026}{}
+等式 \eqref{eq:ch1-fourier-pairing-symmetry} 是 Fubini 定理的直接推论, 因为 $f(x)g(y)$ 在 $\mathbb R^n\times\mathbb R^n$ 上可积.
+
+由 \eqref{eq:ch1-fourier-dilation} 和 \eqref{eq:ch1-fourier-pairing-symmetry}, 得
+\[
+ \int f(x)\widehat g(\lambda x)\,dx
+ =\int\widehat f(x)\lambda^{-n}g(\lambda^{-1}x)\,dx.
+\]
+在第一个积分中作变量代换 $\lambda x=y$, 得
+\[
+ \int f(\lambda^{-1}x)\widehat g(x)\,dx
+ =\int\widehat f(x)g(\lambda^{-1}x)\,dx;
+\]
+再令 $\lambda\to\infty$, 得
+\[
+ f(0)\int\widehat g(x)\,dx=g(0)\int\widehat f(x)\,dx.
+\]
+令 $g(x)=e^{-\pi|x|^2}$. 由引理~\ref{lem:ch1-gaussian-fourier-transform},
+\[
+ f(0)=\int\widehat f(\xi)\,d\xi,
+\]
+这就是 $x=0$ 时的 \eqref{eq:ch1-fourier-inversion}. 将 $f$ 换成 $\tau_xf$, 再由 \eqref{eq:ch1-fourier-translation-modulation},
+\[
+ f(x)=(\tau_xf)(0)=\int\widehat{(\tau_xf)}(\xi)\,d\xi
+ =\int\widehat f(\xi)e^{2\pi ix\cdot\xi}\,d\xi.
+\]
+\end{Proof}
+
+令 $\widetilde f(x)=f(-x)$, 得到下述推论.
+
+\begin{Corollary}
+\label{cor:ch1-fourier-period-four}
+对 $f\in\mathcal S$, 有 $\widehat{\widehat f}=\widetilde f$; 因而 Fourier 变换的周期为 $4$(即连续应用四次得到恒等算子).
+\end{Corollary}
+
+\begin{Definition}
+\label{def:ch1-tempered-distribution-fourier-transform}
+$T\in\mathcal S'$ 的 Fourier 变换是由
+\[
+ \widehat T(f)=T(\widehat f),\qquad f\in\mathcal S
+\]
+给出的缓增分布 $\widehat T$.
+\end{Definition}
+
+由定理~\ref{thm:ch1-schwartz-fourier-inversion}, $\widehat T$ 是缓增分布. 特别地, 若 $T$ 是可积函数, 则 $\widehat T$ 与等式 \eqref{eq:ch1-fourier-transform-definition} 定义的 Fourier 变换一致. 同样, 若 $\mu$ 是有限 Borel 测度(即 $C_0(\mathbb R^n)$ 上的有界线性泛函, 这里 $C_0(\mathbb R^n)$ 是在无穷远处消失的连续函数空间), 则 $\widehat\mu$ 是由
+\[
+ \widehat\mu(\xi)=\int_{\mathbb R^n}e^{-2\pi ix\cdot\xi}\,d\mu(x)
+\]
+给出的有界连续函数. 对原点处的 Dirac 测度 $\delta$, 这给出 $\widehat\delta=1$.
+
+\hypertarget{chapter-01-page-027}{}
+\begin{Theorem}
+\label{thm:ch1-fourier-isomorphism-sprime}
+Fourier 变换是从 $\mathcal S'$ 到 $\mathcal S'$ 的有界线性双射, 其逆映射也有界.
+\end{Theorem}
+
+\begin{Proof}
+若 $T_n\to T$ 于 $\mathcal S'$, 则对任意 $f\in\mathcal S$,
+\[
+ \widehat T_n(f)=T_n(\widehat f)\longrightarrow T(\widehat f)=\widehat T(f).
+\]
+此外, Fourier 变换的周期为 $4$, 所以其逆映射等价于连续应用 Fourier 变换三次; 因此其逆映射也连续.
+\end{Proof}
+
+若定义 $\widetilde T$ 为 $\widetilde T(f)=T(\widetilde f)$, 则由推论~\ref{cor:ch1-fourier-period-four} 有 $\widetilde{(\widehat{\widetilde T})}=T$. 若 $\widehat T\in L^1$, 则由反演公式,
+\[
+ T(x)=\int_{\mathbb R^n}\widehat T(\xi)e^{2\pi ix\cdot\xi}\,d\xi;
+\]
+特别地, $T$ 是有界连续函数.
+

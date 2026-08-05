@@ -1,0 +1,177 @@
+\subsection{逐点收敛判别法}
+\label{sec:ch1-pointwise-convergence-criteria}
+
+以 $S_Nf(x)$ 表示级数 \eqref{eq:ch1-fourier-series} 的第 $N$ 个对称部分和, 即
+\[
+ S_Nf(x)=\sum_{k=-N}^{N}\widehat f(k)e^{2\pi ikx}.
+\]
+注意, 当级数写成 \eqref{eq:ch1-trigonometric-series} 的形式时, 这也是它的第 $N$ 个部分和.
+
+研究用 Fourier 级数表示 $f$ 的第一种途径, 是确定对每个 $x$, 极限 $\lim S_Nf(x)$ 是否存在, 以及在存在时它是否等于 $f(x)$. 第一个肯定结果由 P. G. L. Dirichlet 于 1829 年给出. 他证明了下述收敛判别法: 若 $f$ 有界、分段连续并且只有有限个极大值和极小值, 则 $\lim S_Nf(x)$ 存在且等于 $\frac12[f(x+)+f(x-)]$. 我们将在下面证明的 Jordan 判别法包含这一结果作为特殊情形.
+
+\hypertarget{chapter-01-page-015}{}
+为了研究 $S_Nf(x)$, 需要一个更便于处理的表达式. Dirichlet 将部分和写成
+\[
+\begin{aligned}
+ S_Nf(x)
+ &=\sum_{k=-N}^{N}\int_0^1f(t)e^{-2\pi ikt}\,dt\,e^{2\pi ikx}\\
+ &=\int_0^1f(t)D_N(x-t)\,dt\\
+ &=\int_0^1f(x-t)D_N(t)\,dt,
+\end{aligned}
+\]
+其中 $D_N$ 是 Dirichlet 核,
+\[
+ D_N(t)=\sum_{k=-N}^{N}e^{2\pi ikt}.
+\]
+对这个几何级数求和, 得
+\begin{equation}
+\label{eq:ch1-dirichlet-kernel}
+ D_N(t)=\frac{\sin(\pi(2N+1)t)}{\sin(\pi t)}.
+\end{equation}
+它满足
+\[
+ \int_0^1D_N(t)\,dt=1,
+ \qquad |D_N(t)|\le\frac1{\sin(\pi\delta)},
+ \quad \delta\le|t|\le\frac12.
+\]
+
+下面证明两个逐点收敛判别法.
+
+\begin{Theorem}[Dini 判别法]
+\label{thm:ch1-dini-criterion}
+若对某个 $x$, 存在 $\delta>0$, 使得
+\[
+ \int_{|t|<\delta}\left|\frac{f(x+t)-f(x)}{t}\right|\,dt<\infty,
+\]
+则
+\[
+ \lim_{N\to\infty}S_Nf(x)=f(x).
+\]
+\end{Theorem}
+
+\begin{Theorem}[Jordan 判别法]
+\label{thm:ch1-jordan-criterion}
+若 $f$ 在 $x$ 的一个邻域内是有界变差函数, 则
+\[
+ \lim_{N\to\infty}S_Nf(x)=\frac12[f(x+)+f(x-)].
+\]
+\end{Theorem}
+
+乍看之下, 这些结果是局部的这一点可能令人惊讶, 因为稍微修改函数就会改变 $f$ 的 Fourier 系数. 然而, Fourier 级数的收敛性实际上是一种局部性质; 若修改发生在 $x$ 的某个邻域之外, 则级数在 $x$ 处的行为不变. 下述结果精确表述了这一点.
+
+\hypertarget{chapter-01-page-016}{}
+\begin{Theorem}[Riemann 局部化原理]
+\label{thm:ch1-riemann-localization}
+若 $f$ 在 $x$ 的一个邻域内为零, 则
+\[
+ \lim_{N\to\infty}S_Nf(x)=0.
+\]
+\end{Theorem}
+
+这一结果的一个等价表述是: 若两个函数在 $x$ 的一个邻域内相同, 则它们的 Fourier 级数在 $x$ 处具有相同的行为.
+
+由 Fourier 系数的定义 \eqref{eq:ch1-fourier-coefficient}, 立即有
+\[
+ |\widehat f(k)|\le\|f\|_1,
+\]
+但还有一个更精细的估计成立, 我们将用它证明前面的结果.
+
+\begin{Lemma}[Riemann--Lebesgue]
+\label{lem:ch1-riemann-lebesgue}
+若 $f\in L^1(\mathbb T)$, 则
+\[
+ \lim_{|k|\to\infty}\widehat f(k)=0.
+\]
+\end{Lemma}
+
+\begin{Proof}
+因为 $e^{2\pi ix}$ 的周期为 $1$,
+\[
+\begin{aligned}
+ \widehat f(k)
+ &=\int_0^1f(x)e^{-2\pi ikx}\,dx\\
+ &=-\int_0^1f(x)e^{-2\pi ik(x+1/2k)}\,dx\\
+ &=-\int_0^1f(x-1/2k)e^{-2\pi ikx}\,dx.
+\end{aligned}
+\]
+因此
+\[
+ \widehat f(k)=\frac12\int_0^1[f(x)-f(x-1/2k)]e^{-2\pi ikx}\,dx.
+\]
+若 $f$ 连续, 则立即得到 $\lim_{|k|\to\infty}\widehat f(k)=0$. 对任意 $f\in L^1(\mathbb T)$, 给定 $\varepsilon>0$, 取连续函数 $g$, 使 $\|f-g\|_1<\varepsilon/2$, 再取充分大的 $k$, 使 $|\widehat g(k)|<\varepsilon/2$. 于是
+\[
+ |\widehat f(k)|\le|\widehat{(f-g)}(k)|+|\widehat g(k)|
+ \le\|f-g\|_1+|\widehat g(k)|<\varepsilon.
+\]
+\end{Proof}
+
+\hypertarget{chapter-01-page-017}{}
+\begin{Proof}
+这里证明定理~\ref{thm:ch1-riemann-localization}. 设 $f(t)=0$ 于 $(x-\delta,x+\delta)$. 则
+\[
+\begin{aligned}
+ S_Nf(x)
+ &=\int_{\delta\le|t|<1/2}f(x-t)
+ \frac{\sin(\pi(2N+1)t)}{\sin(\pi t)}\,dt\\
+ &=\widehat{(ge^{\pi i\cdot})}(N)+\widehat{(ge^{-\pi i\cdot})}(-N),
+\end{aligned}
+\]
+其中
+\[
+ g(t)=\frac{f(x-t)}{2i\sin(\pi t)}\chi_{\{\delta\le|t|<1/2\}}(t)
+\]
+可积. 由 Riemann--Lebesgue 引理可得 $\lim_{N\to\infty}S_Nf(x)=0$.
+\end{Proof}
+
+\begin{Proof}
+这里证明定理~\ref{thm:ch1-dini-criterion}. 因为 $D_N$ 的积分为 $1$,
+\[
+ S_Nf(x)-f(x)=\int_{-1/2}^{1/2}[f(x-t)-f(x)]
+ \frac{\sin(\pi(2N+1)t)}{\sin(\pi t)}\,dt
+ =\int_{|t|<\delta}+\int_{\delta\le|t|<1/2}.
+\]
+由 Riemann--Lebesgue 引理, 这两个积分都趋于 $0$. 第二个积分按前一证明论证; 对第一个积分, 由假设函数
+\[
+ \frac{f(x-t)-f(x)}{\sin(\pi t)}\chi_{\{|t|<\delta\}}(t)
+\]
+可积即可得到结论. 这里用到了当 $|t|<\delta$ 时, $\sin(\pi t)$ 与 $\pi t$ 等价.
+\end{Proof}
+
+\begin{Proof}
+这里证明定理~\ref{thm:ch1-jordan-criterion}. 每个有界变差函数都是两个单调函数之差, 因而可设 $f$ 在 $x$ 的一个邻域内单调. 由于
+\[
+ S_Nf(x)=\int_{-1/2}^{1/2}f(x-t)D_N(t)\,dt
+ =\int_0^{1/2}[f(x-t)+f(x+t)]D_N(t)\,dt,
+\]
+只需证明对单调函数 $g$ 有
+\[
+ \lim_{N\to\infty}\int_0^{1/2}g(t)D_N(t)\,dt=\frac12g(0+).
+\]
+进一步, 可设 $g(0+)=0$, 且 $g$ 在 $0$ 的右侧递增. 给定 $\varepsilon>0$, 取 $\delta>0$, 使得当 $0<t<\delta$ 时 $g(t)<\varepsilon$. 于是
+\[
+ \int_0^{1/2}g(t)D_N(t)\,dt=\int_0^\delta+\int_\delta^{1/2}.
+\]
+
+\hypertarget{chapter-01-page-018}{}
+仍由 Riemann--Lebesgue 引理, 第二个积分趋于 $0$. 对第一个积分应用积分第二中值定理\footnote{若 $\phi$ 在 $[a,b]$ 上连续且 $h$ 单调, 则存在 $c$, $a<c<b$, 使得 $\int_a^bh\phi=h(b-)\int_c^b\phi+h(a+)\int_a^c\phi$.}. 则对某个 $\nu$, $0<\nu<\delta$, 有
+\[
+ \int_0^\delta g(t)D_N(t)\,dt=g(\delta-)\int_\nu^\delta D_N(t)\,dt.
+\]
+此外,
+\[
+\begin{aligned}
+ \left|\int_\nu^\delta D_N(t)\,dt\right|
+ &\le\left|\int_\nu^\delta\sin(\pi(2N+1)t)
+ \left(\frac1{\sin(\pi t)}-\frac1{\pi t}\right)dt\right|\\
+ &\quad+\left|\int_\nu^\delta\frac{\sin(\pi(2N+1)t)}{\pi t}\,dt\right|\\
+ &\le\int_\nu^\delta\left|\frac1{\sin(\pi t)}-\frac1{\pi t}\right|dt
+ +2\sup_{M>0}\left|\int_0^M\frac{\sin(\pi t)}t\,dt\right|\\
+ &\le C.
+\end{aligned}
+\]
+因此
+\[
+ \left|\int_0^\delta g(t)D_N(t)\,dt\right|\le C\varepsilon.
+\]
+\end{Proof}
+
