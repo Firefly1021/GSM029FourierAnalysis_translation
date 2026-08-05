@@ -1,0 +1,96 @@
+\subsection{核的 Fourier 变换}
+\label{sec:ch4-fourier-transform-kernel}
+
+若对任意 $x\in\mathbb R^n$ 和 $\lambda>0$ 都有 $f(\lambda x)=\lambda^a f(x)$, 则称函数 $f$ 是 $a$ 次齐次的. 对任意函数 $\varphi$, 定义 $\varphi_\lambda(x)=\lambda^{-n}\varphi(\lambda^{-1}x)$, 于是
+\[
+ \int_{\mathbb R^n}f(x)\varphi_\lambda(x)\,dx
+ =\lambda^a\int_{\mathbb R^n}f(x)\varphi(x)\,dx.
+\]
+
+\hypertarget{chapter-04-page-083}{}
+因此可以如下定义分布的齐次性.
+
+\begin{Definition}
+\label{def:ch4-homogeneous-distribution}
+若分布 $T$ 对每个试验函数 $\varphi$ 都满足
+\[
+ T(\varphi_\lambda)=\lambda^aT(\varphi),
+\]
+则称 $T$ 是 $a$ 次齐次的.
+\end{Definition}
+
+简单计算表明, \eqref{eq:ch4-principal-value-distribution} 给出的分布是 $-n$ 次齐次的, 细节留给读者.
+
+\begin{Proposition}
+\label{prop:ch4-fourier-homogeneity}
+若缓增分布 $T$ 是 $a$ 次齐次的, 则它的 Fourier 变换是 $-n-a$ 次齐次的.
+\end{Proposition}
+
+\begin{Proof}
+由定义以及 Fourier 伸缩性质, 对 $\varphi\in\mathcal S$ 有
+\[
+ \widehat T(\varphi_\lambda)=T(\widehat{\varphi_\lambda})
+ =T(\widehat\varphi(\lambda\,\cdot))
+ =\lambda^{-n}T((\widehat\varphi)_{\lambda^{-1}})
+ =\lambda^{-n-a}T(\widehat\varphi)
+ =\lambda^{-n-a}\widehat T(\varphi).
+\]
+\end{Proof}
+
+由这个命题, 当 $n/2<a<n$ 时容易计算 $f(x)=|x|^{-a}$ 的 Fourier 变换. 此时 $f$ 是一个 $L^1$ 函数与一个 $L^2$ 函数之和, 所以由命题~\ref{prop:ch4-fourier-homogeneity}, $\widehat f$ 是 $a-n$ 次齐次函数. 又因 $\widehat f$ 具有旋转不变性, 有 $\widehat f(\xi)=c_{a,n}|\xi|^{a-n}$. 利用前文的 Gaussian 积分公式计算 $c_{a,n}$, 得
+\begin{equation}
+\label{eq:ch4-fourier-power-kernel}
+ \widehat{|x|^{-a}}(\xi)
+ =\pi^{a-n/2}\frac{\Gamma((n-a)/2)}{\Gamma(a/2)}|\xi|^{a-n}.
+\end{equation}
+事实上, 此式对所有 $0<a<n$ 都成立. 当 $0<a<n/2$ 时, 它由 Fourier 反演公式推出; $a=n/2$ 的情形则由连续性得到.
+
+\hypertarget{chapter-04-page-084}{}
+\begin{Theorem}
+\label{thm:ch4-fourier-principal-value-kernel}
+若 $\Omega$ 是 $S^{n-1}$ 上平均值为零的可积函数, 则 $\operatorname{p.v.}\Omega(x')/|x|^n$ 的 Fourier 变换是零次齐次函数, 并由下式给出:
+\begin{equation}
+\label{eq:ch4-principal-value-multiplier}
+ m(\xi)=\int_{S^{n-1}}\Omega(u)
+ \left[\log\frac1{|u\cdot\xi|}-\frac{i\pi}{2}
+ \operatorname{sgn}(u\cdot\xi)\right]d\sigma(u).
+\end{equation}
+\end{Theorem}
+
+\begin{Proof}
+由命题~\ref{prop:ch4-fourier-homogeneity}, Fourier 变换是零次齐次的, 因此可以假定 $|\xi|=1$. 由于 $\Omega$ 的平均值为零,
+\[
+\begin{aligned}
+ m(\xi)
+ &=\lim_{\varepsilon\to0}\int_{\varepsilon<|y|<1/\varepsilon}
+ \frac{\Omega(y')}{|y|^n}e^{-2\pi iy\cdot\xi}\,dy\\
+ &=\lim_{\varepsilon\to0}\int_{S^{n-1}}\Omega(u)
+ \left[\int_\varepsilon^1(e^{-2\pi iru\cdot\xi}-1)\frac{dr}{r}
+ +\int_1^{1/\varepsilon}e^{-2\pi iru\cdot\xi}\frac{dr}{r}\right]d\sigma(u).
+\end{aligned}
+\]
+写 $m=m_1-im_2$. 由控制收敛定理可以交换极限和球面积分. 在内层积分中作变量代换 $s=2\pi r|u\cdot\xi|$. 对虚部使用
+\[
+ \int_0^\infty\frac{\sin s}{s}\,ds=\frac\pi2,
+\]
+得到 $m_2=(\pi/2)\int\Omega(u)\operatorname{sgn}(u\cdot\xi)\,d\sigma(u)$. 对实部, 变量代换后的极限为
+\[
+ \int_0^1\frac{\cos s-1}{s}\,ds+
+ \int_1^\infty\frac{\cos s}{s}\,ds-log|2\pi|-log|u\cdot\xi|.
+\]
+其中与 $u$ 无关的常数在对平均值为零的 $\Omega$ 积分时消失, 从而得到 \eqref{eq:ch4-principal-value-multiplier}.
+\end{Proof}
+
+\hypertarget{chapter-04-page-085}{}
+公式 \eqref{eq:ch4-principal-value-multiplier} 中与 $\Omega$ 相乘的因子有两项. 第一项是偶函数, 当 $\Omega$ 为奇函数时贡献为零; 它虽不有界, 但它的任意次幂都可积. 第二项是有界奇函数, 当 $\Omega$ 为偶函数时贡献为零. 将 $\Omega$ 分解为偶部 $\Omega_e(u)=(\Omega(u)+\Omega(-u))/2$ 与奇部 $\Omega_o(u)=(\Omega(u)-\Omega(-u))/2$, 立即得到下述推论.
+
+\begin{Corollary}
+\label{cor:ch4-bounded-multiplier-kernel}
+设 $\Omega$ 在 $S^{n-1}$ 上的平均值为零. 若 $\Omega_o\in L^1(S^{n-1})$, 且对某个 $q>1$ 有 $\Omega_e\in L^q(S^{n-1})$, 则 $\operatorname{p.v.}\Omega(x')/|x|^n$ 的 Fourier 变换有界.
+\end{Corollary}
+
+由 \eqref{eq:ch4-principal-value-multiplier} 容易构造出可积的 $\Omega$, 使 $m$ 无界. 不过, 推论~\ref{cor:ch4-bounded-multiplier-kernel} 中关于偶部的假设可以削弱为 $\Omega_e\in L\log L(S^{n-1})$, 即
+\[
+ \int_{S^{n-1}}|\Omega_e(u)|\log^+|\Omega_e(u)|\,d\sigma(u)<\infty.
+\]
+这里 $\log^+t=\max(0,\log t)$. 充分性来自不等式 $AB<A\log A+e^B$, 其中 $A>1$, $B>0$. 在区域 $D=\{u:|\Omega(u)|>1\}$ 上应用它, 再注意 $\Omega$ 在 $D$ 的补集上有界, 即得所需可积性.

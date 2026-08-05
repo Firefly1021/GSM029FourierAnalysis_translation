@@ -1,7 +1,7 @@
 # Template compilation report
 
 - Reference: `input/template/reference/main.tex`
-- Isolated build directory: `workspace/temporary/template-build-yxfs2dok`
+- Isolated build directory: `workspace/temporary/template-build-3o8o2i6z`
 - Driver: latexmk
 - Engine: XeLaTeX
 - Bibliography backend: Biber
