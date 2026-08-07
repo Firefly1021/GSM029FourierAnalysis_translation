@@ -1,0 +1,155 @@
+\subsection{John--Nirenberg 不等式}
+\label{sec:ch6-john-nirenberg}
+
+本节考察 BMO 函数的增长速度. 先看前面作为 BMO 中无界函数例子的 $\log(1/|x|)$. 它在区间 $(-a,a)$ 上的平均值为 $1-\log a$. 给定 $\lambda>1$, 满足
+\[
+ |\log(1/|x|)-(1-\log a)|>\lambda
+\]
+的点集测度为 $2ae^{-\lambda-1}$. 下面的结果说明, 在某种意义下, 对数增长是 BMO 函数所能达到的最大增长.
+
+\begin{Theorem}[John--Nirenberg 不等式]
+\label{thm:ch6-john-nirenberg}
+设 $f\in\mathrm{BMO}$. 则存在只依赖于维数的常数 $C_1,C_2$, 使对 $\mathbb R^n$ 中任意立方体 $Q$ 以及任意 $\lambda>0$,
+\begin{equation}
+\label{eq:ch6-john-nirenberg}
+ |\{x\in Q:|f(x)-f_Q|>\lambda\}|
+ \le C_1e^{-C_2\lambda/\|f\|_*}|Q|.
+\end{equation}
+\end{Theorem}
+
+\begin{Proof}
+由于 \eqref{eq:ch6-john-nirenberg} 是齐次的, 不失一般性可设 $\|f\|_*=1$. 此时
+\begin{equation}
+\label{eq:ch6-normalized-mean-oscillation}
+ \frac1{|Q|}\int_Q|f(x)-f_Q|\,dx\le1.
+\end{equation}
+按定理~\ref{thm:ch2-calderon-zygmund-decomposition} 的方法, 在 $Q$ 上对 $f-f_Q$ 作高度为 $2$ 的 Calderón--Zygmund 分解, 但从把 $Q$ 的各边二分, 得到 $2^n$ 个相等的立方体开始, 并对所得每个立方体重复该过程. 此处用 \eqref{eq:ch6-normalized-mean-oscillation} 代替 $f\in L^1$ 的假设. 于是得到一族立方体 $\{Q_{1,j}\}$, 满足
+\[
+ 2<\frac1{|Q_{1,j}|}\int_{Q_{1,j}}|f(x)-f_Q|\,dx\le2^{n+1},
+\]
+并且当 $x\notin\bigcup_jQ_{1,j}$ 时, $|f(x)-f_Q|\le2$.
+
+\hypertarget{chapter-06-page-136}{}
+特别地,
+\[
+ \sum_j|Q_{1,j}|
+ \le\frac12\int_Q|f(x)-f_Q|\,dx
+ \le\frac12|Q|,
+\]
+并且
+\[
+ |f_{Q_{1,j}}-f_Q|
+ =\left|\frac1{|Q_{1,j}|}\int_{Q_{1,j}}(f(x)-f_Q)\,dx\right|
+ \le2^{n+1}.
+\]
+
+在每个 $Q_{1,j}$ 上, 对 $f-f_{Q_{1,j}}$ 作高度为 $2$ 的 Calderón--Zygmund 分解. 由假设, 该函数在 $Q_{1,j}$ 上的平均值的绝对值至多为 $1$. 于是得到一族立方体 $\{Q_{1,j,k}\}$, 满足
+\[
+ |f_{Q_{1,j,k}}-f_{Q_{1,j}}|\le2^{n+1},
+\]
+\[
+ |f(x)-f_{Q_{1,j}}|\le2
+ \quad\text{若 }x\in Q_{1,j}\setminus\bigcup_kQ_{1,j,k},
+\]
+以及
+\[
+ \sum_k|Q_{1,j,k}|\le\frac12|Q_{1,j}|.
+\]
+
+汇集所有 $Q_{1,j}$ 所对应的 $Q_{1,j,k}$, 并统称为 $\{Q_{2,j}\}$. 则
+\[
+ \sum_j|Q_{2,j}|\le\frac14|Q|,
+\]
+且若 $x\notin\bigcup_jQ_{2,j}$,
+\[
+ |f(x)-f_Q|
+ \le|f(x)-f_{Q_{1,j}}|+|f_{Q_{1,j}}-f_Q|
+ \le2+2^{n+1}\le2\cdot2^{n+1}.
+\]
+
+无限重复此过程. 对每个 $N$, 得到一族互不相交的立方体 $\{Q_{N,j}\}$, 使得当 $x\notin\bigcup_jQ_{N,j}$ 时
+\[
+ |f(x)-f_Q|\le N\cdot2^{n+1},
+\]
+并且
+\[
+ \sum_j|Q_{N,j}|\le2^{-N}|Q|.
+\]
+
+固定 $\lambda\ge2^{n+1}$, 取 $N$ 使
+\[
+ N2^{n+1}\le\lambda<(N+1)2^{n+1}.
+\]
+于是
+\[
+\begin{aligned}
+ |\{x\in Q:|f(x)-f_Q|>\lambda\}|
+ &\le\sum_j|Q_{N,j}|\le2^{-N}|Q|\\
+ &=e^{-N\log2}|Q|\le e^{-C_2\lambda}|Q|,
+\end{aligned}
+\]
+
+\hypertarget{chapter-06-page-137}{}
+其中 $C_2=\log2/2^{n+2}$. 若 $\lambda<2^{n+1}$, 则 $C_2\lambda<\log\sqrt2$, 因而
+\[
+ |\{x\in Q:|f(x)-f_Q|>\lambda\}|
+ \le|Q|\le e^{\log\sqrt2-C_2\lambda}|Q|
+ =\sqrt2e^{-C_2\lambda}|Q|.
+\]
+故可取 $C_1=\sqrt2$.
+\end{Proof}
+
+\begin{Corollary}
+\label{cor:ch6-bmo-lp-oscillation-norm}
+对每个 $1\le p<\infty$,
+\[
+ \|f\|_{*,p}
+ =\sup_Q\left(\frac1{|Q|}\int_Q|f(x)-f_Q|^p\,dx\right)^{1/p}
+\]
+是 BMO 上与 $\|\cdot\|_*$ 等价的范数.
+\end{Corollary}
+
+\begin{Proof}
+只需证明 $\|f\|_{*,p}\le C_p\|f\|_*$, 因为反向不等式是直接的. 由定理~\ref{thm:ch6-john-nirenberg},
+\[
+\begin{aligned}
+ \int_Q|f(x)-f_Q|^p\,dx
+ &=\int_0^\infty p\lambda^{p-1}
+ |\{x\in Q:|f(x)-f_Q|>\lambda\}|\,d\lambda\\
+ &\le C_1|Q|\int_0^\infty p\lambda^{p-1}
+ e^{-C_2\lambda/\|f\|_*}\,d\lambda.
+\end{aligned}
+\]
+作变量代换 $s=C_2\lambda/\|f\|_*$, 得
+\[
+\begin{aligned}
+ \frac1{|Q|}\int_Q|f(x)-f_Q|^p\,dx
+ &\le C_1p\left(\frac{\|f\|_*}{C_2}\right)^p
+ \int_0^\infty s^{p-1}e^{-s}\,ds\\
+ &=C_1pC_2^{-p}\Gamma(p)\|f\|_*^p,
+\end{aligned}
+\]
+这给出所需不等式.
+\end{Proof}
+
+推论~\ref{cor:ch6-bmo-lp-oscillation-norm} 的证明还给出两个结果. 由常数 $C_p$ 的大小, 将指数函数展开为幂级数, 立即得到下述结论.
+
+\begin{Corollary}
+\label{cor:ch6-bmo-exponential-integrability}
+给定 $f\in\mathrm{BMO}$, 存在 $\lambda>0$, 使对任意立方体 $Q$,
+\[
+ \frac1{|Q|}\int_Qe^{\lambda|f(x)-f_Q|}\,dx<\infty.
+\]
+\end{Corollary}
+
+此外, 将推论~\ref{cor:ch6-bmo-lp-oscillation-norm} 的证明用于 $p=1$, 容易得到 John--Nirenberg 不等式的逆命题.
+
+\begin{Corollary}
+\label{cor:ch6-john-nirenberg-converse}
+给定函数 $f$, 假设存在常数 $C_1,C_2,K$, 使对任意立方体 $Q$ 和 $\lambda>0$,
+\[
+ |\{x\in Q:|f(x)-f_Q|>\lambda\}|
+ \le C_1e^{-C_2\lambda/K}|Q|.
+\]
+则 $f\in\mathrm{BMO}$.
+\end{Corollary}
