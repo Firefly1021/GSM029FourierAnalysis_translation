@@ -1,0 +1,205 @@
+\subsection{Carleson 测度}
+\label{sec:ch9-carleson-measures}
+
+\begin{Definition}
+\label{def:ch9-carleson-measure}
+$\mathbb R_+^{n+1}$ 上的正测度 $\nu$ 称为 Carleson 测度, 如果对 $\mathbb R^n$ 中的每个立方体 $Q$,
+\[
+ \nu(Q\times(0,\ell(Q)))\le C|Q|,
+\]
+其中 $\ell(Q)$ 是 $Q$ 的边长. 所有可能常数 $C$ 的下确界称为 $\nu$ 的 Carleson 常数, 记为 $\|\nu\|$.
+\end{Definition}
+
+\hypertarget{chapter-09-page-210}{}
+上半平面 $\mathbb R_+^2$ 中 Carleson 测度的一个例子是极坐标下的 $dr\,d\theta$.
+
+Carleson 测度定义背后的性质并不限于立方体, 还可推广到更一般的集合. 给定开集 $E\subset\mathbb R^n$, 令
+\[
+ \widehat E=\{(x,t)\in\mathbb R_+^{n+1}:B(x,t)\subset E\}.
+\]
+
+\begin{Lemma}
+\label{lem:ch9-carleson-open-set}
+若 $\nu$ 是 $\mathbb R_+^{n+1}$ 中的 Carleson 测度且 $E\subset\mathbb R^n$ 为开集, 则
+\[
+ \nu(\widehat E)\le C\|\nu\|\,|E|.
+\]
+\end{Lemma}
+
+\begin{Proof}
+在 $\mathbb R^n$ 中对 $E$ 的示性函数在高度 $1/2$ 作 Calderón--Zygmund 分解. 得到一族互不相交的二进立方体 $\{Q_j\}$, 满足
+\[
+ E\subset\bigcup_jQ_j,
+ \qquad
+ |E|\le\sum_j|Q_j|\le2|E|.
+\]
+设 $(x,t)\in\widehat E$, 则 $x\in Q_j$ 对某个 $j$ 成立. 令 $\widetilde Q_j$ 为包含 $Q_j$ 且边长为其两倍的二进立方体. $\widetilde Q_j$ 含有 $E^c$ 中的点. 因为 $B(x,t)\subset E$, 必有
+\[
+ t<\sqrt n\,\ell(\widetilde Q_j)=2\sqrt n\,\ell(Q_j).
+\]
+所以
+\[
+ \widehat E\subset\bigcup_jQ_j\times(0,2\sqrt n\,\ell(Q_j)).
+\]
+由此
+\[
+ \nu(\widehat E)le\sum_j\nu(Q_j\times(0,2\sqrt n\,\ell(Q_j)))
+ \le\|\nu\|(2\sqrt n)^n\sum_j|Q_j|
+ \le2(2\sqrt n)^n\|\nu\|\,|E|.
+\]
+\end{Proof}
+
+引理~\ref{lem:ch9-carleson-open-set} 的逆命题也成立. 容易证明, 若对任意球 $B\subset\mathbb R^n$ 有 $\nu(\widehat B)\le C|B|$, 则 $\nu$ 满足定义~\ref{def:ch9-carleson-measure}, 且 $\|\nu\|$ 与该不等式中的常数可比较.
+
+Carleson 测度可刻画为使 Poisson 积分定义从 $L^p(\mathbb R^n,dx)$ 到 $L^p(\mathbb R_+^{n+1},\nu)$ 的有界算子的测度. 这是以下更一般结果的推论.
+
+\begin{Theorem}
+\label{thm:ch9-carleson-convolution-characterization}
+设 $\phi$ 是有界、可积、正、径向且递减的函数. 对 $t>0$, 令 $\phi_t(x)=t^{-n}\phi(t^{-1}x)$. 则测度 $\nu$ 是 Carleson 测度当且仅当对每个 $p$, $1<p<\infty$,
+\begin{equation}
+ \int_{\mathbb R_+^{n+1}}|\phi_t*f(x)|^p\,d\nu(x,t)
+ \le C\int_{\mathbb R^n}|f(x)|^p\,dx.
+ \label{eq:ch9-carleson-embedding}
+\end{equation}
+常数 $C$ 与 $\|\nu\|$ 可比较.
+\end{Theorem}
+
+\hypertarget{chapter-09-page-211}{}
+\begin{Proof}
+先设 $\nu$ 是 Carleson 测度. 定义极大算子
+\[
+ M_\phi f(x)=\sup\{|\phi_t*f(y)|:|x-y|<t\}.
+\]
+容易证明
+\[
+ M_\phi f(x)\le CMf(x),
+\]
+其中 $M$ 是 Hardy--Littlewood 极大算子.
+
+现在
+\begin{equation}
+ \begin{aligned}
+ \int_{\mathbb R_+^{n+1}}|\phi_t*f(x)|^p\,d\nu(x,t)
+ =p\int_0^\infty\lambda^{p-1}
+ \nu\bigl(\{(x,t):|\phi_t*f(x)|>\lambda\}\bigr)\,d\lambda.
+ \end{aligned}
+ \label{eq:ch9-carleson-layer-cake}
+\end{equation}
+令 $E_\lambda=\{x\in\mathbb R^n:M_\phi f(x)>\lambda\}$. 则
+\[
+ \{(x,t):|\phi_t*f(x)|>\lambda\}\subset\widehat E_\lambda.
+\]
+由引理~\ref{lem:ch9-carleson-open-set},
+\[
+ \nu\bigl(\{(x,t):|\phi_t*f(x)|>\lambda\}\bigr)
+ \le\nu(\widehat E_\lambda)\le C\|\nu\|\,|E_\lambda|.
+\]
+所以~\eqref{eq:ch9-carleson-layer-cake} 的右端不超过
+\[
+ pC\|\nu\|\int_0^\infty\lambda^{p-1}|E_\lambda|\,d\lambda
+ =C\|\nu\|\int_{\mathbb R^n}M_\phi f(x)^p\,dx
+ \le C\|\nu\|\int_{\mathbb R^n}|f(x)|^p\,dx,
+\]
+这就给出~\eqref{eq:ch9-carleson-embedding}.
+
+反之, 设~\eqref{eq:ch9-carleson-embedding} 成立. 令 $B\subset\mathbb R^n$ 为以 $x_0$ 为中心、半径为 $r$ 的球, 并取 $(x,t)\in\widehat B$. 则
+\[
+ \begin{aligned}
+ |\phi_t*\chi_B(x)|
+ &=\int_{B(x_0,r)}\phi_t(x-y)\,dy
+ \ge\int_{B(0,t)}\phi_t(y)\,dy\\
+ &=\int_{B(0,1)}\phi(y)\,dy=A.
+ \end{aligned}
+\]
+因此
+\[
+ \nu(\widehat B)le A^{-p}\int_{\mathbb R_+^{n+1}}
+ |\phi_t*\chi_B(x)|^p\,d\nu(x,t)
+ \le C\int_{\mathbb R^n}|\chi_B(x)|^p\,dx=C|B|.
+\]
+由引理~\ref{lem:ch9-carleson-open-set} 后的注记, $\nu$ 是 Carleson 测度.
+\end{Proof}
+
+Carleson 测度还可用 BMO 函数刻画.
+
+\begin{Theorem}
+\label{thm:ch9-bmo-carleson-measure}
+设 $b\in\operatorname{BMO}$, $\psi\in\mathcal S$ 且 $\int\psi=0$. 则由
+\[
+ d\nu=|b*\psi_t(x)|^2\,dx\,\frac{dt}{t}
+\]
+定义的测度是 Carleson 测度, 且 $\|\nu\|$ 由 $\|b\|_*^2$ 控制.
+\end{Theorem}
+
+\hypertarget{chapter-09-page-212}{}
+\begin{Proof}
+固定 $\mathbb R^n$ 中的立方体 $Q$. 因为 BMO 函数的平移仍属于 BMO, 不妨设 $Q$ 以原点为中心. 令 $Q^*$ 为同中心且边长为 $Q$ 的 $2\sqrt n$ 倍的立方体, 以 $b_{Q^*}$ 表示 $b$ 在 $Q^*$ 上的平均. 因为 $\int\psi=0$,
+\[
+ \begin{aligned}
+ \nu(Q\times(0,\ell(Q)))
+ &=\int_Q\int_0^{\ell(Q)}|b*\psi_t(x)|^2\,\frac{dt}{t}\,dx\\
+ &\le2\int_Q\int_0^{\ell(Q)}
+ |((b-b_{Q^*})\chi_{Q^*})*\psi_t(x)|^2\,\frac{dt}{t}\,dx\\
+ &\quad+2\int_Q\int_0^{\ell(Q)}
+ |((b-b_{Q^*})\chi_{\mathbb R^n\setminus Q^*})*\psi_t(x)|^2\,\frac{dt}{t}\,dx\\
+ &=I_1+I_2.
+ \end{aligned}
+\]
+由 Plancherel 定理,
+\[
+ I_1\le2\int_{\mathbb R^n}\int_0^\infty
+ |((b-b_{Q^*})\chi_{Q^*})^{\widehat{\ }}(\xi)|^2
+ |\widehat\psi(t\xi)|^2\,d\xi\,\frac{dt}{t}.
+\]
+因为 $\widehat\psi(0)=0$,
+\[
+ |\widehat\psi(t\xi)|\le C\min(|t\xi|,|t\xi|^{-1}),
+\]
+故
+\[
+ \int_0^\infty|\widehat\psi(t\xi)|^2\,\frac{dt}{t}
+ \le C\int_0^{1/|\xi|}|t\xi|^2\,\frac{dt}{t}
+ +C\int_{1/|\xi|}^\infty|t\xi|^{-2}\,\frac{dt}{t}\le C.
+\]
+由此以及推论~\ref{cor:ch6-bmo-lp-oscillation-norm},
+\[
+ I_1\le C\int_{Q^*}|b-b_{Q^*}|^2
+ \le C|Q|\|b\|_*^2.
+\]
+
+为估计 $I_2$, 令 $Q_k$ 为以原点为中心且边长为 $Q^*$ 的 $2^k$ 倍的立方体. 则
+\[
+ I_2\le2\int_Q\int_0^{\ell(Q)}
+ \left|\sum_{k=0}^\infty\int_{Q_{k+1}\setminus Q_k}
+ (b(y)-b_{Q^*})\psi_t(x-y)\,dy\right|^2\,\frac{dt}{t}\,dx.
+\]
+若 $x\in Q$, $y\notin Q_k$, 则 $|x-y|>2^{k-1}\ell(Q)$. 因为 $\psi\in\mathcal S$,
+\[
+ |\psi_t(x-y)|\le Ct^{-n}(t^{-1}2^k\ell(Q))^{-n-1}.
+\]
+于是
+\[
+ \begin{aligned}
+ I_2
+ &\le C\int_Q\int_0^{\ell(Q)}
+ \left(\sum_{k=0}^\infty2^k\ell(Q)\|b\|_*
+ \frac{t}{(2^k\ell(Q))^{n+1}}\right)^2\,\frac{dt}{t}\,dx\\
+ &\le C\int_Q\int_0^{\ell(Q)}
+ \left(\sum_{k=0}^\infty\frac{t\|b\|_*}{2^{kn}\ell(Q)^n}\right)^2\,\frac{dt}{t}\,dx
+ \le C|Q|\|b\|_*^2.
+ \end{aligned}
+\]
+\end{Proof}
+
+\hypertarget{chapter-09-page-213}{}
+定理~\ref{thm:ch9-bmo-carleson-measure} 的逆命题也成立, 这里不作证明. 若 $\psi,\nu$ 如上且 $\nu$ 是 Carleson 测度, 则 $b\in\operatorname{BMO}$. 证明见 Stein \MBUnresolvedReference{citation}{[17, Chapter 4]}. 结合定理~\ref{thm:ch9-carleson-convolution-characterization} 与定理~\ref{thm:ch9-bmo-carleson-measure}, 得到以下结论.
+
+\begin{Corollary}
+\label{cor:ch9-carleson-bmo-embedding}
+设 $\phi$ 如定理~\ref{thm:ch9-carleson-convolution-characterization}, $\psi$ 如定理~\ref{thm:ch9-bmo-carleson-measure}, 且 $b\in\operatorname{BMO}$. 则
+\[
+ \int_{\mathbb R^n}\int_0^\infty
+ |\phi_t*f(x)|^p|\psi_t*b(x)|^2\,dx\,\frac{dt}{t}
+ \le C\|b\|_*^2\int_{\mathbb R^n}|f(x)|^p\,dx.
+\]
+\end{Corollary}

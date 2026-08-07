@@ -1,0 +1,377 @@
+\subsection{$T1$ 定理的证明}
+\label{sec:ch9-t1-proof}
+
+如前所述, 只须证明定理 \ref{thm:ch9-t1} 的三个条件足以推出 $T$ 在 $L^2$ 上有界. 我们分两种情形处理: 先考虑 $T1=T^*1=0$ 的情形, 再把一般情形化归于此. 由于证明较长, 我们把若干中间结果写成引理.
+
+第一种情形是 $T1=T^*1=0$, 且 $T$ 满足弱有界性. 取一个支集包含于 $B(0,1)$ 的径向函数 $\phi\in\mathcal S(\mathbb R^n)$, 使得 $\int\phi=1$. 令
+\[
+ \phi_j(x)=2^{-jn}\phi(2^{-j}x),\qquad S_jf=\phi_j*f,\qquad \Delta_j=S_j-S_{j-1}.
+\]
+形式上有
+\[
+ T=\sum_j\bigl(S_jT\Delta_j+\Delta_jTS_j-\Delta_jT\Delta_j\bigr).
+\]
+
+\begin{Lemma}
+\label{lem:ch9-t1-finite-sum}
+令
+\[
+ R_N=\sum_{j=-N}^{N}\bigl(S_jT\Delta_j+\Delta_jTS_j-\Delta_jT\Delta_j\bigr).
+\]
+则对 $f,g\in C_c^\infty(\mathbb R^n)$,
+\[
+ \lim_{N\to\infty}\langle R_Nf,g\rangle=\langle Tf,g\rangle.
+\]
+\end{Lemma}
+
+\begin{Proof}
+有限和可以望远镜化为
+\[
+ R_N=S_{-N}TS_{-N}-S_{N+1}TS_{N+1}.
+\]
+由于 $S_{-N}f$ 在 $\mathcal S(\mathbb R^n)$ 中收敛到 $f$, 而 $T$ 是从 $\mathcal S(\mathbb R^n)$ 到 $\mathcal S'(\mathbb R^n)$ 的连续映射,
+\[
+ \lim_{N\to\infty}\langle S_{-N}TS_{-N}f,g\rangle=\langle Tf,g\rangle.
+\]
+因而只须证明
+\begin{equation}
+\label{eq:ch9-large-scale-vanishing}
+ \lim_{N\to\infty}\langle S_NTS_Nf,g\rangle=0.
+\tag{9.7}
+\end{equation}
+我们用 $T$ 的弱有界性证明这一点. 对 $N\geq1$, 令
+\[
+ f_N(x)=2^{nN}\bigl(\phi*f(2^N\mathbin{\cdot})\bigr)(x).
+\]
+则 $\{f_N\}$ 是 $C_c^\infty(\mathbb R^n)$ 的有界子集, 因为这些函数的支集包含于同一个紧集, 且满足一致估计
+\[
+ \|D^\alpha f_N\|_\infty\leq\|f\|_1\|D^\alpha\phi\|_\infty.
+\]
+以同样方式定义 $\{g_N\}$. 由弱有界性,
+\[
+ |\langle Tf_N(2^{-N}\mathbin{\cdot}),g_N(2^{-N}\mathbin{\cdot})\rangle|
+ \leq C2^{nN}.
+\]
+又因 $f_N(2^{-N}x)=2^{nN}S_Nf(x)$, 且 $g_N$ 满足相同恒等式, 所以
+\[
+ |\langle TS_Nf,S_Ng\rangle|\leq C2^{-nN}.
+\]
+令 $N\to\infty$ 即得 \eqref{eq:ch9-large-scale-vanishing}.
+\end{Proof}
+
+\hypertarget{chapter-09-page-218}{}
+
+由引理 \ref{lem:ch9-t1-finite-sum}, 只须证明 $R_N$ 在 $L^2$ 上一致有界. 我们用 Cotlar 引理完成这一步. 为简明起见, 只考察 $T_j=S_jT\Delta_j$, 并证明
+\[
+ \|T_jT_k^*\|_{L^2,L^2},\ \|T_j^*T_k\|_{L^2,L^2}
+ \leq C2^{-\delta|j-k|}.
+\]
+另外两个和式的估计由类似论证得到. 以下论证只使用 $T^*1=0$; 对另外两组算子则使用 $T1=0$.
+
+令 $\psi=\phi-\phi_1$. 为方便起见, 记
+\[
+ \phi_j^x(u)=2^{-jn}\phi\bigl((u-x)/2^j\bigr),\qquad
+ \psi_j^y(u)=2^{-jn}\psi\bigl((u-y)/2^j\bigr).
+\]
+对 $f,g\in C_c^\infty(\mathbb R^n)$,
+\[
+ \langle T_jf,g\rangle
+ =\langle T\Delta_jf,S_jg\rangle
+ =\int_{\mathbb R^n}\int_{\mathbb R^n}
+ \langle T\psi_j^y,\phi_j^x\rangle f(y)g(x)\,dy\,dx.
+\]
+于是 $T_j$ 的核为
+\[
+ K_j(x,y)=\langle T\psi_j^y,\phi_j^x\rangle.
+\]
+
+\hypertarget{chapter-09-page-219}{}
+
+\begin{Lemma}
+\label{lem:ch9-smoothed-kernel-estimates}
+令 $p(x)=(1+|x|)^{-n-\delta}$ 且 $p_j(x)=2^{-jn}p(2^{-j}x)$. 则存在常数 $C$, 使得
+\begin{align*}
+ |K_j(x,y)|&\leq Cp_j(x-y),\\
+ |K_j(x,y)-K_j(w,y)|&\leq C\min(1,2^{-j}|x-w|)
+ \bigl[p_j(x-y)+p_j(w-y)\bigr],\\
+ |K_j(x,y)-K_j(x,w)|&\leq C\min(1,2^{-j}|y-w|)
+ \bigl[p_j(x-y)+p_j(x-w)\bigr].
+\end{align*}
+此外,
+\[
+ \int_{\mathbb R^n}K_j(x,y)\,dy=0,
+ \qquad
+ \int_{\mathbb R^n}K_j(x,y)\,dx=0.
+\]
+\end{Lemma}
+
+\begin{Proof}
+先证第一个估计. 假设 $|x-y|\leq10\cdot2^j$. 令
+\[
+ \widetilde\phi(u)=\phi\bigl(u-2^{-j}(x-y)\bigr).
+\]
+当 $x,y$ 变化时, $\widetilde\phi$ 在 $C_c^\infty(\mathbb R^n)$ 的一个有界子集中变化, 且 $\widetilde\phi_j^y=\phi_j^x$. 因而弱有界性给出
+\[
+ |K_j(x,y)|=|\langle T\psi_j^y,\phi_j^x\rangle|
+ \leq C2^{-jn}\leq Cp_j(x-y).
+\]
+若 $|x-y|>10\cdot2^j$, 则 $\phi_j^x$ 与 $\psi_j^y$ 的支集不交, 所以
+\[
+ K_j(x,y)=\int_{\mathbb R^n}\int_{\mathbb R^n}
+ \phi_j(x-u)K(u,v)\psi_j(v-y)\,du\,dv.
+\]
+利用 $\psi$ 的消失积分, 可将它改写为
+\[
+ K_j(x,y)=\int_{\mathbb R^n}\int_{\mathbb R^n}
+ \phi_j(x-u)[K(u,v)-K(u,y)]\psi_j(v-y)\,du\,dv.
+\]
+在积分区域上 $|x-u|,|v-y|\leq2^j$ 且 $|u-y|\simeq|x-y|$. 标准核的正则性估计因而给出
+\[
+ |K_j(x,y)|\leq\frac{C2^{j\delta}}{|x-y|^{n+\delta}}
+ \leq Cp_j(x-y).
+\]
+
+再证差分估计. 当 $|w-x|>2^j$ 时, 结论直接来自第一个估计, 所以可以假设 $|w-x|\leq2^j$. 若 $u$ 在线段 $[x,w]$ 上, 则
+\[
+ p_j(u-y)\leq C[p_j(x-y)+p_j(w-y)].
+\]
+因此由均值定理, 只需证明
+\[
+ |\nabla_xK_j(x,y)|\leq C2^{-j}p_j(x-y).
+\]
+但
+\[
+ \nabla_xK_j(x,y)=\langle T\psi_j^y,\nabla\phi_j^x\rangle
+ =2^{-j}\langle T\psi_j^y,(\nabla\phi)_j^x\rangle,
+\]
+于是重复第一个估计的论证即可. 对 $y$ 求梯度给出第二个变量中的相同结论.
+
+下面验证消失积分. 若 $R>2^{j+1}$, 则
+\[
+ \int_{|y|\leq R}K_j(x,y)\,dy=\langle Th,\phi_j^x\rangle,
+ \qquad
+ h(u)=2^{-jn}\int_{|y|\leq R}\psi\bigl((u-y)/2^j\bigr)\,dy.
+\]
+形式上, 第一个消失积分等价于 $T1=0$. 函数 $h$ 在 $|u|\geq R+2^{j+1}$ 时为零, 因为 $\operatorname{supp}\psi\subset B(0,2)$; 它在 $|u|\leq R-2^{j+1}$ 时也为零, 因为 $\psi$ 具有消失积分和紧支集. 当 $R$ 充分大时, $h$ 与 $\phi_j^x$ 的支集不交, 因而可用式 \eqref{eq:ch9-t-on-bounded-smooth} 计算 $\langle Th,\phi_j^x\rangle$. 由标准核估计,
+\[
+ |\langle Th,\phi_j^x\rangle|
+ \leq C\int_{R-2^{j+1}<|u|<R+2^{j+1}}\int_{\mathbb R^n}
+ \frac{2^{-jn}}{|u-v|^n}\phi\bigl((v-x)/2^j\bigr)\,dv\,du
+ \leq C2^{-j}R^{n-1}R^{-n},
+\]
+它在 $R\to\infty$ 时趋于 $0$.
+
+形式上, 第二个消失积分等价于 $T^*1=0$, 我们用这一条件证明它. 对 $R>2^j$,
+\[
+ \int_{|x|\leq R}K_j(x,y)\,dx
+ =\int_{|x|\leq R}K_j(x,y)\,dx-\langle T\psi_j^y,1\rangle
+ =\langle\psi_j^y,T^*h\rangle,
+\]
+其中
+\[
+ h(u)=2^{-jn}\int_{|x|\leq R}\phi\bigl((u-x)/2^j\bigr)\,dx-1.
+\]
+由于 $\phi$ 的积分为 $1$ 且 $\operatorname{supp}\phi\subset B(0,1)$, 当 $|u|\leq R-2^j$ 时 $h(u)=0$. 当 $R$ 充分大时, $\psi_j^y$ 与 $h$ 的支集不交. 由式 \eqref{eq:ch9-t-on-bounded-smooth}, 并再次使用 $\psi$ 的消失积分和 $\operatorname{supp}\psi\subset B(0,2)$,
+\[
+ \langle\psi_j^y,T^*h\rangle
+ =\int_{|v-y|\leq2^{j+1}}\int_{|u|>R-2^j}
+ [K(u,v)-K(u,y)]h(u)2^{-jn}\psi\bigl((v-y)/2^j\bigr)\,du\,dv.
+\]
+其绝对值不超过
+\[
+ C2^{-jn}\int_{|v-y|\leq2^{j+1}}\int_{|u|>R-2^j}
+ \frac{|v-y|^\delta}{|u-y|^{n+\delta}}\,du\,dv
+ \leq C2^{j\delta}\int_{|u|>R/2}\frac{du}{|u|^{n+\delta}},
+\]
+故也趋于 $0$.
+\end{Proof}
+
+\hypertarget{chapter-09-page-220}{}
+
+为使用第 \ref{sec:ch9-cotlar-lemma} 节的 Cotlar 引理, 考虑 $T_jT_k^*$ 的核
+\[
+ A_{jk}(x,y)=\int_{\mathbb R^n}K_j(x,z)K_k(y,z)\,dz.
+\]
+
+\hypertarget{chapter-09-page-221}{}
+
+\begin{Lemma}
+\label{lem:ch9-almost-orthogonality}
+存在常数 $C$, 使得
+\[
+ \sup_x\int_{\mathbb R^n}|A_{jk}(x,y)|\,dy
+ +\sup_y\int_{\mathbb R^n}|A_{jk}(x,y)|\,dx
+ \leq C2^{-\delta|j-k|}.
+\]
+\end{Lemma}
+
+\begin{Proof}
+由引理 \ref{lem:ch9-smoothed-kernel-estimates},
+\[
+ |A_{jk}(x,y)|
+ =\left|\int_{\mathbb R^n}K_j(x,z)[K_k(y,z)-K_k(y,x)]\,dz\right|.
+\]
+再用同一引理的大小与正则性估计可得
+\begin{equation}
+\label{eq:ch9-almost-orthogonality-kernel}
+ |A_{jk}(x,y)|\leq C\int_{\mathbb R^n}p_j(x-z)
+ \min(1,2^{-k}|x-z|)\bigl[p_k(z-y)+p_k(x-y)\bigr],dz.
+\tag{9.8}
+\end{equation}
+容易看出
+\[
+ \int_{\mathbb R^n}p_k(z-y)\,dy=C
+\]
+以及
+\[
+ \int_{\mathbb R^n}p_j(x-z)\min(1,2^{-k}|x-z|)\,dx
+ \leq C2^{-\delta|k-j|}.
+\]
+所需两个不等式立即得到. 对第一个不等式, 把 \eqref{eq:ch9-almost-orthogonality-kernel} 的积分写成
+\[
+ C\int_{\mathbb R^n}p_j(x-z)\min(1,2^{-k}|x-z|)
+ \left(\int_{\mathbb R^n}[p_k(z-y)+p_k(x-y)]\,dy\right)dz.
+\]
+对第二个不等式, 则写成
+\[
+ C\int_{\mathbb R^n}p_k(z-y)
+ \left(\int_{\mathbb R^n}p_j(x-z)\min(1,2^{-k}|x-z|)\,dx\right)dz
+\]
+\[
+ {}+C\int_{\mathbb R^n}p_k(x-y)
+ \left(\int_{\mathbb R^n}p_j(x-z)\min(1,2^{-k}|x-z|)\,dz\right)dx.
+\]
+\end{Proof}
+
+由引理 \ref{lem:ch9-almost-orthogonality} 很容易估计 $T_jT_k^*$ 的算子范数. 对 $f\in\mathcal S(\mathbb R^n)$, Cauchy--Schwarz 不等式给出
+\[
+ \|T_jT_k^*f\|_2^2
+ =\int_{\mathbb R^n}\left|\int_{\mathbb R^n}A_{jk}(x,y)f(y)\,dy\right|^2dx
+\]
+\[
+ \leq\int_{\mathbb R^n}\left(\int_{\mathbb R^n}|A_{jk}(x,y)|\,dy\right)
+ \left(\int_{\mathbb R^n}|A_{jk}(x,y)||f(y)|^2\,dy\right)dx
+ \leq C2^{-2\delta|j-k|}\|f\|_2^2.
+\]
+本质相同的论证给出 $T_j^*T_k$ 的相同范数界. 因而可对 $R_N$ 应用 Cotlar 引理, 这就完成了 $T1=T^*1=0$ 情形的证明.
+
+\hypertarget{chapter-09-page-222}{}
+
+现在考虑一般情形.
+
+\begin{Lemma}
+\label{lem:ch9-paraproduct-construction}
+若 $b\in\operatorname{BMO}(\mathbb R^n)$, 则存在一个 Calderón--Zygmund 算子 $L$, 使得
+\[
+ L1=b,\qquad L^*1=0.
+\]
+\end{Lemma}
+
+暂且承认该引理. 设满足定理 \ref{thm:ch9-t1} 条件的算子 $T$ 满足 $T1=b_1$ 和 $T^*1=b_2$. 由该引理, 存在 Calderón--Zygmund 算子 $L_1,L_2$, 使得
+\[
+ L_11=b_1,\quad L_1^*1=0,\qquad L_21=b_2,\quad L_2^*1=0.
+\]
+于是
+\[
+ \widetilde T=T-L_1-L_2^*
+\]
+满足 $\widetilde T1=\widetilde T^*1=0$, 且仍满足弱有界性. 前述论证表明 $\widetilde T$ 在 $L^2$ 上有界, 因而 $T$ 也有界.
+
+\begin{Proof}
+取支集包含于单位球的径向函数 $\phi,\psi\in C_c^\infty(\mathbb R^n)$, 其中 $\phi$ 为正且 $\int\phi=1$, 而 $\int\psi=0$. 适当选择常数 $c$ 后, 定义
+\[
+ Lf=c\int_0^\infty\psi_t*\bigl((\psi_t*b)(\phi_t*f)\bigr)\,\frac{dt}{t}.
+\]
+算子 $L$ 称为抛物积. 我们要证明它的核满足标准估计, $L$ 在 $L^2$ 上有界, 且 $L1=b$ 和 $L^*1=0$. 严格地说, 下列计算中的 $t$ 积分应先在 $\varepsilon$ 与 $1/\varepsilon$ 之间进行, 再令 $\varepsilon\to0$. 这里略去这些技术细节.
+
+先估计核. $L$ 的核为
+\[
+ K(x,y)=c\int_0^\infty K_t(x,y)\,\frac{dt}{t},
+\]
+其中
+\[
+ K_t(x,y)=\int_{\mathbb R^n}\psi_t(x-z)(\psi_t*b)(z)\phi_t(z-y)\,dz.
+\]
+若 $Q$ 是以 $z$ 为中心且边长为 $2t$ 的立方体, 则
+\[
+ |(\psi_t*b)(z)|
+ =\left|\int_Q\psi_t(z-y)(b(y)-b_Q)\,dy\right|
+ \leq2^n\|\psi\|_\infty\|b\|_*.
+\]
+因此
+\[
+ |K_t(x,y)|\leq C\|b\|_*t^{-n}.
+\]
+
+\hypertarget{chapter-09-page-223}{}
+
+当 $|x-y|>2t$ 时 $K_t(x,y)=0$, 因而还可写成更强的估计
+\[
+ |K_t(x,y)|\leq C\|b\|_*t^{-n}
+ \bigl(1+|x-y|/t\bigr)^{-n-2}.
+\]
+由此得到
+\[
+ |K(x,y)|\leq\frac{C\|b\|_*}{|x-y|^n}.
+\]
+类似地,
+\[
+ |\nabla_xK_t(x,y)|+|\nabla_yK_t(x,y)|
+ \leq C\|b\|_*t^{-n-1}
+ \bigl(1+|x-y|/t\bigr)^{-n-2},
+\]
+所以
+\[
+ |\nabla_xK(x,y)|+|\nabla_yK(x,y)|
+ \leq\frac{C\|b\|_*}{|x-y|^{n+1}}.
+\]
+这些不等式说明 $K$ 以 $\delta=1$ 和常数 $C\|b\|_*$ 满足标准核条件.
+
+下面证明 $L$ 在 $L^2$ 上有界. 取 $g\in\mathcal S(\mathbb R^n)$ 且 $\|g\|_2\leq1$. 则
+\[
+ |\langle Lf,g\rangle|
+ \leq c\left(\int_{\mathbb R^n}\int_0^\infty
+ |\psi_t*b(x)|^2|\phi_t*f(x)|^2\,\frac{dt\,dx}{t}\right)^{1/2}
+\]
+\[
+ {}\times\left(\int_{\mathbb R^n}\int_0^\infty
+ |\psi_t*g(x)|^2\,\frac{dx\,dt}{t}\right)^{1/2}.
+\]
+由推论 \ref{cor:ch9-carleson-bmo-embedding}, 第一个因子不超过 $C\|b\|_*\|f\|_2$. 对第二个因子的内层积分应用 Plancherel 定理, 再交换积分次序并对 $t$ 积分, 得到界 $C\|g\|_2$. 因此
+\[
+ |\langle Lf,g\rangle|\leq C\|b\|_*\|f\|_2\|g\|_2,
+\]
+所以 $L$ 在 $L^2$ 上有界.
+
+最后证明 $L1=b$ 和 $L^*1=0$. 对每个 $t>0$,
+\[
+ \bigl(\psi_t*((\psi_t*b)\phi_t*\mathbin{\cdot})\bigr)^*
+ =\phi_t*((\psi_t*b)\psi_t*\mathbin{\cdot}).
+\]
+因为 $\psi$ 的积分为零, $\psi_t*1=0$, 所以 $L^*1=0$. 现在取 $g\in C_{c,0}^\infty$, 即 $g\in C_c^\infty$ 且 $\int g=0$. 对所有 $x$, $\phi_t*1(x)=1$, 因此
+\[
+ \langle L1,g\rangle
+ =c\int_0^\infty\int_{\mathbb R^n}
+ \psi_t*b(x)\phi_t*1(x)\psi_t*g(x)\,dx\,\frac{dt}{t}
+\]
+\[
+ =c\int_0^\infty\int_{\mathbb R^n}
+ b(x)\psi_t*\psi_t*g(x)\,dx\,\frac{dt}{t}.
+\]
+选择 $c$ 使得
+\begin{equation}
+\label{eq:ch9-calderon-reproducing-formula}
+ c\int_0^\infty\psi_t*\psi_t*g\,\frac{dt}{t}=g.
+\tag{9.9}
+\end{equation}
+则右端等于 $\langle b,g\rangle$, 故 $L1=b$.
+
+\hypertarget{chapter-09-page-224}{}
+
+式 \eqref{eq:ch9-calderon-reproducing-formula} 在 $H^1$ 中收敛. 常数 $c$ 可由 Fourier 变换确定, 即令
+\[
+ c\int_0^\infty|\widehat\psi(t\xi)|^2\,\frac{dt}{t}=1,
+ \qquad \xi\neq0.
+\]
+这完成了引理及定理的证明.
+\end{Proof}
