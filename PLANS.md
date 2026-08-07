@@ -43,8 +43,8 @@ Translate every supplied source page in table-of-contents order, preserving the 
 
 ## Current position
 
-- Completed units: Chapters 1--6, PDF 13--144 / printed 1--132; QA and cumulative compilation passed.
-- Active unit: Chapter 7, *Weighted Inequalities*.
-- Active untranslated source range: PDF 145--168 / printed 133--156.
+- Completed units: Chapters 1--7, PDF 13--168 / printed 1--156; QA and cumulative compilation passed.
+- Active unit: Chapter 8, *Littlewood--Paley Theory and Multipliers*.
+- Active untranslated source range: PDF 169--206 / printed 157--194.
 - The accepted Chapter 2 range PDF 37--51 remains unchanged in wording; its former unresolved reference to Section 8.6 resolves to the completed Chapter 2 label.
 - Remote pushes are not authorized for this workflow; completed chapters receive local commits only.
