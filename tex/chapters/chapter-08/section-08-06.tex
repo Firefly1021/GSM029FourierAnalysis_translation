@@ -1,0 +1,303 @@
+\subsection{回到奇异积分}
+\label{sec:ch8-return-singular-integrals}
+
+本节把 Littlewood--Paley 理论应用于奇异积分算子. 主要结果如下.
+
+\begin{Theorem}
+\label{thm:ch8-compact-kernel-dyadic-sum}
+设 $K\in L^1(\mathbb R^n)$ 具有紧支集, 且对某个 $a>0$ 有
+\[
+ |\widehat K(\xi)|\le C|\xi|^{-a},
+ \qquad
+ \int_{\mathbb R^n}K(x)\,dx=0.
+\]
+对每个整数 $j$ 令 $K_j(x)=2^{-jn}K(2^{-j}x)$. 则算子
+\[
+ Tf(x)=\sum_{j=-\infty}^{\infty}K_j*f(x)
+\]
+满足
+\[
+ \|Tf\|_p\le C_p\|f\|_p,
+ \qquad 1<p<\infty.
+\]
+\end{Theorem}
+
+\hypertarget{chapter-08-page-185}{}
+$T$ 的 $L^2$ 范数不等式立即由 Plancherel 定理和假设得到. 因为 $K$ 具有紧支集, 还有 $|\widehat K(\xi)|\le C|\xi|$, 从而
+\[
+ \begin{aligned}
+ \int_{\mathbb R^n}|Tf(x)|^2\,dx
+ &=\int_{\mathbb R^n}\left|\sum_j\widehat K_j(\xi)\right|^2|\widehat f(\xi)|^2\,d\xi\\
+ &\le\int_{\mathbb R^n}\left(\sum_j|\widehat K(2^j\xi)|\right)^2|\widehat f(\xi)|^2\,d\xi\\
+ &\le C\int_{\mathbb R^n}\left(\sum_j\min(|2^j\xi|^{-a},|2^j\xi|)\right)^2|\widehat f(\xi)|^2\,d\xi\\
+ &\le C\|f\|_2^2.
+ \end{aligned}
+\]
+
+为对任意 $p>1$ 证明定理~\ref{thm:ch8-compact-kernel-dyadic-sum}, 把算子分解为
+\[
+ Tf=\sum_{k=-\infty}^{\infty}\widetilde T_kf,
+\]
+其中每个 $\widetilde T_k$ 是把每个乘子 $\widehat K_j$ 分割成支于环带
+\[
+ 2^{-j-k-1}<|\xi|<2^{-j-k+1}
+\]
+的部分后再对 $j$ 求和得到的. 以下把该环带记为 $|\xi|\approx2^{-j-k}$. 对每个 $k$, 相应各部分的支集几乎不交, 并且其大小只依赖于 $k$. 因而 $\widetilde T_k$ 的范数之和将由收敛几何级数控制.
+
+\begin{Proof}
+取径向函数 $\psi\in\mathcal S(\mathbb R^n)$, 使 $\widehat\psi$ 支于 $1/2<|\xi|<2$, 并满足
+\[
+ \sum_{k=-\infty}^{\infty}\widehat\psi(2^k\xi)=1,
+ \qquad \xi\ne0.
+\]
+令 $\psi_k(x)=2^{-kn}\psi(2^{-k}x)$. 由 Plancherel 定理,
+\[
+ K_j=\sum_{k=-\infty}^{\infty}K_j*\psi_{j+k}.
+\]
+定义
+\[
+ \widetilde T_kf=\sum_{j=-\infty}^{\infty}K_j*\psi_{j+k}*f
+ =\sum_{j=-\infty}^{\infty}(K*\psi_k)_j*f.
+\]
+于是
+\[
+ Tf=\sum_jK_j*f=\sum_{j,k}K_j*\psi_{j+k}*f
+ =\sum_k\widetilde T_kf.
+\]
+
+\hypertarget{chapter-08-page-186}{}
+先设下列不等式成立:
+\begin{equation}
+ \|\widetilde T_kf\|_2\le C2^{-a|k|}\|f\|_2,
+ \label{eq:ch8-tk-l2-decay}
+\end{equation}
+\begin{equation}
+ \bigl|\{x\in\mathbb R^n:|\widetilde T_kf(x)|>\lambda\}\bigr|
+ \le\frac{C(1+|k|)}{\lambda}\|f\|_1.
+ \label{eq:ch8-tk-weak-one}
+\end{equation}
+事实上, 当 $0<a\le1$ 时将证明~\eqref{eq:ch8-tk-l2-decay}. 若 $a>1$, 则其中的常数改为 $2^{-|k|}$, 但这不影响证明. 对~\eqref{eq:ch8-tk-l2-decay} 和~\eqref{eq:ch8-tk-weak-one} 应用 Marcinkiewicz 插值定理, 对 $1<p<2$ 得
+\[
+ \|\widetilde T_kf\|_p
+ \le C_p2^{-a\theta|k|}(1+|k|)^{1-\theta}\|f\|_p,
+\]
+其中 $1/p=\theta/2+(1-\theta)$. 对 $k$ 求和便得到 $1<p<2$ 时的结论, 再由对偶论证得到 $2<p<\infty$ 时的结论.
+
+只需证明~\eqref{eq:ch8-tk-l2-decay} 和~\eqref{eq:ch8-tk-weak-one}. 第一式由定义得到. 因为 $\widehat\psi_j\widehat\psi_m$ 仅在 $m=j,j\pm1$ 时非零, 由 Plancherel 定理,
+\[
+ \begin{aligned}
+ \|\widetilde T_kf\|_2^2
+ &\le\sum_j\sum_{m=j-1}^{j+1}\int_{\mathbb R^n}
+ |\widehat K_j(\xi)\widehat K_m(\xi)|
+ |\widehat\psi_{j+k}(\xi)\widehat\psi_{m+k}(\xi)|
+ |\widehat f(\xi)|^2\,d\xi\\
+ &\le C\sum_j\int_{|\xi|\approx2^{-j-k}}2^{-2a|k|}|\widehat f(\xi)|^2\,d\xi\\
+ &\le C2^{-2a|k|}\|f\|_2^2.
+ \end{aligned}
+\]
+第二个不等式使用了 $|\widehat K_j(\xi)|\le\min(|2^j\xi|^{-a},|2^j\xi|)$.
+
+为证明~\eqref{eq:ch8-tk-weak-one}, 应用定理~\ref{thm:ch5-calderon-zygmund}. 只需证明 $\widetilde T_k$ 的 Hörmander 条件~\eqref{eq:ch5-hormander-condition} 中的常数为 $C(1+|k|)$. 固定 $y\ne0$, 则
+\[
+ \begin{aligned}
+ &\int_{|x|>2|y|}\left|\sum_{j=-\infty}^{\infty}
+ (K*\psi_k)_j(x-y)-(K*\psi_k)_j(x)\right|\,dx\\
+ &\quad\le\sum_{j=-\infty}^{\infty}\int_{|x|>2|y|}2^{-jn}
+ |(K*\psi_k)(2^{-j}x-2^{-j}y)-(K*\psi_k)(2^{-j}x)|\,dx\\
+ &\quad=\sum_j\int_{|x|>2^{1-j}|y|}
+ |(K*\psi_k)(x-2^{-j}y)-(K*\psi_k)(x)|\,dx
+ =\sum_j I_j.
+ \end{aligned}
+\]
+
+\hypertarget{chapter-08-page-187}{}
+这里 $I_j$ 表示第 $j$ 个求和项. 作变量替换 $y\mapsto2y$ 时, $I_j$ 变为 $I_{j-1}$. 因为这不影响总和, 可设 $1\le|y|\le2$.
+
+先由中值定理,
+\[
+ \begin{aligned}
+ I_j
+ &\le\int_{\mathbb R^n}\int_{\mathbb R^n}|K(z)|
+ |\psi_k(x-2^{-j}y-z)-\psi_k(x-z)|\,dz\,dx\\
+ &\le\int_{\mathbb R^n}|K(z)|\int_{\mathbb R^n}
+ |\psi_k(x-2^{-j}y)-\psi_k(x)|\,dx\,dz\\
+ &\le C\|K\|_1 2^{-j-k}.
+ \end{aligned}
+\]
+当 $k+j\ge0$ 时使用这个估计. 若 $k+j<0$, 则由第一行可得更好的估计 $I_j\le C$.
+
+为得到第三个估计, 不妨设 $K$ 的支集包含于 $B(0,1)$. 于是
+\[
+ \begin{aligned}
+ I_j
+ &\le2\int_{|x|>2^{-j}}|(K*\psi_k)(x)|\,dx\\
+ &\le2\int_{|z|\le1}|K(z)|\int_{|x|>2^{-j-k}}
+ |\psi(x-2^{-k}z)|\,dx\,dz.
+ \end{aligned}
+\]
+若 $j<0$, 则 $|x|>2|2^{-k}z|$, 因而 $|x-2^{-k}z|>|x|/2$. 所以
+\[
+ I_j\le2\|K\|_1\int_{|x|>2^{-j-k-1}}|\psi(x)|\,dx
+ \le C2^{j+k}.
+\]
+由这些估计, 当 $k\ge0$ 时,
+\[
+ \sum_{j=-\infty}^{\infty}I_j
+ \le C\left(\sum_{j=-k}^{\infty}2^{-j-k}
+ +\sum_{j=-\infty}^{-k-1}2^{j+k}\right)\le C.
+\]
+当 $k<0$ 时,
+\[
+ \sum_{j=-\infty}^{\infty}I_j
+ \le C\left(\sum_{j=|k|}^{\infty}2^{-j-k}
+ +\sum_{j=0}^{|k|-1}1
+ +\sum_{j=-\infty}^{-1}2^{j+k}\right)
+ \le C(1+|k|).
+\]
+证明完成.
+\end{Proof}
+
+定理~\ref{thm:ch8-compact-kernel-dyadic-sum} 有若干应用. 第一个应用给出定理~\ref{thm:ch4-rough-kernel-lp} 的一个较简单证明, 需要下述引理.
+
+\begin{Lemma}
+\label{lem:ch8-annular-rough-kernel-decay}
+若 $\Omega\in L^q(S^{n-1})$, $q>1$, 且
+\[
+ K(x)=\frac{\Omega(x')}{|x|^n}\chi_{\{1<|x|\le2\}},
+\]
+则对 $a<1/q'$ 有
+\[
+ |\widehat K(\xi)|\le C|\xi|^{-a}.
+\]
+\end{Lemma}
+
+\hypertarget{chapter-08-page-188}{}
+\begin{Proof}
+把 Fourier 变换写成极坐标形式, 得
+\[
+ \widehat K(\xi)
+ =\int_{S^{n-1}}\Omega(u)\int_1^2e^{-2\pi iru\cdot\xi}\frac{dr}{r}\,d\sigma(u)
+ =\int_{S^{n-1}}\Omega(u)I(u\cdot\xi)\,d\sigma(u),
+\]
+其中
+\[
+ I(t)=\int_1^2e^{-2\pi irt}\frac{dr}{r}.
+\]
+因为 $|I(t)|\le\min(1,|t|^{-1})$, 对 $0<a<1$ 有 $|I(t)|\le|t|^{-a}$. 因而
+\[
+ \begin{aligned}
+ |\widehat K(\xi)|
+ &\le|\xi|^{-a}\int_{S^{n-1}}|\Omega(u)|\,|u\cdot\xi'|^{-a}\,d\sigma(u)\\
+ &\le|\xi|^{-a}\|\Omega\|_q
+ \left(\int_{S^{n-1}}|u\cdot\xi'|^{-aq'}\,d\sigma(u)\right)^{1/q'}.
+ \end{aligned}
+\]
+最后一个积分与 $\xi'$ 无关, 且在 $aq'<1$ 时收敛.
+\end{Proof}
+
+\begin{Corollary}
+\label{cor:ch8-rough-singular-integral}
+若 $\Omega\in L^q(S^{n-1})$, $q>1$, 且 $\int\Omega(u)\,d\sigma(u)=0$, 则奇异积分
+\[
+ Tf(x)=\operatorname{p.v.}\int_{\mathbb R^n}
+ \frac{\Omega(y')}{|y|^n}f(x-y)\,dy
+\]
+在 $L^p$, $1<p<\infty$, 上有界.
+\end{Corollary}
+
+若按引理~\ref{lem:ch8-annular-rough-kernel-decay} 定义 $K$, 则
+\[
+ Tf=\sum_{j=-\infty}^{\infty}K_j*f,
+\]
+所需结论立即由定理~\ref{thm:ch8-compact-kernel-dyadic-sum} 得到.
+
+第二个应用涉及一族平方函数.
+
+\begin{Corollary}
+\label{cor:ch8-kernel-square-function}
+若 $K$ 和 $K_j$ 如定理~\ref{thm:ch8-compact-kernel-dyadic-sum} 中定义, 则平方函数
+\[
+ g(f)=\left(\sum_{j=-\infty}^{\infty}|K_j*f|^2\right)^{1/2}
+\]
+在 $L^p$, $1<p<\infty$, 上有界.
+\end{Corollary}
+
+\hypertarget{chapter-08-page-189}{}
+\begin{Proof}
+给定序列 $\varepsilon=\{\varepsilon_j\}$, 其中每个 $\varepsilon_j=\pm1$, 定义
+\[
+ T_\varepsilon f=\sum_j\varepsilon_jK_j*f.
+\]
+由定理~\ref{thm:ch8-compact-kernel-dyadic-sum} 的证明可知, $\|T_\varepsilon f\|_p\le C_p\|f\|_p$, 且 $C_p$ 与 $\varepsilon$ 无关.
+
+回忆 Rademacher 函数的定义:
+\[
+ r_0(t)=
+ \begin{cases}
+ -1,&0<t<1/2,\\
+ 1,&1/2<t<1,
+ \end{cases}
+\]
+并且对 $j\ge1$ 令 $r_j(t)=r_0(2^jt)$, 其中把 $r_0$ 周期延拓到整个 $\mathbb R$. Rademacher 函数在 $L^2([0,1])$ 中构成规范正交系. 此外, 若
+\[
+ F(t)=\sum_{j=0}^{\infty}a_jr_j(t)\in L^2([0,1]),
+\]
+则 $F\in L^p([0,1])$, $1<p<\infty$, 并存在正常数 $A_p,B_p$ 使
+\[
+ A_p\|F\|_p\le\|F\|_2
+ =\left(\sum_j|a_j|^2\right)^{1/2}
+ \le B_p\|F\|_p.
+\]
+因此
+\[
+ g(f)(x)^p
+ =\left(\sum_j|K_j*f(x)|^2\right)^{p/2}
+ \le B_p^p\int_0^1\left|\sum_jr_j(t)K_j*f(x)\right|^p\,dt.
+\]
+对 $x$ 积分并应用 Fubini 定理. 对每个 $t$, 被积式中的算子都具有 $T_\varepsilon$ 的形式, 因而由上面的观察得到所需不等式.
+\end{Proof}
+
+最后一个应用中, 定理~\ref{thm:ch8-compact-kernel-dyadic-sum} 和推论~\ref{cor:ch8-kernel-square-function} 里的 $K\in L^1$ 可替换为具有紧支集的有限 Borel 测度, 只要其 Fourier 变换衰减得足够快.
+
+\begin{Corollary}
+\label{cor:ch8-decaying-measure-maximal}
+设 $\mu$ 是具有紧支集的有限 Borel 测度, 且对某个 $a>0$ 有
+\[
+ |\widehat\mu(\xi)|\le C|\xi|^{-a}.
+\]
+则极大函数
+\[
+ \mathcal Mf(x)=\sup_j\left|\int_{\mathbb R^n}f(x-2^jy)\,d\mu(y)\right|
+\]
+在 $L^p$, $1<p<\infty$, 上有界.
+\end{Corollary}
+
+\hypertarget{chapter-08-page-190}{}
+\begin{Proof}
+取具有紧支集的 $\phi\in\mathcal S(\mathbb R^n)$, 使 $\widehat\phi(0)=1$. 定义测度 $\sigma=\mu-\widehat\mu(0)\phi$. 则 $\sigma$ 满足定理~\ref{thm:ch8-compact-kernel-dyadic-sum} 的假设. 因而由 $\mathcal M$ 的定义和命题~\ref{prop:ch2-radial-majorization},
+\[
+ \begin{aligned}
+ \mathcal Mf(x)
+ &\le\sup_j|\sigma_j*f(x)|
+ +|\widehat\mu(0)|\sup_j\left|\int_{\mathbb R^n}f(x-2^jy)\phi(y)\,dy\right|\\
+ &\le\left(\sum_j|\sigma_j*f(x)|^2\right)^{1/2}
+ +|\widehat\mu(0)|Mf(x),
+ \end{aligned}
+\]
+其中 $M$ 是 Hardy--Littlewood 极大算子. 由推论~\ref{cor:ch8-kernel-square-function}, 最后一行中的平方函数在 $L^p$ 上有界, 证明完成.
+\end{Proof}
+
+若 $\mu$ 是单位球面 $S^{n-1}$ 上的 Lebesgue 测度, 则积分
+\[
+ \int_{\mathbb R^n}f(x-2^jy)\,d\mu(y)
+\]
+是 $f$ 在以 $x$ 为球心且半径为 $2^{-j}$ 的球面上的平均. 此时相应的极大函数称为二进球面极大函数. 因为
+\[
+ |\widehat\mu(\xi)|\le C|\xi|^{(-n+1)/2}
+\]
+(在引理~\ref{lem:ch8-bochner-riesz-kernel} 中以位于 $1$ 的 Dirac 测度替换 $f_a$), 推论~\ref{cor:ch8-decaying-measure-maximal} 立即给出以下结论.
+
+\begin{Corollary}
+\label{cor:ch8-dyadic-spherical-maximal}
+若 $n\ge2$, 则二进球面极大函数在 $L^p$, $1<p<\infty$, 上有界.
+\end{Corollary}
