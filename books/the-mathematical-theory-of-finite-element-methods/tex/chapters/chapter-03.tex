@@ -1,0 +1,908 @@
+% Chapter 3. Source PDF pages 82--105 / printed pages 68--92.
+\clearpage
+\MathBookSourcePage{82}
+\section{有限元空间的构造}
+\label{chap:ch03-finite-element-space-construction}
+
+为了逼近第~\ref{chap:ch00-basic-concepts} 章建立的变分问题
+\[
+\MathBookFormulaID{formula-ch03-variational-problem}
+a(u,v)=F(v)\qquad\forall v\in V
+\]
+的解, 需要以系统且实用的方式构造有限维子空间 $S\subset V$.
+
+考察第~\ref{sec:ch00-piecewise-polynomial-spaces} 节定义的空间 $S$. 为了充分理解空间 $S$ 中的函数, 需要回答以下问题:
+\begin{enumerate}
+\item 函数在给定子区间上是什么形状?
+\item 如何确定函数在给定子区间上的值?
+\item 函数在两个相邻区间上的限制如何在公共边界处衔接?
+\end{enumerate}
+本章将定义与 $S$ 类似、但定义在更一般区域上的分片函数空间, 并发展有助于回答这些问题的概念.
+
+\subsection{有限元}
+\label{sec:ch03-finite-element}
+\setcounter{thmcount}{0}
+\setcounter{equation}{0}
+
+我们采用 Ciarlet 对有限元的定义(Ciarlet 1978).
+
+\begin{Definition}
+\label{def:ch03-finite-element}
+设:
+\begin{enumerate}
+\item[(i)] $K\subseteq\mathbb R^n$ 是内部非空且具有分片光滑边界的有界闭集(单元区域);
+\item[(ii)] $\mathcal P$ 是 $K$ 上函数的有限维空间(形函数空间);
+\item[(iii)] $\mathcal N=\{N_1,N_2,\ldots,N_k\}$ 是 $\mathcal P'$ 的一组基(节点变量集合).
+\end{enumerate}
+则称 $(K,\mathcal P,\mathcal N)$ 为有限元.
+
+这里隐含假设节点变量 $N_i$ 属于某个更大函数空间的对偶空间, 例如某个 Sobolev 空间的对偶空间.
+\end{Definition}
+
+\MathBookSourcePage{83}
+\begin{Definition}
+\label{def:ch03-nodal-basis}
+设 $(K,\mathcal P,\mathcal N)$ 是有限元. 与 $\mathcal N$ 对偶的 $\mathcal P$ 的基 $\{\phi_1,\phi_2,\ldots,\phi_k\}$(即 $N_i(\phi_j)=\delta_{ij}$)称为 $\mathcal P$ 的节点基.
+\end{Definition}
+
+\begin{Example}[一维 Lagrange 单元]
+\label{ex:ch03-one-dimensional-lagrange}
+令 $K=[0,1]$, $\mathcal P$ 为线性多项式集合, $\mathcal N=\{N_1,N_2\}$, 其中对所有 $v\in\mathcal P$, $N_1(v)=v(0)$, $N_2(v)=v(1)$. 则 $(K,\mathcal P,\mathcal N)$ 是有限元, 其节点基由 $\phi_1(x)=1-x$ 和 $\phi_2(x)=x$ 构成.
+
+更一般地, 可令 $K=[a,b]$, $\mathcal P_k$ 为所有次数不超过 $k$ 的多项式的集合, 并令
+\[
+\mathcal N_k=\{N_0,N_1,N_2,\ldots,N_k\}.
+\]
+其中对 $v\in\mathcal P_k$ 和 $i=0,1,\ldots,k$,
+\[
+\MathBookFormulaID{formula-ch03-one-dimensional-nodal-values}
+N_i(v)=v\left(a+\frac{(b-a)i}{k}\right).
+\]
+则 $(K,\mathcal P_k,\mathcal N_k)$ 是有限元. 这一点可由引理~\ref{lem:ch03-dual-basis-criterion} 验证.
+\end{Example}
+
+通常, 定义~\ref{def:ch03-finite-element} 的条件 (iii) 是唯一需要较多工作的条件, 下面的结果可简化其验证.
+
+\begin{Lemma}
+\label{lem:ch03-dual-basis-criterion}
+设 $\mathcal P$ 是 $d$ 维向量空间, $\{N_1,N_2,\ldots,N_d\}$ 是对偶空间 $\mathcal P'$ 的子集. 则下列两个命题等价:
+\begin{enumerate}
+\item[(a)] $\{N_1,N_2,\ldots,N_d\}$ 是 $\mathcal P'$ 的一组基;
+\item[(b)] 若 $v\in\mathcal P$ 且 $N_i(v)=0$, $i=1,2,\ldots,d$, 则 $v\equiv0$.
+\end{enumerate}
+\end{Lemma}
+
+\begin{Proof}
+设 $\{\phi_1,\ldots,\phi_d\}$ 是 $\mathcal P$ 的某组基. $\{N_1,\ldots,N_d\}$ 是 $\mathcal P'$ 的一组基, 当且仅当对 $\mathcal P'$ 中任意给定的 $L$ 都有
+\setcounter{equation}{4}
+\begin{equation}
+\MathBookFormulaID{formula-ch03-dual-functional-expansion}
+L=\alpha_1N_1+\cdots+\alpha_dN_d
+\label{eq:ch03-dual-functional-expansion}
+\end{equation}
+(因为 $d=\dim\mathcal P=\dim\mathcal P'$). 方程 \eqref{eq:ch03-dual-functional-expansion} 等价于
+\[
+\MathBookFormulaID{formula-ch03-dual-functional-linear-system}
+y_i:=L(\phi_i)=\alpha_1N_1(\phi_i)+\cdots+\alpha_dN_d(\phi_i),
+\qquad i=1,\ldots,d.
+\]
+令 $B=(N_j(\phi_i))$, $i,j=1,\ldots,d$. 因而 (a) 等价于 $B\alpha=y$ 总可解, 即 $B$ 可逆.
+
+对任意 $v\in\mathcal P$, 可写成 $v=\beta_1\phi_1+\cdots+\beta_d\phi_d$. $N_i(v)=0$ 意味着 $\beta_1N_i(\phi_1)+\cdots+\beta_dN_i(\phi_d)=0$. 因而 (b) 等价于
+\begin{equation}
+\MathBookFormulaID{formula-ch03-primal-linear-system}
+\left.
+\begin{aligned}
+\beta_1N_i(\phi_1)+\cdots+\beta_dN_i(\phi_d)&=0,
+&&i=1,\ldots,d
+\end{aligned}
+\right\}
+\Longrightarrow\beta_1=\cdots=\beta_d=0.
+\label{eq:ch03-primal-linear-system}
+\end{equation}
+令 $C=(N_i(\phi_j))$, $i,j=1,\ldots,d$. 则 (b) 等价于 $Cx=0$ 只有平凡解, 即 $C$ 可逆. 但 $C=B^T$. 因此 (a) 与 (b) 等价.
+\end{Proof}
+
+\setcounter{thmcount}{6}
+\begin{Remark}
+\label{rem:ch03-dual-basis-verification}
+定义~\ref{def:ch03-finite-element} 的条件 (iii) 就是引理~\ref{lem:ch03-dual-basis-criterion} 的 (a), 可通过检验该引理的 (b) 来验证. 例如, 在例~\ref{ex:ch03-one-dimensional-lagrange} 中, $v\in\mathcal P$ 意味着 $v=a+bx$; $N_1(v)=N_2(v)=0$ 意味着 $a=0$ 且 $a+b=0$. 因而 $a=b=0$, 即 $v\equiv0$. 更一般地, 若 $v\in\mathcal P_k$ 且对 $i=0,1,\ldots,k$ 有
+\[
+\MathBookFormulaID{formula-ch03-polynomial-nodal-zeros}
+0=N_i(v)=v\left(a+\frac{(b-a)i}{k}\right),
+\]
+则由代数基本定理, $v$ 恒为零. 因而 $(K,\mathcal P_k,\mathcal N_k)$ 是有限元.
+\end{Remark}
+
+\MathBookSourcePage{84}
+下面的术语将在后续各节中使用.
+
+\begin{Definition}
+\label{def:ch03-n-determines-p}
+若 $\psi\in\mathcal P$ 且对所有 $N\in\mathcal N$ 都有 $N(\psi)=0$ 蕴含 $\psi=0$, 则称 $\mathcal N$ 确定 $\mathcal P$.
+\end{Definition}
+
+\begin{Remark}
+\label{rem:ch03-hyperplane-notation}
+若 $L$ 是非退化线性函数, 我们常把超平面 $\{x:L(x)=0\}$ 简称为 $L$.
+\end{Remark}
+
+\begin{Lemma}
+\label{lem:ch03-polynomial-hyperplane-factor}
+设次数 $d\geq1$ 的多项式 $P$ 在超平面 $L$ 上为零. 则可写成 $P=LQ$, 其中 $Q$ 是次数为 $d-1$ 的多项式.
+\end{Lemma}
+
+\begin{Proof}
+作仿射坐标变换, 使 $L(\widehat x,x_n)=x_n$, 且超平面 $L(\widehat x,x_n)=0$ 为 $\widehat x$ 轴. 因而 $P(\widehat x,0)\equiv0$. 由于 $\deg P=d$,
+\[
+\MathBookFormulaID{formula-ch03-polynomial-multiindex-expansion}
+P(\widehat x,x_n)=\sum_{j=0}^d\sum_{|\widehat i|\leq d-j}
+c_{\widehat i j}\widehat x^{\widehat i}x_n^j,
+\]
+其中 $\widehat x=(x_1,\ldots,x_{n-1})$, $\widehat i=(i_1,\ldots,i_{n-1})$. 令 $x_n=0$, 得
+\[
+\MathBookFormulaID{formula-ch03-polynomial-zero-hyperplane-coefficients}
+0\equiv P(\widehat x,0)=\sum_{|\widehat i|\leq d}c_{\widehat i0}\widehat x^{\widehat i},
+\]
+从而对 $|\widehat i|\leq d$ 有 $c_{\widehat i0}=0$. 因此,
+\[
+\MathBookFormulaID{formula-ch03-polynomial-factorization-proof}
+\begin{aligned}
+P(\widehat x,x_n)
+&=\sum_{j=1}^d\sum_{|\widehat i|\leq d-j}
+c_{\widehat i j}\widehat x^{\widehat i}x_n^j\\
+&=x_n\sum_{j=1}^d\sum_{|\widehat i|\leq d-j}
+c_{\widehat i j}\widehat x^{\widehat i}x_n^{j-1}\\
+&=x_nQ=LQ,
+\end{aligned}
+\]
+其中 $\deg Q=d-1$.
+\end{Proof}
+
+\subsection{三角形有限元}
+\label{sec:ch03-triangular-finite-elements}
+\setcounter{thmcount}{0}
+\setcounter{equation}{0}
+
+设 $K$ 是任意三角形. 记 $\mathcal P_k$ 为二元次数不超过 $k$ 的所有多项式的集合. 表~\ref{tab:ch03-pk-dimension-two-dimensional} 给出 $\mathcal P_k$ 的维数.
+
+\MathBookSourcePage{85}
+\begin{table}[htbp]
+\centering
+\caption{二维情形 $\mathcal P_k$ 的维数}
+\label{tab:ch03-pk-dimension-two-dimensional}
+\begin{tabular}{c|c}
+$k$ & $\dim\mathcal P_k$\\\hline
+$1$ & $3$\\
+$2$ & $6$\\
+$3$ & $10$\\
+$\vdots$ & $\vdots$\\
+$k$ & $\frac12(k+1)(k+2)$
+\end{tabular}
+\end{table}
+
+\subsubsection*{Lagrange 单元}
+
+\begin{Example}[$k=1$]
+\label{ex:ch03-linear-lagrange-triangle}
+令 $\mathcal P=\mathcal P_1$, $\mathcal N_1=\{N_1,N_2,N_3\}$, 其中 $N_i(v)=v(z_i)$, $z_1,z_2,z_3$ 是 $K$ 的顶点. 该单元见图~\ref{fig:ch03-linear-lagrange-triangle}.
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=.42\textwidth]{chapter-03/figure-3-01.png}
+\caption{线性 Lagrange 三角形}
+\label{fig:ch03-linear-lagrange-triangle}
+\end{figure}
+图中的实心点表示在该点取值的节点变量. 令 $L_1,L_2,L_3$ 是定义三角形三条边所在直线的非平凡线性函数. 若 $P\in\mathcal P_1$ 在 $z_1,z_2,z_3$ 处为零, 则 $P|_{L_1}$ 是有两个零点的一元线性函数, 因而 $P=0$ 于 $L_1$. 由引理~\ref{lem:ch03-polynomial-hyperplane-factor}, $P=cL_1$. 但
+\[
+\MathBookFormulaID{formula-ch03-linear-lagrange-unisolvence}
+0=P(z_1)=cL_1(z_1)\quad\Longrightarrow\quad c=0,
+\]
+因为 $L_1(z_1)\ne0$. 故 $P\equiv0$, 从而 $\mathcal N_1$ 确定 $\mathcal P_1$.
+\end{Example}
+
+\begin{Remark}
+\label{rem:ch03-crouzeix-raviart-choice}
+上述 $\mathcal N$ 的选择并不唯一. 例如, 可令 $N_i(v)$ 为 $v$ 在第 $i$ 条边中点的值. 所得 Crouzeix--Raviart 非协调线性三角形见图~\ref{fig:ch03-crouzeix-raviart-triangle}. 连接三个中点后得到一个三角形, $P\in\mathcal P_1$ 在其顶点处为零; 与例~\ref{ex:ch03-linear-lagrange-triangle} 相同的论证表明 $P\equiv0$.
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=.42\textwidth]{chapter-03/figure-3-02.png}
+\caption{Crouzeix--Raviart 非协调线性三角形}
+\label{fig:ch03-crouzeix-raviart-triangle}
+\end{figure}
+\end{Remark}
+
+\MathBookSourcePage{86}
+\begin{Example}[$k=2$]
+\label{ex:ch03-quadratic-lagrange-triangle}
+令 $\mathcal P=\mathcal P_2$, $\mathcal N_2=\{N_1,\ldots,N_6\}$, 其中
+\[
+\MathBookFormulaID{formula-ch03-quadratic-lagrange-nodes}
+N_i(v)=
+\begin{cases}
+v(\text{第 $i$ 个顶点}),&i=1,2,3,\\
+v(\text{第 $i-3$ 条边的中点或该边上任一点}),&i=4,5,6.
+\end{cases}
+\]
+该单元见图~\ref{fig:ch03-quadratic-lagrange-triangle}.
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=.42\textwidth]{chapter-03/figure-3-03.png}
+\caption{二次 Lagrange 三角形}
+\label{fig:ch03-quadratic-lagrange-triangle}
+\end{figure}
+设 $P\in\mathcal P_2$ 在 $z_1,\ldots,z_6$ 处为零. 因为 $P|_{L_1}$ 是在三个点为零的一元二次多项式, 故 $P=0$ 于 $L_1$, 从而 $P=L_1Q_1$, $\deg Q_1=1$. 又因 $P=0$ 于 $L_2$, 且 $L_1$ 在非退化三角形的 $L_2$ 上至多一个点为零, 连续性给出 $Q_1=0$ 于 $L_2$. 再用引理~\ref{lem:ch03-polynomial-hyperplane-factor}, 可写 $Q_1=L_2Q_2$, 其中 $Q_2=c$ 为常数. 因此 $P=cL_1L_2$. 由内部节点 $z_6$,
+\[
+\MathBookFormulaID{formula-ch03-quadratic-lagrange-interior-node}
+0=P(z_6)=cL_1(z_6)L_2(z_6)\quad\Longrightarrow\quad c=0.
+\]
+故 $P\equiv0$.
+\end{Example}
+
+\begin{Example}[$k=3$]
+\label{ex:ch03-cubic-lagrange-triangle}
+令 $\mathcal P=\mathcal P_3$, $\mathcal N_3=\{N_i:i=1,\ldots,10\}$, 其中 $N_i(v)=v(z_i)$, $i=1,\ldots,9$, 这些点按图~\ref{fig:ch03-cubic-lagrange-triangle} 分布在边上; $N_{10}(v)$ 为 $v$ 在任一内部点的值.
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=.42\textwidth]{chapter-03/figure-3-04.png}
+\caption{三次 Lagrange 三角形}
+\label{fig:ch03-cubic-lagrange-triangle}
+\end{figure}
+若 $P\in\mathcal P_3$ 在全部十个节点处为零, 则对三个边依次使用引理~\ref{lem:ch03-polynomial-hyperplane-factor}, 得 $P=cL_1L_2L_3$. 于是
+\[
+\MathBookFormulaID{formula-ch03-cubic-lagrange-interior-node}
+0=P(z_{10})=cL_1(z_{10})L_2(z_{10})L_3(z_{10})\quad\Longrightarrow\quad c=0,
+\]
+因为 $L_i(z_{10})\ne0$, $i=1,2,3$. 故 $P\equiv0$.
+\end{Example}
+
+\MathBookSourcePage{87}
+一般地, 对 $k\geq1$ 取 $\mathcal P=\mathcal P_k$. 对于 $\mathcal N_k=\{N_i:i=1,2,\ldots,\frac12(k+1)(k+2)\}$, 选取求值点为
+\setcounter{equation}{4}
+\begin{equation}
+\MathBookFormulaID{formula-ch03-general-lagrange-node-count}
+\label{eq:ch03-general-lagrange-node-count}
+\begin{cases}
+3\text{ 个顶点节点},\\
+3(k-1)\text{ 个互异的边节点},\\
+\frac12(k-2)(k-1)\text{ 个内部节点}.
+\end{cases}
+\end{equation}
+内部点通过归纳选取, 使其确定 $\mathcal P_{k-3}$. 节点总数为
+\[
+\MathBookFormulaID{formula-ch03-general-lagrange-count-identity}
+3+3(k-1)+\frac12(k-2)(k-1)=\frac12(k+1)(k+2)=\dim\mathcal P_k.
+\]
+$k=4$ 与 $k=5$ 的求值点见图~\ref{fig:ch03-quartic-quintic-lagrange}. 若 $P\in\mathcal P_k$ 在所有节点处为零, 则边节点与顶点节点给出 $P=QL_1L_2L_3$, $\deg Q\leq k-3$. 因三个 $L_i$ 在内部点均不为零, $Q$ 在全部内部点为零. 这些点正是为确定 $Q\equiv0$ 而选取的.
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=.60\textwidth]{chapter-03/figure-3-05.png}
+\caption{四次与五次 Lagrange 三角形}
+\label{fig:ch03-quartic-quintic-lagrange}
+\end{figure}
+
+\subsubsection*{Hermite 单元}
+\MathBookSourcePage{88}
+\setcounter{thmcount}{5}
+\begin{Example}[$k=3$, 三次 Hermite]
+\label{ex:ch03-cubic-hermite-triangle}
+令 $\mathcal P=\mathcal P_3$. 图~\ref{fig:ch03-cubic-hermite-triangle} 中实心点表示在该点求值, 圆圈表示在圆心处对梯度求值. 后者对应两个不同的节点变量, 但梯度的具体表示并不唯一. 图中的 $\mathcal N=\{N_1,\ldots,N_{10}\}$ 确定 $\mathcal P_3$.
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=.42\textwidth]{chapter-03/figure-3-06.png}
+\caption{三次 Hermite 三角形}
+\label{fig:ch03-cubic-hermite-triangle}
+\end{figure}
+设 $P\in\mathcal P_3$ 且 $N_i(P)=0$, $i=1,\ldots,10$. 在 $L_1$ 上, $z_2,z_3$ 是 $P$ 的二重根, 因为函数值及沿直线 $L_1$ 的导数均为零. 一元三次多项式若有四个计重根, 必为零, 故 $P=0$ 于 $L_1$. 对 $L_2,L_3$ 同理, 从而 $P=cL_1L_2L_3$. 内部点 $z_4$ 给出
+\[
+\MathBookFormulaID{formula-ch03-cubic-hermite-interior-node}
+0=P(z_4)=cL_1(z_4)L_2(z_4)L_3(z_4)\quad\Longrightarrow\quad c=0.
+\]
+\end{Example}
+
+\begin{Remark}
+\label{rem:ch03-hermite-directional-choices}
+使用方向导数时, 可用多种不同方式以 $\mathcal P_3$ 定义有限元, 图~\ref{fig:ch03-hermite-directional-choices} 给出其中两种. 箭头表示在该点沿所示方向取方向导数. 左侧的``全局''单元便于在整个三角剖分区域内计算 $x$ 或 $y$ 方向导数; 右侧的``局部''单元则使每个三角形的节点参数相对于该三角形保持不变.
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=.72\textwidth]{chapter-03/figure-3-07.png}
+\caption{三次 Hermite 单元的两组不同节点值}
+\label{fig:ch03-hermite-directional-choices}
+\end{figure}
+\end{Remark}
+
+一般 Hermite 情形的节点为
+\setcounter{equation}{8}
+\begin{equation}
+\MathBookFormulaID{formula-ch03-general-hermite-node-count}
+\label{eq:ch03-general-hermite-node-count}
+\begin{cases}
+3\text{ 个顶点节点},\\
+6\text{ 个方向导数节点(每个顶点的梯度给出两个)},\\
+3(k-3)\text{ 个边节点},\\
+\frac12(k-2)(k-1)\text{ 个内部节点, 与 Lagrange 情形相同}.
+\end{cases}
+\end{equation}
+它们的总数仍为 $\frac12(k+1)(k+2)=\dim\mathcal P_k$.
+
+\setcounter{thmcount}{7}
+\begin{Example}[$k=4$]
+\label{ex:ch03-quartic-hermite-triangle}
+有 $\dim\mathcal P_4=15$. 图~\ref{fig:ch03-quartic-hermite-triangle} 所示 $\mathcal N=\{N_1,\ldots,N_{15}\}$ 确定 $\mathcal P_4$.
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=.42\textwidth]{chapter-03/figure-3-08.png}
+\caption{四次 Hermite 三角形}
+\label{fig:ch03-quartic-hermite-triangle}
+\end{figure}
+\end{Example}
+
+\subsubsection*{Argyris 单元}
+\MathBookSourcePage{89}
+\setcounter{thmcount}{9}
+\begin{Example}[$k=5$]
+\label{ex:ch03-quintic-argyris-triangle}
+令 $\mathcal P=\mathcal P_5$. 考虑图~\ref{fig:ch03-quintic-argyris-triangle} 中的 $21=\dim\mathcal P_5$ 个自由度. 实心点表示函数值, 内圈表示梯度的两个分量, 外圈表示三个二阶导数, 箭头表示在三个边中点取法向导数. 这些节点变量 $\mathcal N=\{N_1,\ldots,N_{21}\}$ 确定 $\mathcal P_5$.
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=.42\textwidth]{chapter-03/figure-3-09.png}
+\caption{五次 Argyris 三角形}
+\label{fig:ch03-quintic-argyris-triangle}
+\end{figure}
+设 $P\in\mathcal P_5$ 且 $N_i(P)=0$, $i=1,\ldots,21$. $P|_{L_1}$ 是在 $z_2,z_3$ 处有三重根的一元五次多项式, 因而恒为零. 对 $L_2,L_3$ 同理, 故 $P=QL_1L_2L_3$, $\deg Q=2$. 记 $\partial_{L_i}$ 为沿 $L_i$ 的方向导数. 由 $(\partial_{L_1}\partial_{L_2}P)(z_3)=0$ 得
+\[
+\MathBookFormulaID{formula-ch03-argyris-vertex-q-zero}
+0=(\partial_{L_1}\partial_{L_2}P)(z_3)=Q(z_3)L_3(z_3)\partial_{L_2}L_1\partial_{L_1}L_2,
+\]
+从而 $Q(z_3)=0$. 同理 $Q(z_1)=Q(z_2)=0$. 又因 $L_1(m_1)=0$,
+\[
+\MathBookFormulaID{formula-ch03-argyris-midpoint-q-zero}
+0=\frac{\partial P}{\partial n_1}(m_1)\quad\Longrightarrow\quad Q(m_1)=0,
+\]
+并同理有 $Q(m_2)=Q(m_3)=0$. 由例~\ref{ex:ch03-quadratic-lagrange-triangle}, $Q\equiv0$.
+\end{Example}
+
+\MathBookSourcePage{90}
+\setcounter{thmcount}{10}
+\begin{Example}[$k=7$]
+\label{ex:ch03-seventh-argyris-triangle}
+$\dim\mathcal P_7=36$. 图~\ref{fig:ch03-seventh-argyris-triangle} 所示节点变量确定 $\mathcal P_7$; 验证留作练习~\ref{exr:ch03-12}.
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=.42\textwidth]{chapter-03/figure-3-10.png}
+\caption{七次 Argyris 三角形}
+\label{fig:ch03-seventh-argyris-triangle}
+\end{figure}
+\end{Example}
+
+\subsection{插值算子}
+\label{sec:ch03-interpolant}
+\setcounter{thmcount}{0}
+\setcounter{equation}{0}
+
+考察若干有限元之后, 现在把它们拼接成 Sobolev 空间的子空间. 首先定义局部插值算子.
+
+\begin{Definition}
+\label{def:ch03-local-interpolant}
+给定有限元 $(K,\mathcal P,\mathcal N)$, 令 $\{\phi_i:1\leq i\leq k\}\subseteq\mathcal P$ 为 $\mathcal N$ 的对偶基. 若函数 $v$ 使所有 $N_i\in\mathcal N$ 均有定义, 则局部插值算子定义为
+\setcounter{equation}{1}
+\begin{equation}
+\MathBookFormulaID{formula-ch03-local-interpolant}
+\label{eq:ch03-local-interpolant}
+I_Kv:=\sum_{i=1}^kN_i(v)\phi_i.
+\end{equation}
+\end{Definition}
+
+\MathBookSourcePage{91}
+\setcounter{thmcount}{2}
+\begin{Example}
+\label{ex:ch03-linear-interpolant}
+令 $K$ 为图~\ref{fig:ch03-linear-interpolant-coordinates} 中的三角形, $\mathcal P=\mathcal P_1$, $\mathcal N=\{N_1,N_2,N_3\}$ 如例~\ref{ex:ch03-linear-lagrange-triangle}, 且 $f=e^{xy}$. 求 $I_Kf$.
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=.38\textwidth]{chapter-03/figure-3-11.png}
+\caption{线性插值的坐标}
+\label{fig:ch03-linear-interpolant-coordinates}
+\end{figure}
+由定义, $I_Kf=N_1(f)\phi_1+N_2(f)\phi_2+N_3(f)\phi_3$. 直线 $L_1$ 为 $y=1-x$, 故 $\phi_1=c(1-x-y)$. 条件 $N_1\phi_1=1$ 给出 $c=1$. 同理, $\phi_2=x$, $\phi_3=y$. 因此
+\[
+\MathBookFormulaID{formula-ch03-linear-interpolant-example}
+I_Kf=N_1(f)(1-x-y)+N_2(f)x+N_3(f)y=1.
+\]
+\end{Example}
+
+\begin{Proposition}
+\label{prop:ch03-local-interpolant-linear}
+$I_K$ 是线性的.
+\end{Proposition}
+\begin{Proof}
+见练习~\ref{exr:ch03-02}.
+\end{Proof}
+
+\begin{Proposition}
+\label{prop:ch03-interpolant-preserves-nodes}
+对所有 $1\leq i\leq d$,
+\[
+\MathBookFormulaID{formula-ch03-interpolant-preserves-nodes}
+N_i\bigl(I_K(f)\bigr)=N_i(f).
+\]
+\end{Proposition}
+\begin{Proof}
+由 $I_K$ 的定义、$N_i$ 的线性及两组基的对偶性,
+\[
+\MathBookFormulaID{formula-ch03-interpolant-preserves-nodes-proof}
+N_i\bigl(I_K(f)\bigr)=N_i\left(\sum_{j=1}^kN_j(f)\phi_j\right)
+=\sum_{j=1}^kN_j(f)N_i(\phi_j)=N_i(f).
+\]
+\end{Proof}
+
+\begin{Remark}
+\label{rem:ch03-interpolant-unique-shape-function}
+命题~\ref{prop:ch03-interpolant-preserves-nodes} 表明, $I_K(f)$ 是与 $f$ 具有相同节点值的唯一形函数.
+\end{Remark}
+
+\MathBookSourcePage{92}
+\begin{Proposition}
+\label{prop:ch03-interpolant-projection}
+若 $f\in\mathcal P$, 则 $I_K(f)=f$. 特别地, $I_K$ 是幂等的, 即 $I_K^2=I_K$.
+\end{Proposition}
+\begin{Proof}
+由命题~\ref{prop:ch03-interpolant-preserves-nodes}, 对所有 $i$ 有 $N_i(f-I_K(f))=0$, 这证明第一项. 又因 $I_Kf\in\mathcal P$,
+\[
+\MathBookFormulaID{formula-ch03-interpolant-idempotent}
+I_K^2f=I_K(I_Kf)=I_Kf.
+\]
+\end{Proof}
+
+下面把各单元拼接起来.
+
+\begin{Definition}
+\label{def:ch03-domain-subdivision}
+区域 $\Omega$ 的一个剖分是有限个单元区域的集合 $\{K_i\}$, 满足:
+\begin{enumerate}
+\item $\operatorname{int}K_i\cap\operatorname{int}K_j=\varnothing$, 若 $i\ne j$;
+\item $\bigcup_iK_i=\overline\Omega$.
+\end{enumerate}
+\end{Definition}
+
+\begin{Definition}
+\label{def:ch03-global-interpolant}
+设区域 $\Omega$ 有剖分 $\mathcal T$. 假设剖分中的每个单元区域 $K$ 配有形函数 $\mathcal P$ 与节点变量 $\mathcal N$, 且 $(K,\mathcal P,\mathcal N)$ 为有限元. 令 $m$ 为节点变量中出现的最高阶偏导数阶数. 对 $f\in C^m(\overline\Omega)$, 全局插值算子由
+\setcounter{equation}{9}
+\begin{equation}
+\MathBookFormulaID{formula-ch03-global-interpolant}
+\label{eq:ch03-global-interpolant}
+I_{\mathcal T}f|_{K_i}=I_{K_i}f\qquad\forall K_i\in\mathcal T
+\end{equation}
+定义.
+\end{Definition}
+
+若不对剖分作进一步假设, 就无法断言全局插值函数的连续性. 下面给出保证连续性的条件. 此处仅详细讨论使用三角形单元的二维情形; 高维和其他剖分可以类似处理.
+
+\setcounter{thmcount}{10}
+\begin{Definition}
+\label{def:ch03-triangulation}
+多边形区域 $\Omega$ 的三角剖分是由三角形构成的剖分, 并且任何一个三角形的顶点都不位于另一个三角形某条边的内部.
+\end{Definition}
+
+\begin{Example}
+\label{ex:ch03-triangulation-and-nontriangulation}
+图~\ref{fig:ch03-triangulation-comparison} 左侧是给定区域的三角剖分, 右侧则不是.
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=.52\textwidth]{chapter-03/figure-3-12.png}
+\caption{两个剖分: 左侧为三角剖分, 右侧不是}
+\label{fig:ch03-triangulation-comparison}
+\end{figure}
+\end{Example}
+
+\MathBookSourcePage{93}
+\begin{Example}
+\label{ex:ch03-two-triangle-global-interpolant}
+令 $\Omega$ 为图~\ref{fig:ch03-two-triangle-triangulation} 中的正方形, $\mathcal T$ 由 $T_1,T_2$ 两个三角形组成. 每个三角形采用例~\ref{ex:ch03-linear-lagrange-triangle} 的 Lagrange 单元. $T_1$ 上的对偶基为 $\{1-x-y,x,y\}$, $T_2$ 上的对偶基为 $\{1-x,1-y,x+y-1\}$. 令 $f=\sin\bigl(\pi(x+y)/2\bigr)$, 则
+\[
+\MathBookFormulaID{formula-ch03-two-triangle-global-interpolant}
+I_{\mathcal T}f=
+\begin{cases}
+x+y,&\text{于 }T_1,\\
+2-x-y,&\text{于 }T_2.
+\end{cases}
+\]
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=.40\textwidth]{chapter-03/figure-3-13.png}
+\caption{由两个三角形构成的简单三角剖分}
+\label{fig:ch03-two-triangle-triangulation}
+\end{figure}
+\end{Example}
+
+\begin{Remark}
+\label{rem:ch03-dirichlet-finite-element-space}
+为逼近零边界条件的 Dirichlet 问题, 在每个三角剖分 $\mathcal T$ 上使用满足边界条件的分片多项式有限维空间
+\[
+\MathBookFormulaID{formula-ch03-dirichlet-finite-element-space}
+V_{\mathcal T}=\{I_{\mathcal T}f:f\in C^m(\overline\Omega),\ f|_{\partial\Omega}=0\}.
+\]
+这将在第~\MBUnresolvedReference{chap:ch05}{5} 章进一步讨论.
+\end{Remark}
+
+\begin{Definition}
+\label{def:ch03-continuity-order}
+若对所有 $f\in C^m(\overline\Omega)$ 都有 $I_{\mathcal T}f\in C^r$, 则称插值算子具有连续阶 $r$, 简称为 $C^r$. 空间 $V_{\mathcal T}=\{I_{\mathcal T}f:f\in C^m\}$ 称为 $C^r$ 有限元空间.
+\end{Definition}
+
+\begin{Remark}
+\label{rem:ch03-cr-element}
+能按上述方式构成 $C^r$ 空间的有限元或单元族通常称为 $C^r$ 单元. 并非任意节点选择都能给出 $C^r$ 连续性, 还必须施加某种正则性. 对目前研究的单元, 关键在于节点的放置应当不依赖坐标, 并且关于边中点对称.
+\end{Remark}
+
+\MathBookSourcePage{94}
+\begin{Proposition}
+\label{prop:ch03-lagrange-hermite-argyris-continuity}
+Lagrange 与 Hermite 单元都是 $C^0$ 单元, Argyris 单元是 $C^1$ 单元. 更准确地说, 给定 $\Omega$ 的三角剖分 $\mathcal T$, 可以为相应单元 $(K,\mathcal P,\mathcal N)$ 选择边节点, 使全局插值满足 $I_{\mathcal T}f\in C^r$, 其中 Lagrange 与 Hermite 情形 $r=0$, Argyris 情形 $r=1$; 相应地 $f\in C^m$, 其中 $m=0,1,2$. 特别地, 对每条边 $xx'$ 取节点 $\xi_i(x'-x)+x$, 其中固定的 $\{\xi_i:i=1,\ldots,k-1-2m\}$ 关于 $\xi=1/2$ 对称, 即已足够. 此外, 在这些假设下 $I_{\mathcal T}f\in W^{r+1}_\infty$.
+\end{Proposition}
+\begin{Proof}
+只需证明跨越每条边的连续性. 设 $T_i$, $i=1,2$, 是共享边 $e$ 的两个三角形. 节点以不依赖坐标且对称的方式选取, 因而两单元在 $e$ 上的边节点位于空间中的同一点. 令 $w=I_{T_1}f-I_{T_2}f$, 并把两个多项式延拓到各三角形外. 则 $w$ 是 $k$ 次多项式, 其在边 $e$ 上的一维 Lagrange、Hermite 或 Argyris 节点均为零, 故 $w|_e=0$, 插值函数跨每条边连续.
+
+$I_{\mathcal T}f$ 的 Lipschitz 连续性可由下列 $r+1$ 阶弱导数得到:
+\[
+\MathBookFormulaID{formula-ch03-global-interpolant-weak-derivatives}
+(D_w^\alpha I_{\mathcal T}f)|_T=D^\alpha I_Tf
+\qquad\forall T\in\mathcal T,\quad |\alpha|\leq r+1.
+\]
+右端显然属于 $L^\infty$. 对检验函数 $\phi$ 分片积分并利用边界项因插值函数的连续性而相消, 得
+\[
+\MathBookFormulaID{formula-ch03-global-interpolant-weak-derivative-verification}
+\int_\Omega(D^\alpha\phi)(I_{\mathcal T}f)\,dx
+=\sum_{T\in\mathcal T}\int_T(D^\alpha\phi)(I_Tf)\,dx
+=(-1)^{|\alpha|}\int_\Omega\phi\sum_{T\in\mathcal T}\chi_T(D^\alpha I_Tf)\,dx.
+\]
+\end{Proof}
+\subsection{单元的等价性}
+\label{sec:ch03-element-equivalence}
+\setcounter{thmcount}{0}
+\setcounter{equation}{0}
+
+在使用全局插值算子时, 必须为局部插值算子 $I_T$ 的范数找到独立于 $T\in\mathcal T$ 的一致界. 因此需要比较不同单元上的局部插值算子. 为此可使用下列等价概念(Ciarlet \& Raviart 1972a).
+
+\MathBookSourcePage{95}
+\begin{Definition}
+\label{def:ch03-affine-equivalence}
+令 $(K,\mathcal P,\mathcal N)$ 为有限元, $F(x)=Ax+b$ 为仿射映射, 其中 $A$ 非奇异. 若有限元 $(\widehat K,\widehat{\mathcal P},\widehat{\mathcal N})$ 满足
+\begin{enumerate}
+\item[(i)] $F(K)=\widehat K$;
+\item[(ii)] $F^*\widehat{\mathcal P}=\mathcal P$;
+\item[(iii)] $F_*\mathcal N=\widehat{\mathcal N}$,
+\end{enumerate}
+则称其与 $(K,\mathcal P,\mathcal N)$ 仿射等价, 记为 $(K,\mathcal P,\mathcal N)\mathrel{\sim_F}(\widehat K,\widehat{\mathcal P},\widehat{\mathcal N})$.
+\end{Definition}
+
+\begin{Remark}
+\label{rem:ch03-pullback-pushforward}
+回忆拉回 $F^*$ 定义为 $F^*(\widehat f)=\widehat f\circ F$, 推前 $F_*$ 定义为 $(F_*N)(\widehat f)=N(F^*(\widehat f))$.
+\end{Remark}
+
+\begin{Proposition}
+\label{prop:ch03-affine-equivalence-relation}
+仿射等价是等价关系.
+\end{Proposition}
+\begin{Proof}
+见练习~\ref{exr:ch03-04}.
+\end{Proof}
+
+\begin{Example}[若干仿射等价与不等价的情形]
+\label{ex:ch03-affine-equivalence-cases}
+有以下情形:
+\begin{enumerate}
+\item 任意三角形 $K$, $\mathcal P=\mathcal P_1$, $\mathcal N$ 为在 $K$ 的顶点求值. 所有这些单元均仿射等价.
+\item 任意三角形 $K$, $\mathcal P=\mathcal P_2$, $\mathcal N$ 为在顶点及边中点求值. 所有这些单元均仿射等价.
+\item 令 $\mathcal P=\mathcal P_2$. 图~\ref{fig:ch03-inequivalent-quadratic-elements} 中 $(T_1,\mathcal P,\mathcal N_1)$ 与 $(T_2,\mathcal P,\mathcal N_2)$ 不仿射等价, 但 $(T_1,\mathcal P,\mathcal N_1)$ 与 $(T_3,\mathcal P,\mathcal N_3)$ 仿射等价.
+\item 令 $\mathcal P=\mathcal P_3$. 图~\ref{fig:ch03-hermite-direction-incompatibility} 中的两个单元因方向导数的方向不同而不仿射等价.
+\item 令 $\mathcal P=\mathcal P_3$. 图~\ref{fig:ch03-hermite-strength-incompatibility} 中的两个单元因方向导数的强度不同而不仿射等价.
+\end{enumerate}
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=.72\textwidth]{chapter-03/figure-3-14.png}
+\caption{不等价的二次单元: 节点位置不相容}
+\label{fig:ch03-inequivalent-quadratic-elements}
+\end{figure}
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=.72\textwidth]{chapter-03/figure-3-15.png}
+\caption{不等价的三次 Hermite 单元: 方向不相容}
+\label{fig:ch03-hermite-direction-incompatibility}
+\end{figure}
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=.72\textwidth]{chapter-03/figure-3-16.png}
+\caption{不等价的三次 Hermite 单元: 导数强度不相容}
+\label{fig:ch03-hermite-strength-incompatibility}
+\end{figure}
+\end{Example}
+
+\MathBookSourcePage{96}
+\begin{Proposition}
+\label{prop:ch03-lagrange-affine-equivalent-placement}
+存在一种节点放置方式, 使给定次数的所有 Lagrange 单元仿射等价.
+\end{Proposition}
+\begin{Proof}
+对每个三角形使用重心坐标 $(b_1,b_2,b_3)$. 点 $(x,y)$ 的第 $i$ 个重心坐标定义为第 $i$ 个线性 Lagrange 基函数在该点的值, 即 $b_i(x,y)=\phi_i(x,y)$. 每个重心坐标自然对应一个顶点, 并等于该点到对边的成比例距离. 因为它们给出常数 $1$ 的插值, 所以三者之和为 $1$. 映射 $(x,y)\mapsto b(x,y)$ 把三角形可逆地映到
+\[
+\MathBookFormulaID{formula-ch03-barycentric-simplex}
+\{b\in[0,1]^3:b_1+b_2+b_3=1\}
+\]
+的一个子集. 对 $k$ 次 Lagrange 单元, 取重心坐标为
+\[
+\MathBookFormulaID{formula-ch03-barycentric-lattice-nodes}
+\left(\frac{i}{k},\frac{j}{k},\frac{l}{k}\right),
+\qquad 0\leq i,j,l\leq k,\quad i+j+l=k
+\]
+的点作为节点.
+\end{Proof}
+
+\begin{Definition}
+\label{def:ch03-interpolation-equivalence}
+若有限元 $(K,\mathcal P,\mathcal N)$ 与 $(K,\mathcal P,\widetilde{\mathcal N})$ 满足
+\[
+\MathBookFormulaID{formula-ch03-interpolation-equivalence}
+I_{\mathcal N}f=I_{\widetilde{\mathcal N}}f
+\qquad\forall f\text{ 足够光滑},
+\]
+则称二者插值等价, 记为 $(K,\mathcal P,\mathcal N)\mathrel{\sim_I}(K,\mathcal P,\widetilde{\mathcal N})$. 这里 $I_{\mathcal N}$ 与 $I_{\widetilde{\mathcal N}}$ 分别按式~\eqref{eq:ch03-local-interpolant} 定义.
+\end{Definition}
+
+\MathBookSourcePage{97}
+\begin{Proposition}
+\label{prop:ch03-interpolation-equivalence-characterization}
+设 $(K,\mathcal P,\mathcal N)$ 与 $(K,\mathcal P,\widetilde{\mathcal N})$ 为有限元. 把节点变量视为 $C^m(K)'$ 的子集时, $\mathcal N$ 中每个节点变量都是 $\widetilde{\mathcal N}$ 中节点变量的线性组合, 当且仅当二者插值等价.
+\end{Proposition}
+\begin{Proof}
+先证``仅当''. 对 $N_i\in\mathcal N$, 写成 $N_i=\sum_{j=1}^kc_j\widetilde N_j$. 则
+\[
+\MathBookFormulaID{formula-ch03-interpolation-equivalence-proof}
+N_i(I_{\widetilde{\mathcal N}}f)
+=\sum_{j=1}^kc_j\widetilde N_j(I_{\widetilde{\mathcal N}}f)
+=\sum_{j=1}^kc_j\widetilde N_j(f)=N_i(f).
+\]
+由节点值唯一性, $I_{\mathcal N}f=I_{\widetilde{\mathcal N}}f$. 反向证明留作练习~\ref{exr:ch03-26}.
+\end{Proof}
+
+\begin{Example}
+\label{ex:ch03-hermite-interpolation-equivalence}
+图~\ref{fig:ch03-hermite-directional-choices}、图~\ref{fig:ch03-hermite-direction-incompatibility} 与图~\ref{fig:ch03-hermite-strength-incompatibility} 中的 Hermite 单元插值等价, 见练习~\ref{exr:ch03-29}.
+\end{Example}
+
+\begin{Definition}
+\label{def:ch03-affine-interpolation-equivalence}
+若 $(K,\mathcal P,\mathcal N)$ 与 $(\widehat K,\widehat{\mathcal P},\widehat{\mathcal N})$ 仿射等价, 而后者与 $(\widetilde K,\widetilde{\mathcal P},\widetilde{\mathcal N})$ 插值等价, 则称 $(K,\mathcal P,\mathcal N)$ 与 $(\widetilde K,\widetilde{\mathcal P},\widetilde{\mathcal N})$ 仿射--插值等价.
+\end{Definition}
+
+\begin{Example}
+\label{ex:ch03-affine-interpolation-equivalence-cases}
+所有仿射等价单元都仿射--插值等价; 适当选取边节点与内部节点的 Hermite 单元也仿射--插值等价; Argyris 单元则不仿射--插值等价(Ciarlet 1978).
+\end{Example}
+
+\begin{Proposition}
+\label{prop:ch03-affine-interpolation-commutation}
+若 $(K,\mathcal P,\mathcal N)$ 与 $(\widehat K,\widehat{\mathcal P},\widehat{\mathcal N})$ 仿射--插值等价, 则
+\[
+\MathBookFormulaID{formula-ch03-affine-interpolation-commutation}
+I\circ F^*=F^*\circ\widehat I,
+\]
+其中 $F:K\to\widehat K$ 是仿射映射.
+\end{Proposition}
+
+\subsection{矩形单元}
+\label{sec:ch03-rectangular-elements}
+\setcounter{thmcount}{0}
+\setcounter{equation}{0}
+
+\MathBookSourcePage{98}
+本节考虑定义在矩形上的有限元. 令
+\[
+\MathBookFormulaID{formula-ch03-qk-space}
+\mathcal Q_k=\left\{\sum_jc_jp_j(x)q_j(y):p_j,q_j\text{ 为次数不超过 }k\text{ 的多项式}\right\}.
+\]
+可以证明
+\begin{equation}
+\MathBookFormulaID{formula-ch03-qk-dimension}
+\label{eq:ch03-qk-dimension}
+\dim\mathcal Q_k=(\dim\mathcal P_k^1)^2,
+\end{equation}
+其中 $\mathcal P_k^1$ 表示一元次数不超过 $k$ 的多项式空间, 见练习~\ref{exr:ch03-06}.
+
+\subsubsection*{张量积单元}
+\setcounter{thmcount}{1}
+\begin{Example}[$k=1$]
+\label{ex:ch03-bilinear-lagrange-rectangle}
+令 $K$ 为任意矩形, $\mathcal P=\mathcal Q_1$, $\mathcal N$ 如图~\ref{fig:ch03-bilinear-lagrange-rectangle}. 若 $P\in\mathcal Q_1$ 在 $z_1,z_2,z_3,z_4$ 处为零, 则 $P$ 在矩形任一边上的限制是一元一次多项式. 因而 $P=cL_1L_2$. 又
+\[
+\MathBookFormulaID{formula-ch03-bilinear-lagrange-unisolvence}
+0=P(z_4)=cL_1(z_4)L_2(z_4)\quad\Longrightarrow\quad c=0.
+\]
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=.42\textwidth]{chapter-03/figure-3-17.png}
+\caption{双线性 Lagrange 矩形}
+\label{fig:ch03-bilinear-lagrange-rectangle}
+\end{figure}
+\end{Example}
+
+\begin{Example}[$k=2$]
+\label{ex:ch03-biquadratic-lagrange-rectangle}
+令 $K$ 为任意矩形, $\mathcal P=\mathcal Q_2$, $\mathcal N$ 如图~\ref{fig:ch03-biquadratic-lagrange-rectangle}. 若 $P\in\mathcal Q_2$ 在 $z_i$, $i=1,\ldots,9$ 处为零, 则 $P=cL_1L_2L_3L_4$. 由内部点 $z_9$ 得 $c=0$.
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=.42\textwidth]{chapter-03/figure-3-18.png}
+\caption{双二次 Lagrange 矩形}
+\label{fig:ch03-biquadratic-lagrange-rectangle}
+\end{figure}
+\end{Example}
+
+\begin{Example}[任意 $k$]
+\label{ex:ch03-general-tensor-product-rectangle}
+令 $K$ 为任意矩形, $\mathcal P=\mathcal Q_k$, 并令 $\mathcal N$ 为在 $\{(t_i,t_j):i,j=0,1,\ldots,k\}$ 处的点求值, 其中 $0=t_0<t_1<\cdots<t_k=1$. $k=3$ 的情形见图~\ref{fig:ch03-bicubic-lagrange-rectangle}. 则 $(K,\mathcal P,\mathcal N)$ 是有限元, 见练习~\ref{exr:ch03-07}.
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=.42\textwidth]{chapter-03/figure-3-19.png}
+\caption{双三次 Lagrange 矩形}
+\label{fig:ch03-bicubic-lagrange-rectangle}
+\end{figure}
+\end{Example}
+
+\MathBookSourcePage{99}
+\subsubsection*{Serendipity 单元}
+\begin{Example}[二次情形]
+\label{ex:ch03-quadratic-serendipity}
+为定义形函数, 先用下列引理; 记号见图~\ref{fig:ch03-serendipity-lemma-notation}.
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=.42\textwidth]{chapter-03/figure-3-20.png}
+\caption{引理~\ref{lem:ch03-serendipity-evaluation-relation} 的记号}
+\label{fig:ch03-serendipity-lemma-notation}
+\end{figure}
+\end{Example}
+
+\begin{Lemma}
+\label{lem:ch03-serendipity-evaluation-relation}
+存在常数 $c_1,\ldots,c_8$, 使得对 $\phi\in\mathcal P_2$,
+\[
+\MathBookFormulaID{formula-ch03-serendipity-evaluation-relation}
+\phi(z_9)=\sum_{i=1}^8c_i\phi(z_i).
+\]
+\end{Lemma}
+\begin{Proof}
+在 $z_1,\ldots,z_6$ 求值构成 $\mathcal P_2$ 的节点基. 设 $\{\phi_1,\ldots,\phi_6\}$ 为其对偶基. 若 $\phi\in\mathcal P_2$, 则 $\phi=\sum_{i=1}^6N_i(\phi)\phi_i$, 因而
+\[
+\MathBookFormulaID{formula-ch03-serendipity-evaluation-relation-proof}
+\phi(z_9)=\sum_{i=1}^6\phi(z_i)\phi_i(z_9)=\sum_{i=1}^8c_i\phi(z_i),
+\]
+其中取 $c_7=c_8=0$.
+\end{Proof}
+
+令 $K$ 为任意矩形,
+\[
+\MathBookFormulaID{formula-ch03-quadratic-serendipity-space}
+\mathcal P=\left\{\phi\in\mathcal Q_2:\sum_{i=1}^8c_i\phi(z_i)-\phi(z_9)=0\right\},
+\]
+$\mathcal N$ 如图~\ref{fig:ch03-quadratic-serendipity}. 若 $\phi\in\mathcal P$ 在 $z_1,\ldots,z_8$ 处为零, 则 $\phi=cL_1L_2L_3L_4$, 而定义关系给出 $\phi(z_9)=0$, 故 $c=0$.
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=.42\textwidth]{chapter-03/figure-3-21.png}
+\caption{二次 Serendipity 单元}
+\label{fig:ch03-quadratic-serendipity}
+\end{figure}
+
+\MathBookSourcePage{100}
+\begin{Example}[三次情形]
+\label{ex:ch03-cubic-serendipity}
+令 $K$ 为任意矩形. 存在常数 $c_j^i$, 使得对 $\phi\in\mathcal P_3$ 及 $i=1,2,3,4$,
+\[
+\MathBookFormulaID{formula-ch03-cubic-serendipity-evaluation-relations}
+\phi(w_i)=\sum_{j=1}^{12}c_j^i\phi(z_j),
+\]
+其中 $w_i,z_j$ 如图~\ref{fig:ch03-cubic-serendipity}. 取
+\[
+\MathBookFormulaID{formula-ch03-cubic-serendipity-space}
+\mathcal P=\left\{\phi\in\mathcal Q_3:\phi(w_i)-\sum_{j=1}^{12}c_j^i\phi(z_j)=0,\ i=1,2,3,4\right\}
+\]
+及图示 $\mathcal N$, 则 $(K,\mathcal P,\mathcal N)$ 是有限元, 见练习~\ref{exr:ch03-08}.
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=.42\textwidth]{chapter-03/figure-3-22.png}
+\caption{三次 Serendipity 单元}
+\label{fig:ch03-cubic-serendipity}
+\end{figure}
+\end{Example}
+
+\begin{Remark}
+\label{rem:ch03-rectangular-continuity}
+$C^r$ 矩形单元可按定义~\ref{def:ch03-continuity-order} 类似定义. 沿用命题~\ref{prop:ch03-lagrange-hermite-argyris-continuity} 的证明, 本节所有矩形单元均为 $C^0$. 一个 $C^1$ 矩形单元见练习~\ref{exr:ch03-16}.
+\end{Remark}
+
+\begin{Remark}
+\label{rem:ch03-serendipity-space-nonunique}
+Serendipity 单元的节点变量并不唯一确定形函数空间 $\mathcal P$. 第~\MBUnresolvedReference{sec:ch04-6}{4.6} 节还将给出另一种选择.
+\end{Remark}
+
+\subsection{高维单元}
+\label{sec:ch03-higher-dimensional-elements}
+\setcounter{thmcount}{0}
+\setcounter{equation}{0}
+
+高维单元可以像二维情形那样, 以一维单元的性质为构件归纳构造. 以三维四面体单元为例, $k$ 次 Lagrange 单元按如下方式定义: 在四个顶点取节点; 在六条边各取 $k-1$ 个内部点; 在四个面各取 $(k-2)(k-1)/2$ 个内部点. $k\geq3$ 时出现的面节点应选得能够确定面内的二元 $k-3$ 次多项式. 当 $k\geq4$ 时, 还在四面体内部选点, 使其确定三元 $k-4$ 次多项式.
+
+若这些节点值对 $v\in\mathcal P_k$ 均为零, 则 $v$ 在每个面 $F_i$ 上的限制恒为零. 令 $L_i$ 为在 $F_i$ 上为零的非平凡线性函数. 四次使用引理~\ref{lem:ch03-polynomial-hyperplane-factor}, 得 $v=L_1L_2L_3L_4R$, 其中 $R$ 的次数为 $k-4$. $k\leq3$ 时这给出 $v=0$; 一般情形由内部节点确定 $R=0$.
+
+\MathBookSourcePage{101}
+上述节点数为
+\begin{equation}
+\MathBookFormulaID{formula-ch03-tetrahedral-node-count}
+\label{eq:ch03-tetrahedral-node-count}
+C(k):=4+6(k-1)+2(k-2)(k-1)+\dim\mathcal P_{k-4}.
+\end{equation}
+三元 $k$ 次多项式的维数可由唯一分解
+\begin{equation}
+\MathBookFormulaID{formula-ch03-three-dimensional-polynomial-decomposition}
+\label{eq:ch03-three-dimensional-polynomial-decomposition}
+P(x,y,z)=p(x,y)+zq(x,y,z)
+\end{equation}
+计算, 其中 $p$ 的次数为 $k$, $q$ 的次数为 $k-1$. 因此
+\begin{equation}
+\MathBookFormulaID{formula-ch03-three-dimensional-polynomial-dimension}
+\label{eq:ch03-three-dimensional-polynomial-dimension}
+\dim\mathcal P_k=\frac{(k+1)(k+2)}2+\dim\mathcal P_{k-1}
+=\sum_{j=0}^k\frac{(j+1)(j+2)}2.
+\end{equation}
+前几个维数见表~\ref{tab:ch03-three-dimensional-polynomial-dimension}. 式~\eqref{eq:ch03-three-dimensional-polynomial-dimension} 表明 $\dim\mathcal P_k$ 是首项系数为 $1/6$ 的 $k$ 的三次多项式. $C(k)$ 也是三次多项式, 且二者在 $k=1,2,3,4$ 时相等, 故恒等.
+\begin{table}[htbp]
+\centering
+\caption{三维 $k$ 次多项式空间 $\mathcal P_k$ 的维数}
+\label{tab:ch03-three-dimensional-polynomial-dimension}
+\begin{tabular}{c|c}
+$k$&$\dim\mathcal P_k$\\\hline
+$1$&$4$\\
+$2$&$10$\\
+$3$&$20$\\
+$4$&$35$
+\end{tabular}
+\end{table}
+
+上述论证还表明, 可以安排节点使 Lagrange 单元为 $C^0$. 如命题~\ref{prop:ch03-lagrange-hermite-argyris-continuity} 的证明所示, 只需使全局插值函数在相邻四面体的公共面上限制相同. 面节点必须以对称且不依赖坐标的方式选取. 特别地, 若每个面上节点的重心坐标集合 $B$ 满足
+\[
+\MathBookFormulaID{formula-ch03-face-barycentric-symmetry}
+(b_1,b_2,b_3)\in B\quad\Longrightarrow\quad
+(b_{\sigma(1)},b_{\sigma(2)},b_{\sigma(3)})\in B
+\]
+对指标的任意置换 $\sigma$ 都成立, 即已足够.
+
+\MathBookSourcePage{102}
+\setcounter{thmcount}{3}
+\begin{Remark}
+\label{rem:ch03-tetrahedral-continuity}
+$C^r$ 四面体单元可按定义~\ref{def:ch03-continuity-order} 类似定义. 沿用命题~\ref{prop:ch03-lagrange-hermite-argyris-continuity} 的证明可知, 本节定义的四面体单元都是 $C^0$.
+\end{Remark}
+
+\subsection{特殊单元}
+\label{sec:ch03-exotic-elements}
+\setcounter{thmcount}{0}
+\setcounter{equation}{0}
+
+迄今研究的所有单元 $(K,\mathcal P,\mathcal N)$ 都以多项式作为形函数, 但这并非必要. 此处简要考察宏有限元, 其形函数本身是分片多项式. 也有人提出其他形函数, 例如有理函数(Wachspress 1975).
+
+令 $K$ 为三角形, 连接边中点将其分成图~\ref{fig:ch03-macro-piecewise-linear-triangle} 所示的四个子三角形. 令 $\mathcal P$ 为该子剖分上的连续分片线性函数集合. 若 $\mathcal N$ 由 $K$ 的顶点及边中点处的点求值构成, 则得到一个定义良好的 $C^0$ 有限元.
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=.42\textwidth]{chapter-03/figure-3-23.png}
+\caption{宏分片线性三角形}
+\label{fig:ch03-macro-piecewise-linear-triangle}
+\end{figure}
+
+更复杂的是 Clough 和 Tocher 的单元(Ciarlet 1978). 将三角形 $K$ 分成图~\ref{fig:ch03-clough-tocher-macro-element} 所示的三个子三角形. 令 $\mathcal P$ 为该子剖分上的 $C^1$ 分片三次函数集合, $\mathcal N$ 由顶点处的函数值与梯度求值以及 $K$ 的边中点处的法向导数求值构成. 则 $(K,\mathcal P,\mathcal N)$ 是定义良好的 $C^1$ 有限元(Ciarlet 1978).
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=.42\textwidth]{chapter-03/figure-3-24.png}
+\caption{Clough--Tocher $C^1$ 宏分片三次三角形}
+\label{fig:ch03-clough-tocher-macro-element}
+\end{figure}
+
+\input{chapters/chapter-03-exercises.tex}
