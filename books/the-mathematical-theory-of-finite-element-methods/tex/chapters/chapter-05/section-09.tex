@@ -1,0 +1,157 @@
+\subsection{板弯曲双调和问题}
+\label{sec:ch05-plate-bending-biharmonic-problem}
+\setcounter{thmcount}{0}
+\setcounter{equation}{0}
+
+至此只考虑了二阶椭圆方程. 后续章节将考虑二阶方程组, 本节则简要说明至今建立的理论如何用于高阶方程. 只讨论一个具有物理意义的问题, 即由双调和方程给出的板弯曲模型. 在 $H^2(\Omega)$ 上定义双线性形式
+\[
+\MathBookFormulaID{formula-ch05-plate-bending-bilinear-form}
+a(u,v):=\int_\Omega\bigl[
+\Delta u\Delta v-(1-\nu)(2u_{xx}v_{yy}+2u_{yy}v_{xx}-4u_{xy}v_{xy})
+\bigr],dx\,dy,
+\]
+其中 $\nu$ 是称为 Poisson 比的物理常数. 在板弯曲模型中, $\nu$ 限制在 $[0,1/2]$ 内. 但已知(Agmon 1965), 对所有 $-3<\nu<1$, $a(\cdot,\cdot)$ 满足 Gårding 型不等式
+\MBSourceItem{1}
+\begin{equation}
+\MathBookFormulaID{formula-ch05-plate-garding-inequality}
+\label{eq:ch05-plate-garding-inequality}
+a(v,v)+K\|v\|_{L^2(\Omega)}^2
+\geq\alpha\|v\|_{H^2(\Omega)}^2
+\quad\forall v\in H^2(\Omega),
+\end{equation}
+其中 $\alpha>0$, $K<\infty$. 注意当 $\nu=1$ 时, 这种不等式不可能成立, 因为此时 $a(v,v)$ 对所有调和函数 $v$ 都为零.
+
+\MathBookSourcePage{161}
+当 $0<\nu<1$ 时可如下导出简单的强制性估计. 写成
+\MBSourceItem{2}
+\begin{equation}
+\MathBookFormulaID{formula-ch05-plate-coercivity-computation}
+\label{eq:ch05-plate-coercivity-computation}
+\begin{aligned}
+a(v,v)
+&=\int_\Omega\left[\nu(v_{xx}+v_{yy})^2
++(1-\nu)\bigl((v_{xx}-v_{yy})^2+4v_{xy}^2\bigr)\right]dx\,dy\\
+&\geq\min\{\nu,1-\nu\}\int_\Omega
+\bigl[(v_{xx}+v_{yy})^2+(v_{xx}-v_{yy})^2+4v_{xy}^2\bigr]dx\,dy\\
+&=2\min\{\nu,1-\nu\}\int_\Omega(v_{xx}^2+v_{yy}^2+2v_{xy}^2)\,dx\,dy\\
+&=2\min\{\nu,1-\nu\}|v|_{H^2(\Omega)}^2.
+\end{aligned}
+\end{equation}
+由式~\eqref{eq:ch05-plate-coercivity-computation} 可知, 对任意满足 $V\cap P_1=\varnothing$ 的闭子空间 $V\subset H^2(\Omega)$, $a(\cdot,\cdot)$ 都具有强制性. 否则存在序列 $v_j\in H^2(\Omega)$, 使 $a(v_j,v_j)<1/j$, 且 $\|v_j\|_{H^2(\Omega)}=1$. 线性多项式集合 $Q^2v_j$ 有界:
+\[
+\MathBookFormulaID{formula-ch05-linear-polynomial-projection-bound}
+\|Q^2v_j\|_{H^2(\Omega)}\leq C\|v_j\|_{H^2(\Omega)}=C.
+\]
+因而(见练习~\ref{exr:ch05-18})某个子序列 $\{Q^2v_{j_k}\}$ 收敛到固定线性多项式 $L$. 又因为
+\[
+\MathBookFormulaID{formula-ch05-linear-polynomial-approximation}
+\|v_j-Q^2v_j\|_{H^2(\Omega)}\leq C|v_j|_{H^2(\Omega)}\to0,
+\]
+所以 $v_{j_k}$ 收敛到 $L$. 但 $V\cap P_1=\varnothing$, 得到矛盾. 因此存在常数 $\alpha>0$, 使
+\MBSourceItem{3}
+\begin{equation}
+\MathBookFormulaID{formula-ch05-plate-subspace-coercivity}
+\label{eq:ch05-plate-subspace-coercivity}
+a(v,v)\geq\alpha\|v\|_{H^2(\Omega)}^2
+\quad\forall v\in V.
+\end{equation}
+
+对 $F\in H^2(\Omega)'$ 和 $V\subset H^2(\Omega)$, 考虑问题: 求 $u\in V$, 使
+\MBSourceItem{4}
+\begin{equation}
+\MathBookFormulaID{formula-ch05-plate-variational-problem}
+\label{eq:ch05-plate-variational-problem}
+a(u,v)=F(v)\quad\forall v\in V.
+\end{equation}
+由 Riesz 表示定理(参见定理~\ref{thm:ch02-symmetric-existence-uniqueness})得到以下结论.
+
+\MBSourceItem{5}
+\begin{Theorem}
+\label{thm:ch05-plate-existence-uniqueness}
+若 $V\subset H^2(\Omega)$ 是满足 $V\cap P_1=\varnothing$ 的闭子空间, 且式~\eqref{eq:ch05-plate-coercivity-computation} 成立, 则问题~\eqref{eq:ch05-plate-variational-problem} 有唯一解.
+\end{Theorem}
+
+若 $u$ 足够光滑, 可对 $v\in C_0^\infty(\Omega)$ 作分部积分, 以确定所满足的微分方程. 例如, 若 $F(v):=\int_\Omega f(x,y)v(x,y)\,dx\,dy$, 其中 $f\in L^2(\Omega)$, 则在 $\Omega$ 的适当条件下(Blum \& Rannacher 1980), 有 $u\in H^4(\Omega)$. 分部积分时, 所有乘以 $1-\nu$ 的项相互抵消, 因为它们都给出交叉导数 $u_{xxyy}$ 的不同形式(参见练习~\ref{exr:ch05-04}). 因而 $\Delta^2u=f$ 在 $L^2$ 意义下成立, 与 $\nu$ 的取值无关.
+
+\MathBookSourcePage{162}
+若干边界条件具有物理意义. 以 $V^{ss}$ 表示 $H^2(\Omega)$ 中在 $\partial\Omega$ 上只零至一阶的函数集合, 即
+\[
+\MathBookFormulaID{formula-ch05-simply-supported-space}
+V^{ss}=\{v\in H^2(\Omega):v=0\text{ 于 }\partial\Omega\}.
+\]
+在式~\eqref{eq:ch05-plate-variational-problem} 中取此 $V$, 所得模型称为``简支''板模型, 因为位移 $u$ 固定在零高度, 但板在边界处仍可自由转动. ``固支''板模型取 $V^c=\mathring H^2(\Omega)$, 即 $H^2(\Omega)$ 中在 $\partial\Omega$ 上零至二阶的函数集合:
+\[
+\MathBookFormulaID{formula-ch05-clamped-space}
+V^c=\left\{v\in H^2(\Omega):v=\frac{\partial v}{\partial\nu}=0
+\text{ 于 }\partial\Omega\right\}.
+\]
+此时板在边界处的转动也被规定.
+
+在简支情形 $V=V^{ss}$ 中, 还存在另一个自然边界条件. 从这个意义说, 问题混合了 Dirichlet 和 Neumann 边界条件, 但两者都施加在整个 $\partial\Omega$ 上. 通过分部积分并允许 $v$ 在 $\partial\Omega$ 上具有任意非零法向导数, 可得到自然边界条件. Bergman \& Schiffer (1953) 指出, ``弯矩'' $\Delta u+(1-\nu)u_{tt}$ 必须在 $\partial\Omega$ 上为零, 其中 $u_{tt}$ 表示切向的二阶方向导数. 结果汇总如下.
+
+\MBSourceItem{6}
+\begin{Theorem}
+\label{thm:ch05-plate-strong-form-and-boundaries}
+设 $V$ 是满足 $\mathring H^2(\Omega)\subset V\subset H^2(\Omega)$ 的任意闭子空间. 若 $f\in L^2(\Omega)$, 且 $u\in H^4(\Omega)$ 满足式~\eqref{eq:ch05-plate-variational-problem}, 其中 $F(v)=(f,v)$, 则
+\[
+\MathBookFormulaID{formula-ch05-biharmonic-strong-equation}
+\Delta^2u=f
+\]
+在 $L^2(\Omega)$ 意义下成立. 当 $V=V^c$ 时,
+\[
+\MathBookFormulaID{formula-ch05-clamped-boundary-condition}
+u=\frac{\partial u}{\partial\nu}=0\quad\text{于 }\partial\Omega;
+\]
+当 $V=V^{ss}$ 时,
+\[
+\MathBookFormulaID{formula-ch05-simply-supported-boundary-condition}
+u=\Delta u+(1-\nu)u_{tt}=0\quad\text{于 }\partial\Omega.
+\]
+\end{Theorem}
+
+为逼近式~\eqref{eq:ch05-plate-variational-problem}, 需要 $H^2(\Omega)$ 的子空间 $V_h$. 例如可取以 Argyris 元为基础的空间(参见例~\ref{ex:ch03-quintic-argyris-triangle} 和命题~\ref{prop:ch03-lagrange-hermite-argyris-continuity}). 对上述任一种 $V$, 若选择满足相应边界条件的 $V_h$, 得到以下结论.
+
+\MBSourceItem{7}
+\begin{Theorem}
+\label{thm:ch05-argyris-plate-error}
+若 $V_h\subset V$ 以阶数 $k\geq5$ 的 Argyris 元为基础, 则存在唯一的 $u_h\in V_h$, 使
+\MathBookSourcePage{163}
+\[
+\MathBookFormulaID{formula-ch05-discrete-plate-problem}
+a(u_h,v)=F(v)\quad\forall v\in V_h.
+\]
+此外,
+\[
+\MathBookFormulaID{formula-ch05-argyris-plate-error}
+\|u-u_h\|_{H^2(\Omega)}
+\leq C\inf_{v\in V_h}\|u-v\|_{H^2(\Omega)}
+\leq Ch^{k-1}\|u\|_{H^{k+1}(\Omega)}.
+\]
+\end{Theorem}
+
+因为当 $u\in H^4(\Omega)$ 时 Argyris 插值有定义, 上述结论中还可把 $k$ 替换为范围 $3\leq s\leq k$ 内任意整数. 若式~\eqref{eq:ch05-plate-variational-problem} 的解具有充分正则性(Blum \& Rannacher 1980), 即
+\MBSourceItem{8}
+\begin{equation}
+\MathBookFormulaID{formula-ch05-plate-regularity}
+\label{eq:ch05-plate-regularity}
+\|u\|_{H^{s+1}(\Omega)}\leq C\|f\|_{H^{s-3}(\Omega)},
+\end{equation}
+则还有下述负范数估计(参见练习~\ref{exr:ch05-17}).
+
+\MBSourceItem{9}
+\begin{Theorem}
+\label{thm:ch05-plate-negative-norm-error}
+假设式~\eqref{eq:ch05-plate-regularity} 对 $s=m+3$ 成立, 其中 $0\leq m\leq k-3$. 则
+\[
+\MathBookFormulaID{formula-ch05-plate-negative-norm-error}
+\|u-u_h\|_{H^{-m}(\Omega)}
+\leq Ch^{m+2}\|u-u_h\|_{H^2(\Omega)}.
+\]
+\end{Theorem}
+
+值得注意的是, 并不能立即得到误差 $u-u_h$ 的 $H^1$ 范数估计. 第~\MBUnresolvedReference{chap:ch14}{14} 章将介绍得到这种估计的技术, 并说明如何放宽条件 $3\leq s\leq k$. 即对任意 $1\leq s\leq k$, 将证明
+\[
+\MathBookFormulaID{formula-ch05-future-relaxed-plate-error}
+\|u-u_h\|_{H^2(\Omega)}\leq Ch^{s-1}\|u\|_{H^{s+1}(\Omega)}.
+\]
+关于板弯曲双调和方程模型的更多细节, 见 Scott (1976) 的综述.

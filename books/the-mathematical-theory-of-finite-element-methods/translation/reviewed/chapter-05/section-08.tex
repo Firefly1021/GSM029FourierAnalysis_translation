@@ -1,0 +1,124 @@
+\subsection{负范数估计}
+\label{sec:ch05-negative-norm-estimates}
+\setcounter{thmcount}{0}
+\setcounter{equation}{0}
+
+上一节作为副产物给出了 $L^2$ 误差估计, 它比 $H^1$ 误差估计多一个因子 $h$. 在某些情形下, 还能在更低的负范数中继续得到改进的误差估计. 负范数估计中出现更高次幂的 $h$, 可解释为误差具有振荡性. 回忆 $H^{-s}$ 范数定义为
+\[
+\MathBookFormulaID{formula-ch05-negative-sobolev-norm}
+\|u\|_{H^{-s}(\Omega)}
+=\sup_{0\ne v\in H^s(\Omega)}\frac{(u,v)}{\|v\|_{H^s(\Omega)}}.
+\]
+假设正则性估计
+\MBSourceItem{1}
+\begin{equation}
+\MathBookFormulaID{formula-ch05-negative-norm-regularity}
+\label{eq:ch05-negative-norm-regularity}
+\|u\|_{H^{s+2}(\Omega)}\leq C_R\|f\|_{H^s(\Omega)}
+\end{equation}
+和逼近估计
+\MBSourceItem{2}
+\begin{equation}
+\MathBookFormulaID{formula-ch05-negative-norm-approximation}
+\label{eq:ch05-negative-norm-approximation}
+\inf_{v\in V_h}\|u-v\|_{H^1(\Omega)}
+\leq Ch^{s+1}\|u\|_{H^{s+2}(\Omega)}
+\end{equation}
+对某个 $s\geq0$ 成立.
+
+\MBSourceItem{3}
+\begin{Theorem}
+\label{thm:ch05-negative-norm-error}
+在条件~\eqref{eq:ch05-general-form-continuity}、\eqref{eq:ch05-shifted-coercivity}、\eqref{eq:ch05-negative-norm-regularity} 和~\eqref{eq:ch05-negative-norm-approximation} 下, 存在常数 $h_0,C$, 使对所有 $h\leq h_0$, 式~\eqref{eq:ch05-general-discrete-problem} 的解满足
+\[
+\MathBookFormulaID{formula-ch05-negative-norm-error}
+\|u-u_h\|_{H^{-s}(\Omega)}
+\leq Ch^{s+1}\|u-u_h\|_{H^1(\Omega)}.
+\]
+\end{Theorem}
+\begin{Proof}
+再次使用对偶性方法. 对任意 $\phi\in H^s(\Omega)$, 需要估计 $(u-u_h,\phi)$. 令 $w$ 为条件~\eqref{eq:ch05-negative-norm-regularity} 保证的伴随问题的解:
+\MathBookSourcePage{159}
+\[
+\MathBookFormulaID{formula-ch05-negative-adjoint-problem}
+a(v,w)=(v,\phi)\quad\forall v\in V.
+\]
+则对任意 $w_h\in V_h$,
+\[
+\MathBookFormulaID{formula-ch05-negative-duality-chain}
+\begin{aligned}
+(u-u_h,\phi)
+&=a(u-u_h,w)\\
+&=a(u-u_h,w-w_h)\qquad\text{(由式~\eqref{eq:ch05-galerkin-orthogonality})}\\
+&\leq C_1\|u-u_h\|_{H^1(\Omega)}\|w-w_h\|_{H^1(\Omega)}.
+\end{aligned}
+\]
+适当选择 $w_h$, 得
+\[
+\MathBookFormulaID{formula-ch05-negative-duality-regularity}
+\begin{aligned}
+(u-u_h,\phi)
+&\leq Ch^{s+1}\|u-u_h\|_{H^1(\Omega)}\|w\|_{H^{s+2}(\Omega)}\\
+&\leq Ch^{s+1}\|u-u_h\|_{H^1(\Omega)}\|\phi\|_{H^s(\Omega)}.
+\end{aligned}
+\]
+对 $\phi$ 取上确界即得结论.
+\end{Proof}
+
+该定理说明逼近在正确值附近振荡, 因为形如 $(u-u_h,\phi)/\|\phi\|_{H^1(\Omega)}$ 的``加权平均''比 $u-u_h$ 本身多小一个因子 $h$.
+
+负范数中改进收敛速度的关键要求是正则性估计~\eqref{eq:ch05-negative-norm-regularity}. 当它不成立时(见例~\ref{ex:ch05-nonconvex-sector-singularity}), 改进也不会发生. 用式~\eqref{eq:ch05-general-discrete-problem} 可作如下简单说明:
+\[
+\MathBookFormulaID{formula-ch05-pollution-energy-lower-bound}
+(u-u_h,f)=a(u,u-u_h)=a(u-u_h,u-u_h)
+\geq\alpha\|u-u_h\|_{H^1(\Omega)}^2.
+\]
+若 $f\in H^s(\Omega)$, 则
+\MBSourceItem{4}
+\begin{equation}
+\MathBookFormulaID{formula-ch05-pollution-negative-lower-bound}
+\label{eq:ch05-pollution-negative-lower-bound}
+\begin{aligned}
+\|u-u_h\|_{H^{-s}(\Omega)}
+&=\sup_{0\ne\phi\in H^s(\Omega)}
+\frac{(u-u_h,\phi)}{\|\phi\|_{H^s(\Omega)}}\\
+&\geq\frac{(u-u_h,f)}{\|f\|_{H^s(\Omega)}}
+\geq\alpha\frac{\|u-u_h\|_{H^1(\Omega)}^2}{\|f\|_{H^s(\Omega)}}.
+\end{aligned}
+\end{equation}
+因此误差的负范数绝不可能小于其 $H^1(\Omega)$ 范数平方的量级. 这通常称为边界奇点的``污染效应''(参见 Ciarlet \& Lions 1991 中 Wahlbin 的文章).
+
+下面证明对例~\ref{ex:ch05-nonconvex-sector-singularity} 中的问题, 有 $\|u-u_h\|_{H^1(\Omega)}\geq ch^\beta$. 一般而言, 若 $V_h$ 由次数不超过 $k+1$ 的分片多项式组成, 则
+\MathBookSourcePage{160}
+\[
+\MathBookFormulaID{formula-ch05-local-polynomial-error-lower-bound}
+\begin{aligned}
+|u-u_h|_{H^1(\Omega)}^2
+&\geq\inf_{v\in V_h}\sum_{T\in\mathcal T^h}\int_T|\nabla u-\nabla v|^2\,dx\\
+&\geq\sum_{T\in\mathcal T^h}\inf_{\widetilde v\in P_k^2}
+\int_T|\nabla u-\widetilde v|^2\,dx\\
+&\geq\inf_{\widetilde v\in P_k^2}\int_{\widetilde T}|\nabla u-\widetilde v|^2\,dx
+\end{aligned}
+\]
+对任意 $\widetilde T\in\mathcal T^h$ 成立. 这里 $P_k$ 表示次数不超过 $k$ 的多项式. 取一个以原点为顶点的单元 $\widetilde T$, 由齐次性论证(练习~\ref{exr:ch05-21} 和~\ref{exr:ch05-22})得
+\[
+\MathBookFormulaID{formula-ch05-sector-homogeneous-lower-bound}
+\inf_{\widetilde v\in P_k^2}\int_{\widetilde T}
+|\nabla(r^\beta\sin\beta\theta)-\widetilde v|^2\,dx
+\geq c_0\operatorname{diam}(\widetilde T)^{2\beta}.
+\]
+因为 $u-r^\beta\sin\beta\theta=-r^{2+\beta}\sin\beta\theta$, 由三角不等式有
+\[
+\MathBookFormulaID{formula-ch05-sector-solution-lower-bound}
+\inf_{\widetilde v\in P_k^2}\int_{\widetilde T}|\nabla u-\widetilde v|^2\,dx
+\geq c_0\operatorname{diam}(\widetilde T)^{2\beta}
+-c_1\operatorname{diam}(\widetilde T)^{2+2\beta}.
+\]
+若 $\mathcal T^h$ 拟一致, 则
+\MBSourceItem{5}
+\begin{equation}
+\MathBookFormulaID{formula-ch05-sector-global-error-lower-bound}
+\label{eq:ch05-sector-global-error-lower-bound}
+\|u-u_h\|_{H^1(\Omega)}\geq c_2h^\beta,
+\end{equation}
+其中 $c_2>0$, 只要 $h$ 足够小.

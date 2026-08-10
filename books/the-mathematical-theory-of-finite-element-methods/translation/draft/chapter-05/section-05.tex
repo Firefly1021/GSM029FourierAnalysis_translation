@@ -1,0 +1,132 @@
+\subsection{椭圆正则性估计}
+\label{sec:ch05-elliptic-regularity-estimates}
+\setcounter{thmcount}{0}
+\setcounter{equation}{0}
+
+本节考察估计~\eqref{eq:ch05-elliptic-regularity-h2} 的有效性. 首先研究整个 $\mathbb R^n$ 上的问题以说明其动机. 将自由使用 Fourier 变换的性质:
+\MathBookSourcePage{151}
+\[
+\MathBookFormulaID{formula-ch05-fourier-transform-definition}
+\widehat v(\xi):=\int_{\mathbb R^n}v(x)e^{-ix\cdot\xi}\,dx
+\]
+(参见 Stein \& Weiss 1971). 该算子将微分算子对角化, 即
+\[
+\MathBookFormulaID{formula-ch05-fourier-derivative}
+\widehat{D^\alpha v}(\xi)=(i\xi)^\alpha\widehat v(\xi).
+\]
+条件~\eqref{eq:ch05-elliptic-regularity-h2} 意味着能用二阶导数的某个特定组合控制所有二阶导数. 这是因为
+\[
+\MathBookFormulaID{formula-ch05-fourier-laplacian-multiplier}
+\widehat{D^\alpha v}(\xi)=(i\xi)^\alpha\widehat v(\xi)
+=-\frac{(i\xi)^\alpha}{|\xi|^2}\widehat{\Delta v}(\xi).
+\]
+当 $|\alpha|=2$ 时, 函数 $\xi^\alpha/|\xi|^2$ 的绝对值以 $1$ 为界, 故
+\[
+\MathBookFormulaID{formula-ch05-fourier-second-derivative-bound}
+\|\widehat{D^\alpha v}\|_{L^2(\mathbb R^n)}
+\leq\|\widehat{\Delta v}\|_{L^2(\mathbb R^n)}.
+\]
+Fourier 变换是 $L^2$ 上的等距映射, 因而
+\[
+\MathBookFormulaID{formula-ch05-second-derivative-laplacian-bound}
+\|D^\alpha v\|_{L^2(\mathbb R^n)}
+\leq\|\Delta v\|_{L^2(\mathbb R^n)}
+\quad\forall|\alpha|=2,
+\]
+这就证明了该特殊情形的式~\eqref{eq:ch05-elliptic-regularity-h2}.
+
+若 $\Omega$ 的边界光滑, 且 $\Gamma$ 为空或为整个 $\partial\Omega$, 则式~\eqref{eq:ch05-elliptic-regularity-h2} 成立(Friedman 1976, Rauch 1991). 当 $n=2$、$\Omega$ 凸, 且 $\Gamma$ 仍为空或为整个 $\partial\Omega$ 时, 该式也成立(Grisvard 1985). 更一般地, 有如下估计, 其中假设 $\Omega$ 有界:
+\MBSourceItem{1}
+\begin{equation}
+\MathBookFormulaID{formula-ch05-w2p-elliptic-regularity}
+\label{eq:ch05-w2p-elliptic-regularity}
+\|v\|_{W_p^2(\Omega)}\leq\|\Delta v\|_{L^p(\Omega)},
+\qquad1<p<\mu,
+\end{equation}
+其中 $\mu$ 依赖于 $\partial\Omega$(Dauge 1988). 当 $\Omega$ 既不光滑也不凸时, 式~\eqref{eq:ch05-elliptic-regularity-h2} 不成立, 下面给出例子.
+
+\MBSourceItem{2}
+\begin{Example}
+\label{ex:ch05-nonconvex-sector-singularity}
+令 $\Omega$ 为圆心角 $\pi/\beta$ 的单位圆扇形:
+\MBSourceItem{3}
+\begin{equation}
+\MathBookFormulaID{formula-ch05-sector-domain}
+\label{eq:ch05-sector-domain}
+\Omega:=\{(r,\theta):0<r<1, 0<\theta<\pi/\beta\}.
+\end{equation}
+若 $\beta<1$, 则 $\Omega$ 不凸. 令 $v(r,\theta)=r^\beta\sin\beta\theta=\operatorname{Im}(z^\beta)$. 因为 $v$ 是复解析函数的虚部, 所以它在 $\Omega$ 中调和. 定义 $u(r,\theta)=(1-r^2)v(r,\theta)$; 注意 $u$ 在 $\partial\Omega$ 上为零. 计算得
+\[
+\MathBookFormulaID{formula-ch05-sector-laplacian-computation}
+\begin{aligned}
+\Delta u
+&=(1-r^2)\Delta v+2\nabla(1-r^2)\cdot\nabla v+v\Delta(1-r^2)\\
+&=-4r\frac{\partial v}{\partial r}-4v=-(4\beta+4)v.
+\end{aligned}
+\]
+因为 $v$ 有界, 所以对所有 $1\leq p\leq\infty$, $v\in L^p(\Omega)$. 但是
+\[
+\MathBookFormulaID{formula-ch05-sector-second-derivative-singularity}
+\frac{\partial^2u}{\partial r^2}\approx r^{\beta-2}
+\quad\text{当 }r\to0,
+\]
+故 $\beta<1$ 时 $u\notin H^2(\Omega)$. 注意无论如何 $\beta\geq1/2$, 所以对某个只依赖于 $\beta$ 的 $p>1$, 总有 $u\in W_p^2(\Omega)$.
+\end{Example}
+
+\MathBookSourcePage{152}
+\MBSourceItem{4}
+\begin{Example}
+\label{ex:ch05-mixed-boundary-singularity}
+即使边界正则, 当边界条件由 Dirichlet 型变为 Neumann 型时也会缺少正则性. 考虑区域
+\[
+\MathBookFormulaID{formula-ch05-half-disk-domain}
+\Omega=\{(r,\theta):0<r<1, 0<\theta<\pi\},
+\]
+并设
+\[
+\MathBookFormulaID{formula-ch05-half-disk-dirichlet-boundary}
+\Gamma:=\{(x,0):0\leq x\leq1\}\cup\{(1,\theta):0\leq\theta\leq\pi\}.
+\]
+考察下列问题解的正则性:
+\[
+\MathBookFormulaID{formula-ch05-mixed-singular-boundary-problem}
+\Delta u=f\quad\text{于 }\Omega,
+\qquad
+u=0\quad\text{于 }\Gamma,
+\qquad
+\frac{\partial u}{\partial\nu}=0\quad\text{于 }\partial\Omega\setminus\Gamma.
+\]
+为说明动机, 令 $\widetilde\Omega$ 为 $\Omega$ 关于 $x$ 轴反射所得的区域. 满足上述边界条件的函数可延拓为 $\widetilde v(x,y)=v(x,-y)$. 在区间 $\{(x,0):-1\leq x\leq0\}$ 上, 该延拓是 $C^1$ 的, 这里先假设 $v\in C^1(\overline\Omega)$. 另一方面, $\widetilde v$ 在
+\[
+\MathBookFormulaID{formula-ch05-reflected-dirichlet-set}
+\{(x,0):0\leq x\leq1\}\cup\{(1,\theta):0\leq\theta<2\pi\}
+\]
+上为零. 这恰是例~\ref{ex:ch05-nonconvex-sector-singularity} 中 $\beta=1/2$ 时的边界条件, 即一个裂口区域. 取该问题的解
+\[
+\MathBookFormulaID{formula-ch05-half-disk-singular-solution}
+u(r,\theta)=(1-r^2)r^{1/2}\sin(\theta/2),
+\]
+它满足上述方程组, 且 $f=-6r^{1/2}\sin(\theta/2)\in L^2(\Omega)$. 因为 $u$ 的奇性为 $r^{1/2}$, 所以一般而言, $f\in L^2(\Omega)$ 时解不属于 $H^2(\Omega)$.
+\end{Example}
+
+\MBSourceItem{5}
+\begin{Example}
+\label{ex:ch05-w2-infinity-failure}
+最后为完整起见, 指出式~\eqref{eq:ch05-w2p-elliptic-regularity} 中 $p\ne1,\infty$ 的限制是尖锐的. 下面给出 $p=\infty$ 时不成立的例子. 令 $u(x,y)=xy\log r$, 其中 $r^2=x^2+y^2$. 则
+\[
+\MathBookFormulaID{formula-ch05-logarithmic-laplacian-example}
+\begin{aligned}
+\Delta u
+&=xy\Delta\log r+2\nabla(xy)\cdot\nabla\log r+\log r\,\Delta(xy)\\
+&=2\nabla(xy)\cdot\nabla\log r
+=2(y,x)\cdot(x,y)/r^2
+=4xy/r^2.
+\end{aligned}
+\]
+因此 $\Delta u\in L^\infty(\Omega)$, 其中 $\Omega$ 可取单位圆盘, 且 $u=0$ 于 $\partial\Omega$. 但容易验证
+\[
+\MathBookFormulaID{formula-ch05-logarithmic-mixed-derivative}
+\frac{\partial^2u}{\partial x\partial y}=\log r+v,
+\]
+其中 $v\in L^\infty(\Omega)$. 所以 $u\notin W_\infty^2(\Omega)$.
+\end{Example}

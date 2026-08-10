@@ -1,0 +1,177 @@
+\subsection{Poisson 方程的变分表述}
+\label{sec:ch05-poisson-variational-formulation}
+\setcounter{thmcount}{0}
+\setcounter{equation}{0}
+
+首先考虑 Poisson 方程
+\MBSourceItem{1}
+\begin{equation}
+\MathBookFormulaID{formula-ch05-poisson-equation}
+\label{eq:ch05-poisson-equation}
+-\Delta u=f\quad\text{于 }\Omega,
+\end{equation}
+其中 $\Delta$ 表示 Laplace 算子
+\[
+\MathBookFormulaID{formula-ch05-laplace-operator}
+\Delta:=\sum_{i=1}^n\frac{\partial^2}{\partial x_i^2}.
+\]
+作为这一方程的补充, 再考虑两类边界条件:
+\MBSourceItem{2}
+\begin{equation}
+\MathBookFormulaID{formula-ch05-mixed-boundary-conditions}
+\label{eq:ch05-mixed-boundary-conditions}
+u=0\quad\text{于 }\Gamma\subset\partial\Omega\quad(\text{Dirichlet}),
+\qquad
+\frac{\partial u}{\partial\nu}=0\quad\text{于 }\partial\Omega\setminus\Gamma\quad(\text{Neumann}).
+\end{equation}
+这里 $\partial u/\partial\nu$ 表示 $u$ 沿边界 $\partial\Omega$ 法向的导数. 即假设 $\partial\Omega$ 是 Lipschitz 连续的, 以 $\nu$ 表示 $\partial\Omega$ 的外单位法向量, 按假设 $\nu\in L^\infty(\partial\Omega)^n$, 并令
+\[
+\MathBookFormulaID{formula-ch05-normal-derivative}
+\frac{\partial u}{\partial\nu}=\nu\cdot\nabla u.
+\]
+
+\MathBookSourcePage{142}
+先假设 $\Gamma$ 是闭集且具有非零测度. 稍后将回到 $\Gamma$ 为空的情形, 即纯 Neumann 情形.
+
+为表述式~\eqref{eq:ch05-poisson-equation} 与式~\eqref{eq:ch05-mixed-boundary-conditions} 的变分等价形式, 定义一个包含边界条件~\eqref{eq:ch05-mixed-boundary-conditions} 的本质部分, 即 Dirichlet 部分的变分空间:
+\MBSourceItem{3}
+\begin{equation}
+\MathBookFormulaID{formula-ch05-mixed-variational-space}
+\label{eq:ch05-mixed-variational-space}
+V:=\{v\in H^1(\Omega):v|_\Gamma=0\}.
+\end{equation}
+这里 $v|_\Gamma=0$ 应借助迹定理在 $L^2(\partial\Omega)$ 中理解. 也就是说, 可把它理解为 $v\chi_\Gamma=0$, 其中 $\chi_\Gamma$ 是通常的特征函数. 与一维情形相同, 适当的双线性形式由下述步骤确定: 以足够光滑的函数乘 Poisson 方程, 在 $\Omega$ 上积分, 再作分部积分. 为准备最后一步, 先在 Sobolev 空间的框架中建立几个高等微积分的标准定理. 以下假设 $\Omega$ 是 Lipschitz 区域, $\nu$ 表示 $\partial\Omega$ 的外单位法向量. 对任意线性空间 $B$, 以 $B^n$ 表示 $B$ 中元素组成的 $n$ 元组的线性空间; 若 $B$ 是赋范空间, 则以各分量范数的适当组合定义 $B^n$ 的范数.
+
+\MBSourceItem{4}
+\begin{Proposition}
+\label{prop:ch05-divergence-theorem}
+设 $\boldsymbol u\in W_1^1(\Omega)^n$. 则
+\[
+\MathBookFormulaID{formula-ch05-divergence-theorem}
+\int_\Omega\nabla\cdot\boldsymbol u\,dx
+=\int_{\partial\Omega}\boldsymbol u\cdot\nu\,ds.
+\]
+\end{Proposition}
+\begin{Proof}
+回忆光滑函数的相应结论, 再使用与命题~\ref{prop:ch01-unit-disk-trace} 证明中相同的稠密性论证. 注意, 迹定理蕴含: 若
+\[
+\MathBookFormulaID{formula-ch05-divergence-density-sequence}
+C^\infty(\overline\Omega)^n\ni\boldsymbol u_k\to\boldsymbol u
+\quad\text{于 }W_1^1(\Omega)^n,
+\]
+则 $\boldsymbol u_k\cdot\nu$ 在 $L^1(\partial\Omega)$ 中收敛到 $\boldsymbol u\cdot\nu$, 因为对 $i=1,\ldots,n$ 有 $\nu_i\in L^\infty(\partial\Omega)$(Hölder 不等式).
+\end{Proof}
+
+\MBSourceItem{5}
+\begin{Proposition}
+\label{prop:ch05-sobolev-integration-by-parts}
+设 $v,w\in H^1(\Omega)$. 则对 $i=1,\ldots,n$,
+\[
+\MathBookFormulaID{formula-ch05-sobolev-integration-by-parts}
+\int_\Omega\frac{\partial v}{\partial x_i}w\,dx
+=-\int_\Omega v\frac{\partial w}{\partial x_i}\,dx
++\int_{\partial\Omega}vw\nu_i\,ds.
+\]
+\end{Proposition}
+\begin{Proof}
+在命题~\ref{prop:ch05-divergence-theorem} 中取 $\boldsymbol u:=vw\boldsymbol e_i$. 由 Schwarz 不等式和练习~\ref{exr:ch05-02}, 它属于 $W_1^1(\Omega)^n$.
+\end{Proof}
+
+\MBSourceItem{6}
+\begin{Proposition}
+\label{prop:ch05-green-identity}
+设 $u\in H^2(\Omega)$, $v\in H^1(\Omega)$. 则
+\[
+\MathBookFormulaID{formula-ch05-green-identity}
+\int_\Omega(-\Delta u)v\,dx
+=\int_\Omega\nabla u\cdot\nabla v\,dx
+-\int_{\partial\Omega}v\frac{\partial u}{\partial\nu}\,ds.
+\]
+\end{Proposition}
+\begin{Proof}
+在命题~\ref{prop:ch05-sobolev-integration-by-parts} 中取 $v:=-\partial u/\partial x_i$, $w:=v$, 再对 $i$ 求和.
+\end{Proof}
+
+\MathBookSourcePage{143}
+利用命题~\ref{prop:ch05-green-identity}, 若 $u\in H^2(\Omega)$ 满足 Poisson 方程~\eqref{eq:ch05-poisson-equation}、边界条件~\eqref{eq:ch05-mixed-boundary-conditions}, 且 $v\in V$, 则
+\[
+\MathBookFormulaID{formula-ch05-poisson-weak-derivation}
+\begin{aligned}
+(f,v)&=\int_\Omega(-\Delta u)v\,dx\\
+&=\int_\Omega\nabla u\cdot\nabla v\,dx
+-\int_{\partial\Omega}v\frac{\partial u}{\partial\nu}\,ds\\
+&=\int_\Omega\nabla u\cdot\nabla v\,dx=:a(u,v).
+\end{aligned}
+\]
+边界项对 $v\in V$ 消失, 因为在边界的每一部分, $v$ 或 $\partial u/\partial\nu$ 为零. 因而得到以下结论.
+
+\MBSourceItem{7}
+\begin{Proposition}
+\label{prop:ch05-classical-implies-variational}
+设 $u\in H^2(\Omega)$ 满足 Poisson 方程~\eqref{eq:ch05-poisson-equation}(这蕴含 $f\in L^2(\Omega)$)和边界条件~\eqref{eq:ch05-mixed-boundary-conditions}. 则 $u$ 可由下述条件刻画:
+\MBSourceItem{8}
+\begin{equation}
+\MathBookFormulaID{formula-ch05-poisson-variational-problem}
+\label{eq:ch05-poisson-variational-problem}
+u\in V,\qquad a(u,v)=(f,v)\quad\forall v\in V.
+\end{equation}
+\end{Proposition}
+
+相伴的逆向结论是: 变分问题~\eqref{eq:ch05-poisson-variational-problem} 的解满足 Poisson 方程. 其证明与定理~\ref{thm:ch00-classical-solution-from-weak-form} 的证明相似.
+
+\MBSourceItem{9}
+\begin{Proposition}
+\label{prop:ch05-variational-implies-classical}
+设 $f\in L^2(\Omega)$, 且 $u\in H^2(\Omega)$ 满足变分方程~\eqref{eq:ch05-poisson-variational-problem}. 则 $u$ 满足 Poisson 方程~\eqref{eq:ch05-poisson-equation} 和边界条件~\eqref{eq:ch05-mixed-boundary-conditions}.
+\end{Proposition}
+\begin{Proof}
+因为 $u\in V$, 所以 $u$ 满足 Dirichlet 边界条件. 在命题~\ref{prop:ch05-green-identity} 中取 $v\in\mathcal D(\Omega)\subset V$, 并使用式~\eqref{eq:ch05-poisson-variational-problem}, 得
+\[
+\MathBookFormulaID{formula-ch05-variational-interior-equation}
+\int_\Omega(f+\Delta u)v\,dx
+=(f,v)-\int_\Omega\nabla u\cdot\nabla v\,dx
+=(f,v)-a(u,v)=0.
+\]
+因为 $\mathcal D(\Omega)$ 在 $L^2(\Omega)$ 中稠密(参见练习~\ref{ex:ch02-exercise-14}), 微分方程~\eqref{eq:ch05-poisson-equation} 在 $L^2(\Omega)$ 中成立. 再由命题~\ref{prop:ch05-green-identity},
+\[
+\MathBookFormulaID{formula-ch05-variational-boundary-integral}
+0=(f,v)-a(u,v)
+=\int_\Omega(-\Delta u)v\,dx-\int_\Omega\nabla u\cdot\nabla v\,dx
+=\int_{\partial\Omega}v\frac{\partial u}{\partial\nu}\,ds
+\quad\forall v\in V.
+\]
+若能证明 $v\in V$ 时 $v|_{\partial\Omega\setminus\Gamma}$ 可任意选择, 即可推出 $u$ 的 Neumann 边界条件. 由于只假设 $\partial\Omega$ 是 Lipschitz 的、$\Gamma$ 是其闭子集, 这一步略具技术性. 但至少对任意 $P\in\partial\Omega\setminus\Gamma$, 存在 $P$ 在 $\partial\Omega\setminus\Gamma$ 中的邻域 $N$, 可写成 Lipschitz 函数 $\phi$ 的图:
+\[
+\MathBookFormulaID{formula-ch05-lipschitz-boundary-chart}
+N=\{(\widehat x,\phi(\widehat x)):\widehat x\in\omega\},
+\]
+其中 $\omega$ 是 $\mathbb R^{n-1}$ 的开子集, $\widehat x=(x_1,\ldots,x_{n-1})$. 还可假设
+\[
+\MathBookFormulaID{formula-ch05-lipschitz-interior-strip}
+\{(x_1,\ldots,x_n):\widehat x\in\omega,
+-\varepsilon<x_n-\phi(\widehat x)<0\}\subset\Omega,
+\]
+其中 $\varepsilon>0$ 只依赖于 $\Omega$. $N$ 上的边界积分可写成
+\[
+\MathBookFormulaID{formula-ch05-boundary-chart-integral}
+\int_Nv\frac{\partial u}{\partial\nu}\,ds
+=\int_\omega v\frac{\partial u}{\partial\nu}(\widehat x,\phi(\widehat x))
+\sqrt{1+|\nabla\phi(\widehat x)|^2}\,d\widehat x.
+\]
+取 $w\in\mathcal D(\omega)$, 并令
+\[
+\MathBookFormulaID{formula-ch05-boundary-test-extension}
+v(\widehat x,t+\phi(\widehat x))
+:=w(\widehat x)(1+t/\varepsilon)
+\quad\forall\widehat x\in\omega, -\varepsilon<t<0,
+\]
+而在其余地方令 $v=0$. 则 $v\in V$, 且
+\[
+\MathBookFormulaID{formula-ch05-boundary-test-integral-zero}
+0=\int_{\partial\Omega}v\frac{\partial u}{\partial\nu}\,ds
+=\int_Nv\frac{\partial u}{\partial\nu}\,ds
+=\int_\omega w(\widehat x)\frac{\partial u}{\partial\nu}
+(\widehat x,\phi(\widehat x))\sqrt{1+|\nabla\phi(\widehat x)|^2}\,d\widehat x.
+\]
+因为 $L^\infty$ 函数 $\sqrt{1+|\nabla\phi(\widehat x)|^2}$ 以 $1$ 为下界, 且 $w$ 任意, 故 $\partial u/\partial\nu|_N=0$(参见练习~\ref{ex:ch01-exercise-39}). $\partial\Omega\setminus\Gamma$ 可由这种邻域 $N$ 覆盖, 所以 Neumann 条件在整个 $\partial\Omega\setminus\Gamma$ 上成立.
+\end{Proof}
