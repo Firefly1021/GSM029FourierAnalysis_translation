@@ -1,5 +1,10 @@
 # Plan for the-mathematical-theory-of-finite-element-methods
 
-1. Run `python -m mathbook start-book the-mathematical-theory-of-finite-element-methods` in its dedicated worktree.
-2. Review the representative sample.
-3. Approve the sample before full translation.
+1. Completed: create the isolated book, branch and worktree.
+2. Completed: diagnose the 404-page source PDF.
+3. Completed: translate and compile the representative sample from PDF pages 171-173, complete Section 6.3.
+4. Completed: the representative sample was explicitly approved by the user.
+5. Current phase: full-book translation, beginning with the first incomplete natural unit in `qa/chapter-progress.tsv`.
+6. Preserve the approved sample and reuse it when Chapter 6 is processed; do not translate it again.
+7. After each unit, run extraction, structure, formula, terminology, name, punctuation, cross-reference, compile, and batch QA checks before marking it passed.
+8. Do not push any book-branch commit unless the user explicitly requests it.
