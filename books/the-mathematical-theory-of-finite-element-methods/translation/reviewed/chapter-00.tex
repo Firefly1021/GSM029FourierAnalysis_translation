@@ -1,0 +1,1127 @@
+% Chapter 0. Source PDF pages 16--37 / printed pages 1--22.
+\MathBookSourcePage{16}
+\section{基本概念}
+\label{chap:ch00-basic-concepts}
+
+有限元方法为生成离散的(有限的)算法提供了一套形式体系, 这些算法用于逼近微分方程的解. 可以把它看作一个黑箱: 输入微分方程(边值问题), 输出逼近相应解的算法. 这样的任务原则上可以由计算机自动完成, 但它需要相当多的数学技巧, 目前仍须有人参与. 本书的目的在于帮助读者熟练掌握这个黑箱的运作方法. 本书不着重讨论如何把所得算法转化为计算机代码, 不过已有若干团队在研究这一课题. 特别地, FEniCS 项目(网站为 \url{fenics.org})利用有限元方法的数学结构自动生成有限元代码.
+
+本章把本书很大一部分内容浓缩到一维问题中加以介绍. 我们暂时留下许多尚未解决的问题, 其中大部分将在下一章给出的 Sobolev 空间理论中得到处理. 这些问题应当为学习这些空间提供动机和指引.
+
+\subsection{边值问题的弱形式}
+\label{sec:ch00-weak-formulation}
+
+考虑两点边值问题
+\setcounter{equation}{0}
+\begin{equation}
+\MathBookFormulaID{formula-ch00-boundary-value-problem}
+\begin{aligned}
+-\frac{d^2u}{dx^2}&=f &&\text{in }(0,1),\\
+u(0)&=0, & u'(1)&=0.
+\end{aligned}
+\label{eq:ch00-boundary-value-problem}
+\end{equation}
+若 $u$ 是其解, 而 $v$ 是任意满足 $v(0)=0$ 的(充分正则的)函数, 则分部积分给出
+\MathBookSourcePage{17}
+\begin{equation}
+\MathBookFormulaID{formula-ch00-bilinear-form}
+\begin{aligned}
+(f,v)&:=\int_0^1 f(x)v(x)\,dx
+=\int_0^1-u''(x)v(x)\,dx\\
+&=\int_0^1u'(x)v'(x)\,dx=:a(u,v).
+\end{aligned}
+\label{eq:ch00-bilinear-form}
+\end{equation}
+暂且形式地定义(因为所用导数的概念尚未精确说明)
+\[
+\MathBookFormulaID{formula-ch00-space-v}
+V=\{v\in L^2(0,1):a(v,v)<\infty\text{ and }v(0)=0\}.
+\]
+于是可以说, \eqref{eq:ch00-boundary-value-problem} 的解 $u$ 由下式刻画:
+\begin{equation}
+\MathBookFormulaID{formula-ch00-weak-problem}
+u\in V\quad\text{such that}\quad a(u,v)=(f,v)\qquad\forall v\in V.
+\label{eq:ch00-weak-problem}
+\end{equation}
+这称为 \eqref{eq:ch00-boundary-value-problem} 的变分形式或弱形式.
+
+关系 \eqref{eq:ch00-weak-problem} 称为``变分的'', 因为允许函数 $v$ 任意变化. 初看起来这或许有些不同寻常; 后面将看到, 它在 Hilbert 空间框架中有自然的解释. (Hilbert 空间是其拓扑由内积定义的向量空间.) Hilbert 空间的一个例子是带内积 $(\cdot,\cdot)$ 的 $L^2(0,1)$. 尽管这一点绝非显然, 我们还将看到, 空间 $V$ 可以视为以 \eqref{eq:ch00-bilinear-form} 定义的 $a(\cdot,\cdot)$ 为内积的 Hilbert 空间.
+
+尚未处理的一个关键问题是: 在双线性型 $a(\cdot,\cdot)$ 的定义中应使用哪一种导数? 应当使用经典导数
+\[
+\MathBookFormulaID{formula-ch00-classical-derivative}
+u'(x)=\lim_{h\to0}\frac{u(x+h)-u(x)}{h}?
+\]
+还是应当使用对有界变差(BV)函数有效的``几乎处处''定义? 我们暂时搁置这一点, 并希望这类问题能促使读者学习下一章的 Sobolev 空间. 当然, 核心问题是 \eqref{eq:ch00-weak-problem} 是否仍然体现原问题 \eqref{eq:ch00-boundary-value-problem}. 在一些简化假设下, 以下定理对此作出验证.
+
+\setcounter{thmcount}{3}
+\begin{Theorem}
+\label{thm:ch00-classical-solution-from-weak-form}
+设 $f\in C^0([0,1])$ 且 $u\in C^2([0,1])$ 满足 \eqref{eq:ch00-weak-problem}. 则 $u$ 解 \eqref{eq:ch00-boundary-value-problem}.
+\end{Theorem}
+
+\begin{Proof}
+令 $v\in V\cap C^1([0,1])$. 分部积分给出
+\setcounter{equation}{4}
+\begin{equation}
+\MathBookFormulaID{formula-ch00-proof-integration-by-parts}
+(f,v)=a(u,v)=\int_0^1(-u'')v\,dx+u'(1)v(1).
+\label{eq:ch00-proof-integration-by-parts}
+\end{equation}
+因此, 对所有满足 $v(1)=0$ 的 $v\in V\cap C^1([0,1])$, 有 $(f-(-u''),v)=0$. 令 $w=f+u''\in C^0([0,1])$. 若 $w\not\equiv0$, 则由连续性, 在某个满足 $x_0<x_1$ 的区间 $[x_0,x_1]\subset[0,1]$ 上, $w(x)$ 同号. 在 $[x_0,x_1]$ 上取 $v(x)=(x-x_0)^2(x-x_1)^2$, 并在区间外令 $v\equiv0$. 但此时 $(w,v)\neq0$, 矛盾. 因而 $-u''=f$. 再在 \eqref{eq:ch00-proof-integration-by-parts} 中取 $v(x)=x$, 得 $u'(1)=0$. 当然, $u\in V$ 蕴含 $u(0)=0$, 所以 $u$ 解 \eqref{eq:ch00-boundary-value-problem}.
+\end{Proof}
+
+\MathBookSourcePage{18}
+\setcounter{thmcount}{5}
+\begin{Remark}
+\label{rem:ch00-boundary-condition-names}
+边界条件 $u(0)=0$ 称为本质边界条件, 因为它显式出现在变分形式中, 即出现在 $V$ 的定义中. 这类边界条件也常以专名 Dirichlet 边界条件相称. 边界条件 $u'(1)=0$ 称为自然边界条件, 因为它被隐式地纳入. 这类边界条件常称为 Neumann 边界条件. 表~\ref{tab:ch00-boundary-condition-names} 汇总了目前遇到的两类边界条件及其不同名称.
+\end{Remark}
+\begin{table}[H]
+\centering
+\caption{两类边界条件的命名约定}
+\label{tab:ch00-boundary-condition-names}
+\begin{tabular}{ccc}
+\hline
+边界条件 & 变分名称 & 专名\\
+\hline
+$u(x)=0$ & 本质 & Dirichlet\\
+$u'(x)=0$ & 自然 & Neumann\\
+\hline
+\end{tabular}
+\end{table}
+
+定理~\ref{thm:ch00-classical-solution-from-weak-form} 中的假设 $f\in C^0([0,1])$ 和 $u\in C^2([0,1])$ 使 \eqref{eq:ch00-boundary-value-problem} 可以按通常意义解释. 不过, 后面还会看到解释 \eqref{eq:ch00-boundary-value-problem} 的其他方式; 事实上, 该定理说明 \eqref{eq:ch00-weak-problem} 是一种在对 $f$ 远为宽松的假设下仍然有效的解释. 因此, \eqref{eq:ch00-weak-problem} 也称为 \eqref{eq:ch00-boundary-value-problem} 的弱形式.
+
+\subsection{Ritz-Galerkin 逼近}
+\label{sec:ch00-ritz-galerkin-approximation}
+
+设 $S\subset V$ 是任意(有限维)子空间. 用 $S$ 替换 \eqref{eq:ch00-weak-problem} 中的 $V$, 即考虑
+\setcounter{equation}{0}
+\begin{equation}
+\MathBookFormulaID{formula-ch00-ritz-galerkin-problem}
+u_S\in S\quad\text{such that}\quad a(u_S,v)=(f,v)\qquad\forall v\in S.
+\label{eq:ch00-ritz-galerkin-problem}
+\end{equation}
+如此容易地定义一个逼近 \eqref{eq:ch00-boundary-value-problem} 的离散格式, 是一件引人注目的事. 这只是 Ritz-Galerkin 方法的一个有力方面. 不过, 首先必须说明 \eqref{eq:ch00-ritz-galerkin-problem} 确实定义了一个对象. 在此过程中, 还将说明 \eqref{eq:ch00-ritz-galerkin-problem} 如何表示关于 $u_S$ 的一个(方形的, 有限的)方程组. 以下定理及其证明完成这两项工作.
+
+\setcounter{thmcount}{1}
+\begin{Theorem}
+\label{thm:ch00-ritz-galerkin-unique-solution}
+给定 $f\in L^2(0,1)$, \eqref{eq:ch00-ritz-galerkin-problem} 有唯一解.
+\end{Theorem}
+
+\begin{Proof}
+用 $S$ 的一组基 $\{\phi_i:1\leq i\leq n\}$ 表示 \eqref{eq:ch00-ritz-galerkin-problem}. 令
+\[
+\MathBookFormulaID{formula-ch00-basis-expansion}
+u_S=\sum_{j=1}^nU_j\phi_j,
+\qquad K_{ij}=a(\phi_j,\phi_i),
+\qquad F_i=(f,\phi_i),
+\quad i,j=1,\ldots,n.
+\]
+记 $\mathbf U=(U_j)$, $\mathbf K=(K_{ij})$, $\mathbf F=(F_i)$. 则 \eqref{eq:ch00-ritz-galerkin-problem} 等价于求解(方形的)矩阵方程
+\MathBookSourcePage{19}
+\setcounter{equation}{2}
+\begin{equation}
+\MathBookFormulaID{formula-ch00-stiffness-system}
+\mathbf K\mathbf U=\mathbf F.
+\label{eq:ch00-stiffness-system}
+\end{equation}
+对于 \eqref{eq:ch00-stiffness-system} 这样的方形方程组, 由于它是有限维方程组, 唯一性等价于存在性. 若解不唯一, 则存在非零向量 $\mathbf V$ 使 $\mathbf K\mathbf V=0$. 写成 $v=\sum_jV_j\phi_j$. \eqref{eq:ch00-ritz-galerkin-problem} 与 \eqref{eq:ch00-stiffness-system} 的等价性意味着对所有 $j$ 都有 $a(v,\phi_j)=0$. 将其乘以 $V_j$ 并对 $j$ 求和, 得
+\[
+\MathBookFormulaID{formula-ch00-kernel-energy-zero}
+0=a(v,v)=\int_0^1(v')^2(x)\,dx,
+\]
+由此断定 $v'\equiv0$. 因而 $v$ 为常数. 又因 $v\in S\subset V$ 蕴含 $v(0)=0$, 必有 $v\equiv0$. 由于 $\{\phi_i:1\leq i\leq n\}$ 是 $S$ 的一组基, 这说明 $\mathbf V=0$. 所以 \eqref{eq:ch00-stiffness-system} 的解必定唯一(因而存在). 因此, \eqref{eq:ch00-ritz-galerkin-problem} 的解 $u_S$ 也存在且唯一.
+\end{Proof}
+
+\setcounter{thmcount}{3}
+\begin{Remark}
+\label{rem:ch00-hidden-sobolev-points}
+定理~\ref{thm:ch00-ritz-galerkin-unique-solution} 的``证明''中隐藏着两个微妙之处. 为什么可以说``因而 $v$ 为常数''? 此外, 为什么 $v\in V$ 确实蕴含 $v(0)=0$(尽管这写在定义中, 换言之, 为什么该定义有意义)? 第一个问题会令熟悉 Cantor 函数的读者警觉: 该函数的导数几乎处处为零, 但它当然不是常数(在典型构造中, 它在区间左端也为零). 因此, 我们对 $V$ 的定义中必须有某种性质把这类函数排除在外. $V$ 是 Sobolev 空间的一个例子, 后面将看到这类问题不会在这些空间中出现. 显然, 应当以一种系统的方式把 Cantor 函数之类的函数排除在微分方程候选解之外, 因为它会成为具有初始条件 $u(0)=0$ 的常微分方程 $u'=0$ 的一个非平凡解.
+\end{Remark}
+
+\setcounter{thmcount}{4}
+\begin{Remark}
+\label{rem:ch00-stiffness-matrix}
+矩阵 $\mathbf K$ 常称为刚度矩阵, 这个名称来自结构问题中的相应矩阵. 由于能量内积 $a(\cdot,\cdot)$ 对称, 它显然是对称矩阵. 它也是正定矩阵, 因为
+\[
+\MathBookFormulaID{formula-ch00-stiffness-positive-definite}
+\sum_{i,j=1}^nK_{ij}v_iv_j=a(v,v),
+\qquad v=\sum_{j=1}^nv_j\phi_j.
+\]
+显然, 对所有 $(v_j)$ 都有 $a(v,v)\geq0$. 原文在此称, $a(v,v)=0$ 蕴含 $v\equiv0$ 已在 \MBUnresolvedReference{thm:ch00-source-number-0-2-3}{原文所称的``定理 0.2.3''} 的证明中``得到说明''; 但该编号在本章对应矩阵方程 \eqref{eq:ch00-stiffness-system}, 因而此处目标保留为待核查项.
+\end{Remark}
+
+\subsection{误差估计}
+\label{sec:ch00-error-estimates}
+
+先考察 $u$ 与 $u_S$ 之间的基本正交关系. 从 \eqref{eq:ch00-weak-problem} 中减去 \eqref{eq:ch00-ritz-galerkin-problem}, 得
+\setcounter{equation}{0}
+\begin{equation}
+\MathBookFormulaID{formula-ch00-galerkin-orthogonality}
+a(u-u_S,w)=0\qquad\forall w\in S.
+\label{eq:ch00-galerkin-orthogonality}
+\end{equation}
+\MathBookSourcePage{20}
+方程 \eqref{eq:ch00-galerkin-orthogonality} 及其后续变形是所有 Ritz-Galerkin/有限元方法取得成功的关键. 现在对所有 $v\in V$ 定义能量范数
+\[
+\MathBookFormulaID{formula-ch00-energy-norm}
+\|v\|_E=\sqrt{a(v,v)}.
+\]
+能量范数与内积之间的一个关键关系是 Schwarz 不等式:
+\begin{equation}
+\MathBookFormulaID{formula-ch00-schwarz-inequality}
+|a(v,w)|\leq\|v\|_E\|w\|_E
+\qquad\forall v,w\in V.
+\label{eq:ch00-schwarz-inequality}
+\end{equation}
+这个不等式是 Hilbert 空间理论的基石, 将在 \MBUnresolvedReference{sec:ch02-hilbert-space-theory}{后文相应小节} 详细讨论. 对任意 $v\in S$, 有
+\[
+\MathBookFormulaID{formula-ch00-best-approximation-derivation}
+\begin{aligned}
+\|u-u_S\|_E^2
+&=a(u-u_S,u-u_S)\\
+&=a(u-u_S,u-v)+a(u-u_S,v-u_S)\\
+&=a(u-u_S,u-v) &&\text{by \eqref{eq:ch00-galerkin-orthogonality}, with $w=v-u_S$}\\
+&\leq\|u-u_S\|_E\|u-v\|_E &&\text{by \eqref{eq:ch00-schwarz-inequality}}.
+\end{aligned}
+\]
+若 $\|u-u_S\|_E\neq0$, 则可除以该量, 对任意 $v\in S$ 得 $\|u-u_S\|_E\leq\|u-v\|_E$. 若 $\|u-u_S\|_E=0$, 该不等式显然成立. 对 $v\in S$ 取下确界, 得
+\[
+\MathBookFormulaID{formula-ch00-error-less-than-infimum}
+\|u-u_S\|_E\leq\inf\{\|u-v\|_E:v\in S\}.
+\]
+由于 $u_S\in S$, 又有
+\[
+\MathBookFormulaID{formula-ch00-infimum-less-than-error}
+\inf\{\|u-v\|_E:v\in S\}\leq\|u-u_S\|_E.
+\]
+因此
+\[
+\MathBookFormulaID{formula-ch00-error-equals-infimum}
+\|u-u_S\|_E=\inf\{\|u-v\|_E:v\in S\}.
+\]
+此外, 该下确界在某个元素(即 $u_S$)处达到, 因此用``最小值''替换``下确界''. 由此证明了以下结论.
+
+\setcounter{thmcount}{2}
+\begin{Theorem}
+\label{thm:ch00-energy-best-approximation}
+有
+\[
+\MathBookFormulaID{formula-ch00-energy-best-approximation}
+\|u-u_S\|_E=\min\{\|u-v\|_E:v\in S\}.
+\]
+\end{Theorem}
+
+这是 Ritz-Galerkin 方法的基本误差估计, 它说明误差在能量范数下是最优的. 后面将针对 $S$ 的特定选择, 通过在 $S$ 中构造 $u$ 的逼近来导出更具体的误差估计. 现在考虑另一种范数下的误差.
+
+定义
+\[
+\MathBookFormulaID{formula-ch00-l2-norm}
+\|v\|=(v,v)^{1/2}=\left(\int_0^1v(x)^2\,dx\right)^{1/2},
+\]
+即 $L^2(0,1)$ 范数. 我们要考察 $u-u_S$ 在这一范数下的大小. 可以猜想, $L^2(0,1)$ 范数弱于能量范数, 因为后者是导数的 $L^2(0,1)$ 范数(在 $V$ 上的确如此, 尽管这并非完全显然, 并且用到了纳入 $V$ 的本质边界条件). 因而, 用 $L^2(0,1)$ 范数度量的误差至少可以同用能量范数度量的误差相比较. 事实上, 我们将发现它小得多.
+
+\MathBookSourcePage{21}
+为估计 $\|u-u_S\|$, 使用所谓``对偶''论证. 令 $w$ 为下列问题的解:
+\[
+\MathBookFormulaID{formula-ch00-dual-problem}
+-w''=u-u_S\quad\text{on }[0,1],
+\qquad w(0)=w'(1)=0.
+\]
+分部积分给出, 对所有 $v\in S$,
+\[
+\MathBookFormulaID{formula-ch00-duality-identity}
+\begin{aligned}
+\|u-u_S\|^2
+&=(u-u_S,u-u_S)\\
+&=(u-u_S,-w'')\\
+&=a(u-u_S,w) &&\text{since $(u-u_S)(0)=w'(1)=0$}\\
+&=a(u-u_S,w-v) &&\text{by \eqref{eq:ch00-galerkin-orthogonality}}.
+\end{aligned}
+\]
+因此, Schwarz 不等式 \eqref{eq:ch00-schwarz-inequality} 蕴含
+\[
+\MathBookFormulaID{formula-ch00-duality-bound}
+\begin{aligned}
+\|u-u_S\|
+&\leq\frac{\|u-u_S\|_E\|w-v\|_E}{\|u-u_S\|}\\
+&=\frac{\|u-u_S\|_E\|w-v\|_E}{\|w''\|}.
+\end{aligned}
+\]
+对 $v\in S$ 取下确界, 得
+\[
+\MathBookFormulaID{formula-ch00-duality-infimum-bound}
+\|u-u_S\|\leq\|u-u_S\|_E
+\inf_{v\in S}\frac{\|w-v\|_E}{\|w''\|}.
+\]
+由此可见, 只要 $w$ 能被 $S$ 中某个函数很好地逼近, 误差的 $L^2$ 范数就可以比能量范数小得多. 假定可以在 $S$ 中选取接近 $w$ 的 $v$ 是合理的, 我们把它形式化为以下逼近假设:
+\setcounter{equation}{3}
+\begin{equation}
+\MathBookFormulaID{formula-ch00-approximation-assumption}
+\inf_{v\in S}\|w-v\|_E\leq\epsilon\|w''\|.
+\label{eq:ch00-approximation-assumption}
+\end{equation}
+当然, 我们设想这里的 $\epsilon$ 是一个小数. 应用 \eqref{eq:ch00-approximation-assumption}, 得
+\[
+\MathBookFormulaID{formula-ch00-l2-vs-energy-error}
+\|u-u_S\|\leq\epsilon\|u-u_S\|_E.
+\]
+在 \eqref{eq:ch00-approximation-assumption} 中再以 $u$ 替换 $w$, 并使用定理~\ref{thm:ch00-energy-best-approximation}, 得
+\[
+\MathBookFormulaID{formula-ch00-energy-error-vs-second-derivative}
+\|u-u_S\|_E\leq\epsilon\|u''\|.
+\]
+结合这些估计并回顾 \eqref{eq:ch00-boundary-value-problem}, 得到以下结论.
+
+\setcounter{thmcount}{4}
+\begin{Theorem}
+\label{thm:ch00-duality-error-estimate}
+假设 \eqref{eq:ch00-approximation-assumption} 蕴含
+\[
+\MathBookFormulaID{formula-ch00-duality-error-estimate}
+\|u-u_S\|\leq\epsilon\|u-u_S\|_E
+\leq\epsilon^2\|u''\|=\epsilon^2\|f\|.
+\]
+\end{Theorem}
+
+关键在于 $\|u-u_S\|_E$ 是 $\epsilon$ 阶的, 而 $\|u-u_S\|$ 是 $\epsilon^2$ 阶的. 下面考虑一族可以使 $\epsilon$ 任意小的空间 $S$.
+
+\subsection{分片多项式空间--有限元方法}
+\label{sec:ch00-piecewise-polynomial-spaces}
+
+\MathBookSourcePage{22}
+设 $0=x_0<x_1<\cdots<x_n=1$ 是 $[0,1]$ 的一个剖分, 并令 $S$ 为满足下列条件的函数 $v$ 所成的线性空间:
+\begin{enumerate}[label=\roman*)]
+\item $v\in C^0([0,1])$;
+\item $v|_{[x_{i-1},x_i]}$ 是线性多项式, $i=1,\ldots,n$;
+\item $v(0)=0$.
+\end{enumerate}
+后面将看到 $S\subset V$. 对每个 $i=1,\ldots,n$, 以条件 $\phi_i(x_j)=\delta_{ij}$ 定义 $\phi_i$, 其中 $\delta_{ij}$ 是 Kronecker delta, 如图~\ref{fig:ch00-piecewise-linear-basis} 所示.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.68\linewidth,trim=0 22 0 0,clip]{source-pdf-022-piecewise-linear-basis.png}
+\caption{分片线性基函数 $\phi_i$}
+\label{fig:ch00-piecewise-linear-basis}
+\end{figure}
+
+\setcounter{thmcount}{0}
+\begin{Lemma}
+\label{lem:ch00-nodal-basis}
+$\{\phi_i:1\leq i\leq n\}$ 是 $S$ 的一组基.
+\end{Lemma}
+
+\setcounter{thmcount}{1}
+\begin{Remark}
+\label{rem:ch00-nodal-basis-names}
+$\{\phi_i\}$ 称为 $S$ 的节点基, $\{v(x_i)\}$ 称为函数 $v$ 的节点值. (点 $\{x_i\}$ 称为节点.)
+\end{Remark}
+
+\par\noindent\textbf{证明:}\quad
+集合 $\{\phi_i\}$ 线性无关, 因为 $\sum_{i=1}^nc_i\phi_i(x_j)=0$ 蕴含 $c_j=0$. 为说明它张成 $S$, 考虑以下定义.
+
+\setcounter{thmcount}{2}
+\begin{Definition}
+\label{def:ch00-interpolant}
+给定 $v\in C^0([0,1])$, $v$ 的插值函数 $v_I\in S$ 定义为
+\[
+\MathBookFormulaID{formula-ch00-interpolant}
+v_I:=\sum_{i=1}^nv(x_i)\phi_i.
+\]
+\end{Definition}
+
+若以下结论成立, 则集合 $\{\phi_i\}$ 显然张成 $S$.
+
+\setcounter{thmcount}{3}
+\begin{Lemma}
+\label{lem:ch00-interpolant-projection}
+$v\in S\Rightarrow v=v_I$.
+\end{Lemma}
+
+\begin{Proof}
+$v-v_I$ 在每个 $[x_{i-1},x_i]$ 上为线性函数, 且在端点为零, 因而必恒等于零.
+\end{Proof}
+
+下面证明关于插值函数的逼近定理.
+
+\setcounter{thmcount}{4}
+\begin{Theorem}
+\label{thm:ch00-interpolation-energy-estimate}
+令 $h=\max_{1\leq i\leq n}(x_i-x_{i-1})$. 则对所有 $u\in V$,
+\[
+\MathBookFormulaID{formula-ch00-interpolation-energy-estimate}
+\|u-u_I\|_E\leq Ch\|u''\|,
+\]
+其中 $C$ 与 $h$ 和 $u$ 无关.
+\end{Theorem}
+
+\MathBookSourcePage{23}
+\begin{Proof}
+回顾两个范数的定义, 只需逐段证明估计
+\[
+\MathBookFormulaID{formula-ch00-local-interpolation-estimate}
+\int_{x_{j-1}}^{x_j}(u-u_I)'(x)^2\,dx
+\leq c(x_j-x_{j-1})^2\int_{x_{j-1}}^{x_j}u''(x)^2\,dx,
+\]
+因为对 $j$ 求和即得所述结论, 其中 $C=\sqrt c$. 令 $e=u-u_I$ 表示误差. 由于 $u_I$ 在区间 $[x_{j-1},x_j]$ 上是线性多项式, 上式等价于
+\[
+\MathBookFormulaID{formula-ch00-local-error-estimate}
+\int_{x_{j-1}}^{x_j}e'(x)^2\,dx
+\leq c(x_j-x_{j-1})^2\int_{x_{j-1}}^{x_j}e''(x)^2\,dx.
+\]
+用仿射映射把区间 $[x_{j-1},x_j]$ 变换到 $[0,1]$, 可见这等价于证明
+\[
+\MathBookFormulaID{formula-ch00-scaled-error-estimate}
+\int_0^1\widetilde e'(\widetilde x)^2\,d\widetilde x
+\leq c\int_0^1\widetilde e''(\widetilde x)^2\,d\widetilde x,
+\]
+其中
+\[
+\MathBookFormulaID{formula-ch00-affine-change-of-variables}
+x=x_{j-1}+\widetilde x(x_j-x_{j-1}),
+\qquad
+\widetilde e(\widetilde x)=e(x_{j-1}+\widetilde x(x_j-x_{j-1})).
+\]
+这样得到的等价估计完全不含网格尺度. 以这种方式把依赖网格长度的估计化为不依赖网格的估计, 称为齐次性论证(或尺度变换论证), 从 \MBUnresolvedReference{chap:ch04-polynomial-approximation}{后文相应章节} 起将频繁使用.
+
+最后一个估计可由简单的微积分论证验证. 为简化记号, 令 $w=\widetilde e$, 并以 $x$ 表示 $\widetilde x$. 注意 $w$ 在区间两端为零(插值误差在所有节点处为零). 由 Rolle 定理, 存在满足 $0<\xi<1$ 的 $\xi$ 使 $w'(\xi)=0$. 因此
+\[
+\MathBookFormulaID{formula-ch00-rolle-integral-representation}
+w'(y)=\int_\xi^y w''(x)\,dx.
+\]
+由 Schwarz 不等式,
+\setcounter{equation}{5}
+\begin{equation}
+\MathBookFormulaID{formula-ch00-scaled-schwarz-bound}
+\begin{aligned}
+|w'(y)|
+&=\left|\int_\xi^y w''(x)\,dx\right|
+=\left|\int_\xi^y1\cdot w''(x)\,dx\right|\\
+&\leq\left|\int_\xi^y1\,dx\right|^{1/2}
+\left|\int_\xi^y w''(x)^2\,dx\right|^{1/2}\\
+&=|y-\xi|^{1/2}\left|\int_\xi^y w''(x)^2\,dx\right|^{1/2}\\
+&\leq |y-\xi|^{1/2}\left(\int_0^1w''(x)^2\,dx\right)^{1/2}.
+\end{aligned}
+\label{eq:ch00-scaled-schwarz-bound}
+\end{equation}
+两边平方并对 $y$ 积分即可完成验证, 因为
+\[
+\MathBookFormulaID{formula-ch00-scaled-constant}
+c=\sup_{0<\xi<1}\int_0^1|y-\xi|\,dy=\frac12.
+\]
+\end{Proof}
+
+\MathBookSourcePage{24}
+\setcounter{thmcount}{6}
+\begin{Corollary}
+\label{cor:ch00-piecewise-linear-error}
+有
+\[
+\MathBookFormulaID{formula-ch00-piecewise-linear-error}
+\|u-u_S\|+Ch\|u-u_S\|_E\leq2(Ch)^2\|u''\|.
+\]
+\end{Corollary}
+
+\begin{Proof}
+定理~\ref{thm:ch00-interpolation-energy-estimate} 蕴含逼近假设 \eqref{eq:ch00-approximation-assumption} 在 $\epsilon=Ch$ 时成立.
+\end{Proof}
+
+\setcounter{thmcount}{7}
+\begin{Remark}
+\label{rem:ch00-interpolation-operator}
+插值函数定义了线性算子 $I:C^0([0,1])\to S$, 其中 $Iv=v_I$. 引理~\ref{lem:ch00-interpolant-projection} 说明 $I$ 是投影, 即 $I^2=I$. 定理~\ref{thm:ch00-interpolation-energy-estimate} 的证明中关于 $w'$ 的估计 \eqref{eq:ch00-scaled-schwarz-bound} 是 Sobolev 不等式的一个例子; 在这种不等式中, 函数的逐点值可以用涉及其导数的积分量估计. \MBUnresolvedReference{chap:ch01-sobolev-spaces}{下一章} 将详细考察这类估计.
+\end{Remark}
+\subsection{与差分方法的关系}
+\label{sec:ch00-relation-to-difference-methods}
+
+使用上面所述的基 $\{\phi_i\}$, 可以把 \eqref{eq:ch00-stiffness-system} 中定义的刚度矩阵 $\mathbf K$ 解释为差分算子. 令 $h_i=x_i-x_{i-1}$. 容易计算矩阵元素 $K_{ij}=a(\phi_i,\phi_j)$:
+\setcounter{equation}{0}
+\begin{equation}
+\MathBookFormulaID{formula-ch00-stiffness-entries}
+K_{ii}=h_i^{-1}+h_{i+1}^{-1},
+\qquad K_{i,i+1}=K_{i+1,i}=-h_{i+1}^{-1},
+\quad i=1,\ldots,n-1,
+\label{eq:ch00-stiffness-entries}
+\end{equation}
+且 $K_{nn}=h_n^{-1}$, $\mathbf K$ 的其余元素为零. 类似地, 若 $f$ 充分光滑, 则可逼近 $\mathbf F$ 的元素:
+\begin{equation}
+\MathBookFormulaID{formula-ch00-load-vector-approximation}
+(f,\phi_i)=\frac12(h_i+h_{i+1})\bigl(f(x_i)+O(h)\bigr),
+\label{eq:ch00-load-vector-approximation}
+\end{equation}
+其中 $h=\max h_i$. (由 Taylor 定理及 $\phi_i$ 的积分为 $(h_i+h_{i+1})/2$ 容易得到这一点. 注意, 除非 $1-(h_i/h_{i+1})=O(h)$, 否则误差并非 $O(h^2)$.) 因此, $\mathbf K\mathbf U=\mathbf F$ 的第 $i$ 个方程($1\leq i\leq n-1$)可以写成
+\begin{equation}
+\MathBookFormulaID{formula-ch00-nonuniform-difference-equation}
+-\frac{2}{h_i+h_{i+1}}
+\left[
+\frac{U_{i+1}-U_i}{h_{i+1}}-
+\frac{U_i-U_{i-1}}{h_i}
+\right]
+=\frac{2(f,\phi_i)}{h_i+h_{i+1}}
+=f(x_i)+O(h).
+\label{eq:ch00-nonuniform-difference-equation}
+\end{equation}
+该方程左端的差分算子也可以看作微分算子 $-d^2/dx^2$ 的 $O(h)$ 精度逼近(在通常意义下并非 $O(h^2)$ 精度, 除非 $1-h_i/h_{i+1}=O(h)$). 对均匀网格, 方程化为熟知的差分方程
+\MathBookSourcePage{25}
+\begin{equation}
+\MathBookFormulaID{formula-ch00-uniform-difference-equation}
+-\frac{U_{i+1}-2U_i+U_{i-1}}{h^2}=f(x_i)+O(h^2),
+\label{eq:ch00-uniform-difference-equation}
+\end{equation}
+其二阶精度是众所周知的. 不过, 对一般网格(例如, 偶数 $i$ 时 $h_i=h$, 奇数 $i$ 时 $h_i=h/2$), 推论~\ref{cor:ch00-piecewise-linear-error} 表明所得答案仍然具有二阶精度(至少在 $L^2(0,1)$ 中如此, 第~\ref{sec:ch00-local-estimates} 节还将证明其在最大范数下也如此), 尽管这些差分方程在形式上仅有一阶相容性. Spijker 对这一现象作了详细研究(Spijker 1971), (Kreiss, et.al. 1986)近期也完成了相关工作. 更多细节见习题~\ref{ex:ch00-difference-variational-form}--\ref{ex:ch00-difference-maximum-error}.
+
+这里借机讨论有限元形式体系在生成微分方程解的离散逼近格式方面的一些有力特征. 由于以边值问题的变分形式为基础, 它十分系统, 能方便地处理不同的边界条件; 只需以有限维子空间替换无限维空间. 如 \eqref{eq:ch00-nonuniform-difference-equation} 所示, 所得结果与有限差分方程相同, 这也符合一个说法: 不同数值方法之间的相似之处通常多于差异之处. 然而, 我们能够非常迅速地导出有限元方法的收敛性质. 最后, 离散格式在有限元形式下的记号相当紧凑. 如果有合适的计算机语言和编译器, 可以利用这一点显著提高算法编码效率. 有限元方法的这一特征尚未得到广泛利用, 但 fec 系统已经作过初步尝试(Bagheri, Scott \& Zhang 1992). (也可以认为, 有限元实践者通过开发自己的大型软件库, 已经构造出自己的``语言''并利用了这一点; 不过, 这同样适用于有限差分实践者.)
+
+\subsection{有限元方法的计算机实现}
+\label{sec:ch00-computer-implementation}
+
+在工程实践中发展起来的有限元方法之所以成功, 一个关键在于能够以系统方式实现计算机代码. 这一过程中的一个重要步骤是组装内积 $a(u,v)$: 分别计算每个子区间或单元上的组成部分, 再把它们求和. 一种称为全局到局部指标的编号方式使这一过程更加便利. 该指标 $i(e,j)$ 把特定单元 $e$ 上的局部节点号 $j$ 与其在全局数据结构中的位置联系起来. 在分片线性函数的一维例子中, 该指标特别简单: ``单元''基于区间
+\MathBookSourcePage{26}
+\[
+\MathBookFormulaID{formula-ch00-elements}
+I_e:=[x_{e-1},x_e],
+\qquad e=1,\ldots,n,
+\]
+并且
+\[
+\MathBookFormulaID{formula-ch00-global-to-local-index}
+i(e,j):=e+j-1,
+\qquad e=1,\ldots,n,\quad j=0,1.
+\]
+也就是说, 每个单元有两个相关的节点参数, 一个对应区间左端($j=0$), 另一个对应右端($j=1$). 映射 $i(e,j)$ 表示它们之间的关系.
+
+对所有分片线性函数组成的空间(不施加边界条件), 连续函数的插值函数可写为
+\setcounter{equation}{0}
+\begin{equation}
+\MathBookFormulaID{formula-ch00-local-interpolant-expansion}
+f_I:=\sum_e\sum_{j=0}^1f(x_{i(e,j)})\phi_j^e,
+\label{eq:ch00-local-interpolant-expansion}
+\end{equation}
+其中 $\{\phi_j^e:j=0,1\}$ 是单个区间 $I_e=[x_{e-1},x_e]$ 上线性函数的基函数集合:
+\[
+\MathBookFormulaID{formula-ch00-local-basis-affine-map}
+\phi_j^e(x)=\phi_j\left(\frac{x-x_{e-1}}{x_e-x_{e-1}}\right),
+\]
+而
+\[
+\MathBookFormulaID{formula-ch00-reference-basis-functions}
+\phi_0(x):=
+\begin{cases}1-x,&x\in[0,1],\\0,&\text{otherwise},\end{cases}
+\qquad
+\phi_1(x):=
+\begin{cases}x,&x\in[0,1],\\0,&\text{otherwise}.
+\end{cases}
+\]
+注意, 通过从 $[0,1]$ 到 $[x_{e-1},x_e]$ 的仿射映射, 我们把所有``局部''基函数 $\phi_j^e$ 都关联到``参考''单元 $[0,1]$ 上的一组固定基函数. (依定义, 局部基函数 $\phi_j^e$ 在区间 $I_e$ 外延拓为零.)
+
+插值函数的表达式 \eqref{eq:ch00-local-interpolant-expansion} 表明(比较引理~\ref{lem:ch00-interpolant-projection}), 任意分片线性函数 $f$(不施加边界条件)都可以写成
+\begin{equation}
+\MathBookFormulaID{formula-ch00-global-piecewise-linear-expansion}
+f:=\sum_e\sum_{j=0}^1 f_{i(e,j)}\phi_j^e,
+\label{eq:ch00-global-piecewise-linear-expansion}
+\end{equation}
+其中对所有 $i$ 都有 $f_i=f(x_i)$. 特别地, 指标映射 $i(e,j)$ 的像的基数就是分片线性函数空间的维数. 注意, 表达式 \eqref{eq:ch00-global-piecewise-linear-expansion} 在节点处对 $f$ 作了不正确的重复表示, 但这不影响对涉及 $f$ 的积分型多线性型进行求值.
+
+用这种表示也很容易求值(组装) \eqref{eq:ch00-bilinear-form} 中定义的双线性型. 例如
+\[
+\MathBookFormulaID{formula-ch00-bilinear-form-assembly}
+a(v,w)=\sum_ea_e(v,w),
+\]
+其中``局部''双线性型定义并计算为
+\MathBookSourcePage{27}
+\[
+\MathBookFormulaID{formula-ch00-local-bilinear-form}
+\begin{aligned}
+a_e(v,w)&:=\int_{I_e}v'w'\,dx\\
+&=(x_e-x_{e-1})^{-1}\int_0^1
+\left(\sum_jv_{i(e,j)}\phi_j\right)'
+\left(\sum_jw_{i(e,j)}\phi_j\right)'\,dx\\
+&=(x_e-x_{e-1})^{-1}
+\begin{pmatrix}v_{i(e,0)}\\v_{i(e,1)}\end{pmatrix}^{t}
+\mathbf K
+\begin{pmatrix}w_{i(e,0)}\\w_{i(e,1)}\end{pmatrix}.
+\end{aligned}
+\]
+这里局部刚度矩阵 $\mathbf K$ 为
+\[
+\MathBookFormulaID{formula-ch00-local-stiffness-matrix}
+K_{ij}:=\int_0^1\phi_{i-1}'\phi_{j-1}'\,dx,
+\qquad i,j=1,2.
+\]
+注意, 我们把分片线性函数空间中的 $v$ 与它在节点处的值向量 $(v_i)$ 等同起来. 第~\ref{sec:ch00-piecewise-polynomial-spaces} 节定义的, 在 $x=0$ 处为零的分片线性函数子空间 $S$, 可与子空间 $\{(v_i):v_0=0\}$ 等同. 把值为零的 $v_0$ 纳入数据结构, 使得存在边界条件时双线性型的组装仍然同样方便.
+
+\subsection{局部估计}
+\label{sec:ch00-local-estimates}
+
+我们希望逐点地导出误差 $u-u_S$ 的估计. 与 $L^2$ 范数的情形相同, 先把待估计的误差写成能量双线性型作用于 $u-u_S$ 和另一个函数的形式. 此处的另一个函数是问题 \eqref{eq:ch00-boundary-value-problem} 的所谓 Green 函数, 在本例中就是
+\[
+\MathBookFormulaID{formula-ch00-green-function}
+g_x(t):=\begin{cases}t,&t<x,\\x,&\text{otherwise},\end{cases}
+\]
+其中 $x$ 是 $[0,1]$ 中任意一点. 分部积分表明
+\[
+\MathBookFormulaID{formula-ch00-green-representation}
+v(x)=a(v,g_x)\qquad\forall v\in V,
+\]
+因为在 $x$ 的两侧, $g_x''$ 都恒等于零. 因此
+\[
+\MathBookFormulaID{formula-ch00-pointwise-error-representation}
+\begin{aligned}
+(u-u_S)(x)&=a(u-u_S,g_x)\\
+&=a(u-u_S,g_x-v)\qquad\forall v\in S.
+\end{aligned}
+\]
+由此得到一个结论: 若 $S$ 是第~\ref{sec:ch00-piecewise-polynomial-spaces} 节所述剖分 $\{x_i:i=1,\ldots,n\}$ 上定义的分片线性函数空间, 则
+\[
+\MathBookFormulaID{formula-ch00-nodal-error-zero}
+(u-u_S)(x_i)=0\qquad\forall i=1,\ldots,n,
+\]
+因为此时 $g_{x_i}\in S$. 因而 $u_S=u_I$, 定理~\ref{thm:ch00-interpolation-energy-estimate} 的一个变式给出
+\MathBookSourcePage{28}
+\setcounter{equation}{0}
+\begin{equation}
+\MathBookFormulaID{formula-ch00-interpolation-maximum-estimate}
+\|u-u_I\|_{\max}\leq Ch^2\|u''\|_{\max}.
+\label{eq:ch00-interpolation-maximum-estimate}
+\end{equation}
+(回顾 $\|f\|_{\max}=\max_{0\leq x\leq1}|f(x)|$.) 结合以上估计, 我们证明了以下结论.
+
+\setcounter{thmcount}{1}
+\begin{Theorem}
+\label{thm:ch00-piecewise-linear-maximum-estimate}
+设 $u_S$ 由 \eqref{eq:ch00-ritz-galerkin-problem} 确定, 其中使用第~\ref{sec:ch00-piecewise-polynomial-spaces} 节定义的分片线性函数空间. 则
+\[
+\MathBookFormulaID{formula-ch00-piecewise-linear-maximum-estimate}
+\|u-u_S\|_{\max}\leq Ch^2\|u''\|_{\max}.
+\]
+\end{Theorem}
+
+高维问题的局部估计要困难得多, 但使用 Green 函数的方法是类似的. 不过, 一维 Green 函数奇点的局部性质会消失, 而高维 Green 函数的分布性质要求使用下一节所展示的技术.
+
+\subsection{自适应逼近}
+\label{sec:ch00-adaptive-approximation}
+
+在许多情形下, 微分方程的解只在有限区域内快速变化. 对于这类问题, 使网格适应解的变化是合理的. 为一般问题选取的网格与为特定问题自适应选取的网格, 在逼近能力上可能有显著差异. 这里给出一个特别简单的逼近问题来说明这一效应. 更复杂的结果见 DeVore, Howard \& Micchelli (1989).
+
+考虑逼近导数可积的一元函数. 这个条件甚至弱于第~\ref{sec:ch00-error-estimates} 节所用的条件, 而我们希望在更强的范数, 即最大范数下考察逼近. 考虑用剖分上的分片常值函数空间 $S_\Delta$ 作逼近, 其中
+\setcounter{equation}{0}
+\begin{equation}
+\MathBookFormulaID{formula-ch00-adaptive-partition}
+\Delta=\{x_0,x_1,\ldots,x_n:0=x_0<x_1<\cdots<x_n=1\}.
+\label{eq:ch00-adaptive-partition}
+\end{equation}
+在此情形下, 记 $\operatorname{size}(\Delta)=n$. 不难看出, 若要求下列形式的最佳结果对所有 $u$(网格固定)都成立,
+\begin{equation}
+\MathBookFormulaID{formula-ch00-fixed-mesh-approximation-bound}
+\inf_{v\in S_\Delta}\|u-v\|_{\max}
+\leq Cn^{-p}\int_0^1|u'(x)|\,dx,
+\label{eq:ch00-fixed-mesh-approximation-bound}
+\end{equation}
+则只能取 $p=0$. 事实上, 无论网格如何, 都可令 $u$ 从 $x_0$ 处的零增至 $x_1$ 处的一, 并在区间其余部分保持为一. 这个特定的 $u$ 满足
+\[
+\MathBookFormulaID{formula-ch00-fixed-mesh-counterexample}
+\int_0^1|u'(x)|\,dx=1,
+\qquad
+\inf_{v\in S_\Delta}\|u-v\|_{\max}=\frac12.
+\]
+
+\MathBookSourcePage{29}
+当然, 把 $u$ 写成 $u'$ 的积分(比较 \eqref{eq:ch00-scaled-schwarz-bound}), 只需取 $v\equiv0$, 就能以 $C=1$, $p=0$ 证明 \eqref{eq:ch00-fixed-mesh-approximation-bound}.
+
+另一方面, 假设固定一个特定的 $u$, 并要求对某个形如 \eqref{eq:ch00-adaptive-partition} 的剖分 $\Delta$, \eqref{eq:ch00-fixed-mesh-approximation-bound} 成立. 换言之, 如果允许依据 $u$ 的性质选取 $\Delta$, 情形如何? 更精确地说, 我们区分两个陈述: 一个是对每个 $u$ 都存在 $\Delta$ 使 \eqref{eq:ch00-fixed-mesh-approximation-bound} 成立; 另一个是前面所述的, 给定 $\Delta$ 后, \eqref{eq:ch00-fixed-mesh-approximation-bound} 对所有 $u$ 成立.
+
+为说明自适应选取网格时可以得到更好的估计, 设 $u$ 满足 $\int_0^1|u'(x)|\,dx=1$. 函数
+\begin{equation}
+\MathBookFormulaID{formula-ch00-cumulative-variation}
+\phi(x)=\int_0^x|u'(t)|\,dt
+\label{eq:ch00-cumulative-variation}
+\end{equation}
+在 $x=0$ 处为零, 且单调不减. 又有 $\phi(1)=1$, 所以必存在点 $x_i$, 使 $\phi(x_i)=i/n$ 且对所有 $i$ 有 $x_i<x_{i+1}$. 若这个过程中恰有 $x_n<1$, 则令 $x_n=1$. 这一剖分的一个性质是, 对所有 $i=1,\ldots,n$,
+\begin{equation}
+\MathBookFormulaID{formula-ch00-equal-variation-partition}
+\int_{x_{i-1}}^{x_i}|u'(t)|\,dt
+=\phi(x_i)-\phi(x_{i-1})=\frac1n.
+\label{eq:ch00-equal-variation-partition}
+\end{equation}
+在区间 $[x_{i-1},x_i]$ 上用常数 $c_i=u(x_{i-1})$ 逼近 $u$. 则对 $x\in[x_{i-1},x_i]$,
+% The source repeats number 0.8.3 here; the duplicate rendered number is preserved and recorded in QA.
+\setcounter{equation}{2}
+\begin{equation}
+\MathBookFormulaID{formula-ch00-local-adaptive-approximation}
+|u(x)-c_i|
+=\left|\int_{x_{i-1}}^xu'(t)\,dt\right|
+\leq\int_{x_{i-1}}^{x_i}|u'(t)|\,dt
+=\frac1n.
+\label{eq:ch00-local-adaptive-approximation}
+\end{equation}
+这证明了当 $\int_0^1|u'(x)|\,dx=1$ 时, 对所有 $n$, \eqref{eq:ch00-fixed-mesh-approximation-bound} 都以 $p=1$, $C=1$ 成立. 在一般情形下, 只需把 \eqref{eq:ch00-fixed-mesh-approximation-bound} 中的各项除以 $\int_0^1|u'(x)|\,dx$.
+
+为再次明确量词, 对满足 $0<\int_0^1|u'(x)|\,dx<\infty$ 的给定 $u$ 以及给定剖分 $\Delta$, 定义逼近商
+\setcounter{equation}{4}
+\begin{equation}
+\MathBookFormulaID{formula-ch00-approximation-quotient}
+Q(u,\Delta)=
+\inf_{v\in S_\Delta}\|u-v\|_{\max}
+\left/\int_0^1|u'(x)|\,dx\right. .
+\label{eq:ch00-approximation-quotient}
+\end{equation}
+于是第一个结果是
+\begin{equation}
+\MathBookFormulaID{formula-ch00-fixed-partition-quantifiers}
+\forall\Delta\ \exists u\quad\text{such that}\quad Q(u,\Delta)\geq\frac12,
+\label{eq:ch00-fixed-partition-quantifiers}
+\end{equation}
+而在第二个结果中, 我们构造了一个 $\Delta$ 来证明
+\begin{equation}
+\MathBookFormulaID{formula-ch00-adaptive-partition-quantifiers}
+\forall u\ \exists\Delta\quad\text{with }\operatorname{size}(\Delta)=n
+\quad\text{such that}\quad Q(u,\Delta)\leq\frac1n.
+\label{eq:ch00-adaptive-partition-quantifiers}
+\end{equation}
+\MathBookSourcePage{30}
+这些结果表明, 使用固定网格与使用适应特定函数的网格, 在逼近能力上可能有极其显著的差异.
+
+\subsection{加权范数估计}
+\label{sec:ch00-weighted-norm-estimates}
+
+设 $h(x)$ 是度量点 $x$ 附近局部网格尺度的函数. 具体地, 假设 $h$ 是满足
+\[
+\MathBookFormulaID{formula-ch00-mesh-function-nodal-values}
+h(x_j)=h_j+h_{j+1}
+\]
+的分片线性函数, 其中 $h_j=x_j-x_{j-1}$, 并令 $h_{n+1}=h_n$, $h_0=h_1$. 注意, 对所有 $j=1,\ldots,n$,
+\setcounter{equation}{0}
+\begin{equation}
+\MathBookFormulaID{formula-ch00-mesh-function-lower-bound}
+h(x)\geq h_j\qquad\forall x\in[x_{j-1},x_j],
+\label{eq:ch00-mesh-function-lower-bound}
+\end{equation}
+因为该不等式在区间的两个端点成立, 而 $h$ 在端点之间为线性函数.
+
+先导出一个与定理~\ref{thm:ch00-interpolation-energy-estimate} 类似的基本估计. 由其证明及 \eqref{eq:ch00-mesh-function-lower-bound}, 有
+\[
+\MathBookFormulaID{formula-ch00-weighted-interpolation-derivation}
+\begin{aligned}
+\|u-u_I\|_E^2
+&=\sum_{i=1}^n\int_{x_{i-1}}^{x_i}(u-u_I)'(x)^2\,dx\\
+&\leq\frac12\sum_{i=1}^nh_i^2\int_{x_{i-1}}^{x_i}u''(x)^2\,dx\\
+&\leq\frac12\sum_{i=1}^n\int_{x_{i-1}}^{x_i}h(x)^2u''(x)^2\,dx
+=\frac12\|hu''\|^2.
+\end{aligned}
+\]
+因此
+\begin{equation}
+\MathBookFormulaID{formula-ch00-weighted-energy-estimate}
+\|u-u_S\|_E\leq\frac1{\sqrt2}\|hu''\|.
+\label{eq:ch00-weighted-energy-estimate}
+\end{equation}
+
+下面导出与定理~\ref{thm:ch00-duality-error-estimate} 中第一个不等式类似的 $L^2$ 估计. 像该定理的证明那样选取 $w$, 得
+\[
+\MathBookFormulaID{formula-ch00-weighted-duality-start}
+\|u-u_S\|^2=a(u-u_S,w),
+\]
+其中 $w$ 解以 $u-u_S$ 为右端项的边值问题 \eqref{eq:ch00-boundary-value-problem}. 为简化记号, 令 $e:=u-u_S$. 使用正交关系 \eqref{eq:ch00-galerkin-orthogonality} 和 Schwarz 不等式, 得
+\MathBookSourcePage{31}
+\[
+\MathBookFormulaID{formula-ch00-weighted-duality-bound}
+\begin{aligned}
+a(e,w)&=a(e,w-w_I)\\
+&=\int_0^1h(u-u_S)'(w-w_I)'/h\,dx\\
+&\leq
+\left(\int_0^1(h(u-u_S)')^2\,dx\right)^{1/2}
+\left(\int_0^1((w-w_I)'/h)^2\,dx\right)^{1/2}.
+\end{aligned}
+\]
+由第~\ref{sec:ch00-piecewise-polynomial-spaces} 节的结果,
+\[
+\MathBookFormulaID{formula-ch00-weighted-interpolation-sum}
+\begin{aligned}
+\int_0^1\left(\frac{(w-w_I)'(x)}{h(x)}\right)^2\,dx
+&=\sum_{i=1}^n\int_{x_{i-1}}^{x_i}
+\left(\frac{(w-w_I)'(x)}{h(x)}\right)^2\,dx\\
+&\leq\sum_{i=1}^nh_i^{-2}\int_{x_{i-1}}^{x_i}(w-w_I)'(x)^2\,dx\\
+&\leq\sum_{i=1}^n\frac12\int_{x_{i-1}}^{x_i}w''(x)^2\,dx.
+\end{aligned}
+\]
+结合以上不等式, 得
+\begin{equation}
+\MathBookFormulaID{formula-ch00-weighted-aew-bound}
+a(e,w)\leq\|he'\|
+\left(\sum_{i=1}^n\frac12\int_{x_{i-1}}^{x_i}w''(x)^2\,dx\right)^{1/2}.
+\label{eq:ch00-weighted-aew-bound}
+\end{equation}
+回顾 $-w''=e$, 得
+\[
+\MathBookFormulaID{formula-ch00-weighted-l2-cancellation}
+\begin{aligned}
+\|e\|^2=a(e,w)
+&\leq\frac1{\sqrt2}\|he'\|
+\left(\sum_{i=1}^n\int_{x_{i-1}}^{x_i}e(x)^2\,dx\right)^{1/2}\\
+&=\frac1{\sqrt2}\|he'\|\|e\|.
+\end{aligned}
+\]
+除以 $\|e\|$ 并回顾 $e=u-u_S$, 得到
+\begin{equation}
+\MathBookFormulaID{formula-ch00-l2-by-weighted-energy}
+\|u-u_S\|\leq\frac1{\sqrt2}
+\left(\int_0^1(h(u-u_S)')^2\,dx\right)^{1/2}.
+\label{eq:ch00-l2-by-weighted-energy}
+\end{equation}
+这说明 $L^2$ 误差总能由导数误差平方的加权积分估计, 其中权由网格函数 \eqref{eq:ch00-mesh-function-lower-bound} 给出. 下面估计 \eqref{eq:ch00-l2-by-weighted-energy} 右端的``加权能量''范数.
+
+仍记 $e:=u-u_S$. 首先注意
+\[
+\MathBookFormulaID{formula-ch00-weighted-energy-expansion}
+\int_0^1(h(u-u_S)')^2\,dx
+=\|he'\|^2
+=a(e,h^2e)-\int_0^12hh'ee'\,dx,
+\]
+这只需展开 $a(e,h^2e)$ 即得. 下面假设 $h'$ 很小, 即网格变化不快(对于均匀网格, $h'\equiv0$). 这样便可忽略项
+\[
+\MathBookFormulaID{formula-ch00-mesh-derivative-cross-term}
+\int_0^12hh'ee'\,dx
+\]
+而不影响前一方程中的其他项. 为此将频繁使用算术-几何平均不等式. 对任意实数 $a,b$, 它不过是如下简单事实:
+\MathBookSourcePage{32}
+\[
+\MathBookFormulaID{formula-ch00-arithmetic-geometric-mean-basic}
+ab\leq\frac12(a^2+b^2),
+\]
+(只需注意 $0\leq(a-b)^2=-2ab+a^2+b^2$). 把 $ab$ 写成
+\[
+\MathBookFormulaID{formula-ch00-arithmetic-geometric-mean-scaled}
+ab=(\epsilon a)(b/\epsilon)
+\leq\frac12\bigl((\epsilon a)^2+(b/\epsilon)^2\bigr),
+\]
+便得到稍复杂的形式. 以 $\delta$ 代替 $\epsilon^2$, 得
+\begin{equation}
+\MathBookFormulaID{formula-ch00-young-inequality-delta}
+ab\leq\frac\delta2a^2+\frac1{2\delta}b^2
+\label{eq:ch00-young-inequality-delta}
+\end{equation}
+对任意 $\delta>0$ 成立.
+
+令 $M:=\|h'\|_{\max}$. Schwarz 不等式和算术-几何平均不等式蕴含
+\[
+\MathBookFormulaID{formula-ch00-cross-term-bound}
+\begin{aligned}
+\left|\int_0^12hh'ee'\,dx\right|
+&\leq2M\int_0^1|hee'|\,dx\\
+&\leq2M\|he'\|\|e\|\\
+&\leq M\bigl(\|he'\|^2+\|e\|^2\bigr).
+\end{aligned}
+\]
+因此
+\[
+\MathBookFormulaID{formula-ch00-weighted-energy-first-bound}
+\|he'\|^2\leq a(e,h^2e)+M\bigl(\|he'\|^2+\|e\|^2\bigr),
+\]
+从而
+\[
+\MathBookFormulaID{formula-ch00-weighted-energy-rearranged}
+(1-M)\|he'\|^2\leq a(e,h^2e)+M\|e\|^2.
+\]
+现在估计 $a(e,h^2e)$. 令 $w:=h^2e$. 由 \eqref{eq:ch00-weighted-aew-bound} 和算术-几何平均不等式,
+\[
+\MathBookFormulaID{formula-ch00-aeh2e-bound}
+\begin{aligned}
+a(e,h^2e)=a(e,w)
+&\leq\frac1{\sqrt2}\|he'\|
+\left(\sum_{i=1}^n\int_{x_{i-1}}^{x_i}(w'')^2\,dx\right)^{1/2}\\
+&\leq\frac{1-M}{2}\|he'\|^2
++\frac1{4(1-M)}\sum_{i=1}^n\int_{x_{i-1}}^{x_i}(w'')^2\,dx.
+\end{aligned}
+\]
+与前一估计结合, 得
+\MathBookSourcePage{33}
+\[
+\MathBookFormulaID{formula-ch00-weighted-energy-w-second-derivative}
+\frac{1-M}{2}\|he'\|^2
+\leq\frac1{4(1-M)}\sum_{i=1}^n\int_{x_{i-1}}^{x_i}(w'')^2\,dx
++M\|e\|^2.
+\]
+在每个区间 $(x_{i-1},x_i)$ 上展开, 有
+\[
+\MathBookFormulaID{formula-ch00-w-second-derivative}
+w''=h^2e''+4hh'e'+2(h')^2e,
+\]
+因为 $h''\equiv0$. 再展开并使用算术-几何平均不等式, 得
+\[
+\MathBookFormulaID{formula-ch00-w-second-derivative-square-bound}
+\begin{aligned}
+(w'')^2
+&\leq h^4(e'')^2+16M^2(he')^2+4M^4e^2\\
+&\quad+8Mh^3|e''||e'|+4M^2h^2|e''||e|
++16M^3h|e'||e|\\
+&\leq7h^4(e'')^2+28M^2(he')^2+14M^4e^2.
+\end{aligned}
+\]
+积分后得到
+\[
+\MathBookFormulaID{formula-ch00-integrated-weighted-bound}
+\begin{aligned}
+\frac{1-M}{2}\|he'\|^2
+&\leq\frac1{4(1-M)}\sum_{i=1}^n\int_{x_{i-1}}^{x_i}7h^4(e'')^2\,dx\\
+&\quad+\frac{7M^2}{1-M}\|he'\|^2
++\left(M+\frac{7M^4}{2(1-M)}\right)\|e\|^2,
+\end{aligned}
+\]
+从而
+\[
+\MathBookFormulaID{formula-ch00-integrated-weighted-bound-rearranged}
+\begin{aligned}
+\left(\frac{1-M}{2}-\frac{7M^2}{1-M}\right)\|he'\|^2
+&\leq\frac1{4(1-M)}\sum_{i=1}^n\int_{x_{i-1}}^{x_i}7h^4(e'')^2\,dx\\
+&\quad+\left(M+\frac{7M^4}{2(1-M)}\right)\|e\|^2.
+\end{aligned}
+\]
+令
+\[
+\MathBookFormulaID{formula-ch00-c-one-definition}
+c_1=\left(\frac{1-M}{2}-\frac{7M^2}{1-M}\right)^{-1},
+\]
+并回顾 $e''=u''$, 当
+\[
+\MathBookFormulaID{formula-ch00-mesh-variation-first-condition}
+M<\frac1{1+\sqrt{14}}
+\]
+时有
+\[
+\MathBookFormulaID{formula-ch00-weighted-energy-final-bound}
+\|he'\|^2
+\leq\frac{7c_1}{4(1-M)}\|h^2u''\|^2
++c_1\left(M+\frac{7M^4}{2(1-M)}\right)\|e\|^2.
+\]
+与估计 \eqref{eq:ch00-l2-by-weighted-energy} 结合, 得
+\[
+\MathBookFormulaID{formula-ch00-l2-weighted-final-derivation}
+\left(2-c_1\left(M+\frac{7M^4}{2(1-M)}\right)\right)\|u-u_S\|^2
+\leq\frac{7c_1}{4(1-M)}\|h^2u''\|^2.
+\]
+最后, 假设 $M$ 充分小, 使
+\[
+\MathBookFormulaID{formula-ch00-mesh-variation-second-condition}
+2-c_1\left(M+\frac{7M^4}{2(1-M)}\right)>0.
+\]
+\MathBookSourcePage{34}
+(注意当 $M\to0$ 时 $c_1\to2$.) 于是得到
+\setcounter{equation}{5}
+\begin{equation}
+\MathBookFormulaID{formula-ch00-weighted-l2-final-estimate}
+\|u-u_S\|^2\leq C(M)\|h^2u''\|^2,
+\label{eq:ch00-weighted-l2-final-estimate}
+\end{equation}
+其中当 $M\to0$ 时 $C(M)\to7/4$. 以下定理汇总上述结果.
+
+\setcounter{thmcount}{6}
+\begin{Theorem}
+\label{thm:ch00-weighted-norm-summary}
+在不对网格施加任何限制的情况下,
+\[
+\MathBookFormulaID{formula-ch00-weighted-summary-energy}
+\|u-u_S\|_E\leq\frac1{\sqrt2}\|hu''\|
+\]
+且
+\[
+\MathBookFormulaID{formula-ch00-weighted-summary-l2}
+\|u-u_S\|\leq\frac1{\sqrt2}\|h(u-u_S)'\|.
+\]
+若网格尺度的变化 $M:=\|h'\|_{\max}$ 充分小, 则存在一个依赖于 $M$, 但除此之外与网格无关的常数 $C$, 使
+\[
+\MathBookFormulaID{formula-ch00-weighted-summary-final}
+\|u-u_S\|\leq C\|h^2u''\|.
+\]
+\end{Theorem}
+
+$h$ 的导数很小这一条件很容易解释. 由定义,
+\[
+\MathBookFormulaID{formula-ch00-mesh-ratio-derivative}
+h'|_{(x_{i-1},x_i)}
+=\frac{h_{i+1}-h_{i-1}}{h_i}
+=r_{i+1}-\frac1{r_i},
+\]
+其中 $r_i$ 是相邻网格区间长度之比, $r_i=h_i/h_{i-1}$. 因而, 当这些比值充分接近一时, $|h'|$ 很小. 不过, 这并不排除强网格分级, 例如当 $\delta$ 充分小时的几何分级网格 $x_i=e^{\delta(i-n)}$.
+
+\subsection*{习题}
+\label{sec:ch00-exercises}
+
+\setcounter{exerciseitem}{0}
+\begin{MBExercise}
+\label{ex:ch00-stiffness-and-mass-matrices}
+验证分片线性函数刚度矩阵 $\mathbf K$ 的表达式 \eqref{eq:ch00-stiffness-entries}. 若 $f$ 是分片线性函数, 即
+\[
+\MathBookFormulaID{formula-ch00-exercise-piecewise-linear-f}
+f(x)=\sum_{i=1}^nf_i\phi_i(x),
+\]
+求矩阵 $\mathbf M$(称为质量矩阵), 使 $\mathbf K\mathbf U=\mathbf M\mathbf F$.
+\end{MBExercise}
+
+\begin{MBExercise}
+\label{ex:ch00-modified-weak-formulations}
+给出两点边值问题 \eqref{eq:ch00-boundary-value-problem} 的下列修改形式的弱形式:
+\begin{enumerate}[label=\alph*)]
+\item 以常微分方程 $-u''+u=f$ 代替 $-u''=f$;
+\item 边界条件为 $u(0)=u(1)=0$.
+\end{enumerate}
+两项修改也可以同时采用.
+\end{MBExercise}
+
+\MathBookSourcePage{35}
+\begin{MBExercise}
+\label{ex:ch00-neumann-not-well-posed}
+说明问题
+\[
+\MathBookFormulaID{formula-ch00-exercise-pure-neumann}
+-u''=f,
+\qquad u'(0)=u'(1)=0
+\]
+在变分框架和经典框架中分别有什么问题. 换言之, 说明该问题在这两种框架下为何都不是适定的.
+\end{MBExercise}
+
+\begin{MBExercise}
+\label{ex:ch00-piecewise-quadratic-basis}
+证明分片二次函数有一组节点基, 由节点 $x_i$ 处的值以及中点 $\frac12(x_i+x_{i+1})$ 处的值组成. 计算这些单元的刚度矩阵.
+\end{MBExercise}
+
+\begin{MBExercise}
+\label{ex:ch00-load-vector-verification}
+验证 \eqref{eq:ch00-load-vector-approximation}.
+\end{MBExercise}
+
+\begin{MBExercise}
+\label{ex:ch00-interpolation-l2-estimate}
+在与定理~\ref{thm:ch00-interpolation-energy-estimate} 相同的假设下, 证明
+\[
+\MathBookFormulaID{formula-ch00-exercise-interpolation-l2-estimate}
+\|u-u_I\|\leq Ch^2\|u''\|.
+\]
+(提示: 使用定理~\ref{thm:ch00-interpolation-energy-estimate} 证明中的齐次性论证. 采用该证明中的记号, 并利用 $w(0)=0$ 进一步证明
+\[
+\MathBookFormulaID{formula-ch00-exercise-poincare-bound}
+\int_0^1w(x)^2\,dx\leq\widetilde c\int_0^1w'(x)^2\,dx.
+\]
+若同时使用 $w(0)=0$ 和 $w(1)=0$, 能把 $\widetilde c$ 取得多小?)
+\end{MBExercise}
+
+\begin{MBExercise}
+\label{ex:ch00-best-l2-approximation}
+仅使用定理~\ref{thm:ch00-duality-error-estimate} 和定理~\ref{thm:ch00-interpolation-energy-estimate}, 证明
+\[
+\MathBookFormulaID{formula-ch00-exercise-best-l2-approximation}
+\inf_{v\in S}\|u-v\|\leq Ch^2\|u''\|.
+\]
+习题~\ref{ex:ch00-interpolation-l2-estimate} 也可以独立推出这一结果. 比较不同方法所得的不同常数 $C$.
+\end{MBExercise}
+
+\begin{MBExercise}
+\label{ex:ch00-classical-existence}
+证明, 若 $f\in C^0([0,1])$, 则 \eqref{eq:ch00-boundary-value-problem} 有解 $u\in C^2([0,1])$. (提示: 写成
+\[
+\MathBookFormulaID{formula-ch00-exercise-classical-solution}
+u(x)=\int_0^x\left(\int_s^1f(t)\,dt\right)ds,
+\]
+并验证各方程.)
+\end{MBExercise}
+
+\begin{MBExercise}
+\label{ex:ch00-coercivity}
+令 $V$ 表示第~\ref{sec:ch00-weak-formulation} 节定义的空间, $a(\cdot,\cdot)$ 表示该节定义的双线性型. 证明强制性结果
+\[
+\MathBookFormulaID{formula-ch00-exercise-coercivity}
+\|v\|^2+\|v'\|^2\leq Ca(v,v)
+\qquad\forall v\in V.
+\]
+给出 $C$ 的一个值. (提示: 见习题~\ref{ex:ch00-interpolation-l2-estimate} 的提示. 为简单起见, 把结论限制在 $v\in V\cap C^1(0,1)$.)
+\end{MBExercise}
+
+\MathBookSourcePage{36}
+\begin{MBExercise}
+\label{ex:ch00-sobolev-inequality}
+令 $V$ 和双线性型 $a(\cdot,\cdot)$ 如第~\ref{sec:ch00-weak-formulation} 节所定义. 证明下列 Sobolev 不等式:
+\[
+\MathBookFormulaID{formula-ch00-exercise-sobolev-inequality}
+\|v\|_{\max}^2\leq Ca(v,v)
+\qquad\forall v\in V.
+\]
+给出 $C$ 的一个值. (提示: 见习题~\ref{ex:ch00-interpolation-l2-estimate} 的提示. 为简单起见, 把结论限制在 $v\in V\cap C^1(0,1)$.)
+\end{MBExercise}
+
+\begin{MBExercise}
+\label{ex:ch00-difference-variational-form}
+考虑由 \eqref{eq:ch00-nonuniform-difference-equation} 表示的差分方法, 即
+\[
+\MathBookFormulaID{formula-ch00-exercise-difference-method}
+-\frac{2}{h_i+h_{i+1}}
+\left(
+\frac{U_{i+1}-U_i}{h_{i+1}}-
+\frac{U_i-U_{i-1}}{h_i}
+\right)=f(x_i).
+\]
+证明 $\widetilde u_S:=\sum_iU_i\phi_i$ 满足 \eqref{eq:ch00-ritz-galerkin-problem} 的下列修改形式:
+\[
+\MathBookFormulaID{formula-ch00-exercise-quadrature-variational-form}
+a(\widetilde u_S,v)=Q(fv)
+\qquad\forall v\in S,
+\]
+其中 $a(\cdot,\cdot)$ 是第~\ref{sec:ch00-weak-formulation} 节定义的双线性型, $S$ 由第~\ref{sec:ch00-piecewise-polynomial-spaces} 节定义的分片线性函数组成, 而 $Q$ 表示基于梯形法则的求积逼近
+\[
+\MathBookFormulaID{formula-ch00-exercise-trapezoidal-rule}
+Q(w):=\sum_{i=0}^n\frac{h_i+h_{i+1}}2w(x_i).
+\]
+这里 $\phi_i$, $x_i$, $h_i$ 如第~\ref{sec:ch00-piecewise-polynomial-spaces} 节所定义; 为简化记号, 再定义 $h_0=h_{n+1}=0$.
+\end{MBExercise}
+
+\begin{MBExercise}
+\label{ex:ch00-quadrature-error}
+设 $Q$ 如习题~\ref{ex:ch00-difference-variational-form} 所定义. 证明
+\[
+\MathBookFormulaID{formula-ch00-exercise-quadrature-error}
+\left|Q(w)-\int_0^1w(x)\,dx\right|
+\leq Ch^2\sum_{i=1}^n\int_{x_{i-1}}^{x_i}|w''(x)|\,dx.
+\]
+(提示: 注意梯形法则对分片线性函数是精确的, 并参考习题~\ref{ex:ch00-interpolation-l2-estimate} 的提示.)
+\end{MBExercise}
+
+\begin{MBExercise}
+\label{ex:ch00-finite-element-difference-consistency}
+设 $u_S$ 解 \eqref{eq:ch00-ritz-galerkin-problem}, 其中 $S$ 由第~\ref{sec:ch00-piecewise-polynomial-spaces} 节定义的分片线性函数组成; 设 $\widetilde u_S$ 如习题~\ref{ex:ch00-difference-variational-form} 所定义. 证明
+\[
+\MathBookFormulaID{formula-ch00-exercise-consistency-error}
+|a(u_S-\widetilde u_S,v)|
+\leq Ch^2(\|f'\|+\|f''\|)(\|v\|+\|v'\|)
+\qquad\forall v\in S.
+\]
+(提示: 应用习题~\ref{ex:ch00-quadrature-error} 和 Schwarz 不等式.)
+\end{MBExercise}
+
+\begin{MBExercise}
+\label{ex:ch00-finite-element-difference-energy-error}
+设 $u_S$ 和 $\widetilde u_S$ 如习题~\ref{ex:ch00-finite-element-difference-consistency} 所定义. 证明
+\[
+\MathBookFormulaID{formula-ch00-exercise-energy-difference-error}
+\|u_S-\widetilde u_S\|_E
+\leq Ch^2(\|f'\|+\|f''\|).
+\]
+(提示: 应用习题~\ref{ex:ch00-finite-element-difference-consistency}, 取 $v=u_S-\widetilde u_S$, 并应用习题~\ref{ex:ch00-coercivity}.)
+\end{MBExercise}
+
+\begin{MBExercise}
+\label{ex:ch00-difference-maximum-error}
+设 $\widetilde u_S$ 如习题~\ref{ex:ch00-difference-variational-form} 所定义, 且 $u$ 解 \eqref{eq:ch00-boundary-value-problem}. 证明
+\MathBookSourcePage{37}
+\[
+\MathBookFormulaID{formula-ch00-exercise-maximum-difference-error}
+\|u-\widetilde u_S\|_{\max}
+\leq Ch^2(\|f\|_{\max}+\|f'\|+\|f''\|).
+\]
+(提示: 应用习题~\ref{ex:ch00-finite-element-difference-energy-error} 和定理~\ref{thm:ch00-piecewise-linear-maximum-estimate}.)
+\end{MBExercise}
+
+\begin{MBExercise}
+\label{ex:ch00-nonhomogeneous-neumann-data}
+给出两点边值问题 \eqref{eq:ch00-boundary-value-problem} 的修改形式的弱形式, 其中边界条件为 $u(0)=0$ 和 $u'(1)=\lambda$. (提示: 证明 $a(u,v)=F(v)$, 其中 $F$ 是线性泛函 $F(v)=\lambda v(1)$.)
+\end{MBExercise}
+
