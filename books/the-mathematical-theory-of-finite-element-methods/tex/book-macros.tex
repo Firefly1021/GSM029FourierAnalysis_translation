@@ -1,6 +1,21 @@
 % Book-local numbering helpers. Shared template files remain unchanged.
 \newcounter{exerciseitem}[section]
 \renewcommand{\theexerciseitem}{\thesection.x.\arabic{exerciseitem}}
+% Hyperref destinations must remain unique when display counters restart in
+% every subsection. These internal anchor forms do not alter printed numbers.
+\renewcommand*{\theHequation}{\arabic{section}.\arabic{subsection}.\arabic{equation}}
+\renewcommand*{\theHthmcount}{\arabic{section}.\arabic{subsection}.\arabic{thmcount}}
+\renewcommand*{\theHdefcount}{\arabic{section}.\arabic{subsection}.\arabic{defcount}}
+\renewcommand*{\theHfigure}{\arabic{section}.\arabic{figure}}
+\renewcommand*{\theHtable}{\arabic{section}.\arabic{table}}
+\renewcommand*{\theHexerciseitem}{\arabic{section}.x.\arabic{exerciseitem}}
+% The source uses one mixed sequence for statements and numbered equations.
+% Call this immediately before a numbered source item so both independent
+% LaTeX counters reproduce the source item number without coupling the template.
+\newcommand{\MBSourceItem}[1]{%
+  \setcounter{thmcount}{#1}\addtocounter{thmcount}{-1}%
+  \setcounter{equation}{#1}\addtocounter{equation}{-1}%
+}
 \NewDocumentEnvironment{MBExercise}{}
 {
     \par\vspace{0.1cm}\refstepcounter{exerciseitem}\noindent
