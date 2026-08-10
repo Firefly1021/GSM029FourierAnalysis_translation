@@ -17,10 +17,10 @@ def main() -> int:
     parser.add_argument("chapter_id")
     parser.add_argument("start_page", type=int)
     parser.add_argument("end_page", type=int)
-    parser.add_argument("--tex", help="Optional single TeX file for a continuation batch")
+    parser.add_argument("--tex", action="append", help="Optional TeX file; repeat for a multi-file batch")
     args = parser.parse_args()
 
-    files = [ROOT / args.tex] if args.tex else [
+    files = [ROOT / path for path in args.tex] if args.tex else [
         ROOT / "tex" / "chapters" / f"{args.chapter_id}.tex",
         *sorted((ROOT / "tex" / "chapters" / args.chapter_id).glob("*.tex")),
     ]

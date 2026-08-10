@@ -43,8 +43,8 @@ Translate every supplied source page in table-of-contents order, preserving the 
 
 ## Current position
 
-- Completed units: Chapters 1--7, PDF 13--168 / printed 1--156; QA and cumulative compilation passed.
-- Active unit: Chapter 8, *Littlewood--Paley Theory and Multipliers*.
-- Active untranslated source range: PDF 169--206 / printed 157--194.
-- The accepted Chapter 2 range PDF 37--51 remains unchanged in wording; its former unresolved reference to Section 8.6 resolves to the completed Chapter 2 label.
-- Remote pushes are not authorized for this workflow; completed chapters receive local commits only.
+- Completed units: front matter and Chapters 1--9, covering every supplied PDF page with content; batch QA and cumulative compilation passed.
+- Visually blank interstitial PDF pages 2, 6, 10, 36, and 60 are recorded without invented OCR content.
+- The accepted Chapter 2 range PDF 37--51 remains unchanged in wording.
+- Active unit: Bibliography and Index, blocked because the announced source pages are absent.
+- Remote pushes are not authorized for this workflow; completed units receive local commits only.

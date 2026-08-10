@@ -13,7 +13,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 ANCHOR_OR_DISPLAY = re.compile(
-    r"\\hypertarget\{chapter-(?P<chapter>\d{2})-page-(?P<page>\d{3})\}\{\}"
+    r"\\hypertarget\{(?P<anchor>[a-z0-9-]+)-page-(?P<page>\d{3})\}\{\}"
     r"|(?P<equation>\\begin\{equation\*?\}.*?\\end\{equation\*?\})"
     r"|(?P<bracket>\\\[.*?\\\])",
     re.DOTALL,

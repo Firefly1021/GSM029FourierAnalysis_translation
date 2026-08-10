@@ -15,11 +15,16 @@ ROOT = Path(__file__).resolve().parents[1]
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("chapter_id", help="For example: chapter-01")
+    parser.add_argument("--tex", action="append", help="Optional TeX file; repeat for a multi-file batch")
     args = parser.parse_args()
-    files = [
-        ROOT / "tex" / "chapters" / f"{args.chapter_id}.tex",
-        *sorted((ROOT / "tex" / "chapters" / args.chapter_id).glob("*.tex")),
-    ]
+    files = (
+        [ROOT / path for path in args.tex]
+        if args.tex
+        else [
+            ROOT / "tex" / "chapters" / f"{args.chapter_id}.tex",
+            *sorted((ROOT / "tex" / "chapters" / args.chapter_id).glob("*.tex")),
+        ]
+    )
     violations: list[tuple[Path, object]] = []
     for path in files:
         if path.is_file():
