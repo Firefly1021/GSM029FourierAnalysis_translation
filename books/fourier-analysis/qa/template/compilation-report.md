@@ -1,7 +1,7 @@
 # Template compilation report
 
 - Reference: `input/template/reference/main.tex`
-- Isolated build directory: `workspace/temporary/template-build-gx90uycj`
+- Isolated build directory: `workspace/temporary/template-build-ztwj182j`
 - Driver: latexmk
 - Engine: XeLaTeX
 - Bibliography backend: Biber

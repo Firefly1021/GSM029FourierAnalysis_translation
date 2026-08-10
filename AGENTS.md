@@ -1,70 +1,58 @@
-# Mathematical book translation project rules
+# Mathematical book translation system rules
 
-## Scope and phase control
+## Global shared state
 
-- Phase 1 integrates and verifies the user-supplied LaTeX template. No source PDF is present.
-- Do not create, infer, analyze, or translate a book until a source PDF is supplied and Phase 2 is explicitly started.
-- Never fabricate inspection, extraction, OCR, formula, terminology, translation, compilation, or QA results.
+- Shared code, CLI, scripts, schemas, tests, template files, translation policy, QA policy, style policy, and the authoritative terminology library live at repository level.
+- The only authoritative cross-book terminology file is `glossary/terminology.tsv`. Match terms by `English + Domain + Context`, not by English alone.
+- User files under `template/style/`, `template/reference/`, and `template/assets/` are read-only. Never modify, overwrite, rename, normalize, or auto-format them.
+- Translation-only template integration belongs in `template/adapter/`. Do not create a competing visual style.
+- Verify template manifest hashes before and after workflows that compile or inspect the template.
 
-## Read-only source material
+## Per-book state
 
-- Everything under `input/template/` and any future content under `input/source/` is read-only source material.
-- Never modify, overwrite, delete, rename, auto-format, or normalize user source files.
-- Copy source files only into an isolated build or processing directory when required.
-- Record suspected source errors in QA data; never silently correct them.
-- Verify SHA-256 hashes before and after any workflow that reads source material.
+- Every book-specific artifact must be below `books/<book-id>/`: source PDF and auxiliaries, page images, OCR, raw text, layout, structured data, formulae, names, notation, candidates, unresolved terms, translations, TeX, figures, generated files, QA, issues, logs, plans, status, and output.
+- A book-specific command always requires an explicit `book-id`. Implicit current-book selection is forbidden.
+- Book-specific writes must pass through `ProjectPaths` and `BookPaths` and remain inside `books/<book-id>/`. Never write to another book's directory.
+- Completed translation text is immutable unless the user explicitly authorizes a correction. Resume from the first incomplete natural unit and never regenerate a unit that already passed QA.
 
-## Mathematical accuracy
+## Git and worktree safety
 
-- Preserve every assumption, conclusion, condition, quantifier, and negation.
-- Do not change necessity, sufficiency, implication direction, or logical strength.
-- Do not add explanations that are absent from the source.
-- Do not simplify, rewrite, normalize, or rederive formulas without explicit review authorization.
+- `main` is the stable system branch. Each active book uses `book/<book-id>` and a dedicated sibling worktree managed by the CLI.
+- On a book branch, shared state is read-only by default: `AGENTS.md`, `src/`, `scripts/`, `schemas/`, `tests/`, `template/`, `style/`, global configuration, and `glossary/terminology.tsv`.
+- Branch, book-id, registered worktree, and physical path must agree before any book-specific write.
+- Shared-system fixes use a dedicated maintenance branch and are merged to `main` before synchronization into book branches.
+- Never force push, rewrite history, delete a real book branch/worktree, modify the remote URL, or perform a remote write without an explicit user request. Project automation must never execute `git push`.
+- Terminology promotion is controlled and audited. It updates main's shared terminology library without whole-file replacement, creates history records, and never silently overwrites another meaning.
+
+## Source and mathematical fidelity
+
+- Treat every source PDF and supplied auxiliary file as read-only. Verify SHA-256 before and after any workflow that reads it.
+- Preserve every assumption, conclusion, condition, quantifier, negation, implication direction, and logical strength.
+- Do not add explanations absent from the source. Never fabricate extraction, OCR, structure, formula, terminology, translation, compilation, or QA results.
+- Do not simplify, rederive, normalize, or rewrite formulas. Preserve tokens, variables, subscripts, superscripts, delimiters, signs, ranges, domains, labels, and references. Route uncertainty to QA.
+- Compilation success is not proof of formula correctness.
 
 ## Personal names
 
-- Do not translate, transliterate, or transcribe natural-person names.
-- Preserve the original language and writing system, accents, diacritics, hyphens, initials, abbreviations, spaces, capitalization, and name order exactly.
-- Do not replace a name with a conventional Chinese rendering or expand information absent from the source.
-- If the source gives only a surname or an abbreviation, preserve exactly that form.
-- In eponymous mathematical terms, translate only the ordinary mathematical noun: `Hilbert space` -> `Hilbert 空间`, `Poincaré inequality` -> `Poincaré 不等式`, and `Lax--Milgram theorem` -> `Lax--Milgram 定理`.
-- Never modify, translate, reorder, or expand author names in bibliographies.
-
-## Formulas
-
-- Every formula receives a stable ID.
-- Preserve formula tokens, subscripts, superscripts, delimiters, signs, summation ranges, integration domains, numbers, labels, and references.
-- Route uncertain formulas to manual review.
-- Compilation success does not establish formula correctness.
-
-## Terminology
-
-- `glossary/terminology.tsv` is the terminology control file.
-- Never mark an unconfirmed term as `approved`.
-- The same English expression may have different translations in different mathematical contexts.
-- Fluency must never override mathematical meaning.
-
-## Supported document block types
-
-Use only: `chapter`, `section`, `subsection`, `definition`, `theorem`, `lemma`, `proposition`, `corollary`, `proof`, `example`, `remark`, `exercise`, `equation`, `figure`, `table`, `footnote`, `ordinary-paragraph`, and `unknown`. Use `unknown` whenever classification is uncertain.
-
-## Template authority
-
-- User `.sty` and `.cls` files are authoritative for visual style.
-- User reference `.tex` files are authoritative for actual usage.
-- Do not redefine user environments or design a competing visual style unless the user explicitly authorizes a translation-only override in `tex/translation-adapter.sty`; never edit the source template file itself.
-- Put translation-only internal commands in `tex/translation-adapter.sty` or `tex/translation-macros.tex`, using project-specific names.
+- Never translate, transliterate, transcribe, expand, reorder, or normalize natural-person names.
+- Preserve the original script, accents, diacritics, hyphens, initials, abbreviations, spaces, capitalization, and name order exactly.
+- In eponymous terms, translate only the ordinary mathematical noun: `Hilbert space` -> `Hilbert 空间`, `Poincaré inequality` -> `Poincaré 不等式`, and `Lax--Milgram theorem` -> `Lax--Milgram 定理`.
+- Never alter names in bibliographies. Book-specific exact name records belong in `books/<book-id>/glossary/proper-names.tsv`.
 
 ## Chinese-body punctuation
 
-- Chinese prose in translations uses ASCII half-width punctuation only: `, . : ; ? ! () [] ...`.
-- Do not use `， 。 ： ； ？ ！ （ ） 【 】 ……` in Chinese prose.
-- Punctuation QA applies only to translated Chinese prose. It must not rewrite mathematics, LaTeX commands, labels, reference or citation keys, file paths, URLs, BibTeX data, code environments, raw template files, or source inputs.
-- Translation generation must run the punctuation checker before a draft can be marked reviewed.
+- Chinese translated prose uses ASCII half-width punctuation only: `, . : ; ? ! () [] ...`.
+- Forbidden in Chinese translated prose: `， 。 ： ； ？ ！ （ ） 【 】 ……`.
+- Punctuation QA must not rewrite mathematics, LaTeX commands, labels, reference/citation keys, paths, URLs, BibTeX, code, raw templates, or source inputs.
+- Punctuation QA must pass before a draft is reviewed.
 
-## Cross-references
+## Cross-references and LaTeX
 
-- Every referenceable object in translated LaTeX receives a unique semantic label whose identity does not depend on the rendered number.
-- Formula references use `\eqref`; theorem-like, chapter, section, subsection, figure, and table references use `\ref` unless the project later adopts `cleveref` consistently.
-- Do not hard-code local object numbers in translated prose. Record unresolved external or unavailable targets in QA instead of guessing.
-- User source files remain read-only. Explicitly authorized environment adaptations belong in `tex/translation-adapter.sty`.
+- Every referenceable chapter, section, subsection, theorem-like object, equation, figure, and table receives a unique stable semantic label independent of rendered numbering.
+- Formula references use `\eqref`; other supported references use `\ref` unless the project adopts `cleveref` consistently.
+- Never hard-code local object numbers. Record unavailable or uncertain targets in QA instead of guessing.
+- Preserve the accepted `Theorem`, `Definition`, `Lemma`, `Proposition`, `Corollary`, `Proof`, `Example`, `Remark`, and `Exercise` environments and their established visual distinctions.
+
+## Supported block types
+
+Use only: `chapter`, `section`, `subsection`, `definition`, `theorem`, `lemma`, `proposition`, `corollary`, `proof`, `example`, `remark`, `exercise`, `equation`, `figure`, `table`, `footnote`, `ordinary-paragraph`, and `unknown`. Use `unknown` whenever classification is uncertain.

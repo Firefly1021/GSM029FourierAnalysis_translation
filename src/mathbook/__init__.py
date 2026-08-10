@@ -1,4 +1,3 @@
-"""Empty package scaffold for the future translation project."""
+"""Multi-book mathematical translation workflow."""
 
-__version__ = "0.0.0"
-
+__version__ = "1.0.0"

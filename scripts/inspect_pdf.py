@@ -1,3 +1,3 @@
-"""Run the source PDF inspection command."""
-from mathbook.cli import main
-raise SystemExit(main(["inspect-pdf"]))
+"""Inspect the explicitly selected book PDF; requires MATHBOOK_BOOK_ID."""
+from phase2_diagnose import main
+raise SystemExit(main())

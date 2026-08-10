@@ -34,7 +34,6 @@ class PageRenderer(Protocol):
     def render(self, path: Path, output_directory: Path, dpi: int = 300) -> list[Path]: ...
 
 
-def source_pdf_path() -> Path:
-    """Fail safely until the user supplies exactly one PDF."""
-    return require_source_pdf()
-
+def source_pdf_path(book_id: str) -> Path:
+    """Return the explicitly selected book's single registered source PDF."""
+    return require_source_pdf(book_id)

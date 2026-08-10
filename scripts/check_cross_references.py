@@ -9,8 +9,10 @@ import re
 from collections import Counter
 from pathlib import Path
 
+from mathbook.script_context import selected_book_root
 
-ROOT = Path(__file__).resolve().parents[1]
+
+ROOT = selected_book_root()
 EXPECTED = {
     "chap:hardy-littlewood-maximal-function": ("chapter", "Chapter 2", "Hardy--Littlewood maximal function", "2"),
     "sec:ch2-identity-approximations": ("section", "§1", "Approximations of the identity", "2.1"),

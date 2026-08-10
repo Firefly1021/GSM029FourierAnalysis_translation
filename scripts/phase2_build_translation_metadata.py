@@ -11,8 +11,10 @@ import json
 from collections import defaultdict
 from pathlib import Path
 
+from mathbook.script_context import selected_book_root
 
-ROOT = Path(__file__).resolve().parents[1]
+
+ROOT = selected_book_root()
 PAGES = range(37, 52)
 
 

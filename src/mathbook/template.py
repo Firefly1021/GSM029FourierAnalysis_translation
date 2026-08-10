@@ -13,8 +13,8 @@ from typing import Any
 from .project import ROOT, ProjectError, iter_files, load_config, sha256_file
 
 
-TEMPLATE_ROOT = ROOT / "input" / "template"
-MANIFEST_PATH = ROOT / "qa" / "template" / "template-manifest.json"
+TEMPLATE_ROOT = ROOT / "template"
+MANIFEST_PATH = ROOT / "config" / "template-manifest.json"
 
 
 def _relative(path: Path) -> str:
@@ -38,7 +38,7 @@ def _file_type(path: Path) -> str:
 
 
 def build_manifest() -> dict[str, Any]:
-    """Hash every input/template file without modifying it."""
+    """Hash every shared template file without modifying it."""
     files = [
         {
             "path": _relative(path),
@@ -49,15 +49,15 @@ def build_manifest() -> dict[str, Any]:
         for path in iter_files(TEMPLATE_ROOT)
     ]
     references = [item["path"] for item in files if item["file_type"] == "latex-source"]
-    configured = load_config("project.yaml")["template"]["reference"]
+    configured = load_config("default.yaml")["template"]["reference"]
     if len(references) == 1:
         selection_reason = "The reference directory contains exactly one .tex file."
     elif configured in references:
-        selection_reason = "Multiple candidates exist; the selected reference is explicitly configured in config/project.yaml."
+        selection_reason = "Multiple candidates exist; the selected reference is explicitly configured in config/default.yaml."
     else:
         selection_reason = "No unambiguous reference selection is available."
     return {
-        "root": "input/template",
+        "root": "template",
         "read_only": True,
         "files": files,
         "reference_candidates": references,
@@ -98,10 +98,10 @@ def validate_template_inputs() -> list[str]:
     styles = list((TEMPLATE_ROOT / "style").glob("*.sty")) + list((TEMPLATE_ROOT / "style").glob("*.cls"))
     references = list((TEMPLATE_ROOT / "reference").glob("*.tex"))
     if not styles:
-        problems.append("No .sty or .cls file exists in input/template/style/.")
+        problems.append("No .sty or .cls file exists in template/style/.")
     if not references:
-        problems.append("No .tex file exists in input/template/reference/.")
-    config = load_config("project.yaml")["template"]
+        problems.append("No .tex file exists in template/reference/.")
+    config = load_config("default.yaml")["template"]
     for key in ("style", "reference"):
         if not (ROOT / config[key]).is_file():
             problems.append(f"Configured template {key} is missing: {config[key]}")
@@ -155,7 +155,7 @@ def analyze_template() -> dict[str, Any]:
     problems = validate_template_inputs()
     if problems:
         raise ProjectError("; ".join(problems))
-    config = load_config("project.yaml")["template"]
+    config = load_config("default.yaml")["template"]
     style_path = ROOT / config["style"]
     reference_path = ROOT / config["reference"]
     style_raw = style_path.read_text(encoding="utf-8")
@@ -268,8 +268,10 @@ def write_analysis_reports() -> tuple[dict[str, Any], dict[str, Any]]:
     environment_lines = "\n".join(f"- `{item['name']}`: {item['reference_usage_count']} use(s) in the reference" for item in analysis["custom_environments"])
     issue_lines = "\n".join(f"- {item['issue']} Observed {item['count']} time(s)." for item in analysis["observed_usage_issues"]) or "- None observed."
     style_report = f"""# Style analysis\n\n- Style source: `input/template/style/Mystyle.sty`\n- Document class used by the reference: `{analysis['document_class']}` with options `{', '.join(analysis['document_class_options'])}`\n- Required engine: XeLaTeX (`fontspec` and `ctexart`; verified by isolated build)\n- Bibliography: biblatex numeric style with Biber; resource `ref.bib`; URL fields use `\\url`.\n- Page: A4; geometry left 2.0cm, right 2.0cm, top 1.66cm, bottom 1.27cm.\n- Page background: `sublight yellow`; reference body color: `ZhengWen`.\n- Page style: plain. `fancyhdr` is loaded but not configured, so no custom header or footer is defined.\n- Formula numbering: reset within subsection. Inline math is globally forced to display style by `\\everymath{{\\displaystyle}}`.\n- Hyperlinks: color links enabled; internal links black and citations blue.\n- Explicit user font commands: none. The successful reference build selected the ctex Windows fontset and logged SimSun for CJK text.\n- Index system: none configured; MakeIndex is not required by the reference.\n\n## Packages\n\n{package_lines}\n\n## Custom commands and mathematical operators\n\nAll discovered definitions and reference usage counts are recorded in `style-commands.json`. Operator-style commands are: {', '.join(analysis['custom_operators'])}.\n\n## Custom environments\n\n{environment_lines}\n\n`Theorem` uses a section-scoped `thmcount` and a tcolorbox with the Chinese title `定理`. `Definition` uses a section-scoped `defcount`; `Lemma` increments the same `defcount`. `Proof` prints the literal English label `Proof` and ends with a black square. No custom proposition, corollary, example, remark, or exercise environment is defined by the user style.\n\n## Section and contents behavior\n\nThe reference class is article-based and defines no chapter usage. Sections are styled by `titlesec`: the section heading is centered, while subsection and subsubsection headings are bold and colored. The reference invokes `\\tableofcontents`.\n\n## Figures, tables, labels, and cross-references\n\nFigure/table support is loaded through graphicx, float, subfigure, caption, array, multirow, and tabularx. The reference contains no active figure, table, label, ref, eqref, or autoref usage.\n\n## External dependencies\n\nThe only active user auxiliary dependency is `ref.bib`. Commented `Section/...` input lines are not active dependencies. Installed package and tool resolution is recorded in `dependencies.md`.\n\n## Observed usage issues\n\n{issue_lines}\n"""
+    style_report = style_report.replace("input/template/", "template/")
     (qa_dir / "style-analysis.md").write_text(style_report, encoding="utf-8")
     reference_report = f"""# Reference analysis\n\n- Selected reference: `input/template/reference/main.tex`\n- Selection reason: the reference directory contains exactly one `.tex` file.\n- Document class: `{analysis['document_class']}`\n- Style invocation: `\\usepackage{{Mystyle}}`\n- Sections: {analysis['reference_usage']['sections']}\n- Subsections: {analysis['reference_usage']['subsections']}\n- Double-dollar display math blocks: {analysis['reference_usage']['display_math_double_dollar']}\n- Bibliography printed: {analysis['reference_usage']['printbibliography']}\n- Citation keys used: {', '.join(analysis['citations'])}\n- Active external inputs other than the bibliography: none. Commented `Section/...` inputs are not dependencies.\n\n## Actual custom-environment usage\n\n{environment_lines}\n\n## Labels and cross-references\n\nNo active `label`, `ref`, `eqref`, or `autoref` command is present in the reference.\n\n## Usage note requiring review\n\n{issue_lines}\n"""
+    reference_report = reference_report.replace("input/template/", "template/")
     (qa_dir / "reference-analysis.md").write_text(reference_report, encoding="utf-8")
     missing_lines = "\n".join(f"- `{item['kind']}` `{item['name']}`" for item in dependencies["missing"]) or "- None detected in the installed TeX Live environment."
     resolved_lines = "\n".join(f"- `{item['kind']}` `{item['name']}` -> `{item['resolved_path']}`" for item in dependencies["resolved"])
@@ -289,9 +291,7 @@ def compile_reference() -> dict[str, Any]:
     latexmk = shutil.which("latexmk")
     if not latexmk:
         raise ProjectError("latexmk is not available; reference compilation cannot run.")
-    build_parent = ROOT / "workspace" / "temporary"
-    build_parent.mkdir(parents=True, exist_ok=True)
-    staging = Path(tempfile.mkdtemp(prefix="template-build-", dir=build_parent))
+    staging = Path(tempfile.mkdtemp(prefix="mathbook-template-build-"))
     output = staging / "out"
     output.mkdir()
     seen: set[str] = set()
@@ -302,14 +302,13 @@ def compile_reference() -> dict[str, Any]:
             raise ProjectError(f"Cannot flatten template inputs because a filename is duplicated: {path.name}")
         seen.add(path.name)
         shutil.copy2(path, staging / path.name)
-    reference_name = Path(load_config("project.yaml")["template"]["reference"]).name
+    reference_name = Path(load_config("default.yaml")["template"]["reference"]).name
     command = [latexmk, "-xelatex", "-interaction=nonstopmode", "-halt-on-error", "-file-line-error", f"-outdir={output}", reference_name]
     completed = subprocess.run(command, cwd=staging, capture_output=True, check=False)
     wrapper_output = (completed.stdout + b"\n" + completed.stderr).decode("utf-8", errors="replace")
     native_log_path = output / (Path(reference_name).stem + ".log")
     native_log = native_log_path.read_bytes().decode("utf-8", errors="replace") if native_log_path.exists() else ""
-    log_path = ROOT / "logs" / "template-compilation.log"
-    log_path.parent.mkdir(parents=True, exist_ok=True)
+    log_path = staging / "template-compilation.log"
     log_path.write_text(wrapper_output + "\n\n===== native TeX log =====\n" + native_log, encoding="utf-8")
     after = {path: sha256_file(path) for path in iter_files(TEMPLATE_ROOT)}
     integrity_ok = before == after
@@ -329,10 +328,9 @@ def compile_reference() -> dict[str, Any]:
         "pdf_size_bytes": pdf_path.stat().st_size if pdf_path.is_file() else None,
         "warnings": warnings,
         "template_integrity_verified": integrity_ok,
-        "build_directory": _relative(staging),
-        "log": "logs/template-compilation.log",
+        "build_directory": str(staging),
+        "log": str(log_path),
     }
     warning_text = "\n".join(f"- {line}" for line in warnings) or "- None."
     report_text = f"""# Template compilation report\n\n- Reference: `input/template/reference/{reference_name}`\n- Isolated build directory: `{report['build_directory']}`\n- Driver: latexmk\n- Engine: XeLaTeX\n- Bibliography backend: Biber\n- Exit code: {completed.returncode}\n- PDF generated: {str(report['pdf_generated']).lower()}\n- Result: {'success' if success else 'failure'}\n- User-template hashes unchanged: {str(integrity_ok).lower()}\n- Full log: `logs/template-compilation.log`\n\n## Warnings\n\n{warning_text}\n"""
-    (ROOT / "qa" / "template" / "compilation-report.md").write_text(report_text, encoding="utf-8")
     return report

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import argparse
 import hashlib
 import json
 import re
@@ -11,13 +12,12 @@ from pathlib import Path
 import pdfplumber
 from PIL import Image
 
-
-ROOT = Path(__file__).resolve().parents[1]
-PDF = ROOT / "input" / "source" / "GSM029 - Fourier Analysis.pdf"
-START_PAGE = 37
-END_PAGE = 51
+from mathbook.script_context import selected_book_paths
 
 
+BOOK = selected_book_paths()
+ROOT = BOOK.root
+PDF = BOOK.require_source_pdf()
 def stable_formula_id(page: int, bbox: tuple[float, float, float, float], raw: str) -> str:
     payload = f"{page}|{bbox!r}|{raw}".encode("utf-8")
     return "formula-" + hashlib.sha256(payload).hexdigest()[:16]
@@ -81,6 +81,12 @@ def crop_formula(rendered_path: Path, page_width: float, page_height: float, bbo
 
 
 def main() -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("start_page", type=int)
+    parser.add_argument("end_page", type=int)
+    args = parser.parse_args()
+    if args.start_page < 1 or args.end_page < args.start_page:
+        raise SystemExit("invalid page range")
     raw_dir = ROOT / "workspace" / "raw-text" / "sample"
     layout_dir = ROOT / "workspace" / "layout" / "sample"
     structured_dir = ROOT / "structured" / "source"
@@ -96,7 +102,9 @@ def main() -> int:
     review_items = []
     repair_log = []
     with pdfplumber.open(PDF) as pdf:
-        for page_number in range(START_PAGE, END_PAGE + 1):
+        if args.end_page > len(pdf.pages):
+            raise SystemExit(f"end page {args.end_page} exceeds PDF length {len(pdf.pages)}")
+        for page_number in range(args.start_page, args.end_page + 1):
             page = pdf.pages[page_number - 1]
             text = page.extract_text(x_tolerance=2, y_tolerance=3, layout=True) or ""
             raw_dir.joinpath(f"page-{page_number:03d}.txt").write_text(text + "\n", encoding="utf-8")
@@ -158,12 +166,11 @@ def main() -> int:
     review_dir.joinpath("sample-review.jsonl").write_text("".join(json.dumps(item, ensure_ascii=False) + "\n" for item in review_items), encoding="utf-8")
     formula_qa.joinpath("sample-review.jsonl").write_text("".join(json.dumps({"formula_id": item["id"], "reason": "Hidden OCR is not accepted as final mathematical LaTeX.", "review_status": "needs-review"}, ensure_ascii=False) + "\n" for item in all_formulas), encoding="utf-8")
     ROOT.joinpath("workspace", "layout", "sample-automatic-repair-log.json").write_text(json.dumps(repair_log, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    report = f"""# Sample formula report\n\n- Sample PDF pages: {START_PAGE}–{END_PAGE}\n- Detected display-formula candidates: {len(all_formulas)}\n- Stable IDs: SHA-256-derived from page, coordinates, and unmodified OCR source text.\n- Image crops: `workspace/formula-images/sample/`\n- Final LaTeX confidence: low. Every `latex` value is explicitly marked `ocr-candidate-not-final` and queued for manual token-by-token review.\n\nThe hidden OCR layer does not encode reliable mathematical structure. Compilation of an OCR candidate is not evidence of formula correctness. Inline-formula completeness and every subscript, superscript, delimiter, sign, integration domain, summation range, equality, and inequality remain blocking review items before full-book translation.\n"""
+    report = f"""# Sample formula report\n\n- Sample PDF pages: {args.start_page}--{args.end_page}\n- Detected display-formula candidates: {len(all_formulas)}\n- Stable IDs: SHA-256-derived from page, coordinates, and unmodified OCR source text.\n- Image crops: `workspace/formula-images/sample/`\n- Final LaTeX confidence: low. Every `latex` value is explicitly marked `ocr-candidate-not-final` and queued for manual token-by-token review.\n\nThe hidden OCR layer does not encode reliable mathematical structure. Compilation of an OCR candidate is not evidence of formula correctness. Inline-formula completeness and every subscript, superscript, delimiter, sign, integration domain, summation range, equality, and inequality remain blocking review items before full-book translation.\n"""
     formula_qa.joinpath("sample-formula-report.md").write_text(report, encoding="utf-8")
-    print(json.dumps({"pages": END_PAGE - START_PAGE + 1, "blocks": len(all_blocks), "formula_candidates": len(all_formulas), "review_blocks": len(review_items)}, indent=2))
+    print(json.dumps({"pages": args.end_page - args.start_page + 1, "blocks": len(all_blocks), "formula_candidates": len(all_formulas), "review_blocks": len(review_items)}, indent=2))
     return 0
 
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

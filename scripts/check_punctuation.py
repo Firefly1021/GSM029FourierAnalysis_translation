@@ -6,10 +6,12 @@ import argparse
 from collections import Counter
 from pathlib import Path
 
+from mathbook.script_context import selected_book_root
+
 from mathbook.qa import find_chinese_prose_punctuation, normalize_chinese_prose_punctuation
 
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = selected_book_root()
 
 
 def main() -> int:

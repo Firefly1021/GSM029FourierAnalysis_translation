@@ -7,8 +7,10 @@ import csv
 import re
 from pathlib import Path
 
+from mathbook.script_context import selected_book_root
 
-ROOT = Path(__file__).resolve().parents[1]
+
+ROOT = selected_book_root()
 PDF_PAGE = re.compile(r"PDF\s+(\d+)")
 
 

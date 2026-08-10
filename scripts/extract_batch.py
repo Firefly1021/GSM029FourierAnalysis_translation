@@ -12,9 +12,12 @@ from pathlib import Path
 import pdfplumber
 from PIL import Image
 
+from mathbook.script_context import selected_book_paths
 
-ROOT = Path(__file__).resolve().parents[1]
-PDF = ROOT / "input" / "source" / "GSM029 - Fourier Analysis.pdf"
+
+BOOK = selected_book_paths()
+ROOT = BOOK.root
+PDF = BOOK.require_source_pdf()
 
 
 def stable_formula_id(batch_id: str, page: int, bbox: tuple[float, float, float, float], raw: str) -> str:

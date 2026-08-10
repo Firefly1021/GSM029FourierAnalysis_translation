@@ -9,13 +9,13 @@ from mathbook.project import ROOT
 class LatexTests(unittest.TestCase):
     def test_adapter_only_overrides_authorized_user_environments(self) -> None:
         conflicts = adapter_environment_conflicts(
-            ROOT / "input/template/style/Mystyle.sty",
-            ROOT / "tex/translation-adapter.sty",
+            ROOT / "template/style/Mystyle.sty",
+            ROOT / "template/adapter/translation-adapter.sty",
         )
         self.assertEqual(conflicts, {"Theorem", "Definition", "Lemma", "Proof"})
 
     def test_adapter_statement_environments_are_referenceable(self) -> None:
-        adapter = (ROOT / "tex/translation-adapter.sty").read_text(encoding="utf-8")
+        adapter = (ROOT / "template/adapter/translation-adapter.sty").read_text(encoding="utf-8")
         for environment in ("Theorem", "Definition", "Lemma", "Proposition", "Corollary", "Example", "Remark", "Exercise"):
             self.assertIn(f"DocumentEnvironment{{{environment}}}", adapter)
         self.assertGreaterEqual(adapter.count("\\refstepcounter{thmcount}"), 8)

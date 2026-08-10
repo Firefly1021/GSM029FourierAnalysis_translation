@@ -1,3 +1,3 @@
-"""Run the Phase 2 structure command that precedes formula registration."""
-from mathbook.cli import main
-raise SystemExit(main(["structure"]))
+"""Run conservative formula-candidate registration for an explicit book batch."""
+from extract_batch import main
+raise SystemExit(main())

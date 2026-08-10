@@ -13,8 +13,10 @@ from pathlib import Path
 import pdfplumber
 from pypdf import PdfReader
 
+from mathbook.script_context import selected_book_root
 
-ROOT = Path(__file__).resolve().parents[1]
+
+ROOT = selected_book_root()
 SOURCE = ROOT / "input" / "source"
 QA = ROOT / "qa"
 
@@ -238,4 +240,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

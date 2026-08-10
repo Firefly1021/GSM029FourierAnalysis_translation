@@ -1,3 +1,3 @@
-"""Run the Phase 2 extraction command."""
-from mathbook.cli import main
-raise SystemExit(main(["extract"]))
+"""Run conservative batch extraction; requires book env plus batch and page arguments."""
+from extract_batch import main
+raise SystemExit(main())

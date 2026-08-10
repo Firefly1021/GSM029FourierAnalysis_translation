@@ -1,46 +1,66 @@
-# Mathematical Book English-to-Chinese Translation Project
+# MathBookTranslation
 
-Phase 1 integrates and verifies the user-supplied LaTeX template. No source PDF has been supplied, and no book analysis or translation has started.
+This repository is a local-first, multi-book mathematical translation system. Shared code, the read-only LaTeX template, translation policy, QA rules, and the global terminology library live once at repository level. Every book's source and generated state are isolated below `books/<book-id>/` and, while active, on a dedicated Git branch and worktree.
 
-## Read-only inputs
+The completed first book is registered as `fourier-analysis` in [PROJECTS.md](PROJECTS.md). Its accepted translation, QA evidence, source, and final PDF were migrated without retranslation.
 
-- Template `.sty` or `.cls`: `input/template/style/`
-- Reference `.tex`: `input/template/reference/`
-- Reference images, `.bib`, fonts, and auxiliary files: `input/template/assets/`
-- Future source PDF: `input/source/`
+## Daily commands
 
-Everything below `input/template/` and `input/source/` is treated as read-only. Commands copy files into isolated temporary directories when compilation or processing is required.
+Create a new book from `main`:
 
-## Environment
-
-The Python implementation has no third-party runtime dependency. From a development checkout, either install the package with `python -m pip install -e .` or set `PYTHONPATH=src`. Template compilation requires the TeX tools identified in `qa/template/dependencies.md`.
-
-## Commands
-
-```text
-python -m mathbook status
-python -m mathbook inspect-template
-python -m mathbook verify-template
-python -m mathbook compile-template
-python -m mathbook validate-project
-python -m mathbook inspect-pdf
-python -m mathbook render
-python -m mathbook extract
-python -m mathbook structure
-python -m mathbook terminology
-python -m mathbook check-names
-python -m mathbook translate
-python -m mathbook qa
-python -m mathbook compile
+```bash
+python -m mathbook new-book <book-id> --source "/path/to/book.pdf"
 ```
 
-Until a source PDF is supplied, every PDF-dependent command exits safely with:
+The command validates the ID and PDF, records hashes and template version, creates `books/<book-id>/`, commits the registration locally, creates `book/<book-id>`, and creates a dedicated sibling worktree. It prints the worktree location.
 
-```text
-Source PDF has not been supplied. Phase 2 cannot begin.
+Start diagnosis and the representative-sample workflow from that worktree:
+
+```bash
+python -m mathbook start-book <book-id>
 ```
 
-## Make targets
+After sample review:
 
-`make test`, `make lint`, `make inspect-template`, `make verify-template`, and `make compile-template` perform the Phase 1 checks.
+```bash
+python -m mathbook approve-sample <book-id>
+python -m mathbook translate-book <book-id>
+```
 
+Resume safely after interruption:
+
+```bash
+python -m mathbook resume <book-id>
+```
+
+Run final whole-book QA and completion:
+
+```bash
+python -m mathbook finish-book <book-id>
+```
+
+Inspect state:
+
+```bash
+python -m mathbook status <book-id>
+python -m mathbook list-books
+```
+
+Users do not need to create directories, switch branches, or manage worktrees manually. Mathematical translation stages are executed by an explicitly configured Codex/agent processor; if none is available, the controller stops truthfully instead of fabricating translation or QA output.
+
+## Terminology
+
+```bash
+python -m mathbook terminology review <book-id>
+python -m mathbook terminology promote <book-id>
+python -m mathbook terminology conflicts
+python -m mathbook terminology history
+```
+
+Books write candidates and unresolved terms only inside their own directory. Controlled promotion uses `English + Domain + Context`, refuses silent overwrite, and appends every accepted change to `glossary/terminology-history.tsv`.
+
+## Make interface
+
+The same workflows are available as `make new-book`, `make start-book`, `make approve-sample`, `make translate-book`, `make resume`, `make finish-book`, `make status`, and `make list-books` with `BOOK` and, for new books, `SOURCE` variables.
+
+All commits and worktrees created by project automation are local. No workflow pushes to GitHub or modifies `origin`.

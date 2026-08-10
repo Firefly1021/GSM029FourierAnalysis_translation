@@ -7,10 +7,12 @@ import shutil
 from collections import defaultdict
 from pathlib import Path
 
+from mathbook.script_context import selected_book_root
+
 from build_chapter_metadata import collect_displays, read_jsonl, write_jsonl
 
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = selected_book_root()
 
 
 def main() -> int:

@@ -10,8 +10,10 @@ import shutil
 from collections import defaultdict
 from pathlib import Path
 
+from mathbook.script_context import selected_book_root
 
-ROOT = Path(__file__).resolve().parents[1]
+
+ROOT = selected_book_root()
 ANCHOR_OR_DISPLAY = re.compile(
     r"\\hypertarget\{(?P<anchor>[a-z0-9-]+)-page-(?P<page>\d{3})\}\{\}"
     r"|(?P<equation>\\begin\{equation\*?\}.*?\\end\{equation\*?\})"

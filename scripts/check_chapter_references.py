@@ -8,8 +8,10 @@ import re
 from collections import Counter
 from pathlib import Path
 
+from mathbook.script_context import selected_book_root
 
-ROOT = Path(__file__).resolve().parents[1]
+
+ROOT = selected_book_root()
 LABEL = re.compile(r"\\label\{([^}]+)\}")
 REFERENCE = re.compile(r"\\(?P<command>eqref|ref|cref|Cref|autoref|pageref)\{(?P<label>[^}]+)\}")
 UNRESOLVED = re.compile(r"\\MBUnresolvedReference\{(?P<kind>[^}]+)\}\{(?P<source>[^}]+)\}")
