@@ -1,0 +1,100 @@
+\MathBookSourcePage{367}
+\subsection{停止准则}
+\label{sec:ch13-stopping-criteria}
+\setcounter{thmcount}{0}
+\setcounter{equation}{0}
+
+对任何迭代方法, 都希望有一个基于易计算信息的良好停止准则. 对迭代罚方法, 这极其简单. 假设 $P_{\Pi_h}g$ 可用某种方式容易地计算. 在许多应用中 $g=0$, 此时这一步是平凡的. 但在其他应用中, 它需要一些附加工作. 随后说明如何避免这一点.
+
+误差 $e^n=u^n-u_h$ 满足
+\MBSourceItem{1}
+\begin{equation}
+\MathBookFormulaID{formula-ch13-velocity-stopping-estimate}
+\label{eq:ch13-velocity-stopping-estimate}
+\begin{aligned}
+\|u^n-u_h\|_V=\|e^n\|_V
+&\leq\left(\frac1\beta+\frac{C_a}{\alpha\beta}\right)\|De^n\|_\Pi\\
+&=\left(\frac1\beta+\frac{C_a}{\alpha\beta}\right)
+\|Du^n-P_{\Pi_h}g\|_\Pi.
+\end{aligned}
+\end{equation}
+误差 $\epsilon^n=p^n-p_h$ 满足
+\[
+\MathBookFormulaID{formula-ch13-pressure-stopping-estimate-derivation}
+\begin{aligned}
+\beta\|p^n-p_h\|_\Pi
+&=\beta\|\epsilon^n\|_\Pi\\
+&\leq\sup_{v\in V_h}\frac{|b(v,\epsilon^n)|}{\|v\|_V}\\
+&=\sup_{v\in V_h}
+\frac{|a(e^n,v)+r(De^n,Dv)_\Pi|}{\|v\|_V}\\
+&\leq C_a\|e^n\|_V+rC_b\|De^n\|_\Pi\\
+&=C_a\|u^n-u_h\|_V+rC_b\|Du^n-P_{\Pi_h}g\|_\Pi.
+\end{aligned}
+\]
+合并以上估计得到下述定理.
+
+\MathBookSourcePage{368}
+\MBSourceItem{2}
+\begin{Theorem}
+\label{thm:ch13-iterated-penalty-stopping-errors}
+假设形式~\eqref{eq:ch13-linearized-navier-form} 满足~\eqref{eq:ch13-continuity-conditions} 和~\eqref{eq:ch13-coercivity-and-inf-sup}. 假设 $V_h$ 与 $\Pi_h=DV_h$ 满足~\eqref{eq:ch13-coercivity-and-inf-sup}. 则算法~\eqref{eq:ch13-iterated-penalty-algorithm} 中的误差满足
+\MBSourceItem{3}
+\begin{equation}
+\MathBookFormulaID{formula-ch13-velocity-error-projected-residual}
+\label{eq:ch13-velocity-error-projected-residual}
+\|u^n-u_h\|_V
+\leq\left(\frac1\beta+\frac{C_a}{\alpha\beta}\right)
+\|Du^n-P_{\Pi_h}g\|_\Pi,
+\end{equation}
+以及
+\MBSourceItem{4}
+\begin{equation}
+\MathBookFormulaID{formula-ch13-pressure-error-projected-residual}
+\label{eq:ch13-pressure-error-projected-residual}
+\|p^n-p_h\|_\Pi
+\leq\left(\frac{C_a}{\beta}+\frac{C_a^2}{\alpha\beta}+rC_b\right)
+\|Du^n-P_{\Pi_h}g\|_\Pi.
+\end{equation}
+\end{Theorem}
+
+在迭代过程中监控 $\|Du^n-P_{\Pi_h}g\|_\Pi$, 就可确定迭代罚方法的收敛性质. 当该量充分小时, 即可终止迭代.
+
+这种方法的主要缺点是必须计算 $P_{\Pi_h}g$ 才能确定误差容限. 因为 $Du^n\in\Pi_h$,
+\[
+\MathBookFormulaID{formula-ch13-projected-residual-contraction}
+\|Du^n-P_{\Pi_h}g\|_\Pi
+=\|P_{\Pi_h}(Du^n-g)\|_\Pi
+\leq\|Du^n-g\|_\Pi,
+\]
+而后一范数在某些情形下容易计算或估计, 从而可以避免计算 $P_{\Pi_h}g$. 将这一观察表述为:
+
+\MBSourceItem{5}
+\begin{Corollary}
+\label{cor:ch13-iterated-penalty-unprojected-residual-errors}
+在定理~\ref{thm:ch13-iterated-penalty-stopping-errors} 的条件下, 算法~\eqref{eq:ch13-iterated-penalty-algorithm} 中的误差满足
+\MBSourceItem{6}
+\begin{equation}
+\MathBookFormulaID{formula-ch13-velocity-error-unprojected-residual}
+\label{eq:ch13-velocity-error-unprojected-residual}
+\|u^n-u_h\|_V
+\leq\left(\frac1\beta+\frac{C_a}{\alpha\beta}\right)
+\|Du^n-g\|_\Pi,
+\end{equation}
+以及
+\MBSourceItem{7}
+\begin{equation}
+\MathBookFormulaID{formula-ch13-pressure-error-unprojected-residual}
+\label{eq:ch13-pressure-error-unprojected-residual}
+\|p^n-p_h\|_\Pi
+\leq\left(\frac{C_a}{\beta}+\frac{C_a^2}{\alpha\beta}+rC_b\right)
+\|Du^n-g\|_\Pi.
+\end{equation}
+\end{Corollary}
+
+\MBSourceItem{8}
+\begin{Remark}
+\label{rem:ch13-large-penalty-pressure-effect}
+以上估计表明, 可以预期任意增大 $r$ 会对压力逼近产生不利影响, 尽管它对速度逼近的影响可能很小.
+\end{Remark}
+
+本节和上一节的结果可直接用于第~\ref{chap:ch12-mixed-methods} 章中的若干混合方法. 例如, 令 $V_h$ 如定理~\ref{thm:ch12-divVh-pressure-errors} 中所述, 且 $\Pi_h:=\operatorname{div}V_h$, 则算法~\eqref{eq:ch13-iterated-penalty-algorithm} 对 Stokes 问题~\eqref{eq:ch12-stokes-abstract-problem}(参见习题~\ref{exr:ch13-stokes-iterated-penalty})以及标量椭圆问题~\eqref{eq:ch12-porous-medium-mixed-problem}(参见习题~\ref{exr:ch13-scalar-elliptic-iterated-penalty})均收敛.

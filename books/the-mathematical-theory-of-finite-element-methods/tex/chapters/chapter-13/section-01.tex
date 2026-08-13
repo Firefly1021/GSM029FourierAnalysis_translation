@@ -1,0 +1,234 @@
+\MathBookSourcePage{363}
+\subsection{迭代罚方法}
+\label{sec:ch13-iterated-penalty-method}
+\setcounter{thmcount}{0}
+\setcounter{equation}{0}
+
+考虑上一章研究的~\eqref{eq:ch12-general-mixed-problem} 型一般混合方法, 即
+\MBSourceItem{1}
+\begin{equation}
+\MathBookFormulaID{formula-ch13-discrete-mixed-system}
+\label{eq:ch13-discrete-mixed-system}
+\begin{aligned}
+a(u_h,v)+b(v,p_h)&=F(v)&&\forall v\in V_h,\\
+b(u_h,q)&=(g,q)_\Pi&&\forall q\in\Pi_h,
+\end{aligned}
+\end{equation}
+其中 $F\in V'$ 且 $g\in\Pi$. 这里 $V$ 和 $\Pi$ 是两个 Hilbert 空间, $V_h\subset V$ 和 $\Pi_h\subset\Pi$ 分别为其子空间. 假设双线性形式满足连续性条件
+\MBSourceItem{2}
+\begin{equation}
+\MathBookFormulaID{formula-ch13-continuity-conditions}
+\label{eq:ch13-continuity-conditions}
+\begin{aligned}
+|a(u,v)|&\leq C_a\|u\|_V\|v\|_V&&\forall u,v\in V,\\
+|b(v,p)|&\leq C_b\|v\|_V\|p\|_\Pi&&\forall v\in V,\ p\in\Pi,
+\end{aligned}
+\end{equation}
+以及强制性条件
+\MBSourceItem{3}
+\begin{equation}
+\MathBookFormulaID{formula-ch13-coercivity-and-inf-sup}
+\label{eq:ch13-coercivity-and-inf-sup}
+\alpha\|v\|_V^2\leq a(v,v)\quad\forall v\in Z\cup Z_h,
+\qquad
+\beta\|p\|_\Pi\leq
+\sup_{v\in V_h}\frac{b(v,p)}{\|v\|_V}quad\forall p\in\Pi_h.
+\end{equation}
+其中 $Z$ 和 $Z_h$ 分别由~\eqref{eq:ch12-kernel-Z} 和~\eqref{eq:ch12-discrete-kernel-Zh} 定义. 还回顾我们假设~\eqref{eq:ch12-b-as-D-inner-product}, 即 $b(v,p)=(Dv,p)_\Pi$.
+
+令 $r\in\mathbb R$ 且 $\rho>0$. 迭代罚方法按下式定义 $u^n\in V_h$ 和 $p^n$:
+\MBSourceItem{4}
+\begin{equation}
+\MathBookFormulaID{formula-ch13-iterated-penalty-algorithm}
+\label{eq:ch13-iterated-penalty-algorithm}
+\begin{aligned}
+a(u^n,v)+r(Du^n-g,Dv)_\Pi
+&=F(v)-b(v,p^n)&&\forall v\in V_h,\\
+p^{n+1}&=p^n+\rho(Du^n-P_{\Pi_h}g).
+\end{aligned}
+\end{equation}
+其中 $P_{\Pi_h}g$ 表示 $g$ 到 $\Pi_h$ 的 $\Pi$-投影. 注意~\eqref{eq:ch13-discrete-mixed-system} 的第二个方程说明
+\MBSourceItem{5}
+\begin{equation}
+\MathBookFormulaID{formula-ch13-discrete-projected-constraint}
+\label{eq:ch13-discrete-projected-constraint}
+P_{\Pi_h}Du_h=P_{\Pi_h}g.
+\end{equation}
+该算法不要求计算 $P_{\Pi_h}g$, 只需使用
+$b(v,P_{\Pi_h}g)=(Dv,P_{\Pi_h}g)_\Pi=(P_{\Pi_h}Dv,g)_\Pi$, $v\in V_h$.
+
+迭代罚方法的关键是, ~\eqref{eq:ch13-iterated-penalty-algorithm} 第一个方程所表示的关于 $u^n$ 的方程组
+\[
+\MathBookFormulaID{formula-ch13-iterated-penalty-linear-system}
+a(u^n,v)+r(Du^n,Dv)_\Pi
+=F(v)-b(v,p^n)+r(g,Dv)_\Pi
+\quad\forall v\in V_h
+\]
+在 $a(\cdot,\cdot)$ 对称时是对称的, 并在 $a(\cdot,\cdot)$ 强制且 $r>0$ 时正定.
+
+若 $g=0$ 且以 $p^0=0$ 开始, 则对所有 $n$ 都有 $p^n\in DV_h$. 特别地, $p^n=Dw^n$, 其中 $w^n\in V_h$ 满足
+\[
+\MathBookFormulaID{formula-ch13-iterated-penalty-implicit-w}
+\begin{aligned}
+a(u^n,v)+r(Du^n,Dv)_\Pi
+&=F(v)-(Dv,Dw^n)_\Pi&&\forall v\in V_h,\\
+w^{n+1}&=w^n+\rho u^n.
+\end{aligned}
+\]
+因此, 迭代罚方法隐式地产生一个与选择 $\Pi_h=DV_h$ 密切相关的逼近. 若能证明 $u^n\to u_h\in V_h$ 且 $p^n\to p_h\in\Pi_h$, 则 $Du^n\to0$, 并且 $(u_h,p_h)$ 解~\eqref{eq:ch13-discrete-mixed-system}. 注意 $w^n=\rho\sum_{i=0}^{n-1}u^i$ 一般不会收敛. $g\neq0$ 的情形参见 Scott, Ilin, Metcalfe 与 Bagheri (1996).
+
+为研究~\eqref{eq:ch13-iterated-penalty-algorithm} 的收敛性, 令 $e^n:=u^n-u_h$ 且 $\epsilon^n:=p^n-p_h$, 其中 $(u_h,p_h)$ 解~\eqref{eq:ch13-discrete-mixed-system}. 假设 $\Pi_h=DV_h$, 此时~\eqref{eq:ch13-discrete-projected-constraint} 化为 $Du_h=P_{\Pi_h}g$. 将~\eqref{eq:ch13-discrete-mixed-system} 从~\eqref{eq:ch13-iterated-penalty-algorithm} 中相减, 得到
+\MBSourceItem{6}
+\begin{equation}
+\MathBookFormulaID{formula-ch13-iterated-penalty-error-equation}
+\label{eq:ch13-iterated-penalty-error-equation}
+a(e^n,v)+r(De^n,Dv)_\Pi=-b(v,\epsilon^n)
+\quad\forall v\in V_h,
+\end{equation}
+以及
+\MBSourceItem{7}
+\begin{equation}
+\MathBookFormulaID{formula-ch13-pressure-error-recurrence}
+\label{eq:ch13-pressure-error-recurrence}
+\epsilon^{n+1}=\epsilon^n+\rho(Du^n-P_{\Pi_h}g)
+=\epsilon^n+\rho De^n.
+\end{equation}
+
+\MathBookSourcePage{365}
+注意 $e^n\in\widetilde Z_h^\perp$, 这里用波浪号将空间
+\MBSourceItem{8}
+\begin{equation}
+\MathBookFormulaID{formula-ch13-a-orthogonal-complement}
+\label{eq:ch13-a-orthogonal-complement}
+\widetilde Z_h^\perp
+:=\{v\in V_h:a(v,w)=0\ \forall w\in Z_h\}
+\end{equation}
+与~\eqref{eq:ch12-Zh-perp} 中基于内积 $(\cdot,\cdot)_V$ 定义的空间 $Z_h^\perp$ 区分开. 因为 $\Pi_h=DV_h$, 有 $Z_h=\{v\in V_h:Dv=0\}$. 因此可把 $e^n\in\widetilde Z_h^\perp$ 刻画为
+\MBSourceItem{9}
+\begin{equation}
+\MathBookFormulaID{formula-ch13-error-equation-on-complement}
+\label{eq:ch13-error-equation-on-complement}
+a(e^n,v)+r(De^n,Dv)_\Pi=-b(v,\epsilon^n)
+\quad\forall v\in\widetilde Z_h^\perp.
+\end{equation}
+新旧误差之间满足
+\MBSourceItem{10}
+\begin{equation}
+\MathBookFormulaID{formula-ch13-successive-error-relation}
+\label{eq:ch13-successive-error-relation}
+\begin{aligned}
+a(e^{n+1},v)+r(De^{n+1},Dv)_\Pi
+&=-b(v,\epsilon^{n+1})\\
+&=-b(v,\epsilon^n)-\rho b(v,De^n)\\
+&=-b(v,\epsilon^n)-\rho(Dv,De^n)_\Pi\\
+&=a(e^n,v)+r(De^n,Dv)_\Pi-\rho(Dv,De^n)_\Pi\\
+&=a(e^n,v)+(r-\rho)(De^n,Dv)_\Pi.
+\end{aligned}
+\end{equation}
+除以 $r$, 取 $v=e^{n+1}$, 并应用 Schwarz 不等式及~\eqref{eq:ch13-continuity-conditions}, 得到
+\MBSourceItem{11}
+\begin{equation}
+\MathBookFormulaID{formula-ch13-basic-error-contraction-bound}
+\label{eq:ch13-basic-error-contraction-bound}
+\begin{aligned}
+\|De^{n+1}\|_\Pi^2+\frac1r a(e^{n+1},e^{n+1})
+&\leq\frac{C_a}{r}\|e^{n+1}\|_V\|e^n\|_V\\
+&\quad+\left|1-\frac\rho r\right|
+\|De^{n+1}\|_\Pi\|De^n\|_\Pi\\
+&\leq\left(\frac{C_a}{r}+C_b^2\left|1-\frac\rho r\right|\right)
+\|e^{n+1}\|_V\|e^n\|_V.
+\end{aligned}
+\end{equation}
+关键点在于, 若~\eqref{eq:ch12-discrete-inf-sup} 成立, 则双线性形式 $(Dv,Dv)_\Pi$ 在 $\widetilde Z_h^\perp$ 上强制. 因而对 $0<\rho<2r$ 的任意 $\rho$, 可得 $e^n\to0$. 若~\eqref{eq:ch12-discrete-inf-sup} 成立, 再由~\eqref{eq:ch13-iterated-penalty-error-equation} 得 $\epsilon^n\to0$.
+
+对 $\Pi_h=DV_h$, ~\eqref{eq:ch13-coercivity-and-inf-sup} 中第二个条件等价于存在算子 $D$ 的右逆 $L:\Pi_h\to V_h$(参见引理~\ref{lem:ch12-inf-sup-operator-equivalence} 以及 Scott 与 Vogelius 1985a), 即
+\MBSourceItem{12}
+\begin{equation}
+\MathBookFormulaID{formula-ch13-right-inverse-L}
+\label{eq:ch13-right-inverse-L}
+D(Lq)=q\qquad\forall q\in\Pi_h,
+\end{equation}
+且满足
+\MBSourceItem{13}
+\begin{equation}
+\MathBookFormulaID{formula-ch13-right-inverse-L-bound}
+\label{eq:ch13-right-inverse-L-bound}
+\|Lq\|_V\leq\frac1\beta\|q\|_\Pi
+\qquad\forall q\in\Pi_h.
+\end{equation}
+
+现在研究 $(Dw,Dw)_\Pi$ 在 $w\in\widetilde Z_h^\perp$ 上的强制性. 由于 $\widetilde Z_h^\perp$ 使用双线性形式 $a(\cdot,\cdot)$ 而非 $(\cdot,\cdot)_V$ 定义, 不能直接使用 Hilbert 空间性质, 必须重新检查定义. 首先, $\widetilde Z_h^\perp$ 是 $V_h$ 的闭线性子空间, 因为 $a(\cdot,\cdot)$ 双线性且连续. 其次, $\widetilde Z_h^\perp\cap Z_h=\{0\}$, 因为 $a(\cdot,\cdot)$ 在 $Z_h$ 上强制.
+
+\MathBookSourcePage{366}
+最后, 任意 $w\in V_h$ 都可分解为 $w=z+z^\perp$, 其中 $z\in Z_h$ 且 $z^\perp\in\widetilde Z_h^\perp$. 为此, 令 $z\in Z_h$ 解
+\[
+\MathBookFormulaID{formula-ch13-a-orthogonal-decomposition}
+a(z,v)=a(w,v)\qquad\forall v\in Z_h,
+\]
+其存在性由 Céa 定理~\ref{thm:ch02-cea} 保证. 此时 $z^\perp:=w-z$ 满足 $a(z^\perp,v)=0$ 对所有 $v\in Z_h$, 即 $z^\perp\in\widetilde Z_h^\perp$. 因而 $V_h=Z_h\oplus\widetilde Z_h^\perp$.
+
+如下定义 $L_a:\Pi_h\to V_h$. 对 $q\in\Pi_h$, 令 $z_q\in Z_h$ 解
+\[
+\MathBookFormulaID{formula-ch13-La-correction-problem}
+a(z_q,v)=a(Lq,v)\qquad\forall v\in Z_h,
+\]
+并置 $L_aq=Lq-z_q$. 由 Céa 定理~\ref{thm:ch02-cea} 与 $a(\cdot,\cdot)$ 的强制性及连续性,
+$\|z_q\|_V\leq(C_a/\alpha)\|Lq\|_V$. 因此由三角不等式和~\eqref{eq:ch13-right-inverse-L-bound},
+\MBSourceItem{14}
+\begin{equation}
+\MathBookFormulaID{formula-ch13-La-bound}
+\label{eq:ch13-La-bound}
+\|L_aq\|_V
+\leq\left(1+\frac{C_a}{\alpha}\right)\|Lq\|_V
+\leq\left(1+\frac{C_a}{\alpha}\right)\frac1\beta\|q\|_\Pi
+\qquad\forall q\in\Pi_h.
+\end{equation}
+由 $L_a$ 的定义和~\eqref{eq:ch13-right-inverse-L},
+\MBSourceItem{15}
+\begin{equation}
+\MathBookFormulaID{formula-ch13-La-right-inverse}
+\label{eq:ch13-La-right-inverse}
+DL_aq=DLq=q\qquad\forall q\in\Pi_h.
+\end{equation}
+
+断言对 $w\in\widetilde Z_h^\perp$ 有 $w=L_aDw$. 事实上, 令 $q:=Dw$, 则
+$a(L_aDw,v)=a(Lq-z_q,v)=0$ 对所有 $v\in Z_h$, 故 $L_aDw\in\widetilde Z_h^\perp$. 因此 $w-L_aDw\in\widetilde Z_h^\perp$. 但~\eqref{eq:ch13-La-right-inverse} 蕴含 $D(w-L_aDw)=0$, 从而 $w-L_aDw\in Z_h$. 由 $Z_h\cap\widetilde Z_h^\perp=\{0\}$, 得 $w=L_aDw$. 由~\eqref{eq:ch13-La-bound},
+\MBSourceItem{16}
+\begin{equation}
+\MathBookFormulaID{formula-ch13-complement-D-coercivity}
+\label{eq:ch13-complement-D-coercivity}
+\|w\|_V=\|L_aDw\|_V
+\leq\left(\frac1\beta+\frac{C_a}{\alpha\beta}\right)\|Dw\|_\Pi
+\qquad\forall w\in\widetilde Z_h^\perp.
+\end{equation}
+把它用于~\eqref{eq:ch13-basic-error-contraction-bound}, 并使用~\eqref{eq:ch13-continuity-conditions}--\eqref{eq:ch13-coercivity-and-inf-sup}, 得到
+\MBSourceItem{17}
+\begin{equation}
+\MathBookFormulaID{formula-ch13-D-error-geometric-bound}
+\label{eq:ch13-D-error-geometric-bound}
+\left(1+\frac{c_1}{r}\right)\|De^{n+1}\|_\Pi
+\leq\left(\left|1-\frac\rho r\right|+\frac{c_2}{r}\right)\|De^n\|_\Pi.
+\end{equation}
+因此当 $0<\rho<2r$ 且 $r$ 充分大时, $De^n\to0$ 几何收敛. 由~\eqref{eq:ch13-successive-error-relation}, $e^n\to0$(参见习题~\ref{exr:ch13-cauchy-error-sequence}). 另一方面, 使用 $a(\cdot,\cdot)$ 的强制性得到
+\MBSourceItem{18}
+\begin{equation}
+\MathBookFormulaID{formula-ch13-e-error-geometric-bound}
+\label{eq:ch13-e-error-geometric-bound}
+\left[\left(\frac1\beta+\frac{C_a}{\alpha\beta}\right)^{-2}
++\frac{\alpha^2}{r}\right]\|e^{n+1}\|_V
+\leq\left(\frac{C_a}{r}+C_b^2\left|1-\frac\rho r\right|\right)\|e^n\|_V.
+\end{equation}
+
+\MathBookSourcePage{367}
+汇总以上结果得到:
+\MBSourceItem{19}
+\begin{Theorem}
+\label{thm:ch13-iterated-penalty-convergence}
+假设形式~\eqref{eq:ch13-discrete-mixed-system} 满足~\eqref{eq:ch13-continuity-conditions} 和~\eqref{eq:ch13-coercivity-and-inf-sup}. 再假设 $V_h$ 与 $\Pi_h=DV_h$ 满足~\eqref{eq:ch13-coercivity-and-inf-sup}. 则当 $r$ 充分大时, 算法~\eqref{eq:ch13-iterated-penalty-algorithm} 对任意 $0<\rho<2r$ 收敛. 当 $\rho=r$ 时, ~\eqref{eq:ch13-iterated-penalty-algorithm} 几何收敛, 其收敛率为
+\[
+\MathBookFormulaID{formula-ch13-iterated-penalty-convergence-rate}
+C_a\left(\frac1\beta+\frac{C_a}{\alpha\beta}\right)^2\bigg/r.
+\]
+\end{Theorem}
+
+注意当 $r=\rho$ 时, ~\eqref{eq:ch13-e-error-geometric-bound} 蕴含标准罚方法在 $r\to\infty$ 时收敛($e^1\to0$). 但~\eqref{eq:ch13-iterated-penalty-error-equation} 中 $\epsilon^1$ 的表达式在 $r\to\infty$ 时恶化, 因而不能得出关于 $\epsilon^1$ 的结论. 所以需要迭代罚方法来保证压力逼近收敛.

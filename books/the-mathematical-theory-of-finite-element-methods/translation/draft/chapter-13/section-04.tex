@@ -1,0 +1,200 @@
+\MathBookSourcePage{371}
+\subsection{Navier--Stokes 方程的应用}
+\label{sec:ch13-application-Navier-Stokes}
+\setcounter{thmcount}{0}
+\setcounter{equation}{0}
+
+现在考察前几节理论的一个更复杂应用, 即 Navier--Stokes 方程的时间步进格式. 黏性、不可压缩 Newtonian 流体的 Navier--Stokes 方程可写为
+\MBSourceItem{1}
+\begin{equation}
+\MathBookFormulaID{formula-ch13-navier-stokes-equations}
+\label{eq:ch13-navier-stokes-equations}
+\begin{aligned}
+-\Delta\chvec u+\chvec\nabla p
+&=-R(\chvec u\cdot\nabla\chvec u+\chvec u_t),\\
+\operatorname{div}\chvec u&=0
+\end{aligned}
+\qquad\text{in }\Omega\subset\mathbb R^d,
+\end{equation}
+其中 $\chvec u$ 表示流体速度, $p$ 表示压力. 表达式 $\chvec u\cdot\nabla\chvec v$ 是一个向量函数, 其第 $i$ 个分量为 $\chvec u\cdot\nabla v_i$. 这些方程描述二维和三维流动(分别为 $d=2$ 和 $3$); 在二维情形, 流场与第三个变量无关, $\chvec u$ 的第三个分量相应为零. 这些方程必须配以适当的边界条件, 例如 $\partial\Omega$ 上的 Dirichlet 边界条件 $\chvec u=0$.
+
+式~\eqref{eq:ch13-navier-stokes-equations} 中参数 $R$ 称为 Reynolds 数. 当它很小时, 方程化为前面研究的 Stokes 方程. 求解~\eqref{eq:ch13-navier-stokes-equations} 的数值技术通常包含两类不同问题: 一类与求解 Stokes 或类 Stokes 方程有关, 另一类与离散乘以 $R$ 的对流项有关. 这里集中考察特别简单的时间步进格式, 着重说明它对相应类 Stokes 方程具体形式的影响. 更复杂的时间步进格式也产生类似的类 Stokes 方程. 更多信息参见 Glowinski 与 Pironneau (1992) 的综述.
+
+式~\eqref{eq:ch13-navier-stokes-equations} 的完整变分形式为
+\MBSourceItem{2}
+\begin{equation}
+\MathBookFormulaID{formula-ch13-navier-stokes-variational-form}
+\label{eq:ch13-navier-stokes-variational-form}
+\begin{aligned}
+a(\chvec u,\chvec v)+b(\chvec v,p)
++R\bigl(c(\chvec u,\chvec u,\chvec v)
++(\chvec u_t,\chvec v)_{L^2}\bigr)&=0
+&&\forall\chvec v\in V,\\
+b(\chvec u,q)&=0&&\forall q\in\Pi,
+\end{aligned}
+\end{equation}
+其中 $a(\cdot,\cdot)$ 和 $b(\cdot,\cdot)$ 例如分别由~\eqref{eq:ch12-stokes-a-form} 和~\eqref{eq:ch12-divergence-b-form} 给出, $(\cdot,\cdot)_{L^2}$ 表示 $L^2(\Omega)^d$ 内积, 且
+\MathBookSourcePage{372}
+\MBSourceItem{3}
+\begin{equation}
+\MathBookFormulaID{formula-ch13-advection-trilinear-form}
+\label{eq:ch13-advection-trilinear-form}
+c(\chvec u,\chvec v,\chvec w)
+:=\int_\Omega(\chvec u\cdot\nabla\chvec v)\cdot\chvec w\,dx.
+\end{equation}
+空间 $V$ 与 $\Pi$ 和 Stokes 方程相同, 如~\eqref{eq:ch12-divergence-b-form} 后的段落所定义.
+
+Navier--Stokes 方程~\eqref{eq:ch13-navier-stokes-equations} 最简单的时间步进格式之一对线性项隐式、对非线性项显式. 其变分形式为
+\MBSourceItem{4}
+\begin{equation}
+\MathBookFormulaID{formula-ch13-explicit-nonlinear-time-step}
+\label{eq:ch13-explicit-nonlinear-time-step}
+\begin{aligned}
+a(\chvec u^\ell,\chvec v)+b(\chvec v,p^\ell)
++R c(\chvec u^{\ell-1},\chvec u^{\ell-1},\chvec v)
++\frac R{\Delta t}(\chvec u^\ell-\chvec u^{\ell-1},\chvec v)_{L^2}&=0,\\
+b(\chvec u^\ell,q)&=0,
+\end{aligned}
+\end{equation}
+这里及下文中, $\chvec v$ 遍历 $V$(或 $V_h$), $q$ 遍历 $\Pi$(或 $\Pi_h$), $\Delta t$ 表示时间步长. 每一时间步都需要求解一个关于 $(\chvec u^\ell,p^\ell)$ 的~\eqref{eq:ch13-discrete-mixed-system} 型问题, 但其中形式 $a(\cdot,\cdot)$ 更一般, 即
+\MBSourceItem{5}
+\begin{equation}
+\MathBookFormulaID{formula-ch13-mass-augmented-form}
+\label{eq:ch13-mass-augmented-form}
+\widetilde a(\chvec u,\chvec v)
+:=a(\chvec u,\chvec v)+\tau(\chvec u,\chvec v)_{L^2},
+\end{equation}
+其中常数 $\tau=R/\Delta t$. 下一节给出这一问题的数值实验. 注意每一时间步待解的线性代数问题都相同.
+
+方程~\eqref{eq:ch13-explicit-nonlinear-time-step} 可写成关于 $(\chvec u^\ell,p^\ell)$ 的~\eqref{eq:ch13-discrete-mixed-system} 型问题:
+\[
+\MathBookFormulaID{formula-ch13-explicit-step-mixed-system}
+\begin{aligned}
+\widetilde a(\chvec u^\ell,\chvec v)+b(\chvec v,p^\ell)
+&=-R c(\chvec u^{\ell-1},\chvec u^{\ell-1},\chvec v)
++\tau(\chvec u^{\ell-1},\chvec v)_{L^2},\\
+b(\chvec u^\ell,q)&=0.
+\end{aligned}
+\]
+因此, ~\eqref{eq:ch13-explicit-nonlinear-time-step} 的迭代罚方法(取 $r=\rho$)为
+\MBSourceItem{6}
+\begin{equation}
+\MathBookFormulaID{formula-ch13-explicit-step-iterated-penalty}
+\label{eq:ch13-explicit-step-iterated-penalty}
+\begin{aligned}
+\widetilde a(\chvec u^{\ell,n},\chvec v)
++r(\operatorname{div}\chvec u^{\ell,n},\operatorname{div}\chvec v)_{L^2}
+&=-R c(\chvec u^{\ell-1},\chvec u^{\ell-1},\chvec v)\\
+&\quad+\tau(\chvec u^{\ell-1},\chvec v)_{L^2}
+-b(\chvec v,p^{\ell,n}),\\
+p^{\ell,n+1}&=p^{\ell,n}-r\operatorname{div}\chvec u^{\ell,n}.
+\end{aligned}
+\end{equation}
+例如可取 $p^{\ell,0}=0$ 且 $n=0$ 开始, 继续迭代直到满足第~\ref{sec:ch13-stopping-criteria} 节所述停止准则. 此时置 $\chvec u^\ell=\chvec u^{\ell,n}$, 并把 $\ell$ 增加一以进入下一时间步. 为明确起见可置 $p^\ell=p^{\ell,n}$, 但压力并不参与时间推进.
+
+\MathBookSourcePage{373}
+取 $p^{\ell,0}=0$ 时, ~\eqref{eq:ch13-explicit-step-iterated-penalty} 可写为
+\MBSourceItem{7}
+\begin{equation}
+\MathBookFormulaID{formula-ch13-explicit-step-implicit-w}
+\label{eq:ch13-explicit-step-implicit-w}
+\begin{aligned}
+\widetilde a(\chvec u^{\ell,n},\chvec v)
++r(\operatorname{div}\chvec u^{\ell,n},\operatorname{div}\chvec v)_{L^2}
+&=-R c(\chvec u^{\ell-1},\chvec u^{\ell-1},\chvec v)\\
+&\quad+\tau(\chvec u^{\ell-1},\chvec v)_{L^2}
++(\operatorname{div}\chvec v,\operatorname{div}\chvec w^{\ell,n})_{L^2},\\
+\chvec w^{\ell,n+1}&=\chvec w^{\ell,n}+r\chvec u^{\ell,n},
+\end{aligned}
+\end{equation}
+其中 $\chvec w^{\ell,0}=0$. 若出于某种原因需要 $p^\ell=p^{\ell,n}=-\operatorname{div}\chvec w^{\ell,n}$, 可另行计算.
+
+一种更复杂的时间步进格式可基于变分方程
+\MBSourceItem{8}
+\begin{equation}
+\MathBookFormulaID{formula-ch13-semi-implicit-nonlinear-time-step}
+\label{eq:ch13-semi-implicit-nonlinear-time-step}
+\begin{aligned}
+a(\chvec u^\ell,\chvec v)+b(\chvec v,p^\ell)
++R c(\chvec u^{\ell-1},\chvec u^\ell,\chvec v)
++\frac R{\Delta t}(\chvec u^\ell-\chvec u^{\ell-1},\chvec v)_{L^2}&=0,\\
+b(\chvec u^\ell,q)&=0.
+\end{aligned}
+\end{equation}
+这里非线性项的逼近方式使线性代数问题在每一时间步都发生变化. 它仍是~\eqref{eq:ch13-discrete-mixed-system} 型问题, 但其中形式 $\widetilde a(\cdot,\cdot)$ 为
+\MBSourceItem{9}
+\begin{equation}
+\MathBookFormulaID{formula-ch13-linearized-navier-form}
+\label{eq:ch13-linearized-navier-form}
+\widetilde a(\chvec u,\chvec v;\chvec U)
+:=a(\chvec u,\chvec v)
++\int_\Omega\bigl(\tau\chvec u\cdot\chvec v
++\chvec U\cdot\nabla\chvec u\cdot\chvec v\bigr)\,dx,
+\end{equation}
+其中 $\chvec U=R\chvec u^n$ 来自非线性项的线性化. ~\eqref{eq:ch13-semi-implicit-nonlinear-time-step} 的迭代罚方法(取 $r=\rho$)为
+\MBSourceItem{10}
+\begin{equation}
+\MathBookFormulaID{formula-ch13-semi-implicit-iterated-penalty}
+\label{eq:ch13-semi-implicit-iterated-penalty}
+\begin{aligned}
+\widetilde a(\chvec u^{\ell,n},\chvec v;R\chvec u^{\ell-1})
++r(\operatorname{div}\chvec u^{\ell,n},\operatorname{div}\chvec v)_{L^2}
+&=\tau(\chvec u^{\ell-1},\chvec v)_{L^2}-b(\chvec v,p^{\ell,n}),\\
+p^{\ell,n+1}&=p^{\ell,n}-r\operatorname{div}\chvec u^{\ell,n},
+\end{aligned}
+\end{equation}
+其中 $p^{\ell,0}$ 以某种方式初始化, 对适当的 $n$ 取 $\chvec u^\ell=\chvec u^{\ell,n}$. 若 $p^{\ell,0}=0$, 则~\eqref{eq:ch13-semi-implicit-iterated-penalty} 化为
+\MBSourceItem{11}
+\begin{equation}
+\MathBookFormulaID{formula-ch13-semi-implicit-implicit-w}
+\label{eq:ch13-semi-implicit-implicit-w}
+\begin{aligned}
+\widetilde a(\chvec u^{\ell,n},\chvec v;R\chvec u^{\ell-1})
++r(\operatorname{div}\chvec u^{\ell,n},\operatorname{div}\chvec v)_{L^2}
+&=\tau(\chvec u^{\ell-1},\chvec v)_{L^2}\\
+&\quad+(\operatorname{div}\chvec v,\operatorname{div}\chvec w^{\ell,n})_{L^2},\\
+\chvec w^{\ell,n+1}&=\chvec w^{\ell,n}+r\chvec u^{\ell,n},
+\end{aligned}
+\end{equation}
+其中 $\chvec w^{\ell,0}=0$.
+
+尽管加入 $\chvec U$ 项使 $\widetilde a(\cdot,\cdot)$ 不对称, 当 $\tau$ 充分大, 即 $\Delta t$ 充分小时, 它仍然强制(参见 Gårding 不等式的证明, 定理~\MBUnresolvedReference{thm:ch05-source-5-6-8}{5.6.8}). 现在假设
+\MBSourceItem{12}
+\begin{equation}
+\MathBookFormulaID{formula-ch13-linearized-form-coercivity}
+\label{eq:ch13-linearized-form-coercivity}
+\alpha\|\chvec v\|_V^2
+\leq\widetilde a(\chvec v,\chvec v)
+\qquad\forall\chvec v\in V,
+\end{equation}
+其中 $\alpha>0$. 当然 $\widetilde a(\cdot,\cdot)$ 连续:
+\MathBookSourcePage{374}
+\MBSourceItem{13}
+\begin{equation}
+\MathBookFormulaID{formula-ch13-linearized-form-continuity}
+\label{eq:ch13-linearized-form-continuity}
+|\widetilde a(\chvec v,\chvec w)|
+\leq C_a\|\chvec v\|_V\|\chvec w\|_V
+\qquad\forall\chvec v,\chvec w\in V,
+\end{equation}
+但此时 $C_a$ 依赖于 $\tau$ 和 $\chvec U$. 应用第~\ref{sec:ch13-iterated-penalty-method} 节的理论得到:
+
+\MBSourceItem{14}
+\begin{Theorem}
+\label{thm:ch13-navier-stokes-penalty-convergence}
+令 $V_h$ 和 $\Pi_h$ 如定理~\ref{thm:ch12-divVh-pressure-errors} 中所述. 假设~\eqref{eq:ch13-linearized-form-coercivity} 和~\eqref{eq:ch13-linearized-form-continuity} 成立. 则当 $r$ 充分大时, 算法~\eqref{eq:ch13-explicit-step-iterated-penalty}(或~\eqref{eq:ch13-explicit-step-implicit-w})以及~\eqref{eq:ch13-semi-implicit-iterated-penalty}(或~\eqref{eq:ch13-semi-implicit-implicit-w})几何收敛. 误差可估计为
+\[
+\MathBookFormulaID{formula-ch13-navier-stokes-penalty-error}
+\|p^{\ell,n}-p^\ell\|_{L^2(\Omega)}
++\|\chvec u^{\ell,n}-\chvec u^\ell\|_{H^1(\Omega)^2}
+\leq C\|\operatorname{div}\chvec u^{\ell,n}\|_{L^2(\Omega)}.
+\]
+\end{Theorem}
+
+\MBSourceItem{15}
+\begin{Remark}
+\label{rem:ch13-large-tau-penalty-parameter}
+若~\eqref{eq:ch13-linearized-navier-form} 中常数 $\tau$ 很大, 则比值 $C_a/\alpha$ 也很大. 更准确地说, 当 $\tau$ 很大时 $C_a$ 与 $\tau$ 可比, 而 $\alpha$ 保持不变. 计算经验(Bagheri, Scott 与 Zhang 1994)表明, 当 $\tau$ 很大时必须取 $r$ 与 $\tau$ 可比, 而定理~\ref{thm:ch13-iterated-penalty-convergence} 中的估计似乎要求 $r$ 大得多. 尚不清楚~\eqref{eq:ch13-complement-D-coercivity} 中常数关于 $C_a/\alpha$ 的依赖是否尖锐.
+\end{Remark}
+
+其他离散方法的算法构造和收敛结果留作习题. 特别地, 习题~\ref{exr:ch13-Taylor-Hood-augmented-explicit} 和~\ref{exr:ch13-Taylor-Hood-augmented-semi-implicit} 构造 Taylor--Hood 空间的增广 Lagrange 方法.
