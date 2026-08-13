@@ -1,0 +1,98 @@
+\MathBookSourcePage{173}
+\subsection{逼近性质}
+\label{sec:ch06-approximation-property}
+\setcounter{thmcount}{0}
+\setcounter{equation}{0}
+
+现在引入 W-循环和 V-循环算法收敛分析所需的两个要素中的第一个.
+
+\MBSourceItem{1}
+\begin{Definition}
+\label{def:ch06-ritz-projection}
+令 $P_k:V\longrightarrow V_k$ 为关于 $a(\cdot,\cdot)$ 的正交投影. 换言之, $P_kv\in V_k$, 且
+\[
+\MathBookFormulaID{formula-ch06-ritz-projection-definition}
+a(v,w)=a(P_kv,w)\qquad\forall w\in V_k.
+\]
+\end{Definition}
+
+算子 $P_{k-1}$ 把第 $k$ 层迭代方案中预光滑后的误差与粗网格上残差方程的精确解联系起来. 回忆第 $k$ 层迭代的误差校正步骤中有 $\bar g=I_k^{k-1}(g-A_kz_{m_1})$. 令 $q\in V_{k-1}$ 满足粗网格残差方程 $A_{k-1}q=\bar g$.
+
+\MBSourceItem{2}
+\begin{Lemma}
+\label{lem:ch06-coarse-residual-ritz-projection}
+有
+\[
+\MathBookFormulaID{formula-ch06-coarse-residual-ritz-projection}
+q=P_{k-1}(z-z_{m_1}).
+\]
+\end{Lemma}
+\begin{Proof}
+对 $w\in V_{k-1}$,
+\[
+\MathBookFormulaID{formula-ch06-coarse-residual-proof-chain}
+\begin{aligned}
+a(q,w)
+&=(A_{k-1}q,w)_{k-1} &&\text{由~\eqref{eq:ch06-discrete-operator-definition}}\\
+&=(\bar g,w)_{k-1} &&\text{由 $q$ 的定义}\\
+&=(I_k^{k-1}(g-A_kz_{m_1}),w)_{k-1} &&\text{由 $\bar g$ 的定义}\\
+&=(g-A_kz_{m_1},w)_k &&\text{由定义~\ref{def:ch06-intergrid-transfer-operators}}\\
+&=(A_k(z-z_{m_1}),w)_k &&\text{由 $z$ 的定义}\\
+&=a(z-z_{m_1},w) &&\text{由~\eqref{eq:ch06-discrete-operator-definition}}.
+\end{aligned}
+\]
+\end{Proof}
+
+\MathBookSourcePage{174}
+因此, 若残差方程在粗网格上精确求解, 则校正步骤后的误差为 $\widehat z_{m_1+1}:=(z_{m_1}+q)=(I-P_{k-1})(z-z_{m_1})$. 因而理解算子 $I-P_{k-1}$ 十分重要.
+
+\MBSourceItem{3}
+\begin{Lemma}
+\label{lem:ch06-ritz-projection-l2-estimate}
+存在正常数 $C$, 使得
+\[
+\MathBookFormulaID{formula-ch06-ritz-projection-l2-estimate}
+\|(I-P_{k-1})v\|_{0,k}
+\leq Ch_k\|(I-P_{k-1})v\|_{1,k}
+\qquad\forall v\in V_k.
+\]
+\end{Lemma}
+\begin{Proof}
+由定理~\ref{thm:ch05-poisson-l2-error} 知
+\[
+\MathBookFormulaID{formula-ch06-ritz-projection-l2-source-estimate}
+\|(I-P_{k-1})v\|_{L^2(\Omega)}
+\leq Ch_k\|(I-P_{k-1})v\|_E
+=Ch_k\|(I-P_{k-1})v\|_{1,k}.
+\]
+再使用引理~\ref{lem:ch06-l2-mesh-norm-equivalence} 即得结论.
+\end{Proof}
+
+下面的结果与定理~\ref{thm:ch05-poisson-l2-error} 在 $m=2$ 时相似. 不过, 这里被逼近的函数 $v$ 不属于 $H^2(\Omega)$.
+
+\MBSourceItem{4}
+\begin{Corollary}[逼近性质]
+\label{cor:ch06-approximation-property}
+存在正常数 $C$, 使得
+\[
+\MathBookFormulaID{formula-ch06-approximation-property}
+\|(I-P_{k-1})v\|_{1,k}
+\leq Ch_k\|v\|_{2,k}
+\qquad\forall v\in V_k.
+\]
+\end{Corollary}
+\begin{Proof}
+\[
+\MathBookFormulaID{formula-ch06-approximation-property-proof}
+\begin{aligned}
+\|(I-P_{k-1})v\|_{1,k}^2
+&=\|v-P_{k-1}v\|_E^2\\
+&=a(v-P_{k-1}v,v-P_{k-1}v)\\
+&=a(v-P_{k-1}v,v)\\
+&\leq\|v-P_{k-1}v\|_{0,k}\|v\|_{2,k}
+&&\text{由引理~\ref{lem:ch06-generalized-cauchy-schwarz}}\\
+&\leq Ch_k\|v-P_{k-1}v\|_{1,k}\|v\|_{2,k}
+&&\text{由引理~\ref{lem:ch06-ritz-projection-l2-estimate}}.
+\end{aligned}
+\]
+\end{Proof}

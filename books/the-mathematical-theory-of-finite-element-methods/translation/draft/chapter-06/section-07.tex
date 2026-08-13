@@ -1,0 +1,124 @@
+\MathBookSourcePage{182}
+\subsection{完全多重网格的收敛性分析与工作量估计}
+\label{sec:ch06-full-multigrid-convergence-work}
+\setcounter{thmcount}{0}
+\setcounter{equation}{0}
+
+下一个定理说明, 完全多重网格方法的收敛性是第 $k$ 层迭代收敛性的直接推论.
+
+\MBSourceItem{1}
+\begin{Theorem}[完全多重网格收敛性]
+\label{thm:ch06-full-multigrid-convergence}
+若第 $k$ 层迭代是一个收缩映射, 其收缩因子 $\gamma$ 与 $k$ 无关, 且 $r$ 充分大, 则存在常数 $C>0$, 使得
+\[
+\MathBookFormulaID{formula-ch06-full-multigrid-convergence}
+\|u_k-\widehat u_k\|_E\leq Ch_k|u|_{H^2(\Omega)}.
+\]
+\end{Theorem}
+\begin{Proof}
+定义 $\widehat e_k:=u_k-\widehat u_k$. 特别地, $\widehat e_1=0$. 有
+\[
+\MathBookFormulaID{formula-ch06-full-multigrid-one-level-bound}
+\begin{aligned}
+\|\widehat e_k\|_E
+&\leq\gamma^r\|u_k-\widehat u_{k-1}\|_E\\
+&\leq\gamma^r\{\|u_k-u\|_E+\|u-u_{k-1}\|_E
+ +\|u_{k-1}-\widehat u_{k-1}\|_E\}\\
+&\leq\gamma^r\{\widetilde C h_k|u|_{H^2(\Omega)}
+ +\|\widehat e_{k-1}\|_E\},
+\end{aligned}
+\]
+其中最后一步使用式~\eqref{eq:ch06-standard-finite-element-error} 和~\eqref{eq:ch06-mesh-size-halving}. 迭代上述不等式可得
+\[
+\MathBookFormulaID{formula-ch06-full-multigrid-geometric-bound}
+\begin{aligned}
+\|\widehat e_k\|_E
+&\leq\widetilde Ch_k\gamma^r|u|_{H^2(\Omega)}
+ +\widetilde Ch_{k-1}\gamma^{2r}|u|_{H^2(\Omega)}+\cdots
+ +\widetilde Ch_1\gamma^{kr}|u|_{H^2(\Omega)}\\
+&\leq h_k|u|_{H^2(\Omega)}\frac{\widetilde C\gamma^r}{1-2\gamma^r},
+\end{aligned}
+\]
+只要 $2\gamma^r<1$. 对这样的 $r$, 即有 $\|\widehat e_k\|_E\leq Ch_k|u|_{H^2(\Omega)}$.
+\end{Proof}
+
+下面估计工作量. 先求 $n_k(=\dim V_k)$ 的渐近估计. 令 $e_k^I$ 表示 $\mathcal T_k$ 的内部边数, $\nu_k^I$ 表示内部顶点数, $t_k$ 表示三角形数. Euler 公式给出
+\[
+\MathBookFormulaID{formula-ch06-euler-triangulation-relation}
+\nu_k^I-e_k^I+t_k=1.
+\]
+
+\MathBookSourcePage{183}
+因此
+\[
+\MathBookFormulaID{formula-ch06-dimension-edge-triangle-relation}
+n_k=\nu_k^I=1+e_k^I-t_k.
+\]
+$e_k^I$ 和 $t_k$ 满足差分方程
+\MBSourceItem{2}
+\begin{equation}
+\MathBookFormulaID{formula-ch06-mesh-count-recurrences}
+\label{eq:ch06-mesh-count-recurrences}
+e_{k+1}^I=2e_k^I+3t_k,
+\qquad
+t_{k+1}=4t_k.
+\end{equation}
+解式~\eqref{eq:ch06-mesh-count-recurrences}(参见习题~\ref{exr:ch06-11})得到
+\MBSourceItem{3}
+\begin{equation}
+\MathBookFormulaID{formula-ch06-dimension-asymptotic}
+\label{eq:ch06-dimension-asymptotic}
+n_k\sim\frac{t_1}{8}4^k.
+\end{equation}
+
+\MBSourceItem{4}
+\begin{Proposition}
+\label{prop:ch06-full-multigrid-linear-work}
+完全多重网格算法所需工作量为 $O(n_k)$.
+\end{Proposition}
+\begin{Proof}
+令 $W_k$ 表示第 $k$ 层方案的工作量. 光滑步骤和校正步骤合在一起给出
+\MBSourceItem{5}
+\begin{equation}
+\MathBookFormulaID{formula-ch06-level-work-recurrence}
+\label{eq:ch06-level-work-recurrence}
+W_k\leq C\widetilde m n_k+pW_{k-1},
+\end{equation}
+其中 $\widetilde m=m_1+m_2$. 迭代式~\eqref{eq:ch06-level-work-recurrence}, 并利用 $p<4$, 得
+\[
+\MathBookFormulaID{formula-ch06-level-work-geometric-sum}
+\begin{aligned}
+W_k
+&\leq C\widetilde m n_k+p(C\widetilde m n_{k-1})+p^2(C\widetilde m n_{k-2})
+ +\cdots+p^{k-1}(C\widetilde m n_1)\\
+&\leq C\widetilde m4^k+pC\widetilde m4^{k-1}+p^2C\widetilde m4^{k-2}
+ +\cdots+p^{k-1}C\widetilde m4\\
+&\leq\frac{C\widetilde m4^k}{1-p/4}
+\leq C4^k
+\leq Cn_k,
+\end{aligned}
+\]
+其中最后一步使用式~\eqref{eq:ch06-dimension-asymptotic}. 因而 $W_k\leq Cn_k$.
+
+令 $\widehat W_k$ 表示在完全多重网格算法中得到 $\widehat u_k$ 所需的工作量. 则
+\MBSourceItem{6}
+\begin{equation}
+\MathBookFormulaID{formula-ch06-full-work-recurrence}
+\label{eq:ch06-full-work-recurrence}
+\widehat W_k\leq\widehat W_{k-1}+rW_k.
+\end{equation}
+迭代式~\eqref{eq:ch06-full-work-recurrence}, 得
+\[
+\MathBookFormulaID{formula-ch06-full-work-geometric-sum}
+\begin{aligned}
+\widehat W_k
+&\leq rCn_k+rCn_{k-1}+\cdots+rCn_1\\
+&\leq rC(4^k+4^{k-1}+\cdots+4)
+&&\text{由~\eqref{eq:ch06-dimension-asymptotic}}\\
+&\leq\frac{rC4^k}{1-1/4}
+\leq C4^k
+\leq Cn_k,
+\end{aligned}
+\]
+最后一步再次使用式~\eqref{eq:ch06-dimension-asymptotic}.
+\end{Proof}
