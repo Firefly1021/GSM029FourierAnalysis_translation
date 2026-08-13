@@ -1,0 +1,1164 @@
+\clearpage
+\section{Stokes 方程的离散化 (I)}
+\label{sec:ch1-stokes-discretization-i}
+
+\ref{subsec:ch1-normed-space-approximation} 讨论赋范空间逼近的一般概念, \ref{subsec:ch1-general-convergence-theorem} 给出一般变分问题逼近的一般收敛定理. 在本节最后一部分以及整个 \MBUnresolvedReference{section}{Section 4} 中, 我们描述 Navier--Stokes 方程基本空间 $V$ 的若干特定逼近. 我们给出 Stokes 方程的相应数值格式, 然后把一般收敛定理应用于这一情形.
+
+在 \ref{subsec:ch1-finite-difference-approximation} 中, 我们考虑有限差分方法. 有限元方法将在下一节(\MBUnresolvedReference{section-range}{Section 4, 4.1--4.5})中处理.
+
+这里引入的空间 $V$ 的逼近将在后续各章中使用, 并记为 (APX1), (APX2), $\ldots$.
+
+\subsection{赋范空间的逼近}
+\label{subsec:ch1-normed-space-approximation}
+
+当涉及计算方法时, 赋范空间 $W$ 必须由一族赋范空间 $(W_h)_{h\in\mathcal H}$ 逼近. 指标集 $\mathcal H$ 取决于所考虑的逼近类型: 下面将考虑 $\mathcal H$ 的几种主要情形, 即 Galerkin 方法中 $\mathcal H=\mathbb N$(正整数集), 有限差分中 $\mathcal H=\prod_{j=1}^n(0,h_j^0]$, 而有限元方法中 $\mathcal H$ 是区域 $\Omega$ 的一组剖分. 不必知道 $\mathcal H$ 的精确形式; 我们只需知道 $\mathcal H$ 上存在一个滤子, 并且所关心的是沿此滤子取极限. 为简单起见, 我们总把这一过程称为 $h\to0$. 严格地说, 这一术语只对有限差分是正确的; 定义和结果很容易适用于其他情形.
+
+\MBSourceStatementNumber{definition}{1}
+\begin{Definition}
+\label{def:ch1-internal-approximation}
+赋范向量空间 $W$ 的一个\emph{内逼近}是由一族三元组
+\[
+\{W_h,p_h,r_h\},\qquad h\in\mathcal H,
+\]
+组成的集合, 其中:
+
+(i) $W_h$ 是赋范向量空间;
+
+(ii) $p_h$ 是从 $W_h$ 到 $W$ 的连续线性算子;
+
+(iii) $r_h$ 是从 $W$ 到 $W_h$ 的算子, 它可以是非线性的.
+\end{Definition}
+
+比较元素 $u\in W$ 与元素 $u_h\in W_h$ 的自然方式, 或者是在 $W$ 中比较 $p_hu_h$ 与 $u$, 或者是在 $W_h$ 中比较 $u_h$ 与 $r_hu$. 第一种观点显然更有意义, 因为比较是在固定空间中进行的. 不过, 在 $W_h$ 中进行比较也可能有用(见图 \ref{fig:ch1-external-approximation-diagram}).
+
+还可以用另一种方式比较元素 $u\in W$: 把 $u$ 在另一空间 $F$ 中的某个像 $\omega u$ 与 $u_h$ 在 $F$ 中的某个像 $p_hu_h$ 比较. 这引出了空间 $W$ 的外逼近概念, 它把内逼近作为特殊情形包含在内.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.34\textwidth]{chapter01-figure03.png}
+\caption{内逼近与外逼近中的映射关系.}
+\label{fig:ch1-external-approximation-diagram}
+\end{figure}
+
+\MBSourceStatementNumber{definition}{2}
+\begin{Definition}
+\label{def:ch1-external-approximation}
+赋范空间 $W$ 的一个\emph{外逼近}由下列对象组成:
+
+(i) 一个赋范空间 $F$ 以及从 $W$ 到 $F$ 的同构 $\omega$;
+
+(ii) 一族三元组 $\{W_h,p_h,r_h\}_{h\in\mathcal H}$, 对每个 $h$:
+
+\quad-- $W_h$ 是赋范空间;
+
+\quad-- $p_h$ 是从 $W_h$ 到 $F$ 的连续线性映射;
+
+\quad-- $r_h$ 是从 $W$ 到 $W_h$ 的映射, 它可以是非线性的.
+\end{Definition}
+
+当 $F=W$ 且 $\omega$ 是恒等映射时, 当然得到 $W$ 的一个内逼近. 下文内容很容易专门化到内逼近.
+
+大多数情形下, $W_h$ 是有限维空间; 算子 $p_h$ 通常是单射. 有时算子 $r_h$ 是线性的, 或者只在 $W$ 的某个子空间上是线性的, 但在一般情形中没有必要强加这一条件; 也不要求 $r_h$ 具有任何连续性.
+
+算子 $p_h$ 和 $r_h$ 分别称为\emph{延拓算子}和\emph{限制算子}. 当 $W$ 与 $F$ 是 Hilbert 空间, 且 $W_h$ 也都是 Hilbert 空间时, 该逼近称为 Hilbert 逼近.
+
+\MBSourceStatementNumber{definition}{3}
+\begin{Definition}
+\label{def:ch1-approximation-errors}
+给定 $h$, $u\in W$, $u_h\in W_h$, 我们称:
+
+(i) $\|\omega u-p_hu_h\|_F$ 为 $u$ 与 $u_h$ 之间的\emph{误差};
+
+(ii) $\|u_h-r_hu\|_{W_h}$ 为 $u$ 与 $u_h$ 之间的\emph{离散误差};
+
+(iii) $\|\omega u-p_hr_hu\|_F$ 为 $u$ 的\emph{截断误差}.
+\end{Definition}
+
+下面定义稳定逼近与收敛逼近.
+
+\MBSourceStatementNumber{definition}{4}
+\begin{Definition}
+\label{def:ch1-stable-approximation}
+若延拓算子 $p_h$ 的范数
+\[
+\|p_h\|=\sup_{\substack{u_h\in W_h\\\|u_h\|_{W_h}=1}}\|p_hu_h\|_F
+\]
+可由与 $h$ 无关的常数控制, 则称这些延拓算子是\emph{稳定的}.
+
+若空间 $W$ 的逼近中的延拓算子是稳定的, 则称该逼近是稳定的.
+\end{Definition}
+
+现在考虑 $h\to0$ 时的情形.
+
+\MBSourceStatementNumber{definition}{5}
+\begin{Definition}
+\label{def:ch1-strong-weak-discrete-convergence}
+若当 $h\to0$ 时 $p_hu_h$ 在 $F$ 的强拓扑(或弱拓扑)中收敛到 $\omega u$, 则称族 $u_h$ \emph{强收敛}(或\emph{弱收敛})到 $u$.
+
+若
+\[
+\lim_{h\to0}\|u_h-r_hu\|_{W_h}=0,
+\]
+则称族 $u_h$ \emph{离散收敛}到 $u$.
+\end{Definition}
+
+\MBSourceStatementNumber{definition}{6}
+\begin{Definition}
+\label{def:ch1-convergent-external-approximation}
+若赋范空间 $W$ 的外逼近满足下列两个条件, 则称它是\emph{收敛的}:
+
+(C1) 对每个 $u\in W$,
+\[
+\lim_{h\to0}p_hr_hu=\omega u
+\]
+在 $F$ 的强拓扑中成立.
+
+(C2) 对任意元素列 $u_{h'}\in W_{h'}$($h'\to0$), 若 $p_{h'}u_{h'}$ 在 $F$ 的弱拓扑中收敛到某个元素 $\varphi$, 则 $\varphi\in\omega W$; 即对某个 $u\in W$, 有 $\varphi=\omega u$.
+\end{Definition}
+
+\MBSourceStatementNumber{remark}{1}
+\begin{Remark}
+\label{rem:ch1-convergence-condition-c2}
+当 $\omega$ 是满射时, 条件 (C2) 消失; 内逼近尤其如此.
+\end{Remark}
+
+下面的命题说明, 对内逼近与外逼近而言, 条件 (C1) 在某种意义下可以削弱.
+
+\MBSourceStatementNumber{proposition}{1}
+\begin{Proposition}
+\label{prop:ch1-extend-restriction-operators}
+设给定空间 $W$ 的一个稳定外逼近, 它在下列受限意义下收敛: 算子 $r_h$ 只在 $W$ 的一个稠密子集 $\mathcal W$ 上定义, 且定义 \ref{def:ch1-convergent-external-approximation} 中的条件 (C1) 只对属于 $\mathcal W$ 的 $u$ 成立, 而条件 (C2) 保持不变.
+
+则可把限制算子 $r_h$ 的定义延拓到整个空间 $W$, 使条件 (C1) 对每个 $u\in W$ 均成立, 从而 $W$ 的逼近不受限制地稳定且收敛.
+\end{Proposition}
+
+\begin{Proof}
+设 $u\in W$, $u\notin\mathcal W$. 我们必须以某种方式定义每个 $h$ 对应的 $r_hu\in W_h$, 使 $h\to0$ 时 $p_hr_hu\to\omega u$. 元素 $u$ 可由 $\mathcal W$ 中的元素逼近, 而这些元素又可由空间 $p_hW_h$ 中的元素逼近; 只需适当地组合这两种逼近.
+
+对每个整数 $n\geq1$, 存在 $u_n\in\mathcal W$, 使 $\|u_n-u\|_W\leq1/n$, 因而
+\begin{equation}
+\|\omega u_n-\omega u\|_F\leq\frac{c_0}{n},
+\label{eq:ch1-approximation-omega-bound}
+\end{equation}
+其中 $c_0$ 是同构 $\omega$ 的范数.
+
+对每个固定整数 $n$, 当 $h\to0$ 时, $p_hr_hu_n$ 在 $F$ 中收敛到 $\omega u_n$. 因此存在某个 $\eta_n>0$, 使 $\lvert h\rvert\leq\eta_n$ 蕴含
+\[
+\|p_hr_hu_n-\omega u_n\|_F\leq\frac1n.
+\]
+可设 $\eta_n$ 同时小于 $\eta_{n-1}$ 和 $1/n$, 从而 $\eta_n$ 构成严格递减并趋于 $0$ 的序列:
+\[
+0<\eta_{n+1}<\cdots<\eta_1,\qquad \eta_n\to0.
+\]
+定义
+\[
+r_hu=r_hu_n\qquad\text{当 }\eta_{n+1}<\lvert h\rvert\leq\eta_n.
+\]
+显然, 当 $\eta_{n+1}<\lvert h\rvert\leq\eta_n$ 时,
+\[
+\begin{aligned}
+\|\omega u-p_hr_hu\|_F
+&\leq\|\omega u-\omega u_n\|_F+\|\omega u_n-p_hr_hu_n\|_F\\
+&\quad+\|p_hr_hu_n-p_hr_hu\|_F
+\leq\frac{1+c_0}{n}.
+\end{aligned}
+\]
+因此, 当 $\lvert h\rvert\leq\eta_n$ 时,
+\[
+\|\omega u-p_hr_hu\|_F\leq\frac{1+c_0}{n}.
+\]
+这说明当 $h\to0$ 时 $p_hr_hu$ 收敛到 $\omega u$, 证明完成.
+\end{Proof}
+
+\MBSourceStatementNumber{remark}{2}
+\begin{Remark}
+\label{rem:ch1-modify-restriction-operators}
+若映射 $r_h$ 已在整个空间 $W$ 上定义, 而条件 (C1) 对所有 $u\in\mathcal W$ 成立, 则命题 \ref{prop:ch1-extend-restriction-operators} 表明, 可以修改 $r_hu$ 在 $\mathcal W$ 的补集上的值, 使条件 (C1) 对所有 $u\in W$ 成立.
+\end{Remark}
+
+\subsubsection*{赋范空间的 Galerkin 逼近}
+
+作为一个非常简单的例子, 可以定义可分赋范空间 $W$ 的 Galerkin 逼近.
+
+设 $W_h$, $h\in\mathbb N=\mathcal H$, 是 $W$ 的递增有限维子空间序列, 其并在 $W$ 中稠密. 对每个 $h$, 令 $p_h$ 为 $W_h$ 的自然嵌入; 对任意属于某个 $W_{h_0}$ 但不属于 $W_{h_0-1}$ 的 $u$, 当 $h\leq h_0$ 时令 $r_hu=0$, 当 $h>h_0$ 时令 $r_hu=u$. 显然, 对任意 $u\in\bigcup_{h\in\mathbb N}W_h$, 当 $h\to\infty$ 时 $p_hr_hu\to u$. 算子 $r_h$ 只在 $\mathcal W=\bigcup_{h\in\mathbb N}W_h$ 上定义, 而 $\mathcal W$ 在 $W$ 中稠密. 因为延拓算子的范数为 $1$, 它们是稳定的; 由命题 \ref{prop:ch1-extend-restriction-operators}, 可以某种方式把算子 $r_h$ 的定义延拓到整个空间 $W$, 使之给出 $W$ 的一个稳定收敛内逼近; 这就是 $W$ 的 Galerkin 逼近.
+
+\subsection{一般收敛定理}
+\label{subsec:ch1-general-convergence-theorem}
+
+讨论一般变分问题 \eqref{eq:ch1-abstract-variational-problem} 的逼近. 设 $W$ 是 Hilbert 空间, $a(u,v)$ 是 $W\times W$ 上的强制连续双线性型,
+\begin{equation}
+a(u,u)\geq\alpha\|u\|_W^2,\qquad\forall u\in W\qquad(\alpha>0),
+\label{eq:ch1-general-coercivity}
+\end{equation}
+且 $\ell$ 是 $W$ 上的连续线性型.
+
+以 $u$ 表示下列问题在 $W$ 中的唯一解:
+\begin{equation}
+a(u,v)=\langle\ell,v\rangle,\qquad\forall v\in W.
+\label{eq:ch1-general-variational-problem}
+\end{equation}
+
+为了逼近元素 $u$, 设给定空间 $W$ 的一个外部稳定收敛 Hilbert 逼近 $\{W_h,p_h,r_h\}_{h\in\mathcal H}$. 此外, 对每个 $h\in\mathcal H$, 设给定:
+
+(i) $W_h\times W_h$ 上的连续双线性型 $a_h(u_h,v_h)$, 它是强制的, 更确切地说,
+\begin{equation}
+\text{存在与 }h\text{ 无关的 }\alpha_0>0,\quad
+a_h(u_h,u_h)\geq\alpha_0\|u_h\|_h^2,\qquad\forall u_h\in W_h,
+\label{eq:ch1-discrete-coercivity}
+\end{equation}
+其中 $\|\cdot\|_h$ 表示 $W_h$ 中的范数;
+
+(ii) $W_h$ 上的连续线性型 $\ell_h\in W_h'$, 使
+\begin{equation}
+\|\ell_h\|_h^\ast\leq\beta,
+\label{eq:ch1-discrete-functional-bound}
+\end{equation}
+其中 $\|\cdot\|_h^\ast$ 表示 $W_h'$ 中的范数, $\beta$ 与 $h$ 无关.
+
+现在把下列逼近方程族与方程 \eqref{eq:ch1-general-variational-problem} 联系起来: 对固定的 $h\in\mathcal H$, 求 $u_h\in W_h$, 使
+\begin{equation}
+a_h(u_h,v_h)=\langle\ell_h,v_h\rangle,\qquad\forall v_h\in W_h.
+\label{eq:ch1-discrete-variational-problem}
+\end{equation}
+根据上述假设, 定理 \ref{thm:ch1-abstract-projection}(其中 $W,W',a,\ell$ 分别换成 $W_h,W_h',a_h,\ell_h$)断言方程 \eqref{eq:ch1-discrete-variational-problem} 有唯一解; 称 $u_h$ 为方程 \eqref{eq:ch1-general-variational-problem} 的逼近解.
+
+在精确定义型 $a_h$ 和 $\ell_h$ 与型 $a$ 和 $\ell$ 相容的方式之后, 我们给出逼近解 $u_h$ 收敛到精确解的一般定理. 作如下相容性假设:
+\begin{equation}
+\begin{gathered}
+\text{若当 }h\to0\text{ 时 }v_h\text{ 弱收敛到 }v,\ w_h\text{ 强收敛到 }w,\text{ 则}\\
+\lim_{h\to0}a_h(v_h,w_h)=a(v,w),\qquad
+\lim_{h\to0}a_h(w_h,v_h)=a(w,v).
+\end{gathered}
+\label{eq:ch1-bilinear-consistency}
+\end{equation}
+\begin{equation}
+\begin{gathered}
+\text{若当 }h\to0\text{ 时 }v_h\text{ 弱收敛到 }v,\text{ 则}\\
+\lim_{h\to0}\langle\ell_h,v_h\rangle=\langle\ell,v\rangle.
+\end{gathered}
+\label{eq:ch1-functional-consistency}
+\end{equation}
+
+\MBSourceStatementNumber{theorem}{1}
+\begin{Theorem}
+\label{thm:ch1-general-approximation-convergence}
+在假设 \eqref{eq:ch1-general-coercivity}, \eqref{eq:ch1-discrete-coercivity}, \eqref{eq:ch1-discrete-functional-bound}, \eqref{eq:ch1-bilinear-consistency} 和 \eqref{eq:ch1-functional-consistency} 下, 当 $h\to0$ 时, \eqref{eq:ch1-discrete-variational-problem} 的解 $u_h$ 强收敛到 \eqref{eq:ch1-general-variational-problem} 的解 $u$.
+\end{Theorem}
+
+\begin{Proof}
+在 \eqref{eq:ch1-discrete-variational-problem} 中令 $v_h=u_h$, 并使用 \eqref{eq:ch1-discrete-coercivity} 与 \eqref{eq:ch1-discrete-functional-bound}, 得
+\begin{equation}
+a_h(u_h,u_h)=\langle\ell_h,u_h\rangle,\qquad
+\alpha_0\|u_h\|_h^2\leq\|\ell_h\|_h^\ast\|u_h\|_h\leq\beta\|u_h\|_h;
+\label{eq:ch1-discrete-energy-identity}
+\end{equation}
+故
+\begin{equation}
+\|u_h\|_h\leq\frac{\beta}{\alpha_0}.
+\label{eq:ch1-discrete-solution-bound}
+\end{equation}
+由于算子 $p_h$ 稳定, 存在常数 $c_0$ 控制这些算子的范数:
+\begin{equation}
+\|p_h\|=\|p_h\|_{\mathcal L(W_h,F)}\leq c_0;
+\label{eq:ch1-prolongation-uniform-bound}
+\end{equation}
+因而
+\begin{equation}
+\|p_hu_h\|_F\leq\frac{c_0\beta}{\alpha_0}.
+\label{eq:ch1-prolongated-solution-bound}
+\end{equation}
+
+在这些条件下, 存在某个 $\varphi\in F$ 以及趋于 $0$ 的序列 $h'$, 使
+\[
+\lim_{h'\to0}p_{h'}u_{h'}=\varphi
+\]
+在 $F$ 的弱拓扑中成立. 由定义 \ref{def:ch1-convergent-external-approximation} 的条件 (C2), $\varphi\in\omega W$, 因而对某个 $u^\ast\in W$, 有 $\varphi=\omega u^\ast$:
+\begin{equation}
+\lim_{h'\to0}p_{h'}u_{h'}=\omega u^\ast
+\qquad(F\text{ 的弱拓扑}).
+\label{eq:ch1-weak-subsequence-limit}
+\end{equation}
+
+说明 $u^\ast=u$. 对固定的 $v\in W$, 在 \eqref{eq:ch1-discrete-variational-problem} 中令 $v_h=r_hv$, 然后沿上述序列 $h'$ 取极限. 利用 \eqref{eq:ch1-bilinear-consistency}, \eqref{eq:ch1-functional-consistency} 和 \eqref{eq:ch1-weak-subsequence-limit}, 得
+\[
+a_h(u_h,r_hv)=\langle\ell_h,r_hv\rangle,
+\]
+\[
+\lim_{h'\to0}a_{h'}(u_{h'},r_{h'}v)=a(u^\ast,v),
+\qquad
+\lim_{h'\to0}\langle\ell_{h'},r_{h'}v\rangle=\langle\ell,v\rangle.
+\]
+最终有
+\[
+a(u^\ast,v)=\langle\ell,v\rangle.
+\]
+因为 $v\in W$ 任意, $u^\ast$ 是 \eqref{eq:ch1-general-variational-problem} 的解, 故 $u^\ast=u$.
+
+完全相同地可以证明, 从 $p_hu_h$ 的任意子列中都能抽出一个在 $F$ 的弱拓扑中收敛到 $\omega u$ 的子列. 这证明当 $h\to0$ 时, 整个 $p_hu_h$ 在弱拓扑中收敛到 $\omega u$.
+
+\emph{强收敛性的证明.} 考虑
+\[
+X_h=a_h(u_h-r_hu,u_h-r_hu),
+\]
+即
+\[
+X_h=a_h(u_h,u_h)-a_h(u_h,r_hu)-a_h(r_hu,u_h)+a_h(r_hu,r_hu).
+\]
+由 \eqref{eq:ch1-bilinear-consistency}, \eqref{eq:ch1-functional-consistency} 和 \eqref{eq:ch1-discrete-energy-identity},
+\[
+\lim_{h\to0}a_h(u_h,u_h)=\langle\ell,u\rangle,
+\]
+\[
+\lim_{h\to0}a_h(u_h,r_hu)
+=\lim_{h\to0}a_h(r_hu,u_h)
+=\lim_{h\to0}a_h(r_hu,r_hu)
+=a(u,u).
+\]
+所以, 由 \eqref{eq:ch1-general-variational-problem} 中取 $v=u$, 得
+\begin{equation}
+\lim_{h\to0}X_h=-a(u,u)+\langle\ell,u\rangle=0.
+\label{eq:ch1-strong-convergence-x-limit}
+\end{equation}
+再由 \eqref{eq:ch1-discrete-coercivity} 和 \eqref{eq:ch1-prolongation-uniform-bound},
+\[
+0\leq\alpha_0\|u_h-r_hu\|_h^2\leq X_h,
+\]
+\[
+0\leq\|p_hu_h-p_hr_hu\|_F^2\leq\frac{c_0^2}{\alpha_0}X_h\to0.
+\]
+利用定义 \ref{def:ch1-convergent-external-approximation} 的条件 (C1) 以及
+\[
+\|p_hu_h-\omega u\|_F
+\leq\|p_hu_h-p_hr_hu\|_F+\|p_hr_hu-\omega u\|_F,
+\]
+可见此量在 $h\to0$ 时趋于 $0$. 定理得证.
+\end{Proof}
+
+\MBSourceStatementNumber{remark}{3}
+\begin{Remark}
+\label{rem:ch1-general-theorem-galerkin}
+如注 \ref{rem:ch1-projection-theorem-comments} (ii) 所述, 定理 \ref{thm:ch1-general-approximation-convergence} 可应用于定理 \ref{thm:ch1-abstract-projection} 证明中使用的 \eqref{eq:ch1-general-variational-problem} 的 Galerkin 逼近. 取 $W_h=W_m$, 对每个 $h=m\in\mathcal H$, $\mathcal H=\mathbb N$, 并如 \ref{subsec:ch1-normed-space-approximation} 末尾的例子那样得到 $W$ 的 Galerkin 逼近. 令
+\[
+a_h(v,w)=a(v,w),\qquad
+\langle\ell_h,v\rangle=\langle\ell,v\rangle,\qquad\forall v,w\in W,
+\]
+定理 \ref{thm:ch1-general-approximation-convergence} 适用, 并说明当 $m\to\infty$ 时 $u_m$ 在 $W$ 的强拓扑中收敛到 $u$.
+\end{Remark}
+
+\MBSourceStatementNumber{remark}{4}
+\begin{Remark}
+\label{rem:ch1-discrete-linear-system}
+若 $\{w_{ih}\}_{1\leq i\leq N(h)}$ 构成 $W_h$ 的一组基, 则逼近问题 \eqref{eq:ch1-discrete-variational-problem} 等价于关于 $u_h$ 在该基下分量的一个正则线性方程组. 即若
+\[
+u_h=\sum_{i=1}^{N(h)}\xi_{ih}w_{ih},
+\]
+则
+\begin{equation}
+\sum_{i=1}^{N(h)}\xi_{ih}a_h(w_{ih},w_{jh})
+=\langle\ell_h,w_{jh}\rangle,\qquad1\leq j\leq N(h).
+\label{eq:ch1-discrete-coordinate-system}
+\end{equation}
+方程组 \eqref{eq:ch1-discrete-coordinate-system} 的解可由代数线性方程组的通常方法得到.
+
+若不能容易地构造 $W_h$ 的一组基(对 Stokes 问题有时正是如此), 则必须寻找某种特殊方法来实际求解 \eqref{eq:ch1-discrete-variational-problem}.
+\end{Remark}
+
+\subsection{有限差分逼近}
+\label{subsec:ch1-finite-difference-approximation}
+
+我们先研究空间 $H_0^1(\Omega)$ 的有限差分逼近, 再研究空间 $V$ 的有限差分逼近, 最后研究相应格式对 Stokes 问题的逼近. 这里所考虑的 $V$ 的逼近记为 (APX1).
+
+\subsubsection{记号}
+\label{subsubsec:ch1-finite-difference-notation}
+
+使用有限差分时, $h$ 表示向量网格, $h=(h_1,\ldots,h_n)$, 其中 $h_i$ 是 $x_i$ 方向的网格步长, 因而
+\[
+0<h_i\leq h_i^0,
+\]
+其中 $h_i^0$ 是某些严格正数; 因此
+\begin{equation}
+\mathcal H=\prod_{i=1}^n(0,h_i^0].
+\label{eq:ch1-mesh-parameter-set}
+\end{equation}
+我们关心的是极限 $h\to0$.
+
+对每个 $h\in\mathcal H$, 定义:
+
+(i) $\mathbf h_i$ 是向量 $h_i e_i$, 其中 $e_i$ 的第 $j$ 个坐标是 $\delta_{ij}$, 即 Kronecker delta.
+
+(ii) $\mathcal R_h$ 是 $\mathbb R^n$ 中形如 $j_1\mathbf h_1+\cdots+j_n\mathbf h_n$ 的点的集合, 其中 $j_i$ 是任意正负号的整数($j_i\in\mathbb Z$).
+
+(iii) 对 $M=(\mu_1,\ldots,\mu_n)$, $\sigma_h(M)$ 是集合
+\[
+\prod_{i=1}^n\left(\mu_i-\frac{h_i}{2},\mu_i+\frac{h_i}{2}\right),
+\]
+称为一个\emph{块}.
+
+(iv) $\sigma_h(M,r)$ 是集合
+\[
+\bigcup_{\substack{1\leq i\leq n\\-r\leq\alpha\leq+r}}
+\sigma_h\left(M+\frac{\alpha}{2}\mathbf h_i\right);
+\]
+当然, $\sigma_h(M,0)=\sigma_h(M)$.
+
+(v) $w_{hM}$ 是块 $\sigma_h(M)$ 的特征函数.
+
+(vi) $\delta_{ih}$(若不会混淆也记作 $\delta_i$)是有限差分算子
+\begin{equation}
+(\delta_i\varphi)(x)
+=\frac{\varphi(x+\frac12\mathbf h_i)-\varphi(x-\frac12\mathbf h_i)}{h_i}.
+\label{eq:ch1-centered-difference}
+\end{equation}
+若 $j=(j_1,\ldots,j_n)\in\mathbb N^n$ 是多重指标, 则 $\delta_h^j$(或简称 $\delta^j$)表示算子
+\begin{equation}
+\delta^j=\delta_1^{j_1}\cdots\delta_n^{j_n}.
+\label{eq:ch1-multiindex-difference}
+\end{equation}
+
+(vii) 对 $\mathbb R^n$ 中每个开集 $\Omega$ 和每个非负整数 $r$, 联系下列点集:
+\begin{equation}
+\mathring\Omega_{rh}=\{M\in\mathcal R_h:\sigma_h(M,r)\subset\Omega\},
+\label{eq:ch1-interior-mesh-points}
+\end{equation}
+\begin{equation}
+\Omega_{rh}=\{M\in\mathcal R_h:\sigma_h(M,r)\cap\Omega\neq\varnothing\}.
+\label{eq:ch1-covering-mesh-points}
+\end{equation}
+
+(viii) 有时还使用其他有限差分算子, 如 $\nabla_{ih}$ 和 $\overline\nabla_{ih}$(也记作 $\nabla_i$ 和 $\overline\nabla_i$):
+\begin{equation}
+\nabla_{ih}\varphi(x)=\frac{\varphi(x+\mathbf h_i)-\varphi(x)}{h_i},
+\label{eq:ch1-forward-difference}
+\end{equation}
+\begin{equation}
+\overline\nabla_{ih}\varphi(x)=\frac{\varphi(x)-\varphi(x-\mathbf h_i)}{h_i}.
+\label{eq:ch1-backward-difference}
+\end{equation}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.72\textwidth]{chapter01-figure04.png}
+\caption{平面中集合 $\sigma_h(M,r)$ 的例子.}
+\label{fig:ch1-block-neighborhood-examples}
+\end{figure}
+
+\subsubsection{\texorpdfstring{$H_0^1(\Omega)$}{H01(Omega)} 的外逼近}
+\label{subsubsec:ch1-h01-external-approximation}
+
+设 $\Omega$ 是 $\mathbb R^n$ 中的 Lipschitz 开集. 令 $W=H_0^1(\Omega)$, $F=L^2(\Omega)^{n+1}$, 并在 $F$ 上赋予自然的 Hilbert 标量积; 令 $\omega$ 为从 $W$ 到 $F$ 的映射
+\begin{equation}
+u\longmapsto\omega u=(u,D_1u,\ldots,D_nu).
+\label{eq:ch1-h01-embedding-map}
+\end{equation}
+显然
+\[
+\|\omega u\|_F=[[u]]_{H_0^1(\Omega)},
+\]
+故 $\omega$ 是从 $W$ 到 $F$ 的同构.
+
+\emph{空间 $W_h$.} 采用上述记号, $W_h$ 是阶梯函数空间
+\begin{equation}
+u_h(x)=\sum_{M\in\mathring\Omega_{1h}}u_h(M)w_{hM}(x),
+\qquad u_h(M)\in\mathbb R^n.
+\label{eq:ch1-step-function-space}
+\end{equation}
+函数 $w_{hM}$($M\in\mathring\Omega_{1h}$)线性无关并张成整个空间 $W_h$; 它们构成 $W_h$ 的一组基. $W_h$ 的维数是点 $M\in\mathring\Omega_{1h}$ 的数目 $N(h)$ 的 $n$ 倍; $W_h$ 是有限维的. 在此空间上赋予标量积
+\begin{equation}
+[[u_h,v_h]]_h
+=\int_\Omega u_h(x)v_h(x)\,dx
++\sum_{j=1}^n\int_\Omega\delta_iu_h(x)\delta_iv_h(x)\,dx,
+\label{eq:ch1-discrete-h01-inner-product}
+\end{equation}
+它使 $W_h$ 成为 Hilbert 空间.
+
+由 $W_h$ 和集合 $\mathring\Omega_{1h}$ 的定义, 函数 $u_h$ 与 $\delta_iu_h$, $1\leq i\leq n$, 在 $\Omega$ 中具有紧支集. 因此可把它们看作定义在 $\Omega$ 或 $\mathbb R^n$ 上的向量函数.
+
+\emph{算子 $p_h$.} 延拓算子 $p_h$ 是 $\omega$ 的离散类似物:
+\begin{equation}
+p_hu_h=(u_h,\delta_1u_h,\ldots,\delta_nu_h),
+\qquad\forall u_h\in W_h.
+\label{eq:ch1-h01-prolongation}
+\end{equation}
+$p_h$ 的范数恰为 $1$,
+\[
+\|p_hu_h\|_F=[[u_h]]_h,
+\]
+故它们是稳定的.
+
+\emph{算子 $r_h$.} 由命题 \ref{prop:ch1-extend-restriction-operators}, 只需在 $H_0^1(\Omega)$ 的稠密子空间 $\mathcal W=\mathcal D(\Omega)$ 上定义算子 $r_h$; 令
+\begin{equation}
+(r_hu)(M)=u(M),\qquad
+\forall M\in\mathring\Omega_{1h},\quad\forall u\in\mathcal D(\Omega),
+\label{eq:ch1-h01-restriction}
+\end{equation}
+这就完全定义了 $r_hu\in W_h$.
+
+\MBSourceStatementNumber{proposition}{2}
+\begin{Proposition}
+\label{prop:ch1-h01-external-approximation}
+上述 $H_0^1(\Omega)$ 的外逼近是稳定且收敛的.
+\end{Proposition}
+
+\begin{Proof}
+因为延拓算子稳定, 该逼近稳定. 现在必须验证定义 \ref{def:ch1-convergent-external-approximation} 的条件 (C1) 和 (C2).
+\end{Proof}
+
+\MBSourceStatementNumber{lemma}{1}
+\begin{Lemma}
+\label{lem:ch1-h01-condition-c1}
+条件 (C1) 成立: 对每个 $u\in\mathcal D(\Omega)$, 当 $h\to0$ 时,
+\begin{equation}
+r_hu\to u\qquad\text{在 }L^2(\Omega)\text{ 中},
+\label{eq:ch1-restriction-l2-convergence}
+\end{equation}
+\begin{equation}
+\delta_ir_hu\to D_iu\qquad\text{在 }L^2(\Omega)\text{ 中}.
+\label{eq:ch1-difference-derivative-convergence}
+\end{equation}
+\end{Lemma}
+
+\begin{Proof}
+设 $u\in\mathcal D(\Omega)$, 并令 $h$ 充分小, 使 $u$ 的支集包含于集合
+\begin{equation}
+\Omega(h)=\bigcup_{M\in\mathring\Omega_{1h}}\sigma_h(M).
+\label{eq:ch1-mesh-covered-domain}
+\end{equation}
+对任意 $M\in\mathring\Omega_{1h}$ 和任意 $x\in\sigma_h(M)$, Taylor 公式给出(令 $u_h=r_hu$)
+\[
+|u_h(x)-u(x)|=|u(M)-u(x)|
+\leq c_1(u)|M-x|\leq\frac{c_1(u)}2|h|,
+\]
+其中
+\begin{equation}
+c_1(u)=\sup_{x\in\Omega}|\operatorname{grad}u(x)|,
+\label{eq:ch1-first-derivative-constant}
+\end{equation}
+\begin{equation}
+|h|=\left(\sum_{i=1}^nh_i^2\right)^{1/2}.
+\label{eq:ch1-vector-mesh-norm}
+\end{equation}
+于是
+\begin{equation}
+\sup_{x\in\Omega(h)}|u_h(x)-u(x)|
+\leq\frac{c_1(u)}2|h|.
+\label{eq:ch1-uniform-error-interior}
+\end{equation}
+在集合 $\Omega-\Omega(h)$ 上,
+\[
+|u(x)|\leq c_1(u)d(x,\Gamma),
+\]
+\begin{equation}
+|u_h(x)-u(x)|\leq c_1(u)d(\Omega(h),\Gamma).
+\label{eq:ch1-uniform-error-boundary-layer}
+\end{equation}
+故
+\begin{equation}
+\sup_{x\in\Omega}|u_h(x)-u(x)|
+\leq c_1(u)\left\{\frac{|h|}{2}+d(\Omega(h),\Gamma)\right\},
+\label{eq:ch1-uniform-error-global}
+\end{equation}
+当 $h\to0$ 时右端趋于 $0$; $u_h$ 在 $L^\infty(\Omega)$ 中收敛到 $u$, 又因 $\Omega$ 有界, 所以也在 $L^2(\Omega)$ 中收敛.
+
+为证明 \eqref{eq:ch1-difference-derivative-convergence}, 再次使用 Taylor 公式: 对每个 $M\in\mathring\Omega_{1h}$ 及每个 $x\in\sigma_h(M)$,
+\begin{equation}
+\left|\delta_iu_h(x)-D_iu(x)\right|
+=\left|\frac{u_h(M+\frac12\mathbf h_i)-u_h(M-\frac12\mathbf h_i)}{h_i}
+-D_iu(x)\right|
+\leq c_2(u)|h|,
+\label{eq:ch1-difference-taylor-error}
+\end{equation}
+其中 $c_2(u)$ 只依赖于 $u$ 的二阶导数的最大范数. 在集合 $\Omega-\Omega(h)$ 上,
+\[
+|D_iu(x)|\leq c_2'(u)d(\Omega(h),\Gamma),
+\]
+因而在整个 $\Omega$ 上
+\begin{equation}
+|\delta_iu_h(x)-D_iu(x)|
+\leq c_2(u)|h|+c_2'(u)d(\Omega(h),\Gamma).
+\label{eq:ch1-difference-error-global}
+\end{equation}
+当 $h\to0$ 时右端趋于 $0$, 这说明 $\delta_iu_h$ 在一致范数和 $L^2$ 范数中收敛到 $D_iu$.
+\end{Proof}
+
+\MBSourceStatementNumber{lemma}{2}
+\begin{Lemma}
+\label{lem:ch1-h01-condition-c2}
+条件 (C2) 成立.
+\end{Lemma}
+
+\begin{Proof}
+设给定序列 $u_{h'}\in W_{h'}$, $h'\to0$, 使当 $h'\to0$ 时 $p_{h'}u_{h'}$ 在 $F$ 的弱拓扑中收敛到 $\varphi$. 这意味着
+\begin{equation}
+\begin{aligned}
+\lim_{h'\to0}u_{h'}&=\varphi_0,\\
+\lim_{h'\to0}\delta_{ih'}u_{h'}&=\varphi_i,\qquad1\leq i\leq n,
+\end{aligned}
+\label{eq:ch1-h01-weak-component-limits}
+\end{equation}
+在 $L^2(\Omega)$ 的弱拓扑中成立, 其中 $\varphi=(\varphi_0,\ldots,\varphi_n)$. 因为函数 $u_{h'}$ 与 $\delta_iu_{h'}$ 在 $\Omega$ 中具有紧支集, 还有
+\begin{equation}
+\begin{aligned}
+\lim_{h'\to0}\widetilde u_{h'}&=\widetilde\varphi_0,\\
+\lim_{h'\to0}\delta_i\widetilde u_{h'}&=\widetilde\varphi_i,\qquad1\leq i\leq n,
+\end{aligned}
+\label{eq:ch1-extended-weak-component-limits}
+\end{equation}
+在 $L^2(\mathbb R^n)$ 的弱拓扑中成立; 这里 $\widetilde g$ 表示在 $\Omega$ 中等于 $g$, 在 $\Omega$ 的补集中等于 $0$ 的函数.
+
+离散分部积分公式给出
+\begin{equation}
+\int_{\mathbb R^n}\delta_{ih'}u_{h'}(x)\sigma(x)\,dx
+=-\int_{\mathbb R^n}u_{h'}(x)\delta_{ih'}\sigma(x)\,dx,
+\label{eq:ch1-discrete-integration-by-parts-centered}
+\end{equation}
+对每个 $\sigma\in\mathcal D(\mathbb R^n)$ 成立.
+
+当 $h'\to0$ 时, \eqref{eq:ch1-discrete-integration-by-parts-centered} 左端收敛到
+\[
+\int_{\mathbb R^n}\widetilde\varphi_i(x)\sigma(x)\,dx,
+\]
+右端收敛到
+\[
+-\int_{\mathbb R^n}\widetilde\varphi_0(x)D_i\sigma(x)\,dx,
+\]
+因为如引理 \ref{lem:ch1-h01-condition-c1} 所示, $\delta_{ih'}\sigma$ 在 $L^2(\mathbb R^n)$ 中收敛到 $D_i\sigma$. 因而
+\[
+\int_{\mathbb R^n}\widetilde\varphi_i(x)\sigma(x)\,dx
+=-\int_{\mathbb R^n}\widetilde\varphi_0(x)D_i\sigma(x)\,dx,
+\qquad\forall\sigma\in\mathcal D(\mathbb R^n),
+\]
+也就是说, 在分布意义下
+\begin{equation}
+\widetilde\varphi_i=D_i\widetilde\varphi_0,\qquad1\leq i\leq n.
+\label{eq:ch1-weak-limit-derivatives}
+\end{equation}
+现在显然 $\widetilde\varphi_0\in H^1(\mathbb R^n)$; 又因 $\widetilde\varphi_0$ 在 $\Omega$ 的补集中为零, $\varphi_0$ 属于 $H_0^1(\Omega)$. 因此 $\varphi\in\omega W$:
+\begin{equation}
+\varphi=\omega\varphi_0,\qquad\varphi_0\in H_0^1(\Omega).
+\label{eq:ch1-h01-limit-in-embedding}
+\end{equation}
+\end{Proof}
+
+\subsubsection{离散 Poincaré 不等式}
+\label{subsubsec:ch1-discrete-poincare}
+
+下面的离散 Poincaré 不等式(见 \eqref{eq:ch1-poincare-inequality})使我们能够在 \eqref{eq:ch1-step-function-space} 的空间 $W_h$ 上赋予另一个标量积 $((\cdot,\cdot))_h$, 即标量积 $((\cdot,\cdot))$(见 \eqref{eq:ch1-h01-gradient-inner-product})的离散类似物.
+
+\MBSourceStatementNumber{proposition}{3}
+\begin{Proposition}
+\label{prop:ch1-discrete-poincare}
+设 $\Omega$ 在 $x_i$ 方向有界, 且 $u_h$ 是 \eqref{eq:ch1-step-function-space} 型的标量阶梯函数($u_h(M)\in\mathbb R$). 则
+\begin{equation}
+|u_h|\leq2\ell|\delta_{ih}u_h|,
+\label{eq:ch1-discrete-poincare-inequality}
+\end{equation}
+其中 $\ell$ 是 $\Omega$ 在这一方向上的宽度.
+\end{Proposition}
+
+\begin{Proof}
+为简单起见, 取 $i=1$. 因为 $u_h$ 具有紧支集, 对任意 $M\in\mathcal R_h$,
+\[
+\begin{aligned}
+u_h(M)^2
+&=\sum_{j=1}^\infty\left\{[u_h(M-j\mathbf h_1)]^2
+-[u_h(M-(j+1)\mathbf h_1)]^2\right\}\\
+&=h_1\sum_{j=1}^\infty
+\delta_{1h}u_h\left(M-\left(j+\frac12\right)\mathbf h_1\right)
+\left[u_h(M-j\mathbf h_1)+u_h(M-(j+1)\mathbf h_1)\right].
+\end{aligned}
+\]
+从而
+\begin{equation}
+\begin{aligned}
+u_h(M)^2&\leq I\\
+&=h_1\sum_{j=-\infty}^{+\infty}
+\left|\delta_{1h}u_h\left(M-\left(j+\frac12\right)\mathbf h_1\right)\right|\\
+&\qquad{}\times
+\left\{|u_h(M-j\mathbf h_1)|+|u_h(M-(j+1)\mathbf h_1)|\right\}.
+\end{aligned}
+\label{eq:ch1-discrete-poincare-telescope}
+\end{equation}
+这些和实际上都是有限和. 对任意 $i\in\mathbb Z$, $u_h(M+i\mathbf h_1)^2$ 由完全相同的量 $I$ 控制. 因为 $\Omega$ 的 $x_1$ 方向宽度小于 $\ell$, 使 $u_h(M+i\mathbf h_1)\neq0$ 的 $i$ 值少于 $\ell/h_1$ 个. 因此
+\begin{equation}
+\sum_{i=-\infty}^{+\infty}u_h(M+i\mathbf h_1)^2
+\leq\frac{\ell}{h_1}I.
+\label{eq:ch1-discrete-poincare-line-sum}
+\end{equation}
+
+以 $F_h(M)$ 表示管道 $\bigcup_{i=-\infty}^{+\infty}\sigma_h(M+i\mathbf h_1)$. 可把 \eqref{eq:ch1-discrete-poincare-line-sum} 解释为
+\[
+\begin{aligned}
+\int_{F_h(M)}u_h(x)^2\,dx
+&=(h_1\cdots h_n)\sum_{i=-\infty}^{+\infty}u_h(M+i\mathbf h_1)^2\\
+&\leq\ell(h_1\cdots h_n)\frac{I}{h_1}\\
+&=\ell\int_{F_h(M)}|\delta_{1h}u_h(x)|
+\left\{|u_h(x+\tfrac12\mathbf h_1)|+|u_h(x-\tfrac12\mathbf h_1)|\right\}\,dx.
+\end{aligned}
+\]
+对所有管道 $F_h(M)$ 求和, 得
+\[
+\int_{\mathbb R^n}u_h(x)^2\,dx
+\leq\ell\int_{\mathbb R^n}|\delta_{1h}u_h(x)|
+\left\{|u_h(x+\tfrac12\mathbf h_1)|+|u_h(x-\tfrac12\mathbf h_1)|\right\}\,dx.
+\]
+应用 Schwarz 不等式,
+\[
+\begin{aligned}
+|u_h|^2
+&=\int_{\mathbb R^n}u_h(x)^2\,dx\\
+&\leq\ell|\delta_{1h}u_h|
+\left[\int_{\mathbb R^n}
+\left\{|u_h(x+\tfrac12\mathbf h_1)|+|u_h(x-\tfrac12\mathbf h_1)|\right\}^2dx\right]^{1/2}\\
+&\leq2\ell|\delta_{1h}u_h|\,|u_h|,
+\end{aligned}
+\]
+从而得到 \eqref{eq:ch1-discrete-poincare-inequality}.
+\end{Proof}
+
+\MBSourceStatementNumber{proposition}{4}
+\begin{Proposition}
+\label{prop:ch1-h01-gradient-inner-product}
+设 $\Omega$ 是有界 Lipschitz 集. 若在空间 $W_h$ 上赋予标量积
+\begin{equation}
+((u_h,v_h))_h
+=\sum_{i=1}^n\int_\Omega\delta_{ih}u_h\,\delta_{ih}v_h\,dx,
+\label{eq:ch1-discrete-gradient-inner-product}
+\end{equation}
+则仍得到 $H_0^1(\Omega)$ 的一个稳定收敛逼近.
+\end{Proposition}
+
+\begin{Proof}
+由命题 \ref{prop:ch1-discrete-poincare}, 延拓算子是稳定的.
+\end{Proof}
+
+\MBSourceStatementNumber{remark}{5}
+\begin{Remark}
+\label{rem:ch1-alternative-difference-operators}
+使用差分算子 $\nabla_{ih}$ 或 $\overline\nabla_{ih}$, 乃至微分算子 $\partial/\partial x_i$ 的任何合理逼近, 都可以定义空间 $H_0^1(\Omega)$ 的许多其他类似逼近. 此时需要修改 \eqref{eq:ch1-discrete-h01-inner-product}, 把 $\delta_{ih}$ 换成 $\nabla_{ih}$ 等; 还要适当定义点集 $\mathring\Omega_{1h}$, 并修改引理 \ref{lem:ch1-h01-condition-c1} 和引理 \ref{lem:ch1-h01-condition-c2} 证明中的若干部分.
+
+同一 Poincaré 不等式对算子 $\nabla_{ih}$ 与 $\overline\nabla_{ih}$ 成立, 但对更一般的算子未必成立.
+\end{Remark}
+
+\MBSourceStatementNumber{remark}{6}
+\begin{Remark}
+\label{rem:ch1-unbounded-h01-approximation}
+当 $\Omega$ 无界时, 可以用下列两类函数之一构成空间 $W_h$, 从而定义 $H_0^1(\Omega)$ 的外逼近:
+
+-- 具有紧支集的阶梯函数 $\sum_{M\in\mathring\Omega_{1h}}\lambda_Mw_{hM}$, 即只对有限个点 $M\in\mathring\Omega_{1h}$ 求和;
+
+-- 或者阶梯函数 $\sum\lambda_Mw_{hM}$, 其中 $M$ 属于 $\mathring\Omega_{1h}$ 与某个大球 $|x|\leq\rho(h)$ 的交集, 且当 $h\to0$ 时 $\rho(h)\to+\infty$.
+
+第二种情形中的 $W_h$ 是有限维的, 第一种则不是. 不修改逼近的其他要素, 就可得到无界局部 Lipschitz 集 $\Omega$ 上 $H_0^1(\Omega)$ 的稳定收敛逼近.
+
+若 $\Omega$ 在 $x_1,\ldots,x_n$ 中某个方向上有界, 则离散 Poincaré 不等式仍可使用.
+\end{Remark}
+
+\subsubsection{空间 \texorpdfstring{$V$}{V} 的逼近 (APX1)}
+\label{subsubsec:ch1-space-v-apx1}
+
+设 $\Omega$ 是 $\mathbb R^n$ 中有界 Lipschitz 集, 设 $\mathcal V$ 是通常的空间 \eqref{eq:ch1-test-divergence-free-space}, $V$ 是它在 $\mathbf H_0^1(\Omega)$ 中的闭包.
+
+现在用有限差分定义 $V$ 的一个逼近, 记为 (APX1).
+
+令 $F=L^2(\Omega)^{n+1}$, 并赋予自然的 Hilbert 标量积; 定义映射 $\omega\in\mathcal L(V,F)$:
+\[
+u\longmapsto\omega u=(u,D_1u,\ldots,D_nu).
+\]
+显然
+\[
+\|\omega u\|_F=[[u]],
+\]
+故 $\omega$ 是从 $V$ 到 $F$ 的同构.
+
+\emph{空间 $V_h$.} 下面取 $V_h$ 为阶梯函数空间
+\begin{equation}
+u_h(x)=\sum_{M\in\mathring\Omega_{1h}}u_h(M)w_{hM}(x),
+\qquad u_h(M)\in\mathbb R^n,
+\label{eq:ch1-apx1-step-functions}
+\end{equation}
+其中这些函数按如下意义离散无散:
+\begin{equation}
+\sum_{i=1}^n\nabla_{ih}u_{ih}(M)=0,
+\qquad\forall M\in\mathring\Omega_{1h},
+\label{eq:ch1-apx1-discrete-divergence-points}
+\end{equation}
+这等价于
+\begin{equation}
+\sum_{i=1}^n\nabla_{ih}u_{ih}(x)=0,
+\qquad\forall x\in\Omega(h).
+\label{eq:ch1-apx1-discrete-divergence-domain}
+\end{equation}
+
+没有可用的 $V_h$ 基. 显然, $V_h$ 是维数不超过 $nN(h)-N(h)=(n-1)N(h)$ 的有限维空间, 因为 \eqref{eq:ch1-apx1-step-functions} 中所有函数构成维数为 $nN(h)$ 的空间, 而 \eqref{eq:ch1-apx1-discrete-divergence-points} 中至多有 $N(h)$ 个独立线性约束. 这些约束是否总线性无关并不清楚, 所以 $V_h$ 的维数不一定是 $(n-1)N(h)$.
+
+在空间 $V_h$ 上赋予下列两个标量积之一:
+\begin{equation}
+((u_h,v_h))_h
+=\sum_{i=1}^n\int_\Omega\delta_iu_h(x)\cdot\delta_iv_h(x)\,dx,
+\label{eq:ch1-apx1-gradient-inner-product}
+\end{equation}
+\begin{equation}
+[[u_h,v_h]]_h
+=\int_\Omega u_h(x)v_h(x)\,dx+((u_h,v_h))_h.
+\label{eq:ch1-apx1-h01-inner-product}
+\end{equation}
+由命题 \ref{prop:ch1-discrete-poincare}(离散 Poincaré 不等式), 赋予其中任一标量积的 $V_h$ 都是 Hilbert 空间.
+
+\emph{算子 $p_h$.} 它们是 $\omega$ 的离散类似物:
+\begin{equation}
+p_hu_h=\{u_h,D_1u_h,\ldots,D_nu_h\}.
+\label{eq:ch1-apx1-prolongation}
+\end{equation}
+由 \eqref{eq:ch1-discrete-poincare-inequality}, 这些算子稳定:
+\begin{equation}
+\|p_hu_h\|_F=[[u_h]]_h\leq c\|u_h\|_h,
+\qquad\forall u_h\in V_h.
+\label{eq:ch1-apx1-prolongation-stability}
+\end{equation}
+
+\emph{算子 $r_h$.} 只对 $u\in\mathcal V$ 定义 $r_hu$, 而 $\mathcal V$ 是 $V$ 的稠密子空间. 对每个
+\[
+M=(m_1h_1,\ldots,m_nh_n)\in\mathring\Omega_{1h},
+\]
+定义
+\begin{equation}
+\begin{aligned}
+u_{ih}(M)&=u_h\text{ 的第 }i\text{ 个分量}\\
+&=u_i\text{ 在 }\sigma_h(M)\text{ 的面 }
+x_i=(m_i-\tfrac12)h_i\text{ 上的平均值}.
+\end{aligned}
+\label{eq:ch1-apx1-restriction-face-average}
+\end{equation}
+若要使 $u_h$ 属于 $V_h$, 就必须采用 $r_hu$ 的这一复杂定义; 事实上有下述引理.
+
+\MBSourceStatementNumber{lemma}{3}
+\begin{Lemma}
+\label{lem:ch1-apx1-restriction-in-vh}
+对每个 $u\in\mathcal V$, 有 $r_hu\in V_h$.
+\end{Lemma}
+
+\begin{Proof}
+有
+\[
+\nabla_{ih}u_{ih}(M)
+=\frac1{h_1\cdots h_n}
+\left\{\int_{\Sigma_i}u_i(x)\,dx-\int_{\Sigma_i'}u_i(x)\,dx\right\},
+\]
+其中 $\Sigma_i$ 和 $\Sigma_i'$ 分别是 $\sigma_h(M)$ 的两个面
+$x_i=(m_i+\frac12)h_i$ 与 $x_i=(m_i-\frac12)h_i$.
+
+这也给出
+\[
+\nabla_{ih}u_{ih}(M)
+=\frac1{h_1\cdots h_n}\int_{\Sigma_i\cup\Sigma_i'}u\cdot\nu\,d\Gamma,
+\]
+其中 $\nu$ 表示 $\sigma_h(M)$ 边界上指向外部的单位法向量. 因而, 对每个 $M\in\mathring\Omega_{1h}$,
+\[
+\begin{aligned}
+\sum_{i=1}^n\nabla_{ih}u_{ih}(M)
+&=\frac1{h_1\cdots h_n}\int_{\partial\sigma_h(M)}u\cdot\nu\,d\Gamma\\
+&=\frac1{h_1\cdots h_n}\int_{\sigma_h(M)}\operatorname{div}u\,dx
+\quad\text{(由 Stokes 公式)}\\
+&=0,
+\end{aligned}
+\]
+因为 $\operatorname{div}u=0$. 条件 \eqref{eq:ch1-apx1-discrete-divergence-points} 得到满足.
+\end{Proof}
+
+\MBSourceStatementNumber{proposition}{5}
+\begin{Proposition}
+\label{prop:ch1-apx1-stable-convergent}
+上述 $V$ 的外逼近是稳定且收敛的.
+\end{Proposition}
+
+\begin{Proof}
+稳定性已经证明.
+
+条件 (C1) 的证明与引理 \ref{lem:ch1-h01-condition-c1} 的证明非常相似, 不再重复所有细节. 例如, 对 $x\in\sigma_h(M)$, $M\in\mathring\Omega_{1h}$,
+\[
+|u_{ih}(x)-u_i(x)|=|u_{ih}(\xi)-u_i(x)|,
+\]
+其中 $\xi$ 是 $\sigma_h(M)$ 的面 $x_i=(m_i-\frac12)h_i$ 上的某一点; 因而
+\[
+|u_{ih}(x)-u_i(x)|\leq c_1(u_i)|x-\xi|\leq c_1(u_i)|h|,
+\]
+并且 \eqref{eq:ch1-uniform-error-global} 换成
+\begin{equation}
+\sup_{x\in\Omega}|u_h(x)-u(x)|
+\leq c_1'(u)\{|h|+d(\Omega(h),\Gamma)\}.
+\label{eq:ch1-apx1-uniform-restriction-error}
+\end{equation}
+
+条件 (C2) 的证明与引理 \ref{lem:ch1-h01-condition-c2} 的证明相似. 更确切地说, 该证明表明, 若当 $h'\to0$ 时
+\[
+p_{h'}u_{h'}\to\varphi\qquad\text{在 }F\text{ 的弱拓扑中},
+\]
+则 $\varphi=\omega u=(u,D_1u,\ldots,D_nu)$, 其中 $u\in\mathbf H_0^1(\Omega)$. 由定理 \ref{thm:ch1-characterization-v}, 要证明 $u\in V$, 只需证明 $\operatorname{div}u=0$. 下面由 \eqref{eq:ch1-apx1-discrete-divergence-domain} 推出这一点.
+
+令 $\sigma$ 是 $\mathcal D(\Omega)$ 中任意测试函数, 并设 $h$ 充分小, 使 $\sigma$ 的支集包含于 $\Omega(h)$. 则 \eqref{eq:ch1-apx1-discrete-divergence-domain} 表明
+\[
+\int_\Omega\left\{\sum_{i=1}^n(\nabla_{ih}u_{ih})(x)\right\}\sigma(x)\,dx=0,
+\]
+即
+\begin{equation}
+\int_{\mathbb R^n}\left\{\sum_{i=1}^n(\nabla_{ih}u_{ih})(x)\right\}\sigma(x)\,dx=0.
+\label{eq:ch1-apx1-divergence-test}
+\end{equation}
+容易验证离散分部积分公式
+\begin{equation}
+\int_{\mathbb R^n}(\nabla_{ih}\theta)(x)\sigma(x)\,dx
+=-\int_{\mathbb R^n}\theta(x)(\overline\nabla_{ih}\sigma)(x)\,dx.
+\label{eq:ch1-forward-backward-integration-by-parts}
+\end{equation}
+于是 \eqref{eq:ch1-apx1-divergence-test} 变成
+\begin{equation}
+\int_{\mathbb R^n}\sum_{i=1}^n
+\left[u_{ih}(x)(\overline\nabla_{ih}\sigma)(x)\right]\,dx=0.
+\label{eq:ch1-apx1-divergence-after-parts}
+\end{equation}
+用类似于引理 \ref{lem:ch1-h01-condition-c1} 的证明(Taylor 公式)可见, 当 $h\to0$ 时,
+\begin{equation}
+\overline\nabla_{ih}\sigma\to-D_i\sigma
+\label{eq:ch1-backward-difference-test-limit}
+\end{equation}
+在一致范数与 $L^2$ 范数中成立. 由于 $u_{ih}$ 在 $L^2(\mathbb R^n)$ 的弱拓扑中收敛到 $u_i$, 在 \eqref{eq:ch1-apx1-divergence-after-parts} 中令 $h\to0$, 得
+\begin{equation}
+\int_{\mathbb R^n}\left\{\sum_{i=1}^nu_i(x)D_i\sigma(x)\right\}\,dx=0.
+\label{eq:ch1-limit-divergence-test}
+\end{equation}
+等式 \eqref{eq:ch1-limit-divergence-test} 对任意 $\sigma\in\mathcal D(\Omega)$ 成立, 因而意味着 $\operatorname{div}u=0$, 所以 $\varphi=\omega u$, 且 $u\in V$.
+\end{Proof}
+
+\MBSourceStatementNumber{remark}{7}
+\begin{Remark}
+\label{rem:ch1-apx1-difference-operator-restriction}
+注 \ref{rem:ch1-alternative-difference-operators} 可推广到当前情形, 但有一个限制: 空间 $V_h$ 定义中的条件 \eqref{eq:ch1-apx1-discrete-divergence-points}--\eqref{eq:ch1-apx1-discrete-divergence-domain} 不能换成涉及其他有限差分算子的类似关系. 例如, 似乎不可能把 \eqref{eq:ch1-apx1-discrete-divergence-domain} 换成
+\begin{equation}
+\sum_{i=1}^n\delta_{ih}u_{ih}(x)=0,
+\label{eq:ch1-centered-discrete-divergence}
+\end{equation}
+因为 \eqref{eq:ch1-centered-discrete-divergence} 要求的代数关系比 \eqref{eq:ch1-apx1-discrete-divergence-domain} 多得多, 而且可能过多(此时 $V_h=\{0\}$).
+\end{Remark}
+
+\MBSourceStatementNumber{remark}{8}
+\begin{Remark}
+\label{rem:ch1-apx1-unbounded-domain}
+当 $\Omega$ 无界时, 可以使用注 \ref{rem:ch1-alternative-difference-operators} 中提到的方法, 定义 \eqref{eq:ch1-y-space-definition} 所引入空间 $W$ 的一个稳定收敛外逼近.
+\end{Remark}
+
+\subsubsection{Stokes 问题的逼近}
+\label{subsubsec:ch1-stokes-finite-difference-scheme}
+
+使用上述 $V$ 的逼近以及 \ref{subsec:ch1-general-convergence-theorem} 的结果, 可提出 Stokes 问题的有限差分逼近格式. 在 \eqref{eq:ch1-discrete-variational-problem} 中取
+\begin{equation}
+a_h(u_h,v_h)=\nu((u_h,v_h))_h,
+\label{eq:ch1-stokes-discrete-bilinear-form}
+\end{equation}
+\begin{equation}
+\langle\ell_h,v_h\rangle=(f,v_h),
+\label{eq:ch1-stokes-discrete-linear-form}
+\end{equation}
+其中 $V_h$ 和 $((\cdot,\cdot))_h$ 是刚定义的空间和标量积, $\nu$ 与 $f$ 如 \ref{subsec:ch1-stokes-variational-formulation} 中给定.
+
+与 \eqref{eq:ch1-stokes-variational-problem} 对应的逼近问题为:
+\begin{equation}
+\text{求 }u_h\in V_h,\quad
+\nu((u_h,v_h))_h=(f,v_h),\qquad\forall v_h\in V_h.
+\label{eq:ch1-stokes-finite-difference-problem}
+\end{equation}
+
+\MBSourceStatementNumber{proposition}{6}
+\begin{Proposition}
+\label{prop:ch1-stokes-finite-difference-convergence}
+对每个 $h\in\mathcal H$, \eqref{eq:ch1-stokes-finite-difference-problem} 的解 $u_h$ 存在且唯一; 此外, 当 $h\to0$ 时, \eqref{eq:ch1-stokes-finite-difference-problem} 的解 $u_h$ 按下列意义收敛到 \eqref{eq:ch1-stokes-variational-problem} 的解 $u$:
+\begin{equation}
+u_h\to u\qquad\text{在 }L^2(\Omega)\text{ 中},
+\label{eq:ch1-stokes-discrete-velocity-convergence}
+\end{equation}
+\begin{equation}
+\delta_{ih}u_h\to D_iu\qquad\text{在 }L^2(\Omega)\text{ 中}.
+\label{eq:ch1-stokes-discrete-derivative-convergence}
+\end{equation}
+\end{Proposition}
+
+\begin{Proof}
+只需验证定理 \ref{thm:ch1-general-approximation-convergence} 适用. 条件 \eqref{eq:ch1-discrete-coercivity} 显然成立($\alpha_0=1$). 对 \eqref{eq:ch1-discrete-functional-bound}, 注意到
+\[
+\begin{aligned}
+|\langle\ell_h,v_h\rangle|
+&=|(f,v_h)|\leq|f|\,|v_h|\\
+&\leq c(\Omega)|f|\,\|v_h\|_h,\qquad\forall v_h\in V_h
+\end{aligned}
+\]
+(由离散 Poincaré 不等式). 因而
+\begin{equation}
+\|\ell_h\|_h^\ast\leq c(\Omega)|f|,
+\label{eq:ch1-stokes-discrete-functional-bound}
+\end{equation}
+所以 \eqref{eq:ch1-discrete-functional-bound} 成立.
+
+为验证 \eqref{eq:ch1-bilinear-consistency}--\eqref{eq:ch1-functional-consistency}, 注意
+\[
+p_hv_h\to\omega v\text{ 弱收敛}
+\qquad
+(\text{相应地 }p_hw_h\to\omega w\text{ 强收敛})
+\]
+意味着
+\[
+v_h\to v,\qquad\delta_{ih}v_h\to D_iv
+\quad\text{在 }L^2(\Omega)\text{ 中弱收敛},
+\]
+(相应地
+\[
+w_h\to w,\qquad\delta_{ih}w_h\to D_iw
+\quad\text{在 }L^2(\Omega)\text{ 中强收敛}),
+\]
+而这显然蕴含
+\[
+(\delta_{ih}v_h,\delta_{ih}w_h)\to(D_iv,D_iw),
+\]
+\[
+((v_h,w_h))_h\to((v,w)),
+\qquad
+(f,v_h)\to(f,v).
+\]
+\end{Proof}
+
+\subsubsection*{压力的逼近}
+
+我们希望给出隐含于 \eqref{eq:ch1-stokes-finite-difference-problem} 中的逼近压力, 正如精确压力 $p$ 隐含于 \eqref{eq:ch1-stokes-variational-problem} 中一样.
+
+\eqref{eq:ch1-apx1-step-functions} 中的空间 $V_h$ 是 \eqref{eq:ch1-step-function-space} 中空间 $W_h$ 的子空间, 即由满足线性约束 \eqref{eq:ch1-apx1-discrete-divergence-points} 的 $v_h\in W_h$ 构成的空间.
+
+映射
+\[
+v_h\longmapsto\nu((u_h,v_h))_h-(f,v_h)
+\]
+是定义在 $W_h$ 上并在 $V_h$ 上消失的线性型. 因此, 引入与线性约束 \eqref{eq:ch1-apx1-discrete-divergence-points} 对应的 Lagrange 乘子, 借助经典线性代数定理可知, 存在实数 $\lambda_M\in\mathbb R$, $M\in\mathring\Omega_{1h}$, 使
+\begin{equation}
+\nu((u_h,v_h))_h-(f,v_h)
+=\sum_{M\in\mathring\Omega_{1h}}\lambda_M
+\sum_{i=1}^n\nabla_{ih}v_{ih}(M),
+\qquad\forall v_h\in W_h.
+\label{eq:ch1-lagrange-multiplier-pressure}
+\end{equation}
+
+现在引入算子 $D_h\in\mathcal L(W_h,L^2(\Omega))$:
+\begin{equation}
+D_hv_h(x)=\sum_{i=1}^n\nabla_{ih}v_{ih}(x),
+\qquad\forall v_h\in W_h.
+\label{eq:ch1-discrete-divergence-operator}
+\end{equation}
+其伴随算子 $D_h^\ast\in\mathcal L(L^2(\Omega),W_h)$ 定义为
+\begin{equation}
+(D_h^\ast\theta,v_h)=(\theta,D_hv_h),
+\qquad\forall\theta\in L^2(\Omega),\quad\forall v_h\in W_h.
+\label{eq:ch1-discrete-divergence-adjoint}
+\end{equation}
+
+令 $\pi_h$ 为在 $\Omega(h)=\bigcup_{M\in\mathring\Omega_{1h}}\sigma_h(M)$ 外为零的阶梯函数, 并满足
+\begin{equation}
+\pi_h(x)=\pi_h(M)=\frac{\lambda_M}{h_1\cdots h_n},
+\qquad\forall x\in\sigma_h(M),\quad M\in\mathring\Omega_{1h}.
+\label{eq:ch1-discrete-pressure-definition}
+\end{equation}
+于是 \eqref{eq:ch1-lagrange-multiplier-pressure} 可写为
+\[
+\nu((u_h,v_h))_h-(f,v_h)=(\pi_h,D_hv_h),
+\]
+或等价地,
+\begin{equation}
+\nu((u_h,v_h))_h-(D_h^\ast\pi_h,v_h)=(f,v_h),
+\qquad\forall v_h\in W_h.
+\label{eq:ch1-discrete-momentum-weak}
+\end{equation}
+
+依次取 $v_h=w_{hM}e_j$, $M\in\mathring\Omega_{1h}$, $j=1,\ldots,n$, 可把 \eqref{eq:ch1-discrete-momentum-weak} 解释为
+\begin{equation}
+-\nu\sum_{i=1}^n\delta_{ih}^2u_h(M)
++(\overline\nabla_h\pi_h)(M)
+=f_h(M),\qquad M\in\mathring\Omega_{1h},
+\label{eq:ch1-discrete-momentum-pointwise}
+\end{equation}
+其中 $\overline\nabla_h(\pi_h(M))$ 是向量
+\[
+(\overline\nabla_{1h}\pi_h(M),\ldots,\overline\nabla_{nh}\pi_h(M)),
+\]
+且
+\begin{equation}
+f_h(M)=\frac1{h_1\cdots h_n}\int_{\sigma_h(M)}f(x)\,dx.
+\label{eq:ch1-cell-average-force}
+\end{equation}
+
+方程 \eqref{eq:ch1-discrete-momentum-pointwise} 以及
+\begin{equation}
+\sum_{i=1}^n(\nabla_{ih}u_{ih})(M)=0,
+\qquad M\in\mathring\Omega_{1h},
+\label{eq:ch1-discrete-incompressibility-pointwise}
+\end{equation}
+是方程 \eqref{eq:ch1-stokes-incompressibility}--\eqref{eq:ch1-stokes-homogeneous-boundary} 的离散形式; $-D_h^\ast\pi_h$ 是 $\operatorname{grad}p$ 的逼近, $-D_h^\ast$ 是离散梯度算子.
+
+\MBSourceStatementNumber{remark}{9}
+\begin{Remark}
+\label{rem:ch1-discrete-stokes-solver}
+如注 \ref{rem:ch1-discrete-linear-system} 所指出的, \eqref{eq:ch1-stokes-finite-difference-problem} 的解并不容易求得, 因为我们不知道 $V_h$ 的任何简单基. 求解 \eqref{eq:ch1-stokes-finite-difference-problem} 的一种可能方式是求解方程组 \eqref{eq:ch1-discrete-momentum-pointwise}, \eqref{eq:ch1-discrete-incompressibility-pointwise}; 这是以
+\[
+u_{1h}(M),\ldots,u_{nh}(M),\pi_h(M),
+\qquad M\in\mathring\Omega_{1h},
+\]
+为未知量的线性方程组. 对 $\pi_h(M)$ 而言, 该方程组的解在相差一个加性常数的意义下唯一; 这种非唯一性使线性方程组的求解变得困难, 而且方程组的矩阵是病态的.
+
+实际计算逼近解的更有效方法将在 \MBUnresolvedReference{section}{Section 5} 中给出.
+\end{Remark}
+
+\subsubsection*{误差}
+
+设精确解满足 $u\in\mathbf C^3(\overline\Omega)$ 且 $p\in C^2(\overline\Omega)$. 利用 Taylor 公式, 有
+\begin{equation}
+-\nu\sum_{i=1}^n(\delta_{ih}^2r_hu)(M)
+-(\overline\nabla_hp)(M)
+=f(M)+\epsilon_h(M),
+\label{eq:ch1-discrete-consistency-residual}
+\end{equation}
+其中 $r_hu$ 是 \eqref{eq:ch1-apx1-restriction-face-average} 所定义的 $V_h$ 中函数, $\epsilon_h(M)$ 是一个小向量:
+\begin{equation}
+|\epsilon_h(M)|\leq c(u,p)|h|,
+\label{eq:ch1-discrete-residual-bound}
+\end{equation}
+$c(u,p)$ 只依赖于 $u$ 的三阶导数和 $p$ 的二阶导数的最大范数. 以 $\pi_h'$ 表示函数
+\[
+\sum_{M\in\mathring\Omega_{1h}}p(M)w_{hM}.
+\]
+则等式 \eqref{eq:ch1-stokes-discrete-functional-bound} 等价于
+\begin{equation}
+\nu((r_hu,v_h))_h+(\pi_h',D_hv_h)
+=(f+\epsilon_h,v_h),
+\label{eq:ch1-consistency-weak-all-wh}
+\end{equation}
+对 \eqref{eq:ch1-step-function-space} 的空间 $W_h$ 中每个 $v_h$ 成立, 并且蕴含
+\begin{equation}
+\nu((r_hu,v_h))_h=(f+\epsilon_h,v_h),
+\label{eq:ch1-consistency-weak-vh}
+\end{equation}
+对每个 $v_h\in V_h$ 成立.
+
+从 \eqref{eq:ch1-stokes-finite-difference-problem} 减去这一等式, 得
+\begin{equation}
+\nu((v_h-r_hu,v_h))_h=(\epsilon_h,v_h),
+\label{eq:ch1-discrete-error-equation}
+\end{equation}
+再令 $v_h=u_h-r_hu$, 可见
+\[
+\nu\|u_h-r_hu\|_h^2
+=(\epsilon_h,u_h-r_hu)
+\leq c(\Omega,u,p)|h|\,\|u_h-r_hu\|_h.
+\]
+因此得到下列离散误差估计:
+\begin{equation}
+\|u_h-r_hu\|_h\leq\frac1\nu c(\Omega,u,p)|h|,
+\label{eq:ch1-discrete-error-h1-estimate}
+\end{equation}
+\begin{equation}
+|u_h-r_hu|\leq\frac1\nu c'(\Omega,u,p)|h|.
+\label{eq:ch1-discrete-error-l2-estimate}
+\end{equation}

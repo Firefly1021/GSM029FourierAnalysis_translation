@@ -8,4 +8,5 @@
 6. Reuse the accepted PDF 243--244 sample unchanged when processing Chapter 3 Section 5.
 7. Completed: translate, review, compile and pass QA for `chapter-01-section-01` (PDF pages 16--30, ending before Section 2).
 8. Completed: translate, review, compile and pass QA for `chapter-01-section-02` (PDF pages 30--43, ending before Section 3).
-9. Current: process `chapter-01-section-03` (PDF pages 43--59) as the next natural unit.
+9. Completed: translate, review, compile and pass QA for `chapter-01-section-03` (PDF pages 43--59).
+10. Current: process `chapter-01-section-04` (PDF pages 60--105) as the next natural unit.
