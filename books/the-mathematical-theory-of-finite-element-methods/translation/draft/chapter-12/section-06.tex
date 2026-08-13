@@ -1,0 +1,230 @@
+\MathBookSourcePage{355}
+\subsection{inf-sup 条件的验证}
+\label{sec:ch12-inf-sup-verification}
+\setcounter{thmcount}{0}
+\setcounter{equation}{0}
+
+现在对 Taylor--Hood 空间的特殊情形导出~\eqref{eq:ch12-discrete-inf-sup}, 即 $V_h$ 由~\eqref{eq:ch12-stokes-velocity-space} 给出, $\Pi_h$ 由~\eqref{eq:ch12-Taylor-Hood-pressure-space} 给出, 用于逼近 Stokes 方程. 讨论限制于 $k=2$. 使用一种把问题化为局部估计的一般技术.
+
+令 $p\in\Pi_h$. 因为在该情形 $\Pi_h\subset H^1(\Omega)$,
+\[
+\MathBookFormulaID{formula-ch12-b-gradient-pressure}
+b(v,p)=\int_\Omega v\cdot\chvec{\operatorname{grad}}p\,dx.
+\]
+对 $\mathcal T^h$ 中三角形的一条边 $e$, 令 $\chvec\tau_e$ 为沿 $e$ 的单位切向量, $\chvec\nu_e$ 为单位法向量, $m_e$ 为边中点. 对每条内边, 取 $v(m_e)$ 满足
+\[
+\MathBookFormulaID{formula-ch12-local-test-function-edge-values}
+\begin{aligned}
+v(m_e)\cdot\chvec\tau_e
+&=(|T_{e,1}|+|T_{e,2}|)
+[\chvec\tau_e\cdot\chvec{\operatorname{grad}}p(m_e)],\\
+v(m_e)\cdot\chvec\nu_e&=0,
+\end{aligned}
+\]
+其中 $T_{e,1}$ 和 $T_{e,2}$ 是 $\mathcal T^h$ 中以 $e$ 为公共边的两个三角形. 由于 $p$ 沿边的切向导数连续, $\chvec\tau_e\cdot\chvec{\operatorname{grad}}p(m_e)$ 无歧义. 在所有顶点与边界边中点令 $v=0$. 这唯一确定了 $v\in V_h$.
+
+对任意 $T\in\mathcal T^h$, 令 $r_T=3$ 若 $T$ 位于内部, 令 $r_T=2$ 若一条边在 $\partial\Omega$ 上. 假设 $\mathcal T^h$ 没有三角形的两条边位于 $\partial\Omega$ 上. 对给定 $T$, 令 $e^i$ 表示其内边. 则
+\[
+\MathBookFormulaID{formula-ch12-local-gradient-test-lower-bound}
+\begin{aligned}
+\int_T v\cdot\chvec{\operatorname{grad}}p\,dx
+&=\frac{|T|}{3}\sum_{i=1}^{r_T}
+\sum_{j=1}^2|T_{e^i,j}|
+|\chvec\tau_{e^i}\cdot\chvec{\operatorname{grad}}p(m_{e^i})|^2\\
+&\geq c_\rho|T|\int_T|\chvec{\operatorname{grad}}p|^2\,dx.
+\end{aligned}
+\]
+对所有 $T$ 求和得到
+\MBSourceItem{1}
+\begin{equation}
+\MathBookFormulaID{formula-ch12-local-b-lower-bound}
+\label{eq:ch12-local-b-lower-bound}
+b(v,p)\geq c_\rho\sum_{T\in\mathcal T^h}
+|T|\|p\|_{H^1(T)}^2.
+\end{equation}
+由 $v$ 的定义还有(参见习题~\ref{exr:ch12-local-test-function-norm})
+\MBSourceItem{2}
+\begin{equation}
+\MathBookFormulaID{formula-ch12-local-test-function-norm}
+\label{eq:ch12-local-test-function-norm}
+\|v\|_{H^1(\Omega)^2}
+\leq C\left[\sum_{T\in\mathcal T^h}
+|T|\|p\|_{H^1(T)}^2\right]^{1/2}.
+\end{equation}
+
+令 $K>0$ 为稍后选择的任意常数, 并定义
+\[
+\MathBookFormulaID{formula-ch12-pressure-local-global-split}
+\Pi_h^K:=\left\{q\in\Pi_h:
+\|q\|_{L^2(\Omega)}
+\leq K\left[\sum_{T\in\mathcal T^h}
+|T|\|q\|_{H^1(T)}^2\right]^{1/2}\right\}.
+\]
+对 $p\in\Pi_h^K$ 及上述 $v$, 由~\eqref{eq:ch12-local-b-lower-bound}--\eqref{eq:ch12-local-test-function-norm},
+\[
+\MathBookFormulaID{formula-ch12-inf-sup-local-pressure}
+\frac{b(v,p)}{\|v\|_{H^1(\Omega)^2}}
+\geq\frac{c_\rho}{K}\|p\|_{L^2(\Omega)}.
+\]
+这对给定 $K$ 证明了~\eqref{eq:ch12-discrete-inf-sup-pointwise} 在 $p\in\Pi_h^K$ 上成立.
+
+\MathBookSourcePage{357}
+对 $p\notin\Pi_h^K$, 由引理~\ref{lem:ch11-divergence-right-inverse}, 可取 $w\in\mathring H^1(\Omega)^2$, 使得
+\MBSourceItem{3}
+\begin{equation}
+\MathBookFormulaID{formula-ch12-continuous-divergence-lifting}
+\label{eq:ch12-continuous-divergence-lifting}
+-\operatorname{div}w=p\quad\text{in }\Omega,
+\qquad
+\|w\|_{H^1(\Omega)^2}\leq\widetilde C\|p\|_{L^2(\Omega)}.
+\end{equation}
+令 $u_h\in V_h$ 满足
+\MBSourceItem{4}
+\begin{equation}
+\MathBookFormulaID{formula-ch12-quasi-interpolant-lifting}
+\label{eq:ch12-quasi-interpolant-lifting}
+\|u_h\|_{H^1(\Omega)^2}+
+\left[\sum_{T\in\mathcal T^h}|T|^{-1}
+\|w-u_h\|_{L^2(T)^2}^2\right]^{1/2}
+\leq C^*\|w\|_{H^1(\Omega)^2}
+\end{equation}
+(构造参见第~\MBUnresolvedReference{sec:ch04-source-4-8}{4.8} 节). 则
+\[
+\MathBookFormulaID{formula-ch12-global-pressure-test-estimate}
+\begin{aligned}
+b(u_h,p)
+&=\|p\|_{L^2(\Omega)}^2-b(w-u_h,p)\\
+&\geq\|p\|_{L^2(\Omega)}^2
+-\left[\sum_T|T|^{-1}\|w-u_h\|_{L^2(T)^2}^2\right]^{1/2}
+\left[\sum_T|T|\|p\|_{H^1(T)}^2\right]^{1/2}\\
+&\geq\|p\|_{L^2(\Omega)}^2
+\left(\frac1{\widetilde CC^*}-\frac1K\right)
+\|u_h\|_{H^1(\Omega)^2}\|p\|_{L^2(\Omega)}.
+\end{aligned}
+\]
+因此当 $K$ 充分大时, 对 $p\notin\Pi_h^K$ 也证明了~\eqref{eq:ch12-discrete-inf-sup-pointwise}. 合并两种情形得到:
+
+\MBSourceItem{6}
+\begin{Theorem}
+\label{thm:ch12-Taylor-Hood-inf-sup-k2}
+假设 $\mathcal T^h$ 非退化, 且没有三角形的两条边位于 $\partial\Omega$ 上. 令 $V_h$ 如~\eqref{eq:ch12-stokes-velocity-space}, $\Pi_h$ 如~\eqref{eq:ch12-Taylor-Hood-pressure-space}. 则当 $k=2$ 时, 条件~\eqref{eq:ch12-discrete-inf-sup-pointwise} 以与 $h$ 无关的 $\beta>0$ 成立.
+\end{Theorem}
+
+由此与推论~\ref{cor:ch12-full-mixed-quasioptimality} 得到:
+\MBSourceItem{7}
+\begin{Theorem}
+\label{thm:ch12-Taylor-Hood-full-error-k2}
+假设 $\mathcal T^h$ 非退化, 且没有三角形的两条边位于 $\partial\Omega$ 上. 令 $V_h$ 如~\eqref{eq:ch12-stokes-velocity-space}, $\Pi_h$ 如~\eqref{eq:ch12-Taylor-Hood-pressure-space}, $k=2$. 令 $(u_h,p_h)$ 为~\eqref{eq:ch12-discrete-mixed-problem} 的解, 其中形式由~\eqref{eq:ch12-stokes-a-form} 和~\eqref{eq:ch12-divergence-b-form} 给出. 则对 $0\leq s\leq2$,
+\[
+\MathBookFormulaID{formula-ch12-Taylor-Hood-full-error-k2}
+\|u-u_h\|_{H^1(\Omega)^2}+\|p-p_h\|_{L^2(\Omega)}
+\leq Ch^s\left(\|u\|_{H^{s+1}(\Omega)^2}
++\|p\|_{H^s(\Omega)}\right),
+\]
+前提是 $(u,p)\in H^{s+1}(\Omega)^2\times H^s(\Omega)$.
+\end{Theorem}
+
+定理~\ref{thm:ch12-Taylor-Hood-inf-sup-k2} 与~\ref{thm:ch12-Taylor-Hood-full-error-k2} 对所有 $k\geq2$ 成立(Brezzi 与 Falk 1991). 当 $k\geq4$ 时, 它们由定理~\ref{thm:ch12-divVh-inf-sup-high-order} 及下述某些温和网格限制推出. 这些限制的基本思想是先对局部 $p\in\Pi_h^K$ 取 $v$ 匹配 $p$, 再对 $p\notin\Pi_h^K$ 使用一般论证.
+
+\MathBookSourcePage{359}
+三角剖分中四个三角形相交的内顶点称为奇异顶点, 若相应相交边位于两条直线上. 若 $\theta_j$ 表示该顶点处的连续边角, 条件可改写为 $\theta_i+\theta_{i+1}=\pi$, $i=1,2,3$. 类似地, 若边界顶点是四个三角形的奇异顶点, 则称其为奇异的. 边界上的特殊情形稍有不同. 若三角剖分族有一列非奇异顶点趋于奇异, 常数 $\beta$ 理论上可能退化.
+
+\MBSourceItem{8}
+\begin{Definition}
+\label{def:ch12-nearly-singular-vertices}
+称三角剖分族 $\mathcal T^h$ 没有近奇异顶点, 若存在与 $h$ 无关的 $\sigma>0$, 使得
+\MBSourceItem{9}
+\begin{equation}
+\MathBookFormulaID{formula-ch12-nearly-singular-angle-condition}
+\label{eq:ch12-nearly-singular-angle-condition}
+\sum_{i=1}^{r-1}|\theta_i+\theta_{i+1}-\pi|\geq\sigma
+\end{equation}
+对所有非奇异内顶点成立, 其中四个三角形相交时 $r=4$; 对边界上有 $2\leq r\leq4$ 个三角形相交的所有非奇异顶点也成立.
+\end{Definition}
+
+以下结果是 Scott 与 Vogelius (1985a) 的推论. 当 $V_h=V_h^k\times V_h^k$ 时, 对近奇异边界顶点没有限制, 三角形两条边位于边界上也不会造成困难.
+
+\MBSourceItem{10}
+\begin{Theorem}
+\label{thm:ch12-divVh-inf-sup-high-order}
+假设 $\mathcal T^h$ 非退化, 没有三角形的两条边位于边界上, 且没有近奇异顶点. 令 $V_h$ 或取 $V_h^k\times V_h^k$, 或如~\eqref{eq:ch12-stokes-velocity-space}; 令 $\Pi_h:=\operatorname{div}V_h$. 则当 $k\geq4$ 时, 条件~\eqref{eq:ch12-discrete-inf-sup-pointwise} 以与 $h$ 无关的 $\beta>0$ 成立.
+\end{Theorem}
+
+\MathBookSourcePage{360}
+在下一章中将研究允许计算 $\Pi_h=DV_h$ 而无需显式知道 $\Pi_h$ 结构的算法. 选择该 $\Pi_h$ 的唯一障碍是必须知道~\eqref{eq:ch12-pressure-approximation-property} 这样的条件成立. 当 $V_h$ 上函数不施加 Dirichlet 边界条件时, 这是 $V_h$ 逼近结果的简单推论.
+
+\MBSourceItem{11}
+\begin{Lemma}
+\label{lem:ch12-divVh-pressure-approximation-no-boundary}
+对 $k\geq1$, 条件~\eqref{eq:ch12-pressure-approximation-property} 对
+$\Pi_h:=\operatorname{div}(V_h^k)^n$ 成立.
+\end{Lemma}
+
+\begin{Proof}
+令 $B$ 为包含 $\Omega$ 的球, 将 $p$ 延拓到 $B$ 上的 $Ep$(若 $p|_\Omega=p$), 使得
+$\|Ep\|_{H^s(B)}\leq C\|p\|_{H^s(\Omega)}$. 在 $B$ 中解 $\Delta\phi=Ep$, 取 Dirichlet 边界条件 $\phi=0$ 于 $\partial B$. 由椭圆正则性,
+$\|\phi\|_{H^{s+2}(B)}\leq C\|p\|_{H^s(\Omega)}$. 写 $w=\chvec{\operatorname{grad}}\phi$, 则 $p=\operatorname{div}w$ 于 $\Omega$, 且
+\[
+\MathBookFormulaID{formula-ch12-divVh-pressure-approximation-proof}
+\inf_{q\in\Pi_h}\|p-q\|_{L^2(\Omega)}
+=\inf_{v\in V_h}\|\operatorname{div}w-\operatorname{div}v\|_{L^2(\Omega)}
+\leq Ch^s\|p\|_{H^s(\Omega)}.
+\]
+\end{Proof}
+
+当 $V_h$ 函数施加 Dirichlet 边界条件时, 对 $\Pi_h=\operatorname{div}V_h$ 的条件~\eqref{eq:ch12-pressure-approximation-property} 似乎不能直接由 $V_h$ 的逼近结果推出. 但对~\eqref{eq:ch12-stokes-velocity-space} 这类空间, Scott 与 Vogelius (1985a) 识别出 $\operatorname{div}V_h$, 并用这些结果证明 $k\geq4$ 时的~\eqref{eq:ch12-pressure-approximation-property}. 以下是这些结果的简单推论.
+
+\MBSourceItem{12}
+\begin{Lemma}
+\label{lem:ch12-divVh-inclusions}
+假设 $\mathcal T^h$ 是多边形区域 $\Omega\subset\mathbb R^2$ 的三角剖分, 且没有三角形的两条边位于边界上. 令 $k\geq4$. 则
+\[
+\MathBookFormulaID{formula-ch12-divVh-inclusions}
+V_h^{k-1}\subset\operatorname{div}(V_h^k\times V_h^k),
+\qquad
+\left\{q\in V_h^{k-1}:\int_\Omega q(x)\,dx=0\right\}
+\subset\operatorname{div}V_h,
+\]
+其中 $V_h$ 由~\eqref{eq:ch12-stokes-velocity-space} 给出.
+\end{Lemma}
+
+\MathBookSourcePage{361}
+特别地, 引理~\ref{lem:ch12-divVh-inclusions} 蕴含两种情形的 $\Pi_h=\operatorname{div}V_h$ 均满足~\eqref{eq:ch12-pressure-approximation-property}. 应用该结果与推论~\ref{cor:ch12-mixed-error-combined} 得到:
+
+\MBSourceItem{13}
+\begin{Theorem}
+\label{thm:ch12-divVh-pressure-errors}
+假设 $\mathcal T^h$ 非退化, 没有三角形的两条边位于边界上, 且没有近奇异顶点. 对~\eqref{eq:ch12-stokes-velocity-space} 中 $V_h$, 取 $k\geq4$ 且 $\Pi_h=\operatorname{div}V_h$. 则~\eqref{eq:ch12-stokes-abstract-problem} 解 $(u,p)$ 的压力逼近满足
+\[
+\MathBookFormulaID{formula-ch12-divVh-stokes-pressure-error}
+\|p-p_h\|_{L^2(\Omega)}
+\leq Ch^s\left(\|u\|_{H^{s+1}(\Omega)^2}
++\|p\|_{H^s(\Omega)}\right),\qquad0\leq s\leq k,
+\]
+前提是 $(u,p)\in H^{s+1}(\Omega)^2\times H^s(\Omega)$. 对 $V_h=V_h^k\times V_h^k$, $k\geq4$, $\Pi_h=\operatorname{div}V_h$, 标量椭圆问题~\eqref{eq:ch12-porous-medium-pressure-equation} 的压力逼近满足
+\[
+\MathBookFormulaID{formula-ch12-divVh-scalar-pressure-error}
+\|p-p_h\|_{L^2(\Omega)}
+\leq Ch^{s+1}\|\chvec{\operatorname{grad}}p\|_{H^{s+1}(\Omega)^2}
++Ch^s\|p\|_{H^s(\Omega)},\qquad0\leq s\leq k.
+\]
+\end{Theorem}
+
+相应的速度误差结果已分别在定理~\ref{thm:ch12-Taylor-Hood-velocity-divVh} 与~\ref{thm:ch12-scalar-elliptic-mixed-velocity} 中证明. 高次逼近中, 收敛判据变得简洁并给出少量限制, 而低次逼近可产生非常不同的结果.
+
+最后考察在定理~\ref{thm:ch12-nonconforming-stokes-velocity} 之前引入的非协调方法.
+
+该情形 $D=-\operatorname{div}_h$ 满足~\eqref{eq:ch12-Fortin-operator}; 这里取~\eqref{eq:ch11-midpoint-interpolant} 中的插值算子. 它还满足~\eqref{eq:ch12-D-bounded-right-inverse}, 并可使用第~\MBUnresolvedReference{sec:ch04-source-4-8}{4.8} 节的技术. 因而得到(参见习题~\ref{exr:ch12-nonconforming-pressure-error}):
+
+\MBSourceItem{14}
+\begin{Theorem}
+\label{thm:ch12-nonconforming-pressure-error}
+问题~\eqref{eq:ch12-nonconforming-stokes-problem} 的解满足
+\[
+\MathBookFormulaID{formula-ch12-nonconforming-pressure-error}
+\|p-p_h\|_{L^2(\Omega)}
+\leq Ch\left(\|u\|_{H^2(\Omega)^2}
++\|p\|_{H^1(\Omega)}\right),
+\]
+前提是 $u\in H^2(\Omega)^2$ 且 $p\in H^1(\Omega)$.
+\end{Theorem}

@@ -1,0 +1,92 @@
+\MathBookSourcePage{344}
+\subsection{离散混合形式}
+\label{sec:ch12-discrete-mixed-formulation}
+\setcounter{thmcount}{0}
+\setcounter{equation}{0}
+
+现在令 $V_h\subset V$ 且 $\Pi_h\subset\Pi$, 并考虑求 $u_h\in V_h$ 和 $p_h\in\Pi_h$ 的变分问题:
+\MBSourceItem{1}
+\begin{equation}
+\MathBookFormulaID{formula-ch12-discrete-mixed-problem}
+\label{eq:ch12-discrete-mixed-problem}
+\begin{aligned}
+a(u_h,v)+b(v,p_h)&=F(v)&&\forall v\in V_h,\\
+b(u_h,q)&=0&&\forall q\in\Pi_h.
+\end{aligned}
+\end{equation}
+第二个方程具有非齐次右端项的情形在第~\ref{sec:ch12-discrete-inf-sup} 节考虑. 类似地, 定义
+\MBSourceItem{2}
+\begin{equation}
+\MathBookFormulaID{formula-ch12-discrete-kernel-Zh}
+\label{eq:ch12-discrete-kernel-Zh}
+Z_h:=\{v\in V_h:b(v,q)=0\quad\forall q\in\Pi_h\}.
+\end{equation}
+
+\MathBookSourcePage{345}
+于是~\eqref{eq:ch12-discrete-mixed-problem} 等价于先求 $u_h\in Z_h$, 使得
+\MBSourceItem{3}
+\begin{equation}
+\MathBookFormulaID{formula-ch12-discrete-reduced-problem}
+\label{eq:ch12-discrete-reduced-problem}
+a(u_h,v)=F(v)\qquad\forall v\in Z_h,
+\end{equation}
+再求 $p_h\in\Pi_h$, 使得
+\MBSourceItem{4}
+\begin{equation}
+\MathBookFormulaID{formula-ch12-discrete-pressure-recovery}
+\label{eq:ch12-discrete-pressure-recovery}
+b(v,p_h)=-a(u_h,v)+F(v)\qquad\forall v\in V_h.
+\end{equation}
+
+若 $Z_h\subset Z$, 可应用 Céa 定理~\MBUnresolvedReference{thm:ch02-source-2-8-1}{2.8.1}, 得到
+\MBSourceItem{5}
+\begin{equation}
+\MathBookFormulaID{formula-ch12-Cea-discrete-kernel}
+\label{eq:ch12-Cea-discrete-kernel}
+\|u-u_h\|_V\leq\frac C\alpha
+\inf_{v\in Z_h}\|u-v\|_V.
+\end{equation}
+若 $Z_h\nsubseteq Z$, 则出现变分罪行, 必须应用第~\ref{chap:ch10-variational-crimes} 章的理论. 由第一 Strang 引理~\ref{lem:ch10-first-strang} 得到
+\[
+\MathBookFormulaID{formula-ch12-strang-discrete-kernel}
+\|u-u_h\|_V\leq
+\left(1+\frac C\alpha\right)\inf_{v\in Z_h}\|u-v\|_V
++\frac1\alpha\sup_{w\in Z_h\setminus\{0\}}
+\frac{|a(u-u_h,w)|}{\|w\|_V},
+\]
+前提是~\eqref{eq:ch12-coercivity-on-Z} 也在 $Z_h$ 上成立. 现在识别后一项. 对 $w\in Z_h$,
+\MBSourceItem{6}
+\begin{equation}
+\MathBookFormulaID{formula-ch12-consistency-as-pressure-approximation}
+\label{eq:ch12-consistency-as-pressure-approximation}
+\begin{aligned}
+a(u-u_h,w)
+&=a(u,w)-F(w)\\
+&=-b(w,p)\\
+&=-b(w,p-q)\qquad\forall q\in\Pi_h.
+\end{aligned}
+\end{equation}
+不等式~\eqref{eq:ch12-bilinear-form-continuity} 蕴含
+$|b(w,p-q)|\leq C\|w\|_V\|p-q\|_\Pi$. 因而
+\[
+\MathBookFormulaID{formula-ch12-consistency-pressure-best-approximation}
+|a(u-u_h,w)|\leq C\|w\|_V
+\inf_{q\in\Pi_h}\|p-q\|_\Pi.
+\]
+
+\MBSourceItem{7}
+\begin{Theorem}
+\label{thm:ch12-discrete-velocity-error}
+设 $V_h\subset V$, $\Pi_h\subset\Pi$, 并分别由~\eqref{eq:ch12-kernel-Z} 和~\eqref{eq:ch12-discrete-kernel-Zh} 定义 $Z$ 与 $Z_h$. 假设~\eqref{eq:ch12-coercivity-on-Z} 对所有 $z\in Z\cup Z_h$ 成立. 令 $u,p$ 由~\eqref{eq:ch12-homogeneous-mixed-problem} 确定, 并令 $u_h$ 分别由~\eqref{eq:ch12-discrete-mixed-problem} 或~\eqref{eq:ch12-discrete-reduced-problem} 确定. 则
+\[
+\MathBookFormulaID{formula-ch12-discrete-velocity-error}
+\|u-u_h\|_V
+\leq\left(1+\frac C\alpha\right)\inf_{v\in Z_h}\|u-v\|_V
++\frac C\alpha\inf_{q\in\Pi_h}\|p-q\|_\Pi,
+\]
+其中 $C$ 由~\eqref{eq:ch12-bilinear-form-continuity} 给出.
+\end{Theorem}
+
+该定理的要点如下. 误差 $u-u_h$ 仅依赖于 $Z_h$ 与 $\Pi_h$ 的逼近能力, 以及强制性条件~\eqref{eq:ch12-coercivity-on-Z}.
+
+关于 $p_h$ 的界还需要更多条件; 事实上, $p_h$ 甚至可能不能稳定确定. 注意 $Z_h$ 的逼近性质可能很差, 但只要~\eqref{eq:ch12-coercivity-on-Z} 成立, $u_h$ 至少稳定确定.

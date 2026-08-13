@@ -1,0 +1,199 @@
+\MathBookSourcePage{346}
+\subsection{速度逼近的收敛结果}
+\label{sec:ch12-velocity-convergence}
+\setcounter{thmcount}{0}
+\setcounter{equation}{0}
+
+作为上述理论的第一个应用, 考虑二维 Stokes 方程~\eqref{eq:ch12-stokes-equations} 的逼近空间族. 由~\eqref{eq:ch12-coercivity-on-Z} 定义的条件对形式~\eqref{eq:ch12-stokes-a-form} 在所有 $z\in V$ 上成立, 因而只需证明可逼近性.
+
+令 $V_h^k$ 表示多边形区域 $\Omega\subset\mathbb R^2$ 的一个非退化三角剖分上次数为 $k$ 的 $C^0$ 分片多项式, 其最大三角形直径为 $h$. 令
+\MBSourceItem{1}
+\begin{equation}
+\MathBookFormulaID{formula-ch12-stokes-velocity-space}
+\label{eq:ch12-stokes-velocity-space}
+V_h:=\{\chvec v\in V_h^k\times V_h^k:\chvec v=0\text{ 于 }\partial\Omega\}
+\end{equation}
+且令 $\Pi_h$ 是
+$\Pi=\{q\in L^2(\Omega):\int_\Omega q(x)\,dx=0\}$ 的任意子集, 满足
+\MBSourceItem{2}
+\begin{equation}
+\MathBookFormulaID{formula-ch12-pressure-approximation-property}
+\label{eq:ch12-pressure-approximation-property}
+\inf_{q\in\Pi_h}\|p-q\|_{L^2(\Omega)}
+\leq Ch^s\|p\|_{H^s(\Omega)}
+\qquad\forall p\in\Pi\cap H^s(\Omega),
+\end{equation}
+其中 $0\leq s\leq k$. 一族这样的压力空间是 Taylor--Hood 压力空间(Brezzi 与 Falk 1991), 如下结果所述.
+
+\MBSourceItem{3}
+\begin{Lemma}
+\label{lem:ch12-Taylor-Hood-pressure-approximation}
+条件~\eqref{eq:ch12-pressure-approximation-property} 对
+\MBSourceItem{4}
+\begin{equation}
+\MathBookFormulaID{formula-ch12-Taylor-Hood-pressure-space}
+\label{eq:ch12-Taylor-Hood-pressure-space}
+\Pi_h=\left\{q\in V_h^{k-1}:\int_\Omega q(x)\,dx=0\right\}
+\end{equation}
+成立.
+\end{Lemma}
+
+\begin{Proof}
+由推论~\MBUnresolvedReference{cor:ch04-source-4-4-24}{4.4.24}(亦参见定理~\MBUnresolvedReference{thm:ch04-source-4-8-12}{4.8.12}),
+\[
+\MathBookFormulaID{formula-ch12-pressure-projection-error}
+\inf_{q\in V_h^{k-1}}\|p-q\|_{L^2(\Omega)}
+\leq Ch^s\|p\|_{H^s(\Omega)},\qquad0\leq s\leq k.
+\]
+下确界由 $p$ 到 $V_h^{k-1}$ 的 $L^2(\Omega)$ 投影 $P_{V_h^{k-1}}p$ 达到. 由于常函数包含在 $V_h^{k-1}$ 中,
+$\int_\Omega P_{V_h^{k-1}}p\,dx=\int_\Omega p\,dx=0$, 故 $P_{V_h^{k-1}}p\in\Pi_h$.
+\end{Proof}
+
+\MBSourceItem{5}
+\begin{Theorem}
+\label{thm:ch12-Taylor-Hood-velocity-error}
+设 $V_h$ 如~\eqref{eq:ch12-stokes-velocity-space} 给出, $\Pi_h$ 满足~\eqref{eq:ch12-pressure-approximation-property}. 令 $u,u_h$ 如定理~\ref{thm:ch12-discrete-velocity-error}. 假设 $k\geq4$. 则对 $0\leq s\leq k$,
+\[
+\MathBookFormulaID{formula-ch12-Taylor-Hood-velocity-error}
+\|u-u_h\|_{H^1(\Omega)^2}
+\leq Ch^s\left(\|u\|_{H^{s+1}(\Omega)^2}
++\|p\|_{H^s(\Omega)}\right),
+\]
+前提是~\eqref{eq:ch12-stokes-abstract-problem} 的解 $(u,p)$ 满足
+$(u,p)\in H^{s+1}(\Omega)^2\times H^s(\Omega)$.
+\end{Theorem}
+
+\begin{Proof}
+由~\eqref{eq:ch12-pressure-approximation-property} 和定理~\ref{thm:ch12-discrete-velocity-error}, 只需证明
+\MBSourceItem{6}
+\begin{equation}
+\MathBookFormulaID{formula-ch12-Zh-velocity-approximation}
+\label{eq:ch12-Zh-velocity-approximation}
+\inf_{v\in Z_h}\|u-v\|_{H^1(\Omega)^2}
+\leq Ch^s\|u\|_{H^{s+1}(\Omega)^2}.
+\end{equation}
+注意 $u\in Z$ 蕴含 $u=\chvec{\operatorname{curl}}\psi$, 其中
+$\psi\in H^{s+2}(\Omega)\cap\mathring H^2(\Omega)$(Arnold, Scott 与 Vogelius 1988). 使用 $\mathcal T^h$ 上的 Argyris 元, 存在分片多项式 $\psi_h\in\mathring H^2(\Omega)$, 次数为 $s+1$, 使得
+\[
+\MathBookFormulaID{formula-ch12-Argyris-approximation}
+\|\psi-\psi_h\|_{H^2(\Omega)}
+\leq Ch^s\|\psi\|_{H^{s+2}(\Omega)}.
+\]
+由于 $\chvec{\operatorname{curl}}\psi_h\in Z_h$, 证明完成. 又因 $u=\chvec{\operatorname{curl}}\psi$, 有
+$\|\psi\|_{H^{s+2}(\Omega)}\leq C\|u\|_{H^{s+1}(\Omega)^2}$.
+\end{Proof}
+
+\MBSourceItem{7}
+\begin{Remark}
+\label{rem:ch12-k3-velocity}
+下一节证明 $k=2$ 的结果. $k=3$ 的情形由 Brezzi 与 Falk (1991) 处理.
+\end{Remark}
+
+\MathBookSourcePage{347}
+为用混合方法逼近标量椭圆问题~\eqref{eq:ch12-porous-medium-pressure-equation}, 必须考虑相应形式 $a(\cdot,\cdot)$ 并不在整个 $V$ 上强制. 它显然在空间
+\[
+\MathBookFormulaID{formula-ch12-scalar-elliptic-kernel}
+Z=\{\chvec v\in H(\operatorname{div}):\operatorname{div}\chvec v=0\}
+\]
+上强制, 故~\eqref{eq:ch12-reduced-kernel-problem} 适定. 然而, 必须保证它在~\eqref{eq:ch12-discrete-kernel-Zh} 给出的 $Z_h$ 上也适定. 一个简单办法是保证 $Z_h\subset Z$, 下面将说明一种实现方式.
+
+回到上一节的一般记号, 注意 $\Pi_h$ 自然地与 $DV_h$ 配对. 若取 $\Pi_h=DV_h$, 则~\eqref{eq:ch12-discrete-kernel-Zh} 对 $Z_h$ 的定义保证 $Z_h\subset Z$, 从而保证强制性. 例如, 可取 $V_h=V_h^k\times V_h^k$(参见~\eqref{eq:ch12-stokes-velocity-space}), 于是~\eqref{eq:ch12-Zh-velocity-approximation} 的证明表明
+\MBSourceItem{8}
+\begin{equation}
+\MathBookFormulaID{formula-ch12-scalar-elliptic-kernel-approximation}
+\label{eq:ch12-scalar-elliptic-kernel-approximation}
+\inf_{v\in Z_h}\|u-v\|_{H^1(\Omega)^2}
+\leq Ch^k\|u\|_{H^{k+1}(\Omega)^2},
+\end{equation}
+因为该结果在以 $V_h\cap\{v\in H^1(\Omega)^2:\operatorname{div}v=0\}$ 代替 $Z_h$ 时成立, 而后者是 $Z_h$ 的子集.
+
+作为~\eqref{eq:ch12-pressure-approximation-property} 和~\eqref{eq:ch12-scalar-elliptic-kernel-approximation} 的推论, 得到以下结果.
+
+\MBSourceItem{9}
+\begin{Theorem}
+\label{thm:ch12-scalar-elliptic-mixed-velocity}
+考虑标量椭圆问题~\eqref{eq:ch12-porous-medium-pressure-equation} 的混合方法, $n=2$, 形式 $a(\cdot,\cdot)$ 由~\eqref{eq:ch12-porous-medium-a-form} 给出. 令 $V_h=V_h^k\times V_h^k$, $\Pi_h=\operatorname{div}V_h$. 假设 $k\geq4$. 则对 $0\leq s\leq k$,
+\[
+\MathBookFormulaID{formula-ch12-scalar-elliptic-mixed-velocity}
+\|u-u_h\|_{H^1(\Omega)^2}
+\leq Ch^{s+1}\|\chvec{\operatorname{grad}}p\|_{H^{s+1}(\Omega)^2}
++Ch^s\|p\|_{H^s(\Omega)},
+\]
+前提是~\eqref{eq:ch12-porous-medium-pressure-equation} 的解 $p$ 满足
+$\chvec{\operatorname{grad}}p\in H^{s+1}(\Omega)^2$.
+\end{Theorem}
+
+类似地, 由~\eqref{eq:ch12-Cea-discrete-kernel} 与~\eqref{eq:ch12-Zh-velocity-approximation} 得到:
+
+\MBSourceItem{10}
+\begin{Theorem}
+\label{thm:ch12-Taylor-Hood-velocity-divVh}
+令 $V_h$ 如~\eqref{eq:ch12-stokes-velocity-space} 给出, 并令 $\Pi_h=\operatorname{div}V_h$. 令 $u,u_h$ 如定理~\ref{thm:ch12-discrete-velocity-error}. 假设 $k\geq4$. 则对 $0\leq s\leq k$,
+\[
+\MathBookFormulaID{formula-ch12-Taylor-Hood-velocity-divVh}
+\|u-u_h\|_{H^1(\Omega)^2}
+\leq Ch^s\|u\|_{H^{s+1}(\Omega)^2},
+\]
+前提是~\eqref{eq:ch12-stokes-abstract-problem} 的解 $u$ 满足
+$u\in H^{s+1}(\Omega)^2$.
+\end{Theorem}
+
+\MathBookSourcePage{348}
+上述理论也可用于 Stokes 方程的非协调有限元逼近. 定义
+\[
+\MathBookFormulaID{formula-ch12-nonconforming-stokes-forms}
+a_h(u,v):=\sum_{T\in\mathcal T^h}\int_T
+\chten{\operatorname{grad}}_h u:\chten{\operatorname{grad}}_h v\,dx,
+\qquad
+b_h(v,q):=-\sum_{T\in\mathcal T^h}\int_T\operatorname{div}_h v\,q\,dx,
+\]
+并令 $\|v\|_h:=\sqrt{a_h(v,v)}$. 令 $V_h^*$ 为~\eqref{eq:ch11-nonconforming-vector-space} 定义的空间, 并令 $\Pi_h$ 表示 $\mathcal T^h$ 上的分片常函数 $q$, 满足 $\int_\Omega q\,dx=0$. 由
+\MBSourceItem{11}
+\begin{equation}
+\MathBookFormulaID{formula-ch12-nonconforming-stokes-problem}
+\label{eq:ch12-nonconforming-stokes-problem}
+\begin{aligned}
+a_h(u_h,v)+b_h(v,p_h)&=\int_\Omega f\cdot v\,dx&&\forall v\in V_h^*,\\
+b_h(u_h,q)&=0&&\forall q\in\Pi_h
+\end{aligned}
+\end{equation}
+定义 $u_h\in V_h^*$ 和 $p_h\in\Pi_h$.
+
+\MBSourceItem{12}
+\begin{Theorem}
+\label{thm:ch12-nonconforming-stokes-velocity}
+若 $u\in H^2(\Omega)^2$ 且 $p\in H^1(\Omega)$, 则
+\[
+\MathBookFormulaID{formula-ch12-nonconforming-stokes-velocity}
+\|u-u_h\|_h\leq Ch\left(\|u\|_{H^2(\Omega)^2}
++\|p\|_{H^1(\Omega)}\right).
+\]
+\end{Theorem}
+
+\begin{Proof}
+令 $Z_h=\{v\in V_h^*:b_h(v,q)=0\ \forall q\in\Pi_h\}$. 由非协调 Strang 估计,
+\[
+\MathBookFormulaID{formula-ch12-nonconforming-stokes-strang}
+\|u-u_h\|_h\leq\inf_{v\in Z_h}\|u-v\|_h+
+\sup_{w\in Z_h\setminus\{0\}}
+\frac{|a_h(u-u_h,w)|}{\|w\|_h}.
+\]
+$a_h(\cdot,\cdot)$ 在 $V=\mathring H^1(\Omega)^2$ 上强制, 在非退化 $V_h^*$ 上也是如此, 因为 $a_h(v,v)=0$ 蕴含 $v$ 是分片常数, 且零边界条件与中点连续性蕴含 $v=0$. 然后
+\[
+\MathBookFormulaID{formula-ch12-nonconforming-stokes-residual}
+\begin{aligned}
+a_h(u-u_h,w)
+&=a_h(u,w)-\int_\Omega f\cdot w\,dx\\
+&=a_h(u,w)-\int_\Omega(-\Delta u+\chvec{\operatorname{grad}}p)\cdot w\,dx.
+\end{aligned}
+\]
+分部积分并约定 $w$ 在 $\Omega$ 外为零, 从引理~\MBUnresolvedReference{lem:ch10-source-3-7}{10.3.7} 和~\MBUnresolvedReference{lem:ch10-source-3-9}{10.3.9} 得到
+\[
+\MathBookFormulaID{formula-ch12-nonconforming-stokes-consistency-bound}
+|a_h(u-u_h,w)|
+\leq Ch\left(\|u\|_{H^2(\Omega)^2}+\|p\|_{H^1(\Omega)}\right)\|w\|_h.
+\]
+沿定理~\ref{thm:ch12-discrete-velocity-error} 的推导,
+$|b_h(w,p)|\leq Ch\|w\|_h\|p\|_{H^1(\Omega)}$. 只需证明
+$\inf_{v\in Z_h}\|u-v\|_h\leq Ch\|u\|_{H^2(\Omega)^2}$. 令 $M_h$ 为图~\MBUnresolvedReference{fig:ch10-source-10-5}{10.5} 所示 Morley 空间. 由 $\chvec{\operatorname{curl}}M_h\subset Z_h$ 及定理~\ref{thm:ch12-Taylor-Hood-velocity-error} 的证明完成.
+\end{Proof}

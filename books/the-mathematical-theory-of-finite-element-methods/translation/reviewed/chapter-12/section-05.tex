@@ -1,0 +1,309 @@
+\MathBookSourcePage{349}
+\subsection{离散 inf-sup 条件}
+\label{sec:ch12-discrete-inf-sup}
+\setcounter{thmcount}{0}
+\setcounter{equation}{0}
+
+上一节表明, 可用空间 $Z_h$ 与 $\Pi_h$ 的逼近性质导出速度误差 $u-u_h$ 的估计. 现在考察~\eqref{eq:ch12-discrete-pressure-recovery} 对 $p_h$ 的适定性. 同时将 $Z_h$ 的逼近问题简化为 $V_h$ 的逼近问题. 在定理~\ref{thm:ch12-discrete-velocity-error}, \ref{thm:ch12-scalar-elliptic-mixed-velocity}, \ref{thm:ch12-Taylor-Hood-velocity-divVh} 和~\ref{thm:ch12-nonconforming-stokes-velocity} 中, $Z_h$ 的逼近问题容易求解, 但在其他情形可能更复杂. 我们说明连续条件~\eqref{eq:ch12-continuous-inf-sup} 在 $(V_h,\Pi_h)$ 上的对应条件对 $Z_h$ 的可逼近性以及从~\eqref{eq:ch12-discrete-pressure-recovery} 求解 $p_h$ 都至关重要.
+
+\MBSourceItem{1}
+\begin{Lemma}[Inf-sup 条件]
+\label{lem:ch12-discrete-inf-sup}
+要使~\eqref{eq:ch12-discrete-pressure-recovery} 有唯一解, 其充分必要条件是
+\MBSourceItem{2}
+\begin{equation}
+\MathBookFormulaID{formula-ch12-discrete-inf-sup}
+\label{eq:ch12-discrete-inf-sup}
+0<\beta:=\inf_{q\in\Pi_h}\sup_{v\in V_h}
+\frac{|b(v,q)|}{\|v\|_V\|q\|_\Pi}.
+\end{equation}
+\end{Lemma}
+
+\begin{Proof}
+若 $\beta=0$, 则由 $\Pi_h$ 有限维可知, 存在 $q\in\Pi_h$, 使得 $b(v,q)=0$ 对所有 $v\in V_h$ 成立. 这证明了 inf-sup 条件的必要性. 反之, $\beta>0$ 蕴含~\eqref{eq:ch12-discrete-pressure-recovery} 的唯一性, 因为~\eqref{eq:ch12-discrete-inf-sup} 等价于
+\MBSourceItem{3}
+\begin{equation}
+\MathBookFormulaID{formula-ch12-discrete-inf-sup-pointwise}
+\label{eq:ch12-discrete-inf-sup-pointwise}
+\beta\|q\|_\Pi\leq\sup_{v\in V_h}\frac{|b(v,q)|}{\|v\|_V}
+\qquad\forall q\in\Pi_h.
+\end{equation}
+
+现在考察~\eqref{eq:ch12-discrete-pressure-recovery} 的可解性. 其右端对所有 $v\in Z_h$ 为零. 因此它等价于
+\MBSourceItem{4}
+\begin{equation}
+\MathBookFormulaID{formula-ch12-pressure-on-Zh-perp}
+\label{eq:ch12-pressure-on-Zh-perp}
+b(v,p_h)=-a(u_h,v)+F(v)\qquad\forall v\in Z_h^\perp,
+\end{equation}
+其中
+\MBSourceItem{5}
+\begin{equation}
+\MathBookFormulaID{formula-ch12-Zh-perp}
+\label{eq:ch12-Zh-perp}
+Z_h^\perp:=\{v\in V_h:(w,v)_V=0\quad\forall w\in Z_h\}.
+\end{equation}
+只要看出 $\dim Z_h^\perp=\dim\Pi_h$, 式~\eqref{eq:ch12-pressure-on-Zh-perp} 就表示一个方阵系统, 唯一性蕴含存在性. 将 $Z_h$ 看作映射
+$T:V_h\to\mathbb R^{\dim\Pi_h}$ 的核, 其中
+$(Tv)_i:=b(v,q_i)$, $\{q_i\}$ 是 $\Pi_h$ 的一组基. 若 $T$ 不满, 则存在非平凡系数向量 $\{c_i\}$, 使得
+$\sum_i c_i(Tv)_i=0$ 对所有 $v\in V_h$ 成立. 令
+$0\neq q=\sum_i c_iq_i\in\Pi_h$, 则 $b(v,q)=0$ 对所有 $v\in V_h$ 成立, 与 $\beta>0$ 矛盾. 因此
+\[
+\MathBookFormulaID{formula-ch12-dimension-Zh-kernel}
+\dim Z_h=\dim\ker T=\dim V_h-\dim\Pi_h.
+\]
+又因为 $V_h=Z_h\oplus Z_h^\perp$, 得到
+$\dim Z_h^\perp=\dim V_h-\dim Z_h=\dim\Pi_h$.
+\end{Proof}
+
+引入与~\eqref{eq:ch12-discrete-pressure-recovery} 有关的解算子 $M:Z_h^\perp\to\Pi_h$:
+\MBSourceItem{6}
+\begin{equation}
+\MathBookFormulaID{formula-ch12-operator-M-definition}
+\label{eq:ch12-operator-M-definition}
+b(v,Mv)=(u,v)_V\qquad\forall v\in V_h.
+\end{equation}
+容易看出(参见习题~\ref{exr:ch12-operator-M-bound})
+\[
+\MathBookFormulaID{formula-ch12-operator-M-norm}
+\|M\|_{V\to\Pi}:=\sup_{0\neq u\in V_h}
+\frac{\|Mu\|_\Pi}{\|u\|_V}\leq\frac1\beta.
+\]
+还有算子 $L:\Pi_h\to Z_h^\perp$, 定义为
+\MBSourceItem{7}
+\begin{equation}
+\MathBookFormulaID{formula-ch12-operator-L-definition}
+\label{eq:ch12-operator-L-definition}
+b(Lp,q)=(p,q)_\Pi\qquad\forall q\in\Pi_h.
+\end{equation}
+式~\eqref{eq:ch12-operator-L-definition} 表示方阵系统, 且唯一性由 $Z_h^\perp\cap\{0\}$ 保证. $L$ 在如下意义下与 $M$ 互为伴随:
+\MBSourceItem{8}
+\begin{equation}
+\MathBookFormulaID{formula-ch12-L-M-adjoint}
+\label{eq:ch12-L-M-adjoint}
+(p,Mu)_\Pi=b(Lp,Mu)=(u,Lp)_V.
+\end{equation}
+其范数满足
+\[
+\MathBookFormulaID{formula-ch12-L-M-norm-equality}
+\|L\|_{\Pi\to V}
+=\sup_{0\neq p\in\Pi_h}\frac{\|Lp\|_V}{\|p\|_\Pi}
+=\|M\|_{V\to\Pi}.
+\]
+
+$Lp$ 可刻画为欠定问题 $b(v,q)=(p,q)_\Pi$ 的最小范数解. 更精确地, $Lp\in Z_h^\perp$ 蕴含(参见习题~\ref{exr:ch12-minimum-norm-Lp})
+\MBSourceItem{9}
+\begin{equation}
+\MathBookFormulaID{formula-ch12-minimum-norm-Lp}
+\label{eq:ch12-minimum-norm-Lp}
+\|Lp\|_V=\min_{v\in Z_h^p}\|v\|_V,
+\end{equation}
+其中 $Z_h^p:=\{v\in V_h:b(v,q)=(p,q)_\Pi\ \forall q\in\Pi_h\}$. 因此
+\[
+\MathBookFormulaID{formula-ch12-L-norm-inf-sup-chain}
+\frac1{\|L\|_{\Pi\to V}}
+=\inf_{0\neq p\in\Pi_h}\frac{\|p\|_\Pi}{\|Lp\|_V}
+=\inf_{0\neq p\in\Pi_h}\sup_{0\neq v\in Z_h^p}
+\frac{(p,p)_\Pi}{\|p\|_\Pi\|v\|_V}
+\leq\inf_{0\neq p\in\Pi_h}\sup_{0\neq v\in V_h}
+\frac{b(v,p)}{\|p\|_\Pi\|v\|_V},
+\]
+故 $\|L\|_{\Pi\to V}\geq1/\beta$.
+
+\MBSourceItem{10}
+\begin{Lemma}
+\label{lem:ch12-inf-sup-operator-equivalence}
+条件~\eqref{eq:ch12-discrete-inf-sup} 等价于存在由~\eqref{eq:ch12-operator-L-definition} 和~\eqref{eq:ch12-operator-M-definition} 分别定义的算子 $L$ 和 $M$, 满足
+$\|L\|_{\Pi\to V}=\|M\|_{V\to\Pi}=1/\beta$.
+\end{Lemma}
+
+\begin{Proof}
+$L$ 和 $M$ 的存在性以及其范数的计算已在上面证明. 逆命题留作习题~\ref{exr:ch12-operator-equivalence-converse}.
+\end{Proof}
+
+\MathBookSourcePage{352}
+现在导出 $p-p_h$ 的误差估计. 从~\eqref{eq:ch12-homogeneous-mixed-problem} 与~\eqref{eq:ch12-discrete-mixed-problem} 的第一式相减得到
+\MBSourceItem{11}
+\begin{equation}
+\MathBookFormulaID{formula-ch12-pressure-error-relation}
+\label{eq:ch12-pressure-error-relation}
+b(v,p-p_h)=-a(u-u_h,v)\qquad\forall v\in V_h.
+\end{equation}
+对任意 $q\in\Pi_h$, 由~\eqref{eq:ch12-discrete-inf-sup-pointwise},
+\[
+\MathBookFormulaID{formula-ch12-pressure-error-bound-derivation}
+\begin{aligned}
+\beta\|q-p_h\|_\Pi
+&\leq\sup_{v\in V_h}\frac{|b(v,q-p_h)|}{\|v\|_V}\\
+&=\sup_{v\in V_h}\frac{|b(v,p-p_h)+b(v,q-p)|}{\|v\|_V}\\
+&\leq C\left(\|u-u_h\|_V+\|q-p\|_\Pi\right).
+\end{aligned}
+\]
+于是由三角不等式得到:
+
+\MBSourceItem{12}
+\begin{Theorem}
+\label{thm:ch12-pressure-error}
+设 $V_h\subset V$ 且 $\Pi_h\subset\Pi$. 令 $u,p$ 由~\eqref{eq:ch12-homogeneous-mixed-problem} 确定, 令 $u_h$ 分别由~\eqref{eq:ch12-discrete-mixed-problem} 或~\eqref{eq:ch12-discrete-reduced-problem} 确定. 假设~\eqref{eq:ch12-discrete-inf-sup} 中 $\beta>0$. 则~\eqref{eq:ch12-discrete-pressure-recovery} 有唯一解 $p_h$, 且
+\[
+\MathBookFormulaID{formula-ch12-pressure-error}
+\|p-p_h\|_\Pi
+\leq\frac C\beta\|u-u_h\|_V
++\left(1+\frac C\beta\right)
+\inf_{q\in\Pi_h}\|p-q\|_\Pi,
+\]
+其中 $C$ 由~\eqref{eq:ch12-bilinear-form-continuity} 给出.
+\end{Theorem}
+
+结合定理~\ref{thm:ch12-pressure-error} 与定理~\ref{thm:ch12-discrete-velocity-error}, 得到:
+\MBSourceItem{13}
+\begin{Corollary}
+\label{cor:ch12-mixed-error-combined}
+在定理~\ref{thm:ch12-pressure-error} 与~\ref{thm:ch12-discrete-velocity-error} 的条件下,
+\[
+\MathBookFormulaID{formula-ch12-mixed-error-combined}
+\|p-p_h\|_\Pi
+\leq c\inf_{v\in Z_h}\|u-v\|_V
++(1+c)\inf_{q\in\Pi_h}\|p-q\|_\Pi,
+\qquad
+c:=\frac C\beta\left(1+\frac C\alpha\right).
+\]
+\end{Corollary}
+
+\MathBookSourcePage{353}
+现在说明~\eqref{eq:ch12-discrete-inf-sup} 如何影响 $Z_h$ 的可逼近性. 为此回到完整问题~\eqref{eq:ch12-general-mixed-problem}, 并考虑如下逼近. 对 $V_h\subset V$, $\Pi_h\subset\Pi$, $F\in V'$, $G\in\Pi'$, 求 $u_h\in V_h$, $p_h\in\Pi_h$, 使得
+\MBSourceItem{14}
+\begin{equation}
+\MathBookFormulaID{formula-ch12-full-discrete-mixed-problem}
+\label{eq:ch12-full-discrete-mixed-problem}
+\begin{aligned}
+a(u_h,v)+b(v,p_h)&=F(v)&&\forall v\in V_h,\\
+b(u_h,q)&=G(q)&&\forall q\in\Pi_h.
+\end{aligned}
+\end{equation}
+注意 $u_h$ 位于仿射集合
+\MBSourceItem{15}
+\begin{equation}
+\MathBookFormulaID{formula-ch12-affine-discrete-space}
+\label{eq:ch12-affine-discrete-space}
+Z_h^G:=\{v\in V_h:b(v,q)=G(q)\quad\forall q\in\Pi_h\}.
+\end{equation}
+特别地, $Z_h^0=Z_h$. 类似地定义
+\MBSourceItem{16}
+\begin{equation}
+\MathBookFormulaID{formula-ch12-affine-continuous-space}
+\label{eq:ch12-affine-continuous-space}
+Z^G:=\{v\in V:b(v,q)=G(q)\quad\forall q\in\Pi\}.
+\end{equation}
+
+若 $(u,p)$ 表示~\eqref{eq:ch12-general-mixed-problem} 的解, 则 $u\in Z^G$. 研究从整个空间 $V_h$ 逼近 $u$ 与从 $Z_h^G$ 逼近 $u$ 之间的关系. 给定任意 $v\in V_h$, 令 $w\in V_h$ 满足
+\[
+\MathBookFormulaID{formula-ch12-affine-correction-equation}
+b(w,q)=b(u-v,q)\qquad\forall q\in\Pi_h.
+\]
+则 $w=LP_{\Pi_h}D(u-v)$, 其中 $P_{\Pi_h}$ 表示到 $\Pi_h$ 的投影. 由引理~\ref{lem:ch12-inf-sup-operator-equivalence} 和~\eqref{eq:ch12-D-continuity},
+\[
+\MathBookFormulaID{formula-ch12-affine-correction-bound}
+\|w\|_V\leq\frac1\beta\|D(u-v)\|_\Pi
+\leq\frac C\beta\|u-v\|_V.
+\]
+由 $w$ 的定义, 只要 $u\in Z^G$, 就有 $v+w\in Z_h^G$. 此外,
+\[
+\MathBookFormulaID{formula-ch12-affine-approximation-bound}
+\|u-(v+w)\|_V\leq\|u-v\|_V+\|w\|_V
+\leq\left(1+\frac C\beta\right)\|u-v\|_V.
+\]
+
+\MBSourceItem{17}
+\begin{Theorem}
+\label{thm:ch12-affine-kernel-approximation}
+设 $V_h\subset V$, $\Pi_h\subset\Pi$, 并分别由~\eqref{eq:ch12-affine-continuous-space} 和~\eqref{eq:ch12-affine-discrete-space} 定义 $Z^G$ 与 $Z_h^G$. 假设~\eqref{eq:ch12-discrete-inf-sup} 中 $\beta>0$. 则对所有 $u\in Z^G$,
+\[
+\MathBookFormulaID{formula-ch12-affine-kernel-approximation}
+\inf_{z\in Z_h^G}\|u-z\|_V
+\leq\left(1+\frac C\beta\right)
+\inf_{v\in V_h}\|u-v\|_V.
+\]
+\end{Theorem}
+
+\MathBookSourcePage{354}
+\MBSourceItem{18}
+\begin{Corollary}
+\label{cor:ch12-full-mixed-quasioptimality}
+令 $(u,p)$ 表示~\eqref{eq:ch12-general-mixed-problem} 的解, $(u_h,p_h)$ 表示~\eqref{eq:ch12-full-discrete-mixed-problem} 的解.
+
+存在只依赖于~\eqref{eq:ch12-bilinear-form-continuity} 中 $C$, ~\eqref{eq:ch12-coercivity-on-Z} 中 $\alpha$ 和~\eqref{eq:ch12-discrete-inf-sup} 中 $\beta$ 的常数 $C$, 使得
+\[
+\MathBookFormulaID{formula-ch12-full-mixed-quasioptimality}
+\|u-u_h\|_V+\|p-p_h\|_\Pi
+\leq C\left(
+\inf_{v\in V_h}\|u-v\|_V+
+\inf_{q\in\Pi_h}\|p-q\|_\Pi\right).
+\]
+\end{Corollary}
+
+\begin{Proof}
+修改第一 Strang 引理的证明(参见习题~\ref{exr:ch12-full-mixed-strang}), 得到
+\MBSourceItem{19}
+\begin{equation}
+\MathBookFormulaID{formula-ch12-full-mixed-Strang}
+\label{eq:ch12-full-mixed-Strang}
+\|u-u_h\|_V
+\leq\left(1+\frac C\alpha\right)
+\inf_{v\in Z_h^G}\|u-v\|_V
++\frac1\alpha\sup_{w\in Z_h^0}
+\frac{|a(u-u_h,w)|}{\|w\|_V}.
+\end{equation}
+由定理~\ref{thm:ch12-discrete-velocity-error} 的证明,
+$|a(u-u_h,w)|\leq C\|w\|_V\inf_{q\in\Pi_h}\|p-q\|_\Pi$. 因而由定理~\ref{thm:ch12-affine-kernel-approximation} 得到 $u-u_h$ 的估计. $p-p_h$ 的估计由定理~\ref{thm:ch12-pressure-error} 得出.
+\end{Proof}
+
+不存在验证~\eqref{eq:ch12-discrete-inf-sup} 的通用方法, 但有一种简单情形. 假设存在算子 $T_h:V\to V_h$ 满足
+\MBSourceItem{20}
+\begin{equation}
+\MathBookFormulaID{formula-ch12-Fortin-operator}
+\label{eq:ch12-Fortin-operator}
+DT_hv=P_{\Pi_h}Dv,
+\qquad
+\|T_hv\|_V\leq B\|v\|_V
+\qquad\forall v\in V,
+\end{equation}
+其中 $P_{\Pi_h}$ 表示关于 $\Pi$ 内积到 $\Pi_h$ 的投影. 进一步假设 $D$ 有有界右逆, 即
+\MBSourceItem{21}
+\begin{equation}
+\MathBookFormulaID{formula-ch12-D-bounded-right-inverse}
+\label{eq:ch12-D-bounded-right-inverse}
+\text{对任意 }p\in\Pi\text{, 存在 }v\in V\text{, 使得}\qquad
+Dv=p,\quad \|v\|_V\leq C\|p\|_\Pi.
+\end{equation}
+则对任意 $p\in\Pi_h$,
+\[
+\MathBookFormulaID{formula-ch12-Fortin-inf-sup-proof}
+\|p\|_\Pi
+=\frac{b(T_hv,p)}{\|p\|_\Pi}
+\leq C\frac{b(T_hv,p)}{\|v\|_V}
+\leq CB\frac{b(T_hv,p)}{\|T_hv\|_V}.
+\]
+
+\MBSourceItem{22}
+\begin{Lemma}
+\label{lem:ch12-Fortin-sufficient}
+假设条件~\eqref{eq:ch12-Fortin-operator} 和~\eqref{eq:ch12-D-bounded-right-inverse} 成立. 则~\eqref{eq:ch12-discrete-inf-sup} 以 $\beta=1/(CB)$ 成立.
+\end{Lemma}
+
+下一节给出所需算子 $T_h$ 的一个构造例子. 一般情形下这种构造并不显然, 但现在说明~\eqref{eq:ch12-discrete-inf-sup} 蕴含这样的 $T_h$ 必定存在. 给定 $u\in V$, 通过求解
+\[
+\MathBookFormulaID{formula-ch12-Fortin-from-mixed-problem}
+\begin{aligned}
+a(u_h,w)+b(w,p_h)&=a(u,w)&&\forall w\in V_h,\\
+b(u_h,q)&=b(u,q)&&\forall q\in\Pi_h
+\end{aligned}
+\]
+定义 $u_h=T_hu$. 这对应于以 $F(v):=a(u,v)$ 和 $G(q):=b(u,q)$ 逼近~\eqref{eq:ch12-general-mixed-problem}. 具有该数据的~\eqref{eq:ch12-general-mixed-problem} 的解当然是 $(u,0)$, 故推论~\ref{cor:ch12-full-mixed-quasioptimality} 蕴含
+$\|u-u_h\|_V\leq c\|u\|_V$, 从而由三角不等式~\eqref{eq:ch12-Fortin-operator} 以 $B=1+c$ 成立.
+
+\MBSourceItem{23}
+\begin{Theorem}
+\label{thm:ch12-inf-sup-Fortin-equivalence}
+假设~\eqref{eq:ch12-D-bounded-right-inverse} 成立. 则条件~\eqref{eq:ch12-discrete-inf-sup} 与~\eqref{eq:ch12-Fortin-operator} 等价.
+\end{Theorem}
