@@ -8,8 +8,8 @@
 - Formula review: passed; 52 source equations (1.1)--(1.52) were registered and visually checked.
 - Personal-name protection: passed; 21 in-range registered forms were found byte-for-byte with no duplicate registry entry.
 - Chinese-prose punctuation: passed; 0 forbidden full-width punctuation occurrences.
-- Cross-references: passed; 79 unique batch labels, 0 duplicates, 0 undefined local labels, and 0 command mismatches.
-- External and forward references: 7 explicit unresolved records remain non-blocking and were not guessed.
+- Cross-references after Chapter 1 integration: passed; 78 unique section labels, 80 LaTeX reference commands, 0 duplicates, 0 undefined local labels, and 0 command mismatches.
+- External and forward references: 1 explicit unresolved Appendix I reference remains non-blocking and was not guessed; references to Sections 2--6 and equation (6.12) were resolved when their targets became available.
 - Statement numbering: passed; source-separated theorem, lemma, proposition, and remark sequences are preserved while hyperref anchors remain unique.
 - Compilation: passed from a clean build directory with all required reruns.
 - Visual PDF review: passed for all 13 chapter pages; no clipping, overflow, duplicate proof-ending marker, or garbled text was observed.

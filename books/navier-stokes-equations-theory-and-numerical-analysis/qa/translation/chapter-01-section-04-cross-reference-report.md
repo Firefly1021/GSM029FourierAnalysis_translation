@@ -2,9 +2,9 @@
 
 - Files checked: 1
 - Chapter/batch labels: 308 (308 unique)
-- Project-wide unique labels: 628
-- LaTeX reference commands: 266
-- Explicit unresolved source references: 3
+- Project-wide unique labels: 734
+- LaTeX reference commands: 267
+- Explicit unresolved source references: 2
 - Duplicate labels: 0
 - Undefined local labels: 0
 - Incorrect equation/non-equation reference commands: 0
@@ -24,7 +24,6 @@
 
 ## Explicitly unresolved source references
 
-- `section` `Section 5` at `tex/chapters/chapter-01/section-04.tex:796`
 - `chapter` `Chapter 2` at `tex/chapters/chapter-01/section-04.tex:2437`
 - `chapter` `Chapter 2` at `tex/chapters/chapter-01/section-04.tex:2723`
 

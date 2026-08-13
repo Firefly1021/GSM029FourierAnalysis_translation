@@ -1,14 +1,14 @@
-# chapter-01-section-03 cross-reference report
+# chapter-01-section-06 cross-reference report
 
 - Files checked: 1
-- Chapter/batch labels: 118 (118 unique)
+- Chapter/batch labels: 56 (56 unique)
 - Project-wide unique labels: 734
-- LaTeX reference commands: 119
+- LaTeX reference commands: 75
 - Explicit unresolved source references: 0
 - Duplicate labels: 0
 - Undefined local labels: 0
 - Incorrect equation/non-equation reference commands: 0
-- Registry: `qa/translation/chapter-01-section-03-cross-reference-registry.tsv`
+- Registry: `qa/translation/chapter-01-section-06-cross-reference-registry.tsv`
 
 ## Duplicate labels
 

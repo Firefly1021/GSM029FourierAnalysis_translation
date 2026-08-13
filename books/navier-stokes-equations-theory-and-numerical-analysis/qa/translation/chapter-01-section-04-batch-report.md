@@ -6,8 +6,8 @@
 - Formula registry: 243 numbered formulas, all reviewed.
 - Theorem-like objects: 17 propositions, 24 lemmas, 9 remarks, and 35 proofs.
 - Figures: 1 source diagram retained as an exact crop.
-- Cross-references: 308 unique labels, 266 LaTeX reference commands, no duplicates, no undefined targets, and no command-type mismatches.
-- Explicit unresolved forward references: 3, targeting Section 5 or Chapter 2 and left unguessed.
+- Cross-references after Chapter 1 integration: 308 unique labels, 267 LaTeX reference commands, no duplicates, no undefined targets, and no command-type mismatches.
+- Explicit unresolved forward references: 2, both targeting Chapter 2 and left unguessed; the former Section 5 reference was resolved when its target became available.
 - Chinese-prose punctuation: pass, 0 forbidden full-width punctuation occurrences.
 - Personal names: pass, 17 in-section registered names preserved exactly.
 - Formula fidelity: pass; apparent source inconsistencies were preserved and recorded as non-blocking QA issues.
