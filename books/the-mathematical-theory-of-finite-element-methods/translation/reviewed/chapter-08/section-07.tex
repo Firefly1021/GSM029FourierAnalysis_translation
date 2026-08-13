@@ -1,0 +1,149 @@
+\MathBookSourcePage{246}
+\subsection{一个非线性例子}
+\label{sec:ch08-nonlinear-example}
+\setcounter{thmcount}{0}
+\setcounter{equation}{0}
+
+考虑二维中的一个很简单的模型问题, 用以说明上一节的精细估计如何给出非线性问题的基本存在性结论. 令
+\MBSourceItem{1}
+\begin{equation}
+\MathBookFormulaID{formula-ch08-nonlinear-form}
+\label{eq:ch08-nonlinear-form}
+a(u;v,w):=\int_\Omega A(u)\nabla v\cdot\nabla w\,dx,
+\end{equation}
+其中函数 $A:\mathbb R\to\mathbb R$ 满足
+\MBSourceItem{2}
+\begin{equation}
+\MathBookFormulaID{formula-ch08-nonlinear-coefficient-bounds}
+\label{eq:ch08-nonlinear-coefficient-bounds}
+0<C_a\leq A(s)
+\qquad\forall s\in\mathbb R.
+\end{equation}
+此外, 只假设 $A(\cdot)$ 在 $\mathbb R$ 的有界子集上有界. 寻求满足
+\MBSourceItem{3}
+\begin{equation}
+\MathBookFormulaID{formula-ch08-nonlinear-continuous-problem}
+\label{eq:ch08-nonlinear-continuous-problem}
+a(u;u,v)=F(v)
+\qquad\forall v\in V,
+\end{equation}
+例如 $V=\mathring H^1(\Omega)$. 注意, $a(u;u,v)$ 对任意 $u\in\mathring H^1(\Omega)$ 实际上未必有定义, 因而这类问题的变分表述需要进一步处理. 这里不讨论这些问题, 只说明如何保证离散问题
+\MBSourceItem{4}
+\begin{equation}
+\MathBookFormulaID{formula-ch08-nonlinear-discrete-problem}
+\label{eq:ch08-nonlinear-discrete-problem}
+a(u_h;u_h,v)=F(v)
+\qquad\forall v\in V_h
+\end{equation}
+存在解. 在适当条件下, 令
+\MBSourceItem{5}
+\begin{equation}
+\MathBookFormulaID{formula-ch08-nonlinear-discrete-ball}
+\label{eq:ch08-nonlinear-discrete-ball}
+V_h^{K,p}:=\{v\in V_h:\|v\|_{W_p^1(\Omega)}\leq K\}
+\end{equation}
+其中 $K>0$. 定义简单迭代映射 $T_h:V_h\to V_h$:
+\MBSourceItem{6}
+\begin{equation}
+\MathBookFormulaID{formula-ch08-nonlinear-iteration-map}
+\label{eq:ch08-nonlinear-iteration-map}
+a(T_hu_h;v,u_h)=F(v)
+\qquad\forall v\in V_h.
+\end{equation}
+这总有良好定义, 因为 $u_h\in V_h$ 蕴含 $A(u_h)\in L^\infty(\Omega)$.
+
+\MBSourceItem{7}
+\begin{Theorem}
+\label{thm:ch08-nonlinear-invariant-ball}
+假设 $A$ 在有界集合上有界, 且式~\eqref{eq:ch08-nonlinear-coefficient-bounds} 成立. 存在 $K>0$, $p>2$, $h_0>0$ 和 $\delta>0$, 使得对任意满足 $\|F\|_{W_p^{-1}}\leq\delta$ 的 $F$, 当 $0<h\leq h_0$ 时, $T_h$ 将 $V_h^{K,p}$ 映入自身.
+\end{Theorem}
+
+\begin{Proof}
+任取 $u_h\in V_h^{K,p}$. 令
+\MBSourceItem{8}
+\begin{equation}
+\MathBookFormulaID{formula-ch08-nonlinear-coefficient-supremum}
+\label{eq:ch08-nonlinear-coefficient-supremum}
+M=\sup\{A(s):|s|\leq c_pK\},
+\end{equation}
+其中 $c_p$ 为 Sobolev 不等式中的常数. 由于 $v\in V_h^{K,p}$ 蕴含 $\|v\|_{L^\infty(\Omega)}\leq c_pK$, 故 $\|A(v)\|_{L^\infty(\Omega)}\leq M$. 对充分小的 $K$(例如 $K=C/c_p$), 命题~\ref{prop:ch08-irregular-coefficient-near-two} 的不等式成立. 因而
+\[
+\MathBookFormulaID{formula-ch08-nonlinear-map-bound}
+\|T_hu_h\|_{W_p^1(\Omega)}
+\leq C\|F\|_{W_p^{-1}}.
+\]
+取 $\delta=K/C$ 即得结论.
+\end{Proof}
+
+\MBSourceItem{9}
+\begin{Corollary}
+\label{cor:ch08-nonlinear-discrete-existence}
+设 $A$ 连续且式~\eqref{eq:ch08-nonlinear-coefficient-bounds} 成立. 令定理~\ref{thm:ch08-nonlinear-invariant-ball} 中的 $K>0$, $p>2$, $h_0>0$ 和 $\delta>0$. 对满足 $\|F\|_{W_p^{-1}}\leq\delta$ 的所有 $F$, 式~\eqref{eq:ch08-nonlinear-discrete-problem} 在 $0<h\leq h_0$ 时存在解 $u_h$, 且
+\[
+\MathBookFormulaID{formula-ch08-nonlinear-discrete-solution-bound}
+\|u_h\|_{W_p^1(\Omega)}\leq K.
+\]
+\end{Corollary}
+
+\begin{Proof}
+应用 Brouwer 不动点定理(参见 Dugundji 1966).
+\end{Proof}
+
+该推论不仅保证离散问题存在一个在 $h\to0$ 时一致有界的解, 还给出稳定性结论. 由此可建立如下收敛估计. 对任意 $v\in V_h$, 由式~\eqref{eq:ch08-nonlinear-discrete-problem} 和式~\eqref{eq:ch08-nonlinear-continuous-problem},
+\[
+\MathBookFormulaID{formula-ch08-nonlinear-error-identity}
+a(u-u_h;v,u_h)=\int_\Omega(A(u)-A(u_h))\nabla v\cdot\nabla u\,dx.
+\]
+若 $u\in W_p^1(\Omega)$, 且 $A\in W_\infty^1(I)$ 对某个包含解值域的有界区间 $I$ 成立, 则反复使用 Hölder 不等式和 Sobolev 不等式~\ref{exr:ch04-11}, 可得
+\MBSourceItem{10}
+\begin{equation}
+\MathBookFormulaID{formula-ch08-nonlinear-error-precea}
+\label{eq:ch08-nonlinear-error-precea}
+\|u-u_h\|_{H^1(\Omega)}
+\leq\frac1{C_a}\left(M\|u-v\|_{H^1(\Omega)}
++c_p'\|A\|_{W_\infty^1(I)}\|u\|_{W_p^1(\Omega)}\|u-u_h\|_{H^1(\Omega)}\right).
+\end{equation}
+由三角不等式, 若
+\[
+\MathBookFormulaID{formula-ch08-nonlinear-gamma}
+\gamma:=\frac{c_p'}{C_a}\|A\|_{W_\infty^1(I)}\|u\|_{W_p^1(\Omega)}<1,
+\]
+则得到类似 Céa 定理的结论:
+\MBSourceItem{11}
+\begin{equation}
+\MathBookFormulaID{formula-ch08-nonlinear-cea-estimate}
+\label{eq:ch08-nonlinear-cea-estimate}
+\|u-u_h\|_{H^1(\Omega)}
+\leq\frac{M+\gamma C_a}{(1-\gamma)C_a}\|u-v\|_{H^1(\Omega)}
+\qquad\forall v\in V_h.
+\end{equation}
+使用稍复杂的技巧, 在定理~\ref{thm:ch08-nonlinear-invariant-ball} 的条件和充分小的 $\delta>0$ 下, 可以证明式~\eqref{eq:ch08-nonlinear-continuous-problem} 存在 $u\in W_p^1(\Omega)$ 的解. 因为 $A$ 连续, 下述映射 $T:W_p^1(\Omega)\to W_p^1(\Omega)$ 是 Lipschitz 连续的:
+\[
+\MathBookFormulaID{formula-ch08-nonlinear-continuous-map}
+a(Tu;v,u)=F(v)
+\qquad\forall v\in\mathring W_q^1(\Omega).
+\]
+这可以从 $T$ 与 $T_h$ 都 Lipschitz 连续这一事实直接推出. 若 $A$ 也 Lipschitz 连续, 则 $T_h$ 为 Lipschitz 连续, 这同时给出解的唯一性和不动点迭代的收敛性
+\MBSourceItem{12}
+\begin{equation}
+\MathBookFormulaID{formula-ch08-nonlinear-fixed-point-iteration}
+\label{eq:ch08-nonlinear-fixed-point-iteration}
+u_h^{n+1}:=T_hu_h^n,
+\end{equation}
+其中 $n\to\infty$. 对 $v,w,\phi\in V_h$, 使用导出式~\eqref{eq:ch08-nonlinear-error-precea} 的技巧,
+\MBSourceItem{13}
+\begin{equation}
+\MathBookFormulaID{formula-ch08-nonlinear-contraction-bound}
+\label{eq:ch08-nonlinear-contraction-bound}
+\|T_hv-T_hw\|_{H^1(\Omega)}
+\leq\frac{c_p'\|A\|_{W_\infty^1(0,M)}K}{C_a}\|w-v\|_{H^1(\Omega)}.
+\end{equation}
+类似结果对 $T$ 也成立. 适当选择 $\delta$ 可使 $K$ 足够小. 这些结论汇总如下.
+
+\MBSourceItem{14}
+\begin{Theorem}
+\label{thm:ch08-nonlinear-existence-uniqueness}
+假设 $A$ 为 Lipschitz 连续且式~\eqref{eq:ch08-nonlinear-coefficient-bounds} 成立. 存在 $\delta>0$, $h_0>0$ 和 $p>2$, 使得对满足 $\|F\|_{W_p^{-1}}\leq\delta$ 的任意 $F$, 式~\eqref{eq:ch08-nonlinear-continuous-problem} 和式~\eqref{eq:ch08-nonlinear-discrete-problem} 对所有 $0<h\leq h_0$ 都有唯一解. 此外, $u_h$ 可由每步只需解线性方程的简单迭代~\eqref{eq:ch08-nonlinear-fixed-point-iteration} 以任意精度逼近. 最后, 误差 $u-u_h$ 满足式~\eqref{eq:ch08-nonlinear-cea-estimate}.
+\end{Theorem}
+
+使用更复杂的技巧并对系数 $A$ 作进一步假设, Douglas and Dupont (1975) 证明了全局性质更强的结果, 并研究了 Newton 方法等更高效的迭代技术. Saavedra and Scott (1991) 给出了上一节结果在另一类非线性问题中的应用.

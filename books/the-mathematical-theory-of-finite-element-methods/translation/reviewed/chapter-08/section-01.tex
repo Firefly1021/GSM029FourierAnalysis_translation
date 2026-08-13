@@ -1,0 +1,153 @@
+\subsection{主要定理}
+\label{sec:ch08-main-theorem}
+\setcounter{thmcount}{0}
+\setcounter{equation}{0}
+
+首先考虑变分型为
+\[
+\MathBookFormulaID{formula-ch08-general-variational-form}
+a(u,v):=\int_\Omega\left\{\sum_{i,j=1}^{d}a_{ij}(x)
+\frac{\partial u}{\partial x_i}(x)\frac{\partial v}{\partial x_j}(x)
++\sum_{i=1}^{d}b_i(x)\frac{\partial u}{\partial x_i}(x)v(x)+b_0(x)u(x)v(x)\right\}\,dx
+\]
+的变分问题, 其首项逐点强制, 即
+\MBSourceItem{1}
+\begin{equation}
+\MathBookFormulaID{formula-ch08-pointwise-ellipticity}
+\label{eq:ch08-pointwise-ellipticity}
+C_a|\xi|^2\leq\sum_{ij}a_{ij}(x)\xi_i\xi_j
+\qquad\forall\xi\in\mathbb R^d, \text{a.a. }x\in\Omega.
+\end{equation}
+还假设系数 $a_{ij}$ 和 $b_i$ 在 $\Omega$ 上有界. 为简单起见, 只考虑 Dirichlet 问题, 因而令 $V=\mathring H^1(\Omega)$. 关于该变分问题的正则性, 假设方程
+\MBSourceItem{2}
+\begin{equation}
+\MathBookFormulaID{formula-ch08-primal-problem}
+\label{eq:ch08-primal-problem}
+a(u,v)=(f,v)
+\qquad\forall v\in V
+\end{equation}
+有唯一解, 且满足
+\MBSourceItem{3}
+\begin{equation}
+\MathBookFormulaID{formula-ch08-primal-regularity}
+\label{eq:ch08-primal-regularity}
+\|u\|_{W_p^2(\Omega)}\leq C\|f\|_{L^p(\Omega)}
+\end{equation}
+其中 $1<p<\mu$, 某个 $\mu>1$ 稍后选定. 还假设由
+\begin{equation}
+\MathBookFormulaID{formula-ch08-adjoint-problem}
+\label{eq:ch08-adjoint-problem}
+a(v,u)=(f,v)
+\qquad\forall v\in V
+\tag{\ref*{eq:ch08-primal-problem}$'$}
+\end{equation}
+定义的伴随问题具有同样的正则性.
+
+此外, 对系数 $a_{ij}$ 和 $b_i$ 的正则性还将作一些独立假设.
+
+我们考虑二维和三维中基于一般单元 $\mathcal E$ 的有限元空间 $V_h$. 为简单起见, 假设单元是相容的, 并以拟一致方式组成剖分族 $\mathcal T^h$. 我们将遵循 Rannacher and Scott (1982) 的论证, 使用与第~\ref{sec:ch00-weighted-norm-estimates} 节中类似的加权范数技巧.
+
+引入权函数
+\[
+\MathBookFormulaID{formula-ch08-weight-sigma-z}
+\sigma_z(x)=\bigl(|x-z|^2+\kappa^2h^2\bigr)^{1/2},
+\]
+其中参数 $\kappa\geq1$. 容易验证, 对任意 $\lambda\in\mathbb R$,
+\MBSourceItem{4}
+\begin{equation}
+\MathBookFormulaID{formula-ch08-weight-element-comparability}
+\label{eq:ch08-weight-element-comparability}
+\max_{T\in\mathcal T^h}
+\left(\sup_{x\in T}\sigma_z^\lambda(x)\Big/\inf_{x\in T}\sigma_z^\lambda(x)\right)\leq C,
+\end{equation}
+\MBSourceItem{5}
+\begin{equation}
+\MathBookFormulaID{formula-ch08-weight-infinity-bound}
+\label{eq:ch08-weight-infinity-bound}
+\|\sigma_z^\lambda\|_{L^\infty(\Omega)}\leq C\max\{1,(\kappa h)^\lambda\},
+\end{equation}
+\MBSourceItem{6}
+\begin{equation}
+\MathBookFormulaID{formula-ch08-weight-derivative-bound}
+\label{eq:ch08-weight-derivative-bound}
+|D^\beta\sigma_z^\lambda(x)|\leq C\sigma_z^{\lambda-|\beta|}(x)
+\qquad\forall x\in\Omega,\ \forall\beta,
+\end{equation}
+其中常数 $C$ 连续依赖于 $\lambda$, 且与 $z\in\overline\Omega$ 和 $h$ 无关.
+
+采用记号
+\[
+\MathBookFormulaID{formula-ch08-broken-integral-notation}
+\int_{\Omega}^{\sim}\cdots\,dx:=\sum_{T\in\mathcal T^h}\int_T\cdots\,dx.
+\]
+假设有限元空间 $V_h\subset V$ 由次数小于 $k_{\max}$ 的分片多项式组成, 且具有 $2\leq k\leq k_{\max}$ 阶的逼近性质: 存在到 $V_h$ 上的插值(或其他投影) $I^h$, 使得
+\MBSourceItem{7}
+\begin{equation}
+\MathBookFormulaID{formula-ch08-weighted-interpolation-estimates}
+\label{eq:ch08-weighted-interpolation-estimates}
+\begin{aligned}
+&\int_{\Omega}^{\sim}\sigma_z^\lambda(\psi-I^h\psi)^2\,dx
++h^2\int_{\Omega}^{\sim}\sigma_z^\lambda|\nabla(\psi-I^h\psi)|^2\,dx
+\leq C\sum_{r=k}^{k_{\max}}h^{2r}\int_{\Omega}^{\sim}\sigma_z^\lambda|\nabla_{\mathcal E,r}\psi|^2\,dx,\\
+&\int_{\Omega}^{\sim}\sigma_z^\lambda(\psi-I^h\psi)^2\,dx
++h^2\int_{\Omega}^{\sim}\sigma_z^\lambda|\nabla(\psi-I^h\psi)|^2\,dx
+\leq Ch^4\int_{\Omega}^{\sim}\sigma_z^\lambda|\nabla^2\psi|^2\,dx.
+\end{aligned}
+\end{equation}
+这里 $\psi\in H^1(\Omega)$, 且对每个 $T\in\mathcal T^h$ 有 $\psi|_T\in H^k(T)$, 并满足
+\MBSourceItem{8}
+\begin{equation}
+\MathBookFormulaID{formula-ch08-interpolation-orthogonality}
+\label{eq:ch08-interpolation-orthogonality}
+\nabla_{\mathcal E,r}(\psi|_T)=0
+\quad\forall T\in\mathcal T^h,\ \forall\psi\in V_h,\ \forall k\leq r\leq k_{\max},
+\end{equation}
+其中 $\nabla_j$ 表示所有 $j$ 阶偏导数组成的向量, $\nabla_{\mathcal E,r}$ 表示依赖于所用单元的某个 $r$ 阶偏导向量. 此外, 假设有如下形式的逆估计:
+\MBSourceItem{9}
+\begin{equation}
+\MathBookFormulaID{formula-ch08-weighted-inverse-estimate}
+\label{eq:ch08-weighted-inverse-estimate}
+\int_{\Omega}^{\sim}\sigma_z^\lambda|\nabla_j\psi_h|^2\,dx
+\leq Ch^{-2j}\int_{\Omega}^{\sim}\sigma_z^\lambda\psi_h^2\,dx
+\qquad\forall\psi_h\in V_h,\ j\geq1.
+\end{equation}
+假设式~\eqref{eq:ch08-weighted-interpolation-estimates} 和式~\eqref{eq:ch08-weighted-inverse-estimate} 中的常数 $C$ 只连续依赖于 $\lambda$. 容易验证, 上述假设对第~\ref{chap:ch03-finite-element-space-construction} 章中研究的所有单元均成立. 对以三角形和四面体为基础、位移函数包含所有次数小于 $k$ 的多项式的单元, 当 $r=k$ 时取 $\nabla_{\mathcal E,r}=\nabla_k$, 其他 $r$ 不取任何导数. 对张量积单元, 同样令 $\nabla_{\mathcal E,r}$ 仅在 $r=k$ 时非空; 此时令它只含 $D^\alpha$, 其中对某个 $i$ 有 $\alpha_i=k$, 且当 $j\neq i$ 时 $\alpha_j=0$(参见定理~\ref{thm:ch04-local-tensor-product-interpolation}). 对 Serendipity 单元, 可选的 $\nabla_{\mathcal E,r}$ 参见第~\ref{sec:ch04-tensor-product-polynomial-approximation} 节.
+
+通常令 $u_h\in V_h$ 解
+\MBSourceItem{10}
+\begin{equation}
+\MathBookFormulaID{formula-ch08-galerkin-problem}
+\label{eq:ch08-galerkin-problem}
+a(u_h,v)=(f,v)
+\qquad\forall v\in V_h.
+\end{equation}
+
+本章主要结果如下.
+
+\MBSourceItem{11}
+\begin{Theorem}
+\label{thm:ch08-main-max-norm-stability}
+设有限元空间满足式~\eqref{eq:ch08-weighted-interpolation-estimates}、式~\eqref{eq:ch08-interpolation-orthogonality} 和式~\eqref{eq:ch08-weighted-inverse-estimate}. 假设式~\eqref{eq:ch08-pointwise-ellipticity} 成立, 且 $a_{ij}$ 和 $b_j$ 均属于 $L^\infty(\Omega)$. 再假设 $d\leq3$, 并且对所有 $i,j=1,\ldots,d$, 当 $d=2$ 时 $a_{ij}\in W_p^1(\Omega)$ 对某个 $p>2$ 成立, 当 $d=3$ 时对某个 $p\geq12/5$ 成立; 最后假设式~\eqref{eq:ch08-primal-regularity} 对某个 $\mu>d$ 成立. 则存在 $h_0>0$ 和 $C<\infty$, 使得当 $0<h<h_0$ 时
+\[
+\MathBookFormulaID{formula-ch08-main-max-norm-stability}
+\|u_h\|_{W_\infty^1(\Omega)}\leq C\|u\|_{W_\infty^1(\Omega)}.
+\]
+\end{Theorem}
+
+该定理在 $2<p<\infty$ 时也可将 $\infty$ 换成 $p$(参见习题~\ref{exr:ch08-01}). 下面的推论容易导出(参见习题~\ref{exr:ch08-02}).
+
+\MBSourceItem{12}
+\begin{Corollary}
+\label{cor:ch08-main-max-norm-error}
+在定理~\ref{thm:ch08-main-max-norm-stability} 的假设下,
+\[
+\MathBookFormulaID{formula-ch08-main-max-norm-error}
+\|u-u_h\|_{W_\infty^1(\Omega)}\leq Ch^{k-1}|u|_{W_\infty^k(\Omega)}.
+\]
+\end{Corollary}
+
+\MBSourceItem{13}
+\begin{Remark}
+\label{rem:ch08-regularity-assumptions}
+我们并未试图在最弱的光滑性条件下证明结果, 但值得注意的是, 当 $\mu>d$ 时, 正则性假设~\eqref{eq:ch08-primal-regularity} 蕴含式~\eqref{eq:ch08-primal-problem} 的解 $u$ 属于 $W_\infty^1(\Omega)$, 而对 $\mu\leq d$ 则并非如此.
+\end{Remark}
