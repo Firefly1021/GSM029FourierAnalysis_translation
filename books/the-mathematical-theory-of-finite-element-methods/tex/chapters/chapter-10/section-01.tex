@@ -1,0 +1,177 @@
+\MathBookSourcePage{282}
+\subsection{偏离框架}
+\label{sec:ch10-departure-framework}
+\setcounter{thmcount}{0}
+\setcounter{equation}{0}
+
+令 $H$ 表示 Hilbert 空间, $V\subset H$ 是一个子空间. 我们首先对 $V_h\not\subset V$ 的变分问题推导抽象误差估计. 下面的引理假设 $a(\cdot,\cdot)$ 是定义在 $H$ 上的双线性形式, 但不假设它对称.
+
+\MBSourceItem{1}
+\begin{Lemma}
+\label{lem:ch10-first-strang}
+设 $V$ 和 $V_h$ 是 $H$ 的子空间. 假设 $a(\cdot,\cdot)$ 是 $H$ 上的连续双线性形式, 并且在 $V_h$ 上强制, 相应的连续性常数和强制性常数分别为 $C$ 和 $\gamma$. 设 $u\in V$ 满足
+\[
+\MathBookFormulaID{formula-ch10-first-strang-continuous-problem}
+a(u,v)=F(v)\qquad\forall v\in V,
+\]
+其中 $F\in H'$. 设 $u_h\in V_h$ 满足
+\[
+\MathBookFormulaID{formula-ch10-first-strang-discrete-problem}
+a(u_h,v)=F(v)\qquad\forall v\in V_h.
+\]
+则
+\MBSourceItem{2}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-first-strang-estimate}
+\label{eq:ch10-first-strang-estimate}
+\|u-u_h\|_H
+\leq\left(1+\frac C\gamma\right)\inf_{v\in V_h}\|u-v\|_H
++\frac1\gamma\sup_{w\in V_h\setminus\{0\}}
+\frac{|a(u-u_h,w)|}{\|w\|_H}.
+\end{equation}
+\end{Lemma}
+
+\begin{Proof}
+对任意 $v\in V_h$,
+\begin{align}
+\MathBookFormulaID{formula-ch10-first-strang-proof-chain}
+\|u-u_h\|_H
+&\leq\|u-v\|_H+\|v-u_h\|_H &&\text{(三角不等式)}\notag\\
+&\leq\|u-v\|_H+\frac1\gamma\sup_{w\in V_h\setminus\{0\}}
+\frac{|a(v-u_h,w)|}{\|w\|_H} &&\text{(强制性)}\notag\\
+&=\|u-v\|_H+\frac1\gamma\sup_{w\in V_h\setminus\{0\}}
+\frac{|a(v-u,w)+a(u-u_h,w)|}{\|w\|_H}\notag\\
+&\leq\|u-v\|_H+\frac1\gamma\sup_{w\in V_h\setminus\{0\}}
+\frac{|a(v-u,w)|}{\|w\|_H}
++\frac1\gamma\sup_{w\in V_h\setminus\{0\}}
+\frac{|a(u-u_h,w)|}{\|w\|_H}\notag\\
+&\leq\|u-v\|_H+\frac C\gamma\|v-u\|_H
++\frac1\gamma\sup_{w\in V_h\setminus\{0\}}
+\frac{|a(u-u_h,w)|}{\|w\|_H} &&\text{(连续性)}\notag\\
+&=\left(1+\frac C\gamma\right)\|u-v\|_H
++\frac1\gamma\sup_{w\in V_h\setminus\{0\}}
+\frac{|a(u-u_h,w)|}{\|w\|_H}.
+\label{eq:ch10-first-strang-proof-chain}
+\end{align}
+对 $v\in V_h$ 取下确界即得结论.
+\end{Proof}
+
+\MathBookSourcePage{283}
+如果 $V_h\subseteq V$, 式~\eqref{eq:ch10-first-strang-estimate} 右端第二项为零. 因而它度量 $V_h\not\subseteq V$ 的影响. 还要注意, 由连续性,
+\MBSourceItem{4}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-consistency-upper-bound}
+\label{eq:ch10-consistency-upper-bound}
+\frac{|a(u-u_h,w)|}{\|w\|_H}\leq C\|u-u_h\|_H,
+\end{equation}
+所以
+\MBSourceItem{5}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-consistency-lower-bound}
+\label{eq:ch10-consistency-lower-bound}
+\|u-u_h\|_H\geq\frac1C\sup_{w\in V_h\setminus\{0\}}
+\frac{|a(u-u_h,w)|}{\|w\|_H}.
+\end{equation}
+结合式~\eqref{eq:ch10-consistency-lower-bound} 和~\eqref{eq:ch10-first-strang-estimate} 得到
+\MBSourceItem{6}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-two-sided-discretization-error}
+\label{eq:ch10-two-sided-discretization-error}
+\begin{split}
+\max\left\{\begin{gathered}
+\displaystyle\frac1C\sup_{w\in V_h\setminus\{0\}}
+\frac{|a(u-u_h,w)|}{\|w\|_H},\\[-2pt]
+\displaystyle\inf_{v\in V_h}\|u-v\|_H
+\end{gathered}\right\}
+&\leq\|u-u_h\|_H\\
+&\leq\left(1+\frac C\gamma\right)\inf_{v\in V_h}\|u-v\|_H
++\frac1\gamma\sup_{w\in V_h\setminus\{0\}}
+\frac{|a(u-u_h,w)|}{\|w\|_H}.
+\end{split}
+\end{equation}
+不等式~\eqref{eq:ch10-two-sided-discretization-error} 表明, 最佳逼近项与一致性项确实反映离散化误差 $\|u-u_h\|_H$ 的大小.
+
+当变分形式 $a(\cdot,\cdot)$ 对称正定时, 可使用自然范数
+\[
+\MathBookFormulaID{formula-ch10-energy-norm-a}
+\|v\|_a:=\sqrt{a(v,v)}
+\]
+改进引理~\ref{lem:ch10-first-strang}.
+
+\MBSourceItem{7}
+\begin{Lemma}
+\label{lem:ch10-symmetric-strang}
+设 $V$ 和 $V_h$ 是 $H$ 的子空间, 且 $\dim V_h<\infty$. 假设 $a(\cdot,\cdot)$ 是 $H$ 上的对称正定双线性形式. 令 $u\in V$ 和 $u_h\in V_h$ 如引理~\ref{lem:ch10-first-strang} 所述. 则
+\MBSourceItem{8}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-symmetric-strang-estimate}
+\label{eq:ch10-symmetric-strang-estimate}
+\|u-u_h\|_a\leq\inf_{v\in V_h}\|u-v\|_a
++\sup_{w\in V_h\setminus\{0\}}\frac{|a(u-u_h,w)|}{\|w\|_a}.
+\end{equation}
+\end{Lemma}
+
+\begin{Proof}
+见习题~\ref{exr:ch10-05}.
+\end{Proof}
+
+第~\ref{sec:ch10-interpolated-boundary} 节将把抽象误差估计~\eqref{eq:ch10-first-strang-estimate} 用于带插值边界条件的问题~\eqref{eq:ch10-dirichlet-model} 的有限元逼近. 第~\ref{sec:ch10-isoparametric} 节将对问题~\eqref{eq:ch10-dirichlet-model} 的等参有限元逼近作同样处理. 第~\MBUnresolvedReference{sec:ch12-stokes}{12.5} 节说明, Stokes 方程的有限元逼近可通过式~\eqref{eq:ch10-symmetric-strang-estimate} 研究.
+
+第二种违反式~\eqref{eq:ch10-conforming-inclusion} 的情形来自使用非协调有限元, 此时 $V_h\not\subset H^1(\Omega)$. 由于 $V_h$ 的成员没有全局弱导数, 离散问题必须使用 $a(\cdot,\cdot)$ 的修正形式 $a_h(\cdot,\cdot)$. 有如下抽象误差估计.
+
+\MathBookSourcePage{284}
+\MBSourceItem{9}
+\begin{Lemma}
+\label{lem:ch10-second-strang}
+假设 $\dim V_h<\infty$. 设 $a_h(\cdot,\cdot)$ 是 $V+V_h$ 上的对称正定双线性形式, 并且在 $V$ 上退化为 $a(\cdot,\cdot)$. 令 $u\in V$ 满足
+\[
+\MathBookFormulaID{formula-ch10-second-strang-continuous-problem}
+a(u,v)=F(v)\qquad\forall v\in V,
+\]
+其中 $F\in V'\cap V_h'$. 令 $u_h\in V_h$ 满足
+\[
+\MathBookFormulaID{formula-ch10-second-strang-discrete-problem}
+a_h(u_h,v)=F(v)\qquad\forall v\in V_h.
+\]
+则
+\MBSourceItem{10}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-second-strang-estimate}
+\label{eq:ch10-second-strang-estimate}
+\|u-u_h\|_h\leq\inf_{v\in V_h}\|u-v\|_h
++\sup_{w\in V_h\setminus\{0\}}\frac{|a_h(u-u_h,w)|}{\|w\|_h},
+\end{equation}
+其中 $\|\cdot\|_h=\sqrt{a_h(\cdot,\cdot)}$.
+\end{Lemma}
+
+\begin{Proof}
+令 $\widetilde u_h\in V_h$ 满足
+\MBSourceItem{11}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-ah-projection}
+\label{eq:ch10-ah-projection}
+a_h(\widetilde u_h,v)=a_h(u,v)\qquad\forall v\in V_h,
+\end{equation}
+于是
+\MBSourceItem{12}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-ah-best-approximation}
+\label{eq:ch10-ah-best-approximation}
+\|u-\widetilde u_h\|_h=\inf_{v\in V_h}\|u-v\|_h.
+\end{equation}
+因此
+\MBSourceItem{13}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-second-strang-triangle}
+\label{eq:ch10-second-strang-triangle}
+\begin{split}
+\|u-u_h\|_h
+&\leq\|u-\widetilde u_h\|_h+\|\widetilde u_h-u_h\|_h\\
+&=\|u-\widetilde u_h\|_h
++\sup_{w\in V_h\setminus\{0\}}\frac{|a_h(\widetilde u_h-u_h,w)|}{\|w\|_h}.
+\end{split}
+\end{equation}
+由式~\eqref{eq:ch10-ah-projection}--\eqref{eq:ch10-second-strang-triangle} 即得估计~\eqref{eq:ch10-second-strang-estimate}.
+\end{Proof}
+
+同样, 如果 $V_h\subseteq V$, 式~\eqref{eq:ch10-second-strang-estimate} 右端第二项为零, 因而该项度量 $V_h\not\subseteq V$ 的影响. 这里也成立与式~\eqref{eq:ch10-two-sided-discretization-error} 类似的不等式. 第~\ref{sec:ch10-nonconforming} 节将把抽象误差估计~\eqref{eq:ch10-second-strang-estimate} 用于问题~\eqref{eq:ch10-dirichlet-model} 的非协调分片线性有限元逼近(见图~\MBUnresolvedReference{fig:ch03-nonconforming-p1}{3.2}).
