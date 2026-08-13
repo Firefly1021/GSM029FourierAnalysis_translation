@@ -1,0 +1,255 @@
+\subsection{BPS 预条件子}
+\label{sec:ch07-bps-preconditioner}
+\setcounter{thmcount}{0}
+\setcounter{equation}{0}
+
+本节讨论 Schur 补算子 $S_h$ 的 Bramble--Pasciak--Schatz (BPS)预条件子(参见 Bramble, Pasciak \& Schatz 1986), 并沿用第~\ref{sec:ch07-nonoverlapping-domain-decomposition} 节的记号. BPS 预条件子有两类辅助空间: 一类与子区域的公共边相联系, 另一类与粗三角剖分 $\mathcal T_H$ 相联系.
+
+设 $E_1,\ldots,E_L$ 是两个子区域共有的开边. 定义边空间
+\MBSourceItem{1}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-bps-edge-space}
+\label{eq:ch07-bps-edge-space}
+V_h(E_l)=\{v\in V_h(\Gamma):v=0
+\text{ 在 }\Gamma_h\setminus E_l\text{ 的所有节点上}\}.
+\end{equation}
+定义 SPD 算子 $S_l:V_h(E_l)\longrightarrow V_h(E_l)'$:
+\MathBookSourcePage{209}
+\MBSourceItem{2}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-bps-edge-operator}
+\label{eq:ch07-bps-edge-operator}
+\langle S_lv_1,v_2\rangle=a(v_1,v_2)
+\qquad\forall v_1,v_2\in V_h(E_l).
+\end{equation}
+边空间 $V_h(E_l)$ 通过自然嵌入 $I_l$ 与 $V_h(\Gamma)$ 相连.
+
+\MBSourceItem{3}
+\begin{Remark}
+\label{rem:ch07-bps-edge-support}
+由引理~\ref{lem:ch07-interface-nodal-uniqueness} 的论证, $V_h(E_l)$ 中的函数在边界不包含 $E_l$ 的子区域上恒为零(参见习题~\ref{exr:ch07-28}). 此外, 因为参考区域至多只有 $K$ 个, 每个 $\Omega_j$ 边界上的边数由常数控制.
+\end{Remark}
+
+粗网格空间 $V_H\subset\mathring H^1(\Omega)$ 是与 $\mathcal T_H$ 相应的 $\mathcal P_1$ 有限元空间, 定义 SPD 算子 $A_H:V_H\longrightarrow V_H'$:
+\MBSourceItem{4}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-bps-coarse-operator}
+\label{eq:ch07-bps-coarse-operator}
+\langle A_Hv_1,v_2\rangle=a(v_1,v_2)
+\qquad\forall v_1,v_2\in V_H.
+\end{equation}
+利用引理~\ref{lem:ch07-interface-nodal-uniqueness}, 定义连接算子 $I_H:V_H\longrightarrow V_h(\Gamma)$:
+\MBSourceItem{5}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-bps-coarse-connection}
+\label{eq:ch07-bps-coarse-connection}
+(I_Hv)|_\Gamma=v|_\Gamma.
+\end{equation}
+BPS 预条件子定义为
+\MBSourceItem{6}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-bps-preconditioner}
+\label{eq:ch07-bps-preconditioner}
+B_{BPS}=I_HA_H^{-1}I_H^t+\sum_{l=1}^{L}I_lS_l^{-1}I_l^t.
+\end{equation}
+
+\MBSourceItem{7}
+\begin{Remark}
+\label{rem:ch07-bps-inexact-solves}
+逆算子 $A_H^{-1}$ 和 $S_l^{-1}$ 可替换为谱等价的近似逆(参见 Bramble, Pasciak \& Schatz 1986).
+\end{Remark}
+
+\MBSourceItem{8}
+\begin{Lemma}
+\label{lem:ch07-bps-space-decomposition}
+有分解
+\[
+\MathBookFormulaID{formula-ch07-bps-space-decomposition}
+V_h(\Gamma)=I_HV_H\oplus V_h(E_1)\oplus\cdots\oplus V_h(E_L).
+\]
+\end{Lemma}
+
+\begin{Proof}
+设 $v\in V_h(\Gamma)$, 定义 $v_H=\Pi_Hv$, 即 $v$ 关于 $\mathcal T_H$ 的节点插值. 由引理~\ref{lem:ch07-interface-nodal-uniqueness}, 可定义 $v_l\in V_h(\Gamma)$:
+\MBSourceItem{9}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-bps-edge-component}
+\label{eq:ch07-bps-edge-component}
+v_l(p)=
+\begin{cases}
+v(p)-v_H(p),&p\in\Gamma_h\cap E_l,\\
+0,&p\in\Gamma_h\setminus E_l.
+\end{cases}
+\end{equation}
+容易验证(参见习题~\ref{exr:ch07-29})
+\MBSourceItem{10}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-bps-unique-decomposition}
+\label{eq:ch07-bps-unique-decomposition}
+v=I_Hv_H+\sum_{l=1}^{L}v_l,
+\end{equation}
+且这是 $v$ 的唯一分解.
+\end{Proof}
+
+由引理~\ref{lem:ch07-bps-space-decomposition}, 条件~\eqref{eq:ch07-auxiliary-space-decomposition} 成立.
+
+\MathBookSourcePage{210}
+\MBSourceItem{11}
+\begin{Lemma}
+\label{lem:ch07-bps-maximum-eigenvalue}
+有 $\lambda_{\max}(B_{BPS}S_h)\lesssim1$.
+\end{Lemma}
+
+\begin{Proof}
+任取 $v\in V_h(\Gamma)$. 由式~\eqref{eq:ch07-preconditioned-maximum-eigenvalue}, 只需证明
+\[
+\MathBookFormulaID{formula-ch07-bps-upper-energy-decomposition}
+\langle S_hv,v\rangle
+\lesssim\langle A_Hv_H,v_H\rangle
++\sum_{l=1}^{L}\langle S_lv_l,v_l\rangle,
+\]
+其中 $v_H\in V_H$, $v_l\in V_h(E_l)$, 且 $v=v_H+\sum_{l=1}^{L}v_l$. 由式~\eqref{eq:ch07-global-energy-form}、式~\eqref{eq:ch07-schur-complement-operator}、式~\eqref{eq:ch07-bps-coarse-operator} 和式~\eqref{eq:ch07-bps-edge-operator}, 这等价于
+\MBSourceItem{12}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-bps-upper-h1-decomposition}
+\label{eq:ch07-bps-upper-h1-decomposition}
+|v|_{H^1(\Omega)}^2
+\lesssim|v_H|_{H^1(\Omega)}^2
++\sum_{l=1}^{L}|v_l|_{H^1(\Omega)}^2.
+\end{equation}
+由式~\eqref{eq:ch07-bps-unique-decomposition} 和 Cauchy--Schwarz 不等式,
+\MBSourceItem{13}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-bps-decomposition-cauchy}
+\label{eq:ch07-bps-decomposition-cauchy}
+|v|_{H^1(\Omega)}^2
+\lesssim|I_Hv_H|_{H^1(\Omega)}^2
++\left|\sum_{l=1}^{L}v_l\right|_{H^1(\Omega)}^2.
+\end{equation}
+其次, 引理~\ref{lem:ch07-interface-minimum-energy}、式~\eqref{eq:ch07-global-energy-form} 和式~\eqref{eq:ch07-bps-coarse-connection} 蕴含
+\MBSourceItem{14}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-bps-coarse-energy-minimality}
+\label{eq:ch07-bps-coarse-energy-minimality}
+|I_Hv_H|_{H^1(\Omega)}^2\leq|v_H|_{H^1(\Omega)}^2.
+\end{equation}
+最后, 因为除非 $E_l,E_k$ 共享一个子区域, 否则 $a(v_l,v_k)=0$(参见备注~\ref{rem:ch07-bps-edge-support}), 所以(参见习题~\ref{exr:ch07-30})
+\MBSourceItem{15}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-bps-edge-sum-energy}
+\label{eq:ch07-bps-edge-sum-energy}
+\left|\sum_{l=1}^{L}v_l\right|_{H^1(\Omega)}^2
+\lesssim\sum_{l=1}^{L}|v_l|_{H^1(\Omega)}^2.
+\end{equation}
+式~\eqref{eq:ch07-bps-upper-h1-decomposition} 由式~\eqref{eq:ch07-bps-decomposition-cauchy}--\eqref{eq:ch07-bps-edge-sum-energy} 得证.
+\end{Proof}
+
+\MBSourceItem{16}
+\begin{Lemma}
+\label{lem:ch07-bps-minimum-eigenvalue}
+有
+\[
+\MathBookFormulaID{formula-ch07-bps-minimum-eigenvalue}
+\lambda_{\min}(B_{BPS}S_h)
+\gtrsim[1+\ln(H/h)]^{-2}.
+\]
+\end{Lemma}
+
+\begin{Proof}
+任取 $v\in V_h(\Gamma)$. 这次需用 $|v|_{H^1(\Omega)}^2$ 估计 $|v_H|_{H^1(\Omega)}^2+\sum_{l=1}^{L}|v_l|_{H^1(\Omega)}^2$, 其中 $v_H,v_l$ 是分解~\eqref{eq:ch07-bps-unique-decomposition} 中的函数.
+
+先考虑 $v_H$. 回忆 $v_H=\Pi_Hv$. 令 $\mathcal V_j$ 为 $\mathcal T_H$ 在 $\Omega_j$ 中的顶点集合, $\overline v_j=|\Omega_j|^{-1}\int_{\Omega_j}v(x)\,dx$. 则
+\MBSourceItem{17}
+\begin{align}
+\MathBookFormulaID{formula-ch07-bps-coarse-local-bound}
+|\Pi_Hv|_{H^1(\Omega_j)}^2
+&=|\Pi_H(v-\overline v_j)|_{H^1(\Omega_j)}^2\notag\\
+&\lesssim\sum_{p\in\mathcal V_j}(v-\overline v_j)^2(p)\notag\\
+&\lesssim[1+\ln(H/h)]
+\left(H^{-2}\|v-\overline v_j\|_{L^2(\Omega_j)}^2
++|v-\overline v_j|_{H^1(\Omega_j)}^2\right)\notag\\
+&\lesssim[1+\ln(H/h)]|v|_{H^1(\Omega_j)}^2.
+\label{eq:ch07-bps-coarse-local-bound}
+\end{align}
+这里使用了式~\eqref{eq:ch04-discrete-sobolev-inequality}、尺度变换以及 Friedrichs 不等式~\eqref{eq:ch04-friedrichs-inequality}. 求和得到
+\MBSourceItem{18}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-bps-coarse-global-bound}
+\label{eq:ch07-bps-coarse-global-bound}
+|v_H|_{H^1(\Omega)}^2
+\lesssim[1+\ln(H/h)]|v|_{H^1(\Omega)}^2.
+\end{equation}
+
+再考虑式~\eqref{eq:ch07-bps-edge-component} 定义的 $v_l$. 设 $E_l$ 是 $\Omega_{l_1}$ 与 $\Omega_{l_2}$ 的公共边. 在每个 $\Omega_j$ 上, $j=l_1$ 或 $l_2$, 有
+\[
+\MathBookFormulaID{formula-ch07-bps-edge-trace-components}
+v_l(p)=
+\begin{cases}
+[v(p)-\overline v_j]-\Pi_H[v-\overline v_j](p),
+&p\in\partial\Omega_{j,h}\cap E_l,\\
+0,&p\in\partial\Omega_{j,h}\setminus E_l.
+\end{cases}
+\]
+因此对 $j=l_1$ 或 $l_2$, 由引理~\ref{lem:ch07-discrete-harmonic-trace-equivalence}、引理~\ref{lem:ch07-edge-truncation-fractional-bound}、引理~\ref{lem:ch07-trace-seminorm-bound}、式~\eqref{eq:ch07-bps-coarse-local-bound}、离散 Sobolev 不等式和 Friedrichs 不等式,
+\[
+\MathBookFormulaID{formula-ch07-bps-edge-local-bound}
+|v_l|_{H^1(\Omega_j)}^2
+\lesssim[1+\ln(H/h)]^2|v|_{H^1(\Omega_j)}^2.
+\]
+从而
+\[
+\MathBookFormulaID{formula-ch07-bps-edge-pair-bound}
+|v_l|_{H^1(\Omega)}^2
+\lesssim[1+\ln(H/h)]^2
+\left(|v|_{H^1(\Omega_{l_1})}^2+|v|_{H^1(\Omega_{l_2})}^2\right).
+\]
+求和得到
+\MBSourceItem{19}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-bps-edge-global-bound}
+\label{eq:ch07-bps-edge-global-bound}
+\sum_{l=1}^{L}|v_l|_{H^1(\Omega)}^2
+\lesssim[1+\ln(H/h)]^2|v|_{H^1(\Omega)}^2.
+\end{equation}
+结论由式~\eqref{eq:ch07-preconditioned-minimum-eigenvalue}、式~\eqref{eq:ch07-bps-coarse-global-bound} 和式~\eqref{eq:ch07-bps-edge-global-bound} 得到.
+\end{Proof}
+
+\MathBookSourcePage{212}
+结合引理~\ref{lem:ch07-bps-maximum-eigenvalue} 和引理~\ref{lem:ch07-bps-minimum-eigenvalue}, 得到如下定理.
+
+\MBSourceItem{20}
+\begin{Theorem}
+\label{thm:ch07-bps-condition-number}
+存在与 $h,H,J$ 无关的正常数 $C$, 使得
+\[
+\MathBookFormulaID{formula-ch07-bps-condition-number}
+\kappa(B_{BPS}S_h)
+=\frac{\lambda_{\max}(B_{BPS}S_h)}{\lambda_{\min}(B_{BPS}S_h)}
+\leq C\left(1+\ln\frac{H}{h}\right)^2.
+\]
+\end{Theorem}
+
+\MBSourceItem{21}
+\begin{Remark}
+\label{rem:ch07-bps-bound-sharpness}
+定理~\ref{thm:ch07-bps-condition-number} 中的界是尖锐的(参见 Brenner and Sung 2000b).
+\end{Remark}
+
+\MBSourceItem{22}
+\begin{Remark}
+\label{rem:ch07-bps-weighted-coefficients}
+BPS 预条件子也可用于变分型
+\[
+\MathBookFormulaID{formula-ch07-bps-weighted-variational-form}
+a(v_1,v_2)=\sum_{j=1}^{J}\rho_j
+\int_{\Omega_j}\nabla v_1\cdot\nabla v_2\,dx
+\qquad\forall v_1,v_2\in V_h
+\]
+定义的边值问题, 其中 $\rho_j$ 为正常数. 定理~\ref{thm:ch07-bps-condition-number} 中的界仍成立, 且常数 $C$ 与 $h,H,J,\rho_j$ 无关.
+\end{Remark}
+
+\MBSourceItem{23}
+\begin{Remark}
+\label{rem:ch07-bps-three-dimensional}
+BPS 预条件子有三维推广(参见 Bramble, Pasciak \& Schatz 1989; Smith 1991).
+\end{Remark}

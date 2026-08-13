@@ -1,0 +1,419 @@
+\subsection{非重叠区域分解方法}
+\label{sec:ch07-nonoverlapping-domain-decomposition}
+\setcounter{thmcount}{0}
+\setcounter{equation}{0}
+
+为便于讨论非重叠区域分解预条件子, 本节给出这类方法的一个框架. 后续各节沿用这里建立的记号.
+
+将 $\Omega$ 分成多边形子区域 $\Omega_1,\ldots,\Omega_J$(参见图~\ref{fig:ch07-nonoverlapping-domain-decomposition} 左图), 使得
+\begin{align}
+\MBSourceItem{1}
+\MathBookFormulaID{formula-ch07-nonoverlap-disjoint-interiors}
+\Omega_j\cap\Omega_l&=\varnothing&&\text{若 }j\neq l,
+\label{eq:ch07-nonoverlap-disjoint-interiors}\\
+\MBSourceItem{2}
+\MathBookFormulaID{formula-ch07-nonoverlap-domain-cover}
+\overline\Omega&=\bigcup_{j=1}^{J}\overline\Omega_j,
+\label{eq:ch07-nonoverlap-domain-cover}\\
+\MBSourceItem{3}
+\MathBookFormulaID{formula-ch07-subdomain-boundary-intersection}
+\partial\Omega_j\cap\partial\Omega_l
+&=\varnothing,\text{ 一个顶点或一条边}&&\text{若 }j\neq l.
+\label{eq:ch07-subdomain-boundary-intersection}
+\end{align}
+并设 $\mathcal T_h$ 是与子区域边界对齐的 $\Omega$ 上拟一致三角剖分.
+
+假设各子区域满足如下形状正则性条件: 存在单位直径的参考多边形区域 $D_1,\ldots,D_K$ 和正数 $H$, 使得对每个子区域 $\Omega_j$, 存在一个参考多边形 $D_k$ 以及 $C^1$ 微分同胚 $\phi_{j,k}:\overline D_k\longrightarrow\overline\Omega_j$, 满足
+\MathBookSourcePage{203}
+\MBSourceItem{4}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-subdomain-shape-regularity}
+\label{eq:ch07-subdomain-shape-regularity}
+|\nabla\phi_{j,k}(x)|\lesssim H
+\quad\forall x\in\overline D_k,
+\qquad
+|\nabla(\phi_{j,k}^{-1})(x)|\lesssim H^{-1}
+\quad\forall x\in\overline\Omega_j.
+\end{equation}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.55\textwidth]{chapter-07-nonoverlapping-domain-decomposition.png}
+\caption{非重叠区域分解与粗网格}
+\label{fig:ch07-nonoverlapping-domain-decomposition}
+\end{figure}
+
+\MBSourceItem{5}
+\begin{Remark}
+\label{rem:ch07-subdomain-shape-regularity}
+形状正则性条件~\eqref{eq:ch07-subdomain-shape-regularity} 蕴含: 涉及子区域的所有估计都可由参考区域上的相应估计得到. 它还蕴含
+\MBSourceItem{6}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-subdomain-diameter}
+\label{eq:ch07-subdomain-diameter}
+\operatorname{diam}\Omega_j\approx H.
+\end{equation}
+\end{Remark}
+
+对 BPS 和 Neumann--Neumann 预条件子, 子区域之间的全局通信都由粗网格空间提供. 以各子区域的顶点为节点, 对每个子区域作三角剖分来构造粗网格; 它们共同形成 $\Omega$ 上网格尺寸约为 $H$ 的三角剖分 $\mathcal T_H$(参见图~\ref{fig:ch07-nonoverlapping-domain-decomposition} 右图).
+
+\MBSourceItem{7}
+\begin{Definition}[界面]
+\label{def:ch07-domain-decomposition-interface}
+令 $\Gamma_j=\partial\Omega_j\setminus\partial\Omega$. 区域分解 $\Omega_1,\ldots,\Omega_J$ 的界面(骨架)为 $\Gamma=\bigcup_{j=1}^{J}\Gamma_j$. $\mathcal T_h$ 中属于 $\Gamma_j$(相应地, $\Gamma$)的节点集合记为 $\Gamma_{j,h}$(相应地, $\Gamma_h$).
+\end{Definition}
+
+定义模型问题~\eqref{eq:ch07-model-poisson-variational-problem} 的变分双线性型
+\MBSourceItem{8}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-global-energy-form}
+\label{eq:ch07-global-energy-form}
+a(v_1,v_2)=\int_\Omega\nabla v_1\cdot\nabla v_2\,dx
+\qquad\forall v_1,v_2\in H^1(\Omega).
+\end{equation}
+式~\eqref{eq:ch07-model-poisson-variational-problem} 的离散问题是求与 $\mathcal T_h$ 相应的 $\mathring H^1(\Omega)$ 中 $\mathcal P_1$ 有限元空间 $V_h(\Omega)$ 里的 $u_h$, 使得
+\MBSourceItem{9}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-nonoverlap-discrete-problem}
+\label{eq:ch07-nonoverlap-discrete-problem}
+a(u_h,v)=F(v)
+\qquad\forall v\in V_h.
+\end{equation}
+空间 $V_h(\Omega)$ 可相对于界面 $\Gamma$ 和变分型 $a(\cdot,\cdot)$ 分解成两个子空间之直和.
+
+\MBSourceItem{10}
+\begin{Definition}[内部空间]
+\label{def:ch07-interface-zero-space}
+空间 $V_h(\Omega\setminus\Gamma)$ 是 $V_h$ 中在界面 $\Gamma$ 上为零的函数组成的子空间, 即
+\MathBookSourcePage{204}
+\MBSourceItem{11}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-interface-zero-space}
+\label{eq:ch07-interface-zero-space}
+V_h(\Omega\setminus\Gamma)=\{v\in V_h:v|_\Gamma=0\}.
+\end{equation}
+界面空间 $V_h(\Gamma)\subset V_h$ 是 $V_h(\Omega\setminus\Gamma)$ 关于 $a(\cdot,\cdot)$ 的正交补, 即
+\MBSourceItem{12}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-interface-harmonic-space}
+\label{eq:ch07-interface-harmonic-space}
+V_h(\Gamma)=\{v\in V_h:a(v,w)=0
+\quad\forall w\in V_h(\Omega\setminus\Gamma)\}.
+\end{equation}
+$V_h(\Gamma)$ 也称为(全局)离散调和函数空间.
+\end{Definition}
+
+由定义~\ref{def:ch07-interface-zero-space} 显然有
+\MBSourceItem{13}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-interface-orthogonal-decomposition}
+\label{eq:ch07-interface-orthogonal-decomposition}
+V_h(\Omega)=V_h(\Omega\setminus\Gamma)\oplus V_h(\Gamma).
+\end{equation}
+因此, 式~\eqref{eq:ch07-nonoverlap-discrete-problem} 的解 $u_h$ 可写成
+\MBSourceItem{14}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-discrete-solution-interface-decomposition}
+\label{eq:ch07-discrete-solution-interface-decomposition}
+u_h=\mathring u_h+\widehat u_h,
+\end{equation}
+其中 $\mathring u_h\in V_h(\Omega\setminus\Gamma)$, $\widehat u_h\in V_h(\Gamma)$. 式~\eqref{eq:ch07-nonoverlap-discrete-problem} 以及 $V_h(\Omega\setminus\Gamma)$ 与 $V_h(\Gamma)$ 的正交性蕴含
+\begin{align}
+\MBSourceItem{15}
+\MathBookFormulaID{formula-ch07-interior-subproblem}
+a(\mathring u_h,v)&=F(v)&&\forall v\in V_h(\Omega\setminus\Gamma),
+\label{eq:ch07-interior-subproblem}\\
+\MBSourceItem{16}
+\MathBookFormulaID{formula-ch07-interface-subproblem}
+a(\widehat u_h,v)&=F(v)&&\forall v\in V_h(\Gamma).
+\label{eq:ch07-interface-subproblem}
+\end{align}
+容易看出(参见习题~\ref{exr:ch07-22}), $\mathring u_{h,j}:=\mathring u_h|_{\Omega_j}$ 属于与 $\mathcal T_h$ 在 $\Omega_j$ 上诱导的三角剖分相应的 $H_0^1(\Omega_j)$ 中 $\mathcal P_1$ 有限元空间 $V_h(\Omega_j)$, 并满足
+\MBSourceItem{17}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-subdomain-dirichlet-problem}
+\label{eq:ch07-subdomain-dirichlet-problem}
+a(\mathring u_{h,j},v)=F(\widetilde v)
+\qquad\forall v\in V_h(\Omega_j),
+\end{equation}
+其中 $\widetilde v\in V_h$ 是 $v$ 的零延拓. 因此 $1\leq j\leq J$ 时的 $\mathring u_{h,j}$ 可由式~\eqref{eq:ch07-subdomain-dirichlet-problem} 计算, 即在每个 $\Omega_j$ 上求解离散 Dirichlet 问题, 且这些问题可并行求解.
+
+定义 Schur 补算子 $S_h:V_h(\Gamma)\longrightarrow V_h(\Gamma)'$:
+\MBSourceItem{18}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-schur-complement-operator}
+\label{eq:ch07-schur-complement-operator}
+\langle S_hv_1,v_2\rangle=a(v_1,v_2)
+\qquad\forall v_1,v_2\in V_h(\Gamma).
+\end{equation}
+于是式~\eqref{eq:ch07-interface-subproblem} 可写成
+\MBSourceItem{19}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-schur-complement-equation}
+\label{eq:ch07-schur-complement-equation}
+S_h\widehat u_h=\widehat f_h,
+\end{equation}
+其中 $\widehat f_h\in V_h(\Gamma)'$ 由 $\langle\widehat f_h,v\rangle=F(v)$ $(v\in V_h(\Gamma))$ 定义.
+
+由式~\eqref{eq:ch07-schur-complement-operator} 可知 $S_h$ 为 SPD. 非重叠区域分解方法的目标是为 $S_h$ 提供一个良好的预条件子, 使得可由式~\eqref{eq:ch07-schur-complement-equation} 通过预条件共轭梯度法等高效求得 $\widehat u_h$.
+
+本节其余部分介绍界面空间 $V_h(\Gamma)$ 的一些基本性质, 下一两节将使用这些性质. 首先注意, $V_h(\Gamma)$ 中的函数完全由其在 $\Gamma$ 上的节点值确定.
+
+\MathBookSourcePage{205}
+\MBSourceItem{20}
+\begin{Lemma}
+\label{lem:ch07-interface-nodal-uniqueness}
+给定任意函数 $\phi:\Gamma_h\longrightarrow\mathbb R$, 存在唯一 $v\in V_h(\Gamma)$, 使得
+\MBSourceItem{21}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-interface-prescribed-nodal-values}
+\label{eq:ch07-interface-prescribed-nodal-values}
+v(p)=\phi(p)
+\qquad\forall p\in\Gamma_h.
+\end{equation}
+\end{Lemma}
+
+\begin{Proof}
+令 $w\in V_h$ 由下列节点值确定:
+\[
+\MathBookFormulaID{formula-ch07-interface-lifting-nodal-values}
+w(p)=
+\begin{cases}
+\phi(p),&p\in\Gamma_h,\\
+0,&p\text{ 不是 }\Gamma\text{ 上的节点}.
+\end{cases}
+\]
+若 $v\in V_h(\Gamma)$ 满足式~\eqref{eq:ch07-interface-prescribed-nodal-values}, 则 $v_*=v-w\in V_h(\Omega\setminus\Gamma)$, 且 $V_h(\Omega\setminus\Gamma)$ 与 $V_h(\Gamma)$ 的正交性给出
+\MBSourceItem{22}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-interface-lifting-equation}
+\label{eq:ch07-interface-lifting-equation}
+a(v_*,\widetilde v)=a(v-w,\widetilde v)=-a(w,\widetilde v)
+\qquad\forall\widetilde v\in V_h(\Omega\setminus\Gamma).
+\end{equation}
+反过来, 若 $v_*\in V_h(\Omega\setminus\Gamma)$ 满足式~\eqref{eq:ch07-interface-lifting-equation}, 则 $v=v_*+w\in V_h(\Gamma)$ 且满足式~\eqref{eq:ch07-interface-prescribed-nodal-values}. 由于 $a(\cdot,\cdot)$ 是 $V_h$ 上的内积, 式~\eqref{eq:ch07-interface-lifting-equation} 在 $V_h(\Omega\setminus\Gamma)$ 中有唯一解, 结论得证.
+\end{Proof}
+
+\MBSourceItem{23}
+\begin{Remark}
+\label{rem:ch07-interface-parallel-harmonic-extension}
+由式~\eqref{eq:ch07-interface-lifting-equation}, $v\in V_h(\Gamma)$ 可由其在 $\Gamma$ 上的节点值获得: 在每个子区域上并行求解具有齐次边界条件的离散 Poisson 方程.
+\end{Remark}
+
+$V_h(\Gamma)$ 中的函数满足最小能量原理.
+
+\MBSourceItem{24}
+\begin{Lemma}[最小能量原理]
+\label{lem:ch07-interface-minimum-energy}
+设 $v\in V_h(\Gamma)$, $w\in V_h$, 且 $v|_\Gamma=w|_\Gamma$. 则 $a(v,v)\leq a(w,w)$.
+\end{Lemma}
+
+\begin{Proof}
+因为 $w-v\in V_h(\Omega\setminus\Gamma)$, $V_h(\Gamma)$ 与 $V_h(\Omega\setminus\Gamma)$ 的正交性给出
+\[
+\MathBookFormulaID{formula-ch07-interface-minimum-energy-proof}
+a(w,w)=a((w-v)+v,(w-v)+v)
+=a(w-v,w-v)+a(v,v)\geq a(v,v).
+\]
+\end{Proof}
+
+$V_h(\Gamma)$ 中函数的能量范数与其在 $\Gamma$ 上迹的分数阶 Sobolev 范数之间存在重要关系(一般分数阶 Sobolev 空间将在第~\MBUnresolvedReference{chap:ch14}{14} 章讨论). 先给出这一关系的局部版本.
+
+设 $D$ 是有界多边形, $\widehat V_{\widehat h}$ 是与 $D$ 上拟一致三角剖分 $\mathcal T_{\widehat h}$ 相应的 $\mathcal P_1$ 有限元空间. 其中在 $\partial D$ 上为零的函数组成的子空间记为 $\widehat V_{\widehat h}(D)$. 记
+\[
+\MathBookFormulaID{formula-ch07-reference-domain-energy-form}
+d(v_1,v_2)=\int_D\nabla v_1\cdot\nabla v_2\,dx.
+\]
+子空间 $\widehat V_{\widehat h}(\partial D)\subseteq\widehat V_{\widehat h}$ 是 $\widehat V_{\widehat h}(D)$ 关于 $d(\cdot,\cdot)$ 的正交补.
+
+\MathBookSourcePage{206}
+\MBSourceItem{25}
+\begin{Definition}[分数阶 Sobolev 半范数]
+\label{def:ch07-fractional-sobolev-seminorm}
+定义
+\[
+\MathBookFormulaID{formula-ch07-fractional-sobolev-seminorm}
+|v|_{H^{1/2}(\partial D)}^2
+=\int_{\partial D}\int_{\partial D}
+\frac{|v(x)-v(y)|^2}{|x-y|^2}\,ds(x)\,ds(y),
+\]
+其中 $ds$ 是弧长微分. 空间 $H^{1/2}(\partial D)$ 由满足 $|v|_{H^{1/2}(\partial D)}<\infty$ 的 $v\in L^2(\partial D)$ 构成, 并定义
+\[
+\MathBookFormulaID{formula-ch07-fractional-sobolev-norm}
+\|v\|_{H^{1/2}(\partial D)}^2
+=\|v\|_{L^2(\partial D)}^2+|v|_{H^{1/2}(\partial D)}^2.
+\]
+\end{Definition}
+
+\MBSourceItem{26}
+\begin{Lemma}
+\label{lem:ch07-trace-seminorm-bound}
+对所有 $v\in H^1(D)$, 有 $|v|_{H^{1/2}(\partial D)}\lesssim|v|_{H^1(D)}$.
+\end{Lemma}
+
+\begin{Proof}
+由迹定理(参见 Nečas 1967; Arnold, Scott \& Vogelius 1988),
+\[
+\MathBookFormulaID{formula-ch07-trace-norm-bound}
+|v|_{H^{1/2}(\partial D)}^2
+\leq\|v\|_{H^{1/2}(\partial D)}^2
+\lesssim\|v\|_{H^1(D)}^2
+\qquad\forall v\in H^1(D).
+\]
+令 $\overline v=|D|^{-1}\int_Dv(x)\,dx$, 则
+\[
+\MathBookFormulaID{formula-ch07-trace-seminorm-poincare}
+|v|_{H^{1/2}(\partial D)}
+=|v-\overline v|_{H^{1/2}(\partial D)}
+\lesssim\|v-\overline v\|_{H^1(D)}
+\lesssim|v|_{H^1(D)},
+\]
+其中最后一步使用 Friedrichs 不等式~\eqref{eq:ch04-friedrichs-inequality}.
+\end{Proof}
+
+\MBSourceItem{27}
+\begin{Lemma}
+\label{lem:ch07-discrete-harmonic-trace-equivalence}
+对任意 $v\in\widehat V_{\widehat h}(\partial D)$, 有
+\[
+\MathBookFormulaID{formula-ch07-discrete-harmonic-trace-equivalence}
+|v|_{H^1(D)}\approx|v|_{H^{1/2}(\partial D)}.
+\]
+\end{Lemma}
+
+\begin{Proof}
+任取 $v\in\widehat V_{\widehat h}(\partial D)$, 令 $\overline v=|\partial D|^{-1}\int_{\partial D}v\,ds$. 注意 $v-\overline v$ 仍属于 $\widehat V_{\widehat h}(\partial D)$. 由迹定理, 存在 $w\in H^1(D)$, 使 $w|_{\partial D}=(v-\overline v)|_{\partial D}$ 且 $\|w\|_{H^1(D)}\lesssim\|v-\overline v\|_{H^{1/2}(\partial D)}$. 由第~\ref{sec:ch04-nonsmooth-function-interpolation} 节, $\widetilde w=\widetilde I^{\widehat h}w\in\widehat V_{\widehat h}(D)$, $|\widetilde w|_{H^1(D)}\lesssim|w|_{H^1(D)}$, 且 $\widetilde w|_{\partial D}=w|_{\partial D}$. 因此
+\[
+\MathBookFormulaID{formula-ch07-discrete-harmonic-trace-upper-proof}
+|v|_{H^1(D)}=|v-\overline v|_{H^1(D)}
+\leq|\widetilde w|_{H^1(D)}
+\lesssim\|v-\overline v\|_{H^{1/2}(\partial D)}
+\approx|v|_{H^{1/2}(\partial D)},
+\]
+其中使用引理~\ref{lem:ch07-interface-minimum-energy} 与习题~\ref{exr:ch07-24}. 结合引理~\ref{lem:ch07-trace-seminorm-bound} 即得结论.
+\end{Proof}
+
+\MBSourceItem{28}
+\begin{Remark}
+\label{rem:ch07-finite-element-extension-theorem}
+$\widetilde w$ 的构造在文献中称为有限元延拓定理(参见 Widlund 1986).
+\end{Remark}
+
+\MathBookSourcePage{207}
+由式~\eqref{eq:ch07-subdomain-shape-regularity}、引理~\ref{lem:ch07-discrete-harmonic-trace-equivalence} 和尺度变换可得
+\MBSourceItem{29}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-global-harmonic-trace-equivalence}
+\label{eq:ch07-global-harmonic-trace-equivalence}
+|v|_{H^1(\Omega)}^2
+\approx\sum_{j=1}^{J}|v|_{H^{1/2}(\partial\Omega_j)}^2
+\qquad\forall v\in V_h(\Gamma),
+\end{equation}
+因为参考区域至多只有 $K$ 个.
+
+下面证明关于空间
+\[
+\MathBookFormulaID{formula-ch07-boundary-piecewise-linear-space}
+\mathcal L_{\widehat h}(\partial D)
+=\{v\in C(\partial D):v\text{ 关于 }\mathcal T_{\widehat h}
+\text{ 在 }\partial D\text{ 上诱导的细分分片线性}\}
+\]
+中函数的两个引理. 该空间是 $\widehat V_{\widehat h}$ 在 $\partial D$ 上的限制.
+
+\MBSourceItem{30}
+\begin{Lemma}
+\label{lem:ch07-edge-truncation-fractional-bound}
+设 $v\in\mathcal L_{\widehat h}(\partial D)$, $E$ 是 $\partial D$ 的一条开边, 并定义 $v_E\in\mathcal L_{\widehat h}(\partial D)$:
+\[
+\MathBookFormulaID{formula-ch07-edge-truncation-definition}
+v_E(p)=
+\begin{cases}
+v(p),&\text{节点 }p\in E,\\
+0,&\text{节点 }p\in\partial D\setminus E.
+\end{cases}
+\]
+则
+\[
+\MathBookFormulaID{formula-ch07-edge-truncation-fractional-bound}
+|v_E|_{H^{1/2}(\partial D)}^2
+\lesssim|v|_{H^{1/2}(\partial D)}^2
++(1+|\ln\widehat h|)\|v\|_{L^\infty(\partial D)}^2.
+\]
+\end{Lemma}
+
+\begin{Proof}
+设 $a,b$ 为 $E$ 的两个端点, $E_a,E_b$ 为与 $E$ 相邻的两条边, $F=\partial D\setminus(E\cup E_a\cup E_b)$. 则
+\begin{align*}
+\MathBookFormulaID{formula-ch07-edge-truncation-proof-integrals}
+|v_E|_{H^{1/2}(\partial D)}^2
+&=\int_E\int_E\frac{|v_E(x)-v_E(y)|^2}{|x-y|^2}\,ds(x)\,ds(y)\\
+&\quad+2\int_E\int_{E_a\cup E_b}
+\frac{|v_E(y)|^2}{|x-y|^2}\,ds(x)\,ds(y)\\
+&\quad+2\int_E\int_F
+\frac{|v_E(y)|^2}{|x-y|^2}\,ds(x)\,ds(y)\\
+&\approx\int_E\int_E\frac{|v_E(x)-v_E(y)|^2}{|x-y|^2}\,ds(x)\,ds(y)\\
+&\quad+\int_Ev_E^2(y)\left(\frac1{|y-a|}+\frac1{|y-b|}\right)\,ds(y)
++\|v_E\|_{L^2(E)}^2\\
+&\lesssim|v|_{H^{1/2}(\partial D)}^2
++(1+|\ln\widehat h|)\|v\|_{L^\infty(\partial D)}^2,
+\end{align*}
+其中最后一步使用习题~\ref{exr:ch07-25} 和~\ref{exr:ch07-26}.
+\end{Proof}
+
+\MBSourceItem{31}
+\begin{Lemma}
+\label{lem:ch07-boundary-hat-fractional-norm}
+设 $p$ 是 $\partial D$ 上的一个节点, 定义 $v_p\in\mathcal L_{\widehat h}(\partial D)$, 使它在除 $p$ 外的所有节点均为零, 且 $v_p(p)=1$. 则 $|v_p|_{H^{1/2}(\partial D)}\approx1$.
+\end{Lemma}
+
+\begin{Proof}
+设 $a,b$ 是与 $p$ 相邻的两个节点, $\widehat h_1=|a-p|$, $\widehat h_2=|b-p|$. 由习题~\ref{exr:ch07-27},
+\MathBookSourcePage{208}
+\[
+\MathBookFormulaID{formula-ch07-boundary-hat-fractional-integral}
+|v_p|_{H^{1/2}(\partial D)}^2
+\approx\|\phi\|_{L^2(I)}^2
++\int_I\int_I\frac{|\phi(x)-\phi(y)|^2}{|x-y|^2}\,dx\,dy
++\int_I\phi^2(y)\left(\frac1{y+\widehat h_2}
++\frac1{\widehat h_1-y}\right)\,dy,
+\]
+其中 $I=[-\widehat h_2,\widehat h_1]$, 且
+\[
+\MathBookFormulaID{formula-ch07-boundary-hat-function}
+\phi(x)=
+\begin{cases}
+1-x/\widehat h_1,&0\leq x\leq\widehat h_1,\\
+1+x/\widehat h_2,&-\widehat h_2\leq x\leq0.
+\end{cases}
+\]
+直接计算即得结论.
+\end{Proof}
+
+\MBSourceItem{32}
+\begin{Corollary}
+\label{cor:ch07-edge-truncation-energy-bound}
+设 $v\in\widehat V_{\widehat h}(\partial D)$ 在 $\partial D$ 上某点为零. 沿用引理~\ref{lem:ch07-edge-truncation-fractional-bound} 的记号, 有
+\[
+\MathBookFormulaID{formula-ch07-edge-truncation-energy-bound}
+|v_E|_{H^{1/2}(\partial D)}^2
+\lesssim(1+|\ln\widehat h|)^2|v|_{H^1(D)}^2.
+\]
+\end{Corollary}
+
+\begin{Proof}
+令 $\overline v=|D|^{-1}\int_Dv\,dx$. 因为 $v$ 在 $\partial D$ 上某点为零,
+\[
+\MathBookFormulaID{formula-ch07-boundary-mean-linfty-bound}
+|\overline v|\leq\|v-\overline v\|_{L^\infty(\partial D)}
++|v|\leq2\|v-\overline v\|_{L^\infty(\partial D)}.
+\]
+于是由引理~\ref{lem:ch07-edge-truncation-fractional-bound}、引理~\ref{lem:ch07-discrete-harmonic-trace-equivalence}、离散 Sobolev 不等式~\eqref{eq:ch04-discrete-sobolev-inequality} 和 Friedrichs 不等式~\eqref{eq:ch04-friedrichs-inequality},
+\[
+\MathBookFormulaID{formula-ch07-edge-truncation-corollary-proof}
+|v_E|_{H^{1/2}(\partial D)}^2
+\lesssim|v|_{H^1(D)}^2
++(1+|\ln\widehat h|)^2
+\bigl(\|v-\overline v\|_{L^2(D)}^2+|v|_{H^1(D)}^2\bigr)
+\lesssim(1+|\ln\widehat h|)^2|v|_{H^1(D)}^2.
+\]
+\end{Proof}

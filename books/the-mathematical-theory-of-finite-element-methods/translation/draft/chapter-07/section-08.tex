@@ -1,0 +1,299 @@
+\subsection{BDDC 预条件子}
+\label{sec:ch07-bddc-preconditioner}
+\setcounter{thmcount}{0}
+\setcounter{equation}{0}
+
+本节讨论 Schur 补算子 $S_h$ 的约束平衡区域分解(balancing domain decomposition by constraints, BDDC)预条件子(Dohrmann 2003).
+
+令 $\mathcal C$(交叉点集合)为 $\Omega_1,\ldots,\Omega_J$ 位于 $\Omega$ 内部的角点集合, $\mathcal H_j$(位于 $\Omega_j$ 上的局部离散调和函数空间)为 $V_j(\Gamma)$ 在 $\Omega_j$ 上的限制. 空间
+\[
+\MathBookFormulaID{formula-ch07-bddc-continuous-crosspoint-space}
+\mathcal H_c=\{v\in L^2(\Omega):v_j=v|_{\Omega_j}\in\mathcal H_j,
+\ 1\leq j\leq J,\text{ 且 }v\text{ 在 }\mathcal C\text{ 上连续}\}
+\]
+是在交叉点连续的离散调和函数空间. 定义 SPD 算子 $S_c:\mathcal H_c\longrightarrow\mathcal H_c'$:
+\MBSourceItem{1}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-bddc-global-broken-operator}
+\label{eq:ch07-bddc-global-broken-operator}
+\langle S_cv,w\rangle=\sum_{j=1}^{J}a_j(v_j,w_j)
+\qquad\forall v,w\in\mathcal H_c,
+\end{equation}
+其中 $a_j(v_j,w_j)=\int_{\Omega_j}\nabla v_j\cdot\nabla w_j\,dx$. 注意
+\MBSourceItem{2}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-bddc-schur-restriction}
+\label{eq:ch07-bddc-schur-restriction}
+\langle S_hv,w\rangle=\langle S_cv,w\rangle
+\qquad\forall v,w\in V_h(\Gamma)\subset\mathcal H_c.
+\end{equation}
+
+令 $\mathring{\mathcal H}$ 为 $\mathcal H_c$ 中在交叉点为零的函数组成的子空间. 空间 $\mathcal H_c$ 有分解
+\MBSourceItem{3}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-bddc-coarse-fine-decomposition}
+\label{eq:ch07-bddc-coarse-fine-decomposition}
+\mathcal H_c=\mathcal H_0\oplus\mathring{\mathcal H},
+\end{equation}
+其中
+\MBSourceItem{4}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-bddc-coarse-space}
+\label{eq:ch07-bddc-coarse-space}
+\mathcal H_0=\{v\in\mathcal H_c:\langle S_cv,\mathring w\rangle=0
+\quad\forall\mathring w\in\mathring{\mathcal H}\}.
+\end{equation}
+记 $I_0$ 为 $\mathcal H_0$ 到 $\mathcal H_c$ 的自然嵌入. 空间 $\mathcal H_0$ 是 BDDC 预条件子的粗空间, 其函数满足约束最小化性质(习题~\ref{exr:ch07-43}). 在 $\mathcal H_0$ 上定义 SPD 算子 $S_0:\mathcal H_0\longrightarrow\mathcal H_0'$:
+\MBSourceItem{5}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-bddc-coarse-operator}
+\label{eq:ch07-bddc-coarse-operator}
+\langle S_0v,w\rangle=\langle S_cv,w\rangle
+\qquad\forall v,w\in\mathcal H_0.
+\end{equation}
+
+BDDC 预条件子还涉及 $\mathcal H_j$ 的子空间 $\mathring{\mathcal H}_j$ $(1\leq j\leq J)$, 其函数在 $\Omega_j$ 的角点为零. 每个 $\mathring{\mathcal H}_j$ 通过零延拓映射 $E_j:\mathring{\mathcal H}_j\longrightarrow\mathcal H_c$ 嵌入 $\mathcal H_c$:
+\MBSourceItem{6}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-bddc-trivial-extension}
+\label{eq:ch07-bddc-trivial-extension}
+E_j\mathring v_j=
+\begin{cases}
+\mathring v_j,&\text{在 }\Omega_j,\\
+0,&\text{在 }\Omega\setminus\Omega_j.
+\end{cases}
+\end{equation}
+在 $\mathring{\mathcal H}_j$ 上定义 SPD 算子 $\mathring S_j:\mathring{\mathcal H}_j\longrightarrow\mathring{\mathcal H}_j'$:
+\MBSourceItem{7}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-bddc-local-operator}
+\label{eq:ch07-bddc-local-operator}
+\langle\mathring S_j\mathring v_j,\mathring w_j\rangle
+=a_j(\mathring v_j,\mathring w_j)
+\qquad\forall\mathring v_j,\mathring w_j\in\mathring{\mathcal H}_j.
+\end{equation}
+
+最后需要把空间 $\mathcal H_0$ 和 $\mathring{\mathcal H}_j$ 与 $V_h(\Gamma)$ 相连. 定义算子 $P_\Gamma:\mathcal H_c\longrightarrow V_h(\Gamma)$:
+\MathBookSourcePage{218}
+\MBSourceItem{8}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-bddc-averaging-operator}
+\label{eq:ch07-bddc-averaging-operator}
+(P_\Gamma v)(p)=\frac1{|\mathcal J_p|}
+\sum_{j\in\mathcal J_p}v_j(p)
+\qquad\forall v\in\mathcal H_c,\ p\in\Gamma_h,
+\end{equation}
+其中 $\mathcal J_p=\{1\leq j\leq J:p\in\Gamma_j\}$, $|\mathcal J_p|$ 是其中指标个数. 于是通过 $P_\Gamma I_0$(相应地 $P_\Gamma E_j$)把 $\mathcal H_0$(相应地 $\mathring{\mathcal H}_j$)与 $V_h(\Gamma)$ 相连. 所得 additive Schwarz 预条件子为
+\MBSourceItem{9}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-bddc-preconditioner}
+\label{eq:ch07-bddc-preconditioner}
+B_{BDDC}=(P_\Gamma I_0)S_0^{-1}(P_\Gamma I_0)^t
++\sum_{j=1}^{J}(P_\Gamma E_j)\mathring S_j^{-1}(P_\Gamma E_j)^t.
+\end{equation}
+
+为验证条件~\eqref{eq:ch07-auxiliary-space-decomposition}, 任取 $v\in V_h(\Gamma)$, 由式~\eqref{eq:ch07-bddc-coarse-fine-decomposition} 写成 $v=v_0+\mathring v$, 其中 $v_0\in\mathcal H_0$, $\mathring v\in\mathring{\mathcal H}$. 则
+\MBSourceItem{10}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-bddc-additive-decomposition}
+\label{eq:ch07-bddc-additive-decomposition}
+v=P_\Gamma v
+=P_\Gamma\left(I_0v_0+\sum_{j=1}^{J}E_j\mathring v_j\right)
+=(P_\Gamma I_0)v_0+\sum_{j=1}^{J}(P_\Gamma E_j)\mathring v_j,
+\end{equation}
+其中 $\mathring v_j=\mathring v|_{\Omega_j}\in\mathring{\mathcal H}_j$.
+
+\MBSourceItem{11}
+\begin{Lemma}
+\label{lem:ch07-bddc-lower-bound}
+BDDC 预条件子满足下界 $\lambda_{\min}(B_{BDDC}S_h)\geq1$.
+\end{Lemma}
+
+\begin{Proof}
+任取 $v\in V_h(\Gamma)$. 对分解~\eqref{eq:ch07-bddc-additive-decomposition}, 有
+\begin{align*}
+\MathBookFormulaID{formula-ch07-bddc-lower-bound-proof}
+\langle S_0v_0,v_0\rangle
++\sum_{j=1}^{J}\langle\mathring S_j\mathring v_j,\mathring v_j\rangle
+&=\langle S_cv_0,v_0\rangle
++\sum_{j=1}^{J}a_j(\mathring v_j,\mathring v_j)
+&&\text{(由式~\eqref{eq:ch07-bddc-coarse-operator} 和式~\eqref{eq:ch07-bddc-local-operator})}\\
+&=\langle S_cv_0,v_0\rangle+\langle S_c\mathring v,\mathring v\rangle\\
+&=\langle S_c(v_0+\mathring v),v_0+\mathring v\rangle
+&&\text{(由式~\eqref{eq:ch07-bddc-coarse-space})}\\
+&=\langle S_hv,v\rangle
+&&\text{(由式~\eqref{eq:ch07-bddc-schur-restriction})}.
+\end{align*}
+从而
+\[
+\MathBookFormulaID{formula-ch07-bddc-lower-minimum-inequality}
+\langle S_hv,v\rangle\geq
+\min_{\substack{v=(P_\Gamma I_0)v_0+\sum_{j=1}^{J}(P_\Gamma E_j)\mathring v_j\\
+v_0\in\mathcal H_0,\ \mathring v_j\in\mathring{\mathcal H}_j}}
+\left(\langle S_0v_0,v_0\rangle
++\sum_{j=1}^{J}\langle\mathring S_j\mathring v_j,\mathring v_j\rangle\right).
+\]
+结合式~\eqref{eq:ch07-preconditioned-minimum-eigenvalue} 即得下界.
+\end{Proof}
+
+\MBSourceItem{12}
+\begin{Remark}
+\label{rem:ch07-bddc-unit-eigenvalue}
+可以证明, 若 $\mathcal C\neq\varnothing$, 则 $\lambda_{\min}(B_{BDDC}S_h)=1$, 且 $1$ 作为 $B_{BDDC}S_h$ 特征值的重数至少为 $|\mathcal C|$(参见 Brenner and Sung 2007).
+\end{Remark}
+
+\MathBookSourcePage{219}
+\MBSourceItem{13}
+\begin{Lemma}
+\label{lem:ch07-bddc-upper-bound}
+有
+\[
+\MathBookFormulaID{formula-ch07-bddc-upper-bound}
+\lambda_{\max}(B_{BDDC}S_h)
+\lesssim[1+\ln(H/h)]^2.
+\]
+\end{Lemma}
+
+\begin{Proof}
+设 $v_0\in\mathcal H_0$, $\mathring v_j\in\mathring{\mathcal H}_j$ $(1\leq j\leq J)$, 且
+\[
+\MathBookFormulaID{formula-ch07-bddc-arbitrary-decomposition}
+v=(P_\Gamma I_0)v_0+\sum_{j=1}^{J}(P_\Gamma E_j)\mathring v_j.
+\]
+则
+\MBSourceItem{14}
+\begin{align}
+\MathBookFormulaID{formula-ch07-bddc-upper-proof-splitting}
+\langle S_hv,v\rangle
+&\leq2\langle S_hP_\Gamma v_0,P_\Gamma v_0\rangle\notag\\
+&\quad+2\left\langle S_h\left(\sum_{j=1}^{J}(P_\Gamma E_j)\mathring v_j\right),
+\sum_{k=1}^{J}(P_\Gamma E_k)\mathring v_k\right\rangle\notag\\
+&\lesssim\langle S_hP_\Gamma v_0,P_\Gamma v_0\rangle
++\sum_{j=1}^{J}\langle S_h(P_\Gamma E_j)\mathring v_j,(P_\Gamma E_j)\mathring v_j\rangle,
+\label{eq:ch07-bddc-upper-proof-splitting}
+\end{align}
+其中使用了如下事实: 若 $\Omega_j,\Omega_k$ 不相近, 则 $\langle S_h(P_\Gamma E_j)\mathring v_j,(P_\Gamma E_k)\mathring v_k\rangle=0$.
+
+令 $w=v_0-P_\Gamma v_0$. 则 $w\in\mathring{\mathcal H}$. 在具有 $l_j$ 条位于 $\Omega$ 内部的开边 $e_1,\ldots,e_{l_j}$ 的子区域 $\Omega_j$ 上, 可写成
+\MBSourceItem{15}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-bddc-edge-decomposition}
+\label{eq:ch07-bddc-edge-decomposition}
+w_j:=w|_{\Omega_j}=\sum_{l=1}^{l_j}w_{j,l},
+\end{equation}
+其中 $w_{j,l}\in\mathcal H_j$, $w_{j,l}=w_j$ 在 $\mathcal T_h$ 位于 $e_l$ 上的节点处, 在 $\mathcal T_h$ 位于 $\partial\Omega_j$ 的其余节点处为零.
+
+设 $\Omega_j$ 的边 $e_l$ 是 $\Omega_j,\Omega_k$ 的公共边, $\alpha$ 是 $v_0$ 在 $e_l$ 一个端点处的值. 定义 $\widetilde v_{0,j}\in\mathcal H_j$ 和 $\widetilde v_{0,k}\in\mathcal H_k$:
+\[
+\MathBookFormulaID{formula-ch07-bddc-shifted-edge-functions}
+\begin{aligned}
+(\widetilde v_{0,j})(p)=
+\begin{cases}
+(v_0|_{\Omega_j})(p)-\alpha,&p\in e_l,\\
+0,&p\in\partial\Omega_{j,h}\setminus e_{l,h},
+\end{cases}
+&\qquad\text{且}\\
+(\widetilde v_{0,k})(p)=
+\begin{cases}
+(v_0|_{\Omega_k})(p)-\alpha,&p\in e_l,\\
+0,&p\in\partial\Omega_{k,h}\setminus e_{l,h}.
+\end{cases}
+\end{aligned}
+\]
+由式~\eqref{eq:ch07-bddc-averaging-operator},
+\[
+\MathBookFormulaID{formula-ch07-bddc-edge-average-difference}
+w_{j,l}(p)=\frac12(\widetilde v_{0,j}(p)-\widetilde v_{0,k}(p))
+\qquad\forall p\in e_{l,h}.
+\]
+由引理~\ref{lem:ch07-discrete-harmonic-trace-equivalence}、习题~\ref{exr:ch07-34} 和推论~\ref{cor:ch07-edge-truncation-energy-bound} 及尺度变换,
+\MathBookSourcePage{220}
+\[
+\MathBookFormulaID{formula-ch07-bddc-single-edge-bound}
+|w_{j,l}|_{H^1(\Omega_j)}^2
+\lesssim[1+\ln(H/h)]^2
+\left(|v_0|_{H^1(\Omega_j)}^2+|v_0|_{H^1(\Omega_k)}^2\right).
+\]
+结合式~\eqref{eq:ch07-bddc-edge-decomposition},
+\MBSourceItem{16}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-bddc-local-averaging-error}
+\label{eq:ch07-bddc-local-averaging-error}
+|w_j|_{H^1(\Omega_j)}^2
+\lesssim[1+\ln(H/h)]^2
+\sum_{k\in\mathcal K_j}|v_0|_{H^1(\Omega_k)}^2,
+\end{equation}
+其中 $\mathcal K_j=\{1\leq k\leq J:\Omega_j\text{ 与 }\Omega_k\text{ 共享公共边}\}$. 由式~\eqref{eq:ch07-bddc-local-averaging-error},
+\begin{align}
+\MathBookFormulaID{formula-ch07-bddc-coarse-averaged-energy}
+\langle S_hP_\Gamma v_0,P_\Gamma v_0\rangle
+&=\sum_{j=1}^{J}|P_\Gamma v_0|_{H^1(\Omega_j)}^2\notag\\
+&\lesssim\sum_{j=1}^{J}\left(|v_0|_{H^1(\Omega_j)}^2+|w_j|_{H^1(\Omega_j)}^2\right)\notag\\
+&\lesssim\sum_{j=1}^{J}|v_0|_{H^1(\Omega_j)}^2
++[1+\ln(H/h)]^2\sum_{j=1}^{J}\sum_{k\in\mathcal K_j}|v_0|_{H^1(\Omega_k)}^2\notag\\
+&\lesssim[1+\ln(H/h)]^2\sum_{j=1}^{J}|v_0|_{H^1(\Omega_j)}^2\notag\\
+&=[1+\ln(H/h)]^2\langle S_0v_0,v_0\rangle.
+\label{eq:ch07-bddc-coarse-averaged-energy}
+\end{align}
+类似地,
+\MBSourceItem{18}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-bddc-local-averaged-energy}
+\label{eq:ch07-bddc-local-averaged-energy}
+\langle S_hP_\Gamma E_j\mathring v_j,P_\Gamma E_j\mathring v_j\rangle
+\lesssim[1+\ln(H/h)]^2
+\langle\mathring S_j\mathring v_j,\mathring v_j\rangle.
+\end{equation}
+结合式~\eqref{eq:ch07-bddc-upper-proof-splitting}、式~\eqref{eq:ch07-bddc-coarse-averaged-energy} 和式~\eqref{eq:ch07-bddc-local-averaged-energy}, 可得
+\[
+\MathBookFormulaID{formula-ch07-bddc-upper-minimum-bound}
+\langle S_hv,v\rangle
+\lesssim[1+\ln(H/h)]^2
+\min_{\substack{v=(P_\Gamma I_0)v_0+\sum_{j=1}^{J}(P_\Gamma E_j)\mathring v_j\\
+v_0\in\mathcal H_0,\ \mathring v_j\in\mathring{\mathcal H}_j}}
+\left(\langle S_0v_0,v_0\rangle
++\sum_{j=1}^{J}\langle\mathring S_j\mathring v_j,\mathring v_j\rangle\right).
+\]
+结合式~\eqref{eq:ch07-preconditioned-maximum-eigenvalue} 即得上界.
+\end{Proof}
+
+\MathBookSourcePage{221}
+结合引理~\ref{lem:ch07-bddc-lower-bound} 和引理~\ref{lem:ch07-bddc-upper-bound}, 得到如下定理.
+
+\MBSourceItem{19}
+\begin{Theorem}
+\label{thm:ch07-bddc-condition-number}
+存在与 $h,H,J$ 无关的正常数 $C$, 使得
+\[
+\MathBookFormulaID{formula-ch07-bddc-condition-number}
+\kappa(B_{BDDC}S_h)
+=\frac{\lambda_{\max}(B_{BDDC}S_h)}{\lambda_{\min}(B_{BDDC}S_h)}
+\leq C\left(1+\ln\frac{H}{h}\right)^2.
+\]
+\end{Theorem}
+
+\MBSourceItem{20}
+\begin{Remark}
+\label{rem:ch07-bddc-feti-duality}
+BDDC 方法与 FETI-DP 方法对偶(Farhat, Lesoinne and Pierson 2000). 事实上, 除去数 $1$, 这两种方法的预条件方程组具有相同的谱(Mandel, Dohrmann and Tezaur 2005; Li and Widlund 2005; Brenner and Sung 2007). 由此联系以及 Brenner 2003b 的结果, 定理~\ref{thm:ch07-bddc-condition-number} 中的界是尖锐的.
+\end{Remark}
+
+\MBSourceItem{21}
+\begin{Remark}
+\label{rem:ch07-bddc-weighted-coefficients}
+若算子 $P_\Gamma:\mathcal H_c\longrightarrow V_h(\Gamma)$ 定义为
+\[
+\MathBookFormulaID{formula-ch07-bddc-weighted-averaging}
+(P_\Gamma v)(p)=
+\left(\frac1{\sum_{k\in\mathcal J_p}\rho_k^t}\right)
+\sum_{j\in\mathcal J_p}\rho_j^tv_j(p)
+\qquad\forall v\in\mathcal H_c,\ p\in\Gamma_h,
+\]
+其中 $t$ 是任意不小于 $1/2$ 的数, 则 BDDC 预条件子也可用于备注~\ref{rem:ch07-bps-weighted-coefficients} 中的边值问题. 定理~\ref{thm:ch07-bddc-condition-number} 中的界仍成立, 且常数 $C$ 与 $h,H,J,\rho_j$ 无关.
+\end{Remark}
+
+\MBSourceItem{22}
+\begin{Remark}
+\label{rem:ch07-bddc-three-dimensional}
+三维 BDDC 预条件子的结果可见 Mandel and Dohrmann 2003 及 Brenner 2006. BDDC 算法还在 Tu 2006 中推广到三层.
+\end{Remark}
