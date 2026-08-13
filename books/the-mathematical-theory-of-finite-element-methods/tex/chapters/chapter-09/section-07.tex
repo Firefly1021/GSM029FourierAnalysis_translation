@@ -1,0 +1,107 @@
+\MathBookSourcePage{275}
+\subsection{条件数的界}
+\label{sec:ch09-condition-number-bounds}
+\setcounter{thmcount}{0}
+\setcounter{equation}{0}
+
+下面估计矩阵 $\mathbf A=(a(\psi_i,\psi_j))$ 的条件数, 其中 $\{\psi_i:i=1,\ldots,N\}$ 是 $V_N$ 的缩放基, 满足前述假设. 这些结果将在第~\ref{sec:ch09-conjugate-gradient-applications} 节用于求解 $\mathbf A\mathbf X=\mathbf F$ 的共轭梯度法收敛率. 先考虑一般情形 $n\geq3$.
+
+\MBSourceItem{1}
+\begin{Theorem}
+\label{thm:ch09-condition-number-n-ge-three}
+设基 $\{\psi_i:i=1,\ldots,N\}$ 满足~\eqref{eq:ch09-basis-scaling-assumption}. 则 $\mathbf A$ 的 $l_2$ 条件数 $\kappa_2(\mathbf A)$ 满足
+\[
+\MathBookFormulaID{formula-ch09-condition-number-n-ge-three}
+\kappa_2(\mathbf A)\leq CN^{2/n}.
+\]
+\end{Theorem}
+
+\begin{Proof}
+令 $u=\sum_i u_i\psi_i$, $\mathbf U=(u_i)$, 则
+\MBSourceItem{2}
+\begin{equation}
+\MathBookFormulaID{formula-ch09-energy-matrix-identity}
+\label{eq:ch09-energy-matrix-identity}
+a(u,u)=\mathbf U^t\mathbf A\mathbf U.
+\end{equation}
+由连续性、$\mathcal T_N$ 是剖分、局部逆估计、基缩放假设~\eqref{eq:ch09-basis-scaling-assumption} 和局部基性质~\eqref{eq:ch09-basis-local-cardinality},
+\[
+\MathBookFormulaID{formula-ch09-matrix-upper-quadratic-bound}
+a(u,u)
+\leq C\sum_{T\in\mathcal T_N}|u|_{H^1(T)}^2
+\leq C\sum_{T\in\mathcal T_N}h_T^{n-2}\|u\|_{L^\infty(T)}^2
+\leq C\mathbf U^t\mathbf U.
+\]
+反向估计为
+\begin{align*}
+\MathBookFormulaID{formula-ch09-matrix-lower-quadratic-bound}
+\mathbf U^t\mathbf U
+&\leq C\sum_{T\in\mathcal T_N}h_T^{n-2}\|u\|_{L^\infty(T)}^2\\
+&\leq C\sum_{T\in\mathcal T_N}\|u\|_{L^{2n/(n-2)}(T)}^2\\
+&\leq C\left(\sum_{T\in\mathcal T_N}
+\|u\|_{L^{2n/(n-2)}(T)}^{2n/(n-2)}\right)^{2/n}
+\|u\|_{L^{2n/(n-2)}(\Omega)}^2\\
+&\leq CN^{2/n}\|u\|_{H^1(\Omega)}^2
+\leq CN^{2/n}a(u,u).
+\end{align*}
+因此
+\[
+\MathBookFormulaID{formula-ch09-eigenvalue-bounds-n-ge-three}
+C^{-1}N^{-2/n}\mathbf U^t\mathbf U
+\leq\mathbf U^t\mathbf A\mathbf U
+\leq C\mathbf U^t\mathbf U.
+\]
+于是 $C^{-1}N^{-2/n}\leq\lambda_{\min}(\mathbf A)$ 且 $\lambda_{\max}(\mathbf A)\leq C$. 又 $\kappa_2(\mathbf A)=\lambda_{\max}(\mathbf A)/\lambda_{\min}(\mathbf A)$, 故结论成立.
+\end{Proof}
+
+二维情形有类似结果.
+
+\MBSourceItem{3}
+\begin{Theorem}
+\label{thm:ch09-condition-number-two-dimensional}
+设基 $\{\psi_i:i=1,\ldots,N\}$ 满足~\eqref{eq:ch09-basis-scaling-assumption}. 则 $\mathbf A$ 的 $l_2$ 条件数满足
+\[
+\MathBookFormulaID{formula-ch09-condition-number-two-dimensional}
+\kappa_2(\mathbf A)
+\leq CN\left(1+\left|\log\bigl(Nh_{\min}(N)^2\bigr)\right|\right),
+\]
+其中 $h_{\min}=\min\{h_T:T\in\mathcal T_N\}$.
+\end{Theorem}
+
+\begin{Proof}
+与定理~\ref{thm:ch09-condition-number-n-ge-three} 的证明相同, 只需证明
+\[
+\MathBookFormulaID{formula-ch09-two-dimensional-spectral-equivalence}
+C^{-1}\left(N\left(1+|\log(Nh_{\min}(N)^2)|\right)\right)^{-1}
+\mathbf U^t\mathbf U
+\leq\mathbf U^t\mathbf A\mathbf U
+\leq C\mathbf U^t\mathbf U.
+\]
+上界同前. 对 $p>2$, 由式~\eqref{eq:ch09-basis-scaling-assumption}、局部逆估计、Hölder 不等式和二维 Sobolev 不等式~\eqref{eq:ch09-sobolev-two-dimensional},
+\begin{align*}
+\MathBookFormulaID{formula-ch09-two-dimensional-lower-bound-derivation}
+\mathbf U^t\mathbf U
+&\leq C\sum_{T\in\mathcal T_N}\|u\|_{L^\infty(T)}^2\\
+&\leq C\sum_{T\in\mathcal T_N}h_T^{-4/p}\|u\|_{L^p(T)}^2\\
+&\leq C\left(\sum_{T\in\mathcal T_N}h_T^{-4/(p-2)}\right)^{(p-2)/p}
+p\,a(u,u).
+\end{align*}
+粗略估计给出
+\[
+\MathBookFormulaID{formula-ch09-two-dimensional-mesh-sum-bound}
+\left(\sum_{T\in\mathcal T_N}h_T^{-4/(p-2)}\right)^{(p-2)/p}
+\leq C^{1-2/p}\bigl(Nh_{\min}(N)^2\bigr)^{-2/p}N.
+\]
+在前式中取
+\[
+\MathBookFormulaID{formula-ch09-optimal-sobolev-exponent}
+p=\max\{2,|\log(Nh_{\min}(N)^2)|\},
+\]
+便得到结论.
+\end{Proof}
+
+\MBSourceItem{4}
+\begin{Remark}
+\label{rem:ch09-condition-number-sharpness}
+Bank and Scott (1989) 证明, 对例~\ref{ex:ch09-radical-mesh-refinement} 中的特殊网格, 定理~\ref{thm:ch09-condition-number-two-dimensional} 的估计是尖锐的.
+\end{Remark}

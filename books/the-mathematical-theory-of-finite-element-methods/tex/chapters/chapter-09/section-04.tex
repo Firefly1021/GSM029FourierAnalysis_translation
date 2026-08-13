@@ -1,0 +1,189 @@
+\MathBookSourcePage{260}
+\subsection{线性泛函和其他范数的估计量}
+\label{sec:ch09-linear-functional-estimators}
+\setcounter{thmcount}{0}
+\setcounter{equation}{0}
+
+假设我们不想估计误差的能量范数, 而只想估计误差的某个连续线性泛函 $L$. 例如, 它可以是我们特别关心的解的某个积分. 此时只需知道 $L(u_h)$ 能很好地逼近 $L(u)$, 即只需知道 $L(e_h)$ 很小.
+
+为估计 $L(e_h)$, 引入由下式确定的对偶函数 $\phi_L\in V$:
+\MBSourceItem{1}
+\begin{equation}
+\MathBookFormulaID{formula-ch09-linear-functional-dual-problem}
+\label{eq:ch09-linear-functional-dual-problem}
+a(v,\phi_L)=L(v)
+\qquad\forall v\in V.
+\end{equation}
+$\phi_L$ 的范数可以通过 $L(\phi_L)$ 估计:
+\MBSourceItem{2}
+\begin{equation}
+\MathBookFormulaID{formula-ch09-dual-energy-identity}
+\label{eq:ch09-dual-energy-identity}
+a(\phi_L,\phi_L)=L(\phi_L),
+\end{equation}
+而正数 $L(\phi_L)$ 只依赖于 $L$. 另一方面,
+\[
+\MathBookFormulaID{formula-ch09-linear-functional-residual-identity}
+L(e_h)=a(e_h,\phi_L)=R(\phi_L).
+\]
+由式~\eqref{eq:ch09-residual-estimator-bound},
+\[
+\MathBookFormulaID{formula-ch09-linear-functional-estimator-intermediate}
+|L(e_h)|\leq\gamma\left(\sum_eE_e(u_h)^2\right)^{1/2}|\phi_L|_{H^1(\Omega)}.
+\]
+
+\MBSourceItem{3}
+\begin{Theorem}
+\label{thm:ch09-linear-functional-estimator}
+设 $L$ 是 $V$ 上的连续线性泛函, $\phi_L$ 由式~\eqref{eq:ch09-linear-functional-dual-problem} 定义. 则
+\[
+\MathBookFormulaID{formula-ch09-linear-functional-estimator}
+|L(e_h)|\leq C\left(\sum_eE_e(u_h)^2\right)^{1/2}\sqrt{L(\phi_L)},
+\]
+其中 $C$ 只与插值误差和系数 $\alpha$ 有关.
+\end{Theorem}
+
+局部误差下界~\eqref{eq:ch09-local-estimator-lower-bound} 还可给出其他范数中的估计. 例如, 在定理~\ref{thm:ch09-local-estimator-lower-bound} 的条件下, Hölder 不等式给出
+\[
+\MathBookFormulaID{formula-ch09-local-infinity-estimator-scaling}
+h_e^{-n/2}E_e(u_h)
+\leq Ch_e^{-n/2}|e_h|_{H^1(T_e)}
+\leq C|e_h|_{W_\infty^1(T_e)}.
+\]
+注意, $h_e^{-n/2}E_e(u_h)$ 等价于(习题~\ref{exr:ch09-12})
+\MBSourceItem{4}
+\begin{equation}
+\MathBookFormulaID{formula-ch09-infinity-error-indicator}
+\label{eq:ch09-infinity-error-indicator}
+E_e^\infty(u_h):=
+\max_{T\subset T_e}h_T\|f+\nabla\cdot(\alpha\nabla u_h)\|_{L^\infty(T)}
++\|[\alpha n\cdot\nabla u_h]\|_{L^\infty(e)}.
+\end{equation}
+
+\MBSourceItem{5}
+\begin{Theorem}
+\label{thm:ch09-local-infinity-estimator}
+在定理~\ref{thm:ch09-local-estimator-lower-bound} 的条件下, 式~\eqref{eq:ch09-infinity-error-indicator} 中的估计量满足
+\[
+\MathBookFormulaID{formula-ch09-local-infinity-estimator}
+E_e^\infty(u_h)\leq C|e_h|_{W_\infty^1(T_e)}
+\qquad\forall e\in\mathcal T^h.
+\]
+\end{Theorem}
+
+为得到误差上界, 修改式~\eqref{eq:ch09-face-error-indicator} 的推导. 令 $g$ 为式~\eqref{eq:ch08-smoothed-delta-gradient-reproduction} 后引入的、对应给定方向 $\nu$ 的光滑化导数 Green 函数. 则
+\begin{align*}
+\MathBookFormulaID{formula-ch09-green-residual-estimator}
+|a(e_h,g)|
+&=|R(g-I^hg)|\\
+&\leq\sum_T\|R_A\|_{L^\infty(T)}\|g-I^hg\|_{L^1(T)}
++\sum_e\|[\alpha n\cdot\nabla u_h]\|_{L^\infty(e)}\|g-I^hg\|_{L^1(e)}\\
+&\leq C\sum_eE_e^\infty(u_h)h_e\int_{T_e}|\nabla^2g(x)|\,dx.
+\end{align*}
+因此, 回顾式~\eqref{eq:ch08-localization-identity},
+\[
+\MathBookFormulaID{formula-ch09-pointwise-gradient-estimator-sum}
+|(\nu\cdot\nabla u,\delta_z)-\nu\cdot\nabla u_h(z)|
+\leq C\sum_eE_e^\infty(u_h)h_e\int_{T_e}|\nabla^2g(x)|\,dx.
+\]
+在每个 $T\in\mathcal T^h$ 上定义分片常数函数
+\MBSourceItem{6}
+\begin{equation}
+\MathBookFormulaID{formula-ch09-piecewise-error-density}
+\label{eq:ch09-piecewise-error-density}
+E(x)=\max_{e\subset T}h_eE_e^\infty(u_h)
+\qquad\forall x\in T.
+\end{equation}
+于是
+\[
+\MathBookFormulaID{formula-ch09-pointwise-gradient-estimator-integral}
+|(\nu\cdot\nabla u,\delta_z)-\nu\cdot\nabla u_h(z)|
+\leq C\int_\Omega E(x)|\nabla^2g(x)|\,dx.
+\]
+应用引理~\ref{lem:ch08-weighted-primal-regularity}, 并使用第~\ref{sec:ch08-main-theorem} 节中 $\sigma_z$ 的定义和第~\ref{sec:ch08-reduction-to-weighted-estimates} 节中 $\delta_z$ 的定义, 得到(见习题~\ref{exr:ch09-15})下面的结论.
+
+\MBSourceItem{7}
+\begin{Theorem}
+\label{thm:ch09-pointwise-gradient-estimator}
+在引理~\ref{lem:ch08-weighted-primal-regularity} 的假设下,
+\[
+\MathBookFormulaID{formula-ch09-pointwise-gradient-estimator}
+|(\nu\cdot\nabla u,\delta_z)-\nu\cdot\nabla u_h(z)|
+\leq Ch_z^{\lambda-2}
+\left(\int_\Omega\sigma_z^{-n-\lambda}E(x)^2\,dx\right)^{1/2}.
+\]
+\end{Theorem}
+
+这里估计的是 $\nu\cdot\nabla u_h(z)$ 对 $\nu\cdot\nabla u(z)$ 的一个显式平均值的逼近, 该平均值使用核 $\delta_z$. 若 $u$ 足够光滑, $(\nu\cdot\nabla u,\delta_z)$ 很接近 $\nu\cdot\nabla u(z)$, 但一般无法估计这种接近程度. 因为 $u_h$ 定义在有限尺寸的网格上, 只能期望它在网格尺度上逼近 $\nu\cdot\nabla u(z)$ 的某个适当平均值. 选用与 $u_h$ 自然联系的平均值, 可以避免再对 $u$ 加入式~\eqref{eq:ch09-w1-saturation-assumption} 这类条件.
+
+若所有 $T\in\mathcal T^h$ 上 $E_T^\infty(u_h)=\varepsilon$, 且 $h(x)=h$ 为常数, 则 $E(x)=\varepsilon h$, 定理中的估计简化为
+\[
+\MathBookFormulaID{formula-ch09-uniform-pointwise-estimator}
+|(\nu\cdot\nabla u,\delta_z)-\nu\cdot\nabla u_h(z)|\leq C\varepsilon.
+\]
+利用 $E$ 和 $\sigma_z$ 的简单形式, 还可写成
+\begin{align*}
+\MathBookFormulaID{formula-ch09-discrete-pointwise-estimator}
+|(\nu\cdot\nabla u,\delta_z)-\nu\cdot\nabla u_h(z)|
+&\leq C\left(\sum_T h_z^{\lambda-2}h_T^{2+n}E_T^\infty(u_h)^2
+(h_z+\operatorname{dist}(z,T))^{-(n+\lambda)}\right)^{1/2}\\
+&\leq C\left(\sum_T\left(\frac{h_T}{h_z}\right)^{2+n}
+E_T^\infty(u_h)^2
+\left(1+\frac{\operatorname{dist}(z,T)}{h_z}\right)^{-(n+\lambda)}\right)^{1/2},
+\end{align*}
+其中 $E_T^\infty(u_h)$ 按照式~\eqref{eq:ch09-element-error-indicator} 的单元版本定义. 更弱假设下的结果见 Nochetto (1995); 适用于非凸区域的加权误差估计量见 Liao and Nochetto (2003).
+
+$W_1^1$ 误差的估计更复杂. 在定理~\ref{thm:ch09-local-estimator-lower-bound} 的条件下, 利用局部逆估计可得
+\begin{align*}
+\MathBookFormulaID{formula-ch09-w1-local-estimator-prebound}
+h_T^{n/2}E_T(u_h)
+&\leq Ch_T^{n/2}|e_h|_{H^1(T')}\\
+&\leq C\left(h_T^{n/2}\|u-I^hu\|_{H^1(T')}
++\|I^hu-u_h\|_{W_1^1(T')}\right).
+\end{align*}
+作饱和假设
+\MBSourceItem{8}
+\begin{equation}
+\MathBookFormulaID{formula-ch09-w1-saturation-assumption}
+\label{eq:ch09-w1-saturation-assumption}
+\|u-I^hu\|_{H^1(T')}\leq Ch_T^{-n/2}\|u-I^hu\|_{W_1^1(T')}.
+\end{equation}
+于是
+\[
+\MathBookFormulaID{formula-ch09-w1-estimator-with-interpolant}
+h_T^{n/2}E_T(u_h)
+\leq C\left(\|u-I^hu\|_{W_1^1(T')}+|e_h|_{W_1^1(T')}\right).
+\]
+注意 $u-I^hu=e_h-I^he_h$. 再假设 $I^h$ 在 $W_1^1$ 中有界(见第~\ref{sec:ch04-nonsmooth-function-interpolation} 节), 即
+\MBSourceItem{9}
+\begin{equation}
+\MathBookFormulaID{formula-ch09-w1-interpolant-stability}
+\label{eq:ch09-w1-interpolant-stability}
+\|I^hv\|_{W_1^1(T')}\leq C|v|_{W_1^1(S_{T'})},
+\end{equation}
+则
+\MBSourceItem{10}
+\begin{equation}
+\MathBookFormulaID{formula-ch09-w1-scaled-estimator}
+\label{eq:ch09-w1-scaled-estimator}
+h_T^{n/2}E_T(u_h)\leq C|e_h|_{W_1^1(S_{T'})}.
+\end{equation}
+又因为 $h_T^{n/2}E_T(u_h)$ 等价于(习题~\ref{exr:ch09-13})
+\MBSourceItem{11}
+\begin{equation}
+\MathBookFormulaID{formula-ch09-l1-error-indicator}
+\label{eq:ch09-l1-error-indicator}
+E_T^1(u_h):=h_T\|f+\nabla\cdot(\alpha\nabla u_h)\|_{L^1(T)}
++\max_{e\subset\partial T}\|[\alpha n\cdot\nabla u_h]\|_{L^1(e)},
+\end{equation}
+故有以下结论.
+
+\MBSourceItem{12}
+\begin{Theorem}
+\label{thm:ch09-local-l1-estimator}
+在假设~\eqref{eq:ch09-w1-saturation-assumption} 和~\eqref{eq:ch09-w1-interpolant-stability} 下,
+\[
+\MathBookFormulaID{formula-ch09-local-l1-estimator}
+E_T^1(u_h)\leq C|e_h|_{W_1^1(S_{T'})}.
+\]
+\end{Theorem}
