@@ -1,0 +1,152 @@
+\setcounter{section}{4}
+\section{Navier--Stokes 方程的离散化: 一般稳定性与收敛定理}
+\label{sec:sample-general-stability-convergence}
+\setcounter{subsection}{1}
+\setcounter{equation}{20}
+
+\subsection{格式 \MBUnresolvedReference{scheme}{5.1} 和 \MBUnresolvedReference{scheme}{5.2} 的稳定性}
+\label{sec:sample-scheme-stability}
+
+问题在于证明近似解的一些先验估计.
+
+\subsubsection{格式 \MBUnresolvedReference{scheme}{5.1}}
+\label{subsec:sample-scheme-51}
+
+\begin{Lemma}
+\label{lem:sample-scheme-51-bounds}
+方程 \MBUnresolvedReference{equation}{(5.12)} 的解 $u_h^m$ 在下述意义下保持有界:
+\begin{equation}
+  \lvert u_h^m\rvert^2 \leq d_2, \qquad m=0,\ldots,N,
+  \label{eq:sample-scheme51-uniform-bound}
+\end{equation}
+\begin{equation}
+  \sum_{m=1}^{N}\lvert u_h^m-u_h^{m-1}\rvert^2 \leq d_2,
+  \label{eq:sample-scheme51-increment-bound}
+\end{equation}
+\begin{equation}
+  k\sum_{m=1}^{N}\lVert u_h^m\rVert_h^2 \leq \frac{1}{\nu}d_2,
+  \label{eq:sample-scheme51-energy-bound}
+\end{equation}
+其中
+\begin{equation}
+  d_2=\lvert u_0\rvert^2+\frac{d_0^2}{\nu}\int_0^T\lvert f(s)\rvert^2\,ds.
+  \label{eq:sample-data-bound-d2}
+\end{equation}
+\end{Lemma}
+
+\begin{Proof}
+在 \MBUnresolvedReference{equation}{(5.12)} 中取 $v_h=u_h^m$. 由 \MBUnresolvedReference{equation}{(5.6)} 以及恒等式
+\begin{equation}
+  2(a-b,a)=\lvert a\rvert^2-\lvert b\rvert^2+\lvert a-b\rvert^2,
+  \qquad \forall a,b\in L^2(\Omega),
+  \label{eq:sample-polarization-identity}
+\end{equation}
+得到
+\begin{align}
+  &\lvert u_h^m\rvert^2-\lvert u_h^{m-1}\rvert^2
+  +\lvert u_h^m-u_h^{m-1}\rvert^2+2k\nu\lVert u_h^m\rVert_h^2 \notag\\
+  &\quad =2k(f^m,u_h^m)
+  \leq 2k\lvert f^m\rvert\lvert u_h^m\rvert \notag\\
+  &\quad \leq 2kd_0\lvert f^m\rvert\lVert u_h^m\rVert_h
+  \quad\text{(由 \MBUnresolvedReference{equation}{(5.4)})} \notag\\
+  &\quad \leq k\nu\lVert u_h^m\rVert_h^2
+  +k\frac{d_0^2}{\nu}\lvert f^m\rvert^2.
+  \label{eq:sample-scheme51-test-estimate}
+\end{align}
+因此
+\begin{align}
+  &\lvert u_h^m\rvert^2-\lvert u_h^{m-1}\rvert^2
+  +\lvert u_h^m-u_h^{m-1}\rvert^2+k\nu\lVert u_h^m\rVert_h^2 \notag\\
+  &\qquad \leq k\frac{d_0^2}{\nu}\lvert f^m\rvert^2,
+  \qquad m=1,\ldots,N.
+  \label{eq:sample-scheme51-step-inequality}
+\end{align}
+将这些不等式对 $m=1,\ldots,N$ 相加, 得到
+\begin{align}
+  \lvert u_h^N\rvert^2
+  &+\sum_{m=1}^{N}\lvert u_h^m-u_h^{m-1}\rvert^2
+  +k\nu\sum_{m=1}^{N}\lVert u_h^m\rVert_h^2 \notag\\
+  &\leq \lvert u_h^0\rvert^2
+  +k\frac{d_0^2}{\nu}\sum_{m=1}^{N}\lvert f^m\rvert^2.
+  \label{eq:sample-scheme51-summed-inequality}
+\end{align}
+与 \MBUnresolvedReference{lemma}{引理 4.5} 中一样, 可以验证
+\begin{equation}
+  k\sum_{m=1}^{N}\lvert f^m\rvert^2
+  \leq \int_0^T\lvert f(s)\rvert^2\,ds.
+  \label{eq:sample-forcing-time-average-bound}
+\end{equation}
+因此, 由 \MBUnresolvedReference{equation}{(5.11)} 和 \eqref{eq:sample-forcing-time-average-bound} 可知, \eqref{eq:sample-scheme51-summed-inequality} 的右端以
+\begin{equation}
+  d_2=\lvert u_0\rvert^2+\frac{d_0^2}{\nu}\int_0^T\lvert f(s)\rvert^2\,ds
+  \label{eq:sample-data-bound-d2-repeated}
+\end{equation}
+为界. 这证明了 \eqref{eq:sample-scheme51-increment-bound} 和 \eqref{eq:sample-scheme51-energy-bound}.
+
+然后将不等式 \eqref{eq:sample-scheme51-step-inequality} 对 $m=1,\ldots,r$ 相加, 并舍去一些正项, 得到
+\[
+  \lvert u_h^r\rvert^2
+  \leq \lvert u_h^0\rvert^2
+  +k\frac{d_0^2}{\nu}\sum_{m=1}^{r}\lvert f^m\rvert^2
+  \leq d_2.
+\]
+其中最后一个不等式由上述结果得到. 因而 \eqref{eq:sample-scheme51-uniform-bound} 也得到证明.
+\end{Proof}
+
+\subsubsection{格式 \MBUnresolvedReference{scheme}{5.2}}
+\label{subsec:sample-scheme-52}
+
+\begin{Lemma}
+\label{lem:sample-scheme-52-bounds}
+方程 \MBUnresolvedReference{equation}{(5.13)} 的解 $u_h^m$ 在下述意义下保持有界:
+\begin{equation}
+  \lvert u_h^m\rvert^2 \leq d_2, \qquad m=1,\ldots,N,
+  \label{eq:sample-scheme52-uniform-bound}
+\end{equation}
+\begin{equation}
+  k\sum_{m=1}^{N}
+  \left\lVert\frac{u_h^m+u_h^{m-1}}{2}\right\rVert_h^2
+  \leq \frac{d_2}{\nu},
+  \label{eq:sample-scheme52-energy-bound}
+\end{equation}
+其中的 $d_2$ 与 \eqref{eq:sample-data-bound-d2} 相同.
+\end{Lemma}
+
+\begin{Proof}
+在 \MBUnresolvedReference{equation}{(5.13)} 中取 $v_h=u_h^m+u_h^{m-1}$. 由 \MBUnresolvedReference{equation}{(5.6)} 得到
+\begin{align}
+  &\lvert u_h^m\rvert^2-\lvert u_h^{m-1}\rvert^2
+  +2k\nu\left\lVert\frac{u_h^m+u_h^{m-1}}{2}\right\rVert_h^2 \notag\\
+  &\quad =k(f^m,u_h^m+u_h^{m-1}) \notag\\
+  &\quad \leq 2kd_0\lvert f^m\rvert
+  \left\lVert\frac{u_h^m+u_h^{m-1}}{2}\right\rVert_h \notag\\
+  &\quad \leq k\nu\left\lVert\frac{u_h^m+u_h^{m-1}}{2}\right\rVert_h^2
+  +k\frac{d_0^2}{\nu}\lvert f^m\rvert^2.
+  \label{eq:sample-scheme52-test-identity}
+\end{align}
+因此
+\begin{align}
+  \lvert u_h^m\rvert^2
+  &+k\nu\left\lVert\frac{u_h^m+u_h^{m-1}}{2}\right\rVert_h^2 \notag\\
+  &\leq \lvert u_h^{m-1}\rvert^2
+  +k\frac{d_0^2}{\nu}\lvert f^m\rvert^2.
+  \label{eq:sample-scheme52-step-inequality}
+\end{align}
+将这些关系对 $m=1,\ldots,N$ 相加, 得到
+\[
+  \lvert u_h^N\rvert^2
+  +k\nu\sum_{m=1}^{N}
+  \left\lVert\frac{u_h^m+u_h^{m-1}}{2}\right\rVert_h^2
+  \leq \lvert u_h^0\rvert^2
+  +k\frac{d_0^2}{\nu}\sum_{m=1}^{N}\lvert f^m\rvert^2
+  \leq d_2.
+\]
+这证明了 \eqref{eq:sample-scheme52-energy-bound}. 然后将关系 \eqref{eq:sample-scheme52-step-inequality} 对 $m=1,\ldots,r$ 相加, 并舍去不需要的项, 得到
+\[
+  \lvert u_h^r\rvert^2
+  \leq \lvert u_h^0\rvert^2
+  +k\frac{d_0^2}{\nu}\sum_{m=1}^{r}\lvert f^m\rvert^2
+  \leq d_2.
+\]
+这给出 \eqref{eq:sample-scheme52-uniform-bound}.
+\end{Proof}
