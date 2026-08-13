@@ -1,0 +1,529 @@
+\clearpage
+\section{数值算法}
+\label{sec:ch1-numerical-algorithms}
+
+我们已经看到, Stokes 方程的离散化并没有完全解决这些方程的数值逼近问题. 为了实际计算其解, 必须有空间 $V_h$ 的一组基, 使 
+\eqref{eq:ch1-discrete-variational-problem} 的类似式对 $u_h$ 的分量给出矩阵足够稀疏的代数线性方程组. 这只在与 (APX4) 和 (APX5) 对应的格式中成立; 对于与 (APX1)--(APX3) 相关的离散问题, 我们甚至没有 $V_h$ 的显式基.
+
+在第 \ref{subsec:ch1-uzawa-algorithm}--\ref{subsec:ch1-discrete-algorithms} 节中, 我们将研究两种对实际求解离散方程很有用的算法. 第 \ref{subsec:ch1-uzawa-algorithm} 节和第 \ref{subsec:ch1-arrow-hurwicz-algorithm} 节考虑连续情形, 第 \ref{subsec:ch1-discrete-algorithms} 节简要说明如何将它们用于离散问题.
+
+第 \MBUnresolvedReference{subsection}{5.4} 节所证明的结果与这一问题有关, 但它们也说明如何把不可压缩流体看作``微''可压缩流体的极限.
+
+\subsection{Uzawa 算法}
+\label{subsec:ch1-uzawa-algorithm}
+
+在命题 \ref{prop:ch1-stokes-energy-minimizer} 中, 我们把 Stokes 问题解释为一个变分问题, 即一个带线性约束的优化问题. 本节和下一节所述算法是经典优化算法. 虽然算法的思想及收敛性的证明来自优化理论, 我们将不直接援引优化理论, 而是给出这些算法并研究其收敛性.
+
+考虑定理 \ref{thm:ch1-stokes-existence-uniqueness} 所定义的函数 $u$ 和 $p$. 我们将把 $u,p$ 表示为比它们更容易计算的序列 $u^m,p^m$ 的极限.
+
+以任意元素 $p^0$ 启动算法:
+\begin{equation}
+p^0\in L^2(\Omega).
+\label{eq:ch1-uzawa-initial-pressure}
+\end{equation}
+当 $p^m$ 已知时, 由下列条件定义 $u^{m+1}$ 和 $p^{m+1}$($m\geq0$):
+\begin{equation}
+\left\{
+\begin{aligned}
+&u^{m+1}\in\mathbf H_0^1(\Omega),\\
+&\nu((u^{m+1},v))-(p^m,\operatorname{div}v)=(f,v),
+\qquad \forall v\in\mathbf H_0^1(\Omega),
+\end{aligned}
+\right.
+\label{eq:ch1-uzawa-velocity-step}
+\end{equation}
+\begin{equation}
+\left\{
+\begin{aligned}
+&p^{m+1}\in L^2(\Omega),\\
+&(p^{m+1}-p^m,q)+\rho(\operatorname{div}u^{m+1},q)=0,
+\qquad \forall q\in L^2(\Omega).
+\end{aligned}
+\right.
+\label{eq:ch1-uzawa-pressure-step}
+\end{equation}
+假设 $\rho>0$ 是固定数; 稍后再给出对 $\rho$ 的其他条件.
+
+由投影定理(定理 \ref{thm:ch1-abstract-projection}), 方程 \eqref{eq:ch1-uzawa-velocity-step} 的解 $u^{m+1}$ 的存在性与唯一性很容易得到. 实际上, $u^{m+1}$ 就是 Dirichlet 问题
+\begin{equation}
+\left\{
+\begin{aligned}
+&u^{m+1}\in\mathbf H_0^1(\Omega),\\
+&-\nu\Delta u^{m+1}=\operatorname{grad}p^m+f\in\mathbf H^{-1}(\Omega)
+\end{aligned}
+\right.
+\label{eq:ch1-uzawa-dirichlet-step}
+\end{equation}
+的一个解. 当 $u^{m+1}$ 已知时, $p^{m+1}$ 由 \eqref{eq:ch1-uzawa-pressure-step} 显式给出; 后一方程等价于
+\begin{equation}
+p^{m+1}=p^m-\rho\operatorname{div}u^{m+1}\in L^2(\Omega).
+\label{eq:ch1-uzawa-pressure-update}
+\end{equation}
+
+\subsubsection*{算法的收敛性}
+
+\MBSourceStatementNumber{theorem}{1}
+\begin{Theorem}
+\label{thm:ch1-uzawa-convergence}
+若数 $\rho$ 满足
+\begin{equation}
+0<\rho<2\nu,
+\label{eq:ch1-uzawa-step-condition}
+\end{equation}
+则当 $m\to\infty$ 时, $u^{m+1}$ 在 $\mathbf H_0^1(\Omega)$ 中收敛到 $u$, 且 $p^{m+1}$ 在 $L^2(\Omega)/\mathbb R$ 中弱收敛到 $p$.
+\end{Theorem}
+
+\begin{Proof}
+$u$ 和 $p$ 所满足的方程 \eqref{eq:ch1-stokes-weak-momentum} 等价于
+\begin{equation}
+\nu((u,v))-(p,\operatorname{div}v)=(f,v),
+\qquad \forall v\in\mathbf H_0^1(\Omega).
+\label{eq:ch1-uzawa-exact-variational-equation}
+\end{equation}
+在方程 \eqref{eq:ch1-uzawa-velocity-step} 和 \eqref{eq:ch1-uzawa-exact-variational-equation} 中取 $v=u^{m+1}-u$, 再将所得方程相减, 得
+\[
+\nu\lVert u^{m+1}-u\rVert^2=(p^m-p,\operatorname{div}u^{m+1}),
+\]
+即
+\begin{equation}
+\nu\lVert v^{m+1}\rVert^2=(q^m,\operatorname{div}v^{m+1}),
+\label{eq:ch1-uzawa-error-identity}
+\end{equation}
+其中令
+\begin{equation}
+v^{m+1}=u^{m+1}-u,
+\label{eq:ch1-uzawa-velocity-error}
+\end{equation}
+\begin{equation}
+q^m=p^m-p.
+\label{eq:ch1-uzawa-pressure-error}
+\end{equation}
+在 \eqref{eq:ch1-uzawa-pressure-step} 中取 $q=p^{m+1}-p$, 得
+\[
+(q^{m+1}-q^m,q^{m+1})+\rho(\operatorname{div}v^{m+1},q^{m+1})=0,
+\]
+等价地,
+\begin{equation}
+\lvert q^{m+1}\rvert^2-\lvert q^m\rvert^2
++\lvert q^{m+1}-q^m\rvert^2
+=-2\rho(\operatorname{div}v^{m+1},q^{m+1}).
+\label{eq:ch1-uzawa-pressure-energy}
+\end{equation}
+将方程 \eqref{eq:ch1-uzawa-error-identity} 乘以 $2\rho$, 再与方程 \eqref{eq:ch1-uzawa-pressure-energy} 相加, 得
+\begin{equation}
+\begin{aligned}
+&\lvert q^{m+1}\rvert^2-\lvert q^m\rvert^2
++\lvert q^{m+1}-q^m\rvert^2
++2\rho\nu\lVert v^{m+1}\rVert^2\\
+&\hspace{4em}=-2\rho(\operatorname{div}v^{m+1},q^{m+1}-q^m).
+\end{aligned}
+\label{eq:ch1-uzawa-combined-energy}
+\end{equation}
+\eqref{eq:ch1-uzawa-combined-energy} 的右端不超过
+\[
+2\rho\lvert\operatorname{div}v^{m+1}\rvert\lvert q^{m+1}-q^m\rvert,
+\]
+而由
+\begin{equation}
+\lvert\operatorname{div}v\rvert\leq\lVert v\rVert,
+\qquad \forall v\in\mathbf H_0^1(\Omega),
+\label{eq:ch1-divergence-norm-bound}
+\end{equation}
+不等式 \eqref{eq:ch1-divergence-norm-bound} 对 $v\in\mathcal D(\Omega)$ 容易证明, 再由连续性论证可推广到每个 $v\in\mathbf H_0^1(\Omega)$. 用同一方法还可检验, 若 $n=1$ 或 $3$, 则
+\[
+\lVert v\rVert^2=\lvert\operatorname{div}v\rvert_{L^2(\Omega)}^2,
+\qquad v\in\mathbf H_0^1(\Omega).
+\]
+它不超过
+\[
+2\rho\lVert v^{m+1}\rVert\lvert q^{m+1}-q^m\rvert.
+\]
+最后一个量又不超过
+\[
+\delta\lvert q^{m+1}-q^m\rvert^2
++\frac{\rho^2}{\delta}\lVert v^{m+1}\rVert^2,
+\]
+其中 $0<\delta<1$ 此时任意. 因而
+\begin{equation}
+\lvert q^{m+1}\rvert^2-\lvert q^m\rvert^2
++(1-\delta)\lvert q^{m+1}-q^m\rvert^2
++\rho\left(2\nu-\frac{\rho}{\delta}\right)\lVert v^{m+1}\rVert^2\leq0.
+\label{eq:ch1-uzawa-one-step-bound}
+\end{equation}
+将 $m=0,\ldots,N$ 的不等式 \eqref{eq:ch1-uzawa-one-step-bound} 相加, 得
+\begin{equation}
+\lvert q^{N+1}\rvert^2
++(1-\delta)\sum_{m=0}^{N}\lvert q^{m+1}-q^m\rvert^2
++\left(2\nu-\frac{\rho}{\delta}\right)\rho
+\sum_{m=1}^{N}\lVert v^{m+1}\rVert^2
+\leq\lvert q^0\rvert^2.
+\label{eq:ch1-uzawa-summed-bound}
+\end{equation}
+由条件 \eqref{eq:ch1-uzawa-step-condition}, 存在某个 $\delta$, 使
+\[
+0<\frac{\rho}{2\nu}<\delta<1,
+\]
+因而
+\[
+2\nu-\frac{\rho}{\delta}>0.
+\]
+固定这样的 $\delta$. 不等式 \eqref{eq:ch1-uzawa-summed-bound} 表明
+\begin{equation}
+\begin{aligned}
+\lvert q^{m+1}-q^m\rvert^2
+&=\lvert p^{m+1}-p^m\rvert^2\longrightarrow0
+&&\text{当 }m\to\infty,\\
+\lVert v^{m+1}\rVert^2
+&=\lVert u^{m+1}-u\rVert^2\longrightarrow0
+&&\text{当 }m\to\infty.
+\end{aligned}
+\label{eq:ch1-uzawa-error-convergence}
+\end{equation}
+由此证明了 $u^{m+1}$ 收敛到 $u$. 由 \eqref{eq:ch1-uzawa-one-step-bound} 还可看出, 序列 $p^m$ 在 $L^2(\Omega)$ 中有界. 因而可从 $p^m$ 中抽取一个子序列 $p^{m'}$, 它在 $L^2(\Omega)$ 中弱收敛到某个元素 $p_*$. 方程 \eqref{eq:ch1-uzawa-velocity-step} 在极限下给出
+\[
+\nu((u,v))-(p_*,\operatorname{div}v)=(f,v),
+\qquad \forall v\in\mathbf H_0^1(\Omega).
+\]
+与 \eqref{eq:ch1-uzawa-exact-variational-equation} 比较, 得
+\[
+(p-p_*,\operatorname{div}v)=0,
+\qquad \forall v\in\mathbf H_0^1(\Omega),
+\]
+从而
+\[
+\operatorname{grad}(p-p_*)=0,
+\qquad p_*=p+\mathrm{const}.
+\]
+从 $p^m$ 的任意子序列中都能抽取一个在 $L^2(\Omega)$ 中弱收敛到 $p+c$ 的子序列; 因而整个序列 $p^m$ 在 $L^2(\Omega)/\mathbb R$ 的弱拓扑中收敛到 $p$.
+\end{Proof}
+
+\MBSourceStatementNumber{remark}{1}
+\begin{Remark}
+\label{rem:ch1-uzawa-zero-mean-pressure}
+通过条件
+\[
+\int_\Omega p(x)\,dx=0
+\]
+定义 $p$. 假设选择 $p^0\in L^2(\Omega)$ 使
+\[
+\int_\Omega p^0(x)\,dx=0.
+\]
+则显然
+\[
+\int_\Omega p^m(x)\,dx=0,
+\qquad m\geq1,
+\]
+且整个序列 $p^m$ 在空间 $L^2(\Omega)$ 中弱收敛到 $p$.
+\end{Remark}
+
+\subsection{Arrow--Hurwicz 算法}
+\label{subsec:ch1-arrow-hurwicz-algorithm}
+
+在此情形下, 函数 $u$ 和 $p$ 仍是递归定义的两个序列 $u^m,p^m$ 的极限.
+
+以任意元素 $u^0,p^0$ 启动算法:
+\begin{equation}
+u^0\in\mathbf H_0^1(\Omega),
+\qquad p^0\in L^2(\Omega).
+\label{eq:ch1-arrow-hurwicz-initial-data}
+\end{equation}
+当 $p^m$ 和 $u^m$ 已知时, 将 $p^{m+1}$ 和 $u^{m+1}$ 定义为下列问题的解:
+\begin{equation}
+\left\{
+\begin{aligned}
+&u^{m+1}\in\mathbf H_0^1(\Omega),\\
+&((u^{m+1}-u^m,v))+\rho\nu((u^m,v))
+-\rho(p^m,\operatorname{div}v)=\rho(f,v),\\
+&\hspace{18em}\forall v\in\mathbf H_0^1(\Omega),
+\end{aligned}
+\right.
+\label{eq:ch1-arrow-hurwicz-velocity-step}
+\end{equation}
+\begin{equation}
+\left\{
+\begin{aligned}
+&p^{m+1}\in L^2(\Omega),\\
+&\alpha(p^{m+1}-p^m,q)+\rho(\operatorname{div}u^{m+1},q)=0,
+\qquad \forall q\in L^2(\Omega).
+\end{aligned}
+\right.
+\label{eq:ch1-arrow-hurwicz-pressure-step}
+\end{equation}
+假设 $\rho$ 和 $\alpha$ 是两个严格正数; 稍后将出现对 $\rho$ 和 $\alpha$ 的条件.
+
+利用投影定理, 容易证明满足 \eqref{eq:ch1-arrow-hurwicz-velocity-step} 的 $u^{m+1}\in\mathbf H_0^1(\Omega)$ 存在且唯一; $u^{m+1}$ 是 Dirichlet 问题
+\begin{equation}
+\left\{
+\begin{aligned}
+-\Delta u^{m+1}
+&=-\Delta u^m+\rho\nu\Delta u^m
+-\rho\operatorname{grad}p^m+\rho f,\\
+u^{m+1}&\in\mathbf H_0^1(\Omega)
+\end{aligned}
+\right.
+\label{eq:ch1-arrow-hurwicz-dirichlet-step}
+\end{equation}
+的解. 然后 $p^{m+1}$ 由 \eqref{eq:ch1-arrow-hurwicz-pressure-step} 显式给出; 后一方程等价于
+\begin{equation}
+p^{m+1}=p^m-\frac{\rho}{\alpha}\operatorname{div}u^{m+1}
+\in L^2(\Omega).
+\label{eq:ch1-arrow-hurwicz-pressure-update}
+\end{equation}
+
+\subsubsection*{算法的收敛性}
+
+\MBSourceStatementNumber{theorem}{2}
+\begin{Theorem}
+\label{thm:ch1-arrow-hurwicz-convergence}
+若数 $\alpha$ 和 $\rho$ 满足
+\begin{equation}
+0<\rho<\frac{2\alpha\nu}{\alpha\nu^2+1},
+\label{eq:ch1-arrow-hurwicz-step-condition}
+\end{equation}
+则当 $m\to\infty$ 时, $u^m$ 在 $\mathbf H_0^1(\Omega)$ 中收敛到 $u$, 且 $p^m$ 在 $L^2(\Omega)/\mathbb R$ 中弱收敛到 $p$.
+\end{Theorem}
+
+\begin{Proof}
+令
+\begin{equation}
+v^m=u^m-u,
+\label{eq:ch1-arrow-hurwicz-velocity-error}
+\end{equation}
+\begin{equation}
+q^m=p^m-p.
+\label{eq:ch1-arrow-hurwicz-pressure-error}
+\end{equation}
+方程 \eqref{eq:ch1-arrow-hurwicz-velocity-step} 和 \eqref{eq:ch1-uzawa-exact-variational-equation} 给出
+\[
+((v^{m+1}-v^m,v))+\rho\nu((v^m,v))
+=\rho(q^m,\operatorname{div}v),
+\qquad\forall v\in\mathbf H_0^1(\Omega).
+\]
+取 $v=v^{m+1}$, 得
+\begin{equation}
+\begin{aligned}
+&\lVert v^{m+1}\rVert^2-\lVert v^m\rVert^2
++\lVert v^{m+1}-v^m\rVert^2
++2\rho\nu\lVert v^{m+1}\rVert^2\\
+&\quad=2\rho\nu((v^{m+1},v^{m+1}-v^m))
++2\rho(q^m,\operatorname{div}v^{m+1})\\
+&\quad\leq\delta\lVert v^{m+1}-v^m\rVert^2
++\frac{\rho^2\nu^2}{\delta}\lVert v^{m+1}\rVert^2
++2\rho(q^m,\operatorname{div}v^{m+1}),
+\end{aligned}
+\label{eq:ch1-arrow-hurwicz-velocity-energy}
+\end{equation}
+其中 $\delta>0$ 此时任意.
+
+方程 \eqref{eq:ch1-arrow-hurwicz-pressure-step} 取 $q=q^{m+1}$ 可写成
+\[
+\begin{aligned}
+\alpha\lvert q^{m+1}\rvert^2-\alpha\lvert q^m\rvert^2
++\alpha\lvert q^{m+1}-q^m\rvert^2
+&=-2\rho(q^{m+1},\operatorname{div}u^{m+1})\\
+&=-2\rho(q^m,\operatorname{div}v^{m+1})
+-2\rho(q^{m+1}-q^m,\operatorname{div}v^{m+1})\\
+&\leq-2\rho(q^m,\operatorname{div}v^{m+1})
++2\rho\lvert q^{m+1}-q^m\rvert\lvert\operatorname{div}v^{m+1}\rvert\\
+&\leq-2\rho(q^m,\operatorname{div}v^{m+1})
++2\rho\lvert q^{m+1}-q^m\rvert\lVert v^{m+1}\rVert,
+\end{aligned}
+\]
+最后一个不等式使用了 \eqref{eq:ch1-divergence-norm-bound}. 因而, 仍取上述 $\delta$,
+\begin{equation}
+\begin{aligned}
+\alpha\lvert q^{m+1}\rvert^2-\alpha\lvert q^m\rvert^2
++\alpha\lvert q^{m+1}-q^m\rvert^2
+\leq{}&-2\rho(q^m,\operatorname{div}v^{m+1})\\
+&+\alpha\delta\lvert q^{m+1}-q^m\rvert^2
++\frac{\rho^2}{\alpha\delta}\lVert v^{m+1}\rVert^2.
+\end{aligned}
+\label{eq:ch1-arrow-hurwicz-pressure-energy}
+\end{equation}
+将不等式 \eqref{eq:ch1-arrow-hurwicz-velocity-energy} 和 \eqref{eq:ch1-arrow-hurwicz-pressure-energy} 相加, 得
+\begin{equation}
+\begin{aligned}
+&\alpha\lvert q^{m+1}\rvert^2+\lVert v^{m+1}\rVert^2
+-\alpha\lvert q^m\rvert^2-\lVert v^m\rVert^2
++\alpha(1-\delta)\lvert q^{m+1}-q^m\rvert^2\\
+&\quad +(1-\delta)\lVert v^{m+1}-v^m\rVert^2
++\rho\left(2\nu-\frac{\rho\nu^2}{\delta}
+-\frac{\rho}{\alpha\delta}\right)\lVert v^{m+1}\rVert^2\leq0.
+\end{aligned}
+\label{eq:ch1-arrow-hurwicz-combined-energy}
+\end{equation}
+若条件 \eqref{eq:ch1-arrow-hurwicz-step-condition} 成立, 则
+\[
+2\nu>\rho\nu^2+\frac{\rho}{\alpha},
+\]
+并且对某个充分接近 $1$ 的 $0<\delta<1$, 仍有
+\[
+2\nu>\frac{1}{\delta}\left(\rho\nu^2+\frac{\rho}{\alpha}\right),
+\]
+从而
+\begin{equation}
+\rho\left(2\nu-\frac{\rho\nu^2}{\delta}
+-\frac{\rho}{\alpha\delta}\right)>0.
+\label{eq:ch1-arrow-hurwicz-positive-coefficient}
+\end{equation}
+将 $m=0,\ldots,N$ 的不等式 \eqref{eq:ch1-arrow-hurwicz-combined-energy} 相加, 得到一个与 \eqref{eq:ch1-uzawa-summed-bound} 同类型的不等式, 再按定理 \ref{thm:ch1-uzawa-convergence} 的证明即可完成证明.
+\end{Proof}
+
+\MBSourceStatementNumber{remark}{2}
+\begin{Remark}
+\label{rem:ch1-arrow-hurwicz-zero-mean-pressure}
+容易把注 \ref{rem:ch1-uzawa-zero-mean-pressure} 推广到这一算法.
+\end{Remark}
+
+\subsection{这些算法的离散形式}
+\label{subsec:ch1-discrete-algorithms}
+
+我们在有限差分情形(逼近 (APX1))下描述这些算法的离散形式.
+
+为了实际计算作为 \eqref{eq:ch1-stokes-finite-difference-problem}, \eqref{eq:ch1-discrete-pressure-definition} 和 \eqref{eq:ch1-discrete-momentum-pointwise} 之解的阶梯函数 $u_h$ 和 $\pi_h$, 定义如下形式的两个阶梯函数序列 $u_h^m,\pi_h^m$:
+\begin{equation}
+u_h^m=\sum_{M\in\mathring\Omega_{1h}}\xi_Mw_{hM},
+\qquad \xi_M\in\mathbb R^n
+\quad(\text{即 }u_h^m\in W_h),
+\label{eq:ch1-discrete-algorithm-velocity-expansion}
+\end{equation}
+\begin{equation}
+\pi_h^m=\sum_{M\in\mathring\Omega_{1h}}\eta_Mw_{hM},
+\qquad \eta_M\in\mathbb R,
+\label{eq:ch1-discrete-algorithm-pressure-expansion}
+\end{equation}
+并用前述某一种算法的类似形式递归定义它们.
+
+\subsubsection*{Uzawa 算法}
+
+以 \eqref{eq:ch1-discrete-algorithm-pressure-expansion} 形式的任意 $\pi_h^0$ 启动. 当 $\pi_h^m$ 已知时, 由下列方程定义 $u_h^{m+1}$ 和 $\pi_h^{m+1}$:
+\begin{equation}
+\left\{
+\begin{aligned}
+&u_h^{m+1}\in W_h,\\
+&\nu((u_h^{m+1},v_h))_h-(\pi_h^m,D_hv_h)_h=(f,v_h),
+\qquad\forall v_h\in W_h,
+\end{aligned}
+\right.
+\label{eq:ch1-discrete-uzawa-velocity-step}
+\end{equation}
+\begin{equation}
+\pi_h^{m+1}(M)=\pi_h^m(M)-\rho(D_hu_h^{m+1})(M),
+\label{eq:ch1-discrete-uzawa-pressure-step}
+\end{equation}
+其中 $D_h$ 是由 \eqref{eq:ch1-discrete-divergence-operator} 定义的离散散度算子.
+
+若 $\rho$ 满足同一条件 \eqref{eq:ch1-uzawa-step-condition}, 重复定理 \ref{thm:ch1-uzawa-convergence} 的证明可知, 当 $m\to\infty$ 时,
+\begin{equation}
+u_h^m\longrightarrow u_h\quad\text{在 }W_h\text{ 中},
+\label{eq:ch1-discrete-uzawa-velocity-convergence}
+\end{equation}
+\begin{equation}
+\pi_h^m\longrightarrow\pi_h\quad\text{相差一个常数},
+\label{eq:ch1-discrete-uzawa-pressure-convergence}
+\end{equation}
+这里的收敛对所考虑有限维空间上的任意范数都成立.
+
+\subsubsection*{Arrow--Hurwicz 算法}
+
+分别以 \eqref{eq:ch1-discrete-algorithm-velocity-expansion} 和 \eqref{eq:ch1-discrete-algorithm-pressure-expansion} 形式的任意 $u_h^0,\pi_h^0$ 启动. 当 $u_h^m,\pi_h^m$ 已知时, 由下列方程定义 $u_h^{m+1},\pi_h^{m+1}$:
+\begin{equation}
+\left\{
+\begin{aligned}
+&u_h^{m+1}\in W_h,\\
+&((u_h^{m+1}-u_h^m,v_h))_h
++\rho\nu((u_h^m,v_h))_h
+-\rho(\pi_h^m,D_hv_h)_h=(f,v_h),\\
+&\hspace{18em}\forall v_h\in W_h,
+\end{aligned}
+\right.
+\label{eq:ch1-discrete-arrow-hurwicz-velocity-step}
+\end{equation}
+\begin{equation}
+\pi_h^{m+1}(M)=\pi_h^m(M)
+-\frac{\rho}{\alpha}D_hu_h^{m+1}(M),
+\qquad\forall M\in\mathring\Omega_{1h}.
+\label{eq:ch1-discrete-arrow-hurwicz-pressure-step}
+\end{equation}
+若 $\rho$ 满足条件 \eqref{eq:ch1-arrow-hurwicz-step-condition}, 推广定理 \ref{thm:ch1-arrow-hurwicz-convergence} 的证明即可得到收敛性 \eqref{eq:ch1-discrete-uzawa-velocity-convergence}--\eqref{eq:ch1-discrete-uzawa-pressure-convergence}.
+
+\subsubsection*{离散 Arrow--Hurwicz 算法}
+
+问题 \eqref{eq:ch1-discrete-uzawa-velocity-step} 和 \eqref{eq:ch1-discrete-arrow-hurwicz-velocity-step} 是离散 Dirichlet 问题, 其求解容易而且相当标准. 不过值得注意的是, 在有限维情形下可以使用 Arrow--Hurwicz 算法的另一种形式, 在迭代过程中无需解任何边值问题.
+
+当 $u_h^m,\pi_h^m$ 已知时, 由下列方程定义 $u_h^{m+1}$:
+\begin{equation}
+\left\{
+\begin{aligned}
+&u_h^{m+1}\in W_h,\\
+&(u_h^{m+1}-u_h^m,v_h)
++\rho\nu((u_h^m,v_h))_h
+-\rho(\pi_h^m,D_hv_h)_h=\rho(f,v_h),\\
+&\hspace{18em}\forall v_h\in W_h,
+\end{aligned}
+\right.
+\label{eq:ch1-explicit-discrete-arrow-hurwicz-step}
+\end{equation}
+然后仍由 \eqref{eq:ch1-discrete-arrow-hurwicz-pressure-step} 定义 $\pi_h^{m+1}$. 变分方程 \eqref{eq:ch1-explicit-discrete-arrow-hurwicz-step} 等价于下列方程:
+\begin{equation}
+\begin{aligned}
+u_h^{m+1}(M)=u_h^m(M)
+&+\rho\nu\sum_{i=1}^{n}(\delta_{ih}^2u_h^m)(M)\\
+&-\rho(\overline\nabla_h\pi_h^m)(M)
++\rho f_h(M),
+\qquad\forall M\in\mathring\Omega_{1h},
+\end{aligned}
+\label{eq:ch1-explicit-discrete-arrow-hurwicz-pointwise}
+\end{equation}
+其中 $\overline\nabla_h$ 和 $f_h$ 由 \eqref{eq:ch1-cell-average-force} 定义.
+
+定理 \ref{thm:ch1-arrow-hurwicz-convergence} 的证明可以如下推广到这一情形. 由于 $W_h$ 是有限维空间, $W_h$ 上定义的所有范数都等价, 因而存在依赖于 $h$ 的常数 $S(h)$, 使
+\begin{equation}
+\lVert u_h\rVert_h\leq S(h)\lvert u_h\rvert,
+\qquad\forall u_h\in W_h.
+\label{eq:ch1-discrete-norm-equivalence}
+\end{equation}
+我们将在 \MBUnresolvedReference{chapter}{Chapter III} 中计算 $S(h)$ 并反复使用这一说明
+\[
+S(h)=2\left(\sum_{i=1}^{n}\frac{1}{h_i^2}\right)^{1/2}.
+\]
+现在若 $\rho$ 满足
+\begin{equation}
+0<\rho<\frac{2\alpha\nu}{\alpha\nu^2S^2(h)+1},
+\label{eq:ch1-explicit-discrete-arrow-hurwicz-step-condition}
+\end{equation}
+则对算法 \eqref{eq:ch1-discrete-arrow-hurwicz-pressure-step}--\eqref{eq:ch1-explicit-discrete-arrow-hurwicz-step}, 收敛性 \eqref{eq:ch1-discrete-uzawa-velocity-convergence}--\eqref{eq:ch1-discrete-uzawa-pressure-convergence} 也成立.
+
+证明与定理 \ref{thm:ch1-arrow-hurwicz-convergence} 相同. 只需以如下不等式替换 \eqref{eq:ch1-arrow-hurwicz-velocity-energy}(其中 $v_h^m=u_h^m-u_h$, $\kappa_h^m=\pi_h^m-\pi_h$):
+\begin{equation}
+\begin{aligned}
+&\lvert v_h^{m+1}\rvert^2-\lvert v_h^m\rvert^2
++\lvert v_h^{m+1}-v_h^m\rvert
++2\rho\nu\lVert v_h^{m+1}\rVert_h^2\\
+&\quad=2\rho\nu((v_h^{m+1},v_h^{m+1}-v_h^m))_h
++2\rho(\kappa_h^m,D_hv_h^{m+1})_h\\
+&\quad\leq2\rho\nu\lVert v_h^{m+1}\rVert_h
+\lVert v_h^{m+1}-v_h^m\rVert_h
++2\rho(\kappa_h^m,D_hv_h^{m+1})_h\\
+&\quad\leq2\rho\nu S(h)\lVert v_h^{m+1}\rVert_h
+\lvert v_h^{m+1}-v_h^m\rvert
++2\rho(\kappa_h^m,D_hv_h^{m+1})_h\\
+&\quad\leq\delta\lvert v_h^{m+1}-v_h^m\rvert^2
++\frac{\rho^2\nu^2S^2(h)}{\delta}\lVert v_h^{m+1}\rVert_h^2
++2\rho(\kappa_h^m,D_hv_h^{m+1})_h.
+\end{aligned}
+\label{eq:ch1-explicit-discrete-arrow-hurwicz-velocity-energy}
+\end{equation}
+于是, 不等式 \eqref{eq:ch1-arrow-hurwicz-combined-energy} 相应地变为
+\begin{equation}
+\begin{aligned}
+&\alpha\lvert\kappa_h^{m+1}\rvert^2+\lvert v_h^{m+1}\rvert^2
+-\alpha\lvert\kappa_h^m\rvert^2-\lvert v_h^m\rvert^2
++\alpha(1-\delta)\lvert\kappa_h^{m+1}-\kappa_h^m\rvert^2\\
+&\quad +(1-\delta)\lvert v_h^{m+1}-v_h^m\rvert^2
++\rho\left(2\nu-\frac{\rho\nu^2S^2(h)}{\delta}
+-\frac{\rho}{\alpha\delta}\right)\lVert v_h^{m+1}\rVert_h^2\leq0.
+\end{aligned}
+\label{eq:ch1-explicit-discrete-arrow-hurwicz-combined-energy}
+\end{equation}
+由 \eqref{eq:ch1-explicit-discrete-arrow-hurwicz-step-condition}, 不等式 \eqref{eq:ch1-explicit-discrete-arrow-hurwicz-combined-energy} 导出与 \eqref{eq:ch1-arrow-hurwicz-combined-energy} 相同的结论.

@@ -10,4 +10,5 @@
 8. Completed: translate, review, compile and pass QA for `chapter-01-section-02` (PDF pages 30--43, ending before Section 3).
 9. Completed: translate, review, compile and pass QA for `chapter-01-section-03` (PDF pages 43--59).
 10. Completed: translate, review, compile and pass QA for `chapter-01-section-04` (PDF pages 60--106, ending before Section 5).
-11. Current: process `chapter-01-section-05` (PDF pages 106--112) as the next natural unit.
+11. Completed: translate, review, compile and pass QA for `chapter-01-section-05` (PDF pages 106--113, ending before Section 6).
+12. Current: process `chapter-01-section-06` (PDF pages 113--119) as the next natural unit.
