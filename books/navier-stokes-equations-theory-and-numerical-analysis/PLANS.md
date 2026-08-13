@@ -6,4 +6,5 @@
 4. Completed: the user approved the representative sample and the workflow entered full-book translation.
 5. Completed: translate, review, compile and pass QA for `frontmatter` (PDF pages 1--15).
 6. Reuse the accepted PDF 243--244 sample unchanged when processing Chapter 3 Section 5.
-7. Current: native extraction for `chapter-01-section-01` (PDF pages 16--29, printed pages 1--14) is complete; continue with visual structure and formula review before translation.
+7. Completed: translate, review, compile and pass QA for `chapter-01-section-01` (PDF pages 16--30, ending before Section 2).
+8. Current: process `chapter-01-section-02` (PDF pages 30--42) as the next natural unit.
