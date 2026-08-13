@@ -1,0 +1,247 @@
+\MathBookSourcePage{329}
+\subsection{有限元逼近与闭锁}
+\label{sec:ch11-fem-locking}
+\setcounter{thmcount}{0}
+\setcounter{equation}{0}
+
+为简单起见, 假设 $\Omega$ 是凸多边形区域, 且 $\Gamma_1$ 或 $\Gamma_2$ 为空. 对于纯位移问题($\Gamma_2=\varnothing$), 只考虑齐次边界条件的情形.
+
+令 $\mathcal T^h$ 是 $\Omega$ 的一个非退化三角剖分族. 对纯位移问题($\Gamma_2=\varnothing$), 使用有限元空间
+\MBSourceItem{1}
+\begin{equation}
+\MathBookFormulaID{formula-ch11-displacement-p1-space}
+\label{eq:ch11-displacement-p1-space}
+\chvec V_h:=\{\chvec v\in\mathring{\chvec H}^1(\Omega):
+\chvec v|_T\text{ 对所有 }T\in\mathcal T^h\text{ 都是线性的}\},
+\end{equation}
+对纯牵引问题($\Gamma_1=\varnothing$), 使用(参见习题~\ref{exr:ch11-traction-interpolant})
+\MBSourceItem{2}
+\begin{equation}
+\MathBookFormulaID{formula-ch11-traction-p1-space}
+\label{eq:ch11-traction-p1-space}
+\widehat{\chvec V}_h:=\{\chvec v\in\widehat{\chvec H}^1(\Omega):
+\chvec v|_T\text{ 对所有 }T\in\mathcal T^h\text{ 都是线性的}\}.
+\end{equation}
+由第~\MBUnresolvedReference{chap:ch02}{2} 章和第~\MBUnresolvedReference{chap:ch04}{4} 章发展的理论得到以下定理.
+
+\MBSourceItem{3}
+\begin{Theorem}
+\label{thm:ch11-displacement-p1-error}
+设 $\chvec u\in\chvec H^2(\Omega)\cap\mathring{\chvec H}^1(\Omega)$ 满足纯位移问题, 且 $\chvec u_h\in\chvec V_h$ 满足
+\[
+\MathBookFormulaID{formula-ch11-displacement-p1-discrete-problem}
+a(\chvec u_h,\chvec v)=\int_\Omega\chvec f\cdot\chvec v\,dx
+\qquad\forall\chvec v\in\chvec V_h.
+\]
+则存在正常数 $C_{(\mu,\lambda)}$, 使得
+\MBSourceItem{4}
+\begin{equation}
+\MathBookFormulaID{formula-ch11-displacement-p1-error}
+\label{eq:ch11-displacement-p1-error}
+\|\chvec u-\chvec u_h\|_{\chvec H^1(\Omega)}
+\leq C_{(\mu,\lambda)}h\|\chvec u\|_{\chvec H^2(\Omega)}.
+\end{equation}
+\end{Theorem}
+
+\MBSourceItem{5}
+\begin{Theorem}
+\label{thm:ch11-traction-p1-error}
+设 $\chvec u\in\widehat{\chvec H}^2(\Omega)$ 满足纯牵引问题. 令 $\chvec u_h\in\widehat{\chvec V}_h$ 满足
+\[
+\MathBookFormulaID{formula-ch11-traction-p1-discrete-problem}
+a(\chvec u_h,\chvec v)=\int_\Omega\chvec f\cdot\chvec v\,dx
++\int_\Gamma\chvec t\cdot\chvec v\,ds
+\qquad\forall\chvec v\in\widehat{\chvec V}_h.
+\]
+则存在正常数 $C_{(\mu,\lambda)}$, 使得
+\[
+\MathBookFormulaID{formula-ch11-traction-p1-error}
+\|\chvec u-\chvec u_h\|_{\chvec H^1(\Omega)}
+\leq C_{(\mu,\lambda)}h\|\chvec u\|_{\chvec H^2(\Omega)}.
+\]
+\end{Theorem}
+
+一般情形 $\varnothing\neq\Gamma_1\neq\partial\Omega$ 的收敛定理参见习题~\ref{exr:ch11-general-boundary-convergence}.
+
+当 $\mu$ 和 $\lambda$ 固定时, 定理~\ref{thm:ch11-displacement-p1-error} 与~\ref{thm:ch11-traction-p1-error} 给出弹性问题的满意收敛有限元逼近. 但是当 $\lambda\to\infty$ 时, 有限元法的性能会恶化. 这称为闭锁现象, 本节其余部分将对此作出说明.
+
+令 $\Omega=(0,1)\times(0,1)$. 对 $\mu=1$ 的纯位移边值问题进行考察:
+\MathBookSourcePage{330}
+\MBSourceItem{6}
+\begin{equation}
+\MathBookFormulaID{formula-ch11-nearly-incompressible-model}
+\label{eq:ch11-nearly-incompressible-model}
+\chvec{\operatorname{div}}\{2\chten\epsilon(\chvec u^\lambda)
++\lambda\operatorname{tr}(\chten\epsilon(\chvec u^\lambda))\chten\delta\}
+=\chvec f\quad\text{in }\Omega,
+\qquad
+\chvec u^\lambda|_{\partial\Omega}=\chvec0.
+\end{equation}
+注意, 对给定的 $\chvec f$, 当 $\lambda\to\infty$ 时, 式~\eqref{eq:ch11-elasticity-regularity-estimate} 蕴含
+$\|\operatorname{div}\chvec u^\lambda\|_{H^1(\Omega)}\to0$. 换言之, 这里处理的是趋近不可压缩的弹性材料. 为强调对 $\lambda$ 的依赖, 用
+\[
+\MathBookFormulaID{formula-ch11-lambda-stress-bilinear-form}
+\chten\sigma_\lambda(\chvec u)=2\chten\epsilon(\chvec u)
++\lambda\operatorname{tr}(\chten\epsilon(\chvec u))\chten\delta,
+\qquad
+a_\lambda(\chvec u,\chvec v)=\int_\Omega
+\{2\chten\epsilon(\chvec u):\chten\epsilon(\chvec v)
++\lambda\operatorname{div}\chvec u\operatorname{div}\chvec v\}\,dx
+\]
+表示应力张量~\eqref{eq:ch11-stress-tensor} 和变分形式~\eqref{eq:ch11-elasticity-bilinear-form}.
+
+令 $\mathcal T^h$ 是 $\Omega$ 的规则三角剖分(图~\ref{fig:ch11-regular-unit-square-triangulation}), 并令 $\chvec V_h$ 如~\eqref{eq:ch11-displacement-p1-space} 定义. 对每个 $\chvec u\in\chvec H^2(\Omega)\cap\mathring{\chvec H}^1(\Omega)$, 定义 $\chvec u_h^\lambda\in\chvec V_h$ 为下式的唯一解:
+\[
+\MathBookFormulaID{formula-ch11-lambda-discrete-problem}
+a_\lambda(\chvec u_h^\lambda,\chvec v)
+=\int_\Omega[-\chvec{\operatorname{div}}\chten\sigma_\lambda(\chvec u)]
+\cdot\chvec v\,dx
+\qquad\forall\chvec v\in\chvec V_h.
+\]
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=.42\textwidth]{chapter-11-fig-11-1.png}
+\caption{单位正方形的规则三角剖分}
+\label{fig:ch11-regular-unit-square-triangulation}
+\end{figure}
+
+令 $L_{\lambda,h}$ 定义为
+\[
+\MathBookFormulaID{formula-ch11-locking-ratio}
+L_{\lambda,h}:=sup\left\{
+\frac{\|\chvec u-\chvec u_h^\lambda\|_{\chvec H^1(\Omega)}}
+{\|\operatorname{div}\chten\sigma_\lambda(\chvec u)\|_{\chvec L^2(\Omega)}}:
+\chvec0\neq\chvec u\in\chvec H^2(\Omega)\cap\mathring{\chvec H}^1(\Omega)
+\right\}.
+\]
+我们要说明存在与 $h$ 无关的正常数 $C$, 使得
+\MBSourceItem{7}
+\begin{equation}
+\MathBookFormulaID{formula-ch11-locking-lower-bound}
+\label{eq:ch11-locking-lower-bound}
+\liminf_{\lambda\to\infty}L_{\lambda,h}\geq C.
+\end{equation}
+式~\eqref{eq:ch11-locking-lower-bound} 的意义是: 无论 $h$ 多小, 只要 $\lambda$ 足够大, 就能找到 $\chvec u\in\chvec H^2(\Omega)\cap\mathring{\chvec H}^1(\Omega)$, 使得相对误差
+$\|\chvec u-\chvec u_h^\lambda\|_{\chvec H^1(\Omega)}/
+\|\operatorname{div}\chten\sigma_\lambda(\chvec u)\|_{\chvec L^2(\Omega)}$ 由一个与 $h$ 无关的常数从下方控制. 换言之, 当 $\lambda$ 变大时, 有限元法的性能将恶化.
+
+\MathBookSourcePage{331}
+为证明~\eqref{eq:ch11-locking-lower-bound}, 先注意
+\MBSourceItem{8}
+\begin{equation}
+\MathBookFormulaID{formula-ch11-discrete-divergence-free-kernel}
+\label{eq:ch11-discrete-divergence-free-kernel}
+\{\chvec v\in\chvec V_h:\operatorname{div}\chvec v=0\}=\{\chvec0\}
+\end{equation}
+(参见习题~\ref{exr:ch11-discrete-divergence-kernel}). 因此, 映射 $\chvec v\mapsto\operatorname{div}\chvec v$ 是从有限维空间 $\chvec V_h$ 到 $L^2(\Omega)$ 的一一映射, 故存在正常数 $C_1(h)$, 使得
+\MBSourceItem{9}
+\begin{equation}
+\MathBookFormulaID{formula-ch11-discrete-divergence-inverse-bound}
+\label{eq:ch11-discrete-divergence-inverse-bound}
+\|\chvec v\|_{\chvec H^1(\Omega)}
+\leq C_1(h)\|\operatorname{div}\chvec v\|_{L^2(\Omega)}
+\qquad\forall\chvec v\in\chvec V_h.
+\end{equation}
+
+令 $\psi$ 是 $\overline\Omega$ 上的一个 $C^\infty$ 函数, 使得
+$\chvec{\operatorname{curl}}\psi=\chvec0$ 在 $\Omega$ 的边界上, 且
+$\|\chten\epsilon(\chvec{\operatorname{curl}}\psi)\|_{\chten L^2(\Omega)}=1$.
+令 $\chvec u=\chvec{\operatorname{curl}}\psi$. 则
+$\chvec u\in\chvec H^2(\Omega)\cap\mathring{\chvec H}^1(\Omega)$, 并且
+\MBSourceItem{10}
+\begin{equation}
+\MathBookFormulaID{formula-ch11-locking-test-divergence}
+\label{eq:ch11-locking-test-divergence}
+\operatorname{div}\chvec u=0,
+\end{equation}
+\MBSourceItem{11}
+\begin{equation}
+\MathBookFormulaID{formula-ch11-locking-test-strain}
+\label{eq:ch11-locking-test-strain}
+\|\chten\epsilon(\chvec u)\|_{\chten L^2(\Omega)}=1,
+\end{equation}
+\MBSourceItem{12}
+\begin{equation}
+\MathBookFormulaID{formula-ch11-locking-test-stress}
+\label{eq:ch11-locking-test-stress}
+\chten\sigma_\lambda(\chvec u)=2\chten\epsilon(\chvec u).
+\end{equation}
+由~\eqref{eq:ch11-locking-test-divergence}, \eqref{eq:ch11-locking-test-strain} 以及第~\ref{sec:ch11-weak-form-korn} 节开头的分部积分可知
+\MBSourceItem{13}
+\begin{equation}
+\MathBookFormulaID{formula-ch11-locking-test-energy}
+\label{eq:ch11-locking-test-energy}
+-\int_\Omega\chvec{\operatorname{div}}\chten\sigma_\lambda(\chvec u)
+\cdot\chvec u\,dx
+=\int_\Omega\chten\epsilon(\chvec u):\chten\sigma_\lambda(\chvec u)\,dx=1.
+\end{equation}
+因此, 由~\eqref{eq:ch11-locking-test-stress} 和~\eqref{eq:ch11-locking-test-energy},
+\MBSourceItem{14}
+\begin{equation}
+\MathBookFormulaID{formula-ch11-locking-test-load-limit}
+\label{eq:ch11-locking-test-load-limit}
+\lim_{\lambda\to\infty}\chvec{\operatorname{div}}\chten\sigma_\lambda(\chvec u)
+=2\chvec{\operatorname{div}}\chten\epsilon(\chvec u)\neq\chvec0.
+\end{equation}
+由推论~\MBUnresolvedReference{cor:ch02-source-2-5-10}{2.5.10},
+\MBSourceItem{15}
+\begin{equation}
+\MathBookFormulaID{formula-ch11-lambda-best-approximation}
+\label{eq:ch11-lambda-best-approximation}
+a_\lambda(\chvec u-\chvec u_h^\lambda,\chvec u-\chvec u_h^\lambda)
+=\min_{\chvec v\in\chvec V_h}a_\lambda(\chvec u-\chvec v,\chvec u-\chvec v)
+\leq a_\lambda(\chvec u,\chvec u).
+\end{equation}
+由~\eqref{eq:ch11-locking-test-divergence} 和~\eqref{eq:ch11-locking-test-strain},
+\MBSourceItem{16}
+\begin{equation}
+\MathBookFormulaID{formula-ch11-locking-test-energy-value}
+\label{eq:ch11-locking-test-energy-value}
+a_\lambda(\chvec u,\chvec u)=2.
+\end{equation}
+因此, 当 $\lambda$ 充分大时,
+\MBSourceItem{17}
+\begin{equation}
+\MathBookFormulaID{formula-ch11-locking-error-energy-bound}
+\label{eq:ch11-locking-error-energy-bound}
+a_\lambda(\chvec u-\chvec u_h^\lambda,
+\chvec u-\chvec u_h^\lambda)\leq2.
+\end{equation}
+
+\MathBookSourcePage{332}
+由~\eqref{eq:ch11-locking-test-divergence} 和~\eqref{eq:ch11-locking-error-energy-bound}, 对充分大的 $\lambda$ 有
+\[
+\MathBookFormulaID{formula-ch11-discrete-divergence-decay}
+\sqrt\lambda\|\operatorname{div}\chvec u_h^\lambda\|_{L^2(\Omega)}
+=\sqrt\lambda\|\operatorname{div}(\chvec u-\chvec u_h^\lambda)\|_{L^2(\Omega)}
+\leq\sqrt{a_\lambda(\chvec u-\chvec u_h^\lambda,
+\chvec u-\chvec u_h^\lambda)}\leq\sqrt2,
+\]
+从而
+\[
+\MathBookFormulaID{formula-ch11-discrete-divergence-limit}
+\lim_{\lambda\to\infty}\|\operatorname{div}\chvec u_h^\lambda\|_{L^2(\Omega)}=0.
+\]
+由~\eqref{eq:ch11-discrete-divergence-inverse-bound},
+\MBSourceItem{18}
+\begin{equation}
+\MathBookFormulaID{formula-ch11-discrete-solution-limit}
+\label{eq:ch11-discrete-solution-limit}
+\lim_{\lambda\to\infty}\|\chvec u_h^\lambda\|_{\chvec H^1(\Omega)}=0.
+\end{equation}
+最后得到(参见习题~\ref{exr:ch11-locking-limit-details})
+\MBSourceItem{19}
+\begin{equation}
+\MathBookFormulaID{formula-ch11-locking-ratio-limit}
+\label{eq:ch11-locking-ratio-limit}
+\begin{split}
+\liminf_{\lambda\to\infty}L_{\lambda,h}
+&\geq\liminf_{\lambda\to\infty}
+\frac{\|\chvec u-\chvec u_h^\lambda\|_{\chvec H^1(\Omega)}}
+{\|\chvec{\operatorname{div}}\chten\sigma_\lambda(\chvec u)\|_{\chvec L^2(\Omega)}}\\
+&=\frac{\|\chvec u\|_{\chvec H^1(\Omega)}}
+{\|\chvec{\operatorname{div}}\chten\sigma_\lambda(\chvec u)\|_{\chvec L^2(\Omega)}}>0.
+\end{split}
+\end{equation}
+这就结束了对该特定例子中闭锁现象的讨论. 关于闭锁的更多信息, 参见 Babuška 与 Suri (1992).

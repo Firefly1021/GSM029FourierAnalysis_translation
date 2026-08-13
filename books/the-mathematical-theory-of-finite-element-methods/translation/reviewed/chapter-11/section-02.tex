@@ -1,0 +1,445 @@
+\MathBookSourcePage{322}
+\subsection{弱形式与 Korn 不等式}
+\label{sec:ch11-weak-form-korn}
+\setcounter{thmcount}{0}
+\setcounter{equation}{0}
+
+假设 $\chvec u\in\chvec H^2(\Omega)$ 满足~\eqref{eq:ch11-static-elasticity-equation}. 则对任意 $\chvec v\in\chvec H^1(\Omega)$ 且 $\chvec v|_{\Gamma_1}=0$, 分部积分(假设可以进行)得到
+\begin{align*}
+\MathBookFormulaID{formula-ch11-elasticity-integration-by-parts}
+\int_\Omega\chvec f\cdot\chvec v\,dx
+&=-\int_\Omega\chvec{\operatorname{div}}\chten\sigma(\chvec u)\cdot\chvec v\,dx\\
+&=\int_\Omega\{2\mu\chten\epsilon(\chvec u)+
+\lambda\operatorname{tr}(\chten\epsilon(\chvec u))\chten\delta\}:
+\chten{\operatorname{grad}}\chvec v\,dx
+-\int_{\Gamma_2}\chten\sigma(\chvec u)\chvec\nu\cdot\chvec v\,ds.
+\end{align*}
+因此, 由~\eqref{eq:ch11-static-elasticity-equation}--\eqref{eq:ch11-traction-boundary-condition} 得到如下弱形式:
+求 $\chvec u\in\chvec H^1(\Omega)$, 使得 $\chvec u|_{\Gamma_1}=\chvec g$, 并且
+\MBSourceItem{1}
+\begin{equation}
+\MathBookFormulaID{formula-ch11-elasticity-weak-problem}
+\label{eq:ch11-elasticity-weak-problem}
+a(\chvec u,\chvec v)=\int_\Omega\chvec f\cdot\chvec v\,dx
++\int_{\Gamma_2}\chvec t\cdot\chvec v\,ds
+\qquad\forall\chvec v\in\chvec V,
+\end{equation}
+其中
+\MBSourceItem{2}
+\begin{equation}
+\MathBookFormulaID{formula-ch11-elasticity-bilinear-form}
+\label{eq:ch11-elasticity-bilinear-form}
+\begin{split}
+a(\chvec u,\chvec v)
+&:=\int_\Omega\left\{2\mu\chten\epsilon(\chvec u):\chten\epsilon(\chvec v)
++\lambda\operatorname{div}\chvec u\operatorname{div}\chvec v\right\}\,dx,\\
+\chvec V&:=\{\chvec v\in\chvec H^1(\Omega):\chvec v|_{\Gamma_1}=0\}.
+\end{split}
+\end{equation}
+
+首先必须问: 问题~\eqref{eq:ch11-elasticity-weak-problem} 是否有唯一解? 换言之, 需要建立有界双线性形式 $a(\cdot,\cdot)$ 在 $\chvec V$ 上的强制性. 我们从一个关于欠定边值问题的引理开始(注意, 其解不唯一), 本章及第~\MBUnresolvedReference{chap:ch12-mixed-methods}{12} 章将频繁使用它. 其证明使用了超出第~\MBUnresolvedReference{chap:ch01}{1} 章所发展的 Sobolev 空间技术, 但为完整起见给出证明梗概. 本节其余部分假设 $\Omega$ 或为多边形, 或 $\partial\Omega$ 光滑.
+
+\MathBookSourcePage{323}
+\MBSourceItem{3}
+\begin{Lemma}
+\label{lem:ch11-divergence-right-inverse}
+存在正常数 $C$, 使得对所有 $p\in L^2(\Omega)$, 都存在 $\chvec v\in\chvec H^1(\Omega)$ 满足
+\[
+\MathBookFormulaID{formula-ch11-divergence-right-inverse-equation}
+\operatorname{div}\chvec v=p
+\]
+以及
+\[
+\MathBookFormulaID{formula-ch11-divergence-right-inverse-bound}
+\|\chvec v\|_{\chvec H^1(\Omega)}\leq C\|p\|_{L^2(\Omega)}.
+\]
+此外, 若 $p$ 满足 $\int_\Omega p\,dx=0$, 则可取 $\chvec v\in\mathring{\chvec H}^1(\Omega)$.
+\end{Lemma}
+
+\begin{Proof}
+对于边界光滑的 $\Omega$ 和多边形 $\Omega$, 该引理均成立. 这里给出光滑边界情形的证明, 多边形情形参见 Girault 与 Raviart (1986), Arnold, Scott 与 Vogelius (1988). 存在唯一的 $w\in H^2(\Omega)$ 满足
+\[
+\MathBookFormulaID{formula-ch11-dirichlet-poisson-for-divergence}
+-\Delta w=p\quad\text{in }\Omega,
+\qquad w=0\quad\text{on }\partial\Omega.
+\]
+由椭圆正则性(参见第~\MBUnresolvedReference{sec:ch05-biharmonic}{5.5} 节),
+\[
+\MathBookFormulaID{formula-ch11-dirichlet-poisson-regularity}
+\|w\|_{H^2(\Omega)}\leq C_2\|p\|_{L^2(\Omega)}.
+\]
+于是 $\chvec v=-\chvec{\operatorname{grad}}w$ 满足引理条件.
+
+现在假设 $\int_\Omega p\,dx=0$. 则存在唯一的 $w\in H^2(\Omega)$ 满足
+\MBSourceItem{4}
+\begin{equation}
+\MathBookFormulaID{formula-ch11-neumann-poisson-for-divergence}
+\label{eq:ch11-neumann-poisson-for-divergence}
+-\Delta w=p\quad\text{in }\Omega,
+\qquad
+\frac{\partial w}{\partial\chvec\nu}=0\quad\text{on }\partial\Omega,
+\qquad
+\int_\Omega w\,dx=0
+\end{equation}
+(参见第~\MBUnresolvedReference{sec:ch05-neumann}{5.2} 节). 由椭圆正则性,
+\[
+\MathBookFormulaID{formula-ch11-neumann-poisson-regularity}
+\|w\|_{H^2(\Omega)}\leq C_2\|p\|_{L^2(\Omega)}.
+\]
+\MathBookSourcePage{324}
+令 $\chvec v_1=-\chvec{\operatorname{grad}}w$. 则 $\chvec v_1\in\chvec H^1(\Omega)$,
+\MBSourceItem{5}
+\begin{equation}
+\MathBookFormulaID{formula-ch11-v1-divergence}
+\label{eq:ch11-v1-divergence}
+\operatorname{div}\chvec v_1=p
+\end{equation}
+且
+\MBSourceItem{6}
+\begin{equation}
+\MathBookFormulaID{formula-ch11-v1-bound}
+\label{eq:ch11-v1-bound}
+\|\chvec v_1\|_{\chvec H^1(\Omega)}\leq C_2\|p\|_{L^2(\Omega)}.
+\end{equation}
+记 $\chvec\nu$ 为 $\partial\Omega$ 上的单位外法向量. 由~\eqref{eq:ch11-neumann-poisson-for-divergence} 可知
+\MBSourceItem{7}
+\begin{equation}
+\MathBookFormulaID{formula-ch11-v1-normal-zero}
+\label{eq:ch11-v1-normal-zero}
+\chvec v_1|_{\partial\Omega}\cdot\chvec\nu
+=-\chvec{\operatorname{grad}}w|_{\partial\Omega}\cdot\chvec\nu=0.
+\end{equation}
+令 $\chvec\tau$ 为正向单位切向量. 迹定理(参见 Adams 1975)蕴含存在 $\psi\in H^2(\Omega)$, 使得
+\[
+\MathBookFormulaID{formula-ch11-psi-boundary-data}
+\psi|_{\partial\Omega}=0,
+\qquad
+\frac{\partial\psi}{\partial\chvec\nu}\bigg|_{\partial\Omega}
+=\chvec v_1|_{\partial\Omega}\cdot\chvec\tau,
+\]
+且对某个正常数 $C_\tau$,
+\MBSourceItem{8}
+\begin{equation}
+\MathBookFormulaID{formula-ch11-psi-bound}
+\label{eq:ch11-psi-bound}
+\|\psi\|_{H^2(\Omega)}\leq C_\tau\|\chvec v_1\|_{\chvec H^1(\Omega)}.
+\end{equation}
+令 $\chvec v_2=\chvec{\operatorname{curl}}\psi$. 则
+\MBSourceItem{9}
+\begin{equation}
+\MathBookFormulaID{formula-ch11-v2-normal-zero}
+\label{eq:ch11-v2-normal-zero}
+\chvec v_2|_{\partial\Omega}\cdot\chvec\nu
+=\chvec{\operatorname{grad}}\psi|_{\partial\Omega}\cdot\chvec\tau=0,
+\end{equation}
+且
+\MBSourceItem{10}
+\begin{equation}
+\MathBookFormulaID{formula-ch11-v2-tangential-cancellation}
+\label{eq:ch11-v2-tangential-cancellation}
+\chvec v_2|_{\partial\Omega}\cdot\chvec\tau
+=-\chvec{\operatorname{grad}}\psi|_{\partial\Omega}\cdot\chvec\nu
+=-\chvec v_1|_{\partial\Omega}\cdot\chvec\tau.
+\end{equation}
+结合~\eqref{eq:ch11-v1-normal-zero}, \eqref{eq:ch11-v2-normal-zero} 和~\eqref{eq:ch11-v2-tangential-cancellation}, 得到
+\MBSourceItem{11}
+\begin{equation}
+\MathBookFormulaID{formula-ch11-boundary-cancellation}
+\label{eq:ch11-boundary-cancellation}
+\chvec v_2|_{\partial\Omega}=-\chvec v_1|_{\partial\Omega}.
+\end{equation}
+令 $\chvec v=\chvec v_1+\chvec v_2$. 由~\eqref{eq:ch11-v1-divergence} 有
+$\operatorname{div}\chvec v=\operatorname{div}\chvec v_1=p$, 由~\eqref{eq:ch11-boundary-cancellation} 有 $\chvec v|_{\partial\Omega}=0$, 并且
+\begin{align*}
+\MathBookFormulaID{formula-ch11-divergence-right-inverse-final-bound}
+\|\chvec v\|_{\chvec H^1(\Omega)}
+&\leq\|\chvec v_1\|_{\chvec H^1(\Omega)}+\|\chvec v_2\|_{\chvec H^1(\Omega)}\\
+&\leq\|\chvec v_1\|_{\chvec H^1(\Omega)}+C\|\psi\|_{H^2(\Omega)}
+\leq C\|\chvec v_1\|_{\chvec H^1(\Omega)}
+\leq C\|p\|_{L^2(\Omega)}.
+\end{align*}
+\end{Proof}
+
+令 $\widehat{\chvec H}^k(\Omega)$ 定义为
+\[
+\MathBookFormulaID{formula-ch11-hat-vector-sobolev-space}
+\widehat{\chvec H}^k(\Omega):=
+\left\{\chvec v\in\chvec H^k(\Omega):
+\int_\Omega\chvec v\,dx=\chvec0,
+\ \int_\Omega\operatorname{rot}\chvec v\,dx=0\right\}.
+\]
+当 $k\geq1$ 时, 它们是 $\chvec H^k(\Omega)$ 的闭子空间.
+
+\MathBookSourcePage{325}
+\MBSourceItem{12}
+\begin{Theorem}[第二 Korn 不等式]
+\label{thm:ch11-second-korn}
+存在正常数 $C$, 使得
+\MBSourceItem{13}
+\begin{equation}
+\MathBookFormulaID{formula-ch11-second-korn-inequality}
+\label{eq:ch11-second-korn-inequality}
+\|\chten\epsilon(\chvec v)\|_{\chten L^2(\Omega)}
+\geq C\|\chvec v\|_{\chvec H^1(\Omega)}
+\qquad\forall\chvec v\in\widehat{\chvec H}^1(\Omega).
+\end{equation}
+\end{Theorem}
+
+\begin{Proof}
+令 $\chvec v\in\widehat{\chvec H}^1(\Omega)$. 由于 $\int_\Omega\operatorname{rot}\chvec v\,dx=0$, 引理~\ref{lem:ch11-divergence-right-inverse} 蕴含存在 $\chvec w\in\mathring{\chvec H}^1(\Omega)$, 使得
+\MBSourceItem{14}
+\begin{equation}
+\MathBookFormulaID{formula-ch11-w-divergence-rotation}
+\label{eq:ch11-w-divergence-rotation}
+\operatorname{div}\chvec w=\operatorname{rot}\chvec v,
+\qquad
+\|\chvec w\|_{\chvec H^1(\Omega)}\leq C_1\|\operatorname{rot}\chvec v\|_{L^2(\Omega)}.
+\end{equation}
+于是, 由~\eqref{eq:ch11-symmetric-gradient-identity},
+\begin{align*}
+\MathBookFormulaID{formula-ch11-second-korn-proof-identity}
+\int_\Omega\chten\epsilon(\chvec v):
+(\chten{\operatorname{grad}}\chvec v-\chten{\operatorname{curl}}\chvec w)\,dx
+&=\int_\Omega\left(\chten{\operatorname{grad}}\chvec v-
+\frac12(\operatorname{rot}\chvec v)\chten\chi\right):
+(\chten{\operatorname{grad}}\chvec v-\chten{\operatorname{curl}}\chvec w)\,dx\\
+&=\|\chten{\operatorname{grad}}\chvec v\|_{\chten L^2(\Omega)}^2
+-\int_\Omega\chten{\operatorname{grad}}\chvec v:
+\chten{\operatorname{curl}}\chvec w\,dx\\
+&\quad-\frac12\int_\Omega(\operatorname{rot}\chvec v)
+(\chten\chi:\chten{\operatorname{grad}}\chvec v-
+\chten\chi:\chten{\operatorname{curl}}\chvec w)\,dx\\
+&=\|\chten{\operatorname{grad}}\chvec v\|_{\chten L^2(\Omega)}^2
+-\frac12\int_\Omega(\operatorname{rot}\chvec v)
+(\operatorname{rot}\chvec v-\operatorname{div}\chvec w)\,dx\\
+&=\|\chten{\operatorname{grad}}\chvec v\|_{\chten L^2(\Omega)}^2.
+\end{align*}
+因此, Schwarz 不等式和~\eqref{eq:ch11-w-divergence-rotation} 蕴含
+\MBSourceItem{15}
+\begin{equation}
+\MathBookFormulaID{formula-ch11-second-korn-gradient-bound}
+\label{eq:ch11-second-korn-gradient-bound}
+\|\chten{\operatorname{grad}}\chvec v\|_{\chten L^2(\Omega)}^2
+\leq\|\chten\epsilon(\chvec v)\|_{\chten L^2(\Omega)}
+\|\chten{\operatorname{grad}}\chvec v-
+\chten{\operatorname{curl}}\chvec w\|_{\chten L^2(\Omega)}
+\leq C\|\chten\epsilon(\chvec v)\|_{\chten L^2(\Omega)}
+\|\chvec v\|_{\chvec H^1(\Omega)}.
+\end{equation}
+定理由~\eqref{eq:ch11-second-korn-gradient-bound} 和 Friedrichs 不等式~\MBUnresolvedReference{eq:ch04-source-4-3-15}{4.3.15} 得出, 因为 $\int_\Omega\chvec v\,dx=0$.
+\end{Proof}
+
+\MBSourceItem{16}
+\begin{Theorem}[Korn 不等式]
+\label{thm:ch11-korn}
+存在正常数 $\alpha$, 使得
+\MBSourceItem{17}
+\begin{equation}
+\MathBookFormulaID{formula-ch11-korn-inequality}
+\label{eq:ch11-korn-inequality}
+\|\chten\epsilon(\chvec v)\|_{\chten L^2(\Omega)}^2
++\|\chvec v\|_{\chvec L^2(\Omega)}^2
+\geq\alpha\|\chvec v\|_{\chvec H^1(\Omega)}^2
+\qquad\forall\chvec v\in\chvec H^1(\Omega).
+\end{equation}
+\end{Theorem}
+
+\begin{Proof}
+首先注意 $\chvec H^1(\Omega)=\widehat{\chvec H}^1(\Omega)\oplus\chvec{\mathrm{RM}}$(参见习题~\ref{exr:ch11-h1-rm-decomposition}), 其中``$\oplus$''只按代数意义理解(它们在 $\chvec H^1(\Omega)$ 中不正交). 因此, 给定任意 $\chvec v\in\chvec H^1(\Omega)$, 存在唯一的一对
+$(\chvec z,\chvec w)\in\widehat{\chvec H}^1(\Omega)\times\chvec{\mathrm{RM}}$, 使得
+$\chvec v=\chvec z+\chvec w$.
+
+\MathBookSourcePage{326}
+特别地, $\chvec w$ 具有~\eqref{eq:ch11-rigid-motions-space} 中的形式, 其中
+\MBSourceItem{18}
+\begin{equation}
+\MathBookFormulaID{formula-ch11-rigid-motion-coefficients}
+\label{eq:ch11-rigid-motion-coefficients}
+b:=-\frac1{2\operatorname{meas}(\Omega)}
+\int_\Omega\operatorname{rot}\chvec v\,dx,
+\qquad
+\chvec c:=\frac1{\operatorname{meas}(\Omega)}
+\int_\Omega\{\chvec v(x)-b(x_2,-x_1)^t\}\,dx.
+\end{equation}
+因此, $\|\chvec w\|_{\chvec H^1(\Omega)}\leq C\|\chvec v\|_{\chvec H^1(\Omega)}$, 其中 $C$ 只依赖于 $\operatorname{meas}(\Omega)$. 由三角不等式, 存在正常数 $C_1$(参见习题~\ref{exr:ch11-closed-subspace-angle}), 使得
+\MBSourceItem{19}
+\begin{equation}
+\MathBookFormulaID{formula-ch11-decomposition-norm-lower-bound}
+\label{eq:ch11-decomposition-norm-lower-bound}
+C_1\left(\|\chvec z\|_{\chvec H^1(\Omega)}+
+\|\chvec w\|_{\chvec H^1(\Omega)}\right)
+\leq\|\chvec v\|_{\chvec H^1(\Omega)}.
+\end{equation}
+
+用反证法证明定理. 若~\eqref{eq:ch11-korn-inequality} 对任何正常数 $C$ 都不成立, 则存在序列 $\{\chvec v_n\}\subseteq\chvec H^1(\Omega)$, 使得
+\MBSourceItem{20}
+\begin{equation}
+\MathBookFormulaID{formula-ch11-korn-contradiction-normalization}
+\label{eq:ch11-korn-contradiction-normalization}
+\|\chvec v_n\|_{\chvec H^1(\Omega)}=1
+\end{equation}
+且
+\MBSourceItem{21}
+\begin{equation}
+\MathBookFormulaID{formula-ch11-korn-contradiction-smallness}
+\label{eq:ch11-korn-contradiction-smallness}
+\|\chten\epsilon(\chvec v_n)\|_{\chten L^2(\Omega)}^2
++\|\chvec v_n\|_{\chvec L^2(\Omega)}^2<\frac1n.
+\end{equation}
+对每个 $n$, 令 $\chvec v_n=\chvec z_n+\chvec w_n$, 其中
+$\chvec z_n\in\widehat{\chvec H}^1(\Omega)$ 且 $\chvec w_n\in\chvec{\mathrm{RM}}$. 于是
+\[
+\MathBookFormulaID{formula-ch11-zn-strain-smallness}
+\|\chten\epsilon(\chvec z_n)\|_{\chten L^2(\Omega)}
+=\|\chten\epsilon(\chvec v_n)\|_{\chten L^2(\Omega)}<\frac1n.
+\]
+第二 Korn 不等式蕴含 $\chvec z_n\to0$ 于 $\chvec H^1(\Omega)$. 由~\eqref{eq:ch11-decomposition-norm-lower-bound} 和~\eqref{eq:ch11-korn-contradiction-normalization}, $\{\chvec w_n\}$ 是 $\chvec H^1(\Omega)$ 中的有界序列. 由于 $\chvec{\mathrm{RM}}$ 是三维的, $\{\chvec w_n\}$ 有收敛子序列 $\{\chvec w_{n_j}\}$. 于是子序列 $\{\chvec v_{n_j}=\chvec z_{n_j}+\chvec w_{n_j}\}$ 在 $\chvec H^1(\Omega)$ 中收敛到某个 $\chvec v\in\chvec{\mathrm{RM}}$. 由~\eqref{eq:ch11-korn-contradiction-normalization} 和~\eqref{eq:ch11-korn-contradiction-smallness}, 得到
+\[
+\MathBookFormulaID{formula-ch11-korn-contradiction-limit}
+\|\chvec v\|_{\chvec H^1(\Omega)}=1,
+\qquad
+\|\chvec v\|_{\chvec L^2(\Omega)}=0,
+\]
+矛盾.
+\end{Proof}
+
+\MBSourceItem{22}
+\begin{Corollary}
+\label{cor:ch11-korn-subspace}
+设 $\chvec V$ 由~\eqref{eq:ch11-elasticity-bilinear-form} 定义且 $\operatorname{meas}(\Gamma_1)>0$. 则存在正常数 $C$, 使得
+\MBSourceItem{23}
+\begin{equation}
+\MathBookFormulaID{formula-ch11-korn-subspace-inequality}
+\label{eq:ch11-korn-subspace-inequality}
+\|\chten\epsilon(\chvec v)\|_{\chten L^2(\Omega)}
+\geq C\|\chvec v\|_{\chvec H^1(\Omega)}
+\qquad\forall\chvec v\in\chvec V.
+\end{equation}
+\end{Corollary}
+
+\MathBookSourcePage{327}
+\begin{Proof}
+同样的反证法证明存在某个 $\chvec v\in\chvec{\mathrm{RM}}\cap\chvec V$, 使得
+\MBSourceItem{24}
+\begin{equation}
+\MathBookFormulaID{formula-ch11-korn-subspace-contradiction}
+\label{eq:ch11-korn-subspace-contradiction}
+\|\chvec v\|_{\chvec H^1(\Omega)}=1.
+\end{equation}
+但 $\chvec{\mathrm{RM}}$ 中唯一满足 $\chvec v|_{\Gamma_1}=0$ 的 $\chvec v$ 是 $\chvec v=0$, 因为 $\operatorname{meas}(\Gamma_1)>0$(参见习题~\ref{exr:ch11-rigid-motion-zero-set}). 这与~\eqref{eq:ch11-korn-subspace-contradiction} 矛盾.
+\end{Proof}
+
+在 $\Gamma_2=\varnothing$ 的情形, 立即得到以下结果.
+
+\MBSourceItem{25}
+\begin{Corollary}[第一 Korn 不等式]
+\label{cor:ch11-first-korn}
+存在正常数 $C$, 使得
+\MBSourceItem{26}
+\begin{equation}
+\MathBookFormulaID{formula-ch11-first-korn-inequality}
+\label{eq:ch11-first-korn-inequality}
+\|\chten\epsilon(\chvec v)\|_{\chten L^2(\Omega)}
+\geq C\|\chvec v\|_{\chvec H^1(\Omega)}
+\qquad\forall\chvec v\in\mathring{\chvec H}^1(\Omega).
+\end{equation}
+\end{Corollary}
+
+\MBSourceItem{27}
+\begin{Remark}
+\label{rem:ch11-korn-generality}
+Korn 不等式实际上对具有 Lipschitz 边界的 $\Omega\subseteq\mathbb R^n$ 成立. 一般情形的证明参见 Duvaut 与 Lions (1972), Nitsche (1981). 它们也可推广到分片 $H^1$ 向量场(Brenner 2004).
+\end{Remark}
+
+现在注意, 当 $\operatorname{meas}(\Gamma_1)>0$ 时, $a(\cdot,\cdot)$ 在 $\chvec V$ 上的强制性立即由推论~\ref{cor:ch11-korn-subspace} 得出, 从而得到~\eqref{eq:ch11-elasticity-weak-problem} 的唯一可解性.
+
+\MBSourceItem{28}
+\begin{Theorem}
+\label{thm:ch11-mixed-boundary-unique-solvability}
+假设 $\chvec f\in\chvec H^{-1}(\Omega)$, $\chvec g=\chvec w|_{\Gamma_1}$, 其中 $\chvec w\in\chvec H^1(\Omega)$, $\chvec t\in\chvec L^2(\Gamma_2)$, 且 $\operatorname{meas}(\Gamma_1)>0$. 则变分问题~\eqref{eq:ch11-elasticity-weak-problem} 有唯一解.
+\end{Theorem}
+
+\begin{Proof}
+令 $\chvec u^*=\chvec u-\chvec w$. 则~\eqref{eq:ch11-elasticity-weak-problem} 等价于求 $\chvec u^*\in\chvec V$, 使得对所有 $\chvec v\in\chvec V$,
+\MBSourceItem{29}
+\begin{equation}
+\MathBookFormulaID{formula-ch11-shifted-elasticity-functional}
+\label{eq:ch11-shifted-elasticity-functional}
+\begin{split}
+a(\chvec u^*,\chvec v)
+&=\int_\Omega\chvec f\cdot\chvec v\,dx
++\int_{\Gamma_2}\chvec t\cdot\chvec v\,ds\\
+&\quad-\int_\Omega\{2\mu\chten\epsilon(\chvec w):\chten\epsilon(\chvec v)
++\lambda\operatorname{div}\chvec w\operatorname{div}\chvec v\}\,dx
+=:F(\chvec v),
+\end{split}
+\end{equation}
+其中, 由 $\chvec f$, $\chvec t$ 和 $\chvec w$ 的条件, $F\in\chvec V'$. 因此, 由定理~\MBUnresolvedReference{thm:ch02-source-2-5-6}{2.5.6}, 式~\eqref{eq:ch11-shifted-elasticity-functional} 有唯一解, 这蕴含~\eqref{eq:ch11-elasticity-weak-problem} 也有唯一解.
+\end{Proof}
+
+注意在纯牵引问题的情形, $\chvec V$ 变为 $\chvec H^1(\Omega)$. 由于齐次纯牵引问题有非平凡核 $\chvec{\mathrm{RM}}$, 在问题~\eqref{eq:ch11-elasticity-weak-problem} 可解之前, $\chvec f$ 和 $\chvec t$ 必须满足某些相容性条件.
+
+\MathBookSourcePage{328}
+\MBSourceItem{30}
+\begin{Theorem}
+\label{thm:ch11-pure-traction-solvability}
+假设 $\chvec f\in\chvec L^2(\Omega)$ 且 $\chvec t\in\chvec L^2(\Gamma)$. 则变分问题
+\MBSourceItem{31}
+\begin{equation}
+\MathBookFormulaID{formula-ch11-pure-traction-variational-problem}
+\label{eq:ch11-pure-traction-variational-problem}
+\text{求 }\chvec u\in\chvec H^1(\Omega)\text{, 使得}\qquad
+a(\chvec u,\chvec v)=\int_\Omega\chvec f\cdot\chvec v\,dx
++\int_\Gamma\chvec t\cdot\chvec v\,ds
+\quad\forall\chvec v\in\chvec H^1(\Omega)
+\end{equation}
+可解, 当且仅当满足如下相容性条件:
+\MBSourceItem{32}
+\begin{equation}
+\MathBookFormulaID{formula-ch11-pure-traction-compatibility}
+\label{eq:ch11-pure-traction-compatibility}
+\int_\Omega\chvec f\cdot\chvec v\,dx
++\int_\Gamma\chvec t\cdot\chvec v\,ds=0
+\qquad\forall\chvec v\in\chvec{\mathrm{RM}}.
+\end{equation}
+当~\eqref{eq:ch11-pure-traction-variational-problem} 可解时, 在 $\widehat{\chvec H}^1(\Omega)$ 中存在唯一解.
+\end{Theorem}
+
+\begin{Proof}
+必要性: 若~\eqref{eq:ch11-pure-traction-variational-problem} 可解, 则由~\eqref{eq:ch11-rigid-motion-strain-zero},
+\[
+\MathBookFormulaID{formula-ch11-pure-traction-necessity}
+\int_\Omega\chvec f\cdot\chvec v\,dx+
+\int_\Gamma\chvec t\cdot\chvec v\,ds
+=a(\chvec u,\chvec v)=0
+\qquad\forall\chvec v\in\chvec{\mathrm{RM}}.
+\]
+
+充分性: 假设~\eqref{eq:ch11-pure-traction-compatibility} 成立. 由第二 Korn 不等式~\eqref{eq:ch11-second-korn-inequality} 和定理~\MBUnresolvedReference{thm:ch02-source-2-5-6}{2.5.6}, 存在唯一的 $\chvec u^*\in\widehat{\chvec H}^1(\Omega)$, 使得
+\[
+\MathBookFormulaID{formula-ch11-pure-traction-restricted-solution}
+a(\chvec u^*,\chvec v)=\int_\Omega\chvec f\cdot\chvec v\,dx+
+\int_\Gamma\chvec t\cdot\chvec v\,ds
+\qquad\forall\chvec v\in\widehat{\chvec H}^1(\Omega).
+\]
+但~\eqref{eq:ch11-rigid-motion-strain-zero} 与相容性条件蕴含
+\[
+\MathBookFormulaID{formula-ch11-pure-traction-rigid-motion-equality}
+a(\chvec u^*,\chvec v)=\int_\Omega\chvec f\cdot\chvec v\,dx+
+\int_\Gamma\chvec t\cdot\chvec v\,ds
+\qquad\forall\chvec v\in\chvec{\mathrm{RM}}.
+\]
+由于 $\chvec H^1(\Omega)=\widehat{\chvec H}^1(\Omega)\oplus\chvec{\mathrm{RM}}$, $\chvec u^*$ 是~\eqref{eq:ch11-pure-traction-variational-problem} 的一个解.
+\end{Proof}
+
+在关于 $\Omega$ 边界的某些条件下, $\chvec f\in\chvec L^2(\Omega)$, $\chvec g=\chvec u_1|_{\Gamma_1}$, 其中 $\chvec u_1\in\chvec H^2(\Omega)$, 且 $\chvec t=\chvec u_2|_{\Gamma_2}$, 其中 $\chvec u_2\in\chvec H^1(\Omega)$, 这一事实蕴含~\eqref{eq:ch11-elasticity-weak-problem} 的解属于 $\chvec H^2(\Omega)$, 然后命题~\MBUnresolvedReference{prop:ch05-source-5-1-9}{5.1.9} 的技术表明, $\chvec u$ 实际满足边值问题~\eqref{eq:ch11-static-elasticity-equation}--\eqref{eq:ch11-traction-boundary-condition}. 例如, 当 $\partial\Omega$ 光滑且 $\overline{\Gamma}_1\cap\overline{\Gamma}_2=\varnothing$(参见 Valent 1988), 或 $\Omega$ 为凸多边形且 $\Gamma_1$ 或 $\Gamma_2$ 为空(参见 Grisvard 1986 和 1989)时, 情形如此. 此外, 在这些情形下(Vogelius 1983, Brenner 与 Sung 1992), 存在与 $(\mu,\lambda)\in[\mu_1,\mu_2]\times(0,\infty)$ 无关的正常数 $C$, 使得
+\MBSourceItem{33}
+\begin{equation}
+\MathBookFormulaID{formula-ch11-elasticity-regularity-estimate}
+\label{eq:ch11-elasticity-regularity-estimate}
+\|\chvec u\|_{\chvec H^2(\Omega)}+
+\lambda\|\operatorname{div}\chvec u\|_{H^1(\Omega)}
+\leq C\left(\|\chvec f\|_{\chvec L^2(\Omega)}+
+\|\chvec u_1\|_{\chvec H^2(\Omega)}+
+\|\chvec u_2\|_{\chvec H^1(\Omega)}\right).
+\end{equation}

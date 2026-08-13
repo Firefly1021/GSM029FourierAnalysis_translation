@@ -1,0 +1,260 @@
+\MathBookSourcePage{332}
+\subsection{纯位移问题的一种稳健方法}
+\label{sec:ch11-robust-displacement-method}
+\setcounter{thmcount}{0}
+\setcounter{equation}{0}
+
+粗略地说, 上一节所述闭锁现象的原因如下. 有限元空间 $\chvec V_h$ 对于逼近近乎不可压缩的材料而言是一个糟糕选择, 因为 $\{\chvec v\in\chvec V_h:\operatorname{div}\chvec v=0\}=\{\chvec0\}$. 因为 $\operatorname{div}\chvec u=0$, 要使 $a_\lambda(\chvec u-\chvec u_h^\lambda,\chvec u-\chvec u_h^\lambda)$ 很小, $\|\operatorname{div}\chvec u_h^\lambda\|_{L^2(\Omega)}$ 必须很小. 但这又意味着 $\|\chvec u_h^\lambda\|$ 很小, 因而 $\chvec u_h^\lambda$ 无法在 $H^1$ 范数中很好地逼近 $\chvec u$.
+
+现在说明, 若使用非协调分片线性有限元空间, 就可以克服闭锁. 成功的关键在于其附加自由度允许对具有无散度约束的函数作良好逼近. 更复杂的稳健有限元方法参见 Arnold, Brezzi 与 Douglas (1984), Arnold, Douglas 与 Brezzi (1984), 以及 Stenberg (1988).
+
+为简单起见, 考虑凸多边形区域 $\Omega$ 上具有齐次纯位移边界条件的~\eqref{eq:ch11-static-elasticity-equation}. (纯牵引边界条件的处理参见 Falk 1991.) 注意纯位移问题可写为
+\MathBookSourcePage{333}
+\MBSourceItem{1}
+\begin{equation}
+\MathBookFormulaID{formula-ch11-displacement-lame-equation}
+\label{eq:ch11-displacement-lame-equation}
+-\mu\Delta\chvec u-(\mu+\lambda)\chvec{\operatorname{grad}}(\operatorname{div}\chvec u)=\chvec f
+\quad\text{in }\Omega,\qquad
+\chvec u=\chvec0\quad\text{on }\partial\Omega,
+\end{equation}
+其中 $\chvec f\in\chvec L^2(\Omega)$. 它有如下弱形式:
+\MBSourceItem{2}
+\begin{equation}
+\MathBookFormulaID{formula-ch11-robust-continuous-problem}
+\label{eq:ch11-robust-continuous-problem}
+\text{求 }\chvec u\in\mathring{\chvec H}^1(\Omega)\text{, 使得}\qquad
+a^s(\chvec u,\chvec v)=\int_\Omega\chvec f\cdot\chvec v\,dx
+\quad\forall\chvec v\in\mathring{\chvec H}^1(\Omega),
+\end{equation}
+其中
+\MBSourceItem{3}
+\begin{equation}
+\MathBookFormulaID{formula-ch11-robust-continuous-bilinear-form}
+\label{eq:ch11-robust-continuous-bilinear-form}
+a^s(\chvec v,\chvec w):=
+\mu\int_\Omega\chten{\operatorname{grad}}\chvec v:
+\chten{\operatorname{grad}}\chvec w\,dx
++(\mu+\lambda)\int_\Omega
+(\operatorname{div}\chvec v)(\operatorname{div}\chvec w)\,dx.
+\end{equation}
+注意 $a(\cdot,\cdot)$ 和 $a^s(\cdot,\cdot)$ 仅在相应的自然边界条件上不同. 因此, 对纯位移问题, 它们完全等价.
+
+$a^s(\cdot,\cdot)$ 的强制性由 Poincaré 不等式~\MBUnresolvedReference{eq:ch05-source-5-3-5}{5.3.5} 得出. 因而~\eqref{eq:ch11-robust-continuous-problem} 有唯一解, 该解实际上属于 $\chvec H^2(\Omega)\cap\mathring{\chvec H}^1(\Omega)$. 此外, 由~\eqref{eq:ch11-elasticity-regularity-estimate} 得到
+\MBSourceItem{4}
+\begin{equation}
+\MathBookFormulaID{formula-ch11-robust-regularity}
+\label{eq:ch11-robust-regularity}
+\|\chvec u\|_{\chvec H^2(\Omega)}+
+\lambda\|\operatorname{div}\chvec u\|_{H^1(\Omega)}
+\leq C\|\chvec f\|_{\chvec L^2(\Omega)},
+\end{equation}
+其中 $C$ 与 $(\mu,\lambda)\in[\mu_1,\mu_2]\times(0,\infty)$ 无关.
+
+令 $\mathcal T^h$ 是 $\Omega$ 的非退化三角剖分族, 并令 $\chvec V_h^s:=V_h^s\times V_h^s$, 其中 $V_h^s$ 是由~\MBUnresolvedReference{eq:ch11-source-11-3-2}{11.3.2} 定义并基于图~\MBUnresolvedReference{fig:ch03-source-3-2}{3.2} 所示单元的空间. 即
+\MBSourceItem{5}
+\begin{equation}
+\MathBookFormulaID{formula-ch11-nonconforming-vector-space}
+\label{eq:ch11-nonconforming-vector-space}
+\begin{split}
+\chvec V_h^s:=\{\chvec v:
+&\chvec v\in\chvec L^2(\Omega),\ \chvec v|_T
+\text{ 对所有 }T\in\mathcal T^h\text{ 都是线性的},\\
+&\chvec v\text{ 在单元间边界的中点连续},\\
+&\chvec v=\chvec0\text{ 于 }\partial\Omega\text{ 上各边的中点}\}.
+\end{split}
+\end{equation}
+由于 $\chvec V_h^s\nsubseteq\chvec H^1(\Omega)$, 其上的微分算子必须逐片定义. 对 $\chvec v\in\chvec V_h^s$, 定义
+\MBSourceItem{6}
+\begin{equation}
+\MathBookFormulaID{formula-ch11-piecewise-gradient-divergence}
+\label{eq:ch11-piecewise-gradient-divergence}
+(\chten{\operatorname{grad}}_h\chvec v)|_T
+=\chten{\operatorname{grad}}(\chvec v|_T),\qquad
+(\operatorname{div}_h\chvec v)|_T
+=\operatorname{div}(\chvec v|_T)
+\quad\forall T\in\mathcal T^h.
+\end{equation}
+离散问题如下:
+\MBSourceItem{7}
+\begin{equation}
+\MathBookFormulaID{formula-ch11-robust-discrete-problem}
+\label{eq:ch11-robust-discrete-problem}
+\text{求 }\chvec u_h\in\chvec V_h^s\text{, 使得}\qquad
+a_h^s(\chvec u_h,\chvec v)=\int_\Omega\chvec f\cdot\chvec v\,dx
+\quad\forall\chvec v\in\chvec V_h^s,
+\end{equation}
+\MathBookSourcePage{334}
+其中
+\MBSourceItem{8}
+\begin{equation}
+\MathBookFormulaID{formula-ch11-robust-discrete-bilinear-form}
+\label{eq:ch11-robust-discrete-bilinear-form}
+a_h^s(\chvec v,\chvec w):=
+\mu\int_\Omega\chten{\operatorname{grad}}_h\chvec v:
+\chten{\operatorname{grad}}_h\chvec w\,dx
++(\mu+\lambda)\int_\Omega
+(\operatorname{div}_h\chvec v)(\operatorname{div}_h\chvec w)\,dx.
+\end{equation}
+式~\eqref{eq:ch11-robust-discrete-problem} 有唯一解, 因为 $a_h^s(\cdot,\cdot)$ 正定; 其证明方式与第~\ref{chap:ch10-variational-crimes} 章中的证明相似.
+
+定义非协调能量范数
+\MBSourceItem{9}
+\begin{equation}
+\MathBookFormulaID{formula-ch11-nonconforming-energy-norm}
+\label{eq:ch11-nonconforming-energy-norm}
+\|\chvec v\|_h:=a_h^s(\chvec v,\chvec v)^{1/2}.
+\end{equation}
+显然
+\MBSourceItem{10}
+\begin{equation}
+\MathBookFormulaID{formula-ch11-broken-gradient-energy-bound}
+\label{eq:ch11-broken-gradient-energy-bound}
+\|\chten{\operatorname{grad}}_h\chvec v\|_{\chten L^2(\Omega)}
+\leq\mu^{-1/2}\|\chvec v\|_h.
+\end{equation}
+
+目标是说明有限元法~\eqref{eq:ch11-robust-discrete-problem} 对 $(\mu,\lambda)\in[\mu_1,\mu_2]\times(0,\infty)$ 一致稳健. 除引理~\ref{lem:ch11-divergence-right-inverse} 外, 还需要插值算子 $\Pi_h:\chvec H^2(\Omega)\cap\mathring{\chvec H}^1(\Omega)\to\chvec V_h^s$, 它满足
+\MBSourceItem{11}
+\begin{equation}
+\MathBookFormulaID{formula-ch11-divergence-preserving-interpolation}
+\label{eq:ch11-divergence-preserving-interpolation}
+\operatorname{div}\chvec\phi=0
+\quad\Longrightarrow\quad
+\operatorname{div}_h(\Pi_h\chvec\phi)=0.
+\end{equation}
+可以定义
+\MBSourceItem{12}
+\begin{equation}
+\MathBookFormulaID{formula-ch11-midpoint-interpolant}
+\label{eq:ch11-midpoint-interpolant}
+(\Pi_h\chvec\phi)(m_e):=\frac1{|e|}\int_e\chvec\phi\,ds,
+\end{equation}
+其中 $m_e$ 是边 $e$ 的中点. 则
+\MBSourceItem{13}
+\begin{equation}
+\MathBookFormulaID{formula-ch11-interpolant-divergence-average}
+\label{eq:ch11-interpolant-divergence-average}
+\operatorname{div}(\Pi_h\chvec\phi)|_T
+=\frac1{|T|}\int_T\operatorname{div}\chvec\phi\,dx
+\quad\forall T\in\mathcal T^h,
+\end{equation}
+且
+\MBSourceItem{14}
+\begin{equation}
+\MathBookFormulaID{formula-ch11-midpoint-interpolation-error}
+\label{eq:ch11-midpoint-interpolation-error}
+\|\chvec\phi-\Pi_h\chvec\phi\|_{\chvec L^2(\Omega)}
++h\|\chten{\operatorname{grad}}_h(\chvec\phi-\Pi_h\chvec\phi)\|_{\chten L^2(\Omega)}
+\leq Ch^2\|\chvec\phi\|_{\chvec H^2(\Omega)}.
+\end{equation}
+
+\MBSourceItem{15}
+\begin{Theorem}
+\label{thm:ch11-robust-nonconforming-error}
+存在与 $h$ 和 $(\mu,\lambda)\in[\mu_1,\mu_2]\times(0,\infty)$ 无关的正常数 $C$, 使得
+\MBSourceItem{16}
+\begin{equation}
+\MathBookFormulaID{formula-ch11-robust-nonconforming-error}
+\label{eq:ch11-robust-nonconforming-error}
+\|\chvec u-\chvec u_h\|_h
+\leq Ch\|\chvec f\|_{\chvec L^2(\Omega)}.
+\end{equation}
+\end{Theorem}
+
+\MathBookSourcePage{335}
+\begin{Proof}
+本证明中, $C$ 表示与 $h$ 和 $(\mu,\lambda)\in[\mu_1,\mu_2]\times(0,\infty)$ 无关的一般常数. 由 Strang 型估计~\MBUnresolvedReference{eq:ch10-source-10-1-10}{10.1.10},
+\MBSourceItem{17}
+\begin{equation}
+\MathBookFormulaID{formula-ch11-nonconforming-strang-estimate}
+\label{eq:ch11-nonconforming-strang-estimate}
+\|\chvec u-\chvec u_h\|_h
+\leq\inf_{\chvec v\in\chvec V_h^s}\|\chvec u-\chvec v\|_h
++\sup_{\chvec v\in\chvec V_h^s\setminus\{\chvec0\}}
+\frac{|a_h^s(\chvec u,\chvec v)-\int_\Omega\chvec f\cdot\chvec v\,dx|}
+{\|\chvec v\|_h}.
+\end{equation}
+采用定理~\MBUnresolvedReference{thm:ch10-source-3-12}{10.3.12} 的证明中使用的相同技术, 得到
+\MBSourceItem{18}
+\begin{equation}
+\MathBookFormulaID{formula-ch11-gradient-consistency-bound}
+\label{eq:ch11-gradient-consistency-bound}
+\left|\int_\Omega\chten{\operatorname{grad}}\chvec u:
+\chten{\operatorname{grad}}_h\chvec v\,dx
++\int_\Omega\Delta\chvec u\cdot\chvec v\,dx\right|
+\leq Ch\|\chvec u\|_{\chvec H^2(\Omega)}
+\|\chten{\operatorname{grad}}_h\chvec v\|_{\chten L^2(\Omega)},
+\end{equation}
+以及
+\MBSourceItem{19}
+\begin{equation}
+\MathBookFormulaID{formula-ch11-divergence-consistency-bound}
+\label{eq:ch11-divergence-consistency-bound}
+\left|\int_\Omega\operatorname{div}\chvec u\operatorname{div}_h\chvec v\,dx
++\int_\Omega\chvec{\operatorname{grad}}(\operatorname{div}\chvec u)\cdot\chvec v\,dx\right|
+\leq Ch\|\operatorname{div}\chvec u\|_{H^1(\Omega)}
+\|\chten{\operatorname{grad}}_h\chvec v\|_{\chten L^2(\Omega)}.
+\end{equation}
+结合~\eqref{eq:ch11-displacement-lame-equation}, \eqref{eq:ch11-robust-discrete-bilinear-form}, \eqref{eq:ch11-gradient-consistency-bound}, \eqref{eq:ch11-divergence-consistency-bound}, \eqref{eq:ch11-robust-regularity} 和~\eqref{eq:ch11-broken-gradient-energy-bound}, 得到
+\MBSourceItem{20}
+\begin{equation}
+\MathBookFormulaID{formula-ch11-consistency-residual-bound}
+\label{eq:ch11-consistency-residual-bound}
+\begin{split}
+\left|a_h^s(\chvec u,\chvec v)-\int_\Omega\chvec f\cdot\chvec v\,dx\right|
+&\leq Ch\|\chten{\operatorname{grad}}_h\chvec v\|_{\chten L^2(\Omega)}
+\{\mu\|\chvec u\|_{\chvec H^2(\Omega)}
++(\mu+\lambda)\|\operatorname{div}\chvec u\|_{H^1(\Omega)}\}\\
+&\leq Ch\|\chvec v\|_h\|\chvec f\|_{\chvec L^2(\Omega)}.
+\end{split}
+\end{equation}
+
+由引理~\ref{lem:ch11-divergence-right-inverse} 的类似结果, 存在 $\chvec u_1\in\chvec H^2(\Omega)\cap\mathring{\chvec H}^1(\Omega)$, 使得
+\MBSourceItem{21}
+\begin{equation}
+\MathBookFormulaID{formula-ch11-divergence-lifting}
+\label{eq:ch11-divergence-lifting}
+\operatorname{div}\chvec u_1=\operatorname{div}\chvec u
+\end{equation}
+且
+\MBSourceItem{22}
+\begin{equation}
+\MathBookFormulaID{formula-ch11-divergence-lifting-bound}
+\label{eq:ch11-divergence-lifting-bound}
+\|\chvec u_1\|_{\chvec H^2(\Omega)}
+\leq C\|\operatorname{div}\chvec u\|_{H^1(\Omega)}.
+\end{equation}
+结合~\eqref{eq:ch11-divergence-lifting-bound} 与~\eqref{eq:ch11-robust-regularity}, 有
+\MBSourceItem{23}
+\begin{equation}
+\MathBookFormulaID{formula-ch11-divergence-lifting-load-bound}
+\label{eq:ch11-divergence-lifting-load-bound}
+\|\chvec u_1\|_{\chvec H^2(\Omega)}
+\leq\frac C{1+\lambda}\|\chvec f\|_{\chvec L^2(\Omega)}.
+\end{equation}
+注意~\eqref{eq:ch11-divergence-preserving-interpolation} 和~\eqref{eq:ch11-divergence-lifting} 蕴含
+\MBSourceItem{24}
+\begin{equation}
+\MathBookFormulaID{formula-ch11-interpolated-divergence-identity}
+\label{eq:ch11-interpolated-divergence-identity}
+\operatorname{div}_h\Pi_h\chvec u_1
+=\operatorname{div}_h\Pi_h\chvec u.
+\end{equation}
+
+\MathBookSourcePage{336}
+于是
+\MBSourceItem{25}
+\begin{align}
+\MathBookFormulaID{formula-ch11-best-approximation-robust-bound}
+\label{eq:ch11-best-approximation-robust-bound}
+\inf_{\chvec v\in\chvec V_h^s}\|\chvec u-\chvec v\|_h
+&\leq\|\chvec u-\Pi_h\chvec u\|_h\notag\\
+&=\left(\mu\|\chten{\operatorname{grad}}_h(\chvec u-\Pi_h\chvec u)\|_{\chten L^2(\Omega)}^2
++(\mu+\lambda)\|\operatorname{div}_h(\chvec u-\Pi_h\chvec u)\|_{L^2(\Omega)}^2\right)^{1/2}\notag\\
+&=\left(\mu\|\chten{\operatorname{grad}}_h(\chvec u-\Pi_h\chvec u)\|_{\chten L^2(\Omega)}^2
++(\mu+\lambda)\|\operatorname{div}_h(\chvec u_1-\Pi_h\chvec u_1)\|_{L^2(\Omega)}^2\right)^{1/2}\notag\\
+&\leq Ch\|\chvec f\|_{\chvec L^2(\Omega)}.
+\end{align}
+这里依次使用了~\eqref{eq:ch11-nonconforming-energy-norm}, \eqref{eq:ch11-divergence-lifting}, \eqref{eq:ch11-interpolated-divergence-identity}, \eqref{eq:ch11-midpoint-interpolation-error}, \eqref{eq:ch11-divergence-lifting-load-bound} 和~\eqref{eq:ch11-robust-regularity}. 结合~\eqref{eq:ch11-nonconforming-strang-estimate}, \eqref{eq:ch11-consistency-residual-bound} 与~\eqref{eq:ch11-best-approximation-robust-bound} 即得定理.
+\end{Proof}
