@@ -1,0 +1,31 @@
+# appendix-03 cross-reference report
+
+- Files checked: 1
+- Chapter/batch labels: 31 (31 unique)
+- Project-wide unique labels: 2395
+- LaTeX reference commands: 91
+- Explicit unresolved source references: 0
+- Duplicate labels: 0
+- Undefined local labels: 0
+- Incorrect equation/non-equation reference commands: 0
+- Registry: `qa/translation/appendix-03-cross-reference-registry.tsv`
+
+## Duplicate labels
+
+- None.
+
+## Undefined local labels
+
+- None.
+
+## Reference-command mismatches
+
+- None.
+
+## Explicitly unresolved source references
+
+- None.
+
+## Result
+
+Pass for all determinable local references; unresolved source citations and forward references remain explicit and are not guessed.
