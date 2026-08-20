@@ -30,4 +30,5 @@
 28. Completed: process `appendix-03` (PDF pages 352--395), including its extended bibliography.
 29. Completed: process `comments` (PDF pages 396--403; PDF page 401 has no book content).
 30. Completed: process the book bibliography (PDF pages 404--421; PDF page 421 has no book content).
-31. Current: process the index (PDF pages 422--426).
+31. Completed: process the index (PDF pages 422--426; PDF pages 424--426 have no book content).
+32. Current: perform the clean full-book integration build and final acceptance checks.
