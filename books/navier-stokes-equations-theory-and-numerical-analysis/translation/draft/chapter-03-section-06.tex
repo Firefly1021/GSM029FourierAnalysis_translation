@@ -1,0 +1,1110 @@
+\hypertarget{chapter-03-page-261-section-06}{}
+\section{Navier--Stokes 方程的离散化: 一般结果的应用}
+\label{sec:ch3-discretization-applications}
+
+我们希望对空间 $V$ 的具体逼近明确陈述稳定性与收敛性定理 (定理 \ref{thm:ch3-schemes-51-52-stability}--\ref{thm:ch3-convergence-three-dimensional}) 的全部假设和结论. 回顾第 \ref{sec:ch3-general-stability-convergence} 节中所研究格式的最终形式和有效性还取决于 $V$ 的逼近方式, 即空间变量的离散化.
+
+第 \ref{subsec:ch3-finite-differences-apx1} 小节考虑 $V$ 的有限差分逼近 (APX1). 第 \ref{subsec:ch3-conforming-finite-elements} 小节处理协调有限元方法, 其中 $V$ 的逼近取 (APX2)--(APX4) 之一. 第 \ref{subsec:ch3-nonconforming-finite-elements} 小节处理非协调有限元方法 (APX5). 最后, 第 \ref{subsec:ch3-numerical-algorithms-pressure} 小节研究适用于实际求解有限维问题的若干算法, 即针对格式 \ref{scheme:ch3-fully-implicit}--\ref{scheme:ch3-explicit} 之一实际计算 $u_h^m$.
+
+\hypertarget{chapter-03-page-262}{}
+\subsection{有限差分 (APX1)}
+\label{subsec:ch3-finite-differences-apx1}
+
+现在把第 \ref{subsec:ch3-scheme-description} 小节开头所考虑的 $V$ 的一般逼近具体取为逼近 (APX1). 我们将依次检验并解释定理 \ref{thm:ch3-schemes-51-52-stability}--\ref{thm:ch3-convergence-three-dimensional} 在此情形下的假设.
+
+\subsubsection{$S(h)$ 的计算}
+条件 \eqref{eq:ch3-discrete-norm-lower-bound} 和 \eqref{eq:ch3-discrete-stability-constant} 显然成立; 由命题 \MBUnresolvedReference{proposition}{Proposition 1.3.3},
+\begin{equation}
+|u_h|\leq d_0\lVert u_h\rVert_h,\qquad d_0=2\ell,
+\label{eq:ch3-apx1-l2-bound}
+\end{equation}
+其中 $\ell$ 是 $\Omega$ 沿方向 $x_1,\ldots,x_n$ 的宽度中的最小者. 下一个命题旨在检验条件 \eqref{eq:ch3-discrete-stability-constant}, 并给出 $S(h)$ 的一个显式值.
+
+\MBSourceStatementNumber{proposition}{1}
+\begin{Proposition}
+\label{prop:ch3-apx1-stability-constant}
+对逼近 (APX1),
+\begin{equation}
+S(h)=2\left(\sum_{i=1}^n\frac1{h_i^2}\right)^{1/2},
+\qquad \forall h=(h_1,\ldots,h_n).
+\label{eq:ch3-apx1-stability-constant}
+\end{equation}
+\end{Proposition}
+
+\begin{Proof}
+有
+\begin{align*}
+\lVert u_h\rVert_h^2
+&=\sum_{i,j=1}^n\left\{\frac1{h_j^2}\int_{\Omega}
+\left|u_{ih}\left(x+\frac{\vec h_j}{2}\right)-u_{ih}\left(x-\frac{\vec h_j}{2}\right)\right|^2\,dx\right\}\\
+&\leq2\sum_{i,j=1}^n\left\{\frac1{h_j^2}\int_{\mathbb R^n}
+\left(\left|u_{ih}\left(x+\frac{\vec h_j}{2}\right)\right|^2+
+\left|u_{ih}\left(x-\frac{\vec h_j}{2}\right)\right|^2\right)\,dx\right\}\\
+&\leq4\sum_{i,j=1}^n\left\{\frac1{h_j^2}\int_{\mathbb R^n}|u_{ih}(x)|^2\,dx\right\}
+\leq4\left(\sum_{j=1}^n\frac1{h_j^2}\right)|u_h|^2,
+\end{align*}
+从而得到 \eqref{eq:ch3-apx1-stability-constant}.
+\end{Proof}
+
+\subsubsection{形式 $b_h$ 与 $S_1(h)$}
+对逼近 (APX1), 我们仍取第 2 章第 \MBUnresolvedReference{section}{Section 3} 节所定义的形式 $b_h$ (见式 \MBUnresolvedReference{equations}{(3.27)--(3.29)}):
+\begin{equation}
+b_h(u_h,v_h,w_h)=b'_h(u_h,v_h,w_h)+b''_h(u_h,v_h,w_h),
+\label{eq:ch3-apx1-bh-decomposition}
+\end{equation}
+\begin{equation}
+b'_h(u_h,v_h,w_h)=\frac12\sum_{i,j=1}^n\int_{\Omega}u_{ih}(\delta_{ih}v_{jh})w_{jh}\,dx,
+\label{eq:ch3-apx1-bh-prime}
+\end{equation}
+\begin{equation}
+b''_h(u_h,v_h,w_h)=b'_h(u_h,w_h,v_h).
+\label{eq:ch3-apx1-bh-double-prime}
+\end{equation}
+显然, $b_h$ 是 $V_h\times V_h\times V_h$ 上的连续三线性形式, 并满足 \eqref{eq:ch3-discrete-trilinear-cancellation}. 为估计 \eqref{eq:ch3-discrete-trilinear-continuity} 中的常数 $d_1$, 先证明下述结果.
+
+\MBSourceStatementNumber{lemma}{1}
+\begin{Lemma}
+\label{lem:ch3-apx1-trilinear-components}
+当 $n=2$ 或 $3$ 时,
+\begin{align}
+|b'_h(u_h,v_h,w_h)|
+&\leq\frac3{\sqrt2}|u_h|^{1/2}\lVert u_h\rVert_h^{1/2}\lVert v_h\rVert_h
+|w_h|^{1/2}\lVert w_h\rVert_h^{1/2} &&(n=2),\notag\\
+&\leq3^{3/2}|u_h|^{1/4}\lVert u_h\rVert_h^{3/4}\lVert v_h\rVert_h
+|w_h|^{1/4}\lVert w_h\rVert_h^{3/4} &&(n=3),
+\label{eq:ch3-apx1-bh-prime-estimate}
+\end{align}
+\begin{align}
+|b''_h(u_h,v_h,w_h)|
+&\leq\frac3{\sqrt2}|u_h|^{1/2}\lVert u_h\rVert_h^{1/2}
+|v_h|^{1/2}\lVert v_h\rVert_h^{1/2}\lVert w_h\rVert_h &&(n=2),\notag\\
+&\leq3^{3/2}|u_h|^{1/4}\lVert u_h\rVert_h^{3/4}
+|v_h|^{1/4}\lVert v_h\rVert_h^{3/4}\lVert w_h\rVert_h &&(n=3).
+\label{eq:ch3-apx1-bh-double-prime-estimate}
+\end{align}
+\end{Lemma}
+
+\hypertarget{chapter-03-page-263}{}
+\begin{Proof}
+此证明基于命题 \MBUnresolvedReference{proposition}{Proposition 2.2.1}. 由式 \MBUnresolvedReference{equations}{2.(2.12) and 2.(2.13)}, 当 $n=2$ 时,
+\begin{equation}
+\sum_{i=1}^n\lVert u_{ih}\rVert_{L^4(\Omega)}^2
+\leq3\sqrt2\,|u_h|\lVert u_h\rVert_h,
+\label{eq:ch3-apx1-l4-bound-2d}
+\end{equation}
+而当 $n=3$ 时, 利用 H\"older 不等式还有
+\begin{equation}
+\left(\sum_{i,j=1}^n\lVert\delta_{jh}u_{ih}\rVert_{L^2(\Omega)}^2\right)^{3/4}
+\leq2\cdot3^{3/2}|u_h|^{1/4}\lVert u_h\rVert_h^{3/4}.
+\label{eq:ch3-apx1-l4-bound-3d}
+\end{equation}
+再次使用 H\"older 不等式, 可得
+\begin{align*}
+|b'_h(u_h,v_h,w_h)|
+&\leq\frac12\sum_{i,j=1}^n\lVert u_{ih}\rVert_{L^4(\Omega)}
+\lVert\delta_{ih}v_{jh}\rVert_{L^2(\Omega)}\lVert w_{jh}\rVert_{L^4(\Omega)}\\
+&\leq\frac12\left(\sum_{i=1}^n\lVert u_{ih}\rVert_{L^4(\Omega)}^2\right)^{1/2}
+\left(\sum_{j=1}^n\lVert w_{jh}\rVert_{L^4(\Omega)}^2\right)^{1/2}\lVert v_h\rVert_h,
+\end{align*}
+以及类似的 $b''_h$ 估计. 将 \eqref{eq:ch3-apx1-l4-bound-2d} 或 \eqref{eq:ch3-apx1-l4-bound-3d} 代入即得结论.
+\end{Proof}
+
+\MBSourceStatementNumber{lemma}{2}
+\begin{Lemma}
+\label{lem:ch3-apx1-trilinear-continuity}
+\begin{equation}
+|b_h(u_h,v_h,w_h)|\leq d_1\lVert u_h\rVert_h\lVert v_h\rVert_h\lVert w_h\rVert_h,
+\qquad\forall u_h,v_h,w_h\in V_h,
+\label{eq:ch3-apx1-bh-continuity}
+\end{equation}
+其中
+\begin{equation}
+d_1=6\sqrt{2\ell}\quad(n=2),
+\qquad d_1=6^{3/2}\sqrt\ell\quad(n=3).
+\label{eq:ch3-apx1-bh-continuity-constant}
+\end{equation}
+\end{Lemma}
+
+\begin{Proof}
+这是 \eqref{eq:ch3-apx1-l2-bound}, \eqref{eq:ch3-apx1-bh-decomposition}, \eqref{eq:ch3-apx1-bh-prime-estimate} 和 \eqref{eq:ch3-apx1-bh-double-prime-estimate} 的直接推论.
+\end{Proof}
+
+\hypertarget{chapter-03-page-264}{}
+\MBSourceStatementNumber{proposition}{2}
+\begin{Proposition}
+\label{prop:ch3-apx1-s1-bound}
+对逼近 (APX1), 不等式 \eqref{eq:ch3-scheme-53-improved-trilinear-bound} 成立, 其中
+\begin{equation}
+\begin{aligned}
+S_1(h)&=3\sqrt2\,S(h), & n&=2,\\
+S_1(h)&=2\cdot3^{3/2}S^{3/2}(h), & n&=3,
+\end{aligned}
+\label{eq:ch3-apx1-s1}
+\end{equation}
+且 $S(h)$ 由 \eqref{eq:ch3-apx1-stability-constant} 给出.
+\end{Proposition}
+
+\begin{Proof}
+由 \eqref{eq:ch3-apx1-l2-bound}, \eqref{eq:ch3-apx1-bh-prime-estimate} 和 \eqref{eq:ch3-apx1-bh-double-prime-estimate}, 分别估计 $b'_h(u_h,u_h,w_h)$ 与 $b''_h(u_h,u_h,w_h)$, 即易得 \eqref{eq:ch3-apx1-s1}.
+\end{Proof}
+
+\subsubsection{稳定性与收敛性定理的应用}
+格式 \ref{scheme:ch3-fully-implicit} 和 \ref{scheme:ch3-crank-nicholson} 无条件稳定. 格式 \ref{scheme:ch3-linear-implicit} 的稳定性条件由定理 \ref{thm:ch3-scheme-53-stability} 和引理 \ref{lem:ch3-scheme-53-apriori-bounds} 给出:
+\begin{equation}
+k\left(\sum_{i=1}^2\frac1{h_i^2}\right)
+\leq\min\left(\frac{d'}{2^3 3^2},\frac{d''}{2^2}\right),
+\qquad n=2,
+\label{eq:ch3-apx1-scheme53-stability-2d}
+\end{equation}
+\begin{equation}
+k\left(\sum_{i=1}^3\frac1{h_i^2}\right)^{3/2}\leq\frac{d'}{2^5 3^3},
+\qquad
+k\left(\sum_{i=1}^3\frac1{h_i^2}\right)\leq\frac{d''}{4},
+\qquad n=3,
+\label{eq:ch3-apx1-scheme53-stability-3d}
+\end{equation}
+其中 $d'$ 和 $d''$ 定义于引理 \ref{lem:ch3-scheme-53-apriori-bounds} 的证明中.\footnote{当 $h$ 充分小时, \eqref{eq:ch3-apx1-scheme53-stability-3d} 中第二个条件是第一个条件的推论.}
+
+对格式 \ref{scheme:ch3-explicit}, 定理 \ref{thm:ch3-scheme-54-stability} 和引理 \ref{lem:ch3-scheme-54-apriori-bounds} 给出的稳定性条件为
+\begin{equation}
+k\left(\sum_{i=1}^2\frac1{h_i^2}\right)\leq\frac{1-\delta}{2^4\nu},
+\qquad
+k\left(\sum_{i=1}^2\frac1{h_i^2}\right)\leq\frac{\nu\delta}{3^2 2^6d_5},
+\qquad n=2,
+\label{eq:ch3-apx1-scheme54-stability-2d}
+\end{equation}
+\begin{equation}
+k\left(\sum_{i=1}^3\frac1{h_i^2}\right)\leq\frac{1-\delta}{2^4\nu},
+\qquad
+k\left(\sum_{i=1}^3\frac1{h_i^2}\right)^{3/2}\leq\frac{\nu\delta}{2^8 3^3d_5},
+\qquad n=3,
+\label{eq:ch3-apx1-scheme54-stability-3d}
+\end{equation}
+其中 $0<\delta<1$, 且 $d_5$ 由 \eqref{eq:ch3-scheme-54-data-bound} 给出.
+
+适用时, 收敛定理 \ref{thm:ch3-convergence-two-dimensional} 和 \ref{thm:ch3-convergence-three-dimensional} 给出
+\begin{equation}
+u_h\to u\quad\text{在 $L^2(Q)$ 中强收敛, 在 $L^\infty(0,T;L^2(\Omega))$ 中弱星收敛},
+\label{eq:ch3-apx1-velocity-convergence}
+\end{equation}
+\begin{equation}
+\delta_{ih}u_h\to D_i u\quad\text{在 $L^2(Q)$ 中强收敛或弱收敛},
+\label{eq:ch3-apx1-gradient-convergence}
+\end{equation}
+具体取决于 $L^2(0,T;F)$ 中的收敛是强收敛还是弱收敛.
+
+\hypertarget{chapter-03-page-265}{}
+\subsubsection{条件 \eqref{eq:ch3-convergence-identification-property}--\eqref{eq:ch3-convergence-compactness-property} 的证明}
+定理 \ref{thm:ch3-convergence-two-dimensional} 和 \ref{thm:ch3-convergence-three-dimensional} 建立在条件 \eqref{eq:ch3-convergence-identification-property}--\eqref{eq:ch3-convergence-compactness-property} 上. 现在检验这些技术条件.
+
+\paragraph{条件 \eqref{eq:ch3-convergence-identification-property} 的检验.}
+若
+\begin{equation}
+u_{h'}\to u\quad\text{在 $L^2(0,T;L(\Omega))$ 中弱收敛},
+\label{eq:ch3-apx1-589-velocity}
+\end{equation}
+\begin{equation}
+p_{h'}u_{h'}\to\phi=(\phi_0,\ldots,\phi_n)
+\quad\text{在 $L^2(0,T;F)$ 中弱收敛},
+\label{eq:ch3-apx1-589-image}
+\end{equation}
+则由引理 \ref{lem:ch3-external-approximation-limit}, $\phi=\bar\omega v$, 其中 $v\in L^2(0,T;V)$. 另一方面, 由 $p_h$ 的定义,
+\begin{equation}
+p_{h'}u_{h'}\to\phi_0=v\quad\text{在 $L^2(Q)$ 中弱收敛}.
+\label{eq:ch3-apx1-589-zero-component}
+\end{equation}
+比较 \eqref{eq:ch3-apx1-589-velocity} 与 \eqref{eq:ch3-apx1-589-zero-component} 可知 $v=u$ 作为 $L^2(Q)$ 的元素相等. 因而 $\phi(t)=\bar\omega u(t)$ 几乎处处成立, 且 $u\in L^2(0,T;V)$.
+
+\paragraph{条件 \eqref{eq:ch3-convergence-bilinear-consistency} 的检验.}
+若 $p_{h'}v_{h'}\to\bar\omega v$ 在 $L^2(0,T;F)$ 中弱收敛, 且 $p_{h'}w_{h'}\to\bar\omega w$ 在其中强收敛, 则 $\delta_{ih'}v_{h'}\to D_i v$ 在 $L^2(Q)$ 中弱收敛, 而 $\delta_{ih'}w_{h'}\to D_iw$ 在其中强收敛. 因此
+\[
+\int_0^T((v_{h'}(t),w_{h'}(t)))_{h'}\,dt
+=\int_0^T\!\int_\Omega\sum_{i=1}^n(\delta_{ih'}v_{h'})(\delta_{ih'}w_{h'})\,dx\,dt
+\to\int_0^T((v(t),w(t)))\,dt.
+\]
+
+\paragraph{条件 \eqref{eq:ch3-convergence-trilinear-consistency} 的检验.}
+证明与第 2 章引理 \MBUnresolvedReference{lemma}{Lemma 3.1} 的证明相似. 假设
+\begin{equation}
+u_{h'}\to u\quad\text{在 $L^2(Q)$ 中强收敛},
+\label{eq:ch3-apx1-591-u}
+\end{equation}
+\begin{equation}
+p_{h'}v_{h'}\to\bar\omega v\quad\text{在 $L^2(0,T;F)$ 中弱收敛},
+\label{eq:ch3-apx1-591-v}
+\end{equation}
+\begin{equation}
+\psi_{h'}\to\psi\quad\text{在 $L^\infty(0,T)$ 中},
+\label{eq:ch3-apx1-591-psi}
+\end{equation}
+并令 $w$ 是 $\mathcal V$ 中的固定元素. 由 \eqref{eq:ch3-apx1-591-v},
+\begin{equation}
+v_{h'}\to v\quad\text{在 $L^2(Q)$ 中弱收敛},
+\label{eq:ch3-apx1-591-v-l2}
+\end{equation}
+\begin{equation}
+\delta_{ih'}v_{h'}\to D_i v\quad\text{在 $L^2(Q)$ 中弱收敛},
+\qquad1\leq i\leq n.
+\label{eq:ch3-apx1-591-v-gradient}
+\end{equation}
+另一方面, 如第 2 章引理 \MBUnresolvedReference{lemma}{Lemma 2.3.2} 的证明中所指出的,
+\begin{equation}
+r_hw\to w\quad\text{在 $L^\infty(\Omega)$ 的范数中},
+\label{eq:ch3-apx1-test-interpolation}
+\end{equation}
+\begin{equation}
+\delta_{ih}r_hw\to D_iw\quad\text{在 $L^\infty(\Omega)$ 的范数中},
+\qquad1\leq i\leq n.
+\label{eq:ch3-apx1-test-gradient-interpolation}
+\end{equation}
+
+\hypertarget{chapter-03-page-266}{}
+先考虑形式 $b'_h$. 由上述收敛性, 对每个 $i,j$,
+\[
+\int_0^T\!\int_\Omega u_{ih'}(\delta_{ih'}v_{jh'})\psi_{k'}w_{jh'}\,dx\,dt
+\to\int_0^T\!\int_\Omega u_i(D_iv_j)\psi w_j\,dx\,dt.
+\]
+因而
+\[
+\int_0^T b'_{h'}(u_{h'}(t),v_{h'}(t),\psi_{k'}(t)r_{h'}w)\,dt
+\to\frac12\int_0^T b(u(t),v(t),\psi(t)w)\,dt.
+\]
+类似地,
+\begin{align*}
+&\int_0^T b''_{h'}(u_{h'}(t),v_{h'}(t),\psi_{k'}(t)r_{h'}w)\,dt\\
+&\qquad\to-\frac12\int_0^T b(u(t),\psi(t)w,v(t))\,dt\\
+&\qquad=\frac12\int_0^T b(u(t),v(t),\psi(t)w)\,dt.
+\end{align*}
+这就证明了条件 \eqref{eq:ch3-convergence-trilinear-consistency}.
+
+\paragraph{条件 \eqref{eq:ch3-convergence-compactness-property} 的检验.}
+令 $\{v_{h'}\}$ 为从 $\mathbb R$ 到 $V_h$ 的函数序列, 其支集包含在 $[0,T]$ 或 $\mathbb R$ 的任一固定紧子集中, 并满足
+\begin{equation}
+\int_0^T\lVert v_{h'}(t)\rVert_{h'}^2\,dt\leq\mathrm{const.},
+\label{eq:ch3-apx1-compactness-energy}
+\end{equation}
+\begin{equation}
+\int_{-\infty}^{+\infty}|\tau|^{2\gamma}|\widehat v_{h'}(\tau)|^2\,d\tau
+\leq\mathrm{const.},\qquad 0<\gamma.
+\label{eq:ch3-apx1-compactness-fourier}
+\end{equation}
+必须证明此序列在 $L^2(Q)$ 中相对紧. 因 $p_h$ 稳定,
+\begin{equation}
+\int_0^T\lVert p_{h'}v_{h'}(t)\rVert_F^2\,dt\leq\mathrm{const.}
+\label{eq:ch3-apx1-compactness-ph}
+\end{equation}
+因此 $h'$ 含有一个仍记为 $h'$ 的子序列, 使得
+\begin{equation}
+p_{h'}v_{h'}\to\bar\omega v\quad\text{在 $L^2(\mathbb R;F)$ 中弱收敛},
+\label{eq:ch3-apx1-compactness-image-limit}
+\end{equation}
+\begin{equation}
+v_{h'}\to v\quad\text{在 $L^2(\mathbb R;L^2(\Omega))$ 中弱收敛},
+\label{eq:ch3-apx1-compactness-weak-limit}
+\end{equation}
+其中 $v\in L^2(\mathbb R;V)$ 且在 $[0,T]$ 外为零. 只需证明 \eqref{eq:ch3-apx1-compactness-weak-limit} 是强收敛, 即证明下式趋于零:
+\begin{equation}
+I_{h'}=\int_{-\infty}^{+\infty}|v_{h'}(t)-v(t)|^2\,dt
+=\int_{-\infty}^{+\infty}|\widehat v_{h'}(\tau)-\widehat v(\tau)|^2\,d\tau,
+\label{eq:ch3-apx1-compactness-parseval}
+\end{equation}
+第二个等号使用了 Parseval 等式.
+
+\hypertarget{chapter-03-page-267}{}
+沿用定理 \MBUnresolvedReference{theorem}{Theorem 2.2} 的证明, 对给定 $\varepsilon>0$, 选择 $M$ 使得 $C/(1+M^{2\gamma})\leq\varepsilon/2$. 分割 Fourier 积分即得
+\begin{equation}
+I_{h'}\leq J_{h'}+\frac\varepsilon2,
+\label{eq:ch3-apx1-compactness-tail}
+\end{equation}
+其中
+\begin{equation}
+J_{h'}=\int_{|\tau|\leq M}|\widehat v_{h'}(\tau)-\widehat v(\tau)|^2\,d\tau.
+\label{eq:ch3-apx1-compactness-local-integral}
+\end{equation}
+若证明
+\begin{equation}
+J_{h'}\to0\quad\text{当 $h',k'\to0$ 时},
+\label{eq:ch3-apx1-compactness-local-limit}
+\end{equation}
+则 $I_{h'}\to0$. 这可由 Lebesgue 定理推出. 对每个 $\tau$,
+\begin{equation}
+\widehat v_{h'}(\tau)=\int_{-\infty}^{+\infty}v_{h'}(t)e^{-2i\pi t\tau}\,dt
+\quad\text{或}\quad
+\int_{-\infty}^{+\infty}v_{h'}(t)\chi(t)e^{-2i\pi t\tau}\,dt,
+\label{eq:ch3-apx1-fourier-transform}
+\end{equation}
+其中 $\chi$ 是紧支集光滑函数, 在 $[0,T]$ 上等于 $1$, 因而对所有 $h'$, $v_{h'}=\chi v_{h'}$. 于是
+\begin{equation}
+|\widehat v_{h'}(\tau)|\leq
+|v_{h'}|_{L^2(\mathbb R;L^2(\Omega))}\lVert e^{-2i\pi t\tau}\chi\rVert_{L^2(\mathbb R)}
+\leq\mathrm{const.}=C_1,
+\label{eq:ch3-apx1-fourier-uniform-bound}
+\end{equation}
+\begin{equation}
+|\widehat v_{h'}(\tau)-\widehat v(\tau)|^2
+\leq2(C_1^2+|\widehat v(\tau)|^2),
+\qquad\forall\tau,
+\label{eq:ch3-apx1-fourier-dominating-function}
+\end{equation}
+且由 \eqref{eq:ch3-apx1-compactness-weak-limit} 和 \eqref{eq:ch3-apx1-fourier-transform},
+\begin{equation}
+\widehat v_{h'}(\tau)\to\widehat v(\tau)
+=\int_{-\infty}^{+\infty}v(t)\chi(t)e^{-2i\pi t\tau}\,dt
+\quad\text{在 $L^2(\Omega)$ 中弱收敛},
+\label{eq:ch3-apx1-fourier-weak-convergence}
+\end{equation}
+对每个 $\tau$ 均成立. 此外, 由 \eqref{eq:ch3-apx1-fourier-transform},
+\[
+\lVert\widehat v_{h'}(\tau)\rVert_{h'}
+\leq\left(\int_{-\infty}^{+\infty}\lVert v_{h'}(t)\rVert_{h'}^2\,dt\right)^{1/2}
+\lVert e^{-2i\pi t\tau}\chi\rVert_{L^2(\mathbb R)}\leq\mathrm{const.}
+\]
+这一估计和离散紧性定理 \MBUnresolvedReference{theorem}{Theorem 2.2.2} (及注 \MBUnresolvedReference{remark}{Remark 2.2.4}) 表明 \eqref{eq:ch3-apx1-fourier-weak-convergence} 在 $L^2(\Omega)$ 范数中也成立. 结合 \eqref{eq:ch3-apx1-fourier-dominating-function}, 应用 Lebesgue 定理即得 \eqref{eq:ch3-apx1-compactness-local-limit}.
+
+\hypertarget{chapter-03-page-268}{}
+\subsection{协调有限元 (APX2), (APX3), (APX4)}
+\label{subsec:ch3-conforming-finite-elements}
+
+现在把第 \ref{subsec:ch3-scheme-description} 小节开头所考虑的 $V$ 的一般逼近取为 (APX2), (APX3), (APX4) 之一. 我们检验并解释定理 \ref{thm:ch3-schemes-51-52-stability}--\ref{thm:ch3-convergence-three-dimensional} 的假设. 对所有这些方法,
+\begin{equation}
+V_h\subset H_0^1(\Omega),\qquad
+\lVert u_h\rVert_h=\lVert u_h\rVert,
+\qquad\forall u_h\in V_h,
+\label{eq:ch3-conforming-space-norm}
+\end{equation}
+且对每个 $h$, $p_h$ 都是恒等映射.
+
+\subsubsection{$S(h)$ 的计算}
+条件 \eqref{eq:ch3-discrete-norm-lower-bound} 和 \eqref{eq:ch3-discrete-stability-constant} 显然成立. 由 Poincar\'e 不等式 (见第 1 章式 \MBUnresolvedReference{equation}{(1.9)}),
+\begin{equation}
+|u_h|\leq d_0\lVert u_h\rVert_h,
+\qquad d_0=2\ell,
+\label{eq:ch3-conforming-poincare}
+\end{equation}
+其中 $\ell$ 是 $\Omega$ 沿方向 $x_1,\ldots,x_n$ 的宽度中的最小者.
+
+\MBSourceStatementNumber{proposition}{3}
+\begin{Proposition}
+\label{prop:ch3-conforming-stability-constant}
+对逼近 (APX2)--(APX4),
+\begin{equation}
+S(h)=\frac{c_q}{\rho'(h)},
+\label{eq:ch3-conforming-stability-constant}
+\end{equation}
+其中 $c_q$ 是依赖于有限元次数 $q$ 的常数.\footnote{$\rho'(h)$ 定义于第 1 章式 \MBUnresolvedReference{equation}{(4.19)}.}
+\end{Proposition}
+
+\begin{Proof}
+$V_h$ 是次数不超过 $q=2,3$ 或 $4$ 的分片多项式空间, 分别对应 (APX2), (APX3), (APX4). 稳定性常数 $S(h)$ 是下列上确界平方根的一个上界:
+\begin{equation}
+\sup_{u_h\in V_h}
+\left\{\frac{\displaystyle\sum_{i=1}^n\int_\Omega|\operatorname{grad}u_{ih}(x)|^2\,dx}
+{\displaystyle\sum_{i=1}^n\int_\Omega|u_{ih}(x)|^2\,dx}\right\}.
+\label{eq:ch3-conforming-inverse-supremum}
+\end{equation}
+此上确界与下式有关:
+\begin{equation}
+\left\{\frac{\displaystyle\int_S|\operatorname{grad}\phi(x)|^2\,dx}
+{\displaystyle\int_S|\phi(x)|^2\,dx}\right\},
+\label{eq:ch3-conforming-simplex-supremum}
+\end{equation}
+其中 $S\in\mathcal T_h$, 而 $\phi$ 遍历 $S$ 上次数不超过 $q$ 的多项式. 实际上, 对每个 $i=1,\ldots,n$ 和每个 $S\in\mathcal T_h$, 设 $\mu_q$ 是此上确界的上界, 则
+\[
+\int_S|\operatorname{grad}u_{ih}(x)|^2\,dx
+\leq\mu_q\int_S|u_{ih}(x)|^2\,dx.
+\]
+对 $i$ 和 $S$ 求和得到
+\begin{equation}
+\lVert u_h\rVert_h^2
+=\sum_{i=1}^n\int_\Omega|\operatorname{grad}u_{ih}(x)|^2\,dx
+\leq\mu_q\sum_{i=1}^n\int_\Omega|u_{ih}(x)|^2\,dx
+=\mu_q|u_h|^2,
+\label{eq:ch3-conforming-inverse-estimate}
+\end{equation}
+因而可取
+\begin{equation}
+S(h)=\sqrt{\mu_q}.
+\label{eq:ch3-conforming-sqrt-muq}
+\end{equation}
+
+\hypertarget{chapter-03-page-269}{}
+为估计 \eqref{eq:ch3-conforming-simplex-supremum}, 使用线性映射 $x=\Lambda\bar x$, 它把 $S$ 映到参考 $n$-单纯形 $\bar S$, 其中 $0\leq\bar x_i\leq1$, $\sum_{i=1}^n\bar x_i\leq1$. 由于有限维多项式空间上相应的半范数和范数等价, 存在仅依赖于 $q$ 和 $\bar S$ 的常数 $\bar\mu_q$, 使得
+\begin{equation}
+\sum_{j=1}^n\int_{\bar S}\left|\frac{\partial}{\partial\bar x_j}\phi(\Lambda\bar x)\right|^2\,d\bar x
+\leq\bar\mu_q\int_{\bar S}|\phi(\Lambda\bar x)|^2\,d\bar x.
+\label{eq:ch3-conforming-reference-inverse-estimate}
+\end{equation}
+由链式法则及 $\lVert\Lambda\rVert\leq\rho_S/\rho'_S\leq\rho_S/\rho'(h)$, 变换回 $S$ 后可取
+\[
+\mu_q=\bar\mu_q\left(\frac{\rho_S}{\rho'(h)}\right)^2.
+\]
+故 \eqref{eq:ch3-conforming-stability-constant} 成立, 其中
+\begin{equation}
+c_q=\sqrt{\bar\mu_q}\,\rho_S.
+\label{eq:ch3-conforming-cq}
+\end{equation}
+\end{Proof}
+
+\hypertarget{chapter-03-page-270}{}
+\subsubsection{形式 $b_h$ 与 $S_1(h)$}
+对逼近 (APX2)--(APX4), 仍取第 2 章第 \MBUnresolvedReference{section}{Section 3} 节定义的形式 $b_h$ (见式 \MBUnresolvedReference{equation}{(3.55)}):
+\begin{equation}
+b_h(u_h,v_h,w_h)=b'(u_h,v_h,w_h)+b''(u_h,v_h,w_h),
+\label{eq:ch3-conforming-bh-decomposition}
+\end{equation}
+\begin{equation}
+b'(u,v,w)=\frac12\sum_{i,j=1}^n\int_\Omega u_i(D_iv_j)w_j\,dx,
+\label{eq:ch3-conforming-b-prime}
+\end{equation}
+\begin{equation}
+b''(u,v,w)=-b'(u,w,v).
+\label{eq:ch3-conforming-b-double-prime}
+\end{equation}
+$b_h$ 在 $V_h^3$ 上连续且满足 \eqref{eq:ch3-discrete-trilinear-cancellation}. 常数 $d_1$ 和 $S_1(h)$ 的估计来自下一引理.
+
+\MBSourceStatementNumber{lemma}{3}
+\begin{Lemma}
+\label{lem:ch3-conforming-trilinear-components}
+当 $n=2$ 或 $3$, 且 $u,v,w\in H_0^1(\Omega)$ 时,
+\begin{align}
+|b'(u,v,w)|
+&\leq\frac1{\sqrt2}|u|^{1/2}\lVert u\rVert^{1/2}\lVert v\rVert
+|w|^{1/2}\lVert w\rVert^{1/2} &&(n=2),\notag\\
+&\leq|u|^{1/4}\lVert u\rVert^{3/4}\lVert v\rVert
+|w|^{1/4}\lVert w\rVert^{3/4} &&(n=3),
+\label{eq:ch3-conforming-b-prime-estimate}
+\end{align}
+\begin{align}
+|b''(u,v,w)|
+&\leq\frac1{\sqrt2}|u|^{1/2}\lVert u\rVert^{1/2}
+|v|^{1/2}\lVert v\rVert^{1/2}\lVert w\rVert &&(n=2),\notag\\
+&\leq|u|^{1/4}\lVert u\rVert^{3/4}
+|v|^{1/4}\lVert v\rVert^{3/4}\lVert w\rVert &&(n=3).
+\label{eq:ch3-conforming-b-double-prime-estimate}
+\end{align}
+\end{Lemma}
+
+\begin{Proof}
+当 $n=2$ 时, 结论由引理 \MBUnresolvedReference{lemma}{Lemma 3.4} 得到, 注意
+\[
+b'(u,v,w)=\frac12b(u,v,w),\qquad
+b''(u,v,w)=-\frac12b(u,w,v).
+\]
+当 $n=3$ 时, 证明基于引理 \MBUnresolvedReference{lemma}{Lemma 3.5}; H\"older 不等式给出
+\begin{equation}
+|b'(u,v,w)|\leq\frac12
+\left(\sum_{i,j=1}^3\lVert D_iv_j\rVert_{L^2(\Omega)}^2\right)^{1/2}
+\left(\sum_{i=1}^3\lVert u_i\rVert_{L^4(\Omega)}^2\right)^{1/2}
+\left(\sum_{j=1}^3\lVert w_j\rVert_{L^4(\Omega)}^2\right)^{1/2}.
+\label{eq:ch3-conforming-b-prime-holder}
+\end{equation}
+又由式 \MBUnresolvedReference{equation}{(3.67)},
+\begin{equation}
+\sum_{i=1}^3\lVert u_i\rVert_{L^4(\Omega)}^2
+\leq2\sum_{i=1}^3\bigl(\lVert u_i\rVert_{L^2(\Omega)}^{1/2}
+\lVert\operatorname{grad}u_i\rVert_{L^2(\Omega)}^{3/2}\bigr)
+\leq2|u|^{1/2}\lVert u\rVert^{3/2},
+\label{eq:ch3-conforming-l4-u}
+\end{equation}
+并且类似地
+\begin{equation}
+\sum_{j=1}^3\lVert w_j\rVert_{L^4(\Omega)}^2
+\leq2|w|^{1/2}\lVert w\rVert^{3/2}.
+\label{eq:ch3-conforming-l4-w}
+\end{equation}
+将二者代入 \eqref{eq:ch3-conforming-b-prime-holder} 得到 \eqref{eq:ch3-conforming-b-prime-estimate}; 对 $b''$ 使用 \eqref{eq:ch3-conforming-b-double-prime} 即得另一个估计.
+\end{Proof}
+
+\hypertarget{chapter-03-page-271}{}
+\MBSourceStatementNumber{lemma}{4}
+\begin{Lemma}
+\label{lem:ch3-conforming-trilinear-continuity}
+\begin{equation}
+|b_h(u_h,v_h,w_h)|\leq d_1\lVert u_h\rVert\lVert v_h\rVert\lVert w_h\rVert,
+\qquad\forall u_h,v_h,w_h\in V_h,
+\label{eq:ch3-conforming-bh-continuity}
+\end{equation}
+其中
+\begin{equation}
+d_1=2\sqrt{2\ell}\quad(n=2),
+\qquad d_1=2^{3/2}\sqrt\ell\quad(n=3).
+\label{eq:ch3-conforming-bh-continuity-constant}
+\end{equation}
+\end{Lemma}
+
+\begin{Proof}
+这是 \eqref{eq:ch3-conforming-poincare}, \eqref{eq:ch3-conforming-bh-decomposition}, \eqref{eq:ch3-conforming-b-prime-estimate} 和 \eqref{eq:ch3-conforming-b-double-prime-estimate} 的直接推论.
+\end{Proof}
+
+\MBSourceStatementNumber{proposition}{4}
+\begin{Proposition}
+\label{prop:ch3-conforming-s1-bound}
+对逼近 (APX2)--(APX4), 不等式 \eqref{eq:ch3-scheme-53-improved-trilinear-bound} 成立, 其中
+\begin{equation}
+S_1(h)=\sqrt2S(h)\quad(n=2),
+\qquad S_1(h)=2S^{3/2}(h)\quad(n=3),
+\label{eq:ch3-conforming-s1}
+\end{equation}
+且 $S(h)$ 由 \eqref{eq:ch3-conforming-stability-constant} 给出.
+\end{Proposition}
+
+\begin{Proof}
+由 \eqref{eq:ch3-conforming-poincare}, \eqref{eq:ch3-conforming-b-prime-estimate} 和 \eqref{eq:ch3-conforming-b-double-prime-estimate} 对 $b'$ 与 $b''$ 分别估计即得.
+\end{Proof}
+
+\subsubsection{稳定性与收敛性定理的应用}
+格式 \ref{scheme:ch3-fully-implicit} 和 \ref{scheme:ch3-crank-nicholson} 无条件稳定. 格式 \ref{scheme:ch3-linear-implicit} 的稳定性条件为
+\begin{equation}
+\frac{k}{[\rho'(h)]^2}\leq\min\left(\frac{d'}{4\ell c_q^2},\frac{d''}{c_q^2}\right),
+\qquad n=2,
+\label{eq:ch3-conforming-scheme53-stability-2d}
+\end{equation}
+\begin{equation}
+\frac{k}{[\rho'(h)]^3}\leq\frac{d'}{4c_q^3},
+\qquad
+\frac{k}{[\rho'(h)]^2}\leq\frac{d''}{c_q^2},
+\qquad n=3,
+\label{eq:ch3-conforming-scheme53-stability-3d}
+\end{equation}
+其中 $d',d''$ 定义于引理 \ref{lem:ch3-scheme-53-apriori-bounds} 的证明中, $c_q$ 定义于命题 \ref{prop:ch3-conforming-stability-constant} 的证明中.
+
+\hypertarget{chapter-03-page-272}{}
+格式 \ref{scheme:ch3-explicit} 的稳定性条件为
+\begin{equation}
+\frac{k}{[\rho'(h)]^2}\leq\frac{1-\delta}{4\nu c_q^2},
+\qquad
+\frac{k}{[\rho'(h)]^2}\leq\frac{\nu\delta}{16c_q^2d_5},
+\qquad n=2,
+\label{eq:ch3-conforming-scheme54-stability-2d}
+\end{equation}
+\begin{equation}
+\frac{k}{[\rho'(h)]^2}\leq\frac{1-\delta}{4\nu c_q^2},
+\qquad
+\frac{k}{[\rho'(h)]^3}\leq\frac{\nu\delta}{32c_q^3d_5},
+\qquad n=3,
+\label{eq:ch3-conforming-scheme54-stability-3d}
+\end{equation}
+其中 $0<\delta<1$, 且 $d_5$ 由 \eqref{eq:ch3-scheme-54-data-bound} 给出. 此时 $F=H_0^1(\Omega)$, 因而收敛结论为
+\begin{equation}
+u_h\to u\quad\text{在 $L^2(Q)$ 中强收敛, 在 $L^\infty(0,T;L^2(\Omega))$ 中弱星收敛},
+\label{eq:ch3-conforming-velocity-convergence-l2}
+\end{equation}
+\begin{equation}
+u_h\to u\quad\text{在 $L^2(0,T;H_0^1(\Omega))$ 中强收敛或弱收敛},
+\label{eq:ch3-conforming-velocity-convergence-h1}
+\end{equation}
+具体取决于 $L^2(0,T;F)$ 中的收敛是强还是弱. 条件 \eqref{eq:ch3-convergence-identification-property}--\eqref{eq:ch3-convergence-compactness-property} 很容易检验: 前三个条件由恒等嵌入、弱强收敛配对和测试函数插值直接得到, 最后一个条件包含在定理 \MBUnresolvedReference{theorem}{Theorem 2.2} 中.
+
+\subsection{非协调有限元 (APX5)}
+\label{subsec:ch3-nonconforming-finite-elements}
+
+现在把 $V$ 的一般逼近取为分片线性非协调有限元逼近 (APX5), 并依次检验定理 \ref{thm:ch3-schemes-51-52-stability}--\ref{thm:ch3-convergence-three-dimensional} 的假设.
+
+\subsubsection{$S(h)$ 的计算}
+条件 \eqref{eq:ch3-discrete-norm-lower-bound} 和 \eqref{eq:ch3-discrete-stability-constant} 显然成立. 由命题 \MBUnresolvedReference{proposition}{Proposition 1.4.13},
+\begin{equation}
+|u_h|\leq d_0\lVert u_h\rVert_h,
+\label{eq:ch3-apx5-l2-bound}
+\end{equation}
+其中 $d_0=c'(\Omega,\alpha)$ 是一个不易显式表示且依赖于 $\Omega$ 和 $\alpha$ 的常数 (见第 1 章式 \MBUnresolvedReference{equation}{(4.179)}; $\alpha$ 的含义与第 1 章式 \MBUnresolvedReference{equation}{(4.21)} 相同).
+
+\MBSourceStatementNumber{proposition}{5}
+\begin{Proposition}
+\label{prop:ch3-apx5-stability-constant}
+对逼近 (APX5),
+\begin{equation}
+S(h)=\frac{c_0(n)}{\rho'(h)},
+\label{eq:ch3-apx5-stability-constant}
+\end{equation}
+其中 $c_0(n)$ 只依赖于 $n$, 而 $\rho'(h)$ 定义于第 1 章式 \MBUnresolvedReference{equation}{(4.20)}.
+\end{Proposition}
+
+\hypertarget{chapter-03-page-273}{}
+\begin{Proof}
+命题 \ref{prop:ch3-conforming-stability-constant} 的证明仍然适用. $S(h)$ 是下列上确界平方根的一个上界:
+\begin{equation}
+\sup_{u_h\in V_h}
+\left\{\frac{\displaystyle\sum_{i=1}^n\int_\Omega|\operatorname{grad}u_{ih}(x)|^2\,dx}
+{\displaystyle\sum_{i=1}^n\int_\Omega|u_{ih}(x)|^2\,dx}\right\}.
+\label{eq:ch3-apx5-inverse-supremum}
+\end{equation}
+如 \eqref{eq:ch3-conforming-sqrt-muq} 的证明那样, $S(h)^2$ 被线性函数在单纯形上的相应上确界 $\mu_1$ 控制. 通过把 $S$ 映到参考单纯形 $\bar S$ 的仿射映射, 有
+\[
+\mu_1=\bar\mu_1\left(\frac{\rho_S}{\rho'(h)}\right)^2.
+\]
+因此 \eqref{eq:ch3-apx5-stability-constant} 成立, 其中
+\begin{equation}
+c_0(n)=\sqrt{\bar\mu_1}\,\rho_S.
+\label{eq:ch3-apx5-c0}
+\end{equation}
+\end{Proof}
+
+\subsubsection{形式 $b_h$ 与 $S_1(h)$}
+对逼近 (APX5), 仍取第 2 章第 \MBUnresolvedReference{subsection}{Section 3.2} 小节定义的形式 $b_h$ (见式 \MBUnresolvedReference{equations}{(3.80)--(3.82)}):
+\begin{equation}
+b_h(u_h,v_h,w_h)=b'_h(u_h,v_h,w_h)+b''_h(u_h,v_h,w_h),
+\label{eq:ch3-apx5-bh-decomposition}
+\end{equation}
+\begin{equation}
+b'_h(u_h,v_h,w_h)=\frac12\sum_{i,j=1}^n\int_\Omega u_{ih}(D_{ih}v_{jh})w_{jh}\,dx,
+\label{eq:ch3-apx5-bh-prime}
+\end{equation}
+\begin{equation}
+b''_h(u_h,v_h,w_h)=-b'_h(u_h,w_h,v_h).
+\label{eq:ch3-apx5-bh-double-prime}
+\end{equation}
+显然 $b'_h,b''_h,b_h$ 都是 $V_h^3$ 上的连续三线性形式, 且满足 \eqref{eq:ch3-discrete-trilinear-cancellation}.
+
+\hypertarget{chapter-03-page-274}{}
+\MBSourceStatementNumber{lemma}{5}
+\begin{Lemma}
+\label{lem:ch3-apx5-trilinear-components}
+当 $n=2$ 时, 对任意固定的 $0<\varepsilon<1$,
+\begin{align}
+|b'_h(u_h,v_h,w_h)|
+&\leq c_1(\Omega,\alpha,\varepsilon)|u_h|^{1-\varepsilon/2}
+\lVert u_h\rVert_h^{1+\varepsilon/2}\lVert v_h\rVert_h
+|w_h|^{1-\varepsilon/2}\lVert w_h\rVert_h^{1+\varepsilon/2},\notag\\
+|b''_h(u_h,v_h,w_h)|
+&\leq c_1(\Omega,\alpha,\varepsilon)|u_h|^{1-\varepsilon/2}
+\lVert u_h\rVert_h^{1+\varepsilon/2}|v_h|^{1-\varepsilon/2}
+\lVert v_h\rVert_h^{1+\varepsilon/2}\lVert w_h\rVert_h.
+\label{eq:ch3-apx5-trilinear-estimate-2d}
+\end{align}
+当 $n=3$ 时,
+\begin{align}
+|b'_h(u_h,v_h,w_h)|
+&\leq c_2(\Omega,\alpha)|u_h|^{1/4}\lVert u_h\rVert_h^{3/4}
+\lVert v_h\rVert_h|w_h|^{1/4}\lVert w_h\rVert_h^{3/4},\notag\\
+|b''_h(u_h,v_h,w_h)|
+&\leq c_2(\Omega,\alpha)|u_h|^{1/4}\lVert u_h\rVert_h^{3/4}
+|v_h|^{1/4}\lVert v_h\rVert_h^{3/4}\lVert w_h\rVert_h.
+\label{eq:ch3-apx5-trilinear-estimate-3d}
+\end{align}
+\end{Lemma}
+
+\begin{Proof}
+$b''_h$ 的估计由 $b'_h$ 的估计交换 $v_h,w_h$ 得到. 与引理 \ref{lem:ch3-apx1-trilinear-components} 一样使用 H\"older 不等式,
+\begin{equation}
+|b'_h(u_h,v_h,w_h)|\leq\frac12
+\left(\sum_{i=1}^n\lVert u_{ih}\rVert_{L^4(\Omega)}^2\right)^{1/2}
+\left(\sum_{j=1}^n\lVert w_{jh}\rVert_{L^4(\Omega)}^2\right)^{1/2}
+\lVert v_h\rVert_h.
+\label{eq:ch3-apx5-holder}
+\end{equation}
+用定理 \MBUnresolvedReference{theorem}{Theorem 2.2.3} 和注 \MBUnresolvedReference{remark}{Remark 2.2.6} 估计 $L^4$ 范数. 当 $n=3$ 时, Schwarz 不等式给出
+\begin{equation}
+\sum_{i=1}^3\lVert u_{ih}\rVert_{L^4(\Omega)}^2
+\leq c_3(\Omega,\alpha)|u_h|^{1/2}\lVert u_h\rVert_h^{3/2}.
+\label{eq:ch3-apx5-l4-bound-3d}
+\end{equation}
+与 \eqref{eq:ch3-apx5-holder} 合用得到三维估计. 当 $n=2$ 时, 由第 2 章式 \MBUnresolvedReference{equation}{(2.48)},
+\begin{equation}
+\sum_{i=1}^2\lVert u_{ih}\rVert_{L^4(\Omega)}^2
+\leq c_4(\Omega,\alpha,\varepsilon)|u_h|^{1-\varepsilon}
+\lVert u_h\rVert_h^{3+\varepsilon},
+\label{eq:ch3-apx5-l4-bound-2d}
+\end{equation}
+从而得到二维估计.
+\end{Proof}
+
+结合 \eqref{eq:ch3-apx5-l2-bound} 与引理 \ref{lem:ch3-apx5-trilinear-components}, 易得
+\begin{equation}
+|b_h(u_h,v_h,w_h)|\leq d_1\lVert u_h\rVert_h\lVert v_h\rVert_h\lVert w_h\rVert_h,
+\qquad\forall u_h,v_h,w_h\in V_h,
+\label{eq:ch3-apx5-bh-continuity}
+\end{equation}
+其中常数 $d_1$ 依赖于 $\Omega$ 和 $\alpha$.
+
+\hypertarget{chapter-03-page-275}{}
+\MBSourceStatementNumber{proposition}{6}
+\begin{Proposition}
+\label{prop:ch3-apx5-s1-bound}
+对逼近 (APX5), 不等式 \eqref{eq:ch3-scheme-53-improved-trilinear-bound} 成立, 其中
+\begin{equation}
+S_1(h)=c_1(\Omega,\alpha,\varepsilon)S(h)^{1+\varepsilon},
+\qquad0<\varepsilon<1\text{ 任意},\quad n=2,
+\label{eq:ch3-apx5-s1-2d}
+\end{equation}
+\begin{equation}
+S_1(h)=c_2(\Omega,\alpha)S(h)^{3/2},
+\qquad n=3,
+\label{eq:ch3-apx5-s1-3d}
+\end{equation}
+其中 $S(h),c_1,c_2$ 分别由 \eqref{eq:ch3-apx5-stability-constant}, \eqref{eq:ch3-apx5-trilinear-estimate-2d}, \eqref{eq:ch3-apx5-trilinear-estimate-3d} 给出.
+\end{Proposition}
+
+\begin{Proof}
+把 \eqref{eq:ch3-apx5-stability-constant} 分别代入 \eqref{eq:ch3-apx5-trilinear-estimate-2d} 和 \eqref{eq:ch3-apx5-trilinear-estimate-3d}, 并对 $b'_h,b''_h$ 相加即得.
+\end{Proof}
+
+\subsubsection{稳定性与收敛性定理的应用}
+格式 \ref{scheme:ch3-fully-implicit} 和 \ref{scheme:ch3-crank-nicholson} 无条件稳定. 格式 \ref{scheme:ch3-linear-implicit} 的稳定性条件为
+\begin{equation}
+\frac{k}{[\rho'(h)]^{2(1+\varepsilon)}}
+\leq\frac{d'}{c_0(n)^{2(1+\varepsilon)}c_1(\Omega,\alpha,\varepsilon)^2},
+\qquad
+\frac{k}{[\rho'(h)]^2}\leq\frac{d''}{c_0(n)^2},
+\quad n=2,
+\label{eq:ch3-apx5-scheme53-stability-2d}
+\end{equation}
+\begin{equation}
+\frac{k}{[\rho'(h)]^3}\leq\frac{d'}{c_0(n)^3c_2(\Omega,\alpha)^2},
+\qquad
+\frac{k}{[\rho'(h)]^2}\leq\frac{d''}{c_0(n)^2},
+\quad n=3,
+\label{eq:ch3-apx5-scheme53-stability-3d}
+\end{equation}
+其中 $d',d''$ 定义于引理 \ref{lem:ch3-scheme-53-apriori-bounds} 的证明中, $0<\varepsilon<1$ 固定但任意.
+
+格式 \ref{scheme:ch3-explicit} 的稳定性条件为
+\begin{equation}
+\frac{k}{[\rho'(h)]^2}\leq\frac{1-\delta}{4\nu c_0^2},
+\qquad
+\frac{k}{[\rho'(h)]^{2(1+\varepsilon)}}
+\leq\frac{\gamma\delta}{8d_5c_1^2c_0^{2(1+\varepsilon)}},
+\quad n=2,
+\label{eq:ch3-apx5-scheme54-stability-2d}
+\end{equation}
+\begin{equation}
+\frac{k}{[\rho'(h)]^2}\leq\frac{1-\delta}{4\nu c_0^2},
+\qquad
+\frac{k}{[\rho'(h)]^3}\leq\frac{\nu\delta}{8d_5c_1^2c_0^3},
+\quad n=3,
+\label{eq:ch3-apx5-scheme54-stability-3d}
+\end{equation}
+其中 $0<\delta<1$, $0<\varepsilon<1$, 且 $d_5$ 由 \eqref{eq:ch3-scheme-54-data-bound} 给出. 由于右端常数的信息不精确, 条件 \eqref{eq:ch3-apx5-scheme53-stability-2d}--\eqref{eq:ch3-apx5-scheme54-stability-3d} 并不完全令人满意.
+
+收敛结论很简单:
+\begin{equation}
+\begin{gathered}
+u_h\to u\quad\text{在 $L^2(Q)$ 中强收敛, 在 $L^\infty(0,T;L^2(\Omega))$ 中弱星收敛},\\
+D_{ih}u_h\to D_i u\quad\text{在 $L^2(Q)$ 中强收敛或弱收敛},
+\end{gathered}
+\label{eq:ch3-apx5-convergence}
+\end{equation}
+后一种情形取决于 $L^2(0,T;F)$ 中的收敛是强还是弱.
+
+\hypertarget{chapter-03-page-276}{}
+定理 \ref{thm:ch3-convergence-two-dimensional} 和 \ref{thm:ch3-convergence-three-dimensional} 的条件 \eqref{eq:ch3-convergence-identification-property}--\eqref{eq:ch3-convergence-compactness-property} 的检验与有限差分完全相同, 只需在第 \ref{subsec:ch3-finite-differences-apx1} 小节的论证中处处以 $D_{ih}$ 代替 $\delta_{ih}$.
+
+\subsection{数值算法与压力逼近}
+\label{subsec:ch3-numerical-algorithms-pressure}
+
+实际计算上述格式之一所定义的 $V_h$ 中元素 $u_h^m$ 并不容易. 困难来自空间 $V_h$ 定义中内置的约束 ``$\operatorname{div}u=0$'', 这与第 1 章 Stokes 问题中的情形完全相同. 本小节说明如何把第 1 章第 \MBUnresolvedReference{section}{Section 5} 节研究的算法推广到问题 \MBUnresolvedReference{problems}{(5.12)--(5.15)}, 并同时引入压力的离散逼近.
+
+\subsubsection{压力的逼近}
+对 $V$ 的每一种逼近 $V_h$, 我们还定义了 $H_0^1(\Omega)$ 的逼近 $W_h$ (见第 1 章第 \MBUnresolvedReference{sections}{Sections 3 and 4}). 本质上, $W_h$ 的元素与 $V_h$ 的元素类型完全相同, 但不施加散度条件. 本节稍后将说明怎样用 $W_h$ 中元素序列 $u_h^{m,r}$ ($r=1,\ldots,\infty$) 逼近 $u_h^m$.
+
+\paragraph{逼近 (APX1).}
+$W_h$ 是下列阶梯函数的空间:
+\begin{equation}
+u_h=\sum_{M\in\mathring\Omega_h^1}\xi_Mw_{hM},
+\qquad\xi_M\in\mathbb R^n.
+\label{eq:ch3-apx1-wh-step-functions}
+\end{equation}
+离散压力是下列类型的阶梯函数空间 $X_h$ 的元素:
+\begin{equation}
+\pi_h=\sum_{M\in\mathring\Omega_h^1}\eta_Mw_{hM},
+\qquad\eta_M\in\mathbb R.
+\label{eq:ch3-apx1-pressure-space}
+\end{equation}
+对 $u_h\in W_h$, 离散散度 $D_hu_h$ 定义为 $X_h$ 中的阶梯函数, 其中
+\begin{equation}
+D_hu_h(M)=\sum_{i=1}^n\nabla_{ih}u_{ih}(M),
+\qquad\forall M\in\mathring\Omega_h^1.
+\label{eq:ch3-apx1-discrete-divergence}
+\end{equation}
+$W_h$ 的元素 $u_h$ 属于 $V_h$ 当且仅当
+\begin{equation}
+D_hu_h=0.
+\label{eq:ch3-apx1-divergence-free}
+\end{equation}
+完全如第 1 章第 \MBUnresolvedReference{subsection}{Subsection 3.3} 小节所证, 若 $u_h^m$ 是格式 \ref{scheme:ch3-fully-implicit} 的解, 则存在形如 \eqref{eq:ch3-apx1-pressure-space} 的阶梯函数 $\pi_h^m$, 使得
+\begin{equation}
+\frac1k(u_h^m-u_h^{m-1},v_h)+\nu((u_h^m,v_h))_h
++b_h(u_h^{m-1},u_h^m,v_h)-(\pi_h^m,D_hv_h)
+=(f^m,v_h),\quad\forall v_h\in W_h.
+\label{eq:ch3-apx1-momentum-with-pressure}
+\end{equation}
+与原格式相比, 差别在于出现了项 $-(\pi_h^m,D_hv_h)$, 且方程对所有 $v_h\in W_h$ 成立, 包括不满足离散无散条件的 $v_h$.
+
+\hypertarget{chapter-03-page-277}{}
+对格式 \ref{scheme:ch3-crank-nicholson}--\ref{scheme:ch3-explicit} 也有相同结果. 分别存在形如 \eqref{eq:ch3-apx1-pressure-space} 的 $\pi_h^m$, 使得
+\begin{equation}
+\begin{split}
+\frac1k(u_h^m-u_h^{m-1},v_h)&+\frac\nu2((u_h^m+u_h^{m-1},v_h))_h\\
+&+\frac12b_h(u_h^{m-1},u_h^m+u_h^{m-1},v_h)-(\pi_h^m,D_hv_h)\\
+&=(f^m,v_h),\qquad\forall v_h\in W_h,
+\end{split}
+\label{eq:ch3-pressure-scheme52}
+\end{equation}
+\begin{equation}
+\frac1k(u_h^m-u_h^{m-1},v_h)+\nu((u_h^m,v_h))_h
++b_h(u_h^{m-1},u_h^{m-1},v_h)
+-(\pi_h^m,D_hv_h)=(f^m,v_h),\quad\forall v_h\in W_h,
+\label{eq:ch3-pressure-scheme53}
+\end{equation}
+\begin{equation}
+\frac1k(u_h^m-u_h^{m-1},v_h)+\nu((u_h^{m-1},v_h))_h
++b_h(u_h^{m-1},u_h^{m-1},v_h)
+-(\pi_h^m,D_hv_h)=(f^m,v_h),\quad\forall v_h\in W_h.
+\label{eq:ch3-pressure-scheme54}
+\end{equation}
+
+\paragraph{其他逼近.}
+对其他逼近, 同一结果成立; 差别只在 $D_h$ 的定义、$\pi_h^m$ 所属空间 $X_h$ 的定义, 以及相应的 $V_h,W_h$ 定义中. 对 (APX2), (APX3), (APX5), $X_h$ 是下列阶梯函数的空间:
+\begin{equation}
+\pi_h=\sum_{S\in\mathcal T_h}\eta_S\chi_S,
+\qquad\eta_S\in\mathbb R,
+\label{eq:ch3-fem-pressure-space}
+\end{equation}
+其中 $\chi_S$ 是单纯形 $S$ 的示性函数. 离散散度是形如 \eqref{eq:ch3-fem-pressure-space} 的阶梯函数, 定义为
+\begin{equation}
+\left\{
+\begin{aligned}
+D_hu_h&=\sum_{S\in\mathcal T_h}\eta_S\chi_S,\\
+\eta_S&=\frac1{\operatorname{meas}S}\int_S\operatorname{div}u_h\,dx.
+\end{aligned}
+\right.
+\label{eq:ch3-fem-discrete-divergence}
+\end{equation}
+$W_h$ 中的函数 $u_h$ 属于 $V_h$ 当且仅当 $D_hu_h$ 为零. 用此记号, 对逼近 (APX2), (APX3), (APX5) 也分别存在满足 \eqref{eq:ch3-apx1-momentum-with-pressure}, \eqref{eq:ch3-pressure-scheme52}--\eqref{eq:ch3-pressure-scheme54} 的 $\pi_h^m$. 对 (APX4) 也可证明类似结果, 但此时空间 $X_h$ 的刻画在技术上更复杂.
+
+\subsubsection{Uzawa 算法}
+我们研究 Uzawa 算法对求解 \eqref{eq:ch3-apx1-momentum-with-pressure}--\eqref{eq:ch3-pressure-scheme54} 的一种改造. 若步 $m-1$ 的元素已算出, 便要求两个未知量
+\begin{equation}
+u_h^m\in V_h,\qquad\pi_h^m\in X_h.
+\label{eq:ch3-uzawa-unknowns}
+\end{equation}
+它们将作为两列元素的极限得到:
+\begin{equation}
+u_h^{m,r}\in W_h,\qquad\pi_h^{m,r}\in X_h,
+\qquad r=0,1,\ldots,\infty.
+\label{eq:ch3-uzawa-sequences}
+\end{equation}
+如第 1 章第 \MBUnresolvedReference{subsections}{Subsections 5.1 and 5.3} 小节, 从任意
+\begin{equation}
+\pi_h^{m,0}\in X_h
+\label{eq:ch3-uzawa-initial-pressure}
+\end{equation}
+开始. 已知 $\pi_h^{m,r}$ 后, 对 $r\geq0$ 定义 $u_h^{m,r+1}$ 和 $\pi_h^{m,r+1}$ 如下.
+
+\hypertarget{chapter-03-page-278}{}
+对格式 \ref{scheme:ch3-fully-implicit}, $u_h^{m,r+1}\in W_h$ 且
+\begin{equation}
+\begin{split}
+(u_h^{m,r+1},v_h)&+k\nu((u_h^{m,r+1},v_h))_h
++kb_h(u_h^{m-1},u_h^{m,r+1},v_h)\\
+&-k(\pi_h^{m,r},D_hv_h)
+=(u_h^{m-1},v_h)+k(f^m,v_h),\qquad\forall v_h\in W_h,
+\end{split}
+\label{eq:ch3-uzawa-scheme51-velocity}
+\end{equation}
+并且 $\pi_h^{m,r+1}\in X_h$ 满足
+\begin{equation}
+(\pi_h^{m,r+1}-\pi_h^{m,r},q_h)+\rho(D_hu_h^{m,r+1},q_h)=0,
+\qquad\forall q_h\in X_h.
+\label{eq:ch3-uzawa-pressure-update}
+\end{equation}
+由投影定理, \eqref{eq:ch3-uzawa-scheme51-velocity} 的解存在且唯一; \eqref{eq:ch3-uzawa-pressure-update} 实际上直接给出 $\pi_h^{m,r+1}$, 无需求逆矩阵. 求 $u_h^{m,r+1}$ 等价于求解一个离散 Dirichlet 问题.
+
+对其余格式, 保持 \eqref{eq:ch3-uzawa-pressure-update} 不变, 并分别以
+\begin{equation}
+\begin{split}
+(u_h^{m,r+1},v_h)&+\frac{k\nu}{2}((u_h^{m-1}+u_h^{m,r+1},v_h))_h\\
+&+\frac k2b_h(u_h^{m-1},u_h^{m-1}+u_h^{m,r+1},v_h)
+-k(\pi_h^{m,r},D_hv_h)\\
+&=(u_h^{m-1},v_h)+k(f^m,v_h),\qquad\forall v_h\in W_h,
+\end{split}
+\label{eq:ch3-uzawa-scheme52-velocity}
+\end{equation}
+\begin{equation}
+\begin{split}
+(u_h^{m,r+1},v_h)&+k\nu((u_h^{m,r+1},v_h))_h
++kb_h(u_h^{m-1},u_h^{m-1},v_h)\\
+&-k(\pi_h^{m,r},D_hv_h)
+=(u_h^{m-1},v_h)+k(f^m,v_h),\qquad\forall v_h\in W_h,
+\end{split}
+\label{eq:ch3-uzawa-scheme53-velocity}
+\end{equation}
+\begin{equation}
+\begin{split}
+(u_h^{m,r+1},v_h)&+k\nu((u_h^{m-1},v_h))_h
++kb_h(u_h^{m-1},u_h^{m-1},v_h)\\
+&-k(\pi_h^{m,r},D_hv_h)
+=(u_h^{m-1},v_h)+k(f^m,v_h),\qquad\forall v_h\in W_h
+\end{split}
+\label{eq:ch3-uzawa-scheme54-velocity}
+\end{equation}
+代替 \eqref{eq:ch3-uzawa-scheme51-velocity}. 计算步 $m$ 时, 步 $m-1$ 的所有元素均已知, 只需对指标 $r$ 迭代.
+
+\MBSourceStatementNumber{proposition}{7}
+\begin{Proposition}
+\label{prop:ch3-uzawa-convergence}
+若 $\rho$ 满足
+\begin{equation}
+0<\rho<\frac{2\nu}{n},
+\label{eq:ch3-uzawa-rho-condition}
+\end{equation}
+则当 $r\to\infty$ 时, $u_h^{m,r}$ 在 $W_h$ 中收敛到 $u_h^m$, 而 $\pi_h^{m,r}$ 在 $X_h/\mathbb R$ 中收敛到 $\pi_h^m$.\footnote{$n=2$ 或 $3$, 即空间维数.}
+\end{Proposition}
+
+\begin{Proof}
+只证明格式 \ref{scheme:ch3-fully-implicit}. 略去指标 $m,h$, 置
+\begin{equation}
+v^r=u_h^{m,r}-u_h^m,
+\label{eq:ch3-uzawa-velocity-error}
+\end{equation}
+\begin{equation}
+\pi^r=\pi_h^{m,r}-\pi_h^m.
+\label{eq:ch3-uzawa-pressure-error}
+\end{equation}
+
+\hypertarget{chapter-03-page-279}{}
+从 \eqref{eq:ch3-uzawa-scheme51-velocity} 减去 \eqref{eq:ch3-apx1-momentum-with-pressure}, 并取 $v_h=v^{r+1}$, 得
+\begin{equation}
+|v^{r+1}|^2+k\nu\lVert v^{r+1}\rVert_h^2
+=k(\pi^r,D_hv^{r+1}).
+\label{eq:ch3-uzawa-error-energy}
+\end{equation}
+由于 $D_hu_h^m=0$, 将 \eqref{eq:ch3-uzawa-pressure-update} 改写并取 $q_h=\pi^{r+1}$, 得
+\begin{equation}
+|\pi^{r+1}|^2-|\pi^r|^2-|\pi^{r+1}-\pi^r|^2
+=-2\rho(D_hv^{r+1},\pi^{r+1}).
+\label{eq:ch3-uzawa-pressure-energy}
+\end{equation}
+下面将证明
+\begin{equation}
+|(D_hv_h,\pi_h)|\leq\sqrt n\,|\pi_h|\lVert v_h\rVert_h,
+\qquad\forall\pi_h\in X_h,\quad\forall v_h\in W_h.
+\label{eq:ch3-divergence-pressure-bound}
+\end{equation}
+暂且承认此式. 对 \eqref{eq:ch3-uzawa-pressure-energy} 的右端应用此估计与 Young 不等式, 再把其乘以 $k$ 后与 \eqref{eq:ch3-uzawa-error-energy} 的 $2\rho$ 倍相加, 得
+\begin{equation}
+\begin{split}
+k|\pi^{r+1}|^2-k|\pi^r|^2+(1-\delta)k|\pi^{r+1}-\pi^r|^2
++|v^{r+1}|^2\\
++k\rho\left(2\nu-\frac{\rho n}{\delta}\right)\lVert v^{r+1}\rVert_h^2\leq0.
+\end{split}
+\label{eq:ch3-uzawa-monotonicity}
+\end{equation}
+若 \eqref{eq:ch3-uzawa-rho-condition} 成立, 可选 $0<\delta<1$ 使 $2\nu-\rho n/\delta>0$. 对 $r=0,\ldots,s$ 求和得到
+\begin{equation}
+\begin{split}
+k|\pi^{s+1}|^2+\sum_{r=0}^s\{k(1-\delta)|\pi^{r+1}-\pi^r|^2+|v^{r+1}|^2\}\\
++k\rho\left(2\nu-\frac{\rho n}{\delta}\right)\sum_{r=0}^s\lVert v^{r+1}\rVert_h^2
+\leq k|\pi^1|^2.
+\end{split}
+\label{eq:ch3-uzawa-summed-energy}
+\end{equation}
+因此相应级数收敛, 并且
+\begin{equation}
+v^r\to0\quad\text{在 $W_h$ 中, 当 $r\to\infty$ 时}.
+\label{eq:ch3-uzawa-velocity-error-limit}
+\end{equation}
+式 \eqref{eq:ch3-uzawa-summed-energy} 还表明 $\pi^s$ 有界; 结合 \eqref{eq:ch3-uzawa-pressure-update}, 任一收敛子序列在 $X_h/\mathbb R$ 中都收敛到零, 故整个序列如此收敛.
+\end{Proof}
+
+\hypertarget{chapter-03-page-280}{}
+尚需证明 \eqref{eq:ch3-divergence-pressure-bound}.
+
+\MBSourceStatementNumber{lemma}{6}
+\begin{Lemma}
+\label{lem:ch3-divergence-pressure-bound}
+对逼近 (APX1)--(APX3) 和 (APX5),
+\begin{equation}
+|(D_hv_h,\pi_h)|\leq\sqrt n\,|\pi_h|\lVert v_h\rVert_h,
+\qquad\forall\pi_h\in X_h,\quad\forall v_h\in W_h.
+\label{eq:ch3-divergence-pressure-bound-repeated}
+\end{equation}
+\end{Lemma}
+
+\begin{Proof}
+对有限差分 (APX1), 因 $\pi_h$ 在每个块上为常数,
+\[
+(\pi_h,D_hv_h)=\int_\Omega\pi_h(x)\left(\sum_{i=1}^n\nabla_{ih}v_{ih}(x)\right)\,dx.
+\]
+由 Schwarz 不等式以及
+\[
+\int_\Omega|\nabla_{ih}v_{ih}(x)|^2\,dx
+=\int_\Omega|\delta_{ih}v_{ih}(x)|^2\,dx,
+\]
+得到 \eqref{eq:ch3-divergence-pressure-bound-repeated}. 对有限元, $\pi_h$ 在每个单纯形上为常数, 从而
+\[
+(\pi_h,D_hv_h)=\int_\Omega\pi_h(x)\operatorname{div}v_h(x)\,dx,
+\]
+再用 Schwarz 不等式即得同一结论.
+\end{Proof}
+
+\subsubsection{Arrow--Hurwicz 算法}
+用两个以略有不同方式定义的序列 $u_h^{m,r}\in W_h$, $\pi_h^{m,r}\in X_h$ ($r\geq0$) 的极限计算 $u_h^m,\pi_h^m$. 取两个正参数 $\rho,\alpha$, 并从任意
+\begin{equation}
+u_h^{m,0}\in W_h,\qquad\pi_h^{m,0}\in X_h
+\label{eq:ch3-arrow-hurwicz-initial-data}
+\end{equation}
+开始递推.
+
+\hypertarget{chapter-03-page-281}{}
+对格式 \ref{scheme:ch3-fully-implicit}, 已知 $\pi_h^{m,r},u_h^{m,r}$ 后, 定义 $u_h^{m,r+1}\in W_h$ 为满足
+\begin{equation}
+\begin{split}
+k((u_h^{m,r+1}-u_h^{m,r},v_h))_h+(u_h^{m,r},v_h)
++k\nu((u_h^{m,r},v_h))_h\\
++kb_h(u_h^{m-1},u_h^{m,r},v_h)-k(\pi_h^{m,r},D_hv_h)
+=(u_h^{m-1},v_h)+k(f^m,v_h),\quad\forall v_h\in W_h,
+\end{split}
+\label{eq:ch3-arrow-hurwicz-scheme51}
+\end{equation}
+的元素, 并定义 $\pi_h^{m,r+1}\in X_h$ 为满足
+\begin{equation}
+\alpha(\pi_h^{m,r+1}-\pi_h^{m,r},q_h)
++\rho(D_hu_h^{m,r+1},q_h)=0,
+\qquad\forall q_h\in X_h.
+\label{eq:ch3-arrow-hurwicz-pressure-update}
+\end{equation}
+的元素. 投影定理给出 $u_h^{m,r+1}$ 的存在唯一性; $\pi_h^{m,r+1}$ 由第二式显式确定.
+
+对其余格式, 保持 \eqref{eq:ch3-arrow-hurwicz-pressure-update} 不变, 分别将 \eqref{eq:ch3-arrow-hurwicz-scheme51} 替换为
+\begin{equation}
+\begin{split}
+k((u_h^{m,r+1}-u_h^{m,r},v_h))_h+(u_h^{m,r},v_h)
++\frac{k\nu}{2}((u_h^{m,r}+u_h^{m-1},v_h))_h\\
++\frac k2b_h(u_h^{m-1},u_h^{m-1}+u_h^{m,r},v_h)-k(\pi_h^{m,r},D_hv_h)
+=(u_h^{m-1},v_h)+k(f^m,v_h),\quad\forall v_h\in W_h,
+\end{split}
+\label{eq:ch3-arrow-hurwicz-scheme52}
+\end{equation}
+\begin{equation}
+\begin{split}
+k((u_h^{m,r+1}-u_h^{m,r},v_h))_h+(u_h^{m,r},v_h)
++k\nu((u_h^{m,r},v_h))_h\\
++kb_h(u_h^{m-1},u_h^{m-1},v_h)-k(\pi_h^{m,r},D_hv_h)
+=(u_h^{m-1},v_h)+k(f^m,v_h),\quad\forall v_h\in W_h,
+\end{split}
+\label{eq:ch3-arrow-hurwicz-scheme53}
+\end{equation}
+\begin{equation}
+\begin{split}
+k((u_h^{m,r+1}-u_h^{m,r},v_h))_h+(u_h^{m,r},v_h)
++k\nu((u_h^{m-1},v_h))_h\\
++kb_h(u_h^{m-1},u_h^{m-1},v_h)-k(\pi_h^{m,r},D_hv_h)
+=(u_h^{m-1},v_h)+k(f^m,v_h),\quad\forall v_h\in W_h.
+\end{split}
+\label{eq:ch3-arrow-hurwicz-scheme54}
+\end{equation}
+
+\MBSourceStatementNumber{proposition}{8}
+\begin{Proposition}
+\label{prop:ch3-arrow-hurwicz-convergence}
+假设 $\rho,\alpha$ 满足
+\begin{equation}
+0<\rho<\frac{2\alpha\nu}{\alpha\nu^2+n}.
+\label{eq:ch3-arrow-hurwicz-condition}
+\end{equation}
+则当 $r\to\infty$ 时, $u_h^{m,r}$ 在 $W_h$ 中收敛到 $u_h^m$, 而 $\pi_h^{m,r}$ 在 $X_h/\mathbb R$ 中收敛到 $\pi_h^m$.\footnote{$n=2$ 或 $3$, 即空间维数.}
+\end{Proposition}
+
+\begin{Proof}
+证明细节略去; 它们与定理 \MBUnresolvedReference{theorem}{Theorem 1.5.2} 和命题 \ref{prop:ch3-uzawa-convergence} 的证明相似.
+\end{Proof}
