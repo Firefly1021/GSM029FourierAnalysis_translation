@@ -1,0 +1,1150 @@
+\hypertarget{chapter-02-page-120}{}
+\section{存在性与唯一性定理}
+\label{sec:ch2-existence-uniqueness}
+
+\subsection*{导言}
+
+本章从与上一章相同的观点研究定常 Navier--Stokes 方程, 即解的存在性, 唯一性和数值逼近. 不过, 它与线性情形有三个重要区别:
+
+-- 引入紧性方法. 为了在非线性项中取极限, 需要强收敛结果; 这些结果由紧性论证得到.
+
+-- 与非线性项有关并与 Sobolev 不等式相联系的一些技术困难. 其结果是, 方程的处理会随空间维数略有变化.
+
+-- 一般而言解不唯一. 只有当``数据足够小或黏性足够大''时才有唯一性.
+
+第 \ref{sec:ch2-existence-uniqueness} 节说明不同情形下的一些存在性, 唯一性和正则性结果($\Omega$ 有界或无界, 齐次或非齐次方程等). 第 \MBUnresolvedReference{section}{Chapter 2, Section 2} 节对逼近 (APX1) 中考虑的阶梯函数空间($V$ 的有限差分逼近)以及 $V$ 的逼近 (APX5) 中出现的非协调有限元函数, 证明离散 Sobolev 不等式和离散紧性定理. 对逼近 (APX2), $\ldots$, (APX4), 连续情形中的定理已经给出相应结果. 第 \MBUnresolvedReference{section}{Chapter 2, Section 3} 节处理定常问题的逼近: 离散化及离散问题的求解. 第 \MBUnresolvedReference{section}{Chapter 2, Section 4} 节的目的是给出定常 Navier--Stokes 方程解不唯一的一个例子. 证明以拓扑度论证为基础, 论述基本上是自足的.
+
+本节研究定常(非线性) Navier--Stokes 方程的一些存在性与唯一性结果. 存在性结果通过 Galerkin 方法构造方程的近似解, 再像线性情形一样取极限而得到. 如前所述, 在非线性情形下取极限时需要序列的某些强收敛性质, 这些性质由紧性方法得到.
+
+第 \ref{subsec:ch2-sobolev-compactness} 节回顾 Sobolev 不等式和 Sobolev 空间的紧性定理; 该定理当然是紧性方法的基本工具. 第 \ref{subsec:ch2-homogeneous-navier-stokes} 节给出齐次 Navier--Stokes 方程(即带齐次边界条件的 Navier--Stokes 方程)的变分表述; 我们研究变分表述中出现的非线性(三线性)型的一些性质. 随后给出一般存在性定理和一个限制较强的唯一性结果. 第 \ref{subsec:ch2-homogeneous-navier-stokes-unbounded} 节考虑集合 $\Omega$ 无界的情形并给出解的正则性结果. 第 \ref{subsec:ch2-nonhomogeneous-navier-stokes} 节处理非齐次 Navier--Stokes 方程.
+
+\hypertarget{chapter-02-page-121}{}
+\subsection{Sobolev 不等式与紧性定理}
+\label{subsec:ch2-sobolev-compactness}
+
+\subsubsection*{嵌入定理}
+
+回顾以后将频繁使用的 Sobolev 嵌入定理. 设 $m$ 为整数, $p$ 为大于或等于 $1$ 的有限数. 若 $1/p-m/n=1/q>0$, 则空间 $W^{m,p}(\mathbb R^n)$ 包含于 $L^q(\mathbb R^n)$ 且嵌入连续. 若 $u\in W^{m,p}(\mathbb R^n)$ 且 $1/p-m/n=0$, 则对任意有界集合 $O$ 和任意 $q$, $1\leq q<\infty$, 有 $u\in L^q(O)$. 若 $1/p-m/n<0$, 则 $W^{m,p}(\mathbb R^n)$ 中的函数几乎处处等于一个连续函数; 这样的函数还具有某些 Hölder 或 Lipschitz 连续性, 但这里不使用这些性质. 若函数属于 $W^{m,p}(\mathbb R^n)$ 且 $1/p-m/n<0$, 则其 $\alpha$ 阶导数属于 $W^{m-\alpha,p}(\mathbb R^n)$, 并且当 $1/p-(m-\alpha)/n<0$ 时, 这些导数满足前述类型的某些嵌入结果.
+
+对 $u\in W^{m,p}(\mathbb R^n)$, $m\geq1$, $1\leq p<\infty$,
+\begin{equation}
+\left\{
+\begin{aligned}
+&\text{若 }\frac1p-\frac mn=\frac1q>0,
+&&\lvert u\rvert_{L^q(\mathbb R^n)}
+\leq c(m,p,n)\lVert u\rVert_{W^{m,p}(\mathbb R^n)},\\
+&\text{若 }\frac1p-\frac mn=0,
+&&\lvert u\rvert_{L^q(O)}
+\leq c(m,p,n,q,O)\lVert u\rVert_{W^{m,p}(\mathbb R^n)},\\
+&&&\quad\forall\text{ 有界集合 }O\subset\mathbb R^n,
+\quad\forall q,\ 1\leq q<\infty,\\
+&\text{若 }\frac1p-\frac mn<0,
+&&\lvert u\rvert_{C^0(O)}
+\leq c(m,p,n,q,O)\lVert u\rVert_{W^{m,p}(\mathbb R^n)},\\
+&&&\quad\forall\text{ 有界集合 }O,\ O\subset\mathbb R^n.
+\end{aligned}
+\right.
+\label{eq:ch2-sobolev-rn-embeddings}
+\end{equation}
+
+若 $\Omega$ 是 $\mathbb R^n$ 中的任意开集, 当 $\Omega$ 足够光滑而满足下列性质时, 通常可得到与 \eqref{eq:ch2-sobolev-rn-embeddings} 类似的结果:
+\begin{equation}
+\text{存在连续线性延拓算子 }
+\Pi\in\mathcal L(W^{m,p}(\Omega),W^{m,p}(\mathbb R^n)).
+\label{eq:ch2-sobolev-extension-operator}
+\end{equation}
+局部 Lipschitz 集合 $\Omega$ 满足性质 \eqref{eq:ch2-sobolev-extension-operator}. 当该性质成立时, 把 \eqref{eq:ch2-sobolev-rn-embeddings} 用于 $\Pi u$, $u\in W^{m,p}(\Omega)$, 可知若 $u\in W^{m,p}(\Omega)$, $m\geq1$, $1<p<\infty$, 且 \eqref{eq:ch2-sobolev-extension-operator} 成立, 则
+\begin{equation}
+\left\{
+\begin{aligned}
+&\text{若 }\frac1p-\frac mn=\frac1q>0,
+&&\lvert u\rvert_{L^q(\Omega)}
+\leq c(m,p,n,\Omega)\lVert u\rVert_{W^{m,p}(\Omega)},\\
+&\text{若 }\frac1p-\frac mn=0,
+&&\lvert u\rvert_{L^q(O)}
+\leq c(m,p,n,q,O,\Omega)\lVert u\rVert_{W^{m,p}(\Omega)},\\
+&&&\quad\forall q,\ 1\leq q<\infty,
+\quad\forall\text{ 有界集合 }O\subset\overline\Omega,\\
+&\text{若 }\frac1p-\frac mn<0,
+&&\lvert u\rvert_{C^0(O)}
+\leq c(m,p,n,q,\Omega,O)\lVert u\rVert_{W^{m,p}(\Omega)},\\
+&&&\quad\forall\text{ 有界集合 }O,\ O\subset\overline\Omega.
+\end{aligned}
+\right.
+\label{eq:ch2-sobolev-domain-embeddings}
+\end{equation}
+
+\hypertarget{chapter-02-page-122}{}
+当 $u\in\mathring W^{m,p}(\Omega)$ 时, 在 $\Omega$ 中等于 $u$ 而在 $\complement\Omega$ 中等于 $0$ 的函数 $\widetilde u$ 属于 $W^{m,p}(\mathbb R^n)$, 因而性质 \eqref{eq:ch2-sobolev-domain-embeddings} 无需对 $\Omega$ 作任何假设也成立.
+
+我们特别关心 $p=2$, $m=1$, 即 $H_0^1(\Omega)$ 的情形. 不要求 $\Omega$ 具有任何正则性, 对 $u\in H_0^1(\Omega)$ 有
+\begin{equation}
+\left\{
+\begin{aligned}
+&n=2,
+&&\lvert u\rvert_{L^q(O)}\leq c(q,O,\Omega)\lVert u\rVert_{H_0^1(\Omega)},\\
+&&&\quad\forall\text{ 有界集合 }O\subset\Omega,
+\quad\forall q,\ 1\leq q<\infty,\\
+&n=3,
+&&\lvert u\rvert_{L^6(\Omega)}\leq c(\Omega)\lVert u\rVert_{H_0^1(\Omega)},\\
+&n=4,
+&&\lvert u\rvert_{L^4(\Omega)}\leq c(\Omega)\lVert u\rVert_{H_0^1(\Omega)},\\
+&n\geq5,
+&&\lvert u\rvert_{L^{2n/(n-2)}(\Omega)}
+\leq c(\Omega)\lVert u\rVert_{H_0^1(\Omega)}.
+\end{aligned}
+\right.
+\label{eq:ch2-h01-sobolev-embeddings}
+\end{equation}
+
+\subsubsection*{紧性定理}
+
+\MBSourceStatementNumber{theorem}{1}
+\begin{Theorem}
+\label{thm:ch2-sobolev-compact-embedding}
+设 $\Omega$ 是 $\mathbb R^n$ 中满足 \eqref{eq:ch2-sobolev-extension-operator} 的任意有界集合. 若 $p\geq n$, 则嵌入
+\begin{equation}
+W^{1,p}(\Omega)\subset L^{q_1}(\Omega)
+\label{eq:ch2-compact-embedding-bounded-domain}
+\end{equation}
+对任意 $q_1$, $1\leq q_1<\infty$, 都是紧的; 若 $1\leq p<n$, 则对任意 $q_1$, $1\leq q_1<q$(其中 $1/p-1/n=1/q$), 该嵌入都是紧的.
+
+对相同的 $p$ 和 $q_1$, 嵌入
+\begin{equation}
+\mathring W^{1,p}(\Omega)\subset L^{q_1}(\Omega)
+\label{eq:ch2-compact-embedding-zero-boundary}
+\end{equation}
+对任意有界开集 $\Omega$ 都是紧的.
+\end{Theorem}
+
+作为定理 \ref{thm:ch2-sobolev-compact-embedding} 的一个特殊情形, 注意到对任意无界集合 $\Omega$, 若 $u\in W^{1,p}(\Omega)$, 则 $u$ 在 $O$ 上的限制(其中 $O\subset\overline O\subset\Omega$, $O$ 有界)属于 $L^{q_1}(O)$, 并且该限制映射
+\begin{equation}
+W^{1,p}(\Omega)\longrightarrow L^{q_1}(\Omega)
+\quad(\text{某些 }p,q_1\text{ 的值})
+\label{eq:ch2-local-compact-restriction}
+\end{equation}
+是紧的.
+
+\hypertarget{chapter-02-page-123}{}
+
+关于 Sobolev 空间的上述所有性质, 可参见第 \ref{sec:ch1-function-spaces} 节所述参考文献(另见本书末尾关于 Chapter 1 的评论).
+
+\subsection{齐次 Navier--Stokes 方程}
+\label{subsec:ch2-homogeneous-navier-stokes}
+
+设 $\Omega$ 是 $\mathbb R^n$ 中边界为 $\Gamma$ 的 Lipschitz 有界开集, $f\in\mathbf L^2(\Omega)$ 是给定向量函数. 寻求表示流体速度的向量函数 $u=(u_1,\ldots,u_n)$ 和表示压力的标量函数 $p$, 它们定义在 $\Omega$ 中并满足下列方程和边界条件:
+\begin{equation}
+-\nu\Delta u+\sum_{i=1}^{n}u_iD_i u+\operatorname{grad}p=f
+\quad\text{在 }\Omega\text{ 中},
+\label{eq:ch2-homogeneous-momentum}
+\end{equation}
+\begin{equation}
+\operatorname{div}u=0\quad\text{在 }\Omega\text{ 中},
+\label{eq:ch2-homogeneous-incompressibility}
+\end{equation}
+\begin{equation}
+u=0\quad\text{在 }\Gamma\text{ 上}.
+\label{eq:ch2-homogeneous-boundary}
+\end{equation}
+与 Chapter 1 第 \ref{subsec:ch1-stokes-variational-formulation} 节完全相同, 若 $f,u,p$ 是满足 \eqref{eq:ch2-homogeneous-momentum}--\eqref{eq:ch2-homogeneous-boundary} 的光滑函数, 则 $u\in V$, 且对每个 $v\in\mathcal V$,
+\begin{equation}
+\nu((u,v))+b(u,u,v)=(f,v),
+\label{eq:ch2-homogeneous-smooth-variational}
+\end{equation}
+其中
+\begin{equation}
+b(u,v,w)=\sum_{i,j=1}^{n}\int_\Omega u_i(D_iv_j)w_j\,dx.
+\label{eq:ch2-trilinear-form-definition}
+\end{equation}
+连续性论证还表明, 方程 \eqref{eq:ch2-homogeneous-smooth-variational} 对任意 $v\in V$ 成立. 反之, 若 $u$ 是 $V$ 中的光滑函数且对每个 $v\in\mathcal V$ 都满足 \eqref{eq:ch2-homogeneous-smooth-variational}, 则由命题 \ref{prop:ch1-de-rham-gradient}, 存在分布 $p$, 使 \eqref{eq:ch2-homogeneous-momentum} 成立, 而 \eqref{eq:ch2-homogeneous-incompressibility}--\eqref{eq:ch2-homogeneous-boundary} 因为 $u\in V$ 而成立.
+
+对 $u,v\in V$, 表达式 $b(u,u,v)$ 未必有意义, 因而 \eqref{eq:ch2-homogeneous-momentum}--\eqref{eq:ch2-homogeneous-boundary} 的变分表述并不恰好是``求 $u\in V$, 使对每个 $v\in V$ 方程 \eqref{eq:ch2-homogeneous-smooth-variational} 成立''. 变分表述略有不同, 将在研究型 $b(u,v,w)$ 的一些性质后给出.
+
+先引入下列空间:
+\begin{equation}
+\widetilde V=\mathcal V\text{ 在 }H_0^1(\Omega)\cap L^n(\Omega)\text{ 中的闭包};
+\label{eq:ch2-v-tilde-definition}
+\end{equation}
+$H_0^1(\Omega)\cap L^n(\Omega)$ 和 $\widetilde V$ 当然赋予范数
+\begin{equation}
+\lVert u\rVert_{H_0^1(\Omega)}+\lvert u\rvert_{L^n(\Omega)}.
+\label{eq:ch2-v-tilde-norm}
+\end{equation}
+一般而言, $\widetilde V$ 是 $V$ 的子空间且不同于 $V$; 但由 \eqref{eq:ch2-h01-sobolev-embeddings}, 当 $n=2,3$ 或 $4$(且 $\Omega$ 有界)时, $\widetilde V=V$.
+\begin{equation}
+V_s=\mathcal V\text{ 在 }H_0^1(\Omega)\cap H^s(\Omega)\text{ 中的闭包},
+\qquad(s\geq1);
+\label{eq:ch2-vs-definition}
+\end{equation}
+这里仍约定 $H_0^1(\Omega)\cap H^s(\Omega)$ 和 $V_s$ 赋予 Hilbert 范数
+\begin{equation}
+\left\{\lVert u\rVert_{H_0^1(\Omega)}^2
++\lvert u\rvert_{H^s(\Omega)}^2\right\}^{1/2};
+\qquad V_s\subset V.
+\label{eq:ch2-vs-norm}
+\end{equation}
+
+\subsubsection*{三线性型 \texorpdfstring{$b$}{b}}
+
+型 $b$ 在空间 $V,\widetilde V,V_s$ 中的若干空间上是三线性且连续的. 关于 $b$ 最方便的结果如下, 它不依赖于 $\Omega$ 的任何性质.
+
+\MBSourceStatementNumber{lemma}{1}
+\begin{Lemma}
+\label{lem:ch2-trilinear-continuity}
+型 $b$ 在 $H_0^1(\Omega)\times H_0^1(\Omega)
+\times(H_0^1(\Omega)\cap L^n(\Omega))$ 上有定义且三线性连续; $\Omega$ 可以有界或无界, 空间维数 $\mathbb R^n$ 任意.
+\end{Lemma}
+
+\begin{Proof}
+若 $u,v\in V$, $w\in\widetilde V$, 则由 \eqref{eq:ch2-h01-sobolev-embeddings}($n\geq3$),
+\[
+u_i\in L^{2n/(n-2)}(\Omega),
+\qquad D_iv_j\in L^2(\Omega),
+\qquad w_j\in L^n(\Omega),
+\quad1\leq i,j\leq n.
+\]
+由 Hölder 不等式, $u_i(D_iv_j)w_j\in L^1(\Omega)$, 且
+\begin{equation}
+\left\lvert\int_\Omega u_iD_iv_jw_j\,dx\right\rvert
+\leq\lvert u_i\rvert_{L^{2n/(n-2)}(\Omega)}
+\lvert D_iv_j\rvert_{L^2(\Omega)}
+\lvert w_j\rvert_{L^n(\Omega)}.
+\label{eq:ch2-trilinear-holder-estimate}
+\end{equation}
+因而 $b(u,v,w)$ 有良好定义, 且
+\begin{equation}
+\lvert b(u,v,w)\rvert
+\leq c(n)\lVert u\rVert_{H_0^1(\Omega)}
+\lVert v\rVert_{H_0^1(\Omega)}
+\lVert w\rVert_{H_0^1(\Omega)\cap L^n(\Omega)}.
+\label{eq:ch2-trilinear-continuity-estimate}
+\end{equation}
+型 $b$ 显然三线性, 而 \eqref{eq:ch2-trilinear-continuity-estimate} 保证其连续性.
+
+当 $n=2$ 时, 结论相同($H_0^1(\Omega)\cap L^2(\Omega)=H_0^1(\Omega)$), 但需把 \eqref{eq:ch2-trilinear-holder-estimate} 替换为
+\begin{equation}
+\left\lvert\int_\Omega u_iD_iv_jw_j\,dx\right\rvert
+\leq\lvert u_i\rvert_{L^4(\Omega)}
+\lvert D_iv_j\rvert_{L^2(\Omega)}
+\lvert w_j\rvert_{L^4(\Omega)}.
+\label{eq:ch2-trilinear-two-dimensional-estimate}
+\end{equation}
+\hypertarget{chapter-02-page-124}{}
+\end{Proof}
+
+特别地有下述结论.
+
+\MBSourceStatementNumber{lemma}{2}
+\begin{Lemma}
+\label{lem:ch2-trilinear-on-v}
+对任意开集 $\Omega$, $b$ 是 $V\times V\times\widetilde V$ 上的连续三线性型. 若 $\Omega$ 有界且 $n\leq4$, 则它是 $V\times V\times V$ 上的连续三线性型.
+\end{Lemma}
+
+需要时, 我们还将证明与上述性质类似的 $b$ 的其他性质; 证明始终与引理 \ref{lem:ch2-trilinear-continuity} 相同, 即使用 Hölder 不等式和嵌入定理 \eqref{eq:ch2-h01-sobolev-embeddings}.
+
+对 $u,v\in H_0^1(\Omega)$, 用 $B(u,v)$ 表示定义在 $\widetilde V$ 上的连续线性型
+\begin{equation}
+\langle B(u,v),w\rangle=b(u,v,w),
+\qquad u,v\in H_0^1(\Omega),
+\quad\forall w\in\widetilde V.
+\label{eq:ch2-bilinear-operator-definition}
+\end{equation}
+当 $u=v$ 时, 写成
+\begin{equation}
+B(u)=B(u,u),
+\qquad u\in H_0^1(\Omega).
+\label{eq:ch2-nonlinear-operator-definition}
+\end{equation}
+
+$b$ 的另一个基本性质如下.
+
+\MBSourceStatementNumber{lemma}{3}
+\begin{Lemma}
+\label{lem:ch2-trilinear-skew-symmetry}
+对任意开集 $\Omega$,
+\begin{equation}
+b(u,v,v)=0,
+\qquad\forall u\in V,
+\quad v\in H_0^1(\Omega)\cap L^n(\Omega),
+\label{eq:ch2-trilinear-zero-property}
+\end{equation}
+\begin{equation}
+b(u,v,w)=-b(u,w,v),
+\qquad\forall u\in V,
+\quad v,w\in H_0^1(\Omega)\cap L^n(\Omega).
+\label{eq:ch2-trilinear-skew-property}
+\end{equation}
+\end{Lemma}
+
+\begin{Proof}
+在 \eqref{eq:ch2-trilinear-zero-property} 中把 $v$ 替换为 $v+w$, 再利用 $b$ 的多线性性质, 即由 \eqref{eq:ch2-trilinear-zero-property} 得到 \eqref{eq:ch2-trilinear-skew-property}.
+
+为证明 \eqref{eq:ch2-trilinear-zero-property}, 只需对 $u\in\mathcal V$, $v\in\mathcal D(\Omega)$ 证明该等式. 对这样的 $u,v$,
+\[
+\int_\Omega u_iD_iv_jv_j\,dx
+=\int_\Omega u_iD_i\frac{(v_j)^2}{2}\,dx
+=-\frac12\int_\Omega D_iu_i(v_j)^2\,dx,
+\]
+所以
+\begin{equation}
+b(u,v,v)=-\frac12\sum_{j=1}^{n}\int_\Omega
+\operatorname{div}u\,(v_j)^2\,dx=0.
+\label{eq:ch2-trilinear-zero-proof}
+\end{equation}
+\end{Proof}
+
+\subsubsection*{变分表述}
+
+当 $\Omega$ 有界且 $n$ 任意时, 将问题 \eqref{eq:ch2-homogeneous-momentum}--\eqref{eq:ch2-homogeneous-boundary} 与下述问题联系起来:
+\begin{equation}
+\text{求 }u\in V,\text{ 使 }
+\nu((u,v))+b(u,u,v)=(f,v),
+\qquad\forall v\in\widetilde V.
+\label{eq:ch2-homogeneous-variational-problem}
+\end{equation}
+其中给定 $f\in\mathbf L^2(\Omega)$. 由 \eqref{eq:ch2-homogeneous-smooth-variational} 和 \eqref{eq:ch2-v-tilde-definition} 显然可知, 若 $u,p$ 是满足 \eqref{eq:ch2-homogeneous-momentum}--\eqref{eq:ch2-homogeneous-boundary} 的光滑函数, 则 $u$ 满足 \eqref{eq:ch2-homogeneous-variational-problem}. 反之, 若 $u\in V$ 满足 \eqref{eq:ch2-homogeneous-variational-problem}, 则
+\begin{equation}
+\left\langle-\nu\Delta u+\sum_i u_iD_iu-f,v\right\rangle=0,
+\qquad\forall v\in\mathcal V.
+\label{eq:ch2-homogeneous-distribution-orthogonality}
+\end{equation}
+$\Delta u\in\mathbf H^{-1}(\Omega)$, $f\in\mathbf L^2(\Omega)$, 并且 $u_iD_iu\in L^{n'}(\Omega)$($1/n'=1-1/n$), 因为由 \eqref{eq:ch2-h01-sobolev-embeddings}, $u_i\in L^{2n/(n-2)}(\Omega)$ 且 $D_iu\in L^2(\Omega)$. 于是, 由 Chapter 1 的命题 \ref{prop:ch1-de-rham-gradient} 和命题 \ref{prop:ch1-gradient-regularity}, 存在分布 $p\in L_{\mathrm{loc}}^{n'}(\Omega)$, 使 \eqref{eq:ch2-homogeneous-momentum} 在分布意义下成立; 而 \eqref{eq:ch2-homogeneous-incompressibility} 和 \eqref{eq:ch2-homogeneous-boundary} 分别在分布意义和迹定理意义下成立.
+
+\hypertarget{chapter-02-page-125}{}
+\MBSourceStatementNumber{theorem}{2}
+\begin{Theorem}
+\label{thm:ch2-homogeneous-existence}
+设 $\Omega$ 是 $\mathbb R^n$ 中的有界集, 且给定 $f\in\mathbf H^{-1}(\Omega)$. 则问题 \eqref{eq:ch2-homogeneous-variational-problem} 至少有一个解 $u\in V$, 并且存在分布 $p\in L_{\mathrm{loc}}^1(\Omega)$, 使 \eqref{eq:ch2-homogeneous-momentum}--\eqref{eq:ch2-homogeneous-incompressibility} 成立.
+\end{Theorem}
+
+\begin{Proof}
+只需证明 $u$ 的存在性; $p$ 的存在性以及对 \eqref{eq:ch2-homogeneous-momentum}--\eqref{eq:ch2-homogeneous-incompressibility} 的解释已经给出.
+
+$u$ 的存在性用 Galerkin 方法证明: 我们构造 \eqref{eq:ch2-homogeneous-variational-problem} 的近似解, 然后取极限.
+
+空间 $\widetilde V$ 作为 $\mathbf H_0^1(\Omega)$ 的子空间是可分的. 由 \eqref{eq:ch2-v-tilde-definition}, 存在线性无关元序列 $w_1,\ldots,w_m,\ldots\in\mathcal V$, 它在 $\widetilde V$ 中稠密. 该序列在 $V$ 中也线性无关且稠密.
+
+对每个固定整数 $m\geq1$, 我们希望用下式定义 \eqref{eq:ch2-homogeneous-variational-problem} 的近似解 $u_m$:
+\begin{equation}
+u_m=\sum_{i=1}^{m}\xi_{i,m}w_i,
+\qquad \xi_{i,m}\in\mathbb R,
+\label{eq:ch2-galerkin-expansion}
+\end{equation}
+\begin{equation}
+\nu((u_m,w_k))+b(u_m,u_m,w_k)=\langle f,w_k\rangle,
+\qquad k=1,\ldots,m.
+\label{eq:ch2-galerkin-system}
+\end{equation}
+方程 \eqref{eq:ch2-galerkin-expansion}--\eqref{eq:ch2-galerkin-system} 是关于 $\xi_{1,m},\ldots,\xi_{m,m}$ 的非线性方程组, 其解的存在性并非显然, 但可由下一个引理得到.
+
+\MBSourceStatementNumber{lemma}{4}
+\begin{Lemma}
+\label{lem:ch2-finite-dimensional-zero}
+设 $X$ 是有限维 Hilbert 空间, 其内积和范数分别为 $[\,\cdot,\cdot\,]$ 和 $[\,\cdot\,]$, 并设 $P$ 是 $X$ 到自身的连续映射, 满足
+\begin{equation}
+[P(\xi),\xi]>0\qquad\text{当 }[\xi]=k>0.
+\label{eq:ch2-finite-dimensional-outward-condition}
+\end{equation}
+则存在 $\xi\in X$, $[\xi]\leq k$, 使
+\begin{equation}
+P(\xi)=0.
+\label{eq:ch2-finite-dimensional-zero}
+\end{equation}
+\end{Lemma}
+
+引理 \ref{lem:ch2-finite-dimensional-zero} 的证明放在定理 \ref{thm:ch2-homogeneous-existence} 的证明之后. 我们如下应用该引理证明 $u_m$ 的存在性: 令 $X$ 为 $w_1,\ldots,w_m$ 张成的空间; $X$ 上的内积为由 $V$ 诱导的内积 $((\,\cdot,\cdot\,))$, 并定义 $P=P_m$ 为
+\[
+[P_m(u),v]=((P_m(u),v))
+=\nu((u,v))+b(u,u,v)-\langle f,v\rangle,
+\qquad\forall u,v\in X.
+\]
+映射 $P_m$ 的连续性是显然的; 下面验证 \eqref{eq:ch2-finite-dimensional-outward-condition}. 由 \eqref{eq:ch2-trilinear-zero-property},
+\[
+\begin{aligned}
+[P_m(u),u]
+&=\nu\lVert u\rVert^2+b(u,u,u)-\langle f,u\rangle\\
+&=\nu\lVert u\rVert^2-\langle f,u\rangle\\
+&\geq\nu\lVert u\rVert^2-\lVert f\rVert_{V'}\lVert u\rVert,
+\end{aligned}
+\]
+故
+\begin{equation}
+[P_m(u),u]\geq\lVert u\rVert
+\bigl(\nu\lVert u\rVert-\lVert f\rVert_{V'}\bigr).
+\label{eq:ch2-galerkin-outward-estimate}
+\end{equation}
+由此可知, 当 $\lVert u\rVert=k$ 且 $k$ 充分大时, $[P_m(u),u]>0$; 更确切地说, 取 $k>\nu^{-1}\lVert f\rVert_{V'}$. 引理 \ref{lem:ch2-finite-dimensional-zero} 的假设成立, 因而存在 \eqref{eq:ch2-galerkin-expansion}--\eqref{eq:ch2-galerkin-system} 的解 $u_m$.
+
+\emph{取极限.} 将 \eqref{eq:ch2-galerkin-system} 乘以 $\xi_{k,m}$, 并对 $k=1,\ldots,m$ 的相应等式求和, 得
+\[
+\nu\lVert u_m\rVert^2+b(u_m,u_m,u_m)=\langle f,u_m\rangle;
+\]
+或者由 \eqref{eq:ch2-trilinear-zero-property},
+\[
+\nu\lVert u_m\rVert^2=\langle f,u_m\rangle
+\leq\lVert f\rVert_{V'}\lVert u_m\rVert.
+\]
+\hypertarget{chapter-02-page-126}{}
+因此得到先验估计
+\begin{equation}
+\lVert u_m\rVert\leq\frac1\nu\lVert f\rVert_{V'}.
+\label{eq:ch2-galerkin-apriori-estimate}
+\end{equation}
+由于序列 $u_m$ 在 $V$ 中有界, 存在某个 $u\in V$ 以及子序列 $m'\to\infty$, 使
+\begin{equation}
+u_{m'}\longrightarrow u
+\qquad\text{在 }V\text{ 的弱拓扑中}.
+\label{eq:ch2-galerkin-weak-convergence}
+\end{equation}
+定理 \ref{thm:ch2-sobolev-compact-embedding} 特别表明 $V$ 到 $L^2(\Omega)$ 的注入是紧的, 因而还有
+\begin{equation}
+u_{m'}\longrightarrow u
+\qquad\text{在 }L^2(\Omega)\text{ 的范数中}.
+\label{eq:ch2-galerkin-strong-l2-convergence}
+\end{equation}
+暂且承认下述引理.
+
+\MBSourceStatementNumber{lemma}{5}
+\begin{Lemma}
+\label{lem:ch2-trilinear-limit}
+若 $u_\mu$ 在 $V$ 中弱收敛于 $u$, 并在 $L^2(\Omega)$ 中强收敛于 $u$, 则
+\begin{equation}
+b(u_\mu,u_\mu,v)\longrightarrow b(u,u,v),
+\qquad\forall v\in\mathcal V.
+\label{eq:ch2-trilinear-limit}
+\end{equation}
+\end{Lemma}
+
+现在令子序列 $m'\to\infty$, 可在 \eqref{eq:ch2-galerkin-system} 中取极限. 由 \eqref{eq:ch2-galerkin-weak-convergence}, \eqref{eq:ch2-galerkin-strong-l2-convergence}, \eqref{eq:ch2-trilinear-limit} 得
+\begin{equation}
+\nu((u,v))+b(u,u,v)=\langle f,v\rangle
+\label{eq:ch2-galerkin-limit-equation}
+\end{equation}
+对任意 $v=w_1,\ldots,w_m,\ldots$ 成立. 方程 \eqref{eq:ch2-galerkin-limit-equation} 对 $w_1,\ldots,w_m,\ldots$ 的任意线性组合也成立. 由于这些线性组合在 $\widetilde V$ 中稠密, 连续性论证最终表明 \eqref{eq:ch2-galerkin-limit-equation} 对每个 $v\in\widetilde V$ 成立, 并且 $u$ 是 \eqref{eq:ch2-homogeneous-variational-problem} 的解.
+\end{Proof}
+
+\begin{Proof}[引理 \ref{lem:ch2-finite-dimensional-zero} 的证明]
+这是 Brouwer 不动点定理的一个简单推论.
+
+假设 $P$ 在 $X$ 中以 $O$ 为中心、半径为 $k$ 的球 $D$ 内没有零点. 则映射
+\[
+\xi\longmapsto S(\xi)=-k\frac{P(\xi)}{[P(\xi)]}
+\]
+把 $D$ 映到自身且连续. Brouwer 定理意味着 $S$ 在 $D$ 中有一个不动点: 存在 $\xi_0\in D$, 使
+\[
+-k\frac{P(\xi_0)}{[P(\xi_0)]}=\xi_0.
+\]
+对该等式两边取范数可见 $[\xi_0]=k$, 再将两边分别与 $\xi_0$ 作内积, 得
+\[
+[\xi_0]^2=k^2=-k\frac{[P(\xi_0),\xi_0]}{[P(\xi_0)]}.
+\]
+该等式与 \eqref{eq:ch2-finite-dimensional-outward-condition} 矛盾, 因而 $P(\xi)$ 必在 $D$ 的某一点为零.
+\end{Proof}
+
+\begin{Proof}[引理 \ref{lem:ch2-trilinear-limit} 的证明]
+与 \eqref{eq:ch2-trilinear-zero-property}--\eqref{eq:ch2-trilinear-skew-property} 一样, 容易证明
+\[
+b(u_\mu,u_\mu,v)=-b(u_\mu,v,u_\mu)
+=-\sum_{i,j=1}^{n}\int_\Omega u_{\mu i}u_{\mu j}D_i v_j\,dx.
+\]
+但 $u_{\mu i}$ 在 $L^2(\Omega)$ 中强收敛于 $u_i$; 因为 $D_iv_j\in L^\infty(\Omega)$, 容易验证
+\[
+\int_\Omega u_{\mu i}u_{\mu j}D_iv_j\,dx
+\longrightarrow
+\int_\Omega u_i u_jD_iv_j\,dx.
+\]
+故 $b(u_\mu,v,u_\mu)$ 收敛于 $b(u,v,u)=-b(u,u,v)$.
+\end{Proof}
+
+\subsubsection*{唯一性}
+
+关于唯一性, 我们只有下述结果.
+
+\hypertarget{chapter-02-page-127}{}
+\MBSourceStatementNumber{theorem}{3}
+\begin{Theorem}
+\label{thm:ch2-homogeneous-uniqueness}
+若 $n\leq4$, 且 $\nu$ 充分大, 或者 $f$ ``充分小'', 使得
+\begin{equation}
+\nu^2>c(n)\lVert f\rVert_{V'},
+\label{eq:ch2-homogeneous-uniqueness-condition}
+\end{equation}
+则 \eqref{eq:ch2-homogeneous-variational-problem} 存在唯一解 $u$.
+\end{Theorem}
+
+\eqref{eq:ch2-homogeneous-uniqueness-condition} 中的常数 $c(n)$ 是 \eqref{eq:ch2-trilinear-continuity-estimate} 中的常数 $c(n)$; 对它的估计与 \eqref{eq:ch2-sobolev-rn-embeddings} 中的常数估计有关, 例如 Lions~[1] 中给出了该估计.\MBUnresolvedReference{citation}{Lions [1]}
+
+\begin{Proof}
+当 $n\leq4$ 时 $\widetilde V=V$, 故在 \eqref{eq:ch2-homogeneous-variational-problem} 中可以取 $v=u$; 结合 \eqref{eq:ch2-trilinear-zero-property} 得
+\begin{equation}
+\nu\lVert u\rVert^2=\langle f,u\rangle
+\leq\lVert f\rVert_{V'}\lVert u\rVert,
+\label{eq:ch2-homogeneous-energy-identity}
+\end{equation}
+所以 \eqref{eq:ch2-homogeneous-variational-problem} 的任意解 $u$ 均满足
+\begin{equation}
+\lVert u\rVert\leq\frac1\nu\lVert f\rVert_{V'}.
+\label{eq:ch2-homogeneous-solution-bound}
+\end{equation}
+
+现在设 $u_*$ 和 $u_{**}$ 是 \eqref{eq:ch2-homogeneous-variational-problem} 的两个不同解, 并令 $u=u_*-u_{**}$. 将分别对应 $u_*$ 和 $u_{**}$ 的方程 \eqref{eq:ch2-homogeneous-variational-problem} 相减, 得
+\begin{equation}
+\nu((u,v))+b(u_{**},u,v)+b(u,u_*,v)=0,
+\qquad\forall v\in V.
+\label{eq:ch2-homogeneous-difference-equation}
+\end{equation}
+在 \eqref{eq:ch2-homogeneous-difference-equation} 中取 $v=u$, 并再次利用 \eqref{eq:ch2-trilinear-zero-property}, 得
+\[
+\nu\lVert u\rVert^2=-b(u,u_*,u).
+\]
+由 \eqref{eq:ch2-trilinear-continuity-estimate} 和 \eqref{eq:ch2-homogeneous-solution-bound}, 得到(对 $u=u_*$)
+\[
+\nu\lVert u\rVert^2
+\leq c(n)\lVert u\rVert^2\lVert u_*\rVert
+\leq\frac{c(n)}\nu\lVert f\rVert_{V'}\lVert u\rVert^2,
+\]
+即
+\[
+\left(\nu-\frac{c(n)}\nu\lVert f\rVert_{V'}\right)\lVert u\rVert^2\leq0.
+\]
+由 \eqref{eq:ch2-homogeneous-uniqueness-condition}, 该不等式推出 $\lVert u\rVert=0$, 即 $u_*=u_{**}$.
+\end{Proof}
+
+\MBSourceStatementNumber{remark}{1}
+\begin{Remark}
+\label{rem:ch2-homogeneous-possible-nonuniqueness}
+如果 \eqref{eq:ch2-homogeneous-uniqueness-condition} 不成立, 或者至少当 $\nu$ 充分小而 $f$ 固定时, \eqref{eq:ch2-homogeneous-variational-problem} 的解很可能不唯一. 对于一个与 \eqref{eq:ch2-homogeneous-variational-problem} 非常相似的问题, 非唯一性结果将在本章 Section 4 中证明.\MBUnresolvedReference{section}{Chapter 2, Section 4}
+\end{Remark}
+
+\MBSourceStatementNumber{remark}{2}
+\begin{Remark}
+\label{rem:ch2-homogeneous-high-dimension}
+当 $n>4$ 时, 定理 \ref{thm:ch2-homogeneous-existence} 表明存在满足 \eqref{eq:ch2-homogeneous-solution-bound} 的 \eqref{eq:ch2-homogeneous-variational-problem} 的解 $u$; 事实上, 估计 \eqref{eq:ch2-galerkin-apriori-estimate} 和收敛式 \eqref{eq:ch2-galerkin-weak-convergence} 给出
+\begin{equation}
+\lVert u\rVert\leq\liminf_{m'\to\infty}\lVert u_{m'}\rVert
+\leq\frac1\nu\lVert f\rVert_{V'}.
+\label{eq:ch2-homogeneous-high-dimensional-bound}
+\end{equation}
+然而, 定理 \ref{thm:ch2-homogeneous-uniqueness} 的证明不能推广到这种情形; \eqref{eq:ch2-homogeneous-difference-equation} 对每个 $v\in\widetilde V$ 成立, 但不能取 $v=u$.
+\end{Remark}
+
+\hypertarget{chapter-02-page-128}{}
+\subsection{齐次 Navier--Stokes 方程(续)}
+\label{subsec:ch2-homogeneous-navier-stokes-unbounded}
+
+\subsubsection*{无界情形}
+
+通过引入与 Chapter 1, Section 2.3 中相同的空间, 我们可以研究 $\Omega$ 无界的情形. 回忆
+\begin{equation}
+Y=\mathcal V\text{ 关于范数 }\lVert\,\cdot\,\rVert\text{ 的完备化空间}.
+\label{eq:ch2-y-definition}
+\end{equation}
+再考虑空间 $\widetilde Y$:
+\begin{equation}
+\widetilde Y=\mathcal V\text{ 在赋予下述范数的空间 }Y\cap\mathbf L^n(\Omega)\text{ 中的闭包},
+\label{eq:ch2-y-tilde-definition}
+\end{equation}
+\begin{equation}
+\lVert u\rVert+\lVert u\rVert_{\mathbf L^n(\Omega)}.
+\label{eq:ch2-y-tilde-norm}
+\end{equation}
+回忆由 Chapter 1 的引理 \ref{lem:ch1-y-space-embeddings}, 对 $n\geq3$ 有连续注入
+\begin{equation}
+Y\subset\{u\in\mathbf L^\alpha(\Omega),\ D_i u\in\mathbf L^2(\Omega),\ 1\leq i\leq n\},
+\label{eq:ch2-y-continuous-injection}
+\end{equation}
+其中
+\begin{equation}
+\alpha=\frac{2n}{n-2}.
+\label{eq:ch2-y-sobolev-exponent}
+\end{equation}
+由于 $\Omega$ 无界, 空间 $L^\gamma(\Omega)$ 不像有界情形那样随 $\gamma$ 增大而递减, 并且即使 $n\leq4$ 也有 $\widetilde Y\neq Y$. 定理 \ref{thm:ch2-sobolev-compact-embedding} 不能推广到无界情形; 不过有下述结论.
+
+\MBSourceStatementNumber{lemma}{6}
+\begin{Lemma}
+\label{lem:ch2-unbounded-trilinear-continuity}
+当 $n\geq3$ 时, $b$ 在 $Y\times Y\times\widetilde Y$ 上有定义且是三线性连续的, 并且
+\begin{equation}
+b(u,v,v)=0,
+\qquad\forall u\in Y,\quad v\in\widetilde Y,
+\label{eq:ch2-unbounded-trilinear-zero}
+\end{equation}
+\begin{equation}
+b(u,v,w)=-b(u,w,v),
+\qquad\forall u\in Y,\quad v,w\in\widetilde Y.
+\label{eq:ch2-unbounded-trilinear-skew}
+\end{equation}
+\end{Lemma}
+
+\begin{Proof}
+不等式 \eqref{eq:ch2-trilinear-holder-estimate}($n\geq3$)仍然成立; 对 $u,v\in Y$, $w\in\widetilde Y$, 有
+\[
+\left|\int_\Omega u_iD_i v_jw_j\,dx\right|
+\leq c\lVert u\rVert_Y\lVert v\rVert_Y\lVert w\rVert_{\widetilde Y},
+\]
+所以
+\begin{equation}
+|b(u,v,w)|\leq c(n)\lVert u\rVert_Y\lVert v\rVert_Y\lVert w\rVert_{\widetilde Y}.
+\label{eq:ch2-unbounded-trilinear-bound}
+\end{equation}
+关系 \eqref{eq:ch2-unbounded-trilinear-zero} 和 \eqref{eq:ch2-unbounded-trilinear-skew} 的证明与 \eqref{eq:ch2-trilinear-zero-property} 和 \eqref{eq:ch2-trilinear-skew-property} 完全相同: 先对 $u,v,w\in\mathcal V$ 证明, 再取极限.
+\end{Proof}
+
+当 $\Omega$ 无界且 $n\geq3$ 时, 问题 \eqref{eq:ch2-homogeneous-momentum}--\eqref{eq:ch2-homogeneous-boundary} 的变分表述规定为
+\begin{equation}
+\text{求 }u\in Y,\text{ 使 }\nu((u,v))+b(u,u,v)=\langle f,v\rangle,
+\qquad\forall v\in\widetilde Y.
+\label{eq:ch2-unbounded-variational-problem}
+\end{equation}
+
+\MBSourceStatementNumber{theorem}{4}
+\begin{Theorem}
+\label{thm:ch2-unbounded-existence}
+设 $\Omega$ 是 $\mathbb R^n$ 中的开集, $n\geq3$, 并设给定 $f\in Y'$, 即 $Y$ 的对偶空间. 则至少存在一个 $u\in Y$ 满足 \eqref{eq:ch2-unbounded-variational-problem}.
+\end{Theorem}
+
+\begin{Proof}
+证明与定理 \ref{thm:ch2-homogeneous-existence}(有界情形)的证明非常相似. 存在由 $\mathcal V$ 中元素组成的线性无关序列 $w_1,\ldots,w_m,\ldots$, 它在 $\widetilde Y$ 中稠密, 从而也在 $Y$ 中稠密; 该序列不一定与前面的序列相同.
+
+\hypertarget{chapter-02-page-129}{}
+定义近似解 $u_m$:
+\begin{equation}
+u_m=\sum_{i=1}^{m}\xi_{i,m}w_i,
+\qquad\xi_{i,m}\in\mathbb R,
+\label{eq:ch2-unbounded-galerkin-expansion}
+\end{equation}
+\begin{equation}
+\nu((u_m,w_k))+b(u_m,u_m,w_k)=\langle f,w_k\rangle,
+\qquad k=1,\ldots,m.
+\label{eq:ch2-unbounded-galerkin-system}
+\end{equation}
+完全如前, 用引理 \ref{lem:ch2-finite-dimensional-zero} 可证明满足 \eqref{eq:ch2-unbounded-galerkin-expansion}--\eqref{eq:ch2-unbounded-galerkin-system} 的 $u_m$ 存在. 于是得到类似于 \eqref{eq:ch2-galerkin-apriori-estimate} 的先验估计
+\begin{equation}
+\lVert u_m\rVert\leq\frac1\nu\lVert f\rVert_{Y'},
+\qquad(\lVert\,\cdot\,\rVert\text{ 是 }Y\text{ 中的范数}).
+\label{eq:ch2-unbounded-apriori-estimate}
+\end{equation}
+因此存在子序列 $m'\to\infty$ 和元素 $u\in Y$, 使
+\begin{equation}
+u_m\longrightarrow u\qquad\text{在 }Y\text{ 中弱收敛}.
+\label{eq:ch2-unbounded-weak-convergence}
+\end{equation}
+证明的其余部分与有界情形相同, 但需处理非线性项 $b(u_{m'},u_{m'},v)$ 的极限. 由于一般 $u$ 甚至不属于 $L^2(\Omega)$($Y\not\subset L^2(\Omega)$), $u_m$ 并不在 $L^2(\Omega)$ 中强收敛于 $u$. 不过有下述引理.
+
+\MBSourceStatementNumber{lemma}{7}
+\begin{Lemma}
+\label{lem:ch2-unbounded-trilinear-limit}
+若 $u_\mu$ 在 $Y$ 中弱收敛于 $u$, 则
+\begin{equation}
+b(u_\mu,u_\mu,v)\longrightarrow b(u,u,v),
+\qquad\forall v\in\mathcal V.
+\label{eq:ch2-unbounded-trilinear-limit}
+\end{equation}
+\end{Lemma}
+
+\begin{Proof}
+我们可以证明
+\begin{equation}
+u_\mu\longrightarrow u\qquad\text{在 }\mathbf L_{\mathrm{loc}}^2(\Omega)\text{ 中强收敛},
+\label{eq:ch2-unbounded-local-strong-convergence}
+\end{equation}
+即对每个有界集 $\mathcal O\subset\Omega$,
+\begin{equation}
+u_\mu\longrightarrow u\qquad\text{在 }L^2(\mathcal O)\text{ 中}.
+\label{eq:ch2-unbounded-local-l2-convergence}
+\end{equation}
+事实上, 取 $\psi\in\mathcal D(\mathbb R^n)$, 使 $\psi=1$ 于 $\mathcal O$, 并令 $\Omega'$ 为 $\Omega$ 的一个包含 $\psi$ 支集的有界子集. 则函数 $\psi u_\mu\in\mathbf H_0^1(\Omega')$, 且由于 $u_\mu$ 在 $Y$ 中弱收敛于 $u$,
+\[
+\psi u_\mu\longrightarrow\psi u
+\qquad\text{在 }\mathbf H_0^1(\Omega')\text{ 中弱收敛}.
+\]
+因此 $\psi u_\mu\to\psi u$ 在 $\mathbf L^2(\Omega)$ 中强收敛; 特别地,
+\[
+\int_{\mathcal O}|u_\mu-u|^2\,dx
+\leq\int_{\Omega'}\psi^2|u_\mu-u|^2\,dx\longrightarrow0,
+\]
+由此得到 \eqref{eq:ch2-unbounded-local-l2-convergence}.
+
+由于在 $v$ 的支集上 $u_\mu$ 按 $L^2$ 范数收敛于 $u$, 现在可如有界情形证明 \eqref{eq:ch2-unbounded-trilinear-limit}:
+\[
+b(u_\mu,u_\mu,v)=-b(u_\mu,v,u_\mu)
+\longrightarrow-b(u,v,u)=b(u,u,v).
+\]
+\end{Proof}
+\end{Proof}
+
+\hypertarget{chapter-02-page-130}{}
+\MBSourceStatementNumber{remark}{3}
+\begin{Remark}
+\label{rem:ch2-unbounded-two-dimensions}
+当 $n=2$ 时, $Y$ 的元素 $u$ 一般不属于任何空间 $L^p(\Omega)$. 因此引理 \ref{lem:ch2-unbounded-trilinear-continuity} 的证明失效, 且 $b$ 在 $Y\times Y\times Y$ 上没有定义.
+
+可以把 \eqref{eq:ch2-unbounded-variational-problem} 替换为: 求 $u\in Y$, 使
+\[
+\nu((u,v))+b(u,u,v)=\langle f,v\rangle,
+\qquad\forall v\in\mathcal V.
+\]
+与定理 \ref{thm:ch2-unbounded-existence} 相同的证明表明, 只要给定 $f\in Y'$, 这样的 $u$ 总是存在.
+\end{Remark}
+
+\MBSourceStatementNumber{remark}{4}
+\begin{Remark}
+\label{rem:ch2-unbounded-test-space}
+由于对任意 $n$ 均有 $Y\neq\widetilde Y$, 不能在 \eqref{eq:ch2-unbounded-variational-problem} 中取 $v=u$. 因此, 即使 $n\leq4$, 定理 \ref{thm:ch2-homogeneous-existence} 的证明也不能推广到无界情形.
+\end{Remark}
+
+\subsubsection*{解的正则性}
+
+若空间维数 $n\leq3$, 可以通过反复执行下述简单过程, 获得关于 \eqref{eq:ch2-homogeneous-variational-problem} 或 \eqref{eq:ch2-unbounded-variational-problem} 的任意解 $u$ 的一些信息: 已有的 $u$ 的信息给出非线性项 $\sum_{i=1}^n u_iD_i u$ 的某种正则性. 然后把 \eqref{eq:ch2-homogeneous-momentum}--\eqref{eq:ch2-homogeneous-boundary} 写成
+\begin{equation}
+-\nu\Delta u+\operatorname{grad}p
+=f-\sum_{i=1}^{n}u_iD_i u,
+\qquad\text{在 }\Omega\text{ 中},
+\label{eq:ch2-regularity-momentum}
+\end{equation}
+\begin{equation}
+\operatorname{div}u=0,
+\qquad\text{在 }\Omega\text{ 中},
+\label{eq:ch2-regularity-incompressibility}
+\end{equation}
+\begin{equation}
+u=0\qquad\text{在 }\Gamma\text{ 上};
+\label{eq:ch2-regularity-boundary}
+\end{equation}
+利用 $f$ 的已有正则性和 Chapter 1 的命题 \ref{prop:ch1-stokes-regularity-apriori}, 可以得到关于 $u$ 的新正则性信息. 如果由此得到的 $u$ 的性质优于此前的性质, 就可以重复该过程.
+
+例如, 我们证明下述结果.
+
+\MBSourceStatementNumber{proposition}{1}
+\begin{Proposition}
+\label{prop:ch2-smoothness-of-solution}
+设 $\Omega$ 是 $\mathbb R^2$ 或 $\mathbb R^3$ 中的 $C^\infty$ 类开集, 且给定 $f\in C^\infty(\overline\Omega)$. 则 \eqref{eq:ch2-homogeneous-momentum}--\eqref{eq:ch2-homogeneous-boundary} 的任意解 $\{u,p\}$ 均属于 $C^\infty(\overline\Omega)\times C^\infty(\overline\Omega)$.
+\end{Proposition}
+
+\begin{Proof}
+先考虑 $\Omega$ 有界的情形. 由 \eqref{eq:ch2-regularity-incompressibility}, 非线性项 $\sum_{i=1}^n u_iD_i u$ 也等于 $\sum_{i=1}^nD_i(u_i u)$. 若 $n=2$, 由 \eqref{eq:ch2-sobolev-rn-embeddings}, 对任意 $1\leq\alpha<+\infty$ 有 $u_i\in L^\alpha(\Omega)$, 因而对任意这样的 $\alpha$, $u_i u$ 属于 $L^\alpha(\Omega)$, $D_i(u_i u)$ 属于 $W^{-1,\alpha}(\Omega)$. Chapter 1 的命题 \ref{prop:ch1-stokes-regularity-apriori} 表明, 对任意 $\alpha$, $u\in W^{1,\alpha}(\Omega)$ 且 $p\in L^\alpha(\Omega)$. 对 $\alpha>2$, 由 \eqref{eq:ch2-sobolev-rn-embeddings}, $W^{1,\alpha}(\Omega)\subset L^\infty(\Omega)$; 因而对任意 $\alpha$, $u_iD_iu\in L^\alpha(\Omega)$. 然后 Chapter 1 的命题 \ref{prop:ch1-stokes-regularity-apriori} 表明, 对任意 $\alpha$, $u\in W^{2,\alpha}(\Omega)$, $p\in W^{1,\alpha}(\Omega)$. 容易验证 $u_iD_i u\in W^{1,\alpha}(\Omega)$, 故 $u\in W^{3,\alpha}(\Omega)$. 重复该过程, 特别得到
+\begin{equation}
+u\in\mathbf H^m(\Omega),
+\qquad p\in H^m(\Omega),
+\qquad\text{对任意 }m\geq1.
+\label{eq:ch2-arbitrary-sobolev-regularity}
+\end{equation}
+$u$ 或 $p$ 的任意导数均具有同样的性质; 因此由 \eqref{eq:ch2-sobolev-rn-embeddings}, $u$ 或 $p$ 的任意导数都属于 $C(\overline\Omega)$, 这就是所断言的性质.
+
+当 $n=3$ 时, 注意由 \eqref{eq:ch2-sobolev-rn-embeddings} 有 $u_i\in L^6(\Omega)$, 因而
+\[
+u_iD_i u_j\in L^{3/2}(\Omega).
+\]
+Chapter 1 的命题 \ref{prop:ch1-stokes-regularity-apriori} 推出 $u\in W^{2,3/2}(\Omega)$; 但 \eqref{eq:ch2-sobolev-rn-embeddings} 又表明, 对任意 $1\leq\alpha<+\infty$ 有 $u\in L^\alpha(\Omega)$($p=3/2,m=2,n=3$). 因此对任意 $\alpha$, 有
+\[
+D_i(u_i u_j)\in W^{-1,\alpha}(\Omega),
+\]
+此时只需重复 $n=2$ 时给出的证明. 若 $\Omega$ 无界, 将上述方法应用于 $\psi u$, 其中 $\psi\in\mathcal D(\mathbb R^n)$ 是截断函数, 且在 $\Omega$ 的紧子集上 $\psi=1$, 即可在 $\overline\Omega$ 的任意紧子集上得到相同的正则性.
+\end{Proof}
+
+\MBSourceStatementNumber{remark}{5}
+\begin{Remark}
+\label{rem:ch2-solution-regularity}
+(i) 显然, 可以对 $f$ 假设较低的正则性, 并得到 $u$ 和 $p$ 的较低正则性.
+
+(ii) 当 $n\geq4$ 时, 同一方法失效. 例如, 当 $\Omega$ 有界且 $n=4$ 时, 若把非线性项写成 $D_i(u_i u)$, 则只有 $u_i u_j\in L^2(\Omega)$, $D_i(u_i u)\in H^{-1}(\Omega)$, 因而 $u\in H_0^1(\Omega)$; 若把非线性项写成 $u_iD_i u$, 则有 $u_iD_i u\in L^{4/3}(\Omega)$, 从而 $u\in W^{2,4/3}(\Omega)$; 但这只给出 $u_i\in L^4(\Omega)$, $D_i u_j\in L^2(\Omega)$, 即仍是原来已知的性质.
+\end{Remark}
+
+\hypertarget{chapter-02-page-131}{}
+\subsection{非齐次 Navier--Stokes 方程}
+\label{subsec:ch2-nonhomogeneous-navier-stokes}
+
+设 $\Omega$ 是 $\mathbb R^n$ 中的有界开集. 这里考虑下述非齐次 Navier--Stokes 问题: 给定分别定义在 $\Omega$ 和 $\Gamma$ 上并满足稍后所指定条件的两个向量函数 $f$ 和 $\phi$, 求 $u$ 和 $p$, 使
+\begin{equation}
+-\nu\Delta u+\sum_{i=1}^{n}u_iD_i u+\operatorname{grad}p=f,
+\qquad\text{在 }\Omega\text{ 中},
+\label{eq:ch2-nonhomogeneous-momentum}
+\end{equation}
+\begin{equation}
+\operatorname{div}u=0,
+\qquad\text{在 }\Omega\text{ 中},
+\label{eq:ch2-nonhomogeneous-incompressibility}
+\end{equation}
+\begin{equation}
+u=\phi,
+\qquad\text{在 }\Gamma\text{ 上}.
+\label{eq:ch2-nonhomogeneous-boundary}
+\end{equation}
+我们假设 $\Omega$ 属于 $C^2$ 类, 给定 $f\in\mathbf H^{-1}(\Omega)$, 且 $\phi$ 具有下述稍显限制性的形式:
+\begin{equation}
+\phi=\operatorname{curl}\zeta,
+\label{eq:ch2-boundary-data-curl}
+\end{equation}
+其中
+\begin{equation}
+\zeta\in\mathbf H^2(\Omega),
+\qquad D_i\zeta\in\mathbf L^n(\Omega),
+\qquad\zeta\in\mathbf L^\infty(\Omega),
+\label{eq:ch2-boundary-potential-regularity}
+\end{equation}
+并且对 $n=2,3$, $\operatorname{curl}$ 表示通常的算子; 对 $n\geq4$, $\operatorname{curl}$ 表示具有常系数并满足 $\operatorname{div}(\operatorname{curl}\zeta)=0$ 的线性微分算子.\footnote{原文参见 Appendix I 的条件 (2.1) 和 Remark 2.1; 这些目标尚未翻译. 对 $\zeta=(R_1\zeta,\ldots,R_a\zeta)$, $R_i\zeta=\sum_{j,k}\alpha_{ijk}D_j\zeta_k$ 时, 只需对所有 $j,k$ 有 $\sum_{i=1}^n\alpha_{ijk}=0$.}
+
+\MBSourceStatementNumber{theorem}{5}
+\begin{Theorem}
+\label{thm:ch2-nonhomogeneous-existence}
+在上述假设下, 至少存在一个 $u\in\mathbf H^1(\Omega)$ 以及 $\Omega$ 上的一个分布 $p$, 使 \eqref{eq:ch2-nonhomogeneous-momentum}--\eqref{eq:ch2-nonhomogeneous-boundary} 成立.\footnote{原文指出 Appendix I 中有定理 \ref{thm:ch2-nonhomogeneous-existence} 的改进形式; 目标尚未翻译.}
+\end{Theorem}
+
+\begin{Proof}
+任取向量函数 $\psi\in\mathbf H^1(\Omega)\cap\mathbf L^n(\Omega)$, 使
+\begin{equation}
+\psi\in\mathbf H^1(\Omega)\cap\mathbf L^n(\Omega),
+\qquad\operatorname{div}\psi=0,
+\qquad\psi=\phi\text{ 于 }\Gamma.
+\label{eq:ch2-divergence-free-lifting}
+\end{equation}
+令
+\[
+\widehat u=u-\psi.
+\]
+\hypertarget{chapter-02-page-132}{}
+则 $u\in\mathbf H^1(\Omega)$ 且满足 \eqref{eq:ch2-nonhomogeneous-incompressibility}; 而 \eqref{eq:ch2-nonhomogeneous-boundary} 等价于
+\begin{equation}
+\widehat u\in V.
+\label{eq:ch2-lifted-velocity-in-v}
+\end{equation}
+方程 \eqref{eq:ch2-nonhomogeneous-momentum} 等价于
+\begin{equation}
+-\nu\Delta\widehat u
++\sum_{i=1}^{n}\widehat u_iD_i\widehat u
++\sum_{i=1}^{n}\widehat u_iD_i\psi
++\sum_{i=1}^{n}\psi_iD_i\widehat u
++\operatorname{grad}p=\widehat f,
+\label{eq:ch2-lifted-momentum}
+\end{equation}
+其中
+\[
+\widehat f=f+\nu\Delta\psi-\sum_{i=1}^{n}\psi_iD_i\psi.
+\]
+注意
+\[
+\widehat f\in\mathbf H^{-1}(\Omega).
+\]
+证明如下. 显然 $f+\nu\Delta\psi\in\mathbf H^{-1}(\Omega)$; 此外, 当 $n\geq3$ 时, $\psi_iD_i\psi\in L^{\alpha'}(\Omega)$, $1/\alpha'+1/\alpha=1$, $\alpha=2n/(n-2)$; 当 $n=2$ 时可取任意 $\alpha>2$; 因为 $H_0^1(\Omega)\subset L^\alpha(\Omega)$, 所以 $\psi_iD_i\psi$ 也属于 $H^{-1}(\Omega)$.
+
+与 Section 1.2 一样, 若找到 $\widehat u\in V$, 使
+\begin{equation}
+\nu((\widehat u,v))+b(\widehat u,\widehat u,v)
++b(\widehat u,\psi,v)+b(\psi,\widehat u,v)
+=\langle\widehat f,v\rangle,
+\qquad\forall v\in\widetilde V,
+\label{eq:ch2-lifted-variational-problem}
+\end{equation}
+则问题 \eqref{eq:ch2-lifted-velocity-in-v}--\eqref{eq:ch2-lifted-momentum} 得解.
+
+完全如定理 \ref{thm:ch2-homogeneous-existence}, 只要存在某个 $\beta>0$, 使
+\[
+\nu\lVert v\rVert^2+b(v,v,v)+b(v,\psi,v)+b(\psi,v,v)
+\geq\beta\lVert v\rVert^2,
+\qquad\forall v\in\widetilde V,
+\]
+即可证明存在满足 \eqref{eq:ch2-lifted-variational-problem} 的 $\widehat u\in V$; 或者由 \eqref{eq:ch2-trilinear-zero-property}, 只需
+\begin{equation}
+\nu\lVert v\rVert^2+b(v,\psi,v)
+\geq\beta\lVert v\rVert^2,
+\qquad\forall v\in\widetilde V.
+\label{eq:ch2-lifting-coercivity}
+\end{equation}
+如果能够找到满足 \eqref{eq:ch2-divergence-free-lifting} 且满足
+\begin{equation}
+|b(v,\psi,v)|\leq\frac\nu2\lVert v\rVert^2,
+\qquad\forall v\in\widetilde V,
+\label{eq:ch2-lifting-smallness}
+\end{equation}
+的 $\psi$, 则 \eqref{eq:ch2-lifting-coercivity} 必然成立. 为此证明下述引理.
+
+\MBSourceStatementNumber{lemma}{8}
+\begin{Lemma}
+\label{lem:ch2-small-divergence-free-lifting}
+对任意 $\gamma>0$, 存在某个满足 \eqref{eq:ch2-divergence-free-lifting} 的 $\psi=\psi(\gamma)$, 且
+\begin{equation}
+|b(v,\psi,v)|\leq\gamma\lVert v\rVert^2,
+\qquad\forall v\in\overline V.
+\label{eq:ch2-lifting-arbitrary-smallness}
+\end{equation}
+\end{Lemma}
+
+在证明它之前, 先证明另外两个引理.
+
+\MBSourceStatementNumber{lemma}{9}
+\begin{Lemma}
+\label{lem:ch2-boundary-cutoff}
+令 $\rho(x)=d(x,\Gamma)$ 为 $x$ 到 $\Gamma$ 的距离. 对任意 $\epsilon>0$, 存在函数 $\theta_\epsilon\in C^2(\overline\Omega)$, 使
+\begin{equation}
+\theta_\epsilon=1
+\qquad\text{在 }\Gamma\text{ 的某个邻域中(该邻域依赖于 }\epsilon),
+\label{eq:ch2-cutoff-one-near-boundary}
+\end{equation}
+\begin{equation}
+\theta_\epsilon=0
+\qquad\text{若 }\rho(x)\geq2\delta(\epsilon),
+\qquad\delta(\epsilon)=\exp(-1/\epsilon),
+\label{eq:ch2-cutoff-support}
+\end{equation}
+\begin{equation}
+|D_k\theta_\epsilon(x)|\leq\frac\epsilon{\rho(x)}
+\qquad\text{若 }\rho(x)\leq2\delta(\epsilon),
+\qquad k=1,\ldots,n.
+\label{eq:ch2-cutoff-derivative-bound}
+\end{equation}
+\end{Lemma}
+
+\hypertarget{chapter-02-page-133}{}
+\begin{Proof}
+依 E. Hopf~[2], 对 $\lambda\geq0$ 定义函数 $\lambda\mapsto\xi_\epsilon(\lambda)$:
+\begin{equation}
+\xi_\epsilon(\lambda)=
+\begin{cases}
+1,&\lambda<\delta(\epsilon)^2,\\
+\epsilon\log\!\left(\dfrac{\delta(\epsilon)}\lambda\right),
+&\delta(\epsilon)^2<\lambda<\delta(\epsilon),\\
+0,&\lambda>\delta(\epsilon),
+\end{cases}
+\label{eq:ch2-hopf-cutoff-profile}
+\end{equation}
+并记
+\begin{equation}
+\chi_\epsilon(x)=\xi_\epsilon(\rho(x)).
+\label{eq:ch2-hopf-cutoff-composition}
+\end{equation}
+因为函数 $\rho\in C^2(\overline\Omega)$, 函数 $\chi_\epsilon$ 满足 \eqref{eq:ch2-cutoff-one-near-boundary}--\eqref{eq:ch2-cutoff-derivative-bound}, 而 $\theta_\epsilon$ 由 $\chi_\epsilon$ 正则化得到.
+\end{Proof}
+
+\MBSourceStatementNumber{lemma}{10}
+\begin{Lemma}
+\label{lem:ch2-hardy-boundary-inequality}
+存在仅依赖于 $\Omega$ 的正常数 $c_1$, 使
+\begin{equation}
+\left\lVert\frac1\rho v\right\rVert_{L^2(\Omega)}
+\leq c_1\lVert v\rVert_{H_0^1(\Omega)},
+\qquad\forall v\in H_0^1(\Omega).
+\label{eq:ch2-hardy-boundary-inequality}
+\end{equation}
+\end{Lemma}
+
+\begin{Proof}
+利用从属于 $\Gamma$ 的一个覆盖的单位分解以及边界附近的局部坐标, 可把问题约化为 $\Omega$ 是半空间 $\{x=(x_n,x'),\ x_n>0,\ x'=(x_1,\ldots,x_{n-1})\in\mathbb R^{n-1}\}$ 的同一问题. 在此情形 $\rho(x)=x_n$, 只需验证
+\begin{equation}
+\int_\Omega\frac{v(x)^2}{x_n^2}\,dx
+\leq c_1\int_\Omega|D_nv(x)|^2\,dx,
+\qquad\forall v\in\mathcal D(\Omega).
+\label{eq:ch2-hardy-half-space}
+\end{equation}
+若证明下述一维不等式, 上式即显然成立:
+\begin{equation}
+\int_0^{+\infty}\left|\frac{v(s)}s\right|^2ds
+\leq2\int_0^{+\infty}|v'(s)|^2ds,
+\qquad\forall v\in\mathcal D(0,+\infty).
+\label{eq:ch2-hardy-one-dimensional}
+\end{equation}
+这是经典 Hardy 不等式. 为证明它, 写成 $s=e^\sigma$, $t=e^\tau$, 并令
+\[
+\frac{v(s)}s=\frac1s\int_0^s w(t)\,dt,
+\qquad v'=w,
+\]
+于是
+\[
+\begin{aligned}
+\int_0^{+\infty}\frac{|v(s)|^2}{|s|^2}\,ds
+&=\int_{-\infty}^{+\infty}e^{-\sigma}
+\left(\int_0^{e^\sigma}w(t)\,dt\right)^2d\sigma\\
+&=\int_{-\infty}^{+\infty}
+\left(\int_{-\infty}^{+\infty}
+\mathcal Y(\sigma-\tau)e^{-(\sigma-\tau)/2}w(e^\tau)e^{\tau/2}\,d\tau\right)^2d\sigma,
+\end{aligned}
+\]
+其中 $\mathcal Y$ 表示 Heaviside 函数, $\mathcal Y(\sigma)=1$ 当 $\sigma>0$, $\mathcal Y(\sigma)=0$ 当 $\sigma<0$. 由通常的卷积不等式, 最后一个量不超过
+\[
+\left(\int_{-\infty}^{+\infty}\mathcal Y(\sigma)e^{-\sigma/2}\,d\sigma\right)^2
+\int_{-\infty}^{+\infty}|w(e^\tau)|^2e^\tau\,d\tau
+=4\int_0^{+\infty}|w(t)|^2\,dt,
+\]
+由此得到 \eqref{eq:ch2-hardy-one-dimensional}.
+\end{Proof}
+
+\hypertarget{chapter-02-page-134}{}
+\begin{Proof}[引理 \ref{lem:ch2-small-divergence-free-lifting} 的证明]
+下面证明
+\[
+\psi=\operatorname{curl}(\theta_\epsilon\zeta)
+\]
+满足 \eqref{eq:ch2-divergence-free-lifting} 和 \eqref{eq:ch2-lifting-arbitrary-smallness}; 由 \eqref{eq:ch2-boundary-data-curl} 和 \eqref{eq:ch2-cutoff-one-near-boundary}, \eqref{eq:ch2-divergence-free-lifting} 是显然的. 当 $\rho(x)>2\delta(\epsilon)$ 时 $\psi_j(x)=0$, 并且
+\begin{equation}
+|\psi_j(x)|\leq c_2\left(\frac\epsilon{\rho(x)}|\zeta(x)|+|D\zeta(x)|\right)
+\quad\text{若 }\rho(x)\leq2\delta(\epsilon),
+\label{eq:ch2-lifting-pointwise-bound}
+\end{equation}
+其中
+\[
+|D\zeta(x)|=\left\{\sum_{i,j=1}^{n}|D_i\zeta_j(x)|^2\right\}^{1/2}.
+\]
+由于假设 $\zeta_i\in L^\infty(\Omega)$, 由 \eqref{eq:ch2-lifting-pointwise-bound} 推出
+\[
+|\psi_j(x)|\leq c_3\left(\frac\epsilon{\rho(x)}+|D\rho(x)|\right),
+\qquad\forall j,\quad\rho(x)\leq2\delta(\epsilon).
+\]
+因此
+\begin{equation}
+\lVert v_i\psi_j\rVert_{L^2(\Omega)}
+\leq c_4\left\{\epsilon\left\lVert\frac{v_i}\rho\right\rVert_{L^2}
++\left(\int_{\rho\leq2\delta(\epsilon)}v_i^2|D\zeta|^2\,dx\right)^{1/2}\right\}.
+\label{eq:ch2-lifting-product-preestimate}
+\end{equation}
+但由 Hölder 不等式,
+\[
+\left(\int_{\rho\leq2\delta(\epsilon)}v_i^2|D\zeta|^2\,dx\right)^{1/2}
+\leq\mu(\epsilon)\lVert v_i\rVert_{L^\alpha(\Omega)},
+\]
+其中 $1/\alpha=1/2-1/n$, 且
+\[
+\mu(\epsilon)=
+\left\{\int_{\rho(x)\leq2\delta(\epsilon)}|D\zeta(x)|^n\,dx\right\}^{1/n};
+\]
+由于 $D_i\zeta_j\in L^n(\Omega)$, $1\leq i,j\leq n$, 当 $\epsilon\to0$ 时 $\mu(\epsilon)\to0$.
+
+结合最后这个控制式、\eqref{eq:ch2-sobolev-rn-embeddings} 和引理 \ref{lem:ch2-hardy-boundary-inequality}, \eqref{eq:ch2-lifting-product-preestimate} 给出
+\begin{equation}
+\lVert v_i\psi_j\rVert_{L^2(\Omega)}
+\leq c_5\{\epsilon\lVert v\rVert+\mu(\epsilon)\lVert v\rVert_{L^\alpha(\Omega)}\}
+\leq c_6(\epsilon+\mu(\epsilon))\lVert v\rVert,
+\quad1\leq i,j\leq n.
+\label{eq:ch2-lifting-product-estimate}
+\end{equation}
+现在容易验证 \eqref{eq:ch2-lifting-arbitrary-smallness}; 对每个 $v\in\mathcal V$,
+\[
+b(v,\psi,v)=-b(v,v,\psi),
+\]
+且
+\begin{equation}
+|b(v,v,\psi)|
+\leq\lVert v\rVert
+\left\{\sum_{i,j=1}^{n}\lVert v_i\psi_j\rVert\right\}
+\leq c_7(\epsilon+\mu(\epsilon))\lVert v\rVert^2,
+\label{eq:ch2-lifting-trilinear-estimate}
+\end{equation}
+其中最后一步使用 \eqref{eq:ch2-lifting-product-estimate}. 若 $\epsilon$ 充分小, 使 $c_7(\epsilon+\mu(\epsilon))\leq\gamma$, 则对每个 $v\in\mathcal V$ 得到 \eqref{eq:ch2-lifting-arbitrary-smallness}, 再由连续性对每个 $v\in\overline V$ 成立.
+\end{Proof}
+\end{Proof}
+
+\hypertarget{chapter-02-page-135}{}
+\MBSourceStatementNumber{remark}{6}
+\begin{Remark}
+\label{rem:ch2-nonhomogeneous-lifting}
+(i) 当 $n\leq3$ 时, 由 Sobolev 嵌入定理(见 \eqref{eq:ch2-sobolev-rn-embeddings}), 条件 \eqref{eq:ch2-boundary-potential-regularity} 约化为 $\zeta\in\mathbf H^2(\Omega)$.
+
+(ii) 对水动力学中的经典问题, 如空化问题、Taylor 问题等, 容易把边界条件写成 \eqref{eq:ch2-boundary-data-curl} 的形式. 原文另参见 \MBUnresolvedReference{appendix}{Appendix I}.
+
+(iii) 上述构造把 \eqref{eq:ch2-nonhomogeneous-boundary} 中定义在 $\Gamma$ 上的函数 $\phi$ 延拓(或提升)为定义在整个 $\Omega$ 上并用于引理 \ref{lem:ch2-small-divergence-free-lifting} 的函数 $\psi$. X. Wang 提出了用于其他目的的另一种延拓; 原文参见 R. Temam and X. Wang (1996, 2000).
+\end{Remark}
+
+\MBSourceStatementNumber{remark}{7}
+\begin{Remark}
+\label{rem:ch2-nonhomogeneous-regularity}
+容易把命题 \ref{prop:ch2-smoothness-of-solution} 推广到非齐次问题. 在该命题的假设下, 再假设 $\psi\in C^\infty(\Gamma)$, 则 \eqref{eq:ch2-nonhomogeneous-momentum}--\eqref{eq:ch2-nonhomogeneous-boundary} 的解 $\{u,p\}$ 属于 $C^\infty(\overline\Omega)\times C^\infty(\overline\Omega)$. 为证明此点, 可像命题 \ref{prop:ch2-smoothness-of-solution} 那样直接处理方程 \eqref{eq:ch2-nonhomogeneous-momentum}--\eqref{eq:ch2-nonhomogeneous-boundary}(即不引入 $\widehat u$).
+\end{Remark}
+
+还有一个类似于定理 \ref{thm:ch2-homogeneous-uniqueness} 的唯一性结果: 当 $n\leq4$, $\nu$ ``大'' 且 $f$ ``小'' 时, 有唯一性.
+
+\MBSourceStatementNumber{theorem}{6}
+\begin{Theorem}
+\label{thm:ch2-nonhomogeneous-uniqueness}
+假设 $n\leq4$, $\phi$ 在 $L^n(\Omega)$ 中的范数足够小, 使
+\begin{equation}
+|b(v,\phi,v)|\leq\frac\nu2\lVert v\rVert^2,
+\qquad\forall v\in V,
+\label{eq:ch2-boundary-data-smallness}
+\end{equation}
+并且 $\nu$ 足够大, 使
+\begin{equation}
+\nu^2>4c(n)\lVert\widehat f\rVert_{V'},
+\label{eq:ch2-nonhomogeneous-uniqueness-condition}
+\end{equation}
+其中 $c(n)$ 是 \eqref{eq:ch2-trilinear-continuity-estimate} 中的常数, 且
+\begin{equation}
+\widehat f=f+\nu\Delta\phi-\sum_{i=1}^{n}\phi_iD_i\phi.
+\label{eq:ch2-nonhomogeneous-effective-force}
+\end{equation}
+则 \eqref{eq:ch2-nonhomogeneous-momentum}--\eqref{eq:ch2-nonhomogeneous-boundary} 存在唯一解 $u,p$.\footnote{一如既往, $p$ 在相差一个常数的意义下唯一.}
+\end{Theorem}
+
+\begin{Proof}
+引理 \ref{lem:ch2-trilinear-continuity}, \ref{lem:ch2-trilinear-on-v}, \ref{lem:ch2-trilinear-skew-symmetry} 已证明
+\[
+b(v,\phi,v)=-b(v,v,\phi),
+\]
+且
+\[
+|b(v,v,\phi)|\leq c\lVert v\rVert^2\lVert\phi\rVert_{L^n(\Omega)}.
+\]
+因此, 若 $\lVert\phi\rVert_{L^n(\Omega)}$ 充分小, 条件 \eqref{eq:ch2-boundary-data-smallness} 成立; 这意味着对 $\psi=\phi$ 有 \eqref{eq:ch2-lifting-smallness}, 并且在这种情况下不需要先前对 $\psi$ 的构造. 尽管如此, 取 $\psi=\phi$, 存在性的证明仍沿相同路线进行.
+
+若 $u_1$ 是 \eqref{eq:ch2-nonhomogeneous-momentum}--\eqref{eq:ch2-nonhomogeneous-boundary} 的解, 则 $\widehat u_1=u_1-\phi$ 是取 $\psi=\phi$ 时 \eqref{eq:ch2-lifted-variational-problem} 的解. 在 \eqref{eq:ch2-lifted-variational-problem} 中取 $v=\widehat u_1$, 利用 \eqref{eq:ch2-boundary-data-smallness} 得
+\[
+\nu\lVert\widehat u_1\rVert^2
+=-b(\widehat u_1,\phi,\widehat u_1)
++\langle\widehat f,\widehat u_1\rangle
+\leq\frac\nu2\lVert\widehat u_1\rVert^2
++\lVert\widehat f\rVert_{V'}\lVert\widehat u_1\rVert,
+\]
+因而
+\begin{equation}
+\lVert\widehat u_1\rVert
+\leq\frac2\nu\lVert\widehat f\rVert_{V'}.
+\label{eq:ch2-nonhomogeneous-solution-bound}
+\end{equation}
+
+假设 $u_0,u_1$ 是 \eqref{eq:ch2-nonhomogeneous-momentum}--\eqref{eq:ch2-nonhomogeneous-boundary} 的两个解; 令 $\widehat u_0=u_0-\phi$, $\widehat u_1=u_1-\phi$, $\widehat u=\widehat u_0-\widehat u_1$; $\widehat u_0$ 和 $\widehat u_1$ 均满足取 $\psi=\phi$ 时的 \eqref{eq:ch2-lifted-variational-problem}:
+\[
+\nu((\widehat u_0,v))+b(\widehat u_0,\widehat u_0,v)
++b(\widehat u_0,\phi,v)+b(\phi,\widehat u_0,v)
+=\langle\widehat f,v\rangle,
+\qquad v\in V,
+\]
+\[
+\nu((\widehat u_1,v))+b(\widehat u_1,\widehat u_1,v)
++b(\widehat u_1,\phi,v)+b(\phi,\widehat u_1,v)
+=\langle\widehat f,v\rangle,
+\qquad v\in V.
+\]
+\hypertarget{chapter-02-page-136}{}
+在这两个方程中取 $v=\widehat u$, 并以第一个减去第二个; 展开并利用 \eqref{eq:ch2-trilinear-zero-property}, 得
+\begin{equation}
+\nu\lVert\widehat u\rVert^2
+=-b(\widehat u,\widehat u_1,\widehat u)
+-b(\widehat u,\phi,\widehat u).
+\label{eq:ch2-nonhomogeneous-difference-energy}
+\end{equation}
+由 \eqref{eq:ch2-boundary-data-smallness},
+\[
+-b(\widehat u,\phi,\widehat u)
+\leq\frac\nu2\lVert\widehat u\rVert^2.
+\]
+由 \eqref{eq:ch2-trilinear-continuity-estimate},
+\[
+-b(\widehat u,\widehat u_1,\widehat u)
+\leq c(n)\lVert\widehat u_1\rVert\lVert\widehat u\rVert^2,
+\]
+并由 \eqref{eq:ch2-nonhomogeneous-solution-bound}, 后者不超过
+\[
+\frac2\nu c(n)\lVert\widehat f\rVert_{V'}\lVert\widehat u\rVert^2.
+\]
+最终得到
+\[
+\left(\frac\nu2-\frac2\nu c(n)\lVert\widehat f\rVert_{V'}\right)
+\lVert\widehat u\rVert^2\leq0,
+\]
+由 \eqref{eq:ch2-nonhomogeneous-uniqueness-condition} 推出 $\widehat u=0$.
+
+若 $\widehat u_0=\widehat u_1$, 显然 $\operatorname{grad}p_0=\operatorname{grad}p_1$, 因而 $p_0$ 与 $p_1$ 之差为常数.
+\end{Proof}
+
+\MBSourceStatementNumber{remark}{8}
+\begin{Remark}
+\label{rem:ch2-nonhomogeneous-nonuniqueness}
+在二维情形, 对于某些构型, 已经证明问题 \eqref{eq:ch2-nonhomogeneous-momentum}--\eqref{eq:ch2-nonhomogeneous-boundary} 的非唯一性结果; 原文参见 \MBUnresolvedReference{citation}{Rabinowitz [2]}, \MBUnresolvedReference{citation}{Velte [1, 2]} 以及 \MBUnresolvedReference{section}{Chapter 2, Section 4}.
+\end{Remark}
