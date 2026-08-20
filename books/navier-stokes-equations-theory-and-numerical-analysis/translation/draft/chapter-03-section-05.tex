@@ -1,0 +1,1434 @@
+\hypertarget{chapter-03-page-239-section-05}{}
+\setcounter{section}{4}
+\section{Navier--Stokes 方程的离散化: 一般稳定性与收敛定理}
+\label{sec:ch3-general-stability-convergence}
+\newcounter{mbscheme}[section]
+\renewcommand{\thembscheme}{\thesection.\arabic{mbscheme}}
+
+本节一般性地讨论演化 Navier--Stokes 方程的离散化. 这里研究方程关于空间变量和时间变量的完全离散化:
+
+1) 空间变量的离散化通过引入空间 $V$ 的一个外逼近实现, 例如与有限差分或有限元相对应的逼近 (APX1)--(APX4) 之一. 这些具体例子将在别处作更详细的讨论.
+
+2) 对时间变量的离散化, 我们从许多自然且经典的格式中提出四种双层时间格式: 全隐式格式, Crank--Nicholson 格式, 线性部分隐式而非线性部分显式的格式, 以及显式型格式.
+
+描述所考虑的格式之后, 我们接着研究这些格式的稳定性. 在数值分析的术语中, 稳定性问题就是求近似解先验估计的问题. 经典地说, 同时对演化方程的空间和时间进行离散化可能产生不稳定或条件稳定的格式: 除非离散化参数满足某种限制, 近似解会无界. 我们详细讨论上述四种格式的数值稳定性. 据我们所知, 这里使用的是研究非线性方程稳定性的非经典方法. 非线性不稳定性的研究是一个困难问题; 这里基于能量方法的研究只能导出稳定性的充分条件. 所得稳定性条件看来接近必要条件, 但本文完全不研究稳定性必要条件的问题.
+
+本节处理的最后一个主题是格式的收敛性. 对不同格式, 我们在适当空间中证明两个一般收敛定理. 收敛性证明依赖离散紧性方法. 由于三维情形下弱解不唯一, 二维与三维情形所得的收敛结果不同; 当然, $n=2$ 时结果更好.
+
+后续各小节的安排如下. 第 \ref{subsec:ch3-scheme-description} 小节描述将要研究的一般离散化类型和数值格式. 第 \ref{sec:sample-scheme-stability}, \ref{subsec:ch3-scheme-53-stability} 和 \ref{subsec:ch3-scheme-54-stability} 小节依次研究格式 \ref{scheme:ch3-fully-implicit} 与 \ref{scheme:ch3-crank-nicholson}, 格式 \ref{scheme:ch3-linear-implicit}, 以及格式 \ref{scheme:ch3-explicit} 的稳定性. 源文称第 \MBUnresolvedReference{subsection}{5.5} 小节处理涉及近似函数关于时间的分数阶导数的辅助先验估计, 并称第 \MBUnresolvedReference{subsection}{5.6} 小节给出相容性假设, 陈述一般收敛定理并证明这些定理; 这两个源文小节号与后面的实际标题不一致.
+
+这些结果对空间 $V$ 的具体逼近的应用将在 \MBUnresolvedReference{section}{Section 6} 中处理. 该节还将研究求解离散问题的实用方法, 附录则描述实际例子. 非线性演化 Navier--Stokes 方程的其他逼近方法见 \MBUnresolvedReference{sections}{Sections 7 and 8}, 包括分步法或投影法以及人工可压缩性方法.
+
+从现在起, 我们只限于空间的``具体''维数 $n=2$ 和 $n=3$.
+
+\hypertarget{chapter-03-page-240}{}
+\subsection{逼近格式的描述}
+\label{subsec:ch3-scheme-description}
+
+从现在起只考虑二维和三维情形下 Navier--Stokes 方程解的逼近, 并假设 $\Omega$ 有界. 为简单起见, 假设给定数据 $u_0,f$ 满足
+\begin{equation}
+f\in L^2(0,T;H),
+\label{eq:ch3-discrete-force-data}
+\end{equation}
+以及同前一样,
+\begin{equation}
+u_0\in H.
+\label{eq:ch3-discrete-initial-data}
+\end{equation}
+定理 \ref{thm:ch3-existence-weak-solution} 和 \ref{thm:ch3-uniqueness-2d} 表明: 当 $n=2$ 时, 问题 \MBUnresolvedReference{problem}{Problem 3.2} 存在唯一解; 当 $n=3$ 时, 至少存在一个这样的解.
+
+给定空间 $V$ 的一个稳定且收敛的外逼近
+\[
+\{(V_h,p_h,r_h)_{h\in\mathcal H},(\overline\omega,F)\},
+\]
+其中假设 $V_h$ 是有限维空间. 这一逼近可以是第 1 章描述的逼近 (APX1), $\ldots$, (APX5) 中的任意一个. 为简单起见, 假设
+\begin{equation}
+V_h\subset L^2(\Omega),\qquad\forall h\in\mathcal H,
+\label{eq:ch3-discrete-space-l2-inclusion}
+\end{equation}
+此前所有逼近都满足这一条件. 因而空间 $V_h$ 带有两个范数: $L^2(\Omega)$ 诱导的范数 $|\cdot|$ 和它自身的范数 $\lVert\cdot\rVert_h$. 由于 $V_h$ 有限维, 这两个范数必然等价; 二者之比由一个可以依赖于 $h$ 的常数控制. 更具体地, 假设
+\begin{equation}
+|u_h|\leq d_0\lVert u_h\rVert_h,
+\qquad\forall u_h\in V_h,
+\label{eq:ch3-discrete-norm-lower-bound}
+\end{equation}
+其中 $d_0$ 与 $h$ 无关, 并且
+\begin{equation}
+\lVert u_h\rVert_h\leq S(h)|u_h|,
+\qquad\forall u_h\in V_h.
+\label{eq:ch3-discrete-stability-constant}
+\end{equation}
+通常依赖于 $h$ 的常数 $S(h)$ 在数值逼近的稳定性研究中起重要作用; 因此 $S(h)$ 有时称为稳定性常数. 通常当 $h\to0$ 时, $S(h)\to+\infty$.
+
+\hypertarget{chapter-03-page-241}{}
+在 $V_h$ 上给定一个连续三线性形式 $b_h(u_h,v_h,w_h)$, 它满足
+\begin{equation}
+b_h(u_h,v_h,v_h)=0,
+\qquad\forall u_h,v_h\in V_h,
+\label{eq:ch3-discrete-trilinear-cancellation}
+\end{equation}
+以及
+\begin{equation}
+|b_h(u_h,v_h,w_h)|\leq d_1\lVert u_h\rVert_h\lVert v_h\rVert_h\lVert w_h\rVert_h,
+\qquad\forall u_h,v_h,w_h\in V_h,
+\label{eq:ch3-discrete-trilinear-continuity}
+\end{equation}
+其中 $d_1$ 与 $h$ 无关. 需要其他性质时, 即在讨论这些格式的稳定性和收敛性时, 再予以说明.
+
+把区间 $[0,T]$ 分成 $N$ 个长度相等的区间, 记
+\begin{equation}
+k=\frac TN.
+\label{eq:ch3-discrete-time-step}
+\end{equation}
+与第 \ref{sec:ch3-semidiscrete-existence} 节一样, 对 $k$ 和函数 $f$ 定义元素 $f^1,\ldots,f^N$:
+\begin{equation}
+f^m=\frac1k\int_{(m-1)k}^{mk}f(t)\,dt,
+\qquad m=1,\ldots,N;qquad f^m\in L^2(\Omega).
+\label{eq:ch3-discrete-force-average}
+\end{equation}
+
+我们将从已经为 Navier--Stokes 方程提出的一大类有意义且有时很经典的格式中, 选取并研究四种基本格式.
+
+对所有四种格式, 针对每个 $h$ 和 $k$, 递归定义 $V_h$ 中的一族元素 $u_h^0,\ldots,u_h^N$. 实际上这些元素依赖于 $h,k$ 和数据, 应记为 $u_{hk}^m$; 不过为简单起见, 不强调这种双重依赖.
+
+在每一种格式中, 递推都从
+\begin{equation}
+u_h^0=\text{$u_0$ 在 $L^2(\Omega)$ 中到 $V_h$ 上的正交投影}
+\label{eq:ch3-discrete-initial-projection}
+\end{equation}
+开始. 由 \,\eqref{eq:ch3-discrete-space-l2-inclusion}, 这一定义有意义, 并立即得到
+\begin{equation}
+|u_h^0|\leq|u_0|,
+\qquad\forall h.
+\label{eq:ch3-discrete-initial-projection-bound}
+\end{equation}
+
+\refstepcounter{mbscheme}\label{scheme:ch3-fully-implicit}
+\paragraph{格式 \thembscheme.}
+已知 $u_h^0,\ldots,u_h^{m-1}$ 时, $u_h^m$ 是 $V_h$ 中满足下式的解:
+\begin{equation}
+\frac1k(u_h^m-u_h^{m-1},v_h)+\nu((u_h^m,v_h))_h
++b_h(u_h^{m-1},u_h^m,v_h)=(f^m,v_h),
+\qquad\forall v_h\in V_h.
+\label{eq:ch3-scheme-51}
+\end{equation}
+
+\refstepcounter{mbscheme}\label{scheme:ch3-crank-nicholson}
+\paragraph{格式 \thembscheme.}
+已知 $u_h^0,\ldots,u_h^{m-1}$ 时, $u_h^m$ 是 $V_h$ 中满足下式的解:
+\begin{align}
+&\frac1k(u_h^m-u_h^{m-1},v_h)
++\frac\nu2((u_h^{m-1}+u_h^m,v_h))_h \notag\\
+&\qquad+\frac12b_h(u_h^{m-1},u_h^{m-1}+u_h^m,v_h)
+=(f^m,v_h),\qquad\forall v_h\in V_h.
+\label{eq:ch3-scheme-52}
+\end{align}
+
+\refstepcounter{mbscheme}\label{scheme:ch3-linear-implicit}
+\paragraph{格式 \thembscheme.}
+已知 $u_h^0,\ldots,u_h^{m-1}$ 时, $u_h^m$ 是 $V_h$ 中满足下式的解:
+\begin{equation}
+\frac1k(u_h^m-u_h^{m-1},v_h)+\nu((u_h^m,v_h))_h
++b_h(u_h^{m-1},u_h^{m-1},v_h)=(f^m,v_h),
+\qquad\forall v_h\in V_h.
+\label{eq:ch3-scheme-53}
+\end{equation}
+
+\hypertarget{chapter-03-page-242}{}
+\refstepcounter{mbscheme}\label{scheme:ch3-explicit}
+\paragraph{格式 \thembscheme.}
+已知 $u_h^0,\ldots,u_h^{m-1}$ 时, $u_h^m$ 是 $V_h$ 中满足下式的解:
+\begin{equation}
+\frac1k(u_h^m-u_h^{m-1},v_h)+\nu((u_h^{m-1},v_h))_h
++b_h(u_h^{m-1},u_h^{m-1},v_h)=(f^m,v_h),
+\qquad\forall v_h\in V_h.
+\label{eq:ch3-scheme-54}
+\end{equation}
+
+对所有格式, 定义 $u_h^m$ 的方程都等价于如下形式的线性方程:
+\begin{equation}
+a_h(u_h^m,v_h)=L_h(v_h),
+\qquad\forall v_h\in V_h.
+\label{eq:ch3-discrete-linear-form}
+\end{equation}
+$L_h$ 依赖于 $m$; 对格式 \ref{scheme:ch3-fully-implicit} 和 \ref{scheme:ch3-crank-nicholson}, $a_h$ 也依赖于 $m$, 对格式 \ref{scheme:ch3-linear-implicit} 和 \ref{scheme:ch3-explicit} 则不依赖于 $m$. 在所有情形下都有
+\begin{equation}
+a_h(v_h,v_h)\geq\frac1k|v_h|^2,
+\label{eq:ch3-discrete-linear-coercivity}
+\end{equation}
+因而方程 \eqref{eq:ch3-discrete-linear-form} 解的存在唯一性是投影定理 \MBUnresolvedReference{theorem}{Theorem 1.2.2} 的推论.
+
+\MBSourceStatementNumber{remark}{1}
+\begin{Remark}
+\label{rem:ch3-discrete-matrix-properties}
+(i) 计算 $u_h^m$ 需要对一个矩阵求逆:
+
+-- 对格式 \ref{scheme:ch3-fully-implicit} 和 \ref{scheme:ch3-crank-nicholson}, 该矩阵正定, 非对称且依赖于 $m$;
+
+-- 对格式 \ref{scheme:ch3-linear-implicit} 和 \ref{scheme:ch3-explicit}, 该矩阵正定, 对称且不依赖于 $m$.
+
+(ii) 格式 \ref{scheme:ch3-fully-implicit} 是标准全隐式格式; 格式 \ref{scheme:ch3-crank-nicholson} 是经典 Crank--Nicholson 格式的一种解释. 格式 \ref{scheme:ch3-linear-implicit} 是部分隐式格式, 只对算子的线性部分采用隐式.
+
+(iii) 格式 \ref{scheme:ch3-explicit} 是显式格式, 更准确地说是所谓显式格式的一种解释. 之所以使用这一术语, 是因为这种格式通常显式给出 $u_h^m$, 即不需要对任何矩阵求逆. 在当前情形, 由于空间 $V_h$ 中包含离散条件 $\operatorname{div}u_h=0$, 确定 $u_h^m$ 仍需对一个矩阵求逆. 这大大限制了该格式的意义, 但我们仍认为值得考虑.
+
+(iv) 除了上述关于格式类型的讨论外, 求 $u_h^m$ 的实际计算方法见 \MBUnresolvedReference{section}{Section 6}.
+\end{Remark}
+
+\MBSourceStatementNumber{remark}{2}
+\begin{Remark}[相关格式]
+\label{rem:ch3-related-schemes}
+(i) 与格式 \ref{scheme:ch3-fully-implicit} 和 \ref{scheme:ch3-crank-nicholson} 相关的是这两种格式的非线性形式.
+
+\paragraph{格式 \ref{scheme:ch3-fully-implicit}$'$.}
+\begin{equation}
+\frac1k(u_h^m-u_h^{m-1},v_h)+\nu((u_h^m,v_h))_h
++b_h(u_h^m,u_h^m,v_h)=(f^m,v_h),
+\qquad\forall v_h\in V_h.
+\label{eq:ch3-scheme-51-nonlinear}
+\end{equation}
+
+\paragraph{格式 \ref{scheme:ch3-crank-nicholson}$'$.}
+\begin{align}
+&\frac1k(u_h^m-u_h^{m-1},v_h)
++\frac\nu2((u_h^{m-1}+u_h^m,v_h))_h \notag\\
+&\qquad+\frac14b_h(u_h^{m-1}+u_h^m,u_h^{m-1}+u_h^m,v_h)
+=(f^m,v_h),\qquad\forall v_h\in V_h.
+\label{eq:ch3-scheme-52-nonlinear}
+\end{align}
+
+(ii) 与格式 \ref{scheme:ch3-linear-implicit} 相关的是一个线性部分采用 Crank--Nicholson 离散的格式.
+
+\hypertarget{chapter-03-page-243}{}
+\paragraph{格式 \ref{scheme:ch3-linear-implicit}$'$.}
+\begin{align}
+&\frac1k(u_h^m-u_h^{m-1},v_h)
++\frac\nu2((u_h^{m-1}+u_h^m,v_h))_h \notag\\
+&\qquad+b_h(u_h^{m-1},u_h^{m-1},v_h)
+=(f^m,v_h),\qquad\forall v_h\in V_h.
+\label{eq:ch3-scheme-53-crank-nicholson}
+\end{align}
+
+(iii) 这些格式可以用与格式 \ref{scheme:ch3-fully-implicit}--\ref{scheme:ch3-explicit} 完全相同的方法研究.
+\end{Remark}
+
+% Reuse the accepted PDF 243--244 sample byte-for-byte. Only its standalone
+% section heading is suppressed here, and determinable references are resolved
+% through stable labels supplied by the surrounding complete section.
+\MBSourceStatementNumber{lemma}{1}
+\let\MBSavedSection\section
+\makeatletter
+\def\section#1{\stepcounter{section}\phantomsection\protected@edef\@currentlabel{\thesection}}
+\makeatother
+\let\MBSavedUnresolvedReference\MBUnresolvedReference
+\expandafter\def\csname MBResolvedRef@5.1\endcsname{\ref{scheme:ch3-fully-implicit}}
+\expandafter\def\csname MBResolvedRef@5.2\endcsname{\ref{scheme:ch3-crank-nicholson}}
+\expandafter\def\csname MBResolvedRef@(5.4)\endcsname{\eqref{eq:ch3-discrete-norm-lower-bound}}
+\expandafter\def\csname MBResolvedRef@(5.6)\endcsname{\eqref{eq:ch3-discrete-trilinear-cancellation}}
+\expandafter\def\csname MBResolvedRef@(5.11)\endcsname{\eqref{eq:ch3-discrete-initial-projection-bound}}
+\expandafter\def\csname MBResolvedRef@(5.12)\endcsname{\eqref{eq:ch3-scheme-51}}
+\expandafter\def\csname MBResolvedRef@(5.13)\endcsname{\eqref{eq:ch3-scheme-52}}
+\expandafter\def\csname MBResolvedRef@引理 4.5\endcsname{引理~\ref{lem:ch3-semidiscrete-force-average-bound}}
+\def\MBUnresolvedReference#1#2{%
+  \ifcsname MBResolvedRef@#2\endcsname
+    \csname MBResolvedRef@#2\endcsname
+  \else
+    \MBSavedUnresolvedReference{#1}{#2}%
+  \fi
+}
+\input{chapters/sample.tex}
+\let\section\MBSavedSection
+\let\MBUnresolvedReference\MBSavedUnresolvedReference
+
+\hypertarget{chapter-03-page-245}{}
+\subsubsection{稳定性定理}
+\label{subsubsec:ch3-schemes-51-52-stability-theorems}
+
+先回顾一个定义.
+
+\MBSourceStatementNumber{definition}{1}
+\begin{Definition}
+\label{def:ch3-lp-stability}
+一个无限函数集 $\mathcal E$ 称为 $L^p(0,T;X)$ 稳定的, 当且仅当 $\mathcal E$ 是 $L^p(0,T;X)$ 的有界子集.
+\end{Definition}
+
+\long\def\MBSchemeFiftyFourBlock{%
+\subsection{格式 \ref{scheme:ch3-explicit} 的稳定性}
+\label{subsec:ch3-scheme-54-stability}
+
+\subsubsection{先验估计}
+\label{subsubsec:ch3-scheme-54-apriori-estimates}
+
+\MBSourceStatementNumber{lemma}{4}
+\begin{Lemma}
+\label{lem:ch3-scheme-54-apriori-bounds}
+假设 $k$ 和 $h$ 满足
+\begin{equation}
+kS^2(h)\leq\frac{1-\delta}{4\nu},
+\qquad\text{其中某个 }\delta\text{ 满足 }0<\delta<1,
+\label{eq:ch3-scheme-54-first-stability-condition}
+\end{equation}
+以及
+\begin{equation}
+kS_1^2(h)\leq\frac{\nu\delta}{8d_5},
+\label{eq:ch3-scheme-54-second-stability-condition}
+\end{equation}
+其中
+\begin{equation}
+d_5=|u_0|^2+\left(\frac{d_0^2}{\nu}+4T\right)
+\int_0^T|f(s)|^2\,ds.
+\label{eq:ch3-scheme-54-data-bound}
+\end{equation}
+则由 \eqref{eq:ch3-scheme-54} 给出的 $u_h^m$ 在下述意义下保持有界:
+\begin{equation}
+|u_h^m|^2\leq d_5,
+\qquad m=1,\ldots,N,
+\label{eq:ch3-scheme-54-uniform-bound}
+\end{equation}
+\begin{equation}
+k\sum_{m=1}^N\lVert u_h^m\rVert_h^2\leq\frac{2d_5}{\delta\nu},
+\label{eq:ch3-scheme-54-energy-bound}
+\end{equation}
+\begin{equation}
+\sum_{m=1}^N|u_h^m-u_h^{m-1}|^2
+\leq\frac{d_5}{\delta}(2-\delta)+4T\int_0^T|f(s)|^2\,ds.
+\label{eq:ch3-scheme-54-increment-bound}
+\end{equation}
+\end{Lemma}
+
+\begin{Proof}
+在 \eqref{eq:ch3-scheme-54} 中取 $v_h=u_h^{m-1}$. 由恒等式
+\begin{equation}
+2(a-b,b)=|a|^2-|b|^2-|a-b|^2,
+\qquad\forall a,b\in L^2(\Omega),
+\label{eq:ch3-scheme-54-polarization-identity}
+\end{equation}
+得到
+\begin{align*}
+&|u_h^m|^2-|u_h^{m-1}|^2-|u_h^m-u_h^{m-1}|^2
++2k\nu\lVert u_h^{m-1}\rVert_h^2\\
+&\qquad=2k(f^m,u_h^{m-1})
+\leq2kd_0|f^m|\lVert u_h^{m-1}\rVert_h\\
+&\qquad\leq\nu k\lVert u_h^{m-1}\rVert_h^2
++\frac{kd_0^2}{\nu}|f^m|^2.
+\end{align*}
+因而
+\begin{align}
+|u_h^m|^2-|u_h^{m-1}|^2-|u_h^m-u_h^{m-1}|^2
++k\nu\lVert u_h^{m-1}\rVert_h^2
+\leq\frac{kd_0^2}{\nu}|f^m|^2.
+\label{eq:ch3-scheme-54-preliminary-energy}
+\end{align}
+上式与 \eqref{eq:sample-scheme51-test-estimate} 的不同之处在于左端的 $|u_h^m-u_h^{m-1}|^2$ 带负号, 因而必须估计它的上界.
+
+\hypertarget{chapter-03-page-249}{}
+为估计 $|u_h^m-u_h^{m-1}|^2$, 在 \eqref{eq:ch3-scheme-54} 中取 $v_h=u_h^m-u_h^{m-1}$. 得
+\begin{align}
+2|u_h^m-u_h^{m-1}|^2
+={}&-2k\nu((u_h^{m-1},u_h^m-u_h^{m-1}))_h\notag\\
+&-2kb_h(u_h^{m-1},u_h^{m-1},u_h^m-u_h^{m-1})\notag\\
+&+2k(f^m,u_h^m-u_h^{m-1}).
+\label{eq:ch3-scheme-54-increment-identity}
+\end{align}
+反复使用 \eqref{eq:ch3-discrete-stability-constant}, \eqref{eq:ch3-scheme-53-improved-trilinear-bound} 和 Schwarz 不等式, 依次估计右端各项:
+\begin{align*}
+&-2k\nu((u_h^{m-1},u_h^m-u_h^{m-1}))_h\\
+&\quad\leq2k\nu\lVert u_h^{m-1}\rVert_h\lVert u_h^m-u_h^{m-1}\rVert_h\\
+&\quad\leq2k\nu S(h)\lVert u_h^{m-1}\rVert_h|u_h^m-u_h^{m-1}|\\
+&\quad\leq\frac14|u_h^m-u_h^{m-1}|^2
++4k^2\nu^2S^2(h)\lVert u_h^{m-1}\rVert_h^2;
+\end{align*}
+\begin{align*}
+&-2kb_h(u_h^{m-1},u_h^{m-1},u_h^m-u_h^{m-1})\\
+&\quad\leq2kS_1(h)|u_h^{m-1}|\lVert u_h^{m-1}\rVert_h|u_h^m-u_h^{m-1}|\\
+&\quad\leq\frac14|u_h^m-u_h^{m-1}|^2
++4k^2S_1^2(h)|u_h^{m-1}|^2\lVert u_h^{m-1}\rVert_h^2;
+\end{align*}
+\begin{align*}
+2k(f^m,u_h^m-u_h^{m-1})
+&\leq2k|f^m||u_h^m-u_h^{m-1}|\\
+&\leq\frac14|u_h^m-u_h^{m-1}|^2+4k^2|f^m|^2.
+\end{align*}
+因此 \eqref{eq:ch3-scheme-54-increment-identity} 变成
+\begin{align}
+|u_h^m-u_h^{m-1}|^2
+&\leq4k^2\nu^2S^2(h)\lVert u_h^{m-1}\rVert_h^2\notag\\
+&\quad+4k^2S_1^2(h)|u_h^{m-1}|^2\lVert u_h^{m-1}\rVert_h^2
++4k^2|f^m|^2\notag\\
+&\leq k\nu(1-\delta)\lVert u_h^{m-1}\rVert_h^2
++4k^2S_1^2(h)|u_h^{m-1}|^2\lVert u_h^{m-1}\rVert_h^2
++4k^2|f^m|^2,
+\label{eq:ch3-scheme-54-increment-estimate}
+\end{align}
+其中最后一步使用 \eqref{eq:ch3-scheme-54-first-stability-condition}. 对 \eqref{eq:ch3-scheme-54-preliminary-energy}, 有
+\begin{align}
+&|u_h^m|^2-|u_h^{m-1}|^2
++k\bigl(\nu\delta-4kS_1^2(h)|u_h^{m-1}|^2\bigr)
+\lVert u_h^{m-1}\rVert_h^2\notag\\
+&\qquad\leq k\left(\frac{d_0^2}{\nu}+4k\right)|f^m|^2
+\leq k\left(\frac{d_0^2}{\nu}+4T\right)|f^m|^2,
+\label{eq:ch3-scheme-54-step-inequality}
+\end{align}
+因为 $k\leq T$. 将这些不等式对 $m=1,\ldots,r$ 相加, 得
+\begin{equation}
+|u_h^r|^2+k\sum_{m=1}^r
+\bigl(\nu\delta-4kS_1^2(h)|u_h^{m-1}|^2\bigr)
+\lVert u_h^{m-1}\rVert_h^2\leq\mu_r,
+\label{eq:ch3-scheme-54-summed-inequality}
+\end{equation}
+其中
+\begin{equation}
+\mu_r=|u_h^0|^2+k\left(\frac{d_0^2}{\nu}+4T\right)
+\sum_{m=1}^r|f^m|^2.
+\label{eq:ch3-scheme-54-mu-r}
+\end{equation}
+现在使用 \eqref{eq:ch3-scheme-54-second-stability-condition} 递归证明
+\begin{equation}
+|u_h^r|^2+\frac{k\nu\delta}{2}
+\sum_{m=1}^r\lVert u_h^{m-1}\rVert_h^2\leq\mu_r,
+\qquad r=1,\ldots,N.
+\label{eq:ch3-scheme-54-inductive-bound}
+\end{equation}
+
+\hypertarget{chapter-03-page-250}{}
+首先注意到
+\begin{align}
+\mu_r\leq\mu_N
+&=|u_h^0|^2+k\left(\frac{d_0^2}{\nu}+4T\right)
+\sum_{m=1}^N|f^m|^2\notag\\
+&\leq|u_0|^2+\left(\frac{d_0^2}{\nu}+4T\right)
+\int_0^T|f(s)|^2\,ds=d_5.
+\label{eq:ch3-scheme-54-mu-bound}
+\end{align}
+关系 \eqref{eq:ch3-scheme-54-inductive-bound} 对 $r=1$ 是显然的; 在 \eqref{eq:ch3-scheme-54-step-inequality} 中取 $m=1$ 并使用 \eqref{eq:ch3-scheme-54-second-stability-condition}, 得
+\begin{align*}
+|u_h^1|^2+k\nu\delta\lVert u_h^0\rVert_h^2
+&\leq|u_h^0|^2+k\left(\frac{d_0^2}{\nu}+4T\right)|f^1|^2
++4k^2S_1^2(h)|u_h^0|^2\lVert u_h^0\rVert_h^2\\
+&\leq\mu_1+\frac{\nu\delta}{2}\lVert u_h^0\rVert_h^2,
+\end{align*}
+这就是 $r=1$ 时的 \eqref{eq:ch3-scheme-54-inductive-bound}.
+
+现假设 \eqref{eq:ch3-scheme-54-inductive-bound} 一直成立到 $r-1$ 阶, 并对 $r$ 阶证明它. 由递推假设,
+\begin{equation}
+|u_h^{r-1}|^2\leq\mu_{r-1}\leq\mu_N\leq d_5,
+\label{eq:ch3-scheme-54-recurrence-uniform-bound}
+\end{equation}
+最后一个不等式来自 \eqref{eq:ch3-scheme-54-mu-bound}. 因而 \eqref{eq:ch3-scheme-54-summed-inequality} 给出
+\begin{align}
+|u_h^r|^2+k\nu\delta\sum_{m=1}^r\lVert u_h^{m-1}\rVert_h^2
+&\leq\mu_r+4k^2S_1^2(h)d_5
+\sum_{m=1}^r\lVert u_h^{m-1}\rVert_h^2\notag\\
+&\leq\mu_r+\frac{k\nu\delta}{2}
+\sum_{m=1}^r\lVert u_h^{m-1}\rVert_h^2,
+\label{eq:ch3-scheme-54-induction-step}
+\end{align}
+于是得到 $r$ 阶的 \eqref{eq:ch3-scheme-54-inductive-bound}.
+
+还需证明 \eqref{eq:ch3-scheme-54-increment-bound}. 回到 \eqref{eq:ch3-scheme-54-increment-estimate}, 并使用 \eqref{eq:ch3-scheme-54-first-stability-condition} 和 \eqref{eq:ch3-scheme-54-second-stability-condition}, 得
+\begin{equation}
+|u_h^m-u_h^{m-1}|^2
+\leq k\nu\left(1-\frac\delta2\right)
+\lVert u_h^{m-1}\rVert_h^2+4kT|f^m|^2.
+\label{eq:ch3-scheme-54-final-increment-estimate}
+\end{equation}
+求和并使用 \eqref{eq:sample-forcing-time-average-bound}, 得到 \eqref{eq:ch3-scheme-54-increment-bound}.
+\end{Proof}
+
+\long\gdef\MBStrongProlongationBlock{%
+\hypertarget{chapter-03-page-259}{}
+\subsubsection{\eqref{eq:ch3-convergence-strong-prolongation} 的证明}
+\label{subsubsec:ch3-proof-strong-prolongation}
+
+为完整起见, 还证明 \eqref{eq:ch3-convergence-strong-prolongation}. 为此需要一个相当一般且本身也有意义的预备结果.
+
+\MBSourceStatementNumber{lemma}{10}
+\begin{Lemma}
+\label{lem:ch3-time-dependent-recovery-sequence}
+设
+\[
+\{(V_h,p_h,r_h)_{h\in\mathcal H},(\overline\omega,F)\}
+\]
+是 $V$ 的一个稳定且收敛的外逼近. 对给定的 $v\in L^2(0,T;V)$, 对每个 $h\in\mathcal H$ 可以定义函数 $v_h^+\in L^2(0,T;V_h)$, 使当 $h\to0$ 时,
+\[
+p_hv_h^+\to\overline\omega v
+\quad\text{在 }L^2(0,T;F)\text{ 中}.
+\]
+\end{Lemma}
+
+\begin{Proof}
+证明实质上与定理 \MBUnresolvedReference{theorem}{Theorem 1.3.1} 相同. 当 $v$ 作为 $t$ 的函数是阶梯函数时, 结果显然. 阶梯函数在 $L^2(0,T;V)$ 中稠密, 一般情形由命题 \MBUnresolvedReference{proposition}{Proposition 1.3.1} 中那样的二重取极限论证得到.
+\end{Proof}
+
+\MBSourceStatementNumber{lemma}{11}
+\begin{Lemma}
+\label{lem:ch3-scheme-51-strong-prolongation}
+空间维数为 $n=2$. 对格式 \ref{scheme:ch3-fully-implicit}, 当 $h,k\to0$ 时,
+\begin{equation}
+p_hu_h\to\overline\omega u
+\quad\text{在 }L^2(0,T;F)\text{ 中}.
+\label{eq:ch3-scheme-51-strong-prolongation}
+\end{equation}
+\end{Lemma}
+
+\begin{Proof}
+考虑表达式
+\[
+X_h=|u_h^N-u(T)|^2+\sum_{m=1}^N|u_h^m-u_h^{m-1}|^2
++2\nu\int_0^T\lVert u_h(t)-u_h^+(t)\rVert_h^2\,dt,
+\]
+其中 $u_h^+$ 如引理 \ref{lem:ch3-time-dependent-recovery-sequence} 中定义. 由 \eqref{eq:sample-scheme51-uniform-bound}, $|u_h^N|\leq\text{常数}$; 因而存在序列 $h',k'$, 使
+\begin{equation}
+u_{h'}^N\rightharpoonup\chi
+\quad\text{在 }L^2(\Omega)\text{ 中}.
+\label{eq:ch3-final-value-weak-limit}
+\end{equation}
+暂时假设
+\begin{equation}
+(\chi-u(T),v)=0,
+\qquad\forall v\in H,
+\label{eq:ch3-final-value-identification}
+\end{equation}
+并证明 $X_{h'}\to0$. 令
+\[
+X_h=X_h^1+X_h^2+X_h^3,
+\]
+其中由引理 \ref{lem:ch3-time-dependent-recovery-sequence} 和 \eqref{eq:ch3-convergence-bilinear-consistency},
+\[
+X_h^1=|u(T)|^2+2\nu\int_0^T\lVert u_h^+(t)\rVert_h^2\,dt
+\longrightarrow|u(T)|^2+2\nu\int_0^T\lVert u(t)\rVert^2\,dt,
+\]
+由引理 \ref{lem:ch3-time-dependent-recovery-sequence}, \eqref{eq:ch3-convergence-bilinear-consistency} 和 \eqref{eq:ch3-final-value-weak-limit}--\eqref{eq:ch3-final-value-identification}, 并回顾 $u(T)\in H$,
+\[
+X_h^2=-2(u_h^N,u(T))-4\nu\int_0^T((u_h(t),u_h^+(t)))_h\,dt
+\longrightarrow-2|u(T)|^2-4\nu\int_0^T\lVert u(t)\rVert^2\,dt,
+\]
+以及
+\begin{align}
+X_h^3
+&=|u_h^N|^2+\sum_{m=1}^N|u_h^m-u_h^{m-1}|^2
++2\nu\int_0^T\lVert u_h(t)\rVert_h^2\,dt\notag\\
+&=|u_h^N|^2+\sum_{m=1}^N|u_h^m-u_h^{m-1}|^2
++2k\nu\sum_{m=1}^N\lVert u_h^m\rVert_h^2.
+\label{eq:ch3-strong-prolongation-x3}
+\end{align}
+
+\hypertarget{chapter-03-page-260}{}
+把等式 \eqref{eq:sample-scheme51-test-estimate} 中最初的能量等式对 $m=1,\ldots,N$ 相加, 得
+\begin{align*}
+X_h^3
+&=|u_h^0|^2+2k\sum_{m=1}^N(f^m,u_h^m)\\
+&=|u_h^0|^2+2\int_0^T(f_k(t),u_h(t))\,dt.
+\end{align*}
+于是显然, 当 $h,k\to0$ 时,
+\[
+X_h^3\longrightarrow|u_0|^2+2\int_0^T(f(t),u(t))\,dt.
+\]
+所以
+\begin{align}
+X_{h'}\longrightarrow{}&|u_0|^2+2\int_0^T(f(t),u(t))\,dt
+-|u(T)|^2-2\nu\int_0^T\lVert u(t)\rVert^2\,dt,
+\label{eq:ch3-strong-prolongation-energy-limit}
+\end{align}
+而由 \eqref{eq:ch3-semidiscrete-limit-energy-equality-2d}, 此极限为零.
+
+用反证法同样可证明整个族 $X_h$ 收敛到零:
+\[
+X_h\to0,
+\qquad h,k\to0.
+\]
+特别地,
+\[
+\int_0^T\lVert u_h(t)-u_h^+(t)\rVert_h^2\,dt\to0,
+\]
+并且
+\begin{align*}
+\int_0^T\lVert p_hu_h(t)-\overline\omega u(t)\rVert_F^2\,dt
+&\leq c\int_0^T\lVert u_h(t)-u_h^+(t)\rVert_h^2\,dt\\
+&\quad+\int_0^T\lVert p_hu_h^+(t)-\overline\omega u(t)\rVert_F^2\,dt
+\longrightarrow0.
+\end{align*}
+由此得到 \eqref{eq:ch3-scheme-51-strong-prolongation}.
+
+还需证明 \eqref{eq:ch3-final-value-identification}. 把 \eqref{eq:ch3-scheme-51} 对 $m=1,\ldots,N$ 相加, 得
+\[
+(u_h^N-u_h^0,v_h)+k\nu\sum_{m=1}^N((u_h^m,v_h))_h
++k\sum_{m=1}^Nb_h(u_h^{m-1},u_h^m,v_h)
+=k\sum_{m=1}^N(f^m,v_h).
+\]
+取 $v_h=r_hv$, $v\in V$, 容易取极限得到
+\[
+(\chi-u_0,v)+\nu\int_0^T((u(t),v))\,dt
++\int_0^Tb(u(t),u(t),v)\,dt
+=\int_0^T(f(t),v)\,dt,
+\qquad\forall v\in V.
+\]
+\hypertarget{chapter-03-page-261-section-05}{}
+另一方面, 对 \MBUnresolvedReference{equation}{(3.13)} 积分可推出一个把 $\chi$ 换成 $u(T)$ 的相同方程, 所以
+\[
+(\chi-u(T),v)=0,
+\qquad\forall v\in V.
+\]
+由稠密性, 这蕴含 \eqref{eq:ch3-final-value-identification}. 引理 \ref{lem:ch3-scheme-51-strong-prolongation} 证明完毕.
+\end{Proof}
+
+\subsubsection{定理 \ref{thm:ch3-convergence-two-dimensional} 和 \ref{thm:ch3-convergence-three-dimensional} 的证明(其他情形)}
+\label{subsubsec:ch3-proof-convergence-other-cases}
+
+对于格式 \ref{scheme:ch3-crank-nicholson}, \ref{scheme:ch3-linear-implicit} 和 \ref{scheme:ch3-explicit}, 在 $n=2$ 的情形, 使用相应的先验估计即可得到与上述证明非常相似的证明.
+
+对格式 \ref{scheme:ch3-crank-nicholson}, 引入条件 \eqref{eq:ch3-convergence-scheme-52-condition} 是为了给出证明 \eqref{eq:ch3-reconstruction-distance} 的一个充分条件; 更准确地说, 此时 \eqref{eq:ch3-reconstruction-distance} 的类似式由 \eqref{eq:ch3-scheme-52-increment-bound}, \eqref{eq:ch3-reconstruction-distance-identity} 和 \eqref{eq:ch3-convergence-scheme-52-condition} 推出. 对格式 \ref{scheme:ch3-linear-implicit} 和 \ref{scheme:ch3-explicit}, 稳定性条件 \eqref{eq:ch3-scheme-53-stability-conditions}, \eqref{eq:ch3-scheme-54-first-stability-condition} 和 \eqref{eq:ch3-scheme-54-second-stability-condition} 只用于保证 $u_h$ 和 $p_hu_h$ 在适当空间中保持有界.
+
+在证明 \eqref{eq:ch3-convergence-strong-prolongation} 时, 条件 \eqref{eq:ch3-convergence-additional-strong-conditions} 出现如下:
+
+-- 对格式 \ref{scheme:ch3-explicit}, 与引理 \ref{lem:ch3-scheme-51-strong-prolongation} 中 $X_h$ 相似的``自然''表达式为
+\[
+Y_h=|u_h^N-u(T)|^2-\sum_{m=1}^N|u_h^m-u_h^{m-1}|^2
++2\nu\int_0^T\lVert u_h(t)-u_h^+(t)\rVert_h^2\,dt.
+\]
+为由 $Y_h\to0$ 推出 \eqref{eq:ch3-convergence-strong-prolongation}, 只需
+\[
+\sum_{m=1}^N|u_h^m-u_h^{m-1}|^2\to0,
+\]
+而这是 \eqref{eq:ch3-convergence-additional-strong-conditions} 的推论.
+
+-- 对格式 \ref{scheme:ch3-linear-implicit}, 考虑同一表达式 $X_h$; 由于存在若干含 $b_h$ 的项(见 \eqref{eq:ch3-scheme-53-energy-identity}), 表达式 $X_h^3$ 不像 \eqref{eq:ch3-strong-prolongation-energy-limit} 那样简单. 条件 \eqref{eq:ch3-convergence-additional-strong-conditions} 表明 $X_h^3$ 中含 $b_h$ 的附加项趋于零.
+
+若 $n=3$, 首先注意到定理 \ref{thm:ch3-convergence-three-dimensional} 的陈述中没有显式提及稳定性条件. 实际上, 正是借助这些条件及其蕴含的先验估计, 才证明存在子列 $h',k'\to0$, 使 \eqref{eq:ch3-convergence-3d-strong-l2}--\eqref{eq:ch3-convergence-3d-prolongation} 成立; $u$ 是问题 \MBUnresolvedReference{problem}{Problem 3.1} 的解则完全像前面一样证明.
+}
+
+
+\subsubsection{稳定性定理}
+\label{subsubsec:ch3-scheme-54-stability-theorem}
+
+现在令
+\begin{equation}
+u_h:[0,T]\longrightarrow V_h,
+\label{eq:ch3-scheme-54-approximate-function}
+\end{equation}
+\begin{equation}
+u_h(t)=u_h^{m-1},
+\qquad(m-1)k\leq t<mk,qquad m=1,\ldots,N.
+\label{eq:ch3-scheme-54-time-reconstruction}
+\end{equation}
+于是有下述结论.
+
+\MBSourceStatementNumber{theorem}{3}
+\begin{Theorem}
+\label{thm:ch3-scheme-54-stability}
+若 $k$ 和 $h$ 始终由 \eqref{eq:ch3-scheme-54-first-stability-condition}--\eqref{eq:ch3-scheme-54-data-bound} 联系, 则对应于格式 \ref{scheme:ch3-explicit} 的函数 $u_h$ 和 $p_hu_h$, $h\in\mathcal H$, 分别在 $L^\infty(0,T;L^2(\Omega))$ 和 $L^2(0,T;F)$ 中稳定.
+\end{Theorem}
+}
+
+
+从前面的估计推出若干稳定性结果是有意义的. 为陈述这些结果, 引入近似函数 $u_h$:
+\begin{equation}
+u_h:[0,T]\longrightarrow V_h,
+\label{eq:ch3-schemes-51-52-approximate-function}
+\end{equation}
+并定义
+\begin{align}
+u_h(t)&=u_h^m,
+&& (m-1)k\leq t<mk
+&&\text{(格式~\ref{scheme:ch3-fully-implicit})},\notag\\
+u_h(t)&=\frac{u_h^m+u_h^{m-1}}2,
+&& (m-1)k\leq t<mk
+&&\text{(格式~\ref{scheme:ch3-crank-nicholson})},\notag\\
+&&&m=1,\ldots,N.
+\label{eq:ch3-schemes-51-52-time-reconstruction}
+\end{align}
+由引理 \ref{lem:sample-scheme-51-bounds} 和 \ref{lem:sample-scheme-52-bounds},
+\begin{equation}
+\sup_{t\in[0,T]}|u_h(t)|\leq\sqrt{d_2},
+\label{eq:ch3-schemes-51-52-linfty-bound}
+\end{equation}
+\begin{equation}
+\int_0^T\lVert u_h(t)\rVert_h^2\,dt\leq\frac{d_2}{\nu}.
+\label{eq:ch3-schemes-51-52-l2-bound}
+\end{equation}
+由于延拓算子 $p_h\in\mathcal L(V_h,F)$ 稳定, 有
+\begin{equation}
+\lVert p_hu_h\rVert_F\leq d_3\lVert u_h\rVert_h,
+\qquad\forall u_h\in V_h,
+\label{eq:ch3-prolongation-stability}
+\end{equation}
+其中 $d_3$ 与 $h$ 无关. 由 \eqref{eq:ch3-schemes-51-52-l2-bound} 推得
+\[
+\int_0^T\lVert p_hu_h(t)\rVert_F^2\,dt\leq\frac{d_3^2d_2}{\nu}.
+\]
+这些说明使我们能够陈述稳定性定理.
+
+\MBSourceStatementNumber{theorem}{1}
+\begin{Theorem}
+\label{thm:ch3-schemes-51-52-stability}
+对应于格式 \ref{scheme:ch3-fully-implicit} 和 \ref{scheme:ch3-crank-nicholson} 的函数 $u_h$, $h\in\mathcal H$, 无条件地在 $L^\infty(0,T;L^2(\Omega))$ 中稳定; 函数 $p_hu_h$ 无条件地在 $L^2(0,T;F)$ 中稳定.
+\end{Theorem}
+
+\MBSourceStatementNumber{remark}{3}
+\begin{Remark}
+\label{rem:ch3-increment-estimate-role}
+估计 \eqref{eq:sample-scheme51-increment-bound} 以及后面将对其他格式给出的类似估计并不对应于稳定性结果, 但在证明格式收敛性时具有技术用途. 对格式 \ref{scheme:ch3-crank-nicholson} 的同类估计, 见 \MBUnresolvedReference{subsection}{Subsection 5.4.3}.
+\end{Remark}
+
+\subsection{格式 \ref{scheme:ch3-linear-implicit} 的稳定性}
+\label{subsec:ch3-scheme-53-stability}
+
+由 \eqref{eq:ch3-discrete-stability-constant} 和 \eqref{eq:ch3-discrete-trilinear-continuity},
+\begin{align}
+|b_h(u_h,u_h,v_h)|
+&\leq d_1\lVert u_h\rVert_h^2\lVert v_h\rVert_h\notag\\
+&\leq d_1S^2(h)|u_h|\lVert u_h\rVert_h|v_h|,
+\qquad\forall u_h,v_h\in V_h.
+\label{eq:ch3-scheme-53-basic-trilinear-bound}
+\end{align}
+有时可以改进这一关系, 而这会显著改善本节后面出现的某些限制性稳定条件; 因此假设
+\begin{equation}
+|b_h(u_h,u_h,v_h)|\leq S_1(h)|u_h|\lVert u_h\rVert_h|v_h|,
+\qquad\forall u_h,v_h\in V_h,
+\label{eq:ch3-scheme-53-improved-trilinear-bound}
+\end{equation}
+其中至少有
+\begin{equation}
+S_1(h)\leq d_1S^2(h).
+\label{eq:ch3-scheme-53-s1-bound}
+\end{equation}
+
+\hypertarget{chapter-03-page-246}{}
+\subsubsection{先验估计}
+\label{subsubsec:ch3-scheme-53-apriori-estimates}
+
+\MBSourceStatementNumber{lemma}{3}
+\begin{Lemma}
+\label{lem:ch3-scheme-53-apriori-bounds}
+假设 $k$ 和 $h$ 满足
+\begin{equation}
+kS_1^2(h)\leq d',
+\qquad kS^2(h)\leq d'',
+\label{eq:ch3-scheme-53-stability-conditions}
+\end{equation}
+\footnote{实际中, 这两个关系中的一个应当是另一个的推论; 这取决于 $S$ 和 $S_1$ 的具体值.}
+其中 $d'$ 和 $d''$ 是依赖于数据的常数, 并将在证明过程中估计.
+
+则由 \eqref{eq:ch3-scheme-53} 给出的 $u_h^m$ 在下述意义下保持有界:
+\begin{equation}
+|u_h^m|\leq d_4,
+\qquad m=0,\ldots,N,
+\label{eq:ch3-scheme-53-uniform-bound}
+\end{equation}
+\begin{equation}
+\sum_{m=1}^N|u_h^m-u_h^{m-1}|^2\leq d_4,
+\label{eq:ch3-scheme-53-increment-bound}
+\end{equation}
+\begin{equation}
+k\sum_{m=1}^N\lVert u_h^m\rVert_h^2\leq d_4,
+\label{eq:ch3-scheme-53-energy-bound}
+\end{equation}
+其中 $d_4$ 是只依赖于数据, $d'$ 和 $d''$ 的常数.
+\end{Lemma}
+
+\begin{Proof}
+在 \eqref{eq:ch3-scheme-53} 中取 $v_h=u_h^m$. 再次使用 \eqref{eq:sample-polarization-identity}, 得到关系
+\begin{align}
+&|u_h^m|^2-|u_h^{m-1}|+|u_h^m-u_h^{m-1}|^2
++2k\nu\lVert u_h^m\rVert_h^2\notag\\
+&\qquad=-2kb_h(u_h^{m-1},u_h^{m-1},u_h^m)+2k(f^m,u_h^m).
+\label{eq:ch3-scheme-53-energy-identity}
+\end{align}
+这里按原文保留 \eqref{eq:ch3-scheme-53-energy-identity} 中 $|u_h^{m-1}|$ 上缺少平方的写法. 由 \eqref{eq:ch3-discrete-trilinear-cancellation}, 其右端等于
+\[
+-2kb_h(u_h^{m-1},u_h^{m-1},u_h^m-u_h^{m-1})+2k(f^m,u_h^m).
+\]
+利用 \eqref{eq:ch3-discrete-norm-lower-bound} 和 \eqref{eq:ch3-scheme-53-improved-trilinear-bound}, 该式不超过
+\begin{align*}
+&2kS_1(h)|u_h^{m-1}|\lVert u_h^{m-1}\rVert_h|u_h^m-u_h^{m-1}|
++2kd_0|f^m|\lVert u_h^m\rVert_h\\
+&\quad\leq k\nu\lVert u_h^m\rVert_h^2
++2k^2S_1^2(h)|u_h^{m-1}|^2\lVert u_h^{m-1}\rVert_h^2\\
+&\qquad+\frac12|u_h^m-u_h^{m-1}|^2
++\frac{kd_0^2}{\nu}|f^m|^2.
+\end{align*}
+因此
+\begin{align}
+&|u_h^m|^2-|u_h^{m-1}|^2+\frac12|u_h^m-u_h^{m-1}|^2
++k\nu\lVert u_h^m\rVert_h^2\notag\\
+&\qquad-2k^2S_1^2(h)|u_h^{m-1}|^2\lVert u_h^{m-1}\rVert_h^2
+\leq\frac{kd_0^2}{\nu}|f^m|^2.
+\label{eq:ch3-scheme-53-step-inequality}
+\end{align}
+将这些不等式对 $m=1,\ldots,r$ 相加:
+\begin{align}
+&|u_h^r|^2+\frac12\sum_{m=1}^r|u_h^m-u_h^{m-1}|^2
++k\nu\sum_{m=1}^r\lVert u_h^m\rVert_h^2\notag\\
+&\qquad-2k^2S_1^2(h)\sum_{m=2}^r
+|u_h^{m-1}|^2\lVert u_h^{m-1}\rVert_h^2\leq\lambda_r,
+\label{eq:ch3-scheme-53-summed-inequality}
+\end{align}
+其中
+\begin{equation}
+\lambda_r=|u_h^0|^2+\frac{kd_0^2}{\nu}\sum_{m=1}^r|f^m|^2
++2k^2S_1^2(h)|u_h^0|^2\lVert u_h^0\rVert_h^2.
+\label{eq:ch3-scheme-53-lambda-r}
+\end{equation}
+
+\hypertarget{chapter-03-page-247}{}
+假设对某个固定的 $\delta$, $0<\delta<\nu$, 有
+\begin{equation}
+2kS_1^2(h)\lambda_N\leq\nu-\delta.
+\label{eq:ch3-scheme-53-induction-condition}
+\end{equation}
+若此不等式成立, 容易递归证明
+\begin{align}
+|u_h^r|^2+\frac12\sum_{m=1}^r|u_h^m-u_h^{m-1}|^2
++k\delta\sum_{m=1}^r\lVert u_h^m\rVert_h^2
+\leq\lambda_r,
+\quad r=1,\ldots,N.
+\label{eq:ch3-scheme-53-inductive-bound}
+\end{align}
+事实上, 令 $m=1$ 的关系 \eqref{eq:ch3-scheme-53-step-inequality} 表明 \eqref{eq:ch3-scheme-53-inductive-bound} 对 $r=1$ 成立. 假设它一直成立到 $r-1$ 阶, 下面对整数 $r$ 证明该关系. 根据假设,
+\begin{equation}
+|u_h^m|^2\leq\lambda_m\leq\lambda_N,
+\qquad m=1,\ldots,r-1.
+\label{eq:ch3-scheme-53-intermediate-uniform-bound}
+\end{equation}
+因此由 \eqref{eq:ch3-scheme-53-induction-condition},
+\begin{align*}
+2k^2S_1^2(h)\sum_{m=2}^r|u_h^{m-1}|^2\lVert u_h^{m-1}\rVert_h^2
+&\leq2k^2S_1^2(h)\lambda_N\sum_{m=1}^r\lVert u_h^m\rVert_h^2\\
+&\leq k(\nu-\delta)\sum_{m=1}^r\lVert u_h^m\rVert_h^2.
+\end{align*}
+把这一估计代入 \eqref{eq:ch3-scheme-53-summed-inequality}, 即得到整数 $r$ 的 \eqref{eq:ch3-scheme-53-inductive-bound}.
+
+只要再证明形如 \eqref{eq:ch3-scheme-53-stability-conditions} 的条件保证 \eqref{eq:ch3-scheme-53-induction-condition}, 证明即告完成. 根据引理 \ref{lem:sample-scheme-51-bounds} 和 \ref{lem:sample-scheme-52-bounds} 中所用的估计(见 \eqref{eq:ch3-discrete-initial-projection-bound} 和 \eqref{eq:sample-forcing-time-average-bound}),
+\begin{align*}
+\lambda_N
+&\leq|u_0|^2+\frac{d_0^2}{\nu}\int_0^T|f(s)|^2\,ds
++2k^2S_1^2(h)|u_0|^2\lVert u_h^0\rVert_h^2\\
+&\leq d_2+2k^2S_1^2(h)S^2(h)|u_0|^2
+\quad\text{(见 \eqref{eq:ch3-discrete-stability-constant} 和 \eqref{eq:sample-data-bound-d2})}.
+\end{align*}
+因此, 若 \eqref{eq:ch3-scheme-53-stability-conditions} 成立, 则
+\[
+2kS_1^2(h)\lambda_N\leq2d'\bigl(d_2+2d'd''|u_0|^2\bigr),
+\]
+而只要 $d'$ 和 $d''$ 充分小, 它必然不超过 $\nu-\delta$:
+\begin{equation}
+2d'\bigl(d_2+2d'd''|u_0|^2\bigr)\leq\nu-\delta.
+\label{eq:ch3-scheme-53-smallness-choice}
+\end{equation}
+证明完成.
+\end{Proof}
+
+\subsubsection{稳定性定理}
+\label{subsubsec:ch3-scheme-53-stability-theorem}
+
+对格式 \ref{scheme:ch3-linear-implicit}, 定义近似函数 $u_h$ 为
+\begin{equation}
+u_h:[0,T)\longrightarrow V_h,
+\qquad
+u_h(t)=u_h^m,quad (m-1)k\leq t<mk,quad m=1,\ldots,N.
+\label{eq:ch3-scheme-53-time-reconstruction}
+\end{equation}
+由 \eqref{eq:ch3-prolongation-stability}, \eqref{eq:ch3-scheme-53-uniform-bound} 和 \eqref{eq:ch3-scheme-53-energy-bound} 可知, 若 \eqref{eq:ch3-scheme-53-stability-conditions} 成立, 则
+\[
+\sup_{t\in[0,T]}|u_h(t)|\leq d_4,
+\qquad
+\int_0^T\lVert p_hu_h(t)\rVert_F^2\,dt\leq d_3^2d_4.
+\]
+
+\hypertarget{chapter-03-page-248}{}
+因此有下述结论.
+
+\MBSourceStatementNumber{theorem}{2}
+\begin{Theorem}
+\label{thm:ch3-scheme-53-stability}
+若 $k$ 和 $h$ 始终由 \eqref{eq:ch3-scheme-53-stability-conditions} 联系, 则对应于格式 \ref{scheme:ch3-linear-implicit} 的函数 $u_h$ 和 $p_hu_h$, $h\in\mathcal H$, 分别在 $L^\infty(0,T;L^2(\Omega))$ 和 $L^2(0,T;F)$ 中稳定.
+\end{Theorem}
+
+\MBSourceStatementNumber{definition}{2}
+\begin{Definition}
+\label{def:ch3-stability-condition}
+形如 \eqref{eq:ch3-scheme-53-stability-conditions} 的条件称为稳定性条件. 它们是保证格式稳定的充分条件. 证明稳定性时是否出现这样的条件, 相应地称该格式为条件稳定的或无条件稳定的.
+\end{Definition}
+
+\MBSchemeFiftyFourBlock
+
+\hypertarget{chapter-03-page-251}{}
+\subsection{格式 \ref{scheme:ch3-crank-nicholson} 的一个补充估计}
+\label{subsec:ch3-scheme-52-complementary-estimate}
+
+利用第 \ref{subsec:ch3-scheme-53-stability} 和 \ref{subsec:ch3-scheme-54-stability} 小节中广泛使用的技术, 可以补全第 \ref{sec:sample-scheme-stability} 小节: 对格式 \ref{scheme:ch3-crank-nicholson} 给出一个类似于
+\begin{equation}
+\sum_{m=1}^N|u_h^m-u_h^{m-1}|^2\leq\text{常数}
+\label{eq:ch3-scheme-52-target-increment-estimate}
+\end{equation}
+的估计; 我们已经对格式 \ref{scheme:ch3-fully-implicit}, \ref{scheme:ch3-linear-implicit} 和 \ref{scheme:ch3-explicit} 证明了这类估计. 正如源文 \MBUnresolvedReference{remark}{Remark 5.2} 所说, 这些估计将在收敛性证明中使用.
+
+\MBSourceStatementNumber{lemma}{5}
+\begin{Lemma}
+\label{lem:ch3-scheme-52-complementary-estimate}
+由 \eqref{eq:ch3-scheme-52}, 即格式 \ref{scheme:ch3-crank-nicholson}, 定义的 $u_h^m$ 满足
+\begin{equation}
+\sum_{m=1}^N|u_h^m-u_h^{m-1}|^2\leq d\bigl(1+kS^4(h)\bigr),
+\label{eq:ch3-scheme-52-increment-bound}
+\end{equation}
+其中 $d$ 表示只依赖于数据的常数.
+\end{Lemma}
+
+\begin{Proof}
+在 \eqref{eq:ch3-scheme-52} 中取 $v_h=2k(u_h^m-u_h^{m-1})$, 得
+\begin{align*}
+2|u_h^m-u_h^{m-1}|^2
+={}&-k\nu\lVert u_h^m\rVert_h^2+k\nu\lVert u_h^{m-1}\rVert_h^2\\
+&-kb_h(u_h^{m-1},u_h^m+u_h^{m-1},u_h^m-u_h^{m-1})\\
+&+2k(f^m,u_h^m-u_h^{m-1})\\
+\leq{}&-k\nu\lVert u_h^m\rVert_h^2+k\nu\lVert u_h^{m-1}\rVert_h^2\\
+&+kd_1S^2(h)|u_h^{m-1}|\lVert u_h^m+u_h^{m-1}\rVert_h
+|u_h^m-u_h^{m-1}|\\
+&+2k|f^m||u_h^m-u_h^{m-1}|\\
+\leq{}&-k\nu\lVert u_h^m\rVert_h^2+k\nu\lVert u_h^{m-1}\rVert_h^2
++\frac12|u_h^m-u_h^{m-1}|^2\\
+&+\frac{k^2}{2}d_1^2S^4(h)|u_h^{m-1}|^2
+\lVert u_h^m+u_h^{m-1}\rVert_h^2\\
+&+\frac12|u_h^m-u_h^{m-1}|^2+2kT|f^m|^2.
+\end{align*}
+这里使用了 \eqref{eq:ch3-scheme-53-basic-trilinear-bound} 和 \eqref{eq:ch3-discrete-stability-constant}. 因而
+\begin{align*}
+\sum_{m=1}^N|u_h^m-u_h^{m-1}|^2
+&\leq k\nu\lVert u_h^0\rVert_h^2+2kT\sum_{m=1}^N|f^m|^2\\
+&\quad+\frac{k^2}{2}d_1^2S^4(h)
+\sum_{m=1}^N|u_h^{m-1}|^2\lVert u_h^m+u_h^{m-1}\rVert_h^2\\
+&\leq k\nu S^2(h)|u_0|^2+2T\int_0^T|f(s)|^2\,ds
++\frac{d_1^2d_2^2}{\nu}kS^4(h),
+\end{align*}
+其中使用了 \eqref{eq:ch3-discrete-stability-constant}, \eqref{eq:ch3-discrete-initial-projection-bound}, \eqref{eq:sample-forcing-time-average-bound}, \eqref{eq:sample-scheme52-uniform-bound} 和 \eqref{eq:sample-scheme52-energy-bound}. 证明完成.
+\end{Proof}
+
+\subsection{其他先验估计}
+\label{subsec:ch3-fractional-estimates}
+
+为证明强收敛结果, 将建立一些涉及近似函数关于 $t$ 的分数阶导数的进一步先验估计. 本小节主要是技术性的, 将在第 \MBUnresolvedReference{subsection}{5.7} 小节证明格式收敛性时使用.
+
+\hypertarget{chapter-03-page-252}{}
+对全部四种格式, 定义从 $\mathbb R$ 到 $V_h$ 的函数 $w_h$ 如下:
+\begin{equation}
+\begin{minipage}{0.82\linewidth}
+$w_h$ 是从 $\mathbb R$ 到 $V_h$ 的连续函数, 在每个区间 $[mk,(m+1)k]$ 上为线性的, 且
+$w_h(mk)=u_h^m$, $m=0,\ldots,N-1$; 在区间 $[0,T]$ 外, $w_h=0$.
+\end{minipage}
+\label{eq:ch3-fractional-piecewise-linear-function}
+\end{equation}
+
+\MBSourceStatementNumber{lemma}{6}
+\begin{Lemma}
+\label{lem:ch3-fractional-fourier-estimate}
+假设与定理 \ref{thm:ch3-schemes-51-52-stability}, \ref{thm:ch3-scheme-53-stability} 和 \ref{thm:ch3-scheme-54-stability} 中相同的稳定性条件,
+\footnote{格式 \ref{scheme:ch3-fully-implicit} 和 \ref{scheme:ch3-crank-nicholson} 无条件; 格式 \ref{scheme:ch3-linear-implicit} 使用条件 \eqref{eq:ch3-scheme-53-stability-conditions}; 格式 \ref{scheme:ch3-explicit} 使用条件 \eqref{eq:ch3-scheme-54-first-stability-condition}--\eqref{eq:ch3-scheme-54-second-stability-condition}.}
+则 $w_h$ 的 Fourier 变换 $\widehat w_h$ 满足
+\begin{equation}
+\int_{-\infty}^{+\infty}|\tau|^{2\gamma}|\widehat w_h(\tau)|^2\,d\tau
+\leq\text{常数},
+\qquad0<\gamma<\frac14,
+\label{eq:ch3-fractional-fourier-weighted-bound}
+\end{equation}
+其中常数依赖于 $\gamma$ 和数据.
+\end{Lemma}
+
+\begin{Proof}
+四个方程 \eqref{eq:ch3-scheme-51}--\eqref{eq:ch3-scheme-54} 可以解释为
+\begin{equation}
+\frac d{dt}(w_h(t),v_h)=((g_h(t),v_h))_h,
+\qquad\forall v_h\in V_h,quad t\in(0,T),
+\label{eq:ch3-fractional-time-derivative-equation}
+\end{equation}
+其中函数 $g_h$ 满足
+\begin{equation}
+\int_0^T\lVert g_h(t)\rVert_h\,dt\leq\text{常数}.
+\label{eq:ch3-fractional-gh-l1-bound}
+\end{equation}
+例如, 对格式 \ref{scheme:ch3-fully-implicit}, $g_h$ 由
+\[
+((g_h(t),v_h))_h=(f^m,v_h)-b_h(u_h^{m-1},u_h^m,v_h)
+-\nu((u_h^m,v_h))_h,
+\]
+\[
+\forall v_h\in V_h,qquad(m-1)k\leq t<mk
+\]
+定义. 不等式 \eqref{eq:ch3-fractional-gh-l1-bound} 由 \eqref{eq:ch3-discrete-norm-lower-bound}, \eqref{eq:ch3-discrete-trilinear-continuity} 以及前面的先验估计推出:
+\[
+\lVert g_h(t)\rVert_h
+\leq d_0|f^m|+d_1\lVert u_h^{m-1}\rVert_h\lVert u_h^m\rVert_h
++\nu\lVert u_h^m\rVert_h,
+\]
+\begin{align*}
+\int_0^T\lVert g_h(t)\rVert_h\,dt
+\leq k\sum_{m=1}^N\bigl(&d_0|f^m|
++d_1\lVert u_h^{m-1}\rVert_h\lVert u_h^m\rVert_h\\
+&+\nu\lVert u_h^m\rVert_h\bigr);
+\end{align*}
+由引理 \ref{lem:sample-scheme-51-bounds}, 该关系右端有界.
+
+下面由 \eqref{eq:ch3-fractional-time-derivative-equation}--\eqref{eq:ch3-fractional-gh-l1-bound} 推出 \eqref{eq:ch3-fractional-fourier-weighted-bound}. 把 $g_h$ 在 $[0,T]$ 外延拓为零, 得到函数 $\widetilde g_h$, 使下述等式在整条 $t$ 轴上成立:
+\begin{equation}
+\frac d{dt}(w_h(t),v_h)=((\widetilde g_h(t),v_h))_h
++(u_h^0,v_h)\delta_0-(u_h^N,v_h)\delta_T,
+\qquad\forall v_h\in V_h,
+\label{eq:ch3-fractional-distribution-equation}
+\end{equation}
+其中 $\delta_0,\delta_T$ 表示位于 $0$ 和 $T$ 的 Dirac 分布. 取 Fourier 变换, 得
+\[
+-2i\pi\tau(\widehat w_h(\tau),v_h)
+=((\widehat g_h(\tau),v_h))_h+(u_h^0,v_h)
+-(u_h^N,v_h)\exp(-2i\pi\tau T),
+\]
+其中 $\widehat g_h$ 是 $\widetilde g_h$ 的 Fourier 变换. 取 $v_h=\widehat w_h(\tau)$ 再取绝对值, 得
+\[
+2\pi|\tau||\widehat w_h(\tau)|^2
+\leq\lVert\widehat g_h(\tau)\rVert_h
+\lVert\widehat w_h(\tau)\rVert_h+c_1|\widehat w_h(\tau)|,
+\]
+因为 $u_h^0$ 和 $u_h^N$ 保持有界. 由 \eqref{eq:ch3-fractional-gh-l1-bound} 还有
+\[
+\lVert\widehat g_h(\tau)\rVert_h
+\leq\int_0^T\lVert g_h(t)\rVert_h\,dt\leq\text{常数}=c_2,
+\]
+
+\hypertarget{chapter-03-page-253}{}
+最后得到
+\begin{equation}
+|\tau||\widehat w_h(\tau)|^2
+\leq c_3\lVert\widehat w_h(\tau)\rVert_h.
+\label{eq:ch3-fractional-frequency-pointwise-bound}
+\end{equation}
+固定 $\gamma<1/4$, 注意到
+\[
+|\tau|^{2\gamma}\leq c_4(\gamma)
+\frac{1+|\tau|}{1+|\tau|^{1-2\gamma}},
+\qquad\forall\tau\in\mathbb R.
+\]
+因而
+\begin{align}
+\int_{-\infty}^{+\infty}|\tau|^{2\gamma}|\widehat w_h(\tau)|^2\,d\tau
+&\leq c_4(\gamma)\int_{-\infty}^{+\infty}
+\frac{1+|\tau|}{1+|\tau|^{1-2\gamma}}|\widehat w_h(\tau)|^2\,d\tau\notag\\
+&\leq c_4(\gamma)\int_{-\infty}^{+\infty}|\widehat w_h(\tau)|^2\,d\tau
++c_5\int_{-\infty}^{+\infty}
+\frac{\lVert\widehat w_h(\tau)\rVert_h}{1+|\tau|^{1-2\gamma}}\,d\tau\notag\\
+&\leq c_4\int_{-\infty}^{+\infty}|\widehat w_h(\tau)|^2\,d\tau\notag\\
+&\quad+c_5\left(\int_{-\infty}^{+\infty}
+\frac{d\tau}{(1+|\tau|^{1-2\gamma})^2}\right)^{1/2}
+\left(\int_{-\infty}^{+\infty}
+\lVert\widehat w_h(\tau)\rVert_h^2\,d\tau\right)^{1/2}.
+\label{eq:ch3-fractional-fourier-integral-estimate}
+\end{align}
+最后一步使用 Schwarz 不等式. 当 $\gamma<1/4$ 时, 积分
+\[
+\int_{-\infty}^{+\infty}
+\frac{d\tau}{(1+|\tau|^{1-2\gamma})^2}
+\]
+有限. 因此由 Parseval 关系和前面的估计, 最后一个不等式的右端有限且有界:
+\begin{equation}
+\int_{-\infty}^{+\infty}|\widehat w_h(\tau)|^2\,d\tau
+\leq d_0^2\int_{-\infty}^{+\infty}\lVert\widehat w_h(\tau)\rVert_h^2\,d\tau
+=d_0^2\int_0^T\lVert w_h(t)\rVert_h^2\,dt\leq\text{常数}.
+\label{eq:ch3-fractional-parseval-bound}
+\end{equation}
+引理得证.
+\end{Proof}
+
+\subsection{数值格式的收敛性}
+\label{subsec:ch3-general-convergence}
+
+目标是证明格式 \ref{scheme:ch3-fully-implicit}--\ref{scheme:ch3-explicit} 在后面说明的某种意义下收敛. 首先陈述保证收敛所需的离散数据的相容性和紧性性质, 然后陈述并证明收敛结果.
+
+\subsubsection{相容性与紧性假设}
+\label{subsubsec:ch3-consistency-compactness}
+
+在下述引理之后, 后续假设更容易陈述.
+
+\MBSourceStatementNumber{lemma}{7}
+\begin{Lemma}
+\label{lem:ch3-external-approximation-limit}
+设
+\[
+\{(V_h,p_h,r_h)_{h\in\mathcal H},(\overline\omega,F)\}
+\]
+表示 $V$ 的一个稳定且收敛的外逼近. 假设对某个序列 $h'\to0$, 一族函数
+\[
+u_{h'}:[0,T]\longrightarrow V_{h'}
+\]
+满足
+\begin{equation}
+p_{h'}u_{h'}\rightharpoonup\phi
+\quad\text{在 }L^2(0,T;F)\text{ 中},
+\qquad h'\to0.
+\label{eq:ch3-external-approximation-weak-limit}
+\end{equation}
+则对几乎每个 $t$, $\phi(t)=\overline\omega u(t)$, 且
+\begin{equation}
+u=\overline\omega^{-1}\phi\in L^2(0,T;V).
+\label{eq:ch3-external-approximation-limit-space}
+\end{equation}
+\end{Lemma}
+
+\hypertarget{chapter-03-page-254}{}
+\begin{Proof}
+设 $\theta$ 是 $\mathcal D((0,T))$ 中的某个函数. 容易验证, 当 $h'\to0$ 时,
+\[
+\int_0^Tp_{h'}u_{h'}(t)\theta(t)\,dt
+\longrightarrow\int_0^T\phi(t)\theta(t)\,dt.
+\]
+但定义 \MBUnresolvedReference{definition}{Definition 1.3.6} 的条件 (C2) 表明, 在这种情形下,
+\[
+\int_0^T\phi(t)\theta(t)\,dt\in\overline\omega V.
+\]
+根据定义, $\overline\omega V$ 与 $V$ 同构, 故 $\overline\omega V$ 是 $F$ 的闭子空间. 现取一列收敛于点 $s$ 处 Dirac 分布的函数 $\theta_\varepsilon$, $s\in(0,T)$, 则对几乎每个 $s\in[0,T]$,
+\[
+\int_0^T\phi(t)\theta_\varepsilon(t)\,dt\longrightarrow\phi(s)
+\quad\text{在 }F\text{ 中},
+\]
+因而 $\phi(s)\in\overline\omega V$ 几乎处处成立. 由于 $\overline\omega$ 是同构, $\overline\omega^{-1}\phi$ 有定义且属于 $L^2(0,T;V)$.
+\end{Proof}
+
+前一引理相当一般, 但在当前情形还假设
+\begin{equation}
+V_h\subset L^2(\Omega),
+\qquad\forall h.
+\label{eq:ch3-convergence-vh-l2-inclusion}
+\end{equation}
+因此可能出现某个序列 $h'\to0$, 使得
+\[
+u_{h'}\rightharpoonup u_*
+\quad\text{在 }L^2(0,T;L^2(\Omega))\text{ 中},
+\]
+\[
+p_{h'}u_{h'}\rightharpoonup\phi
+\quad\text{在 }L^2(0,T;F)\text{ 中}.
+\]
+由源文所称引理 \MBUnresolvedReference{lemma}{Lemma 5.6}, $\phi=\overline\omega u$, $u\in L^2(0,T;V)$. 没有进一步信息时, 不能断言 $u=u_*$. 不过, 对所考虑的每个逼近都将证明以下性质:
+
+设 $u_{h'}$ 是从 $[0,T]$ 到 $V_{h'}$ 的一列函数, 且当 $h'\to0$ 时,
+\[
+u_{h'}\rightharpoonup u_*
+\quad\text{在 }L^2(0,T;L^2(\Omega))\text{ 中},
+\]
+\[
+p_{h'}u_{h'}\rightharpoonup\phi
+\quad\text{在 }L^2(0,T;F)\text{ 中}.
+\]
+则
+\begin{equation}
+u_*\in L^2(0,T;V),
+\qquad\phi=\overline\omega u_*.
+\label{eq:ch3-convergence-identification-property}
+\end{equation}
+
+除 \eqref{eq:ch3-convergence-identification-property} 外, 相容性假设如下.
+
+设 $v_{h'},w_{h'}$ 是从 $[0,T]$ 到 $V_{h'}$ 的两列函数, 当 $h'\to0$ 时,
+\[
+p_{h'}v_{h'}\rightharpoonup\overline\omega v
+\quad\text{在 }L^2(0,T;F)\text{ 中},
+\qquad
+p_{h'}w_{h'}\to\overline\omega w
+\quad\text{在 }L^2(0,T;F)\text{ 中}.
+\]
+则当 $h'\to0$ 时,
+\begin{equation}
+\int_0^T((v_{h'}(t),w_{h'}(t)))_{h'}\,dt
+\longrightarrow\int_0^T((v(t),w(t)))\,dt.
+\label{eq:ch3-convergence-bilinear-consistency}
+\end{equation}
+
+设 $u_{h'},v_{h'}$ 是从 $[0,T]$ 到 $V_{h'}$ 的两列函数, 当 $h'\to0$ 时,
+\[
+p_{h'}u_{h'}\rightharpoonup\overline\omega u
+\quad\text{在 }L^2(0,T;F)\text{ 中},
+\qquad
+u_{h'}\to u\quad\text{在 }L^2(Q)\text{ 中},quad Q=\Omega\times(0,T),
+\]
+且
+\[
+p_{h'}v_{h'}\rightharpoonup\overline\omega v
+\quad\text{在 }L^2(0,T;F)\text{ 中}.
+\]
+则对每个标量函数 $\psi\in L^\infty(0,T)$ 和每个 $w\in V$, 当 $h'\to0$ 时,
+\[
+\int_0^Tb_{h'}(u_{h'}(t),v_{h'}(t),\psi(t)r_{h'}w)\,dt
+\longrightarrow\int_0^Tb(u(t),v(t),\psi(t)w)\,dt.
+\]
+若还给定一列函数 $\psi_{k'}$, 满足当 $k'\to0$ 时 $\psi_{k'}\to\psi$ 于 $L^\infty(0,T)$, 则当 $h'\to0,k'\to0$ 时,
+\begin{equation}
+\int_0^Tb_{h'}(u_{h'}(t),v_{h'}(t),\psi_{k'}(t)r_{h'}w)\,dt
+\longrightarrow\int_0^Tb(u(t),v(t),\psi(t)w)\,dt.
+\label{eq:ch3-convergence-trilinear-consistency}
+\end{equation}
+
+为得到 \eqref{eq:ch3-convergence-trilinear-consistency} 所需的强收敛结果, 即 $u_{h'}\to u$ 于 $L^2(Q)$, 假设如下性质.
+
+设 $v_{h'}$ 是从 $\mathbb R$ 到 $V_{h'}$ 的一列函数, 支集包含在 $[0,T]$ 中, 并满足
+\[
+\int_0^T\lVert v_{h'}(t)\rVert_{h'}^2\,dt\leq\text{常数},
+\]
+\[
+\int_{-\infty}^{+\infty}|\tau|^{2\gamma}
+|\widehat v_{h'}(\tau)|^2\,d\tau\leq\text{常数},
+\qquad\text{其中某个 }\gamma>0.
+\]
+则这样的序列 $v_{h'}$ 在 $L^2(Q)$ 中相对紧. 特别地, 可以从 $v_{h'}$ 中抽取一个子列, 仍记为 $v_{h'}$, 使
+\begin{equation}
+p_{h'}v_{h'}\rightharpoonup\overline\omega v
+\quad\text{在 }L^2(0,T;F)\text{ 中},
+\qquad
+v_{h'}\to v\quad\text{在 }L^2(Q)\text{ 中}.
+\label{eq:ch3-convergence-compactness-property}
+\end{equation}
+
+\hypertarget{chapter-03-page-256}{}
+\subsubsection{收敛定理}
+\label{subsubsec:ch3-convergence-theorems}
+
+根据空间维数($n=2$ 或 $3$)和所考虑的格式, 收敛定理的陈述有所不同.
+
+回顾我们把函数 $u_h$ 与元素 $u_h^m$ 联系起来:
+\[
+u_h:[0,T]\longrightarrow V_h,
+\]
+其定义对各格式略有不同(见 \eqref{eq:ch3-schemes-51-52-time-reconstruction}, \eqref{eq:ch3-scheme-53-time-reconstruction} 和 \eqref{eq:ch3-scheme-54-time-reconstruction}):
+\begin{equation}
+u_h(t)=
+\begin{cases}
+u_h^m,&\text{格式 \ref{scheme:ch3-fully-implicit} 和 \ref{scheme:ch3-linear-implicit}},\\
+\dfrac12(u_h^m+u_h^{m-1}),&\text{格式 \ref{scheme:ch3-crank-nicholson}},\\
+u_h^{m-1},&\text{格式 \ref{scheme:ch3-explicit}},
+\end{cases}
+\quad (m-1)k\leq t<mk,quad m=1,\ldots,N.
+\label{eq:ch3-convergence-reconstruction-summary}
+\end{equation}
+这里强调 $u_h$ 依赖于 $h$ 和 $k$; 只是为简单起见写作 $u_h$ 而不是 $u_{hk}$.
+
+\MBSourceStatementNumber{theorem}{4}
+\begin{Theorem}
+\label{thm:ch3-convergence-two-dimensional}
+空间维数为 $n=2$, 并假设 \eqref{eq:ch3-discrete-force-data}--\eqref{eq:ch3-discrete-trilinear-continuity}, \eqref{eq:ch3-discrete-force-average}, \eqref{eq:ch3-discrete-initial-projection}, \eqref{eq:ch3-scheme-53-improved-trilinear-bound} 以及 \eqref{eq:ch3-convergence-identification-property}--\eqref{eq:ch3-convergence-compactness-property}. 记 $u$ 为问题 \MBUnresolvedReference{problem}{Problem 3.1} 的唯一解.
+
+当 $h,k\to0$ 时, 有
+\begin{equation}
+u_h\to u\quad\text{在 }L^2(Q)\text{ 中},
+\qquad
+u_h\stackrel{*}{\rightharpoonup}u
+\quad\text{在 }L^\infty(0,T;L^2(\Omega))\text{ 中},
+\label{eq:ch3-convergence-2d-velocity}
+\end{equation}
+\begin{equation}
+p_hu_h\rightharpoonup\overline\omega u
+\quad\text{在 }L^2(0,T;F)\text{ 中},
+\label{eq:ch3-convergence-2d-prolongation}
+\end{equation}
+但须分别满足:
+
+(i) 格式 \ref{scheme:ch3-fully-implicit}: 无条件;
+
+(ii) 格式 \ref{scheme:ch3-crank-nicholson}:
+\begin{equation}
+kS^2(h)\longrightarrow0;
+\label{eq:ch3-convergence-scheme-52-condition}
+\end{equation}
+
+(iii) 格式 \ref{scheme:ch3-linear-implicit}: 满足 \eqref{eq:ch3-scheme-53-stability-conditions};
+
+(iv) 格式 \ref{scheme:ch3-explicit}: 满足 \eqref{eq:ch3-scheme-54-first-stability-condition}--\eqref{eq:ch3-scheme-54-second-stability-condition}.
+\end{Theorem}
+
+\MBSourceStatementNumber{remark}{4}
+\begin{Remark}
+\label{rem:ch3-convergence-strong-prolongation}
+(i) 对格式 \ref{scheme:ch3-fully-implicit} 和 \ref{scheme:ch3-crank-nicholson}, 不作任何进一步假设即可证明, 当 $h,k\to0$ 时,
+\begin{equation}
+p_hu_h\to\overline\omega u
+\quad\text{在 }L^2(0,T;F)\text{ 中}.
+\label{eq:ch3-convergence-strong-prolongation}
+\end{equation}
+
+(ii) 对其他格式, 若还假设
+\begin{equation}
+kS_1^2(h)\to0,
+\qquad kS^2(h)\to0
+\quad\text{(格式 \ref{scheme:ch3-linear-implicit} 和 \ref{scheme:ch3-explicit})},
+\label{eq:ch3-convergence-additional-strong-conditions}
+\end{equation}
+则同一结果成立.
+
+(iii) 证明格式 \ref{scheme:ch3-crank-nicholson} 收敛时使用的假设 \eqref{eq:ch3-convergence-scheme-52-condition} 很可能是不必要的, 因为该格式无条件地在 $L^2(0,T;F)$ 和 $L^\infty(0,T;L^2(\Omega))$ 中稳定.
+\end{Remark}
+
+\MBSourceStatementNumber{theorem}{5}
+\begin{Theorem}
+\label{thm:ch3-convergence-three-dimensional}
+空间维数为 $n=3$, 其余假设与定理 \ref{thm:ch3-convergence-two-dimensional} 相同. 则存在某个序列 $h',k'\to0$, 使
+\begin{equation}
+u_{h'}\to u\quad\text{在 }L^2(Q)\text{ 中},
+\label{eq:ch3-convergence-3d-strong-l2}
+\end{equation}
+\begin{equation}
+u_{h'}\stackrel{*}{\rightharpoonup}u
+\quad\text{在 }L^\infty(0,T;L^2(\Omega))\text{ 中},
+\label{eq:ch3-convergence-3d-weak-star}
+\end{equation}
+\begin{equation}
+p_{h'}u_{h'}\rightharpoonup\overline\omega u
+\quad\text{在 }L^2(0,T;F)\text{ 中},
+\label{eq:ch3-convergence-3d-prolongation}
+\end{equation}
+其中 $u$ 是问题 \MBUnresolvedReference{problem}{Problem 3.1} 的某个解.
+
+对满足收敛关系 \eqref{eq:ch3-convergence-3d-strong-l2}--\eqref{eq:ch3-convergence-3d-prolongation} 的任意其他序列 $h',k'\to0$, $u$ 必为问题 \MBUnresolvedReference{problem}{Problem 3.1} 的某个解.
+\end{Theorem}
+
+\hypertarget{chapter-03-page-257}{}
+\MBSourceStatementNumber{remark}{5}
+\begin{Remark}
+\label{rem:ch3-convergence-three-dimensional-limitations}
+由于问题 \MBUnresolvedReference{problem}{Problem 3.1} 的解不唯一, 我们不能证明整个序列收敛.
+
+由于精确问题缺少能量等式, 也不能证明在 $L^2(0,T;F)$ 中强收敛; 对 $n=3$ 只有能量不等式, 见注 \ref{rem:ch3-semidiscrete-energy-inequality}.
+\end{Remark}
+
+本小节余下部分证明上述两个定理. 对格式 \ref{scheme:ch3-fully-implicit} 详细证明定理 \ref{thm:ch3-convergence-two-dimensional}, 包括 \eqref{eq:ch3-convergence-strong-prolongation}; 其他情形只概述实际上非常相似的证明.
+
+\subsubsection{定理 \ref{thm:ch3-convergence-two-dimensional} 的证明(格式 \ref{scheme:ch3-fully-implicit})}
+\label{subsubsec:ch3-proof-convergence-2d-scheme-51}
+
+由稳定性定理 \ref{thm:ch3-schemes-51-52-stability} 和 \eqref{eq:ch3-convergence-identification-property}, 存在子列 $h',k'\to0$, 使对某个 $u\in L^2(0,T;V)\cap L^\infty(0,T;H)$,
+\[
+u_{h'}\stackrel{*}{\rightharpoonup}u
+\quad\text{在 }L^\infty(0,T;L^2(\Omega))\text{ 中},
+\]
+\begin{equation}
+p_{h'}u_{h'}\rightharpoonup\overline\omega u
+\quad\text{在 }L^2(0,T;F)\text{ 中}.
+\label{eq:ch3-proof-convergence-u-subsequence}
+\end{equation}
+考虑第 \ref{subsec:ch3-fractional-estimates} 小节引入的分段线性函数 $w_h$(见 \eqref{eq:ch3-fractional-piecewise-linear-function}). 由引理 \ref{lem:ch3-fractional-fourier-estimate} 和对 $u_h^m$ 的估计,
+\[
+|w_h|_{L^\infty(0,T;L^2(\Omega))}\leq\text{常数},
+\qquad
+\lVert p_hw_h\rVert_{L^2(0,T;F)}\leq\text{常数},
+\]
+\[
+\int_{-\infty}^{+\infty}|\tau|^{2\gamma}|\widehat w_h(\tau)|^2\,d\tau
+\leq\text{常数}.
+\]
+因此根据 \eqref{eq:ch3-convergence-compactness-property}, 可选择 $h',k'\to0$, 使对某个 $w\in L^2(0,T;V)\cap L^\infty(0,T;H)$,
+\begin{equation}
+\begin{aligned}
+w_{h'}&\stackrel{*}{\rightharpoonup}w
+&&\text{在 }L^\infty(0,T;L^2(\Omega))\text{ 中},\\
+w_{h'}&\to w
+&&\text{在 }L^2(0,T;L^2(\Omega))\text{ 中},\\
+p_{h'}w_{h'}&\rightharpoonup\overline\omega w
+&&\text{在 }L^2(0,T;F)\text{ 中}.
+\end{aligned}
+\label{eq:ch3-proof-convergence-w-subsequence}
+\end{equation}
+
+\MBSourceStatementNumber{lemma}{8}
+\begin{Lemma}
+\label{lem:ch3-reconstruction-distance}
+当 $h,k\to0$ 时,
+\begin{equation}
+u_h-w_h\to0
+\quad\text{在 }L^2(0,T;L^2(\Omega))\text{ 中}.
+\label{eq:ch3-reconstruction-distance}
+\end{equation}
+因而
+\begin{equation}
+w=u,
+\label{eq:ch3-reconstruction-limit-identification}
+\end{equation}
+且当 $h',k'\to0$ 时,
+\begin{equation}
+u_{h'}\to u
+\quad\text{在 }L^2(0,T;L^2(\Omega))\text{ 中}.
+\label{eq:ch3-proof-convergence-strong-l2}
+\end{equation}
+\end{Lemma}
+
+\begin{Proof}
+完全与引理 \ref{lem:ch3-semidiscrete-interpolation-distance} 相同, 可验证
+\begin{equation}
+|u_h-w_h|_{L^2(0,T;L^2(\Omega))}
+=\sqrt{\frac k3}
+\left(\sum_{m=1}^N|u_h^m-u_h^{m-1}|^2\right)^{1/2}.
+\label{eq:ch3-reconstruction-distance-identity}
+\end{equation}
+于是 \eqref{eq:ch3-reconstruction-distance} 由 \eqref{eq:sample-scheme51-increment-bound} 得出; \eqref{eq:ch3-reconstruction-limit-identification} 和 \eqref{eq:ch3-proof-convergence-strong-l2} 是 \eqref{eq:ch3-proof-convergence-u-subsequence}, \eqref{eq:ch3-proof-convergence-w-subsequence} 和 \eqref{eq:ch3-reconstruction-distance} 的直接推论.
+\end{Proof}
+
+\hypertarget{chapter-03-page-258}{}
+下一步证明 $u$ 是问题 \MBUnresolvedReference{problem}{Problem 3.1} 的解.
+
+\MBSourceStatementNumber{lemma}{9}
+\begin{Lemma}
+\label{lem:ch3-convergence-limit-solves-problem}
+\eqref{eq:ch3-proof-convergence-u-subsequence}, \eqref{eq:ch3-proof-convergence-w-subsequence} 和 \eqref{eq:ch3-reconstruction-limit-identification} 中的函数 $u$ 是问题 \MBUnresolvedReference{problem}{Problem 3.1} 的解.
+\end{Lemma}
+
+\begin{Proof}
+方程 \eqref{eq:ch3-scheme-51} 容易解释为
+\begin{equation}
+\frac d{dt}(w_h(t),v_h)+\nu((u_h(t),v_h))_h
++b_h(u_h(t-k),u_h(t),v_h)=(f_k(t),v_h),
+\quad\forall t\in[0,T],\quad\forall v_h\in V_h,
+\label{eq:ch3-convergence-discrete-evolution}
+\end{equation}
+其中
+\begin{equation}
+f_k(t)=f^m,
+\qquad(m-1)k\leq t<mk.
+\label{eq:ch3-convergence-piecewise-force}
+\end{equation}
+任取 $v\in V$, 在 \eqref{eq:ch3-convergence-discrete-evolution} 中令 $v_h=r_hv$. 设 $\psi$ 是 $[0,T]$ 上连续可微的标量函数, 且
+\begin{equation}
+\psi(T)=0.
+\label{eq:ch3-convergence-test-terminal-zero}
+\end{equation}
+将取 $v_h=r_hv$ 的 \eqref{eq:ch3-convergence-discrete-evolution} 乘以 $\psi(t)$, 关于 $t$ 积分, 并对第一项分部积分, 得
+\begin{align}
+&-\int_0^T(w_h(t),\psi'(t)r_hv)\,dt
++\nu\int_0^T((u_h(t),\psi(t)r_hv))_h\,dt\notag\\
+&\quad+\int_0^Tb_h(u_h(t-k),u_h(t),\psi(t)r_hv)\,dt\notag\\
+&=(u_h^0,r_hv)\psi(0)+\int_0^T(f_k(t),\psi(t)r_hv)\,dt.
+\label{eq:ch3-convergence-discrete-weak-form}
+\end{align}
+在 \eqref{eq:ch3-convergence-discrete-weak-form} 中沿 $h',k'\to0$ 取极限, 主要使用 \eqref{eq:ch3-convergence-bilinear-consistency}, \eqref{eq:ch3-convergence-trilinear-consistency}, \eqref{eq:ch3-proof-convergence-u-subsequence}, \eqref{eq:ch3-proof-convergence-w-subsequence} 和引理 \ref{lem:ch3-reconstruction-distance}; 还回顾
+\begin{equation}
+r_hv\to\overline\omega v\quad\text{在 }F\text{ 中},
+\label{eq:ch3-convergence-restriction-strong}
+\end{equation}
+\begin{equation}
+u_h^0\to u_0\quad\text{在 }L^2(\Omega)\text{ 中},
+\label{eq:ch3-convergence-initial-projection-strong}
+\end{equation}
+\begin{equation}
+f_k\to f\quad\text{在 }L^2(0,T;L^2(\Omega))\text{ 中}.
+\label{eq:ch3-convergence-force-strong}
+\end{equation}
+最后一个关系见引理 \ref{lem:ch3-semidiscrete-force-convergence}. 极限中得到
+\begin{align}
+&-\int_0^T(u(t),\psi'(t)v)\,dt
++\nu\int_0^T((u(t),\psi(t)v))\,dt
++\int_0^Tb(u(t),u(t),\psi(t)v)\,dt\notag\\
+&\qquad=(u_0,v)\psi(0)+\int_0^T(f(t),v)\psi(t)\,dt.
+\label{eq:ch3-convergence-limit-weak-form}
+\end{align}
+恰如定理 \ref{thm:ch3-existence-weak-solution} 的证明在 \MBUnresolvedReference{equation}{(3.43)} 之后所作的那样, 由此等式推出 $u$ 是问题 \MBUnresolvedReference{problem}{Problem 3.1} 的解.
+
+由于问题 \MBUnresolvedReference{problem}{Problem 3.1} 的解唯一(见定理 \ref{thm:ch3-uniqueness-2d}), 已多次使用的反证论证表明
+\begin{equation}
+\text{收敛关系 \eqref{eq:ch3-proof-convergence-u-subsequence} 和
+\eqref{eq:ch3-proof-convergence-w-subsequence} 对整个族 $h,k\to0$ 成立.}
+\label{eq:ch3-convergence-whole-family}
+\end{equation}
+这就完成了定理 \ref{thm:ch3-convergence-two-dimensional} 的证明.
+\end{Proof}
+
+\MBStrongProlongationBlock

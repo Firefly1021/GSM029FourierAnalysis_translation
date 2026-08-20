@@ -1,10 +1,10 @@
 # chapter-03 cross-reference report
 
-- Files checked: 5
-- Chapter/batch labels: 462 (462 unique)
-- Project-wide unique labels: 1624
-- LaTeX reference commands: 639
-- Explicit unresolved source references: 36
+- Files checked: 6
+- Chapter/batch labels: 611 (611 unique)
+- Project-wide unique labels: 1773
+- LaTeX reference commands: 908
+- Explicit unresolved source references: 61
 - Duplicate labels: 0
 - Undefined local labels: 0
 - Incorrect equation/non-equation reference commands: 0
@@ -60,6 +60,31 @@
 - `section` `Section 4.3` at `tex/chapters/chapter-03/section-04.tex:217`
 - `theorem` `Theorem 2.1.2` at `tex/chapters/chapter-03/section-04.tex:227`
 - `lemma` `Lemma 1.4` at `tex/chapters/chapter-03/section-04.tex:227`
+- `subsection` `5.5` at `tex/chapters/chapter-03/section-05.tex:18`
+- `subsection` `5.6` at `tex/chapters/chapter-03/section-05.tex:18`
+- `section` `Section 6` at `tex/chapters/chapter-03/section-05.tex:20`
+- `sections` `Sections 7 and 8` at `tex/chapters/chapter-03/section-05.tex:20`
+- `problem` `Problem 3.2` at `tex/chapters/chapter-03/section-05.tex:38`
+- `theorem` `Theorem 1.2.2` at `tex/chapters/chapter-03/section-05.tex:159`
+- `section` `Section 6` at `tex/chapters/chapter-03/section-05.tex:174`
+- `theorem` `Theorem 1.3.1` at `tex/chapters/chapter-03/section-05.tex:459`
+- `proposition` `Proposition 1.3.1` at `tex/chapters/chapter-03/section-05.tex:459`
+- `equation` `(3.13)` at `tex/chapters/chapter-03/section-05.tex:566`
+- `problem` `Problem 3.1` at `tex/chapters/chapter-03/section-05.tex:596`
+- `subsection` `Subsection 5.4.3` at `tex/chapters/chapter-03/section-05.tex:669`
+- `remark` `Remark 5.2` at `tex/chapters/chapter-03/section-05.tex:863`
+- `subsection` `5.7` at `tex/chapters/chapter-03/section-05.tex:908`
+- `definition` `Definition 1.3.6` at `tex/chapters/chapter-03/section-05.tex:1079`
+- `lemma` `Lemma 5.6` at `tex/chapters/chapter-03/section-05.tex:1106`
+- `problem` `Problem 3.1` at `tex/chapters/chapter-03/section-05.tex:1211`
+- `problem` `Problem 3.1` at `tex/chapters/chapter-03/section-05.tex:1281`
+- `problem` `Problem 3.1` at `tex/chapters/chapter-03/section-05.tex:1283`
+- `problem` `Problem 3.1` at `tex/chapters/chapter-03/section-05.tex:1290`
+- `problem` `Problem 3.1` at `tex/chapters/chapter-03/section-05.tex:1367`
+- `problem` `Problem 3.1` at `tex/chapters/chapter-03/section-05.tex:1372`
+- `equation` `(3.43)` at `tex/chapters/chapter-03/section-05.tex:1423`
+- `problem` `Problem 3.1` at `tex/chapters/chapter-03/section-05.tex:1423`
+- `problem` `Problem 3.1` at `tex/chapters/chapter-03/section-05.tex:1425`
 
 ## Result
 

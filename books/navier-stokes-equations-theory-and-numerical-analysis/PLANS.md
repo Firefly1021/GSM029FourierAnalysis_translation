@@ -21,4 +21,5 @@
 19. Completed: translate, review, compile and pass QA for `chapter-03-section-02` (PDF pages 197--203).
 20. Completed: translate, review, compile and pass QA for `chapter-03-section-03` (PDF pages 204--231, ending before Section 4).
 21. Completed: extend `chapter-03-section-04` through the upper part of PDF 239, include equations (4.53)--(4.55), and repeat QA successfully.
-22. Current: process `chapter-03-section-05` (PDF pages 239--260), reusing the accepted PDF 243--244 sample unchanged.
+22. Completed: process `chapter-03-section-05` (PDF pages 239--261), reusing the accepted PDF 243--244 sample unchanged.
+23. Current: process `chapter-03-section-06` from the lower part of PDF 261 through PDF 281.
