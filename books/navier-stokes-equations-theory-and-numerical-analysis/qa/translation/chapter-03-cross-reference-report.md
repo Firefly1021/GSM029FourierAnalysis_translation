@@ -1,10 +1,10 @@
 # chapter-03 cross-reference report
 
-- Files checked: 2
-- Chapter/batch labels: 119 (119 unique)
-- Project-wide unique labels: 1281
-- LaTeX reference commands: 188
-- Explicit unresolved source references: 12
+- Files checked: 3
+- Chapter/batch labels: 171 (171 unique)
+- Project-wide unique labels: 1333
+- LaTeX reference commands: 235
+- Explicit unresolved source references: 11
 - Duplicate labels: 0
 - Undefined local labels: 0
 - Incorrect equation/non-equation reference commands: 0
@@ -24,7 +24,6 @@
 
 ## Explicitly unresolved source references
 
-- `section` `Section 2` at `tex/chapters/chapter-03/section-01.tex:5`
 - `section` `Section 3` at `tex/chapters/chapter-03/section-01.tex:5`
 - `citation` `J. Leray [1, 2, 3]` at `tex/chapters/chapter-03/section-01.tex:5`
 - `citation` `E. Höpf [2]` at `tex/chapters/chapter-03/section-01.tex:5`

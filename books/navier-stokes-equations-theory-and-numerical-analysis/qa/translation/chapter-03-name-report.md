@@ -1,7 +1,7 @@
 # chapter-03 personal-name report
 
-- Registered names first occurring in source range: 5
-- Exact canonical forms found: 5
+- Registered names first occurring in source range: 1
+- Exact canonical forms found: 1
 - Missing exact forms: 0
 - Duplicate in-range registry entries: 0
 

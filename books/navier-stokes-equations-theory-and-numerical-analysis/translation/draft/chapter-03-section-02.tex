@@ -1,0 +1,489 @@
+\hypertarget{chapter-03-section-02-start}{}
+\section{紧性定理}
+\label{sec:ch3-compactness}
+第 \ref{chap:steady-state-navier-stokes} 章给出的紧性定理不足以处理非线性演化问题. 本节的目标是证明适用于本章其余部分中非线性问题的若干紧性定理.
+
+在第 \ref{subsec:ch3-compactness-preliminary} 小节给出一个预备结果之后, 我们在第 \ref{subsec:ch3-compactness-banach} 小节证明 Banach 空间框架下的一个紧性定理. 第 \ref{subsec:ch3-compactness-fractional} 小节证明 Hilbert 空间框架下的另外两个紧性定理; 其中一个涉及函数关于时间的分数阶导数.
+
+这些定理的一些相关离散形式将在后面研究.
+
+\hypertarget{chapter-03-page-198}{}
+\subsection{一个预备结果}
+\label{subsec:ch3-compactness-preliminary}
+后两小节紧性定理的证明将以如下引理为基础.
+
+\MBSourceStatementNumber{lemma}{1}
+\begin{Lemma}
+\label{lem:ch3-compactness-interpolation}
+设 $X_0,X,X_1$ 是三个 Banach 空间, 满足
+\begin{equation}
+X_0\subset X\subset X_1,
+\label{eq:ch3-compactness-space-chain}
+\end{equation}
+$X$ 到 $X_1$ 的注入连续, 并且
+\begin{equation}
+X_0\text{ 到 }X\text{ 的注入是紧的}.
+\label{eq:ch3-compactness-compact-injection}
+\end{equation}
+则对每个 $\eta>0$, 存在依赖于 $\eta$(以及空间 $X_0,X,X_1$)的常数 $c_\eta$, 使
+\begin{equation}
+\lVert v\rVert_X\leq \eta\lVert v\rVert_{X_0}+c_\eta\lVert v\rVert_{X_1},
+\qquad\forall v\in X_0.
+\label{eq:ch3-compactness-interpolation-inequality}
+\end{equation}
+\end{Lemma}
+
+\begin{Proof}
+采用反证法. 若 \eqref{eq:ch3-compactness-interpolation-inequality} 不成立, 则存在某个 $\eta>0$, 使对每个 $c\in\mathbb R$, 至少存在一个 $v$ 满足
+\[
+\lVert v\rVert_X\geq \eta\lVert v\rVert_{X_0}+c\lVert v\rVert_{X_1}.
+\]
+取 $c=m$, 得到元素序列 $v_m$, 满足
+\[
+\lVert v_m\rVert_X\geq \eta\lVert v_m\rVert_{X_0}+m\lVert v_m\rVert_{X_1},
+\qquad\forall m.
+\]
+考虑规范化序列
+\[
+w_m=\frac{v_m}{\lVert v_m\rVert_{X_0}},
+\]
+它满足
+\begin{equation}
+\lVert w_m\rVert_X\geq\eta+m\lVert w_m\rVert_{X_1},
+\qquad\forall m.
+\label{eq:ch3-compactness-normalized-inequality}
+\end{equation}
+由于 $\lVert w_m\rVert_{X_0}=1$, 序列 $w_m$ 在 $X$ 中有界, 而 \eqref{eq:ch3-compactness-normalized-inequality} 表明
+\begin{equation}
+\lVert w_m\rVert_{X_1}\longrightarrow0,
+\qquad m\to\infty.
+\label{eq:ch3-compactness-x1-zero}
+\end{equation}
+此外, 由 \eqref{eq:ch3-compactness-compact-injection}, 序列 $w_m$ 在 $X$ 中相对紧; 因而可从 $w_m$ 中抽取在 $X$ 中强收敛的子序列 $w_\mu$. 由 \eqref{eq:ch3-compactness-x1-zero}, $w_\mu$ 的极限必为 $0$, 但这与
+\[
+\lVert w_\mu\rVert_X\geq\eta>0,
+\qquad\forall\mu
+\]
+矛盾.
+\end{Proof}
+
+\subsection{Banach 空间中的一个紧性定理}
+\label{subsec:ch3-compactness-banach}
+设 $X_0,X,X_1$ 是三个 Banach 空间, 满足
+\begin{equation}
+X_0\subset X\subset X_1,
+\label{eq:ch3-compactness-banach-chain}
+\end{equation}
+其中各注入连续, 并且
+\begin{equation}
+X_i\text{ 是自反的},\qquad i=0,1,
+\label{eq:ch3-compactness-reflexive-spaces}
+\end{equation}
+\begin{equation}
+X_0\longrightarrow X\text{ 的注入是紧的}.
+\label{eq:ch3-compactness-banach-compact-injection}
+\end{equation}
+设 $T>0$ 是一个固定有限数, $\alpha_0,\alpha_1$ 是两个有限数, 满足 $\alpha_i>1$, $i=0,1$.
+
+考虑空间
+\begin{equation}
+Y=Y(0,T;\alpha_0,\alpha_1;X_0,X_1),
+\label{eq:ch3-compactness-y-space}
+\end{equation}
+\begin{equation}
+Y=\left\{v\in L^{\alpha_0}(0,T;X_0),\quad
+v'=\frac{dv}{dt}\in L^{\alpha_1}(0,T;X_1)\right\}.
+\label{eq:ch3-compactness-y-definition}
+\end{equation}
+
+\hypertarget{chapter-03-page-199}{}
+空间 $Y$ 赋予范数
+\begin{equation}
+\lVert v\rVert_Y=\lVert v\rVert_{L^{\alpha_0}(0,T;X_0)}
++\lVert v'\rVert_{L^{\alpha_1}(0,T;X_1)},
+\label{eq:ch3-compactness-y-norm}
+\end{equation}
+在此范数下它是 Banach 空间. 显然
+\[
+Y\subset L^{\alpha_0}(0,T;X),
+\]
+且注入连续. 事实上, 我们将证明该注入是紧的.
+
+\MBSourceStatementNumber{theorem}{1}
+\begin{Theorem}
+\label{thm:ch3-compactness-aubin-lions-banach}
+在假设 \eqref{eq:ch3-compactness-banach-chain}--\eqref{eq:ch3-compactness-y-space} 下, $Y$ 到 $L^{\alpha_0}(0,T;X)$ 的注入是紧的.
+\end{Theorem}
+
+\begin{Proof}
+(i) 设 $u_m$ 是 $Y$ 中的一个有界序列. 必须证明该序列包含一个在 $L^{\alpha_0}(0,T;X)$ 中强收敛的子序列 $u_\mu$.
+
+由于空间 $X_i$ 自反且 $1<\alpha_i<+\infty$, 空间 $L^{\alpha_i}(0,T;X_i)$, $i=0,1$, 也自反, 从而 $Y$ 自反. 因此存在某个 $u\in Y$ 和某个子序列 $u_\mu$, 满足
+\begin{equation}
+u_\mu\longrightarrow u\quad\text{在 }Y\text{ 中弱收敛},
+\qquad\mu\to\infty,
+\label{eq:ch3-compactness-y-weak-convergence}
+\end{equation}
+即
+\begin{equation}
+\left\{
+\begin{aligned}
+u_\mu&\longrightarrow u&&\text{在 }L^{\alpha_0}(0,T;X_0)\text{ 中弱收敛},\\
+u_\mu'&\longrightarrow u'&&\text{在 }L^{\alpha_1}(0,T;X_1)\text{ 中弱收敛}.
+\end{aligned}
+\right.
+\label{eq:ch3-compactness-component-weak-convergence}
+\end{equation}
+只需证明
+\begin{equation}
+v_\mu=u_\mu-u\longrightarrow0
+\quad\text{在 }L^{\alpha_0}(0,T;X)\text{ 中强收敛}.
+\label{eq:ch3-compactness-banach-strong-goal}
+\end{equation}
+
+(ii) 若能证明
+\begin{equation}
+v_\mu\longrightarrow0
+\quad\text{在 }L^{\alpha_0}(0,T;X_1)\text{ 中强收敛},
+\label{eq:ch3-compactness-banach-x1-strong-goal}
+\end{equation}
+则定理得证. 事实上, 由引理 \ref{lem:ch3-compactness-interpolation},
+\[
+\lVert v_\mu\rVert_{L^{\alpha_0}(0,T;X)}
+\leq \eta\lVert v_\mu\rVert_{L^{\alpha_0}(0,T;X_0)}
++c_\eta\lVert v_\mu\rVert_{L^{\alpha_0}(0,T;X_1)},
+\]
+而序列 $v_\mu$ 在 $Y$ 中有界, 故
+\begin{equation}
+\lVert v_\mu\rVert_{L^{\alpha_0}(0,T;X)}
+\leq c\eta+c_\eta\lVert v_\mu\rVert_{L^{\alpha_0}(0,T;X_1)}.
+\label{eq:ch3-compactness-banach-interpolation-bound}
+\end{equation}
+在 \eqref{eq:ch3-compactness-banach-interpolation-bound} 中取极限, 由 \eqref{eq:ch3-compactness-banach-x1-strong-goal} 得
+\begin{equation}
+\lim_{\mu\to\infty}\lVert v_\mu\rVert_{L^{\alpha_0}(0,T;X)}\leq c\eta.
+\label{eq:ch3-compactness-banach-limsup}
+\end{equation}
+由于引理 \ref{lem:ch3-compactness-interpolation} 中的 $\eta>0$ 任意小, 此上极限为 $0$, 从而 \eqref{eq:ch3-compactness-banach-strong-goal} 得证.
+
+(iii) 为证明 \eqref{eq:ch3-compactness-banach-x1-strong-goal}, 注意到
+\begin{equation}
+Y\subset C([0,T];X_1),
+\label{eq:ch3-compactness-y-continuous-injection}
+\end{equation}
+且注入连续; 包含关系 \eqref{eq:ch3-compactness-y-continuous-injection} 由引理 \ref{lem:ch3-linear-banach-valued-derivative} 得到, 注入的连续性也很容易验证.
+
+由此推出估计
+\begin{equation}
+\lVert v_\mu(t)\rVert_{X_1}\leq c,
+\qquad\forall t\in[0,T],\quad\forall\mu.
+\label{eq:ch3-compactness-banach-pointwise-bound}
+\end{equation}
+根据 Lebesgue 定理, 若能证明对几乎每个 $t\in[0,T]$,
+\begin{equation}
+v_\mu(t)\longrightarrow0\quad\text{在 }X_1\text{ 中强收敛},
+\qquad\mu\to\infty,
+\label{eq:ch3-compactness-banach-pointwise-convergence}
+\end{equation}
+则 \eqref{eq:ch3-compactness-banach-x1-strong-goal} 得证.
+
+\hypertarget{chapter-03-page-200}{}
+我们对 $t=0$ 证明 \eqref{eq:ch3-compactness-banach-pointwise-convergence}; 对任意其他 $t$ 的证明类似. 写成
+\[
+v_\mu(0)=v_\mu(t)-\int_0^t v_\mu'(\tau)\,d\tau,
+\]
+并积分得到
+\[
+v_\mu(0)=\frac1s\left\{\int_0^s v_\mu(t)\,dt
+-\int_0^s\int_0^t v_\mu'(\tau)\,d\tau\,dt\right\}.
+\]
+因此
+\begin{equation}
+v_\mu(0)=a_\mu+b_\mu,
+\label{eq:ch3-compactness-banach-decomposition}
+\end{equation}
+其中
+\begin{equation}
+a_\mu=\frac1s\int_0^s v_\mu(t)\,dt,
+\qquad
+b_\mu=-\frac1s\int_0^s(s-t)v_\mu'(t)\,dt.
+\label{eq:ch3-compactness-banach-decomposition-terms}
+\end{equation}
+给定 $\epsilon>0$, 选择 $s$ 使
+\[
+\lVert b_\mu\rVert_{X_1}
+\leq\int_0^s\lVert v_\mu'(t)\rVert_{X_1}\,dt
+\leq\frac\epsilon2.
+\]
+随后对这个固定的 $s$, 注意当 $\mu\to\infty$ 时, $a_\mu$ 在 $X_0$ 中弱收敛到 $0$, 因而在 $X_1$ 中强收敛到 $0$; 当 $\mu$ 充分大时,
+\[
+\lVert a_\mu\rVert_{X_1}\leq\frac\epsilon2,
+\]
+于是 $t=0$ 时的 \eqref{eq:ch3-compactness-banach-pointwise-convergence} 成立.
+\end{Proof}
+
+\subsection{涉及分数阶导数的一个紧性定理}
+\label{subsec:ch3-compactness-fractional}
+下一个紧性定理采用 Hilbert 空间框架, 并以函数分数阶导数的概念为基础.
+
+设 $X_0,X,X_1$ 是 Hilbert 空间, 满足
+\begin{equation}
+X_0\subset X\subset X_1,
+\label{eq:ch3-compactness-hilbert-chain}
+\end{equation}
+各注入连续, 并且
+\begin{equation}
+X_0\text{ 到 }X\text{ 的注入是紧的}.
+\label{eq:ch3-compactness-hilbert-compact-injection}
+\end{equation}
+若 $v$ 是从 $\mathbb R$ 到 $X_1$ 的函数, 以 $\widehat v$ 表示其 Fourier 变换:
+\begin{equation}
+\widehat v(\tau)=\int_{-\infty}^{+\infty}e^{-2i\pi t\tau}v(t)\,dt.
+\label{eq:ch3-compactness-fourier-transform}
+\end{equation}
+$v$ 关于 $t$ 的 $\gamma$ 阶导数是 $(2i\pi\tau)^\gamma\widehat v$ 的 Fourier 逆变换, 即
+\begin{equation}
+\widehat{D_t^\gamma v}(\tau)=(2\pi\tau)^\gamma\widehat v(\tau).
+\label{eq:ch3-compactness-fractional-derivative}
+\end{equation}
+\footnote{当 $\gamma$ 是整数时, 定义 \eqref{eq:ch3-compactness-fractional-derivative} 与通常定义一致.}
+给定 $\gamma>0$, 定义空间
+\begin{equation}
+\mathcal H^\gamma(\mathbb R;X_0,X_1)
+=\{v\in L^2(\mathbb R;X_0),\ D_t^\gamma v\in L^2(\mathbb R;X_1)\}.
+\label{eq:ch3-compactness-fractional-space}
+\end{equation}
+\footnote{在应用中, 通常有 $0<\gamma\leq1$.}
+这是 Hilbert 空间, 其范数为
+\[
+\lVert v\rVert_{\mathcal H^\gamma(\mathbb R;X_0,X_1)}
+=\left\{\lVert v\rVert_{L^2(\mathbb R;X_0)}^2
++\lVert |\tau|^\gamma\widehat v\rVert_{L^2(\mathbb R;X_1)}^2\right\}^{1/2}.
+\]
+
+\hypertarget{chapter-03-page-201}{}
+对任意集合 $K\subset\mathbb R$, 定义 $\mathcal H^\gamma$ 的子空间 $\mathcal H_K^\gamma$, 它由 $\mathcal H^\gamma$ 中支集包含于 $K$ 的函数 $u$ 组成:
+\begin{equation}
+\mathcal H_K^\gamma(\mathbb R;X_0,X_1)
+=\{u\in\mathcal H^\gamma(\mathbb R;X_0,X_1),\ \operatorname{supp}u\subset K\}.
+\label{eq:ch3-compactness-supported-fractional-space}
+\end{equation}
+现在可以陈述紧性定理.
+
+\MBSourceStatementNumber{theorem}{2}
+\begin{Theorem}
+\label{thm:ch3-compactness-fractional}
+设 $X_0,X,X_1$ 是满足 \eqref{eq:ch3-compactness-hilbert-chain} 和 \eqref{eq:ch3-compactness-hilbert-compact-injection} 的 Hilbert 空间. 则对任意有界集 $K$ 和任意 $\gamma>0$, $\mathcal H_K^\gamma(\mathbb R;X_0,X_1)$ 到 $L^2(\mathbb R;X)$ 的注入是紧的.
+\end{Theorem}
+
+\begin{Proof}
+(i) 固定 $\gamma$ 和 $K$, 设 $u_m$ 是 $\mathcal H_K^\gamma(\mathbb R;X_0,X_1)$ 中的一个有界序列. 必须证明 $u_m$ 包含一个在 $L^2(\mathbb R;X)$ 中强收敛的子序列.
+
+由于 $\mathcal H^\gamma(\mathbb R;X_0,X_1)$ 是 Hilbert 空间, 序列 $u_\mu$ 包含一个在此空间中弱收敛到某个元素 $u$ 的子序列. 显然 $u$ 也属于 $\mathcal H_K^\gamma$; 因而令
+\[
+v_\mu=u_\mu-u,
+\]
+则序列 $v_\mu$ 是 $\mathcal H_K^\gamma(\mathbb R;X_0,X_1)$ 中的有界序列, 且在 $\mathcal H^\gamma$ 中弱收敛到 $0$; 这意味着
+\begin{equation}
+v_\mu\longrightarrow0\quad\text{在 }L^2(\mathbb R;X_0)\text{ 中弱收敛},
+\label{eq:ch3-compactness-fractional-x0-weak}
+\end{equation}
+\begin{equation}
+|\tau|^\gamma\widehat v_\mu
+\longrightarrow0\quad\text{在 }L^2(\mathbb R;X_1)\text{ 中弱收敛}.
+\label{eq:ch3-compactness-fractional-derivative-weak}
+\end{equation}
+若能证明 $u_\mu$ 在 $L^2(\mathbb R;X)$ 中强收敛到 $u$, 定理即得证, 这等价于
+\begin{equation}
+v_\mu\longrightarrow0\quad\text{在 }L^2(\mathbb R;X)\text{ 中强收敛}.
+\label{eq:ch3-compactness-fractional-x-strong-goal}
+\end{equation}
+
+(ii) 证明的第二步是说明, 若证明
+\begin{equation}
+v_\mu\longrightarrow0\quad\text{在 }L^2(\mathbb R;X_1)\text{ 中强收敛},
+\label{eq:ch3-compactness-fractional-x1-strong-goal}
+\end{equation}
+则 \eqref{eq:ch3-compactness-fractional-x-strong-goal} 得证. 由引理 \ref{lem:ch3-compactness-interpolation},
+\begin{equation}
+\lVert v_\mu\rVert_{L^2(\mathbb R;X)}
+\leq\eta\lVert v_\mu\rVert_{L^2(\mathbb R;X_0)}
++c_\eta\lVert v_\mu\rVert_{L^2(\mathbb R;X_1)},
+\label{eq:ch3-compactness-fractional-interpolation}
+\end{equation}
+而 $v_\mu$ 在 $L^2(\mathbb R;X_0)$ 中有界, 故
+\begin{equation}
+\lVert v_\mu\rVert_{L^2(\mathbb R;X)}
+\leq c\eta+c_\eta\lVert v_\mu\rVert_{L^2(\mathbb R;X_1)}.
+\label{eq:ch3-compactness-fractional-interpolation-bound}
+\end{equation}
+若假设 \eqref{eq:ch3-compactness-hilbert-chain}, 则在 \eqref{eq:ch3-compactness-fractional-interpolation-bound} 中令 $\mu\to\infty$, 得
+\[
+\lim_{\mu\to\infty}\lVert v_\mu\rVert_{L^2(\mathbb R;X)}\leq c\eta.
+\]
+由于引理 \ref{lem:ch3-compactness-interpolation} 中的 $\eta$ 任意小, 此上极限必为 $0$, 从而 \eqref{eq:ch3-compactness-fractional-x-strong-goal} 成立.
+
+(iii) 最后证明 \eqref{eq:ch3-compactness-fractional-x1-strong-goal}. 根据 Parseval 定理,
+\begin{equation}
+I_\mu=\int_{-\infty}^{+\infty}\lVert v_\mu(t)\rVert_{X_1}^2\,dt
+=\int_{-\infty}^{+\infty}\lVert\widehat v_\mu(\tau)\rVert_{X_1}^2\,d\tau,
+\label{eq:ch3-compactness-parseval-integral}
+\end{equation}
+其中 $\widehat v_\mu$ 是 $v_\mu$ 的 Fourier 变换. 必须证明
+\begin{equation}
+I_\mu\longrightarrow0,
+\qquad\mu\to\infty.
+\label{eq:ch3-compactness-parseval-goal}
+\end{equation}
+
+\hypertarget{chapter-03-page-202}{}
+为此写成
+\[
+\begin{aligned}
+I_\mu
+&=\int_{|\tau|\leq M}\lVert\widehat v_\mu(\tau)\rVert_{X_1}^2\,d\tau\\
+&\quad+\int_{|\tau|>M}(1+|\tau|^{2\gamma})
+\lVert\widehat v_\mu(\tau)\rVert_{X_1}^2
+\frac{d\tau}{1+|\tau|^{2\gamma}}\\
+&\leq\frac{c}{1+M^{2\gamma}}
++\int_{|\tau|\leq M}\lVert\widehat v_\mu(\tau)\rVert_{X_1}^2\,d\tau,
+\end{aligned}
+\]
+因为 $v_\mu$ 在 $\mathcal H^\gamma$ 中有界.
+
+给定 $\epsilon>0$, 选择 $M$ 使
+\[
+\frac{c}{1+M^{2\gamma}}\leq\frac\epsilon2.
+\]
+于是
+\[
+I_\mu\leq\int_{|\tau|\leq M}\lVert\widehat v_\mu(\tau)\rVert_{X_1}^2\,d\tau
++\frac\epsilon2,
+\]
+若能对这个固定的 $M$ 证明
+\begin{equation}
+J_\mu=\int_{|\tau|\leq M}\lVert\widehat v_\mu(\tau)\rVert_{X_1}^2\,d\tau
+\longrightarrow0,
+\qquad\mu\to\infty,
+\label{eq:ch3-compactness-low-frequency-goal}
+\end{equation}
+则 \eqref{eq:ch3-compactness-parseval-goal} 得证.
+
+这可由 Lebesgue 定理证明. 若 $\chi$ 表示 $K$ 的特征函数, 则 $v_\mu\chi=v_\mu$, 且
+\[
+\widehat v_\mu(\tau)
+=\int_{-\infty}^{+\infty}e^{-2i\pi t\tau}\chi(t)v_\mu(t)\,dt.
+\]
+因此
+\[
+\lVert\widehat v_\mu(\tau)\rVert_{X_1}
+\leq\lVert v_\mu\rVert_{L^2(\mathbb R;X_1)}
+\lVert e^{-2i\pi t\tau}\chi\rVert_{L^2(\mathbb R)},
+\]
+\begin{equation}
+\lVert\widehat v_\mu(\tau)\rVert_{X_1}\leq\mathrm{const}.
+\label{eq:ch3-compactness-fourier-pointwise-bound}
+\end{equation}
+另一方面, 对每个 $\sigma\in X_0$ 和每个固定的 $\tau$,
+\[
+((\widehat v_\mu(\tau),\sigma))_{X_0}
+=\int_{-\infty}^{+\infty}
+((v_\mu(t),e^{-2i\pi t\tau}\chi(t)\sigma))_{X_0}\,dt,
+\]
+由 \eqref{eq:ch3-compactness-fractional-x0-weak}, 当 $\mu\to\infty$ 时它趋于 $0$. 序列 $\widehat v_\mu(\tau)$ 在 $X_0$ 中弱收敛到 $0$, 因而在 $X$ 和 $X_1$ 中强收敛到 $0$.
+
+结合这一点与 \eqref{eq:ch3-compactness-fourier-pointwise-bound}, Lebesgue 定理推出 \eqref{eq:ch3-compactness-low-frequency-goal}.
+\end{Proof}
+
+利用上一条定理的方法, 可以证明另一个与定理 \ref{thm:ch3-compactness-aubin-lions-banach} 类似的紧性定理. 不过, 这个定理既不包含于定理 \ref{thm:ch3-compactness-fractional}, 也不包含该定理.
+
+\MBSourceStatementNumber{theorem}{3}
+\begin{Theorem}
+\label{thm:ch3-compactness-y-hilbert}
+在假设 \eqref{eq:ch3-compactness-hilbert-chain} 和 \eqref{eq:ch3-compactness-hilbert-compact-injection} 下, $Y(0,T;2,1;X_0,X_1)$\footnote{该空间的定义见 \eqref{eq:ch3-compactness-y-space}--\eqref{eq:ch3-compactness-y-definition}.} 到 $L^2(0,T;X)$ 的注入是紧的.
+\end{Theorem}
+
+\begin{Proof}
+设 $u_m$ 是空间 $Y$ 中的一个有界序列; 以 $\widetilde u_m$ 表示定义在整条直线 $\mathbb R$ 上的函数, 它在 $[0,T]$ 上等于 $u_m$, 在该区间外等于 $0$. 由定理 \ref{thm:ch3-compactness-fractional}, 若能证明序列 $\widetilde u_m$ 对某个 $\gamma>0$ 在空间 $\mathcal H^\gamma(\mathbb R;X_0,X_1)$ 中有界, 结论即得证.
+
+由引理 \ref{lem:ch3-linear-banach-valued-derivative}, 每个函数 $u_m$ 在一个零测集上修改后从 $[0,T]$ 到 $X_1$ 连续; 更确切地说, $Y$ 到 $C([0,T];X_1)$ 的注入连续.
+
+\hypertarget{chapter-03-page-203}{}
+经典结果表明, 因为 $\widetilde u_m$ 在 $0$ 和 $T$ 处有两个间断点, $\widetilde u_m$ 的分布导数为
+\begin{equation}
+\frac d{dt}\widetilde u_m
+=\widetilde g_m+u_m(0)\delta_0-u_m(T)\delta_T,
+\label{eq:ch3-compactness-zero-extension-derivative}
+\end{equation}
+其中 $\delta_0,\delta_T$ 是位于 $0,T$ 的 Dirac 分布, 且
+\begin{equation}
+g_m=u_m'=u_m\text{ 在 }[0,T]\text{ 上的导数}.
+\label{eq:ch3-compactness-extension-derivative-definition}
+\end{equation}
+对 \eqref{eq:ch3-compactness-zero-extension-derivative} 作 Fourier 变换得到
+\begin{equation}
+2i\pi\tau\widehat u_m(\tau)
+=\widehat g_m(\tau)+u_m(0)-u_m(T)\exp(-2i\pi\tau T),
+\label{eq:ch3-compactness-extension-fourier-identity}
+\end{equation}
+其中 $\widehat g_m$ 和 $\widehat u_m$ 分别表示 $\widetilde g_m$ 和 $\widetilde u_m$ 的 Fourier 变换.
+
+因为函数 $g_m$ 在 $L^1(0,T;X_1)$ 中保持有界, 函数 $\widetilde g_m$ 在 $L^1(\mathbb R;X_1)$ 中有界, 函数 $\widehat g_m$ 在 $L^\infty(\mathbb R;X_1)$ 中有界:
+\begin{equation}
+\lVert\widehat g_m(\tau)\rVert_{X_1}\leq\mathrm{const},
+\qquad\forall m,\quad\forall\tau\in\mathbb R.
+\label{eq:ch3-compactness-extension-g-fourier-bound}
+\end{equation}
+已经指出 $Y$ 到 $C([0,T];X_1)$ 的注入连续; 因此
+\[
+\lVert u_m(0)\rVert_{X_1}\leq\mathrm{const},
+\qquad
+\lVert u_m(T)\rVert_{X_1}\leq\mathrm{const},
+\]
+而 \eqref{eq:ch3-compactness-extension-fourier-identity} 表明
+\begin{equation}
+|\tau|^2\lVert\widehat u_m(\tau)\rVert_{X_1}^2\leq c,
+\qquad\forall m,\quad\forall\tau\in\mathbb R.
+\label{eq:ch3-compactness-extension-fourier-decay}
+\end{equation}
+对固定的 $\gamma<1/2$, 注意
+\[
+|\tau|^{2\gamma}\leq c_0(\gamma)
+\frac{1+\tau^2}{1+|\tau|^{2(1-\gamma)}},
+\qquad\forall\tau\in\mathbb R.
+\]
+因此, 由 \eqref{eq:ch3-compactness-extension-fourier-decay},
+\[
+\begin{aligned}
+\int_{-\infty}^{+\infty}|\tau|^{2\gamma}
+\lVert\widehat u_m(\tau)\rVert_{X_1}^2\,d\tau
+&\leq c_0(\gamma)\int_{-\infty}^{+\infty}
+\frac{1+\tau^2}{1+|\tau|^{2(1-\gamma)}}
+\lVert\widehat u_m(\tau)\rVert_{X_1}^2\,d\tau\\
+&\leq c_1\int_{-\infty}^{+\infty}
+\frac{d\tau}{1+|\tau|^{2(1-\gamma)}}
++c_0(\gamma)\int_{-\infty}^{+\infty}
+\lVert\widehat u_m(\tau)\rVert_{X_1}^2\,d\tau.
+\end{aligned}
+\]
+由于 $\gamma<1/2$, 积分
+\[
+\int_{-\infty}^{+\infty}\frac{d\tau}{1+|\tau|^{2(\gamma-1)}}
+\]
+收敛; 另一方面, 由 Parseval 等式,
+\[
+\int_{-\infty}^{+\infty}\lVert\widehat u_m(\tau)\rVert_{X_1}^2\,d\tau
+=\int_0^T\lVert u_m(t)\rVert_{X_1}^2\,dt,
+\]
+且这些积分有界.
+
+因此
+\begin{equation}
+\int_{-\infty}^{+\infty}|\tau|^{2\gamma}
+\lVert\widehat u_m(\tau)\rVert_{X_1}^2\,d\tau\leq c_2,
+\label{eq:ch3-compactness-extension-fractional-bound}
+\end{equation}
+其中 $c_2$ 依赖于 $\gamma$.
+
+现在显然序列 $\widetilde u_m$ 在 $\mathcal H^\lambda(\mathbb R;X_0,X_1)$ 中有界, 且其支集包含于 $[0,T]$; 证明完成.
+\end{Proof}

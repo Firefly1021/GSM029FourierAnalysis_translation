@@ -5,7 +5,7 @@
 - Structure recovery: complete and reviewed.
 - Formula registry: 105 numbered formulas and 41 unnumbered displays, all reviewed against the source pages.
 - Theorem-like objects: 1 theorem, 4 lemmas, 2 propositions, and 5 proofs; source statement numbers are preserved.
-- Cross-references: 118 unique batch labels, 188 LaTeX reference commands, no duplicate labels, no undefined local targets, and no command-type mismatches; 12 source citations or forward/external targets remain explicit and were not guessed.
+- Cross-references: 118 unique batch labels, 189 LaTeX reference commands, no duplicate labels, no undefined local targets, and no command-type mismatches; 11 source citations or forward/external targets remain explicit and were not guessed. The forward reference to Section 2 was resolved when that section was added.
 - Chinese-prose punctuation: pass, 0 forbidden full-width punctuation occurrences.
 - Personal names: pass; 5 forms first occurring in this range were registered and found byte-for-byte in the translation.
 - Formula fidelity: pass with five non-blocking source anomalies recorded; the printed forms of (1.15), (1.61), the proof of Proposition 1.1, (1.89), and (1.100) were preserved without silent correction.
