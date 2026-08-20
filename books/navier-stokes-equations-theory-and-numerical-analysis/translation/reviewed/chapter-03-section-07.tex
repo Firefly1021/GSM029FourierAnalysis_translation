@@ -1,0 +1,1593 @@
+\hypertarget{chapter-03-page-282}{}
+\section{投影方法对 Navier--Stokes 方程的逼近}
+\label{sec:ch3-projection-method}
+
+本节研究用分步方法逼近 Navier--Stokes 方程.
+
+分步方法或分裂方法是一种基于算子分解的演化方程逼近方法. 我们先在如下非常简单的情形中介绍其思想. 假设要逼近线性演化方程
+\begin{equation}
+u'+\mathcal Au=0,\qquad 0<t<T,
+\label{eq:ch3-projection-linear-evolution}
+\end{equation}
+\begin{equation}
+u(0)=u_0,
+\label{eq:ch3-projection-linear-initial}
+\end{equation}
+其中 $u(t)$ 是有限维向量, $u(t)\in\mathbb R^h$, 而 $\mathcal A$ 是 $m$ 阶方阵. 采用标准隐式格式(类似于格式 \MBUnresolvedReference{scheme}{Scheme 5.1}), 按如下方式定义向量序列 $u^m$, $m=0,\ldots,N$ ($T=kN$, $k$ 为网格步长, $N$ 为整数):
+\begin{equation}
+u^0=u_0,
+\label{eq:ch3-projection-standard-initial}
+\end{equation}
+\begin{equation}
+\frac{u^{m+1}-u^m}{k}+\mathcal Au^{m+1}=0,
+\qquad m=0,\ldots,N-1.
+\label{eq:ch3-projection-standard-implicit}
+\end{equation}
+分裂方法建立在算子 $\mathcal A$ 可分解为如下和式这一事实之上:
+\begin{equation}
+\mathcal A=\sum_{i=1}^q\mathcal A_i.
+\label{eq:ch3-projection-operator-splitting}
+\end{equation}
+仍从
+\begin{equation}
+u^0=u_0
+\label{eq:ch3-projection-split-initial}
+\end{equation}
+出发, 递归地定义元素族 $u^{m+i/q}$, $m=0,\ldots,N-1$, $i=1,\ldots,q$:
+\begin{equation}
+\frac{u^{m+i/q}-u^{m+(i-1)/q}}{k}
++\mathcal A_i u^{m+i/q}=0,
+\qquad i=1,\ldots,q,\quad m=0,\ldots,N-1.
+\label{eq:ch3-projection-fractional-step}
+\end{equation}
+当 $u^m$ 已知时, 在普通隐式格式 \eqref{eq:ch3-projection-standard-implicit} 中, 可通过求矩阵 $I+k\mathcal A$ 的逆计算 $u^{m+1}$; 在分步方法 \eqref{eq:ch3-projection-fractional-step} 中, 计算 $u^{m+1}$ 需要求 $q$ 个矩阵 $(I+k\mathcal A_1),\ldots,(I+k\mathcal A_q)$ 的逆. 如果这 $q$ 个矩阵都比 $I+k\mathcal A$ 更容易求逆, 这一算法便是有用的.
+
+这一方法可通过算子的多种可能分解以多种方式适用于 Navier--Stokes 方程. 我们考虑其中两种. 第一种对应于 $q=2$, 且
+\begin{equation}
+\mathcal A_1u=-\nu\Delta u+\sum_{i=1}^n u_iD_i u,
+\label{eq:ch3-projection-first-operator}
+\end{equation}
+而 $\mathcal A_2$ 是一个考虑 $\operatorname{grad}p$ 项和条件 $\operatorname{div}u=0$ 的启发式算子. 本节后面会给出更精确的说明, 但现在先强调: 对 Navier--Stokes 方程, 我们所研究的方法是对 \eqref{eq:ch3-projection-operator-splitting}--\eqref{eq:ch3-projection-fractional-step} 所述分步方法的一种解释, 而不仅是其特例. 我们称之为投影方法.
+
+\hypertarget{chapter-03-page-283}{}
+对于 $\mathcal A$ 的第二种分解, 有 $q=n+1$, 算子 $\mathcal A_{n+1}$ 类似于前面的算子 $\mathcal A_2$, 而 $\mathcal A_1,\ldots,\mathcal A_n$ 定义为
+\begin{equation}
+\mathcal A_i u=-\nu D_i^2u+u_iD_i u,
+\qquad i=1,\ldots,n.
+\label{eq:ch3-projection-directional-operators}
+\end{equation}
+
+还可以把这些方法与空间变量的离散化结合起来. 研究所有可能的组合既无效又冗长. 因此我们只限于两个典型情形: 首先是不对空间变量离散化的第一种分解(第 \ref{subsec:ch3-projection-two-step} 小节); 然后是采用有限差分离散化的第二种分解(第 \ref{subsec:ch3-projection-nplusone-step} 和 \ref{subsec:ch3-projection-convergence} 小节).
+
+\subsection{具有两个中间步骤的格式}
+\label{subsec:ch3-projection-two-step}
+
+这里描述一种不离散空间变量的 Navier--Stokes 方程分步逼近.
+
+\subsubsection{格式的描述}
+\label{subsubsec:ch3-projection-two-step-description}
+
+空间维数为 $n=2$ 或 $3$, 我们希望逼近问题 \MBUnresolvedReference{problem}{Problem 3.1} (或 \MBUnresolvedReference{problem}{Problem 3.2}) 的解. 为简单起见, 假设
+\begin{equation}
+f\in L^2(0,T;H),
+\label{eq:ch3-projection-force-assumption}
+\end{equation}
+且仍有
+\begin{equation}
+u_0\in H.
+\label{eq:ch3-projection-initial-assumption}
+\end{equation}
+把区间 $[0,T]$ 分成 $N$ 个长度为 $k$ 的区间($T=kN$), 并令
+\begin{equation}
+f^m=\frac1k\int_{(m-1)k}^{mk}f(t)\,dt,
+\qquad m=1,\ldots,N.
+\label{eq:ch3-projection-force-average}
+\end{equation}
+我们将定义 $L^2(\Omega)$ 中的元素族 $u^{m+i/2}$, $i=0,1$, $m=0,\ldots,N-1$. 按分数指标 $m+i/2$ 递增的次序依次计算这些元素.
+
+从
+\begin{equation}
+u^0=u_0
+\label{eq:ch3-projection-two-step-initial}
+\end{equation}
+开始. 当 $u^m$ 已知时($m\geq0$), 依次定义 $u^{m+1/2}$ 与 $u^{m+1}$:
+\begin{equation}
+\begin{aligned}
+&u^{m+1/2}\in H_0^1(\Omega),\\
+&\frac1k(u^{m+1/2}-u^m,v)+\nu((u^{m+1/2},v))
++\widehat b(u^{m+1/2},u^{m+1/2},v)
+=(f^m,v),\\
+&\hspace{9cm}\forall v\in H_0^1(\Omega),
+\end{aligned}
+\label{eq:ch3-projection-two-step-momentum}
+\end{equation}
+\begin{equation}
+u^{m+1}\in H,\qquad
+(u^{m+1},v)=(u^{m+1/2},v),\qquad\forall v\in H.
+\label{eq:ch3-projection-two-step-project}
+\end{equation}
+第 2 章引入的形式 $\widehat b$ 是 $b$ 的斜对称部分:
+\begin{equation}
+\widehat b(u,v,w)=\frac12\{b(u,v,w)-b(u,w,v)\}.
+\label{eq:ch3-projection-bhat}
+\end{equation}
+因为 $n\leq3$, 显然 $\widehat b$ 与 $b$ 一样是 $H_0^1(\Omega)$ 上的连续三线性形式, 且
+\begin{equation}
+\widehat b(u,v,v)=0,\qquad\forall u,v\in H_0^1(\Omega).
+\label{eq:ch3-projection-bhat-cancellation}
+\end{equation}
+
+\hypertarget{chapter-03-page-284}{}
+定义 $u^{m+1/2}$ 的方程 \eqref{eq:ch3-projection-two-step-momentum} 是一个与定常 Navier--Stokes 方程非常相似的非线性方程. 完全按照第 2 章定理 \MBUnresolvedReference{theorem}{Theorem 1.2} 的证明, 利用 Galerkin 过程和 \eqref{eq:ch3-projection-bhat}, 可证明至少存在一个满足 \eqref{eq:ch3-projection-two-step-momentum} 的元素 $u^{m+1/2}$.
+
+关系 \eqref{eq:ch3-projection-two-step-project} 表明, $u^{m+1}$ 是 $L^2(\Omega)$ 中 $u^{m+1/2}$ 到 $H$ 上的正交投影. 因而 $u^{m+1}$ 由 \eqref{eq:ch3-projection-two-step-project} 良定义; 记
+\begin{equation}
+u^{m+1}=P_Hu^{m+1/2},
+\label{eq:ch3-projection-ph}
+\end{equation}
+其中 $P_H$ 表示 $L^2(\Omega)$ 到空间 $H$ 上的正交投影. 由第 1 章定理 \ref{thm:ch1-helmholtz-decomposition} 对 $H$ 和 $H^\perp$ 的刻画, 差 $u^{m+1/2}-u^{m+1}$ 是某个 $H^1(\Omega)$ 函数的梯度, 适宜把该函数记为 $kp^{m+1}$:
+\begin{equation}
+\frac{u^{m+1}-u^{m+1/2}}{k}+\operatorname{grad}p^{m+1}=0,
+\qquad p^{m+1}\in H^1(\Omega).
+\label{eq:ch3-projection-pressure-update}
+\end{equation}
+关系 \eqref{eq:ch3-projection-two-step-project} 等价于两个条件, 即 \eqref{eq:ch3-projection-pressure-update} 和
+\begin{equation}
+u^{m+1}\in L^2(\Omega),\qquad
+\operatorname{div}u^{m+1}=0,\qquad
+\gamma_\nu u^{m+1}=0.
+\label{eq:ch3-projection-divergence-boundary}
+\end{equation}
+
+\MBSourceStatementNumber{remark}{1}
+\begin{Remark}
+\label{rem:ch3-projection-dirichlet-step}
+定义 $u^{m+1/2}$ 的方程 \eqref{eq:ch3-projection-two-step-momentum} 本质上是一个非线性 Dirichlet 问题; 在 \eqref{eq:ch3-projection-two-step-momentum} 中取 $v\in\mathcal D(\Omega)$, 得
+\begin{equation}
+\frac1k(u^{m+1/2}-u^m)-\nu\Delta u^{m+1/2}
++\sum_{i=1}^n u_i^{m+1/2}D_i u^{m+1/2}
++\frac12(\operatorname{div}u^{m+1/2})u^{m+1/2}=f^m.
+\label{eq:ch3-projection-dirichlet-form}
+\end{equation}
+\end{Remark}
+
+\MBSourceStatementNumber{remark}{2}
+\begin{Remark}
+\label{rem:ch3-projection-neumann-pressure}
+定义 $u^{m+1}$ 与 $p^{m+1}$ 的关系 \eqref{eq:ch3-projection-pressure-update}, \eqref{eq:ch3-projection-divergence-boundary} 等价于 $p^{m+1}$ 的一个 Neumann 问题.\footnote{当 $p^{m+1}$ 已知时, $u^{m+1}$ 由 \eqref{eq:ch3-projection-pressure-update} 直接给出.} 对 \eqref{eq:ch3-projection-pressure-update} 两边应用算子 $\operatorname{div}$, 得
+\begin{equation}
+\Delta p^{m+1}=\frac1k\operatorname{div}u^{m+1/2}
+\quad(\text{因为 }\operatorname{div}u^{m+1}=0),
+\label{eq:ch3-projection-pressure-poisson}
+\end{equation}
+而应用算子 $\gamma_\nu$(即在 $\partial\Omega$ 上取法向分量), 得
+\begin{equation}
+\frac{\partial p^{m+1}}{\partial\nu}=0
+\quad\text{在 }\Gamma=\partial\Omega\text{ 上},
+\label{eq:ch3-projection-pressure-neumann}
+\end{equation}
+因为 $\gamma_\nu u^{m+1}=\gamma_\nu u^{m+1/2}=0$.
+
+值得注意的是, 精确压力并不满足边界条件 $\partial p/\partial\nu=0$ 在 $\Gamma$ 上. 这会影响 $p^{m+1}$ 作为 $p$ 的逼近的精度; 但如下文将证明的, 它不影响格式的收敛性.
+
+第 \ref{subsec:ch3-projection-nplusone-step} 小节的另一分步方法没有这种特殊性.
+\end{Remark}
+
+现在要证明 $u^{m+i/2}$ 的先验估计, 然后研究格式的收敛性.
+
+\hypertarget{chapter-03-page-285}{}
+\subsubsection{先验估计 (I)}
+\label{subsubsec:ch3-projection-apriori-one}
+
+\MBSourceStatementNumber{lemma}{1}
+\begin{Lemma}
+\label{lem:ch3-projection-basic-estimates}
+元素 $u^{m+i/2}$ 在如下意义下有界:
+\begin{equation}
+|u^{m+i/2}|^2\leq d_2,\qquad
+m=0,\ldots,N-1,\quad i=1,2,
+\label{eq:ch3-projection-basic-linfty}
+\end{equation}
+\begin{equation}
+k\sum_{m=0}^{N-1}\lVert u^{m+1}\rVert^2\leq\frac{d_2}{\nu},
+\label{eq:ch3-projection-basic-h1}
+\end{equation}
+\begin{equation}
+\sum_{m=0}^{N-1}|u^{m+1}-u^{m+1/2}|^2\leq d_2,
+\label{eq:ch3-projection-basic-projection-jumps}
+\end{equation}
+\begin{equation}
+\sum_{m=0}^{N-1}|u^{m+1/2}-u^m|^2\leq d_2,
+\label{eq:ch3-projection-basic-momentum-jumps}
+\end{equation}
+其中
+\begin{equation}
+d_2=|u_0|^2+\frac{d_0^2}{\nu}\int_0^T|f(s)|^2\,ds.
+\label{eq:ch3-projection-basic-data-bound}
+\end{equation}
+\end{Lemma}
+
+\begin{Proof}
+在 \eqref{eq:ch3-projection-two-step-momentum} 中取 $v=u^{m+1/2}$, 并考虑 \eqref{eq:ch3-projection-bhat-cancellation}, 得
+\begin{align}
+&|u^{m+1/2}|^2-|u^m|^2+|u^{m+1/2}-u^m|^2
++2k\nu\lVert u^{m+1/2}\rVert^2 \notag\\
+&\qquad=2k(f^m,u^{m+1/2})
+\leq2k|f^m|\,|u^{m+1/2}|
+\leq2kd_0|f^m|\lVert u^{m+1/2}\rVert\footnotemark \notag\\
+&\qquad\leq k\nu\lVert u^{m+1/2}\rVert^2
++\frac{kd_0^2}{\nu}|f^m|^2.
+\label{eq:ch3-projection-basic-energy}
+\end{align}
+因此
+\begin{equation}
+|u^{m+1/2}|^2-|u^m|^2+|u^{m+1/2}-u^m|^2
++k\nu\lVert u^{m+1}\rVert^2
+\leq\frac{kd_0^2}{\nu}|f^m|^2.
+\label{eq:ch3-projection-basic-energy-bound}
+\end{equation}
+\footnotetext{$|v|\leq d_0\lVert v\rVert$, $\forall v\in H_0^1(\Omega)$.}
+允许在 \eqref{eq:ch3-projection-two-step-project} 中取 $v=u^{m+1}$, 得
+\begin{equation}
+|u^{m+1}|^2-|u^{m+1/2}|^2
++|u^{m+1}-u^{m+1/2}|^2=0.
+\label{eq:ch3-projection-projection-energy}
+\end{equation}
+把关系 \eqref{eq:ch3-projection-basic-energy} 和 \eqref{eq:ch3-projection-basic-energy-bound} 对 $m=0,\ldots,N-1$ 相加, 得
+\begin{align}
+|u^N|^2
+&+\sum_{m=0}^{N-1}\bigl\{|u^{m+1}-u^{m+1/2}|^2
++|u^{m+1/2}-u^m|^2\bigr\}
++k\nu\sum_{m=0}^{N-1}\lVert u^{m+1/2}\rVert^2 \notag\\
+&\leq |u_0|^2+\frac{kd_0^2}{\nu}\sum_{m=1}^N|f^m|^2
+\leq |u_0|^2+\frac{d_0^2}{\nu}\int_0^T|f(s)|^2\,ds
+=d_2.
+\label{eq:ch3-projection-summed-energy}
+\end{align}
+这里最后一个不等式使用了 \MBUnresolvedReference{equation}{(5.29)}. 这证明了 \eqref{eq:ch3-projection-basic-h1}--\eqref{eq:ch3-projection-basic-momentum-jumps}.
+
+接着把 \eqref{eq:ch3-projection-basic-energy-bound} 对 $m=0,\ldots,r$ 相加, 并把 \eqref{eq:ch3-projection-projection-energy} 对 $m=0,\ldots,r-1$ 相加. 舍去若干正项, 得
+\[
+|u^{r+1/2}|^2\leq|u^0|^2+\frac{kd_0^2}{\nu}\sum_{m=0}^{r-1}|f^m|^2\leq d_2.
+\]
+
+\hypertarget{chapter-03-page-286}{}
+类似地, 把 \eqref{eq:ch3-projection-basic-energy-bound} 和 \eqref{eq:ch3-projection-projection-energy} 对 $m=0,\ldots,r$ 相加, 经过简化得到
+\[
+|u^{r+1}|^2\leq|u^0|^2+\frac{kd_0^2}{\nu}\sum_{m=1}^{r}|f^m|^2\leq d_2.
+\]
+因此 \eqref{eq:ch3-projection-basic-linfty} 得证.
+\end{Proof}
+
+\paragraph{逼近函数.}
+引入逼近函数 $u_k^{(i)}$, $i=1,2$, 以及 $u_k$:
+\begin{equation}
+\begin{gathered}
+u_k^{(i)}:[0,T]\longrightarrow L^2(\Omega),\\
+u_k^{(i)}(t)=u^{m+i/2}\quad\text{当 }mk\leq t<(m+1)k,\quad i=1,2,
+\end{gathered}
+\label{eq:ch3-projection-piecewise-constant}
+\end{equation}
+\begin{equation}
+\begin{aligned}
+u_k&\text{ 是从 }[0,T]\text{ 到 }L^2(\Omega)\text{ 的连续函数, 在每个区间}\\
+&[mk,(m+1)k],\quad m=0,\ldots,N-1,\text{ 上为线性函数, 且}\\
+&u_k(mk)=u^m,\quad m=0,\ldots,N.
+\end{aligned}
+\label{eq:ch3-projection-piecewise-linear}
+\end{equation}
+由引理 \ref{lem:ch3-projection-basic-estimates} 得:
+
+\MBSourceStatementNumber{lemma}{2}
+\begin{Lemma}
+\label{lem:ch3-projection-function-bounds}
+当 $k\to0$ 时, 函数 $u_k$, $u_k^{(i)}$, $i=1,2$, 在 $L^\infty(0,T;L^2(\Omega))$ 中保持有界. 函数 $u_k^{(i)}$ 在 $L^2(0,T;H_0^1(\Omega))$ 中保持有界.
+\end{Lemma}
+
+\MBSourceStatementNumber{lemma}{3}
+\begin{Lemma}
+\label{lem:ch3-projection-function-differences}
+\begin{equation}
+|u_k^{(2)}-u_k^{(1)}|_{L^2(0,T;L^2(\Omega))}
+\leq\sqrt{k}\,d_2^{1/2},
+\label{eq:ch3-projection-stage-difference}
+\end{equation}
+\begin{equation}
+|u_k-u_k^{(2)}|_{L^2(0,T;L^2(\Omega))}
+\leq\frac{2\sqrt{k}}{\sqrt3}\,d_2^{1/2}.
+\label{eq:ch3-projection-interpolant-difference}
+\end{equation}
+\end{Lemma}
+
+\begin{Proof}
+引理 \ref{lem:ch3-projection-function-bounds} 和 \eqref{eq:ch3-projection-stage-difference} 是引理 \ref{lem:ch3-projection-basic-estimates} 的直接推论. 对于 \eqref{eq:ch3-projection-interpolant-difference}, 引理 \MBUnresolvedReference{lemma}{Lemma 4.8} 的计算给出
+\[
+|u_k-u_k^{(2)}|_{L^2(0,T;L^2(\Omega))}^2
+=\frac{k}{3}\sum_{m=0}^{N-1}|u^{m+1}-u^m|^2.
+\]
+但
+\[
+|u^{m+1}-u^m|
+\leq|u^{m+1}-u^{m+1/2}|+|u^{m+1/2}-u^m|,
+\]
+\[
+|u^{m+1}-u^m|^2
+\leq2|u^{m+1}-u^{m+1/2}|^2
++2|u^{m+1/2}-u^m|^2.
+\]
+所以由 \eqref{eq:ch3-projection-basic-projection-jumps}--\eqref{eq:ch3-projection-basic-momentum-jumps},
+\[
+|u_k-u_k^{(2)}|_{L^2(0,T;L^2(\Omega))}^2
+\leq\frac{4k}{3}d_2.
+\]
+\end{Proof}
+
+\subsubsection{先验估计 (II)}
+\label{subsubsec:ch3-projection-apriori-two}
+
+为应用紧性工具, 还需要关于 $u_k$ 的时间导数的估计.
+
+把函数 $u_k$ 在区间 $[0,T]$ 之外延拓为零, 并以 $\widehat u_k$ 表示延拓后函数的 Fourier 变换.
+
+\MBSourceStatementNumber{lemma}{4}
+\begin{Lemma}
+\label{lem:ch3-projection-fourier-bound}
+Fourier 变换 $\widehat u_k$ 满足
+\begin{equation}
+\int_{-\infty}^{+\infty}|\tau|^{2\gamma}
+\lVert\widehat u_k(\tau)\rVert_{V'}^2\,d\tau
+\leq C,\qquad 0<\gamma<\frac14,
+\label{eq:ch3-projection-fourier-bound}
+\end{equation}
+其中常数依赖于 $\gamma$ 和数据.
+\end{Lemma}
+\hypertarget{chapter-03-page-287}{}
+\begin{Proof}
+由定理 \MBUnresolvedReference{theorem}{Theorems 1.1.4 and 1.1.6}, $V=H\cap H_0^1(\Omega)$, 且关系 \eqref{eq:ch3-projection-two-step-momentum} 和 \eqref{eq:ch3-projection-two-step-project} 对任意 $v\in V$ 都成立. 相加后得到
+\begin{equation}
+\begin{aligned}
+&\frac1k(u^{m+1}-u^m,v)+\nu((u^{m+1/2},v))
++\widehat b(u^{m+1/2},u^{m+1},v)=(f^m,v),\\
+&\hspace{7cm}\forall v\in V,\quad m=0,\ldots,N-1,
+\end{aligned}
+\label{eq:ch3-projection-summed-discrete-equation}
+\end{equation}
+此方程等价于
+\begin{equation}
+\begin{aligned}
+\frac{d}{dt}(u_k(t),v)
+&+\nu((u_k^{(1)}(t),v))
++\widehat b(u_k^{(1)}(t),u_k^{(1)}(t),v)\\
+&=(f_k(t),v),
+\qquad\forall t\in(0,T),\quad\forall v\in V,
+\end{aligned}
+\label{eq:ch3-projection-time-equation}
+\end{equation}
+或
+\begin{equation}
+\frac{d}{dt}(u_k(t),v)=\langle g_k(t),v\rangle,
+\qquad\forall t\in(0,T),\quad\forall v\in V,
+\label{eq:ch3-projection-time-derivative}
+\end{equation}
+其中
+\begin{equation}
+f_k(t)=f^m,\qquad
+mk\leq t<(m+1)k,\quad m=0,\ldots,N-1,
+\label{eq:ch3-projection-piecewise-force}
+\end{equation}
+而 $g_k(t)\in V'$ 定义为
+\begin{equation}
+\langle g_k(t),v\rangle
+=-\nu((u_k^{(1)}(t),v))
+-\widehat b(u_k^{(1)}(t),u_k^{(1)}(t),v)
++(f_k(t),v),\qquad\forall v\in V.
+\label{eq:ch3-projection-gk-definition}
+\end{equation}
+由 $\widehat b$ 的性质显然有
+\begin{equation}
+\lVert g_k(t)\rVert_{V'}
+\leq\nu\lVert u_k^{(1)}(t)\rVert
++c\lVert u_k^{(1)}(t)\rVert^2+|f_k(t)|,
+\label{eq:ch3-projection-gk-bound}
+\end{equation}
+且由引理 \ref{lem:ch3-projection-function-bounds},
+\begin{equation}
+g_k\text{ 在 }L^2(0,T;V')\text{ 中保持有界}.
+\label{eq:ch3-projection-gk-l2-bound}
+\end{equation}
+此后完全重复定理 \MBUnresolvedReference{theorem}{Theorem 2.2} 的证明论证, 即可得到 \eqref{eq:ch3-projection-fourier-bound}.
+\end{Proof}
+
+\subsubsection{格式的收敛性}
+\label{subsubsec:ch3-projection-two-step-convergence}
+
+当 $k\to0$ 时, 逼近函数 $u_k^{(i)}$, $u_k$ 的行为由下述定理描述.
+
+\MBSourceStatementNumber{theorem}{1}
+\begin{Theorem}
+\label{thm:ch3-projection-convergence-two-dimensional}
+空间维数为 $n=2$, 且 $f$ 和 $u_0$ 满足 \eqref{eq:ch3-projection-force-assumption}--\eqref{eq:ch3-projection-initial-assumption}; 记 $u$ 为问题 \MBUnresolvedReference{problem}{Problem 3.1} 的唯一解, $u_k^{(i)}$, $u_k$ 为 \eqref{eq:ch3-projection-piecewise-constant}, \eqref{eq:ch3-projection-piecewise-linear} 定义的逼近函数.
+
+当 $k\to0$ 时, 有如下收敛结果:
+\begin{equation}
+u_k^{(i)},u_k\longrightarrow u
+\quad\text{在 }L^2(Q)\text{ 中强收敛, 在 }L^\infty(0,T;L^2(\Omega))
+\text{ 中弱星收敛},
+\label{eq:ch3-projection-convergence-2d-l2}
+\end{equation}
+\begin{equation}
+u_k^{(1)}\longrightarrow u
+\quad\text{在 }L^2(0,T;H_0^1(\Omega))\text{ 中强收敛}.
+\label{eq:ch3-projection-convergence-2d-h1}
+\end{equation}
+\end{Theorem}
+
+\MBSourceStatementNumber{theorem}{2}
+\begin{Theorem}
+\label{thm:ch3-projection-convergence-three-dimensional}
+空间维数为 $n=3$, 且 $f$ 和 $u_0$ 满足 \eqref{eq:ch3-projection-force-assumption}--\eqref{eq:ch3-projection-initial-assumption}.
+
+则存在某个序列 $k'\to0$, 使得
+\begin{equation}
+u_{k'}^{(i)},u_{k'}\longrightarrow u
+\quad\text{在 }L^2(Q)\text{ 中强收敛, 在 }L^\infty(0,T;L^2(\Omega))
+\text{ 中弱星收敛},
+\label{eq:ch3-projection-convergence-3d-l2}
+\end{equation}
+\begin{equation}
+u_{k'}^{(1)}\longrightarrow u
+\quad\text{在 }L^2(0,T;H_0^1(\Omega))\text{ 中弱收敛},
+\label{eq:ch3-projection-convergence-3d-h1}
+\end{equation}
+其中 $u$ 是问题 \MBUnresolvedReference{problem}{Problem 3.1} 的某个解.
+
+对于任何其他满足 \eqref{eq:ch3-projection-convergence-3d-l2}--\eqref{eq:ch3-projection-convergence-3d-h1} 的序列 $k'\to0$, $u$ 必为问题 \MBUnresolvedReference{problem}{Problem 3.1} 的一个解.
+\footnote{$\widehat b$ 上的符号 $\widehat{\phantom b}$ 与表示 Fourier 变换的符号 $\widehat{\phantom b}$ 无关.}
+\end{Theorem}
+
+\hypertarget{chapter-03-page-288}{}
+除 $L^2(0,T;H_0^1(\Omega))$ 中的强收敛外, 这两个定理的证明相同.
+
+\subsubsection{$L(Q)$ 中的强收敛}
+\label{subsubsec:ch3-projection-strong-lq}
+
+由引理 \ref{lem:ch3-projection-function-bounds}, 存在子列 $k'\to0$, 使得
+\begin{equation}
+u_{k'}^{(1)}\longrightarrow u^{(1)}
+\quad\text{在 }L^\infty(0,T;L^2(\Omega))\text{ 中弱星收敛,
+在 }L^2(0,T;H_0^1(\Omega))\text{ 中弱收敛},
+\label{eq:ch3-projection-subsequence-u1}
+\end{equation}
+\begin{equation}
+u_{k'}^{(2)}\longrightarrow u^{(2)}
+\quad\text{在 }L^\infty(0,T;L^2(\Omega))\text{ 中弱星收敛},
+\label{eq:ch3-projection-subsequence-u2}
+\end{equation}
+\begin{equation}
+u_{k'}\longrightarrow u_*
+\quad\text{在 }L^\infty(0,T;L^2(\Omega))\text{ 中弱星收敛}.
+\label{eq:ch3-projection-subsequence-uk}
+\end{equation}
+由引理 \ref{lem:ch3-projection-function-differences},
+\begin{equation}
+u^{(1)}=u^{(2)}=u_*.
+\label{eq:ch3-projection-common-limit}
+\end{equation}
+函数 $u_k^{(2)}$ 以及由此得到的函数 $u^{(2)}$ 属于 $L^\infty(0,T;H)$. 由此推出
+\[
+u_*(t)\in H_0^1(\Omega)\cap H=V,\qquad\text{a.e.},
+\]
+这蕴含
+\begin{equation}
+u_*\in L^2(0,T;V)\cap L^\infty(0,T;H).
+\label{eq:ch3-projection-limit-space}
+\end{equation}
+
+为通过极限所必需的 $L^2(Q)$ 中强收敛结果并非仅靠应用紧性定理得到; 还需要下面给出的进一步论证.
+
+回顾按 $u_k^{(2)}$ 的定义, 对所有 $t\in[0,T]$, $u_k^{(2)}(t)$ 都是 $H$ 中的元素. 又由定理 \ref{thm:ch1-helmholtz-decomposition}, $L^2(\Omega)$ 是 $H$ 与其正交补 $H^\perp$ 的直和. 以 $P_H$ 和 $P_{H^\perp}$ 表示 $L^2(\Omega)$ 到 $H$ 和 $H^\perp$ 上的正交投影, 则
+\[
+u_k^{(1)}=P_Hu_k^{(1)}+P_{H^\perp}u_k^{(1)},
+\]
+从而
+\begin{equation}
+|u_k^{(1)}(t)-u_k^{(2)}(t)|^2
+=|P_Hu_k^{(1)}(t)-u_k^{(2)}(t)|^2
++|P_{H^\perp}u_k^{(1)}(t)|^2.
+\label{eq:ch3-projection-orthogonal-decomposition}
+\end{equation}
+由 \eqref{eq:ch3-projection-orthogonal-decomposition} 和 \eqref{eq:ch3-projection-stage-difference} 得
+\begin{equation}
+P_Hu_k^{(1)}-u_k^{(2)}\longrightarrow0
+\quad\text{在 }L^2(0,T;H)\text{ 中强收敛},
+\label{eq:ch3-projection-ph-difference}
+\end{equation}
+\begin{equation}
+P_{H^\perp}u_k^{(1)}\longrightarrow0
+\quad\text{在 }L^2(0,T;L^2(\Omega))\text{ 中强收敛}.
+\label{eq:ch3-projection-phperp-difference}
+\end{equation}
+由注 \MBUnresolvedReference{remark}{Remark 1.1.6} 和引理 \ref{lem:ch3-projection-function-bounds}, $P_Hu_k^{(1)}$ 是 $L^2(0,T;H^1(\Omega)\cap H)$ 中的有界序列. 因而可选取上述子列 $k'$, 使得
+\begin{equation}
+P_Hu_{k'}^{(1)}\longrightarrow P_Hu_*=u_*
+\quad\text{在 }L^2(0,T;H^1(\Omega)\cap H)\text{ 中弱收敛}.
+\label{eq:ch3-projection-ph-weak}
+\end{equation}
+现在按如下方式应用命题 \MBUnresolvedReference{proposition}{Proposition 2.1}: $X_0=H^1(\Omega)\cap H$, $X_1=V'$, 并用序列 $\{u_{k'}\}$, $\{P_Hu_{k'}^{(1)}\}$ 代替序列 $\{u_m\}$, $\{v_m\}$. 这些序列满足所需性质; 此外,
+\[
+H^1(\Omega)\cap H\subset H\subset V',
+\]
+
+\hypertarget{chapter-03-page-289}{}
+而且从 $H^1(\Omega)\cap H$ 到 $H$ 的嵌入是紧的, 所以从 $H^1(\Omega)\cap H=X_0$ 到 $V'=X_1$ 的嵌入也是紧的. 命题 \MBUnresolvedReference{proposition}{Proposition 2.1} 说明序列 $P_Hu_{k'}^{(1)}$ 在 $L^2(0,T;V')$ 中相对紧, 因而
+\begin{equation}
+P_Hu_{k'}^{(1)}\longrightarrow P_Hu_*=u_*
+\quad\text{在 }L^2(0,T;V')\text{ 中强收敛}.
+\label{eq:ch3-projection-ph-vprime-strong}
+\end{equation}
+在引理 \MBUnresolvedReference{lemma}{Lemma 2.1} 中取 $X_0=H^1(\Omega)\cap H$, $X=H$, $X_1=V'$, 得
+\[
+|P_Hu_{k'}^{(1)}-u_*|_{L^2(0,T;H)}
+\leq\epsilon\lVert P_Hu_{k'}^{(1)}-u_*\rVert_{L^2(0,T;H^1(\Omega)\cap H)}
++C(\epsilon)\lVert P_Hu_{k'}^{(1)}-u_*\rVert_{L^2(0,T;V')}.
+\]
+又因为 $P_Hu_{k'}^{(1)}$ 在 $L^2(0,T;H^1(\Omega))$ 中有界,
+\begin{equation}
+|P_Hu_{k'}^{(1)}-u_*|_{L^2(0,T;H)}
+\leq C\epsilon
++C(\epsilon)\lVert P_Hu_{k'}^{(1)}-u_*\rVert_{L^2(0,T;V')}.
+\label{eq:ch3-projection-interpolation-bound}
+\end{equation}
+在 \eqref{eq:ch3-projection-interpolation-bound} 中取上极限, 得
+\[
+\limsup_{k'\to0}|P_Hu_{k'}^{(1)}-u_*|_{L^2(0,T;H)}\leq C\epsilon.
+\]
+由于 $\epsilon$ 任意小, 此上极限为零, 因而
+\begin{equation}
+P_Hu_{k'}^{(1)}\longrightarrow u_*
+\quad\text{在 }L^2(0,T;H)\text{ 中},\qquad k'\to0.
+\label{eq:ch3-projection-ph-h-strong}
+\end{equation}
+比较 \eqref{eq:ch3-projection-phperp-difference} 和 \eqref{eq:ch3-projection-ph-h-strong}, 得
+\begin{equation}
+u_{k'}^{(1)}\longrightarrow u_*
+\quad\text{在 }L^2(0,T;L^2(\Omega))\text{ 中强收敛},\qquad k'\to0.
+\label{eq:ch3-projection-u1-l2-strong}
+\end{equation}
+最后, \eqref{eq:ch3-projection-stage-difference} 和 \eqref{eq:ch3-projection-interpolant-difference} 蕴含
+\begin{equation}
+u_{k'}^{(2)}\longrightarrow u_*
+\quad\text{在 }L^2(0,T;L^2(\Omega))\text{ 中强收敛},\qquad k'\to0,
+\label{eq:ch3-projection-u2-l2-strong}
+\end{equation}
+\begin{equation}
+u_{k'}\longrightarrow u_*
+\quad\text{在 }L^2(0,T;L^2(\Omega))\text{ 中强收敛},\qquad k'\to0.
+\label{eq:ch3-projection-uk-l2-strong}
+\end{equation}
+
+\subsubsection{定理 \ref{thm:ch3-projection-convergence-two-dimensional} 和 \ref{thm:ch3-projection-convergence-three-dimensional} 的证明}
+\label{subsubsec:ch3-projection-convergence-proof}
+
+设 $\psi$ 是 $[0,T]$ 上任意连续可微且满足 $\psi(T)=0$ 的函数. 将 \eqref{eq:ch3-projection-time-equation} 乘以 $\psi(t)$ 并对 $t$ 积分. 对第一项分部积分, 得到($u_k(0)=u_0$)
+\begin{align*}
+-\int_0^T(u_k(t),v\psi'(t))\,dt
+&+\nu\int_0^T((u_k^{(1)}(t),v\psi(t)))\,dt\\
+&+\int_0^T\widehat b(u_k^{(1)}(t),u_k^{(1)}(t),v\psi(t))\,dt\\
+&=(u_0,\psi(0)v)+\int_0^T(f_k(t),v\psi(t))\,dt,
+\qquad\forall v\in V.
+\end{align*}
+由 \eqref{eq:ch3-projection-subsequence-u1}, \eqref{eq:ch3-projection-subsequence-uk} 和 \eqref{eq:ch3-projection-common-limit},
+\[
+\int_0^T(u_{k'}(t),v\psi'(t))\,dt
+\longrightarrow\int_0^T(u_*(t),v\psi'(t))\,dt,
+\]
+\[
+\int_0^T((u_{k'}^{(1)}(t),v\psi(t)))\,dt
+\longrightarrow\int_0^T((u_*(t),v\psi(t)))\,dt.
+\]
+由 \eqref{eq:ch3-projection-bhat}, \eqref{eq:ch3-projection-u1-l2-strong} 和引理 \ref{lem:ch3-existence-nonlinear-limit},
+\[
+\int_0^T\widehat b(u_{k'}^{(1)}(t),u_{k'}^{(1)}(t),v\psi(t))\,dt
+\longrightarrow\int_0^T\widehat b(u_*(t),u_*(t),v\psi(t))\,dt.
+\]
+因为 $u_*(t)\in V$ a.e., 引理 \MBUnresolvedReference{lemma}{Lemma 2.1.3} 和 \eqref{eq:ch3-projection-bhat} 蕴含
+\[
+\widehat b(u_*(t),u_*(t),v)=b(u_*(t),u_*(t),v),\qquad\text{a.e.}
+\]
+
+\hypertarget{chapter-03-page-290}{}
+由引理 \MBUnresolvedReference{lemma}{Lemma 4.9} 容易得到
+\[
+\int_0^T(f_k(t),v\psi(t))\,dt
+\longrightarrow\int_0^T(f(t),v\psi(t))\,dt.
+\]
+因此在极限中得到
+\begin{align}
+-\int_0^T(u_*(t),v\psi'(t))\,dt
+&+\nu\int_0^T((u_*(t),v\psi(t)))\,dt \notag\\
+&+\int_0^Tb(u_*(t),u_*(t),v\psi(t))\,dt \notag\\
+&=(u_0,v\psi(0))+\int_0^T(f(t),v\psi(t))\,dt,
+\qquad\forall v\in V.
+\label{eq:ch3-projection-limit-weak-form}
+\end{align}
+此方程与 \MBUnresolvedReference{equation}{(3.43)} 相同, 像定理 \ref{thm:ch3-existence-weak-solution} 中那样, 由此可知 $u_*$ 是问题 \MBUnresolvedReference{problem}{Problem 3.1} 的解.
+
+对 $u_k$, $u_k^{(i)}$ 的任何其他收敛子列都可重复同样的论证. 这就完成了定理 \ref{thm:ch3-projection-convergence-three-dimensional} ($n=3$) 的证明. 当 $n=2$ 时, 问题 \MBUnresolvedReference{problem}{Problem 3.1} 只有一个解 $u$; 因此 $u_*=u$, 而序列 $u_k^{(i)}$, $u_k$ 整体按 \eqref{eq:ch3-projection-subsequence-u1}--\eqref{eq:ch3-projection-subsequence-uk} 的意义收敛到 $u$. 尚需证明 $L^2(0,T;H_0^1(\Omega))$ 中的强收敛; 这是下一小节的目标.
+
+\subsubsection{定理 \ref{thm:ch3-projection-convergence-two-dimensional} 的证明(强收敛)}
+\label{subsubsec:ch3-projection-strong-h1-proof}
+
+\MBSourceStatementNumber{lemma}{5}
+\begin{Lemma}
+\label{lem:ch3-projection-final-time-weak}
+若 $n=2$, 则当 $k\to0$ 时, $u_k^N=u^N\to u(T)$ 在 $L^2(\Omega)$ 中弱收敛.
+\end{Lemma}
+
+\begin{Proof}
+由 \eqref{eq:ch3-projection-basic-linfty}, $|u_k^N|\leq C$, 因而可选子列 $k'$, 使得
+\begin{equation}
+u_{k'}^N\longrightarrow\chi
+\quad\text{在 }H\text{ 中弱收敛}\quad(u_k^N,\chi\in H).
+\label{eq:ch3-projection-final-subsequence}
+\end{equation}
+对 \eqref{eq:ch3-projection-time-equation} 积分, 得
+\begin{align*}
+(u_k(T),v)=(u_k^N,v)
+&=(u_0,v)-\nu\int_0^T((u_k^{(1)}(t),v))\,dt\\
+&\quad-\int_0^T\widehat b(u_k^{(1)}(t),u_k^{(1)}(t),v)\,dt
++\int_0^T(f_k(t),v)\,dt,\qquad\forall v\in V.
+\end{align*}
+沿序列 $k'$ 对此关系取极限, 得
+\[
+(\chi,v)=(u_0,v)-\nu\int_0^T((u(t),v))\,dt
+-\int_0^T\widehat b(u(t),u(t),v)\,dt
++\int_0^T(f(t),v)\,dt.
+\]
+将它与 \MBUnresolvedReference{equation}{(3.13)} 从 $0$ 到 $T$ 的积分关系比较, 得
+\[
+(\chi,v)=(u(T),v),\qquad\forall v\in V.
+\]
+又因为 $\chi\in H$, 所以 $u(T)=\chi$.
+
+由于极限与子列 $k'$ 的选择无关, 收敛结果 \eqref{eq:ch3-projection-final-subsequence} 实际上对整个序列 $k$ 成立.
+\end{Proof}
+
+\MBSourceStatementNumber{lemma}{6}
+\begin{Lemma}
+\label{lem:ch3-projection-h1-strong}
+若 $n=2$, 则 $u_k^{(1)}\to u$ 在 $L^2(0,T;H_0^1(\Omega))$ 中强收敛.
+\end{Lemma}
+
+\begin{Proof}
+考虑表达式
+\[
+X_k=|u^N-u(T)|^2+2\nu\int_0^T\lVert u_k^{(1)}(t)-u(t)\rVert^2\,dt.
+\]
+
+\hypertarget{chapter-03-page-291}{}
+写成
+\[
+X_k=X^{(1)}+X_k^{(2)}+X_k^{(3)},
+\]
+\[
+X^{(1)}=|u(T)|^2+2\nu\int_0^T\lVert u(t)\rVert^2\,dt,
+\]
+\[
+X_k^{(2)}=-2(u^N,u(T))-4\nu\int_0^T((u_k^{(1)}(t),u(t)))\,dt,
+\]
+\[
+X_k^{(3)}=|u^N|^2+2\nu\int_0^T\lVert u_k^{(1)}(t)\rVert^2\,dt.
+\]
+项 $X^{(1)}$ 与 $k$ 无关; 由 \eqref{eq:ch3-projection-subsequence-u1} 和引理 \ref{lem:ch3-projection-final-time-weak}, 易于在 $X_k^{(2)}$ 中取极限:
+\[
+X_k^{(2)}\longrightarrow-2|u(T)|^2
+-4\nu\int_0^T\lVert u(t)\rVert^2\,dt=-2X^{(1)}.
+\]
+已经证明的弱收敛结果不足以在 $X_k^{(3)}$ 中取极限. 但是, 把关系 \eqref{eq:ch3-projection-basic-energy} 和 \eqref{eq:ch3-projection-projection-energy} 对 $m=0,\ldots,N-1$ 相加, 可写成
+\begin{align*}
+|u^N|^2
+&+2k\nu\sum_{m=1}^{N-1}\lVert u^{m+1/2}\rVert^2
++\sum_{m=0}^{N-1}\bigl\{|u^{m+1}-u^{m+1/2}|^2
++|u^{m+1/2}-u^m|^2\bigr\}\\
+&=|u_0|^2+2k\sum_{m=0}^{N-1}(f^m,u^{m+1/2}),
+\end{align*}
+或
+\[
+X_k^{(3)}\leq|u_0|^2
++2\int_0^T(f_k(t),u_k^{(1)}(t))\,dt.
+\]
+取上极限, 得
+\[
+\limsup_{k\to0}X_k^{(3)}
+\leq|u_0|^2+2\int_0^T(f(t),u(t))\,dt.
+\]
+由精确问题的能量等式(见 \MBUnresolvedReference{equation}{(4.55)}), 最后一个不等式的右端等于 $X^{(1)}$. 因而
+\[
+\limsup_{k\to0}X_k^{(3)}\leq X^{(1)},
+\]
+结合上述结果,
+\[
+\limsup_{k\to0}X_k\leq0.
+\]
+这表明当 $k\to0$ 时 $X_k\to0$, 证明完成.
+\end{Proof}
+
+\hypertarget{chapter-03-page-292}{}
+\subsection{具有 $n+1$ 个中间步骤的格式}
+\label{subsec:ch3-projection-nplusone-step}
+
+我们在离散框架中描述这一格式. 考虑第 1 章研究的 $H_0^1(\Omega)$ 的有限差分逼近及其相应的 $V$ 的逼近 (APX1). 以下内容可部分推广到空间 $V$ 的其他逼近, 但格式的意义将大为减弱, 因为分解方法在有限差分方法框架中最为有效.
+
+\subsubsection{算子的分解}
+\label{subsubsec:ch3-projection-operator-decomposition}
+
+对每个 $h=(h_1,\ldots,h_n)$, $h_i>0$, 第 1 章第 \ref{subsec:ch1-finite-difference-approximation} 小节定义了 $H_0^1(\Omega)$ 的逼近 $W_h$ 和 $V$ 的相应逼近 $V_h$(有限差分, 逼近 (APX1)). 两者均为有限维空间, 装备由 $L^2(\Omega)$ 诱导的标量积 $(u,v)$, 或标量积
+\[
+((u_h,v_h))_h=\sum_{i=1}^n(\delta_{ih}u_h,\delta_{ih}v_h).
+\]
+在 $W_h$(因而也在 $V_h$) 上定义另外 $n$ 个标量积
+\begin{equation}
+((u_h,v_h))_{ih}=(\delta_{ih}u_h,\delta_{ih}v_h),
+\qquad1\leq i\leq n.
+\label{eq:ch3-projection-directional-inner-products}
+\end{equation}
+由离散 Poincar\'e 不等式(见命题 \MBUnresolvedReference{proposition}{Proposition 1.3.3}),
+\begin{equation}
+|u_h|\leq d_0\lVert u_h\rVert_{ih},
+\qquad\forall u_h\in W_h,\quad d_0=2\ell,
+\label{eq:ch3-projection-directional-poincare}
+\end{equation}
+其中 $\ell$ 现在表示 $\Omega$ 沿 $x_i$ 方向的宽度中的最大者. 此不等式说明 $\lVert\cdot\rVert_{ih}$ 是 $W_h$ 上的范数, 而 $((\cdot,\cdot))_{ih}$ 是 Hilbert 标量积.
+
+把 \eqref{eq:ch3-apx1-bh-decomposition}--\eqref{eq:ch3-apx1-bh-double-prime} 中考虑的三线性形式 $b_h$ 写成
+\begin{equation}
+b_h(u_h,v_h,w_h)=\sum_{i=1}^n b_{ih}(u_h,v_h,w_h),
+\label{eq:ch3-projection-bh-directional-sum}
+\end{equation}
+\begin{equation}
+b_{ih}(u_h,v_h,w_h)
+=b'_{ih}(u_h,v_h,w_h)+b''_{ih}(u_h,v_h,w_h),
+\label{eq:ch3-projection-bih-decomposition}
+\end{equation}
+\begin{equation}
+b'_{ih}(u_h,v_h,w_h)
+=\frac12\sum_{j=1}^n\int_\Omega u_{ih}(\delta_{ih}v_{jh})w_{jh}\,dx,
+\label{eq:ch3-projection-bih-prime}
+\end{equation}
+\begin{equation}
+b''_{ih}(u_h,v_h,w_h)
+=-\frac12\sum_{j=1}^n\int_\Omega u_{ih}v_{jh}(\delta_{ih}w_{jh})\,dx.
+\label{eq:ch3-projection-bih-double-prime}
+\end{equation}
+显然这些形式都在 $W_h\times W_h\times W_h$ 上定义且连续三线性; 并且显然
+\begin{equation}
+b_{ih}(u_h,v_h,v_h)=0,\qquad
+\forall u_h,v_h\in W_h.
+\label{eq:ch3-projection-bih-cancellation}
+\end{equation}
+
+\subsubsection{格式}
+\label{subsubsec:ch3-projection-discrete-scheme}
+
+数据 $f$ 和 $u_0$ 满足 \eqref{eq:ch3-projection-force-assumption}--\eqref{eq:ch3-projection-initial-assumption}. 假设给定 $f$ 的分解
+\begin{equation}
+f=\sum_{i=1}^n f_i,\qquad f_i\in L^2(0,T;H);
+\label{eq:ch3-projection-force-decomposition}
+\end{equation}
+此分解可以相当任意, $f_i$ 最简单的选择是 $f_1=f$, $f_i=0$, $i=2,\ldots,n$.
+
+把区间 $[0,T]$ 分成 $N$ 个长度为 $k$ 的区间($T=kN$), 并令
+\begin{equation}
+f^{m+i/q}=\frac1k\int_{mk}^{(m+1)k}f_i(t)\,dt,
+\qquad i=1,\ldots,n,
+\label{eq:ch3-projection-directional-force-average}
+\end{equation}
+其中
+\begin{equation}
+q=n+1.
+\label{eq:ch3-projection-q}
+\end{equation}
+现在定义 $W_h$ 中的元素族 $u_h^{m+i/q}$, $m=0,\ldots,N-1$, $i=1,\ldots,q$. 按分数指标 $m+i/q$ 递增的次序依次定义这些元素.
+
+\hypertarget{chapter-03-page-293}{}
+从下式开始:
+\begin{equation}
+u_h^0=\text{$u_0$ 在 $L^2(\Omega)$ 中到 $V_h$ 上的正交投影}.
+\label{eq:ch3-projection-discrete-initial}
+\end{equation}
+由于 $W_h\subset L^2(\Omega)$, 此定义有意义, 且显然
+\begin{equation}
+|u_h^0|\leq|u_0|,\qquad\forall h.
+\label{eq:ch3-projection-discrete-initial-bound}
+\end{equation}
+当 $u_h^m$ 已知时($m\geq0$), 如下定义 $u_h^{m+i/q}$:
+
+当 $1\leq i\leq n$ 时, $u_h^{m+i/q}\in W_h$, 且
+\begin{equation}
+\begin{aligned}
+\frac1k(u_h^{m+i/q}-u_h^{m+(i-1)/q},v_h)
+&+\nu((u_h^{m+i/q},v_h))_{ih}\\
+&+b_{ih}(u_h^{m+(i-1)/q},u_h^{m+i/q},v_h)
+=(f^{m+i/q},v_h),\\
+&\hspace{6cm}\forall v_h\in W_h.
+\end{aligned}
+\label{eq:ch3-projection-discrete-directional-step}
+\end{equation}
+当 $i=n+1(=q)$ 时, $u_h^{m+1}\in V_h$, 且
+\begin{equation}
+(u_h^{m+1},v_h)=(u_h^{m+n/q},v_h),
+\qquad\forall v_h\in V_h.
+\label{eq:ch3-projection-discrete-projection-step}
+\end{equation}
+关系 \eqref{eq:ch3-projection-discrete-projection-step} 表示 $u_h^{m+1}$ 是空间 $W_h$ 中 $u_h^{m+n/q}$ 到 $V_h$ 上关于标量积 $(\cdot,\cdot)_h$ 的正交投影; 因此 $u_h^{m+1}$ 由 \eqref{eq:ch3-projection-discrete-projection-step} 良定义.
+
+方程 \eqref{eq:ch3-projection-discrete-directional-step} 关于 $u_h^{m+i/q}$ 是线性的; 投影定理 \MBUnresolvedReference{theorem}{Theorem 1.2.2} 保证 $u_h^{m+i/q}$ 的存在唯一性. 事实上, 形式
+\begin{equation}
+\{u_h,v_h\}\longmapsto
+\frac1k(u_h,v_h)+\nu((u_h,v_h))_{ih}
++b_h(u_h^{m+(i-1)/q},u_h,v_h)
+\label{eq:ch3-projection-discrete-bilinear-form}
+\end{equation}
+在 $W_h$ 上双线性连续, 而形式
+\[
+v_h\longmapsto\frac1k(u_h^{m+(i-1)/q},v_h)
++(f^{m+i/q},v_h)
+\]
+线性连续; \eqref{eq:ch3-projection-discrete-bilinear-form} 的强制性由 \eqref{eq:ch3-projection-bih-cancellation} 推出.
+
+\MBSourceStatementNumber{remark}{3}
+\begin{Remark}[对 \eqref{eq:ch3-projection-discrete-projection-step} 的解释]
+\label{rem:ch3-projection-discrete-pressure}
+我们解释 \eqref{eq:ch3-projection-discrete-projection-step}, 由此引入压力的一个逼近. 像第 \ref{subsec:ch1-finite-difference-approximation} 小节那样处理; $W_h$ 中的元素 $u_h^{m+1}-u_h^{m+n/q}$ 关于标量积 $(\cdot,\cdot)_h$ 正交于 $V_h$. 这等价于: 当 $v_h\in W_h$ 且
+\begin{equation}
+\sum_{i=1}^n\nabla_{ih}v_{ih}(M)=0,
+\qquad\forall M\in\mathring\Omega_h^1,
+\label{eq:ch3-projection-discrete-divergence-condition}
+\end{equation}
+时,
+\[
+(u_h^{m+1}-u_h^{m+n/q},v_h)=0.
+\]
+由线性代数的经典结果, 存在数族 $\lambda_M$, $M\in\mathring\Omega_h^1$, 使得
+\begin{equation}
+(u_h^{m+1}-u_h^{m+n/q},v_h)
+=\sum_{M\in\mathring\Omega_h^1}\lambda_M
+\left\{\sum_{i=1}^n\nabla_{ih}v_{ih}(M)\right\},
+\qquad\forall v_h\in W_h.
+\label{eq:ch3-projection-discrete-lagrange-multipliers}
+\end{equation}
+\end{Remark}
+
+\hypertarget{chapter-03-page-294}{}
+若以 $\pi_h^{m+1}$ 表示 $X_h$ 中由
+\begin{equation}
+\pi_h^{m+1}
+=\sum_{M\in\mathring\Omega_h^1}
+\frac{k\lambda_M}{h_1\cdots h_n}w_{hM}
+\label{eq:ch3-projection-discrete-pressure-definition}
+\end{equation}
+给出的阶梯函数,\footnote{$w_{hM}$ 是块 $\sigma_h(M)$ 的特征函数.} 则关系 \eqref{eq:ch3-projection-discrete-lagrange-multipliers} 可解释为\footnote{与第 1 章 \MBUnresolvedReference{equations}{(3.71)--(3.72)} 比较.}
+\begin{equation}
+\frac1k(u_h^{m+1}-u_h^{m+n/q},v_h)
+-(\pi_h^{m+1},D_hv_h)=0,
+\qquad\forall v_h\in W_h,
+\label{eq:ch3-projection-discrete-pressure-weak}
+\end{equation}
+其中 $D_hv_h(x)=\sum_{i=1}^n\nabla_{ih}v_{ih}(x)$, 或
+\begin{equation}
+\frac1k(u_{ih}^{m+1}(M)-u_{ih}^{m+n/q}(M))
++\overline\nabla_{ih}\pi_h^{m+1}(M)=0,
+\qquad\forall M\in\mathring\Omega_h^1.
+\label{eq:ch3-projection-discrete-pressure-pointwise}
+\end{equation}
+
+\MBSourceStatementNumber{remark}{4}
+\begin{Remark}[关系 \eqref{eq:ch3-projection-discrete-directional-step} 的求解]
+\label{rem:ch3-projection-directional-resolution}
+关系 \eqref{eq:ch3-projection-discrete-directional-step} 等价于
+\[
+\begin{aligned}
+\frac1k\bigl(u_h^{m+i/q}(M)-u_h^{m+(i-1)/q}(M)\bigr)
+&-\nu\delta_{ih}^2u_h^{m+i/q}(M)\\
+&+\frac12u_{ih}^{m+(i-1)/q}(M)\delta_{ih}u_h^{m+i/q}(M)\\
+&+\frac12\delta_{ih}\bigl(u_{ih}^{m+(i-1)/q}u_h^{m+i/q}\bigr)(M)\\
+&=f_h^{m+i/q}(M)
+=\frac1{h_1\cdots h_n}\int_{\sigma_h(M)}f^{m+i/q}(x)\,dx,\\
+&\hspace{6cm}\forall M\in\mathring\Omega_h^1.
+\end{aligned}
+\]
+计算 $u_h^{m+i/q}$ 时, 未知量是 $u_h^{m+i/q}(M)$ 的各分量; 分步方法的关键在于, 上述系统实际上分解成若干互不耦合的子系统, 每个子系统只涉及位于同一条平行于 $x_i$ 方向的直线上的点 $M$ 所对应的未知量 $u_h^{m+i/q}(M)$. 这使得求解 \eqref{eq:ch3-projection-discrete-directional-step} 非常容易.
+\end{Remark}
+
+\MBSourceStatementNumber{remark}{5}
+\begin{Remark}[关系 \eqref{eq:ch3-projection-discrete-projection-step} 的求解]
+\label{rem:ch3-projection-discrete-neumann}
+与注 \ref{rem:ch3-projection-neumann-pressure} 相同, 可把 \eqref{eq:ch3-projection-discrete-projection-step} 解释为压力 $\pi^{m+1}$ 的一个 Neumann 问题的离散化(其边界条件不同于 \eqref{eq:ch3-projection-pressure-neumann}):
+\begin{equation}
+\left\{
+\begin{aligned}
+\Delta\pi^{m+1}&=\frac1k\operatorname{div}u^{m+n/q},\\
+\frac{\partial\pi^{m+1}}{\partial\nu}
+&=\frac1k\gamma_\nu u^{m+n/q}.
+\end{aligned}
+\right.
+\label{eq:ch3-projection-discrete-neumann-problem}
+\end{equation}
+因此可通过求解 $\pi_h^{m+1}$ 的离散 Neumann 问题来求解 \eqref{eq:ch3-projection-discrete-projection-step}. 关于这一过程, 见 A.J. Chorin [3], M. Fortin [1].
+
+求解 \eqref{eq:ch3-projection-discrete-projection-step} 的另一种过程是使用第 1 章第 \MBUnresolvedReference{section}{Section 5} 节以及本章第 \MBUnresolvedReference{subsection}{Subsection 6.3} 小节所考虑类型的迭代算法. 这里的情形非常相似, 略去细节.
+\end{Remark}
+
+\subsubsection{无条件先验估计}
+\label{subsubsec:ch3-projection-unconditional-estimates}
+
+我们将建立两类先验估计: 无条件先验估计, 以及假设 $k$ 与 $h$ 满足某些类似稳定性条件时得到的先验估计. 本小节讨论无条件先验估计; 条件先验估计将在第 \ref{subsubsec:ch3-projection-conditional-estimates} 小节中研究, 其前先在第 \ref{subsubsec:ch3-projection-auxiliary-results} 和 \ref{subsubsec:ch3-projection-bih-estimates} 小节中建立一些预备工具.
+
+\hypertarget{chapter-03-page-295}{}
+\MBSourceStatementNumber{lemma}{7}
+\begin{Lemma}
+\label{lem:ch3-projection-discrete-basic-estimates}
+元素 $u_h^{m+i/q}$ 在如下意义下保持有界:
+\begin{equation}
+|u_h^{m+i/q}|^2\leq d_2,
+\qquad m=0,\ldots,N-1,\quad i=1,\ldots,q,
+\label{eq:ch3-projection-discrete-linfty}
+\end{equation}
+\begin{equation}
+k\sum_{m=0}^{N-1}\lVert u_h^{m+i/q}\rVert_{ih}^2
+\leq\frac{d_2}{\nu},
+\qquad i=1,\ldots,n\;(=q-1),
+\label{eq:ch3-projection-discrete-directional-h1}
+\end{equation}
+\begin{equation}
+\sum_{m=0}^{N}\left|u_h^{m+i/q}-u_h^{m+(i-1)/q}\right|^2
+\leq d_2,\qquad i=1,\ldots,q,
+\label{eq:ch3-projection-discrete-stage-jumps}
+\end{equation}
+其中
+\begin{equation}
+d_2=|u_0|^2+\sum_{i=1}^n\int_0^T|f_i(s)|^2\,ds.
+\label{eq:ch3-projection-discrete-data-bound}
+\end{equation}
+\end{Lemma}
+
+\begin{Proof}
+在 \eqref{eq:ch3-projection-discrete-directional-step} 中取 $v_h=u_h^{m+i/q}$; 利用 \eqref{eq:ch3-projection-bih-cancellation}, 得
+\begin{align}
+&|u_h^{m+i/q}|^2-|u_h^{m+(i-1)/q}|^2
++|u_h^{m+i/q}-u_h^{m+(i-1)/q}|^2
++2k\nu\lVert u_h^{m+i/q}\rVert_{ih}^2 \notag\\
+&\quad=2k(f^{m+i/q},u_h^{m+i/q})
+\leq2k|f^{m+i/q}|\,|u_h^{m+i/q}| \notag\\
+&\quad\leq2kd_0|f^{m+i/q}|\lVert u_h^{m+i/q}\rVert_{ih}
+\leq k\nu\lVert u_h^{m+i/q}\rVert_{ih}^2
++\frac{kd_0^2}{\nu}|f^{m+i/q}|^2.
+\label{eq:ch3-projection-discrete-energy}
+\end{align}
+最终得到
+\begin{align}
+|u_h^{m+i/q}|^2-|u_h^{m+(i-1)/q}|^2
+&+|u_h^{m+i/q}-u_h^{m+(i-1)/q}|^2
++k\nu\lVert u_h^{m+i/q}\rVert_{ih}^2 \notag\\
+&\leq\frac{kd_0^2}{\nu}|f^{m+i/q}|^2,
+\qquad1\leq i\leq q.
+\label{eq:ch3-projection-discrete-energy-bound}
+\end{align}
+在 \eqref{eq:ch3-projection-discrete-projection-step} 中取 $v=u_h^{m+1}$, 得
+\begin{equation}
+|u_h^{m+1}|^2-|u_h^{m+n/q}|^2
++|u_h^{m+1}-u_h^{m+n/q}|^2=0.
+\label{eq:ch3-projection-discrete-projection-energy}
+\end{equation}
+将所有关系 \eqref{eq:ch3-projection-discrete-energy-bound} 和 \eqref{eq:ch3-projection-discrete-projection-energy} 对 $i=1,\ldots,n$, $m=0,\ldots,N-1$ 相加, 经过简化得到
+\begin{align}
+|u_h^N|^2
+&+\sum_{i=1}^q\sum_{m=0}^{N-1}
+\left|u_h^{m+i/q}-u_h^{m+(i-1)/q}\right|^2
++k\nu\sum_{i=1}^{q-1}\sum_{m=0}^{N-1}
+\lVert u_h^{m+i/q}\rVert_{ih}^2 \notag\\
+&\leq|u_h^0|^2
++\frac{kd_0^2}{\nu}\sum_{i=1}^{q-1}\sum_{m=0}^{N-1}
+|f^{m+i/q}|^2.
+\label{eq:ch3-projection-discrete-summed-energy}
+\end{align}
+由 \eqref{eq:ch3-projection-discrete-initial-bound}, $|u_h^0|\leq|u_0|$, 且由 \MBUnresolvedReference{equation}{(5.29)},
+\[
+k\sum_{m=0}^{N-1}|f^{m+i/q}|^2
+\leq\int_0^T|f_i(s)|^2\,ds.
+\]
+因此 \eqref{eq:ch3-projection-discrete-summed-energy} 的右端不超过 $d_2$, 从而 \eqref{eq:ch3-projection-discrete-directional-h1} 和 \eqref{eq:ch3-projection-discrete-stage-jumps} 得证.
+
+\hypertarget{chapter-03-page-296}{}
+固定 $r,j$, $0\leq r\leq N-1$, $1\leq j\leq q$. 将 \eqref{eq:ch3-projection-discrete-energy-bound} 和 \eqref{eq:ch3-projection-discrete-projection-energy} 对 $m=0,\ldots,r-1$, $i=1,\ldots,q$ 以及 $m=r$, $1\leq i\leq j$ 相加;\footnote{这里对满足 $0\leq m+i/q\leq r+j/q$ 的 $m$ 和 $i$ 求和.} 舍去若干正项, 得
+\[
+\begin{aligned}
+|u^{r+j/q}|^2
+&\leq|u_h^0|^2+\frac{kd_0^2}{\nu}
+\sum_{\substack{m,i\\0\leq m+i/q\leq r+j/q}}|f^{m+i/q}|^2\\
+&\leq|u_h^0|^2+\frac{kd_0^2}{\nu}
+\sum_{i=1}^{q-1}\sum_{m=0}^{N-1}|f^{m+i/q}|^2
+\leq d_2,\\
+&\hspace{5cm}r=0,\ldots,N-1,\quad j=1,\ldots,q.
+\end{aligned}
+\]
+引理得证.
+\end{Proof}
+
+\subsubsection{稳定性定理}
+\label{subsubsec:ch3-projection-stability-theorem}
+
+引入逼近函数 $u_h^{(i)}$, $i=1,\ldots,q$, 以及 $u_h$:
+\begin{equation}
+\begin{gathered}
+u_h^{(i)}:[0,T]\longrightarrow W_h,\\
+u_h^{(i)}(t)=u_h^{m+i/q}
+\quad\text{当 }mk\leq t<(m+1)k,\quad i=1,\ldots,q,
+\end{gathered}
+\label{eq:ch3-projection-discrete-piecewise-constant}
+\end{equation}
+\begin{equation}
+\begin{aligned}
+u_h&\text{ 是从 }[0,T]\text{ 到 }W_h\text{ 的连续函数, 在每个区间}\\
+&[mk,(m+1)k],\quad m=0,\ldots,N-1,\text{ 上为线性函数, 且}\\
+&u_h(mk)=u_h^m,\quad m=0,\ldots,N.
+\end{aligned}
+\label{eq:ch3-projection-discrete-piecewise-linear}
+\end{equation}
+由引理 \ref{lem:ch3-projection-discrete-basic-estimates} 得到下述稳定性定理.
+
+\MBSourceStatementNumber{theorem}{3}
+\begin{Theorem}
+\label{thm:ch3-projection-unconditional-stability}
+由 \eqref{eq:ch3-projection-discrete-piecewise-constant}, \eqref{eq:ch3-projection-discrete-piecewise-linear} 定义的函数 $u_h^{(i)}$ 和 $u_h$ 在 $L^\infty(0,T;L^2(\Omega))$ 中无条件稳定($1\leq i\leq q$). 函数 $\delta_{ih}u_h^{(i)}$($1\leq i\leq n$)在 $L^2(0,T;L^2(\Omega))$ 中无条件稳定.
+\end{Theorem}
+
+\MBSourceStatementNumber{remark}{6}
+\begin{Remark}
+\label{rem:ch3-projection-discrete-stage-convergence}
+(i) 由 \eqref{eq:ch3-projection-discrete-stage-jumps},
+\begin{equation}
+|u_h^{(i)}-u_h^{(i-1)}|_{L^2(0,T;L^2(\Omega))}
+\leq\sqrt{kd_2},\qquad i=2,\ldots,n.
+\label{eq:ch3-projection-discrete-stage-difference}
+\end{equation}
+
+(ii) 与引理 \ref{lem:ch3-projection-function-differences} 相同,
+\begin{equation}
+|u_h^{(q)}-u_h|_{L^2(0,T;L^2(\Omega))}
+\leq\sqrt{\frac{kd_2}{2}}.
+\label{eq:ch3-projection-discrete-interpolant-difference}
+\end{equation}
+事实上, 利用引理 \MBUnresolvedReference{lemma}{Lemma 4.8} 的计算,
+\[
+\begin{aligned}
+|u_h^{(q)}-u_h|_{L^2(0,T;L^2(\Omega))}^2
+&=\frac{k}{2}\sum_{m=0}^{N-1}|u_h^{m+1}-u_h^m|^2\\
+&\leq\frac{k}{2}\sum_{m=0}^{N-1}
+\left(\sum_{i=1}^q|u_h^{m+i/q}-u_h^{m+(i-1)/q}|\right)^2\\
+&\leq\frac{kq}{2}\sum_{m=0}^{N-1}\sum_{i=1}^q
+|u_h^{m+i/q}-u_h^{m+(i-1)/q}|^2\\
+&\leq\frac{kq}{2}d_2.
+\end{aligned}
+\]
+\end{Remark}
+
+\hypertarget{chapter-03-page-297}{}
+\subsection{格式的收敛性}
+\label{subsec:ch3-projection-convergence}
+
+我们要证明格式 \eqref{eq:ch3-projection-discrete-directional-step}, \eqref{eq:ch3-projection-discrete-projection-step} 的收敛性. 首先还须建立一些先验估计.
+
+\subsubsection{辅助结果}
+\label{subsubsec:ch3-projection-auxiliary-results}
+
+以 $A_{ih}$($1\leq i\leq n$)表示由下式定义的从 $W_h$ 到 $W_h$ 的线性算子:
+\begin{equation}
+(A_{ih}u_h,v_h)=((u_h,v_h))_{ih},
+\qquad\forall u_h,v_h\in W_h.
+\label{eq:ch3-projection-aih-definition}
+\end{equation}
+又以 $B_{ih}$ 表示由下式定义的从 $W_h\times W_h$ 到 $W_h$ 的连续双线性算子:
+\begin{equation}
+(B_{ih}(u_h,v_h),w_h)=b_{ih}(u_h,v_h,w_h),
+\qquad\forall u_h,v_h,w_h\in W_h.
+\label{eq:ch3-projection-bih-operator}
+\end{equation}
+用这些算子, 关系 \eqref{eq:ch3-projection-discrete-directional-step} 可写为
+\begin{equation}
+\frac1k(u_h^{m+i/q}-u_h^{m+(i-1)/q})
++\nu A_{ih}u_h^{m+i/q}
++B_{ih}(u_h^{m+(i-1)/q},u_h^{m+i/q})
+=f_h^{m+i/q}.
+\label{eq:ch3-projection-discrete-operator-form}
+\end{equation}
+
+\MBSourceStatementNumber{lemma}{8}
+\begin{Lemma}
+\label{lem:ch3-projection-directional-inverse-bound}
+\begin{equation}
+\lVert u_h\rVert_{ih}\leq S_i(h)|u_h|,
+\qquad\forall u_h\in W_h,
+\label{eq:ch3-projection-directional-inverse-inequality}
+\end{equation}
+其中
+\begin{equation}
+S_i(h)=\frac2{h_i},\qquad1\leq i\leq n.
+\label{eq:ch3-projection-directional-si}
+\end{equation}
+\end{Lemma}
+
+\begin{Proof}
+这在命题 \ref{prop:ch3-apx1-stability-constant} 的证明中已基本得到.\footnote{在命题 \ref{prop:ch3-apx1-stability-constant} 的证明中固定 $j$ 的值.}
+\end{Proof}
+
+\MBSourceStatementNumber{lemma}{9}
+\begin{Lemma}
+\label{lem:ch3-projection-aih-bound}
+\begin{equation}
+|A_{ih}u_h|\leq S_i(h)\lVert u_h\rVert_{ih},
+\qquad\forall u_h\in W_h.
+\label{eq:ch3-projection-aih-bound}
+\end{equation}
+\end{Lemma}
+
+\begin{Proof}
+由 \eqref{eq:ch3-projection-aih-definition} 和 \eqref{eq:ch3-projection-directional-inverse-inequality},
+\[
+|(A_{ih}u_h,v_h)|=|((u_h,v_h))_{ih}|
+\leq\lVert u_h\rVert_{ih}\lVert v_h\rVert_{ih}
+\leq S_i(h)\lVert u_h\rVert_{ih}|v_h|,
+\qquad\forall u_h,v_h\in W_h,
+\]
+从而得到 \eqref{eq:ch3-projection-aih-bound}.
+\end{Proof}
+
+\subsubsection{形式 $b_{ih}$ 的估计}
+\label{subsubsec:ch3-projection-bih-estimates}
+
+\MBSourceStatementNumber{lemma}{10}
+\begin{Lemma}
+\label{lem:ch3-projection-bih-estimates-two-dimensional}
+若 $n=2$, 则
+\begin{equation}
+|b'_{ih}(u_h,v_h,w_h)|
+\leq\sqrt3\,|u_h|^{1/2}\lVert u_h\rVert_{jh}^{1/2}
+\lVert v_h\rVert_{jh}|w_h|^{1/2}\lVert w_h\rVert_{ih}^{1/2},
+\label{eq:ch3-projection-bih-prime-2d}
+\end{equation}
+\begin{equation}
+|b''_{ih}(u_h,v_h,w_h)|
+\leq\sqrt3\,|u_h|^{1/2}\lVert u_h\rVert_{jh}^{1/2}
+|v_h|^{1/2}\lVert v_h\rVert_{jh}^{1/2}\lVert w_h\rVert_{ih},
+\label{eq:ch3-projection-bih-double-prime-2d}
+\end{equation}
+\begin{equation}
+|B_{ih}(u_h,v_h)|
+\leq2\sqrt3\,S_i(h)|u_h|^{1/2}\lVert u_h\rVert_{jh}^{1/2}
+|v_h|^{1/2}\lVert v_h\rVert_{ih}^{1/2},
+\label{eq:ch3-projection-bih-operator-2d}
+\end{equation}
+其中 $\{i,j\}$ 是集合 $\{1,2\}$ 的一个排列.
+\end{Lemma}
+
+\begin{Proof}
+只证明 $i=1$, $j=2$ 时的 \eqref{eq:ch3-projection-bih-prime-2d}. 为简化记号, 略去指标 $h$, 并令
+\[
+u=\{u_1,u_2\},\qquad v=\{v_1,v_2\},\qquad w=\{w_1,w_2\}.
+\]
+
+\hypertarget{chapter-03-page-298}{}
+由 $b_{ih}$ 的定义,
+\[
+b'_{1h}(u,v,w)=\frac12\sum_{\ell=1}^2
+\int_\Omega u_1(\delta_{1h}v_\ell)w_\ell\,dx.
+\]
+由 Schwarz 不等式,
+\[
+\begin{aligned}
+\left|\int_\Omega u_1(\delta_{1h}v_\ell)w_\ell\,dx\right|
+&=\left|\int_{\mathbb R^2}u_1(\delta_{1h}v_\ell)w_\ell\,dx\right|\\
+&\leq
+\left\{\int_{\mathbb R^2}|\delta_{1h}v_\ell|^2\,dx\right\}^{1/2}
+\left\{\int_{\mathbb R^2}|u_1w_\ell|^2\,dx\right\}^{1/2},
+\end{aligned}
+\]
+并且
+\[
+\int_{\mathbb R^2}|u_1w_\ell|^2\,dx
+\leq\int_{\mathbb R^2}
+\left\{\sup_{\xi_2}|u_1(x_1,\xi_2)|\right\}
+\left\{\sup_{\xi_1}|w_\ell(\xi_1,x_2)|^2\right\}\,dx.
+\]
+$x_1$ 和 $x_2$ 中的积分相互独立, 因而
+\[
+\begin{aligned}
+\int_{\mathbb R^2}|u_1w_\ell|^2\,dx
+&\leq
+\left\{\int_{-\infty}^{+\infty}
+\sup_{\xi_2}|u_1(x_1,\xi_2)|^2\,dx_1\right\}\\
+&\qquad{}\times
+\left\{\int_{-\infty}^{+\infty}
+\sup_{\xi_1}|w_\ell(\xi_1,x_2)|^2\,dx_2\right\}.
+\end{aligned}
+\]
+由第 2 章 \MBUnresolvedReference{equation}{(2.15)},
+\[
+\sup_{\xi_2}|u_1(x_1,\xi_2)|^2
+\leq2\int_{-\infty}^{+\infty}
+|\delta_{2h}u_1(x_1,\xi_2)|
+\left(\sum_{\alpha=1}^{1}
+\left|u_1\left(x_1,\xi_2+\frac{\alpha h_2}{2}\right)\right|\right)\,d\xi_2,
+\]
+\[
+\int_{-\infty}^{+\infty}
+\sup_{\xi_2}|u_1(x_1,\xi_2)|^2\,dx_1
+\leq2\sqrt3\,|\delta_{2h}u_1|\,|u_1|.
+\]
+同理,
+\[
+\int_{-\infty}^{+\infty}
+\sup_{\xi_1}|w_\ell(\xi_1,x_2)|^2\,dx_2
+\leq2\sqrt3\,|\delta_{1h}w_\ell|\,|w_\ell|,
+\]
+由此可写
+\[
+\int_{\mathbb R^2}|u_1w_\ell|^2\,dx
+\leq12|u_1|\,|\delta_{2h}u_1|\,|w_\ell|\,|\delta_{1h}w_\ell|,
+\]
+\[
+|b'_{1h}(u,v,w)|
+\leq\sqrt3\sum_{\ell=1}^2
+|u_1|^{1/2}|\delta_{2h}u_\ell|^{1/2}
+|\delta_{1h}v_\ell|\,|w_\ell|^{1/2}
+|\delta_{1h}w_\ell|^{1/2}.
+\]
+再次使用 Schwarz 不等式, 将最后一个关系的右端估计为
+\[
+\begin{aligned}
+&\sqrt3\,|u_1|^{1/2}|\delta_{2h}u_1|^{1/2}
+\left(\sum_{\ell=1}^2|\delta_{1h}v_\ell|^2\right)^{1/2}
+\left(\sum_{\ell=1}^2|w_\ell|\,|\delta_{1h}w_\ell|\right)^{1/2}\\
+&\qquad\leq\sqrt3\,|u_1|^{1/2}|\delta_{2h}u_1|^{1/2}
+\lVert v\rVert_{1h}|w|^{1/2}\lVert w\rVert_{1h}^{1/2}\\
+&\qquad\leq\sqrt3\,|u|^{1/2}\lVert u\rVert_{2h}^{1/2}
+\lVert v\rVert_{1h}|w|^{1/2}\lVert w\rVert_{1h}^{1/2}.
+\end{aligned}
+\]
+这证明了 \eqref{eq:ch3-projection-bih-prime-2d}.
+
+为证明 \eqref{eq:ch3-projection-bih-double-prime-2d}, 只需注意, 由 \eqref{eq:ch3-projection-bih-cancellation},
+\[
+b''_{ih}(u_h,v_h,w_h)=b'_{ih}(u_h,w_h,v_h),
+\]
+
+\hypertarget{chapter-03-page-299}{}
+并应用 \eqref{eq:ch3-projection-bih-prime-2d}. 对于 \eqref{eq:ch3-projection-bih-operator-2d}, 由 \eqref{eq:ch3-projection-bih-cancellation} 可知
+\[
+|b_{ih}(u_h,v_h,w_h)|
+\leq2\sqrt3\,S_i(h)|u_h|^{1/2}\lVert u_h\rVert_{jh}^{1/2}
+|v_h|^{1/2}\lVert v_h\rVert_{ih}^{1/2}|w_h|,
+\qquad\forall u_h,v_h,w_h\in W_h.
+\]
+\end{Proof}
+
+\MBSourceStatementNumber{lemma}{11}
+\begin{Lemma}
+\label{lem:ch3-projection-bih-estimates-three-dimensional}
+若 $n=3$, 则
+\begin{equation}
+|b'_{ih}(u_h,v_h,w_h)|
+\leq3^{3/2}|u_h|^{1/4}\lVert u_h\rVert_h^{3/4}
+\lVert v_h\rVert_{ih}|w_h|^{1/4}\lVert w_h\rVert_h^{3/4},
+\label{eq:ch3-projection-bih-prime-3d}
+\end{equation}
+\begin{equation}
+|b''_{ih}(u_h,v_h,w_h)|
+\leq3^{3/2}|u_h|^{1/4}\lVert u_h\rVert_h^{3/4}
+|v_h|^{1/4}\lVert v_h\rVert_h^{3/4}\lVert w_h\rVert_{ih},
+\label{eq:ch3-projection-bih-double-prime-3d}
+\end{equation}
+\begin{equation}
+\begin{aligned}
+|B_{ih}(u_h,v_h)|
+\leq3^{3/2}|u_h|^{1/4}\lVert u_h\rVert_h^{3/4}
+\bigl\{S_i^{3/4}(h)\lVert v_h\rVert_{ih}
++S_i(h)|v_h|^{1/4}\lVert v_h\rVert_h^{3/4}\bigr\}.
+\end{aligned}
+\label{eq:ch3-projection-bih-operator-3d}
+\end{equation}
+\end{Lemma}
+
+\begin{Proof}
+\eqref{eq:ch3-projection-bih-prime-3d} 和 \eqref{eq:ch3-projection-bih-double-prime-3d} 的证明与引理 \ref{lem:ch3-apx1-trilinear-components} 的证明相同; \eqref{eq:ch3-projection-bih-operator-3d} 是前两式的简单推论.
+\end{Proof}
+
+\subsubsection{条件先验估计}
+\label{subsubsec:ch3-projection-conditional-estimates}
+
+\MBSourceStatementNumber{lemma}{12}
+\begin{Lemma}
+\label{lem:ch3-projection-conditional-estimate-two-dimensional}
+假设 $n=2$, 且 $k$ 与 $h$ 满足
+\begin{equation}
+kS^2(h)\leq M,
+\label{eq:ch3-projection-stability-condition-2d}
+\end{equation}
+其中 $M$ 固定但可任意大. 则
+\begin{equation}
+k\sum_{m=0}^{N-1}\lVert u_h^{m+i/3}\rVert_h^2
+\leq C,\qquad i=1,2,3,
+\label{eq:ch3-projection-conditional-bound-2d}
+\end{equation}
+其中常数依赖于 $M$ 和数据.
+\end{Lemma}
+
+\begin{Proof}
+从格式的形式 \eqref{eq:ch3-projection-discrete-operator-form} 出发. 这里 $q=3$, 对 $i=2$, \eqref{eq:ch3-projection-discrete-operator-form} 成为
+\[
+u_h^{m+1/3}=u_h^{m+2/3}
++k\nu A_{2h}u_h^{m+2/3}
++kB_{2h}(u_h^{m+1/3},u_h^{m+2/3})
+-kf_h^{m+2/3}.
+\]
+对两边取 $\lVert\cdot\rVert_{2h}$ 范数,
+\[
+\begin{aligned}
+\lVert u_h^{m+1/3}\rVert_{2h}
+&\leq\lVert u_h^{m+2/3}\rVert_{2h}
++k\nu\lVert A_{2h}u_h^{m+2/3}\rVert_{2h}\\
+&\quad+k\lVert B_{2h}(u_h^{m+1/3},u_h^{m+2/3})\rVert_{2h}
++k\lVert f_h^{m+2/3}\rVert_h.
+\end{aligned}
+\]
+由 \eqref{eq:ch3-projection-directional-inverse-inequality}, \eqref{eq:ch3-projection-aih-bound} 和 \eqref{eq:ch3-projection-bih-operator-2d}, 右端不超过
+\[
+\begin{aligned}
+\lVert u_h^{m+1/3}\rVert_{2h}
+&+k\nu S_2^2(h)\lVert u_h^{m+2/3}\rVert_{2h}\\
+&+2k\sqrt3\,S_2^2(h)|u_h^{m+1/3}|^{1/2}
+\lVert u_h^{m+1/3}\rVert_{1h}^{1/2}
+|u_h^{m+2/3}|^{1/2}\lVert u_h^{m+2/3}\rVert_{2h}^{1/2}\\
+&+kS_2(h)|f^{m+2/3}|.
+\end{aligned}
+\]
+由 Schwarz 不等式,
+\[
+\begin{aligned}
+\lVert u_h^{m+1/3}\rVert_{2h}^2
+&\leq4\lVert u_h^{m+2/3}\rVert_{2h}^2
++4k^2\nu^2S_2^4(h)\lVert u_h^{m+2/3}\rVert_{2h}^2\\
+&\quad+48k^2S_2^4(h)|u_h^{m+1/3}|
+\lVert u_h^{m+1/3}\rVert_{1h}
+|u_h^{m+2/3}|\lVert u_h^{m+2/3}\rVert_{2h}\\
+&\quad+4k^2S_2^2(h)|f^{m+2/3}|^2.
+\end{aligned}
+\]
+
+\hypertarget{chapter-03-page-300}{}
+由引理 \ref{lem:ch3-projection-discrete-basic-estimates} 的先前估计和 \eqref{eq:ch3-projection-stability-condition-2d}, 上一不等式右端从 $m=0$ 到 $N-1$ 的和被一个常数与 $k^{-1}$ 的乘积所控制, 因而对 $i=1$, \eqref{eq:ch3-projection-conditional-bound-2d} 得证.
+
+为对 $i=2$ 证明同一结果, 把 $i=2$($q=3$)时的 \eqref{eq:ch3-projection-discrete-operator-form} 写成
+\[
+u_h^{m+2/3}=u_h^{m+1/3}
+-k\nu A_{2h}u_h^{m+2/3}
+-kB_{2h}(u_h^{m+1/3},u_h^{m+2/3})
++kf_h^{m+2/3},
+\]
+对两边取 $\lVert\cdot\rVert_{1h}$ 范数, 再按前述方式处理.
+
+为在 $i=3$ 时证明 \eqref{eq:ch3-projection-conditional-bound-2d}, 把 $i=1$($q=3$)时的 \eqref{eq:ch3-projection-discrete-operator-form} 写成
+\[
+u_h^m=u_h^{m+1/3}
+-k\nu A_{1h}u_h^{m+1/3}
+-kB_{1h}(u_h^m,u_h^{m+1/3})
++kf_h^{m+1/3},
+\]
+然后依次对两边取 $\lVert\cdot\rVert_{1h}$ 和 $\lVert\cdot\rVert_{2h}$ 范数, 并基本按前述方式处理.
+\end{Proof}
+
+\MBSourceStatementNumber{lemma}{13}
+\begin{Lemma}
+\label{lem:ch3-projection-conditional-estimate-three-dimensional}
+假设 $n=3$, 且 $k$ 与 $h$ 满足
+\begin{equation}
+kS(h)^{11/4}(h)\leq M,
+\label{eq:ch3-projection-stability-condition-3d}
+\end{equation}
+其中 $M$ 固定但可任意大. 则
+\begin{equation}
+k\sum_{m=0}^{N-1}\lVert u_h^{m+1/3}\rVert_h^2
+\leq C,\qquad i=1,2,3,4,
+\label{eq:ch3-projection-conditional-bound-3d}
+\end{equation}
+其中常数仅依赖于 $M$ 和数据.
+\end{Lemma}
+
+\begin{Proof}
+证明与引理 \ref{lem:ch3-projection-conditional-estimate-two-dimensional} 相同. 以 $B_{ih}$ 的较粗估计 \eqref{eq:ch3-projection-bih-operator-3d} 代替 \eqref{eq:ch3-projection-bih-operator-2d}, 因此用更强的关系 \eqref{eq:ch3-projection-stability-condition-3d} 代替 \eqref{eq:ch3-projection-stability-condition-2d}.
+\end{Proof}
+
+由这些引理推出一个条件稳定性定理.
+
+\MBSourceStatementNumber{theorem}{4}
+\begin{Theorem}
+\label{thm:ch3-projection-conditional-stability}
+假设 $k$ 与 $h$ 满足稳定性条件 \eqref{eq:ch3-projection-stability-condition-2d}(若 $n=2$)或 \eqref{eq:ch3-projection-stability-condition-3d}(若 $n=3$), 则所有函数
+\[
+\delta_{jh}u_h^{(i)},\quad\delta_{jh}u_h,
+\qquad i=1,\ldots,n+1,\quad j=1,\ldots,n,
+\]
+在 $L^2(0,T;L^2(\Omega))$ 中稳定.
+\end{Theorem}
+
+\subsubsection{收敛定理}
+\label{subsubsec:ch3-projection-discrete-convergence-theorems}
+
+\MBSourceStatementNumber{theorem}{5}
+\begin{Theorem}
+\label{thm:ch3-projection-discrete-convergence-two-dimensional}
+假设维数为 $n=2$, 且 $k$ 与 $h$ 由 \eqref{eq:ch3-projection-stability-condition-2d} 联系. 当 $k,h$ 趋于零时, 有如下收敛结果:
+\begin{equation}
+u_h^{(i)},u_h\longrightarrow u
+\quad\text{在 }L^2(Q)\text{ 中强收敛, 在 }L^\infty(0,T;L^2(\Omega))
+\text{ 中弱星收敛},\quad i=1,2,3,
+\label{eq:ch3-projection-discrete-convergence-2d-l2}
+\end{equation}
+\begin{equation}
+\delta_{ih}u_h^{(i)},\delta_{ih}u_h
+\longrightarrow D_j u
+\quad\text{在 }L^2(Q)\text{ 中弱收敛},
+\quad i=1,2,3,\quad j=1,2,
+\label{eq:ch3-projection-discrete-convergence-2d-derivatives}
+\end{equation}
+\begin{equation}
+\delta_{ih}u_h^{(i)}\longrightarrow D_i u
+\quad\text{在 }L^2(Q)\text{ 中强收敛},\quad i=1,2,
+\label{eq:ch3-projection-discrete-convergence-2d-strong-directional}
+\end{equation}
+其中 $u$ 是与 \eqref{eq:ch3-projection-force-assumption}, \eqref{eq:ch3-projection-initial-assumption} 中数据 $f,u_0$ 对应的问题 \MBUnresolvedReference{problem}{Problem 3.1} 的唯一解.
+\end{Theorem}
+
+\hypertarget{chapter-03-page-301}{}
+\MBSourceStatementNumber{theorem}{6}
+\begin{Theorem}
+\label{thm:ch3-projection-discrete-convergence-three-dimensional}
+假设维数为 $n=3$, 则存在趋于零的序列 $h',k'$\footnote{$h'$ 和 $k'$ 满足 \eqref{eq:ch3-projection-stability-condition-3d}.}, 使得
+\begin{equation}
+u_{h'}^{(i)},u_{h'}
+\longrightarrow u
+\quad\text{在 }L^2(Q)\text{ 中强收敛, 在 }L^\infty(0,T;L(\Omega))
+\text{ 中弱星收敛},
+\label{eq:ch3-projection-discrete-convergence-3d-l2}
+\end{equation}
+\begin{equation}
+\delta_{ih'}u_{h'}^{(i)},\delta_{ih'}u_{h'}
+\longrightarrow D_j u
+\quad\text{在 }L^2(Q)\text{ 中弱收敛},
+\quad i=1,\ldots,4,\quad j=1,2,3,
+\label{eq:ch3-projection-discrete-convergence-3d-derivatives}
+\end{equation}
+其中 $u$ 是问题 \MBUnresolvedReference{problem}{Problem 3.1} 的某个解.
+\end{Theorem}
+
+这些定理的证明原理与定理 \ref{thm:ch3-projection-convergence-two-dimensional}, \ref{thm:ch3-projection-convergence-three-dimensional} 以及定理 \ref{thm:ch3-convergence-two-dimensional}, \ref{thm:ch3-convergence-three-dimensional} 非常相似, 我们只说明证明的主要步骤.
+
+\subsubsection{收敛性证明}
+\label{subsubsec:ch3-projection-discrete-convergence-proof}
+
+\MBSourceStatementNumber{lemma}{14}
+\begin{Lemma}
+\label{lem:ch3-projection-discrete-fourier-bound}
+在条件 \eqref{eq:ch3-projection-stability-condition-2d}(若 $n=2$)或 \eqref{eq:ch3-projection-stability-condition-3d}(若 $n=3$)下,
+\[
+\int_{-\infty}^{+\infty}|\tau|^{2\gamma}
+|\widehat u_h(\tau)|^2\,d\tau\leq C,
+\qquad\text{对某个 }0<\gamma<\frac14,
+\]
+其中 $\widehat u_h$ 是 $u_h$ 在区间 $[0,T]$ 之外延拓为零后关于 $t$ 的 Fourier 变换; 常数依赖于 $\gamma$, $M$ 和数据.
+\end{Lemma}
+
+\begin{Proof}
+将 \eqref{eq:ch3-projection-discrete-projection-step} 与 $i=1,\ldots,n$ 时的关系 \eqref{eq:ch3-projection-discrete-directional-step} 相加, 得
+\[
+\begin{aligned}
+\frac1k(u_h^{m+1}-u_h^m,v_h)
+&+\sum_{i=1}^n((u_h^{m+i/q},v_h))_{ih}\\
+&+\sum_{i=1}^n
+b_{ih}(u_h^{m+(i-1)/q},u_h^{m+i/q},v_h)
+=\sum_{i=1}^n(f^{m+i/q},v_h),
+\qquad\forall v_h\in V_h.
+\end{aligned}
+\]
+这等价于(见 \eqref{eq:ch3-projection-discrete-piecewise-constant}--\eqref{eq:ch3-projection-discrete-piecewise-linear})
+\begin{equation}
+\begin{aligned}
+\frac{d}{dt}(u_h(t),v_h)
+&+\sum_{i=1}^n((u_h^{(i)}(t),v_h))_{ih}\\
+&+\sum_{i=1}^n b_{ih}(u_h^{(i-1)}(t),u_h^{(i)}(t),v_h)
+=(f_{ih}(t),v_h),\\
+&\hspace{5cm}\forall t\in(0,T),\quad\forall v_h\in V_h.
+\end{aligned}
+\label{eq:ch3-projection-discrete-time-equation}
+\end{equation}
+利用前面的先验估计, 然后重复引理 \MBUnresolvedReference{lemma}{Lemma 5.6} 的证明.
+\end{Proof}
+
+\begin{Proof}[定理 \ref{thm:ch3-projection-discrete-convergence-two-dimensional} 和 \ref{thm:ch3-projection-discrete-convergence-three-dimensional} 的证明]
+由定理 \ref{thm:ch3-projection-unconditional-stability}, 存在序列 $h',k'\to0$, 使得
+\begin{equation}
+u_{h'}^{(i)}\longrightarrow u^{(i)}
+\quad\text{在 }L^\infty(0,T;L^2(\Omega))\text{ 中弱星收敛},
+\quad i=1,\ldots,q,
+\label{eq:ch3-projection-discrete-subsequence-stages}
+\end{equation}
+\begin{equation}
+u_{h'}\longrightarrow u_*
+\quad\text{在 }L^\infty(0,T;L^2(\Omega))\text{ 中弱星收敛}.
+\label{eq:ch3-projection-discrete-subsequence-interpolant}
+\end{equation}
+由注 \ref{rem:ch3-projection-discrete-stage-convergence}, $u_{h'}^{(i)}-u_{h'}^{(i-1)}$ 在 $L^2(Q)$ 中强收敛到 $0$, $i=2,\ldots,q$, 且 $u_{h'}-u_{h'}^{(q)}$ 也收敛到零; 因而所有极限相同:
+\begin{equation}
+u^{(i)}=\cdots=u^{(q)}=u_*.
+\label{eq:ch3-projection-discrete-common-limit}
+\end{equation}
+目标是证明 $u_*$ 是问题 \MBUnresolvedReference{problem}{Problem 3.1} 的解.
+
+由定理 \ref{thm:ch3-projection-conditional-stability}, 可选序列 $h',k'\to0$, 使以下收敛结果也成立:
+\begin{equation}
+\delta_{jh'}u_{h'}^{(i)},\delta_{jh'}u_{h'}
+\longrightarrow D_j u_*
+\quad\text{在 }L^2(Q)\text{ 中弱收敛}.
+\label{eq:ch3-projection-discrete-weak-derivative-limit}
+\end{equation}
+
+\hypertarget{chapter-03-page-302-section-07}{}
+由引理 \ref{lem:ch3-projection-discrete-fourier-bound} 和第 \MBUnresolvedReference{subsection}{Subsection 6.1.3} 小节为有限差分证明的性质 \eqref{eq:ch3-convergence-compactness-property},
+\begin{equation}
+u_{h'}\longrightarrow u_*
+\quad\text{在 }L^2(Q)\text{ 中强收敛}.
+\label{eq:ch3-projection-discrete-strong-interpolant}
+\end{equation}
+再次使用注 \ref{rem:ch3-projection-discrete-stage-convergence}, 得
+\begin{equation}
+u_{h'}^{(i)}\longrightarrow u_*
+\quad\text{在 }L^2(Q)\text{ 中强收敛},\qquad i=1,\ldots,q.
+\label{eq:ch3-projection-discrete-strong-stages}
+\end{equation}
+收敛结果 \eqref{eq:ch3-projection-discrete-subsequence-stages}, \eqref{eq:ch3-projection-discrete-subsequence-interpolant} 和 \eqref{eq:ch3-projection-discrete-weak-derivative-limit}--\eqref{eq:ch3-projection-discrete-strong-stages} 使我们可以像定理 \ref{thm:ch3-convergence-two-dimensional}, \ref{thm:ch3-convergence-three-dimensional}, \ref{thm:ch3-projection-convergence-two-dimensional} 和 \ref{thm:ch3-projection-convergence-three-dimensional} 的证明那样, 在 \eqref{eq:ch3-projection-discrete-time-equation} 中通过极限. 得到 $u_*$ 是问题 \MBUnresolvedReference{problem}{Problem 3.1} 的解.
+
+若 $n=2$, 问题 \MBUnresolvedReference{problem}{Problem 3.1} 的解唯一; 因而 $u_*=u$, 且上述收敛结果对整个序列 $k',h'\to0$ 成立.
+
+强收敛 \eqref{eq:ch3-projection-discrete-convergence-2d-strong-directional} ($n=2$)的证明仿照引理 \MBUnresolvedReference{lemma}{Lemmas 5.11} 和 \ref{lem:ch3-projection-h1-strong}, 证明表达式
+\[
+X_h=|u_h^N-u(T)|^2
++2\nu\sum_{i=1}^2\int_0^T
+|D_i u(t)-\delta_{ih}u_h^{(i)}(t)|^2\,dt
+\]
+当 $h,k\to0$ 时趋于零.
+\end{Proof}
+
+\MBSourceStatementNumber{remark}{7}
+\begin{Remark}
+\label{rem:ch3-projection-semidiscrete-analogue}
+格式 \eqref{eq:ch3-projection-discrete-directional-step}--\eqref{eq:ch3-projection-discrete-projection-step} 是下述格式的空间变量离散化对应物:
+\begin{equation}
+\begin{aligned}
+\frac1k(u^{m+i/q}-u^{m+(i-1)/q})
+&-\nu D_i^2u^{m+i/q}
++\sum_{j=1}^n u_j^{m+(i-1)/q}(D_j u^{m+i/q})\\
+&+\frac12(\operatorname{div}u^{m+(i-1)/q})u^{m+i/q}
+=f^{m+i/q},\qquad i=1,\ldots,n,\\
+u^{m+1}&\in H,\qquad
+(u^{m+1},v)=(u^{m+n/q},v),\qquad\forall v\in H.
+\end{aligned}
+\label{eq:ch3-projection-semidiscrete-analogue}
+\end{equation}
+方程 \eqref{eq:ch3-projection-semidiscrete-analogue} 配有适当的边界条件: $u^{m+i/q}$ 在依赖于 $i$ 的 $\Gamma$ 的某一部分上为零; 更确切地说(见 Temam [1]),
+\[
+u^{m+i/q}\cos(\nu,X_i)=0\qquad\text{在 }\Gamma\text{ 上}.
+\]
+
+元素 $u^{m+i/q}$ 满足与引理 \ref{lem:ch3-projection-discrete-basic-estimates} 为 $u_h^{m+i/q}$ 所证明者类似的先验估计; 但是, 由于缺少类似于引理 \ref{lem:ch3-projection-conditional-estimate-two-dimensional} 和 \ref{lem:ch3-projection-conditional-estimate-three-dimensional} 所建立的先验估计, 无法证明这一半离散格式的收敛性. 在空间和时间变量都完全离散的框架中, 通过要求 $k$ 与 $h$ 满足稳定性条件 \eqref{eq:ch3-projection-stability-condition-2d}, \eqref{eq:ch3-projection-stability-condition-3d} 来克服这一困难. 这些稳定性条件使我们获得足够的额外先验估计以通过极限.
+\end{Remark}
