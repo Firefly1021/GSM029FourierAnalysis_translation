@@ -1,0 +1,1032 @@
+\hypertarget{chapter-03-page-182}{}
+\paragraph{引言.}
+最后一章处理完整的 Navier--Stokes 方程, 即非线性演化情形. 首先介绍解的存在性与唯一性的一些基本结果, 然后研究用若干方法逼近这些方程.
+
+第 \ref{sec:ch3-linear-case} 节简要研究线性演化方程(演化 Stokes 方程). 本节包含一些适用于演化方程研究的技术引理. \MBUnresolvedReference{section}{Section 2} 给出紧性定理, 使我们能够在演化情形得到强收敛结果, 并在非线性项中取极限. \MBUnresolvedReference{section}{Section 3} 包含问题的变分表述(依照 \MBUnresolvedReference{citation}{J. Leray [1, 2, 3]} 和 \MBUnresolvedReference{citation}{E. Höpf [2]} 的弱解或湍流解), 以及逼近和解的唯一性的主要结果(空间维数为 $n=2$ 或 $3$); 存在性以 Galerkin 方法构造逼近解为基础. \MBUnresolvedReference{section}{Section 4} 给出进一步的存在性与唯一性结果; 此处通过时间半离散得到存在性, 并且对任意空间维数均成立.
+
+最后一节研究二维和三维情形下演化 Navier--Stokes 方程的逼近. 所考虑的若干格式把时间变量的经典离散化(隐式, Crank--Nicholson, 显式)与第 \ref{chap:steady-state-stokes} 章引入的任意空间变量离散化(有限差分, 有限元)结合起来. 最后研究这些格式的非线性稳定性, 建立稳定性的充分条件, 并证明所有稳定格式均收敛.
+
+\section{线性情形}
+\label{sec:ch3-linear-case}
+本节讨论线性化 Navier--Stokes 方程解的存在性, 唯一性和正则性结果. 先引入在线性和非线性情形都要用到的一些记号(第 \ref{subsec:ch3-linear-notation} 小节), 再给出问题的经典表述与变分表述以及主要存在唯一性结果的陈述(第 \ref{subsec:ch3-linear-existence-uniqueness} 小节); 随后分别在第 \ref{subsec:ch3-linear-existence-proof} 和 \ref{subsec:ch3-linear-continuity-uniqueness} 小节证明存在性与唯一性.
+
+\subsection{记号}
+\label{subsec:ch3-linear-notation}
+设 $\Omega$ 是 $\mathbb R^n$ 中的 Lipschitz 开集; 为简单起见, 假设 $\Omega$ 有界, 无界情形参见第 \ref{subsec:ch3-linear-miscellaneous} 小节的注. 回忆前几章所用空间 $\mathcal V,V,H$ 的定义, 它们也是本章的基本空间:
+\begin{equation}
+\mathcal V=\{u\in\mathcal D(\Omega),\ \operatorname{div}u=0\},
+\label{eq:ch3-linear-test-space}
+\end{equation}
+\begin{equation}
+V=\mathcal V\text{ 在 }\mathbf H_0^1(\Omega)\text{ 中的闭包},
+\label{eq:ch3-linear-v-space}
+\end{equation}
+
+\hypertarget{chapter-03-page-183}{}
+\begin{equation}
+H=\mathcal V\text{ 在 }\mathbf L^2(\Omega)\text{ 中的闭包}.
+\label{eq:ch3-linear-h-space}
+\end{equation}
+空间 $H$ 赋予由 $\mathbf L^2(\Omega)$ 诱导的内积 $(\cdot,\cdot)$; 因为 $\Omega$ 有界, 空间 $V$ 关于内积
+\begin{equation}
+((u,v))=\sum_{i=1}^{n}(D_i u,D_i v)
+\label{eq:ch3-linear-v-inner-product}
+\end{equation}
+是 Hilbert 空间.
+
+$V$ 包含于 $H$, 在 $H$ 中稠密, 且注入连续. 以 $H',V'$ 表示 $H,V$ 的对偶空间, 以 $i$ 表示从 $V$ 到 $H$ 的注入映射. 伴随算子 $i'$ 是从 $H'$ 到 $V'$ 的连续线性映射; 因为 $i(V)=V$ 在 $H$ 中稠密, 故 $i'$ 是一一的; 因为 $i$ 是一一的, 故 $i'(H')$ 在 $V'$ 中稠密. 因而可以把 $H'$ 视为 $V'$ 的稠密子空间. 此外, 由 Riesz 表示定理可以等同 $H$ 与 $H'$, 从而得到包含关系
+\begin{equation}
+V\subset H\equiv H'\subset V',
+\label{eq:ch3-linear-gelfand-triple}
+\end{equation}
+其中每个空间在后一个空间中稠密, 且各注入均连续.
+
+由上述等同可知, $f\in H$ 与 $u\in V$ 在 $H$ 中的内积, 等于 $f,u$ 在 $V'$ 与 $V$ 对偶关系下的对偶积:
+\begin{equation}
+\langle f,u\rangle=(f,u),
+\qquad\forall f\in H,\quad\forall u\in V.
+\label{eq:ch3-linear-duality-inner-product}
+\end{equation}
+对每个 $u\in V$, 形式
+\begin{equation}
+v\in V\longmapsto((u,v))\in\mathbb R
+\label{eq:ch3-linear-form-on-v}
+\end{equation}
+在 $V$ 上线性连续; 因而存在记为 $Au$ 的 $V'$ 中元素, 使
+\begin{equation}
+\langle Au,v\rangle=((u,v)),
+\qquad\forall v\in V.
+\label{eq:ch3-linear-operator-a}
+\end{equation}
+容易看出映射 $u\mapsto Au$ 线性连续, 并且由定理 \ref{thm:ch1-abstract-projection} 和相应的注, 它是 $V$ 到 $V'$ 上的同构.
+
+若 $\Omega$ 无界, 则在 $V$ 上采用内积
+\begin{equation}
+[[u,v]]=((u,v))+(u,v).
+\label{eq:ch3-linear-unbounded-v-inner-product}
+\end{equation}
+包含关系 \eqref{eq:ch3-linear-gelfand-triple} 仍成立. 算子 $A$ 从 $V$ 到 $V'$ 线性连续, 但一般不是同构; 对每个 $\epsilon>0$, $A+\epsilon I$ 是 $V$ 到 $V'$ 上的同构.
+
+设 $a,b$ 是两个扩充实数, $-\infty\leq a<b\leq\infty$, $X$ 是 Banach 空间. 对给定 $\alpha$, $1\leq\alpha<+\infty$, 以 $L^\alpha(a,b;X)$ 表示从 $[a,b]$ 到 $X$ 的 $L^\alpha$-可积函数空间; 它关于范数
+\begin{equation}
+\left(\int_a^b\lVert f(t)\rVert_X^\alpha\,dt\right)^{1/\alpha}
+\label{eq:ch3-linear-bochner-lp-norm}
+\end{equation}
+是 Banach 空间. 空间 $L^\infty(a,b;X)$ 是从 $[a,b]$ 到 $X$ 的本质有界函数空间, 赋予 Banach 范数
+\begin{equation}
+\operatorname*{Ess\,Sup}_{[a,b]}\lVert f(t)\rVert_X.
+\label{eq:ch3-linear-bochner-linfty-norm}
+\end{equation}
+
+\hypertarget{chapter-03-page-184}{}
+空间 $C([a,b];X)$ 是从 $[a,b]$ 到 $X$ 的连续函数空间; 若 $-\infty<a<b<\infty$, 则赋予 Banach 范数
+\begin{equation}
+\operatorname*{Sup}_{t\in[a,b]}\lVert f(t)\rVert_X.
+\label{eq:ch3-linear-continuous-function-norm}
+\end{equation}
+通常区间 $[a,b]$ 是固定的 $[0,T]$, $T>0$. 不致混淆时采用简记
+\begin{equation}
+L^\alpha(X)=L^\alpha(0,T;X),
+\qquad1\leq\alpha\leq+\infty,
+\label{eq:ch3-linear-condensed-lp-notation}
+\end{equation}
+\begin{equation}
+C(X)=C([0,T];X).
+\label{eq:ch3-linear-condensed-c-notation}
+\end{equation}
+
+第 \ref{subsec:ch3-linear-notation} 小节余下部分用于证明下面关于 Banach 空间值函数导数的技术引理.
+
+\MBSourceStatementNumber{lemma}{1}
+\begin{Lemma}
+\label{lem:ch3-linear-banach-valued-derivative}
+设 $X$ 是给定的 Banach 空间, 对偶空间为 $X'$, 且 $u,g\in L^1(a,b;X)$. 则下列三个条件等价:
+
+(i) $u$ 几乎处处等于 $g$ 的一个原函数,
+\begin{equation}
+u(t)=\xi+\int_0^t g(s)\,ds,
+\qquad \xi\in X,
+\quad\text{对几乎处处的 }t\in[a,b].
+\label{eq:ch3-linear-banach-primitive}
+\end{equation}
+
+(ii) 对每个试验函数 $\varphi\in\mathcal D((a,b))$,
+\begin{equation}
+\int_a^b u(t)\varphi'(t)\,dt
+=-\int_a^b g(t)\varphi(t)\,dt,
+\qquad \left(\varphi'=\frac{d\varphi}{dt}\right).
+\label{eq:ch3-linear-banach-weak-derivative}
+\end{equation}
+
+(iii) 对每个 $\eta\in X'$,
+\begin{equation}
+\frac d{dt}\langle u,\eta\rangle=\langle g,\eta\rangle
+\label{eq:ch3-linear-banach-scalar-distribution}
+\end{equation}
+在 $(a,b)$ 上按标量分布意义成立.
+
+若 (i)--(iii) 成立, 则 $u$ 特别地几乎处处等于从 $[a,b]$ 到 $X$ 的一个连续函数.
+\end{Lemma}
+
+\begin{Proof}
+为简单起见, 假设 $[a,b]=[0,T]$. 合法的分部积分表明 (i) 蕴含 (ii) 和 (iii); 只需验证 (iii) 蕴含 (ii), 以及 (ii) 蕴含 (i).
+
+若 (iii) 成立且 $\varphi\in\mathcal D((0,T))$, 则由定义
+\begin{equation}
+\int_0^T\langle u(t),\eta\rangle\varphi'(t)\,dt
+=-\int_0^T\langle g(t),\eta\rangle\varphi(t)\,dt,
+\label{eq:ch3-linear-scalar-integration-by-parts}
+\end{equation}
+即
+\[
+\left\langle
+\int_0^T u(t)\varphi'(t)\,dt
++\int_0^T g(t)\varphi(t)\,dt,\eta
+\right\rangle=0,
+\qquad\forall\eta\in X',
+\]
+所以 \eqref{eq:ch3-linear-banach-weak-derivative} 成立.
+
+现在证明 (ii) 蕴含 (i). 可以把一般情形化为 $g=0$. 为此令 $v=u-u_0$, 其中
+\begin{equation}
+u_0(t)=\int_0^t g(s)\,ds.
+\label{eq:ch3-linear-primitive-u-zero}
+\end{equation}
+
+\hypertarget{chapter-03-page-185}{}
+显然 $u_0$ 绝对连续且 $u_0'=g$; 因而 \eqref{eq:ch3-linear-banach-weak-derivative} 对 $u_0+v$ 成立, 且
+\begin{equation}
+\int_0^T v(t)\varphi'(t)\,dt=0,
+\qquad\forall\varphi\in\mathcal D((0,T)).
+\label{eq:ch3-linear-zero-distributional-derivative}
+\end{equation}
+若证明 \eqref{eq:ch3-linear-zero-distributional-derivative} 蕴含 $v$ 是 $X$ 中的常元, 就完成了 (i) 的证明.
+
+取 $\varphi_0\in\mathcal D((0,T))$ 使
+\[
+\int_0^T\varphi_0(t)\,dt=1.
+\]
+任意 $\varphi\in\mathcal D((0,T))$ 可写成
+\begin{equation}
+\varphi=\lambda\varphi_0+\psi',
+\qquad
+\lambda=\int_0^T\varphi(t)\,dt,
+\quad \psi\in\mathcal D((0,T)).
+\label{eq:ch3-linear-test-function-decomposition}
+\end{equation}
+事实上,
+\[
+\int_0^T(\varphi(t)-\lambda\varphi_0(t))\,dt=0,
+\]
+而 $\varphi-\lambda\varphi_0$ 从 $0$ 起的原函数属于 $\mathcal D((0,T))$, $\psi$ 正是这个原函数. 由 \eqref{eq:ch3-linear-zero-distributional-derivative}, \eqref{eq:ch3-linear-test-function-decomposition},
+\begin{equation}
+\int_0^T(v(t)-\xi)\varphi(t)\,dt=0,
+\qquad\forall\varphi\in\mathcal D((0,T)),
+\label{eq:ch3-linear-vector-distribution-constant}
+\end{equation}
+其中
+\[
+\xi=\int_0^T v(s)\varphi_0(s)\,ds.
+\]
+
+最后只需证明 \eqref{eq:ch3-linear-vector-distribution-constant} 蕴含 $v(t)=\xi$ 几乎处处, 即若 $w\in L^1(X)$ 且
+\begin{equation}
+\int_0^T w(t)\varphi(t)\,dt=0,
+\qquad\forall\varphi\in\mathcal D((0,T)),
+\label{eq:ch3-linear-zero-vector-distribution}
+\end{equation}
+则 $w$ 几乎处处为零. 这一熟知结果可由正则化证明. 令 $\widetilde w$ 在 $[0,T]$ 上等于 $w$, 在区间外等于 $0$, $\rho_\epsilon$ 为偶正则化函数. 当 $\epsilon$ 充分小时, 对每个 $\varphi\in\mathcal D((0,T))$, $\rho_\epsilon*\varphi\in\mathcal D((0,T))$, 且
+\[
+\begin{aligned}
+\int_0^T\widetilde w(t)(\rho_\epsilon*\varphi)(t)\,dt
+&=\int_{-\infty}^{+\infty}\widetilde w(t)(\rho_\epsilon*\varphi)(t)\,dt\\
+&=\int_{-\infty}^{+\infty}(\rho_\epsilon*\widetilde w)(t)\varphi(t)\,dt=0.
+\end{aligned}
+\]
+因此, 对任意固定 $\eta>0$, 当 $\epsilon$ 充分小时, $\rho_\epsilon*\widetilde w$ 在 $[\eta,T-\eta]$ 上等于 $0$. 当 $\epsilon\to0$ 时, $\rho_\epsilon*\widetilde w$ 在 $L^1(-\infty,+\infty;X)$ 中收敛于 $\widetilde w$. 因而 $w$ 在 $[\eta,T-\eta]$ 上为零; 由于 $\eta>0$ 可任意小, $w$ 在整个 $[0,T]$ 上为零.
+\end{Proof}
+
+\hypertarget{chapter-03-page-186}{}
+\subsection{存在唯一性定理}
+\label{subsec:ch3-linear-existence-uniqueness}
+设 $\Omega$ 是 $\mathbb R^n$ 中有界的 Lipschitz 开集, $T>0$ 固定. 以 $Q$ 表示柱体 $\Omega\times(0,T)$. 线性化 Navier--Stokes 方程是与 Stokes 问题对应的演化方程:
+
+求向量函数 $u:\Omega\times[0,T]\to\mathbb R^n$ 和标量函数 $p:\Omega\times[0,T]\to\mathbb R$, 它们分别等于流体的速度与压力, 并满足
+\begin{equation}
+\frac{\partial u}{\partial t}-\nu\Delta u+\operatorname{grad}p=f
+\quad\text{于 }Q=\Omega\times(0,T),
+\label{eq:ch3-linear-momentum}
+\end{equation}
+\begin{equation}
+\operatorname{div}u=0\quad\text{于 }Q,
+\label{eq:ch3-linear-incompressibility}
+\end{equation}
+\begin{equation}
+u=0\quad\text{于 }\partial\Omega\times[0,T],
+\label{eq:ch3-linear-boundary-condition}
+\end{equation}
+\begin{equation}
+u(x,0)=u_0(x)\quad\text{于 }\Omega,
+\label{eq:ch3-linear-initial-condition}
+\end{equation}
+其中给定向量函数 $f,u_0$, $f$ 定义在 $\Omega\times[0,T]$ 上, $u_0$ 定义在 $\Omega$ 上; \eqref{eq:ch3-linear-boundary-condition}, \eqref{eq:ch3-linear-initial-condition} 分别给出边界条件和初始条件.
+
+假设 $u,p$ 是 \eqref{eq:ch3-linear-momentum}--\eqref{eq:ch3-linear-initial-condition} 的经典解, 例如 $u\in C^2(Q)$, $p\in C^1(Q)$. 若 $v$ 是 $\mathcal V$ 的任意元素, 容易看出
+\begin{equation}
+\left(\frac{\partial u}{\partial t},v\right)+\nu((u,v))=(f,v).
+\label{eq:ch3-linear-classical-variational-identity}
+\end{equation}
+由连续性, \eqref{eq:ch3-linear-classical-variational-identity} 对每个 $v\in V$ 也成立; 还注意到
+\[
+\left(\frac{\partial u}{\partial t},v\right)=\frac d{dt}(u,v).
+\]
+这导出 \eqref{eq:ch3-linear-momentum}--\eqref{eq:ch3-linear-initial-condition} 的如下弱表述. 给定 $f,u_0$,
+\begin{equation}
+f\in L^2(0,T;V'),
+\label{eq:ch3-linear-force-assumption}
+\end{equation}
+\begin{equation}
+u_0\in H,
+\label{eq:ch3-linear-initial-data-assumption}
+\end{equation}
+求 $u$ 满足
+\begin{equation}
+u\in L^2(0,T;V),
+\label{eq:ch3-linear-weak-solution-space}
+\end{equation}
+以及
+\begin{equation}
+\frac d{dt}(u,v)+\nu((u,v))=\langle f,v\rangle,
+\qquad\forall v\in V,
+\label{eq:ch3-linear-weak-variational-equation}
+\end{equation}
+\begin{equation}
+u(0)=u_0.
+\label{eq:ch3-linear-weak-initial-condition}
+\end{equation}
+若 $u\in L^2(0,T;V)$, 条件 \eqref{eq:ch3-linear-weak-initial-condition} 一般没有意义; 在下面两点说明之后解释其含义:
+
+(i) \eqref{eq:ch3-linear-force-assumption}--\eqref{eq:ch3-linear-weak-solution-space} 中的空间正是将证明存在性与唯一性的空间; 至少显然, \eqref{eq:ch3-linear-momentum}--\eqref{eq:ch3-linear-initial-condition} 的光滑解 $u$ 满足 \eqref{eq:ch3-linear-weak-solution-space}.
+
+\hypertarget{chapter-03-page-187}{}
+(ii) 现在还不能验证 \eqref{eq:ch3-linear-weak-solution-space}--\eqref{eq:ch3-linear-weak-initial-condition} 的解在某种弱意义下是 \eqref{eq:ch3-linear-momentum}--\eqref{eq:ch3-linear-initial-condition} 的解; 因而把这一问题推迟到第 \ref{subsec:ch3-linear-miscellaneous} 小节.
+
+由 \eqref{eq:ch3-linear-duality-inner-product}, \eqref{eq:ch3-linear-operator-a}, 可将 \eqref{eq:ch3-linear-weak-variational-equation} 写成
+\begin{equation}
+\frac d{dt}\langle u,v\rangle=\langle f-\nu Au,v\rangle,
+\qquad\forall v\in V.
+\label{eq:ch3-linear-dual-evolution-identity}
+\end{equation}
+由于 $A$ 从 $V$ 到 $V'$ 线性连续且 $u\in L^2(V)$, 函数 $Au\in L^2(V')$; 因而 $f-\nu Au\in L^2(V')$, 且 \eqref{eq:ch3-linear-dual-evolution-identity} 与引理 \ref{lem:ch3-linear-banach-valued-derivative} 表明
+\begin{equation}
+u'\in L^2(0,T;V'),
+\label{eq:ch3-linear-time-derivative-space}
+\end{equation}
+并且 $u$ 几乎处处等于从 $[0,T]$ 到 $V'$ 的一个(绝对)连续函数. 对任何满足 \eqref{eq:ch3-linear-weak-solution-space}, \eqref{eq:ch3-linear-weak-variational-equation} 的函数, 在一个零测集上修改后, 它都是从 $[0,T]$ 到 $V'$ 的连续函数, 因而条件 \eqref{eq:ch3-linear-weak-initial-condition} 有意义.
+
+仍设 $f\in L^2(V')$ 如 \eqref{eq:ch3-linear-force-assumption}. 若 $u$ 满足 \eqref{eq:ch3-linear-weak-solution-space}, \eqref{eq:ch3-linear-weak-variational-equation}, 则如前所述, $u$ 满足 \eqref{eq:ch3-linear-time-derivative-space}, \eqref{eq:ch3-linear-dual-evolution-identity}. 由引理 \ref{lem:ch3-linear-banach-valued-derivative}, \eqref{eq:ch3-linear-dual-evolution-identity} 本身等价于
+\begin{equation}
+u'+\nu Au=f.
+\label{eq:ch3-linear-abstract-evolution-equation}
+\end{equation}
+反之, 若 $u$ 满足 \eqref{eq:ch3-linear-weak-solution-space}, \eqref{eq:ch3-linear-time-derivative-space}, \eqref{eq:ch3-linear-abstract-evolution-equation}, 则显然对所有 $v\in V$ 满足 \eqref{eq:ch3-linear-weak-variational-equation}.
+
+弱问题的另一种表述如下: 给定满足 \eqref{eq:ch3-linear-force-assumption}, \eqref{eq:ch3-linear-initial-data-assumption} 的 $f,u_0$, 求 $u$ 满足
+\begin{equation}
+u\in L^2(0,T;V),
+\qquad u'\in L^2(0,T;V'),
+\label{eq:ch3-linear-abstract-solution-spaces}
+\end{equation}
+\begin{equation}
+u'+\nu Au=f\quad\text{于 }(0,T),
+\label{eq:ch3-linear-abstract-problem}
+\end{equation}
+\begin{equation}
+u(0)=u_0.
+\label{eq:ch3-linear-abstract-initial-data}
+\end{equation}
+\eqref{eq:ch3-linear-abstract-solution-spaces}--\eqref{eq:ch3-linear-abstract-initial-data} 的任意解都是 \eqref{eq:ch3-linear-weak-solution-space}--\eqref{eq:ch3-linear-weak-initial-condition} 的解, 反之亦然. 关于这些问题解的存在性与唯一性, 将证明以下结果.
+
+\MBSourceStatementNumber{theorem}{1}
+\begin{Theorem}
+\label{thm:ch3-linear-existence-uniqueness}
+对满足 \eqref{eq:ch3-linear-force-assumption}, \eqref{eq:ch3-linear-initial-data-assumption} 的给定 $f,u_0$, 存在唯一函数 $u$ 满足 \eqref{eq:ch3-linear-abstract-solution-spaces}--\eqref{eq:ch3-linear-abstract-initial-data}. 此外,
+\begin{equation}
+u\in C([0,T];H).
+\label{eq:ch3-linear-h-continuity}
+\end{equation}
+\end{Theorem}
+
+存在性的证明见第 \ref{subsec:ch3-linear-existence-proof} 小节, 唯一性以及 \eqref{eq:ch3-linear-h-continuity} 的证明见第 \ref{subsec:ch3-linear-continuity-uniqueness} 小节.
+
+\subsection{定理 \ref{thm:ch3-linear-existence-uniqueness} 中存在性的证明}
+\label{subsec:ch3-linear-existence-proof}
+采用 Faedo--Galerkin 方法. 因为 $V$ 可分, 存在线性无关元素序列 $w_1,\ldots,w_m,\ldots$, 它在 $V$ 中完全. 对每个 $m$, 如下定义 \eqref{eq:ch3-linear-abstract-problem}(或 \eqref{eq:ch3-linear-weak-variational-equation})的逼近解 $u_m$:
+\begin{equation}
+u_m=\sum_{i=1}^{m}g_{im}(t)w_i,
+\label{eq:ch3-linear-galerkin-expansion}
+\end{equation}
+\begin{equation}
+(u_m',w_j)+\nu((u_m,w_j))=\langle f,w_j\rangle,
+\qquad j=1,\ldots,m,
+\label{eq:ch3-linear-galerkin-equations}
+\end{equation}
+\begin{equation}
+u_m(0)=u_{0m},
+\label{eq:ch3-linear-galerkin-initial-condition}
+\end{equation}
+
+\hypertarget{chapter-03-page-188}{}
+其中 $u_{0m}$ 例如是 $u_0$ 在 $H$ 中到 $w_1,\ldots,w_m$ 所张成空间上的正交投影.\footnote{$u_{0m}$ 可以是 $w_1,\ldots,w_m$ 所张成空间中的任意元素, 只要当 $m\to\infty$ 时 $u_{0m}\to u_0$ 于 $H$ 的范数.}
+
+函数 $g_{im}$, $1\leq i\leq m$, 是定义在 $[0,T]$ 上的标量函数, \eqref{eq:ch3-linear-galerkin-equations} 是这些函数的线性微分方程组. 事实上,
+\begin{equation}
+\sum_{i=1}^{m}(w_i,w_j)g_{im}'(t)
++\nu\sum_{i=1}^{m}((w_i,w_j))g_{im}(t)
+=\langle f(t),w_j\rangle,
+\qquad j=1,\ldots,m.
+\label{eq:ch3-linear-galerkin-coordinate-system}
+\end{equation}
+由于 $w_1,\ldots,w_m$ 线性无关, 元素为 $(w_i,w_j)$, $1\leq i,j\leq m$, 的矩阵非奇异是熟知的; 反演该矩阵后, \eqref{eq:ch3-linear-galerkin-coordinate-system} 化为常系数线性方程组
+\begin{equation}
+g_{im}'(t)+\sum_{j=1}^{m}\alpha_{ij}g_{im}(t)
+=\sum_{j=1}^{m}\beta_{ij}\langle f(t),w_j\rangle,
+\qquad1\leq i\leq m,
+\label{eq:ch3-linear-galerkin-constant-coefficient-system}
+\end{equation}
+其中 $\alpha_{ij},\beta_{ij}\in\mathbb R$. 条件 \eqref{eq:ch3-linear-galerkin-initial-condition} 等价于 $m$ 个方程
+\begin{equation}
+g_{im}(0)=u_{0m}\text{ 的第 }i\text{ 个分量}.
+\label{eq:ch3-linear-galerkin-coordinate-initial-data}
+\end{equation}
+线性微分方程组 \eqref{eq:ch3-linear-galerkin-constant-coefficient-system} 与初始条件 \eqref{eq:ch3-linear-galerkin-coordinate-initial-data} 在整个区间 $[0,T]$ 上唯一确定 $g_{im}$.
+
+由于标量函数 $t\mapsto\langle f(t),w_j\rangle$ 平方可积, $g_{im}$ 也平方可积, 因而对每个 $m$,
+\begin{equation}
+u_m\in L^2(0,T;V),
+\qquad u_m'\in L^2(0,T;V).
+\label{eq:ch3-linear-galerkin-regularity}
+\end{equation}
+下面先得到与 $m$ 无关的 $u_m$ 先验估计, 然后取极限.
+
+\paragraph{先验估计.}
+把方程 \eqref{eq:ch3-linear-galerkin-equations} 乘 $g_{jm}(t)$, 再对 $j=1,\ldots,m$ 相加. 得
+\[
+(u_m'(t),u_m(t))+\nu\lVert u_m(t)\rVert^2
+=\langle f(t),u_m(t)\rangle.
+\]
+但由 \eqref{eq:ch3-linear-galerkin-regularity},
+\[
+2(u_m'(t),u_m(t))=\frac d{dt}|u_m(t)|^2,
+\]
+因而
+\begin{equation}
+\frac d{dt}|u_m(t)|^2+2\nu\lVert u_m(t)\rVert^2
+=2\langle f(t),u_m(t)\rangle.
+\label{eq:ch3-linear-galerkin-energy-identity}
+\end{equation}
+\eqref{eq:ch3-linear-galerkin-energy-identity} 的右端不超过
+\[
+2\lVert f(t)\rVert_{V'}\lVert u_m(t)\rVert
+\leq\nu\lVert u_m(t)\rVert^2
++\frac1\nu\lVert f(t)\rVert_{V'}^2.
+\]
+因此
+\begin{equation}
+\frac d{dt}|u_m(t)|^2+\nu\lVert u_m(t)\rVert^2
+\leq\frac1\nu\lVert f(t)\rVert_{V'}^2.
+\label{eq:ch3-linear-galerkin-energy-inequality}
+\end{equation}
+从 $0$ 到 $s$, $0<s<T$, 积分 \eqref{eq:ch3-linear-galerkin-energy-inequality}, 特别得到
+\begin{equation}
+|u_m(s)|^2\leq|u_{0m}|^2
++\frac1\nu\int_0^s\lVert f(t)\rVert_{V'}^2\,dt
+\leq|u_0|^2+\frac1\nu\int_0^T\lVert f(t)\rVert_{V'}^2\,dt.
+\label{eq:ch3-linear-galerkin-pointwise-bound}
+\end{equation}
+
+\hypertarget{chapter-03-page-189}{}
+因而
+\begin{equation}
+\sup_{s\in[0,T]}|u_m(s)|^2
+\leq|u_0|^2+\frac1\nu\int_0^T\lVert f(t)\rVert_{V'}^2\,dt.
+\label{eq:ch3-linear-galerkin-uniform-bound}
+\end{equation}
+\eqref{eq:ch3-linear-galerkin-uniform-bound} 的右端有限且与 $m$ 无关; 因此
+\begin{equation}
+u_m\text{ 序列在 }L^\infty(0,T;H)\text{ 的一个有界集中}.
+\label{eq:ch3-linear-galerkin-linfty-boundedness}
+\end{equation}
+再从 $0$ 到 $T$ 积分 \eqref{eq:ch3-linear-galerkin-energy-inequality}, 得
+\begin{equation}
+\begin{aligned}
+|u_m(T)|^2+\nu\int_0^T\lVert u_m(t)\rVert^2\,dt
+&\leq|u_{0m}|^2+\frac1\nu\int_0^T\lVert f(t)\rVert_{V'}^2\,dt\\
+&\leq|u_0|^2+\frac1\nu\int_0^T\lVert f(t)\rVert_{V'}^2\,dt.
+\end{aligned}
+\label{eq:ch3-linear-galerkin-integrated-bound}
+\end{equation}
+这表明
+\begin{equation}
+u_m\text{ 序列在 }L^2(0,T;V)\text{ 的一个有界集中}.
+\label{eq:ch3-linear-galerkin-l2-boundedness}
+\end{equation}
+
+\paragraph{取极限.}
+先验估计 \eqref{eq:ch3-linear-galerkin-linfty-boundedness} 表明, 存在 $u\in L^\infty(0,T;H)$ 以及子序列 $m'\to\infty$, 使
+\begin{equation}
+u_{m'}\text{ 在 }L^\infty(0,T;H)\text{ 的弱星拓扑中收敛于 }u.
+\label{eq:ch3-linear-galerkin-weak-star-convergence}
+\end{equation}
+\eqref{eq:ch3-linear-galerkin-weak-star-convergence} 意味着对每个 $v\in L^1(0,T;H)$,
+\begin{equation}
+\int_0^T(u_{m'}(t)-u(t),v(t))\,dt\longrightarrow0,
+\qquad m'\to\infty.
+\label{eq:ch3-linear-galerkin-weak-star-definition}
+\end{equation}
+由 \eqref{eq:ch3-linear-galerkin-l2-boundedness}, 子序列 $u_{m'}$ 属于 $L^2(0,T;V)$ 的一个有界集.
+
+因此再次取子序列, 存在 $u^*\in L^2(0,T;V)$ 以及仍记为 $u_{m'}$ 的子序列, 使
+\begin{equation}
+u_{m'}\text{ 在 }L^2(0,T;V)\text{ 的弱拓扑中收敛于 }u^*.
+\label{eq:ch3-linear-galerkin-v-weak-convergence}
+\end{equation}
+收敛式 \eqref{eq:ch3-linear-galerkin-v-weak-convergence} 意味着
+\[
+\int_0^T\langle u_{m'}(t)-u^*(t),v(t)\rangle\,dt\longrightarrow0,
+\qquad\forall v\in L^2(0,T;V').
+\]
+特别地, 由 \eqref{eq:ch3-linear-duality-inner-product},
+\begin{equation}
+\int_0^T(u_{m'}(t),v(t))\,dt
+\longrightarrow\int_0^T(u^*(t),v(t))\,dt
+\label{eq:ch3-linear-galerkin-h-pairing-limit}
+\end{equation}
+对每个 $v\in L^2(0,T;H)$ 成立. 与 \eqref{eq:ch3-linear-galerkin-weak-star-definition} 比较可知
+\begin{equation}
+\int_0^T(u(t)-u^*(t),v(t))\,dt=0
+\label{eq:ch3-linear-identification-integral}
+\end{equation}
+对每个 $v\in L^2(0,T;H)$ 成立; 因而
+\begin{equation}
+u=u^*\in L^2(0,T;V)\cap L^\infty(0,T;H).
+\label{eq:ch3-linear-limit-solution-spaces}
+\end{equation}
+为在方程 \eqref{eq:ch3-linear-galerkin-equations}, \eqref{eq:ch3-linear-galerkin-initial-condition} 中取极限, 考虑在 $[0,T]$ 上连续可微且满足
+\begin{equation}
+\psi(T)=0
+\label{eq:ch3-linear-time-test-terminal-condition}
+\end{equation}
+的标量函数 $\psi$.
+
+\hypertarget{chapter-03-page-190}{}
+对这样的 $\psi$, 将 \eqref{eq:ch3-linear-galerkin-equations} 乘 $\psi(t)$, 关于 $t$ 积分并分部积分:
+\[
+\int_0^T(u_m'(t),w_j)\psi(t)\,dt
+=-\int_0^T(u_m(t)\psi'(t),w_j)\,dt
+-(u_m(0),w_j)\psi(0).
+\]
+所以
+\begin{equation}
+\begin{aligned}
+-\int_0^T(u_m(t),\psi'(t)w_j)\,dt
++\nu\int_0^T((u_m(t),\psi(t)w_j))\,dt
+&=(u_{0m},w_j)\psi(0)\\
+&\quad+\int_0^T\langle f(t),w_j\rangle\,dt.
+\end{aligned}
+\label{eq:ch3-linear-galerkin-integrated-test-equation}
+\end{equation}
+利用 \eqref{eq:ch3-linear-galerkin-weak-star-convergence}, \eqref{eq:ch3-linear-galerkin-h-pairing-limit}, \eqref{eq:ch3-linear-limit-solution-spaces}, 容易在左端各积分中令 $m=m'\to\infty$; 还注意到
+\begin{equation}
+u_{0m}\longrightarrow u_0\quad\text{在 }H\text{ 中强收敛}.
+\label{eq:ch3-linear-initial-projection-convergence}
+\end{equation}
+因此在极限中得到
+\begin{equation}
+\begin{aligned}
+-\int_0^T(u(t),\psi'(t)w_j)\,dt
++\nu\int_0^T((u(t),\psi(t)w_j))\,dt
+&=(u_0,w_j)\psi(0)\\
+&\quad+\int_0^T\langle f(t),w_j\rangle\psi(t)\,dt.
+\end{aligned}
+\label{eq:ch3-linear-limit-test-equation-basis}
+\end{equation}
+对每个 $j$ 成立的 \eqref{eq:ch3-linear-limit-test-equation-basis}, 由线性可写成
+\begin{equation}
+\begin{aligned}
+-\int_0^T(u(t),v)\psi'(t)\,dt
++\nu\int_0^T((u(t),v))\psi(t)\,dt
+&=(u_0,v)\psi(0)\\
+&\quad+\int_0^T\langle f(t),v\rangle\psi(t)\,dt,
+\end{aligned}
+\label{eq:ch3-linear-limit-test-equation}
+\end{equation}
+其中 $v$ 是 $w_j$ 的任意有限线性组合. \eqref{eq:ch3-linear-limit-test-equation} 的每一项关于 $v$ 在 $V$ 的范数下线性连续, 因而由连续性, 它对每个 $v\in V$ 仍成立.
+
+特别在 \eqref{eq:ch3-linear-limit-test-equation} 中取 $\psi=\varphi\in\mathcal D((0,T))$, 得到在 $(0,T)$ 上按分布意义成立的等式
+\begin{equation}
+\frac d{dt}(u,v)+\nu((u,v))=\langle f,v\rangle,
+\qquad\forall v\in V,
+\label{eq:ch3-linear-limit-variational-equation}
+\end{equation}
+这正是 \eqref{eq:ch3-linear-weak-variational-equation}. 如定理 \ref{thm:ch3-linear-existence-uniqueness} 陈述之前所证, 该等式与 \eqref{eq:ch3-linear-limit-solution-spaces} 蕴含 $u'\in L^2(0,T;V')$, 且
+\begin{equation}
+u'+\nu Au=f.
+\label{eq:ch3-linear-limit-abstract-equation}
+\end{equation}
+最后还需验证 $u(0)=u_0$($u$ 的连续性在第 \ref{subsec:ch3-linear-continuity-uniqueness} 小节证明). 为此, 将 \eqref{eq:ch3-linear-limit-variational-equation} 乘以前述 $\psi(t)$, 关于 $t$ 积分并分部积分:
+\[
+\int_0^T\frac d{dt}(u(t),v)\psi(t)\,dt
+=-\int_0^T(u(t),v)\psi'(t)\,dt
++(u(0),v)\psi(0).
+\]
+
+\hypertarget{chapter-03-page-191}{}
+得到
+\begin{equation}
+\begin{aligned}
+-\int_0^T(u(t),v)\psi'(t)\,dt
++\nu\int_0^T((u(t),v))\psi(t)\,dt
+&=(u(0),v)\psi(0)\\
+&\quad+\int_0^T\langle f(t),v\rangle\psi(t)\,dt.
+\end{aligned}
+\label{eq:ch3-linear-initial-trace-identity}
+\end{equation}
+与 \eqref{eq:ch3-linear-limit-test-equation} 比较可知
+\[
+(u_0-u(0),v)\psi(0)=0
+\]
+对每个 $v\in V$ 和每个上述类型的 $\psi$ 成立. 可选择 $\psi(0)\ne0$, 因而
+\[
+(u(0)-u_0,v)=0,
+\qquad\forall v\in V.
+\]
+该等式蕴含 $u(0)=u_0$, 从而完成存在性的证明.
+
+\subsection{连续性与唯一性的证明}
+\label{subsec:ch3-linear-continuity-uniqueness}
+该证明基于下面的引理, 它是 Lions--Magenes~\MBUnresolvedReference{citation}{Lions--Magenes [1]} 的一般插值定理的一个特殊情形.
+
+\MBSourceStatementNumber{lemma}{2}
+\begin{Lemma}
+\label{lem:ch3-linear-lions-magenes-continuity}
+设 $V,H,V'$ 是三个 Hilbert 空间, 每个空间按 \eqref{eq:ch3-linear-gelfand-triple} 包含于后一个空间, 且 $V'$ 是 $V$ 的对偶空间. 若 $u\in L^2(0,T;V)$ 且其导数 $u'\in L^2(0,T;V')$, 则 $u$ 几乎处处等于从 $[0,T]$ 到 $H$ 的一个连续函数, 并且下式在 $(0,T)$ 上按标量分布意义成立:
+\begin{equation}
+\frac d{dt}|u|^2=2\langle u',u\rangle.
+\label{eq:ch3-linear-energy-derivative-identity}
+\end{equation}
+\end{Lemma}
+
+等式 \eqref{eq:ch3-linear-energy-derivative-identity} 有意义, 因为函数
+\[
+t\longmapsto|u(t)|^2,
+\qquad
+t\longmapsto\langle u'(t),u(t)\rangle
+\]
+都在 $[0,T]$ 上可积. 下面给出一个比 Lions--Magenes~\MBUnresolvedReference{citation}{Lions--Magenes [1]} 的证明更初等的证明.
+
+先假定该引理. 此时 \eqref{eq:ch3-linear-h-continuity} 显然, 只需验证唯一性. 设 $u,v$ 是 \eqref{eq:ch3-linear-abstract-solution-spaces}--\eqref{eq:ch3-linear-abstract-initial-data} 的两个解, 令 $w=u-v$. 则 $w$ 属于与 $u,v$ 相同的空间, 且
+\begin{equation}
+w'+\nu Aw=0,
+\qquad w(0)=0.
+\label{eq:ch3-linear-uniqueness-difference-equation}
+\end{equation}
+将 \eqref{eq:ch3-linear-uniqueness-difference-equation} 第一式与 $w(t)$ 作对偶积, 得
+\[
+\langle w'(t),w(t)\rangle+\nu\lVert w(t)\rVert^2=0
+\quad\text{几乎处处}.
+\]
+再把 \eqref{eq:ch3-linear-energy-derivative-identity} 用于 $w$, 得
+\[
+\frac d{dt}|w(t)|^2+2\nu\lVert w(t)\rVert^2=0,
+\]
+\[
+|w(t)|^2\leq|w(0)|^2=0,
+\qquad t\in[0,T].
+\]
+因而对每个 $t$, $u(t)=v(t)$.
+
+\hypertarget{chapter-03-page-192}{}
+\paragraph{引理 \ref{lem:ch3-linear-lions-magenes-continuity} 的证明.}
+前面所说的初等证明由下面两个引理给出.
+
+\MBSourceStatementNumber{lemma}{3}
+\begin{Lemma}
+\label{lem:ch3-linear-energy-identity-distributional}
+在引理 \ref{lem:ch3-linear-lions-magenes-continuity} 的假设下, 等式 \eqref{eq:ch3-linear-energy-derivative-identity} 成立.
+\end{Lemma}
+
+\begin{Proof}
+把从 $\mathbb R$ 到 $V$ 的函数 $\widetilde u$(它在 $[0,T]$ 上等于 $u$, 在区间外等于 $0$)正则化, 容易得到函数序列 $u_m$, 使
+\begin{equation}
+\begin{gathered}
+\text{对每个 }m,\ u_m\text{ 是从 }[0,T]\text{ 到 }V\text{ 的无穷次可微函数},\\
+u_m\longrightarrow u\quad\text{于 }L^2_{\mathrm{loc}}((0,T);V),\\
+u_m'\longrightarrow u'\quad\text{于 }L^2_{\mathrm{loc}}((0,T);V').
+\end{gathered}
+\label{eq:ch3-linear-regularized-sequence}
+\end{equation}
+由 \eqref{eq:ch3-linear-duality-inner-product}, \eqref{eq:ch3-linear-regularized-sequence}, 对 $u_m$ 而言 \eqref{eq:ch3-linear-energy-derivative-identity} 显然:
+\begin{equation}
+\frac d{dt}|u_m(t)|^2
+=2(u_m'(t),u_m(t))
+=2\langle u_m'(t),u_m(t)\rangle,
+\qquad\forall m.
+\label{eq:ch3-linear-regularized-energy-identity}
+\end{equation}
+当 $m\to\infty$ 时, 由 \eqref{eq:ch3-linear-regularized-sequence},
+\[
+|u_m|^2\longrightarrow|u|^2
+\quad\text{于 }L^1_{\mathrm{loc}}((0,T)),
+\]
+\[
+\langle u_m',u_m\rangle\longrightarrow\langle u',u\rangle
+\quad\text{于 }L^1_{\mathrm{loc}}((0,T)).
+\]
+这些收敛也在分布意义下成立, 因而可在 \eqref{eq:ch3-linear-regularized-energy-identity} 中按分布意义取极限, 恰好得到 \eqref{eq:ch3-linear-energy-derivative-identity}.
+\end{Proof}
+
+因为函数 $t\mapsto\langle u'(t),u(t)\rangle$ 在 $[0,T]$ 上可积, \eqref{eq:ch3-linear-energy-derivative-identity} 表明引理 \ref{lem:ch3-linear-energy-identity-distributional} 中的函数 $u$ 满足
+\begin{equation}
+u\in L^\infty(0,T;H).
+\label{eq:ch3-linear-energy-linfty-consequence}
+\end{equation}
+对于满足 \eqref{eq:ch3-linear-abstract-solution-spaces}--\eqref{eq:ch3-linear-abstract-initial-data} 的函数 $u$, 这一点已经在第 \ref{subsec:ch3-linear-existence-proof} 小节直接证明.
+
+由引理 \ref{lem:ch3-linear-banach-valued-derivative}, $u$ 是从 $[0,T]$ 到 $V'$ 的连续函数. 结合这一点与 \eqref{eq:ch3-linear-energy-linfty-consequence}, 下一个引理表明 $u$ 从 $[0,T]$ 到 $H$ 弱连续, 即
+\begin{equation}
+\forall v\in H,\quad t\longmapsto(u(t),v)\text{ 连续}.
+\label{eq:ch3-linear-h-weak-continuity}
+\end{equation}
+暂时承认这一点, 即可完成引理 \ref{lem:ch3-linear-lions-magenes-continuity} 的证明. 必须证明对每个 $t_0\in[0,T]$,
+\begin{equation}
+|u(t)-u(t_0)|^2\longrightarrow0
+\quad\text{当 }t\to t_0.
+\label{eq:ch3-linear-h-strong-continuity-goal}
+\end{equation}
+展开该项得到
+\[
+|u(t)|^2+|u(t_0)|^2-2(u(t),u(t_0)).
+\]
+当 $t\to t_0$ 时, $|u(t)|^2\to|u(t_0)|^2$, 因为由 \eqref{eq:ch3-linear-energy-derivative-identity},
+\[
+|u(t)|^2=|u(t_0)|^2+2\int_{t_0}^{t}\langle u'(s),u(s)\rangle\,ds;
+\]
+
+\hypertarget{chapter-03-page-193}{}
+而由 \eqref{eq:ch3-linear-h-weak-continuity},
+\[
+(u(t),u(t_0))\longrightarrow|u(t_0)|^2.
+\]
+所以 \eqref{eq:ch3-linear-h-strong-continuity-goal} 得证.
+
+证明下一个稍更一般的引理后, 引理 \ref{lem:ch3-linear-lions-magenes-continuity} 的证明即告完成.
+
+\MBSourceStatementNumber{lemma}{4}
+\begin{Lemma}
+\label{lem:ch3-linear-weak-continuity-transfer}
+设 $X,Y$ 是两个 Banach 空间, 且
+\begin{equation}
+X\subset Y
+\label{eq:ch3-linear-banach-continuous-injection}
+\end{equation}
+的注入连续. 若 $\phi\in L^\infty(0,T;X)$ 且作为 $Y$-值函数弱连续, 则 $\phi$ 作为 $X$-值函数弱连续.
+\end{Lemma}
+
+\begin{Proof}
+用 $X$ 在 $Y$ 中的闭包代替 $Y$, 可假设 $X$ 在 $Y$ 中稠密. 于是 $X$ 到 $Y$ 的稠密连续嵌入由对偶性给出 $Y'$(即 $Y$ 的对偶)到 $X'$(即 $X$ 的对偶)的稠密连续嵌入:
+\begin{equation}
+Y'\subset X'.
+\label{eq:ch3-linear-dual-dense-injection}
+\end{equation}
+由假设, 对每个 $\eta\in Y'$,
+\begin{equation}
+\langle\phi(t),\eta\rangle\longrightarrow\langle\phi(t_0),\eta\rangle
+\quad\text{当 }t\to t_0,\quad\forall t_0,
+\label{eq:ch3-linear-y-weak-continuity}
+\end{equation}
+而需证明 \eqref{eq:ch3-linear-y-weak-continuity} 对每个 $\eta\in X'$ 也成立.
+
+先证明对每个 $t$, $\phi(t)\in X$, 且
+\begin{equation}
+\lVert\phi(t)\rVert_X\leq\lVert\phi\rVert_{L^\infty(0,T;X)},
+\qquad\forall t\in[0,T].
+\label{eq:ch3-linear-pointwise-x-bound}
+\end{equation}
+事实上, 将在 $[0,T]$ 上等于 $\phi$、区间外等于 $0$ 的函数 $\widetilde\phi$ 正则化, 得到从 $[0,T]$ 到 $X$ 的光滑函数序列 $\phi_m$, 满足
+\[
+\lVert\phi_m(t)\rVert_X\leq\lVert\phi\rVert_{L^\infty(X)},
+\qquad\forall m,\quad\forall t\in[0,T],
+\]
+且
+\[
+\langle\phi_m(t),\eta\rangle\longrightarrow\langle\phi(t),\eta\rangle,
+\qquad m\to\infty,\quad\forall\eta\in Y'.
+\]
+因为
+\[
+|\langle\phi_m(t),\eta\rangle|
+\leq\lVert\phi\rVert_{L^\infty(X)}\lVert\eta\rVert_{X'},
+\qquad\forall m,\quad\forall t,
+\]
+取极限得到
+\[
+|\langle\phi(t),\eta\rangle|
+\leq\lVert\phi\rVert_{L^\infty(X)}\lVert\eta\rVert_{X'},
+\qquad\forall t\in[0,T],\quad\forall\eta\in Y'.
+\]
+该不等式表明 $\phi(t)\in X$, 且 \eqref{eq:ch3-linear-pointwise-x-bound} 成立.
+
+\hypertarget{chapter-03-page-194}{}
+最后证明 \eqref{eq:ch3-linear-y-weak-continuity} 对 $\eta\in X'$ 成立. 因为 $Y'$ 在 $X'$ 中稠密, 对每个 $\epsilon>0$, 存在 $\eta_\epsilon\in Y'$ 使
+\[
+\lVert\eta-\eta_\epsilon\rVert_{X'}\leq\epsilon.
+\]
+于是
+\[
+\langle\phi(t)-\phi(t_0),\eta\rangle
+=\langle\phi(t)-\phi(t_0),\eta-\eta_\epsilon\rangle
++\langle\phi(t)-\phi(t_0),\eta_\epsilon\rangle,
+\]
+\[
+|\langle\phi(t)-\phi(t_0),\eta\rangle|
+\leq2\epsilon\lVert\phi\rVert_{L^\infty(X)}
++\langle\phi(t)-\phi(t_0),\eta_\epsilon\rangle.
+\]
+当 $t\to t_0$ 时, 因为 $\eta_\epsilon\in Y'$, 连续性假设蕴含
+\[
+\langle\phi(t)-\phi(t_0),\eta_\epsilon\rangle\longrightarrow0.
+\]
+因此
+\[
+\limsup|\langle\phi(t)-\phi(t_0),\eta\rangle|
+\leq2\epsilon\lVert\phi\rVert_{L^\infty(X)}.
+\]
+由于 $\epsilon>0$ 可任意小, 上述上极限为零, \eqref{eq:ch3-linear-y-weak-continuity} 得证.
+\end{Proof}
+\subsection{若干补充说明}
+\label{subsec:ch3-linear-miscellaneous}
+本节给出定理 \ref{thm:ch3-linear-existence-uniqueness} 的若干说明和补充.
+
+\paragraph{定理 \ref{thm:ch3-linear-existence-uniqueness} 的一个推广.}
+定理 \ref{thm:ch3-linear-existence-uniqueness} 是涉及抽象空间 $V,H$ 和抽象算子 $A$ 的抽象定理的一个特殊情形; 见 \MBUnresolvedReference{citation}{Lions--Magenes [1]}.
+
+若不用 \eqref{eq:ch3-linear-force-assumption}, 而假设
+\begin{equation}
+f=f_1+f_2,
+\qquad f_1\in L^2(0,T;V'),
+\quad f_2\in L^1(0,T;H),
+\label{eq:ch3-linear-split-force-assumption}
+\end{equation}
+则定理 \ref{thm:ch3-linear-existence-uniqueness} 的全部结论仍成立, 只需作一处修改:
+\begin{equation}
+u'\in L^2(0,T;V')+L^1(0,T;H).
+\label{eq:ch3-linear-split-derivative-space}
+\end{equation}
+在存在性的证明中, 在 \eqref{eq:ch3-linear-galerkin-energy-identity} 之后写成
+\begin{equation}
+\begin{aligned}
+\frac d{dt}|u_m(t)|^2+2\nu\lVert u_m(t)\rVert^2
+&\leq2\lVert f_1(t)\rVert_{V'}\lVert u_m(t)\rVert
++2|f_2(t)|\,|u_m(t)|\\
+&\leq\nu\lVert u_m(t)\rVert^2
++\frac1\nu\lVert f_1(t)\rVert_{V'}^2
++|f_2(t)|\{1+|u_m(t)|^2\}.
+\end{aligned}
+\label{eq:ch3-linear-split-force-energy-bound}
+\end{equation}
+特别地,
+\begin{equation}
+\frac d{dt}\{1+|u_m(t)|^2\}
+\leq\frac1\nu\lVert f_1(t)\rVert_{V'}^2
++|f_2(t)|\{1+|u_m(t)|^2\}.
+\label{eq:ch3-linear-split-force-gronwall-inequality}
+\end{equation}
+把它乘以
+\[
+\exp\left(-\int_0^t|f_2(\sigma)|\,d\sigma\right),
+\]
+得到
+\[
+\begin{aligned}
+\frac d{dt}\biggl[&\exp\left(-\int_0^t|f_2(\sigma)|\,d\sigma\right)
+\{1+|u_m(t)|^2\}\biggr]\\
+&\leq\frac1\nu\lVert f_1(t)\rVert_{V'}^2
+\exp\left(-\int_0^t|f_2(\sigma)|\,d\sigma\right).
+\end{aligned}
+\]
+从 $0$ 到 $s$, $s>0$, 积分该不等式, 得到类似 \eqref{eq:ch3-linear-galerkin-uniform-bound} 的控制, 从而推出 \eqref{eq:ch3-linear-galerkin-linfty-boundedness}. 再从 $0$ 到 $T$ 积分 \eqref{eq:ch3-linear-split-force-energy-bound}, 得到 \eqref{eq:ch3-linear-galerkin-l2-boundedness}. 此后完全按照第 \ref{subsec:ch3-linear-existence-proof} 小节证明存在性.
+
+关于导数 $u'$, 有
+\begin{equation}
+u'=-\nu Au+f_1+f_2
+\in L^2(0,T;V')+L^1(0,T;H).
+\label{eq:ch3-linear-split-force-derivative}
+\end{equation}
+容易看出, 若
+\begin{equation}
+u\in L^2(0,T;V)\cap L^\infty(0,T;H),
+\qquad
+u'\in L^2(0,T;V')+L^1(0,T;H),
+\label{eq:ch3-linear-extended-continuity-assumptions}
+\end{equation}
+则引理 \ref{lem:ch3-linear-lions-magenes-continuity} 仍成立. 注意到这一点, 就可完全按照第 \ref{subsec:ch3-linear-continuity-uniqueness} 小节证明唯一性以及 $u\in C([0,T];H)$.
+
+\hypertarget{chapter-03-page-195}{}
+\paragraph{$\Omega$ 无界的情形.}
+对演化问题, 当 $\Omega$ 无界时, 不再需要引入定常无界情形(第 \ref{subsec:ch1-stokes-unbounded-domain} 小节)所考虑的空间 $Y$. 若 $\Omega$ 无界且 $V$ 赋予范数 \eqref{eq:ch3-linear-unbounded-v-inner-product}, 则上述全部结果成立. 在最一般情形下, 假设 $f$ 满足 \eqref{eq:ch3-linear-split-force-assumption}. 若 $f$ 满足 \eqref{eq:ch3-linear-force-assumption}, 所得结果与定理 \ref{thm:ch3-linear-existence-uniqueness} 完全相同; 若 $f$ 满足 \eqref{eq:ch3-linear-split-force-assumption}, 所得结果与 \eqref{eq:ch3-linear-split-derivative-space} 完全相同. 唯一区别是必须把 \eqref{eq:ch3-linear-split-force-energy-bound} 换成
+\begin{equation}
+\begin{aligned}
+\frac d{dt}|u_m(t)|^2+2\nu\lVert u_m(t)\rVert^2
+&\leq2\lVert f_1(t)\rVert_{V'}\lVert u_m(t)\rVert
++2|f_2(t)|\,|u_m(t)|\\
+&\leq\nu\lVert u_m(t)\rVert^2+\nu|u_m(t)|^2
++\frac1\nu\lVert f_1(t)\rVert_{V'}^2\\
+&\quad+|f_2(t)|(1+|u_m(t)|^2).
+\end{aligned}
+\label{eq:ch3-linear-unbounded-energy-bound}
+\end{equation}
+因而
+\begin{equation}
+\frac d{dt}\{1+|u_m(t)|^2\}
+\leq(|f_2(t)|+\nu)\{1+|u_m(t)|^2\}
++\frac1\nu\lVert f_1(t)\rVert_{V'}^2.
+\label{eq:ch3-linear-unbounded-gronwall-inequality}
+\end{equation}
+然后完全像处理 \eqref{eq:ch3-linear-split-force-gronwall-inequality} 那样处理这个不等式, 得到 \eqref{eq:ch3-linear-galerkin-linfty-boundedness}. 此后从 $0$ 到 $T$ 积分 \eqref{eq:ch3-linear-unbounded-energy-bound}, 得
+\[
+\int_0^T\lVert u_m(t)\rVert^2\,dt\leq\mathrm{const}.
+\]
+该估计与 \eqref{eq:ch3-linear-galerkin-linfty-boundedness} 一起给出 \eqref{eq:ch3-linear-galerkin-l2-boundedness}. 随后存在性, 唯一性和连续性的证明与前面完全相同.
+
+\paragraph{变分问题的解释.}
+现在确切说明定理 \ref{thm:ch3-linear-existence-uniqueness} 定义的函数 $u$ 在何种意义下是初值问题 \eqref{eq:ch3-linear-momentum}--\eqref{eq:ch3-linear-initial-condition} 的解.
+
+\MBSourceStatementNumber{proposition}{1}
+\begin{Proposition}
+\label{prop:ch3-linear-pressure-distribution}
+在定理 \ref{thm:ch3-linear-existence-uniqueness} 的假设下, 存在 $Q=\Omega\times(0,T)$ 上的分布 $p$, 使定理 \ref{thm:ch3-linear-existence-uniqueness} 定义的函数 $u$ 与 $p$ 在 $Q$ 中按分布意义满足 \eqref{eq:ch3-linear-momentum}; \eqref{eq:ch3-linear-incompressibility} 也按分布意义成立, 且 \eqref{eq:ch3-linear-initial-condition} 在下述意义下成立:
+\begin{equation}
+u(t)\longrightarrow u_0\quad\text{于 }\mathbf L^2(\Omega),
+\qquad t\to0.
+\label{eq:ch3-linear-initial-l2-convergence}
+\end{equation}
+\end{Proposition}
+
+\begin{Proof}
+等式 \eqref{eq:ch3-linear-incompressibility} 是 $u\in L^2(0,T;V)$ 的直接推论; \eqref{eq:ch3-linear-initial-condition} 与 \eqref{eq:ch3-linear-force-assumption} 也直接由定理 \ref{thm:ch3-linear-existence-uniqueness} 得到; 由于 $u\in L^2(0,T;\mathbf H_0^1(\Omega))$, \eqref{eq:ch3-linear-boundary-condition} 在依赖于 $\Omega$ 上可用迹定理的意义下成立.
+
+为引入压力, 令
+\begin{equation}
+U(t)+\int_0^t u(s)\,ds,
+\qquad
+F(t)=\int_0^t f(s)\,ds.
+\label{eq:ch3-linear-integrated-velocity-force}
+\end{equation}
+至少显然有
+\[
+U\in C([0,T];V),
+\qquad F\in C([0,T];V').
+\]
+积分 \eqref{eq:ch3-linear-weak-variational-equation} 可知
+\begin{equation}
+(u(t)-u_0,v)+\nu((U(t),v))
+=\langle F(t),v\rangle,
+\qquad\forall t\in[0,T],\quad\forall v\in V,
+\label{eq:ch3-linear-integrated-variational-equation}
+\end{equation}
+即
+\[
+\langle u(t)-u_0-\nu\Delta U(t)-F(t),v\rangle=0,
+\qquad\forall t\in[0,T],\quad\forall v\in V.
+\]
+
+\hypertarget{chapter-03-page-196}{}
+应用 \MBUnresolvedReference{propositions}{Propositions 1.1.1 and 1.1.2}, 对每个 $t\in[0,T]$ 可得某个函数 $P(t)$ 存在, 且 $P(t)\in L^2(\Omega)$, 使
+\begin{equation}
+u(t)-u_0-\nu\Delta U(t)+\operatorname{grad}P(t)=F(t).
+\label{eq:ch3-linear-integrated-pressure-equation}
+\end{equation}
+由 \MBUnresolvedReference{remark}{Remark 1.1.4(ii)}, 梯度算子是 $L^2(\Omega)/\mathbb R$ 到 $H^{-1}(\Omega)$ 上的同构. 注意到
+\begin{equation}
+\operatorname{grad}P=F+\nu\Delta U-u+u_0,
+\label{eq:ch3-linear-pressure-gradient}
+\end{equation}
+可知 $\operatorname{grad}P$ 与 \eqref{eq:ch3-linear-pressure-gradient} 的右端一样属于 $C([0,T];H^{-1}(\Omega))$; 因而
+\begin{equation}
+P\in C([0,T];L^2(\Omega)).
+\label{eq:ch3-linear-integrated-pressure-continuity}
+\end{equation}
+这使我们能够在 $Q=\Omega\times(0,T)$ 中按分布意义关于 $t$ 对 \eqref{eq:ch3-linear-integrated-pressure-equation} 求导. 令
+\begin{equation}
+p=\frac{\partial P}{\partial t},
+\label{eq:ch3-linear-pressure-time-derivative}
+\end{equation}
+恰好得到 \eqref{eq:ch3-linear-momentum}.
+\end{Proof}
+
+一般不能得到比 \eqref{eq:ch3-linear-integrated-pressure-continuity}, \eqref{eq:ch3-linear-pressure-time-derivative} 更好的 $p$ 的信息. 下一命题通过对数据 $f,u_0$ 假设更高正则性, 得到 $p$ 的更高正则性.
+
+\paragraph{若干正则性结果.}
+若数据 $\Omega,f,u_0$ 充分光滑, 则可得到所需的任意高的 $u,p$ 正则性. 这里只证明一个简单的此类结果.
+
+\MBSourceStatementNumber{proposition}{2}
+\begin{Proposition}
+\label{prop:ch3-linear-regularity}
+假设 $\Omega$ 是 $C^2$ 类的, 且
+\begin{equation}
+f\in L^2(0,T;H),
+\label{eq:ch3-linear-regularity-force}
+\end{equation}
+以及
+\begin{equation}
+u_0\in V.
+\label{eq:ch3-linear-regularity-initial-data}
+\end{equation}
+则
+\begin{equation}
+u\in L^2(0,T;\mathbf H^2(\Omega)),
+\label{eq:ch3-linear-spatial-h2-regularity}
+\end{equation}
+\begin{equation}
+u'\in L^2(0,T;H),
+\quad\text{即 }u'\in\mathbf L^2(Q),
+\label{eq:ch3-linear-time-l2-regularity}
+\end{equation}
+\begin{equation}
+p\in L^2(0,T;H^1(\Omega)).
+\label{eq:ch3-linear-pressure-h1-regularity}
+\end{equation}
+\end{Proposition}
+
+\begin{Proof}
+第一步是得到 \eqref{eq:ch3-linear-time-l2-regularity}; 这通过为 Galerkin 方法构造的逼近解 $u_m$ 得到另一个先验估计来证明.
+
+沿用第 \ref{subsec:ch3-linear-existence-proof} 小节的记号, 将 \eqref{eq:ch3-linear-galerkin-equations} 乘 $g_{jm}'(t)$, 再对 $j=1,\ldots,m$ 相加, 得
+\[
+|u_m'(t)|^2+\nu((u_m(t),u_m'(t)))=(f(t),u_m'(t)),
+\]
+即
+\begin{equation}
+2|u_m'(t)|^2+\nu\frac d{dt}\lVert u_m(t)\rVert^2
++2(f(t),u_m'(t)).
+\label{eq:ch3-linear-higher-energy-printed-relation}
+\end{equation}
+
+\hypertarget{chapter-03-page-197}{}
+从 $0$ 到 $T$ 积分 \eqref{eq:ch3-linear-higher-energy-printed-relation}, 并使用 Schwarz 不等式, 得
+\[
+\begin{aligned}
+2\int_0^T|u_m'(t)|^2\,dt+\nu\lVert u_m(T)\rVert^2
+&=\nu\lVert u_{0m}\rVert^2+2\int_0^T(f(t),u_m'(t))\,dt\\
+&\leq\nu\lVert u_{0m}\rVert^2+\int_0^T|f(t)|^2\,dt
++\int_0^T|u_m'(t)|^2\,dt,
+\end{aligned}
+\]
+\begin{equation}
+\int_0^T|u_m'(t)|^2\,dt
+\leq\nu\lVert u_{0m}\rVert^2+\int_0^T|f(t)|^2\,dt.
+\label{eq:ch3-linear-time-derivative-apriori-bound}
+\end{equation}
+Galerkin 方法使用的基 $w_j$ 可选择为对每个 $j$ 都有 $w_j\in\mathcal V$, 并可取
+\[
+u_{0m}=u_0\text{ 在 }V\text{ 中到 }w_1,\ldots,w_m
+\text{ 所张成空间上的投影}.
+\]
+因此
+\begin{equation}
+u_{0m}\longrightarrow u_0\quad\text{在 }V\text{ 中强收敛},
+\qquad m\to\infty,
+\label{eq:ch3-linear-v-projection-convergence}
+\end{equation}
+并且
+\begin{equation}
+\lVert u_{0m}\rVert\leq\lVert u_0\rVert.
+\label{eq:ch3-linear-v-projection-bound}
+\end{equation}
+在这些 $w_j,u_{0m}$ 的选择下, \eqref{eq:ch3-linear-time-derivative-apriori-bound} 表明
+\begin{equation}
+u_m'\text{ 属于 }L^2(0,T;H)\text{ 的一个有界集},
+\label{eq:ch3-linear-galerkin-time-derivative-boundedness}
+\end{equation}
+从而 \eqref{eq:ch3-linear-time-l2-regularity} 得证.
+
+再回到等式 \eqref{eq:ch3-linear-momentum}--\eqref{eq:ch3-linear-boundary-condition}, 应用定常情形的正则性定理 \MBUnresolvedReference{theorem}{Theorem 1.2.4}. 对几乎每个 $t\in[0,T]$,
+\begin{equation}
+\left\{
+\begin{aligned}
+-\nu\Delta u(t)+\operatorname{grad}p(t)
+&=f-u'\in L^2(0,T;\mathbf L^2(\Omega)),\\
+\operatorname{div}u(t)&=0\quad\text{于 }\Omega,\\
+u(t)&=0\quad\text{于 }\partial\Omega,
+\end{aligned}
+\right.
+\label{eq:ch3-linear-stationary-regularity-system}
+\end{equation}
+所以 $u(t)\in\mathbf H^2(\Omega)$, $p(t)\in H^1(\Omega)$. 此外, 映射
+\[
+f(t)-u'(t)\longmapsto\{u(t),p(t)\}
+\]
+由 \MBUnresolvedReference{equation}{Chapter 1, (2.40)} 可知是从 $\mathbf L^2(\Omega)$ 到 $\mathbf H^2(\Omega)\times H^1(\Omega)$ 的连续线性映射; 又因为 $f-u'\in L^2(0,T;\mathbf L^2(\Omega))$, 显然 \eqref{eq:ch3-linear-spatial-h2-regularity}, \eqref{eq:ch3-linear-pressure-h1-regularity} 成立.
+\end{Proof}
+
