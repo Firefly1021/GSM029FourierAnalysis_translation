@@ -28,4 +28,5 @@
 26. Completed: process `appendix-01` (PDF pages 326--335).
 27. Completed: process `appendix-02` (PDF pages 336--351; PDF page 351 is blank).
 28. Completed: process `appendix-03` (PDF pages 352--395), including its extended bibliography.
-29. Current: process `comments` (PDF pages 396--403).
+29. Completed: process `comments` (PDF pages 396--403; PDF page 401 has no book content).
+30. Current: process the book bibliographies (PDF pages 404--421).
