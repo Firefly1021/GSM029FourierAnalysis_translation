@@ -25,4 +25,5 @@
 23. Completed: process `chapter-03-section-06` from the lower part of PDF 261 through PDF 281.
 24. Completed: process `chapter-03-section-07` from PDF page 282 through the upper part of PDF page 302.
 25. Completed: process `chapter-03-section-08` from the lower part of PDF page 302 through PDF page 324; PDF page 325 is blank.
-26. Current: process `appendix-01` (PDF pages 326--335).
+26. Completed: process `appendix-01` (PDF pages 326--335).
+27. Current: process `appendix-02` (PDF pages 336--351).
