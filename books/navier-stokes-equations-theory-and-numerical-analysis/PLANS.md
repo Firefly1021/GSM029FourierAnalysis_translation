@@ -14,4 +14,5 @@
 12. Completed: translate, review, compile and pass QA for `chapter-01-section-06` (PDF pages 113--119), completing Chapter 1.
 13. Completed: run integrated Chapter 1 cross-reference, punctuation, compilation, and visual QA.
 14. Completed: translate, review, compile and pass QA for `chapter-02-section-01` (PDF pages 120--136, ending before Section 2).
-15. Current: process `chapter-02-section-02` (PDF pages 136--149) as the next natural unit.
+15. Completed: translate, review, compile and pass QA for `chapter-02-section-02` (PDF pages 136--148, ending before Section 3).
+16. Current: process `chapter-02-section-03` (PDF pages 149--164) as the next natural unit.

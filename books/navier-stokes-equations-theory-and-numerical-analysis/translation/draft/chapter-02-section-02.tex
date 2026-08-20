@@ -1,0 +1,783 @@
+\hypertarget{chapter-02-page-136}{}
+\section{离散不等式与紧性定理}
+\label{sec:ch2-discrete-inequalities-compactness}
+
+在讨论定常 Navier--Stokes 方程的数值逼近之前, 必须引入新工具: 对阶梯函数和非协调有限元给出 Sobolev 不等式以及紧性定理(定理 \ref{thm:ch2-sobolev-compact-embedding})的离散对应物. 本节的目标是证明这些不等式以及另外一些 Sobolev 型不等式. 本节技术性较强, 后文不需要这些证明的细节.
+
+\subsection{阶梯函数的离散 Sobolev 不等式}
+\label{subsec:ch2-discrete-sobolev-step-functions}
+
+沿用有限差分的记号, 见 Chapter 1, Section 3.3. 特别回忆, $\mathcal R_h$ 是坐标为 $m_1h_1,\ldots,m_nh_n$, $m_i\in\mathbb Z$ 的点集, $h=(h_1,\ldots,h_n)$, $h_i>0$; $w_{hM}$ 是块
+\begin{equation}
+\sigma_h(M)=\prod_{i=1}^{n}
+\left(\mu_i-\frac{h_i}{2},\mu_i+\frac{h_i}{2}\right),
+\qquad M=(\mu_1,\ldots,\mu_n),
+\label{eq:ch2-step-cell}
+\end{equation}
+的特征函数, 而 $\delta_{ih}$ 是差分算子
+\begin{equation}
+\delta_{ih}\phi(x)=\frac1{h_i}
+\left[\phi\left(x+\frac12\vec h_i\right)
+-\phi\left(x-\frac12\vec h_i\right)\right],
+\label{eq:ch2-centered-difference}
+\end{equation}
+其中 $\vec h_i$ 的第 $i$ 个分量为 $h_i$, 其余分量均为 $0$.
+
+\MBSourceStatementNumber{theorem}{1}
+\begin{Theorem}
+\label{thm:ch2-discrete-sobolev-step}
+设 $1\leq p<n$, 并以 $1/q=1/p-1/n$ 定义 $q$. 存在只依赖于 $n,p$ 的常数 $c=c(n,p)$, 使
+\begin{equation}
+|u_h|_{L^q(\mathbb R^n)}
+\leq c(n,p)\sum_{i=1}^{n}|\delta_{ih}u_h|_{L^p(\mathbb R^n)},
+\label{eq:ch2-discrete-sobolev-step-bound}
+\end{equation}
+对每个具有紧支集的阶梯函数
+\begin{equation}
+u_h=\sum_{M\in\mathcal R_h}u_h(M)w_{hM}
+\label{eq:ch2-step-function-expansion}
+\end{equation}
+成立.
+\end{Theorem}
+
+\hypertarget{chapter-02-page-137}{}
+\begin{Proof}
+(i) 考虑标量函数
+\[
+s\longmapsto g(s)=|s|^{(n-1)p/(n-p)}.
+\]
+由于 $(n-1)p/(n-p)\geq1$, 该函数可微, 且
+\[
+g'(s)=\frac{(n-1)p}{n-p}|s|^{(n(p-2)+p)/(n-p)}s.
+\]
+Taylor 公式写成
+\[
+g(s_1)-g(s_2)=(s_1-s_2)g'(\lambda s_1+(1-\lambda)s_2),
+\qquad\lambda\in(0,1),
+\]
+并给出
+\begin{equation}
+|g(s_1)-g(s_2)|
+\leq c_1(n,p)|s_1-s_2|
+\left\{|s_1|^{n(p-1)/(n-p)}+|s_2|^{n(p-1)/(n-p)}\right\}.
+\label{eq:ch2-discrete-sobolev-scalar-difference}
+\end{equation}
+
+(ii) 设 $M\in\mathcal R_h$. 在 \eqref{eq:ch2-discrete-sobolev-scalar-difference} 中取 $s_1=u_h(M-r\vec h_i)$, $s_2=u_h(M-(r+1)\vec h_i)$, 并对 $r\geq0$ 求和, 得
+\begin{equation}
+\begin{aligned}
+|u_h(M)|^{(n-1)p/(n-p)}
+&\leq c_1(n,p)h_i\sum_{r=0}^{+\infty}
+\left|\delta_{ih}u_h\left(M-\left(r+\frac12\right)\vec h_i\right)\right|\\
+&\quad\cdot\left\{|u_h(M-r\vec h_i)|^{n(p-1)/(n-p)}
++|u_h(M-(r+1)\vec h_i)|^{n(p-1)/(n-p)}\right\}.
+\end{aligned}
+\label{eq:ch2-discrete-sobolev-telescoping}
+\end{equation}
+把右端的和扩大为对 $r\in\mathbb Z$ 求和, 再把它解释为积分, 可用下式控制:
+\[
+c_1(n,p)\int_{-\infty}^{+\infty}
+|\delta_{ih}u_h(\widehat\mu_i,\xi_i)|
+\left\{\sum_{\alpha=-1}^{1}
+\left|u_h\left(\widehat\mu_i,\xi_i+\frac{\alpha h_i}{2}\right)\right|^{n(p-1)/(n-p)}\right\}d\xi_i.
+\]
+这里 $(\mu_1,\ldots,\mu_n)$ 是 $M$ 的坐标, $\widehat\mu_i=(\mu_1,\ldots,\mu_{i-1},\mu_{i+1},\ldots,\mu_n)$. 类似地, 用 $\widehat x_i$ 表示向量 $(x_1,\ldots,x_{i-1},x_{i+1},\ldots,x_n)$, 并写 $x=(\widehat x_i,x_i)$.
+
+\hypertarget{chapter-02-page-138}{}
+对任意 $x\in\sigma_h(M)$, 不等式 \eqref{eq:ch2-discrete-sobolev-telescoping} 给出
+\begin{equation}
+\begin{aligned}
+|u_h(x)|^{(n-1)p/(n-p)}
+&=|u_h(M)|^{(n-1)p/(n-p)}\\
+&\leq c_1(n,p)\int_{-\infty}^{+\infty}
+|\delta_{ih}u_h(\widehat x_i,\xi_i)|
+\left\{\sum_{\alpha=-1}^{1}
+\left|u_h\left(\widehat x_i,\xi_i+\frac{\alpha h_i}{2}\right)\right|^{n(p-1)/(n-p)}\right\}d\xi_i.
+\end{aligned}
+\label{eq:ch2-discrete-sobolev-pointwise}
+\end{equation}
+令
+\begin{equation}
+w_i(x)=w_i(\widehat x_i)=\sup_{x_i\in\mathbb R}|u_h(x)|^{p/(n-p)}.
+\label{eq:ch2-discrete-sobolev-wi}
+\end{equation}
+则 $|w_i(\widehat x_i)|^{n-1}$ 被 \eqref{eq:ch2-discrete-sobolev-pointwise} 右端控制. 对 $\widehat x_i$ 积分并使用 Hölder 不等式, 得
+\begin{equation}
+\int_{\mathbb R^{n-1}}w_i(\widehat x_i)^{n-1}\,d\widehat x_i
+\leq c_2(n,p)|\delta_{ih}u_h|_{L^p(\mathbb R^n)}
+|u_h|_{L^q(\mathbb R^n)}^{(p-1)q/p}.
+\label{eq:ch2-discrete-sobolev-wi-integral}
+\end{equation}
+现在
+\[
+\int_{\mathbb R^n}|u_h|^q\,dx
+\leq\int_{\mathbb R^n}\prod_{i=1}^{n}\sup_{x_i}|u_h(\widehat x_i,x_i)|^{p/(n-p)}\,dx
+\leq\int_{\mathbb R^n}\prod_{i=1}^{n}|w_i(\widehat x_i)|\,dx.
+\]
+由下一个引理中的不等式以及 \eqref{eq:ch2-discrete-sobolev-wi-integral}, 得
+\[
+|u_h|_{L^q(\mathbb R^n)}^q
+\leq c_3(n,p)
+\left\{\prod_{i=1}^{n}|\delta_{ih}u_h|_{L^p(\mathbb R^n)}^{1/(n-1)}\right\}
+|u_h|_{L^q(\mathbb R^n)}^{nq(p-1)/((n-1)p)}.
+\]
+因此
+\[
+|u_h|_{L^q(\mathbb R^n)}
+\leq c_4(n,p)
+\left\{\prod_{i=1}^{n}|\delta_{ih}u_h|_{L^p(\mathbb R^n)}\right\}^{1/n}
+\leq c_5(n,p)\sum_{i=1}^{n}|\delta_{ih}u_h|_{L^p(\mathbb R^n)}.
+\]
+\end{Proof}
+
+\hypertarget{chapter-02-page-139}{}
+\MBSourceStatementNumber{lemma}{1}
+\begin{Lemma}
+\label{lem:ch2-gagliardo-product-inequality}
+设 $w_1,\ldots,w_n$ 是 $\mathbb R^n$ 上具有紧支集的有界可测函数, 且 $w_i$ 与 $x_i$ 无关. 则
+\begin{equation}
+\int_{\mathbb R^n}\left\{\prod_{i=1}^{n}w_i(\widehat x_i)\right\}dx
+\leq\prod_{i=1}^{n}
+\left\{\int_{\mathbb R^{n-1}}|w_i(\widehat x_i)|^{n-1}d\widehat x_i\right\}^{1/(n-1)}.
+\label{eq:ch2-gagliardo-product-inequality}
+\end{equation}
+\end{Lemma}
+
+这是 E. Gagliardo~[1] 的一个不等式的特例; 另见 Lions~[1], 第 31 页.\MBUnresolvedReference{citation}{E. Gagliardo [1] and Lions [1]}
+
+\MBSourceStatementNumber{remark}{1}
+\begin{Remark}
+\label{rem:ch2-discrete-sobolev-critical-case}
+当 $p=n$ 时, 若 $u_h$ 的支集包含在有界集 $\Omega$ 中, 则对每个形如 \eqref{eq:ch2-step-function-expansion} 的 $u_h$ 以及每个 $q$, $1\leq q<+\infty$, 有
+\begin{equation}
+|u_h|_{L^q(\mathbb R^n)}
+\leq c(n,q,\Omega)\sum_{i=1}^{n}|\delta_{ih}u_h|_{L^n(\mathbb R^n)}.
+\label{eq:ch2-discrete-sobolev-critical-bound}
+\end{equation}
+事实上, 任意这样的 $q>n$ 都可写成 $q=p_1n/(n-p_1)$, 其中 $1\leq p_1<n$. 不等式 \eqref{eq:ch2-discrete-sobolev-step-bound} 可用于 $p_1$, 且由 Hölder 不等式和支集的有界性得到 \eqref{eq:ch2-discrete-sobolev-critical-bound}.
+\end{Remark}
+
+\MBSourceStatementNumber{proposition}{1}
+\begin{Proposition}
+\label{prop:ch2-discrete-ladyzhenskaya-step}
+假设空间维数为 $2$ 或 $3$. 对任意形如 \eqref{eq:ch2-step-function-expansion} 且具有紧支集的阶梯函数 $u_h$, 有
+\begin{equation}
+|u_h|_{L^4(\mathbb R^2)}
+\leq2^{1/4}3^{1/2}|u_h|_{L^2(\mathbb R^2)}^{1/2}
+\left\{\sum_{i=1}^{2}|\delta_{ih}u_h|_{L^2(\mathbb R^2)}^2\right\}^{1/4},
+\qquad n=2,
+\label{eq:ch2-discrete-ladyzhenskaya-two-dimensional}
+\end{equation}
+\begin{equation}
+|u_h|_{L^4(\mathbb R^3)}
+\leq2^{1/2}3^{3/4}|u_h|_{L^2(\mathbb R^3)}^{1/4}
+\left\{\sum_{i=1}^{3}|\delta_{ih}u_h|_{L^2(\mathbb R^3)}^2\right\}^{3/8},
+\qquad n=3.
+\label{eq:ch2-discrete-ladyzhenskaya-three-dimensional}
+\end{equation}
+\footnote{连续情形的类似不等式见 \MBUnresolvedReference{lemma}{Chapter 3, Lemma 3.3}.}
+\end{Proposition}
+
+\begin{Proof}
+在 \eqref{eq:ch2-discrete-sobolev-pointwise} 中取 $n=2,p=4/3$. 对 \eqref{eq:ch2-discrete-sobolev-pointwise} 的证明作更精确的分析可知, 此时 $c_1(n,p)=2$; 实际上 $g(s)=s^2$, 且
+\[
+|g(s_1)-g(s_2)|\leq2|s_1-s_2|(|s_1|+|s_2|).
+\]
+于是对任意 $x\in\sigma_h(M)$, $M\in\mathcal R_h$, 有
+\begin{equation}
+|u_h(x)|^2
+\leq8\int_{-\infty}^{+\infty}|\delta_{ih}u_h(\widehat x_i,\xi_i)|
+\left\{\sum_{\alpha=-1}^{1}
+\left|u_h\left(\widehat x_i,\xi_i+\frac{\alpha h_i}{2}\right)\right|\right\}d\xi_i.
+\label{eq:ch2-discrete-ladyzhenskaya-pointwise}
+\end{equation}
+
+\hypertarget{chapter-02-page-140}{}
+因为右端与 $x_i$ 无关, 有
+\begin{equation}
+\sup_{x_i}|u_h(x)|^2
+\leq2\int_{-\infty}^{+\infty}|\delta_{ih}u_h(\widehat x_i,\xi_i)|
+\left\{\sum_{\alpha=-1}^{1}
+\left|u_h\left(\widehat x_i,\xi_i+\frac{\alpha h_i}{2}\right)\right|\right\}d\xi_i.
+\label{eq:ch2-discrete-ladyzhenskaya-supremum}
+\end{equation}
+在二维情形,
+\begin{equation}
+\begin{aligned}
+\int_{\mathbb R^2}|u_h(x)|^4\,dx
+&\leq\int_{\mathbb R^2}
+\left[\sup_{x_1}|u_h(x)|^2\right]
+\left[\sup_{x_2}|u_h(x)|^2\right]dx\\
+&\leq4\left\{\int_{\mathbb R^2}|\delta_{1h}u_h(\xi_1,x_2)|
+\left[\sum_{\alpha=-1}^{1}\left|u_h\left(\xi_1+\frac{\alpha h_1}{2},x_2\right)\right|\right]d\xi_1dx_2\right\}\\
+&\quad\cdot\left\{\int_{\mathbb R^2}|\delta_{2h}u_h(x_1,\xi_2)|
+\left[\sum_{\alpha=-1}^{1}\left|u_h\left(x_1,\xi_2+\frac{\alpha h_2}{2}\right)\right|\right]dx_1d\xi_2\right\}.
+\end{aligned}
+\label{eq:ch2-discrete-ladyzhenskaya-two-dimensional-proof}
+\end{equation}
+由 Schwarz 不等式以及
+\begin{equation}
+\int_{\mathbb R^2}\left|u_h\left(\xi_1+\frac{\alpha h_1}{2},x_2\right)\right|^2d\xi_1dx_2
+=|u_h|_{L^2(\mathbb R^2)}^2,
+\label{eq:ch2-translation-invariant-l2}
+\end{equation}
+最后一个表达式不超过
+\[
+36\{|\delta_{1h}u_h|_{L^2(\mathbb R^2)}|u_h|_{L^2(\mathbb R^2)}\}
+\{|\delta_{2h}u_h|_{L^2(\mathbb R^2)}|u_h|_{L^2(\mathbb R^2)}\}
+\leq18|u_h|_{L^2(\mathbb R^2)}^2
+\left\{\sum_{i=1}^{2}|\delta_{ih}u_h|_{L^2(\mathbb R^2)}^2\right\}.
+\]
+于是证明了 \eqref{eq:ch2-discrete-ladyzhenskaya-two-dimensional}.
+
+在三维情形, 利用 \eqref{eq:ch2-discrete-ladyzhenskaya-two-dimensional} 和 \eqref{eq:ch2-discrete-ladyzhenskaya-supremum}, 有
+\begin{equation}
+\begin{aligned}
+\int_{\mathbb R^3}|u_h(x)|^4dx
+&\leq18\int\left\{\left[\int|u_h|^2dx_1dx_2\right]
+\left[\sum_{i=1}^{2}\int|\delta_{ih}u_h|^2dx_1dx_2\right]\right\}dx_3\\
+&\leq3^3 2^2|u_h|_{L^2(\mathbb R^3)}
+|\delta_{3h}u_h|_{L^2(\mathbb R^3)}
+\left\{\sum_{i=1}^{2}|\delta_{ih}u_h|_{L^2(\mathbb R^3)}^2\right\}\\
+&\leq3^3 2^2|u_h|_{L^2(\mathbb R^3)}
+\left\{\sum_{i=1}^{3}|\delta_{ih}u_h|_{L^2(\mathbb R^3)}^2\right\}^{3/2}.
+\end{aligned}
+\label{eq:ch2-discrete-ladyzhenskaya-three-dimensional-proof}
+\end{equation}
+于是证明了 \eqref{eq:ch2-discrete-ladyzhenskaya-three-dimensional}.
+\end{Proof}
+
+\hypertarget{chapter-02-page-141}{}
+\MBSourceStatementNumber{remark}{2}
+\begin{Remark}
+\label{rem:ch2-step-inequalities-unbounded-support}
+不等式 \eqref{eq:ch2-discrete-sobolev-step-bound}, \eqref{eq:ch2-discrete-sobolev-critical-bound}, \eqref{eq:ch2-discrete-ladyzhenskaya-two-dimensional} 可由连续性推广到具有无界支集的阶梯函数类.
+\end{Remark}
+
+\subsection{阶梯函数的离散紧性定理}
+\label{subsec:ch2-discrete-compactness-step-functions}
+
+这里给出定理 \ref{thm:ch2-sobolev-compact-embedding} 的离散对应物, 更确切地说, 当
+\begin{equation}
+1\leq p<n,
+\qquad1\leq q_1<q,
+\qquad\frac1q=\frac1p-\frac1n,
+\label{eq:ch2-step-compactness-exponents-subcritical}
+\end{equation}
+或者
+\begin{equation}
+p=n,
+\qquad1\leq q_1<+\infty,
+\label{eq:ch2-step-compactness-exponents-critical}
+\end{equation}
+时, $W^{1,p}(\Omega)$ 到 $L^{q_1}(\Omega)$ 的注入是紧的这一事实的离散对应物.
+
+\MBSourceStatementNumber{theorem}{2}
+\begin{Theorem}
+\label{thm:ch2-discrete-compactness-step}
+设 $\mathcal E_h$ 是可以为空的形如 \eqref{eq:ch2-step-function-expansion} 的阶梯函数族, 并令
+\begin{equation}
+\mathcal E=\bigcup_{|h|\leq c_0}\mathcal E_h.
+\label{eq:ch2-step-family-union}
+\end{equation}
+假设
+\begin{equation}
+\mathcal E\text{ 中函数 }u_h\text{ 的支集都包含在 }\mathbb R^n
+\text{ 的某个固定有界集 }\Omega\text{ 中},
+\label{eq:ch2-step-family-fixed-support}
+\end{equation}
+并且
+\begin{equation}
+\sup_{u_h\in\mathcal E}
+\left\{|u_h|_{L^p(\mathbb R^n)}
++\sum_{i=1}^{n}|\delta_{ih}u_h|_{L^p(\mathbb R^n)}\right\}<+\infty.
+\label{eq:ch2-step-family-uniform-bound}
+\end{equation}
+若 $p,q_1$ 满足 \eqref{eq:ch2-step-compactness-exponents-subcritical}--\eqref{eq:ch2-step-compactness-exponents-critical}, 则 $\mathcal E$ 在 $L^{q_1}(\mathbb R^n)$(或 $L^{q_1}(\Omega)$)中相对紧.
+\end{Theorem}
+
+\begin{Proof}
+根据 \MBUnresolvedReference{citation}{M. Riesz [1]} 的一个定理, 必须证明下述两个性质:
+
+(i) 对每个 $\epsilon>0$, 存在紧集 $K\subset\Omega$, 使
+\begin{equation}
+\int_{\Omega-K}|u_h|^{q_1}dx\leq\epsilon,
+\qquad\forall u_h\in\mathcal E.
+\label{eq:ch2-step-compactness-tightness}
+\end{equation}
+
+(ii) 对每个 $\epsilon>0$, 存在 $\eta>0$, 使对任意 $u_h\in\mathcal E$ 和任意 $\ell=(\ell_1,\ldots,\ell_n)$, $|\ell|\leq\eta$, 有
+\begin{equation}
+|\tau_\ell u_h-u_h|_{L^{q_1}(\mathbb R^n)}\leq\epsilon,
+\label{eq:ch2-step-compactness-translation}
+\end{equation}
+其中 $\tau_\ell$ 表示平移算子
+\begin{equation}
+(\tau_\ell\phi)(x)=\phi(x+\ell).
+\label{eq:ch2-translation-operator}
+\end{equation}
+
+性质 (i) 的证明. 由 Sobolev 不等式 \eqref{eq:ch2-discrete-sobolev-step-bound} 和 \eqref{eq:ch2-discrete-sobolev-critical-bound}, $\mathcal E$ 在 $L^q(\Omega)$ 中有界, 其中当 $p<n$ 时 $q$ 由 \eqref{eq:ch2-step-compactness-exponents-subcritical} 给出, 否则固定取某个 $q>q_1$. 由 Hölder 不等式,
+\begin{equation}
+\int_{\Omega-K}|u_h|^{q_1}dx
+\leq c[\operatorname{meas}(\Omega-K)]^{1-(q_1/q)},
+\qquad\forall u_h\in\mathcal E.
+\label{eq:ch2-step-compactness-tightness-bound}
+\end{equation}
+取足够大的紧集 $K$, 可使右端小于 $\epsilon$, 从而证明 (i).
+
+性质 (ii) 的证明. 先说明 \eqref{eq:ch2-step-compactness-translation} 可由 $L^p$ 中的类似条件 \eqref{eq:ch2-step-compactness-lp-translation} 代替.
+
+\hypertarget{chapter-02-page-142}{}
+情形 (a): $q_1\leq p$. 因为 $\Omega$ 有界且 $q_1\leq p<q$, 对任意 $f\in L^q(\Omega)$ 也有 $f\in L^{q_1}(\Omega)$ 和 $f\in L^p(\Omega)$, 并由 Hölder 不等式
+\[
+|f|_{L^{q_1}(\Omega)}
+\leq(\operatorname{meas}\Omega)^{1/q_1-1/p}|f|_{L^p(\Omega)}.
+\]
+
+情形 (b): $q_1>p$. 对任意 $f\in L^q(\Omega)$, 由 Hölder 不等式
+\[
+\int|f|^{q_1}dx
+\leq\left(\int|f|^pdx\right)^{1/\rho}
+\left(\int|f|^qdx\right)^{1/\rho'},
+\]
+其中 $\theta\in(0,1)$, $\rho>1$, $1/\rho'+1/\rho=1$, 且选择 $\theta,\rho$ 使 $q_1\theta\rho=p$, $q_1(1-\theta)\rho'=q$. 因而
+\begin{equation}
+\int|f|^{q_1}dx
+\leq\left(\int|f|^pdx\right)^{1/\rho}
+\left(\int|f|^qdx\right)^{1/\rho'}.
+\label{eq:ch2-step-compactness-interpolation}
+\end{equation}
+特别地, 对任意 $\ell,u_h$,
+\[
+|\tau_\ell u_h-u_h|_{L^{q_1}(\mathbb R^n)}
+\leq2^{1-\theta}|u_h|_{L^q(\mathbb R^n)}^{1-\theta}
+|\tau_\ell u_h-u_h|_{L^p(\mathbb R^n)}^\theta.
+\]
+由于 $\mathcal E$ 在 $L^q(\mathbb R^n)$ 中有界,
+\begin{equation}
+|\tau_\ell u_h-u_h|_{L^{q_1}(\mathbb R^n)}
+\leq c|\tau_\ell u_h-u_h|_{L^p(\mathbb R^n)}^\theta.
+\label{eq:ch2-step-compactness-interpolation-translation}
+\end{equation}
+所以只需证明
+\begin{equation}
+\forall\epsilon>0,\ \exists\eta>0:\quad
+|\tau_\ell u_h-u_h|_{L^p(\mathbb R^n)}\leq\epsilon
+\quad\text{当 }|\ell|\leq\eta,\ u_h\in\mathcal E.
+\label{eq:ch2-step-compactness-lp-translation}
+\end{equation}
+它容易由 \eqref{eq:ch2-step-family-uniform-bound} 和下面两个引理得到.
+\end{Proof}
+
+\MBSourceStatementNumber{lemma}{2}
+\begin{Lemma}
+\label{lem:ch2-multidirectional-translation}
+令 $\vec\ell_i=\ell_i\vec h_i$. 则
+\begin{equation}
+|\tau_\ell u_h-u_h|_{L^p(\mathbb R^n)}
+\leq\sum_{i=1}^{n}|\tau_{\vec\ell_i}u_h-u_h|_{L^p(\mathbb R^n)}.
+\label{eq:ch2-multidirectional-translation-bound}
+\end{equation}
+\end{Lemma}
+
+\begin{Proof}
+记 $I$ 为恒等算子, 容易验证恒等式
+\begin{equation}
+\tau_\ell-I=\sum_{i=1}^{n}
+\tau_{\vec\ell_1}\cdots\tau_{\vec\ell_{i-1}}(\tau_{\vec\ell_i}-I).
+\label{eq:ch2-translation-telescoping-operator}
+\end{equation}
+它与平移不改变 $L^p$ 范数这一事实给出 \eqref{eq:ch2-multidirectional-translation-bound}.
+\end{Proof}
+
+\hypertarget{chapter-02-page-143}{}
+回忆对任意 $\alpha\in\mathbb R^n$ 和任意 $f\in L^p(\mathbb R^n)$,
+\begin{equation}
+|\tau_\alpha f|_{L^p(\mathbb R^n)}=|f|_{L^p(\mathbb R^n)}.
+\label{eq:ch2-translation-isometry}
+\end{equation}
+
+\MBSourceStatementNumber{lemma}{3}
+\begin{Lemma}
+\label{lem:ch2-one-direction-translation}
+对 $1\leq i\leq n$,
+\begin{equation}
+|\tau_{\vec\ell_i}u_h-u_h|_{L^p(\mathbb R^n)}
+\leq c(|\ell_i|+|\ell_i|^{1/p})
+|\delta_{ih}u_h|_{L^p(\mathbb R^n)}.
+\label{eq:ch2-one-direction-translation-bound}
+\end{equation}
+\end{Lemma}
+
+\begin{Proof}
+由于
+\[
+|\tau_{\vec\ell_i}u_h-u_h|_{L^p(\mathbb R^n)}
+=|\tau_{-\vec\ell_i}u_h-u_h|_{L^p(\mathbb R^n)},
+\]
+可假设 $\ell_i\geq0$, 并写
+\begin{equation}
+\ell_i=(\alpha_i+\beta_i)h_i,
+\qquad\alpha_i\text{ 是非负整数},\quad0\leq\beta_i<1,
+\qquad1\leq i\leq n.
+\label{eq:ch2-translation-grid-decomposition}
+\end{equation}
+于是
+\begin{equation}
+\tau_{\vec\ell_i}u_h-u_h
+=\sum_{j=0}^{\alpha_i-1}\tau_{j\vec h_i}(\tau_{\vec h_i}u_h-u_h)
++\tau_{\alpha_i\vec h_i}(\tau_{\beta_i\vec h_i}u_h-u_h).
+\label{eq:ch2-translation-grid-telescoping}
+\end{equation}
+由 \eqref{eq:ch2-translation-grid-telescoping} 和 \eqref{eq:ch2-translation-isometry}, 得
+\begin{equation}
+|\tau_{\vec\ell_i}u_h-u_h|_{L^p(\mathbb R^n)}
+\leq\sum_{j=0}^{\alpha_i-1}|\tau_{\vec h_i}u_h-u_h|_{L^p(\mathbb R^n)}
++|\tau_{\beta_i\vec h_i}u_h-u_h|_{L^p(\mathbb R^n)}.
+\label{eq:ch2-translation-grid-majoration}
+\end{equation}
+但 $\tau_{\vec h_i}-I=h_i\tau_{\vec h_i/2}\delta_{ih}$, 且右端的和等于 $\alpha_i h_i|\delta_{ih}u_h|_{L^p(\mathbb R^n)}$. 因为 $\alpha_i h_i\leq\ell_i$, 得
+\begin{equation}
+|\tau_{\vec\ell_i}u_h-u_h|_{L^p(\mathbb R^n)}
+\leq\ell_i|\delta_{ih}u_h|_{L^p(\mathbb R^n)}
++|\tau_{\beta_i\vec h_i}u_h-u_h|_{L^p(\mathbb R^n)}.
+\label{eq:ch2-translation-grid-majoration-reduced}
+\end{equation}
+对 $i=1$, 在每个 $\sigma_h(M)$ 上直接计算并求和, 得
+\[
+|\tau_{\beta_1\vec h_1}u_h-u_h|_{L^p(\mathbb R^n)}
+=\beta_1^{1/p}h_1|\tau_{\vec h_1/2}\delta_{1h}u_h|_{L^p(\mathbb R^n)}.
+\]
+由于 $h$ 有界且 $\beta_1h_1\leq\ell_1$, 后者不超过 $c\ell_1^{1/p}|\delta_{1h}u_h|_{L^p(\mathbb R^n)}$. 对 $i=2,\ldots,n$ 证明相同, 从而得到 \eqref{eq:ch2-one-direction-translation-bound}.
+\end{Proof}
+
+\hypertarget{chapter-02-page-144}{}
+\MBSourceStatementNumber{remark}{3}
+\begin{Remark}
+\label{rem:ch2-step-compactness-sequence}
+在定理 \ref{thm:ch2-discrete-compactness-step} 的最常见应用中, 族 $\mathcal E$ 是元素序列 $u_{h_m}$, 其中 $h_m\to0$. 因而 $\mathcal E_{h_m}=\{u_{h_m}\}$, 若 $h$ 不是某个 $h_m$, 则 $\mathcal E_h$ 为空.
+\end{Remark}
+
+\MBSourceStatementNumber{remark}{4}
+\begin{Remark}
+\label{rem:ch2-finite-difference-compactness}
+设 $\Omega$ 有界, 且
+\begin{equation}
+\mathcal E=\bigcup_{|h|\leq c_0}\mathcal E_h,
+\qquad\mathcal E_h=\{u_h\in W_h,\ \lVert u_h\rVert_h\leq1\},
+\label{eq:ch2-finite-difference-unit-family}
+\end{equation}
+其中 $W_h$ 是由有限差分得到的 $H_0^1(\Omega)$ 的逼近 (APX1). 由定理 \ref{thm:ch2-discrete-compactness-step} 推知 $\mathcal E$ 在 $L^2(\Omega)$ 中相对紧. 下述集合 $\mathcal E'\subset\mathcal E$ 也在 $L^2(\Omega)$ 中相对紧:
+\begin{equation}
+\mathcal E'=\bigcup_{|h|\leq c_0}\mathcal E_h',
+\qquad\mathcal E_h'=\{u_h\in V_h,\ \lVert u_h\rVert_h\leq1\};
+\label{eq:ch2-finite-difference-divfree-family}
+\end{equation}
+$V_h$ 对应于 $V$ 的逼近 (APX1).
+\end{Remark}
+
+\subsection{非协调有限元的离散 Sobolev 不等式}
+\label{subsec:ch2-discrete-sobolev-nonconforming}
+
+本节其余部分沿用 Chapter 1, Section 4.5 关于非协调有限元的记号. 特别回忆, $\mathcal T_h$ 是有界开集 $\Omega$ 的一个容许正则剖分; $\mathcal U_h$ 是点 $B$ 的集合, 这些点是某个单纯形 $S\in\mathcal T_h$ 的一个 $(n-1)$ 维面的重心并属于 $\Omega(h)$ 的内部, 其中
+\[
+\Omega(h)=\bigcup_{S\in\mathcal T_h}S.
+\]
+$w_{hB}$, $B\in\mathcal U_h$, 是在每个单纯形 $S\in\mathcal T_h$ 上线性的标量函数, 在 $\Omega(h)$ 外为零, 并取节点值 $w_{hB}(B)=1$, 而对作为某个 $S\in\mathcal T_h$ 的 $(n-1)$ 维面重心且不同于 $B$ 的所有 $M$, $w_{hB}(M)=0$.
+
+对任意形如
+\begin{equation}
+u_h=\sum_{M\in\mathcal U_h}u_h(M)w_{hM}
+\label{eq:ch2-nonconforming-expansion}
+\end{equation}
+的函数 $u_h$, $D_{ih}u_h$ 是在 $\Omega(h)$ 外为零并满足
+\[
+D_{ih}u_h(x)=D_i u_h(x),
+\qquad\forall x\in S,\quad\forall S\in\mathcal T_h
+\]
+的阶梯函数.
+
+\MBSourceStatementNumber{theorem}{3}
+\begin{Theorem}
+\label{thm:ch2-discrete-sobolev-nonconforming}
+设 $1\leq p<n$, 并以 $1/q=1/p-1/n$ 定义 $q$. 存在只依赖于 $n,p,\Omega,\alpha$ 的常数 $c=c(n,p,\Omega,\alpha)$, 使对每个形如 \eqref{eq:ch2-nonconforming-expansion} 的函数,
+\begin{equation}
+|u_h|_{L^q(\Omega)}
+\leq c(n,p,\Omega,\alpha)
+\sum_{i=1}^{n}|D_{ih}u_h|_{L^p(\Omega)}.
+\label{eq:ch2-nonconforming-sobolev-bound}
+\end{equation}
+\end{Theorem}
+
+\begin{Proof}
+证明强烈依赖 Chapter 1 的命题 \ref{prop:ch1-nc-jh-lp-estimate}. 为证明 \eqref{eq:ch2-nonconforming-sobolev-bound}, 必须说明对每个 $\theta\in\mathcal D(\Omega)$,
+\begin{equation}
+\left|\int_\Omega u_h\theta\,dx\right|
+\leq c(n,p,\Omega)|\theta|_{L^{q'}(\Omega)}
+\left(\sum_{j=1}^{n}|D_{jh}u_h|_{L^p(\Omega)}\right),
+\label{eq:ch2-nonconforming-duality-bound}
+\end{equation}
+其中 $1/q+1/q'=1$.
+
+\hypertarget{chapter-02-page-145}{}
+以 $\chi$ 表示 Dirichlet 问题的解
+\[
+\Delta\chi=\theta\quad\text{在 }\Omega\text{ 中},
+\qquad\chi=0\quad\text{在 }\partial\Omega\text{ 上}.
+\]
+函数 $\chi\in C^\infty(\Omega)$; 由椭圆方程的正则性结果,
+\begin{equation}
+|\chi|_{W^{2,q'}(\Omega)}
+\leq c(n,p,\Omega)|\theta|_{L^{q'}(\Omega)}.
+\label{eq:ch2-dirichlet-regularity-dual}
+\end{equation}
+注意 $1<q,q'<\infty$. 由 Sobolev 不等式, $\chi_i=D_i\chi$ 属于 $W^{1,q'}(\Omega)$, 从而属于 $L^{p'}(\Omega)$, 其中 $1/p'+1/p=1$:
+\begin{equation}
+|\chi_i|_{L^{p'}(\Omega)}
+\leq c(n,p,\Omega)|\theta|_{L^{q'}(\Omega)},
+\qquad\chi_i=D_i\chi,quad1\leq i\leq n.
+\label{eq:ch2-dirichlet-gradient-dual-bound}
+\end{equation}
+用函数 $\chi$ 写成
+\[
+\int_\Omega u_h\theta\,dx
+=\sum_{S\in\mathcal T_h}\int_Su_h\Delta\chi\,dx
+=\sum_{i=0}^{n}\mathcal J_h^i,
+\]
+其中
+\[
+\mathcal J_h^0=-\sum_{S\in\mathcal T_h}\int_SD_i u_hD_i\chi\,dx
+=-\int_\Omega D_{ih}u_hD_i\chi\,dx,
+\]
+且
+\[
+\mathcal J_h^i=\sum_{S\in\mathcal T_h}\int_SD_i(u_hD_i\chi)\,dx.
+\]
+于是
+\begin{equation}
+\left|\int_\Omega u_h\theta\,dx\right|
+\leq\sum_{i=0}^{n}|\mathcal J_h^i|.
+\label{eq:ch2-nonconforming-duality-decomposition}
+\end{equation}
+为证明 \eqref{eq:ch2-nonconforming-duality-bound}, 对 $0\leq i\leq n$ 的 $|\mathcal J_h^i|$ 建立同类型的控制. 对 $\mathcal J_h^0$, Hölder 不等式和 \eqref{eq:ch2-dirichlet-gradient-dual-bound} 给出
+\begin{equation}
+\begin{aligned}
+|\mathcal J_h^0|
+&\leq\sum_{i=1}^{n}|D_{ih}u_h|_{L^p(\Omega)}|D_i\chi|_{L^{p'}(\Omega)}\\
+&\leq c(n,p,\Omega)|\theta|_{L^{q'}(\Omega)}
+\left(\sum_{i=1}^{n}|D_{ih}u_h|_{L^p(\Omega)}\right).
+\end{aligned}
+\label{eq:ch2-nonconforming-volume-term-bound}
+\end{equation}
+对 $1\leq i\leq n$ 的 $\mathcal J_h^i$, 在 Chapter 1 的 \eqref{eq:ch1-nc-jh-lp-estimate} 中取 $\phi=\chi_i=D_i\chi$, 得
+\[
+|\mathcal J_h^i|
+\leq c(n,p,\Omega,\alpha)
+\left(\sum_{j=1}^{n}|D_j\chi_i|_{L^{q'}(\Omega)}\right)
+\left(\sum_{j=1}^{n}|D_{jh}u_h|_{L^p(\Omega)}\right)
+\]
+\[
+\leq c(n,p,\Omega,\alpha)|\chi|_{W^{2,q'}(\Omega)}
+\left(\sum_{j=1}^{n}|D_{jh}u_h|_{L^p(\Omega)}\right)
+\]
+\[
+\leq c(n,p,\Omega,\alpha)|\theta|_{L^{q'}(\Omega)}
+\left(\sum_{j=1}^{n}|D_{jh}u_h|_{L^p(\Omega)}\right),
+\]
+其中最后一步使用 \eqref{eq:ch2-dirichlet-regularity-dual}. 这证明了 \eqref{eq:ch2-nonconforming-duality-bound}.
+\end{Proof}
+
+\hypertarget{chapter-02-page-146}{}
+\MBSourceStatementNumber{remark}{5}
+\begin{Remark}
+\label{rem:ch2-nonconforming-domain-constant}
+与通常的 Sobolev 不等式(见 Section 1 和定理 \ref{thm:ch2-discrete-sobolev-step})不同, 在离散情形下, 不等式 \eqref{eq:ch2-nonconforming-sobolev-bound} 含有依赖于 $\Omega$ 的系数 $c(n,p,\Omega)$. 通常的 Sobolev 不等式所含系数与所论函数的支集无关. 这里损失了一些信息, 但对后文并不重要.
+\end{Remark}
+
+\MBSourceStatementNumber{remark}{6}
+\begin{Remark}
+\label{rem:ch2-nonconforming-critical-case}
+$n=p$ 的情形可如注 \ref{rem:ch2-discrete-sobolev-critical-case} 那样处理. 任取 $1\leq p_1<n$, 并由 $1/q=1/p_1-1/n$ 定义 $q$. 对任意形如 \eqref{eq:ch2-nonconforming-expansion} 的函数 $u_h$, 关系 \eqref{eq:ch2-nonconforming-sobolev-bound} 给出
+\[
+|u_h|_{L^q(\Omega)}
+\leq c(n,p,\Omega,\alpha)
+\sum_{i=1}^{n}|D_{ih}u_h|_{L^{p_1}(\Omega)}.
+\]
+由 Hölder 不等式,
+\[
+|D_{ih}u_h|_{L^{p_1}(\Omega)}
+\leq(\operatorname{meas}\Omega)^{1-p/n}|D_{ih}u_h|_{L^n(\Omega)}.
+\]
+因此, 换用另一个常数 $c(n,p,\Omega,\alpha)$,
+\begin{equation}
+|u_h|_{L^q(\Omega)}
+\leq c(n,p,\Omega,\alpha)
+\sum_{i=1}^{n}|D_{ih}u_h|_{L^n(\Omega)}.
+\label{eq:ch2-nonconforming-critical-intermediate}
+\end{equation}
+改变常数的名称并注意 $q$ 可以是任意大于或等于 $1$ 的数, 将 \eqref{eq:ch2-nonconforming-critical-intermediate} 写成
+\begin{equation}
+|u_h|_{L^q(\Omega)}
+\leq c(n,q,\Omega,\alpha)
+\sum_{i=1}^{n}|D_{ih}u_h|_{L^n(\Omega)},
+\label{eq:ch2-nonconforming-critical-bound}
+\end{equation}
+它对支集包含于 $\Omega$ 的每个形如 \eqref{eq:ch2-nonconforming-expansion} 的 $u_h$ 以及每个 $q$, $1\leq q<\infty$, 成立.
+\end{Remark}
+
+\MBSourceStatementNumber{remark}{7}
+\begin{Remark}
+\label{rem:ch2-nonconforming-ladyzhenskaya}
+Chapter 3 给出一个类似于 \eqref{eq:ch2-discrete-ladyzhenskaya-three-dimensional}($n=3$)的不等式. 我们不知道在二维情形下是否有对非协调有限元成立的类似于 \eqref{eq:ch2-discrete-ladyzhenskaya-two-dimensional}($n=2$)的不等式; Chapter 3 将给出一个较弱的不等式.\MBUnresolvedReference{chapter}{Chapter 3}
+\end{Remark}
+
+\subsection{非协调有限元的离散紧性定理}
+\label{subsec:ch2-discrete-compactness-nonconforming}
+
+现在给出定理 \ref{thm:ch2-sobolev-compact-embedding} 的一个离散对应物, 更确切地说, 对任意有界集 $\Omega$, $H_0^1(\Omega)$ 到 $L^2(\Omega)$ 的注入是紧的这一事实的离散对应物. 但由于一个技术困难, 只在二维和三维情形证明该结果.
+
+用 $\{\mathcal T_h\}_{h\in\mathcal H_\alpha}$ 表示 $\Omega$ 的一个正则剖分族. 对每个 $h$, 考虑由形如 \eqref{eq:ch2-nonconforming-expansion} 的标量函数 $u_h$ 组成的空间 $Y_h$, 即
+\begin{equation}
+u_h=\sum_{M\in\mathcal U_h}u_h(M)w_{hM},
+\qquad u_h(M)\in\mathbb R.
+\label{eq:ch2-nonconforming-space-expansion}
+\end{equation}
+这些函数在每个单纯形 $S\in\mathcal T_h$ 上线性, 在 $\Omega(h)=\bigcup_{S\in\mathcal T_h}S$ 外为零, 并在某个单纯形 $S\in\mathcal T_h$ 的一个 $(n-1)$ 维面的重心处连续. 空间 $Y_h$ 赋以内积
+\begin{equation}
+((u_h,v_h))_h
+=\sum_{i=1}^{n}(D_{ih}u_h,D_{ih}v_h)
+=\sum_{i=1}^{n}\sum_{S\in\mathcal T_h}
+\int_S\frac{\partial u_h}{\partial x_i}
+\frac{\partial v_h}{\partial x_i}\,dx.
+\label{eq:ch2-nonconforming-discrete-inner-product}
+\end{equation}
+
+\hypertarget{chapter-02-page-147}{}
+\MBSourceStatementNumber{theorem}{4}
+\begin{Theorem}
+\label{thm:ch2-discrete-compactness-nonconforming}
+假设 $n=2$ 或 $3$, 且 $\mathcal T_h$, $h\in\mathcal H_\alpha$, 是 $\Omega$ 的正则剖分族. 设 $\mathcal E_h$ 是可以为空的形如 \eqref{eq:ch2-nonconforming-space-expansion} 的函数族, 并令
+\begin{equation}
+\mathcal E=\bigcup_{\rho(h)\leq c_0}\mathcal E_h.
+\label{eq:ch2-nonconforming-family-union}
+\end{equation}
+假设
+\begin{equation}
+\sup_{u_h\in\mathcal E}\lVert u_h\rVert_h<+\infty.
+\label{eq:ch2-nonconforming-family-uniform-bound}
+\end{equation}
+则族 $\mathcal E$ 在 $L^2(\Omega)$ 中相对紧.
+\end{Theorem}
+
+\begin{Proof}
+证明的主要思想是观察到(分片线性)协调有限元函数空间是(分片线性)非协调有限元函数空间的子空间. 然后利用``非离散''紧性定理(定理 \ref{thm:ch2-sobolev-compact-embedding})和前面的先验估计得到结果.
+
+由 \eqref{eq:ch2-nonconforming-space-expansion} 定义的空间 $Y_h$ 包含在 $\Omega(h)$ 边界上为零的连续分片线性函数空间 $X_h$(协调元). 由于 $X_h,Y_h$ 都是有限维的, 二者关于内积 \eqref{eq:ch2-nonconforming-discrete-inner-product} 都是 Hilbert 空间; 因而可考虑从 $Y_h$ 到 $X_h$ 的正交投影 $\pi_h$, 且按定义\footnote{这些性质已经提到并使用过多次.}
+\begin{equation}
+((\pi_hu_h,v_h))_h=((u_h,v_h))_h,
+\qquad\forall u_h\in Y_h,\quad\forall v_h\in X_h,
+\label{eq:ch2-nonconforming-orthogonal-projection}
+\end{equation}
+\begin{equation}
+\lVert\pi_hu_h\rVert_h\leq\lVert u_h\rVert_h,
+\qquad\forall u_h\in Y_h.
+\label{eq:ch2-nonconforming-projection-contraction}
+\end{equation}
+考虑族 $\mathcal E$ 中的元素 $u_h$. 由 \eqref{eq:ch2-nonconforming-projection-contraction}, 族 $\{\pi_hu_h\mid u_h\in\mathcal E\}$ 在 $H_0^1(\Omega)$ 中有界, 因为 $X_h\subset H_0^1(\Omega)$, 且对协调元, $\lVert\,\cdot\,\rVert_h$ 范数与 $H_0^1(\Omega)$ 范数一致:
+\[
+\sup_{u_h\in\mathcal E}\lVert\pi_hu_h\rVert_{H_0^1(\Omega)}
+=\sup_{u_h\in\mathcal E}\lVert\pi_hu_h\rVert_h
+\leq\sup_{u_h\in\mathcal E}\lVert u_h\rVert_h<+\infty.
+\]
+由定理 \ref{thm:ch2-sobolev-compact-embedding}, 族 $\pi_hu_h$ 在 $L^2(\Omega)$ 中相对紧, 因而存在子序列 $h'\to0$ 和某个 $u\in L^2(\Omega)$, 使
+\[
+\pi_{h'}u_{h'}\longrightarrow u
+\qquad\text{在 }L^2(\Omega)\text{ 中},\quad h'\to0.
+\]
+只需证明
+\begin{equation}
+\pi_{h'}u_{h'}-u_{h'}\longrightarrow0,
+\qquad h'\to0,
+\label{eq:ch2-nonconforming-projection-error-convergence}
+\end{equation}
+而这立即由下一个引理得到.
+\end{Proof}
+
+\MBSourceStatementNumber{lemma}{4}
+\begin{Lemma}
+\label{lem:ch2-nonconforming-projection-error}
+对每个 $v_h\in Y_h$,
+\begin{equation}
+|\pi_hv_h-v_h|_{L^2(\Omega)}
+\leq c(\alpha,\Omega)\rho(h)\lVert v_h\rVert_h.
+\label{eq:ch2-nonconforming-projection-error}
+\end{equation}
+\end{Lemma}
+
+\hypertarget{chapter-02-page-148}{}
+\begin{Proof}
+与定理 \ref{thm:ch2-discrete-sobolev-nonconforming} 的证明一样, 取 $\theta\in\mathcal D(\Omega)$, 并令 $\chi$ 为 Dirichlet 问题
+\[
+\Delta\chi=\theta\quad\text{在 }\Omega\text{ 中},
+\qquad\chi=0\quad\text{在 }\partial\Omega\text{ 上}
+\]
+的解. 为估计 $|v_h-\pi_hv_h|_{L^2(\Omega)}$, 考虑
+\[
+(v_h-\pi_hv_h,\theta)=(v_h-\pi_hv_h,\Delta\chi).
+\]
+与定理 \ref{thm:ch2-discrete-sobolev-nonconforming} 的证明一样,
+\begin{equation}
+(v_h-\pi_hv_h,\Delta\chi)
+=((\pi_hv_h-v_h,\chi))_h+\sum_{i=1}^{n}\mathcal J_h^i,
+\qquad
+\mathcal J_h^i=\sum_{S\in\mathcal T_h}\int_SD_i((v_h-\pi_hv_h)D_i\chi)\,dx.
+\label{eq:ch2-nonconforming-projection-duality}
+\end{equation}
+由 Chapter 1 的命题 \ref{prop:ch1-nc-jh-h1-estimate},
+\begin{equation}
+|\mathcal J_h^i|
+\leq c(\Omega,\alpha)\rho(h)
+\lVert v_h-\pi_hv_h\rVert_h|\theta|_{L^2(\Omega)},
+\label{eq:ch2-nonconforming-projection-boundary-term}
+\end{equation}
+\footnote{这里本质上使用了正则性假设 $\sigma_h\leq\alpha<+\infty$, $\forall h$.}
+结合 \eqref{eq:ch2-nonconforming-family-uniform-bound} 和 \eqref{eq:ch2-nonconforming-projection-contraction}, 得
+\begin{equation}
+|\mathcal J_h^i|\leq c\rho(h).
+\label{eq:ch2-nonconforming-projection-boundary-small}
+\end{equation}
+为估计 $((v_h-\pi_hv_h,\chi))_h$, 考虑由
+\[
+\chi_h\in X_h,
+\qquad\chi_h(M)=\chi(M),\quad\forall M\in\mathcal U_h
+\]
+刻画的函数 $\chi_h$(即 $\chi$ 的插值函数). 注意当 $n\leq3$ 时 $H^2(\Omega)\subset C^0(\overline\Omega)$. 由 Chapter 1 回顾的一般插值结果,
+\begin{equation}
+\lVert\chi-\chi_h\rVert_h
+\leq c(\alpha)\rho(h)|\chi|_{H^2(\Omega)}
+\leq c\rho(h)|\theta|_{L^2(\Omega)}.
+\label{eq:ch2-nonconforming-interpolation-error}
+\end{equation}
+\footnote{见 Chapter 1 的 \MBUnresolvedReference{equations}{(4.42), (4.43)} 及其 $L^2$ 类似式, 也见 \MBUnresolvedReference{citation}{Ciarlet and Raviart [1], Theorem 5, p. 196}.}
+由 \eqref{eq:ch2-nonconforming-orthogonal-projection},
+\[
+((v_h-\pi_hv_h,\chi))_h
+=((v_h-\pi_hv_h,\chi-\chi_h))_h,
+\]
+所以
+\[
+|((v_h-\pi_hv_h,\chi))_h|
+\leq\lVert v_h-\pi_hv_h\rVert_h\lVert\chi-\chi_h\rVert_h
+\leq c\rho(h).
+\]
+关系 \eqref{eq:ch2-nonconforming-projection-error} 得证.
+\end{Proof}
+
+\MBSourceStatementNumber{remark}{8}
+\begin{Remark}
+\label{rem:ch2-nonconforming-compactness-sequence}
+在定理 \ref{thm:ch2-discrete-compactness-nonconforming} 的最常见应用中, 族 $\mathcal E$ 是元素序列 $u_{h_m}$, $\rho(h_m)\to0$, $\sigma(h_m)\leq\alpha$. 因而 $\mathcal E_{h_m}=\{u_{h_m}\}$, 若 $h$ 不是某个 $h_m$, 则 $\mathcal E_h$ 为空. 若 $\lVert u_{h_m}\rVert_{h_m}\leq c$, 则序列 $u_{h_m}$ 在 $L^2(\Omega)$ 中相对紧.
+\end{Remark}
+
+在二维和三维情形, 还证明下面这个将会有用的相关不等式.
