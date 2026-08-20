@@ -1,0 +1,544 @@
+\hypertarget{chapter-03-section-04-page-231}{}
+\section{用半离散给出的另一存在性证明}
+\label{sec:ch3-semidiscrete-existence}
+本节给出 Navier--Stokes 方程弱解的另一种存在性证明, 它适用于任意空间维数. 通过关于 $t$ 的半离散构造逼近解, 再利用紧性论证取极限. 第 \ref{subsec:ch3-semidiscrete-formulation} 小节以适用于任意维数的方式重新表述问题并陈述存在性结果; 第 \ref{subsec:ch3-semidiscrete-approximation} 小节构造逼近解; 第 \ref{subsec:ch3-semidiscrete-estimates} 和 \ref{subsec:ch3-semidiscrete-limit} 小节分别处理先验估计与极限过程.
+
+\subsection{问题的陈述}
+\label{subsec:ch3-semidiscrete-formulation}
+在更高维数中陈述存在性定理之前, 必须重新表述弱解问题. 与定常情形一样, 当 $n>4$ 时, $b$ 在 $V$ 上不是连续三线性型, 因而像 \eqref{eq:ch3-existence-force-assumption}--\eqref{eq:ch3-existence-weak-initial-condition} 那样的陈述没有意义, 因为其中的 $b(u(t),u(t),v)$ 项可能没有定义.
+
+为此再次引入(见第 \ref{chap:steady-state-navier-stokes} 章第 \ref{subsec:ch2-sobolev-compactness} 小节)空间 $V_s$:
+\begin{equation}
+V_s=\overline{\mathcal V}^{\,\mathbf H_0^1(\Omega)\cap\mathbf H^s(\Omega)},
+\qquad s\geq1.
+\label{eq:ch3-semidiscrete-vs-definition}
+\end{equation}
+
+\hypertarget{chapter-03-page-232}{}
+空间 $\mathbf H_0^1(\Omega)\cap\mathbf H^s(\Omega)$ 和 $V_s$ 赋予 $\mathbf H^s(\Omega)$ 的通常 Hilbert 范数:
+\begin{equation}
+\lVert u\rVert_{\mathbf H^s(\Omega)}=
+\left\{\sum_{|j|\leq s}|D^ju|^2\right\}^{1/2}
+\qquad(s\text{ 为整数}).
+\label{eq:ch3-semidiscrete-hs-norm}
+\end{equation}
+显然, 对 $s\geq1$,
+\begin{equation}
+V_s\subset V
+\label{eq:ch3-semidiscrete-vs-embedding}
+\end{equation}
+为连续注入, 且 $V_s$ 在 $V$ 中稠密. 当 $s\geq n/2$ 时, $b$ 定义在 $V\times V\times V_s$ 上; 更确切地说:
+
+\MBSourceStatementNumber{lemma}{1}
+\begin{Lemma}
+\label{lem:ch3-semidiscrete-trilinear-continuity}
+若 $s\geq n/2$, 则 $b$ 在 $V\times V\times V_s$ 上连续三线性, 且
+\begin{equation}
+|b(u,v,w)|\leq c|u|\lVert v\rVert\lVert w\rVert_{V_s}.
+\label{eq:ch3-semidiscrete-trilinear-estimate}
+\end{equation}
+\end{Lemma}
+
+\begin{Proof}
+对 $u,v,w\in\mathcal V$, Hölder 不等式给出
+\[
+\begin{aligned}
+|b(u,v,w)|=|b(u,w,v)|
+&\leq\sum_{i,j=1}^n\lVert u_i\rVert_{L^2(\Omega)}
+\lVert D_iw_j\rVert_{L^n(\Omega)}
+\lVert v_j\rVert_{L^{2n/(n-2)}(\Omega)}\\
+&\leq c_0|u|\lVert v\rVert\sum_{i,j=1}^n
+\lVert D_iw_j\rVert_{L^n(\Omega)},
+\end{aligned}
+\]
+这里使用了 Sobolev 不等式 $H_0^1(\Omega)\subset L^{2n/(n-2)}(\Omega)$. 因 $s\geq n/2$, $H^{s-1}(\Omega)$ 包含于 $L^q(\Omega)$, 其中
+\begin{equation}
+\frac1q=\frac12-\frac{s-1}{n},
+\qquad q\geq n.
+\label{eq:ch3-semidiscrete-sobolev-exponent}
+\end{equation}
+若 $w\in V_s$, 则 $D_iw_j\in H^{s-1}(\Omega)\cap L^2(\Omega)$, 因而 $D_iw_j\in L^n(\Omega)$ 且
+\[
+\lVert D_iw_j\rVert_{L^n(\Omega)}\leq c_1\lVert w\rVert_{V_s}.
+\]
+所以
+\begin{equation}
+|b(u,v,w)|\leq c_2|u|\lVert v\rVert\lVert w\rVert_{V_s}.
+\label{eq:ch3-semidiscrete-trilinear-estimate-dense}
+\end{equation}
+此估计把 $b$ 从 $\mathcal V\times\mathcal V\times\mathcal V$ 连续延拓到 $V\times V\times V_s$, 甚至延拓到 $H\times V\times V_s$.
+\end{Proof}
+
+\MBSourceStatementNumber{lemma}{2}
+\begin{Lemma}
+\label{lem:ch3-semidiscrete-bu-vs-dual}
+若 $u\in L^2(0,T;V)\cap L^\infty(0,T;H)$, 则对 $s\geq n/2$, $Bu\in L^2(0,T;V_s')$.
+\end{Lemma}
+
+\begin{Proof}
+由 $B$ 的定义和 \eqref{eq:ch3-semidiscrete-trilinear-estimate},
+\[
+|\langle Bu(t),v\rangle|=|b(u(t),u(t),v)|
+\leq c|u(t)|\lVert u(t)\rVert\lVert v\rVert_{V_s},
+\qquad\forall v\in V_s.
+\]
+故对几乎每个 $t\in[0,T]$,
+\[
+\lVert Bu(t)\rVert_{V_s'}\leq c|u(t)|\lVert u(t)\rVert,
+\]
+结论成立.
+\end{Proof}
+
+\hypertarget{chapter-03-page-233}{}
+在任意空间维数中, Navier--Stokes 问题可作如下弱表述.
+
+\MBProblemHeading
+\label{prob:ch3-semidiscrete-variational}
+给定 $f,u_0$ 满足
+\begin{equation}
+f\in L^2(0,T;V'),
+\label{eq:ch3-semidiscrete-force}
+\end{equation}
+\begin{equation}
+u_0\in H,
+\label{eq:ch3-semidiscrete-initial-data}
+\end{equation}
+求 $u$ 满足
+\begin{equation}
+u\in L^2(0,T;V)\cap L^\infty(0,T;H),
+\label{eq:ch3-semidiscrete-solution-space}
+\end{equation}
+\begin{equation}
+\frac d{dt}(u,v)+\nu((u,v))+b(u,u,v)=\langle f,v\rangle,
+\qquad\forall v\in V_s,quad s\geq\frac n2,
+\label{eq:ch3-semidiscrete-variational-equation}
+\end{equation}
+\begin{equation}
+u(0)=u_0.
+\label{eq:ch3-semidiscrete-initial-condition}
+\end{equation}
+若 $u$ 满足 \eqref{eq:ch3-semidiscrete-solution-space} 和 \eqref{eq:ch3-semidiscrete-variational-equation}, 则
+\[
+\frac d{dt}\langle u,v\rangle=\langle g,v\rangle,
+\qquad\forall v\in V_s,
+\]
+其中 $g=f-Bu-\nu Au$. 由引理 \ref{lem:ch3-semidiscrete-bu-vs-dual}, $Bu\in L^2(0,T;V_s')$, 而 $f-\nu Au\in L^2(0,T;V')$, 故
+\begin{equation}
+g\in L^2(0,T;V_s').
+\label{eq:ch3-semidiscrete-g-space}
+\end{equation}
+引理 \ref{lem:ch3-linear-banach-valued-derivative} 因而推出
+\begin{equation}
+u'\in L^2(0,T;V_s'),
+\qquad u'=f-\nu Au-Bu.
+\label{eq:ch3-semidiscrete-time-derivative}
+\end{equation}
+于是 $u$ 几乎处处等于从 $[0,T]$ 到 $V_s'$ 的连续函数, \eqref{eq:ch3-semidiscrete-initial-condition} 有意义.
+
+问题 \ref{prob:ch3-semidiscrete-variational} 的另一表述如下.
+
+\MBProblemHeading
+\label{prob:ch3-semidiscrete-operator}
+给定满足 \eqref{eq:ch3-semidiscrete-force}--\eqref{eq:ch3-semidiscrete-initial-data} 的 $f,u_0$, 求 $u$ 满足
+\begin{equation}
+u\in L^2(0,T;V)\cap L^\infty(0,T;H),
+\qquad u'\in L^2(0,T;V_s'),quad s\geq\frac n2,
+\label{eq:ch3-semidiscrete-operator-space}
+\end{equation}
+\begin{equation}
+u'+\nu Au+Bu=f\quad\text{于 }(0,T),
+\label{eq:ch3-semidiscrete-operator-equation}
+\end{equation}
+\begin{equation}
+u(0)=u_0.
+\label{eq:ch3-semidiscrete-operator-initial}
+\end{equation}
+两种表述等价. 下列定理给出解的存在性, 并蕴含定理 \ref{thm:ch3-existence-weak-solution}.
+
+\MBSourceStatementNumber{theorem}{1}
+\begin{Theorem}
+\label{thm:ch3-semidiscrete-existence}
+给定满足 \eqref{eq:ch3-semidiscrete-force}--\eqref{eq:ch3-semidiscrete-initial-data} 的 $f,u_0$. 则问题 \ref{prob:ch3-semidiscrete-operator} 至少存在一个解 $u$. 此外, $u$ 从 $[0,T]$ 到 $H$ 弱连续.
+\end{Theorem}
+
+该定理在第 \ref{subsec:ch3-semidiscrete-approximation} 和 \ref{subsec:ch3-semidiscrete-estimates} 小节证明; $H$ 中的弱连续性直接来自 \eqref{eq:ch3-semidiscrete-operator-space} 和引理 \ref{lem:ch3-linear-weak-continuity-transfer}.
+
+\hypertarget{chapter-03-page-234}{}
+\subsection{逼近解}
+\label{subsec:ch3-semidiscrete-approximation}
+令 $N$ 为稍后趋于无穷的整数, 并置
+\begin{equation}
+k=\frac TN.
+\label{eq:ch3-semidiscrete-time-step}
+\end{equation}
+递归定义 $V$ 中元素 $u^0,u^1,\ldots,u^N$; $u^m$ 在某种意义下逼近区间 $mk<t<(m+1)k$ 上所求函数 $u$.
+
+先定义 $V'$ 中元素 $f^1,\ldots,f^N$:
+\begin{equation}
+f^m=\frac1k\int_{(m-1)k}^{mk}f(t)\,dt,
+\qquad m=1,\ldots,N;quad f^m\in V'.
+\label{eq:ch3-semidiscrete-force-average}
+\end{equation}
+从
+\begin{equation}
+u^0=u_0
+\label{eq:ch3-semidiscrete-u0}
+\end{equation}
+开始; 已知 $u^0,\ldots,u^{m-1}$ 时, 把 $u^m$ 定义为满足
+\begin{equation}
+\frac{u^m-u^{m-1}}k+\nu Au^m+Bu^m=f^m
+\label{eq:ch3-semidiscrete-recursion}
+\end{equation}
+的 $V$ 中元素. $u^m$ 依赖于 $k$, 但简记为 $u^m$ 而不写 $u_k^m$. 其存在性由引理 \ref{lem:ch3-semidiscrete-step-existence} 保证.
+
+\MBSourceStatementNumber{lemma}{3}
+\begin{Lemma}
+\label{lem:ch3-semidiscrete-step-existence}
+对每个固定的 $k$ 和每个 $m\geq1$, 至少存在一个满足 \eqref{eq:ch3-semidiscrete-recursion} 的 $u^m$, 且
+\begin{equation}
+|u^m|^2-|u^{m-1}|^2+|u^m-u^{m-1}|^2
++2k\nu\lVert u^m\rVert^2\leq2k\langle f^m,u^m\rangle.
+\label{eq:ch3-semidiscrete-step-energy}
+\end{equation}
+\end{Lemma}
+
+对每个固定的 $k$(或 $N$), 由 $u^1,\ldots,u^N$ 定义逼近函数:
+\begin{equation}
+u_k:[0,T]\to V,
+\qquad u_k(t)=u^m,quad t\in[(m-1)k,mk],\quad m=1,\ldots,N,
+\label{eq:ch3-semidiscrete-piecewise-constant}
+\end{equation}
+\begin{equation}
+w_k:[0,T]\to H,
+\quad w_k\text{ 连续且在每个 }[(m-1)k,mk]\text{ 上线性},
+\quad w_k(mk)=u^m,quad m=0,\ldots,N.
+\label{eq:ch3-semidiscrete-piecewise-linear}
+\end{equation}
+第 \ref{subsec:ch3-semidiscrete-estimates} 小节给出这些函数的先验估计; 然后令 $k\to0$ 取极限(源文写作 \MBUnresolvedReference{section}{Section 4.3}).
+
+\begin{Proof}[引理 \ref{lem:ch3-semidiscrete-step-existence} 的证明]
+等式 \eqref{eq:ch3-semidiscrete-recursion} 必须在比 $V'$ 更大的空间中理解, 例如 $V_s'$ 中, $s\geq n/2$. 它等价于
+\begin{equation}
+(u^m,v)+k\nu((u^m,v))+kb(u^m,u^m,v)
+=\langle u^{m-1}+kf^m,v\rangle,
+\qquad\forall v\in V_s.
+\label{eq:ch3-semidiscrete-step-variational}
+\end{equation}
+基本像定理 \MBUnresolvedReference{theorem}{Theorem 2.1.2} 一样使用 Galerkin 方法. 选取 $V_s$ 中自由且完备, 因而在 $V$ 中也完备的序列 $w_1,\ldots,w_i,\ldots$. 对每个 $r$, 应用引理 \MBUnresolvedReference{lemma}{Lemma 1.4} 得到
+\begin{equation}
+\varphi_r=\sum_{i=1}^r\xi_{i,r}w_i,
+\label{eq:ch3-semidiscrete-galerkin-phi}
+\end{equation}
+满足
+\begin{equation}
+(\varphi_r,v)+k\nu((\varphi_r,v))+kb(\varphi_r,\varphi_r,v)
+=\langle u^{m-1}+kf^m,v\rangle,
+\quad\forall v\in\operatorname{Sp}[w_1,\ldots,w_r].
+\label{eq:ch3-semidiscrete-galerkin-equation}
+\end{equation}
+
+\hypertarget{chapter-03-page-235}{}
+还需取得与 $r$ 无关的先验估计并令 $r\to\infty$(此证明中 $k,m$ 固定). 在 \eqref{eq:ch3-semidiscrete-galerkin-equation} 中取 $v=\varphi_r$ 得
+\begin{equation}
+(\varphi_r-u^{m-1},\varphi_r)+k\nu\lVert\varphi_r\rVert^2
+=k\langle f^m,\varphi_r\rangle.
+\label{eq:ch3-semidiscrete-galerkin-energy}
+\end{equation}
+又有
+\begin{equation}
+2(a-b,a)=|a|^2-|b|^2+|a-b|^2,
+\qquad\forall a,b\in H,
+\label{eq:ch3-semidiscrete-polarization}
+\end{equation}
+故
+\begin{equation}
+\begin{aligned}
+|\varphi_r|^2+|\varphi_r-u^{m-1}|^2+2k\nu\lVert\varphi_r\rVert^2
+&=|u^{m-1}|^2+2k\langle f^m,\varphi_r\rangle\\
+&\leq|u^{m-1}|^2+k\nu\lVert\varphi_r\rVert^2
++\frac k\nu\lVert f^m\rVert_{V'}^2.
+\end{aligned}
+\label{eq:ch3-semidiscrete-galerkin-energy-bound}
+\end{equation}
+因此
+\begin{equation}
+|\varphi_r|^2+|\varphi_r-u^{m-1}|^2+k\nu\lVert\varphi_r\rVert^2
+\leq|u^{m-1}|^2+\frac k\nu\lVert f^m\rVert_{V'}^2.
+\label{eq:ch3-semidiscrete-galerkin-uniform-bound}
+\end{equation}
+于是 $\varphi_r$ 在 $V$ 中有界, 可抽取子序列 $\varphi_{r'}$ 使
+\begin{equation}
+\varphi_{r'}\rightharpoonup\varphi\quad\text{在 }V\text{ 中},
+\qquad r'\to\infty.
+\label{eq:ch3-semidiscrete-galerkin-weak-limit}
+\end{equation}
+用标准论证在 \eqref{eq:ch3-semidiscrete-galerkin-equation} 中取极限, 证明 $\varphi=u^m$ 满足 \eqref{eq:ch3-semidiscrete-step-variational}. 最后在 \eqref{eq:ch3-semidiscrete-galerkin-energy-bound} 中取下极限, 利用弱拓扑下范数的下半连续性, 得到 \eqref{eq:ch3-semidiscrete-step-energy}.
+\end{Proof}
+
+\subsection{先验估计}
+\label{subsec:ch3-semidiscrete-estimates}
+\MBSourceStatementNumber{lemma}{4}
+\begin{Lemma}
+\label{lem:ch3-semidiscrete-discrete-estimates}
+有
+\begin{equation}
+|u^m|^2\leq d_1,
+\qquad m=1,\ldots,N,
+\label{eq:ch3-semidiscrete-um-bound}
+\end{equation}
+\begin{equation}
+k\sum_{m=1}^N\lVert u^m\rVert^2\leq\frac{d_1}\nu,
+\label{eq:ch3-semidiscrete-v-sum-bound}
+\end{equation}
+\begin{equation}
+\sum_{m=1}^N|u^m-u^{m-1}|^2\leq d_1,
+\label{eq:ch3-semidiscrete-increment-bound}
+\end{equation}
+其中 $d_1$ 只依赖于数据:
+\begin{equation}
+d_1=|u_0|^2+\frac1\nu\int_0^T\lVert f(s)\rVert_{V'}^2\,ds.
+\label{eq:ch3-semidiscrete-d1}
+\end{equation}
+\end{Lemma}
+
+\begin{Proof}
+如引理 \ref{lem:ch3-semidiscrete-step-existence} 的证明所述, 至少当 $n>4$ 时不能在 \eqref{eq:ch3-semidiscrete-recursion} 中与 $u^m$ 作内积, 因为 $Bu^m$ 一般不属于 $V'$. 但 \eqref{eq:ch3-semidiscrete-step-energy} 起到同样作用.
+
+\hypertarget{chapter-03-page-236}{}
+以
+\[
+2k\lVert f^m\rVert_{V'}\lVert u^m\rVert
+\leq k\nu\lVert u^m\rVert^2+\frac k\nu\lVert f^m\rVert_{V'}^2
+\]
+控制右端, 得
+\begin{equation}
+|u^m|^2-|u^{m-1}|^2+|u^m-u^{m-1}|^2+k\nu\lVert u^m\rVert^2
+\leq\frac k\nu\lVert f^m\rVert_{V'}^2.
+\label{eq:ch3-semidiscrete-step-energy-reduced}
+\end{equation}
+对 $m=1,\ldots,N$ 求和得
+\begin{equation}
+|u^N|^2+\sum_{m=1}^N|u^m-u^{m-1}|^2
++k\nu\sum_{m=1}^N\lVert u^m\rVert^2
+\leq|u_0|^2+\frac k\nu\sum_{m=1}^N\lVert f^m\rVert_{V'}^2.
+\label{eq:ch3-semidiscrete-global-energy}
+\end{equation}
+对 $m=1,\ldots,r$ 求和并舍去 $\lVert u^m\rVert^2$ 项, 得
+\begin{equation}
+|u^r|^2\leq|u_0|^2+\frac k\nu\sum_{m=1}^r\lVert f^m\rVert_{V'}^2
+\leq|u_0|^2+\frac k\nu\sum_{m=1}^N\lVert f^m\rVert_{V'}^2,
+\quad r=1,\ldots,N.
+\label{eq:ch3-semidiscrete-partial-energy}
+\end{equation}
+结合下一引理即可得证.
+\end{Proof}
+
+\MBSourceStatementNumber{lemma}{5}
+\begin{Lemma}
+\label{lem:ch3-semidiscrete-force-average-bound}
+若 $f^m$ 由 \eqref{eq:ch3-semidiscrete-force-average} 定义, 则
+\begin{equation}
+k\sum_{m=1}^N\lVert f^m\rVert_{V'}^2
+\leq\int_0^T\lVert f(t)\rVert_{V'}^2\,dt.
+\label{eq:ch3-semidiscrete-force-average-estimate}
+\end{equation}
+\end{Lemma}
+
+\begin{Proof}
+由 Schwarz 不等式,
+\[
+\lVert f^m\rVert_{V'}^2
+=\left\lVert\frac1k\int_{(m-1)k}^{mk}f(t)\,dt\right\rVert_{V'}^2
+\leq\frac1k\int_{(m-1)k}^{mk}\lVert f(t)\rVert_{V'}^2\,dt.
+\]
+对 $m=1,\ldots,N$ 求和即得 \eqref{eq:ch3-semidiscrete-force-average-estimate}.
+\end{Proof}
+
+\MBSourceStatementNumber{lemma}{6}
+\begin{Lemma}
+\label{lem:ch3-semidiscrete-time-difference-bound}
+和式
+\[
+k\sum_{m=1}^N
+\left\lVert\frac{u^m-u^{m-1}}k\right\rVert_{V_s'}^2
+\]
+与 $k$ 无关地有界.
+\end{Lemma}
+
+\begin{Proof}
+在 \eqref{eq:ch3-semidiscrete-recursion} 中取 $V_s'$ 范数, 得
+\[
+\begin{aligned}
+\left\lVert\frac{u^m-u^{m-1}}k\right\rVert_{V_s'}
+&\leq\lVert f^m\rVert_{V_s'}+\nu\lVert Au^m\rVert_{V_s'}
++\lVert Bu^m\rVert_{V_s'}\\
+&\leq c_1(\lVert f^m\rVert_{V'}+\lVert u^m\rVert)+\lVert Bu^m\rVert_{V_s'},
+\end{aligned}
+\]
+所以
+\[
+\left\lVert\frac{u^m-u^{m-1}}k\right\rVert_{V_s'}^2
+\leq c_2\{\lVert f^m\rVert_{V'}^2+\lVert u^m\rVert^2
++\lVert Bu^m\rVert_{V_s'}^2\}.
+\]
+由 \eqref{eq:ch3-semidiscrete-trilinear-estimate} 和 \eqref{eq:ch3-semidiscrete-um-bound},
+\[
+\lVert Bu^m\rVert_{V_s'}^2\leq c_3|u^m|^2\lVert u^m\rVert^2
+\leq c_4\lVert u^m\rVert^2.
+\]
+
+\hypertarget{chapter-03-page-237}{}
+最终
+\[
+k\sum_{m=1}^N
+\left\lVert\frac{u^m-u^{m-1}}k\right\rVert_{V_s'}^2
+\leq c_5k\sum_{m=1}^N(\lVert f^m\rVert_{V'}^2+\lVert u^m\rVert^2),
+\]
+结合 \eqref{eq:ch3-semidiscrete-v-sum-bound} 和引理 \ref{lem:ch3-semidiscrete-force-average-bound} 即得证.
+\end{Proof}
+
+现在把上述估计解释为逼近函数的估计.
+
+\MBSourceStatementNumber{lemma}{7}
+\begin{Lemma}
+\label{lem:ch3-semidiscrete-function-bounds}
+$u_k,w_k$ 在 $L^2(0,T;V)\cap L^\infty(0,T;H)$ 的一个有界集中; $w_k'$ 在 $L^2(0,T;V_s')$ 中有界, 且
+\begin{equation}
+u_k-w_k\longrightarrow0\quad\text{在 }L^2(0,T;H)\text{ 中},
+\qquad k\to0.
+\label{eq:ch3-semidiscrete-uk-wk-convergence}
+\end{equation}
+\end{Lemma}
+
+\begin{Proof}
+关于 $u_k,w_k,w_k'$ 的估计分别是 \eqref{eq:ch3-semidiscrete-um-bound}--\eqref{eq:ch3-semidiscrete-v-sum-bound} 与引理 \ref{lem:ch3-semidiscrete-time-difference-bound} 的解释; \eqref{eq:ch3-semidiscrete-uk-wk-convergence} 由 \eqref{eq:ch3-semidiscrete-increment-bound} 和下一引理推出.
+\end{Proof}
+
+\MBSourceStatementNumber{lemma}{8}
+\begin{Lemma}
+\label{lem:ch3-semidiscrete-interpolation-distance}
+有
+\begin{equation}
+|u_k-w_k|_{L^2(0,T;H)}
+=\left\{\frac k3\sum_{m=1}^N|u^m-u^{m-1}|^2\right\}^{1/2}.
+\label{eq:ch3-semidiscrete-interpolation-distance-formula}
+\end{equation}
+\end{Lemma}
+
+\begin{Proof}
+当 $(m-1)k\leq t\leq mk$ 时,
+\[
+w_k(t)-u_k(t)=\frac{t-mk}{k}(u^m-u^{m-1}),
+\]
+且
+\[
+\int_{(m-1)k}^{mk}|w_k(t)-u_k(t)|^2\,dt
+=\frac k3|u^m-u^{m-1}|^2.
+\]
+求和即得 \eqref{eq:ch3-semidiscrete-interpolation-distance-formula}.
+\end{Proof}
+
+\subsection{取极限}
+\label{subsec:ch3-semidiscrete-limit}
+由引理 \ref{lem:ch3-semidiscrete-function-bounds}, 可从 $u_k$ 抽取子序列 $u_{k'}$, 使
+\begin{equation}
+u_{k'}\rightharpoonup u\quad\text{在 }L^2(0,T;V)\text{ 中},
+\qquad
+u_{k'}\overset{*}{\rightharpoonup}u\quad\text{在 }L^\infty(0,T;H)\text{ 中}.
+\label{eq:ch3-semidiscrete-uk-weak-limits}
+\end{equation}
+为在 \eqref{eq:ch3-semidiscrete-recursion} 中取极限, 需要 $u_k$ 的强收敛; $w_k$ 将发挥辅助作用. 可选取子序列使
+\begin{equation}
+w_{k'}\rightharpoonup u_*\quad\text{在 }L^2(0,T;V)\text{ 中},
+\qquad
+w_{k'}\overset{*}{\rightharpoonup}u_*quad\text{在 }L^\infty(0,T;H)\text{ 中},
+\label{eq:ch3-semidiscrete-wk-weak-limits}
+\end{equation}
+\begin{equation}
+\frac{dw_{k'}}{dt}\rightharpoonup u_*'
+\quad\text{在 }L^2(0,T;V_s')\text{ 中}.
+\label{eq:ch3-semidiscrete-wk-derivative-limit}
+\end{equation}
+由 \eqref{eq:ch3-semidiscrete-uk-wk-convergence}, $u_*=u$. 定理 \ref{thm:ch3-compactness-aubin-lions-banach} 给出
+\begin{equation}
+w_{k'}\longrightarrow u\quad\text{在 }L^2(0,T;H)\text{ 中},
+\label{eq:ch3-semidiscrete-wk-strong-limit}
+\end{equation}
+再由 \eqref{eq:ch3-semidiscrete-uk-wk-convergence},
+\begin{equation}
+u_{k'}\longrightarrow u\quad\text{在 }L^2(0,T;H)\text{ 中}.
+\label{eq:ch3-semidiscrete-uk-strong-limit}
+\end{equation}
+
+\hypertarget{chapter-03-page-238}{}
+方程 \eqref{eq:ch3-semidiscrete-recursion} 可解释为
+\begin{equation}
+\frac{dw_k}{dt}+Au_k+Bu_k=f_k,
+\label{eq:ch3-semidiscrete-functional-equation}
+\end{equation}
+其中
+\[
+f_k(t)=f^m,
+\qquad(m-1)k\leq t\leq mk,quad m=1,\ldots,N.
+\]
+由 \eqref{eq:ch3-semidiscrete-uk-weak-limits}, \eqref{eq:ch3-semidiscrete-uk-strong-limit} 及引理 \ref{lem:ch3-existence-bu-integrability}, \ref{lem:ch3-semidiscrete-bu-vs-dual},
+\[
+Bu_{k'}\rightharpoonup Bu\quad\text{在 }L^2(0,T;V_s')\text{ 中}.
+\]
+由下面的引理 \ref{lem:ch3-semidiscrete-force-convergence},
+\[
+f_k\longrightarrow f\quad\text{在 }L^2(0,T;V')\text{ 中}.
+\]
+因此可在 \eqref{eq:ch3-semidiscrete-functional-equation} 中取极限, 得
+\[
+u'+\nu Au+Bu=f.
+\]
+由 \eqref{eq:ch3-semidiscrete-wk-weak-limits}, \eqref{eq:ch3-semidiscrete-wk-derivative-limit} 和引理 \ref{lem:ch3-semidiscrete-trilinear-continuity},
+\[
+\langle w_{k'}(t),\sigma\rangle\longrightarrow\langle u(t),\sigma\rangle,
+\qquad\forall\sigma\in V_s',\quad\forall t\in[0,T].
+\]
+因 $w_{k'}(0)=u_0$, 得 $u(0)=u_0$. 这证明 $u$ 满足 \eqref{eq:ch3-semidiscrete-operator-space}--\eqref{eq:ch3-semidiscrete-operator-initial}; 证明下列引理后定理 \ref{thm:ch3-semidiscrete-existence} 即证完.
+
+\MBSourceStatementNumber{lemma}{9}
+\begin{Lemma}
+\label{lem:ch3-semidiscrete-force-convergence}
+\begin{equation}
+f_k\longrightarrow f\quad\text{在 }L^2(0,T;V')\text{ 中},
+\qquad k\to0.
+\label{eq:ch3-semidiscrete-force-convergence}
+\end{equation}
+\end{Lemma}
+
+\begin{Proof}
+变换 $f\mapsto f_k$ 是 $L^2(0,T;V')$ 中的线性平均映射; 由引理 \ref{lem:ch3-semidiscrete-force-average-bound}, 它连续且
+\begin{equation}
+\lVert f_k\rVert_{L^2(0,T;V')}
+\leq\lVert f\rVert_{L^2(0,T;V')}.
+\label{eq:ch3-semidiscrete-averaging-contraction}
+\end{equation}
+因此只需在 $L^2(0,T;V')$ 的稠密子空间中证明 \eqref{eq:ch3-semidiscrete-force-convergence}; 对 $f\in C([0,T];V')$, 结论显然, 略去证明.
+\end{Proof}
+
+\MBSourceStatementNumber{remark}{1}
+\begin{Remark}
+\label{rem:ch3-semidiscrete-energy-inequality}
+将 \eqref{eq:ch3-semidiscrete-step-energy} 对 $m=1,\ldots,r$ 求和并舍去 $|u^m-u^{m-1}|^2$ 项, 得
+\begin{equation}
+|u^r|^2+2k\nu\sum_{m=1}^r\lVert u^m\rVert^2
+\leq|u_0|^2+2k\sum_{m=1}^r\langle f^m,u^m\rangle.
+\label{eq:ch3-semidiscrete-discrete-energy-remark}
+\end{equation}
+它可解释为
+\begin{equation}
+|u_k(t)|^2+2\nu\int_0^{t_k}\lVert u_k(s)\rVert^2\,ds
+\leq|u_0|^2+\int_0^{t_k}\langle f_k(s),u_k(s)\rangle\,ds,
+\label{eq:ch3-semidiscrete-functional-energy-remark}
+\end{equation}
+其中
+\begin{equation}
+t(k)=(m+k)k,
+\qquad mk\leq t<(m+1)k.
+\label{eq:ch3-semidiscrete-time-ceiling-source}
+\end{equation}
+\end{Remark}

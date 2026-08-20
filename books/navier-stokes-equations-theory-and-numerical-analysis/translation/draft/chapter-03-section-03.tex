@@ -1,0 +1,2055 @@
+\hypertarget{chapter-03-section-03-page-204}{}
+\section{存在唯一性定理($n\leq4$)}
+\label{sec:ch3-existence-uniqueness}
+本节研究完整 Navier--Stokes 方程弱解的存在性与唯一性定理($n\leq4$). 第 \ref{subsec:ch3-existence-theorem} 小节依照 \MBUnresolvedReference{citation}{J. Leray [1, 2, 3]} 给出这些方程的变分表述, 并陈述 $n\leq4$ 时的存在性定理. 该定理由 J.L. Lions 给出的证明见第 \ref{subsec:ch3-existence-proof} 小节. 证明以 Galerkin 方法构造逼近解为基础, 随后利用逼近解关于时间的一个分数阶导数的先验估计和第 \ref{sec:ch3-compactness} 节的紧性定理取极限. 第 \ref{sec:ch3-semidiscrete-existence} 节将讨论一种基于时间半离散且适用于任意维数的另一证明.
+
+第 \ref{subsec:ch3-regularity-uniqueness-2d} 小节给出弱解的唯一性定理($n=2$). 在三维情形, 已知存在性的函数类与能够证明唯一性的更小函数类之间存在间隙; 第 \ref{subsec:ch3-regularity-uniqueness-3d} 小节给出这类唯一性定理的一个例子($n=3$). 第 \ref{subsec:ch3-more-regular-solutions} 小节证明二维情形下, 若数据具有更高正则性, 则存在更正则的解; 三维情形有类似的局部解结果, 即解定义在某个较“小”的时间区间上, 并假设数据充分小.
+
+\subsection{$\mathbb R^n$ 中的一个存在性定理($n\leq4$)}
+\label{subsec:ch3-existence-theorem}
+记号同上, 特别是第 \ref{subsec:ch3-linear-notation} 小节开头回顾的记号; $\Omega$ 是 Lipschitz 开集, 为简单起见假设其有界; 无界情形见注 \ref{rem:ch3-existence-unbounded-energy}.
+
+回忆\footnote{参见第 \ref{chap:steady-state-navier-stokes} 章第 \ref{subsec:ch2-sobolev-compactness} 小节.} 因为维数不超过 $4$, 可以在 $\mathbf H_0^1(\Omega)$ 上, 特别是在 $V$ 上, 定义连续三线性形式 $b$:
+\begin{equation}
+b(u,v,w)=\sum_{i,j=1}^{n}\int_\Omega u_i(D_i v_j)w_j\,dx.
+\label{eq:ch3-existence-trilinear-form}
+\end{equation}
+若 $u\in V$, 则
+\begin{equation}
+b(u,v,v)=0,
+\qquad\forall v\in\mathbf H_0^1(\Omega).
+\label{eq:ch3-existence-skew-cancellation}
+\end{equation}
+对 $u,v\in V$, 以 $B(u,v)$ 表示由下式定义的 $V'$ 中元素:
+\begin{equation}
+\langle B(u,v),w\rangle=b(u,v,w),
+\qquad\forall w\in V,
+\label{eq:ch3-existence-bilinear-operator}
+\end{equation}
+并令
+\begin{equation}
+B(u)=B(u,u)\in V',
+\qquad\forall u\in V.
+\label{eq:ch3-existence-nonlinear-operator}
+\end{equation}
+
+\hypertarget{chapter-03-page-205}{}
+完整 Navier--Stokes 方程初边值问题的经典表述如下: 求向量函数 $u:\Omega\times[0,T]\to\mathbb R^n$ 和标量函数 $p:\Omega\times[0,T]\to\mathbb R$, 使
+\begin{equation}
+\frac{\partial u}{\partial t}-\nu\Delta u
++\sum_{i=1}^{n}u_iD_i u+\operatorname{grad}p=f
+\quad\text{于 }Q=\Omega\times(0,T),
+\label{eq:ch3-existence-classical-momentum}
+\end{equation}
+\begin{equation}
+\operatorname{div}u=0\quad\text{于 }Q,
+\label{eq:ch3-existence-classical-incompressibility}
+\end{equation}
+\begin{equation}
+u=0\quad\text{于 }\partial\Omega\times(0,T),
+\label{eq:ch3-existence-classical-boundary}
+\end{equation}
+\begin{equation}
+u(x,0)=u_0(x)\quad\text{于 }\Omega.
+\label{eq:ch3-existence-classical-initial}
+\end{equation}
+与前面一样, $f,u_0$ 是分别定义在 $\Omega\times[0,T]$ 和 $\Omega$ 上的给定函数.
+
+假设 $u,p$ 是 \eqref{eq:ch3-existence-classical-momentum}--\eqref{eq:ch3-existence-classical-initial} 的经典解, 比如 $u\in C^2(Q)$, $p\in C^1(Q)$. 显然 $u\in L^2(0,T;V)$, 且对 $v\in\mathcal V$ 容易验证
+\begin{equation}
+\frac d{dt}(u,v)+\nu((u,v))+b(u,u,v)=\langle f,v\rangle.
+\label{eq:ch3-existence-classical-variational}
+\end{equation}
+由连续性, \eqref{eq:ch3-existence-classical-variational} 对每个 $v\in V$ 成立.
+
+这提示我们对问题 \eqref{eq:ch3-existence-classical-momentum}--\eqref{eq:ch3-existence-classical-variational} 作如下弱表述(参见 \MBUnresolvedReference{citation}{J. Leray [1, 2, 3]}).
+
+\MBProblemHeading
+\label{prob:ch3-weak-variational}
+给定 $f,u_0$, 满足
+\begin{equation}
+f\in L^2(0,T;V'),
+\label{eq:ch3-existence-force-assumption}
+\end{equation}
+\begin{equation}
+u_0\in H,
+\label{eq:ch3-existence-initial-assumption}
+\end{equation}
+求 $u$, 满足
+\begin{equation}
+u\in L^2(0,T;V),
+\label{eq:ch3-existence-weak-solution-space}
+\end{equation}
+以及
+\begin{equation}
+\frac d{dt}(u,v)+\nu((u,v))+b(u,u,v)=\langle f,v\rangle,
+\qquad\forall v\in V,
+\label{eq:ch3-existence-weak-variational-equation}
+\end{equation}
+\begin{equation}
+u(0)=u_0.
+\label{eq:ch3-existence-weak-initial-condition}
+\end{equation}
+
+若 $u$ 仅属于 $L^2(0,T;V)$, 条件 \eqref{eq:ch3-existence-weak-initial-condition} 未必有意义. 但若 $u\in L^2(0,T;V)$ 且满足 \eqref{eq:ch3-existence-weak-variational-equation}, 则下面将像线性情形一样, 利用引理 \ref{lem:ch3-linear-banach-valued-derivative} 证明 $u$ 几乎处处等于某个连续函数, 因而 \eqref{eq:ch3-existence-weak-initial-condition} 有意义.
+
+在此之前提醒, 当前考虑 $n\leq4$ 的情形; 在更高维数将略微修改上述表述(见第 \ref{subsec:ch3-semidiscrete-formulation} 小节).
+
+\MBSourceStatementNumber{lemma}{1}
+\begin{Lemma}
+\label{lem:ch3-existence-bu-integrability}
+假设空间维数 $n\leq4$, 且 $u\in L^2(0,T;V)$. 则由
+\[
+\langle Bu(t),v\rangle=b(u(t),u(t),v),
+\qquad\forall v\in V,\quad\text{对几乎每个 }t\in[0,T]
+\]
+定义的函数 $Bu$ 属于 $L^1(0,T;V')$.
+\end{Lemma}
+
+\hypertarget{chapter-03-page-206}{}
+\begin{Proof}
+对几乎每个 $t$, $Bu(t)$ 是 $V'$ 中元素, 且函数 $t\in[0,T]\mapsto Bu(t)\in V'$ 的可测性容易验证. 此外, 因为 $b$ 在 $V$ 上连续三线性,
+\begin{equation}
+\lVert Bw\rVert_{V'}\leq c\lVert w\rVert^2,
+\qquad\forall w\in V,
+\label{eq:ch3-existence-bu-pointwise-bound}
+\end{equation}
+所以
+\[
+\int_0^T\lVert Bu(t)\rVert_{V'}\,dt
+\leq c\int_0^T\lVert u(t)\rVert^2\,dt<+\infty,
+\]
+引理得证.
+\end{Proof}
+
+若 $u$ 满足 \eqref{eq:ch3-existence-weak-solution-space}--\eqref{eq:ch3-existence-weak-variational-equation}, 则由 \eqref{eq:ch3-linear-operator-a}, \eqref{eq:ch3-linear-condensed-lp-notation} 和上述引理, 可将 \eqref{eq:ch3-existence-weak-variational-equation} 写成
+\[
+\frac d{dt}\langle u,v\rangle
+=\langle f-\nu Au-Bu,v\rangle,
+\qquad\forall v\in V.
+\]
+因为与线性情形一样 $Au\in L^2(0,T;V')$, 函数 $f-\nu Au-Bu\in L^1(0,T;V')$. 引理 \ref{lem:ch3-linear-banach-valued-derivative} 因而推出
+\begin{equation}
+\left\{
+\begin{aligned}
+u'&\in L^1(0,T;V'),\\
+u'&=f-\nu Au-Bu,
+\end{aligned}
+\right.
+\label{eq:ch3-existence-time-derivative}
+\end{equation}
+且 $u$ 几乎处处等于从 $[0,T]$ 到 $V'$ 的连续函数. 因此 \eqref{eq:ch3-existence-weak-initial-condition} 有意义.
+
+问题 \ref{prob:ch3-weak-variational} 的另一种表述是:
+
+\MBProblemHeading
+\label{prob:ch3-weak-operator}
+给定满足 \eqref{eq:ch3-existence-force-assumption}--\eqref{eq:ch3-existence-initial-assumption} 的 $f,u_0$, 求 $u$, 满足
+\begin{equation}
+u\in L^2(0,T;V),
+\qquad u'\in L^1(0,T;V'),
+\label{eq:ch3-existence-operator-solution-space}
+\end{equation}
+\begin{equation}
+u'+\nu Au+Bu=f\quad\text{于 }(0,T),
+\label{eq:ch3-existence-operator-equation}
+\end{equation}
+\begin{equation}
+u(0)=u_0.
+\label{eq:ch3-existence-operator-initial}
+\end{equation}
+我们已经证明问题 \ref{prob:ch3-weak-variational} 的任意解都是问题 \ref{prob:ch3-weak-operator} 的解; 反之很容易验证, 因而两个问题等价.
+
+下列定理保证这些问题存在解.
+
+\MBSourceStatementNumber{theorem}{1}
+\begin{Theorem}
+\label{thm:ch3-existence-weak-solution}
+设维数 $n\leq4$. 给定满足 \eqref{eq:ch3-existence-force-assumption}--\eqref{eq:ch3-existence-initial-assumption} 的 $f,u_0$. 则至少存在一个满足 \eqref{eq:ch3-existence-operator-solution-space}--\eqref{eq:ch3-existence-operator-initial} 的函数 $u$. 此外,
+\begin{equation}
+u\in L^\infty(0,T;H),
+\label{eq:ch3-existence-linfty-h}
+\end{equation}
+且 $u$ 从 $[0,T]$ 到 $H$ 弱连续.\footnote{即对每个 $v\in H$, $t\mapsto(u(t),v)$ 是连续标量函数.}
+\end{Theorem}
+
+满足 \eqref{eq:ch3-existence-linfty-h} 的 $u$ 的存在性证明见第 \ref{subsec:ch3-existence-proof} 小节; 连续性结论直接来自 \eqref{eq:ch3-existence-linfty-h}, $u$ 在 $V'$ 中的连续性和引理 \ref{lem:ch3-linear-weak-continuity-transfer}.
+
+\hypertarget{chapter-03-page-207}{}
+\MBSourceStatementNumber{remark}{1}
+\begin{Remark}
+\label{rem:ch3-existence-general-force}
+(i) 若假设
+\[
+f=f_1+f_2,
+\qquad f_1\in L^2(0,T;V'),
+\qquad f_2\in L^1(0,T;H),
+\]
+定理 \ref{thm:ch3-existence-weak-solution} 仍成立. 证明所需的相应修改参见第 \ref{subsec:ch3-linear-miscellaneous} 小节.
+
+(ii) 若 $\Omega$ 无界, 定理 \ref{thm:ch3-existence-weak-solution} 也成立; 细节见注 \ref{rem:ch3-existence-unbounded-energy}.
+\end{Remark}
+
+\subsection{定理 \ref{thm:ch3-existence-weak-solution} 的证明}
+\label{subsec:ch3-existence-proof}
+(i) 像线性情形一样应用 Galerkin 方法. 因为 $V$ 可分且 $\mathcal V$ 在 $V$ 中稠密, 存在 $\mathcal V$ 中元素的序列 $w_1,\ldots,w_m,\ldots$, 它线性无关且在 $V$ 中完备.\footnote{为简单起见取 $w_j\in\mathcal V$. 作一些技术修改后也可取 $w_j\in V$.} 对每个 $m$, 如下定义 \eqref{eq:ch3-existence-weak-variational-equation} 的逼近解 $u_m$:
+\begin{equation}
+u_m=\sum_{i=1}^{m}g_{im}(t)w_i,
+\label{eq:ch3-existence-galerkin-expansion}
+\end{equation}
+且
+\begin{equation}
+(u_m'(t),w_j)+\nu((u_m(t),w_j))
++b(u_m(t),u_m(t),w_j)=\langle f(t),w_j\rangle,
+\quad t\in[0,T],\quad j=1,\ldots,m,
+\label{eq:ch3-existence-galerkin-equations}
+\end{equation}
+\begin{equation}
+u_m(0)=u_{0m},
+\label{eq:ch3-existence-galerkin-initial}
+\end{equation}
+其中 $u_{0m}$ 是 $u_0$ 在 $H$ 中到 $w_1,\ldots,w_m$ 所张成空间上的正交投影.\footnote{也可把 $u_{0m}$ 取为该空间中满足 $u_{0m}\to u_0$ 在 $H$ 中收敛的任意元素.}
+
+方程 \eqref{eq:ch3-existence-galerkin-equations} 构成关于函数 $g_{1m},\ldots,g_{mm}$ 的非线性微分方程组:
+\begin{equation}
+\begin{aligned}
+\sum_{i=1}^{m}(w_i,w_j)g_{im}'(t)
+&+\nu\sum_{i=1}^{m}((w_i,w_j))g_{im}(t)\\
+&+\sum_{i,\ell=1}^{m}b(w_i,w_\ell,w_j)g_{im}(t)g_{\ell m}(t)
+=\langle f(t),w_j\rangle.
+\end{aligned}
+\label{eq:ch3-existence-galerkin-coordinate-system}
+\end{equation}
+对元素为 $(w_i,w_j)$, $1\leq i,j\leq m$ 的非奇异矩阵求逆, 可将微分方程写成通常形式
+\begin{equation}
+g_{im}'(t)+\sum_{j=1}^{m}\alpha_{ij}g_{jm}(t)
++\sum_{j,k=1}^{m}\alpha_{ijk}g_{jm}(t)g_{km}(t)
+=\sum_{j=1}^{m}\beta_{ij}\langle f(t),w_j\rangle,
+\label{eq:ch3-existence-galerkin-normal-system}
+\end{equation}
+其中 $\alpha_{ij},\alpha_{ijk},\beta_{ij}\in\mathbb R$.
+
+条件 \eqref{eq:ch3-existence-galerkin-initial} 等价于 $m$ 个标量初始条件
+\begin{equation}
+g_{im}(0)=u_{0m}\text{ 的第 }i\text{ 个分量}.
+\label{eq:ch3-existence-galerkin-coordinate-initial}
+\end{equation}
+带初始条件 \eqref{eq:ch3-existence-galerkin-coordinate-initial} 的非线性微分方程组 \eqref{eq:ch3-existence-galerkin-normal-system} 在某个区间 $[0,t_m]$ 上有极大解. 若 $t_m<T$, 则当 $t\to t_m$ 时 $|u_m(t)|$ 必趋于 $+\infty$; 后面证明的先验估计表明这不会发生, 因而 $t_m=T$.
+
+\hypertarget{chapter-03-page-208}{}
+(ii) 第一组先验估计与线性情形相同. 将 \eqref{eq:ch3-existence-galerkin-equations} 乘 $g_{jm}(t)$, 再对 $j=1,\ldots,m$ 相加. 利用 \eqref{eq:ch3-existence-skew-cancellation}, 得
+\begin{equation}
+(u_m'(t),u_m(t))+\nu\lVert u_m(t)\rVert^2
+=\langle f(t),u_m(t)\rangle.
+\label{eq:ch3-existence-galerkin-energy-identity}
+\end{equation}
+于是
+\[
+\begin{aligned}
+\frac d{dt}|u_m(t)|^2+2\nu\lVert u_m(t)\rVert^2
+&=2\langle f(t),u_m(t)\rangle\\
+&\leq2\lVert f(t)\rVert_{V'}\lVert u_m(t)\rVert\\
+&\leq\nu\lVert u_m(t)\rVert^2+\frac1\nu\lVert f(t)\rVert_{V'}^2,
+\end{aligned}
+\]
+从而
+\begin{equation}
+\frac d{dt}|u_m(t)|^2+\nu\lVert u_m(t)\rVert^2
+\leq\frac1\nu\lVert f(t)\rVert_{V'}^2.
+\label{eq:ch3-existence-galerkin-energy-inequality}
+\end{equation}
+将 \eqref{eq:ch3-existence-galerkin-energy-inequality} 从 $0$ 积分到 $s$, 特别得到
+\[
+\begin{aligned}
+|u_m(s)|^2
+&\leq|u_{0m}|^2+\frac1\nu\int_0^s\lVert f(t)\rVert_{V'}^2\,dt\\
+&\leq|u_0|^2+\frac1\nu\int_0^T\lVert f(t)\rVert_{V'}^2\,dt.
+\end{aligned}
+\]
+因此
+\begin{equation}
+\sup_{s\in[0,T]}|u_m(s)|^2
+\leq|u_0|^2+\frac1\nu\int_0^T\lVert f(t)\rVert_{V'}^2\,dt,
+\label{eq:ch3-existence-galerkin-linfty-bound}
+\end{equation}
+这表明
+\begin{equation}
+u_m\text{ 序列保持在 }L^\infty(0,T;H)\text{ 的一个有界集中}.
+\label{eq:ch3-existence-galerkin-linfty-boundedness}
+\end{equation}
+再将 \eqref{eq:ch3-existence-galerkin-energy-inequality} 从 $0$ 积分到 $T$, 得
+\[
+\begin{aligned}
+|u_m(T)|^2+\nu\int_0^T\lVert u_m(t)\rVert^2\,dt
+&\leq|u_{0m}|^2+\frac1\nu\int_0^T\lVert f(t)\rVert_{V'}^2\,dt\\
+&\leq|u_0|^2+\frac1\nu\int_0^T\lVert f(t)\rVert_{V'}^2\,dt.
+\end{aligned}
+\]
+该估计表明
+\begin{equation}
+u_m\text{ 序列保持在 }L^2(0,T;V)\text{ 的一个有界集中}.
+\label{eq:ch3-existence-galerkin-l2-boundedness}
+\end{equation}
+
+(iii) 以 $\widetilde u_m$ 表示从 $\mathbb R$ 到 $V$ 的函数, 它在 $[0,T]$ 上等于 $u_m$, 在该区间补集上等于 $0$. 以 $\widehat u_m$ 表示 $\widetilde u_m$ 的 Fourier 变换.
+
+除上述与线性情形估计类似的不等式外, 还要证明对某个 $\gamma>0$,
+\begin{equation}
+\int_{-\infty}^{+\infty}|\tau|^{2\gamma}|\widehat u_m(\tau)|^2\,d\tau
+\leq\mathrm{const}.
+\label{eq:ch3-existence-fractional-fourier-bound}
+\end{equation}
+它与 \eqref{eq:ch3-existence-galerkin-l2-boundedness} 一起表明
+\begin{equation}
+\widetilde u_m\text{ 属于 }\mathcal H^\gamma(\mathbb R;V,H)\text{ 的一个有界集},
+\label{eq:ch3-existence-fractional-space-boundedness}
+\end{equation}
+从而可以应用定理 \ref{thm:ch3-compactness-fractional} 的紧性结论.
+
+\hypertarget{chapter-03-page-209}{}
+为证明 \eqref{eq:ch3-existence-fractional-fourier-bound}, 注意 \eqref{eq:ch3-existence-galerkin-equations} 可写成\footnote{与定理 \ref{thm:ch3-compactness-y-hilbert} 的证明比较.}
+\begin{equation}
+\frac d{dt}(\widetilde u_m,w_j)
+=\langle\widetilde f_m,w_j\rangle
++(u_{0m},w_j)\delta_0-(u_m(T),w_j)\delta_T,
+\qquad j=1,\ldots,m,
+\label{eq:ch3-existence-extension-distribution-equation}
+\end{equation}
+其中 $\delta_0,\delta_T$ 是位于 $0,T$ 的 Dirac 分布, 且
+\begin{equation}
+\left\{
+\begin{aligned}
+f_m&=f-\nu Au_m-Bu_m,\\
+\widetilde f_m&=f_m\text{ 于 }[0,T],\quad0\text{ 于该区间外}.
+\end{aligned}
+\right.
+\label{eq:ch3-existence-extension-force}
+\end{equation}
+对 \eqref{eq:ch3-existence-extension-distribution-equation} 作 Fourier 变换得到
+\begin{equation}
+2i\pi\tau(\widehat u_m,w_j)
+=\langle\widehat f_m,w_j\rangle+(u_{0m},w_j)
+-(u_m(T),w_j)\exp(-2i\pi T\tau),
+\label{eq:ch3-existence-fourier-galerkin-equation}
+\end{equation}
+其中 $\widehat u_m,\widehat f_m$ 分别表示 $\widetilde u_m,\widetilde f_m$ 的 Fourier 变换.
+
+将 \eqref{eq:ch3-existence-fourier-galerkin-equation} 乘 $\widehat g_{jm}(\tau)$(即 $\widetilde g_{jm}$ 的 Fourier 变换), 再对 $j=1,\ldots,m$ 相加, 得
+\begin{equation}
+\begin{aligned}
+2i\pi\tau|\widehat u_m(\tau)|^2
+&=\langle\widehat f_m(\tau),\widehat u_m(\tau)\rangle
++(u_{0m},\widehat u_m(\tau))\\
+&\quad-(u_m(T),\widehat u_m(\tau))\exp(-2i\pi T\tau).
+\end{aligned}
+\label{eq:ch3-existence-fourier-energy-identity}
+\end{equation}
+由 \eqref{eq:ch3-existence-bu-pointwise-bound},
+\[
+\int_0^T\lVert f_m(t)\rVert_{V'}\,dt
+\leq\int_0^T\bigl(\lVert f(t)\rVert_{V'}+\nu\lVert u_m(t)\rVert
++c\lVert u_m(t)\rVert^2\bigr)\,dt,
+\]
+根据 \eqref{eq:ch3-existence-galerkin-l2-boundedness}, 右端保持有界. 因而
+\[
+\sup_{\tau\in\mathbb R}\lVert\widehat f_m(\tau)\rVert_{V'}\leq\mathrm{const},
+\qquad\forall m.
+\]
+由 \eqref{eq:ch3-existence-galerkin-linfty-bound},
+\[
+|u_m(0)|\leq\mathrm{const},
+\qquad |u_m(T)|\leq\mathrm{const},
+\]
+从 \eqref{eq:ch3-existence-fourier-energy-identity} 推出
+\[
+|\tau|\,|\widehat u_m(\tau)|^2
+\leq c_2\lVert\widehat u_m(\tau)\rVert+c_3|\widehat u_m(\tau)|,
+\]
+即
+\begin{equation}
+|\tau|\,|\widehat u_m(\tau)|^2
+\leq c_4\lVert\widehat u_m(\tau)\rVert.
+\label{eq:ch3-existence-fourier-pointwise-estimate}
+\end{equation}
+固定 $\gamma<1/4$, 注意
+\[
+|\tau|^{2\gamma}\leq c_5(\gamma)\frac{1+|\tau|}{1+|\tau|^{1-2\gamma}},
+\qquad\forall\tau\in\mathbb R.
+\]
+因此由 \eqref{eq:ch3-existence-fourier-pointwise-estimate},
+\[
+\begin{aligned}
+\int_{-\infty}^{+\infty}|\tau|^{2\gamma}|\widehat u_m(\tau)|^2\,d\tau
+&\leq c_5(\gamma)\int_{-\infty}^{+\infty}
+\frac{1+|\tau|}{1+|\tau|^{1-2\gamma}}|\widehat u_m(\tau)|^2\,d\tau\\
+&\leq c_6\int_{-\infty}^{+\infty}
+\frac{\lVert\widehat u_m(\tau)\rVert}{1+|\tau|^{1-2\gamma}}\,d\tau
++c_7\int_{-\infty}^{+\infty}\lVert\widehat u_m(\tau)\rVert^2\,d\tau.
+\end{aligned}
+\]
+由 Parseval 等式和 \eqref{eq:ch3-existence-galerkin-l2-boundedness}, 最后一个积分随 $m\to\infty$ 保持有界; 所以若证明
+\begin{equation}
+\int_{-\infty}^{+\infty}
+\frac{\lVert\widehat u_m(\tau)\rVert}{1+|\tau|^{1-2\gamma}}\,d\tau
+\leq\mathrm{const},
+\label{eq:ch3-existence-fourier-weighted-integral}
+\end{equation}
+则 \eqref{eq:ch3-existence-fractional-fourier-bound} 得证.
+
+\hypertarget{chapter-03-page-210}{}
+由 Schwarz 不等式和 Parseval 等式, 上述积分可由
+\[
+\left\{\int_{-\infty}^{+\infty}
+\frac{d\tau}{(1+|\tau|^{1-2\gamma})^2}\right\}^{1/2}
+\left\{\int_0^T\lVert u_m(t)\rVert^2\,dt\right\}^{1/2}
+\]
+控制. 因为 $\gamma<1/4$, 该量有限, 且由 \eqref{eq:ch3-existence-galerkin-l2-boundedness}, 当 $m\to\infty$ 时保持有界. 因而 \eqref{eq:ch3-existence-fractional-fourier-bound} 和 \eqref{eq:ch3-existence-fractional-space-boundedness} 的证明完成.
+
+(iv) 估计 \eqref{eq:ch3-existence-galerkin-linfty-boundedness} 和 \eqref{eq:ch3-existence-galerkin-l2-boundedness} 表明, 存在元素 $u\in L^2(0,T;V)\cap L^\infty(0,T;H)$ 及子序列 $u_{m'}$, 使
+\begin{equation}
+u_{m'}\longrightarrow u
+\quad\text{在 }L^2(0,T;V)\text{ 中弱收敛, 且在 }L^\infty(0,T;H)\text{ 中弱星收敛},
+\qquad m'\to\infty.
+\label{eq:ch3-existence-galerkin-weak-convergence}
+\end{equation}
+由 \eqref{eq:ch3-existence-fractional-space-boundedness} 和定理 \ref{thm:ch3-compactness-fractional}, 还有
+\begin{equation}
+u_{m'}\longrightarrow u
+\quad\text{在 }L^2(0,T;H)\text{ 中强收敛}.
+\label{eq:ch3-existence-galerkin-strong-convergence}
+\end{equation}
+收敛结果 \eqref{eq:ch3-existence-galerkin-weak-convergence} 使我们能够取极限. 基本过程与线性情形相同.
+
+设 $\psi$ 是 $[0,T]$ 上连续可微且满足 $\psi(T)=0$ 的函数. 将 \eqref{eq:ch3-existence-galerkin-equations} 乘 $\psi(t)$, 再分部积分, 得
+\begin{equation}
+\begin{aligned}
+-\int_0^T(u_m(t),\psi'(t)w_j)\,dt
+&+\nu\int_0^T((u_m(t),w_j\psi(t)))\,dt\\
+&+\int_0^T b(u_m(t),u_m(t),w_j\psi(t))\,dt\\
+&=(u_{0m},w_j)\psi(0)+\int_0^T\langle f(t),w_j\psi(t)\rangle\,dt.
+\end{aligned}
+\label{eq:ch3-existence-galerkin-integrated-equation}
+\end{equation}
+沿子序列 $m'$ 取极限时, 线性项容易处理; 对非线性项应用下面的引理 \ref{lem:ch3-existence-nonlinear-limit}. 极限方程为
+\begin{equation}
+\begin{aligned}
+-\int_0^T(u(t),v\psi'(t))\,dt
+&+\nu\int_0^T((u(t),v\psi(t)))\,dt\\
+&+\int_0^T b(u(t),u(t),v\psi(t))\,dt\\
+&=(u_0,v)\psi(0)+\int_0^T\langle f(t),v\psi(t)\rangle\,dt.
+\end{aligned}
+\label{eq:ch3-existence-limit-integrated-equation}
+\end{equation}
+它先对 $v=w_1,w_2,\ldots$ 成立, 因而对 $w_j$ 的任意有限线性组合成立; 再由连续性论证, 对任意 $v\in V$ 均成立.
+
+特别在 \eqref{eq:ch3-existence-limit-integrated-equation} 中取 $\psi=\varphi\in\mathcal D((0,T))$, 可知 $u$ 按分布意义满足 \eqref{eq:ch3-existence-weak-variational-equation}.
+
+最后还须证明 $u$ 满足 \eqref{eq:ch3-existence-weak-initial-condition}. 为此将 \eqref{eq:ch3-existence-weak-variational-equation} 乘 $\psi$ 并积分. 对第一项分部积分, 得
+\begin{equation}
+\begin{aligned}
+-\int_0^T(u(t),v\psi'(t))\,dt
+&+\nu\int_0^T((u(t),v\psi(t)))\,dt\\
+&+\int_0^T b(u(t),u(t),v\psi(t))\,dt\\
+&=(u(0),v)\psi(0)+\int_0^T\langle f(t),v\psi(t)\rangle\,dt.
+\end{aligned}
+\label{eq:ch3-existence-solution-integrated-equation}
+\end{equation}
+与 \eqref{eq:ch3-existence-limit-integrated-equation} 比较,
+\[
+(u(0)-u_0,v)\psi(0)=0.
+\]
+可选取 $\psi(0)=1$, 从而
+\[
+(u(0)-u_0,v)=0,
+\qquad\forall v\in V,
+\]
+于是 \eqref{eq:ch3-existence-weak-initial-condition} 成立.
+
+\hypertarget{chapter-03-page-211}{}
+为完成定理 \ref{thm:ch3-existence-weak-solution} 的证明, 只需证明下列引理.
+
+\MBSourceStatementNumber{lemma}{2}
+\begin{Lemma}
+\label{lem:ch3-existence-nonlinear-limit}
+若 $u_\mu$ 在 $L^2(0,T;V)$ 中弱收敛到 $u$, 且在 $L^2(0,T;H)$ 中强收敛到 $u$, 则对任意各分量属于 $C^1(Q)$ 的向量函数 $w$,
+\begin{equation}
+\int_0^T b(u_\mu(t),u_\mu(t),w(t))\,dt
+\longrightarrow\int_0^T b(u(t),u(t),w(t))\,dt.
+\label{eq:ch3-existence-nonlinear-limit}
+\end{equation}
+\end{Lemma}
+
+\begin{Proof}
+写成
+\[
+\begin{aligned}
+\int_0^T b(u_\mu,u_\mu,w)\,dt
+&=-\int_0^T b(u_\mu,w,u_\mu)\,dt\\
+&=-\sum_{i,j=1}^{n}\int_0^T\int_\Omega
+(u_\mu)_i(D_iw_j)(u_\mu)_j\,dx\,dt.
+\end{aligned}
+\]
+这些积分收敛到
+\[
+-\sum_{i,j=1}^{n}\int_0^T\int_\Omega u_i(D_iw_j)u_j\,dx\,dt
+=-\int_0^T b(u,w,u)\,dt
+=\int_0^T b(u,u,w)\,dt,
+\]
+引理得证.
+\end{Proof}
+
+\MBSourceStatementNumber{remark}{2}
+\begin{Remark}
+\label{rem:ch3-existence-unbounded-energy}
+(i) 无界区域.
+
+当 $\Omega$ 无界时, 像线性情形第 \ref{subsec:ch3-linear-miscellaneous} 小节那样证明 \eqref{eq:ch3-existence-galerkin-linfty-boundedness} 和 \eqref{eq:ch3-existence-galerkin-l2-boundedness}. 随后 \eqref{eq:ch3-existence-fractional-fourier-bound} 和 \eqref{eq:ch3-existence-fractional-space-boundedness} 与前面相同. 主要差别在于 $V$ 到 $H$ 的注入不再紧.
+
+不过仍可抽取满足 \eqref{eq:ch3-existence-galerkin-weak-convergence} 的子序列 $u_{m'}$. 对任意包含于 $\Omega$ 的球 $O$, $H^1(O)$ 到 $L^2(O)$ 的注入是紧的, 而 \eqref{eq:ch3-existence-fractional-space-boundedness} 表明
+\begin{equation}
+u_m|_O\text{ 属于 }\mathcal H^\gamma(\mathbb R;\mathbf H^1(O),\mathbf L^2(O))\text{ 的一个有界集},
+\qquad\forall O.
+\label{eq:ch3-existence-local-fractional-boundedness}
+\end{equation}
+定理 \ref{thm:ch3-compactness-fractional} 因而推出
+\[
+u_{m'}|_O\longrightarrow u|_O
+\quad\text{在 }L^2(0,T;\mathbf L^2(O))\text{ 中强收敛},
+\qquad\forall O,
+\]
+即
+\[
+u_{m'}\longrightarrow u
+\quad\text{在 }L^2(0,T;\mathbf L_{\mathrm{loc}}^2(\Omega))\text{ 中强收敛}.
+\]
+特别地, 对固定的 $j$,
+\[
+u_{m'}|_{\Omega'}\longrightarrow u|_{\Omega'}
+\quad\text{在 }L^2(0,T;\mathbf L^2(\Omega'))\text{ 中强收敛},
+\]
+其中 $\Omega'$ 表示 $w_j$ 的支集; 这足以在 \eqref{eq:ch3-existence-galerkin-integrated-equation} 中取极限.
+
+(ii) 能量不等式.
+
+积分 \eqref{eq:ch3-existence-galerkin-energy-identity} 得
+\[
+|u_m(t)|^2+2\nu\int_0^t\lVert u_m(s)\rVert^2\,ds
+=|u_{0m}|^2+2\int_0^t\langle f(s),u_m(s)\rangle\,ds.
+\]
+将此等式乘 $\phi(t)$, 其中 $\phi\in\mathcal D((0,T))$, $\phi(t)\geq0$, 再关于 $t$ 积分:
+\[
+\begin{aligned}
+\int_0^T\left\{|u_m(t)|^2+2\nu\int_0^t\lVert u_m(s)\rVert^2\,ds\right\}\phi(t)\,dt
+=\int_0^T\left\{|u_{0m}|^2+2\int_0^t\langle f(s),u_m(s)\rangle\,ds\right\}\phi(t)\,dt.
+\end{aligned}
+\]
+
+\hypertarget{chapter-03-page-212}{}
+利用 \eqref{eq:ch3-existence-galerkin-weak-convergence} 对此关系取下极限, 得对所有 $\phi\in\mathcal D((0,T))$, $\phi\geq0$,
+\[
+\begin{aligned}
+\int_0^T\left\{|u(t)|^2+2\nu\int_0^t\lVert u(s)\rVert^2\,ds\right\}\phi(t)\,dt
+\leq\int_0^T\left\{|u_0|^2+2\int_0^t\langle f(s),u(s)\rangle\,ds\right\}\phi(t)\,dt.
+\end{aligned}
+\]
+这等价于
+\begin{equation}
+|u(t)|^2+2\nu\int_0^t\lVert u(s)\rVert^2\,ds
+\leq|u_0|^2+2\int_0^t\langle f(s),u(s)\rangle\,ds
+\label{eq:ch3-existence-energy-inequality}
+\end{equation}
+对几乎每个 $t\in[0,T]$ 成立.
+
+这是定理 \ref{thm:ch3-existence-weak-solution} 给出的函数 $u$ 所满足的能量不等式. 后面将证明, 若 $n=2$, 相应等式成立(见定理 \ref{thm:ch3-uniqueness-2d} 和 \MBUnresolvedReference{lemma}{Lemma 2.1}). 一般情形下是否满足相应等式尚不清楚(参见定理 \ref{thm:ch3-weak-strong-uniqueness}).
+\end{Remark}
+
+\subsection{正则性与唯一性($n=2$)}
+\label{subsec:ch3-regularity-uniqueness-2d}
+当空间维数 $n=2$ 时, \MBUnresolvedReference{theorem}{Theorem 4.1} 保证存在的 \eqref{eq:ch3-existence-operator-solution-space}--\eqref{eq:ch3-existence-operator-initial} 的解具有进一步的正则性, 且实际上唯一. 证明基于以下引理.
+
+\MBSourceStatementNumber{lemma}{3}
+\begin{Lemma}
+\label{lem:ch3-ladyzhenskaya-2d}
+若 $n=2$, 则对任意开集 $\Omega$,
+\begin{equation}
+\lVert v\rVert_{L^4(\Omega)}
+\leq2^{1/4}\lVert v\rVert_{L^2(\Omega)}^{1/2}
+\lVert\operatorname{grad}v\rVert_{L^2(\Omega)}^{1/2},
+\qquad\forall v\in H_0^1(\Omega).
+\label{eq:ch3-uniqueness-2d-l4-inequality}
+\end{equation}
+\end{Lemma}
+
+\begin{Proof}
+只需对 $v\in\mathcal D(\Omega)$ 证明 \eqref{eq:ch3-uniqueness-2d-l4-inequality}. 对这样的 $v$ 写成
+\[
+|v(x)|^2=2\int_{-\infty}^{x_1}v(\xi_1,x_2)D_1v(\xi_1,x_2)\,d\xi_1,
+\]
+因而
+\begin{equation}
+|v(x)|^2\leq2v_1(x_2),
+\label{eq:ch3-uniqueness-2d-v1-bound}
+\end{equation}
+其中
+\begin{equation}
+v_1(x_2)=\int_{-\infty}^{+\infty}
+|v(\xi_1,x_2)|\,|D_1v(\xi_1,x_2)|\,d\xi_1.
+\label{eq:ch3-uniqueness-2d-v1-definition}
+\end{equation}
+类似地,
+\begin{equation}
+|v(x)|^2\leq2v_2(x_1),
+\label{eq:ch3-uniqueness-2d-v2-bound}
+\end{equation}
+其中
+\begin{equation}
+v_2(x_1)=\int_{-\infty}^{+\infty}
+|v(x_1,\xi_2)|\,|D_2v(x_1,\xi_2)|\,d\xi_2.
+\label{eq:ch3-uniqueness-2d-v2-definition}
+\end{equation}
+于是
+\[
+\begin{aligned}
+\int_{\mathbb R^2}|v(x)|^4\,dx
+&\leq4\int_{\mathbb R^2}v_1(x_2)v_2(x_1)\,dx\\
+&\leq4\left(\int_{-\infty}^{+\infty}v_1(x_2)\,dx_2\right)
+\left(\int_{-\infty}^{+\infty}v_2(x_1)\,dx_1\right)\\
+&\leq4\lVert v\rVert_{L^2(\mathbb R^2)}^2
+\lVert D_1v\rVert_{L^2(\mathbb R^2)}
+\lVert D_2v\rVert_{L^2(\mathbb R^2)}\\
+&\leq2\lVert v\rVert_{L^2(\mathbb R^2)}^2
+\lVert\operatorname{grad}v\rVert_{L^2(\mathbb R^2)}^2.
+\end{aligned}
+\]
+\end{Proof}
+
+\hypertarget{chapter-03-page-213}{}
+\MBSourceStatementNumber{lemma}{4}
+\begin{Lemma}
+\label{lem:ch3-trilinear-2d}
+若 $n=2$, 则
+\begin{equation}
+|b(u,v,w)|\leq2^{1/2}|u|^{1/2}\lVert u\rVert^{1/2}
+\lVert v\rVert|w|^{1/2}\lVert w\rVert^{1/2},
+\qquad\forall u,v,w\in\mathbf H_0^1(\Omega).
+\label{eq:ch3-uniqueness-2d-trilinear-bound}
+\end{equation}
+若 $u\in L^2(0,T;V)\cap L^\infty(0,T;H)$, 则 $Bu\in L^2(0,T;V')$, 且
+\begin{equation}
+\lVert Bu\rVert_{L^2(0,T;V')}
+\leq2^{1/2}|u|_{L^\infty(0,T;H)}\lVert u\rVert_{L^2(0,T;V)}.
+\label{eq:ch3-uniqueness-2d-bu-l2-bound}
+\end{equation}
+\end{Lemma}
+
+\begin{Proof}
+反复应用 Schwarz 与 Hölder 不等式得
+\[
+\begin{aligned}
+|b(u,v,w)|
+&\leq\sum_{i,j=1}^{2}\int_\Omega|u_i(D_iv_j)w_j|\,dx\\
+&\leq\sum_{i,j=1}^{2}\lVert u_i\rVert_{L^4(\Omega)}
+\lVert D_iv_j\rVert_{L^2(\Omega)}\lVert w_j\rVert_{L^4(\Omega)}.
+\end{aligned}
+\]
+由 \eqref{eq:ch3-uniqueness-2d-l4-inequality},
+\[
+\sum_{i=1}^{2}\lVert u_i\rVert_{L^4(\Omega)}^2
+\leq2^{1/2}|u|\lVert u\rVert,
+\]
+对 $w$ 有类似不等式, 从而得到 \eqref{eq:ch3-uniqueness-2d-trilinear-bound}.
+
+若 $u,v,w\in V$, 关系 $b(u,v,w)=-b(u,w,v)$ 给出另一估计:
+\begin{equation}
+|b(u,v,w)|\leq2^{1/2}|u|^{1/2}\lVert u\rVert^{1/2}
+|v|^{1/2}\lVert v\rVert^{1/2}\lVert w\rVert,
+\qquad\forall u,v,w\in V.
+\label{eq:ch3-uniqueness-2d-alternate-trilinear-bound}
+\end{equation}
+特别地,
+\begin{equation}
+|b(u,u,v)|\leq2^{1/2}|u|\lVert u\rVert\lVert v\rVert,
+\qquad\forall u,v\in V,
+\label{eq:ch3-uniqueness-2d-buu-bound}
+\end{equation}
+从而
+\begin{equation}
+\lVert Bu\rVert_{V'}\leq2^{1/2}|u|\lVert u\rVert,
+\qquad\forall u\in V.
+\label{eq:ch3-uniqueness-2d-bu-pointwise-bound}
+\end{equation}
+若现在 $u\in L^2(0,T;H)\cap L^\infty(0,T;H)$, 则对几乎每个 $t$, $Bu(t)\in V'$, 且估计
+\begin{equation}
+\lVert Bu\rVert_{V'}\leq2^{1/2}|u(t)|\lVert u(t)\rVert
+\label{eq:ch3-uniqueness-2d-bu-time-bound}
+\end{equation}
+表明 $Bu\in L^2(0,T;V')$, 并推出 \eqref{eq:ch3-uniqueness-2d-bu-l2-bound}.
+\end{Proof}
+
+现在可以陈述并证明主要结果(参见 \MBUnresolvedReference{citation}{J.L. Lions and G. Prodi [1]}).
+
+\MBSourceStatementNumber{theorem}{2}
+\begin{Theorem}
+\label{thm:ch3-uniqueness-2d}
+在二维情形, 定理 \ref{thm:ch3-existence-weak-solution} 给出的问题 \ref{prob:ch3-weak-variational}--\ref{prob:ch3-weak-operator} 的解 $u$ 是唯一的. 此外, $u$ 几乎处处等于从 $[0,T]$ 到 $H$ 的连续函数, 且
+\begin{equation}
+u(t)\longrightarrow u_0\quad\text{在 }H\text{ 中},
+\qquad t\to0.
+\label{eq:ch3-uniqueness-2d-initial-continuity}
+\end{equation}
+\end{Theorem}
+
+\hypertarget{chapter-03-page-214}{}
+\begin{Proof}
+(i) 先证明正则性. 由 \eqref{eq:ch3-existence-operator-equation} 和引理 \ref{lem:ch3-trilinear-2d},
+\[
+u'=f-\nu Au-Bu,
+\]
+且右端每一项属于 $L^2(0,T;V')$, 故
+\begin{equation}
+u'\in L^2(0,T;V').
+\label{eq:ch3-uniqueness-2d-time-regularity}
+\end{equation}
+这一改进使我们能够应用引理 \ref{lem:ch3-linear-lions-magenes-continuity}, 它恰好说明 $u$ 几乎处处等于从 $[0,T]$ 到 $H$ 的连续函数. 因此
+\begin{equation}
+u\in C([0,T];H),
+\label{eq:ch3-uniqueness-2d-continuity}
+\end{equation}
+而 \eqref{eq:ch3-uniqueness-2d-initial-continuity} 容易得到.
+
+还回忆引理 \ref{lem:ch3-linear-lions-magenes-continuity} 断言, 对任意 $u\in L^2(0,T;V)$ 且满足 \eqref{eq:ch3-uniqueness-2d-time-regularity} 的函数,
+\begin{equation}
+\frac d{dt}|u(t)|^2=2\langle u'(t),u(t)\rangle.
+\label{eq:ch3-uniqueness-2d-energy-derivative}
+\end{equation}
+
+(ii) 设 $u_1,u_2$ 是 \eqref{eq:ch3-existence-operator-solution-space}--\eqref{eq:ch3-existence-operator-initial} 的两个解, 令 $u=u_1-u_2$. 如上所示, $u_1,u_2$ 以及 $u$ 均满足 \eqref{eq:ch3-uniqueness-2d-time-regularity}. 差 $u$ 满足
+\begin{equation}
+u'+\nu Au=-Bu_1+Bu_2,
+\label{eq:ch3-uniqueness-2d-difference-equation}
+\end{equation}
+\begin{equation}
+u(0)=0.
+\label{eq:ch3-uniqueness-2d-difference-initial}
+\end{equation}
+在 $V,V'$ 对偶关系下, 对几乎每个 $t$ 将 \eqref{eq:ch3-uniqueness-2d-difference-equation} 与 $u(t)$ 作标量积. 利用 \eqref{eq:ch3-uniqueness-2d-energy-derivative} 得
+\begin{equation}
+\frac d{dt}|u(t)|^2+2\nu\lVert u(t)\rVert^2
+=2b(u_2(t),u_2(t),u(t))-2b(u_1(t),u_1(t),u(t)).
+\label{eq:ch3-uniqueness-2d-difference-energy}
+\end{equation}
+由 \eqref{eq:ch3-existence-skew-cancellation}, 右端等于 $-2b(u(t),u_2(t),u(t))$. 利用 \eqref{eq:ch3-uniqueness-2d-trilinear-bound}, 可由
+\[
+2^{3/2}|u(t)|\lVert u(t)\rVert\lVert u_2(t)\rVert
+\leq2\nu\lVert u(t)\rVert^2+\frac1\nu|u_2(t)|^2\lVert u_2(t)\rVert^2
+\]
+控制. 代入 \eqref{eq:ch3-uniqueness-2d-difference-energy} 得
+\[
+\frac d{dt}|u(t)|^2\leq\frac1\nu|u(t)|^2\lVert u_2(t)\rVert^2.
+\]
+因为 $t\mapsto\lVert u_2(t)\rVert^2$ 可积,
+\[
+\frac d{dt}\left\{
+\exp\left(-\frac1\nu\int_0^t\lVert u_2(s)\rVert^2\,ds\right)|u(t)|^2
+\right\}\leq0.
+\]
+积分并利用 \eqref{eq:ch3-uniqueness-2d-difference-initial}, 得 $|u(t)|^2\leq0$, $t\in[0,T]$. 因而 $u_1=u_2$, 解唯一.
+\end{Proof}
+
+\hypertarget{chapter-03-page-215}{}
+\MBSourceStatementNumber{remark}{3}
+\begin{Remark}
+\label{rem:ch3-uniqueness-2d-l4q}
+由 \eqref{eq:ch3-uniqueness-2d-l4-inequality}, Navier--Stokes 方程的唯一解满足
+\begin{equation}
+u\in L^4(Q)\qquad(n=2).
+\label{eq:ch3-uniqueness-2d-l4q}
+\end{equation}
+\end{Remark}
+
+\MBSourceStatementNumber{remark}{4}
+\begin{Remark}
+\label{rem:ch3-uniqueness-2d-unbounded}
+定理 \ref{thm:ch3-uniqueness-2d} 同时涵盖有界和无界情形; 两种证明没有差别.
+\end{Remark}
+
+\subsection{正则性与唯一性($n=3$)}
+\label{subsec:ch3-regularity-uniqueness-3d}
+由于缺少定理 \ref{thm:ch3-existence-weak-solution} 给出的弱解正则性信息, 第 \ref{subsec:ch3-regularity-uniqueness-2d} 小节的结果不能推广到更高维数.
+
+不过仍可证明解的一些进一步正则性, 只是弱于二维情形. 随后在一个尚不知道存在性的函数类中给出唯一性定理; 该结果说明弱解的正则性信息与唯一性之间的关系.
+
+与引理 \ref{lem:ch3-ladyzhenskaya-2d} 对应的结果如下.
+
+\MBSourceStatementNumber{lemma}{5}
+\begin{Lemma}
+\label{lem:ch3-ladyzhenskaya-3d}
+若 $n=3$, 则对任意开集 $\Omega$,
+\begin{equation}
+\lVert v\rVert_{L^4(\Omega)}
+\leq2^{1/2}\lVert v\rVert_{L^2(\Omega)}^{1/4}
+\lVert\operatorname{grad}v\rVert_{L^2(\Omega)}^{3/4},
+\qquad\forall v\in H_0^1(\Omega).
+\label{eq:ch3-uniqueness-3d-l4-inequality}
+\end{equation}
+\end{Lemma}
+
+\begin{Proof}
+只需对 $v\in\mathcal D(\Omega)$ 证明 \eqref{eq:ch3-uniqueness-3d-l4-inequality}. 对这样的 $v$, 应用 \eqref{eq:ch3-uniqueness-2d-l4-inequality} 写成
+\begin{equation}
+\begin{aligned}
+\int_{\mathbb R^3}|v(x)|^4\,dx
+&\leq2\int_{-\infty}^{+\infty}
+\left\{\int_{\mathbb R^2}|v|^2\,dx_1dx_2\right\}
+\left\{\int_{\mathbb R^2}\sum_{i=1}^{2}|D_iv|^2\,dx_1dx_2\right\}\,dx_3\\
+&\leq2\sup_{x_3}\left\{\int_{\mathbb R^2}|v|^2\,dx_1dx_2\right\}
+\left\{\sum_{i=1}^{2}\lVert D_iv\rVert_{L^2(\mathbb R^3)}^2\right\}.
+\end{aligned}
+\label{eq:ch3-uniqueness-3d-slice-bound}
+\end{equation}
+但
+\[
+|v(x)|^2=2\int_{-\infty}^{x_3}v(x_1,x_2,\xi_3)D_3v(x_1,x_2,\xi_3)\,d\xi_3
+\leq2\int_{-\infty}^{+\infty}|v|\,|D_3v|\,d\xi_3,
+\]
+所以
+\[
+\sup_{x_3}\int_{\mathbb R^2}|v|^2\,dx_1dx_2
+\leq2\int_{\mathbb R^3}|v|\,|D_3v|\,dx
+\leq2\lVert v\rVert_{L^2(\mathbb R^3)}\lVert D_3v\rVert_{L^2(\mathbb R^3)}.
+\]
+由此从 \eqref{eq:ch3-uniqueness-3d-slice-bound} 推出
+\[
+\begin{aligned}
+\int_{\mathbb R^3}|v(x)|^4\,dx
+&\leq4\lVert v\rVert_{L^2(\mathbb R^3)}\lVert D_3v\rVert_{L^2(\mathbb R^3)}
+\sum_{i=1}^{2}\lVert D_iv\rVert_{L^2(\mathbb R^3)}^2\\
+&\leq4\lVert v\rVert_{L^2(\mathbb R^3)}
+\left(\sum_{i=1}^{3}\lVert D_iv\rVert_{L^2(\mathbb R^3)}^2\right)^{3/2},
+\end{aligned}
+\]
+从而得到 \eqref{eq:ch3-uniqueness-3d-l4-inequality}.
+\end{Proof}
+
+\hypertarget{chapter-03-page-216}{}
+\MBSourceStatementNumber{theorem}{3}
+\begin{Theorem}
+\label{thm:ch3-regularity-3d}
+若 $n=3$, 则定理 \ref{thm:ch3-existence-weak-solution} 给出的 \eqref{eq:ch3-existence-operator-solution-space}--\eqref{eq:ch3-existence-operator-initial} 的解 $u$ 满足
+\begin{equation}
+u\in L^{8/3}(0,T;\mathbf L^4(\Omega)),
+\label{eq:ch3-regularity-3d-l83-l4}
+\end{equation}
+\begin{equation}
+u'\in L^{4/3}(0,T;V').
+\label{eq:ch3-regularity-3d-time-derivative}
+\end{equation}
+\end{Theorem}
+
+\begin{Proof}
+由 \eqref{eq:ch3-uniqueness-3d-l4-inequality}, 对几乎每个 $t$,
+\begin{equation}
+\lVert u(t)\rVert_{\mathbf L^4(\Omega)}
+\leq c_0|u(t)|^{1/4}\lVert u(t)\rVert^{3/4}.
+\label{eq:ch3-regularity-3d-l4-pointwise}
+\end{equation}
+右端函数属于 $L^{8/3}(0,T)$, 因而左端也属于该空间.
+
+利用 Hölder 不等式, 第 \ref{chap:steady-state-navier-stokes} 章已导出\footnote{该不等式在任意空间维数均成立, 其中 $c$ 依赖于 $n$.}
+\begin{equation}
+|b(u,u,v)|=|b(u,v,u)|
+\leq c_1\lVert u\rVert_{\mathbf L^4(\Omega)}^2\lVert v\rVert,
+\qquad\forall u,v\in V.
+\label{eq:ch3-regularity-3d-bu-l4-bound}
+\end{equation}
+因此, 若 $u\in L^2(0,T;V)\cap L^\infty(0,T;H)$, 则 $Bu\in L^{4/3}(0,T;V')$, 因为
+\begin{equation}
+\lVert Bu(t)\rVert_{V'}\leq c_1\lVert u(t)\rVert_{\mathbf L^4(\Omega)}^2,
+\label{eq:ch3-regularity-3d-bu-l4}
+\end{equation}
+\begin{equation}
+\lVert Bu(t)\rVert_{V'}\leq c_2|u(t)|^{1/2}\lVert u(t)\rVert^{3/2}
+\qquad\text{几乎处处}.
+\label{eq:ch3-regularity-3d-bu-energy}
+\end{equation}
+结合 \eqref{eq:ch3-existence-operator-equation}, 得到 \eqref{eq:ch3-regularity-3d-l83-l4}--\eqref{eq:ch3-regularity-3d-time-derivative}.
+\end{Proof}
+
+二维情形下, 已证明 \eqref{eq:ch3-existence-operator-solution-space}--\eqref{eq:ch3-existence-operator-initial} 的任意解满足 \eqref{eq:ch3-uniqueness-2d-time-regularity} 和 \eqref{eq:ch3-uniqueness-2d-l4q}, 这正是证明唯一性的关键性质. 当 $n=3$ 时, 它们由较弱的 \eqref{eq:ch3-regularity-3d-l83-l4}--\eqref{eq:ch3-regularity-3d-time-derivative} 取代.
+
+现在证明在一个小于已知存在性函数类的类中, 解至多一个.
+
+\MBSourceStatementNumber{theorem}{4}
+\begin{Theorem}
+\label{thm:ch3-uniqueness-3d}
+若 $n=3$, 则问题 \ref{prob:ch3-weak-operator} 中满足
+\begin{equation}
+u\in L^2(0,T;V)\cap L^\infty(0,T;H),
+\label{eq:ch3-uniqueness-3d-energy-class}
+\end{equation}
+\begin{equation}
+u\in L^8(0,T;\mathbf L^4(\Omega))
+\label{eq:ch3-uniqueness-3d-serrin-class}
+\end{equation}
+的解至多一个. 这样的解从 $[0,T]$ 到 $H$ 连续.
+\end{Theorem}
+
+\begin{Proof}
+(i) 不等式 \eqref{eq:ch3-regularity-3d-bu-l4-bound}--\eqref{eq:ch3-regularity-3d-bu-l4} 表明, 若 $u$ 满足 \eqref{eq:ch3-uniqueness-3d-serrin-class}, 则
+\begin{equation}
+Bu\in L^2(0,T;V')\quad\text{(至少)}.
+\label{eq:ch3-uniqueness-3d-bu-l2}
+\end{equation}
+因而若 $u$ 满足 \eqref{eq:ch3-uniqueness-3d-energy-class}--\eqref{eq:ch3-uniqueness-3d-serrin-class} 和 \eqref{eq:ch3-existence-operator-equation}, 则
+\begin{equation}
+u'\in L^2(0,T;V'),
+\label{eq:ch3-uniqueness-3d-time-regularity}
+\end{equation}
+由引理 \ref{lem:ch3-linear-lions-magenes-continuity}, $u$ 几乎处处等于从 $[0,T]$ 到 $H$ 的连续函数.
+
+(ii) 由 Hölder 不等式和 \eqref{eq:ch3-uniqueness-3d-l4-inequality},
+\[
+|b(u,u,v)|\leq c_0\lVert u\rVert_{\mathbf L^4(\Omega)}
+\lVert v\rVert_{\mathbf L^4(\Omega)}\lVert u\rVert,
+\]
+\begin{equation}
+|b(u,u,v)|\leq c_1|u|^{1/4}\lVert u\rVert^{7/4}
+\lVert v\rVert_{\mathbf L^4(\Omega)}.
+\label{eq:ch3-uniqueness-3d-nonlinear-bound}
+\end{equation}
+
+(iii) 设 $u_1,u_2$ 是满足 \eqref{eq:ch3-uniqueness-3d-energy-class}--\eqref{eq:ch3-uniqueness-3d-serrin-class} 的两个解, 令 $u=u_1-u_2$.
+
+\hypertarget{chapter-03-page-217}{}
+与定理 \ref{thm:ch3-uniqueness-2d} 的证明相同可得
+\begin{equation}
+\frac d{dt}|u(t)|^2+2\nu\lVert u(t)\rVert^2
+=2b(u(t),u(t),u_2(t)).
+\label{eq:ch3-uniqueness-3d-difference-energy}
+\end{equation}
+由 \eqref{eq:ch3-uniqueness-3d-nonlinear-bound}, 右端可由
+\[
+2c_1|u(t)|^{1/4}\lVert u(t)\rVert^{7/4}
+\lVert u_2(t)\rVert_{\mathbf L^4(\Omega)}
+\leq\nu\lVert u(t)\rVert^2
++c_2|u(t)|^2\lVert u_2(t)\rVert_{\mathbf L^4(\Omega)}^8
+\]
+控制. 因而
+\[
+\frac d{dt}|u(t)|^2
+\leq c_2\lVert u_2(t)\rVert_{\mathbf L^4(\Omega)}^4|u(t)|^2.
+\]
+由于 $t\mapsto\lVert u_2(t)\rVert_{\mathbf L^4(\Omega)}^8$ 可积, 可以像定理 \ref{thm:ch3-uniqueness-2d} 那样完成证明.
+\end{Proof}
+
+\MBSourceStatementNumber{remark}{5}
+\begin{Remark}
+\label{rem:ch3-uniqueness-3d-unbounded}
+上述证明对有界或无界 $\Omega$ 均成立.
+\end{Remark}
+
+\MBSourceStatementNumber{remark}{6}
+\begin{Remark}
+\label{rem:ch3-uniqueness-serrin-general}
+还可通过假设其他正则性性质证明许多类似的唯一性结果. 例如(参见 \MBUnresolvedReference{citation}{Lions [2, p. 84]}), 若以
+\begin{equation}
+u\in L^s(0,T;\mathbf L^r(\Omega))
+\label{eq:ch3-uniqueness-general-serrin-class}
+\end{equation}
+取代 \eqref{eq:ch3-uniqueness-3d-serrin-class}, 且
+\begin{equation}
+\left\{
+\begin{aligned}
+\frac2s+\frac nr&\leq1&&\text{若 }\Omega\text{ 有界},\\
+\frac2s+\frac nr&=1&&\text{若 }\Omega\text{ 无界},
+\end{aligned}
+\right.
+\label{eq:ch3-uniqueness-general-serrin-condition}
+\end{equation}
+则任意维数下均有唯一性.
+\end{Remark}
+
+\hypertarget{chapter-03-subsection-3-5-start}{}
+\subsection{更正则的解}
+\label{subsec:ch3-more-regular-solutions}
+本节的目标是证明, 在二维情形, 对数据假设更高正则性可得到更正则的解. 在三维情形, 若给定数据 $u_0,f$ “充分小”, 或 $\nu$ 充分大, 则可在任意时间区间上证明这类更正则解的存在性.
+
+\subsubsection{二维情形}
+\label{subsubsec:ch3-more-regular-2d}
+
+\MBSourceStatementNumber{theorem}{5}
+\begin{Theorem}
+\label{thm:ch3-more-regular-2d}
+假设 $n=2$, 且
+\begin{equation}
+f,f'\in L^2(0,T;V'),
+\qquad f(0)\in H,
+\label{eq:ch3-regular-2d-force-assumptions}
+\end{equation}
+\begin{equation}
+u_0\in\mathbf H^2(\Omega)\cap V.
+\label{eq:ch3-regular-2d-initial-assumption}
+\end{equation}
+则由定理 \ref{thm:ch3-existence-weak-solution} 和 \ref{thm:ch3-uniqueness-2d} 给出的问题 \ref{prob:ch3-weak-operator} 的唯一解满足
+\begin{equation}
+u'\in L^2(0,T;V)\cap L^\infty(0,T;H).
+\label{eq:ch3-regular-2d-time-regularity}
+\end{equation}
+\end{Theorem}
+
+\begin{Proof}
+(i) 回到定理 \ref{thm:ch3-existence-weak-solution} 证明中使用的 Galerkin 逼近. 只需证明该逼近解还满足两个先验估计:
+\begin{equation}
+u_m'\text{ 保持在 }L^2(0,T;V)\cap L^\infty(0,T;H)\text{ 的一个有界集中}.
+\label{eq:ch3-regular-2d-galerkin-derivative-boundedness}
+\end{equation}
+在极限中, \eqref{eq:ch3-regular-2d-galerkin-derivative-boundedness} 推出 \eqref{eq:ch3-regular-2d-time-regularity}.
+
+因为 $u_0\in V\cap\mathbf H^2(\Omega)$, 可取 $u_{0m}$ 为 $u_0$ 在 $V\cap\mathbf H^2(\Omega)$ 中到 $w_1,\ldots,w_m$ 所张成空间上的正交投影; 则
+\begin{equation}
+\left\{
+\begin{aligned}
+u_{0m}&\longrightarrow u_0&&\text{在 }\mathbf H^2(\Omega)\text{ 中},\quad m\to\infty,\\
+\lVert u_{0m}\rVert_{\mathbf H^2(\Omega)}&\leq\lVert u_0\rVert_{\mathbf H^2(\Omega)}.
+\end{aligned}
+\right.
+\label{eq:ch3-regular-2d-initial-projection}
+\end{equation}
+
+\hypertarget{chapter-03-page-218}{}
+(ii) 将 \eqref{eq:ch3-existence-galerkin-equations} 乘 $g_{jm}'(t)$, 再对 $j=1,\ldots,m$ 相加, 得
+\[
+|u_m'(t)|^2+\nu((u_m(t),u_m'(t)))
++b(u_m(t),u_m(t),u_m'(t))=\langle f(t),u_m'(t)\rangle.
+\]
+特别在 $t=0$ 时,
+\begin{equation}
+|u_m'(0)|^2=(f(0),u_m'(0))+\nu(\Delta u_{0m},u_m'(0))
+-b(u_{0m},u_{0m},u_m'(0)),
+\label{eq:ch3-regular-2d-initial-derivative-identity}
+\end{equation}
+从而
+\begin{equation}
+|u_m'(0)|\leq|f(0)|+\nu|\Delta u_{0m}|+|Bu_{0m}|.
+\label{eq:ch3-regular-2d-initial-derivative-bound}
+\end{equation}
+由 \eqref{eq:ch3-regular-2d-initial-projection}, 显然
+\begin{equation}
+|\Delta u_{0m}|\leq c_0\lVert u_{0m}\rVert_{\mathbf H^2(\Omega)}
+\leq c_0\lVert u_0\rVert_{\mathbf H^2(\Omega)}.
+\label{eq:ch3-regular-2d-laplacian-bound}
+\end{equation}
+对 $Bu_{0m}$, 由 Hölder 不等式,
+\[
+\begin{aligned}
+|b(u,u,v)|
+&\leq c_1\lVert u\rVert_{\mathbf L^4(\Omega)}
+|\operatorname{grad}u|_{\mathbf L^4(\Omega)}|v|\\
+&\leq c_2\lVert u\rVert\lVert u\rVert_{\mathbf H^2(\Omega)}|v|
+\quad\text{(由 \eqref{eq:ch3-uniqueness-2d-l4-inequality} 和 Sobolev 不等式)},
+\end{aligned}
+\]
+对所有 $u\in\mathbf H^2(\Omega)$, $v\in\mathbf L^2(\Omega)$ 成立, 因而
+\begin{equation}
+|Bu_{0m}|\leq c_2\lVert u_{0m}\rVert\lVert u_{0m}\rVert_{\mathbf H^2(\Omega)}
+\leq c_2\lVert u_0\rVert_{\mathbf H^2(\Omega)}^2.
+\label{eq:ch3-regular-2d-initial-nonlinear-bound}
+\end{equation}
+最后, \eqref{eq:ch3-regular-2d-laplacian-bound} 与上述估计表明
+\begin{equation}
+u_m'(0)\text{ 属于 }H\text{ 的一个有界集}.
+\label{eq:ch3-regular-2d-initial-derivative-boundedness}
+\end{equation}
+
+(iii) 可以关于 $t$ 对 \eqref{eq:ch3-existence-galerkin-equations} 求导; 因为 $f$ 满足 \eqref{eq:ch3-regular-2d-force-assumptions}, 得
+\begin{equation}
+(u_m'',w_j)+\nu((u_m',w_j))+b(u_m',u_m,w_j)
++b(u_m,u_m',w_j)=\langle f',w_j\rangle,
+\qquad j=1,\ldots,m.
+\label{eq:ch3-regular-2d-differentiated-galerkin}
+\end{equation}
+将 \eqref{eq:ch3-regular-2d-differentiated-galerkin} 乘 $g_{jm}'(t)$, 再对 $j=1,\ldots,m$ 相加, 利用 \eqref{eq:ch3-existence-skew-cancellation}, 得
+\begin{equation}
+\frac d{dt}|u_m'(t)|^2+2\nu\lVert u_m'(t)\rVert^2
++2b(u_m'(t),u_m(t),u_m'(t))
+==2\langle f'(t),u_m'(t)\rangle.
+\label{eq:ch3-regular-2d-derivative-energy-printed}
+\end{equation}
+由引理 \ref{lem:ch3-trilinear-2d},
+\[
+\begin{aligned}
+2|b(u_m'(t),u_m(t),u_m'(t))|
+&\leq2^{3/2}|u_m'(t)|\lVert u_m'(t)\rVert\lVert u_m(t)\rVert\\
+&\leq\nu\lVert u_m'(t)\rVert^2
++\frac2\nu\lVert u_m(t)\rVert^2|u_m'(t)|^2.
+\end{aligned}
+\]
+因此由 \eqref{eq:ch3-regular-2d-derivative-energy-printed} 得
+\begin{equation}
+\frac d{dt}|u_m'(t)|^2+\frac\nu2\lVert u_m'(t)\rVert^2
+\leq\frac2\nu\lVert f'(t)\rVert_{V'}^2
++\phi_m(t)|u_m'(t)|^2,
+\label{eq:ch3-regular-2d-derivative-gronwall-inequality}
+\end{equation}
+其中
+\[
+\phi_m(t)=\frac2\nu\lVert u_m(t)\rVert^2.
+\]
+由通常的 Gronwall 不等式方法,
+\[
+\frac d{dt}\left\{|u_m'(t)|^2
+\exp\left(-\int_0^t\phi_m(s)\,ds\right)\right\}
+\leq\frac2\nu\lVert f'(t)\rVert_{V'}^2,
+\]
+从而
+\begin{equation}
+|u_m'(t)|^2\leq
+\left\{|u_m'(0)|^2+\frac2\nu\int_0^t\lVert f'(s)\rVert_{V'}^2\,ds\right\}
+\exp\left(\int_0^t\phi_m(s)\,ds\right).
+\label{eq:ch3-regular-2d-derivative-gronwall-bound}
+\end{equation}
+
+\hypertarget{chapter-03-page-219}{}
+因为 $u_m$ 保持在 $L^2(0,T;V)$ 的一个有界集中(见 \eqref{eq:ch3-existence-galerkin-l2-boundedness}), 且由 \eqref{eq:ch3-regular-2d-initial-derivative-boundedness}, \eqref{eq:ch3-regular-2d-derivative-gronwall-bound} 的右端对 $t\in[0,T]$ 和 $m$ 一致有界:
+\begin{equation}
+u_m'\text{ 属于 }L^\infty(0,T;H)\text{ 的一个有界集}.
+\label{eq:ch3-regular-2d-derivative-linfty-boundedness}
+\end{equation}
+由 \eqref{eq:ch3-regular-2d-derivative-linfty-boundedness} 容易从 \eqref{eq:ch3-regular-2d-derivative-gronwall-inequality} 推出 $u_m'$ 保持在 $L^2(0,T;V)$ 的一个有界集中. 证明完成.
+\end{Proof}
+
+\MBSourceStatementNumber{theorem}{6}
+\begin{Theorem}
+\label{thm:ch3-regular-2d-h2}
+假设同定理 \ref{thm:ch3-more-regular-2d}, 并进一步假设 $\Omega$ 是有界 $C^2$ 集, 且
+\begin{equation}
+f\in L^\infty(0,T;H).
+\label{eq:ch3-regular-2d-force-linfty}
+\end{equation}
+则函数 $u$ 满足
+\begin{equation}
+u\in L^\infty(0,T;\mathbf H^2(\Omega)).
+\label{eq:ch3-regular-2d-h2-linfty}
+\end{equation}
+\end{Theorem}
+
+\begin{Proof}
+(i) 将 \eqref{eq:ch3-existence-operator-equation} 写成
+\begin{equation}
+\nu((u(t),v))=(g(t),v),
+\qquad\forall v\in V,
+\label{eq:ch3-regular-2d-stationary-equation}
+\end{equation}
+其中
+\begin{equation}
+g(t)=f(t)-u'(t)-Bu(t).
+\label{eq:ch3-regular-2d-g-definition}
+\end{equation}
+证明以两次相继应用 \MBUnresolvedReference{proposition}{Proposition 1.2.2} 为基础.
+
+(ii) 因为 $u\in L^\infty(0,T;V)$, 且
+\begin{equation}
+\begin{aligned}
+|b(u(t),u(t),v)|
+&\leq c_0\lVert u(t)\rVert_{\mathbf L^4(\Omega)}
+\lVert u(t)\rVert\lVert v\rVert_{\mathbf L^4(\Omega)}\\
+&\leq c_1\lVert u(t)\rVert^2\lVert v\rVert_{\mathbf L^4(\Omega)},
+\end{aligned}
+\label{eq:ch3-regular-2d-bu-l43-bound}
+\end{equation}
+所以 $Bu\in L^\infty(0,T;\mathbf L^{4/3}(\Omega))$. 又 $f-u'\in L^\infty(0,T;H)$, 因而
+\begin{equation}
+g\in L^\infty(0,T;\mathbf L^{4/3}(\Omega)).
+\label{eq:ch3-regular-2d-g-l43}
+\end{equation}
+由 \MBUnresolvedReference{proposition}{Proposition 1.2.2},
+\[
+u\in L^\infty(0,T;\mathbf W^{2,4/3}(\Omega)).
+\]
+由 Sobolev 定理, $\mathbf W^{2,4/3}(\Omega)\subset\mathbf L^\infty(\Omega)$, 从而 $u\in L^\infty(Q)$.
+
+(iii) 现在可改进 \eqref{eq:ch3-regular-2d-g-l43}. 以不等式
+\[
+|b(u(t),u(t),v)|\leq c_2\lVert u\rVert_{L^\infty(Q)}\lVert u(t)\rVert|v|
+\]
+取代 \eqref{eq:ch3-regular-2d-bu-l43-bound}, 可知 $Bu\in L^\infty(0,T;H)$. 因而 $g\in L^\infty(0,T;H)$, 再次应用 \MBUnresolvedReference{proposition}{Proposition 1.2.2} 得到 \eqref{eq:ch3-regular-2d-h2-linfty}.
+\end{Proof}
+
+\hypertarget{chapter-03-page-220}{}
+\MBSourceStatementNumber{remark}{7}
+\begin{Remark}
+\label{rem:ch3-regular-compatibility}
+反复应用 \MBUnresolvedReference{proposition}{Proposition 1.2.2}, 可以像 \MBUnresolvedReference{proposition}{Proposition 2.1.1} 那样证明: 若 $\Omega$ 为 $C^\infty$ 类, $f\in C^\infty(Q)$, 则解 $u\in C^\infty(\Omega\times(0,T])$. 对数据作适当假设, 同一方法还可得到中间正则性. $u$ 在 $t=0$ 附近的正则性与数据在 $t=0$ 的相容性有关: 仅假设 $\Omega$ 为 $C^\infty$ 类, $u_0\in C^\infty(\Omega)\cap V$, $f\in C^\infty(Q)$, 尚不足以保证 $u\in C^\infty(Q)$; 数据还必须满足所谓相容性条件. R. Temam [15] 导出了全部必要充分相容性条件, 并研究了 $t=0$ 附近的正则性结果.
+\end{Remark}
+
+\subsubsection{三维情形}
+\label{subsubsec:ch3-more-regular-3d}
+当 $n=3$ 时, 我们将在数据“小”的假设下证明与 $n=2$ 情形类似的正则性.
+
+在下一定理中, 以 $c$ 表示使下式成立的某个常数:
+\begin{equation}
+|b(u,v,w)|\leq c\lVert u\rVert\lVert v\rVert\lVert w\rVert,
+\qquad\forall u,v,w\in V.
+\label{eq:ch3-regular-3d-trilinear-v-bound}
+\end{equation}
+
+\MBSourceStatementNumber{theorem}{7}
+\begin{Theorem}
+\label{thm:ch3-more-regular-3d}
+假设 $n=3$, 给定 $f,u_0$ 满足
+\begin{equation}
+u_0\in\mathbf H^2(\Omega)\cap V,
+\label{eq:ch3-regular-3d-initial-assumption}
+\end{equation}
+\begin{equation}
+f\in L^\infty(0,T;H),
+\qquad f'\in L^1(0,T;H),
+\label{eq:ch3-regular-3d-force-assumptions}
+\end{equation}
+并满足证明过程中给出的另一条件; 若 $\nu$ 充分大, 或 $f,u_0$ “充分小”, 该条件成立.\footnote{见 \eqref{eq:ch3-regular-3d-smallness-condition}.} 则问题 \ref{prob:ch3-weak-operator} 存在唯一解, 且
+\begin{equation}
+u'\in L^2(0,T;V)\cap L^\infty(0,T;H).
+\label{eq:ch3-regular-3d-time-regularity}
+\end{equation}
+\end{Theorem}
+
+\begin{Proof}
+(i) 首先注意, 唯一性只是定理 \ref{thm:ch3-uniqueness-3d} 的推论, 因为这样的解将满足
+\begin{equation}
+u\in L^\infty(0,T;V),
+\label{eq:ch3-regular-3d-v-linfty}
+\end{equation}
+而 $V\subset\mathbf L^4(\Omega)$ 因而推出(见 \eqref{eq:ch3-uniqueness-3d-serrin-class})
+\begin{equation}
+u\in L^\infty(0,T;\mathbf L^4(\Omega)).
+\label{eq:ch3-regular-3d-l4-linfty}
+\end{equation}
+
+(ii) 存在性证明的一些步骤与定理 \ref{thm:ch3-uniqueness-3d} 相同: 使用定理 \ref{thm:ch3-existence-weak-solution} 的 Galerkin 方法, 并选择基和 $u_{0m}$ 使 \eqref{eq:ch3-regular-2d-initial-projection} 成立. 估计 \eqref{eq:ch3-regular-2d-laplacian-bound}, 从而 \eqref{eq:ch3-regular-2d-initial-derivative-boundedness} 仍成立:
+\begin{equation}
+|u_m'(0)|\leq d_1
+=|f(0)|+\nu c_0\lVert u_0\rVert_{\mathbf H^2(\Omega)}
++c_1\lVert u_0\rVert_{\mathbf H^2(\Omega)}^2.
+\label{eq:ch3-regular-3d-initial-derivative-bound}
+\end{equation}
+以同样方式导出 \eqref{eq:ch3-regular-2d-derivative-energy-printed}, 再利用 \eqref{eq:ch3-regular-3d-trilinear-v-bound} 得
+\begin{equation}
+\frac d{dt}|u_m'(t)|^2
++2(\nu-c\lVert u_m(t)\rVert)\lVert u_m'(t)\rVert^2
+\leq2|f'(t)|\,|u_m'(t)|.
+\label{eq:ch3-regular-3d-derivative-energy}
+\end{equation}
+
+\hypertarget{chapter-03-page-221}{}
+(iii) 由 \eqref{eq:ch3-existence-galerkin-energy-inequality} 和 \eqref{eq:ch3-existence-galerkin-linfty-bound},
+\begin{equation}
+\begin{aligned}
+\nu\lVert u_m(t)\rVert^2
+&\leq\frac1\nu\lVert f(t)\rVert_{V'}^2-2(u_m(t),u_m'(t))\\
+&\leq\frac1\nu\lVert f(t)\rVert_{V'}^2+2|u_m(t)|\,|u_m'(t)|\\
+&\leq\frac{d_2}{\nu}
++2\left(|u_0|^2+\frac{Td_2}{\nu}\right)^{1/2}|u_m'(t)|,
+\end{aligned}
+\label{eq:ch3-regular-3d-v-bound}
+\end{equation}
+其中
+\begin{equation}
+d_2=\lVert f\rVert_{L^\infty(0,T;V')}^2.
+\label{eq:ch3-regular-3d-d2}
+\end{equation}
+利用 \eqref{eq:ch3-regular-3d-initial-derivative-bound}, 从 \eqref{eq:ch3-regular-3d-v-bound} 在 $t=0$ 时推出
+\begin{equation}
+\nu\lVert u_m(0)\rVert^2
+\leq\frac{d_2}{\nu}+2d_1
+\left(|u_0|^2+\frac{Td_2}{\nu}\right)^{1/2}=d_3.
+\label{eq:ch3-regular-3d-initial-v-bound}
+\end{equation}
+定理陈述中提到的假设是
+\begin{equation}
+d_4=\frac{d_2}{\nu}+(1+d_1^2)
+\left(|u_0|^2+\frac{Td_2}{\nu}\right)^{1/2}
+\exp\left(\int_0^T|f'(s)|\,ds\right)<\frac{\nu^3}{c^2}.
+\label{eq:ch3-regular-3d-smallness-condition}
+\end{equation}
+因为 $d_3\leq d_4$, 由 \eqref{eq:ch3-regular-3d-initial-v-bound}--\eqref{eq:ch3-regular-3d-smallness-condition} 得
+\[
+\nu\lVert u_m(0)\rVert^2\leq d_3\leq d_4<\frac{\nu^3}{c^2},
+\]
+因而 $\nu-c\lVert u_m(0)\rVert>0$.
+
+由此可知 $\nu-c\lVert u_m(t)\rVert$ 在某个以 $0$ 为端点的区间上保持正. 以 $T_m$ 表示使 $\nu-c\lVert u_m(T_m)\rVert=0$ 的第一个时刻 $t\leq T$; 若不存在, 则令 $T_m=T$. 于是
+\begin{equation}
+\nu-c\lVert u_m(t)\rVert\geq0,
+\qquad0\leq t\leq T_m.
+\label{eq:ch3-regular-3d-coercivity-nonnegative}
+\end{equation}
+
+(iv) 利用 \eqref{eq:ch3-regular-3d-coercivity-nonnegative}, 从 \eqref{eq:ch3-regular-3d-derivative-energy} 得
+\[
+\frac d{dt}|u_m'(t)|^2\leq2|f'(t)|\,|u_m'(t)|,
+\]
+\[
+\frac d{dt}(1+|u_m'(t)|^2)
+\leq|f'(t)|(1+|u_m'(t)|^2).
+\]
+因此
+\[
+\frac d{dt}\left\{(1+|u_m'(t)|^2)
+\exp\left(-\int_0^t|f'(s)|\,ds\right)\right\}\leq0,
+\]
+\[
+1+|u_m'(t)|^2\leq(1+|u_m'(0)|^2)
+\exp\left(\int_0^t|f'(s)|\,ds\right),
+\]
+而由 \eqref{eq:ch3-regular-3d-initial-derivative-bound},
+\begin{equation}
+1+|u_m'(t)|^2\leq(1+d_1^2)
+\exp\left(\int_0^T|f'(s)|\,ds\right),
+\qquad0\leq t\leq T_m.
+\label{eq:ch3-regular-3d-derivative-linfty-bound}
+\end{equation}
+
+\hypertarget{chapter-03-page-222}{}
+由 \eqref{eq:ch3-regular-3d-v-bound}, \eqref{eq:ch3-regular-3d-smallness-condition} 和 \eqref{eq:ch3-regular-3d-derivative-linfty-bound},
+\[
+\nu\lVert u_m(t)\rVert^2\leq d_4,
+\qquad0\leq t\leq T_m,
+\]
+\begin{equation}
+\nu-c\lVert u_m(t)\rVert
+\geq\nu-c\frac{\sqrt{d_4}}{\sqrt\nu}>0,
+\qquad0\leq t\leq T_m.
+\label{eq:ch3-regular-3d-coercivity-positive}
+\end{equation}
+所以 $T_m=T$, 而 \eqref{eq:ch3-regular-3d-derivative-energy} 给出
+\[
+\frac d{dt}|u_m'(t)|^2
++2\left(\nu-c\frac{\sqrt{d_4}}{\sqrt\nu}\right)
+\lVert u_m'(t)\rVert^2
+\leq2|f'(t)|\,|u_m'(t)|,
+\qquad0\leq t\leq T.
+\]
+由此容易推出
+\begin{equation}
+u_m'\text{ 保持在 }L^2(0,T;V)\cap L^\infty(0,T;H)\text{ 的一个有界集中}.
+\label{eq:ch3-regular-3d-galerkin-derivative-boundedness}
+\end{equation}
+存在性得证.
+\end{Proof}
+
+\MBSourceStatementNumber{theorem}{8}
+\begin{Theorem}
+\label{thm:ch3-regular-3d-h2}
+在定理 \ref{thm:ch3-more-regular-3d} 的假设下, 若进一步假设 $\Omega$ 为 $C^2$ 类, 则函数 $u$ 满足
+\begin{equation}
+u\in L^\infty(0,T;\mathbf H^2(\Omega)).
+\label{eq:ch3-regular-3d-h2-linfty}
+\end{equation}
+\end{Theorem}
+
+\begin{Proof}
+将 \eqref{eq:ch3-existence-operator-equation} 写成
+\[
+\nu((u(t),v))=(g(t),v),
+\qquad\forall v\in V,
+\]
+其中 $g(t)=f(t)-u'(t)-Bu(t)$. 因为 $f-u'\in L^\infty(0,T;H)$, 若证明
+\begin{equation}
+Bu\in L^\infty(0,T;H)
+\quad\text{(从而 }g\in L^\infty(0,T;H)\text{)},
+\label{eq:ch3-regular-3d-bu-h-linfty-goal}
+\end{equation}
+则由 \MBUnresolvedReference{proposition}{Proposition 1.2.2} 得到 \eqref{eq:ch3-regular-3d-h2-linfty}.
+
+该结论也通过反复应用 \MBUnresolvedReference{proposition}{Proposition 1.2.2} 及形式 $b$ 的各种估计获得. 由 Hölder 不等式,
+\begin{equation}
+\begin{aligned}
+|b(u(t),u(t),v)|
+&\leq c_0\lVert u(t)\rVert_{\mathbf L^6(\Omega)}\lVert u(t)\rVert
+|v|_{\mathbf L^3(\Omega)}\\
+&\leq c_1\lVert u(t)\rVert^2|v|_{\mathbf L^3(\Omega)}.
+\end{aligned}
+\label{eq:ch3-regular-3d-bu-l32-bound}
+\end{equation}
+由 \eqref{eq:ch3-regular-3d-bu-l32-bound} 及 $u\in L^\infty(0,T;V)$ 得
+\[
+Bu\in L^\infty(0,T;\mathbf L^{3/2}(\Omega)),
+\qquad g\in L^\infty(0,T;\mathbf L^{3/2}(\Omega)).
+\]
+由 \MBUnresolvedReference{proposition}{Proposition 1.2.2},
+\[
+u\in L^\infty(0,T;\mathbf W^{2,3/2}(\Omega)),
+\]
+特别地, 因为当 $n=3$ 时 $\mathbf W^{2,3/2}(\Omega)\subset\mathbf L^8(\Omega)$,
+\[
+u\in L^\infty(0,T;\mathbf L^8(\Omega)).
+\]
+再次利用 Hölder 不等式估计
+\[
+|b(u(t),u(t),v)|
+\leq c_0\lVert u(t)\rVert_{\mathbf L^8(\Omega)}
+\lVert u(t)\rVert\lVert v\rVert_{\mathbf L^{8/3}(\Omega)}.
+\]
+因而
+\[
+Bu,g\in L^\infty(0,T;\mathbf L^{8/5}(\Omega)),
+\]
+再由 \MBUnresolvedReference{proposition}{Proposition 1.2.2},
+\hypertarget{chapter-03-page-223}{}
+\begin{equation}
+u\in L^\infty(0,T;\mathbf W^{2,8/5}(\Omega))
+\subset L^\infty(\Omega\times[0,T]).
+\label{eq:ch3-regular-3d-w285}
+\end{equation}
+由 \eqref{eq:ch3-regular-3d-w285} 和 $u\in L^\infty(0,T;V)$, 容易证明 \eqref{eq:ch3-regular-3d-bu-h-linfty-goal}, 从而定理 \ref{thm:ch3-regular-3d-h2} 得证.
+\end{Proof}
+
+\MBSourceStatementNumber{remark}{8}
+\begin{Remark}
+\label{rem:ch3-regular-3d-compatibility}
+关于正则性的结论与注 \ref{rem:ch3-regular-compatibility} 相同.
+\end{Remark}
+
+\paragraph{压力的引入($n\leq4$).}
+\label{par:ch3-pressure-introduction}
+为引入压力, 令
+\[
+U(t)=\int_0^t u(s)\,ds,
+\qquad\beta(t)=\int_0^t Bu(s)\,ds,
+\qquad F(t)=\int_0^t f(s)\,ds.
+\]
+若 $u$ 是 \eqref{eq:ch3-existence-operator-solution-space}--\eqref{eq:ch3-existence-operator-initial} 的解, 则对任意 $n\leq4$,
+\begin{equation}
+U,\beta,F\in C([0,T];V').
+\label{eq:ch3-pressure-integrated-functions-continuity}
+\end{equation}
+积分 \eqref{eq:ch3-existence-operator-equation} 得
+\begin{equation}
+\nu((U(t),v))=\langle g(t),v\rangle,
+\qquad\forall v\in V,quad\forall t\in[0,T],
+\label{eq:ch3-pressure-integrated-variational-equation}
+\end{equation}
+其中
+\[
+g(t)=F(t)-\beta(t)-u(t)+u_0,
+\qquad g\in C([0,T];V').
+\]
+应用 \MBUnresolvedReference{proposition}{Proposition 1.1.1} 和 \MBUnresolvedReference{proposition}{Proposition 1.1.2}, 对每个 $t\in[0,T]$ 存在函数 $P(t)\in L^2(\Omega)$, 使
+\[
+-\nu\Delta U(t)+\operatorname{grad}P(t)=g(t),
+\]
+即
+\begin{equation}
+u(t)-u_0-\nu\Delta U(t)+\beta(t)+\operatorname{grad}P(t)=F(t).
+\label{eq:ch3-pressure-integrated-momentum}
+\end{equation}
+由 \MBUnresolvedReference{remark}{Remark 1.1.4}, 梯度算子是 $L^2(\Omega)/\mathbb R$ 到 $H^{-1}(\Omega)$ 上的同构. 注意
+\[
+\operatorname{grad}P=g+\nu\Delta U,
+\]
+可知 $\operatorname{grad}P\in C([0,T];H^{-1}(\Omega))$, 从而
+\begin{equation}
+P\in C([0,T];L^2(\Omega)).
+\label{eq:ch3-pressure-p-continuity}
+\end{equation}
+这使我们能够在 $Q=\Omega\times(0,T)$ 中按分布意义对 \eqref{eq:ch3-pressure-integrated-momentum} 求导; 令
+\begin{equation}
+p=\frac{\partial P}{\partial t},
+\label{eq:ch3-pressure-definition}
+\end{equation}
+得到
+\begin{equation}
+\frac{\partial u}{\partial t}-\nu\Delta u
++\sum_{i=1}^{n}u_iD_iu+\operatorname{grad}p=f
+\quad\text{于 }Q.
+\label{eq:ch3-pressure-distributional-momentum}
+\end{equation}
+一般而言, 压力是由 \eqref{eq:ch3-pressure-p-continuity}--\eqref{eq:ch3-pressure-definition} 定义的 $Q$ 上分布. 在定理 \ref{thm:ch3-regular-2d-h2}($n=2$)或定理 \ref{thm:ch3-regular-3d-h2}($n=3$)的假设下, 应用 \MBUnresolvedReference{proposition}{Proposition 1.2.2} 还可得到
+\begin{equation}
+P\in L^\infty(0,T;H^1(\Omega)).
+\label{eq:ch3-pressure-p-h1-linfty}
+\end{equation}
+
+\hypertarget{chapter-03-page-224}{}
+\subsection{存在性与唯一性问题之间的关系($n=3$)}
+\label{subsec:ch3-existence-uniqueness-relations}
+以上各小节指出了三维 Navier--Stokes 方程理论中的两个重要问题:
+
+\begin{itemize}
+\item “极弱解”的唯一性, 即定理 \ref{thm:ch3-existence-weak-solution} 保证存在的解的唯一性;
+\item 对任意数据在整体时间上的“更正则解”存在性, 例如定理 \ref{thm:ch3-uniqueness-3d} 保证唯一性的解, 或定理 \ref{thm:ch3-more-regular-3d} 在限制条件下证明存在的解.
+\end{itemize}
+
+为方便起见, 在本小节结束前称:
+
+\begin{itemize}
+\item 满足 \eqref{eq:ch3-existence-weak-variational-equation}, \eqref{eq:ch3-existence-weak-initial-condition} 且
+\begin{equation}
+u\in L^2(0,T;V)\cap L^\infty(0,T;H)
+\label{eq:ch3-relations-weak-energy-class}
+\end{equation}
+并因而(定理 \ref{thm:ch3-uniqueness-2d})满足
+\begin{equation}
+u\in L^{8/3}(0,T;\mathbf L^4(\Omega)),
+\qquad u'\in L^{4/3}(0,T;V')
+\label{eq:ch3-relations-weak-regularity}
+\end{equation}
+的解 $u$ 为弱解;
+\item 满足 \eqref{eq:ch3-existence-weak-variational-equation}, \eqref{eq:ch3-existence-weak-initial-condition}, \eqref{eq:ch3-relations-weak-energy-class}, \eqref{eq:ch3-relations-weak-regularity}, 且还满足
+\begin{equation}
+v\in L^8(0,T;\mathbf L^4(\Omega))
+\label{eq:ch3-relations-strong-class}
+\end{equation}
+的解 $v$ 为强解.
+\end{itemize}
+
+由定理 \ref{thm:ch3-existence-weak-solution}, \ref{thm:ch3-uniqueness-2d}, \ref{thm:ch3-uniqueness-3d} 和 \ref{thm:ch3-more-regular-3d}, 已知弱解存在但未必唯一, 强解唯一但未必存在(除了一些限制很强的情形).
+
+注意定理 \ref{thm:ch3-existence-weak-solution} 给出的弱解满足能量不等式 \eqref{eq:ch3-existence-energy-inequality}(见注 \ref{rem:ch3-existence-unbounded-energy}):
+\begin{equation}
+|u(t)|^2+2\nu\int_0^t\lVert u(s)\rVert^2\,ds
+\leq|u_0|^2+2\int_0^t\langle f(s),u(s)\rangle\,ds,
+\qquad\forall t\in[0,T].
+\label{eq:ch3-relations-weak-energy-inequality}
+\end{equation}
+由定理 \ref{thm:ch3-uniqueness-3d}, \eqref{eq:ch3-uniqueness-3d-time-regularity} 和引理 \ref{lem:ch3-linear-lions-magenes-continuity}, 强解(若存在)满足能量等式而不是 \eqref{eq:ch3-relations-weak-energy-inequality}:
+\begin{equation}
+|v(t)|^2+2\nu\int_0^t\lVert v(s)\rVert^2\,ds
+=|u_0|^2+2\int_0^t\langle f(s),v(s)\rangle\,ds,
+\qquad\forall t\in[0,T].
+\label{eq:ch3-relations-strong-energy-equality}
+\end{equation}
+
+弱解的唯一性问题与强解的存在性问题有如下关系.
+
+\MBSourceStatementNumber{theorem}{9}
+\begin{Theorem}
+\label{thm:ch3-weak-strong-uniqueness}
+假设 $n=3$, 且任意给定 $f,u_0$ 满足
+\begin{equation}
+f\in L^2(0,T;H),
+\qquad u_0\in H.
+\label{eq:ch3-relations-data}
+\end{equation}
+若存在满足 \eqref{eq:ch3-existence-weak-variational-equation}, \eqref{eq:ch3-existence-weak-initial-condition}, \eqref{eq:ch3-relations-weak-energy-class}, \eqref{eq:ch3-relations-strong-energy-equality} 的解 $v$(即强解), 则不存在另一个满足 \eqref{eq:ch3-existence-weak-variational-equation}, \eqref{eq:ch3-existence-weak-initial-condition}, \eqref{eq:ch3-relations-weak-energy-class}, \eqref{eq:ch3-relations-weak-regularity}, \eqref{eq:ch3-relations-weak-energy-inequality} 的解 $u$(即满足能量不等式的弱解).
+
+该结果由 J. Sather 和 J. Serrin 证明(见 \MBUnresolvedReference{citation}{Serrin [3]}).
+\end{Theorem}
+
+\hypertarget{chapter-03-page-225}{}
+\begin{Proof}
+设 $u,v$ 是定理 \ref{thm:ch3-weak-strong-uniqueness} 中的两个解; $u$ 满足 \eqref{eq:ch3-relations-weak-energy-inequality}, $v$ 满足 \eqref{eq:ch3-relations-strong-energy-equality}. 下一引理将证明
+\begin{equation}
+\begin{aligned}
+(u(t),v(t))+2\nu\int_0^t((u(s),v(s)))\,ds
+&=|u_0|^2+\int_0^t\langle f(s),u(s)+v(s)\rangle\,ds\\
+&\quad-\int_0^t b(w(s),w(s),v(s))\,ds,
+\end{aligned}
+\label{eq:ch3-relations-cross-energy}
+\end{equation}
+其中 $w=u-v$.
+
+将 \eqref{eq:ch3-relations-weak-energy-inequality} 与 \eqref{eq:ch3-relations-strong-energy-equality} 相加, 再从相应不等式中减去两倍 \eqref{eq:ch3-relations-cross-energy}. 展开后得到
+\begin{equation}
+|w(t)|^2+2\nu\int_0^t\lVert w(s)\rVert^2\,ds
+\leq2\int_0^t b(w(s),w(s),v(s))\,ds.
+\label{eq:ch3-relations-difference-energy}
+\end{equation}
+利用 Hölder 不等式, 第 \ref{chap:steady-state-navier-stokes} 章导出估计
+\[
+|b(w(s),w(s),v(s))|
+\leq c_1\lVert w(s)\rVert_{\mathbf L^4(\Omega)}
+\lVert w(s)\rVert\lVert v(s)\rVert_{\mathbf L^4(\Omega)}.
+\]
+由引理 \ref{lem:ch3-ladyzhenskaya-3d}, 该式可由
+\[
+c_2|w(s)|^{1/4}\lVert w(s)\rVert^{7/4}
+\lVert v(s)\rVert_{\mathbf L^4(\Omega)}
+\leq\nu\lVert w(s)\rVert^2
++c_3|w(s)|^2\lVert v(s)\rVert_{\mathbf L^4(\Omega)}^8
+\]
+控制. 代入 \eqref{eq:ch3-relations-difference-energy} 得
+\[
+|w(t)|^2\leq2c_3\int_0^t|w(s)|^2
+\lVert v(s)\rVert_{\mathbf L^4(\Omega)}^8\,ds.
+\]
+由于 $t\mapsto\sigma(t)=2c_3\lVert v(t)\rVert_{\mathbf L^4(\Omega)}^8$ 可积($v$ 满足 \eqref{eq:ch3-relations-strong-class}), Gronwall 不等式给出
+\[
+|w(t)|^2\leq\int_0^t\sigma(s)|w(s)|^2\,ds\leq0,
+\]
+从而 $w=u-v=0$.
+\end{Proof}
+
+还需证明 \eqref{eq:ch3-relations-cross-energy}.
+
+\MBSourceStatementNumber{lemma}{6}
+\begin{Lemma}
+\label{lem:ch3-relations-cross-energy}
+对定理 \ref{thm:ch3-weak-strong-uniqueness} 中的 $u,v$, 关系 \eqref{eq:ch3-relations-cross-energy} 成立.
+\end{Lemma}
+
+\begin{Proof}
+设 $\rho\in\mathcal D(\mathbb R)$ 是正则化函数, $\rho\geq0$, $\rho(-t)=\rho(t)$, 当 $|t|\geq1$ 时 $\rho(t)=0$, 且
+\[
+\int_\mathbb R\rho(t)\,dt=1;
+\]
+令 $\rho_\epsilon(t)=\epsilon^{-1}\rho(t/\epsilon)$.
+
+对任意定义在 $[0,T]$ 上的函数 $w$, 关联定义在 $\mathbb R$ 上的函数 $\widetilde w$, 它在 $[0,T]$ 上等于 $w$, 在区间外等于 $0$.
+
+由 \eqref{eq:ch3-existence-operator-equation},
+\begin{equation}
+u'+\nu Au+Bu=f\quad\text{于 }(0,T),
+\label{eq:ch3-relations-u-equation}
+\end{equation}
+\begin{equation}
+v'+\nu Av+Bv=f\quad\text{于 }(0,T),
+\label{eq:ch3-relations-v-equation}
+\end{equation}
+对 \eqref{eq:ch3-relations-u-equation} 正则化得到
+\begin{equation}
+\frac d{dt}(\widetilde u*\rho_\epsilon*\rho_\epsilon)
+=(\widetilde f-\widetilde{Bu}-\nu A\widetilde u)
+*\rho_\epsilon*\rho_\epsilon
+\quad\text{于 }(\epsilon,T-\epsilon).
+\label{eq:ch3-relations-regularized-u-equation}
+\end{equation}
+
+\hypertarget{chapter-03-page-226}{}
+由 \eqref{eq:ch3-relations-v-equation} 和 \eqref{eq:ch3-relations-regularized-u-equation}, 在 $(\epsilon,T-\epsilon)$ 上有
+\[
+\begin{aligned}
+\frac d{dt}(v,\widetilde u*\rho_\epsilon*\rho_\epsilon)
+&=\langle v',\widetilde u*\rho_\epsilon*\rho_\epsilon\rangle\\
+&=\langle f-\nu Av-Bv,\widetilde u*\rho_\epsilon*\rho_\epsilon\rangle\\
+&\quad+\langle v,(\widetilde f-\widetilde{Bu}-\nu A\widetilde u)
+*\rho_\epsilon*\rho_\epsilon\rangle.
+\end{aligned}
+\]
+因为函数 $\rho_\epsilon$ 是奇函数, 还有
+\begin{equation}
+\frac d{dt}(v,u_\epsilon)
+=\langle f-\nu Av-Bv,u_\epsilon\rangle
++\langle v_\epsilon,f-Bu-\nu Au\rangle,
+\label{eq:ch3-relations-regularized-cross-derivative}
+\end{equation}
+其中 $u_\epsilon=\widetilde u*\rho_\epsilon*\rho_\epsilon$, $v_\epsilon=\widetilde v*\rho_\epsilon*\rho_\epsilon$.
+
+将 \eqref{eq:ch3-relations-regularized-cross-derivative} 从 $s$ 积分到 $t$, $\epsilon<s<t<T-\epsilon$, 得
+\begin{equation}
+\begin{aligned}
+(v(t),u_\epsilon(t))-(v(s),u_\epsilon(s))
+&=\int_0^t\langle f(\sigma),u_\epsilon(\sigma)+v_\epsilon(\sigma)\rangle\,d\sigma\\
+&\quad-\nu\int_s^t\{((v(\sigma),u_\epsilon(\sigma)))
++((v_\epsilon(\sigma),u(\sigma)))\}\,d\sigma\\
+&\quad-\int_s^t\{b(v(\sigma),v(\sigma),u_\epsilon(\sigma))
++b(u(\sigma),u(\sigma),v_\epsilon(\sigma))\}\,d\sigma.
+\end{aligned}
+\label{eq:ch3-relations-regularized-cross-integral}
+\end{equation}
+由 \eqref{eq:ch3-relations-weak-energy-class}, \eqref{eq:ch3-relations-weak-regularity} 和 \eqref{eq:ch3-relations-strong-class},
+\begin{equation}
+\left\{
+\begin{aligned}
+u_\epsilon&\longrightarrow u&&\text{在 }L_{\mathrm{loc}}^2((0,T);V)
+\text{ 和 }L_{\mathrm{loc}}^{8/3}((0,T);\mathbf L^4(\Omega))\text{ 中},\\
+v_\epsilon&\longrightarrow v&&\text{在 }L_{\mathrm{loc}}^2((0,T);V)
+\text{ 和 }L_{\mathrm{loc}}^8((0,T);\mathbf L^4(\Omega))\text{ 中}.
+\end{aligned}
+\right.
+\label{eq:ch3-relations-regularized-convergence}
+\end{equation}
+因此可在 \eqref{eq:ch3-relations-regularized-cross-integral} 中取极限; 对几乎所有 $s,t$, $0<s<t<T$,
+\begin{equation}
+\begin{aligned}
+&(v(t),u(t))-(v(s),u(s))\\
+&\quad+2\nu\int_s^t((u(\sigma),v(\sigma)))\,d\sigma
+=\int_s^t\langle f(\sigma),u(\sigma)+v(\sigma)\rangle\,d\sigma\\
+&\quad-\int_s^t\{b(v(\sigma),v(\sigma),u(\sigma))
++b(u(\sigma),u(\sigma),v(\sigma))\}\,d\sigma.
+\end{aligned}
+\label{eq:ch3-relations-cross-identity-general}
+\end{equation}
+因为 $u$ 在 $H$ 中弱连续(定理 \ref{thm:ch3-existence-weak-solution}), $v$ 在 $H$ 中强连续(定理 \ref{thm:ch3-uniqueness-3d}), 函数 $t\mapsto(u(t),v(t))$ 连续, 所以 \eqref{eq:ch3-relations-cross-identity-general} 对所有 $0\leq s<t\leq T$ 成立. 令 $s=0$, 并注意
+\[
+b(v,v,u)+b(u,u,v)=b(u-v,u,v)=b(u-v,u-v,v),
+\]
+恰好得到 \eqref{eq:ch3-relations-cross-energy}.
+\end{Proof}
+
+\hypertarget{chapter-03-subsection-3-7-start}{}
+\subsection{特殊基的使用}
+\label{subsec:ch3-special-basis}
+若 $\Omega$ 是 $\mathbb R^n$($n=2,3$) 中的有界 Lipschitz 开集, 可在 Galerkin 方法(第 \ref{subsec:ch3-existence-proof} 小节)中采用第 \ref{subsec:ch1-stokes-eigenfunctions} 小节引入的特征函数基 $w_i$. 这将给出关于解的进一步先验估计, 以及与第 \ref{subsec:ch3-more-regular-solutions} 小节略有不同的正则解存在性结果.
+
+\hypertarget{chapter-03-page-227}{}
+\subsubsection{预备结果}
+\label{subsubsec:ch3-special-basis-preliminary}
+以下引理将会用到.
+
+\MBSourceStatementNumber{lemma}{7}
+\begin{Lemma}
+\label{lem:ch3-special-basis-a-norm}
+设 $\Omega$ 是 $\mathbb R^n$(任意 $n$)中的有界 $C^2$ 开集. 则 $|Au|$ 是 $V\cap\mathbf H^2(\Omega)$ 上的范数, 且与 $\mathbf H^2(\Omega)$ 诱导的范数等价.
+\end{Lemma}
+
+\begin{Proof}
+对 $u\in V$, $f\in\mathbf L^2(\Omega)$, $Au=f$ 等价于
+\begin{equation}
+((u,v))=(f,v),
+\qquad\forall v\in V.
+\label{eq:ch3-special-basis-stokes-variational}
+\end{equation}
+把 \eqref{eq:ch3-special-basis-stokes-variational} 解释为线性 Stokes 问题, 再应用 \MBUnresolvedReference{proposition}{Proposition 1.2.2}, 得
+\[
+\lVert u\rVert_{\mathbf H^2(\Omega)}\leq c_0|f|=c_0|Au|.
+\]
+反向不等式容易得到, 引理得证.
+\end{Proof}
+
+\MBSourceStatementNumber{lemma}{8}
+\begin{Lemma}
+\label{lem:ch3-special-basis-bu-estimates}
+假设 $\Omega\subset\mathbb R^n$($n=2,3$)有界且为 $C^2$ 类. 若 $u\in V\cap\mathbf H^2(\Omega)$, 则 $Bu\in H\subset\mathbf L^2(\Omega)$, 且
+\begin{equation}
+|Bu|\leq c_1|u|^{1/2}\lVert u\rVert|Au|^{1/2}
+\qquad\text{若 }n=2,
+\label{eq:ch3-special-basis-bu-2d}
+\end{equation}
+\begin{equation}
+|Bu|\leq c_2\lVert u\rVert^{3/2}|Au|^{1/2}
+\qquad\text{若 }n=3.
+\label{eq:ch3-special-basis-bu-3d}
+\end{equation}
+\end{Lemma}
+
+\begin{Proof}
+若 $n=2$, 应用指数为 $4,4,2$ 的 Hölder 不等式:
+\[
+\left|\int_\Omega u_i(D_iu_j)v_j\,dx\right|
+\leq|u_i|_{L^4(\Omega)}|D_iu_j|_{L^4(\Omega)}|v_j|_{L^2(\Omega)}.
+\]
+由 \eqref{eq:ch3-uniqueness-2d-l4-inequality},\footnote{关系 \eqref{eq:ch3-uniqueness-2d-l4-inequality} 对 $v\in H_0^1(\Omega)$ 建立; 对 $v\in H^1(\Omega)$ 也成立, 但系数 $2^{1/4}$ 换成依赖于 $\Omega$ 的常数. 见 Lions--Magenes [1].} 右端由
+\[
+c_3|u_i|^{1/2}|\operatorname{grad}u_j|
+|\operatorname{grad}D_iu_j|^{1/2}|v_j|
+\]
+控制. 因而
+\[
+|b(u,u,v)|\leq c_4|u|^{1/2}\lVert u\rVert
+\lVert u\rVert_{\mathbf H^2(\Omega)}^{1/2}|v|,
+\]
+应用引理 \ref{lem:ch3-special-basis-a-norm} 得 \eqref{eq:ch3-special-basis-bu-2d}.
+
+若 $n=3$, 应用指数 $6,4,12,2$ 的 Hölder 不等式:
+\[
+\begin{aligned}
+\left|\int_\Omega u_i(D_iu_j)v_j\,dx\right|
+&\leq\int_\Omega|u_i|,|D_iu_j|^{1/2}|D_iu_j|^{1/2}|v_j|\,dx\\
+&\leq|u_i|_{L^6(\Omega)}|D_iu_j|_{L^2(\Omega)}^{1/2}
+|D_iu_j|_{L^6(\Omega)}^{1/2}|v_j|_{L^2(\Omega)}.
+\end{aligned}
+\]
+由 Sobolev 嵌入定理, 该式小于
+\[
+c_5|u_i|_{H^1(\Omega)}|D_iu_j|_{H^1(\Omega)}^{1/2}|v_j|_{L^2(\Omega)},
+\]
+从而
+\[
+|b(u,u,v)|\leq c_6\lVert u\rVert^{3/2}
+\lVert u\rVert_{\mathbf H^2(\Omega)}^{1/2}|v|,
+\]
+于是 \eqref{eq:ch3-special-basis-bu-3d} 得证.
+\end{Proof}
+
+\hypertarget{chapter-03-page-228}{}
+\subsubsection{二维情形}
+\label{subsubsec:ch3-special-basis-2d}
+
+\MBSourceStatementNumber{theorem}{10}
+\begin{Theorem}
+\label{thm:ch3-special-basis-2d}
+假设 $\Omega$ 是 $\mathbb R^2$ 中的有界 $C^2$ 开集. 给定 $f,u_0$ 满足
+\begin{equation}
+u_0\in H,
+\label{eq:ch3-special-basis-2d-initial-h}
+\end{equation}
+\begin{equation}
+f\in L^2(0,T;H).
+\label{eq:ch3-special-basis-2d-force-l2}
+\end{equation}
+则问题 \ref{prob:ch3-weak-operator} 存在唯一解, 且还满足
+\begin{equation}
+\sqrt t\,u\in L^2(0,T;\mathbf H^2(\Omega))\cap L^\infty(0,T;V),
+\qquad\sqrt t\,u'\in L^2(0,T;H).
+\label{eq:ch3-special-basis-2d-weighted-regularity}
+\end{equation}
+若 $u_0\in V$, 则
+\begin{equation}
+u\in L^2(0,T;\mathbf H^2(\Omega))\cap L^\infty(0,T;V),
+\qquad u'\in L^2(0,T;H).
+\label{eq:ch3-special-basis-2d-regularity}
+\end{equation}
+\end{Theorem}
+
+\begin{Proof}
+先考虑 $u_0\in V$ 的情形. 再次考虑定理 \ref{thm:ch3-existence-weak-solution} 证明中使用的 Galerkin 逼近. 这次取第 \ref{subsec:ch1-stokes-eigenfunctions} 小节给出的 $w_j$, 并假设 $u_{0m}\in\operatorname{Sp}[w_1,\ldots,w_m]$ 满足
+\[
+u_{0m}\longrightarrow u_0\quad\text{在 }V\text{ 中强收敛},
+\qquad m\to\infty.
+\]
+关系 \eqref{eq:ch3-existence-galerkin-equations} 可写成
+\begin{equation}
+(u_m',w_j)+(\nu Au_m+Bu_m,w_j)=(f,w_j),
+\qquad1\leq j\leq m.
+\label{eq:ch3-special-basis-galerkin-equation}
+\end{equation}
+由 \MBUnresolvedReference{equation}{Chapter 1, (2.64)},
+\begin{equation}
+((w_j,v))=(Aw_j,v)=\lambda_j(w_j,v),
+\qquad\forall v\in V.
+\label{eq:ch3-special-basis-eigenfunction-identity}
+\end{equation}
+因此乘以 $\lambda_j$ 后, 可将 \eqref{eq:ch3-special-basis-galerkin-equation} 写成
+\[
+((u_m',w_j))+\nu(Au_m,Aw_j)+(Bu_m,Aw_j)=(f,Aw_j).
+\]
+再乘 $g_j$(见 \eqref{eq:ch3-existence-galerkin-expansion})并对 $j=1,\ldots,m$ 相加, 得
+\begin{equation}
+\frac12\frac d{dt}\lVert u_m\rVert^2
++\nu|Au_m|^2+(Bu_m,Au_m)=(f,Au_m).
+\label{eq:ch3-special-basis-higher-energy-identity}
+\end{equation}
+由引理 \ref{lem:ch3-special-basis-bu-estimates},
+\[
+\begin{aligned}
+\frac12\frac d{dt}\lVert u_m\rVert^2+\nu|Au_m|^2
+&\leq|f|,|Au_m|+c_1|u_m|^{1/2}\lVert u_m\rVert|Au_m|^{3/2}\\
+&\leq\frac\nu4|Au_m|^2+\frac1\nu|f|^2
++\frac\nu4|Au_m|^2+c_7|u_m|^2\lVert u_m\rVert^4.
+\end{aligned}
+\]
+从而
+\begin{equation}
+\frac d{dt}\lVert u_m\rVert^2+\nu|Au_m|^2
+\leq\frac2\nu|f|^2+2c_7|u_m|^2\lVert u_m\rVert^4.
+\label{eq:ch3-special-basis-2d-higher-energy-inequality}
+\end{equation}
+特别令 $\sigma_m(t)=2c_7|u_m(t)|^2\lVert u_m(t)\rVert^2$, 得
+\[
+\frac d{dt}\lVert u_m\rVert^2
+\leq\frac2\nu|f|^2+\sigma_m\lVert u_m\rVert^2.
+\]
+由估计 \eqref{eq:ch3-existence-galerkin-linfty-boundedness}, \eqref{eq:ch3-existence-galerkin-l2-boundedness},
+\[
+\int_0^T\sigma_m(t)\,dt\leq\mathrm{const}=c_8,
+\]
+再由 Gronwall 方法和 \eqref{eq:ch3-special-basis-galerkin-equation}, 得
+\begin{equation}
+u_m\text{ 序列保持在 }L^\infty(0,T;V)\text{ 中有界}.
+\label{eq:ch3-special-basis-2d-v-linfty-boundedness}
+\end{equation}
+
+\hypertarget{chapter-03-page-229}{}
+回到 \eqref{eq:ch3-special-basis-2d-higher-energy-inequality}, 得
+\[
+\begin{aligned}
+\lVert u_m(T)\rVert^2+\nu\int_0^T|Au_m|^2\,dt
+&\leq\lVert u_{0m}\rVert^2+\frac2\nu\int_0^T|f|^2\,dt\\
+&\quad+2c_7\int_0^T|u_m|^2\lVert u_m\rVert^4\,dt,
+\end{aligned}
+\]
+由 \eqref{eq:ch3-special-basis-2d-v-linfty-boundedness} 和引理 \ref{lem:ch3-special-basis-a-norm},
+\begin{equation}
+u_m\text{ 序列保持在 }L^2(0,T;\mathbf H^2(\Omega))\text{ 中有界}.
+\label{eq:ch3-special-basis-2d-h2-boundedness}
+\end{equation}
+容易得出 $u_m$ 收敛到 $u$, 且 $u\in L^\infty(0,T;V)\cap L^2(0,T;\mathbf H^2(\Omega))$. 引理 \ref{lem:ch3-special-basis-bu-estimates} 推出 $Bu\in L^4(0,T;H)$; 另一方面 $Au\in L^2(0,T;H)$, 由 \eqref{eq:ch3-existence-operator-equation}, $u'=f-Bu-\nu Au\in L^2(0,T;H)$. 因此 $u_0\in V$ 时定理得证.
+
+若 $u_0\in H$, 将 \eqref{eq:ch3-special-basis-2d-higher-energy-inequality} 乘 $t$, 得
+\[
+\frac d{dt}(t\lVert u_m\rVert^2)+\nu t|Au_m|^2
+\leq\lVert u_m\rVert^2+\frac{2t}\nu|f|^2+t\sigma_m\lVert u_m\rVert^2.
+\]
+从而 $\sqrt t,u_m$ 保持在 $L^\infty(0,T;V)$ 和 $L^2(0,T;\mathbf H^2(\Omega))$ 中有界. 令 $m\to\infty$ 得到 \eqref{eq:ch3-special-basis-2d-weighted-regularity} 的第一部分; $\sqrt t,u'\in L^2(0,T;H)$ 用与前面类似的证明得到: 由 \eqref{eq:ch3-special-basis-bu-2d},
+\[
+\sqrt t,u'=\sqrt t(f-Bu-\nu Au)
+\]
+显然属于 $L^2(0,T;H)$.
+\end{Proof}
+
+\subsubsection{三维情形}
+\label{subsubsec:ch3-special-basis-3d}
+
+\MBSourceStatementNumber{theorem}{11}
+\begin{Theorem}
+\label{thm:ch3-special-basis-3d}
+假设 $\Omega$ 是 $\mathbb R^3$ 中的有界 $C^2$ 开集. 给定 $u_0,f$ 满足
+\begin{equation}
+u_0\in V,
+\qquad f\in L^\infty(0,T;H).
+\label{eq:ch3-special-basis-3d-data}
+\end{equation}
+则存在 $T_*=\min(T,T_1)$, 其中
+\begin{equation}
+T_1=\frac3{4c_9\mu^2},
+\label{eq:ch3-special-basis-3d-t1}
+\end{equation}
+\begin{equation}
+\mu=4\max\left(\lVert u_0\rVert^2,
+\frac2{c_{10}\nu^2}N(f)\right),
+\qquad N(f)=|f|_{L^\infty(0,T;H)}^2,
+\label{eq:ch3-special-basis-3d-mu}
+\end{equation}
+使问题 \ref{prob:ch3-weak-operator} 在 $(0,T_*)$ 上存在唯一解 $u$, 且
+\begin{equation}
+u\in L^\infty(0,T_*;V)\cap L^2(0,T_*;\mathbf H^2(\Omega)),
+\label{eq:ch3-special-basis-3d-solution-space}
+\end{equation}
+\begin{equation}
+u'\in L^2(0,T_*;H).
+\label{eq:ch3-special-basis-3d-time-regularity}
+\end{equation}
+\end{Theorem}
+
+\begin{Proof}
+像定理 \ref{thm:ch3-special-basis-2d} 一样进行, 直到等式 \eqref{eq:ch3-special-basis-higher-energy-identity}. 随后引理 \ref{lem:ch3-special-basis-bu-estimates} 给出
+\[
+\begin{aligned}
+\frac12\frac d{dt}\lVert u_m\rVert^2+\nu|Au_m|^2
+&\leq|f||Au_m|+c_2\lVert u_m\rVert^{3/2}|Au_m|^{3/2}\\
+&\leq\frac\nu4|Au_m|^2+\frac1\nu|f|^2
++\frac\nu4|Au_m|^2+c_9\lVert u_m\rVert^6.
+\end{aligned}
+\]
+从而
+\begin{equation}
+\frac d{dt}\lVert u_m\rVert^2+\nu|Au_m|^2
+\leq\frac2\nu|f|^2+2c_9\lVert u_m\rVert^6.
+\label{eq:ch3-special-basis-3d-higher-energy-inequality}
+\end{equation}
+
+\hypertarget{chapter-03-page-230}{}
+由引理 \ref{lem:ch3-special-basis-bu-estimates}, $|Av|\leq c_{10}\lVert v\rVert$, 因而
+\begin{equation}
+\frac d{dt}\lVert u_m\rVert^2+c_{10}\nu\lVert u_m\rVert^2
+\leq\frac2\nu N(f)+2c_9\lVert u_m\rVert^6.
+\label{eq:ch3-special-basis-3d-v-ode}
+\end{equation}
+现断言
+\begin{equation}
+\lVert u_m(t)\rVert^2\leq\mu,
+\qquad0\leq t\leq T_1,
+\label{eq:ch3-special-basis-3d-local-bound}
+\end{equation}
+只要 $\lVert u_{0m}\rVert\leq\lVert u_0\rVert$; 例如取 $u_{0m}=P_mu_0$ 为 $u_0$ 在 $V$ 或 $H$ 中到 $w_1,\ldots,w_m$ 所张成空间上的投影时满足此条件.
+
+事实上令 $z=\max(\mu/2,\lVert u_m\rVert^2)$. 由 G. Stampacchia [1] 的一个著名结果, $z$ 几乎处处可微, 且
+\[
+\frac{dz}{dt}=0\quad\text{若 }\lVert u_m\rVert^2\leq\mu/2,
+\]
+否则
+\[
+\frac{dz}{dt}=\frac d{dt}\lVert u_m\rVert^2.
+\]
+因此
+\[
+\frac{dz}{dt}\leq2c_9z^3,
+\qquad z(0)=\mu/2,
+\]
+从而对 $t\leq T$,
+\[
+\frac1{\mu^2}\leq\frac{4(1-c_9t\mu^2)}{\mu^2}\leq\frac1{z^2}.
+\]
+因此 $u_m$ 序列在 $L^\infty(0,T_*;V)$ 中有界, 进而像前面一样在 $L^2(0,T_*;\mathbf H^2(\Omega))$ 中有界. $u_m'$ 也在 $L^2(0,T_*;H)$ 中有界. 极限 $u$ 是问题 \ref{prob:ch3-weak-operator} 在 $[0,T_*]$ 上的唯一解, 结论得证.
+\end{Proof}
+
+\MBSourceStatementNumber{remark}{9}
+\begin{Remark}
+\label{rem:ch3-special-basis-limit-inequalities}
+直接地或在 \eqref{eq:ch3-special-basis-2d-higher-energy-inequality}, \eqref{eq:ch3-special-basis-3d-higher-energy-inequality} 中取下极限可知, $u$ 满足
+\begin{equation}
+\frac d{dt}\lVert u\rVert^2+\nu|Au|^2
+\leq\frac2\nu|f|^2+2c_7|u|^2\lVert u\rVert^4
+\quad(n=2, 0<t<T),
+\label{eq:ch3-special-basis-limit-2d}
+\end{equation}
+\begin{equation}
+\frac d{dt}\lVert u\rVert^2+\nu|Au|^2
+\leq\frac2\nu|f|^2+2c_9\lVert u\rVert^6
+\quad(n=3, 0<t<T_*).
+\label{eq:ch3-special-basis-limit-3d}
+\end{equation}
+\end{Remark}
+
+\subsection{特殊情形 $f=0$}
+\label{subsec:ch3-zero-force}
+下面证明当 $f=0$ 时, 流体在 $t\to\infty$ 时光滑地趋于平衡.
+
+\MBSourceStatementNumber{theorem}{12}
+\begin{Theorem}
+\label{thm:ch3-zero-force-decay}
+假设 $\Omega$ 是 $\mathbb R^n$($n=2,3$)中的有界 $C^2$ 开集, $u_0\in V$, 且 $f=0$.
+
+若 $n=2$, 则 $u\in L^\infty(0,\infty;V)$, 且当 $t\to+\infty$ 时在 $V$ 中趋于 $0$.
+
+若 $n=3$, 则对下面估计的某些 $T_2,T_3$(其中 $0<T_2\leq T_3$),
+\[
+u\in L^\infty(0,T_2;V),
+\qquad u\in L^\infty(T_3,\infty;V),
+\]
+且当 $t\to+\infty$ 时在 $V$ 中趋于 $0$.
+\end{Theorem}
+
+\begin{Proof}
+设 $u$ 是定理 \ref{thm:ch3-existence-weak-solution} 给出的问题 \ref{prob:ch3-weak-operator} 的某个解(当 $n=2$ 时为唯一解). 由 \eqref{eq:ch3-existence-energy-inequality},
+\begin{equation}
+|u(t)|^2+2\nu\int_0^t\lVert u(s)\rVert^2\,ds
+\leq|u_0|^2,
+\qquad\forall t>0.
+\label{eq:ch3-zero-force-energy}
+\end{equation}
+
+\hypertarget{chapter-03-page-231}{}
+而 \eqref{eq:ch3-special-basis-limit-2d}, \eqref{eq:ch3-special-basis-limit-3d} 给出
+\begin{equation}
+\frac d{dt}\lVert u\rVert^2+c_{10}\nu\lVert u\rVert^2
+\leq c_{11}\lVert u\rVert^{2n},
+\label{eq:ch3-zero-force-v-ode}
+\end{equation}
+其中当 $n=2$ 时 $c_{11}=2c_7|u_0|^2$, 当 $n=3$ 时 $c_{11}=2c_9$.
+
+若对某个 $t_1>0$, $u(t_1)\in V$ 且 $\lVert u(t_1)\rVert$ 充分小, 使
+\begin{equation}
+\lVert u(t_1)\rVert^{2(n-1)}\leq\frac{\nu c_{10}}{4c_{11}},
+\label{eq:ch3-zero-force-smallness-at-t1}
+\end{equation}
+并且在某个区间 $t_1\leq t\leq t_1+\delta$ 上
+\[
+\lVert u(t)\rVert^{2(n-1)}\leq\frac{\nu c_{10}}{2c_{11}},
+\]
+则
+\[
+\frac d{dt}\lVert u(t)\rVert^2+\frac{\nu c_{10}}2\lVert u(t)\rVert^2\leq0
+\quad(t_1\leq t\leq t_1+\delta).
+\]
+因此 $\lVert u(t)\rVert$ 在 $t_1$ 后衰减; 更确切地说, \eqref{eq:ch3-zero-force-smallness-at-t1} 对任意 $t\geq t_1$ 保持成立, $u\in L^\infty(t_1,\infty;V)$, 且当 $t\to+\infty$ 时 $\lVert u(t)\rVert$ 指数趋于 $0$.
+
+\eqref{eq:ch3-zero-force-energy} 保证存在满足 \eqref{eq:ch3-zero-force-smallness-at-t1} 的 $t_1$. 否则对所有 $t_1>0$ 都必须有
+\[
+|u_0|^2\geq2\nu t_1
+\left(\frac{\nu c_{10}}{4c_{11}}\right)^{1/(n-1)},
+\]
+而当 $t_1$ 充分大时这是不可能的.
+
+若 $n=3$, 可取定理 \ref{thm:ch3-special-basis-3d} 给出的 $T_2=T_1$. 或者更直接地, 由
+\[
+\frac d{dt}\lVert u\rVert^2\leq c_{11}\lVert u\rVert^6
+\]
+得到
+\[
+\lVert u(t)\rVert\leq
+\frac{\lVert u_0\rVert}{(1-2c_{11}t\lVert u_0\rVert^4)^{1/4}},
+\]
+对 $t<T_2=(2c_{11}\lVert u_0\rVert^4)^{-1}$ 成立.
+\end{Proof}
