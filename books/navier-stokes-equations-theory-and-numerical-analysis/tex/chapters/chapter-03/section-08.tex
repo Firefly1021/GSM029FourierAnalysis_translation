@@ -1,0 +1,1722 @@
+\hypertarget{chapter-03-page-302-section-08}{}
+\section{人工可压缩性方法对 Navier--Stokes 方程的逼近}
+\label{sec:ch3-artificial-compressibility}
+
+本节研究用人工可压缩性方法对 Navier--Stokes 方程作数值逼近. 这是克服约束 ``$\operatorname{div}u=0$'' 所带来计算困难的另一种方法. 我们引入一族依赖于正参数 $\epsilon$ 的摄动系统, 其极限逼近 Navier--Stokes 方程, 而且不含这一约束. 最常用的摄动系统之一, 实质上是带有人工状态方程的轻微可压缩介质方程:
+\begin{equation}
+\rho=\rho_0+\epsilon p,
+\qquad ``\epsilon>0\text{ 很小}'',
+\label{eq:ch3-ac-state-equation}
+\end{equation}
+其中 $\rho$ 是密度, $p$ 是压力, $\rho_0$ 是表示密度一级近似的常数.\footnote{为简化起见, 前面各节始终取 $\rho_0=1$. 若 $\rho_0\neq1$, 将运动方程除以 $\rho_0$ 即得相同结果.}
+
+\hypertarget{chapter-03-page-303}{}
+关于 $\epsilon$ 将运动方程线性化, 作为一级近似可得
+\begin{equation}
+\frac{\partial u_\epsilon}{\partial t}
+-\nu\Delta u_\epsilon
++\sum_{i=1}^n u_{i\epsilon}D_i u_\epsilon
++\operatorname{grad}p_\epsilon=f,
+\label{eq:ch3-ac-perturbed-momentum-intro}
+\end{equation}
+\begin{equation}
+\epsilon\frac{\partial p_\epsilon}{\partial t}
++\operatorname{div}u_\epsilon=0.
+\label{eq:ch3-ac-perturbed-continuity-intro}
+\end{equation}
+方程 \eqref{eq:ch3-ac-perturbed-momentum-intro}--\eqref{eq:ch3-ac-perturbed-continuity-intro} 就是我们将要研究的摄动方程. 它们比原 Navier--Stokes 方程更容易逼近, 因为约束 ``$\operatorname{div}u=0$'' 已由演化方程 \eqref{eq:ch3-ac-perturbed-continuity-intro} 取代. 现在的问题是:
+\begin{itemize}
+\item 摄动方程 \eqref{eq:ch3-ac-perturbed-momentum-intro}--\eqref{eq:ch3-ac-perturbed-continuity-intro} (配以适当的初始条件和边界条件)解的存在性与唯一性;
+\item \eqref{eq:ch3-ac-perturbed-momentum-intro}--\eqref{eq:ch3-ac-perturbed-continuity-intro} 的解 $u_\epsilon,p_\epsilon$ 是否逼近 Navier--Stokes 方程的解 $u,p$;
+\item 摄动问题的离散化, 以及离散逼近向 Navier--Stokes 方程本身的解收敛.
+\end{itemize}
+
+在第 \ref{subsec:ch3-ac-perturbed-problems} 小节, 我们更精确地陈述与 \eqref{eq:ch3-ac-perturbed-momentum-intro}--\eqref{eq:ch3-ac-perturbed-continuity-intro} 相联系的边值问题, 并给出这些方程在固定 $\epsilon>0$ 时的存在唯一性定理. 情形本质上与 Navier--Stokes 方程相同: 二维情形弱解存在且唯一, 三维情形弱解存在.\footnote{我们不研究强解的存在性与性质.} 在第 \ref{subsec:ch3-ac-limit} 小节, 我们说明摄动问题的解在 $\epsilon\to0$ 时如何收敛到 Navier--Stokes 方程的解. 第 \ref{subsec:ch3-ac-numerical} 小节讨论摄动方程的数值逼近. 可用于这些方程的数值方法很多; 我们不打算系统研究各种方法, 而选择详细研究用分步方法逼近摄动方程. 对某些空间中的隐式格式, 我们得到无条件稳定性. 最后, 研究离散逼近在 $\epsilon,h,k$ 趋于零时向 Navier--Stokes 方程解的收敛性.
+
+\subsection{摄动问题的研究}
+\label{subsec:ch3-ac-perturbed-problems}
+
+\subsubsection{问题的描述}
+\label{subsubsec:ch3-ac-description}
+
+空间维数为 $n=2$ 或 $3$, $\Omega$ 有界. 假设 $u_0$ 如问题 \MBUnresolvedReference{problem}{Problem 3.1} 中给定,
+\begin{equation}
+u_0\in H,
+\label{eq:ch3-ac-initial-data}
+\end{equation}
+并为简单起见假设 $f\in L^2(0,T;H)$:
+\begin{equation}
+f\in L^2(0,T;H).
+\label{eq:ch3-ac-force-data}
+\end{equation}
+对任意给定的 $\epsilon>0$, 考虑如下初边值问题: 求从 $Q=\Omega\times(0,T)$ 到 $\mathbb R^n$ 的向量函数 $u_\epsilon=\{u_{1\epsilon},\ldots,u_{n\epsilon}\}$ 和从 $Q$ 到 $\mathbb R$ 的标量函数 $p_\epsilon$, 使
+\begin{equation}
+\frac{\partial u_\epsilon}{\partial t}
+-\nu\Delta u_\epsilon
++\sum_{i=1}^n u_{i\epsilon}D_i u_\epsilon
++\frac12(\operatorname{div}u_\epsilon)u_\epsilon
++\operatorname{grad}p_\epsilon=f
+\quad\text{在 }Q\text{ 中},
+\label{eq:ch3-ac-strong-momentum}
+\end{equation}
+\begin{equation}
+\epsilon\frac{\partial p_\epsilon}{\partial t}
++\operatorname{div}u_\epsilon=0
+\quad\text{在 }Q\text{ 中},
+\label{eq:ch3-ac-strong-continuity}
+\end{equation}
+\begin{equation}
+u_\epsilon=0,
+\qquad x\in\partial\Omega,quad t\in(0,T),
+\label{eq:ch3-ac-boundary-condition}
+\end{equation}
+\begin{equation}
+u_\epsilon=u_0\quad\text{在 }t=0,
+\label{eq:ch3-ac-velocity-initial}
+\end{equation}
+\begin{equation}
+p_\epsilon=p_0\quad\text{在 }t=0.
+\label{eq:ch3-ac-pressure-initial}
+\end{equation}
+函数 $p_0$ 并未随问题 \MBUnresolvedReference{problem}{Problem 3.1} 给定, 这里任意选取, 但与 $\epsilon$ 无关, 且
+\begin{equation}
+p_0\in L^2(\Omega).
+\label{eq:ch3-ac-pressure-data}
+\end{equation}
+
+方程 \eqref{eq:ch3-ac-strong-momentum} 含有项 $\frac12(\operatorname{div}u_\epsilon)u_\epsilon$, 它既不出现在 \eqref{eq:ch3-ac-perturbed-momentum-intro} 中, 也不出现在精确问题中(见 \MBUnresolvedReference{equation}{(3.5)}). 这是前面各节已多次使用的稳定化项, 对应于以形式 $\widehat b$ 代替形式 $b$.\footnote{回顾当 $\operatorname{div}u=0$ 时, $b(u,v,w)=\widehat b(u,v,w)$. 正因如此, 我们引入形式 $\widehat b$: 当 $\operatorname{div}u\neq0$ 时一般有 $\widehat b(u,v,w)\neq b(u,v,w)$, 而对任意 $u,v$ 都有 $\widehat b(u,v,v)=0$. 这使我们得到对所有时间都有解的摄动问题.}
+
+\hypertarget{chapter-03-page-304}{}
+假设 $u_\epsilon,p_\epsilon$ 是 \eqref{eq:ch3-ac-strong-momentum}--\eqref{eq:ch3-ac-pressure-initial} 的经典解, 比如 $u_\epsilon\in C^2(Q)$, $p_\epsilon\in C^1(Q)$. 若 $v\in\mathcal D(\Omega)$, $q\in\mathcal D(\Omega)$, 分别以 $v$ 和 $q$ 乘 \eqref{eq:ch3-ac-strong-momentum}, \eqref{eq:ch3-ac-strong-continuity}, 再在 $\Omega$ 上积分, 易得
+\[
+\frac d{dt}(u_\epsilon,v)+\nu((u_\epsilon,v))
++\widehat b(u_\epsilon,u_\epsilon,v)
++(\operatorname{grad}p_\epsilon,v)=(f,v),
+\]
+\[
+\epsilon\frac d{dt}(p_\epsilon,q)+(\operatorname{div}u_\epsilon,q)=0.
+\]
+由连续性论证, 对任意 $v\in H_0^1(\Omega)$ 和 $q\in L^2(\Omega)$, 这些关系仍然成立. 这引出问题的第一种表述.
+
+\MBProblemHeading\label{prob:ch3-ac-weak-formulation-one}
+给定固定的 $\epsilon>0$ 以及满足 \eqref{eq:ch3-ac-initial-data}, \eqref{eq:ch3-ac-force-data}, \eqref{eq:ch3-ac-pressure-data} 的 $f,u_0,p_0$, 求 $u_\epsilon,p_\epsilon$, 使
+\begin{equation}
+u_\epsilon\in L^2(0,T;H_0^1(\Omega)),
+\qquad p_\epsilon\in L^2(0,T;L^2(\Omega)),
+\label{eq:ch3-ac-problem-one-spaces}
+\end{equation}
+\begin{equation}
+\frac d{dt}(u_\epsilon,v)+\nu((u_\epsilon,v))
++\widehat b(u_\epsilon,u_\epsilon,v)
++(\operatorname{grad}p_\epsilon,v)=(f,v),
+\qquad\forall v\in H_0^1(\Omega),
+\label{eq:ch3-ac-problem-one-momentum}
+\end{equation}
+\begin{equation}
+\epsilon\frac d{dt}(p_\epsilon,q)
++(\operatorname{div}u_\epsilon,q)=0,
+\qquad\forall q\in L^2(\Omega),
+\label{eq:ch3-ac-problem-one-continuity}
+\end{equation}
+\begin{equation}
+u_\epsilon(0)=u_0,
+\qquad p_\epsilon(0)=p_0.
+\label{eq:ch3-ac-problem-one-initial}
+\end{equation}
+
+\MBSourceStatementNumber{remark}{1}
+\begin{Remark}
+\label{rem:ch3-ac-initial-values-well-defined}
+若 $u_\epsilon,p_\epsilon$ 只满足 \eqref{eq:ch3-ac-problem-one-spaces}, 条件 \eqref{eq:ch3-ac-problem-one-initial} 未必有意义. 我们将像处理精确 Navier--Stokes 方程那样证明, 若 $u_\epsilon,p_\epsilon$ 满足 \eqref{eq:ch3-ac-problem-one-spaces}--\eqref{eq:ch3-ac-problem-one-continuity}, 则 $u_\epsilon,p_\epsilon$ 是取值于足够大空间的连续函数, 因而 \eqref{eq:ch3-ac-problem-one-initial} 有意义.
+\end{Remark}
+
+\hypertarget{chapter-03-page-305}{}
+对 $u,v\in H_0^1(\Omega)$, 定义 $\widehat B(u,v)\in H^{-1}(\Omega)$ 和 $\widehat B(u)\in H^{-1}(\Omega)$ 如下:
+\begin{equation}
+\langle\widehat B(u,v),w\rangle=\widehat b(u,v,w),
+\qquad\forall u,v,w\in H_0^1(\Omega),
+\label{eq:ch3-ac-B-bilinear-definition}
+\end{equation}
+\begin{equation}
+\widehat B(u)=\widehat B(u,u).
+\label{eq:ch3-ac-B-quadratic-definition}
+\end{equation}
+
+\MBSourceStatementNumber{lemma}{1}
+\begin{Lemma}
+\label{lem:ch3-ac-B-time-integrability}
+若 $u\in L^2(0,T;H_0^1(\Omega))$, 则函数 $t\mapsto\widehat B(u(t))$ 属于 $L^1(0,T;H^{-1}(\Omega))$.
+\end{Lemma}
+
+\begin{Proof}
+已经注意到, 由
+\begin{equation}
+\widehat b(u,v,w)=\frac12\{b(u,v,w)-b(u,w,v)\}
+\label{eq:ch3-ac-bhat-definition}
+\end{equation}
+给出的形式 $\widehat b$ 与 $b$ 一样, 是 $H_0^1(\Omega)$ 上的连续三线性形式; 因而
+\[
+|\widehat b(u,v,w)|\leq d_1\lVert u\rVert\lVert v\rVert\lVert w\rVert,
+\qquad\forall u,v,w\in H_0^1(\Omega),
+\]
+\[
+\lVert\widehat B(u,v)\rVert_{H^{-1}(\Omega)}
+\leq d_1\lVert u\rVert\lVert v\rVert,
+\]
+\begin{equation}
+\lVert\widehat B(u)\rVert_{H^{-1}(\Omega)}
+\leq d_1\lVert u\rVert^2.
+\label{eq:ch3-ac-B-bound}
+\end{equation}
+由 \eqref{eq:ch3-ac-B-bound} 即得引理.
+\end{Proof}
+
+现在, 若 $u_\epsilon$ 满足 \eqref{eq:ch3-ac-problem-one-spaces} 和 \eqref{eq:ch3-ac-problem-one-momentum}, 则根据 \MBUnresolvedReference{equation}{(1.6)} 和 \MBUnresolvedReference{equation}{(1.8)}, 可将 \eqref{eq:ch3-ac-problem-one-momentum} 写成
+\[
+\left\langle\frac d{dt}u_\epsilon,v\right\rangle
+=\langle f+\nu\Delta u_\epsilon-\widehat B(u_\epsilon),v\rangle,
+\qquad\forall v\in V.
+\]
+显然
+\[
+\Delta u_\epsilon\in L^2(0,T;H^{-1}(\Omega)),
+\qquad
+\widehat B(u_\epsilon)\in L^1(0,T;H^{-1}(\Omega)),
+\]
+所以 $f+\nu\Delta u_\epsilon-\widehat B(u_\epsilon)$ 属于 $L^1(0,T;H^{-1}(\Omega))$. 因而由引理 \MBUnresolvedReference{lemma}{Lemma 1.1},
+\begin{equation}
+u_\epsilon'\in L^1(0,T;H^{-1}(\Omega)),
+\qquad u_\epsilon'=f+\nu\Delta u_\epsilon-\widehat B(u_\epsilon).
+\label{eq:ch3-ac-velocity-time-derivative}
+\end{equation}
+类似地, \eqref{eq:ch3-ac-problem-one-spaces}, \eqref{eq:ch3-ac-problem-one-continuity} 和引理 \MBUnresolvedReference{lemma}{Lemma 1.1} 蕴含
+\begin{equation}
+p_\epsilon'\in L^2(0,T;H^{-1}(\Omega)),
+\qquad \epsilon\frac{\partial p_\epsilon}{\partial t}
++\operatorname{div}u_\epsilon=0.
+\label{eq:ch3-ac-pressure-time-derivative}
+\end{equation}
+问题 \ref{prob:ch3-ac-weak-formulation-one} 的另一种表述如下.
+
+\MBProblemHeading\label{prob:ch3-ac-weak-formulation-two}
+给定固定的 $\epsilon>0$ 以及满足 \eqref{eq:ch3-ac-initial-data}, \eqref{eq:ch3-ac-force-data}, \eqref{eq:ch3-ac-pressure-data} 的 $f,u_0,p_0$, 求 $u_\epsilon,p_\epsilon$, 使
+\begin{equation}
+u_\epsilon\in L^2(0,T;H_0^1(\Omega)),
+\qquad u_\epsilon'\in L^1(0,T;H^{-1}(\Omega)),
+\label{eq:ch3-ac-problem-two-velocity-space}
+\end{equation}
+\begin{equation}
+p_\epsilon\in L^2(0,T;L^2(\Omega)),
+\qquad p_\epsilon'\in L^2(0,T;H^{-1}(\Omega)),
+\label{eq:ch3-ac-problem-two-pressure-space}
+\end{equation}
+\begin{equation}
+u_\epsilon'-\nu\Delta u_\epsilon+\widehat B(u_\epsilon)
++\operatorname{grad}p_\epsilon=f,
+\label{eq:ch3-ac-problem-two-momentum}
+\end{equation}
+\begin{equation}
+\epsilon p_\epsilon'+\operatorname{div}u_\epsilon=0,
+\label{eq:ch3-ac-problem-two-continuity}
+\end{equation}
+\begin{equation}
+u_\epsilon(0)=u_0,
+\qquad p_\epsilon(0)=p_0.
+\label{eq:ch3-ac-problem-two-initial}
+\end{equation}
+我们已证明问题 \ref{prob:ch3-ac-weak-formulation-one} 的任一解都是问题 \ref{prob:ch3-ac-weak-formulation-two} 的解; 反向结论很容易验证(使用引理 \MBUnresolvedReference{lemma}{Lemma 1.1}), 因此这两个问题等价.
+
+\hypertarget{chapter-03-page-306}{}
+现在的目标是研究固定 $\epsilon>0$ 时这些问题解的存在性与唯一性; 随后考察这些问题的解如何逼近问题 \MBUnresolvedReference{problem}{Problems 3.1 and 3.2} 的解.
+
+\subsubsection{摄动问题解的存在性}
+\label{subsubsec:ch3-ac-existence}
+
+\MBSourceStatementNumber{theorem}{1}
+\begin{Theorem}
+\label{thm:ch3-ac-existence}
+给定固定的 $\epsilon>0$ 以及满足 \eqref{eq:ch3-ac-initial-data}, \eqref{eq:ch3-ac-force-data}, \eqref{eq:ch3-ac-pressure-data} 的 $f,u_0,p_0$, 问题 \ref{prob:ch3-ac-weak-formulation-one} 和 \ref{prob:ch3-ac-weak-formulation-two} 至少存在一个解 $\{u_\epsilon,p_\epsilon\}$. 此外,
+\begin{equation}
+u_\epsilon\in L^\infty(0,T;L^2(\Omega)),
+\qquad p_\epsilon\in L^\infty(0,T;L^2(\Omega)),
+\label{eq:ch3-ac-existence-linfty}
+\end{equation}
+且 $u_\epsilon$ (相应地 $p_\epsilon$)从 $[0,T]$ 到 $L^2(\Omega)$ (相应地 $L^2(\Omega)$)弱连续.
+\end{Theorem}
+
+存在性将在下一小节证明; 弱连续性则由引理 \ref{lem:ch3-ac-B-time-integrability}, 以及已经证明的 $u_\epsilon,p_\epsilon$ 分别取值于 $H^{-1}(\Omega)$ 和 $H^{-1}(\Omega)$ 的弱连续性得到.
+
+\subsubsection{定理 \ref{thm:ch3-ac-existence} 的证明}
+\label{subsubsec:ch3-ac-existence-proof}
+
+\begin{Proof}
+(i) 为应用 Galerkin 方法, 考虑由 $\mathcal D(\Omega)$ 中元素 $w_i$ 构成的 $H_0^1(\Omega)$ 的一组基, 以及由 $\mathcal D(\Omega)$ 中元素 $r_i$ 构成的 $L^2(\Omega)$ 的一组基.
+
+对每个 $m$, 定义问题 \ref{prob:ch3-ac-weak-formulation-one} 的近似解 $u_{\epsilon m},p_{\epsilon m}$:
+\begin{equation}
+u_{\epsilon m}(t)=\sum_{i=1}^m g_{im}(t)w_i,
+\qquad
+p_{\epsilon m}(t)=\sum_{j=1}^m\xi_{jm}(t)r_j,
+\label{eq:ch3-ac-galerkin-expansion}
+\end{equation}
+并要求
+\begin{equation}
+\begin{aligned}
+(u_{\epsilon m}'(t),w_k)&+\nu((u_{\epsilon m}(t),w_k))
++\widehat b(u_{\epsilon m}(t),u_{\epsilon m}(t),w_k)\\
+&+(\operatorname{grad}p_{\epsilon m}(t),w_k)
+=(f(t),w_k),
+\qquad k=1,\ldots,m,
+\end{aligned}
+\label{eq:ch3-ac-galerkin-momentum}
+\end{equation}
+\begin{equation}
+\epsilon(p_{\epsilon m}'(t),r_\ell)
++(\operatorname{div}u_{\epsilon m}(t),r_\ell)=0,
+\qquad \ell=1,\ldots,m.
+\label{eq:ch3-ac-galerkin-continuity}
+\end{equation}
+此外, 要求这一微分系统满足初始条件
+\begin{equation}
+u_{\epsilon m}(0)=u_{0m},
+\qquad p_{\epsilon m}(0)=p_{0m},
+\label{eq:ch3-ac-galerkin-initial}
+\end{equation}
+其中 $u_{0m}$ (或 $p_{0m}$)是 $u_0$ (或 $p_0$)在 $L^2(\Omega)$ 中到 $w_1,\ldots,w_m$ (或 $r_1,\ldots,r_m$)所张成空间的正交投影.
+
+方程 \eqref{eq:ch3-ac-galerkin-momentum}, \eqref{eq:ch3-ac-galerkin-continuity} 构成关于函数 $g_{1m},\ldots,g_{mm},\xi_{1m},\ldots,\xi_{mm}$ 的非线性微分系统. 与定理 \ref{thm:ch3-existence-weak-solution} 相同, 至少存在一个定义在某个区间 $[0,t_m)$, $0<t_m\leq T$ 上的解; 以下先验估计表明实际上 $t_m=T$.
+
+(ii) 将 \eqref{eq:ch3-ac-galerkin-momentum} 乘以 $g_{km}(t)$, 将 \eqref{eq:ch3-ac-galerkin-continuity} 乘以 $\xi_{\ell m}(t)$, 再对 $k=1,\ldots,m$, $\ell=1,\ldots,m$ 的所有方程求和, 得
+\[
+\begin{aligned}
+(u_{\epsilon m}',u_{\epsilon m})
+&+\nu\lVert u_{\epsilon m}\rVert^2
++\widehat b(u_{\epsilon m},u_{\epsilon m},u_{\epsilon m})
++(\operatorname{grad}p_{\epsilon m},u_{\epsilon m})\\
+&+\epsilon(p_{\epsilon m}',p_{\epsilon m})
++(\operatorname{div}u_{\epsilon m},p_{\epsilon m})
+=(f,u_{\epsilon m}).
+\end{aligned}
+\]
+由 \eqref{eq:ch3-ac-bhat-definition}, $\widehat b(u_{\epsilon m},u_{\epsilon m},u_{\epsilon m})=0$; 又因 $u_{\epsilon m}$ 在 $\partial\Omega$ 上为零,
+\[
+(\operatorname{grad}p_{\epsilon m},u_{\epsilon m})
++(p_{\epsilon m},\operatorname{div}u_{\epsilon m})=0.
+\]
+因此只剩
+\begin{equation}
+\frac d{dt}\{|u_{\epsilon m}|^2+\epsilon|p_{\epsilon m}|^2\}
++2\nu\lVert u_{\epsilon m}\rVert^2
+=2(f,u_{\epsilon m}).
+\label{eq:ch3-ac-galerkin-energy-identity}
+\end{equation}
+
+\hypertarget{chapter-03-page-307}{}
+右端满足
+\[
+2|f||u_{\epsilon m}|
+\leq2d_0|f|\lVert u_{\epsilon m}\rVert
+\leq\nu\lVert u_{\epsilon m}\rVert^2
++\frac{d_0^2}{\nu}|f|^2,
+\]
+故
+\begin{equation}
+\frac d{dt}\{|u_{\epsilon m}|^2+\epsilon|p_{\epsilon m}|^2\}
++\nu\lVert u_{\epsilon m}\rVert^2
+\leq\frac{d_0^2}{\nu}|f|^2.
+\label{eq:ch3-ac-galerkin-energy-inequality}
+\end{equation}
+将 \eqref{eq:ch3-ac-galerkin-energy-inequality} 从 $0$ 积分到 $s$, 得
+\[
+\begin{aligned}
+|u_{\epsilon m}(s)|^2+\epsilon|p_{\epsilon m}(s)|^2
+&\leq|u_{0m}|^2+\epsilon|p_{0m}|^2
++\frac{d_0^2}{\nu}\int_0^s|f(t)|^2\,dt\\
+&\leq|u_0|^2+\epsilon|p_0|^2
++\frac{d_0^2}{\nu}\int_0^T|f(t)|^2\,dt,
+\qquad0<s<t_m.
+\end{aligned}
+\]
+因此 $t_m=T$, 且
+\begin{equation}
+\sup_{s\in[0,T]}
+\{|u_{\epsilon m}(s)|^2+\epsilon|p_{\epsilon m}(s)|^2\}
+\leq d_3,
+\label{eq:ch3-ac-galerkin-linfty-bound}
+\end{equation}
+其中\footnote{我们关注 $\epsilon$ 的小值, 因此假设 $\epsilon$ 有上界, 比如 $\epsilon\leq1$.}
+\begin{equation}
+d_3=|u_0|^2+|p_0|^2
++\frac{d_0^2}{\nu}\int_0^T|f(t)|^2\,dt.
+\label{eq:ch3-ac-energy-constant}
+\end{equation}
+再将 \eqref{eq:ch3-ac-galerkin-energy-inequality} 从 $0$ 积分到 $T$:
+\[
+\begin{aligned}
+|u_{\epsilon m}(T)|^2+\epsilon|p_{\epsilon m}(T)|^2
++\nu\int_0^T\lVert u_{\epsilon m}(t)\rVert^2\,dt
+&\leq|u_{0m}|^2+\epsilon|p_{0m}|^2
++\frac{d_0^2}{\nu}\int_0^T|f(t)|^2\,dt\\
+&\leq d_3.
+\end{aligned}
+\]
+于是
+\begin{equation}
+\int_0^T\lVert u_{\epsilon m}(t)\rVert^2\,dt
+\leq\frac{d_3}{\nu}.
+\label{eq:ch3-ac-galerkin-h1-bound}
+\end{equation}
+
+(iii) 为在非线性项中通过极限, 需要 $u_{\epsilon m}$ 关于时间的分数阶导数估计. 令
+\[
+\varphi_m(t)=f(t)+\nu\Delta u_{\epsilon m}-\widehat B(u_{\epsilon m}).
+\]
+由 \eqref{eq:ch3-ac-galerkin-h1-bound}, \eqref{eq:ch3-ac-B-bound},
+\begin{equation}
+\lVert\varphi_m(t)\rVert_{H^{-1}(\Omega)}
+\leq|f(t)|+\nu\lVert u_{\epsilon m}(t)\rVert
++d_1\lVert u_{\epsilon m}(t)\rVert^2,
+\label{eq:ch3-ac-galerkin-phi-bound}
+\end{equation}
+从而
+\begin{equation}
+\varphi_m\text{ 保持在 }L^1(0,T;H^{-1}(\Omega))\text{ 的一个有界集中}.
+\label{eq:ch3-ac-galerkin-phi-bounded}
+\end{equation}
+关系 \eqref{eq:ch3-ac-galerkin-momentum}, \eqref{eq:ch3-ac-galerkin-continuity} 可写为
+\[
+(u_{\epsilon m}'(t),w_k)
++(\operatorname{grad}p_{\epsilon m}(t),w_k)
+=(\varphi_m(t),w_k),
+\qquad k=1,\ldots,m,
+\]
+\[
+\epsilon(p_{\epsilon m}'(t),r_\ell)
++(\operatorname{div}u_{\epsilon m}(t),r_\ell)=0,
+\qquad\ell=1,\ldots,m.
+\]
+如前面多次所作的那样, 将所有函数在区间 $[0,T]$ 外延拓为零, 并考虑这些方程的 Fourier 变换.
+
+\hypertarget{chapter-03-page-308}{}
+在 $\mathbb R$ 上有
+\[
+\frac d{dt}(\widetilde u_{\epsilon m},w_k)
++(\operatorname{grad}\widetilde p_{\epsilon m},w_k)
+=\langle\widetilde\varphi_m,w_k\rangle
++(u_{0m},w_k)\delta_{(0)}
+-(u_{\epsilon m}(T),w_k)\delta_{(T)},
+\]
+\[
+\epsilon\frac d{dt}(\widetilde p_{\epsilon m},r_\ell)
++(\operatorname{div}\widetilde u_{\epsilon m},r_\ell)
+=\epsilon(p_{0m},r_\ell)\delta_{(0)}
+-\epsilon(p_{\epsilon m}(T),r_\ell)\delta_{(T)}.
+\]
+取 Fourier 变换后得到
+\[
+\begin{aligned}
+2i\pi\tau(\widehat u_{\epsilon m}(\tau),w_k)
++(\operatorname{grad}\widehat p_{\epsilon m}(\tau),w_k)
+&=\langle\widehat\varphi_m(\tau),w_k\rangle
++(u_{0m},w_k)\\
+&\quad-(u_{\epsilon m}(T),w_k)e^{-2i\pi\tau T},
+\end{aligned}
+\]
+\[
+\begin{aligned}
+2i\pi\tau\epsilon(\widehat p_{\epsilon m}(\tau),r_\ell)
++(\operatorname{div}\widehat u_{\epsilon m}(\tau),r_\ell)
+&=\epsilon(p_{0m},r_\ell)\\
+&\quad-\epsilon(p_{\epsilon m}(T),r_\ell)e^{-2i\pi\tau T}.
+\end{aligned}
+\]
+第一式乘以 $\widehat g_{km}(\tau)$, 第二式乘以 $\widehat\xi_{\ell m}(\tau)$, 再分别对 $k=1,\ldots,m$, $\ell=1,\ldots,m$ 求和, 得
+\begin{equation}
+\begin{aligned}
+2i\pi\tau\{|\widehat u_{\epsilon m}(\tau)|^2
++\epsilon|\widehat p_{\epsilon m}(\tau)|^2\}
+&+(\operatorname{grad}\widehat p_{\epsilon m}(\tau),\widehat u_{\epsilon m}(\tau))
++(\operatorname{div}\widehat u_{\epsilon m}(\tau),\widehat p_{\epsilon m}(\tau))\\
+&=\langle\widehat\varphi_m(\tau),\widehat u_{\epsilon m}(\tau)\rangle
++(u_{0m},\widehat u_{\epsilon m}(\tau))
++\epsilon(p_{0m},\widehat p_{\epsilon m}(\tau))\\
+&\quad-\{(u_{\epsilon m}(T),\widehat u_{\epsilon m}(\tau))
++\epsilon(p_{\epsilon m}(T),\widehat p_{\epsilon m}(\tau))\}e^{-2i\pi T\tau}.
+\end{aligned}
+\label{eq:ch3-ac-galerkin-fourier-identity}
+\end{equation}
+项
+\[
+(\operatorname{grad}\widehat p_{\epsilon m},\widehat u_{\epsilon m})
++(\operatorname{div}\widehat u_{\epsilon m},\widehat p_{\epsilon m})
+\]
+为零. 由此从 \eqref{eq:ch3-ac-galerkin-fourier-identity} 推得
+\[
+\begin{aligned}
+2\pi|\tau|\{|\widehat u_{\epsilon m}(\tau)|^2
++\epsilon|\widehat p_{\epsilon m}(\tau)|^2\}
+&\leq|\langle\widehat\varphi_m(\tau),\widehat u_{\epsilon m}(\tau)\rangle|
++|u_{0m}|\,|\widehat u_{\epsilon m}(\tau)|\\
+&\quad+\epsilon|p_{0m}|\,|\widehat p_{\epsilon m}(\tau)|
++|u_{\epsilon m}(T)|\,|\widehat u_{\epsilon m}(\tau)|\\
+&\quad+\epsilon|p_{\epsilon m}(T)|\,|\widehat p_{\epsilon m}(\tau)|.
+\end{aligned}
+\]
+由先前估计 \eqref{eq:ch3-ac-galerkin-linfty-bound}, \eqref{eq:ch3-ac-galerkin-h1-bound},
+\[
+2\pi|\tau|\,|\widehat u_{\epsilon m}(\tau)|^2
+\leq\lVert\widehat\varphi_m(\tau)\rVert_{H^{-1}(\Omega)}
+\lVert\widehat u_{\epsilon m}(\tau)\rVert
++2\sqrt{d_3}|\widehat u_{\epsilon m}(\tau)|
++2\sqrt{d_3}\sqrt\epsilon|\widehat p_{\epsilon m}(\tau)|.
+\]
+而
+\[
+\lVert\widehat\varphi_m(\tau)\rVert_{H^{-1}(\Omega)}
+\leq\int_{-\infty}^{+\infty}
+\lVert\widetilde\varphi_m(t)\rVert_{H^{-1}(\Omega)}\,dt
+\leq\int_0^T\{|f(t)|+\nu\lVert u_{\epsilon m}(t)\rVert
++d_0\lVert u_{\epsilon m}(t)\rVert^2\}\,dt
+\leq\text{常数},
+\]
+并且
+\[
+\epsilon|\widehat p_{\epsilon m}(\tau)|
+\leq\epsilon\int_{-\infty}^{+\infty}|\widetilde p_{\epsilon m}(t)|\,dt
+=\epsilon\int_0^T|p_{\epsilon m}(t)|\,dt
+\leq\sqrt\epsilon\sqrt{d_3T}
+\leq\text{常数}.
+\]
+最终得到
+\begin{equation}
+2\pi|\tau|\,|\widehat u_{\epsilon m}(\tau)|^2
+\leq c_1\lVert\widehat u_{\epsilon m}(\tau)\rVert+c_2.
+\label{eq:ch3-ac-galerkin-fourier-pointwise}
+\end{equation}
+如定理 \MBUnresolvedReference{theorem}{Theorem 2.2} 的证明中那样, 此不等式蕴含
+\begin{equation}
+\int_{-\infty}^{+\infty}|\tau|^{2\gamma}
+|\widehat u_{\epsilon m}(\tau)|^2\,d\tau
+\leq\text{常数},
+\qquad\text{对某个 }\gamma,quad0<\gamma<\frac14.
+\label{eq:ch3-ac-galerkin-fractional-time-bound}
+\end{equation}
+
+\hypertarget{chapter-03-page-309}{}
+(iv) 利用估计 \eqref{eq:ch3-ac-galerkin-linfty-bound}, \eqref{eq:ch3-ac-galerkin-h1-bound}, \eqref{eq:ch3-ac-galerkin-fractional-time-bound}, 我们要在 \eqref{eq:ch3-ac-galerkin-momentum}--\eqref{eq:ch3-ac-galerkin-initial} 中令 $m\to\infty$. 回顾目前 $\epsilon>0$ 固定, 只考虑 $m\to\infty$ 的极限.
+
+存在序列 $m'\to\infty$, 使得
+\begin{equation}
+u_{\epsilon m'}\longrightarrow u_\epsilon
+\quad\text{在 }L^2(0,T;H_0^1(\Omega))\text{ 中弱收敛},
+\label{eq:ch3-ac-galerkin-velocity-weak-limit}
+\end{equation}
+并在 $L^\infty(0,T;L^2(\Omega))$ 中弱星收敛, 且由于 \eqref{eq:ch3-ac-galerkin-fractional-time-bound} 和定理 \MBUnresolvedReference{theorem}{Theorem 2.1}, 在 $L^2(0,T;L^2(\Omega))$ 中强收敛; 另外
+\begin{equation}
+p_{\epsilon m'}\longrightarrow p_\epsilon
+\quad\text{在 }L^\infty(0,T;L^2(\Omega))\text{ 中弱星收敛}.
+\label{eq:ch3-ac-galerkin-pressure-weak-limit}
+\end{equation}
+设 $\psi$ 是 $[0,T]$ 上连续可微的标量函数, 且 $\psi(T)=0$. 将 \eqref{eq:ch3-ac-galerkin-momentum} (相应地 \eqref{eq:ch3-ac-galerkin-continuity})乘以 $\psi(t)$, 在 $[0,T]$ 上积分, 再对第一项分部积分:
+\begin{equation}
+\begin{aligned}
+-\int_0^T(u_{\epsilon m}(t),w_k\psi'(t))\,dt
+&+\nu\int_0^T((u_{\epsilon m}(t),w_k\psi(t)))\,dt\\
+&+\int_0^T\{\widehat b(u_{\epsilon m}(t),u_{\epsilon m}(t),w_k\psi(t))
++(\operatorname{grad}p_{\epsilon m}(t),w_k\psi(t))\}\,dt\\
+&=(u_{0m},w_k)\psi(0)+\int_0^T(f(t),w_k\psi(t))\,dt,
+\end{aligned}
+\label{eq:ch3-ac-galerkin-integrated-momentum}
+\end{equation}
+\begin{equation}
+-\epsilon\int_0^T(p_{\epsilon m}(t),r_\ell\psi'(t))\,dt
++\int_0^T(\operatorname{div}u_{\epsilon m}(t),r_\ell\psi(t))\,dt
+=\epsilon(p_{0m},r_\ell)\psi(0),
+\quad1\leq k,\ell\leq m.
+\label{eq:ch3-ac-galerkin-integrated-continuity}
+\end{equation}
+沿序列 $m'$ 在 \eqref{eq:ch3-ac-galerkin-integrated-momentum}, \eqref{eq:ch3-ac-galerkin-integrated-continuity} 中通过极限很容易, 得
+\begin{equation}
+\begin{aligned}
+-\int_0^T(u_\epsilon(t),w_k\psi'(t))\,dt
+&+\nu\int_0^T((u_\epsilon(t),w_k\psi(t)))\,dt\\
+&+\int_0^T\{\widehat b(u_\epsilon(t),u_\epsilon(t),w_k\psi(t))
++(\operatorname{grad}p_\epsilon(t),w_k\psi(t))\}\,dt\\
+&=(u_0,w_k)\psi(0)+\int_0^T(f(t),w_k\psi(t))\,dt,
+\end{aligned}
+\label{eq:ch3-ac-limit-integrated-momentum}
+\end{equation}
+\begin{equation}
+-\epsilon\int_0^T(p_\epsilon(t),r_\ell\psi'(t))\,dt
++\int_0^T(\operatorname{div}u_\epsilon(t),r_\ell\psi(t))\,dt
+=\epsilon(p_0,r_\ell)\psi(0),
+\quad1\leq k,\ell\leq m.
+\label{eq:ch3-ac-limit-integrated-continuity}
+\end{equation}
+关系 \eqref{eq:ch3-ac-limit-integrated-momentum}, \eqref{eq:ch3-ac-limit-integrated-continuity} 蕴含 $\{u_\epsilon,p_\epsilon\}$ 是问题 \ref{prob:ch3-ac-weak-formulation-one} 的解; 证明与对 \MBUnresolvedReference{equation}{(3.43)} 的解释相同. 问题 \ref{prob:ch3-ac-weak-formulation-one}, \ref{prob:ch3-ac-weak-formulation-two} 解的存在性以及定理 \ref{thm:ch3-ac-existence} 均得证.
+\end{Proof}
+
+\MBSourceStatementNumber{remark}{2}
+\begin{Remark}
+\label{rem:ch3-ac-epsilon-independent-estimates}
+为令 $\epsilon\to0$, 建立 $u_\epsilon,p_\epsilon$ 所满足且与 $\epsilon$ 无关的一些先验估计是有用的.
+
+\hypertarget{chapter-03-page-310}{}
+由 \eqref{eq:ch3-ac-galerkin-linfty-bound}, \eqref{eq:ch3-ac-galerkin-h1-bound}, \eqref{eq:ch3-ac-galerkin-velocity-weak-limit} 以及弱拓扑下范数的下半连续性,
+\begin{equation}
+|u_\epsilon|_{L^\infty(0,T;L^2(\Omega))}
+\leq\liminf_{m'\to\infty}
+|u_{\epsilon m'}|_{L^\infty(0,T;L^2(\Omega))}
+\leq\sqrt{d_3},
+\label{eq:ch3-ac-epsilon-velocity-linfty}
+\end{equation}
+\begin{equation}
+\lVert u_\epsilon\rVert_{L^2(0,T;H_0^1(\Omega))}
+\leq\liminf_{m'\to\infty}
+\lVert u_{\epsilon m'}\rVert_{L^2(0,T;H_0^1(\Omega))}
+\leq\sqrt{\frac{d_3}{\nu}}.
+\label{eq:ch3-ac-epsilon-velocity-h1}
+\end{equation}
+由 \eqref{eq:ch3-ac-galerkin-linfty-bound}, \eqref{eq:ch3-ac-galerkin-pressure-weak-limit},
+\begin{equation}
+\sqrt\epsilon\,|p_\epsilon|_{L^\infty(0,T;L^2(\Omega))}
+\leq\liminf_{m'\to\infty}
+\sqrt\epsilon\,|p_{\epsilon m'}|_{L^\infty(0,T;L^2(\Omega))}
+\leq\sqrt{d_3}.
+\label{eq:ch3-ac-epsilon-pressure-linfty}
+\end{equation}
+类似地, 检查 \eqref{eq:ch3-ac-galerkin-fourier-pointwise}, \eqref{eq:ch3-ac-galerkin-fractional-time-bound} 的证明可见, 其中出现的常数均与 $\epsilon$ (当然也与 $m$)无关. 因而由 \eqref{eq:ch3-ac-galerkin-velocity-weak-limit},
+\begin{equation}
+\int_{-\infty}^{+\infty}|\tau|^{2\gamma}
+|\widehat u_\epsilon(\tau)|^2\,d\tau
+\leq\liminf_{m'\to\infty}
+\int_{-\infty}^{+\infty}|\tau|^{2\gamma}
+|\widehat u_{\epsilon m'}(\tau)|^2\,d\tau
+\leq\text{常数},
+\quad0<\gamma<\frac14,
+\label{eq:ch3-ac-epsilon-fractional-time}
+\end{equation}
+其中常数与 $\epsilon$ 无关.
+\end{Remark}
+
+\subsubsection{摄动问题解的唯一性}
+\label{subsubsec:ch3-ac-uniqueness}
+
+\MBSourceStatementNumber{theorem}{2}
+\begin{Theorem}
+\label{thm:ch3-ac-uniqueness}
+假设 $n=2$, 其余假设与定理 \ref{thm:ch3-ac-existence} 相同. 问题 \ref{prob:ch3-ac-weak-formulation-one}, \ref{prob:ch3-ac-weak-formulation-two} 存在唯一解 $\{u_\epsilon,p_\epsilon\}$, 它属于
+\[
+L^\infty(0,T;L^2(\Omega))\times L^\infty(0,T;L^2(\Omega)),
+\]
+且 $u_\epsilon$ 是从 $[0,T]$ 到 $L^2(\Omega)$ 的连续函数.
+\end{Theorem}
+
+该定理由若干引理推出, 其中一些给出 $u_\epsilon$ 的附加正则性.
+
+\MBSourceStatementNumber{lemma}{2}
+\begin{Lemma}
+\label{lem:ch3-ac-two-dimensional-regularity}
+若 $n=2$, $u\in L^2(0,T;H_0^1(\Omega))\cap L^\infty(0,T;L^2(\Omega))$, 则
+\begin{equation}
+u\in L^4(0,T;L^4(\Omega)),
+\label{eq:ch3-ac-l4-regularity}
+\end{equation}
+\begin{equation}
+\widehat B(u)\in L^{4/3}(0,T;L^{4/3}(\Omega)).
+\label{eq:ch3-ac-B-l43-regularity}
+\end{equation}
+\end{Lemma}
+
+\begin{Proof}
+性质 \eqref{eq:ch3-ac-l4-regularity} 由引理 \MBUnresolvedReference{lemma}{Lemma 3.3} 给出的估计
+\begin{equation}
+\lVert u(t)\rVert_{L^4(\Omega)}^4
+\leq c|u(t)|^2\lVert u(t)\rVert^2,
+\quad\text{a.e. }t,
+\label{eq:ch3-ac-two-dimensional-l4-estimate}
+\end{equation}
+推出. 对 \eqref{eq:ch3-ac-B-l43-regularity}, 先注意\footnote{$\widehat B(\cdot)$ 如 \eqref{eq:ch3-ac-B-quadratic-definition} 所定义. 这里的尖帽符号与 Fourier 变换无关.}
+\begin{equation}
+\widehat b(u,v,w)
+=\sum_{i,j=1}^2\int_\Omega u_i(D_i v_j)w_j\,dx
++\frac12\sum_{j=1}^2\int_\Omega(\operatorname{div}u)v_jw_j\,dx.
+\label{eq:ch3-ac-bhat-integral-form}
+\end{equation}
+当 $u,v,w\in\mathcal D(\Omega)$ 时, \eqref{eq:ch3-ac-bhat-integral-form} 显然成立; 由连续性它对 $u,v,w\in H_0^1(\Omega)$ 仍成立. 事实上, 由 H\"older 不等式,
+\[
+\begin{aligned}
+|\widehat b(u,v,w)|
+&\leq\sum_{i,j=1}^2
+\lVert u_i\rVert_{L^4(\Omega)}|D_i v_j|_{L^2(\Omega)}
+|w_j|_{L^4(\Omega)}\\
+&\quad+\frac12\sum_{j=1}^2
+|\operatorname{div}u|_{L^2(\Omega)}
+|v_j|_{L^4(\Omega)}|w_j|_{L^4(\Omega)}.
+\end{aligned}
+\]
+因而
+\begin{equation}
+|\widehat b(u,u,w)|
+\leq c\lVert u\rVert_{L^4(\Omega)}\lVert u\rVert
+\lVert w\rVert_{L^4(\Omega)},
+\label{eq:ch3-ac-bhat-l4-bound}
+\end{equation}
+\begin{equation}
+|\widehat b(u,u,w)|
+\leq c|u|^{1/2}\lVert u\rVert^{3/2}
+\lVert w\rVert_{L^4(\Omega)},
+\qquad\forall u\in H_0^1(\Omega),quad\forall w\in L^4(\Omega),
+\label{eq:ch3-ac-bhat-interpolated-bound}
+\end{equation}
+其中第二式使用了 \eqref{eq:ch3-ac-two-dimensional-l4-estimate}. 由于 $L^{4/3}(\Omega)$ 是 $L^4(\Omega)$ 的对偶空间, 可得
+\begin{equation}
+\lVert\widehat B u\rVert_{L^{4/3}(\Omega)}
+\leq c|u|^{1/2}\lVert u\rVert^{3/2},
+\qquad\forall u\in H_0^1(\Omega),
+\label{eq:ch3-ac-B-l43-bound}
+\end{equation}
+由此容易推出 \eqref{eq:ch3-ac-B-l43-regularity}.
+\end{Proof}
+
+\hypertarget{chapter-03-page-311}{}
+\MBSourceStatementNumber{lemma}{3}
+\begin{Lemma}
+\label{lem:ch3-ac-solution-time-regularity}
+若 $n=2$, 且 $u_\epsilon$ 是问题 \ref{prob:ch3-ac-weak-formulation-one} 属于 $L^\infty(0,T;L^2(\Omega))$ 的解, 则
+\begin{equation}
+u_\epsilon\in L^2(0,T;H_0^1(\Omega))
+\cap L^4(0,T;L^4(\Omega)),
+\label{eq:ch3-ac-solution-l4-space-time}
+\end{equation}
+\begin{equation}
+u_\epsilon'\in L^2(0,T;H^{-1}(\Omega))
++L^{4/3}(0,T;L^{4/3}(\Omega)).
+\label{eq:ch3-ac-solution-derivative-sum-space}
+\end{equation}
+\end{Lemma}
+
+\begin{Proof}
+这只是引理 \ref{lem:ch3-ac-two-dimensional-regularity} 的推论; \eqref{eq:ch3-ac-B-l43-bound} 等价于 \eqref{eq:ch3-ac-l4-regularity}, 而对 \eqref{eq:ch3-ac-solution-derivative-sum-space}, 使用 \eqref{eq:ch3-ac-problem-two-momentum}:
+\[
+u_\epsilon'=f+\nu\Delta u_\epsilon
+-\operatorname{grad}p_\epsilon-\widehat B u_\epsilon.
+\]
+右端前三项属于 $L^2(0,T;H^{-1}(\Omega))$, 最后一项由 \eqref{eq:ch3-ac-B-l43-regularity} 属于 $L^{4/3}(0,T;L^{4/3}(\Omega))$.
+\end{Proof}
+
+\MBSourceStatementNumber{lemma}{4}
+\begin{Lemma}
+\label{lem:ch3-ac-energy-chain-rule}
+对任意满足 \eqref{eq:ch3-ac-solution-l4-space-time}, \eqref{eq:ch3-ac-solution-derivative-sum-space} 的函数 $u_\epsilon$, 在 $(0,T)$ 上的分布意义下,
+\begin{equation}
+2\langle u_\epsilon'(t),u_\epsilon(t)\rangle
+=\frac d{dt}|u_\epsilon(t)|^2.
+\label{eq:ch3-ac-energy-chain-rule}
+\end{equation}
+此外, $u_\epsilon$ 几乎处处等于一个从 $[0,T]$ 到 $L^2(\Omega)$ 的连续函数.
+\end{Lemma}
+
+\begin{Proof}
+证明与引理 \MBUnresolvedReference{lemma}{Lemma 1.2} 相同, 只须注意 \eqref{eq:ch3-ac-solution-l4-space-time}, \eqref{eq:ch3-ac-solution-derivative-sum-space} 中的空间彼此对偶.
+\end{Proof}
+
+\begin{Proof}[定理 \ref{thm:ch3-ac-uniqueness} 的证明]
+只需证明唯一性. 省略指标 $\epsilon$, 以 $\{u_1,p_1\}$, $\{u_2,p_2\}$ 表示问题 \ref{prob:ch3-ac-weak-formulation-one} 的两个解, 并令
+\[
+u=u_1-u_2,
+\qquad p=p_1-p_2.
+\]
+分别将 $u_1,u_2$ (相应地 $p_1,p_2$)所满足的关系 \eqref{eq:ch3-ac-problem-two-momentum} (相应地 \eqref{eq:ch3-ac-problem-two-continuity})相减, 得
+\begin{equation}
+u'-\nu\Delta u+\operatorname{grad}p
+=\widehat B u_2-\widehat B u_1,
+\label{eq:ch3-ac-uniqueness-difference-momentum}
+\end{equation}
+\begin{equation}
+\epsilon p'+\operatorname{div}u=0.
+\label{eq:ch3-ac-uniqueness-difference-continuity}
+\end{equation}
+将 \eqref{eq:ch3-ac-uniqueness-difference-momentum} 与 $u(t)$ 作标量积, 将 \eqref{eq:ch3-ac-uniqueness-difference-continuity} 与 $p(t)$ 作标量积, 再相加, 得
+\begin{equation}
+\langle u'(t),u(t)\rangle
++\epsilon(p'(t),p(t))+\nu\lVert u(t)\rVert^2
+=-\widehat b(u(t),u_2(t),u(t));
+\label{eq:ch3-ac-uniqueness-energy-preliminary}
+\end{equation}
+其中项
+\[
+(\operatorname{grad}p,u)+(p,\operatorname{div}u)
+\]
+消失了, 并使用了 $\widehat b$ 的性质
+\[
+\widehat b(v,w,w)=0,
+\qquad\forall v,w\in H_0^1(\Omega).
+\]
+
+\hypertarget{chapter-03-page-312}{}
+借助引理 \ref{lem:ch3-ac-energy-chain-rule}, 可将 \eqref{eq:ch3-ac-uniqueness-energy-preliminary} 写成
+\[
+\frac d{dt}\{|u(t)|^2+\epsilon|p(t)|^2\}
++2\nu\lVert u(t)\rVert^2
+=-2\widehat b(u(t),u_2(t),u(t)).
+\]
+引理 \ref{lem:ch3-ac-two-dimensional-regularity} 证明中建立的不等式可将此方程右端估计为
+\[
+\begin{aligned}
+c_3|u(t)|\lVert u(t)\rVert\lVert u_2(t)\rVert
+&+c_4|u(t)|^{1/2}\lVert u(t)\rVert^{3/2}
+|u_2(t)|^{1/2}\lVert u_2(t)\rVert^{1/2}\\
+&\leq\nu\lVert u(t)\rVert^2
++c_5\lVert u_2(t)\rVert^2|u(t)|^2\\
+&\quad+\nu\lVert u(t)\rVert^2
++c_6|u_2(t)|^2\lVert u_2(t)\rVert^2|u(t)|^2.
+\end{aligned}
+\]
+因此
+\begin{equation}
+\frac d{dt}\{|u(t)|^2+\epsilon|p(t)|^2\}
+\leq\sigma(t)|u(t)|^2,
+\label{eq:ch3-ac-uniqueness-gronwall-inequality}
+\end{equation}
+其中 $\sigma\in L^1(0,T)$, 更确切地说,
+\[
+\sigma(t)=\{c_5+c_6|u_2(t)|^2\}\lVert u_2(t)\rVert^2.
+\]
+由 Gronwall 引理以及
+\[
+u(0)=0,
+\qquad p(0)=0,
+\]
+关系 \eqref{eq:ch3-ac-uniqueness-gronwall-inequality} 蕴含
+\[
+|u(t)|^2+\epsilon|p(t)|^2=0,
+\qquad0\leq t\leq T,
+\]
+唯一性得证.
+\end{Proof}
+
+\subsection{摄动问题向 Navier--Stokes 方程的收敛}
+\label{subsec:ch3-ac-limit}
+
+\MBSourceStatementNumber{theorem}{3}
+\begin{Theorem}
+\label{thm:ch3-ac-limit-two-dimensional}
+若 $n=2$, 则当 $\epsilon\to0$ 时, 问题 \ref{prob:ch3-ac-weak-formulation-one} 的解 $u_\epsilon,p_\epsilon$ 按如下意义收敛到问题 \MBUnresolvedReference{problem}{Problem 3.1} 的解 $u$ 及相应压力 $p$:
+\begin{equation}
+u_\epsilon\longrightarrow u
+\quad\text{在 }L^2(0,T;H_0^1(\Omega))\text{ 中强收敛, 且在 }
+L^\infty(0,T;L^2(\Omega))\text{ 中弱星收敛},
+\label{eq:ch3-ac-limit-2d-velocity}
+\end{equation}
+\begin{equation}
+\operatorname{grad}p_\epsilon\longrightarrow\operatorname{grad}p
+\quad\text{在 }H^{-1}(Q)\text{ 中收敛}.
+\label{eq:ch3-ac-limit-2d-pressure}
+\end{equation}
+\end{Theorem}
+
+\MBSourceStatementNumber{theorem}{4}
+\begin{Theorem}
+\label{thm:ch3-ac-limit-three-dimensional}
+若 $n=3$, 则存在问题 \ref{prob:ch3-ac-weak-formulation-one} 的一列解 $u_{\epsilon'},p_{\epsilon'}$, 使
+\begin{equation}
+\begin{aligned}
+u_{\epsilon'}&\longrightarrow u
+&&\text{在 }L^2(0,T;L^2(\Omega))\text{ 中强收敛},\\
+u_{\epsilon'}&\longrightarrow u
+&&\text{在 }L^2(0,T;H_0^1(\Omega))\text{ 中弱收敛},\\
+u_{\epsilon'}&\longrightarrow u
+&&\text{在 }L^\infty(0,T;L^2(\Omega))\text{ 中弱星收敛}.
+\end{aligned}
+\label{eq:ch3-ac-limit-3d-velocity}
+\end{equation}
+\begin{equation}
+\operatorname{grad}p_{\epsilon'}\longrightarrow\operatorname{grad}p
+\quad\text{在 }H^{-1}(Q)\text{ 中弱收敛},
+\label{eq:ch3-ac-limit-3d-pressure}
+\end{equation}
+其中 $u$ 是问题 \MBUnresolvedReference{problem}{Problem 3.1} 的某个解, $p$ 是相应压力.
+
+对满足 \eqref{eq:ch3-ac-limit-3d-velocity}--\eqref{eq:ch3-ac-limit-3d-pressure} 的任何其他序列 $u_{\epsilon'},p_{\epsilon'}$, $u$ 必为问题 \MBUnresolvedReference{problem}{Problem 3.1} 的某个解, $p$ 为相应压力.
+\end{Theorem}
+
+\begin{Proof}[定理 \ref{thm:ch3-ac-limit-two-dimensional} 和 \ref{thm:ch3-ac-limit-three-dimensional} 的证明]
+在注 \ref{rem:ch3-ac-epsilon-independent-estimates} 中已经指出, 定理 \ref{thm:ch3-ac-existence} 证明中构造的解 $u_\epsilon,p_\epsilon$ 满足与 $\epsilon$ 无关的先验估计.
+
+\hypertarget{chapter-03-page-313}{}
+由这些估计, 存在序列 $\epsilon'\to0$, 使
+\begin{equation}
+u_{\epsilon'}\longrightarrow u_*
+\quad\text{在 }L^\infty(0,T;L^2(\Omega))\text{ 中弱星收敛, 且在 }
+L^2(0,T;H_0^1(\Omega))\text{ 中弱收敛},
+\label{eq:ch3-ac-limit-subsequence-weak}
+\end{equation}
+\begin{equation}
+\sqrt{\epsilon'}p_{\epsilon'}\longrightarrow\chi
+\quad\text{在 }L^\infty(0,T;L^2(\Omega))\text{ 中弱星收敛}.
+\label{eq:ch3-ac-limit-scaled-pressure}
+\end{equation}
+由 \eqref{eq:ch3-ac-limit-subsequence-weak}, \eqref{eq:ch3-ac-epsilon-fractional-time} 以及紧性定理 \MBUnresolvedReference{theorem}{Theorem 2.1}, 还有
+\begin{equation}
+u_{\epsilon'}\longrightarrow u_*
+\quad\text{在 }L^2(0,T;L^2(\Omega))\text{ 中强收敛}.
+\label{eq:ch3-ac-limit-subsequence-strong}
+\end{equation}
+可沿序列 $\epsilon'$ 在 \eqref{eq:ch3-ac-problem-one-continuity} 中通过极限; 在分布意义下,
+\[
+\sqrt{\epsilon'}\frac d{dt}(p_{\epsilon'},q)
+\longrightarrow\frac d{dt}(\chi,q),
+\]
+因而同样在分布意义下
+\[
+\epsilon'\frac d{dt}(p_{\epsilon'},q)\longrightarrow0.
+\]
+于是 \eqref{eq:ch3-ac-problem-one-continuity} 在极限中给出
+\[
+(\operatorname{div}u_*,q)=0,
+\qquad\forall q\in L^2(\Omega),
+\]
+这表明 $\operatorname{div}u_*=0$, 从而
+\begin{equation}
+u_*\in L^2(0,T;V)\cap L^\infty(0,T;H).
+\label{eq:ch3-ac-limit-divergence-free-space}
+\end{equation}
+取 $v\in\mathcal V$, 方程 \eqref{eq:ch3-ac-problem-one-momentum} 给出
+\begin{equation}
+\frac d{dt}(u_\epsilon,v)+\nu((u_\epsilon,v))
++\widehat b(u_\epsilon,u_\epsilon,v)=(f,v),
+\label{eq:ch3-ac-limit-divergence-free-test}
+\end{equation}
+因为
+\[
+(\operatorname{grad}p_\epsilon,v)=(p_\epsilon,\operatorname{div}v)=0.
+\]
+若 $\psi$ 是 $[0,T]$ 上连续可微的标量函数且 $\psi(T)=0$, 将 \eqref{eq:ch3-ac-limit-divergence-free-test} 乘以 $\psi(t)$, 对 $t$ 积分并分部积分, 得
+\begin{equation}
+\begin{aligned}
+-\int_0^T(u_\epsilon(t),v\psi'(t))\,dt
+&+\nu\int_0^T((u_\epsilon(t),v\psi(t)))\,dt\\
+&+\int_0^T\widehat b(u_\epsilon(t),u_\epsilon(t),v\psi(t))\,dt\\
+&=(u_0,v)\psi(0)+\int_0^T(f(t),v\psi(t))\,dt,
+\qquad\forall v\in\mathcal V.
+\end{aligned}
+\label{eq:ch3-ac-limit-test-integrated}
+\end{equation}
+利用弱收敛 \eqref{eq:ch3-ac-limit-scaled-pressure} 和强收敛 \eqref{eq:ch3-ac-limit-subsequence-strong}, 可在 \eqref{eq:ch3-ac-limit-test-integrated} 中通过极限, 得
+\begin{equation}
+\begin{aligned}
+-\int_0^T(u_*(t),v\psi'(t))\,dt
+&+\nu\int_0^T((u_*(t),v\psi(t)))\,dt\\
+&+\int_0^T\widehat b(u_*(t),u_*(t),v\psi(t))\,dt\\
+&=(u_0,v)\psi(0)+\int_0^T(f(t),v\psi(t))\,dt,
+\qquad\forall v\in\mathcal V.
+\end{aligned}
+\label{eq:ch3-ac-limit-equation}
+\end{equation}
+关系 \eqref{eq:ch3-ac-limit-equation} 与 \MBUnresolvedReference{equation}{(3.43)} 相同; 如对该式所作的那样, 可断定 $u_*$ 是问题 \MBUnresolvedReference{problem}{Problem 3.1} 的解.
+
+若 $n=2$, 问题 \MBUnresolvedReference{problem}{Problem 3.1} 的解 $u$ 唯一, 整个序列 $u_\epsilon$ 按 \eqref{eq:ch3-ac-limit-subsequence-weak}--\eqref{eq:ch3-ac-limit-scaled-pressure} 的意义收敛到 $u$. 在 $L^2(0,T;H_0^1(\Omega))$ 中的强收敛用前面已经使用过的方法得到, 这里略述如下: 首先证明
+\[
+(u_\epsilon(T)-u(T),v)\longrightarrow0,
+\qquad\forall v\in V,
+\]
+这与前面的弱收敛结果一起, 足以证明表达式
+\begin{equation}
+X_\epsilon=|u_\epsilon(T)-u(T)|^2
++\epsilon|p_\epsilon(T)|^2
++2\nu\int_0^T\lVert u_\epsilon(t)-u(t)\rVert^2\,dt
+\label{eq:ch3-ac-limit-strong-energy-error}
+\end{equation}
+在 $\epsilon\to0$ 时趋于零.
+
+\hypertarget{chapter-03-page-314}{}
+尚需证明 \eqref{eq:ch3-ac-limit-2d-pressure}, \eqref{eq:ch3-ac-limit-3d-pressure}. 为此将 \eqref{eq:ch3-ac-problem-two-momentum} 写成
+\[
+\operatorname{grad}p_\epsilon
+=f-u_\epsilon'+\nu\Delta u_\epsilon-\widehat B u_\epsilon.
+\]
+关于 $u_\epsilon$ 的收敛结果表明, 右端在 $H^{-1}(Q)$ 中收敛到
+\[
+f-u'+\nu\Delta u-\widehat B u
+\qquad(\widehat B u=Bu),
+\]
+与 \MBUnresolvedReference{equation}{(3.129)} 比较可知, 这恰为 $\operatorname{grad}p$. 因而
+\[
+\operatorname{grad}p_\epsilon\longrightarrow\operatorname{grad}p
+\quad\text{在 }H^{-1}(Q)\text{ 中};
+\]
+若 $n=2$, 整个序列 $\epsilon$ 在 $H^{-1}(Q)$ 中强收敛; 若 $n=3$, 子列 $\epsilon'$ 在 $H^{-1}(Q)$ 中弱收敛.
+\end{Proof}
+
+\subsection{摄动问题的逼近}
+\label{subsec:ch3-ac-numerical}
+
+现在的目标是逼近摄动问题, 即问题 \ref{prob:ch3-ac-weak-formulation-one}, \ref{prob:ch3-ac-weak-formulation-two}. 在许多可用方法中, 我们研究分步方法的逼近, 并用有限差分离散空间变量. 此研究在若干方面与第 \MBUnresolvedReference{subsection}{Section 7.2} 小节分步格式的研究相似.
+
+\subsubsection{格式的描述}
+\label{subsubsec:ch3-ac-scheme-description}
+
+$H_0^1(\Omega)$ 和 $V$ 的离散化采用离散化 (APX1), 并沿用第 \MBUnresolvedReference{subsection}{Subsection 7.2.1} 小节的所有记号. 为逼近压力, 还需要 $L^2(\Omega)$ 的一个逼近; 我们直接取已多次出现的空间 $X_h$: $X_h$ 是如下类型的阶梯函数空间
+\begin{equation}
+\pi_h=\sum_{M\in\mathring\Omega_h^1}\xi_M w_{hM},
+\qquad \xi_M\in\mathbb R
+\quad(\xi_M=\pi_h(M)),
+\label{eq:ch3-ac-pressure-step-space}
+\end{equation}
+其中 $w_{hM}$ 是以 $M$ 为中心、各边平行于 $x_i$ 轴且长度为 $h_i$, $i=1,\ldots,n$, 的块 $\sigma_h(M)$ 的特征函数. 空间 $X_h$ 配备由 $L^2(\Omega)$ 诱导的标量积
+\begin{equation}
+(\pi_h,\pi_h')=\int_\Omega\pi_h(x)\pi_h'(x)\,dx
+=(h_1\cdots h_n)\sum_{M\in\mathring\Omega_h^1}
+\pi_h(M)\pi_h'(M).
+\label{eq:ch3-ac-pressure-step-inner-product}
+\end{equation}
+此外, 数据 $p_0,u_0,f$ 满足 \eqref{eq:ch3-ac-pressure-data}, \eqref{eq:ch3-ac-initial-data}, \eqref{eq:ch3-ac-force-data}, 并选择 $f$ 的某个分解
+\begin{equation}
+f=\sum_{i=1}^n f_i,
+\qquad f_i\in L^2(0,T;H);
+\label{eq:ch3-ac-force-decomposition}
+\end{equation}
+与 \MBUnresolvedReference{equation}{(7.73)} 一样, 此分解相当任意, 最简单的选择可以是 $f_1=f$, $f_i=0$, $i=2,\ldots,n$.
+
+\hypertarget{chapter-03-page-315}{}
+将区间 $[0,T]$ 分成 $N$ 个长度为 $k$ 的区间($T=kN$), 并令
+\begin{equation}
+f^{m+i/n}=\frac1k\int_{mk}^{(m+1)k}f_i(t)\,dt,
+\qquad i=1,\ldots,n.
+\label{eq:ch3-ac-force-fractional-average}
+\end{equation}
+所研究的分步格式包含 $n$ 个中间步骤, 其中 $n$ 是空间维数($n=2$ 或 $3$).
+
+定义 $W_h\times X_h$ 中的一族元素对 $\{u_h^{m+i/n},\pi_h^{m+i/n}\}$, 其中 $m=0,\ldots,N-1$, $i=1,\ldots,n$. 按分数指标 $m+i/n$ 递增的顺序依次定义这些元素.
+
+从
+\begin{equation}
+\left\{
+\begin{aligned}
+u_h^0&=u_0\text{ 在 }L^2(\Omega)\text{ 中到 }V_h\text{ 的正交投影},\\
+\pi_h^0&=p_0\text{ 在 }L^2(\Omega)\text{ 中到 }X_h\text{ 的正交投影}
+\end{aligned}
+\right.
+\label{eq:ch3-ac-discrete-initial-projections}
+\end{equation}
+开始. 这些定义有意义($V_h\subset L^2(\Omega)$, $X_h\subset L^2(\Omega)$), 且值得注意的是
+\begin{equation}
+|u_h^0|\leq|u_0|,
+\qquad|\pi_h^0|\leq|p_0|,
+\qquad\forall h.
+\label{eq:ch3-ac-discrete-initial-stability}
+\end{equation}
+当 $u_h^{m+(i-1)/n},\pi_h^{m+(i-1)/n}$ 已知时, 用如下条件定义 $u_h^{m+i/n},\pi_h^{m+i/n}$, $m=0,\ldots,N-1$, $i=1,\ldots,n$:
+\[
+u_h^{m+i/n}\in W_h,
+\qquad\pi_h^{m+i/n}\in X_h,
+\]
+且
+\begin{equation}
+\begin{aligned}
+\frac1k(u_h^{m+i/n}-u_h^{m+(i-1)/n},v_h)
+&+\nu((u_h^{m+i/n},v_h))_{ih}\\
+&+b_{ih}(u_h^{m+(i-1)/n},u_h^{m+i/n},v_h)
+-(\pi_h^{m+i/n},\nabla_{ih}v_{ih})\\
+&=(f^{m+i/n},v_h),
+\qquad\forall v_h\in W_h,
+\end{aligned}
+\label{eq:ch3-ac-discrete-momentum-step}
+\end{equation}
+\begin{equation}
+\frac\epsilon k(\pi_h^{m+i/n}-\pi_h^{m+(i-1)/n},\pi_h')
++(\nabla_{ih}u_{ih}^{m+i/n},\pi_h')=0,
+\qquad\forall\pi_h'\in X_h.
+\label{eq:ch3-ac-discrete-pressure-step}
+\end{equation}
+对计算所得元素 $u_h^{m+i/n}$ 的离散散度不加条件, 因为允许它们属于 $W_h$, 而不仅属于 $V_h$.
+
+方程 \eqref{eq:ch3-ac-discrete-momentum-step}--\eqref{eq:ch3-ac-discrete-pressure-step} 构成关于 $\{u_h^{m+i/n},\pi_h^{m+i/n}\}\in W_h\times X_h$ 的线性变分方程; 由 \MBUnresolvedReference{equation}{(7.72)} 保证相应双线性形式的强制性. $u_h^{m+i/n},\pi_h^{m+i/n}$ 的存在性是投影定理的推论.
+
+\hypertarget{chapter-03-page-316}{}
+\MBSourceStatementNumber{remark}{3}
+\begin{Remark}
+\label{rem:ch3-ac-pointwise-scheme}
+与注 \MBUnresolvedReference{remark}{Remark 7.3} 相同, 可按如下方式解释方程 \eqref{eq:ch3-ac-discrete-momentum-step}--\eqref{eq:ch3-ac-discrete-pressure-step}:
+\begin{equation}
+\begin{aligned}
+\frac1k\{u_h^{m+i/n}(M)-u_h^{m+(i-1)/n}(M)\}
+&-\nu\delta_{i,2h}u_h^{m+i/n}(M)\\
+&+\frac12u_{ih}^{m+(i-1)/n}(M)\delta_{ih}u_h^{m+i/n}(M)\\
+&+\frac12\delta_{ih}
+\bigl(u_{ih}^{m+(i-1)/n}u_h^{m+i/n}\bigr)(M)
++\overline\nabla_{ih}\pi_{ih}^{m+i/n}(M)\\
+&=f_h^{m+i/n}(M),
+\qquad\forall M\in\mathring\Omega_h,
+\end{aligned}
+\label{eq:ch3-ac-pointwise-momentum}
+\end{equation}
+\begin{equation}
+\frac\epsilon k\{\pi_h^{m+i/n}(M)-\pi_h^{m+(i-1)/n}(M)\}
++\nabla_{ih}u_{ih}^{m+i/n}(M)=0,
+\qquad\forall M\in\mathring\Omega_h^1,
+\label{eq:ch3-ac-pointwise-pressure}
+\end{equation}
+其中
+\begin{equation}
+f_h^{m+i/n}(M)=\frac1{h_1\cdots h_n}
+\int_{\sigma_h(M)}f^{m+i/n}(x)\,dx,
+\qquad\forall M\in\mathring\Omega_h^1.
+\label{eq:ch3-ac-pointwise-force-average}
+\end{equation}
+
+计算 $u_h^{m+i/n},\pi_h^{m+i/n}$ 时的未知量是 $u_h^{m+i/n}(M)$ 的 $n$ 个分量和数 $\pi_h^{m+i/n}(M)$. 分步方法的要点仍然是(见注 \MBUnresolvedReference{remark}{Remark 7.3}), 上述方程实际上解耦为若干小得多的子系统; 每个子系统只包含与同一条平行于 $x_i$ 方向直线上的节点 $M$ 相对应的未知量 $u_h^{m+i/n}(M),\pi_h^{m+i/n}(M)$. 这使 \eqref{eq:ch3-ac-pointwise-momentum}, \eqref{eq:ch3-ac-pointwise-pressure} 很容易求解.
+\end{Remark}
+
+\subsubsection{无条件先验估计}
+\label{subsubsec:ch3-ac-unconditional-estimates}
+
+与第 \MBUnresolvedReference{subsection}{Section 7.2} 小节相同, 格式的稳定性将通过两类先验估计建立: 无条件先验估计导出无条件稳定性结果; 条件先验估计导出条件稳定性定理, 并用于收敛性证明. 本小节讨论无条件先验估计.
+
+\MBSourceStatementNumber{lemma}{5}
+\begin{Lemma}
+\label{lem:ch3-ac-unconditional-discrete-estimates}
+元素 $u_h^{m+i/n}$ 按如下意义保持有界:
+\begin{equation}
+|u_h^{m+i/n}|^2\leq d_4,
+\qquad\epsilon|\pi_h^{m+i/n}|^2\leq d_4,
+\quad m=0,\ldots,N-1,quad i=1,\ldots,n,
+\label{eq:ch3-ac-discrete-pointwise-energy-bound}
+\end{equation}
+\begin{equation}
+k\sum_{m=0}^{N-1}\lVert u_h^{m+i/n}\rVert_{ih}^2
+\leq\frac{d_4}{\nu},
+\qquad i=1,\ldots,n,
+\label{eq:ch3-ac-discrete-directional-energy-sum}
+\end{equation}
+\begin{equation}
+\sum_{m=0}^{N-1}
+|u_h^{m+i/n}-u_h^{m+(i-1)/n}|^2
+\leq d_4,
+\qquad i=1,\ldots,n,
+\label{eq:ch3-ac-discrete-velocity-jump-sum}
+\end{equation}
+\begin{equation}
+\epsilon\sum_{m=0}^{N-1}
+|\pi_h^{m+i/n}-\pi_h^{m+(i-1)/n}|^2
+\leq d_4,
+\qquad i=1,\ldots,n,
+\label{eq:ch3-ac-discrete-pressure-jump-sum}
+\end{equation}
+其中
+\[
+d_4=|u_0|^2+|p_0|^2
++\frac{d_0^2}{\nu}\sum_{i=1}^n\int_0^T|f_i(t)|^2\,dt.
+\]
+\end{Lemma}
+
+\hypertarget{chapter-03-page-317}{}
+\begin{Proof}
+在 \eqref{eq:ch3-ac-discrete-momentum-step} 中取 $v_h=u_h^{m+i/n}$; 由 \MBUnresolvedReference{equation}{(7.72)}, 得
+\begin{equation}
+\begin{aligned}
+|u_h^{m+i/n}|^2-|u_h^{m+(i-1)/n}|^2
+&+|u_h^{m+i/n}-u_h^{m+(i-1)/n}|^2
++2k\nu\lVert u_h^{m+i/n}\rVert_{ih}^2\\
+&-2k(\pi_h^{m+i/n},\nabla_{ih}u_{ih}^{m+i/n})
+=2k(f^{m+i/n},u_h^{m+i/n})\\
+&\leq2k|f^{m+i/n}|\,|u_h^{m+i/n}|\\
+&\leq2kd_0|f^{m+i/n}|\lVert u_h^{m+i/n}\rVert_{ih}\\
+&\leq k\nu\lVert u_h^{m+i/n}\rVert_{ih}^2
++\frac{kd_0^2}{\nu}|f^{m+i/n}|^2.
+\end{aligned}
+\label{eq:ch3-ac-discrete-energy-step-before-simplification}
+\end{equation}
+化简后得到
+\begin{equation}
+\begin{aligned}
+|u_h^{m+i/n}|^2-|u_h^{m+(i-1)/n}|^2
+&+|u_h^{m+i/n}-u_h^{m+(i-1)/n}|^2
++k\nu\lVert u_h^{m+i/n}\rVert_{ih}^2\\
+&-2k(\pi_h^{m+i/n},\nabla_{ih}u_{ih}^{m+i/n})
+\leq\frac{kd_0^2}{\nu}|f^{m+i/n}|^2.
+\end{aligned}
+\label{eq:ch3-ac-discrete-energy-step}
+\end{equation}
+此外, 在 \eqref{eq:ch3-ac-discrete-pressure-step} 中取 $\pi_h'=\pi_h^{m+i/n}$, 得
+\begin{equation}
+\begin{aligned}
+\epsilon|\pi_h^{m+i/n}|^2
+-\epsilon|\pi_h^{m+(i-1)/n}|^2
+&+\epsilon|\pi_h^{m+i/n}-\pi_h^{m+(i-1)/n}|^2\\
+&+2k(\pi_h^{m+i/n},\nabla_{ih}u_{ih}^{m+i/n})=0.
+\end{aligned}
+\label{eq:ch3-ac-discrete-pressure-energy-step}
+\end{equation}
+接着对 $i=1,\ldots,n$, $m=0,\ldots,N-1$ 的所有关系 \MBUnresolvedReference{equation}{(9.94)} 和 \eqref{eq:ch3-ac-discrete-pressure-energy-step} 求和. 化简并舍去若干正项后, 得
+\begin{equation}
+\begin{aligned}
+|u_h^N|^2+\epsilon|\pi_h^N|^2
+&+\sum_{i=1}^n\sum_{m=0}^{N-1}
+\bigl\{|u_h^{m+i/n}-u_h^{m+(i-1)/n}|^2\\
+&\hspace{4cm}+\epsilon|\pi_h^{m+i/n}-\pi_h^{m+(i-1)/n}|^2\bigr\}\\
+&+k\nu\sum_{i=1}^n\sum_{m=0}^{N-1}
+\lVert u_h^{m+i/n}\rVert_{ih}^2\\
+&\leq|u_h^0|^2+\epsilon|\pi_h^0|^2
++\frac{kd_0^2}{\nu}\sum_{i=1}^n\sum_{m=0}^{N-1}|f^{m+i/n}|^2.
+\end{aligned}
+\label{eq:ch3-ac-discrete-global-energy}
+\end{equation}
+像其他几处一样, 利用 \MBUnresolvedReference{equation}{(8.53)} 和 \MBUnresolvedReference{equation}{(5.29)}, 并回顾 $\epsilon\leq1$, 以 $d_4$ 控制此不等式的右端. 于是 \eqref{eq:ch3-ac-discrete-global-energy} 蕴含 \eqref{eq:ch3-ac-discrete-directional-energy-sum}--\eqref{eq:ch3-ac-discrete-pressure-jump-sum}.
+
+固定 $r,j$, $0\leq r\leq N-1$, $1\leq j\leq n$. 对 $m=0,\ldots,r-1$, $i=1,\ldots,q$, 以及 $m=r$, $i=1,\ldots,j$ 的关系 \eqref{eq:ch3-ac-discrete-energy-step}, \eqref{eq:ch3-ac-discrete-pressure-energy-step} 求和.\footnote{求和涉及满足 $0\leq m+i/n\leq r+j/n$ 的指标 $m,i$.}
+
+\hypertarget{chapter-03-page-318}{}
+舍去若干正项并化简, 得
+\[
+\begin{aligned}
+|u_h^{r+j/q}|^2+\epsilon|\pi_h^{r+j/q}|^2
+&\leq|u_h^0|^2+\epsilon|\pi_h^0|^2
++\frac{kd_0^2}{\nu}
+\sum_{\substack{i,m\\0\leq m+i/n\leq r+j/n}}|f^{m+i/n}|^2\\
+&\leq|u_h^0|^2+\epsilon|\pi_h^0|^2
++\frac{kd_0^2}{\nu}\sum_{i=1}^n\sum_{m=0}^{N-1}|f^{m+i/n}|^2\\
+&\leq d_4,
+\qquad r=0,\ldots,N-1,quad j=1,\ldots,n.
+\end{aligned}
+\]
+因此 \eqref{eq:ch3-ac-discrete-pointwise-energy-bound} 得证, 引理证明完成.
+\end{Proof}
+
+\paragraph{逼近函数.}
+现在考虑与 $u_h^{m+i/n},\pi_h^{m+i/n}$ 相联系的如下逼近函数:
+\begin{equation}
+\begin{aligned}
+&u_h^{(i)}:[0,T]\longrightarrow W_h,\\
+&u_h^{(i)}(t)=u_h^{m+i/n},
+\quad mk\leq t<(m+1)k,quad i=1,\ldots,n,
+\end{aligned}
+\label{eq:ch3-ac-velocity-piecewise-constant}
+\end{equation}
+以及连续函数 $u_h:[0,T]\to W_h$, 它在每个区间 $[mk,(m+1)k]$, $m=0,\ldots,N-1$, 上为线性函数, 且
+\begin{equation}
+u_h(mk)=u_h^m,
+\qquad m=0,\ldots,N.
+\label{eq:ch3-ac-velocity-piecewise-linear}
+\end{equation}
+引理 \ref{lem:ch3-ac-unconditional-discrete-estimates} 的结果可解释为如下稳定性结论.
+
+\MBSourceStatementNumber{theorem}{5}
+\begin{Theorem}
+\label{thm:ch3-ac-unconditional-stability}
+由 \eqref{eq:ch3-ac-velocity-piecewise-constant} 定义的函数 $u_h^{(i)},u_h$ 在 $L^\infty(0,T;L^2(\Omega))$ 中无条件稳定($1\leq i\leq n$). 函数 $\delta_{ih}u_h^{(i)}$ 和 $\delta_{nh}u_h$ ($1\leq i\leq n$)在 $L^2(0,T;L^2(\Omega))$ 中无条件稳定.
+\end{Theorem}
+
+\MBSourceStatementNumber{remark}{4}
+\begin{Remark}
+\label{rem:ch3-ac-velocity-stage-differences}
+(i) 由 \eqref{eq:ch3-ac-discrete-velocity-jump-sum},
+\begin{equation}
+|u_h^{(i)}-u_h^{(i-1)}|_{L^2(0,T;L^2(\Omega))}
+\leq\sqrt{kd_4},
+\qquad i=2,\ldots,n.
+\label{eq:ch3-ac-stage-velocity-difference}
+\end{equation}
+
+(ii) 与引理 \MBUnresolvedReference{lemma}{Lemma 7.3} 和注 \MBUnresolvedReference{remark}{Remark 7.6} 中相同,
+\[
+\begin{aligned}
+|u_h^{(n)}-u_h|_{L^2(0,T;L^2(\Omega))}^2
+&=\frac k3\sum_{m=0}^{N-1}|u_h^{m+1}-u_h^m|^2\\
+&\leq\frac k3\sum_{m=0}^{N-1}
+\left(\sum_{i=1}^n
+|u_h^{m+i/n}-u_h^{m+(i-1)/n}|\right)^2\\
+&\leq\frac{kn}{3}\sum_{m=0}^{N-1}\sum_{i=1}^n
+|u_h^{m+i/n}-u_h^{m+(i-1)/n}|^2
+\leq\frac{kn}{3}d_4.
+\end{aligned}
+\]
+因此
+\begin{equation}
+|u_h^{(n)}-u_h|_{L^2(0,T;L^2(\Omega))}
+\leq\sqrt{\frac{kn d_4}{3}}.
+\label{eq:ch3-ac-final-stage-velocity-difference}
+\end{equation}
+\end{Remark}
+
+\MBSourceStatementNumber{remark}{5}
+\begin{Remark}
+\label{rem:ch3-ac-pressure-interpolants}
+令 $\pi_h^{(i)},\pi_h$ 表示由下式定义的从 $[0,T]$ 到 $X_h$ 的函数:
+\begin{equation}
+\pi_h^{(i)}(t)=\pi_h^{m+i/n},
+\qquad mk\leq t<(m+1)k,quad i=1,\ldots,n,
+\label{eq:ch3-ac-pressure-piecewise-constant}
+\end{equation}
+\begin{equation}
+\pi_h\text{ 在 }[0,T]\text{ 上连续, 在每个区间 }[mk,(m+1)k]
+\text{ 上线性, 且 }\pi_h(mk)=\pi_h^m.
+\label{eq:ch3-ac-pressure-piecewise-linear}
+\end{equation}
+
+\hypertarget{chapter-03-page-319}{}
+于是 \eqref{eq:ch3-ac-discrete-pressure-jump-sum} 等价于
+\begin{equation}
+\sqrt\epsilon\,
+|\pi_h^{(i)}-\pi_h^{(i-1)}|_{L^2(0,T;L^2(\Omega))}
+\leq\sqrt{kd_4},
+\qquad i=2,\ldots,n.
+\label{eq:ch3-ac-stage-pressure-difference}
+\end{equation}
+另一方面, 像对 \eqref{eq:ch3-ac-final-stage-velocity-difference} 所作的那样, 可证明
+\begin{equation}
+\sqrt\epsilon\,
+|\pi_h^{(n)}-\pi_h|_{L^2(0,T;L^2(\Omega))}
+\leq\sqrt{\frac{kn d_4}{3}}.
+\label{eq:ch3-ac-final-stage-pressure-difference}
+\end{equation}
+\end{Remark}
+
+\subsubsection{条件先验估计}
+\label{subsubsec:ch3-ac-conditional-estimates}
+
+以下估计通过引理 \MBUnresolvedReference{lemma}{Lemmas 7.11 and 7.12} 的方法得到, 特别要使用第 \MBUnresolvedReference{subsection}{Sections 7.3.1 and 7.3.2} 小节中的引理. 还适宜考虑记作 $D_{ih}$ 的线性算子, 它从 $X_h$ 连续映入 $W_h$, 并满足
+\begin{equation}
+(D_{ih}\pi_h,v_h)=(\pi_h,\nabla_{ih}v_{ih}),
+\qquad\forall\pi_h\in X_h,quad\forall v_h\in W_h.
+\label{eq:ch3-ac-discrete-pressure-gradient-operator}
+\end{equation}
+利用算子 $A_{ih},D_{ih},B_{ih}$, 将 \eqref{eq:ch3-ac-discrete-momentum-step} 重写为
+\begin{equation}
+\begin{aligned}
+\frac1k(u_h^{m+i/n}-u_h^{m+(i-1)/n})
+&+\nu A_{ih}u_h^{m+i/n}
++B_{ih}(u_h^{m+(i-1)/n},u_h^{m+i/n})\\
+&+D_{ih}\pi_h^{m+i/n}=f_h^{m+i/n},
+\quad m=0,\ldots,N-1,quad i=1,\ldots,n.
+\end{aligned}
+\label{eq:ch3-ac-discrete-operator-form}
+\end{equation}
+
+\MBSourceStatementNumber{lemma}{6}
+\begin{Lemma}
+\label{lem:ch3-ac-discrete-pressure-gradient-bound}
+\begin{equation}
+|D_{ih}\pi_h|\leq S_i(h)|\pi_h|,
+\qquad\forall\pi_h\in X_h,
+\qquad S_i(h)=\frac2{h_i}.
+\label{eq:ch3-ac-discrete-pressure-gradient-bound}
+\end{equation}
+\end{Lemma}
+
+\begin{Proof}
+由 \eqref{eq:ch3-ac-pressure-piecewise-constant},
+\[
+\begin{aligned}
+|(D_{ih}\pi_h,v_h)|
+&=|(\pi_h,\nabla_{ih}v_{ih})|
+\leq|\pi_h|\,|\nabla_{ih}v_{ih}|\\
+&\leq|\pi_h|\lVert v_h\rVert_{ih}
+\leq S_i(h)|\pi_h|\,|v_h|,
+\qquad\forall v_h\in W_h,
+\end{aligned}
+\]
+这就证明了 \eqref{eq:ch3-ac-discrete-pressure-gradient-bound}.
+\end{Proof}
+
+\MBSourceStatementNumber{lemma}{7}
+\begin{Lemma}
+\label{lem:ch3-ac-conditional-estimate-two-dimensional}
+假设 $n=2$, 且 $k,h$ 满足
+\begin{equation}
+kS(h)^2\leq M,
+\label{eq:ch3-ac-stability-condition-two-dimensional}
+\end{equation}
+其中 $M$ 固定且可以任意大. 则
+\begin{equation}
+k\sum_{m=0}^{N-1}\lVert u_h^{m+i/2}\rVert_h^2
+\leq\text{常数},
+\qquad i=1,2,
+\label{eq:ch3-ac-conditional-h1-two-dimensional}
+\end{equation}
+其中常数只依赖于 $M$ 和数据.
+\end{Lemma}
+
+\begin{Proof}
+在 \eqref{eq:ch3-ac-discrete-operator-form} 中取 $i=2$ (且 $n=2$):
+\[
+u_h^{m+1}=u_h^{m+1/2}-k\nu A_{2h}u_h^{m+1}
+-kB_{2h}(u_h^{m+1/2},u_h^{m+1})
+-kD_{2h}\pi_h^{m+1}+kf_h^{m+1}.
+\]
+
+\hypertarget{chapter-03-page-320}{}
+两边取 $\lVert\cdot\rVert_{1h}$ 范数, 利用 \MBUnresolvedReference{equation}{(7.102)}, \MBUnresolvedReference{equation}{(7.104)}, \MBUnresolvedReference{equation}{(7.107)} 和 \eqref{eq:ch3-ac-discrete-pressure-gradient-bound}, 将右端估计如下:
+\[
+\begin{aligned}
+\lVert u_h^{m+1}\rVert_{1h}
+&\leq\lVert u_h^{m+1/2}\rVert_{1h}
++k\nu\lVert A_{2h}u_h^{m+1}\rVert_{1h}
++k\lVert B_{2h}(u_h^{m+1/2},u_h^{m+1})\rVert_{1h}\\
+&\quad+k\lVert D_{2h}\pi_h^{m+1}\rVert_{1h}
++k\lVert f_h^{m+1}\rVert_{1h}\\
+&\leq\lVert u_h^{m+1}\rVert_{2h}
++k\nu S_1(h)S_2(h)\lVert u_h^{m+1}\rVert_{2h}\\
+&\quad+2\sqrt3kS_1(h)S_2(h)
+|u_h^{m+1/2}|^{1/2}\lVert u_h^{m+1/2}\rVert_{1h}^{1/2}
+|u_h^{m+1}|^{1/2}\lVert u_h^{m+1}\rVert_{2h}^{1/2}\\
+&\quad+kS_1(h)S_2(h)|\pi_h^{m+1}|+kS_1(h)|f_h^{m+1}|.
+\end{aligned}
+\]
+由 Schwarz 不等式,
+\[
+\begin{aligned}
+\lVert u_h^{m+1}\rVert_{1h}^2
+&\leq5\{1+k^2\nu^2S_1(h)^2\}\lVert u_h^{m+1}\rVert_{2h}^2\\
+&\quad+60k^2S_1(h)S_2(h)^2
+|u_h^{m+1/2}|\lVert u_h^{m+1/2}\rVert_{1h}
+|u_h^{m+1}|\lVert u_h^{m+1}\rVert_{2h}\\
+&\quad+5k^2S_1(h)^2S_2(h)^2|\pi_h^{m+1}|^2
++5k^2S_1(h)^2|f_h^{m+1}|^2.
+\end{aligned}
+\]
+由引理 \ref{lem:ch3-ac-unconditional-discrete-estimates} 的先前估计和 \eqref{eq:ch3-ac-stability-condition-two-dimensional}, 此不等式右端从 $0$ 到 $N-1$ 的和被 $k^{-1}$ 乘以一个常数所控制, 因而对 $i=2$ 证明了 \eqref{eq:ch3-ac-conditional-h1-two-dimensional}.
+
+为证明
+\[
+k\sum_{m=0}^{N-1}\lVert u_h^{m+1/2}\rVert_{2h}^2
+\leq\text{常数},
+\]
+在 \eqref{eq:ch3-ac-discrete-operator-form} 中取 $i=1$, 并适当地估计 $\lVert u_h^{m+1/2}\rVert_{2h}$.
+\end{Proof}
+
+\MBSourceStatementNumber{lemma}{8}
+\begin{Lemma}
+\label{lem:ch3-ac-conditional-estimate-three-dimensional}
+假设 $n=3$, 且 $k,h$ 满足
+\begin{equation}
+\frac{kS(h)^{11/4}}{\sqrt\epsilon}\leq M,
+\label{eq:ch3-ac-stability-condition-three-dimensional}
+\end{equation}
+其中 $M$ 固定且可以任意大. 则
+\begin{equation}
+k\sum_{m=0}^{N-1}\lVert u_h^{m+i/n}\rVert_h^2
+\leq\text{常数},
+\qquad i=1,2,3,
+\label{eq:ch3-ac-conditional-h1-three-dimensional}
+\end{equation}
+其中常数只依赖于 $M$ 和数据.
+\end{Lemma}
+
+\begin{Proof}
+证明与引理 \ref{lem:ch3-ac-conditional-estimate-two-dimensional} (以及引理 \MBUnresolvedReference{lemma}{Lemmas 7.11 and 7.12})相同, 只须以 $B_{ih}$ 的估计 \MBUnresolvedReference{equation}{(7.110)} 代替估计 \MBUnresolvedReference{equation}{(7.107)}.
+\end{Proof}
+
+由这些引理推出新的稳定性结果.
+
+\MBSourceStatementNumber{theorem}{6}
+\begin{Theorem}
+\label{thm:ch3-ac-conditional-stability}
+假设 $k,h,\epsilon$ 满足稳定性条件 \eqref{eq:ch3-ac-stability-condition-two-dimensional} ($n=2$)或 \eqref{eq:ch3-ac-stability-condition-three-dimensional} ($n=3$), 则所有函数
+\[
+\delta_{jh}u_h^{(i)},
+\qquad1\leq i,j\leq n,
+\]
+在 $L^2(0,T;L^2(\Omega))$ 中稳定.
+\end{Theorem}
+
+\hypertarget{chapter-03-page-321}{}
+\subsubsection{收敛定理}
+\label{subsubsec:ch3-ac-convergence-theorems}
+
+\MBSourceStatementNumber{theorem}{7}
+\begin{Theorem}
+\label{thm:ch3-ac-discrete-convergence-two-dimensional}
+假设空间维数 $n=2$, 且 $k,h,\epsilon$ 由 \eqref{eq:ch3-ac-stability-condition-two-dimensional} 联系. 若 $k,h,\epsilon$ 趋于零且
+\begin{equation}
+\frac k\epsilon\longrightarrow0,
+\label{eq:ch3-ac-time-compressibility-ratio}
+\end{equation}
+则有如下收敛结果:
+\begin{equation}
+u_h^{(i)},u_h\longrightarrow u
+\quad\text{在 }L^2(Q)\text{ 中强收敛, 在 }
+L^\infty(0,T;L^2(\Omega))\text{ 中弱星收敛},
+\quad i=1,2,
+\label{eq:ch3-ac-discrete-convergence-2d-velocity}
+\end{equation}
+\begin{equation}
+\delta_{jh}u_h^{(i)},\delta_{jh}u_h
+\longrightarrow D_j u
+\quad\text{在 }L^2(Q)\text{ 中弱收敛},
+\qquad1\leq i,j\leq2,
+\label{eq:ch3-ac-discrete-convergence-2d-derivatives}
+\end{equation}
+\begin{equation}
+\delta_{ih}u_h^{(i)}\longrightarrow D_i u
+\quad\text{在 }L^2(Q)\text{ 中强收敛},
+\qquad i=1,2,
+\label{eq:ch3-ac-discrete-convergence-2d-strong-directional}
+\end{equation}
+其中 $u$ 是与 \eqref{eq:ch3-ac-initial-data}, \eqref{eq:ch3-ac-force-data} 中数据 $f,u_0$ 相应的问题 \MBUnresolvedReference{problem}{Problem 3.1} 的唯一解.
+\end{Theorem}
+
+\MBSourceStatementNumber{theorem}{8}
+\begin{Theorem}
+\label{thm:ch3-ac-discrete-convergence-three-dimensional}
+假设空间维数 $n=3$. 存在趋于零的序列 $h',k',\epsilon'$\footnote{$h',k',\epsilon'$ 满足 \eqref{eq:ch3-ac-discrete-operator-form}, 且 $k'/\epsilon'\to0$.}, 使
+\begin{equation}
+u_{h'}^{(i)},u_{h'}\longrightarrow u
+\quad\text{在 }L^2(Q)\text{ 中强收敛, 在 }
+L^\infty(0,T;L^2(\Omega))\text{ 中弱星收敛},
+\label{eq:ch3-ac-discrete-convergence-3d-velocity}
+\end{equation}
+\begin{equation}
+\delta_{jh'}u_{h'}^{(i)},\delta_{jh'}u_{h'}
+\longrightarrow D_j u
+\quad\text{在 }L^2(Q)\text{ 中弱收敛},
+\qquad1\leq i,j\leq3,
+\label{eq:ch3-ac-discrete-convergence-3d-derivatives}
+\end{equation}
+其中 $u$ 是问题 \MBUnresolvedReference{problem}{Problem 3.1} 的某个解.
+
+对任何其他满足
+\begin{equation}
+\frac{k'}{\epsilon'}\longrightarrow0
+\label{eq:ch3-ac-discrete-other-sequence-ratio}
+\end{equation}
+并使收敛结果 \eqref{eq:ch3-ac-discrete-convergence-3d-velocity}, \eqref{eq:ch3-ac-discrete-convergence-3d-derivatives} 成立的序列 $h',k',\epsilon'\to0$, $u$ 必为问题 \MBUnresolvedReference{problem}{Problem 3.1} 的一个解.
+\end{Theorem}
+
+证明的主要步骤见第 \ref{subsubsec:ch3-ac-convergence-proof} 和 \ref{subsubsec:ch3-ac-convergence-identification} 小节.
+
+\subsubsection{收敛性证明}
+\label{subsubsec:ch3-ac-convergence-proof}
+
+\MBSourceStatementNumber{lemma}{9}
+\begin{Lemma}
+\label{lem:ch3-ac-discrete-fourier-bound}
+在条件 \eqref{eq:ch3-ac-conditional-h1-two-dimensional} ($n=2$)或 \eqref{eq:ch3-ac-stability-condition-three-dimensional} ($n=3$)下, 若 $k/\epsilon$ 保持有界, 则
+\begin{equation}
+\int_{-\infty}^{+\infty}|\tau|^{2\gamma}
+|\widehat u_h(\tau)|^2\,d\tau
+\leq\text{常数},
+\qquad\text{对某个 }0<\gamma<\frac14,
+\label{eq:ch3-ac-discrete-fourier-bound}
+\end{equation}
+其中 $\widehat u_h$ 是将 $u_h$ 在区间 $[0,T]$ 外延拓为零后关于 $t$ 的 Fourier 变换; 常数依赖于 $\gamma$, $k/\epsilon$ 的界 $M$ 和数据.
+\end{Lemma}
+
+\hypertarget{chapter-03-page-322}{}
+\begin{Proof}
+分别对 $i=1,\ldots,n$ 的关系 \eqref{eq:ch3-ac-discrete-momentum-step}, \eqref{eq:ch3-ac-discrete-pressure-step} 求和, 简单计算后得到
+\begin{equation}
+\begin{aligned}
+\frac1k(u_h^{m+1}-u_h^m,v_h)
+&+\nu\sum_{i=1}^n((u_h^{m+i/n},v_h))_{ih}\\
+&+\sum_{i=1}^n b_{ih}(u_h^{m+(i-1)/n},u_h^{m+i/n},v_h)
+-(\pi_h^{m+1},D_hv_h)\\
+&=\sum_{i=1}^n(f^{m+i/n},v_h)
++\sum_{i=1}^{n-1}(\pi_h^{m+1}-\pi_h^{m+i/n},\nabla_{ih}v_{ih}),
+\quad\forall v_h\in W_h,
+\end{aligned}
+\label{eq:ch3-ac-discrete-summed-momentum}
+\end{equation}
+\begin{equation}
+\begin{aligned}
+\frac\epsilon k(\pi_h^{m+1}-\pi_h^m,\pi_h')
++(D_hu_h^{m+1},\pi_h')
+=-\sum_{i=1}^{n-1}
+(\nabla_{ih}u_{ih}^{m+1}-\nabla_{ih}u_{ih}^{m+i/n},\pi_h'),
+\quad\forall\pi_h'\in X_h.
+\end{aligned}
+\label{eq:ch3-ac-discrete-summed-pressure}
+\end{equation}
+将这些方程重写为
+\begin{equation}
+\begin{aligned}
+\frac d{dt}(u_h(t),v_h)
+&+\nu\sum_{i=1}^n((u_h^{(i)}(t),v_h))_{ih}\\
+&+\sum_{i=1}^n b_{ih}(u_h^{(i-1)}(t),u_h^{(i)}(t),v_h)
+-(\pi_h^{(n)}(t),D_hv_h)\\
+&=(f_h(t),v_h)+(\varphi_h(t),v_h),
+\quad\forall v_h\in W_h,quad\forall t\in(0,T),
+\end{aligned}
+\label{eq:ch3-ac-discrete-time-momentum}
+\end{equation}
+\begin{equation}
+\epsilon\frac d{dt}(\pi_h(t),\pi_h')
++(D_hu_h^{(n)}(t),\pi_h')
+=(\theta_h(t),\pi_h'),
+\quad\forall\pi_h'\in X_h,quad\forall t\in(0,T),
+\label{eq:ch3-ac-discrete-time-pressure}
+\end{equation}
+其中 $\varphi_h$ 和 $\theta_h$ 分别是从 $[0,T]$ 到 $W_h$ 和 $X_h$ 的阶梯函数, 定义为
+\begin{equation}
+\varphi_h(t)=-\sum_{i=1}^{n-1}
+(D_{ih}\pi_h^{m+1}-D_{ih}\pi_h^{m+i/n}),
+\qquad mk\leq t<(m+1)k,
+\label{eq:ch3-ac-discrete-pressure-remainder}
+\end{equation}
+\begin{equation}
+\theta_h(t)=-\sum_{i=1}^{n-1}
+(\nabla_{ih}u_{ih}^{m+1}-\nabla_{ih}u_{ih}^{m+i/n}),
+\qquad mk\leq t<(m+1)k,
+\label{eq:ch3-ac-discrete-divergence-remainder}
+\end{equation}
+其中 $m=0,\ldots,N-1$.
+
+\eqref{eq:ch3-ac-discrete-fourier-bound} 的推导基于与类似结果相同的原理(见引理 \MBUnresolvedReference{lemma}{Lemma 5.6} 和定理 \ref{thm:ch3-ac-existence} 证明的第 (iii) 点), 但必须适当地估计与 $\varphi_h,\theta_h$ 对应的项. 注意当 $t\in(mk,(m+1)k)$ 时,
+\[
+\begin{aligned}
+|(\varphi_h(t),v_h)|
+&=\left|-\sum_{i=1}^{n-1}
+(\pi_h^{m+1}-\pi_h^{m+i/n},\nabla_{ih}v_{ih})\right|\\
+&\leq\left\{\sum_{i=1}^{n-1}
+|\pi_h^{m+1}-\pi_h^{m+i/n}|^2\right\}^{1/2}
+\left\{\sum_{i=1}^n|\nabla_{ih}v_{ih}|^2\right\}^{1/2}\\
+&\leq c_1\lVert v_h\rVert_h
+\left\{\sum_{i=2}^n
+|\pi_h^{m+i/n}-\pi_h^{m+(i-1)/n}|^2\right\}^{1/2}.
+\end{aligned}
+\]
+
+\hypertarget{chapter-03-page-323}{}
+因此, 以 $\lVert\cdot\rVert_{*h}$ 表示 $W_h$ 上 $\lVert\cdot\rVert_h$ 的对偶范数,
+\[
+\lVert\varphi_h(t)\rVert_{*h}^2
+\leq c_1^2\sum_{i=2}^n
+|\pi_h^{m+i/n}-\pi_h^{m+(i-1)/n}|^2,
+\qquad mk\leq t<(m+1)k,
+\]
+从而
+\begin{equation}
+\int_0^T\lVert\varphi_h(t)\rVert_{*h}^2\,dt
+\leq\frac{c_1^2kd_4}{\epsilon}
+\leq\text{常数},
+\label{eq:ch3-ac-discrete-pressure-remainder-bound}
+\end{equation}
+其中使用了 \eqref{eq:ch3-ac-discrete-pressure-jump-sum}. 类似地, 若 $t\in(mk,(m+1)k)$,
+\[
+|\theta_h(t)|
+\leq\sum_{i=1}^{n-1}
+|\nabla_{ih}u_{ih}^{m+1}-\nabla_{ih}u_{ih}^{m+i/n}|,
+\]
+\[
+|\theta_h(t)|^2
+\leq C_2S(h)^2\sum_{i=2}^n
+|u_h^{m+i/n}-u_h^{m+(i-1)/n}|^2,
+\]
+因此, 利用 \eqref{eq:ch3-ac-discrete-velocity-jump-sum}, \eqref{eq:ch3-ac-stability-condition-two-dimensional}, \eqref{eq:ch3-ac-stability-condition-three-dimensional},
+\begin{equation}
+\int_0^T|\theta_h(t)|^2\,dt\leq\text{常数}.
+\label{eq:ch3-ac-discrete-divergence-remainder-bound}
+\end{equation}
+估计 \eqref{eq:ch3-ac-discrete-pressure-remainder-bound}, \eqref{eq:ch3-ac-discrete-divergence-remainder-bound} 足以控制 \eqref{eq:ch3-ac-discrete-time-momentum}, \eqref{eq:ch3-ac-discrete-time-pressure} 中与 $\varphi_h,\theta_h$ 对应的项.
+\end{Proof}
+
+\subsubsection{收敛极限的识别}
+\label{subsubsec:ch3-ac-convergence-identification}
+
+\begin{Proof}[定理 \ref{thm:ch3-ac-discrete-convergence-two-dimensional} 和 \ref{thm:ch3-ac-discrete-convergence-three-dimensional} 的证明]
+(i) 由定理 \ref{thm:ch3-ac-unconditional-stability}, 存在序列 $h',k'\to0$, 使
+\begin{equation}
+u_{h'}^{(i)}\longrightarrow u^{(i)}
+\quad\text{在 }L^\infty(0,T;L^2(\Omega))\text{ 中弱星收敛},
+\qquad i=1,\ldots,n,
+\label{eq:ch3-ac-discrete-subsequence-stages}
+\end{equation}
+\begin{equation}
+u_{h'}\longrightarrow u_*
+\quad\text{在 }L^\infty(0,T;L^2(\Omega))\text{ 中弱星收敛}.
+\label{eq:ch3-ac-discrete-subsequence-interpolant}
+\end{equation}
+由注 \ref{rem:ch3-ac-velocity-stage-differences}, $u_h^{(i)}-u_h^{(i-1)}$ 在 $L^2(Q)$ 中强收敛到 $0$ ($2\leq i\leq n$), $u_{h'}-u_{h'}^{(n)}$ 也如此. 因而所有极限相同:
+\begin{equation}
+u^{(1)}=\cdots=u^{(n)}=u_*,
+\label{eq:ch3-ac-discrete-common-limit}
+\end{equation}
+我们要证明 $u_*$ 是问题 \MBUnresolvedReference{problem}{Problem 3.1} 的解.
+
+由定理 \ref{thm:ch3-ac-conditional-stability}, 可选取序列 $h',k'\to0$, 使还有
+\begin{equation}
+\delta_{jh'}u_{h'}^{(i)},\delta_{jh'}u_{h'}
+\longrightarrow D_j u_*
+\quad\text{在 }L^2(Q)\text{ 中弱收敛}.
+\label{eq:ch3-ac-discrete-weak-derivative-limit}
+\end{equation}
+还可选取序列使 $k'/\epsilon'\to0$. 于是由引理 \ref{lem:ch3-ac-discrete-fourier-bound} 以及性质 \MBUnresolvedReference{equation}{(5.92)}\footnote{见第 \MBUnresolvedReference{subsection}{Subsection 6.1.3} 小节中有限差分情形的证明.},
+\begin{equation}
+u_{h'}\longrightarrow u_*
+\quad\text{在 }L^2(Q)\text{ 中强收敛}.
+\label{eq:ch3-ac-discrete-strong-interpolant}
+\end{equation}
+再次利用注 \ref{rem:ch3-ac-velocity-stage-differences}, 得
+\begin{equation}
+u_{h'}^{(i)}\longrightarrow u_*
+\quad\text{在 }L^2(Q)\text{ 中强收敛},
+\qquad1\leq i\leq n.
+\label{eq:ch3-ac-discrete-strong-stages}
+\end{equation}
+
+(ii) 现在通过在 \eqref{eq:ch3-ac-discrete-pressure-step} 中取极限来证明 $\operatorname{div}u_*=0$. 设 $\sigma\in\mathcal D(\Omega)$, 并定义 $\pi_{h'}$:
+\[
+\pi_{h'}(M)=\sigma(M),
+\qquad\forall M\in\mathring\Omega_{h'}^1.
+\]
+
+\hypertarget{chapter-03-page-324}{}
+显然当 $h'\to0$ 时
+\begin{equation}
+\pi_{h'}\longrightarrow\sigma
+\quad\text{在 }L^\infty(\Omega)\text{ 中收敛}.
+\label{eq:ch3-ac-test-pressure-convergence}
+\end{equation}
+设 $\psi$ 是 $[0,T]$ 上连续可微的标量函数, 且 $\psi(T)=0$. 将 \eqref{eq:ch3-ac-discrete-pressure-step} 乘以 $\psi^m=\psi(mk)$, 再对 $m=0,\ldots,N-1$, $i=1,\ldots,m$ 求和, 得
+\begin{equation}
+\epsilon\sum_{m=1}^N
+(\pi_h^m,(\psi^m-\psi^{m-1})\pi_{h'})
++k\sum_{i=1}^n\sum_{m=0}^{N-1}
+(\nabla_{ih}u_{ih}^{m+i/n},\psi^m\pi_{h'})
+=\epsilon(\pi_h^0,\pi_{h'}\psi(0)).
+\label{eq:ch3-ac-discrete-divergence-test-sum}
+\end{equation}
+利用对 $\pi_h^m$ 的估计 \eqref{eq:ch3-ac-discrete-pointwise-energy-bound} 和上述弱收敛, 容易在 \eqref{eq:ch3-ac-discrete-divergence-test-sum} 中通过极限. 极限关系为
+\begin{equation}
+\int_0^T(\operatorname{div}u_*(t),\sigma\psi(t))\,dt=0.
+\label{eq:ch3-ac-limit-divergence-test}
+\end{equation}
+由于 $\sigma\in\mathcal D(\Omega)$ 和 $\psi$ 任意, \eqref{eq:ch3-ac-limit-divergence-test} 等价于
+\[
+\operatorname{div}u_*=0,
+\]
+从而
+\begin{equation}
+u_*\in L^2(0,T;V)\cap L^\infty(0,T;H).
+\label{eq:ch3-ac-discrete-limit-space}
+\end{equation}
+
+(iii) 尚需在 \eqref{eq:ch3-ac-discrete-time-momentum} 中通过极限. 取 $v\in\mathcal V$, 并在 \eqref{eq:ch3-ac-discrete-time-momentum} 中令 $v_h=r_hv$, 其中 $r_h$ 是逼近 (APX1) 的限制算子($D_hr_hv=0$). 取前述 $\psi$, 将 \eqref{eq:ch3-ac-discrete-time-momentum} 乘以 $\psi(t)$, 对 $t$ 积分并分部积分, 得
+\begin{equation}
+\begin{aligned}
+-\int_0^T(u_h(t),\psi'(t)v_h)\,dt
+&+\nu\sum_{i=1}^n\int_0^T
+((u_h^{(i)}(t),v_h\psi(t)))_{ih}\,dt\\
+&+\sum_{i=1}^n\int_0^T
+b_{ih}(u_h^{(i-1)}(t),u_h^{(i)}(t),\psi(t)v_h)\,dt\\
+&=\sum_{i=1}^n\int_0^T(f_{ih}(t),v_h\psi(t))\,dt
++(u_h^0,v_h)\psi(0)\\
+&\quad+\int_0^T(\varphi_h(t),v_h\psi(t))\,dt.
+\end{aligned}
+\label{eq:ch3-ac-discrete-limit-momentum-test}
+\end{equation}
+沿序列 $h',k',\epsilon'$ 在 \eqref{eq:ch3-ac-discrete-limit-momentum-test} 中除最后一项之外的所有项通过极限是标准的. 由对 $\varphi_h$ 的估计 \eqref{eq:ch3-ac-discrete-pressure-remainder-bound} 以及假设 $k'/\epsilon'\to0$, 右端最后一项趋于零. 这是证明中唯一需要比值 $k/\epsilon$ 假设之处.
+
+极限中得到一个与 \MBUnresolvedReference{equation}{(3.43)} 类似的方程(其中 $u$ 换成 $u_*$), 由此像定理 \ref{thm:ch3-existence-weak-solution} 中那样推出 $u_*$ 是问题 \MBUnresolvedReference{problem}{Problem 3.1} 的解.
+
+若 $n=2$, 问题 \MBUnresolvedReference{problem}{Problem 3.1} 的解唯一; 因此 $u_*=u$, 且前述弱收敛结果对整个序列 $k,h,\epsilon\to0$ 成立, 其中满足 \eqref{eq:ch3-ac-stability-condition-two-dimensional} 且 $k/\epsilon\to0$.
+
+强收敛结果 \eqref{eq:ch3-ac-discrete-convergence-2d-strong-directional} 通过证明表达式
+\[
+X_h=|u_h^N-u(T)|^2+\epsilon|\pi_h^N|^2
++2\nu\sum_{i=1}^2\int_0^T
+|D_i u(t)-\delta_{ih}u_h^{(i)}(t)|^2\,dt
+\]
+当 $h,k,\epsilon\to0$ 时趋于零而得到.
+\end{Proof}
