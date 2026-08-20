@@ -1,0 +1,1245 @@
+\hypertarget{chapter-02-page-149}{}
+\section{定常 Navier--Stokes 方程的逼近}
+\label{sec:ch2-stationary-approximation}
+
+这里讨论用与线性 Stokes 问题所用格式同类型的数值格式逼近定常 Navier--Stokes 方程. 在 Section 3.1 中给出一个一般收敛定理; 随后在 Section 3.2 中, 将它用于以空间 $V$ 的逼近 (APX1), \ldots, (APX5) 为基础的数值格式. 在 Section 3.3 中, 把 \MBUnresolvedReference{section}{Chapter 1, Section 5} 讨论的数值算法推广到非线性情形.
+
+本节所有内容都可看作把 \MBUnresolvedReference{sections}{Chapter 1, Sections 3, 4, and 5} 在线性情形下所得结果推广到非线性情形. 然而, 特别由于精确问题的解可能不唯一, 这里的结果不如线性情形强.
+
+\subsection{一般收敛定理}
+\label{subsec:ch2-general-convergence}
+
+设 $\Omega$ 是 $\mathbb R^n$ 中的有界 Lipschitz 开集, 且给定 $f\in L^2(\Omega)$. 由定理 \ref{thm:ch2-homogeneous-existence}, 至少存在一个 $u\in V$ 使
+\begin{equation}
+\nu((u,v))+b(u,u,v)=(f,v),\qquad\forall v\in V.
+\label{eq:ch2-approx-exact-problem}
+\end{equation}
+由定理 \ref{thm:ch2-homogeneous-uniqueness}, 若 $n\leq4$ 且 $\nu$ 充分大, 则这个 $u$ 唯一. 这里的目标是讨论问题 \eqref{eq:ch2-approx-exact-problem} 的逼近.
+
+首先给定空间 $V$ 的一个外部、稳定且收敛的 Hilbert 逼近 $(\overline\omega,F)$, $(V_h,p_h,r_h)_{h\in\mathcal H}$, 其中 $V_h$ 是有限维空间; 该逼近可以是 \MBUnresolvedReference{approximations}{Chapter 1, (APX1)--(APX5)} 中的任意一种.
+
+假设给定双线性型 $\nu((u,v))$ 和线性型 $(f,v)$ 的某个相容逼近, 满足与 Chapter 1, Section 3 相同的假设:
+
+(i) 对每个 $h\in\mathcal H$, $a_h(u_h,v_h)$ 是 $V_h\times V_h$ 上的连续双线性型, 且一致强制, 即
+\begin{equation}
+\exists\alpha_0>0\text{ 与 }h\text{ 无关, 使 }
+a_h(u_h,u_h)\geq\alpha_0\lVert u_h\rVert_h^2,
+\qquad\forall u_h\in V_h,
+\label{eq:ch2-approx-uniform-coercivity}
+\end{equation}
+其中 $\lVert\cdot\rVert_h$ 表示 $V_h$ 中的范数.
+
+(ii) 对每个 $h\in\mathcal H$, $\ell_h$ 是 $V_h$ 上的连续线性型, 且
+\begin{equation}
+\lVert\ell_h\rVert_{V_h'}\leq\beta.
+\label{eq:ch2-approx-load-bound}
+\end{equation}
+
+若族 $v_h$ 当 $h\to0$ 时弱收敛于 $v$, 而族 $w_h$ 当 $h\to0$ 时强收敛于 $w$,\footnote{回忆这意味着 $p_hv_h\to\overline\omega v$ 在 $F$ 中弱收敛, 且 $p_hw_h\to\overline\omega w$ 在 $F$ 中强收敛.} 则
+\begin{equation}
+\lim_{h\to0}a_h(v_h,w_h)=\nu((v,w)),
+\qquad
+\lim_{h\to0}a_h(w_h,v_h)=\nu((w,v)).
+\label{eq:ch2-approx-bilinear-consistency}
+\end{equation}
+若族 $v_h$ 当 $h\to0$ 时弱收敛于 $v$, 则
+\begin{equation}
+\lim_{h\to0}\langle\ell_h,v_h\rangle=(f,v).
+\label{eq:ch2-approx-load-consistency}
+\end{equation}
+
+\hypertarget{chapter-02-page-150}{}
+为逼近型 $b$, 假设给定 $V_h$ 上的连续三线性型 $b_h(u_h,v_h,w_h)$, 满足
+\begin{equation}
+b_h(u_h,v_h,v_h)=0,
+\qquad\forall u_h,v_h\in V_h.
+\label{eq:ch2-approx-discrete-trilinear-zero}
+\end{equation}
+若族 $v_h$ 当 $h\to0$ 时弱收敛于 $v$, 且 $w\in V$, 则
+\begin{equation}
+\lim_{h\to0}b_h(v_h,v_h,r_hw)=b(v,v,w).
+\label{eq:ch2-approx-trilinear-consistency}
+\end{equation}
+有时还需更精确地刻画 $b_h$ 的连续性, 此时要求
+\begin{equation}
+|b_h(u_h,v_h,w_h)|
+\leq c(n,\Omega)\lVert u_h\rVert_h\lVert v_h\rVert_h\lVert w_h\rVert_h,
+\qquad\forall u_h,v_h,w_h\in V_h,
+\label{eq:ch2-approx-trilinear-uniform-continuity}
+\end{equation}
+其中常数 $c=c(n,\Omega)$ 依赖于 $n,\Omega$, 但不依赖于 $h$.
+
+现在定义 \eqref{eq:ch2-approx-exact-problem} 的逼近问题:
+\begin{equation}
+\text{求 }u_h\in V_h,\text{ 使 }
+a_h(u_h,v_h)+b_h(u_h,u_h,v_h)=\langle\ell_h,v_h\rangle,
+\qquad\forall v_h\in V_h.
+\label{eq:ch2-approx-discrete-problem}
+\end{equation}
+
+\MBSourceStatementNumber{proposition}{1}
+\begin{Proposition}
+\label{prop:ch2-approx-discrete-existence-uniqueness}
+对每个 $h$, 至少存在一个 $u_h\in V_h$ 为 \eqref{eq:ch2-approx-discrete-problem} 的解. 若 \eqref{eq:ch2-approx-trilinear-uniform-continuity} 成立, 且
+\begin{equation}
+\alpha_0^2>c(n,\Omega)\beta,
+\label{eq:ch2-approx-discrete-uniqueness-condition}
+\end{equation}
+则 $u_h$ 唯一.
+\end{Proposition}
+
+\begin{Proof}
+$u_h$ 的存在性由引理 \ref{lem:ch2-finite-dimensional-zero} 得到. 将该引理用于 $X=V_h$, 后者关于内积 $((\cdot,\cdot))_h$ 是有限维 Hilbert 空间. 定义从 $V_h$ 到 $V_h$ 的算子 $P$:
+\begin{equation}
+((P(u_h),v_h))_h
+=a_h(u_h,v_h)+b_h(u_h,u_h,v_h)-\langle\ell_h,v_h\rangle,
+\qquad\forall u_h,v_h\in V_h.
+\label{eq:ch2-approx-discrete-operator}
+\end{equation}
+算子 $P$ 连续, 只需检查 Chapter 2 的 \MBUnresolvedReference{equation}{(1.29)}. 由 \eqref{eq:ch2-approx-discrete-trilinear-zero},
+\[
+\begin{aligned}
+((P(u_h),u_h))_h
+&=a_h(u_h,u_h)-\langle\ell_h,u_h\rangle\\
+&\geq\alpha_0\lVert u_h\rVert_h^2-\lVert\ell_h\rVert_{V_h'}\lVert u_h\rVert_h\\
+&\geq(\alpha_0\lVert u_h\rVert_h-\beta)\lVert u_h\rVert_h.
+\end{aligned}
+\]
+因此, 若 $\lVert u_h\rVert_h=k$ 且 $k>\beta/\alpha_0$, 则 $((P(u_h),u_h))_h>0$. 引理 \ref{lem:ch2-finite-dimensional-zero} 给出至少一个 $u_h$ 使 $P(u_h)=0$, 即
+\begin{equation}
+((P(u_h),v_h))_h=0,
+\qquad\forall v_h\in V_h,
+\label{eq:ch2-approx-discrete-operator-zero}
+\end{equation}
+这正是 \eqref{eq:ch2-approx-discrete-problem}.
+
+\hypertarget{chapter-02-page-151}{}
+再设 \eqref{eq:ch2-approx-trilinear-uniform-continuity} 和 \eqref{eq:ch2-approx-discrete-uniqueness-condition} 成立. 若 $u_h^*,u_h^{**}$ 是 \eqref{eq:ch2-approx-discrete-problem} 的两个解, 且 $u_h=u_h^*-u_h^{**}$, 则
+\[
+a_h(u_h,v_h)+b_h(u_h^*,u_h^*,v_h)-b_h(u_h^{**},u_h^{**},v_h)=0,
+\qquad\forall v_h\in V_h.
+\]
+取 $v_h=u_h$ 并用 \eqref{eq:ch2-approx-discrete-trilinear-zero}, 得 $a_h(u_h,u_h)=b_h(u_h,u_h^*,u_h)$. 由 \eqref{eq:ch2-approx-uniform-coercivity} 和 \eqref{eq:ch2-approx-trilinear-uniform-continuity},
+\begin{equation}
+\alpha_0\lVert u_h\rVert_h^2
+\leq c\lVert u_h^*\rVert_h\lVert u_h\rVert_h^2.
+\label{eq:ch2-approx-uniqueness-difference-bound}
+\end{equation}
+在 $u_h^*$ 满足的 \eqref{eq:ch2-approx-discrete-problem} 中取 $v_h=u_h^*$, 得 $a_h(u_h^*,u_h^*)=\langle\ell_h,u_h^*\rangle$. 由 \eqref{eq:ch2-approx-uniform-coercivity} 和 \eqref{eq:ch2-approx-load-bound},
+\begin{equation}
+\alpha_0\lVert u_h^*\rVert_h^2\leq\beta\lVert u_h^*\rVert_h,
+\qquad
+\lVert u_h^*\rVert_h\leq\frac\beta{\alpha_0}.
+\label{eq:ch2-approx-solution-apriori-bound}
+\end{equation}
+结合前两式, 得
+\begin{equation}
+\left(\alpha_0-\frac{c\beta}{\alpha_0}\right)\lVert u_h\rVert_h^2\leq0.
+\label{eq:ch2-approx-uniqueness-final-bound}
+\end{equation}
+若 \eqref{eq:ch2-approx-discrete-uniqueness-condition} 成立, 则 $u_h=0$.
+\end{Proof}
+
+\MBSourceStatementNumber{theorem}{1}
+\begin{Theorem}
+\label{thm:ch2-approx-general-convergence}
+假设条件 \eqref{eq:ch2-approx-uniform-coercivity}--\eqref{eq:ch2-approx-trilinear-consistency} 成立, 且 $u_h$ 是 \eqref{eq:ch2-approx-discrete-problem} 的某个解.
+
+若 $n\leq4$, 族 $\{p_hu_h\}$ 包含在 $F$ 中强收敛的子序列. 任意这样的子序列都收敛于 $\overline\omega u$, 其中 $u$ 是 \eqref{eq:ch2-approx-exact-problem} 的某个解. 若 \eqref{eq:ch2-approx-exact-problem} 的解唯一, 则整个族 $\{p_hu_h\}$ 收敛于 $\overline\omega u$.
+
+若 $n\geq5$, 结论相同, 但在 $F$ 中只有弱收敛.
+\end{Theorem}
+
+\begin{Proof}
+先设 $n$ 任意. 在 \eqref{eq:ch2-approx-discrete-problem} 中取 $v_h=u_h$, 并用 \eqref{eq:ch2-approx-uniform-coercivity}, \eqref{eq:ch2-approx-load-bound} 和 \eqref{eq:ch2-approx-discrete-trilinear-zero}, 得
+\begin{equation}
+a_h(u_h,u_h)=\langle\ell_h,u_h\rangle,
+\qquad
+\alpha_0\lVert u_h\rVert_h\leq\beta.
+\label{eq:ch2-approx-uniform-solution-bound}
+\end{equation}
+由于 $p_h$ 稳定, 族 $p_hu_h$ 在 $F$ 中有界; 因此存在子序列 $h'\to0$ 和某个 $\phi\in F$, 使 $p_{h'}u_{h'}\to\phi$ 在 $F$ 中弱收敛. 空间逼近的条件 (C2) 表明必有 $\phi\in\overline\omega V$, 即 $\phi=\overline\omega u$, $u\in V$:
+\begin{equation}
+p_{h'}u_{h'}\longrightarrow\overline\omega u
+\quad\text{在 }F\text{ 中弱收敛},\qquad h'\to0.
+\label{eq:ch2-approx-weak-subsequence}
+\end{equation}
+任取 $v\in V$, 在 \eqref{eq:ch2-approx-discrete-problem} 中令 $v_h=r_hv$:
+\begin{equation}
+a_h(u_h,r_hv)+b_h(u_h,u_h,r_hv)=\langle\ell_h,r_hv\rangle.
+\label{eq:ch2-approx-test-lifted}
+\end{equation}
+当 $h'\to0$ 时, 由 \eqref{eq:ch2-approx-bilinear-consistency}, \eqref{eq:ch2-approx-load-consistency}, \eqref{eq:ch2-approx-trilinear-consistency},
+\[
+a_{h'}(u_{h'},r_{h'}v)\to\nu((u,v)),\quad
+b_{h'}(u_{h'},u_{h'},r_{h'}v)\to b(u,u,v),\quad
+\langle\ell_{h'},r_{h'}v\rangle\to(f,v).
+\]
+
+\hypertarget{chapter-02-page-152}{}
+因此 $u\in V$ 且满足
+\begin{equation}
+\nu((u,v))+b(u,u,v)=(f,v),
+\qquad\forall v\in V.
+\label{eq:ch2-approx-limit-equation}
+\end{equation}
+若 $n\leq4$, 由连续性, \eqref{eq:ch2-approx-limit-equation} 对每个 $v\in V$ 成立; 若 $n\geq5$, 由连续性得到该式对每个 $v\in\widetilde V$ 成立. 两种情形下, $u$ 都是定常 Navier--Stokes 方程的解.
+
+完全相同的方法可证明, $p_hu_h$ 的任意收敛子序列都收敛于 $\overline\omega u$, 其中 $u$ 是 \eqref{eq:ch2-approx-exact-problem} 的某个解. 若该解唯一, 则整个族 $p_hu_h$ 在 $F$ 中弱收敛于 $\overline\omega u$.
+
+下面证明 $n\leq4$ 时的强收敛. 与线性情形一样, 考虑
+\[
+X_h=a_h(u_h-r_hu,u_h-r_hu).
+\]
+展开并在 \eqref{eq:ch2-approx-discrete-problem} 中取 $v_h=u_h$, 得
+\[
+X_h=\langle\ell_h,u_h\rangle-a_h(u_h,r_hu)-a_h(r_hu,u_h)+a_h(r_hu,r_hu).
+\]
+由 Chapter 1 的 \MBUnresolvedReference{equation}{(2.4)}, \eqref{eq:ch2-approx-load-consistency} 和 \eqref{eq:ch2-approx-weak-subsequence},
+\[
+X_{h'}\longrightarrow\langle f,u\rangle-a(u,u),\qquad h'\to0.
+\]
+在 \eqref{eq:ch2-approx-exact-problem} 中取 $v=u$ 并用 \eqref{eq:ch2-trilinear-zero-property}, 得 $\langle f,u\rangle=a(u,u)$,\footnote{当 $n\geq5$ 时此等式不成立, 这正是证明不能推广到这些情形的原因.} 因而
+\begin{equation}
+X_{h'}\longrightarrow0,
+\qquad h'\to0.
+\label{eq:ch2-approx-energy-convergence}
+\end{equation}
+随后如线性情形完成证明. 不等式 \eqref{eq:ch2-approx-uniform-coercivity} 给出
+\[
+\lVert u_{h'}-r_{h'}u\rVert_{h'}\longrightarrow0.
+\]
+由 $p_h$ 的稳定性,
+\[
+\lVert p_{h'}u_{h'}-p_{h'}r_{h'}u\rVert_F
+\leq\lVert p_{h'}\rVert_{\mathcal L(V_{h'},F)}
+\lVert u_{h'}-r_{h'}u\rVert_{h'}\longrightarrow0.
+\]
+最后,
+\[
+\lVert p_{h'}u_{h'}-\overline\omega u\rVert_F
+\leq\lVert p_{h'}u_{h'}-p_{h'}r_{h'}u\rVert_F
++\lVert p_{h'}r_{h'}u-\overline\omega u\rVert_F,
+\]
+右端两项均在 $h'\to0$ 时趋于 $0$.\footnote{回忆对每个 $u\in V$ 和 $h\in\mathcal H$, 存在 $r_hu\in V_h$, 使 $p_hr_hu\to\overline\omega u$ 在 $F$ 中强收敛. 见 \MBUnresolvedReference{proposition}{Chapter 1, Proposition 3.1}.}
+\end{Proof}
+
+\hypertarget{chapter-02-page-153}{}
+\subsection{应用}
+\label{subsec:ch2-approx-applications}
+
+本节把一般收敛定理用于与 $V$ 的逼近 (APX1), \ldots, (APX5) 对应的逼近格式.
+
+\paragraph{逼近 (APX1).}
+与线性情形一样选取 $a_h$ 和 $\ell_h$:
+\begin{equation}
+a_h(u_h,v_h)=\nu((u_h,v_h))_h,
+\label{eq:ch2-apx1-bilinear-form}
+\end{equation}
+\begin{equation}
+\langle\ell_h,v_h\rangle=(f,v_h).
+\label{eq:ch2-apx1-load-form}
+\end{equation}
+在定义 $b_h$ 之前, 引入三线性型 $\widehat b(u,v,w)$:
+\begin{equation}
+\widehat b(u,v,w)=b'(u,v,w)+b''(u,v,w),
+\label{eq:ch2-antisymmetrized-form}
+\end{equation}
+\begin{equation}
+b'(u,v,w)=\frac12\sum_{i,j=1}^{n}\int_\Omega u_i(D_iv_j)w_j\,dx,
+\label{eq:ch2-antisymmetrized-first-part}
+\end{equation}
+\begin{equation}
+b''(u,v,w)=-b'(u,w,v)
+=-\frac12\sum_{i,j=1}^{n}\int_\Omega u_iv_j(D_iw_j)\,dx.
+\label{eq:ch2-antisymmetrized-second-part}
+\end{equation}
+容易看出
+\begin{equation}
+\widehat b(u,u,v)=b(u,u,v),
+\qquad u\in V,\quad\forall v\in\widetilde V,
+\label{eq:ch2-antisymmetrized-agrees-on-v}
+\end{equation}
+但在其他情形下 $\widehat b$ 与 $b$ 不同. 由 \eqref{eq:ch2-antisymmetrized-second-part}, $\widehat b$ 是 $b$ 关于最后两个变元的反对称化形式.
+
+定义
+\begin{equation}
+b_h(u_h,v_h,w_h)=b_h'(u_h,v_h,w_h)+b_h''(u_h,v_h,w_h),
+\label{eq:ch2-apx1-trilinear-form}
+\end{equation}
+\begin{equation}
+b_h'(u_h,v_h,w_h)
+=\frac12\sum_{i,j=1}^{n}\int_\Omega u_{ih}(\delta_{ih}v_{jh})w_{jh}\,dx,
+\label{eq:ch2-apx1-trilinear-first-part}
+\end{equation}
+\begin{equation}
+b_h''(u_h,v_h,w_h)
+=-\frac12\sum_{i,j=1}^{n}\int_\Omega u_{ih}v_{jh}(\delta_{ih}w_{jh})\,dx.
+\label{eq:ch2-apx1-trilinear-second-part}
+\end{equation}
+显然 $b_h',b_h''$ 以及 $b_h$ 都是 $V_h$ 上的三线性型; 由于 $V_h$ 有限维, 这些型连续. 按此定义, \eqref{eq:ch2-approx-discrete-trilinear-zero} 显然成立; 下一个引理验证 \eqref{eq:ch2-approx-trilinear-consistency}.
+
+\MBSourceStatementNumber{lemma}{1}
+\begin{Lemma}
+\label{lem:ch2-apx1-trilinear-convergence}
+若 $p_hu_h$ 收敛于 $\overline\omega u$, 则
+\begin{equation}
+b_h(u_h,u_h,r_hv)\longrightarrow b(u,u,v),
+\qquad\forall v\in V.
+\label{eq:ch2-apx1-trilinear-convergence}
+\end{equation}
+\end{Lemma}
+
+\begin{Proof}
+$p_hu_h$ 弱收敛于 $\overline\omega u$ 意味着
+\begin{equation}
+u_h\longrightarrow u\quad\text{在 }L^2(\Omega)\text{ 中弱收敛},
+\label{eq:ch2-apx1-weak-l2}
+\end{equation}
+且
+\begin{equation}
+\delta_{ih}u_h\longrightarrow D_iu
+\quad\text{在 }L^2(\Omega)\text{ 中弱收敛},
+\qquad1\leq i\leq n.
+\label{eq:ch2-apx1-weak-derivatives}
+\end{equation}
+紧性定理 \ref{thm:ch2-discrete-compactness-step} 可用, 并给出
+\begin{equation}
+u_h\longrightarrow u\quad\text{在 }L^2(\Omega)\text{ 中强收敛}.
+\label{eq:ch2-apx1-strong-l2}
+\end{equation}
+
+\hypertarget{chapter-02-page-154}{}
+已知若 $v\in V$, 则 $p_hr_hv$ 在 $F$ 中强收敛于 $\overline\omega v$; 但 \MBUnresolvedReference{results}{Chapter 1, Lemma 3.1 and Proposition 3.5} 的证明实际上还表明
+\begin{equation}
+r_hv\longrightarrow v\quad\text{在 }L^\infty(\Omega)\text{ 的范数中},
+\label{eq:ch2-apx1-lift-uniform}
+\end{equation}
+\begin{equation}
+\delta_{ih}r_hv\longrightarrow D_iv
+\quad\text{在 }L^\infty(\Omega)\text{ 的范数中}.
+\label{eq:ch2-apx1-lift-derivative-uniform}
+\end{equation}
+若证明
+\begin{equation}
+b_h'(u_h,u_h,r_hv)\longrightarrow b'(u,u,v),
+\label{eq:ch2-apx1-first-part-convergence}
+\end{equation}
+\begin{equation}
+b_h''(u_h,u_h,r_hv)\longrightarrow b''(u,u,v),
+\label{eq:ch2-apx1-second-part-convergence}
+\end{equation}
+则由 \eqref{eq:ch2-apx1-trilinear-form} 即得结论. 对 \eqref{eq:ch2-apx1-first-part-convergence}, 写成
+\[
+\begin{aligned}
+&|b_h'(u_h,u_h,r_hv)-b'(u,u,v)|\\
+&\quad\leq c_0\sum_{i,j=1}^{n}
+\left|\int_\Omega(u_{ih}v_{jh}-u_iv_j)\delta_{ih}u_{jh}\,dx\right|\\
+&\qquad+c_0\sum_{i,j=1}^{n}
+\left|\int_\Omega u_iv_j(\delta_{ih}u_{jh}-D_iu_j)\,dx\right|.
+\end{aligned}
+\]
+前述所有积分都趋于 $0$, 因而 \eqref{eq:ch2-apx1-first-part-convergence} 得证; \eqref{eq:ch2-apx1-second-part-convergence} 的证明相同.
+\end{Proof}
+
+定理 \ref{thm:ch2-approx-general-convergence} 给出的收敛结果如下($n\leq4$):
+\begin{equation}
+u_{h'}\longrightarrow u\quad\text{在 }L^2(\Omega)\text{ 中强收敛},
+\label{eq:ch2-apx1-solution-strong-l2}
+\end{equation}
+\begin{equation}
+\delta_{ih'}u_{h'}\longrightarrow D_iu
+\quad\text{在 }L^2(\Omega)\text{ 中强收敛},
+\qquad1\leq i\leq n.
+\label{eq:ch2-apx1-solution-strong-derivatives}
+\end{equation}
+与线性情形完全一样, 可证明存在阶梯函数
+\begin{equation}
+\pi_h=\sum_{M\in\mathring\Omega_h^1}\pi_h(M)w_{hM},
+\label{eq:ch2-apx1-pressure-step-function}
+\end{equation}
+使
+\begin{equation}
+\nu((u_h,v_h))_h+(\nabla_h\pi_h,v_h)=(f,v_h),
+\qquad\forall v_h\in W_h.
+\label{eq:ch2-apx1-pressure-equation}
+\end{equation}
+因此 \eqref{eq:ch2-approx-discrete-problem} 的解 $u_h$ 是阶梯函数
+\begin{equation}
+u_h=\sum_{M\in\mathring\Omega_h^1}u_h(M)w_{hM},
+\label{eq:ch2-apx1-velocity-step-function}
+\end{equation}
+满足
+\begin{equation}
+\sum_{i=1}^{n}(\nabla_{ih}u_{ih})(M)=0,
+\qquad\forall M\in\mathring\Omega_h^1,
+\label{eq:ch2-apx1-discrete-divergence-free}
+\end{equation}
+以及
+\begin{equation}
+\begin{aligned}
+-\nu\sum_{i=1}^{n}\delta_{ih}^2u_h(M)
+&+\frac12\sum_{i=1}^{n}u_{ih}(M)\delta_{ih}u_h(M)\\
+&-\frac12\sum_{i=1}^{n}\delta_{ih}(u_{ih}u_h)(M)
++\nabla_h\pi_h(M)=f_h(M),
+\qquad\forall M\in\mathring\Omega_h^1,
+\end{aligned}
+\label{eq:ch2-apx1-discrete-momentum}
+\end{equation}
+其中
+\begin{equation}
+f_h(M)=\frac1{h_1\cdots h_n}\int_{\sigma_h(M)}f(x)\,dx.
+\label{eq:ch2-apx1-cell-average-force}
+\end{equation}
+
+\hypertarget{chapter-02-page-155}{}
+若条件 \eqref{eq:ch2-approx-trilinear-uniform-continuity} 和某个类似于 \eqref{eq:ch2-approx-discrete-uniqueness-condition} 的条件成立, 则 $u_h,u$ 唯一; 若还假设 $u\in C^3(\overline\Omega)$, $p\in C^2(\overline\Omega)$, 则可像线性情形那样估计误差. Taylor 公式给出
+\begin{equation}
+\begin{aligned}
+-\nu\sum_{i=1}^{n}(\delta_{ih}r_hu)(M)
+&+\frac12\sum_{i=1}^{n}(r_hu)_i(M)\delta_{ih}(r_hu)(M)\\
+&-\frac12\sum_{i=1}^{n}\delta_{ih}((r_hu)_ir_hu)(M)
++(\nabla_hp)(M)\\
+&=f(M)+\epsilon_h(M),
+\qquad\forall M\in\mathring\Omega_h^1,
+\end{aligned}
+\label{eq:ch2-apx1-taylor-residual}
+\end{equation}
+且
+\begin{equation}
+|\epsilon_h(M)|\leq c(u,p)|h|,
+\label{eq:ch2-apx1-residual-bound}
+\end{equation}
+其中 $c(u,p)$ 只依赖于 $u$ 的二阶、三阶导数以及 $p$ 的二阶导数的最大范数. 式 \eqref{eq:ch2-apx1-taylor-residual} 表明, 对每个 $v_h\in W_h$,
+\begin{equation}
+\nu((r_hu,v_h))_h+b(r_hu,r_hu,v_h)-(\nabla_h\pi_h',v_h)
+=(f+\epsilon_h,v_h),
+\label{eq:ch2-apx1-residual-variational}
+\end{equation}
+其中阶梯函数
+\begin{equation}
+\pi_h'=\sum_{M\in\mathring\Omega_h^1}p(M)w_{hM}.
+\label{eq:ch2-apx1-interpolated-pressure}
+\end{equation}
+从 \eqref{eq:ch2-approx-discrete-problem} 减去 \eqref{eq:ch2-apx1-residual-variational}, 得
+\[
+\nu((u_h-r_hu,v_h))_h
+=-b_h(u_h,u_h,v_h)+b_h(r_hu,r_hu,v_h)+(\epsilon_h,v_h),
+\qquad\forall v_h\in W_h.
+\]
+取 $v_h=u_h-r_hu$ 并用 \eqref{eq:ch2-approx-discrete-trilinear-zero}, 得
+\[
+\nu\lVert u_h-r_hu\rVert_h^2
+=-b_h(u_h-r_hu,u_h,u_h-r_hu)+(\epsilon_h,u_h-r_hu).
+\]
+由 \eqref{eq:ch2-approx-trilinear-uniform-continuity} 和 \eqref{eq:ch2-apx1-residual-bound},
+\[
+\begin{aligned}
+\nu\lVert u_h-r_hu\rVert_h^2
+&\leq c(n,\Omega)\lVert u_h\rVert_h\lVert u_h-r_hu\rVert_h^2
++c(u,p)\lVert u_h-r_hu\rVert_h|h|,\\
+\nu\lVert u_h-r_hu\rVert_h
+&\leq c(n,\Omega)\lVert u_h\rVert_h\lVert u_h-r_hu\rVert_h+c(u,p)|h|\\
+&\leq\frac\beta{\alpha_0}c(n,\Omega)\lVert u_h-r_hu\rVert_h+c(u,p)|h|.
+\end{aligned}
+\]
+最后
+\begin{equation}
+\left(\nu-\frac\beta{\alpha_0}c(n,\Omega)\right)
+\lVert u_h-r_hu\rVert_h\leq c(u,p)|h|.
+\label{eq:ch2-apx1-error-precondition}
+\end{equation}
+若
+\begin{equation}
+\nu\alpha_0>\beta c(n,\Omega),
+\label{eq:ch2-apx1-error-condition}
+\end{equation}
+其中 $c(n,\Omega)$ 是 \eqref{eq:ch2-approx-trilinear-uniform-continuity} 中的常数, 则
+\begin{equation}
+\lVert u_h-r_hu\rVert_h
+\leq\frac{c(u,p)}{\nu-\dfrac\beta{\alpha_0}c(n,\Omega)}|h|.
+\label{eq:ch2-apx1-error-estimate}
+\end{equation}
+
+\paragraph{逼近 (APX2).}
+在二维情形, 可将 \MBUnresolvedReference{section}{Chapter 1, Section 4.2} 所述 $V$ 的逼近 (APX2) 与 Navier--Stokes 方程的一个新离散格式联系起来.
+
+\hypertarget{chapter-02-page-156}{}
+回忆对该逼近有 $V_h\subset H_0^1(\Omega)$, 并如线性情形取
+\begin{equation}
+a_h(u_h,v_h)=\nu((u_h,v_h)),
+\label{eq:ch2-apx2-bilinear-form}
+\end{equation}
+\begin{equation}
+\langle\ell_h,v_h\rangle=(f,v_h),
+\label{eq:ch2-apx2-load-form}
+\end{equation}
+其中 $((\cdot,\cdot))$ 是 $V_h$ 和 $H_0^1(\Omega)$ 中的内积. 定义
+\begin{equation}
+b_h(u_h,v_h,w_h)=\widehat b(u_h,v_h,w_h),
+\qquad\forall u_h,v_h,w_h\in V_h,
+\label{eq:ch2-apx2-trilinear-form}
+\end{equation}
+其中 $\widehat b$ 由 \eqref{eq:ch2-antisymmetrized-form}--\eqref{eq:ch2-antisymmetrized-second-part} 定义. 因为 $V_h$ 是有界向量函数空间, $\widehat b$ 在 $V_h$ 上有定义; 它是三线性的, 因而连续. 条件 \eqref{eq:ch2-approx-discrete-trilinear-zero} 显然成立, 条件 \eqref{eq:ch2-approx-trilinear-consistency} 由下一个引理给出.
+
+\MBSourceStatementNumber{lemma}{2}
+\begin{Lemma}
+\label{lem:ch2-apx2-trilinear-convergence}
+若 $p_hu_h=u_h$ 收敛于 $\overline\omega u$, 则
+\begin{equation}
+b_h(u_h,u_h,r_hv)\longrightarrow b(u,u,v),
+\qquad\forall v\in V.
+\label{eq:ch2-apx2-trilinear-convergence}
+\end{equation}
+\end{Lemma}
+
+\begin{Proof}
+回忆 $F=H_0^1(\Omega)$, 且 $\overline\omega,p_h$ 都是恒等映射. $p_hu_h$ 在 $F$ 中弱收敛于 $\overline\omega u$ 等价于
+\begin{equation}
+u_h\longrightarrow u\quad\text{在 }H_0^1(\Omega)\text{ 中弱收敛}.
+\label{eq:ch2-apx2-weak-h1}
+\end{equation}
+紧性定理 \ref{thm:ch2-sobolev-compact-embedding} 给出
+\begin{equation}
+u_h\longrightarrow u\quad\text{在 }L^2(\Omega)\text{ 中强收敛}.
+\label{eq:ch2-apx2-strong-l2}
+\end{equation}
+只需注意
+\begin{equation}
+r_hv\longrightarrow v\quad\text{在 }L^\infty(\Omega)\text{ 的范数中},
+\label{eq:ch2-apx2-lift-uniform}
+\end{equation}
+\begin{equation}
+D_ir_hv\longrightarrow D_iv\quad\text{在 }L^\infty(\Omega)\text{ 的范数中},
+\qquad1\leq i\leq n,
+\label{eq:ch2-apx2-lift-derivative-uniform}
+\end{equation}
+便可按引理 \ref{lem:ch2-apx1-trilinear-convergence} 的同样方式证明; 这些性质已在 \MBUnresolvedReference{proposition}{Chapter 1, Proposition 4.3 and equation (4.63)} 中证明.
+\end{Proof}
+
+定理 \ref{thm:ch2-approx-general-convergence} 给出的弱(或强)收敛结果为
+\begin{equation}
+\rho(h)\to0,\quad\sigma(h)\leq\alpha\ (h\in\mathcal H_\alpha)
+\quad\Longrightarrow\quad
+u_{h'}\to u\text{ 在 }H_0^1(\Omega)\text{ 中弱(或强)收敛}.
+\label{eq:ch2-apx2-h1-convergence}
+\end{equation}
+与线性情形一样, 可证明存在阶梯函数
+\begin{equation}
+\pi_h=\sum_{S\in\mathcal T_h}\pi_h(S)\chi_{hS},
+\label{eq:ch2-apx2-pressure-step-function}
+\end{equation}
+其中 $\chi_{hS}$ 是单纯形 $S$ 的特征函数, 且
+\begin{equation}
+\nu((u_h,v_h))+b_h(u_h,u_h,v_h)-(\pi_h,\operatorname{div}v_h)
+=(f,v_h),
+\qquad\forall v_h\in W_h.
+\label{eq:ch2-apx2-discrete-pressure-equation}
+\end{equation}
+该式是
+\begin{equation}
+\nu((u,v))+b(u,u,v)-(p,\operatorname{div}v)
+=(f,v),
+\qquad\forall v\in H_0^1(\Omega)\cap L^n(\Omega)
+\label{eq:ch2-apx2-continuous-pressure-equation}
+\end{equation}
+的离散类似式. 因为空间维数 $n=2$, $\widehat b$ 在 $H_0^1(\Omega)^3$ 上连续三线性, 且存在常数 $\widehat c$ 使
+\begin{equation}
+|\widehat b(u,v,w)|
+\leq\widehat c\lVert u\rVert\lVert v\rVert\lVert w\rVert,
+\qquad\forall u,v,w\in H_0^1(\Omega).
+\label{eq:ch2-apx2-trilinear-continuity}
+\end{equation}
+
+\hypertarget{chapter-02-page-157}{}
+这可用与 Chapter 2 的 \MBUnresolvedReference{equation}{(1.18)} 相同的方法证明, 因而 \eqref{eq:ch2-approx-trilinear-uniform-continuity} 对 $c(n,\Omega)=\widehat c$ 成立.
+
+为估计误差, 假设 $u\in C^3(\overline\Omega)$, $p\in C^2(\overline\Omega)$, 并作类似于 \eqref{eq:ch2-apx1-error-condition} 的假设. 在 \eqref{eq:ch2-apx2-discrete-pressure-equation} 中取 $v_h=r_hu-u_h$, 在 \eqref{eq:ch2-apx2-continuous-pressure-equation} 中取 $v=r_hu-u_h$, 两式相减得
+\begin{equation}
+\begin{aligned}
+&\nu((u-u_h,r_hu-u_h))
++\widehat b(u,u,r_hu-u_h)-\widehat b(u_h,u_h,r_hu-u_h)\\
+&\qquad-(p-\pi_h,\operatorname{div}(r_hu-u_h))=0.
+\end{aligned}
+\label{eq:ch2-apx2-error-identity}
+\end{equation}
+由于 $\operatorname{div}(r_hu-u_h)$ 在每个 $S\in\mathcal T_h$ 上为常数,
+\[
+(p-\pi_h,\operatorname{div}(r_hu-u_h))
+=(p-\pi_h',\operatorname{div}(r_hu-u_h)),
+\]
+其中
+\begin{equation}
+\pi_h'=\sum_{S\in\mathcal T_h}
+\frac1{\operatorname{meas}S}\left(\int_Sp(x)\,dx\right)\chi_{hS}.
+\label{eq:ch2-apx2-cell-average-pressure}
+\end{equation}
+因此
+\begin{equation}
+|(p-\pi_h,\operatorname{div}(r_hu-u_h))|
+\leq|\pi_h'-p|\,|\operatorname{div}(r_hu-u_h)|
+\leq|\pi_h'-p|\lVert u_h-r_hu\rVert.
+\label{eq:ch2-apx2-pressure-error-bound}
+\end{equation}
+再考虑差
+\[
+\begin{aligned}
+&\widehat b(u_h,u_h,r_hu-u)-\widehat b(u,u,r_hu-u)\\
+&=\widehat b(u_h-r_hu,u_h,r_hu-u_h)
++\widehat b(r_hu,u_h,r_hu-u_h)-\widehat b(u,u,r_hu-u)\\
+&=\widehat b(u_h-r_hu,u_h,r_hu-u_h)
++\widehat b(r_hu,r_hu-u,r_hu-u_h)\\
+&\qquad+\widehat b(r_hu-u,u,r_hu-u_h).
+\end{aligned}
+\]
+由 \eqref{eq:ch2-apx2-trilinear-continuity}, 其绝对值不超过
+\begin{equation}
+\widehat c\lVert u_h\rVert\lVert r_hu-u_h\rVert^2
++\widehat c(\lVert r_hu\rVert+\lVert u\rVert)
+\lVert r_hu-u\rVert\lVert r_hu-u_h\rVert.
+\label{eq:ch2-apx2-nonlinear-error-bound}
+\end{equation}
+回忆
+\[
+\nu\lVert u_h\rVert^2=\langle f,u_h\rangle,
+\qquad
+\lVert u_h\rVert\leq\frac1\nu|f|.
+\]
+所以 \eqref{eq:ch2-apx2-nonlinear-error-bound} 不超过
+\begin{equation}
+\frac{\widehat c}{\nu}|f|\lVert u_h-r_hu\rVert^2
++\widehat c(\lVert r_hu\rVert+\lVert u\rVert)
+\lVert r_hu-u\rVert\lVert r_hu-u_h\rVert.
+\label{eq:ch2-apx2-nonlinear-error-force-bound}
+\end{equation}
+由 \eqref{eq:ch2-apx2-error-identity}, \eqref{eq:ch2-apx2-pressure-error-bound} 和 \eqref{eq:ch2-apx2-nonlinear-error-force-bound}, 最终得到
+\begin{equation}
+\begin{aligned}
+\left(\nu-\frac{\widehat c}{\nu}|f|\right)\lVert u_h-r_hu\rVert
+&\leq\nu\lVert u-r_hu\rVert+|\pi_h'-p|\\
+&\quad+\widehat c(\lVert r_hu\rVert+\lVert u\rVert)\lVert u-r_hu\rVert.
+\end{aligned}
+\label{eq:ch2-apx2-final-error-bound}
+\end{equation}
+
+\hypertarget{chapter-02-page-158}{}
+在假设
+\begin{equation}
+\nu^2>\widehat c|f|
+\label{eq:ch2-apx2-error-condition}
+\end{equation}
+下, \eqref{eq:ch2-apx2-final-error-bound} 给出 $u_h$ 与 $r_hu$, 从而 $u$ 与 $u_h$ 之间的误差估计.
+
+\paragraph{逼近 (APX3).}
+与线性情形一样, 这里的方法同逼近 (APX2) 所用方法非常相似.
+
+\paragraph{逼近 (APX4).}
+回忆 $\Omega$ 必须是 $\mathbb R^2$ 中的单连通开集. 因为 (APX4) 是 $V$ 的内部逼近, 与其对应的最简单格式为
+\begin{equation}
+\text{求 }u_h\in V_h\text{ 使 }
+\nu((u_h,v_h))+b(u_h,u_h,v_h)=\langle f,v_h\rangle,
+\qquad\forall v_h\in V_h.
+\label{eq:ch2-apx4-discrete-problem}
+\end{equation}
+定理 \ref{thm:ch2-approx-general-convergence} 可用并表明, 若 $\sigma(h)\leq\alpha$, 则
+\begin{equation}
+u_h\longrightarrow u\quad\text{在 }V\text{ 中},
+\qquad\rho(h)\to0.
+\label{eq:ch2-apx4-convergence}
+\end{equation}
+在解唯一时, 可如下估计误差. 在 $u$ 满足的变分方程中取 $v=u-u_h$, 在 \eqref{eq:ch2-apx4-discrete-problem} 中取 $v=r_hu-u_h$, 两式相减得
+\[
+\nu((u,v))+b(u,u,v)=(f,v),
+\qquad\forall v\in V.
+\]
+\begin{equation}
+\begin{aligned}
+\nu\lVert u_h-u\rVert^2
+&=\nu((u-u_h,u-r_hu))\\
+&\quad+b(u_h,u_h,r_hu-u_h)-b(u,u,r_hu-u_h).
+\end{aligned}
+\label{eq:ch2-apx4-error-identity}
+\end{equation}
+其中的差
+\[
+b(u_h,u_h,r_hu-u_h)-b(u,u,r_hu-u_h)
+\]
+等于
+\[
+\begin{aligned}
+&b(u_h-u,u_h,r_hu-u_h)+b(u,u_h-u,r_hu-u_h)\\
+&=b(u_h-u,u_h,r_hu-u)+b(u_h-u,u_h,u-u_h)\\
+&\qquad+b(u,u_h-u,r_hu-u)\\
+&=b(u_h-u,u_h,r_hu-u)+b(u_h-u,u,u-u_h)\\
+&\qquad+b(u,u_h-u,r_hu-u).
+\end{aligned}
+\]
+由 Chapter 2 的 \MBUnresolvedReference{equation}{(1.18)}, 其绝对值不超过
+\[
+c(\lVert u\rVert+\lVert u_h\rVert)\lVert u_h-u\rVert\lVert r_hu-u\rVert
++c\lVert u\rVert\lVert u-u_h\rVert^2.
+\]
+并且
+\[
+\nu\lVert u\rVert^2=\langle f,u\rangle,
+\qquad
+\lVert u\rVert\leq\frac1\nu\lVert f\rVert_{V'},
+\qquad
+\nu\lVert u_h\rVert^2=\langle f,u_h\rangle,
+\qquad
+\lVert u_h\rVert\leq\frac1\nu\lVert f\rVert_{V'},
+\]
+从 \eqref{eq:ch2-apx4-error-identity} 推得
+\begin{equation}
+\left(\nu-\frac c\nu|f|\right)\lVert u_h-u\rVert
+\leq\left(\nu+\frac{2c}\nu|f|\right)\lVert r_hu-u\rVert.
+\label{eq:ch2-apx4-error-estimate}
+\end{equation}
+若
+\begin{equation}
+\nu^2>c\lVert f\rVert_{V'},
+\label{eq:ch2-apx4-error-condition}
+\end{equation}
+则 \eqref{eq:ch2-apx4-error-estimate} 表明误差 $\lVert u_h-u\rVert$ 与 $\lVert r_hu-u\rVert$ 同阶. 这里 $c$ 是 Chapter 2 的 \MBUnresolvedReference{equation}{(1.18)} 在 $n=2$ 时的常数, 而 \eqref{eq:ch2-apx4-error-condition} 正是保证精确问题解 $u$ 唯一的条件.
+
+\hypertarget{chapter-02-page-159}{}
+\paragraph{逼近 (APX5).}
+对 $V$ 的逼近 (APX5), 可取
+\begin{equation}
+a_h(u_h,v_h)=\nu((u_h,v_h))_h,
+\label{eq:ch2-apx5-bilinear-form}
+\end{equation}
+\begin{equation}
+\langle\ell_h,v_h\rangle=(f,v_h),
+\label{eq:ch2-apx5-load-form}
+\end{equation}
+\begin{equation}
+b_h(u_h,v_h,w_h)=b_h'(u_h,v_h,w_h)+b_h''(u_h,v_h,w_h),
+\label{eq:ch2-apx5-trilinear-form}
+\end{equation}
+\begin{equation}
+b_h'(u_h,v_h,w_h)
+=\frac12\sum_{i,j=1}^{n}\int_\Omega u_{ih}(D_{ih}v_{jh})w_{jh}\,dx,
+\label{eq:ch2-apx5-trilinear-first-part}
+\end{equation}
+\begin{equation}
+b_h''(u_h,v_h,w_h)
+=-\frac12\sum_{i,j=1}^{n}\int_\Omega u_{ih}v_{jh}(D_{ih}w_{jh})\,dx.
+\label{eq:ch2-apx5-trilinear-second-part}
+\end{equation}
+$b_h',b_h''$ 和 $b_h$ 显然都是 $V_h$ 上的三线性型, 且因 $V_h$ 有限维而连续. 条件 \eqref{eq:ch2-approx-discrete-trilinear-zero} 显然成立, 条件 \eqref{eq:ch2-approx-trilinear-consistency} 由下一个引理给出.
+
+\MBSourceStatementNumber{lemma}{3}
+\begin{Lemma}
+\label{lem:ch2-apx5-trilinear-convergence}
+设 $n\leq3$. 若 $p_hu_h$ 弱收敛于 $\overline\omega u$, 则
+\begin{equation}
+b_h(u_h,u_h,r_hv)\longrightarrow b(u,u,v),
+\qquad\forall v\in V.
+\label{eq:ch2-apx5-trilinear-convergence}
+\end{equation}
+\end{Lemma}
+
+\begin{Proof}
+按定义, 假设意味着
+\begin{equation}
+u_h\longrightarrow u\quad\text{在 }L^2(\Omega)\text{ 中弱收敛},
+\label{eq:ch2-apx5-weak-l2}
+\end{equation}
+且
+\begin{equation}
+D_{ih}u_h\longrightarrow D_iu
+\quad\text{在 }L^2(\Omega)\text{ 中弱收敛},
+\qquad1\leq i\leq n.
+\label{eq:ch2-apx5-weak-derivatives}
+\end{equation}
+Chapter 1 的紧性定理 \MBUnresolvedReference{theorem}{Chapter 1, Compactness Theorem 4.2} 表明
+\begin{equation}
+u_h\longrightarrow u\quad\text{在 }L^2(\Omega)\text{ 中强收敛}.
+\label{eq:ch2-apx5-strong-l2}
+\end{equation}
+已知若 $v\in V$, 则 $p_hr_hv$ 在 $F$ 中强收敛于 $\overline\omega v$; \MBUnresolvedReference{propositions}{Chapter 1, Propositions 4.12 and 4.15} 的证明还给出
+\begin{equation}
+r_hv\longrightarrow v\quad\text{在 }L^\infty(\Omega)\text{ 的范数中},
+\label{eq:ch2-apx5-lift-uniform}
+\end{equation}
+\begin{equation}
+D_{ih}r_hv\longrightarrow D_iv\quad\text{在 }L^\infty(\Omega)\text{ 的范数中}.
+\label{eq:ch2-apx5-lift-derivative-uniform}
+\end{equation}
+
+\hypertarget{chapter-02-page-160}{}
+若证明
+\begin{equation}
+b_h'(u_h,u_h,r_hv)\longrightarrow b'(u,u,v),
+\label{eq:ch2-apx5-first-part-convergence}
+\end{equation}
+\begin{equation}
+b_h''(u_h,u_h,r_hv)\longrightarrow b''(u,u,v),
+\label{eq:ch2-apx5-second-part-convergence}
+\end{equation}
+则 \eqref{eq:ch2-approx-trilinear-consistency} 得证. 对第一式写成
+\[
+\begin{aligned}
+&|b_h'(u_h,u_h,r_hv)-b'(u,u,v)|\\
+&\quad\leq c_0\sum_{i,j=1}^{n}
+\left|\int_\Omega(u_{ih}v_{jh}-u_iv_j)D_{ih}u_{jh}\,dx\right|\\
+&\qquad+c_0\sum_{i,j=1}^{n}
+\left|\int_\Omega u_iv_j(D_{ih}u_{jh}-D_iu_j)\,dx\right|.
+\end{aligned}
+\]
+前述积分均趋于 $0$, 从而 \eqref{eq:ch2-apx5-first-part-convergence} 成立; 另一式的证明相同.
+\end{Proof}
+
+定理 \ref{thm:ch2-approx-general-convergence} 给出
+\begin{equation}
+u_{h'}\longrightarrow u\quad\text{在 }L^2(\Omega)\text{ 中强收敛},
+\label{eq:ch2-apx5-solution-strong-l2}
+\end{equation}
+\begin{equation}
+D_{ih'}u_{h'}\longrightarrow D_iu
+\quad\text{在 }L^2(\Omega)\text{ 中强收敛},
+\qquad1\leq i\leq n,
+\label{eq:ch2-apx5-solution-strong-derivatives}
+\end{equation}
+其中只考虑 $n=2$ 或 $3$. 与线性情形一样, 可证明存在阶梯函数 $\pi_h$, 它在每个 $S\in\mathcal T_h$ 上为常数并在 $\Omega(h)$ 外为零, 使
+\begin{equation}
+\nu((u_h,v_h))_h+b_h(u_h,u_h,v_h)
+-(\pi_h,\operatorname{div}_hv_h)=(f,v_h),
+\qquad\forall v_h\in W_h.
+\label{eq:ch2-apx5-discrete-pressure-equation}
+\end{equation}
+若 \eqref{eq:ch2-approx-trilinear-uniform-continuity} 和某个类似于 \eqref{eq:ch2-approx-discrete-uniqueness-condition} 的条件成立, 则 $u_h,u$ 唯一. 若还假设 $u\in C^3(\overline\Omega)$, $p\in C^2(\overline\Omega)$, 则可像线性情形一样估计误差.
+
+\MBSourceStatementNumber{lemma}{4}
+\begin{Lemma}
+\label{lem:ch2-apx5-consistency-residual}
+设 $u,p$ 是 Chapter 2 的 \MBUnresolvedReference{equations}{(1.8)--(1.10)} 的精确解, 并假设 $u\in C^3(\overline\Omega)$, $p\in C^2(\overline\Omega)$, $\Omega=\Omega(h)$. 则
+\begin{equation}
+\nu((u,v_h))_h+b_h(u,u,v_h)-(p,\operatorname{div}v_h)
+=(f,v_h)+\ell_h(v_h),
+\label{eq:ch2-apx5-consistency-identity}
+\end{equation}
+其中
+\begin{equation}
+|\ell_h(v_h)|\leq c(u,p)\rho(h)\lVert v_h\rVert_h.
+\label{eq:ch2-apx5-consistency-residual-bound}
+\end{equation}
+\end{Lemma}
+
+\begin{Proof}
+取 $v_h\in W_h$ 与方程
+\[
+-\nu\Delta u+\frac12\sum_{i=1}^{n}(u_iD_iu-D_i(u_iu))+\operatorname{grad}p=f
+\]
+在 $L^2(\Omega)$ 中的内积. 因 $\Omega=\Omega(h)$, 得
+\[
+\sum_S\left\{-\nu(\Delta u,v_h)_S
++\frac12(u_iD_iu-D_i(u_iu),v_h)_S
++(\operatorname{grad}p,v_h)_S-(f,v_h)_S\right\}=0.
+\]
+在每个单纯形 $S$ 上反复使用 Green 公式, 上式左端等于
+\[
+\left\{\nu((u,v_h))_h+\widehat b(u,u,v_h)
+-(p,\operatorname{div}_hv_h)-(f,v_h)-\ell_h(v_h)\right\}=0,
+\]
+从而得到 \eqref{eq:ch2-apx5-consistency-identity}, 其中
+\[
+\ell_h(v_h)=\sum_{S\in\mathcal T_h}
+\int_{\partial S}
+\left(\nu\frac{\partial u}{\partial\vec\nu}\cdot v_h
+-\frac12(u\cdot\vec\nu)(u\cdot v_h)
++\frac{\partial p}{\partial\vec\nu}v_h\right)d\Gamma.
+\]
+估计 \eqref{eq:ch2-apx5-consistency-residual-bound} 容易由 Chapter 1, Proposition 4.16 得到.\MBUnresolvedReference{proposition}{Chapter 1, Proposition 4.16}
+\end{Proof}
+
+\hypertarget{chapter-02-page-161}{}
+现按 \eqref{eq:ch2-apx2-final-error-bound} 的方法进行. 在 \eqref{eq:ch2-apx5-discrete-pressure-equation} 和 \eqref{eq:ch2-apx5-consistency-identity} 中取 $v_h=u_h-r_hu$ 并相减. 因 $\operatorname{div}_h(r_hu-u_h)=0$, 压力项消失, 且
+\begin{equation}
+\begin{aligned}
+&\nu((u-u_h,u_h-r_hu))_h
++b_h(u,u,u_h-r_hu)-b_h(u_h,u_h,u_h-r_hu)\\
+&\qquad-(p-\pi_h,\operatorname{div}_h(r_hu-u_h))=\ell_h(v_h).
+\end{aligned}
+\label{eq:ch2-apx5-error-identity}
+\end{equation}
+再估计差
+\[
+\begin{aligned}
+&b_h(u_h,u_h,u_h-r_hu)-b_h(u,u,u_h-r_hu)\\
+&=b_h(u_h-r_hu,u_h,u_h-r_hu)
++b_h(r_hu,u_h,u_h-r_hu)-b_h(u,u,u_h-r_hu)\\
+&=b_h(u_h-r_hu,u_h,u_h-r_hu)
++b_h(r_hu,r_hu-u,u_h-r_hu)\\
+&\qquad+b_h(r_hu-u,u,u_h-r_hu).
+\end{aligned}
+\]
+由 Chapter 2 的 \MBUnresolvedReference{equations}{(1.18), (3.65)}, 其绝对值不超过
+\begin{equation}
+c\lVert u_h\rVert_h\lVert u_h-r_hu\rVert_h^2
++c(\lVert r_hu\rVert_h+\lVert u\rVert)
+\lVert r_hu-u\rVert_h\lVert u_h-r_hu\rVert_h.
+\label{eq:ch2-apx5-nonlinear-error-bound}
+\end{equation}
+回忆
+\[
+\nu\lVert u_h\rVert_h^2=\langle f,u_h\rangle,
+\qquad
+\lVert u_h\rVert_h\leq\frac1\nu|f|.
+\]
+从而上式不超过
+\begin{equation}
+\frac c\nu|f|\lVert u_h-r_hu\rVert_h^2
++c(\lVert r_hu\rVert_h+\lVert u\rVert)
+\lVert r_hu-u\rVert_h\lVert r_hu-u_h\rVert_h.
+\label{eq:ch2-apx5-nonlinear-error-force-bound}
+\end{equation}
+结合 \eqref{eq:ch2-apx5-consistency-residual-bound} 与 \eqref{eq:ch2-apx5-error-identity}, 得
+\begin{equation}
+\begin{aligned}
+\left(\nu-\frac c\nu|f|\right)\lVert u_h-r_hu\rVert_h^2
+&\leq\nu\lVert u_h-r_hu\rVert_h\lVert u-r_hu\rVert_h\\
+&\quad+c(\lVert r_hu\rVert_h+\lVert u\rVert)
+\lVert u_h-r_hu\rVert_h\lVert u-r_hu\rVert_h\\
+&\quad+c(u,p)\rho(h)\lVert u_h-r_hu\rVert_h.
+\end{aligned}
+\label{eq:ch2-apx5-quadratic-error-bound}
+\end{equation}
+最终
+\begin{equation}
+\begin{aligned}
+\left(\nu-\frac c\nu|f|\right)\lVert u_h-r_hu\rVert_h
+&\leq\nu\lVert u-r_hu\rVert_h\\
+&\quad+c(\lVert r_hu\rVert_h+\lVert u\rVert)\lVert u-r_hu\rVert_h
++c(u,p)\rho(h).
+\end{aligned}
+\label{eq:ch2-apx5-final-error-bound}
+\end{equation}
+在假设
+\begin{equation}
+\nu^2>c|f|
+\label{eq:ch2-apx5-error-condition}
+\end{equation}
+下, \eqref{eq:ch2-apx5-final-error-bound} 给出 $u_h$ 与 $r_hu$, 从而 $u$ 与 $u_h$ 之间的误差估计.
+
+\hypertarget{chapter-02-page-162}{}
+\subsection{数值算法}
+\label{subsec:ch2-stationary-numerical-algorithms}
+
+以下分析限于维数 $n\leq4$. 我们希望把 \MBUnresolvedReference{section}{Chapter 1, Section 5} 在线性情形下所述的数值算法推广到非线性情形.
+
+注意, 定常 Navier--Stokes 方程不像 Stokes 方程那样是优化问题的 Euler 方程. 因而以下算法是通常与优化问题相联系的 Uzawa 和 Arrow--Hurwicz 算法的某种推广.
+
+本节余下部分始终使用 \eqref{eq:ch2-antisymmetrized-form}--\eqref{eq:ch2-antisymmetrized-second-part} 定义的三线性型 $\widehat b(u,v,w)$. 它在 $H_0^1(\Omega)^3$ 上连续三线性, 且存在常数 $\widehat c=\widehat c(n)$ 使
+\begin{equation}
+|\widehat b(u,v,w)|
+\leq\widehat c(n)\lVert u\rVert\lVert v\rVert\lVert w\rVert,
+\qquad\forall u,v,w\in H_0^1(\Omega),\quad n\leq4.
+\label{eq:ch2-algorithms-trilinear-continuity}
+\end{equation}
+已注意到
+\begin{equation}
+\widehat b(u,v,w)=b(u,v,w),
+\qquad u\in V,\quad v,w\in H_0^1(\Omega),
+\label{eq:ch2-algorithms-trilinear-agreement}
+\end{equation}
+\begin{equation}
+\widehat b(u,v,v)=0,
+\qquad u,v\in H_0^1(\Omega).
+\label{eq:ch2-algorithms-trilinear-zero}
+\end{equation}
+
+\paragraph{Uzawa 算法.}
+为逼近 Chapter 2 的 \MBUnresolvedReference{equations}{(1.8)--(1.11)} 的解, 与 Chapter 1, Section 5 一样构造两列元素
+\begin{equation}
+u^m\in H_0^1(\Omega),
+\qquad p^m\in L^2(\Omega).
+\label{eq:ch2-uzawa-sequences}
+\end{equation}
+该构造相对容易, 因为条件 $\operatorname{div}u=0$ 将从逼近方程中消失. 从任意元素开始:
+\begin{equation}
+p^0\in L^2(\Omega).
+\label{eq:ch2-uzawa-initial-pressure}
+\end{equation}
+当 $p^m$ 已知时($m\geq0$), 把 $u^{m+1}$ 定义为下列问题的某个解:
+\begin{equation}
+\left\{
+\begin{aligned}
+&u^{m+1}\in H_0^1(\Omega),\\
+&\nu((u^{m+1},v))+\widehat b(u^{m+1},u^{m+1},v)
+=(p^m,\operatorname{div}v)+(f,v),\\
+&\hspace{8em}\forall v\in H_0^1(\Omega).
+\end{aligned}
+\right.
+\label{eq:ch2-uzawa-velocity-step}
+\end{equation}
+再由
+\begin{equation}
+\left\{
+\begin{aligned}
+&p^{m+1}\in L^2(\Omega),\\
+&(p^{m+1}-p^m,q)+\rho(\operatorname{div}u^{m+1},q)=0,
+\qquad\forall q\in L^2(\Omega)
+\end{aligned}
+\right.
+\label{eq:ch2-uzawa-pressure-step}
+\end{equation}
+定义 $p^{m+1}$. 稍后给出数 $\rho>0$ 必须满足的条件.
+
+满足 \eqref{eq:ch2-uzawa-velocity-step} 的 $u^{m+1}$ 的存在性并不显然, 但可完全像定理 \ref{thm:ch2-homogeneous-existence} 那样用 Galerkin 方法证明, 此处略去. 不难看出, $u^{m+1}$ 是下列非线性 Dirichlet 问题的解:
+\begin{equation}
+\left\{
+\begin{aligned}
+&u^{m+1}\in H_0^1(\Omega),\\
+&-\nu\Delta u^{m+1}
++\sum_{i=1}^{n}u_i^{m+1}D_iu^{m+1}
++\frac12(\operatorname{div}u^{m+1})u^{m+1}
+=-\operatorname{grad}p^m+f\in H^{-1}(\Omega).
+\end{aligned}
+\right.
+\label{eq:ch2-uzawa-dirichlet-problem}
+\end{equation}
+
+\hypertarget{chapter-02-page-163}{}
+一般而言, \eqref{eq:ch2-uzawa-velocity-step}--\eqref{eq:ch2-uzawa-dirichlet-problem} 的解不唯一. 当 $u^{m+1}$ 已知时, \eqref{eq:ch2-uzawa-pressure-step} 显式给出
+\begin{equation}
+p^{m+1}=p^m-\rho\operatorname{div}u^{m+1}\in L^2(\Omega).
+\label{eq:ch2-uzawa-explicit-pressure}
+\end{equation}
+为研究收敛性, 假设
+\begin{equation}
+\nu-\frac{c(n)}\nu\lVert f\rVert_{V'}=\overline\nu>0.
+\label{eq:ch2-uzawa-uniqueness-condition}
+\end{equation}
+由 \eqref{eq:ch2-algorithms-trilinear-continuity}, \eqref{eq:ch2-algorithms-trilinear-agreement} 和定理 \ref{thm:ch2-homogeneous-uniqueness}, 条件 \eqref{eq:ch2-uzawa-uniqueness-condition} 保证 Chapter 2 的 \MBUnresolvedReference{equations}{(1.8)--(1.11)} 的解唯一. $p$ 在相差一个加法常数的意义下唯一; 固定该常数使
+\begin{equation}
+\int_\Omega p(x)\,dx=0.
+\label{eq:ch2-uzawa-pressure-normalization}
+\end{equation}
+
+\MBSourceStatementNumber{proposition}{2}
+\begin{Proposition}
+\label{prop:ch2-uzawa-convergence}
+假设 $n\leq4$ 且 \eqref{eq:ch2-algorithms-trilinear-continuity} 成立. 再假设 $\rho$ 满足
+\begin{equation}
+0<\rho<2\overline\nu.
+\label{eq:ch2-uzawa-step-condition}
+\end{equation}
+则当 $m\to\infty$ 时,
+\begin{equation}
+u^m\longrightarrow u\quad\text{在 }H_0^1(\Omega)\text{ 的范数中},
+\label{eq:ch2-uzawa-velocity-convergence}
+\end{equation}
+\begin{equation}
+p^m\longrightarrow p\quad\text{在 }L^2(\Omega)\text{ 中弱收敛},
+\label{eq:ch2-uzawa-pressure-convergence}
+\end{equation}
+其中 $\{u,p\}$ 是满足 \eqref{eq:ch2-uzawa-pressure-normalization} 的 Chapter 2 的 \MBUnresolvedReference{equations}{(1.8)--(1.11)} 的唯一解.
+\end{Proposition}
+
+\begin{Proof}
+令
+\begin{equation}
+v^{m+1}=u^{n+1}-u,
+\qquad
+q^{m+1}=p^{m+1}-p,
+\label{eq:ch2-uzawa-error-variables}
+\end{equation}
+并按 Chapter 1, Theorem 5.1 的证明进行.\MBUnresolvedReference{theorem}{Chapter 1, Theorem 5.1}
+
+从
+\begin{equation}
+\nu((u,v))+\widehat b(u,u,v)-(p,\operatorname{div}v)
+=\langle f,v\rangle,
+\qquad\forall v\in H_0^1(\Omega)
+\label{eq:ch2-uzawa-exact-equation}
+\end{equation}
+减去 \eqref{eq:ch2-uzawa-velocity-step}, 并取 $v=v^{m+1}$, 得
+\begin{equation}
+\begin{aligned}
+\nu\lVert v^{m+1}\rVert^2
+&=(q^m,\operatorname{div}v^{m+1})
++\widehat b(u,u,v^{m+1})
+-\widehat b(u^{m+1},u^{m+1},v^{m+1})\\
+&=-(q^{m+1}-q^m,\operatorname{div}v^{m+1})
+-(q^{m+1},\operatorname{div}v^{m+1})
++\widehat b(v^{m+1},u,v^{m+1})\\
+&\leq-(q^{m+1}-q^m,\operatorname{div}v^{m+1})
+-(q^{m+1},\operatorname{div}v^{m+1})
++\frac{\widehat c}\nu\lVert f\rVert_{V'}\lVert v^{m+1}\rVert^2.
+\end{aligned}
+\label{eq:ch2-uzawa-error-energy}
+\end{equation}
+这里用了 \eqref{eq:ch2-algorithms-trilinear-continuity} 和 Chapter 2 的 \MBUnresolvedReference{equation}{(1.39)}. 在 \eqref{eq:ch2-uzawa-pressure-step} 中取 $q=q^{m+1}$, 得
+\begin{equation}
+|q^{m+1}|^2-|q^m|^2+|q^{m+1}-q^m|
+=-2\rho(\operatorname{div}v^{m+1},q^{m+1}).
+\label{eq:ch2-uzawa-pressure-energy}
+\end{equation}
+将 \eqref{eq:ch2-uzawa-error-energy} 中的最后一个不等式乘 $2\rho$, 再与 \eqref{eq:ch2-uzawa-pressure-energy} 相加, 得
+\begin{equation}
+\begin{aligned}
+|q^{m+1}|^2-|q^m|^2+|q^{m+1}-q^m|^2
+&+\left(\nu-\frac{\widehat c}\nu\lVert f\rVert_{V'}\right)
+\lVert v^{m+1}\rVert^2\\
+&\leq-2\rho(q^{m+1}-q^m,\operatorname{div}v^{m+1}).
+\end{aligned}
+\label{eq:ch2-uzawa-combined-energy}
+\end{equation}
+该不等式类似于 Chapter 1, Theorem 5.1 证明中的式 \MBUnresolvedReference{equation}{(5.12)}, 其中把 $\nu$ 换成 $\overline\nu$. 因而可完全按该定理完成证明.
+\end{Proof}
+
+\hypertarget{chapter-02-page-164}{}
+\MBSourceStatementNumber{remark}{1}
+\begin{Remark}
+\label{rem:ch2-uzawa-nonunique-averages}
+一般情形下不假设唯一性时, 可证明平均值
+\[
+\frac1N\sum_{m=1}^{N}u^m,
+\qquad
+\frac1N\sum_{m=1}^{N}p^m
+\]
+的弱收敛结果. 这些序列分别在 $H_0^1(\Omega)$ 和 $L^2(\Omega)$ 中有界, 每个弱收敛子序列都收敛于 Chapter 2 的 \MBUnresolvedReference{equations}{(1.8)--(1.11)} 的某个解偶 $\{u,p\}$.
+\end{Remark}
+
+\paragraph{Arrow--Hurwicz 算法.}
+构造如下定义的解偶序列 $\{u^m,p^m\}$.
+
+从任意元素开始:
+\begin{equation}
+u^0\in H_0^1(\Omega),
+\qquad p^0\in L^2(\Omega).
+\label{eq:ch2-arrow-hurwicz-initial-data}
+\end{equation}
+当 $p^m,u^m$ 已知时, 把 $p^{m+1},u^{m+1}$ 定义为下列问题的解:
+\begin{equation}
+\left\{
+\begin{aligned}
+&u^{m+1}\in H_0^1(\Omega),\\
+&((u^{m+1}-u^m,v))+\rho\nu((u^m,v))
++b(u^m,u^{m+1},v)-\rho(p^m,\operatorname{div}v)\\
+&\hspace{10em}=\rho(f,v),
+\qquad\forall v\in H_0^1(\Omega),
+\end{aligned}
+\right.
+\label{eq:ch2-arrow-hurwicz-velocity-step}
+\end{equation}
+\begin{equation}
+\left\{
+\begin{aligned}
+&p^{m+1}\in L^2(\Omega),\\
+&\alpha(p^{m+1}-p^m,q)+\rho(\operatorname{div}u^{m+1},q)=0,
+\qquad\forall q\in L^2(\Omega).
+\end{aligned}
+\right.
+\label{eq:ch2-arrow-hurwicz-pressure-step}
+\end{equation}
+假设 $\rho,\alpha$ 是两个严格正数; 稍后给出它们应满足的条件.
+
+由投影定理容易得到满足 \eqref{eq:ch2-arrow-hurwicz-velocity-step} 的 $u^{m+1}\in H_0^1(\Omega)$ 的存在唯一性; 该式是一个线性变分方程, 等价于 Dirichlet 问题
+\begin{equation}
+\left\{
+\begin{aligned}
+&u^{m+1}\in H_0^1(\Omega),\\
+&-\Delta u^{m+1}+\rho\sum_{i=1}^{n}u_i^mD_iu^{m+1}
++\frac\rho2(\operatorname{div}u^m)u^{m+1}\\
+&\hspace{5em}=-\Delta u^m+\rho\nu\Delta u^m+\rho\operatorname{grad}p^m+f.
+\end{aligned}
+\right.
+\label{eq:ch2-arrow-hurwicz-dirichlet-problem}
+\end{equation}
+于是 \eqref{eq:ch2-arrow-hurwicz-pressure-step} 显式给出
+\begin{equation}
+p^{m+1}=p^m-\frac\rho\alpha\operatorname{div}u^{m+1}\in L^2(\Omega).
+\label{eq:ch2-arrow-hurwicz-explicit-pressure}
+\end{equation}
+在比命题 \ref{prop:ch2-uzawa-convergence} 更强的条件下可证明收敛性.
+
+\MBSourceStatementNumber{proposition}{3}
+\begin{Proposition}
+\label{prop:ch2-arrow-hurwicz-convergence}
+假设 $n\leq4$,
+\begin{equation}
+\nu-\frac{2\widehat c}\nu\lVert f\rVert_{V'}
+-\frac{4\widehat c^2}{\nu^2}\lVert f\rVert_{V'}^2
+=\nu^*>0,
+\label{eq:ch2-arrow-hurwicz-coercivity-condition}
+\end{equation}
+并且
+\begin{equation}
+0<\rho<\frac{\alpha\nu^*}{2(1+\nu^2\alpha)}.
+\label{eq:ch2-arrow-hurwicz-step-condition}
+\end{equation}
+
+\hypertarget{chapter-02-page-165}{}
+则当 $m\to\infty$ 时,
+\begin{equation}
+u^m\longrightarrow u\quad\text{在 }H_0^1(\Omega)\text{ 的范数中},
+\label{eq:ch2-arrow-hurwicz-velocity-convergence}
+\end{equation}
+\begin{equation}
+p^m\longrightarrow p\quad\text{在 }L^2(\Omega)\text{ 中弱收敛},
+\label{eq:ch2-arrow-hurwicz-pressure-convergence}
+\end{equation}
+其中 $\{u,p\}$ 是满足 \eqref{eq:ch2-uzawa-pressure-normalization} 的 Chapter 2 的 \MBUnresolvedReference{equations}{(1.8)--(1.11)} 的唯一解.
+\end{Proposition}
+
+\begin{Proof}
+仍用记号 \eqref{eq:ch2-uzawa-error-variables}. 在 \eqref{eq:ch2-uzawa-exact-equation} 和 \eqref{eq:ch2-arrow-hurwicz-velocity-step} 中取 $v=2v^{m+1}$ 并相减, 得
+\begin{equation}
+\begin{aligned}
+&\lVert v^{m+1}\rVert^2-\lVert v^m\rVert^2
++\lVert v^{m+1}-v^m\rVert^2+2\rho\nu\lVert v^{m+1}\rVert^2\\
+&\quad=2\rho\nu((v^{m+1},v^{m+1}-v^m))
++2\rho(q^m,\operatorname{div}v^{m+1})\\
+&\qquad+2b(u^m,u^{m+1},v^{m+1})-2b(u,u,v^{m+1})\\
+&\quad\leq\frac14\lVert v^{m+1}-v^m\rVert^2
++4\rho^2\nu^2\lVert v^{m+1}\rVert^2
++2\rho(q^m,\operatorname{div}v^{m+1})\\
+&\qquad+2b(v^m-v^{m+1},u,v^{m+1})
++2b(v^{m+1},u,v^{m+1})\\
+&\quad\leq\frac14\lVert v^{m+1}-v^m\rVert^2
++4\rho^2\nu^2\lVert v^{m+1}\rVert^2
++2\rho(q^m,\operatorname{div}v^{m+1})\\
+&\qquad+\frac{2\widehat c}\nu\lVert f\rVert_{V'}
+\lVert v^{m+1}-v^m\rVert\lVert v^{m+1}\rVert
++\frac{2\widehat c}\nu\lVert f\rVert_{V'}\lVert v^{m+1}\rVert^2\\
+&\quad\leq\frac12\lVert v^{m+1}-v^m\rVert^2
++\left(4\rho^2\nu^2+\frac{4\widehat c^2}{\nu^2}\lVert f\rVert_{V'}^2
++\frac{2\widehat c}\nu\lVert f\rVert_{V'}\right)\lVert v^{m+1}\rVert^2\\
+&\qquad+2\rho(q^m,\operatorname{div}v^{m+1}).
+\end{aligned}
+\label{eq:ch2-arrow-hurwicz-velocity-energy}
+\end{equation}
+这里使用了 \eqref{eq:ch2-algorithms-trilinear-continuity} 和 Chapter 2 的 \MBUnresolvedReference{equation}{(1.39)}. 在 \eqref{eq:ch2-arrow-hurwicz-pressure-step} 中取 $q=2q^{m+1}$:
+\begin{equation}
+\begin{aligned}
+\alpha|q^{m+1}|^2-\alpha|q^m|^2
+&=2\rho(q^{m+1},\operatorname{div}v^{m+1})\\
+&=-2\rho(q^m,\operatorname{div}v^{m+1})
+-2\rho(q^{m+1}-q^m,\operatorname{div}v^{m+1})\\
+&\leq-2\rho(q^m,\operatorname{div}v^{m+1})
++2\rho|q^{m+1}-q^m|\lVert v^{m+1}\rVert\\
+&\leq\frac\alpha2|q^{m+1}-q^m|^2
++\frac{2\rho^2n}{\alpha}\lVert v^{m+1}\rVert^2
+-2\rho(q^m,\operatorname{div}v^{m+1}).
+\end{aligned}
+\label{eq:ch2-arrow-hurwicz-pressure-energy}
+\end{equation}
+这里使用 Chapter 1 的 \MBUnresolvedReference{equations}{(5.13), (5.25), and (5.26)}. 将 \eqref{eq:ch2-arrow-hurwicz-velocity-energy} 与 \eqref{eq:ch2-arrow-hurwicz-pressure-energy} 的最后不等式相加, 得
+\begin{equation}
+\begin{aligned}
+&\alpha|q^{m+1}|^2-\alpha|q^m|^2
++\frac12|q^{m+1}-q^m|^2
++\lVert v^{m+1}\rVert^2-\lVert v^m\rVert^2\\
+&\quad+\frac12\lVert v^{m+1}-v^m\rVert^2\\
+&\quad+2\rho\left(\nu-\frac{2\widehat c}\nu\lVert f\rVert_{V'}
+-\frac{4\widehat c^2}{\nu^2}\lVert f\rVert_{V'}^2
+-2\rho\nu^2-\frac{2\rho}\alpha\right)
+\lVert v^{m+1}\rVert^2\leq0.
+\end{aligned}
+\label{eq:ch2-arrow-hurwicz-combined-energy}
+\end{equation}
+条件 \eqref{eq:ch2-arrow-hurwicz-coercivity-condition}--\eqref{eq:ch2-arrow-hurwicz-step-condition} 保证原文所称式 \MBUnresolvedReference{equation}{(1.132)} 中 $\lVert v^{m+1}\rVert^2$ 的系数严格为正; 该不等式于是类似于 Chapter 1, Theorem 5.2 证明中的式 \MBUnresolvedReference{equation}{(5.27)}, 可按该定理完成证明.
+\end{Proof}
