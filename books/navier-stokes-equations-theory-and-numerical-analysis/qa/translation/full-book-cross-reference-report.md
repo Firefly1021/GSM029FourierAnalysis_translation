@@ -1,0 +1,353 @@
+# full-book cross-reference report
+
+- Files checked: 29
+- Chapter/batch labels: 2399 (2399 unique)
+- Project-wide unique labels: 2399
+- LaTeX reference commands: 2975
+- Explicit unresolved source references: 323
+- Duplicate labels: 0
+- Undefined local labels: 0
+- Incorrect equation/non-equation reference commands: 0
+- Registry: `qa/translation/full-book-cross-reference-registry.tsv`
+
+## Duplicate labels
+
+- None.
+
+## Undefined local labels
+
+- None.
+
+## Reference-command mismatches
+
+- None.
+
+## Explicitly unresolved source references
+
+- `appendix` `Appendix III` at `tex/frontmatter.tex:75`
+- `appendix` `Appendix III` at `tex/frontmatter.tex:77`
+- `source-note` `Proposition 1.1.1 前的脚注` at `tex/frontmatter.tex:79`
+- `remark` `Remark 1.2.7` at `tex/frontmatter.tex:79`
+- `remark` `Remark 2.1.6(iii)` at `tex/frontmatter.tex:79`
+- `appendix` `Appendix III` at `tex/frontmatter.tex:79`
+- `appendix-introduction` `Appendix III 的 Introduction` at `tex/frontmatter.tex:83`
+- `comments` `修订版补充评论, printed page 381` at `tex/frontmatter.tex:99`
+- `chapter` `Chapter 1` at `tex/frontmatter.tex:113`
+- `chapter` `Chapter 2` at `tex/frontmatter.tex:113`
+- `chapter` `Chapter 3` at `tex/frontmatter.tex:113`
+- `chapter` `Chapter 1` at `tex/frontmatter.tex:115`
+- `chapter` `Chapter 2` at `tex/frontmatter.tex:115`
+- `chapter` `Chapter 3` at `tex/frontmatter.tex:115`
+- `chapter` `Chapter 2` at `tex/frontmatter.tex:117`
+- `chapter` `Chapter 3` at `tex/frontmatter.tex:119`
+- `chapter` `Chapter 1` at `tex/frontmatter.tex:119`
+- `theorem` `Theorem 1.5` at `tex/chapters/appendix-01.tex:11`
+- `equation` `(1.3)` at `tex/chapters/appendix-01.tex:19`
+- `theorem` `Theorem 1.5` at `tex/chapters/appendix-01.tex:47`
+- `equation` `(1.41)` at `tex/chapters/appendix-01.tex:52`
+- `equation` `(1.42)` at `tex/chapters/appendix-01.tex:52`
+- `equation` `(1.34)` at `tex/chapters/appendix-01.tex:68`
+- `theorem` `Theorem 2.2` at `tex/chapters/appendix-01.tex:159`
+- `equation` `(1.19)` at `tex/chapters/appendix-01.tex:208`
+- `theorem` `Theorem 1.5` at `tex/chapters/appendix-01.tex:252`
+- `remark` `Remark 1.6` at `tex/chapters/appendix-01.tex:252`
+- `equation` `(1.44)` at `tex/chapters/appendix-01.tex:275`
+- `theorem` `Theorem 1.5` at `tex/chapters/appendix-01.tex:515`
+- `equation` `(1.62)` at `tex/chapters/appendix-01.tex:526`
+- `equation` `(1.64)` at `tex/chapters/appendix-01.tex:526`
+- `theorem` `Theorem 1.5` at `tex/chapters/appendix-01.tex:530`
+- `equation` `(1.65)` at `tex/chapters/appendix-01.tex:530`
+- `equation` `(1.66)` at `tex/chapters/appendix-01.tex:530`
+- `theorem` `Theorem 2.4` at `tex/chapters/appendix-01.tex:543`
+- `equation` `(2.49)` at `tex/chapters/appendix-01.tex:549`
+- `remark` `Remark 1.6` at `tex/chapters/appendix-01.tex:560`
+- `proposition` `Proposition 1.1` at `tex/chapters/appendix-01.tex:560`
+- `equation` `(1.62)` at `tex/chapters/appendix-01.tex:566`
+- `equation` `(1.64)` at `tex/chapters/appendix-01.tex:566`
+- `theorem` `Theorem 1.5` at `tex/chapters/appendix-01.tex:601`
+- `theorem` `Theorem 1.5` at `tex/chapters/appendix-01.tex:610`
+- `equation` `(1.85)` at `tex/chapters/appendix-01.tex:610`
+- `equation` `(4.209)` at `tex/chapters/appendix-02.tex:460`
+- `equation` `(3.78)` at `tex/chapters/appendix-02.tex:540`
+- `equation` `(3.80)` at `tex/chapters/appendix-02.tex:541`
+- `equation` `(3.93)` at `tex/chapters/appendix-02.tex:542`
+- `equation` `(3.107)` at `tex/chapters/appendix-02.tex:546`
+- `equation` `(3.108)` at `tex/chapters/appendix-02.tex:547`
+- `equation` `(3.122)` at `tex/chapters/appendix-02.tex:564`
+- `equation` `(3.123)` at `tex/chapters/appendix-02.tex:565`
+- `appendix` `I` at `tex/chapters/chapter-01/section-01.tex:678`
+- `theorem` `3.1` at `tex/chapters/chapter-01/section-02.tex:282`
+- `chapter` `2` at `tex/chapters/chapter-01/section-02.tex:398`
+- `chapter-section` `Chapter 2, \S1` at `tex/chapters/chapter-01/section-02.tex:836`
+- `chapter` `Chapter 2` at `tex/chapters/chapter-01/section-04.tex:2437`
+- `chapter` `Chapter 2` at `tex/chapters/chapter-01/section-04.tex:2723`
+- `subsection` `5.4` at `tex/chapters/chapter-01/section-05.tex:10`
+- `chapter` `Chapter III` at `tex/chapters/chapter-01/section-05.tex:486`
+- `section` `Chapter 2, Section 2` at `tex/chapters/chapter-02/section-01.tex:15`
+- `section` `Chapter 2, Section 3` at `tex/chapters/chapter-02/section-01.tex:15`
+- `section` `Chapter 2, Section 4` at `tex/chapters/chapter-02/section-01.tex:15`
+- `citation` `Lions [1]` at `tex/chapters/chapter-02/section-01.tex:475`
+- `section` `Chapter 2, Section 4` at `tex/chapters/chapter-02/section-01.tex:516`
+- `appendix` `Appendix I` at `tex/chapters/chapter-02/section-01.tex:1040`
+- `citation` `Rabinowitz [2]` at `tex/chapters/chapter-02/section-01.tex:1148`
+- `citation` `Velte [1, 2]` at `tex/chapters/chapter-02/section-01.tex:1148`
+- `section` `Chapter 2, Section 4` at `tex/chapters/chapter-02/section-01.tex:1148`
+- `citation` `E. Gagliardo [1] and Lions [1]` at `tex/chapters/chapter-02/section-02.tex:146`
+- `lemma` `Chapter 3, Lemma 3.3` at `tex/chapters/chapter-02/section-02.tex:178`
+- `citation` `M. Riesz [1]` at `tex/chapters/chapter-02/section-02.tex:300`
+- `chapter` `Chapter 3` at `tex/chapters/chapter-02/section-02.tex:632`
+- `equations` `(4.42), (4.43)` at `tex/chapters/chapter-02/section-02.tex:762`
+- `citation` `Ciarlet and Raviart [1], Theorem 5, p. 196` at `tex/chapters/chapter-02/section-02.tex:762`
+- `section` `Chapter 1, Section 5` at `tex/chapters/chapter-02/section-03.tex:5`
+- `sections` `Chapter 1, Sections 3, 4, and 5` at `tex/chapters/chapter-02/section-03.tex:7`
+- `approximations` `Chapter 1, (APX1)--(APX5)` at `tex/chapters/chapter-02/section-03.tex:19`
+- `equation` `(1.29)` at `tex/chapters/chapter-02/section-03.tex:99`
+- `equation` `(2.4)` at `tex/chapters/chapter-02/section-03.tex:198`
+- `proposition` `Chapter 1, Proposition 3.1` at `tex/chapters/chapter-02/section-03.tex:224`
+- `results` `Chapter 1, Lemma 3.1 and Proposition 3.5` at `tex/chapters/chapter-02/section-03.tex:313`
+- `section` `Chapter 1, Section 4.2` at `tex/chapters/chapter-02/section-03.tex:465`
+- `proposition` `Chapter 1, Proposition 4.3 and equation (4.63)` at `tex/chapters/chapter-02/section-03.tex:517`
+- `equation` `(1.18)` at `tex/chapters/chapter-02/section-03.tex:555`
+- `equation` `(1.18)` at `tex/chapters/chapter-02/section-03.tex:677`
+- `equation` `(1.18)` at `tex/chapters/chapter-02/section-03.tex:703`
+- `theorem` `Chapter 1, Compactness Theorem 4.2` at `tex/chapters/chapter-02/section-03.tex:756`
+- `propositions` `Chapter 1, Propositions 4.12 and 4.15` at `tex/chapters/chapter-02/section-03.tex:761`
+- `equations` `(1.8)--(1.10)` at `tex/chapters/chapter-02/section-03.tex:817`
+- `proposition` `Chapter 1, Proposition 4.16` at `tex/chapters/chapter-02/section-03.tex:854`
+- `equations` `(1.18), (3.65)` at `tex/chapters/chapter-02/section-03.tex:878`
+- `section` `Chapter 1, Section 5` at `tex/chapters/chapter-02/section-03.tex:930`
+- `equations` `(1.8)--(1.11)` at `tex/chapters/chapter-02/section-03.tex:954`
+- `equations` `(1.8)--(1.11)` at `tex/chapters/chapter-02/section-03.tex:1015`
+- `equations` `(1.8)--(1.11)` at `tex/chapters/chapter-02/section-03.tex:1038`
+- `theorem` `Chapter 1, Theorem 5.1` at `tex/chapters/chapter-02/section-03.tex:1049`
+- `equation` `(1.39)` at `tex/chapters/chapter-02/section-03.tex:1074`
+- `equation` `(5.12)` at `tex/chapters/chapter-02/section-03.tex:1090`
+- `equations` `(1.8)--(1.11)` at `tex/chapters/chapter-02/section-03.tex:1103`
+- `equations` `(1.8)--(1.11)` at `tex/chapters/chapter-02/section-03.tex:1184`
+- `equation` `(1.39)` at `tex/chapters/chapter-02/section-03.tex:1214`
+- `equations` `(5.13), (5.25), and (5.26)` at `tex/chapters/chapter-02/section-03.tex:1229`
+- `equation` `(1.132)` at `tex/chapters/chapter-02/section-03.tex:1243`
+- `equation` `(5.27)` at `tex/chapters/chapter-02/section-03.tex:1243`
+- `citation` `V.I. Yudovich [1, 2]` at `tex/chapters/chapter-02/section-04.tex:5`
+- `citation` `P. Rabinowitz [2]` at `tex/chapters/chapter-02/section-04.tex:5`
+- `citation` `W. Velte [1, 2]` at `tex/chapters/chapter-02/section-04.tex:5`
+- `citation` `W. Velte [2]` at `tex/chapters/chapter-02/section-04.tex:7`
+- `subsection` `Subsection 4.1` at `tex/chapters/chapter-02/section-04.tex:7`
+- `subsection` `Subsection 4.2` at `tex/chapters/chapter-02/section-04.tex:7`
+- `subsection` `Subsection 4.3` at `tex/chapters/chapter-02/section-04.tex:7`
+- `citation` `Agmon--Douglis--Nirenberg [1]` at `tex/chapters/chapter-02/section-04.tex:243`
+- `citation` `S. Karlin [1]` at `tex/chapters/chapter-02/section-04.tex:570`
+- `citation` `K. Kirchgässner [1]` at `tex/chapters/chapter-02/section-04.tex:570`
+- `citation` `Witting [1]` at `tex/chapters/chapter-02/section-04.tex:625`
+- `citation` `Krein--Rutman [1]` at `tex/chapters/chapter-02/section-04.tex:625`
+- `citation` `R.S. Varga [1]` at `tex/chapters/chapter-02/section-04.tex:625`
+- `citation` `J. Leray and J. Schauder [1]` at `tex/chapters/chapter-02/section-04.tex:815`
+- `citation` `M. A. Krasnoselskii [1]` at `tex/chapters/chapter-02/section-04.tex:815`
+- `citation` `L. Nirenberg [1]` at `tex/chapters/chapter-02/section-04.tex:815`
+- `citation` `P. Rabinowitz [4]` at `tex/chapters/chapter-02/section-04.tex:815`
+- `citation` `V.I. Yudovich [2]` at `tex/chapters/chapter-02/section-04.tex:970`
+- `citation` `Rabinowitz [1]` at `tex/chapters/chapter-02/section-04.tex:970`
+- `citation` `Velte [1]` at `tex/chapters/chapter-02/section-04.tex:970`
+- `citation` `Rabinowitz [5]` at `tex/chapters/chapter-02/section-04.tex:972`
+- `section` `Section 3` at `tex/chapters/chapter-03/section-01.tex:5`
+- `citation` `J. Leray [1, 2, 3]` at `tex/chapters/chapter-03/section-01.tex:5`
+- `citation` `E. Höpf [2]` at `tex/chapters/chapter-03/section-01.tex:5`
+- `section` `Section 4` at `tex/chapters/chapter-03/section-01.tex:5`
+- `citation` `Lions--Magenes [1]` at `tex/chapters/chapter-03/section-01.tex:568`
+- `citation` `Lions--Magenes [1]` at `tex/chapters/chapter-03/section-01.tex:586`
+- `citation` `Lions--Magenes [1]` at `tex/chapters/chapter-03/section-01.tex:772`
+- `propositions` `Propositions 1.1.1 and 1.1.2` at `tex/chapters/chapter-03/section-01.tex:905`
+- `remark` `Remark 1.1.4(ii)` at `tex/chapters/chapter-03/section-01.tex:910`
+- `theorem` `Theorem 1.2.4` at `tex/chapters/chapter-03/section-01.tex:1014`
+- `equation` `Chapter 1, (2.40)` at `tex/chapters/chapter-03/section-01.tex:1030`
+- `citation` `J. Leray [1, 2, 3]` at `tex/chapters/chapter-03/section-03.tex:4`
+- `citation` `J. Leray [1, 2, 3]` at `tex/chapters/chapter-03/section-03.tex:65`
+- `lemma` `Lemma 2.1` at `tex/chapters/chapter-03/section-03.tex:563`
+- `theorem` `Theorem 4.1` at `tex/chapters/chapter-03/section-03.tex:568`
+- `citation` `J.L. Lions and G. Prodi [1]` at `tex/chapters/chapter-03/section-03.tex:689`
+- `citation` `Lions [2, p. 84]` at `tex/chapters/chapter-03/section-03.tex:954`
+- `proposition` `Proposition 1.2.2` at `tex/chapters/chapter-03/section-03.tex:1148`
+- `proposition` `Proposition 1.2.2` at `tex/chapters/chapter-03/section-03.tex:1165`
+- `proposition` `Proposition 1.2.2` at `tex/chapters/chapter-03/section-03.tex:1175`
+- `proposition` `Proposition 1.2.2` at `tex/chapters/chapter-03/section-03.tex:1182`
+- `proposition` `Proposition 2.1.1` at `tex/chapters/chapter-03/section-03.tex:1182`
+- `proposition` `Proposition 1.2.2` at `tex/chapters/chapter-03/section-03.tex:1362`
+- `proposition` `Proposition 1.2.2` at `tex/chapters/chapter-03/section-03.tex:1364`
+- `proposition` `Proposition 1.2.2` at `tex/chapters/chapter-03/section-03.tex:1379`
+- `proposition` `Proposition 1.2.2` at `tex/chapters/chapter-03/section-03.tex:1397`
+- `proposition` `Proposition 1.1.1` at `tex/chapters/chapter-03/section-03.tex:1437`
+- `proposition` `Proposition 1.1.2` at `tex/chapters/chapter-03/section-03.tex:1437`
+- `remark` `Remark 1.1.4` at `tex/chapters/chapter-03/section-03.tex:1446`
+- `proposition` `Proposition 1.2.2` at `tex/chapters/chapter-03/section-03.tex:1467`
+- `citation` `Serrin [3]` at `tex/chapters/chapter-03/section-03.tex:1536`
+- `proposition` `Proposition 1.2.2` at `tex/chapters/chapter-03/section-03.tex:1703`
+- `equation` `Chapter 1, (2.64)` at `tex/chapters/chapter-03/section-03.tex:1807`
+- `section` `Section 4.3` at `tex/chapters/chapter-03/section-04.tex:217`
+- `theorem` `Theorem 2.1.2` at `tex/chapters/chapter-03/section-04.tex:227`
+- `lemma` `Lemma 1.4` at `tex/chapters/chapter-03/section-04.tex:227`
+- `subsection` `5.5` at `tex/chapters/chapter-03/section-05.tex:18`
+- `subsection` `5.6` at `tex/chapters/chapter-03/section-05.tex:18`
+- `section` `Section 6` at `tex/chapters/chapter-03/section-05.tex:20`
+- `sections` `Sections 7 and 8` at `tex/chapters/chapter-03/section-05.tex:20`
+- `problem` `Problem 3.2` at `tex/chapters/chapter-03/section-05.tex:38`
+- `theorem` `Theorem 1.2.2` at `tex/chapters/chapter-03/section-05.tex:159`
+- `section` `Section 6` at `tex/chapters/chapter-03/section-05.tex:174`
+- `theorem` `Theorem 1.3.1` at `tex/chapters/chapter-03/section-05.tex:459`
+- `proposition` `Proposition 1.3.1` at `tex/chapters/chapter-03/section-05.tex:459`
+- `equation` `(3.13)` at `tex/chapters/chapter-03/section-05.tex:566`
+- `problem` `Problem 3.1` at `tex/chapters/chapter-03/section-05.tex:596`
+- `subsection` `Subsection 5.4.3` at `tex/chapters/chapter-03/section-05.tex:669`
+- `remark` `Remark 5.2` at `tex/chapters/chapter-03/section-05.tex:863`
+- `subsection` `5.7` at `tex/chapters/chapter-03/section-05.tex:908`
+- `definition` `Definition 1.3.6` at `tex/chapters/chapter-03/section-05.tex:1079`
+- `lemma` `Lemma 5.6` at `tex/chapters/chapter-03/section-05.tex:1106`
+- `problem` `Problem 3.1` at `tex/chapters/chapter-03/section-05.tex:1211`
+- `problem` `Problem 3.1` at `tex/chapters/chapter-03/section-05.tex:1281`
+- `problem` `Problem 3.1` at `tex/chapters/chapter-03/section-05.tex:1283`
+- `problem` `Problem 3.1` at `tex/chapters/chapter-03/section-05.tex:1290`
+- `problem` `Problem 3.1` at `tex/chapters/chapter-03/section-05.tex:1367`
+- `problem` `Problem 3.1` at `tex/chapters/chapter-03/section-05.tex:1372`
+- `equation` `(3.43)` at `tex/chapters/chapter-03/section-05.tex:1423`
+- `problem` `Problem 3.1` at `tex/chapters/chapter-03/section-05.tex:1423`
+- `problem` `Problem 3.1` at `tex/chapters/chapter-03/section-05.tex:1425`
+- `proposition` `Proposition 1.3.3` at `tex/chapters/chapter-03/section-06.tex:16`
+- `section` `Section 3` at `tex/chapters/chapter-03/section-06.tex:50`
+- `equations` `(3.27)--(3.29)` at `tex/chapters/chapter-03/section-06.tex:50`
+- `proposition` `Proposition 2.2.1` at `tex/chapters/chapter-03/section-06.tex:89`
+- `equations` `2.(2.12) and 2.(2.13)` at `tex/chapters/chapter-03/section-06.tex:89`
+- `lemma` `Lemma 3.1` at `tex/chapters/chapter-03/section-06.tex:227`
+- `lemma` `Lemma 2.3.2` at `tex/chapters/chapter-03/section-06.tex:250`
+- `theorem` `Theorem 2.2` at `tex/chapters/chapter-03/section-06.tex:314`
+- `theorem` `Theorem 2.2.2` at `tex/chapters/chapter-03/section-06.tex:362`
+- `remark` `Remark 2.2.4` at `tex/chapters/chapter-03/section-06.tex:362`
+- `equation` `(1.9)` at `tex/chapters/chapter-03/section-06.tex:378`
+- `equation` `(4.19)` at `tex/chapters/chapter-03/section-06.tex:394`
+- `section` `Section 3` at `tex/chapters/chapter-03/section-06.tex:450`
+- `equation` `(3.55)` at `tex/chapters/chapter-03/section-06.tex:450`
+- `lemma` `Lemma 3.4` at `tex/chapters/chapter-03/section-06.tex:488`
+- `lemma` `Lemma 3.5` at `tex/chapters/chapter-03/section-06.tex:493`
+- `equation` `(3.67)` at `tex/chapters/chapter-03/section-06.tex:501`
+- `theorem` `Theorem 2.2` at `tex/chapters/chapter-03/section-06.tex:596`
+- `proposition` `Proposition 1.4.13` at `tex/chapters/chapter-03/section-06.tex:604`
+- `equation` `(4.179)` at `tex/chapters/chapter-03/section-06.tex:609`
+- `equation` `(4.21)` at `tex/chapters/chapter-03/section-06.tex:609`
+- `equation` `(4.20)` at `tex/chapters/chapter-03/section-06.tex:619`
+- `subsection` `Section 3.2` at `tex/chapters/chapter-03/section-06.tex:643`
+- `equations` `(3.80)--(3.82)` at `tex/chapters/chapter-03/section-06.tex:643`
+- `theorem` `Theorem 2.2.3` at `tex/chapters/chapter-03/section-06.tex:695`
+- `remark` `Remark 2.2.6` at `tex/chapters/chapter-03/section-06.tex:695`
+- `equation` `(2.48)` at `tex/chapters/chapter-03/section-06.tex:701`
+- `section` `Section 5` at `tex/chapters/chapter-03/section-06.tex:794`
+- `problems` `(5.12)--(5.15)` at `tex/chapters/chapter-03/section-06.tex:794`
+- `sections` `Sections 3 and 4` at `tex/chapters/chapter-03/section-06.tex:797`
+- `subsection` `Subsection 3.3` at `tex/chapters/chapter-03/section-06.tex:823`
+- `subsections` `Subsections 5.1 and 5.3` at `tex/chapters/chapter-03/section-06.tex:886`
+- `theorem` `Theorem 1.5.2` at `tex/chapters/chapter-03/section-06.tex:1109`
+- `scheme` `Scheme 5.1` at `tex/chapters/chapter-03/section-07.tex:16`
+- `problem` `Problem 3.1` at `tex/chapters/chapter-03/section-07.tex:70`
+- `problem` `Problem 3.2` at `tex/chapters/chapter-03/section-07.tex:70`
+- `theorem` `Theorem 1.2` at `tex/chapters/chapter-03/section-07.tex:121`
+- `equation` `(5.29)` at `tex/chapters/chapter-03/section-07.tex:247`
+- `lemma` `Lemma 4.8` at `tex/chapters/chapter-03/section-07.tex:303`
+- `theorem` `Theorems 1.1.4 and 1.1.6` at `tex/chapters/chapter-03/section-07.tex:346`
+- `theorem` `Theorem 2.2` at `tex/chapters/chapter-03/section-07.tex:398`
+- `problem` `Problem 3.1` at `tex/chapters/chapter-03/section-07.tex:409`
+- `problem` `Problem 3.1` at `tex/chapters/chapter-03/section-07.tex:442`
+- `problem` `Problem 3.1` at `tex/chapters/chapter-03/section-07.tex:444`
+- `remark` `Remark 1.1.6` at `tex/chapters/chapter-03/section-07.tex:510`
+- `proposition` `Proposition 2.1` at `tex/chapters/chapter-03/section-07.tex:516`
+- `proposition` `Proposition 2.1` at `tex/chapters/chapter-03/section-07.tex:522`
+- `lemma` `Lemma 2.1` at `tex/chapters/chapter-03/section-07.tex:528`
+- `lemma` `Lemma 2.1.3` at `tex/chapters/chapter-03/section-07.tex:594`
+- `lemma` `Lemma 4.9` at `tex/chapters/chapter-03/section-07.tex:600`
+- `equation` `(3.43)` at `tex/chapters/chapter-03/section-07.tex:614`
+- `problem` `Problem 3.1` at `tex/chapters/chapter-03/section-07.tex:614`
+- `problem` `Problem 3.1` at `tex/chapters/chapter-03/section-07.tex:616`
+- `equation` `(3.13)` at `tex/chapters/chapter-03/section-07.tex:647`
+- `equation` `(4.55)` at `tex/chapters/chapter-03/section-07.tex:705`
+- `proposition` `Proposition 1.3.3` at `tex/chapters/chapter-03/section-07.tex:735`
+- `theorem` `Theorem 1.2.2` at `tex/chapters/chapter-03/section-07.tex:825`
+- `equations` `(3.71)--(3.72)` at `tex/chapters/chapter-03/section-07.tex:870`
+- `section` `Section 5` at `tex/chapters/chapter-03/section-07.tex:919`
+- `subsection` `Subsection 6.3` at `tex/chapters/chapter-03/section-07.tex:919`
+- `equation` `(5.29)` at `tex/chapters/chapter-03/section-07.tex:995`
+- `lemma` `Lemma 4.8` at `tex/chapters/chapter-03/section-07.tex:1062`
+- `equation` `(2.15)` at `tex/chapters/chapter-03/section-07.tex:1215`
+- `problem` `Problem 3.1` at `tex/chapters/chapter-03/section-07.tex:1449`
+- `problem` `Problem 3.1` at `tex/chapters/chapter-03/section-07.tex:1471`
+- `lemma` `Lemma 5.6` at `tex/chapters/chapter-03/section-07.tex:1514`
+- `problem` `Problem 3.1` at `tex/chapters/chapter-03/section-07.tex:1535`
+- `subsection` `Subsection 6.1.3` at `tex/chapters/chapter-03/section-07.tex:1546`
+- `problem` `Problem 3.1` at `tex/chapters/chapter-03/section-07.tex:1558`
+- `problem` `Problem 3.1` at `tex/chapters/chapter-03/section-07.tex:1560`
+- `lemma` `Lemmas 5.11` at `tex/chapters/chapter-03/section-07.tex:1562`
+- `problem` `Problem 3.1` at `tex/chapters/chapter-03/section-08.tex:42`
+- `problem` `Problem 3.1` at `tex/chapters/chapter-03/section-08.tex:81`
+- `equation` `(3.5)` at `tex/chapters/chapter-03/section-08.tex:87`
+- `equation` `(1.6)` at `tex/chapters/chapter-03/section-08.tex:174`
+- `equation` `(1.8)` at `tex/chapters/chapter-03/section-08.tex:174`
+- `lemma` `Lemma 1.1` at `tex/chapters/chapter-03/section-08.tex:186`
+- `lemma` `Lemma 1.1` at `tex/chapters/chapter-03/section-08.tex:192`
+- `lemma` `Lemma 1.1` at `tex/chapters/chapter-03/section-08.tex:227`
+- `problem` `Problems 3.1 and 3.2` at `tex/chapters/chapter-03/section-08.tex:230`
+- `theorem` `Theorem 2.2` at `tex/chapters/chapter-03/section-08.tex:496`
+- `theorem` `Theorem 2.1` at `tex/chapters/chapter-03/section-08.tex:514`
+- `equation` `(3.43)` at `tex/chapters/chapter-03/section-08.tex:556`
+- `lemma` `Lemma 3.3` at `tex/chapters/chapter-03/section-08.tex:632`
+- `lemma` `Lemma 1.2` at `tex/chapters/chapter-03/section-08.tex:721`
+- `problem` `Problem 3.1` at `tex/chapters/chapter-03/section-08.tex:805`
+- `problem` `Problem 3.1` at `tex/chapters/chapter-03/section-08.tex:839`
+- `problem` `Problem 3.1` at `tex/chapters/chapter-03/section-08.tex:841`
+- `theorem` `Theorem 2.1` at `tex/chapters/chapter-03/section-08.tex:860`
+- `equation` `(3.43)` at `tex/chapters/chapter-03/section-08.tex:917`
+- `problem` `Problem 3.1` at `tex/chapters/chapter-03/section-08.tex:917`
+- `problem` `Problem 3.1` at `tex/chapters/chapter-03/section-08.tex:919`
+- `equation` `(3.129)` at `tex/chapters/chapter-03/section-08.tex:944`
+- `subsection` `Section 7.2` at `tex/chapters/chapter-03/section-08.tex:955`
+- `subsection` `Subsection 7.2.1` at `tex/chapters/chapter-03/section-08.tex:960`
+- `equation` `(7.73)` at `tex/chapters/chapter-03/section-08.tex:980`
+- `equation` `(7.72)` at `tex/chapters/chapter-03/section-08.tex:1035`
+- `remark` `Remark 7.3` at `tex/chapters/chapter-03/section-08.tex:1041`
+- `remark` `Remark 7.3` at `tex/chapters/chapter-03/section-08.tex:1069`
+- `subsection` `Section 7.2` at `tex/chapters/chapter-03/section-08.tex:1075`
+- `equation` `(7.72)` at `tex/chapters/chapter-03/section-08.tex:1116`
+- `equation` `(9.94)` at `tex/chapters/chapter-03/section-08.tex:1152`
+- `equation` `(8.53)` at `tex/chapters/chapter-03/section-08.tex:1166`
+- `equation` `(5.29)` at `tex/chapters/chapter-03/section-08.tex:1166`
+- `lemma` `Lemma 7.3` at `tex/chapters/chapter-03/section-08.tex:1222`
+- `remark` `Remark 7.6` at `tex/chapters/chapter-03/section-08.tex:1222`
+- `lemma` `Lemmas 7.11 and 7.12` at `tex/chapters/chapter-03/section-08.tex:1279`
+- `subsection` `Sections 7.3.1 and 7.3.2` at `tex/chapters/chapter-03/section-08.tex:1279`
+- `equation` `(7.102)` at `tex/chapters/chapter-03/section-08.tex:1350`
+- `equation` `(7.104)` at `tex/chapters/chapter-03/section-08.tex:1350`
+- `equation` `(7.107)` at `tex/chapters/chapter-03/section-08.tex:1350`
+- `lemma` `Lemmas 7.11 and 7.12` at `tex/chapters/chapter-03/section-08.tex:1408`
+- `equation` `(7.110)` at `tex/chapters/chapter-03/section-08.tex:1408`
+- `equation` `(7.107)` at `tex/chapters/chapter-03/section-08.tex:1408`
+- `problem` `Problem 3.1` at `tex/chapters/chapter-03/section-08.tex:1457`
+- `problem` `Problem 3.1` at `tex/chapters/chapter-03/section-08.tex:1477`
+- `problem` `Problem 3.1` at `tex/chapters/chapter-03/section-08.tex:1484`
+- `lemma` `Lemma 5.6` at `tex/chapters/chapter-03/section-08.tex:1565`
+- `problem` `Problem 3.1` at `tex/chapters/chapter-03/section-08.tex:1635`
+- `equation` `(5.92)` at `tex/chapters/chapter-03/section-08.tex:1644`
+- `subsection` `Subsection 6.1.3` at `tex/chapters/chapter-03/section-08.tex:1644`
+- `equation` `(3.43)` at `tex/chapters/chapter-03/section-08.tex:1711`
+- `problem` `Problem 3.1` at `tex/chapters/chapter-03/section-08.tex:1711`
+- `problem` `Problem 3.1` at `tex/chapters/chapter-03/section-08.tex:1713`
+- `scheme` `5.1` at `tex/chapters/sample.tex:7`
+- `scheme` `5.2` at `tex/chapters/sample.tex:7`
+- `scheme` `5.1` at `tex/chapters/sample.tex:12`
+- `equation` `(5.12)` at `tex/chapters/sample.tex:17`
+- `equation` `(5.12)` at `tex/chapters/sample.tex:38`
+- `equation` `(5.6)` at `tex/chapters/sample.tex:38`
+- `equation` `(5.4)` at `tex/chapters/sample.tex:51`
+- `lemma` `引理 4.5` at `tex/chapters/sample.tex:73`
+- `equation` `(5.11)` at `tex/chapters/sample.tex:79`
+- `scheme` `5.2` at `tex/chapters/sample.tex:96`
+- `equation` `(5.13)` at `tex/chapters/sample.tex:101`
+- `equation` `(5.13)` at `tex/chapters/sample.tex:116`
+- `equation` `(5.6)` at `tex/chapters/sample.tex:116`
+
+## Result
+
+Pass for all determinable local references; unresolved source citations and forward references remain explicit and are not guessed.
