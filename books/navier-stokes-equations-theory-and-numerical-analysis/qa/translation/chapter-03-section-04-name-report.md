@@ -1,11 +1,18 @@
 # chapter-03-section-04 personal-name report
 
-- Source range checked: PDF 231--238.
-- Newly registered natural-person forms: 0.
-- Previously registered exact forms reused: `Hölder`, `Sobolev`, `Schwarz`, and `Galerkin`.
-- Missing exact forms: 0.
-- Duplicate in-range registry entries: 0.
+- Registered names first occurring in source range: 0
+- Exact canonical forms found: 0
+- Missing exact forms: 0
+- Duplicate in-range registry entries: 0
+
+## Missing forms
+
+- None.
+
+## Duplicate registry entries
+
+- None.
 
 ## Result
 
-Pass: every eponym is preserved exactly and only its ordinary mathematical noun is translated.
+Pass: every in-range registered name is present byte-for-byte in the translated chapter.

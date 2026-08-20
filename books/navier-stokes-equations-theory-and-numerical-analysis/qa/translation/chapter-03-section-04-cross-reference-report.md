@@ -1,8 +1,8 @@
 # chapter-03-section-04 cross-reference report
 
 - Files checked: 1
-- Batch labels: 70 (70 unique)
-- LaTeX reference commands: 72
+- Batch labels: 73 (73 unique)
+- LaTeX reference commands: 76
 - Explicit unresolved source references: 3
 - Duplicate labels: 0
 - Undefined local labels: 0

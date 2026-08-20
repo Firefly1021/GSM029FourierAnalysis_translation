@@ -1,9 +1,9 @@
 # chapter-03 cross-reference report
 
 - Files checked: 5
-- Chapter/batch labels: 459 (459 unique)
-- Project-wide unique labels: 1621
-- LaTeX reference commands: 635
+- Chapter/batch labels: 462 (462 unique)
+- Project-wide unique labels: 1624
+- LaTeX reference commands: 639
 - Explicit unresolved source references: 36
 - Duplicate labels: 0
 - Undefined local labels: 0
