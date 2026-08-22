@@ -1,0 +1,167 @@
+\subsection{不可压缩模型}
+\label{sec:chap1-incompressible-models}
+
+在许多情形下, 求解完整 Navier--Stokes--Fourier 方程既无必要也不可取, 因为在所考虑的应用中某些物理现象可以忽略. 本书研究不可压缩模型. 这类简化模型适用于标准条件下的液体和低速气流; 其他情形通常需要可压缩模型. 不同渐近区域及由完整系统导出的简化模型可参见\MBUnresolvedReference{bib:source-127}{[127]}.
+
+\subsubsection{不可压缩假设}
+\label{subsec:chap1-incompressibility-assumption}
+
+\begin{Proposition}[Definition and Proposition]
+\label{prop:chap1-incompressibility-equivalences}
+若下列等价性质之一成立, 则称流体流动不可压缩:
+\begin{enumerate}
+\item 任意流体元的体积随时间保持不变.
+\item 速度场 $v$ 无散, 即
+\[
+  (\operatorname{div}v)(t,x)=0,\qquad\text{对所有 $(t,x)$}.
+\]
+\item 密度 $\rho$ 沿速度场 $v$ 的轨迹保持不变.
+\end{enumerate}
+更准确的名称应当是等体积流动或等容流动, 但文献普遍使用不可压缩流动, 本书沿用这一惯例.
+\end{Proposition}
+
+\begin{Proof}
+对任意流体元 $(\Omega_t)_t$, 在输运定理中取 $f=1$, 得
+\[
+  \frac{\mathrm{d}}{\mathrm{d}t}|\Omega_t|=\int_{\Omega_t}\operatorname{div}v\,\mathrm{d}x.
+\]
+因此对任意流体元保持体积等价于 $\operatorname{div}v=0$. 另一方面, 质量平衡方程\eqref{eq:chap1-mass-balance}写为
+\[
+  \frac{D\rho}{Dt}+\rho\operatorname{div}v=0.
+\]
+连续介质假设下 $\rho$ 不会消失, 所以 $\operatorname{div}v=0$ 当且仅当 $D\rho/Dt=0$, 后者恰表示密度沿特征曲线保持不变.
+\end{Proof}
+
+\begin{Remark}
+\label{rem:chap1-incompressible-nonhomogeneous}
+即使密度不是常数, 流动仍可不可压缩; 只要求每个流体粒子的密度在演化中保持不变. 海水的密度依赖盐度, 但海水流动仍可视为非齐次不可压缩流动.
+\end{Remark}
+
+\begin{Remark}
+\label{rem:chap1-incompressible-homogeneous}
+若不可压缩流动的初始密度齐次, 即 $\rho(0,x)=\rho_0$ 为常数, 则
+\[
+  \rho(t,x)=\rho_0,\qquad\text{对所有 $(t,x)$}.
+\]
+因为密度沿轨迹保持不变, 且对固定 $t$, 映射 $x_0\mapsto X(t,0,x_0)=\varphi_t(x_0)$ 是双射.
+\end{Remark}
+
+下面考察何时可以作不可压缩假设. 状态方程给出 $\rho=\rho(p,T)$, 因而
+\begin{equation}
+\label{eq:chap1-divergence-pressure-temperature}
+  \operatorname{div}v=-\frac1\rho\frac{D\rho}{Dt}
+  =-\frac1\rho\left(\frac{\partial\rho}{\partial p}\right)_T\frac{Dp}{Dt}
+   -\frac1\rho\left(\frac{\partial\rho}{\partial T}\right)_p\frac{DT}{Dt}.
+\end{equation}
+不可压缩条件相当于压缩项与热膨胀项均为零或可忽略, 因为没有理由认为描述不同现象的两项会彼此抵消. 后文假定流体的热膨胀系数可忽略, 例如正压流体, 或温度沿流体粒子轨迹近似恒定, 例如等温流动.
+
+压缩项足够小有两种情形. 第一, 等温压缩系数
+\[
+  \beta=-\frac1\rho\left(\frac{\partial\rho}{\partial p}\right)_T\approx0.
+\]
+这适用于标准温压下的液体. 例如液态水的 $\beta$ 约为 $10^{-10}\,\mathrm{Pa}^{-1}$. 第二, $\beta$ 不够小, 如气体中约为 $10^{-5}\,\mathrm{Pa}^{-1}$, 但典型速度远小于等温声速时仍可采用不可压缩假设.
+
+等温声速 $c$ 定义为
+\[
+  \frac1{c^2}=\left(\frac{\partial\rho}{\partial p}\right)_T.
+\]
+引入 Reynolds 数 $\operatorname{Re}=\rho v_0l_0/\mu$, 其中 $l_0,v_0$ 是特征长度和速度. 忽略热膨胀后, 式\eqref{eq:chap1-divergence-pressure-temperature}成为
+\begin{equation}
+\label{eq:chap1-divergence-sound-speed}
+  \operatorname{div}v=-\frac1{\rho c^2}\frac{Dp}{Dt}.
+\end{equation}
+在稳态且高 Reynolds 数时, 黏性效应可忽略, 动量方程给出 $-\nabla p/\rho\approx(v\cdot\nabla)v$. 因而若 Mach 数 $\operatorname{Ma}=v_0/c$ 满足
+\begin{equation}
+\label{eq:chap1-low-mach-high-reynolds}
+  \operatorname{Ma}\ll1,
+\end{equation}
+则 $\operatorname{div}v$ 相对典型速度梯度可忽略. 通常认为 $\operatorname{Ma}<0.3$ 是判断是否需要考虑可压缩性的良好准则.
+
+在低 Reynolds 数时, 非线性惯性项相对黏性效应可忽略. 使用 Stokes 假设\eqref{eq:chap1-stokes-hypothesis}, 类似量纲估计表明不可压缩条件变为
+\begin{equation}
+\label{eq:chap1-low-mach-low-reynolds}
+  \operatorname{Ma}\ll\sqrt{\operatorname{Re}},
+\end{equation}
+它可能比式\eqref{eq:chap1-low-mach-high-reynolds}严格得多.
+
+在两种情形中声速都很大, 对应 $(\partial\rho/\partial p)_T\approx0$. 因而不可压缩渐近区域中不能利用状态方程求出 $p=p(\rho,T)$. 压力成为与其他热力学变量无关的未知量, 与新增的无散约束相配. 数学上, 动量方程中的压力梯度是无散约束的 Lagrange 乘子. 压力可任加常数而不改变方程, 只有压力梯度具有物理意义.
+
+在 $\operatorname{Ma}\to0$ 的形式极限中, 热力学压力 $p_{\operatorname{Ma}}$ 趋于常数 $p_0$, 并存在函数 $\pi$ 使
+\[
+  p_{\operatorname{Ma}}-p_0\sim\operatorname{Ma}^2\pi,
+  \qquad \nabla p_{\operatorname{Ma}}\sim\operatorname{Ma}^2\nabla\pi.
+\]
+因此不可压缩方程中的压力应理解为真实热力学压力在均值附近的波动, 不具有特定符号. 低 Mach 数极限的严格结果超出本书范围, 参见\MBUnresolvedReference{bib:low-mach-reviews}{[4, 46, 58, 4]}.
+
+\subsubsection{不可压缩模型概览}
+\label{subsec:chap1-incompressible-overview}
+
+从现在起忽略温度变化的影响并专注于不可压缩流动. 系统中不再有能量演化方程, 压力也不由状态方程定义, 而是通过无散约束间接确定.
+
+\paragraph{非齐次不可压缩 Navier--Stokes 方程.}
+\label{subsec:chap1-nonhomogeneous-navier-stokes}
+本书\MBUnresolvedReference{chap:transport-nonhomogeneous}{Chapter~VI} 研究的最一般系统为
+\[
+\left\{
+\begin{aligned}
+&\frac{\partial\rho}{\partial t}+\operatorname{div}(\rho v)=0,\\
+&\frac{\partial(\rho v)}{\partial t}+\operatorname{div}(\rho v\otimes v)-2\operatorname{div}(\mu(\rho)D(v))+\nabla p=\rho f,\\
+&\operatorname{div}v=0.
+\end{aligned}
+\right.
+\]
+形式上前两个方程可写成非守恒形式, 但定义弱解时守恒形式更合适, 且两者未必等价.
+
+\paragraph{齐次不可压缩 Navier--Stokes 方程.}
+\label{subsec:chap1-homogeneous-navier-stokes}
+密度为正常数时, 质量方程与无散约束完全相同, 只剩
+\[
+\left\{\begin{aligned}
+&\rho\left(\frac{\partial v}{\partial t}+(v\cdot\nabla)v\right)-\mu\Delta v+\nabla p=\rho f,\\
+&\operatorname{div}v=0,
+\end{aligned}\right.
+\]
+以及其稳态形式. 本书\MBUnresolvedReference{chap:navier-stokes-analysis}{Chapter~V} 分析这些系统.
+
+\paragraph{无量纲方程.}
+\label{subsec:chap1-dimensionless-equations}
+选择时间尺度 $t_0$, 空间尺度 $l_0$, 特征速度 $v_0=l_0/t_0$ 和体力尺度 $f_0$, 并令
+\[
+  \widetilde t=\frac t{t_0},\quad \widetilde x=\frac x{l_0},\quad
+  \widetilde v=\frac v{v_0},\quad \widetilde f=\frac f{f_0},\quad
+  \widetilde p=\frac p{\rho v_0^2}.
+\]
+无量纲系统只依赖 Reynolds 数和 Froude 数
+\[
+  \operatorname{Re}=\frac{\rho v_0l_0}{\mu},\qquad
+  \operatorname{Fr}=\frac{v_0/t_0}{f_0}.
+\]
+Reynolds 数度量惯性项与黏性项的量级之比. 小 Reynolds 数时黏性效应占主导, 流动称为层流; 大 Reynolds 数时惯性效应占主导, 流动称为湍流. 二者转变依具体物理情形而定, 参见\MBUnresolvedReference{bib:source-59}{[59]}. 对重力体力, Froude 数度量平均流动加速度与浮力加速度之比. 后文取 $\operatorname{Fr}=1$, 并省略无量纲变量上的波浪号, 得
+\begin{equation}
+\label{eq:chap1-dimensionless-navier-stokes}
+\left\{\begin{aligned}
+&\frac{\partial v}{\partial t}-\frac1{\operatorname{Re}}\Delta v+(v\cdot\nabla)v+\nabla p=f,\\
+&\operatorname{div}v=0.
+\end{aligned}\right.
+\end{equation}
+
+\paragraph{齐次 Stokes 问题.}
+\label{subsec:chap1-homogeneous-stokes}
+当非线性效应可忽略时, 式\eqref{eq:chap1-dimensionless-navier-stokes}形式上约化为线性常系数 Stokes 方程
+\[
+\frac{\partial v}{\partial t}-\frac1{\operatorname{Re}}\Delta v+\nabla p=f,
+\qquad\operatorname{div}v=0.
+\]
+主要数学困难已包含在相应稳态问题中, 特别是压力的存在性和性质. \MBUnresolvedReference{chap:stokes-analysis}{Chapter~IV} 在不同边界条件下研究这些方程.
+
+\paragraph{初始数据与边界数据.}
+\label{subsec:chap1-initial-boundary-data}
+非稳态模型需要给定初始密度(非齐次情形)和初始速度. 压力是不可压缩约束的 Lagrange 乘子, 对其指定初值没有数学意义. 最常用的速度边界条件是
+\[
+  v=v_b,\qquad\text{在边界上}.
+\]
+$v_b=0$ 时称为齐次 Dirichlet 条件或无滑移条件. 压力不需要边界条件. 对非齐次流体, 若 $v$ 与边界相切, 特征曲线不穿过边界, 密度无需边界条件; 若 $v$ 不与边界相切, 则需要在流入边界点给定 $\rho$. \MBUnresolvedReference{chap:transport-nonhomogeneous}{Chapter~VI} 详细讨论这两种情形. 后文还研究应力, 涡量和流出边界条件.
+
+\paragraph{补充说明.}
+\label{subsec:chap1-incompressible-comments}
+当 Reynolds 数很大时, 式\eqref{eq:chap1-dimensionless-navier-stokes}形式上成为不可压缩 Euler 系统. 它是双曲型系统, 与抛物型 Navier--Stokes 系统性质很不相同, 本书不作研究, 参见\MBUnresolvedReference{bib:euler-references}{[88, 86, 41]}. 本书也不分析可压缩 Navier--Stokes 方程和完整 Navier--Stokes--Fourier 系统, 相关结果见\MBUnresolvedReference{bib:compressible-references}{[87, 57, 93]}.
