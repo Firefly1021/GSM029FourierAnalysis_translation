@@ -1,5 +1,7 @@
 # Batch QA: ch02-sec04
 
+> Fidelity status revoked: source comparison shows condensed exposition and proof steps. This unit is `rework-required`.
+
 - Source: PDF pages 96-104, following the natural Section 4 boundary.
 - Structure and content: passed; antiderivatives, Lebesgue points, Hardy inequality, Gronwall lemmas, and Bihari inequality are present in source order.
 - Formula fidelity: passed; source equations (II.15)--(II.19) compile as 2.15--2.19.

@@ -10,5 +10,5 @@
 8. For every unit: extract, restore structure, register formulae and references, apply approved terminology, translate faithfully, run deterministic QA, compile, and visually inspect.
 9. Completed: Phase 1 ended after Chapter I and was pushed after explicit user authorization.
 10. Completed: Phase 2 Chapter II, Sections 1 and 2 passed unit QA and integrated compilation.
-11. Completed: Chapter II and Chapter III natural units passed unit QA and integrated compilation.
-12. Completed: Phase 2 passed integrated QA; source and template hashes remained unchanged. The explicitly requested remote push is the final Phase 2 action.
+11. Invalidated: Chapter II and Chapter III were incorrectly accepted after condensed translations omitted source exposition and proof steps.
+12. In progress: perform page-by-page fidelity remediation beginning with `ch02-sec01`; no Phase 2 unit may return to `passed` without explicit source coverage evidence.

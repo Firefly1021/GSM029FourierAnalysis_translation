@@ -1,4 +1,6 @@
-# Phase 2 integrated QA
+# Phase 2 integrated QA (invalidated)
+
+> Invalidated after source comparison revealed systematic omissions and condensed proofs. This report must not be used as evidence of translation completion. See `qa/translation/phase-2-fidelity-audit.md`.
 
 - Scope: all of Chapter II and Chapter III.
 - Natural units passed: `ch02-sec01`--`ch02-sec06` and `ch03-sec01`--`ch03-sec04`.

@@ -1,5 +1,7 @@
 # Batch QA: ch02-sec02
 
+> Fidelity status revoked: source comparison shows condensed exposition and proof steps. This unit is `rework-required`.
+
 - Source: PDF pages 63-89, following the natural Section 2 boundary; the final proof crosses the mechanical extraction boundary and was restored from the next page.
 - Structure: passed; Banach spaces, weak and weak-* convergence, Lebesgue spaces, partitions of unity, distributions, and Lipschitz functions are present in source order.
 - Formula fidelity: passed; source equations (II.2)--(II.10) and the unnumbered displays were retained without silent correction.

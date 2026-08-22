@@ -1,5 +1,7 @@
 # Batch QA: ch03-sec02
 
+> Invalidated: the numbered-object check passed, but substantial source exposition and proof calculations were omitted or condensed. This unit is `rework-required`.
+
 - Source: PDF pages 147-200, Chapter III, Section 2.
 - Structure and content: passed; all ten source subsections and source objects III.2.1--III.2.46 are present in source order.
 - Formula fidelity: passed; source equations (III.11)--(III.59) are registered once each and compile as 3.11--3.59.

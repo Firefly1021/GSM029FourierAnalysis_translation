@@ -1,5 +1,7 @@
 # Batch QA: ch03-sec01
 
+> Fidelity status revoked: source comparison shows condensed exposition and proof steps. This unit is `rework-required`.
+
 - Source: PDF pages 133-147, restored to the natural Chapter III introduction and Section 1 boundary.
 - Structure and content: passed; domain classes, Lipschitz graph maps, cone property, star-shaped coverings, boundary integration, and Stokes formula are present in source order.
 - Formula fidelity: passed; source equations (III.1)--(III.10) compile as 3.1--3.10.
