@@ -14,7 +14,7 @@
 ## 定义、定理与论证环境
 
 - `definition`、`theorem`、`lemma`、`proposition`、`corollary`、`proof`、`example`、`remark` 和 `exercise` 必须保持原环境类型，不得相互替换。
-- 环境标题固定显示为英文 `Theorem`、`Definition`、`Lemma`、`Proposition`、`Corollary`、`Proof`、`Example`、`Remark` 和 `Exercise`，不得将环境标题翻译成中文。中文正文中的普通数学名词仍按术语规则翻译。
+- 环境标题及对象引用前缀固定显示为英文 `Theorem`、`Definition`、`Lemma`、`Proposition`、`Corollary`、`Proof`、`Example`、`Remark` 和 `Exercise`，不得将环境名翻译成中文。中文正文中不充当环境名或引用前缀的普通数学名词仍按术语规则翻译。
 - 定义中的约定性表达应保持确定语气；定理、引理、命题和推论的假设与结论不得重排到造成歧义的位置。
 - 证明中的因果、递推、分类讨论、反证和归纳结构必须明确保留。
 - 例子只翻译原有内容，不得补充解释、计算或推广。
