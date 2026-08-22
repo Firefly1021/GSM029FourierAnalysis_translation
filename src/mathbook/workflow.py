@@ -211,13 +211,21 @@ def isolate_book_worktree(project: ProjectPaths, book_id: str) -> dict[str, obje
     """
     validate_book_id(book_id)
     record = project_record(project, book_id)
-    worktree = Path(record.worktree).resolve(strict=False) if record.worktree else None
-    if worktree is None or not worktree.is_dir():
-        raise ProjectError(f"Registered worktree is unavailable for {book_id!r}: {record.worktree!r}")
-
-    normalized = os.path.normcase(str(worktree))
-    entry = project.git_worktree_map().get(normalized)
     expected_branch = f"refs/heads/book/{book_id}"
+    worktrees = project.git_worktree_map()
+    registered = Path(record.worktree).resolve(strict=False) if record.worktree else None
+    entry = worktrees.get(os.path.normcase(str(registered))) if registered else None
+    if entry is None or entry.get("branch") != expected_branch:
+        matches = [item for item in worktrees.values() if item.get("branch") == expected_branch]
+        if len(matches) != 1:
+            raise ProjectError(
+                f"Exactly one registered worktree is required for book/{book_id}; found {len(matches)}."
+            )
+        entry = matches[0]
+    worktree = Path(entry["worktree"]).resolve(strict=False)
+    if not worktree.is_dir():
+        raise ProjectError(f"Registered worktree is unavailable for {book_id!r}: {worktree}")
+
     if not entry or entry.get("branch") != expected_branch:
         raise ProjectError("branch/book-id/worktree/path mismatch; refusing sparse-worktree isolation.")
 
