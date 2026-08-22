@@ -14,13 +14,16 @@ from mathbook.project import ProjectError, ProjectPaths, run_git
 from mathbook.terminology import HISTORY_COLUMNS, TERM_COLUMNS, _read_tsv, find_conflicts, promote_candidates
 from mathbook.workflow import (
     approve_sample,
+    book_status,
     finish_book,
     isolate_book_worktree,
     list_books,
     new_book,
     next_incomplete_unit,
+    project_record,
     resume_book,
     start_book,
+    update_project_record,
     verify_book_context,
 )
 
@@ -137,6 +140,11 @@ class WorktreeIsolationTests(unittest.TestCase):
             (b_project.glossary / "terminology.tsv").read_bytes(),
         )
         self.assertEqual({item["book_id"] for item in list_books(b_project)}, {"test-book-a", "test-book-b"})
+        hidden_record = project_record(b_project, "test-book-a")
+        hidden_record.phase = "completed"
+        hidden_record.status = "completed"
+        update_project_record(b_project, hidden_record)
+        self.assertEqual(book_status(b_project, "test-book-a")["status"], "completed")
 
     def test_isolation_is_idempotent_and_preserves_current_book_changes(self) -> None:
         a_project = ProjectPaths(Path(self.a["worktree"]))

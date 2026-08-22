@@ -645,7 +645,16 @@ def finish_book(
 def book_status(project: ProjectPaths, book_id: str) -> dict[str, object]:
     book = project.book(book_id)
     record = project_record(project, book_id)
-    state = _workflow_state(book)
+    state = (
+        _workflow_state(book)
+        if book.root.is_dir()
+        else {
+            "book_id": book_id,
+            "status": record.status,
+            "completed_units": [],
+            "blocking_issues": [item for item in record.blocking_issues.split(";") if item],
+        }
+    )
     effective_status = str(state.get("status") or record.status)
     effective_phase = (
         "sample" if effective_status in {"sample-processing", "awaiting-sample-approval"}
@@ -662,7 +671,7 @@ def book_status(project: ProjectPaths, book_id: str) -> dict[str, object]:
         "status": effective_status,
         "progress": {
             "completed_units": state.get("completed_units", []),
-            "next_unit": None if effective_status == "completed" else next_incomplete_unit(book),
+            "next_unit": None if effective_status == "completed" or not book.root.is_dir() else next_incomplete_unit(book),
         },
         "blocking_issues": state.get("blocking_issues", []),
         "final_output": record.final_output,
