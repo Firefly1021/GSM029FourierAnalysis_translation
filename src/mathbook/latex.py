@@ -24,5 +24,5 @@ def adapter_environment_conflicts(style_path: Path, adapter_path: Path) -> set[s
 
 def emit_environment(environment: str, body: str, title: str | None = None) -> str:
     """Emit an existing template environment without changing its definition."""
-    opening = f"\\begin{{{environment}}}" + (f"[{title}]" if title else "")
+    opening = f"\\begin{{{environment}}}" + (f"{{{title}}}" if title else "")
     return f"{opening}\n{body}\n\\end{{{environment}}}\n"

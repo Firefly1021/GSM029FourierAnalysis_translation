@@ -12,19 +12,22 @@ class LatexTests(unittest.TestCase):
             ROOT / "template/style/Mystyle.sty",
             ROOT / "template/adapter/translation-adapter.sty",
         )
-        self.assertEqual(conflicts, {"Theorem", "Definition", "Lemma", "Proof"})
+        self.assertEqual(
+            conflicts,
+            {"Theorem", "Definition", "Lemma", "Proposition", "Corollary", "Proof", "Example", "Exercise"},
+        )
 
     def test_adapter_statement_environments_are_referenceable(self) -> None:
         adapter = (ROOT / "template/adapter/translation-adapter.sty").read_text(encoding="utf-8")
         for environment in ("Theorem", "Definition", "Lemma", "Proposition", "Corollary", "Example", "Remark", "Exercise"):
             self.assertIn(f"DocumentEnvironment{{{environment}}}", adapter)
-        self.assertGreaterEqual(adapter.count("\\refstepcounter{thmcount}"), 8)
-        self.assertIn("frame hidden", adapter)
+        self.assertGreaterEqual(adapter.count("\\refstepcounter{statement}"), 8)
+        self.assertIn("boxrule=0pt", adapter)
         self.assertIn("breakable", adapter)
 
     def test_output_uses_existing_environment(self) -> None:
         output = emit_environment("Theorem", "template-test-body", "template-test-title")
-        self.assertIn("\\begin{Theorem}[template-test-title]", output)
+        self.assertIn("\\begin{Theorem}{template-test-title}", output)
         self.assertIn("\\end{Theorem}", output)
 
 
