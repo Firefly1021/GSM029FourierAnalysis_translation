@@ -10,7 +10,7 @@ import tempfile
 from pathlib import Path
 from typing import Any
 
-from .project import ROOT, ProjectError, iter_files, load_config, sha256_file
+from .project import ROOT, ProjectError, iter_files, load_config, manifest_file_fingerprint, sha256_file
 
 
 TEMPLATE_ROOT = ROOT / "template"
@@ -39,15 +39,15 @@ def _file_type(path: Path) -> str:
 
 def build_manifest() -> dict[str, Any]:
     """Hash every shared template file without modifying it."""
-    files = [
-        {
+    files = []
+    for path in iter_files(TEMPLATE_ROOT):
+        size, file_hash = manifest_file_fingerprint(path)
+        files.append({
             "path": _relative(path),
             "file_type": _file_type(path),
-            "size_bytes": path.stat().st_size,
-            "sha256": sha256_file(path),
-        }
-        for path in iter_files(TEMPLATE_ROOT)
-    ]
+            "size_bytes": size,
+            "sha256": file_hash,
+        })
     references = [item["path"] for item in files if item["file_type"] == "latex-source"]
     configured = load_config("default.yaml")["template"]["reference"]
     if len(references) == 1:

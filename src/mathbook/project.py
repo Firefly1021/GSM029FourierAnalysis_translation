@@ -52,6 +52,22 @@ def sha256_file(path: Path) -> str:
     return digest.hexdigest()
 
 
+_MANIFEST_TEXT_SUFFIXES = {".bib", ".cls", ".json", ".jsonl", ".md", ".sty", ".tex", ".tsv", ".yaml", ".yml"}
+
+
+def manifest_file_fingerprint(path: Path) -> tuple[int, str]:
+    """Return a worktree-portable size and SHA-256 for manifest metadata.
+
+    Git may materialize text files with LF or CRLF in different Windows
+    worktrees. Manifest fingerprints use the repository's canonical LF form
+    for declared text inputs while leaving binary assets byte-exact.
+    """
+    data = path.read_bytes()
+    if path.name == ".gitkeep" or path.suffix.lower() in _MANIFEST_TEXT_SUFFIXES:
+        data = data.replace(b"\r\n", b"\n").replace(b"\r", b"\n")
+    return len(data), hashlib.sha256(data).hexdigest()
+
+
 def iter_files(directory: Path) -> Iterable[Path]:
     """Yield files below a directory in stable relative-path order."""
     return sorted(
@@ -65,7 +81,8 @@ def directory_manifest_hash(directory: Path) -> str:
     digest = hashlib.sha256()
     for path in iter_files(directory):
         relative = path.relative_to(directory).as_posix()
-        digest.update(f"{relative}\0{path.stat().st_size}\0{sha256_file(path)}\n".encode("utf-8"))
+        size, file_hash = manifest_file_fingerprint(path)
+        digest.update(f"{relative}\0{size}\0{file_hash}\n".encode("utf-8"))
     return digest.hexdigest()
 
 

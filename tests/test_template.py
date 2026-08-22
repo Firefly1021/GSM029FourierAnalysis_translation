@@ -3,7 +3,7 @@
 import unittest
 from unittest import mock
 
-from mathbook.project import ROOT, iter_files, sha256_file
+from mathbook.project import ROOT, iter_files, manifest_file_fingerprint, sha256_file
 from mathbook.template import (
     TEMPLATE_ROOT,
     analyze_template,
@@ -22,7 +22,9 @@ class TemplateTests(unittest.TestCase):
     def test_manifest_hashes_match_files(self) -> None:
         manifest = build_manifest()
         for entry in manifest["files"]:
-            self.assertEqual(entry["sha256"], sha256_file(ROOT / entry["path"]))
+            size, file_hash = manifest_file_fingerprint(ROOT / entry["path"])
+            self.assertEqual(entry["size_bytes"], size)
+            self.assertEqual(entry["sha256"], file_hash)
 
     def test_commands_and_reference_usage_are_recognized(self) -> None:
         analysis = analyze_template()
