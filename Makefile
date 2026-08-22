@@ -2,7 +2,7 @@ PYTHON ?= python
 export PYTHONPATH := $(CURDIR)/src
 
 .PHONY: test lint validate-project inspect-template verify-template compile-template \
-	new-book start-book approve-sample translate-book resume finish-book status list-books
+	new-book start-book approve-sample translate-book resume finish-book status list-books isolate-worktree
 
 test:
 	$(PYTHON) -m unittest discover -s tests -v
@@ -45,3 +45,6 @@ status:
 
 list-books:
 	$(PYTHON) -m mathbook list-books
+
+isolate-worktree:
+	$(PYTHON) -m mathbook isolate-worktree $(BOOK)

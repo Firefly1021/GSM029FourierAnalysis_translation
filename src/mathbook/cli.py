@@ -14,6 +14,7 @@ from .workflow import (
     approve_sample,
     book_status,
     finish_book,
+    isolate_book_worktree,
     list_books,
     new_book,
     resume_book,
@@ -81,7 +82,7 @@ def build_parser() -> argparse.ArgumentParser:
     new.add_argument("book_id")
     new.add_argument("--source", required=True, type=Path)
 
-    for name in ("start-book", "approve-sample", "translate-book", "resume", "finish-book", "status"):
+    for name in ("start-book", "approve-sample", "translate-book", "resume", "finish-book", "status", "isolate-worktree"):
         command = sub.add_parser(name)
         command.add_argument("book_id")
     sub.add_parser("list-books")
@@ -113,6 +114,8 @@ def dispatch(args: argparse.Namespace) -> int:
         _print_json(finish_book(project, args.book_id))
     elif args.command == "status":
         _print_json(book_status(project, args.book_id))
+    elif args.command == "isolate-worktree":
+        _print_json(isolate_book_worktree(project, args.book_id))
     elif args.command == "list-books":
         _print_json(list_books(project))
     elif args.command == "terminology":
