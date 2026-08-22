@@ -4,7 +4,7 @@
 |---|---|---|---|---|
 | Chapter I | The equations of fluid mechanics | `chap:fluid-mechanics-equations` | `tex/chapters/sample.tex` | Defined |
 | Section I.2 | The transport theorem | `sec:chap1-transport-theorem` | `tex/chapters/sample.tex` | Defined |
-| Theorem I.2.1 | Transport theorem | `thm:chap1-transport` | `tex/chapters/sample.tex` | Defined and referenced |
+| Theorem I.2.1 | Transport theorem | `thm:chap1-transport` | `tex/chapters/sample.tex` | Defined and referenced with English prefix `Theorem` |
 | Formula (I.6) | Chain-rule identity | `eq:chap1-transport-chain-rule` | `tex/chapters/sample.tex` | Defined and referenced with `\eqref` |
 | Remark I.2.1 | Vector generalisation | `rem:chap1-transport-vector` | `tex/chapters/sample.tex` | Defined |
 | Formula (I.2) | Earlier velocity definition | `eq:chap1-velocity-definition` | Outside sample | Known target, deferred; no number fabricated |
