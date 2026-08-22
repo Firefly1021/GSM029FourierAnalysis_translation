@@ -12,7 +12,7 @@ Create a new book from `main`:
 python -m mathbook new-book <book-id> --source "/path/to/book.pdf"
 ```
 
-The command validates the ID and PDF, records hashes and template version, creates `books/<book-id>/`, commits the registration locally, creates `book/<book-id>`, and creates a dedicated sibling worktree. It prints the worktree location.
+The command validates the ID and PDF, records hashes and template version, creates `books/<book-id>/`, commits the registration locally, creates `book/<book-id>`, and creates a dedicated sibling worktree. The new worktree uses worktree-local cone sparse checkout: all shared system directories remain visible, while `books/` materializes only `books/<book-id>/`. Other books remain tracked in branch history and are never deleted. The command prints the worktree location.
 
 Start diagnosis and the representative-sample workflow from that worktree:
 
@@ -46,6 +46,14 @@ python -m mathbook status <book-id>
 python -m mathbook list-books
 ```
 
+Repair or retrofit the local view of an existing registered book worktree:
+
+```bash
+python -m mathbook isolate-worktree <book-id>
+```
+
+This command refuses to proceed if the selected worktree contains uncommitted files under another book. It preserves current-book and shared-file modifications byte-for-byte, does not remove any book from Git, and does not push or rewrite history. Sparse-checkout configuration is local Git metadata, so it is intentionally not committed or transferred by `git push`.
+
 Users do not need to create directories, switch branches, or manage worktrees manually. Mathematical translation stages are executed by an explicitly configured Codex/agent processor; if none is available, the controller stops truthfully instead of fabricating translation or QA output.
 
 ## Terminology
@@ -61,6 +69,6 @@ Books write candidates and unresolved terms only inside their own directory. Con
 
 ## Make interface
 
-The same workflows are available as `make new-book`, `make start-book`, `make approve-sample`, `make translate-book`, `make resume`, `make finish-book`, `make status`, and `make list-books` with `BOOK` and, for new books, `SOURCE` variables.
+The same workflows are available as `make new-book`, `make start-book`, `make approve-sample`, `make translate-book`, `make resume`, `make finish-book`, `make status`, `make list-books`, and `make isolate-worktree` with `BOOK` and, for new books, `SOURCE` variables.
 
 All commits and worktrees created by project automation are local. No workflow pushes to GitHub or modifies `origin`.
