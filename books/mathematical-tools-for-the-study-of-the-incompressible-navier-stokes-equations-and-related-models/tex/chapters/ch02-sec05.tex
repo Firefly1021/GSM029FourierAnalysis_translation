@@ -1,0 +1,353 @@
+\subsection{Banach 值函数空间}
+\label{sec:chap2-banach-valued-functions}
+\renewcommand{\thestatement}{5.\number\numexpr\value{statement}-70\relax}
+
+\subsubsection{定义与主要性质}
+\label{subsec:chap2-bochner-spaces}
+
+\begin{Definition}
+\label{def:chap2-banach-valued-measurable}
+设 $X$ 为 Banach 空间, $I\subset\mathbb{R}$ 为区间. 若 $f:I\to X$ 满足: $X$ 的每个开集在 $f$ 下的逆像都是 $I$ 的 Borel 集; 并且可在零测集上修改 $f$, 使其值落在 $X$ 的某个可分子空间中, 则称 $f$ 为 Lebesgue 可测函数.
+\end{Definition}
+
+这一定义保证 $f$ 几乎处处是 $X$ 值简单函数序列的极限, 从而可以定义 Bochner 积分.
+
+\begin{Proposition}
+\label{prop:chap2-bochner-lp-banach}
+设 $X$ 为 Banach 空间, $I\subset\mathbb{R}$ 为区间. 对 $1\leq p<+\infty$, $L^p(I,X)$ 是满足 $t\mapsto\|f(t)\|_X^p$ 可积的可测函数组成的 Banach 空间, 范数为
+\[
+ \|f\|_{L^p(I,X)}=\left(\int_I\|f(t)\|_X^p\,\mathrm{d}t\right)^{1/p}.
+\]
+当 $p=+\infty$ 时, 以 $\|f\|_{L^\infty(I,X)}=\operatorname*{ess\,sup}_{t\in I}\|f(t)\|_X$ 定义 Banach 空间 $L^\infty(I,X)$.
+\end{Proposition}
+
+\begin{Proposition}
+\label{prop:chap2-continuous-dense-bochner-lp}
+若 $p<+\infty$, 则 $I$ 上的连续 $X$ 值函数在 $L^p(I,X)$ 中稠密.
+\end{Proposition}
+
+对 $f\in L^p(I,X)$, 以 $\widetilde f$ 表示其在 $\mathbb{R}$ 上的零延拓, 并定义
+\begin{equation}
+ \tau_hf(\cdot)=\widetilde f(\cdot+h).
+ \label{eq:chap2-banach-translation}
+\end{equation}
+
+\begin{Corollary}[Continuity of the translation operator]
+\label{cor:chap2-banach-translation-continuity}
+若 $p<+\infty$ 且 $f\in L^p(I,X)$, 则 $\tau_hf\to f$ 于 $L^p(I,X)$ 当 $h\to0$.
+\end{Corollary}
+
+对 $f\in L^1(I,X)$ 可定义 $\int_If(t)\,\mathrm{d}t\in X$, 且对 $\varphi\in X'$,
+\[
+ \int_I\langle\varphi,f(t)\rangle\,\mathrm{d}t
+ =\left\langle\varphi,\int_If(t)\,\mathrm{d}t\right\rangle.
+\]
+
+\begin{Theorem}
+\label{thm:chap2-mixed-lp-interpolation}
+设 $f\in L^{p_1}(I,L^{q_1}(\Omega))\cap L^{p_2}(I,L^{q_2}(\Omega))$ 且 $0<\theta<1$. 定义
+\begin{equation}
+ \frac1p=\frac\theta{p_1}+\frac{1-\theta}{p_2},
+ \qquad\frac1q=\frac\theta{q_1}+\frac{1-\theta}{q_2}.
+ \label{eq:chap2-mixed-interpolation-exponents}
+\end{equation}
+则 $f\in L^p(I,L^q(\Omega))$, 且
+\[
+ \|f\|_{L^p(I,L^q)}
+ \leq\|f\|_{L^{p_1}(I,L^{q_1})}^\theta
+ \|f\|_{L^{p_2}(I,L^{q_2})}^{1-\theta}.
+\]
+\end{Theorem}
+
+\begin{Proof}
+由 Lemma~\ref{lem:chap2-lp-interpolation}, 对几乎处处的 $t$,
+\[
+ \|f(t)\|_{L^q}^p\leq
+ \|f(t)\|_{L^{q_1}}^{p\theta}
+ \|f(t)\|_{L^{q_2}}^{p(1-\theta)}.
+\]
+再以共轭指数 $p_1/(p\theta)$ 和 $p_2/(p(1-\theta))$ 应用 H\"older 不等式. 无穷指数情形直接得到.
+\end{Proof}
+
+\begin{Corollary}
+\label{cor:chap2-mixed-lp-intermediate-convergence}
+沿用 Theorem~\ref{thm:chap2-mixed-lp-interpolation} 的记号, 并设 $p_1,q_1<+\infty$, $p_2,q_2>1$. 若 $u_n\to u$ 于 $L^{p_1}(I,L^{q_1}(\Omega))$, 且 $u_n$ 在 $L^{p_2}(I,L^{q_2}(\Omega))$ 中弱收敛到 $u$ (出现无穷指数时为弱-$*$ 收敛), 则对 $0<\theta\leq1$, $u_n\to u$ 于由式\eqref{eq:chap2-mixed-interpolation-exponents}定义的 $L^p(I,L^q(\Omega))$.
+\end{Corollary}
+
+\begin{Proof}
+对 $u-u_n$ 应用 Theorem~\ref{thm:chap2-mixed-lp-interpolation}. 强收敛因子趋于 $0$, 弱收敛因子有界.
+\end{Proof}
+
+\subsubsection{时间正则性}
+\label{subsec:chap2-time-regularity}
+
+\paragraph{弱时间导数}
+
+\begin{Definition}
+\label{def:chap2-weak-time-derivative}
+设 Banach 空间 $X$ 连续嵌入 $Y$, $1\leq p,q\leq+\infty$. 若 $u\in L^p(I,X)$ 且存在 $g\in L^q(I,Y)$ 使
+\begin{equation}
+ \int_I\varphi'(t)u(t)\,\mathrm{d}t
+ =-\int_I\varphi(t)g(t)\,\mathrm{d}t,
+ \qquad\forall\varphi\in\mathcal{D}(I),
+ \label{eq:chap2-weak-time-derivative}
+\end{equation}
+则称 $u$ 在 $L^q(I,Y)$ 中有弱导数, 并记 $\mathrm{d}u/\mathrm{d}t=g$.
+\end{Definition}
+
+\par\noindent\textbf{Remark 5.1:}\quad 在适当的稠密嵌入和可分性条件下, 同一函数在不同目标空间中得到的弱导数几乎处处相同.
+
+\paragraph{弱连续性}
+
+\begin{Definition}
+\label{def:chap2-weakly-continuous-function}
+设 $Y$ 为 Banach 空间. 若对每个 $\psi\in Y'$, 映射 $t\mapsto\langle\psi,u(t)\rangle$ 连续, 则称 $u:[0,T]\to Y$ 弱连续. 此类函数空间记为 $C^0([0,T],Y_{\mathrm{weak}})$.
+\end{Definition}
+
+\begin{Lemma}
+\label{lem:chap2-weak-continuity-transfer}
+设 $X$ 为可分自反 Banach 空间, $X$ 连续嵌入 Banach 空间 $Y$. 则
+\[
+ L^\infty((0,T),X)\cap C^0([0,T],Y_{\mathrm{weak}})
+ =C^0([0,T],X_{\mathrm{weak}}).
+\]
+\end{Lemma}
+
+\begin{Proof}
+若 $u\in C^0([0,T],X_{\mathrm{weak}})$, 则 $Y'$ 中泛函限制到 $X$ 后属于 $X'$, 故 $u$ 在 $Y$ 中弱连续. 可分性给出可测性, Banach--Steinhaus 定理和对偶范数刻画给出 $\sup_t\|u(t)\|_X<+\infty$.
+
+反之, 延拓 $u$ 到 $\mathbb{R}$ 并令 $u_n=u*\eta_{1/n}$. 对固定 $t_0$, $(u_n(t_0))_n$ 在自反空间 $X$ 中有界, 可抽取弱收敛子序列. $Y$ 中的弱连续性说明该极限只能是 $u(t_0)$, 因而 $u(t_0)\in X$ 且
+\begin{equation}
+ \|u(t)\|_X\leq C,\qquad\forall t\in\mathbb{R}.
+ \label{eq:chap2-weak-continuity-pointwise-bound}
+\end{equation}
+若 $t_n\to t$, 则式\eqref{eq:chap2-weak-continuity-pointwise-bound}和自反性允许抽取在 $X$ 中弱收敛的子序列; $Y$ 中弱极限的唯一性说明所有聚点均为 $u(t)$, 故整个序列在 $X$ 中弱收敛到 $u(t)$.
+\end{Proof}
+
+\par\noindent\textbf{Remark 5.2:}\quad 若 $X,Y$ 可分且 $Y$ 稠密嵌入 $X$, 则 $L^\infty((0,T),X')\cap C^0([0,T],Y'_{\mathrm{weak-*}})\subset C^0([0,T],X'_{\mathrm{weak-*}})$.
+
+\paragraph{强连续性}
+
+设 $X$ 连续且稠密嵌入 $Y$, 并定义
+\[
+ E_{p,q}=\left\{u\in L^p((0,T),X):\frac{\mathrm{d}u}{\mathrm{d}t}\in L^q((0,T),Y)\right\}.
+\]
+
+\begin{Lemma}
+\label{lem:chap2-epq-banach-dense-smooth}
+$E_{p,q}$ 配以
+\[
+ \|u\|_{E_{p,q}}=\|u\|_{L^p((0,T),X)}+
+ \left\|\frac{\mathrm{d}u}{\mathrm{d}t}\right\|_{L^q((0,T),Y)}
+\]
+后为 Banach 空间. 若 $p,q<+\infty$, 则 $C^\infty([0,T],X)$ 在其中稠密.
+\end{Lemma}
+
+\begin{Proof}
+完备性直接由定义得到. 取和为 $1$ 的光滑单位分解分别支撑于区间两端, 将函数平移后再以磨光核卷积. Corollary~\ref{cor:chap2-banach-translation-continuity} 同时给出函数和弱导数的收敛.
+\end{Proof}
+
+\par\noindent\textbf{Remark 5.3:}\quad 当某个指数为 $+\infty$ 且相应空间为对偶空间时, 同一构造在该 $L^\infty$ 因子上给出弱-$*$ 稠密性.
+
+\begin{Proposition}
+\label{prop:chap2-epq-continuous-representative}
+每个 $u\in E_{p,q}$ 都有取值于 $Y$ 的连续代表元, 且 $E_{p,q}\hookrightarrow C^0([0,T],Y)$ 连续. 对任意 $t_1,t_2\in[0,T]$,
+\[
+ u(t_2)-u(t_1)=\int_{t_1}^{t_2}\frac{\mathrm{d}u}{\mathrm{d}t}\,\mathrm{d}t.
+\]
+\end{Proposition}
+
+\begin{Theorem}[Lions--Magenes]
+\label{thm:chap2-lions-magenes-product}
+设 Hilbert 空间 $V$ 连续且稠密嵌入 $H$, 并作 $V\subset H\subset V'$ 的枢轴空间等同. 若 $u\in E_{p,q'}$ 且 $v\in E_{q,p'}$, 则 $t\mapsto(u(t),v(t))_H$ 在 $[0,T]$ 上有连续代表元, 且
+\[
+ (u(t_2),v(t_2))_H-(u(t_1),v(t_1))_H
+ =\int_{t_1}^{t_2}\left(
+ \left\langle\frac{\mathrm{d}u}{\mathrm{d}t},v\right\rangle_{V',V}
+ +\left\langle\frac{\mathrm{d}v}{\mathrm{d}t},u\right\rangle_{V',V}
+ \right)\mathrm{d}t.
+\]
+\end{Theorem}
+
+\begin{Proof}
+对光滑 $u,v$ 这是内积的通常乘积法则. Lemma~\ref{lem:chap2-epq-banach-dense-smooth} 给出光滑逼近; H\"older 不等式说明内积映射和右端双线性映射连续进入 $L^1(0,T)$. 传递到极限后, $t\mapsto(u(t),v(t))_H$ 属于 $W^{1,1}(0,T)$, Corollary~\ref{cor:chap2-w11-continuous-representative} 给出结论.
+\end{Proof}
+
+\begin{Theorem}
+\label{thm:chap2-lions-magenes-continuity-h}
+空间
+\[
+ E_{2,2}=\left\{u\in L^2((0,T),V):\frac{\mathrm{d}u}{\mathrm{d}t}\in L^2((0,T),V')\right\}
+\]
+连续嵌入 $C^0([0,T],H)$.
+\end{Theorem}
+
+\begin{Proof}
+在 Theorem~\ref{thm:chap2-lions-magenes-product} 中取 $u=v$, 得 $t\mapsto\|u(t)\|_H^2$ 连续, 且
+\begin{equation}
+ \|u(t)\|_H^2\leq C\|u\|_{E_{2,2}}^2.
+ \label{eq:chap2-lions-magenes-energy-bound}
+\end{equation}
+Proposition~\ref{prop:chap2-epq-continuous-representative} 给出 $V'$ 值连续性, Lemma~\ref{lem:chap2-weak-continuity-transfer} 给出 $H$ 值弱连续性. 范数连续与弱连续合起来给出 $H$ 值强连续性.
+\end{Proof}
+
+\begin{Theorem}
+\label{thm:chap2-interpolation-time-continuity}
+设 $V,W$ 为 Hilbert 空间. 则
+\[
+ \left\{v\in L^2((0,T),V):\frac{\mathrm{d}v}{\mathrm{d}t}\in L^2((0,T),W)\right\}
+ \hookrightarrow C^0([0,T],[V,W]_{1/2}),
+\]
+其中 $[V,W]_{1/2}$ 是 $V,W$ 的 $1/2$ 阶插值空间.
+\end{Theorem}
+
+\subsubsection{紧性定理}
+\label{subsec:chap2-time-compactness}
+
+\begin{Lemma}
+\label{lem:chap2-lions-epsilon-inequality}
+设 $B_0\hookrightarrow B_1\hookrightarrow B_2$, 其中 $B_1\hookrightarrow B_2$ 连续且 $B_0\hookrightarrow B_1$ 紧. 对每个 $\varepsilon>0$, 存在 $C(\varepsilon)$ 使
+\[
+ \|u\|_{B_1}\leq\varepsilon\|u\|_{B_0}+C(\varepsilon)\|u\|_{B_2},
+ \qquad\forall u\in B_0.
+\]
+\end{Lemma}
+
+\begin{Proof}
+反设不成立. 经齐次化可取序列 $\|u_n\|_{B_1}=1$, 同时 $(u_n)_n$ 在 $B_0$ 中有界且 $\|u_n\|_{B_2}\leq1/n$. 紧嵌入给出在 $B_1$ 中收敛到 $u_\infty$ 的子序列, 于是 $\|u_\infty\|_{B_1}=1$ 而 $\|u_\infty\|_{B_2}=0$, 矛盾.
+\end{Proof}
+
+\begin{Theorem}[Aubin--Lions--Simon]
+\label{thm:chap2-aubin-lions-simon}
+沿用 Lemma~\ref{lem:chap2-lions-epsilon-inequality} 的空间, 并定义
+\[
+ E_{p,r}=\left\{v\in L^p((0,T),B_0):\frac{\mathrm{d}v}{\mathrm{d}t}\in L^r((0,T),B_2)\right\}.
+\]
+若 $p<+\infty$, 则 $E_{p,r}\hookrightarrow L^p((0,T),B_1)$ 紧; 若 $p=+\infty$ 且 $r>1$, 则 $E_{p,r}\hookrightarrow C^0([0,T],B_1)$ 紧.
+\end{Theorem}
+
+\begin{Proof}
+只证第一种情形, 且可设 $r=1$. 对 $E_{p,1}$ 中有界序列 $(u_n)_n$, Lemma~\ref{lem:chap2-lions-epsilon-inequality} 表明, 只需抽取在 $L^p((0,T),B_2)$ 中 Cauchy 的子序列. 用光滑截断把 $u_n$ 分成在 $T$ 端消失和在 $0$ 端消失的两项, 两项处理相同.
+
+对在 $T$ 端消失并以零延拓的 $v_n$, 令
+\[
+ v_n(t)=\frac1h\int_t^{t+h}v_n(s)\,\mathrm{d}s
+ +\frac1h\int_t^{t+h}(v_n(t)-v_n(s))\,\mathrm{d}s
+ =a_{n,h}(t)+b_{n,h}(t).
+\]
+固定 $h>0$. 序列 $(a_{n,h})_n$ 等度连续, 且其值位于 $B_0$ 的同一有界集, 从而位于 $B_2$ 的紧集. Theorem~\ref{thm:chap2-ascoli} 给出在 $C^0([0,T],B_2)$ 中收敛的子序列. Jensen 和 Fubini 定理给出
+\begin{equation}
+ \|b_{n,h}\|_{L^p((0,T),B_2)}\leq C_T h^{1/p}.
+ \label{eq:chap2-aubin-lions-remainder}
+\end{equation}
+取 $h_k=1/k$, 对各 $(a_{n,h_k})_n$ 逐次抽取并作对角选择. 式\eqref{eq:chap2-aubin-lions-remainder}说明所得子序列在 $L^p((0,T),B_2)$ 中为 Cauchy 序列, 再由 Lemma~\ref{lem:chap2-lions-epsilon-inequality} 得到 $L^p((0,T),B_1)$ 中的 Cauchy 性.
+\end{Proof}
+
+对 $1\leq q<+\infty$ 和 $0<\sigma<1$, 定义 Nikolskii 空间
+\begin{equation}
+ N_q^\sigma((0,T),E)=\left\{f\in L^q((0,T),E):
+ \sup_{0<h<T}\frac{\|\tau_hf-f\|_{L^q((0,T-h),E)}}{h^\sigma}<+\infty\right\}.
+ \label{eq:chap2-nikolskii-space}
+\end{equation}
+
+\begin{Theorem}[Simon]
+\label{thm:chap2-simon-nikolskii-compactness}
+设 $B_0\hookrightarrow B_1\hookrightarrow B_2$, 其中 $B_1\hookrightarrow B_2$ 连续且 $B_0\hookrightarrow B_1$ 紧. 对 $1\leq q\leq+\infty$ 和 $0<\sigma<1$,
+\[
+ L^q((0,T),B_0)\cap N_q^\sigma((0,T),B_2)
+ \hookrightarrow L^q((0,T),B_1)
+\]
+为紧嵌入.
+\end{Theorem}
+
+\subsubsection{Banach 值 Fourier 变换}
+\label{subsec:chap2-banach-fourier}
+
+\begin{Definition}
+\label{def:chap2-banach-fourier-transform}
+设 $X$ 为复 Banach 空间, $f\in L^1(\mathbb{R},X)$. 定义
+\[
+ \mathcal{F}(f)(\tau)=\frac1{\sqrt{2\pi}}\int_\mathbb{R}f(t)e^{-it\tau}\,\mathrm{d}t.
+\]
+\end{Definition}
+
+\begin{Theorem}[Hausdorff--Young]
+\label{thm:chap2-hausdorff-young-finite-dimensional}
+设 $X=\mathbb{C}^n$. Fourier 变换唯一延拓为 $L^2(\mathbb{R},\mathbb{C}^n)$ 上的等距映射. 此外, 对 $1\leq p\leq2$, 存在 $C>0$ 使
+\[
+ \|\mathcal{F}(f)\|_{L^{p'}(\mathbb{R},\mathbb{C}^n)}
+ \leq C\|f\|_{L^p(\mathbb{R},\mathbb{C}^n)}.
+\]
+\end{Theorem}
+
+\begin{Theorem}[Hausdorff--Young for Lebesgue spaces]
+\label{thm:chap2-hausdorff-young-lebesgue-valued}
+设 $(E,\mu)$ 为紧的局部分离拓扑空间, $\mu$ 为 Borel 集上的正则测度, $X=L^q(E,\mu)$. 若 $1\leq p\leq2$ 且 $p\leq q\leq p'$, 则
+\[
+ \|\mathcal{F}(f)\|_{L^{p'}(\mathbb{R},L^q(E,\mu))}
+ \leq C\|f\|_{L^p(\mathbb{R},L^q(E,\mu))}.
+\]
+\end{Theorem}
+
+\begin{Proof}
+对光滑 $f$, 先以指数 $p'/q\geq1$ 应用 Minkowski 不等式, 再对固定 $x$ 的标量函数应用 Theorem~\ref{thm:chap2-hausdorff-young-finite-dimensional}, 最后以指数 $q/p\geq1$ 再用 Minkowski 不等式, 即得估计. 一般情形由稠密性得到.
+\end{Proof}
+
+\begin{Corollary}
+\label{cor:chap2-fourier-hilbert-isometry}
+若 $X=H$ 为 Hilbert 空间, 则 $\mathcal{F}$ 延拓为 $L^2(\mathbb{R},H)$ 上的可逆等距映射, 且
+\[
+ \mathcal{F}^{-1}(g)(t)=\frac1{\sqrt{2\pi}}\int_\mathbb{R}g(\tau)e^{i\tau t}\,\mathrm{d}\tau.
+\]
+\end{Corollary}
+
+\begin{Proposition}
+\label{prop:chap2-fourier-time-derivative}
+设 $f\in W^{1,1}(\mathbb{R},X)$. 则
+\[
+ \mathcal{F}\left(\frac{\mathrm{d}f}{\mathrm{d}t}\right)(\tau)
+ =i\tau\mathcal{F}(f)(\tau).
+\]
+\end{Proposition}
+
+若 $\widetilde f$ 是 $f\in W^{1,1}((0,T),X)$ 的零延拓, 则分布意义下
+\begin{equation}
+ i\tau\mathcal{F}(\widetilde f)
+ =\mathcal{F}\left(\frac{\partial f}{\partial t}\right)
+ +\frac1{\sqrt{2\pi}}f(0)-\frac{e^{-i\tau T}}{\sqrt{2\pi}}f(T).
+ \label{eq:chap2-fourier-zero-extension-derivative}
+\end{equation}
+
+\begin{Proposition}
+\label{prop:chap2-fourier-nikolskii}
+设 $H$ 为 Hilbert 空间, $f\in L^2((0,T),H)$, 且对某个 $0<\sigma\leq1$,
+\begin{equation}
+ \int_\mathbb{R}|\tau|^{2\sigma}
+ \|\mathcal{F}(\widetilde f)(\tau)\|_H^2\,\mathrm{d}\tau\leq C^2.
+ \label{eq:chap2-fourier-fractional-moment}
+\end{equation}
+则 $f\in N_2^\sigma((0,T),H)$, 且
+\[
+ \|f\|_{N_2^\sigma((0,T),H)}\leq M_\sigma(1+C),
+\]
+其中 $M_\sigma$ 只依赖于 $\sigma,T$.
+\end{Proposition}
+
+\begin{Proof}
+对 $0<h<T$, 令 $g_h(t)=\widetilde f(t+h)-\widetilde f(t)$. 则
+\[
+ \mathcal{F}(g_h)(\tau)=(e^{i\tau h}-1)\mathcal{F}(\widetilde f)(\tau).
+\]
+函数 $(e^{ix}-1)/x^\sigma$ 在 $\mathbb{R}$ 上有界, 故
+\[
+ \|\mathcal{F}(g_h)(\tau)\|_H
+ \leq K_\sigma h^\sigma|\tau|^\sigma
+ \|\mathcal{F}(\widetilde f)(\tau)\|_H.
+\]
+由 Corollary~\ref{cor:chap2-fourier-hilbert-isometry} 和式\eqref{eq:chap2-fourier-fractional-moment},
+\[
+ \int_0^{T-h}\|f(t+h)-f(t)\|_H^2\,\mathrm{d}t
+ \leq K_\sigma^2C^2h^{2\sigma},
+\]
+这正是式\eqref{eq:chap2-nikolskii-space}中的估计.
+\end{Proof}
