@@ -8,4 +8,7 @@
 6. Completed: `ch01-sec01` extracted, structured, translated, formula-registered, compiled, visually inspected, and passed batch QA.
 7. Completed: Chapter I Sections 3-7 extracted, translated, formula-registered, cross-referenced, compiled, and passed integrated QA; Sections 1-2 were preserved unchanged.
 8. For every unit: extract, restore structure, register formulae and references, apply approved terminology, translate faithfully, run deterministic QA, compile, and visually inspect.
-9. Phase 1 stop point reached. The next natural unit is `ch02-sec01`; do not start it before the user continues the project.
+9. Completed: Phase 1 ended after Chapter I and was pushed after explicit user authorization.
+10. Completed: Phase 2 Chapter II, Sections 1 and 2 passed unit QA and integrated compilation.
+11. In progress: continue from `ch02-sec03`, then complete the remaining Chapter II and Chapter III natural units.
+12. Phase 2 ends only after Chapters II and III pass integrated QA, source and template hashes remain unchanged, and the explicitly requested remote push is verified.
