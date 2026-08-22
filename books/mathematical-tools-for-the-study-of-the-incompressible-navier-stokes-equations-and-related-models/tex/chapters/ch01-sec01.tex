@@ -1,0 +1,107 @@
+\section{流体力学方程}
+\label{chap:fluid-mechanics-equations}
+
+本章介绍流体力学方程以及后文将研究的各种模型. 关于流体力学, 以及更一般的连续介质力学, 已有大量著作出版. 如果读者希望更详细地了解各个概念, 我们建议参阅\MBUnresolvedReference{bib:source-90}{[90]}, \MBUnresolvedReference{bib:source-66}{[66]}, \MBUnresolvedReference{bib:source-102}{[102]}, \MBUnresolvedReference{bib:source-127}{[127]}, \MBUnresolvedReference{bib:source-126}{[126]}和\MBUnresolvedReference{bib:source-123}{[123]}. 此外, 我们所使用的一些热力学概念在\MBUnresolvedReference{app:thermodynamics-supplement}{Appendix~B}中有非常简要的说明.
+
+\subsection{流体的连续描述}
+\label{sec:chap1-continuous-description}
+
+\subsubsection{连续介质假设. 密度}
+\label{subsec:chap1-continuum-density}
+
+流体由大量运动着的分子构成, 与固体不同, 它在静止时没有确定的形状. 研究流体的一种初步方法, 可以是在考虑各粒子相互作用的情况下写出每个粒子的运动方程. 这些相互作用既包括以平均自由程为特征的碰撞, 也包括长程相互作用. 这种所谓的统计方法产生了流体动理学理论, 并更一般地产生了统计力学. 这一方法可以追溯到十九世纪中叶 Maxwell 的工作.
+
+在大量物理情形中, 如果所研究流体的平均密度不太低, 即问题的特征长度相对于粒子的平均自由程足够大, 那么可以把流体视为连续介质. 这意味着可以把粒子的运动作为整体来考察, 而不是分别考察每个粒子. 因此, 我们可以定义刻画系统的宏观量, 如密度和速度等.
+
+连续介质的一种直观描述如下. 在所考察的流体中, 给定时刻 $t$ 和点 $M$, 令 $\delta V$ 表示点 $M$ 周围的一个空间微元体积. 这里假定体积 $\delta V$ 相对于所研究问题的尺度很小, 但相对于分子的平均自由程又足够大. 这意味着 $\delta V$ 中包含大量分子. 现以 $\delta m$ 表示该微元体积中所含的质量, 则时刻 $t$ 点 $M$ 处的流体密度可以直观地定义为比值
+\[
+  \rho\approx\frac{\delta m}{\delta V}.
+\]
+如果测量能够证实, 只要 $\delta V$ 的大小保持在上述范围内, 这个量就基本不依赖于时刻 $t$ 点 $M$ 周围所选的微元体积 $\delta V$, 那么称连续介质假设成立. 在这种情况下, 时刻 $t$ 点 $M$ 处流速的一个直观统计定义是 $\delta V$ 中所含粒子质心的速度:
+\[
+  v\approx\frac{\sum_{i=1}^{N}m_i v_i}{\sum_{i=1}^{N}m_i},
+\]
+其中 $m_i$ 和 $v_i$ 分别表示 $\delta V$ 中各分子的质量和速度, $N$ 是这些分子的数目. 同样, 期望这一比值基本不依赖于体积 $\delta V$ 的大小. \MBUnresolvedReference{bib:source-125}{文献 [125]}给出了连续介质假设有效性的交互式说明. 密度更形式化的定义如下.
+
+\begin{Definition}
+\label{def:chap1-density-field}
+如果存在非负函数 $(t,X)\mapsto\rho(t,X)$, 使得时刻 $t$ 任意流体体积 $\omega$ 中所含的质量可表示为
+\begin{equation}
+\label{eq:chap1-density-mass}
+  \text{时刻 $t$ 体积 $\omega$ 中的质量}
+  =\int_{\omega}\rho(t,X)\,\mathrm{d}X,
+\end{equation}
+则称连续介质描述有效.
+\end{Definition}
+
+函数 $\rho$ 称为所研究流体的密度场. 由上面的形式化讨论应当清楚, 只有当流体体积 $\omega$ 的尺度充分大于流体中分子的平均自由程时, 才能期望式\eqref{eq:chap1-density-mass}成立.
+
+在正常温度和压力条件下, 常规气体(氧气, 氢气, 氮气等)中的平均自由程约为 $100\,\mathrm{nm}=10^{-7}\,\mathrm{m}$, 而水中的这一特征长度约为 $10^{-10}\,\mathrm{m}$. 当然, 与大多数实际情形下所研究问题的特征尺度相比, 这些长度非常小. 然而, 在更极端的情形中, 例如高空空气稀薄处, 介质中的平均自由程可能长得多, 其数量级可能与所研究实际问题的尺度相当, 例如航天飞机在高层大气中的绕流. 在这种情况下, 流体不能再被假定为连续介质, 必须采用介质的微观统计描述. 本书下文始终假定所处理的是连续介质.
+
+\noindent\textbf{Notation:}\quad 关于这里所用常见微分算子的主要记号和性质, 见\MBUnresolvedReference{app:classic-differential-operators}{Appendix~A}.
+
+\subsubsection{Lagrangian 坐标与 Eulerian 坐标}
+\label{subsec:chap1-lagrangian-eulerian}
+
+在流体力学中, 可以用两个典范坐标系写出各种运动方程. 如下所述, Lagrangian 坐标与一个流体粒子(或一个流体体积元)相联系, 并在其整个演化过程中跟随它. 相比之下, Eulerian 坐标是与实验相关联的固定参考系中的坐标.
+
+在某些情形下, 例如研究自由表面流或流固相互作用时, Lagrangian 坐标确实很有用. 然而, 自十八世纪 Euler 的工作以来, 使用 Eulerian 坐标写出流动方程更为常见也更为方便, 本书也将采用这种坐标.
+
+连续介质假设使我们能够把流体分子的运动作为整体而不是逐个分子来考察. 设 $\omega\subset\mathbb{R}^3$ 是初始时刻流体占据的空间体积. 流动由定义在 $\omega$ 上的一族双射映射 $(\varphi_t)_t$ 描述, 使得对任意 $\Omega_0\subset\omega$, 集合 $\Omega_t=\varphi_t(\Omega_0)$ 在时刻 $t$ 恰好包含初始时刻位于 $\Omega_0$ 中的那些流体分子. 本书始终假定系统中没有物质源或物质汇; 否则必须相应修改方程.
+
+\begin{Definition}
+\label{def:chap1-fluid-element}
+由时间变量 $t$ 标记且满足 $\Omega_t=\varphi_t(\Omega_0)$ 的这样一族集合 $(\Omega_t)_t$ 称为流体元.
+
+当 $\Omega_0$ 是单点集 $\Omega_0=\{x_0\}$ 时, 称其为流体粒子.
+\end{Definition}
+
+这是一个纯粹的数学概念, 与流体中的任何特定分子无关. 在后一种情形中, 对任意 $t$ 都有 $\Omega_t=\{\varphi_t(x_0)\}$. 因此, $\varphi_t(x_0)$ 是初始时刻 $0$ 位于 $x_0$ 的流体粒子在时刻 $t$ 相对于固定参考系的位置.
+
+于是, 对任意 $t$, $t_0$ 和 $x_0$, 可以引入点
+\[
+  X(t,t_0,x_0)=\varphi_t\bigl(\varphi_{t_0}^{-1}(x_0)\bigr),
+\]
+它表示在时刻 $t_0$ 位于 $x_0$ 的流体粒子在时刻 $t$ 的位置. 映射 $t\mapsto X(t,t_0,x_0)$ 称为该流体粒子的轨迹.
+
+知道 $X$ 或 $(\varphi_t)_t$ 是等价的, 并且能够完全确定系统的演化. 不过, 我们通常并不关心在给定时刻识别系统中每个流体粒子的位置; 更适合使用由下列运动学关系定义的宏观速度场 $v$:
+\begin{equation}
+\label{eq:chap1-velocity-definition}
+  v(t,x)=\left.\frac{\partial X(s,t,x)}{\partial s}\right|_{s=t}.
+\end{equation}
+这意味着 $v(t,x)$ 是时刻 $t$ 经过 $x$ 的流体粒子的速度. 等价地, 对任意 $t$ 和任意 $x_0$, 此定义可写为
+\begin{equation}
+\label{eq:chap1-velocity-lagrangian}
+  v\bigl(t,\varphi_t(x_0)\bigr)
+  =\left.\frac{\partial\varphi_s(x_0)}{\partial s}\right|_{s=t}.
+\end{equation}
+
+\begin{Remark}
+\label{rem:chap1-characteristic-equation}
+由式\eqref{eq:chap1-velocity-lagrangian}可见, 如果速度场 $v$ 已知且足够光滑, 那么理论上可以通过求解下列微分方程来确定位置场 $X$; 该方程有时称为特征方程:
+\begin{equation}
+\label{eq:chap1-characteristic-equation}
+  \frac{\partial X(t,t_0,x_0)}{\partial t}
+  =v\bigl(t,X(t,t_0,x_0)\bigr),
+  \qquad X(t_0,t_0,x_0)=x_0.
+\end{equation}
+\end{Remark}
+
+上面的坐标 $(t,X)$ 构成所谓的 Eulerian 坐标系. 在 Eulerian 坐标中工作, 就是固定一个位置 $X$, 并在这个固定点写出力学平衡方程和热力学平衡方程.
+
+设 $f(t,X)$ 是与流体描述有关的任意量, 如密度或温度等. 使用 Eulerian 坐标需要付出的代价是, $f$ 关于时间的偏导数 $\partial f/\partial t$ 不能正确描述在时刻 $t$ 经过固定位置 $X$ 的粒子所携带的量 $f$ 随时间的变化, 因为它没有计入粒子的运动. 在这种情况下, Eulerian 描述中 $f$ 的正确时间导数概念是物质导数, 定义为
+\begin{equation}
+\label{eq:chap1-material-derivative}
+  \frac{Df}{Dt}=\frac{\partial f}{\partial t}+v\cdot\nabla f.
+\end{equation}
+这一定义来自下面对流体粒子所携带的量 $f$ 关于时间变化的计算:
+\begin{align*}
+  \frac{\mathrm{d}}{\mathrm{d}t}f\bigl(t,X(t,t_0,x_0)\bigr)
+  &=\frac{\partial f}{\partial t}\bigl(t,X(t,t_0,x_0)\bigr)
+    +\frac{\partial X}{\partial t}(t,t_0,x_0)\cdot
+      \nabla f\bigl(t,X(t,t_0,x_0)\bigr)\\
+  &=\frac{\partial f}{\partial t}\bigl(t,X(t,t_0,x_0)\bigr)
+    +v\bigl(t,X(t,t_0,x_0)\bigr)\cdot
+      \nabla f\bigl(t,X(t,t_0,x_0)\bigr)\\
+  &=\frac{Df}{Dt}\bigl(t,X(t,t_0,x_0)\bigr).
+\end{align*}
