@@ -1,0 +1,58 @@
+\section{分析工具}
+\label{chap:analysis-tools}
+
+本章旨在介绍后续各章将使用的分析工具. 我们汇集了研究许多线性或非线性演化偏微分方程所需的基本概念, 这类方程来自物理学和生物学等多个领域.
+
+首先, 在\MBUnresolvedReference{sec:chap2-functional-analysis}{Section~2}中, 我们不加证明地介绍若干经典泛函分析结果, 如开映射定理, Banach--Steinhaus 定理和 Lax--Milgram 定理. 这些定理的证明很容易在文献中找到, 例如\MBUnresolvedReference{bib:functional-analysis-sources}{[27, 104, 105]}. 我们还给出弱收敛与弱-* 收敛的定义, 它们在偏微分方程分析中经常使用. 我们特别关注这些结果在一些基本空间, 即 Lebesgue 空间中的表述. 本节最后简要介绍分布理论, 并说明 Lipschitz 连续函数的一些基本性质.
+
+\MBUnresolvedReference{sec:chap2-compactness}{Section~3}旨在介绍与紧性概念有关的若干工具. 在处理偏微分方程中的非线性项时, 紧性至关重要. 我们特别回顾 Schauder 不动点定理.
+
+在演化问题分析中, 建立存在性定理的一种常用方法是先获得能量估计. 通常, 这些估计由涉及单个实变量的实函数的初等微分不等式推出; 对我们关注的问题而言, 这个变量就是时间 $t$. 因此, 本章\MBUnresolvedReference{sec:chap2-real-variable}{Section~4}说明单实变量数值函数的弱微分与通常微分之间的联系. 最后证明各种 Gronwall 型不等式, 它们在多数情形下能给出所需估计.
+
+\MBUnresolvedReference{sec:chap2-banach-valued}{Section~5}介绍并研究定义在 $\mathbb{R}$ 的区间上且取值于 Banach 空间的可积函数空间, 这也称为 Bochner 积分理论. 特别地, 我们证明 Aubin--Lions--Simon 紧性定理\MBUnresolvedReference{bib:aubin-lions-simon}{[14, 84, 109]}, 它是研究非线性问题的一个基本结果. 证明的主要工具是在本章开头回顾的 Ascoli 定理. 我们还介绍这类函数的 Fourier 变换及其主要性质.
+
+最后, 在\MBUnresolvedReference{sec:chap2-spectral-analysis}{Section~6}中, 我们非常简要地介绍具有紧预解式的自伴无界算子的谱理论.
+
+\subsection{主要记号}
+\label{sec:chap2-main-notation}
+
+本书始终用 $d\in\mathbb{N}^*$ 表示空间维数; 在流体力学应用中通常有 $d=2$ 或 $d=3$. $\mathbb{R}^d$ 上的 Euclidean 范数记为 $x\mapsto|x|$, 相应的内积记为 $(x,y)\mapsto x\cdot y$.
+
+对任意多重指标 $\alpha=(\alpha_1,\ldots,\alpha_d)\in\mathbb{N}^d$, 记其长度为 $|\alpha|=\alpha_1+\cdots+\alpha_d$. 对任意函数 $f$, 只要相应偏导数以经典或弱意义存在, 定义
+\[
+  \partial^\alpha f=\partial_{x_1}^{\alpha_1}\cdots\partial_{x_d}^{\alpha_d}f.
+\]
+
+对任意开集 $\Omega\subset\mathbb{R}^d$, 使用下列标准函数空间:
+\begin{itemize}
+\item $C^k(\Omega)$, $k\geq0$, 表示直到 $k$ 阶的偏导数均连续的函数集合.
+\item $C_b^k(\Omega)\subset C^k(\Omega)$, 表示直到 $k$ 阶的所有偏导数均有界的函数集合.
+\item $C^{0,\alpha}(\Omega)$, $\alpha\in(0,1]$, 表示 $\alpha$-Hölder 连续函数集合. 当 $\alpha=1$ 时, $C^{0,1}(\Omega)$ 是 Lipschitz 连续函数集合. 这类函数的 Lipschitz 半范数定义为
+\[
+  \operatorname{Lip}(f)=\sup_{\substack{x,y\in\Omega\\x\neq y}}
+  \frac{|f(x)-f(y)|}{|x-y|}<+\infty.
+\]
+\item $C^{k,\alpha}(\Omega)$, $k\geq0$, $\alpha\in(0,1]$, 表示 $C^k(\Omega)$ 中所有 $k$ 阶偏导数均为 $\alpha$-Hölder 连续的函数集合.
+\item $C_c^\infty(\Omega)$ 表示 $C^\infty(\Omega)$ 中在 $\Omega$ 内具有紧支集的函数集合. 在分布理论中, 这一空间通常也记为 $\mathcal{D}(\Omega)$.
+\item $C_c^\infty(\overline\Omega)$ 表示 $C_c^\infty(\mathbb{R}^d)$ 中函数限制到 $\Omega$ 后所得的集合.
+\end{itemize}
+
+此外, 对定义在 $\Omega$ 上的任意函数 $u$, 记 $\overline u$ 为其在全空间上的零延拓:
+\[
+  \overline u(x)=
+  \begin{cases}
+  u(x),&x\in\Omega,\\
+  0,&x\notin\Omega.
+  \end{cases}
+\]
+
+定义边界的符号距离函数 $\delta$ 为
+\begin{equation}
+\label{eq:chap2-signed-distance}
+  \delta(x)=
+  \begin{cases}
+  d(x,\partial\Omega),&x\in\Omega,\\
+  -d(x,\partial\Omega),&x\notin\Omega.
+  \end{cases}
+\end{equation}
+由三角不等式容易验证, $\delta$ 在 $\mathbb{R}^d$ 上 Lipschitz 连续, 且 $\operatorname{Lip}(\delta)\leq1$.
