@@ -1,0 +1,161 @@
+\section{流体力学方程}
+\label{chap:fluid-mechanics-equations}
+
+为简单起见, 在叙述和说明本章结果时, 我们对用于刻画流动的变量(密度, 速度等)的正则性作出若干假设. 不过应注意, 在某些情形下可以放宽这些假设.
+
+\subsection{输运定理}
+\label{sec:chap1-transport-theorem}
+
+我们首先叙述一个基本的微分结果, 在流体力学中称为输运定理. 它说明如何对流体元 $(\Omega_t)_t$ 上积分的标量值求导.
+
+我们假设, 对每个 $t$, 映射 $\varphi_t$ 是光滑微分同胚, 并且 $t\mapsto\varphi_t$ 是光滑的. 为略微简化记号, 还令
+\[
+  \varphi(t,x)=\varphi_t(x)=X(t,0,x).
+\]
+
+\begin{Theorem}
+\label{thm:chap1-transport}
+设函数 $f$ 关于变量 $(t,X)\in\mathbb{R}\times\mathbb{R}^3$ 属于 $C^1$ 类. 则对任意时刻 $t$, 有
+\[
+  \frac{\mathrm{d}}{\mathrm{d}t}\int_{\Omega_t} f(t,X)\,\mathrm{d}X
+  =\int_{\Omega_t}\left(\frac{\partial f}{\partial t}+\operatorname{div}(fv)\right)\,\mathrm{d}X,
+\]
+其中 $v$ 是由\MBUnresolvedReference{eq:chap1-velocity-definition}{前述运动学关系}定义的 $\mathbb{R}^3$ 中的向量场.
+\end{Theorem}
+
+\begin{Proof}
+固定 $t$. 作变量替换 $x\in\Omega_0\mapsto X=\varphi(t,x)\in\Omega_t$, 得
+\[
+  \int_{\Omega_t} f(t,X)\,\mathrm{d}X
+  =\int_{\Omega_0} f(t,\varphi(t,x))\lvert J(t,x)\rvert\,\mathrm{d}x,
+\]
+其中 $J$ 是映射 $x\mapsto\varphi(t,x)$ 的 Jacobian 行列式.
+
+此外, 行列式关于其三行是三线性函数. 由\MBUnresolvedReference{eq:chap1-velocity-lagrangian}{前述等价关系}, 推得恒等式
+\[
+  \frac{\partial}{\partial t}\frac{\partial\varphi_i}{\partial x_j}(t,x)
+  =\frac{\partial}{\partial x_j}\frac{\partial\varphi_i}{\partial t}(t,x)
+  =\frac{\partial}{\partial x_j}\bigl(v_i(t,\varphi(t,x))\bigr).
+\]
+省略导数取值点的书写, 得
+\[
+\frac{\mathrm{d}}{\mathrm{d}t}J(t,x)=
+\begin{vmatrix}
+\dfrac{\partial v_1}{\partial x_1}&\dfrac{\partial v_1}{\partial x_2}&\dfrac{\partial v_1}{\partial x_3}\\
+\dfrac{\partial\varphi_2}{\partial x_1}&\dfrac{\partial\varphi_2}{\partial x_2}&\dfrac{\partial\varphi_2}{\partial x_3}\\
+\dfrac{\partial\varphi_3}{\partial x_1}&\dfrac{\partial\varphi_3}{\partial x_2}&\dfrac{\partial\varphi_3}{\partial x_3}
+\end{vmatrix}
++
+\begin{vmatrix}
+\dfrac{\partial\varphi_1}{\partial x_1}&\dfrac{\partial\varphi_1}{\partial x_2}&\dfrac{\partial\varphi_1}{\partial x_3}\\
+\dfrac{\partial v_2}{\partial x_1}&\dfrac{\partial v_2}{\partial x_2}&\dfrac{\partial v_2}{\partial x_3}\\
+\dfrac{\partial\varphi_3}{\partial x_1}&\dfrac{\partial\varphi_3}{\partial x_2}&\dfrac{\partial\varphi_3}{\partial x_3}
+\end{vmatrix}
++
+\begin{vmatrix}
+\dfrac{\partial\varphi_1}{\partial x_1}&\dfrac{\partial\varphi_1}{\partial x_2}&\dfrac{\partial\varphi_1}{\partial x_3}\\
+\dfrac{\partial\varphi_2}{\partial x_1}&\dfrac{\partial\varphi_2}{\partial x_2}&\dfrac{\partial\varphi_2}{\partial x_3}\\
+\dfrac{\partial v_3}{\partial x_1}&\dfrac{\partial v_3}{\partial x_2}&\dfrac{\partial v_3}{\partial x_3}
+\end{vmatrix}.
+\]
+应用链式法则, 得
+\begin{equation}
+\label{eq:chap1-transport-chain-rule}
+  \frac{\partial}{\partial x_j}\bigl(v_k(t,\varphi(t,x))\bigr)
+  =\sum_{\ell=1}^{3}\frac{\partial v_k}{\partial X_\ell}(t,\varphi(t,x))
+  \frac{\partial\varphi_\ell}{\partial x_j}(t,x).
+\end{equation}
+
+定义行向量 $L_k$ 和 $M_k$ 如下:
+\[
+  L_k=\left(
+  \frac{\partial\varphi_k}{\partial x_1}(t,x),
+  \frac{\partial\varphi_k}{\partial x_2}(t,x),
+  \frac{\partial\varphi_k}{\partial x_3}(t,x)
+  \right),
+\]
+\[
+  M_k=\left(
+  \frac{\partial}{\partial x_1}\bigl(v_k(t,\varphi(t,x))\bigr),
+  \frac{\partial}{\partial x_2}\bigl(v_k(t,\varphi(t,x))\bigr),
+  \frac{\partial}{\partial x_3}\bigl(v_k(t,\varphi(t,x))\bigr)
+  \right).
+\]
+式\eqref{eq:chap1-transport-chain-rule}表明
+\[
+  M_k=\sum_{\ell=1}^{3}\frac{\partial v_k}{\partial X_\ell}(t,\varphi(t,x))L_\ell,
+\]
+因而
+\begin{align*}
+  \det(M_1,L_2,L_3)
+  &=\det\left(\sum_{\ell=1}^{3}\frac{\partial v_1}{\partial X_\ell}L_\ell,L_2,L_3\right)\\
+  &=\sum_{\ell=1}^{3}\frac{\partial v_1}{\partial X_\ell}\det(L_\ell,L_2,L_3)\\
+  &=\frac{\partial v_1}{\partial X_1}\det(L_1,L_2,L_3)
+   =\frac{\partial v_1}{\partial X_1}(t,\varphi(t,x))J,
+\end{align*}
+这是因为行列式是三线性且交错的. 类似计算给出
+\[
+  \det(L_1,M_2,L_3)=\frac{\partial v_2}{\partial X_2}(t,\varphi(t,x))J,
+  \qquad
+  \det(L_1,L_2,M_3)=\frac{\partial v_3}{\partial X_3}(t,\varphi(t,x))J.
+\]
+另一方面, 已知
+\[
+  \frac{\partial J}{\partial t}
+  =\det(M_1,L_2,L_3)+\det(L_1,M_2,L_3)+\det(L_1,L_2,M_3).
+\]
+所以
+\[
+  \frac{\partial J(t,x)}{\partial t}
+  =(\operatorname{div}v)(t,\varphi(t,x))J(t,x).
+\]
+
+我们已经假定 $\varphi(t)$ 是连续依赖于 $t$ 的 $C^1$ 微分同胚, 因而其 Jacobian 行列式 $J$ 不为零, 且其值全都位于 $\mathbb{R}_*^+$ 或全都位于 $\mathbb{R}_*^-$ 中. 在这些区域上, ``绝对值''函数为 $C^\infty$, 且导数为``符号''函数. 因此, 函数 $\lvert J\rvert$ 可微, 并且
+\[
+  \frac{\partial\lvert J\rvert}{\partial t}
+  =\operatorname{sgn}(J)\frac{\partial J}{\partial t}
+  =\operatorname{sgn}(J)(\operatorname{div}v)(t,\varphi(t,x))J
+  =(\operatorname{div}v)(t,\varphi(t,x))\lvert J\rvert.
+\]
+应用积分号下求导理论, 得
+\begin{align*}
+  \frac{\mathrm{d}}{\mathrm{d}t}\int_{\Omega_t}f(t,X)\,\mathrm{d}X
+  &=\frac{\mathrm{d}}{\mathrm{d}t}\int_{\Omega_0}f(t,\varphi(t,x))\lvert J(t,x)\rvert\,\mathrm{d}x\\
+  &=\int_{\Omega_0}\frac{\partial}{\partial t}
+    \bigl(f(t,\varphi(t,x))\lvert J(t,x)\rvert\bigr)\,\mathrm{d}x.
+\end{align*}
+此外,
+\begin{align*}
+  &\frac{\partial}{\partial t}
+  \bigl(f(t,\varphi(t,x))\lvert J(t,x)\rvert\bigr)\\
+  &\quad=\frac{\partial f}{\partial t}(t,\varphi)\lvert J\rvert
+  +\left(\frac{\partial\varphi}{\partial t}\right)\!\cdot\nabla f\,\lvert J\rvert
+  +f(t,\varphi)\frac{\partial}{\partial t}\lvert J\rvert\\
+  &\quad=\left(
+  \frac{\partial f}{\partial t}(t,\varphi)+v\cdot\nabla f
+  +f(t,\varphi)(\operatorname{div}v)(t,\varphi(t,x))
+  \right)\lvert J\rvert.
+\end{align*}
+对上式作反向变量替换, 得
+\begin{align*}
+  \frac{\mathrm{d}}{\mathrm{d}t}\int_{\Omega_t}f(t,X)\,\mathrm{d}X
+  &=\int_{\Omega_t}\left(
+  \frac{\partial f}{\partial t}+v\cdot\nabla f+f\operatorname{div}v
+  \right)\,\mathrm{d}X\\
+  &=\int_{\Omega_t}\left(
+  \frac{\partial f}{\partial t}+\operatorname{div}(fv)
+  \right)\,\mathrm{d}X.
+\end{align*}
+\end{Proof}
+
+\begin{Remark}
+\label{rem:chap1-transport-vector}
+这个标量方程的微分结果可以推广到向量方程. 为方便起见, 我们在下方以简洁形式给出此结果, 其中 $F(t,X)$ 是向量:
+\[
+  \frac{\mathrm{d}}{\mathrm{d}t}\int_{\Omega_t}F(t,X)\,\mathrm{d}X
+  =\int_{\Omega_t}\left(
+  \frac{\partial F}{\partial t}+\operatorname{div}(F\otimes v)
+  \right)\,\mathrm{d}X,
+\]
+这里的向量场 $v$ 与定理\ref{thm:chap1-transport}中的相同. 关于 $\operatorname{div}(F\otimes v)$ 的定义, 参见\MBUnresolvedReference{app:vector-operator-identities}{附录中的向量算子说明}.
+\end{Remark}

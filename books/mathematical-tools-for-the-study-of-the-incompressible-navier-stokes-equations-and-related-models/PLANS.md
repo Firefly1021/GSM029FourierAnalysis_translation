@@ -1,5 +1,7 @@
 # Plan for mathematical-tools-for-the-study-of-the-incompressible-navier-stokes-equations-and-related-models
 
-1. Run `python -m mathbook start-book mathematical-tools-for-the-study-of-the-incompressible-navier-stokes-equations-and-related-models` in its dedicated worktree.
-2. Review the representative sample.
-3. Approve the sample before full translation.
+1. Completed: register the book, source hash, branch, and dedicated worktree.
+2. Completed: run `start-book` diagnosis and classify all 535 PDF pages.
+3. Completed: extract, structure, translate, QA, and compile the representative sample from PDF pages 17-19.
+4. Current stop: wait for user review of `output/sample-translation.pdf`.
+5. Do not begin full-book translation until the sample is explicitly approved.
