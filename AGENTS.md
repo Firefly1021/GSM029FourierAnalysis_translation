@@ -18,6 +18,7 @@
 ## Git and worktree safety
 
 - `main` is the stable system branch. Each active book uses `book/<book-id>` and a dedicated sibling worktree managed by the CLI.
+- Each book worktree uses worktree-local cone sparse checkout to materialize all shared system directories and exactly `books/<book-id>/`. Isolation is a local visibility rule: never delete other books from a branch to imitate sparse checkout, and refuse isolation when another book has uncommitted files in the selected worktree.
 - On a book branch, shared state is read-only by default: `AGENTS.md`, `src/`, `scripts/`, `schemas/`, `tests/`, `template/`, `style/`, global configuration, and `glossary/terminology.tsv`.
 - Branch, book-id, registered worktree, and physical path must agree before any book-specific write.
 - Shared-system fixes use a dedicated maintenance branch and are merged to `main` before synchronization into book branches.

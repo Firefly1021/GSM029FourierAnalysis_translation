@@ -202,6 +202,82 @@ def verify_book_context(project: ProjectPaths, book_id: str, *, writable: bool) 
     return book, record
 
 
+def isolate_book_worktree(project: ProjectPaths, book_id: str) -> dict[str, object]:
+    """Materialize shared state plus exactly one book in its registered worktree.
+
+    Sparse checkout only changes worktree-local visibility and skip-worktree bits;
+    it never deletes another book from the branch or rewrites history. Any pending
+    change below a different book root causes a refusal before sparse checkout runs.
+    """
+    validate_book_id(book_id)
+    record = project_record(project, book_id)
+    worktree = Path(record.worktree).resolve(strict=False) if record.worktree else None
+    if worktree is None or not worktree.is_dir():
+        raise ProjectError(f"Registered worktree is unavailable for {book_id!r}: {record.worktree!r}")
+
+    normalized = os.path.normcase(str(worktree))
+    entry = project.git_worktree_map().get(normalized)
+    expected_branch = f"refs/heads/book/{book_id}"
+    if not entry or entry.get("branch") != expected_branch:
+        raise ProjectError("branch/book-id/worktree/path mismatch; refusing sparse-worktree isolation.")
+
+    current_book = f"books/{book_id}"
+    if not (worktree / current_book).is_dir():
+        raise ProjectError(f"Current book directory is missing before isolation: {worktree / current_book}")
+
+    changed = set(run_git(worktree, ["diff", "--name-only", "HEAD", "--"]).stdout.splitlines())
+    changed.update(run_git(worktree, ["ls-files", "--others", "--exclude-standard"]).stdout.splitlines())
+    changed.update(
+        run_git(worktree, ["ls-files", "--others", "--ignored", "--exclude-standard"]).stdout.splitlines()
+    )
+    foreign_book_changes = sorted(
+        path for path in changed
+        if path.startswith("books/") and not path.startswith(current_book + "/")
+    )
+    if foreign_book_changes:
+        preview = "\n".join(f"- {path}" for path in foreign_book_changes[:20])
+        raise ProjectError(
+            "Sparse isolation refused because another book has uncommitted files in this worktree:\n" + preview
+        )
+
+    status_before = run_git(worktree, ["status", "--porcelain=v1", "--untracked-files=all"]).stdout
+    books_index_before = run_git(worktree, ["ls-files", "-s", "--", "books"]).stdout
+    shared_directories = sorted(
+        directory
+        for directory in run_git(worktree, ["ls-tree", "-d", "--name-only", "HEAD"]).stdout.splitlines()
+        if directory and directory != "books"
+    )
+    sparse_paths = [*shared_directories, current_book]
+    run_git(worktree, ["sparse-checkout", "set", "--cone", "--no-sparse-index", *sparse_paths])
+
+    books_index_after = run_git(worktree, ["ls-files", "-s", "--", "books"]).stdout
+    status_after = run_git(worktree, ["status", "--porcelain=v1", "--untracked-files=all"]).stdout
+    if books_index_after != books_index_before:
+        raise ProjectError("A book entry in the Git index changed during sparse isolation.")
+    if status_after != status_before:
+        raise ProjectError("Working-tree changes changed during sparse isolation.")
+    if not (worktree / current_book).is_dir():
+        raise ProjectError("Current book disappeared during sparse isolation.")
+
+    visible_books = sorted(path.name for path in (worktree / "books").iterdir() if path.is_dir())
+    unexpected = [item for item in visible_books if item != book_id]
+    if unexpected:
+        raise ProjectError(
+            "Sparse checkout completed without deleting data, but untracked or ignored directories remain visible: "
+            + ", ".join(unexpected)
+        )
+    return {
+        "book_id": book_id,
+        "branch": f"book/{book_id}",
+        "worktree": str(worktree),
+        "mode": "cone",
+        "visible_books": visible_books,
+        "shared_directories": shared_directories,
+        "status_preserved": True,
+        "books_index_preserved": True,
+    }
+
+
 def _copy_source(source: Path, destination: Path) -> None:
     destination.parent.mkdir(parents=True, exist_ok=True)
     if destination.exists():
@@ -277,6 +353,7 @@ def new_book(project: ProjectPaths, book_id: str, source: Path) -> dict[str, obj
     run_git(project.root, ["branch", branch])
     worktree.parent.mkdir(parents=True, exist_ok=True)
     run_git(project.root, ["worktree", "add", str(worktree), branch])
+    isolation = isolate_book_worktree(project, book_id)
     main_head = project.git_head()
     branch_head = run_git(project.root, ["rev-parse", branch]).stdout.strip()
     if main_head != branch_head:
@@ -284,7 +361,14 @@ def new_book(project: ProjectPaths, book_id: str, source: Path) -> dict[str, obj
     worktree_source = worktree / "books" / book_id / "input" / "source" / source.name
     if not worktree_source.is_file() or sha256_file(worktree_source) != source_hash:
         raise ProjectError("Source PDF hash changed after worktree creation; binary Git attributes must be corrected.")
-    return {"book_id": book_id, "branch": branch, "worktree": str(worktree), "source_sha256": source_hash, "status": "registered"}
+    return {
+        "book_id": book_id,
+        "branch": branch,
+        "worktree": str(worktree),
+        "source_sha256": source_hash,
+        "status": "registered",
+        "isolation": isolation,
+    }
 
 
 def _run_processor(command: Sequence[str], project: ProjectPaths, book: BookPaths, action: str) -> None:
@@ -580,7 +664,30 @@ def book_status(project: ProjectPaths, book_id: str) -> dict[str, object]:
 
 
 def list_books(project: ProjectPaths) -> list[dict[str, object]]:
-    return [book_status(project, row.book_id) for row in read_projects(project)]
+    results: list[dict[str, object]] = []
+    for row in read_projects(project):
+        candidates = []
+        if row.worktree:
+            candidates.append(ProjectPaths(Path(row.worktree)))
+        candidates.append(project)
+        selected = next((item for item in candidates if item.book(row.book_id).root.is_dir()), None)
+        if selected is not None:
+            results.append(book_status(selected, row.book_id))
+            continue
+        results.append({
+            "book_id": row.book_id,
+            "title": row.title,
+            "branch": row.branch,
+            "worktree": row.worktree,
+            "phase": row.phase,
+            "status": row.status,
+            "progress": {"completed_units": [], "next_unit": None},
+            "blocking_issues": [item for item in row.blocking_issues.split(";") if item],
+            "final_output": row.final_output,
+            "source_hash": row.source_hash,
+            "template_version": row.template_version,
+        })
+    return results
 
 
 def terminology_action(project: ProjectPaths, action: str, book_id: str | None = None) -> object:

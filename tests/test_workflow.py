@@ -12,7 +12,17 @@ from pypdf import PdfWriter
 
 from mathbook.project import ProjectError, ProjectPaths, run_git
 from mathbook.terminology import HISTORY_COLUMNS, TERM_COLUMNS, _read_tsv, find_conflicts, promote_candidates
-from mathbook.workflow import approve_sample, finish_book, new_book, next_incomplete_unit, resume_book, start_book, verify_book_context
+from mathbook.workflow import (
+    approve_sample,
+    finish_book,
+    isolate_book_worktree,
+    list_books,
+    new_book,
+    next_incomplete_unit,
+    resume_book,
+    start_book,
+    verify_book_context,
+)
 
 
 def write_tsv(path: Path, columns: tuple[str, ...], rows: list[dict[str, str]]) -> None:
@@ -102,6 +112,16 @@ class WorktreeIsolationTests(unittest.TestCase):
         self.assertNotEqual(self.a["worktree"], self.b["worktree"])
         a_project = ProjectPaths(Path(self.a["worktree"]))
         b_project = ProjectPaths(Path(self.b["worktree"]))
+        self.assertEqual(
+            run_git(b_project.root, ["config", "--worktree", "--get", "core.sparseCheckout"]).stdout.strip(),
+            "true",
+        )
+        self.assertFalse((b_project.books / "test-book-a").exists())
+        self.assertTrue((b_project.books / "test-book-b").is_dir())
+        self.assertTrue(
+            run_git(b_project.root, ["ls-files", "--", "books/test-book-a"]).stdout.strip(),
+            "Sparse checkout must hide the prior book without deleting it from the branch index.",
+        )
         a_book, _ = verify_book_context(a_project, "test-book-a", writable=True)
         b_book, _ = verify_book_context(b_project, "test-book-b", writable=True)
         a_label = a_book.assert_write_path(a_book.root / "tex" / "chapters" / "same-label.tex")
@@ -116,6 +136,25 @@ class WorktreeIsolationTests(unittest.TestCase):
             (a_project.glossary / "terminology.tsv").read_bytes(),
             (b_project.glossary / "terminology.tsv").read_bytes(),
         )
+        self.assertEqual({item["book_id"] for item in list_books(b_project)}, {"test-book-a", "test-book-b"})
+
+    def test_isolation_is_idempotent_and_preserves_current_book_changes(self) -> None:
+        a_project = ProjectPaths(Path(self.a["worktree"]))
+        changed = a_project.book("test-book-a").root / "tex" / "chapters" / "manual-edit.tex"
+        changed.write_text("% manual book-local edit\n", encoding="utf-8")
+        before = a_project.git_status()
+        result = isolate_book_worktree(a_project, "test-book-a")
+        self.assertEqual(result["visible_books"], ["test-book-a"])
+        self.assertEqual(a_project.git_status(), before)
+        self.assertEqual(changed.read_text(encoding="utf-8"), "% manual book-local edit\n")
+
+    def test_isolation_refuses_foreign_book_changes(self) -> None:
+        b_project = ProjectPaths(Path(self.b["worktree"]))
+        run_git(b_project.root, ["sparse-checkout", "disable"])
+        foreign = b_project.books / "test-book-a" / "PROJECT_STATUS.md"
+        foreign.write_text(foreign.read_text(encoding="utf-8") + "foreign edit\n", encoding="utf-8")
+        with self.assertRaisesRegex(ProjectError, "another book has uncommitted files"):
+            isolate_book_worktree(b_project, "test-book-b")
 
     def test_mismatch_resume_and_finish_safety(self) -> None:
         with self.assertRaises(ProjectError):
