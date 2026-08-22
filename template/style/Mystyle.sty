@@ -5,16 +5,16 @@
 \RequirePackage[scr=boondoxo]{mathalpha}
 \RequirePackage{geometry,fontspec}
 \RequirePackage[most]{tcolorbox}
-\RequirePackage{fancyhdr, flowchart, array, multirow, tikz, xparse, bm, graphicx, float, subfigure, titlesec,tabularx,caption,pgfplots,enumitem}
+\RequirePackage{fancyhdr, flowchart, array, multirow, tikz, xparse, bm, graphicx, float, subfigure, tabularx,caption,pgfplots,enumitem}
 \RequirePackage{algorithm,algpseudocode}
-\RequirePackage{xcolor}
+\RequirePackage{xcolor,marvosym}
 \RequirePackage[backend=biber,style=numeric]{biblatex}
 \definecolor{light yellow}{RGB}{245,222,179}
 \definecolor{sublight yellow}{RGB}{252,251,242}
-\definecolor{BiaoTi}{RGB}{37,125,80}
+\definecolor{SectionColor}{RGB}{37,125,80}
 \definecolor{KuangNei}{RGB}{242,242,242}
 \definecolor{BianKuang}{RGB}{71,93,79}
-\definecolor{ZhengWen}{RGB}{32,100,100}
+\definecolor{PageColor}{RGB}{32,100,100}
 
 \geometry{left=2.0cm,right=2.0cm,top=1.66cm,bottom=1.27cm}
 \pagecolor{sublight yellow}
@@ -23,9 +23,33 @@
 \DeclareFieldFormat{url}{\url{#1}}
 \addbibresource{ref.bib}
 
-\titleformat*{\section}{\centering\Huge\bfseries\color{BiaoTi}}
-\titleformat*{\subsection}{\Large\bfseries\color{BiaoTi}}
-\titleformat*{\subsubsection}{\large\bfseries\color{BiaoTi}}
+\ctexset{
+  section = {
+    format       = \zihao{4},
+    numberformat = \sffamily\bfseries\color{SectionColor},
+    titleformat  = \heiti\color{black},
+    aftername    = \hspace{0.65em},
+    beforeskip   = 2.5ex,
+    afterskip    = 1.2ex
+  },
+  subsection = {
+    format       = \zihao{-4},
+    numberformat = \sffamily\bfseries\color{SectionColor},
+    titleformat  = \heiti\color{black},
+    aftername    = \hspace{0.65em},
+    beforeskip   = 2.0ex,
+    afterskip    = 0.8ex
+  },
+  subsubsection = {
+    format       = \zihao{-4},
+    numberformat = \sffamily\bfseries\color{SectionColor},
+    titleformat  = \heiti\color{black},
+    aftername    = \hspace{0.65em},
+    beforeskip   = 2.0ex,
+    afterskip    = 0.8ex
+  }
+}
+
 
 \usetikzlibrary{shapes.geometric, intersections, positioning, arrows.meta, bending, calc, decorations.markings, patterns}
 
@@ -89,54 +113,118 @@
 \def\ddashint{\Xint=}
 \def\fint{\Xint-}
 
-\newcounter{thmcount}[section]
-\renewcommand{\thethmcount}{\thesection.\arabic{thmcount}}
+\newcounter{statement}[section]
+\renewcommand{\thestatement}{\thesection.\arabic{statement}}
 
-\NewDocumentEnvironment{Theorem}{o}
+% \newcounter{thmcount}[section]
+% \renewcommand{\thethmcount}{\thesection.\arabic{thmcount}}
+
+\NewDocumentEnvironment{Theorem}{g}
 {
     \vspace{0.1cm}
-    \refstepcounter{thmcount}
+    \refstepcounter{statement}
     \begin{tcolorbox}[
+        enhanced,
+        breakable,
         colback=KuangNei,
-        colframe=BianKuang,
-        title=\textbf{定理}\IfValueT{#1}{(\textbf{#1})} \thethmcount :,
-        sharpish corners,
-        fonttitle=\bfseries,
+        colframe=KuangNei,
+        boxrule=0pt,
+        arc=3mm,
+        outer arc=3mm,
+        boxsep=0pt,
+        left=4mm,
+        right=4mm,
+        top=2.5mm,
+        bottom=2.5mm,
         before skip=10pt,
         after skip=10pt
-    ]\kaishu
+    ]
+    {\sffamily\bfseries\color{PageColor}
+     Theorem~\thestatement
+     \IfValueT{#1}{{\mdseries\ (#1)}}}
+    \par
+    \kaishu
 }
 {
     \end{tcolorbox}
     \vspace{0.1cm}
 }
 
-
-\newcounter{defcount}[section]
-\renewcommand{\thedefcount}{\thesection.\arabic{defcount}}
-
-\NewDocumentEnvironment{Definition}{o}
+\NewDocumentEnvironment{Definition}{g}
 {
-    \vspace{0.1cm}
-    \par
-    \refstepcounter{defcount}
-    \textbf{定义}\IfValueT{#1}{(\textbf{#1})}\thedefcount :\kaishu
+    \refstepcounter{statement}
+
+    {\sffamily
+     \bfseries
+     \color{PageColor}
+     \fontsize{10.95}{13.2}\selectfont
+     Definition~\thestatement
+     \IfValueT{#1}{
+         {\mdseries\ (#1)}
+     }
+    }
+    \kaishu
 }
 {
     \par
-    \vspace{0.1cm}
 }
 
-\NewDocumentEnvironment{Lemma}{o}
+\NewDocumentEnvironment{Lemma}{g}
 {
-    \vspace{0.1cm}
-    \par
-    \refstepcounter{defcount}
-    \textbf{引理} \IfValueT{#1}{(\textbf{#1})}\thedefcount :\kaishu
+
+    \refstepcounter{statement}
+    
+    {\sffamily
+     \bfseries
+     \color{PageColor}
+     \fontsize{10.95}{13.2}\selectfont
+     Lemma~\thestatement
+     \IfValueT{#1}{
+         {\mdseries\ (#1)}
+     }
+    }
+    \kaishu
 }
 {
     \par
-    \vspace{0.1cm}
+}
+
+\NewDocumentEnvironment{Proposition}{g}
+{
+    \refstepcounter{statement}
+
+    {\sffamily
+     \bfseries
+     \color{PageColor}
+     \fontsize{10.95}{13.2}\selectfont
+     Proposition~\thestatement
+     \IfValueT{#1}{
+         {\mdseries\ (#1)}
+     }
+    }
+    \kaishu
+}
+{
+    \par
+}
+
+\NewDocumentEnvironment{Corollary}{g}
+{
+    \refstepcounter{statement}
+
+    {\sffamily
+     \bfseries
+     \color{PageColor}
+     \fontsize{10.95}{13.2}\selectfont
+     Corollary~\thestatement
+     \IfValueT{#1}{
+         {\mdseries\ (#1)}
+     }
+    }
+    \kaishu
+}
+{
+    \par
 }
 
 \newenvironment{Proof}{
@@ -150,5 +238,45 @@
     \vspace{0.1cm}
 }
 
+\NewDocumentEnvironment{Example}{g}
+{
+    \refstepcounter{statement}
+
+    {\rmfamily
+     \bfseries
+     \color{SectionColor}
+     \fontsize{10.95}{13.2}\selectfont
+     \WritingHand\;
+     Example~\thestatement
+     \IfValueT{#1}{
+         {\mdseries\ (#1)}
+     }
+    }
+    \par
+    \kaishu
+}
+{
+\par
+}
+
+\NewDocumentEnvironment{Exercise}{g}
+{
+    \refstepcounter{statement}
+
+    {\rmfamily
+     \bfseries
+     \color{black}
+     \fontsize{10.95}{13.2}\selectfont
+     \WritingHand\;
+     Exercise~\thestatement
+     \IfValueT{#1}{
+         {\mdseries\ (#1)}
+     }.
+    }
+    \kaishu
+}
+{
+\par
+}
 
 \pgfplotsset{compat=newest}
