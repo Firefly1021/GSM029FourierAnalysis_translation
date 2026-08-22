@@ -30,6 +30,14 @@ class LatexTests(unittest.TestCase):
         self.assertIn("\\begin{Theorem}{template-test-title}", output)
         self.assertIn("\\end{Theorem}", output)
 
+    def test_environment_display_names_remain_english(self) -> None:
+        adapter = (ROOT / "template/adapter/translation-adapter.sty").read_text(encoding="utf-8")
+        for heading in ("Theorem", "Definition", "Lemma", "Proposition", "Corollary", "Example", "Remark", "Exercise"):
+            self.assertIn(f"{heading}~\\thestatement", adapter)
+        self.assertIn("\\textbf{Proof:}", adapter)
+        for translated in ("定理", "定义", "引理", "命题", "推论", "例~", "注~", "习题", "证明:"):
+            self.assertNotIn(translated, adapter)
+
 
 if __name__ == "__main__":
     unittest.main()
