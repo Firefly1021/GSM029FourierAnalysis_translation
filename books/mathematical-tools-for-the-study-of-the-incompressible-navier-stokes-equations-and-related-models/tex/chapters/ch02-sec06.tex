@@ -1,243 +1,469 @@
-\subsection{无界算子的若干谱分析结果}
+\subsection{无界算子谱分析的若干结果}
 \label{sec:chap2-unbounded-operator-spectral-analysis}
 \renewcommand{\thestatement}{6.\number\numexpr\value{statement}-93\relax}
+\newcounter{chaptersixremark}
+\renewcommand{\thechaptersixremark}{6.\arabic{chaptersixremark}}
 
-为把有限维谱理论推广到无限维, 考虑从 Hilbert 空间 $H$ 到自身、但只在子空间 $D(A)$ 上定义的算子 $A$. 后文将其应用于 Stokes 算子.
+为了把熟知的有限维谱理论推广到无限维空间中的线性算子, 采用把 Hilbert 空间 $H$ 映到自身的算子是方便的 (当然也可以在 Banach 空间中工作, 见\MBUnresolvedReference{bib:source-27-101}{[27, 101]}). 事实上, 为了使特征向量的定义
+\[
+ Au=\lambda u
+\]
+有意义, $u$ 和 $Au$ 显然必须共存于同一个空间中. 遗憾的是, 物理问题中常见的算子通常是微分算子; 由于导数的损失, 它们不把常用 Sobolev 空间 $H^s(\Omega)$ 映到自身 (Sobolev 空间的定义见\MBUnresolvedReference{chap:sobolev-spaces}{Chapter~III}).
+
+在本书后文中, 我们特别把这一理论应用于 Stokes 算子 (见\MBUnresolvedReference{sec:future-iv-stokes-operator}{Chapter~IV 的 Section~5.2}).
 
 \subsubsection{定义}
 \label{subsec:chap2-unbounded-operator-definitions}
 
-无界算子由 Hilbert 空间 $H$、线性子空间 $D(A)\subset H$ 以及线性映射 $A:D(A)\to H$ 给出. 本书假设 $D(A)$ 在 $H$ 中稠密, 且图像
+我们需要把这些所谓的无界算子 $A$ 看作 $H$ 中的算子, 它们只定义在 $H$ 的一个子集上. 这个子集称为算子的定义域, 记作 $D(A)$. 例如, 可以把 Laplace 算子定义为 $L^2(\Omega)$ 上的无界算子, 其定义域为 $H^2(\Omega)\cap H_0^1(\Omega)$.
+
+因此, 给定一个无界算子就是给定:
+\begin{itemize}
+ \item 一个 Hilbert 空间 $H$.
+ \item 一个线性子空间 $D(A)\subset H$.
+ \item 一个线性映射 $A:D(A)\to H$.
+\end{itemize}
+在我们的框架中, 假定所有无界算子的定义域在 $H$ 中稠密, 并且算子是闭的. 这意味着 $A$ 的图
 \[
  G(A)=\{(u,Au):u\in D(A)\}
 \]
-在 $H\times H$ 中闭.
+是 $H\times H$ 的闭子集.
 
-\par\noindent\textbf{Remark 6.1:}\quad 若闭算子 $A$ 的稠密定义域 $D(A)\neq H$, 则不存在 $C>0$ 使 $\|Au\|_H\leq C\|u\|_H$ 对所有 $u\in D(A)$ 成立. 否则由稠密性和图像闭性可推出每个 $u\in H$ 都属于 $D(A)$.
+\par\noindent\refstepcounter{chaptersixremark}\textbf{Remark~\thechaptersixremark:}\label{rem:chap2-unbounded-really-unbounded}\quad
+``无界算子''这一名称源于如下事实: 若 $A$ 是定义域稠密的闭算子, 且 $D(A)\neq H$, 则 $A$ 不可能有界. 换言之, 不存在 $C>0$ 使得
+\[
+ \|Au\|_H\leq C\|u\|_H,\qquad\forall u\in D(A).
+\]
+事实上, 假设这个不等式对某个 $C>0$ 成立. 任意 $u\in H$ 都是 $D(A)$ 中某个序列 $(u_n)_n$ 的极限. 这个序列是 Cauchy 序列, 因而由上述不等式, $(Au_n)_n$ 也是 $H$ 中的 Cauchy 序列, 从而收敛. 因此, $A$ 的图中的序列 $(u_n,Au_n)_n$ 收敛. 由于这个图假定为闭集, 可得 $u\in D(A)$. 于是我们证明了 $H=D(A)$, 这与假设矛盾.
+
+现在定义自伴算子这一基本概念, 它同样推广了有限维空间中的通常概念.
 
 \begin{Definition}
 \label{def:chap2-adjoint-unbounded-operator}
-设 $A:D(A)\subset H\to H$ 有稠密定义域. 定义
+设 $A:D(A)\subset H\to H$ 是定义域稠密的无界算子. 引入
 \[
- D(A^*)=\{u\in H:v\in D(A)\mapsto(Av,u)_H
- \text{ 关于 }H\text{ 范数连续}\}.
+ D(A^*)=\{u\in H:v\in D(A)\longmapsto(Av,u)_H\text{ 关于 }H\text{ 的范数连续}\}.
 \]
-对 $u\in D(A^*)$, 唯一元素 $A^*u\in H$ 由
+对于 $u\in D(A^*)$, 映射 $v\mapsto(Av,u)_H$ 因而可以延拓为 $H$ 上的连续线性泛函, 并可由一个记作 $A^*u\in H$ 的元素表示:
 \[
  (Av,u)_H=(v,A^*u)_H,
- \qquad\forall v\in D(A)
+ \qquad\forall u\in D(A^*),\quad\forall v\in D(A).
 \]
-确定. 称 $A^*$ 为 $A$ 的伴随算子.
+定义域为 $D(A^*)$ 的算子 $A^*$ 称为 $A$ 的伴随算子.
 \end{Definition}
+
+这个定义是相容的, 因为 $D(A)$ 在 $H$ 中的稠密性保证了定义中所用延拓的唯一性. 现在可以定义一类基本算子.
 
 \begin{Definition}
 \label{def:chap2-self-adjoint-unbounded-operator}
-若 $D(A^*)=D(A)$ 且 $A^*u=Au$ 对所有 $u\in D(A)$ 成立, 则称 $A$ 自伴.
+若无界算子 $A$ 满足
+\[
+ D(A^*)=D(A),\qquad Au=A^*u,\quad\forall u\in D(A),
+\]
+则称 $A$ 自伴.
 \end{Definition}
 
 \begin{Proposition}
 \label{prop:chap2-inverse-self-adjoint}
-设无界算子 $A$ 自伴, $A:D(A)\to H$ 为双射, 且 $A^{-1}:H\to H$ 连续. 则有界算子 $A^{-1}$ 自伴.
+设 $A$ 为自伴无界算子. 假定 $A$ 是从 $D(A)$ 到 $H$ 的双射, 且 $A^{-1}$ 从 $H$ 到 $H$ 连续. 则有界算子 $A^{-1}$ 自伴.
 \end{Proposition}
 
 \begin{Proof}
-连续性给出 $D((A^{-1})^*)=H$. 对 $u,v\in H$, $A^{-1}u,A^{-1}v\in D(A)$, 且
+$A^{-1}$ 的定义域为 $H$. 因此, 首先需要证明 $D((A^{-1})^*)$ 也等于 $H$. 设 $u\in H$. 由于 $A^{-1}$ 连续, 映射 $v\mapsto(A^{-1}v,u)_H$ 显然在整个 $H$ 上连续, 因而根据定义, $u\in D((A^{-1})^*)$.
+
+设 $u,v\in H$. 则 $A^{-1}u$ 和 $A^{-1}v$ 属于 $D(A)$. 由于 $A$ 自伴, 有
 \[
- (u,A^{-1}v)_H=(A(A^{-1}u),A^{-1}v)_H
- =(A^{-1}u,A(A^{-1}v))_H=(A^{-1}u,v)_H.
+ \bigl(A(A^{-1}u),A^{-1}v\bigr)_H
+ =\bigl(A^{-1}u,A(A^{-1}v)\bigr)_H;
 \]
+换言之,
+\[
+ (u,A^{-1}v)_H=(A^{-1}u,v)_H.
+\]
+这确实证明了 $A^{-1}$ 自伴.
 \end{Proof}
+
+一般而言, 当 $D(A)$ 赋予 $H$ 的范数时, 无界算子从 $D(A)$ 到 $H$ 并不连续. 这意味着 $H$ 的范数不是应当赋予 $D(A)$ 的正确范数. 下面这个命题的证明是直接的, 它是 $A$ 的图为闭集这一事实的结果.
 
 \begin{Proposition}
 \label{prop:chap2-graph-norm-hilbert}
-设 $A$ 为 $H$ 中定义域为 $D(A)$ 的闭无界算子. 赋予 $D(A)$ 内积
+设 $A$ 是 Hilbert 空间 $H$ 中定义域为 $D(A)$ 的闭无界算子. 在 $D(A)$ 上赋予内积
 \begin{equation}
- (u,v)_{D(A)}=(u,v)_H+(Au,Av)_H.
+ (u,v)_{D(A)}=(u,v)_H+(Au,Av)_H,
+ \qquad\forall u,v\in D(A),
  \label{eq:chap2-graph-inner-product}
 \end{equation}
-则 $D(A)$ 是 Hilbert 空间, $D(A)\hookrightarrow H$ 连续, 且 $A:D(A)\to H$ 连续.
+以及相应的范数. 则 $D(A)$ 是 Hilbert 空间, 从 $D(A)$ 到 $H$ 的嵌入连续, 且 $A$ 从 $D(A)$ 到 $H$ 连续.
 \end{Proposition}
 
-\par\noindent\textbf{Remark 6.2:}\quad 上述范数等价于图范数 $\|u\|_H+\|Au\|_H$.
+\par\noindent\refstepcounter{chaptersixremark}\textbf{Remark~\thechaptersixremark:}\label{rem:chap2-graph-norm-equivalence}\quad
+显然, 上面引入的范数等价于所谓的图范数
+\[
+ \|u\|_{\mathrm{graph}}=\|u\|_H+\|Au\|_H,
+ \qquad\forall u\in D(A).
+\]
 
 \subsubsection{谱理论的初等结果}
 \label{subsec:chap2-elementary-spectral-theory}
 
-\begin{Theorem}[Compact self-adjoint operators]
+上述概念在我们所关心主题中的基本应用包含在下面的结果中.
+
+\begin{Theorem}{Compact self-adjoint operators}
 \label{thm:chap2-compact-self-adjoint-spectral}
-设 $H$ 为可分无限维 Hilbert 空间, $T:H\to H$ 为紧自伴有界算子. 则 $H$ 有一组由 $T$ 的特征向量组成的标准正交基. 其特征值均为实数, 可排列成趋于 $0$ 的序列.
+设 $H$ 为可分的无限维 Hilbert 空间, $T$ 为从 $H$ 到 $H$ 的紧自伴算子, 并且 $T$ 有界, 即在整个 $H$ 上有定义且连续. 则 $H$ 有一组由 $T$ 的特征向量组成的标准正交基. 此外, $T$ 的特征值集合由实数组成, 并可以排列为一个趋于 $0$ 的序列.
 \end{Theorem}
 
-\begin{Theorem}[Operators with compact inverse]
+这里不给出证明, 例如可参见\MBUnresolvedReference{bib:source-27}{[27]}.
+
+当无界算子 $A$ 是从 $D(A)$ 到 $H$ 的双射时, 开映射定理说明 $A$ 是从赋予图范数的 $D(A)$ 到 $H$ 的同构. 在这种情形下, $A^{-1}$ 是从 $H$ 到 $D(A)$ 的连续算子. 由于从 $D(A)$ 到 $H$ 的嵌入连续, 也可以把 $A^{-1}$ 看作从 $H$ 到 $H$ 的连续算子.
+
+此外, 若从 $D(A)$ 到 $H$ 的嵌入是紧的, 正如应用中经常出现的那样, 则把 $A^{-1}$ 看作从 $H$ 到 $H$ 的算子时, 它是紧的 (见 Lemma~\ref{lem:chap2-compact-composition}). 因此可以应用前一个定理, 得到下面的结果.
+
+\begin{Theorem}{Operators with compact inverse}
 \label{thm:chap2-compact-inverse-spectral}
-设 $H$ 为可分无限维 Hilbert 空间, $A:D(A)\subset H\to H$ 自伴, 从 $D(A)$ 到 $H$ 为双射, 且 $D(A)\hookrightarrow H$ 紧. 则存在 $H$ 的标准正交基 $(w_k)_{k\geq1}$ 以及实数 $\lambda_k$, 使
+设 $H$ 为可分的无限维 Hilbert 空间. 设 $A:D(A)\subset H\to H$ 为无界算子. 假定 $A$ 自伴, 是从 $D(A)$ 到 $H$ 的双射, 且从 $D(A)$ 到 $H$ 的典范嵌入是紧的.
+
+则存在 $H$ 的一个标准正交基 $(w_k)_{k\geq1}$, 它由 $A$ 的特征向量组成, 即对所有 $k\geq1$,
 \[
- w_k\in D(A),\qquad Aw_k=\lambda_kw_k,
+ w_k\in D(A),\qquad Aw_k=\lambda_k w_k,
 \]
-并可使 $(|\lambda_k|)_k$ 单调递增且趋于 $+\infty$. 此外, $(w_k)_k$ 在 $D(A)$ 中为完备正交族.
+其中 $A$ 的特征值 $(\lambda_k)_{k\geq1}$ 为实数, 并可以按使 $(|\lambda_k|)_k$ 单调递增的方式排列, 且当 $k$ 趋于无穷时, $|\lambda_k|$ 趋于 $+\infty$.
+
+最后, 特征向量 $(w_k)_{k\geq1}$ 构成 $D(A)$ 中的完备正交族.
 \end{Theorem}
 
 \begin{Proof}
-由 Proposition~\ref{prop:chap2-inverse-self-adjoint}, $A^{-1}$ 是紧自伴有界算子. Theorem~\ref{thm:chap2-compact-self-adjoint-spectral} 给出 $H$ 的标准正交基 $(w_k)_k$ 以及非零特征值 $\mu_k\to0$. 令 $\lambda_k=1/\mu_k$, 则 $Aw_k=\lambda_kw_k$ 且 $|\lambda_k|\to+\infty$.
+如上所述, 在定理的假设下, 算子 $A^{-1}$ 可以看作有界的紧自伴算子. 由 Theorem~\ref{thm:chap2-compact-self-adjoint-spectral}, 存在 $H$ 的一个标准正交基 $(w_k)_{k\geq1}$, 它由 $A^{-1}$ 对应于特征值 $\mu_k$ 的特征向量组成, 并且 $\mu_k\to0$.
 
-对 $k\neq l$,
+现在注意, 由于 $A^{-1}$ 是单射 (注意! 它在 $H$ 上不是满射), $0$ 不可能是 $A^{-1}$ 的特征值. 因此, 原文此处写作对所有 $k\geq0$, $\mu_k\neq0$. 此外, 由 $A^{-1}w_k=\mu_k w_k$ 可以清楚看出, $w_k$ 属于 $A^{-1}$ 的像, 即属于 $D(A)$.
+
+若令 $\lambda_k=1/\mu_k$, 则立即得到
 \[
- (w_k,w_l)_{D(A)}=(1+\lambda_k\lambda_l)(w_k,w_l)_H=0.
+ w_k\in D(A),\qquad Aw_k=\lambda_k w_k.
 \]
-若 $u\in D(A)$ 与所有 $w_k$ 在 $D(A)$ 中正交, 则
+$|\lambda_k|\to+\infty$ 是 $\mu_k\to0$ 的直接结果. 这证明了定理的第一部分.
+
+对 $k,l\geq0$, 有
 \[
- 0=(u,w_k)_{D(A)}=(1+\lambda_k^2)(u,w_k)_H,
+ (w_k,w_l)_{D(A)}=(w_k,w_l)_H+(Aw_k,Aw_l)_H
+ =(1+\lambda_k\lambda_l)(w_k,w_l)_H.
 \]
-故 $u=0$, 从而该族在 $D(A)$ 中完备.
+由于 $(w_k)_{k\geq1}$ 是 $H$ 的 Hilbert 基, 当 $k\neq l$ 时 $(w_k,w_l)_{D(A)}=0$, 并且
+\[
+ \|w_k\|_{D(A)}=\sqrt{1+\lambda_k^2}.
+\]
+因此, $(w_k)_k$ 是 $D(A)$ 中的正交族.
+
+为了证明它还是完备族, 需要证明 $D(A)$ 中与所有 $w_k$ 正交的唯一向量是零向量. 设 $u\in D(A)$, 并且对所有 $k$ 都有 $(u,w_k)_{D(A)}=0$. 利用 $A$ 的自伴性, 得
+\[
+\begin{aligned}
+ 0=(u,w_k)_{D(A)}
+ &= (u,w_k)_H+(Au,Aw_k)_H\\
+ &= (u,w_k)_H+\lambda_k(Au,w_k)_H\\
+ &= (u,w_k)_H+\lambda_k(u,Aw_k)_H\\
+ &= (1+\lambda_k^2)(u,w_k)_H.
+\end{aligned}
+\]
+这表明对所有 $k$ 都有 $(u,w_k)_H=0$. 由于 $(w_k)_k$ 是 $H$ 的标准正交基, 确有 $u=0$.
 \end{Proof}
+
+已知每个 $u\in H$ 都可以唯一地表示为
+\[
+ u=\sum_{k\geq1}u_kw_k,
+\]
+其中收敛是在 $H$ 的意义下, 并且 $u_k=(u,w_k)_H$. 利用这一表示, 可以识别 $H$ 中哪些元素属于 $D(A)$.
 
 \begin{Proposition}
 \label{prop:chap2-domain-spectral-characterization}
-在 Theorem~\ref{thm:chap2-compact-inverse-spectral} 的假设下,
+设算子 $A$ 满足前一定理的假设. 则
 \[
  D(A)=\left\{u\in H:\sum_{k\geq1}\lambda_k^2(u,w_k)_H^2<+\infty\right\}.
 \]
 \end{Proposition}
 
 \begin{Proof}
-$(w_k/\|w_k\|_{D(A)})_k$ 是 $D(A)$ 的标准正交基, 且
-\[
- (u,w_k)_{D(A)}=(1+\lambda_k^2)(u,w_k)_H,
- \qquad\|w_k\|_{D(A)}^2=1+\lambda_k^2.
-\]
-Parseval 恒等式给出必要性. 反之, 若加权级数收敛, 则 $\sum_k(u,w_k)_Hw_k$ 在 $D(A)$ 中收敛到某个 $\widetilde u$. 连续嵌入说明它在 $H$ 中也收敛, 标准正交基的完备性给出 $u=\widetilde u\in D(A)$.
+\begin{itemize}
+ \item 设 $u\in D(A)$. $(w_k)_k$ 是 $D(A)$ 中的完备正交族, 因而
+ \[
+  \left(\frac{w_k}{\|w_k\|_{D(A)}}\right)_k
+ \]
+ 是 $D(A)$ 的标准正交基. 因此,
+ \[
+  \sum_{k\geq1}\frac{(u,w_k)_{D(A)}^2}{\|w_k\|_{D(A)}^2}<+\infty.
+ \]
+ 另一方面, 对每个 $k$,
+ \[
+ \begin{aligned}
+ (u,w_k)_{D(A)}
+ &= (u,w_k)_H+(Au,Aw_k)_H\\
+ &= (u,w_k)_H+(u,A^2w_k)_H\\
+ &= (1+\lambda_k^2)(u,w_k)_H,
+ \end{aligned}
+ \]
+ 并且
+ \[
+  \|w_k\|_{D(A)}^2=(1+\lambda_k^2)\|w_k\|_H^2=1+\lambda_k^2.
+ \]
+ 因而得到
+ \[
+  \sum_{k\geq1}(1+\lambda_k^2)(u,w_k)_H^2<+\infty,
+ \]
+ 这证明了所需断言.
+
+ \item 现在设 $u\in H$, 并假定
+ \[
+  \sum_{k\geq1}\lambda_k^2(u,w_k)_H^2<+\infty.
+ \]
+ 这个假设蕴含
+ \[
+  \sum_{k\geq1}\|(u,w_k)_Hw_k\|_{D(A)}^2<+\infty.
+ \]
+ 由于向量族 $((u,w_k)_Hw_k)_k$ 在 $D(A)$ 中两两正交, 这说明级数
+ \[
+  \sum_{k\geq1}(u,w_k)_Hw_k
+ \]
+ 在 $D(A)$ 的范数意义下收敛到某个 $\widetilde u\in D(A)$. 由于从 $D(A)$ 到 $H$ 的嵌入连续, 收敛也在 $H$ 中成立, 因而
+ \[
+  (\widetilde u,w_k)_H=(u,w_k)_H.
+ \]
+ 这证明 $u-\widetilde u$ 与所有 $w_k$ 正交. 由于 $(w_k)_k$ 在 $H$ 中完备, 可得 $u=\widetilde u$, 从而 $u\in D(A)$.
+\end{itemize}
 \end{Proof}
 
-以下假设 $A$ 非负. 对 $s\geq0$, 定义
+我们同时证明了, 对 $u\in D(A)$,
+\[
+ \|u\|_H^2=\sum_{k\geq1}(u,w_k)_H^2,
+ \qquad
+ \|u\|_{D(A)}^2=\sum_{k\geq1}(1+\lambda_k^2)(u,w_k)_H^2.
+\]
+此外, 由于特征值绝对值序列 $(|\lambda_k|)_k$ 有一个正的下界, $D(A)$ 上的范数等价于
+\[
+ u\in D(A)\longmapsto
+ \left(\sum_{k\geq1}\lambda_k^2(u,w_k)_H^2\right)^{1/2}.
+\]
+
+现在希望定义算子 $A$ 的幂. 例如, 可以按下面的自然方式定义 $A^2$:
+\[
+ D(A^2)=\{u\in D(A):Au\in D(A)\},
+ \qquad A^2u=A(Au),\quad\forall u\in D(A^2).
+\]
+不过, 我们选择另一种定义, 它还允许定义算子的分数次幂. 为此, 必须假定算子非负, 即对每个 $u\in D(A)$ 都有 $(Au,u)_H\geq0$. 这等价于假定 $A$ 的特征值非负. 从现在起作此假定. 对每个非负实数 $s$, 引入
 \[
  D(A^s)=\left\{u\in H:\sum_{k\geq1}\lambda_k^{2s}(u,w_k)_H^2<+\infty\right\},
- \qquad A^su=\sum_{k\geq1}\lambda_k^s(u,w_k)_Hw_k.
 \]
+并对每个 $u\in D(A^s)$ 定义
+\[
+ A^su=\sum_{k\geq1}\lambda_k^s(u,w_k)_Hw_k\in H.
+\]
+最后, 在 $D(A^s)$ 上赋予自然内积
+\[
+ (u,v)_{D(A^s)}=\sum_{k\geq1}(1+\lambda_k^{2s})(u,w_k)_H(v,w_k)_H.
+\]
+容易验证下面的性质.
 
 \begin{Proposition}
 \label{prop:chap2-fractional-power-properties}
-有:
 \begin{enumerate}
-\item $A^1=A$, $D(A^0)=H$, 且 $A^0$ 为恒等算子.
-\item 对 $s>0$, $D(A^s)$ 为 Hilbert 空间, $A^s$ 是从 $D(A^s)$ 到 $H$ 的非负自伴同构, $(w_k)_k$ 在 $D(A^s)$ 中完备.
-\item 若 $0\leq s<s'$, 则 $D(A^{s'})\subsetneq D(A^s)$, 且该嵌入紧.
+ \item 算子 $A^1$ 就是 $A$. 此外, $D(A^0)=H$, 且 $A^0$ 是恒等算子. $D(A^1)$ 和 $D(A^0)$ 上的上述范数分别等价于这些空间上的通常范数.
+ \item 对每个 $s>0$, $D(A^s)$ 是 Hilbert 空间, 且 $A^s$ 是从 $D(A^s)$ 到 $H$ 的非负自伴同构. 此外, $(w_k)_k$ 是 $D(A^s)$ 中的完备族.
+ \item 对每个 $0\leq s<s'$, 有 $D(A^{s'})\subsetneq D(A^s)$, 并且这个嵌入是紧的.
 \end{enumerate}
 \end{Proposition}
 
 \begin{Proof}
-只证紧性. 若 $(u_j)_j$ 在 $D(A^{s'})$ 中有界, 则对充分大的 $n_0$,
+前两点是直接的, 严格包含 $D(A^{s'})\subsetneq D(A^s)$ 也是如此. 这里只证明从 $D(A^{s'})$ 到 $D(A^s)$ 的嵌入是紧的.
+
+设 $(u_k)_k$ 是 $D(A^{s'})$ 中的有界序列. 则存在 $C>0$, 使得
+\[
+ \sum_n\lambda_n^{2s'}|u_n^k|^2\leq C,
+ \qquad\forall k\in\mathbb N,
+\]
+其中 $u_n^k=(u_k,w_n)_H$ 是 $u_k$ 在基 $(w_n)_n$ 中的坐标.
+
+我们证明, 对每个 $\varepsilon>0$, 可以用 $D(A^s)$ 中有限多个半径为 $\varepsilon$ 的球覆盖序列 $(u_k)_k$. 给定 $\varepsilon>0$. 由于 $\lambda_n\to+\infty$, 存在 $n_0\geq0$, 使得
+\[
+ \lambda_n\geq\left(\frac{2C}{\varepsilon^2}\right)^{1/(2(s'-s))},
+ \qquad\forall n\geq n_0.
+\]
+因此, 对每个 $k$,
 \begin{equation}
- \sum_{n\geq n_0}\lambda_n^{2s}|(u_j,w_n)_H|^2\leq\varepsilon^2/2,
+ \sum_{n\geq n_0}\lambda_n^{2s}|u_n^k|^2
+ =\sum_{n\geq n_0}\lambda_n^{2(s-s')}\lambda_n^{2s'}|u_n^k|^2
+ \leq\frac{\varepsilon^2}{2C}\sum_{n\geq n_0}\lambda_n^{2s'}|u_n^k|^2
+ \leq\frac{\varepsilon^2}{2}.
  \label{eq:chap2-fractional-power-tail}
 \end{equation}
-对所有 $j$ 一致成立. 前 $n_0$ 个坐标位于有限维有界集, 可由有限个小球覆盖, 即
+由于 $n_0$ 固定, 对所有 $n<n_0$ 有
+\[
+ |u_n^k|^2\leq\frac{C}{\lambda_n^{2s'}},
+ \qquad\forall k.
+\]
+因此, 对 $0\leq n\leq n_0-1$, 实数序列 $(u_n^k)_k$ 有界. $\mathbb R^{n_0}$ 中的闭球是紧集, 所以存在 $\mathbb R^{n_0}$ 中的有限族 $(v^i)_{i\in I}$, 其中 $v^i=(v_n^i)_{0\leq n\leq n_0-1}$, 使得
 \begin{equation}
- \sum_{n<n_0}\lambda_n^{2s}|(u_j-v^i,w_n)_H|^2\leq\varepsilon^2/2
+ \forall k\in\mathbb N,\quad\exists i\in I,\quad
+ |u_n^k-v_n^i|^2\leq
+ \frac{\varepsilon^2}{2\sum_{n=0}^{n_0-1}\lambda_n^{2s}},
+ \qquad\forall n\leq n_0-1.
  \label{eq:chap2-fractional-power-head}
 \end{equation}
-对某个有限集合中的 $v^i$ 成立. 两式相加得到 $D(A^s)$ 中的有限 $\varepsilon$-覆盖.
+对每个 $i\in I$, 定义 $D(A^s)$ 中的元素
+\[
+ \widetilde v^i=\sum_{n=0}^{n_0-1}v_n^iw_n.
+\]
+固定 $k\in\mathbb N$, 并取由\eqref{eq:chap2-fractional-power-head}给出的 $i\in I$. 则
+\[
+ \|u_k-\widetilde v^i\|_{D(A^s)}^2
+ =\sum_{n\leq n_0-1}\lambda_n^{2s}|u_n^k-v_n^i|^2
+ +\sum_{n\geq n_0}\lambda_n^{2s}|u_n^k|^2
+ \leq\frac{\varepsilon^2}{2}+\frac{\varepsilon^2}{2}=\varepsilon^2,
+\]
+其中第一项由\eqref{eq:chap2-fractional-power-head}控制, 第二项由\eqref{eq:chap2-fractional-power-tail}控制.
 \end{Proof}
 
-对 $s<0$, 以范数 $\|u\|_{D(A^s)}^2=\sum_k\lambda_k^{2s}(u,w_k)_H^2$ 完备化 $H$, 得到大于 $H$ 的 Hilbert 空间 $D(A^s)$.
+现在希望对 $s<0$ 定义类似概念. 在这种情形下, 前面的定义并不适用, 因为各个空间 $D(A^s)$ 都会等于 $H$, 而且没有一个是完备的. $s<0$ 时的空间 $D(A^s)$ 必须大于 $H$. 因此, 对每个 $u\in H$, 定义
+\[
+ \|u\|_{D(A^s)}^2=\sum_{k\geq1}\lambda_k^{2s}(u,w_k)_H^2.
+\]
+这是 $H$ 上的一个范数. 若把 $D(A^s)$ 定义为 $H$ 关于此范数的完备化, 则算子 $A^s$ 可以自然定义. 事实上, $D(A^s)$ 对完备化所得内积是 Hilbert 空间, 并且 $A$ 的正实数次幂的上述性质可以直接推广. 我们于是接受下面的结果.
 
 \begin{Proposition}
 \label{prop:chap2-negative-power-duality}
-对 $s\geq0$, 把 $H$ 与其对偶等同后,
+对每个 $s\geq0$, 若把 $H$ 与其对偶等同, 则
 \[
  D(A^s)'\simeq D(A^{-s}),
 \]
-且
+并且对偶性可以利用 $H$ 的内积写成
 \[
  \langle u,v\rangle_{D(A^{-s}),D(A^s)}
- =\sum_{k\geq1}(u,w_k)_H(v,w_k)_H.
+ =\sum_{k\geq1}(u,w_k)_H(v,w_k)_H,
+ \qquad\forall u\in H,\quad\forall v\in D(A^s).
 \]
 \end{Proposition}
 
 \subsubsection{半群理论的应用}
 \label{subsec:chap2-semigroup-applications}
 
-设 $A$ 满足上述自伴、双射、非负和紧逆条件. 考虑
+设 $(A,D(A))$ 是 $H$ 中的无界算子, 它自伴, 是从 $D(A)$ 到 $H$ 的双射, 非负, 且从 $D(A)$ 到 $H$ 的典范嵌入是紧的.
+
+我们的目标是利用上面给出的要素, 说明如何求解无限维线性微分方程
 \begin{equation}
  \begin{cases}
- \dfrac{\mathrm{d}u}{\mathrm{d}t}+Au=0,\\
+ \dfrac{\mathrm du}{\mathrm dt}+Au=0,\\
  u(0)=u_0.
  \end{cases}
  \label{eq:chap2-homogeneous-semigroup-problem}
 \end{equation}
 
-\begin{Proposition}[Definition and proposition]
+设 $(w_k)_{k\geq1}$ 为与 $A$ 关联的谱基, $(\lambda_k)_{k\geq1}$ 为 $A$ 的正特征值. 假定序列 $(\lambda_k)_{k\geq1}$ 按非递减顺序排列.
+
+\begin{Proposition}{Definition and proposition}
 \label{prop:chap2-semigroup-definition}
-若 $u_0=\sum_{k\geq1}u_{0,k}w_k\in H$, 则对 $t\geq0$ 可定义
+设 $u_0\in H$, 写成 $u_0=\sum_{k\geq1}u_{0,k}w_k$. 对任意 $t\geq0$, 可以定义
 \[
  e^{-tA}u_0=\sum_{k\geq1}u_{0,k}e^{-t\lambda_k}w_k\in H.
 \]
-对任意 $s\geq0$ 和 $t>0$, $e^{-tA}u_0\in D(A^s)$.
+此外, 对任意 $s\geq0$ 和 $t>0$, 有 $e^{-tA}u_0\in D(A^s)$.
 \end{Proposition}
 
-\par\noindent\textbf{Remark 6.3:}\quad $e^{-(t+s)A}=e^{-tA}e^{-sA}=e^{-sA}e^{-tA}$, 因而 $(e^{-tA})_{t\geq0}$ 称为与 $-A$ 关联的半群.
+\par\noindent\refstepcounter{chaptersixremark}\textbf{Remark~\thechaptersixremark:}\label{rem:chap2-semigroup-property}\quad
+显然有
+\[
+ e^{-(t+s)A}=e^{-tA}e^{-sA}=e^{-sA}e^{-tA},
+ \qquad\forall s,t\geq0.
+\]
+这就是为什么 $H$ 中的连续算子族 $(e^{-tA})_{t\geq0}$ 称为与 $-A$ 关联的半群.
 
 \begin{Proof}
-因 $\lambda_k,t\geq0$, 级数在 $H$ 中有定义. 对 $s>0$,
+由于 $\lambda_k\geq0$ 且 $t\geq0$, 这个和在 $H$ 中显然有良好定义. 此外, 固定 $t>0$, 对任意 $s>0$, 有
 \[
  \lambda_k^se^{-t\lambda_k}=(t\lambda_k)^se^{-t\lambda_k}t^{-s}
- \leq C_st^{-s}.
+ \leq C_st^{-s},
 \]
-故
+其中
 \[
- \sum_{k\geq1}(\lambda_k^su_{0,k}e^{-t\lambda_k})^2
- \leq C_s^2t^{-2s}\sum_{k\geq1}|u_{0,k}|^2<+\infty.
+ C_s=\sup_{y\in[0,+\infty)}y^se^{-y}<+\infty.
 \]
+于是
+\[
+ \sum_{k\geq1}\bigl(\lambda_k^su_{0,k}e^{-t\lambda_k}\bigr)^2
+ \leq C_s^2t^{-2s}\sum_{k\geq1}|u_{0,k}|^2<+\infty,
+\]
+从而对任意 $t>0$ 和任意 $s\geq0$, 有 $e^{-tA}u_0\in D(A^s)$.
 \end{Proof}
 
 \begin{Theorem}
 \label{thm:chap2-homogeneous-semigroup-solution}
-对每个 $u_0\in H$, 问题\eqref{eq:chap2-homogeneous-semigroup-problem}有唯一解
+对任意 $u_0\in H$, 存在唯一的
 \[
- u\in C^0([0,+\infty),H)\cap C^1((0,+\infty),D(A)),
+ u\in C^0([0,+\infty),H)\cap C^1((0,+\infty),D(A))
 \]
-且
+求解\eqref{eq:chap2-homogeneous-semigroup-problem}. 它由公式
 \begin{equation}
- u(t)=e^{-tA}u_0.
+ u(t)=e^{-tA}u_0,
+ \qquad\forall t\geq0
  \label{eq:chap2-homogeneous-semigroup-formula}
 \end{equation}
+定义.
 \end{Theorem}
 
 \begin{Proof}
-若 $u_0=0$, 对 $0<\varepsilon<T$ 应用 Theorem~\ref{thm:chap2-lions-magenes-product},
+先证明唯一性. 问题是线性的, 因此只需证明初值 $u_0=0$ 对应的任意解 $u$ 必为 $0$.
+
+给定 $0<\varepsilon<T$. 应用 Theorem~\ref{thm:chap2-lions-magenes-product} 和 Corollary~\ref{cor:chap2-pivot-space-compact-embedding}, 得
 \[
+\begin{aligned}
  \|u(T)\|_H^2-\|u(\varepsilon)\|_H^2
- =-2\int_\varepsilon^T(Au(t),u(t))_H\,\mathrm{d}t\leq0.
+ &=2\int_\varepsilon^T\left(\frac{\mathrm du}{\mathrm dt}(t),u(t)\right)_H\,\mathrm dt\\
+ &=-2\int_\varepsilon^T(Au(t),u(t))_H\,\mathrm dt\leq0,
+\end{aligned}
 \]
-令 $\varepsilon\to0$ 得 $u(T)=0$, 故解唯一. 式\eqref{eq:chap2-homogeneous-semigroup-formula}定义的级数具有所述正则性, 且对 $t>0$ 可逐项求导:
+因为 $A$ 是非负算子. 因此 $\|u(T)\|_H\leq\|u(\varepsilon)\|_H$. 但 $u$ 以 $H$ 为值连续, 且满足 $u(0)=0$, 所以令 $\varepsilon$ 趋于 $0$ 可得 $\|u(T)\|_H=0$, 即 $u(T)=0$. 由于这对任意 $T>0$ 成立, 断言得证.
+
+容易验证由\eqref{eq:chap2-homogeneous-semigroup-formula}定义的函数 $t\in[0,+\infty)\mapsto u(t)$ 具有所断言的正则性, 并且 $u(0)=u_0$. 注意, $u$ 在 $t=0$ 处不一定以 $H$ 为值可微. 对任意 $t>0$, 可以对级数逐项求导, 得
 \[
- \frac{\mathrm{d}u}{\mathrm{d}t}
- =-\sum_{k\geq1}\lambda_ku_{0,k}e^{-t\lambda_k}w_k=-Au(t).
+\begin{aligned}
+ \frac{\mathrm du}{\mathrm dt}(t)
+ &=\sum_{k\geq1}(-\lambda_k)u_{0,k}e^{-t\lambda_k}w_k\\
+ &=-\sum_{k\geq1}u_{0,k}e^{-t\lambda_k}Aw_k\\
+ &=-A\left(\sum_{k\geq1}u_{0,k}e^{-t\lambda_k}w_k\right)
+ =-Au(t).
+\end{aligned}
 \]
+最后一个等式成立, 是因为级数在 $D(A)$ 中收敛, 并且 $A$ 从 $D(A)$ 到 $H$ 连续.
 \end{Proof}
+
+当在问题\eqref{eq:chap2-homogeneous-semigroup-problem}中加入源项 $f$ 时, 与 $-A$ 关联的半群仍然允许我们求解该问题. 更确切地说, 例如可以证明下面的结果 (见\MBUnresolvedReference{bib:source-48-95}{[48] 或 [95]}), 它是常微分方程中一个十分标准的结果在无限维情形下的版本.
 
 \begin{Theorem}
 \label{thm:chap2-duhamel-semigroup}
-设 $u_0\in H$, $f\in C^1([0,+\infty),H)$. 则问题
+设 $u_0\in H$, $f\in C^1([0,+\infty),H)$. 则存在唯一的
+\[
+ u\in C^0([0,+\infty),H)\cap C^1((0,+\infty),H)\cap C^0((0,+\infty),D(A))
+\]
+求解
 \begin{equation}
  \begin{cases}
- \dfrac{\mathrm{d}u}{\mathrm{d}t}+Au=f,\\
- u(0)=u_0
+ \dfrac{\mathrm du}{\mathrm dt}+Au=f,\\
+ u(0)=u_0.
  \end{cases}
  \label{eq:chap2-inhomogeneous-semigroup-problem}
 \end{equation}
-有唯一解 $u\in C^0([0,+\infty),H)\cap C^1((0,+\infty),H)\cap C^0((0,+\infty),D(A))$, 且
+这个解由 Duhamel 公式
 \begin{equation}
- u(t)=e^{-tA}u_0+\int_0^te^{-(t-s)A}f(s)\,\mathrm{d}s.
+ u(t)=e^{-tA}u_0+\int_0^te^{-(t-s)A}f(s)\,\mathrm ds,
+ \qquad\forall t\geq0
  \label{eq:chap2-duhamel-formula}
 \end{equation}
+给出.
 \end{Theorem}
 
 \begin{Proof}
-在式\eqref{eq:chap2-duhamel-formula}的积分中作变量代换 $s\mapsto t-s$, 得
+在\eqref{eq:chap2-duhamel-formula}的积分中作变量代换 $s\mapsto t-s$, 得
 \[
- u(t)=e^{-tA}u_0+\int_0^te^{-sA}f(t-s)\,\mathrm{d}s.
+ u(t)=e^{-tA}u_0+\int_0^te^{-sA}f(t-s)\,\mathrm ds.
 \]
-$f$ 为 $C^1$ 的假设允许逐项求导, 再分部积分即得方程和初值. 唯一性由齐次问题得到.
+由于假定 $f$ 是 $H$ 值 $C^1$ 函数, 可以证明所有项的求导均有意义, 然后通过分部积分得到结论.
 \end{Proof}
 
-\par\noindent\textbf{Remark 6.4:}\quad 式\eqref{eq:chap2-duhamel-formula}对正则性较低的源项仍成立, 但需相应减弱解的概念.
+\par\noindent\refstepcounter{chaptersixremark}\textbf{Remark~\thechaptersixremark:}\label{rem:chap2-duhamel-low-regularity}\quad
+上面的结果, 特别是 Formula~\eqref{eq:chap2-duhamel-formula}, 对正则性较低的源项仍然成立, 但这需要减弱所考虑的解的概念.

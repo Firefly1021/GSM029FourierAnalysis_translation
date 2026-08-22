@@ -9,61 +9,95 @@
 \subsubsection{函数空间中的紧集}
 \label{subsec:chap2-compact-sets-function-spaces}
 
+Ascoli 定理是非线性分析的基本工具之一. 它可以简单刻画 $C^0(E,F)$ 中的相对紧集, 其中 $E$ 是紧空间. 这一结果十分重要, 因为它是本书后文使用的大多数紧性结果的基础. 关于该定理的一个非常经典的证明, 例如可见\MBUnresolvedReference{bib:source-99}{[99]}.
+
 \begin{Theorem}[Ascoli]
 \label{thm:chap2-ascoli}
 设 $E$ 是紧度量空间, $F$ 是度量空间, 并以一致距离
 \[
  d(f,g)=\sup_{x\in E}d(f(x),g(x))
 \]
-赋予 $C^0(E,F)$ 度量. 设 $K\subset C^0(E,F)$, 并假设:
+赋予 $C^0(E,F)$ 度量. 设 $\mathcal{K}\subset C^0(E,F)$, 并假设:
 \begin{enumerate}
-\item 对每个 $x\in E$, 集合 $K(x)=\{f(x):f\in K\}$ 在 $F$ 中相对紧.
-\item $K$ 等度连续, 即对任意 $x\in E$ 和 $\varepsilon>0$, 存在 $\eta>0$, 使对所有满足 $d(x,y)<\eta$ 的 $y\in E$ 以及所有 $f\in K$, 都有 $d(f(x),f(y))<\varepsilon$.
+\item 对每个 $x\in E$, 集合 $\mathcal{K}(x)=\{f(x),f\in\mathcal{K}\}$ 在 $F$ 中相对紧.
+\item $\mathcal{K}$ 等度连续, 即对任意 $x\in E$ 和 $\varepsilon>0$, 存在 $\eta>0$, 使对所有满足 $d(x,y)<\eta$ 的 $y\in E$ 以及所有 $f\in\mathcal{K}$, 都有 $d(f(x),f(y))<\varepsilon$.
 \end{enumerate}
-则 $K$ 在 $C^0(E,F)$ 中相对紧.
+则 $\mathcal{K}$ 在 $C^0(E,F)$ 中相对紧 (即其闭包是紧的).
 \end{Theorem}
+
+遗憾的是, 在偏微分方程分析中, 我们很少在紧空间上的连续函数集合中工作. 下面这个由 Ascoli 定理推出的定理, 对 $L^p(\Omega)$ 空间中的有界子集给出了一个类似于 Ascoli 定理的紧性判据.
 
 \begin{Theorem}[Kolmogorov]
 \label{thm:chap2-kolmogorov}
-设 $\Omega\subset\mathbb{R}^d$ 为开集, $F$ 是 $L^p(\Omega)$ 的有界子集, $1\leq p<+\infty$. 假设:
+设 $\Omega\subset\mathbb{R}^d$ 为任意开集, $\mathcal{F}$ 是 $L^p(\Omega)$ 的有界子集, $1\leq p<+\infty$. 假设:
 \begin{enumerate}
 \item 对每个 $\varepsilon>0$ 和每个满足 $\overline\omega\subset\Omega$ 的有界开集 $\omega$, 存在 $0<\alpha<d(\omega,\mathbb{R}^d\setminus\Omega)$, 使
 \begin{equation}
  \|\tau_hf-f\|_{L^p(\omega)}\leq\varepsilon,
- \quad\forall f\in F,\quad\forall h\in\mathbb{R}^d,\ |h|\leq\alpha.
+ \quad\forall f\in\mathcal{F},\quad\forall h\in\mathbb{R}^d,\ |h|\leq\alpha.
  \label{eq:chap2-kolmogorov-translations}
 \end{equation}
 \item 对每个 $\varepsilon>0$, 存在满足 $\overline\omega\subset\Omega$ 的有界开集 $\omega$, 使
 \begin{equation}
  \|f\|_{L^p(\Omega\setminus\omega)}\leq\varepsilon,
- \quad\forall f\in F.
+ \quad\forall f\in\mathcal{F}.
  \label{eq:chap2-kolmogorov-tightness}
 \end{equation}
 \end{enumerate}
-其中 $\tau_hf(x)=f(x+h)$. 则 $F$ 在 $L^p(\Omega)$ 中相对紧.
+则 $\mathcal{F}$ 在 $L^p(\Omega)$ 中相对紧.
 \end{Theorem}
 
+在该定理中, $\tau_hf$ 表示由下式定义的平移函数:
+\[
+ \tau_hf(x)=f(x+h).
+\]
+第一个条件类似于 Ascoli 定理的等度连续条件; 第二个条件说明, $\mathcal{F}$ 中的函数在 $\Omega$ 的边界附近以及无穷远处, 必须在 $L^p$ 范数下一致地“小”.
+
 \begin{Proof}
-给定 $\varepsilon>0$, 取满足式\eqref{eq:chap2-kolmogorov-tightness}的 $\omega$, 再取满足式\eqref{eq:chap2-kolmogorov-translations}的 $\alpha$. 对 $f\in F$ 的零延拓 $\bar f$, Jensen 和 Fubini 定理给出
+\begin{itemize}
+\item 给定 $\varepsilon>0$, 取满足式\eqref{eq:chap2-kolmogorov-tightness}的开集 $\omega$. 再取满足 $\alpha<d(\omega,\mathbb{R}^d\setminus\Omega)$ 以及式\eqref{eq:chap2-kolmogorov-translations}的 $\alpha>0$. 注意, 对任意 $f\in\mathcal{F}$ 和任意 $x\in\omega$, 有
+\[
+ |\bar f\star\eta_\alpha(x)-f(x)|
+ \leq\int_B|\bar f(x-\alpha z)-f(x)|\eta(z)\,\mathrm{d}z.
+\]
+应用 Jensen 不等式, 在 $\omega$ 上积分并使用 Fubini 定理, 得
+\[
+ \|\bar f\star\eta_\alpha-f\|_{L^p(\omega)}
+ \leq\int_B\eta(z)\|\tau_{-\alpha z}f-f\|_{L^p(\omega)}\,\mathrm{d}z.
+\]
+这里用到了如下事实: 由对 $\alpha$ 的假设, 一旦 $x\in\omega$ 且 $z\in B$, 就有 $x-\alpha z\in\Omega$, 因而 $\bar f(x-\alpha z)=f(x-\alpha z)$. 对任意 $z\in B$, 有 $|-\alpha z|\leq\alpha$, 所以由式\eqref{eq:chap2-kolmogorov-translations}可得
 \begin{equation}
- \|\bar f*\eta_\alpha-f\|_{L^p(\omega)}
- \leq\int_B\eta(z)\|\tau_{-\alpha z}f-f\|_{L^p(\omega)}\,\mathrm{d}z
- \leq\varepsilon.
+ \|\bar f\star\eta_\alpha-f\|_{L^p(\omega)}\leq\varepsilon,
+ \qquad\forall f\in\mathcal{F}.
  \label{eq:chap2-kolmogorov-mollification}
 \end{equation}
-记 $F_\alpha=\{\bar f*\eta_\alpha:f\in F\}$. 由于 $F$ 有界,
+
+\item 定义 $\mathcal{F}_\alpha=\{\bar f\star\eta_\alpha,f\in\mathcal{F}\}$ 和 $\mathcal{F}_\omega=\{f|_\omega,f\in\mathcal{F}\}$. $\mathcal{F}_\alpha$ 中的每个函数在紧集 $\overline\omega$ 上连续, 且满足
 \[
- \|\nabla(\bar f*\eta_\alpha)\|_{L^\infty}
- \leq C\alpha^{-1-d/p}\|f\|_{L^p}\leq C'\alpha^{-1-d/p}.
+ \|\nabla(\bar f\star\eta_\alpha)\|_{L^\infty}
+ \leq\frac{C}{\alpha^{1+d/p}}\|f\|_{L^p}
+ \leq\frac{C'}{\alpha^{1+d/p}},
 \]
-故 $F_\alpha$ 在紧集 $\overline\omega$ 上满足 Theorem~\ref{thm:chap2-ascoli} 的条件, 从而在 $L^p(\omega)$ 中相对紧. 因此有限个半径 $2\varepsilon$ 的 $L^p(\omega)$ 球覆盖 $F|_\omega$. 将球心以零延拓, 并用式\eqref{eq:chap2-kolmogorov-tightness}, 得
+因为 $\mathcal{F}$ 是 $L^p(\Omega)$ 的有界集. 固定 $\alpha>0$ 后, 我们已经证明 $\mathcal{F}_\alpha$ 满足 Ascoli 定理的假设. 因此, $\mathcal{F}_\alpha$ 在 $C^0(\overline\omega)$ 中相对紧; 再由嵌入 $C^0(\overline\omega)\subset L^p(\omega)$ 的连续性, 它在 $L^p(\omega)$ 中也相对紧.
+
+\item 因此, 存在有限个半径为 $\varepsilon$ 的 $L^p(\omega)$ 球覆盖 $\mathcal{F}_\alpha$. 结合式\eqref{eq:chap2-kolmogorov-mollification}, 可知存在有限个半径为 $2\varepsilon$ 的 $L^p(\omega)$ 球覆盖 $\mathcal{F}|_\omega$. 将这样一个覆盖记为
 \[
- \|f-g_i\|_{L^p(\Omega)}^p
+ \bigl(B_{L^p(\omega)}(g_i,2\varepsilon)\bigr)_{1\leq i\leq N}.
+\]
+
+\item 最后证明这些球
+\[
+ \bigl(B_{L^p(\Omega)}(\bar g_i,3\varepsilon)\bigr)_{1\leq i\leq N}
+\]
+实际上覆盖 $\mathcal{F}$. 的确, 对任意 $f\in\mathcal{F}$, 存在 $1\leq i\leq N$ 使 $f|_\omega\in B_{L^p(\omega)}(g_i,2\varepsilon)$, 从而利用式\eqref{eq:chap2-kolmogorov-tightness}可得
+\[
+ \|f-\bar g_i\|_{L^p(\Omega)}^p
  =\|f\|_{L^p(\Omega\setminus\omega)}^p+
  \|f-g_i\|_{L^p(\omega)}^p
  \leq\varepsilon^p+(2\varepsilon)^p\leq(3\varepsilon)^p.
 \]
-故 $F$ 对每个 $\varepsilon$ 都可由有限个半径 $3\varepsilon$ 的球覆盖, 结论成立.
+因此断言得证, 因为对任意 $\varepsilon>0$, 我们都构造出了一个由半径为 $3\varepsilon$ 的球组成的 $\mathcal{F}$ 在 $L^p(\Omega)$ 中的有限覆盖.
+\end{itemize}
 \end{Proof}
 
 \subsubsection{紧映射}
@@ -71,10 +105,14 @@
 
 \begin{Definition}
 \label{def:chap2-compact-map}
-设 $E,F$ 为 Banach 空间. 若映射 $S:E\to F$ 把 $E$ 的每个有界子集映为 $F$ 的相对紧子集, 则称 $S$ 为紧映射.
+设 $E,F$ 为两个 Banach 空间. 若映射 $S:E\to F$ 把 $E$ 的任意有界子集映为 $F$ 的相对紧子集, 即在 $F$ 中具有紧闭包的集合, 则称 $S$ 为紧映射.
 \end{Definition}
 
-特别地, 若 $(u_n)_n$ 在 $E$ 中有界且 $S$ 紧, 则存在子序列 $(u_{n_k})_k$, 使 $(Su_{n_k})_k$ 在 $F$ 中收敛.
+当然, 任意紧线性映射都是连续的, 因为紧性蕴含它在 $0$ 的某个邻域中有界. 我们通常以下面的形式使用映射的紧性.
+
+设 $(u_n)_n$ 是 $E$ 中的有界点列. 若 $S$ 紧, 则存在子序列 $(u_{n_k})_k$, 使 $(Su_{n_k})_k$ 在 $F$ 中收敛.
+
+特别地, 有如下结果.
 
 \begin{Proposition}
 \label{prop:chap2-compact-map-weak-to-strong}
@@ -82,13 +120,23 @@
 \end{Proposition}
 
 \begin{Proof}
-对任意 $f\in F'$,
+首先注意, 序列 $(Su_n)_n$ 弱收敛到 $Su$. 的确, 对任意 $f\in F'$,
 \[
  \langle f,Su_n\rangle_{F',F}=\langle{}^tSf,u_n\rangle_{E',E}
  \longrightarrow\langle{}^tSf,u\rangle_{E',E}=\langle f,Su\rangle_{F',F},
 \]
-故 $Su_n\rightharpoonup Su$. 弱收敛序列有界, 而紧性说明 $(Su_n)_n$ 位于 $F$ 的一个紧子集中. 其每个聚点都因弱极限唯一而等于 $Su$, 因而整个序列强收敛到 $Su$.
+此外, 由于 $(u_n)_n$ 弱收敛, 由 Corollary~\ref{cor:chap2-weak-lower-semicontinuity}, 它是有界序列. 因而 $(u_n)_n$ 属于 $E$ 的某个有界子集 $B$. 由于 $S$ 紧, $S(B)$ 是紧的, 所以序列 $(Su_n)_n$ 位于 $F$ 的一个紧空间中.
+
+而在紧度量空间中, 一个序列收敛当且仅当它只有一个聚点. 因此, 设
+\[
+ v=\lim_{k\to+\infty}Su_{n_k}
+\]
+是 $(Su_n)_n$ 在 $F$ 中的一个聚点. 如上所见, $(Su_{n_k})_k$ 弱收敛到 $Su$. 由弱极限的唯一性可知 $v=Su$. 因此, $Su$ 是序列 $(Su_n)_n$ 的唯一聚点, 从而该序列收敛.
 \end{Proof}
+
+特别地, 这使我们能够从弱收敛恢复强收敛, 但所得到的强收敛发生在比初始空间更大的空间中. 的确, 若空间 $E$ 以紧嵌入嵌入空间 $F$ (我们称 $E$ 紧嵌入 $F$), 则 $E$ 中任意在 $E$ 中弱收敛的元素序列, 都在 $F$ 中强收敛.
+
+另一方面, 线性映射的紧性在复合以及取伴随映射时是稳定的. 更精确地说, 有如下结果.
 
 \begin{Lemma}
 \label{lem:chap2-compact-composition}
@@ -96,7 +144,7 @@
 \end{Lemma}
 
 \begin{Proof}
-连续线性映射把有界集映为有界集, 把紧集映为紧集, 结论随即成立.
+这实质上是下述事实的结果: 连续线性映射将有界集 (分别地, 紧集) 映为另一个有界集 (分别地, 紧集).
 \end{Proof}
 
 \begin{Lemma}
@@ -105,43 +153,83 @@
 \end{Lemma}
 
 \begin{Proof}
-设 $(f_n)_n$ 在 $F'$ 中有界, 并令 $K=\overline{S(B_E(0,1))}$, 则 $K$ 紧. 把 $f_n$ 限制在 $K$ 上, 得 $C^0(K,\mathbb{R})$ 中的有界等度连续族. 由 Theorem~\ref{thm:chap2-ascoli}, 存在子序列 $(f_{n_k})_k$ 在 $K$ 上一致收敛. 因
+设 $(f_n)_n$ 是 $F'$ 中的有界序列. 由 $S$ 的伴随映射的定义, 对所有 $u\in B_E(0,1)$, 有
+\[
+ \langle{}^tSf_n,u\rangle_{E',E}=\langle f_n,Su\rangle_{F',F}.
+\]
+由于 $S$ 紧, 集合
+\[
+ \mathcal{K}=\overline{S(B(0,1)_E)}
+\]
+是 $F$ 的紧子集. 序列 $(f_n)_n$ 在 $F'$ 中有界, 因而它在 $C^0(\mathcal{K},\mathbb{R})$ 中也是有界的. 此外, 对任意 $v_1,v_2\in\mathcal{K}$, 有
+\[
+ |\langle f_n,v_1-v_2\rangle_{F',F}|
+ \leq\|f_n\|_{F'}\|v_1-v_2\|_F.
+\]
+由于 $(f_n)_n$ 在 $F'$ 中有界, 这证明 $(f_n)_n$ 是 $\mathcal{K}$ 上的一个等度连续族.
+
+因此, 由 Ascoli 定理 Theorem~\ref{thm:chap2-ascoli}, 存在一个抽取序列 $(f_{n_k})_k$, 它在 $\mathcal{K}$ 上一致收敛到从 $\mathcal{K}$ 到 $\mathbb{R}$ 的某个连续函数 $f$.
+
+于是, 通过转置, 对所有 $u\in B_E(0,1)$ 有
 \[
  \langle{}^tSf_{n_k},u\rangle_{E',E}
- =\langle f_{n_k},Su\rangle_{F',F},
+ =\langle f_{n_k},Su\rangle_{F',F}
+ \longrightarrow f(Su),
 \]
-该收敛在 $E$ 的单位球上一致, 即 ${}^tSf_{n_k}$ 在 $E'$ 中强收敛.
+而且这一收敛关于 $u\in B_E(0,1)$ 是一致的. 由齐次性 (即函数 ${}^tSf_{n_k}$ 的线性), 可知对所有 $u\in E$, 序列 $\bigl(\langle{}^tSf_{n_k},u\rangle_{E',E}\bigr)_k$ 收敛; 此外, 该收敛在 $E$ 的所有有界集上一致. 函数 ${}^tSf_{n_k}$ 是线性且连续的, 因而所得极限必然也是线性且连续的. 这一切表明收敛确实发生在 $E'$ 中 (在 $E'$ 中, 强拓扑正是有界集上的一致收敛拓扑).
 \end{Proof}
+
+下面把这一结果应用于一个 Banach 空间连续嵌入另一个 Banach 空间的情形.
 
 \begin{Proposition}
 \label{prop:chap2-canonical-dual-embedding}
-设 Banach 空间 $E$ 连续且稠密嵌入 $F$. 定义
+设 $E,F$ 为两个 Banach 空间. 假设 $E$ 连续嵌入 $F$, 且 $E$ 在 $F$ 中的像稠密 (我们不严格地说 $E$ 在 $F$ 中稠密); 定义映射
 \[
- T:F'\to E',\qquad
- \langle Tf,u\rangle_{E',E}=\langle f,u\rangle_{F',F},\quad\forall u\in E.
+ T:f\in F'\longmapsto Tf\in E'
 \]
-则 $T$ 是从 $F'$ 到 $E'$ 的单射连续嵌入. 若 $E\hookrightarrow F$ 紧, 则 $T$ 也紧. 若 $E$ 自反, 则 $T(F')$ 在 $E'$ 中稠密.
+由下式定义:
+\[
+ \langle Tf,u\rangle_{E',E}=\langle f,u\rangle_{F',F},
+ \qquad\forall u\in E.
+\]
+则 $T$ 是从 $F'$ 到 $E'$ 的嵌入 (称为关于所考虑的 $E$ 到 $F$ 的嵌入的典范嵌入).
+
+此外, 若 $E$ 到 $F$ 的嵌入是紧的, 则 $T$ 是紧嵌入. 最后, 若 $E$ 自反, 则 $T$ 的像在 $E'$ 中稠密.
 \end{Proposition}
 
 \begin{Proof}
-连续嵌入给出 $\|u\|_F\leq C\|u\|_E$, 故 $Tf\in E'$. 若 $Tf=0$, 则 $f$ 在稠密子空间 $E$ 上为零, 从而 $f=0$. 紧性由 Lemma~\ref{lem:chap2-adjoint-compact} 得到. 最后设 $E$ 自反. 若 $E'$ 上的连续线性泛函在 $T(F')$ 上为零, 则它可写成 $g\mapsto\langle g,u\rangle_{E',E}$, 其中 $u\in E$, 且 $\langle f,u\rangle_{F',F}=0$ 对所有 $f\in F'$ 成立. 由对偶范数刻画, $u=0$, 故 Proposition~\ref{prop:chap2-density-by-annihilator} 给出稠密性.
+由于 $E$ 到 $F$ 的嵌入连续, 存在常数 $C>0$, 使任意 $u\in E$ 都满足 $\|u\|_F\leq C\|u\|_E$. 因此, 对所有 $f\in F'$, 函数 $Tf$ 确实是 $E$ 上的连续线性函数, 即 $E'$ 的一个元素.
+
+下面证明映射 $f\mapsto Tf$ 的单射性. 设 $f\in F'$ 且 $Tf=0$. 因而对所有 $u\in E$, 有 $\langle f,u\rangle_{F',F}=0$; 由于 $E$ 在 $F$ 中稠密, 可推出 $f=0$.
+
+若 $E$ 到 $F$ 的嵌入是紧的, 则 $T$ 的紧性直接由 Lemma~\ref{lem:chap2-adjoint-compact} 得到.
+
+现在假设 $E$ 自反. 需要证明 $T(F')$ 在 $E'$ 中稠密. 为此, 使用 Proposition~\ref{prop:chap2-density-by-annihilator}. $E'$ 上任意连续线性泛函都具有 $f\mapsto\langle f,u\rangle_{E',E}$ 的形式, 其中 $u\in E$. 假设这样一个泛函在 $T(F')$ 上为零, 并证明它在整个 $E'$ 上为零. 该线性泛函在 $T(F')$ 上为零, 意味着
+\[
+ \langle f,u\rangle_{F',F}=0,
+ \qquad\forall f\in F'.
+\]
+Proposition~\ref{prop:chap2-norm-by-duality} 表明 $\|u\|_F=0$, 因而 $u=0$, 结论得证.
 \end{Proof}
+
+Riesz 定理使我们能够在 Hilbert 情形下把这一结果表述得更具体.
 
 \begin{Corollary}
 \label{cor:chap2-pivot-space-compact-embedding}
-设 Hilbert 空间 $V$ 稠密嵌入 $H$. 通过 Riesz 定理把 $H$ 与其对偶等同, 则有双重稠密嵌入
+设 $V,H$ 为两个 Hilbert 空间, 且 $V$ 稠密嵌入 $H$. 根据 Riesz 定理, 可以通过 $H$ 的内积把 $H$ 与其对偶等同. 于是有双重稠密嵌入
 \[
  V\subset H\subset V',
 \]
-其中第二个嵌入由
+其中第二个嵌入由下式定义:
 \[
- f\in H\longmapsto T_f\in V',\qquad
- \langle T_f,v\rangle_{V',V}=(f,v)_H
+ f\in H\longmapsto Tf\in V',
+ \qquad \langle Tf,v\rangle_{V',V}=(f,v)_H,
+ \quad\forall v\in V.
 \]
 定义. 若 $V\hookrightarrow H$ 紧, 则 $H\hookrightarrow V'$ 也紧.
 \end{Corollary}
 
-在上述情形中, $H$ 称为枢轴空间. 我们把 $f\in H$ 与 $T_f\in V'$ 等同, 并写成
+由于显然的原因, 在该推论所描述的情形中, 空间 $H$ 称为枢轴空间. 此外, 由于 $T$ 是单射, 我们系统地把 $f\in H$ 与其像 $Tf\in V'$ 等同, 从而可以用 $H$ 的内积表示对偶 $(V',V)$:
 \[
  \langle f,v\rangle_{V',V}=(f,v)_H,
  \qquad\forall f\in H,\ \forall v\in V.
@@ -150,19 +238,27 @@
 \subsubsection{Schauder 不动点定理}
 \label{subsec:chap2-schauder-fixed-point}
 
-求解非线性偏微分方程时常采用不动点方法. 后文对定常 Navier--Stokes 方程和非齐次非定常 Navier--Stokes 方程的研究都使用这一策略.
+求解非线性偏微分方程时, 常常可以采用一种相当经典的不动点方法. 在本书中, 我们沿用这一策略研究定常 Navier--Stokes 方程 (\MBUnresolvedReference{sec:chap5-steady-navier-stokes}{Section 3 of Chapter V}) 以及\MBUnresolvedReference{chap:nonhomogeneous-unsteady-navier-stokes}{Chapter VI}中非齐次流的非定常 Navier--Stokes 方程.
+
+这一方法的关键在于下面的定理. 它的证明相当巧妙, 例如可见\MBUnresolvedReference{bib:source-114}{[114]}. 该证明依赖拓扑度概念, 这超出了本书的范围和目标.
 
 \begin{Theorem}[Schauder fixed-point theorem]
 \label{thm:chap2-schauder-fixed-point}
-设 $E$ 为 Banach 空间, $C\subset E$ 为凸紧集. 若连续映射 $T:C\to C$, 则 $T$ 在 $C$ 中至少有一个不动点.
+设 $E$ 为 Banach 空间, $\mathcal{C}\subset E$ 为凸紧集. 若连续 (非线性) 映射 $T:\mathcal{C}\to\mathcal{C}$, 则 $T$ 在 $\mathcal{C}$ 中至少有一个不动点.
 \end{Theorem}
 
-该定理不保证不动点唯一, 而 $T(C)\subset C$ 是关键条件.
+注意, 该定理没有说明不动点的唯一性, 而且通常唯一性并不成立 (考虑恒等映射). 此外, 映射 $T$ 把集合 $\mathcal{C}$ 映入其自身这一事实当然至关重要.
+
+在 $E=\mathbb{R}$ 的特殊情形下, 我们恢复了一个初等结果: 从 $\mathbb{R}$ 到 $\mathbb{R}$ 的连续函数若把紧区间 $[a,b]$ 映到自身, 则它在该区间中有一个不动点.
+
+这一结果还有下面这个略有不同的形式.
 
 \begin{Theorem}
 \label{thm:chap2-schauder-compact-map-form}
-设 $E$ 为 Banach 空间, $C\subset E$ 为凸闭有界集. 若 $T:C\to C$ 连续且紧, 则 $T$ 在 $C$ 中至少有一个不动点.
+设 $E$ 为 Banach 空间, $\mathcal{C}\subset E$ 为凸闭有界区域. 若紧且连续的 (非线性) 映射 $T:\mathcal{C}\to\mathcal{C}$, 则 $T$ 在 $\mathcal{C}$ 中至少有一个不动点.
 \end{Theorem}
+
+在有限维框架中, 该定理称为 Brouwer 定理, 并且等价于下面的结果.
 
 \begin{Proposition}
 \label{prop:chap2-brouwer-zero}
@@ -177,16 +273,16 @@
 \begin{Proof}
 反设 $P(\xi)\neq0$ 对所有 $\xi\in B(0,\rho)$ 成立. 连续映射
 \[
- Q(\xi)=-\frac{\rho}{|P(\xi)|}P(\xi)
+ Q:\xi\in\mathbb{R}^N\longmapsto-\frac{\rho}{|P(\xi)|}P(\xi)
 \]
-把紧凸集 $B(0,\rho)$ 映入自身. 由 Theorem~\ref{thm:chap2-schauder-fixed-point}, 存在 $\xi\in B(0,\rho)$ 使
+把紧凸球 $B(0,\rho)$ 映入自身. 由 Brouwer/Schauder Theorem~\ref{thm:chap2-schauder-fixed-point}, 存在 $\xi^\ast\in B(0,\rho)$ 使
 \begin{equation}
- \xi=Q(\xi).
+ \xi^\ast=Q(\xi^\ast).
  \label{eq:chap2-brouwer-fixed-point}
 \end{equation}
-必有 $|\xi|=\rho$. 对式\eqref{eq:chap2-brouwer-fixed-point}两端与 $\xi$ 作内积, 得
+必有 $|\xi^\ast|=\rho$. 对式\eqref{eq:chap2-brouwer-fixed-point}两端分别与 $\xi^\ast$ 作内积, 得
 \[
- \rho^2=-\frac{\rho}{|P(\xi)|}\xi\cdot P(\xi),
+ \rho^2=-\frac{\rho}{|P(\xi^\ast)|}\bigl(\xi^\ast\cdot P(\xi^\ast)\bigr).
 \]
-从而 $\xi\cdot P(\xi)<0$, 与假设矛盾.
+因此 $\xi^\ast\cdot P(\xi^\ast)<0$, 与假设矛盾.
 \end{Proof}

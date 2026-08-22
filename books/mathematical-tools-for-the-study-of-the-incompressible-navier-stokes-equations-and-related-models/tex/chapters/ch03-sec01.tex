@@ -4,7 +4,15 @@
 \renewcommand{\thefigure}{III.\arabic{figure}}
 \setcounter{figure}{0}
 
-本章首先给出 $\mathbb{R}^d$ 中区域的基本定义与性质, 特别研究 Lipschitz 区域上的边界积分、外法向量和 Stokes 公式. 随后定义并研究这些区域上的 Sobolev 空间, 包括光滑函数稠密性、迹理论、Sobolev 嵌入以及 Poincar\'e 和 Hardy 不等式. 第 3 节研究光滑区域边界邻域的切向和法向坐标, 包括符号距离及其正则化. 最后研究带 Dirichlet 或 Neumann 边界条件的 Laplace 问题.
+本章第一节专门介绍 $\mathbb{R}^d$ 中区域的基本定义与性质. 我们特别关注 Lipschitz 区域. 对这类区域, 可以容易地在 $\partial\Omega$ 上定义积分理论和 $\partial\Omega$ 上的外单位法向量, 并最终证明 Stokes 公式. 这个公式是研究区域上偏微分方程的基石.
+
+第二节定义并研究这类区域上的 Sobolev 空间. 我们首先证明光滑函数在这些空间中的稠密性, 并研究相应的迹理论. 随后介绍偏微分方程分析中的有用工具, 如 Sobolev 嵌入定理以及 Poincar\'e 和 Hardy 不等式.
+
+第三节研究充分光滑区域的边界邻域的适当参数化. 其思想是在边界附近以某种内蕴方式分离切向坐标与法向坐标. 为实现这一目标, 需要仔细研究到边界的距离函数 $\delta=d(\cdot,\partial\Omega)$ 的性质与正则性. 实际上, 还必须定义并研究适当的正则化距离函数. 这样便能在边界附近构造法向/切向坐标系, 并在这些变量中写出常见微分算子的表达式. 这些要素广泛用于\MBUnresolvedReference{chap:stokes-analysis}{Chapter~IV} 中 Stokes 问题椭圆正则性的证明. 初次阅读时完全可以跳过本节, 因为理解本书许多结果并不严格需要其中的材料.
+
+本章最后一节专门研究带 Dirichlet 或 Neumann 边界条件的经典 Laplace 问题. 两种情形下都证明存在性、唯一性和正则性. 这些结果会在本书后文多处使用. 此外, 这也使我们能够先在一个相当简单的问题上说明第三节引入的概念, 再把类似思想应用于 Stokes 和 Navier--Stokes 方程.
+
+依照本书的一般原则, 我们决定为本章给出的几乎所有结果提供完整证明. 因此, 本章应当是自足的, 并且不仅在流体力学框架内, 对任何关注有界区域上偏微分方程研究的读者都有用.
 
 \subsection{区域}
 \label{sec:chap3-domains}
@@ -15,12 +23,20 @@
  \qquad\Omega_\xi=\{x\in\Omega:\delta(x)>\xi\}.
 \]
 
+\begin{center}
+ \includegraphics[width=0.48\textwidth]{figures/ch03-domain-layers.png}
+\end{center}
+
 \subsubsection{一般定义}
 \label{subsec:chap3-domain-general-definitions}
 
 以下 $k$ 为非负整数, $\alpha\in[0,1]$, 且 $k+\alpha\geq1$.
 
-\begin{Definition}[$C^{k,\alpha}$ half-spaces]
+这意味着 $C^{k,\alpha}$ 类函数至少局部 Lipschitz 连续. 若开集 $\Omega\subset\mathbb R^d$ 的边界 $\partial\Omega$ 局部是 $C^{k,\alpha}$ 类函数的图, 且 $\Omega$ 位于该图的同一侧, 则称 $\Omega$ 为 $C^{k,\alpha}$ 类区域. 需要强调, 后一个条件至关重要; 特别是, 它使我们能够定义区域的外法向量概念, 从而在 $\partial\Omega$ 上确定一个定向, 如下文所示.
+
+现在给出更精确的定义.
+
+\begin{Definition}{$C^{k,\alpha}$ half-spaces}
 \label{def:chap3-ckalpha-half-space}
 对紧支集的 $C^{k,\alpha}$ 映射 $a:\mathbb{R}^{d-1}\to\mathbb{R}$, 定义
 \[
@@ -31,23 +47,20 @@
 
 \begin{Definition}
 \label{def:chap3-ckalpha-domain}
-若对每个 $\sigma\in\partial\Omega$, 存在开邻域 $U_\sigma$, 旋转 $R_\sigma\in O_d^+(\mathbb{R})$ 以及 $C^{k,\alpha}$ 半空间 $H_{a_\sigma}$, 使
+若对每个 $\sigma\in\partial\Omega$, 存在 $\sigma$ 在 $\mathbb R^d$ 中的开邻域 $U_\sigma$, 旋转 $R_\sigma\in O_d^+(\mathbb{R})$ 以及 $C^{k,\alpha}$ 半空间 $H_{a_\sigma}$, 使
 \[
  \Omega\cap U_\sigma=(R_\sigma H_{a_\sigma})\cap U_\sigma,
  \quad
  \partial\Omega\cap U_\sigma=(R_\sigma\partial H_{a_\sigma})\cap U_\sigma,
 \]
-且 $\Omega^c\cap U_\sigma=(R_\sigma H_{a_\sigma}^c)\cap U_\sigma$, 则称 $\Omega$ 为 $C^{k,\alpha}$ 区域. $k=0,\alpha=1$ 时称为 Lipschitz 区域.
+且 $\Omega^c\cap U_\sigma=(R_\sigma H_{a_\sigma}^c)\cap U_\sigma$, 则称 $\Omega$ 为 $C^{k,\alpha}$ 区域.
 \end{Definition}
+
+当 $k=0$ 且 $\alpha=1$ 时, 简称区域 $\Omega$ 为 Lipschitz 区域. 当 $\alpha=0$ 时, 简称 $\Omega$ 为 $C^k$ 类区域.
 
 \begin{figure}[H]
 \centering
-\begin{tikzpicture}[scale=.75]
-\draw[thick] (-4,-.4) .. controls (-2,1.2) and (1,-1.1) .. (4,.5);
-\fill[ZhengWen,opacity=.12] (-4,-.4) .. controls (-2,1.2) and (1,-1.1) .. (4,.5) -- (4,2.6) -- (-4,2.6) -- cycle;
-\draw[dashed] (-1.2,-1.5) rectangle (1.6,1.7);
-\node at (-2.8,1.8) {$\Omega$}; \node at (.2,-1.8) {$U_\sigma$}; \fill (.2,.15) circle (2pt) node[below] {$\sigma$};
-\end{tikzpicture}
+\includegraphics[width=0.78\textwidth]{figures/ch03-fig-iii-1.png}
 \caption{$C^{k,\alpha}$ 区域局部为 $C^{k,\alpha}$ 半空间.}
 \label{fig:chap3-local-half-space-domain}
 \end{figure}
@@ -55,13 +68,19 @@
 \subsubsection{Lipschitz 区域}
 \label{subsec:chap3-lipschitz-domains}
 
+这里所考虑的最一般区域类别是 Lipschitz 区域. 关于更复杂区域的专门资料, 例如参见\MBUnresolvedReference{bib:lipschitz-domain-monographs}{[67, 89]}. 还要提到一个不加证明的事实: Lipschitz 区域类例如包含所有凸开集.
+
 \paragraph{Lipschitz 半空间}
 
-固定磨光核 $\eta:\mathbb{R}^{d-1}\to\mathbb{R}$, 并令
+本节证明, Definition~\ref{def:chap3-ckalpha-half-space} 中定义的任意 Lipschitz 半空间 $H_a$, 都可以借助一个适当的 Lipschitz 微分同胚映到平坦半空间 $\mathbb R_+^d=\mathbb R^{d-1}\times\mathbb R_+^*$. 因此, $H_a$ 上函数空间的许多性质可以由 $\mathbb R_+^d$ 上的相应性质推出.
+
+固定 Definition~\ref{def:chap2-mollifying-kernel} 中定义的磨光核 $\eta:\mathbb{R}^{d-1}\to\mathbb{R}$, 并引入与 $\eta$ 关联的正数
 \[
  M_\eta=\int_B|z|\eta(z)\,\mathrm{d}z,
- \qquad M_{\nabla\eta,k}=\int_B|z|^k|\nabla\eta(z)|\,\mathrm{d}z.
+ \qquad M_{\nabla\eta,k}=\int_B|z|^k|\nabla\eta(z)|\,\mathrm{d}z,
+ \quad\forall k\in\{0,1,2\},
 \]
+其中 $B$ 是 $\mathbb R^{d-1}$ 的单位球.
 取 $\gamma>0$ 使 $\gamma\operatorname{Lip}(a)M_\eta\leq1/2$, 并定义
 \begin{equation}
  a_\gamma(\bar x,x_d)
@@ -72,37 +91,133 @@
 
 \begin{Proposition}
 \label{prop:chap3-regularized-graph-properties}
-$a_\gamma$ 在 $x_d\neq0$ 处光滑, $a_\gamma(\bar x,0)=a(\bar x)$, 并满足
-\[
- |\partial_{x_d}a_\gamma|\leq\gamma\operatorname{Lip}(a)M_\eta,
- \quad |\partial_{x_i}a_\gamma|\leq\operatorname{Lip}(a),
- \quad |\partial_{x_i}\partial_{x_j}a_\gamma|\leq C_\gamma|x_d|^{-1}.
-\]
-在 $a$ 的每个可微点, $\partial_{x_i}a_\gamma(\bar x,x_d)\to\partial_{x_i}a(\bar x)$ 当 $x_d\to0$. 对固定 $\bar x$, 映射 $x_d\mapsto x_d+a_\gamma(\bar x,x_d)$ 单调递增且映满 $\mathbb{R}$. 映射
-\[
- T_a(\bar x,x_d)=(\bar x,x_d+a_\gamma(\bar x,x_d))
-\]
-是 $\mathbb{R}^d$ 上的 Lipschitz 微分同胚, 把 $\mathbb{R}_+^d$, $\mathbb{R}_-^d$ 和 $\partial\mathbb{R}_+^d$ 分别映到 $H_a$, $H_a^c$ 和 $\partial H_a$. 其 Jacobian 行列式及逆映射的 Jacobian 行列式分别位于 $[1/2,3/2]$ 和 $[2/3,2]$.
+下列性质成立:
+\begin{enumerate}
+ \item $a_\gamma$ 在 $\{(\bar x,x_d)\in\mathbb R^d:x_d\neq0\}$ 上为 $C^\infty$ 函数, 且对每个 $\bar x\in\mathbb R^{d-1}$, 有 $a_\gamma(\bar x,0)=a(\bar x)$.
+ \item $a_\gamma$ 在 $\mathbb R^d$ 上 Lipschitz 连续, 且
+ \[
+  |\partial_{x_d}a_\gamma|\leq\gamma\operatorname{Lip}(a)M_\eta,
+  \qquad |\partial_{x_i}a_\gamma|\leq\operatorname{Lip}(a),
+  \quad\forall i\in\{1,\ldots,d-1\},
+ \]
+ 以及
+ \[
+  |\partial_{x_i}\partial_{x_j}a_\gamma|
+  \leq\frac{C_\gamma}{|x_d|},
+  \quad\forall i,j\in\{1,\ldots,d\}.
+ \]
+ \item 在 $a$ 可微的每个 $\bar x\in\mathbb R^{d-1}$,
+ \[
+  \partial_{x_i}a_\gamma(\bar x,x_d)
+  \underset{x_d\to0}{\longrightarrow}\partial_{x_i}a(\bar x),
+  \quad\forall i\in\{1,\ldots,d-1\}.
+ \]
+ \item 对任意 $\bar x\in\mathbb R^{d-1}$, 映射 $x_d\in\mathbb R\mapsto x_d+a_\gamma(\bar x,x_d)\in\mathbb R$ 单调递增, 并把 $\mathbb R$ 映到 $\mathbb R$ 上.
+ \item 映射
+ \[
+  T_a:(\bar x,x_d)\in\mathbb R^d
+  \longmapsto(\bar x,x_d+a_\gamma(\bar x,x_d))\in\mathbb R^d
+ \]
+ 是 $\mathbb R^d$ 到自身的 Lipschitz 微分同胚. 其 Jacobian 行列式 $J_{T_a}$ 满足
+ \[
+  \frac12\leq J_{T_a}(x)\leq\frac32,
+  \qquad |\nabla J_{T_a}(x)|\leq\frac{C_\gamma}{|x_d|},
+  \quad\forall x\in\mathbb R^d,
+ \]
+ 而 $T_a^{-1}$ 的 Jacobian 行列式 $J_{T_a^{-1}}$ 满足
+ \[
+  \frac23\leq J_{T_a^{-1}}(y)\leq2,
+  \qquad |\nabla J_{T_a^{-1}}(y)|
+  \leq\frac{C_\gamma}{|(T_a^{-1}(y))_d|},
+  \quad\forall y\in\mathbb R^d.
+ \]
+ 此外,
+ \[
+  T_a(\mathbb R_+^d)=H_a,\qquad
+  T_a(\mathbb R_-^d)=H_a^c,\qquad
+  T_a(\partial\mathbb R_+^d)=\partial H_a.
+ \]
+\end{enumerate}
 \end{Proposition}
 
 \begin{Proof}
-正则性和极限由 Proposition~\ref{prop:chap2-mollification-lipschitz} 得到. 利用 $a$ 的 Lipschitz 性可得一阶导数估计; 对卷积表达式求导并使用 $\int\partial_i\eta=0$ 与 $\int z\cdot\nabla\eta=-(d-1)$, 得二阶导数估计. 又
+第一点由 Proposition~\ref{prop:chap2-mollification-lipschitz} 得到.
+
+设 $(\bar x,x_d),(\bar y,y_d)\in\mathbb R^d$. 有
 \[
- (y_1+a_\gamma(\bar x,y_1))-(y_2+a_\gamma(\bar x,y_2))
- \geq(1-\gamma\operatorname{Lip}(a)M_\eta)|y_1-y_2|,
+\begin{aligned}
+ |a_\gamma(\bar x,x_d)-a_\gamma(\bar y,y_d)|
+ &\leq\int_B|a(\bar x-\gamma|x_d|z)-a(\bar y-\gamma|y_d|z)|\eta(z)\,\mathrm dz\\
+ &\leq\operatorname{Lip}(a)|\bar x-\bar y|
+ +\operatorname{Lip}(a)\gamma M_\eta|x_d-y_d|,
+\end{aligned}
 \]
-从而得到单调性、满射性和 $T_a$ 的可逆性. 最后 $J_{T_a}=1+\partial_{x_d}a_\gamma$ 给出 Jacobian 估计.
+这给出 $a_\gamma$ 一阶导数的估计. 现在计算
+\[
+\begin{aligned}
+ \partial_{x_i}a_\gamma
+ &=\frac1{\gamma|x_d|}\int_Ba(\bar x-\gamma|x_d|z)\partial_{z_i}\eta(z)\,\mathrm dz\\
+ &=\frac1{\gamma|x_d|}\int_B
+ [a(\bar x-\gamma|x_d|z)-a(\bar x)]\partial_{z_i}\eta(z)\,\mathrm dz,
+ \quad i\in\{1,\ldots,d-1\},
+\end{aligned}
+\]
+因为 $\int_B\partial_{z_i}\eta(z)\,\mathrm dz=0$. 类似地,
+\[
+\begin{aligned}
+ \partial_{x_d}a_\gamma
+ &=-\frac1{|x_d|}\int_Ba(\bar x-\gamma|x_d|z)z\cdot\nabla\eta(z)\,\mathrm dz
+ -\frac{d-1}{|x_d|}a_\gamma(\bar x,x_d)\\
+ &=-\frac1{|x_d|}\int_B[a(\bar x-\gamma|x_d|z)-a(\bar x)]z\cdot\nabla\eta(z)\,\mathrm dz\\
+ &\quad-\frac{d-1}{|x_d|}[a_\gamma(\bar x,x_d)-a(\bar x)],
+\end{aligned}
+\]
+其中使用分部积分恒等式 $\int_Bz\cdot\nabla\eta(z)\,\mathrm dz=-(d-1)$. 利用 $a$ 和 $a_\gamma$ 的 Lipschitz 正则性, 得
+\[
+ |\partial_{x_d}\partial_{x_i}a_\gamma|
+ \leq\frac{2\operatorname{Lip}(a)}{|x_d|}M_{\nabla\eta,1},
+ \quad i\in\{1,\ldots,d-1\},
+\]
+\[
+ |\partial_{x_j}\partial_{x_i}a_\gamma|
+ \leq\frac{\operatorname{Lip}(a)}{\gamma|x_d|}M_{\nabla\eta,0},
+ \quad i,j\in\{1,\ldots,d-1\},
+\]
+以及
+\[
+ |\partial_{x_d}^2a_\gamma|
+ \leq\frac{2\gamma\operatorname{Lip}(a)}{|x_d|}M_{\nabla\eta,2}
+ +\frac{2\gamma|d-1|\operatorname{Lip}(a)}{|x_d|}M_\eta.
+\]
+
+第三点直接来自 Proposition~\ref{prop:chap2-mollification-lipschitz}. 对给定的 $\bar x\in\mathbb R^{d-1}$ 和 $y_1>y_2$, 有
+\[
+\begin{aligned}
+ &[y_1+a_\gamma(\bar x,y_1)]-[y_2+a_\gamma(\bar x,y_2)]\\
+ &\qquad\geq(y_1-y_2)-\|\partial_{x_d}a_\gamma\|_\infty|y_1-y_2|\\
+ &\qquad\geq(1-\gamma\operatorname{Lip}(a)M_\eta)|y_1-y_2|,
+\end{aligned}
+\]
+这证明第四点. 最后, 直接计算得 $J_{T_a}(x)=1+\partial_{x_d}a_\gamma(x)$. $T_a$、$J_{T_a}$ 和 $J_{T_a^{-1}}$ 的各项性质立即由上述全部估计得到.
 \end{Proof}
+
+后文将证明 (见\MBUnresolvedReference{thm:chap3-future-sobolev-change-variables}{Theorem~III.2.13}), 映射 $T_a$ 可以用来构造 $H_a$ 上 Sobolev 空间与平坦半空间 $\mathbb R_+^d$ 上 Sobolev 空间之间的同构. 目前利用\MBUnresolvedReference{prop:chap2-source-change-of-variables}{Proposition~II.2.15}, 已经可以断言 $L^p(H_a)$ 与 $L^p(\mathbb R_+^d)$ 同构.
 
 \paragraph{锥性质及其推论}
 
+下文建立的 Sobolev 空间的大多数性质都依赖下面这个称为锥性质的性质, 见\MBUnresolvedReference{bib:cone-property-sources}{[1, 67, 33]}.
+
 \begin{Theorem}
 \label{thm:chap3-lipschitz-cone-property}
-边界紧的 Lipschitz 区域 $\Omega\subset\mathbb{R}^d$ 满足锥性质: 存在 $\partial\Omega$ 的有限开覆盖 $(U_i)_{1\leq i\leq N}$、$\theta\in(0,\pi/2)$ 和 $\delta_0>0$, 使 $O_{\delta_0}\subset\bigcup_iU_i$, 且对每个 $i$ 存在单位向量 $\widetilde\nu_i$, 若
+边界紧的 Lipschitz 区域 $\Omega\subset\mathbb{R}^d$ 满足锥性质: 存在 $\partial\Omega$ 的有限开覆盖 $(U_i)_{1\leq i\leq N}$、$\theta\in(0,\pi/2)$ 和 $\delta_0>0$, 使:
+\begin{itemize}
+ \item $O_{\delta_0}=\{x\in\Omega:\delta(x)<\delta_0\}\subset\bigcup_{i=1}^NU_i$.
+ \item 对每个 $1\leq i\leq N$, 存在 $\sigma_i\in\partial\Omega$, 使 $U_i\subset U_{\sigma_i}$, 其中 $U_{\sigma_i}$ 在 Definition~\ref{def:chap3-ckalpha-domain} 中引入.
+ \item 对每个 $1\leq i\leq N$, 存在单位向量 $\widetilde\nu_i$, 若
 \[
  C_i=\{z\in\mathbb{R}^d:\sin\theta|z|\leq z\cdot\widetilde\nu_i\leq\delta_0\},
 \]
-则
+ 则
 \begin{equation}
  x+C_i\subset\Omega\quad(x\in\Omega\cap U_i),
  \qquad x-C_i\subset\Omega^c\quad(x\in\Omega^c\cap U_i),
@@ -114,31 +229,68 @@ $a_\gamma$ 在 $x_d\neq0$ 处光滑, $a_\gamma(\bar x,0)=a(\bar x)$, 并满足
  \quad x\in\Omega\cap U_i,\quad0\leq t\leq\delta_0/2.
  \label{eq:chap3-cone-cover-shift}
 \end{equation}
+ 成立.
+\end{itemize}
 \end{Theorem}
 
 \begin{figure}[H]
 \centering
-\begin{tikzpicture}[scale=.62]
-\draw[thick] (-4,0) .. controls (-2,1) and (1,-1) .. (4,.2);
-\fill[ZhengWen,opacity=.10] (-4,0) .. controls (-2,1) and (1,-1) .. (4,.2) -- (4,2.5) -- (-4,2.5) -- cycle;
-\draw[->,thick] (0,0) -- (0,2) node[above] {$\widetilde\nu$};
-\draw[dashed] (0,0) -- (-1.3,1.8); \draw[dashed] (0,0) -- (1.3,1.8);
-\node at (2.7,1.6) {$H_a$};
-\end{tikzpicture}
+\includegraphics[width=0.78\textwidth]{figures/ch03-fig-iii-2.png}
 \caption{半空间 $H_a$ 及其内锥.}
 \label{fig:chap3-half-space-cone}
 \end{figure}
 
 \begin{Proof}
-由边界紧性只需在一个 Lipschitz 半空间 $H_a$ 上证明. 取 $\widetilde\nu=e_d$, $\theta=\arctan(\operatorname{Lip}(a))$, 并取
+利用 Definitions~\ref{def:chap3-ckalpha-half-space}、\ref{def:chap3-ckalpha-domain} 以及 $\partial\Omega$ 的紧性, 可以看出只需例如假设 $\sigma=0$, 并考虑满足 $0\in\partial H_a$ 的 Lipschitz 半空间 $H_a$, 因为所有要求的性质在旋转下不变.
+
+对这样的 Lipschitz 半空间, 取单位向量 $\widetilde\nu=(0,\ldots,0,1)^T$, 角度 $\theta=\arctan(\operatorname{Lip}(a))$, 并取 $\sigma=0$ 的开邻域
 \begin{equation}
  U=\bigcup_{|\bar x|<\alpha}\{\bar x\}\times(a(\bar x)-\alpha,a(\bar x)+\alpha).
  \label{eq:chap3-local-cylinder}
 \end{equation}
-若 $y-x$ 位于对应的无限锥中, 则 Lipschitz 估计给出 $y_d>a(\bar y)$, 故 $x+C\subset H_a$; 补集情形相同. 取充分小的 $\delta_0<2\alpha$ 即得式\eqref{eq:chap3-cone-cover-shift}.
+这里 $\alpha>0$ 取得足够小, 使 $R_\sigma U\subset U_\sigma$.
+
+引入无限锥
+\[
+ C=\{z=(\bar z,z_d)\in\mathbb R^d:\sin(\theta)|z|\leq z_d\}.
+\]
+注意
+\[
+ z=(\bar z,z_d)\in C\quad\Longrightarrow\quad
+ |z|\geq\frac1{\cos\theta}|\bar z|.
+\]
+设 $x\in H_a$ 且 $y\in x+C$. 因为 $y-x\in C$, 有
+\[
+\begin{aligned}
+ y_d
+ &=x_d+(y-x)_d
+ \geq x_d+\sin(\theta)|y-x|\\
+ &>a(\bar x)+\sin(\theta)|y-x|\\
+ &=a(\bar y)+[a(\bar x)-a(\bar y)]+\sin(\theta)|y-x|\\
+ &\geq a(\bar y)-\operatorname{Lip}(a)|\bar x-\bar y|
+ +\tan(\theta)|\bar x-\bar y|
+ =a(\bar y),
+\end{aligned}
+\]
+因而 $y\in H_a$. 类似计算表明, 对任意 $x\in H_a^c$, 有 $x-C\subset H_a^c$.
+
+最后验证末一个性质. 由\eqref{eq:chap3-local-cylinder}, 任意 $x\in\Omega\cap U$ 可以写成
+\[
+ x=(\bar x,a(\bar x)+z),
+ \qquad |\bar x|<\alpha,\quad0<z<\alpha.
+\]
+由 $\widetilde\nu$ 的构造,
+\[
+ x-t\widetilde\nu=(\bar x,a(\bar x)+z-t).
+\]
+因此对 $t\geq0$, $x-t\widetilde\nu\in U$ 当且仅当 $z-t>-\alpha$. 若 $\delta_0<2\alpha$, 则这对任意 $0<z<\alpha$ 和任意 $0<t<\delta_0/2$ 都成立. 所以, 只要把 $\delta_0$ 取得足够小, \eqref{eq:chap3-cone-cover-shift}便成立.
 \end{Proof}
 
 令 $U_0=\Omega_{\delta_0/2}$ 和 $\nu_0=0$.
+这样, 我们刚刚构造了 $\Omega$ 的有限开覆盖:
+\[
+ \Omega\subset\bigcup_{i=0}^NU_i.
+\]
 
 \begin{Proposition}
 \label{prop:chap3-shifted-balls-cone}
@@ -156,21 +308,94 @@ $a_\gamma$ 在 $x_d\neq0$ 处光滑, $a_\gamma(\bar x,0)=a(\bar x)$, 并满足
 \end{equation}
 \end{Proposition}
 
+注意, 对 $i=0$, \eqref{eq:chap3-outward-shifted-ball}显然不成立. 还要指出, \eqref{eq:chap3-outward-shifted-ball}中并不要求 $y\in\Omega$.
+
 \begin{figure}[H]
 \centering
-\begin{tikzpicture}[scale=.66]
-\draw[thick] (-4,0) .. controls (-2,.8) and (1,-.7) .. (4,.1);
-\fill (0,.05) circle (2pt) node[below] {$y$};
-\draw[->,thick] (0,.05) -- (0,1.5) node[midway,right] {$\varepsilon\nu_i$};
-\draw (0,1.5) circle (.65); \fill (0,1.5) circle (2pt);
-\draw[dashed] (0,.05) -- (-1.1,2.1); \draw[dashed] (0,.05) -- (1.1,2.1);
-\end{tikzpicture}
+\includegraphics[height=0.34\textheight]{figures/ch03-fig-iii-3.png}
 \caption{球 $B(y+\varepsilon\nu_i,2\varepsilon)$ 包含于锥 $C_i$.}
 \label{fig:chap3-shifted-ball-in-cone}
 \end{figure}
 
 \begin{Proof}
-取 $M>2$ 使 $\sin^2\theta=(M^2-4)/M^2$, 并令 $\varepsilon_0=\delta_0/(M+2)$. 对 $i\geq1$, 直接验证 $B(\varepsilon M\widetilde\nu_i,2\varepsilon)\subset C_i$, 再用式\eqref{eq:chap3-cone-property}得到第一式. 对第二式, 沿 $-\nu_i$ 方向把 $y$ 移到 $U_i\cap\Omega^c$, 再应用同一锥论证. $i=0$ 的情形由 $U_0$ 到边界的距离得到.
+取 $M>2$, 使 $\sin^2\theta=(M^2-4)/M^2$, 并定义 $\varepsilon_0=\delta_0/(M+2)$.
+
+对 $i=0$, 因 $\nu_0=0$, 只需注意对任意 $y\in U_0$,
+\[
+ B(y,2\varepsilon)\subset\Omega,
+\]
+这是因为根据 $U_0=\Omega_{\delta_0/2}$ 的定义,
+\[
+ d(y,\partial\Omega)>\frac{\delta_0}{2}
+ \geq2\varepsilon_0\geq2\varepsilon.
+\]
+
+现在设 $i\in\{1,\ldots,N\}$ 且 $y\in U_i$.
+\begin{itemize}
+ \item 若 $y\in\Omega$, 由\eqref{eq:chap3-cone-property}有 $y+C_i\subset\Omega$. 所以只需证明 $B(\varepsilon\nu_i,2\varepsilon)\subset C_i$. 设
+ \[
+  z\in B(\varepsilon\nu_i,2\varepsilon)
+  =B(\varepsilon M\widetilde\nu_i,2\varepsilon).
+ \]
+ 首先,
+ \[
+  0<(M-2)\varepsilon\leq z\cdot\widetilde\nu_i
+  \leq(M+2)\varepsilon\leq(M+2)\varepsilon_0\leq\delta_0.
+ \]
+ 其次, 利用 Young 不等式 Corollary~\ref{cor:chap2-young-epsilon}, 计算得
+ \[
+ \begin{aligned}
+  |z|^2
+  &=|z-\varepsilon M\widetilde\nu_i+\varepsilon M\widetilde\nu_i|^2\\
+  &\leq(4-M^2)\varepsilon^2+2\varepsilon Mz\cdot\widetilde\nu_i
+  \leq\frac{M^2}{M^2-4}|z\cdot\widetilde\nu_i|^2.
+ \end{aligned}
+ \]
+ 根据 $M$ 的定义以及 $z\cdot\widetilde\nu_i\geq0$, 这恰好给出
+ \[
+  \sin(\theta)|z|\leq z\cdot\widetilde\nu_i,
+ \]
+ 断言得证.
+
+ \item 设 $d(y,\partial\Omega)\leq\varepsilon/M$. 我们断言存在
+ \[
+  0\leq\alpha\leq\frac{d(y,\partial\Omega)}2,
+ \]
+ 使 $y-\alpha\nu_i\in U_i\cap\Omega^c$.
+ 若 $y\in\Omega^c$, 取 $\alpha=0$ 即可. 若 $y\in\Omega$, 因 $d(y,\partial\Omega)\leq\varepsilon$, 由 $\varepsilon_0$ 的定义,
+ \[
+  \frac{M d(y,\partial\Omega)}2
+  \leq\frac{M\varepsilon_0}{2}<\frac{\delta_0}{2}.
+ \]
+ 因而可用\eqref{eq:chap3-cone-cover-shift}断言
+ \[
+  y^*=y-\frac{d(y,\partial\Omega)}2M\widetilde\nu_i
+ \]
+ 属于 $U_i$. 现在证明 $y^*\in\Omega^c$. 反设 $y^*\in\Omega$. 对\eqref{eq:chap3-inward-shifted-ball}把 $\varepsilon$ 换为 $d(y,\partial\Omega)/2$, 得
+ \[
+  B\left(y^*+\frac{d(y,\partial\Omega)}2M\widetilde\nu_i,
+  d(y,\partial\Omega)\right)\subset\Omega.
+ \]
+ 括号中的球心正是 $y$, 这蕴含 $d(y,\partial\Omega)>d(y,\partial\Omega)$, 显然矛盾.
+
+ 已知 $y-\alpha\nu_i\in U_i\cap\Omega^c$, 因而可使用证明\eqref{eq:chap3-inward-shifted-ball}时的同一论证, 得
+ \[
+  B(y-\alpha\nu_i-\varepsilon\nu_i,2\varepsilon)\subset\Omega^c.
+ \]
+ 最后注意, 因为
+ \[
+  \alpha M\leq\frac{M d(y,\partial\Omega)}2\leq\frac\varepsilon2,
+ \]
+ 有
+ \[
+ \begin{aligned}
+  B(y-\varepsilon\nu_i,\varepsilon)
+  &\subset B(y-\varepsilon\nu_i-\alpha\nu_i,\varepsilon+\alpha M)\\
+  &\subset B(y-\varepsilon\nu_i-\alpha\nu_i,2\varepsilon),
+ \end{aligned}
+ \]
+ 从而得到\eqref{eq:chap3-outward-shifted-ball}.
+\end{itemize}
 \end{Proof}
 
 \begin{Definition}
@@ -180,16 +405,59 @@ $a_\gamma$ 在 $x_d\neq0$ 处光滑, $a_\gamma(\bar x,0)=a(\bar x)$, 并满足
 
 \begin{Lemma}
 \label{lem:chap3-lipschitz-locally-star-shaped}
-有界 Lipschitz 区域 $\Omega$ 可由有限个星形开集覆盖. 无界 Lipschitz 区域可由局部有限的星形开集族覆盖.
+设 $\Omega$ 为 $\mathbb R^d$ 中的有界 Lipschitz 区域. 存在 $\mathbb R^d$ 中的有限个星形开集族 $(\omega_i)_{i\in I}$, 使
+\[
+ \Omega=\bigcup_{i\in I}\omega_i.
+\]
+若 $\Omega$ 是无界 Lipschitz 区域, 则可由局部有限的星形开集族覆盖.
 \end{Lemma}
 
 \begin{Proof}
-内部点附近可取包含于 $\Omega$ 的球. 对 $a\in\partial\Omega\cap U_i$, 取
+只需证明, 对每个 $a\in\overline\Omega$, 存在 $\Omega$ 的一个开集 $O$ 包含 $a$, 且 $O\cap\Omega$ 星形. 事实上, 由于 $\overline\Omega$ 紧, 可以从这样的开集中选出可数且局部有限的 $\overline\Omega$ 的覆盖. 还注意到, 对任意 $a\in\Omega$, 取以 $a$ 为中心且包含于 $\Omega$ 的球, 结果显然成立.
+
+因此设 $a\in\partial\Omega$, 并取 $1\leq i\leq N$ 使 $a\in U_i$, 其中覆盖 $(U_i)_i$ 由 Theorem~\ref{thm:chap3-lipschitz-cone-property} 给出. 给定 $\varepsilon>0$, 定义
 \[
  O=\bigcup_{x\in\partial\Omega\cap U_i,\ |x-a|<\varepsilon}
- (x+\mathring C_i\cup\{0\}).
+ \bigl(x+(\mathring C_i\cup\{0\})\bigr),
 \]
-当 $\varepsilon$ 充分小时, $O$ 关于 $a+(\delta_0/2)\widetilde\nu_i$ 星形. 紧性给出有限覆盖, 无界情形给出局部有限覆盖.
+其中开截锥为
+\[
+ \mathring C_i=
+ \{z\in\mathbb R^d:\sin(\theta)|z|<z\cdot\widetilde\nu_i<\delta_0\}.
+\]
+容易验证 $O$ 是 $\Omega$ 的开集. 我们证明, 对适当的 $\varepsilon>0$, $O$ 关于点
+\[
+ y=a+\frac{\delta_0}{2}\widetilde\nu_i
+\]
+星形. 每个集合 $x+(\mathring C_i\cup\{0\})$ 都是凸集, 因而只需证明 $y$ 属于其中每一个.
+
+设 $x\in\partial\Omega\cap U_i$ 且 $|x-a|<\varepsilon$. 需要证明 $y\in x+\mathring C_i$, 即
+\[
+ y-x=a-x+\frac{\delta_0}{2}\widetilde\nu_i\in\mathring C_i.
+\]
+由构造,
+\[
+ (y-x)\cdot\widetilde\nu_i=(a-x)\cdot\widetilde\nu_i+\frac{\delta_0}{2},
+\]
+从而
+\[
+ \frac{\delta_0}{2}-\varepsilon
+ \leq(y-x)\cdot\widetilde\nu_i
+ \leq\frac{\delta_0}{2}+\varepsilon.
+\]
+若 $\varepsilon<\delta_0/2$, 则 $(y-x)\cdot\widetilde\nu_i<\delta_0$. 此外, 选择 $\varepsilon>0$ 使
+\[
+ \sin(\theta)\left(\varepsilon+\frac{\delta_0}{2}\right)
+ <\frac{\delta_0}{2}-\varepsilon,
+\]
+这是可能的, 因为 $\sin\theta<1$. 于是
+\[
+ \sin(\theta)|y-x|
+ <\sin(\theta)\left(\varepsilon+\frac{\delta_0}{2}\right)
+ <\frac{\delta_0}{2}-\varepsilon
+ \leq(y-x)\cdot\widetilde\nu_i,
+\]
+断言得证.
 \end{Proof}
 
 \paragraph{Lipschitz 区域边界上的积分}
@@ -202,18 +470,53 @@ $a_\gamma$ 在 $x_d\neq0$ 处光滑, $a_\gamma(\bar x,0)=a(\bar x)$, 并满足
  J_a=\sqrt{1+\sum_{i=1}^{d-1}(\partial_{x_i}a)^2}.
  \label{eq:chap3-boundary-integral-half-space}
 \end{equation}
-由 Theorem~\ref{thm:chap2-rademacher}, $J_a$ 几乎处处有定义. 外单位法向量为
+由 Theorem~\ref{thm:chap2-rademacher}, $J_a$ 几乎处处有定义, 并满足
+\[
+ 1\leq J_a(\bar x)\leq\sqrt{1+(d-1)\operatorname{Lip}(a)^2}.
+\]
+因此, 积分\eqref{eq:chap3-boundary-integral-half-space}有良好定义.
+
+对几乎每个 $\bar x$, 定义单位向量
 \begin{equation}
  \nu_{H_a}(\bar x,a(\bar x))
  =\frac1{J_a(\bar x)}
  (\partial_{x_1}a,\ldots,\partial_{x_{d-1}}a,-1)^T.
  \label{eq:chap3-outward-normal-half-space}
 \end{equation}
-对一般边界紧的 Lipschitz 区域, 通过有限图覆盖和单位分解定义 $\partial\Omega$ 上的 Radon 测度 $\mathrm{d}\sigma$ 及外单位法向量 $\nu\in(L^\infty(\partial\Omega))^d$; 该定义与覆盖、图和单位分解的选择无关.
+它称为 $H_a$ 在点 $(\bar x,a(\bar x))\in\partial H_a$ 处的外单位法向量. 容易验证, 积分\eqref{eq:chap3-boundary-integral-half-space}和外单位法向量\eqref{eq:chap3-outward-normal-half-space}在计算它们所用的标准正交坐标系旋转下不变.
+
+现在设 $\Omega$ 是 $\mathbb R^d$ 中边界有界的 Lipschitz 区域. 考虑 Theorem~\ref{thm:chap3-lipschitz-cone-property} 中引入的 $\partial\Omega$ 的有限开覆盖 $(U_i)_{1\leq i\leq N}$. 根据构造, 对每个 $i$, 存在旋转 $R_i$, 使得对某个 Lipschitz 连续函数 $a_i$,
+\[
+ \Omega\cap U_i=(R_iH_{a_i})\cap U_i.
+\]
+取与 $\partial\Omega$ 的这个开覆盖关联的单位分解 $(\psi_i)_i$. 对任意 $\mathbb R^d$ 上的连续函数 $\varphi$, 定义
+\[
+ \int_{\partial\Omega}\varphi\,\mathrm d\sigma
+ =\sum_{i=1}^N\int_{\partial H_{a_i}}
+ (\varphi\circ R_i)(\psi_i\circ R_i)\,\mathrm d\sigma.
+\]
+此外, 对任意 $1\leq i\leq N$ 和 $\sigma\in\partial\Omega\cap U_i$, 可以定义外单位法向量
+\[
+ \nu_\Omega(\sigma)=R_i\nu_{H_{a_i}}(R_i^{-1}\sigma).
+\]
+容易验证, 这些定义既不依赖覆盖 $(U_i)_i$, 也不依赖半空间 $H_{a_i}$ 的选择或所用的单位分解.
+
+最后, 映射
+\[
+ \varphi\in C^0(\partial\Omega)
+ \longmapsto\int_{\partial\Omega}\varphi\,\mathrm d\sigma
+\]
+在 $\partial\Omega$ 上定义了 Radon 测度 $\mathrm d\sigma$. 它使我们能够定义 Lebesgue 空间 $L^p(\partial\Omega)$, $1\leq p\leq+\infty$, 并对任意 $\mathrm d\sigma$-可积函数赋予积分 $\int_{\partial\Omega}\varphi\,\mathrm d\sigma$ 以意义. 这些空间具有与\MBUnresolvedReference{subsec:chap2-source-lebesgue-spaces}{Chapter~II 的 Section~2.3}中所述 $L^p(\Omega)$ 空间相似的性质. 特别要注意, 依此定义,
+\[
+ \nu_\Omega\in(L^\infty(\partial\Omega))^d.
+\]
+不会产生混淆时, 简记外单位法向量 $\nu_\Omega$ 为 $\nu$.
 
 \paragraph{Stokes 公式}
 
-\begin{Theorem}[Stokes formula. Divergence theorem]
+本节证明偏微分方程研究中的下面这个基本定理.
+
+\begin{Theorem}{Stokes formula. Divergence theorem}
 \label{thm:chap3-stokes-divergence}
 设 $\Omega\subset\mathbb{R}^d$ 为边界紧的 Lipschitz 区域. 对任意 $\Phi\in(C_c^1(\mathbb{R}^d))^d$,
 \begin{equation}
@@ -221,34 +524,127 @@ $a_\gamma$ 在 $x_d\neq0$ 处光滑, $a_\gamma(\bar x,0)=a(\bar x)$, 并满足
  =\int_{\partial\Omega}\Phi\cdot\nu\,\mathrm{d}\sigma.
  \label{eq:chap3-stokes-divergence}
 \end{equation}
-因此对 $\psi\in C_c^1(\mathbb{R}^d)$,
+\end{Theorem}
+
+先说明, 利用\MBUnresolvedReference{app:vector-operator-identities}{Appendix~A} 中的公式, 可以给出这个公式的许多等价形式. 例如, 对任意 $\Phi\in(C_c^1(\mathbb R^d))^d$ 和 $\psi\in C_c^1(\mathbb R^d)$, 我们将经常使用
 \begin{equation}
  \int_\Omega\psi\operatorname{div}\Phi\,\mathrm{d}x
  +\int_\Omega\Phi\cdot\nabla\psi\,\mathrm{d}x
  =\int_{\partial\Omega}\psi\Phi\cdot\nu\,\mathrm{d}\sigma.
  \label{eq:chap3-stokes-product}
 \end{equation}
-\end{Theorem}
+它只需把\eqref{eq:chap3-stokes-divergence}应用于向量场 $\psi\Phi$ 即得.
 
 \begin{Proof}
-线性和单位分解把一般情形约化到 Lipschitz 半空间. 对光滑图 $a$, Fubini 定理和 $\bar x$ 方向分部积分给出
+先假定结论对任意 Lipschitz 半空间 $H_a$ 成立, 再对边界紧的 Lipschitz 区域 $\Omega$ 证明. 使用公式\eqref{eq:chap3-stokes-divergence}关于 $\Phi$ 的线性性.
+
+若 $\Phi$ 紧支于 $\Omega$, 则\eqref{eq:chap3-stokes-divergence}中的边界积分显然为零, 而体积分为
 \[
- \int_{H_a}\operatorname{div}\Phi\,\mathrm{d}x
- =\int_{\mathbb{R}^{d-1}}
- \Phi(\bar x,a(\bar x))\cdot
- (\nabla a(\bar x),-1)^T\,\mathrm{d}\bar x,
+ \int_\Omega\operatorname{div}\Phi\,\mathrm dx
+ =\int_{\mathbb R^d}\operatorname{div}\Phi\,\mathrm dx
+ =\sum_{i=1}^d\int_{\mathbb R^d}\frac{\partial}{\partial x_i}\Phi_i\,\mathrm dx=0,
 \]
-再用式\eqref{eq:chap3-boundary-integral-half-space}和\eqref{eq:chap3-outward-normal-half-space}得到结论.
+最后一步来自 $\mathbb R^d$ 上的分部积分.
+
+现在取 Section~\ref{subsec:chap3-lipschitz-domains} 中引入的 $\Omega$ 的开覆盖 $(U_i)_{0\leq i\leq N}$, 以及相应的单位分解 $(\psi_i)_{0\leq i\leq N}$. 可以验证 $\psi_0\Phi$ 紧支于 $U_0\subset\Omega$, 因而刚才已证明它满足 Stokes 公式. 还需对 $1\leq i\leq N$ 证明\eqref{eq:chap3-stokes-divergence}对每个 $\psi_i\Phi$ 成立. 因为 $\psi_i$ 支于 $U_i$, 变量代换给出
+\[
+\begin{aligned}
+ \int_\Omega\operatorname{div}(\psi_i\Phi)\,\mathrm dx
+ &=\int_{R_iH_{a_i}}\operatorname{div}(\psi_i\Phi)\,\mathrm dx\\
+ &=\int_{H_{a_i}}\operatorname{div}(\psi_i\Phi)\circ R_i\,\mathrm dy\\
+ &=\int_{H_{a_i}}\operatorname{div}
+ \bigl((\psi_i\circ R_i)(R_i^{-1}\Phi\circ R_i)\bigr)\,\mathrm dy.
+\end{aligned}
+\]
+这里使用了任意向量场 $v$ 所满足的恒等式
+\[
+ \operatorname{div}(v)\circ R
+ =\operatorname{div}(R^{-1}v\circ R).
+\]
+假定 Stokes 公式对 Lipschitz 半空间成立, 再利用 $R_i^{-1}$ 是 $\mathbb R^d$ 的等距映射, 得
+\[
+\begin{aligned}
+ \int_\Omega\operatorname{div}(\psi_i\Phi)\,\mathrm dx
+ &=\int_{\partial H_{a_i}}(\psi_i\circ R_i)
+ (R_i^{-1}\Phi\circ R_i)\cdot\nu_{H_{a_i}}\,\mathrm d\sigma\\
+ &=\int_{\partial H_{a_i}}(\psi_i\circ R_i)
+ (R_i^{-1}\Phi\circ R_i)\cdot(R_i^{-1}\nu_\Omega\circ R_i)\,\mathrm d\sigma\\
+ &=\int_{\partial H_{a_i}}(\psi_i\circ R_i)
+ (\Phi\circ R_i)\cdot(\nu_\Omega\circ R_i)\,\mathrm d\sigma\\
+ &=\int_{\partial\Omega}\psi_i\Phi\cdot\nu_\Omega\,\mathrm d\sigma.
+\end{aligned}
+\]
+一般区域的断言得证.
+
+还需证明 Lipschitz 半空间的情形. 先设 $a\in C^\infty$, 即 $H_a$ 是光滑半空间. 由 Fubini 定理,
+\[
+\begin{aligned}
+ \int_{H_a}\operatorname{div}\Phi\,\mathrm dx
+ &=\int_{\mathbb R^{d-1}}\int_{a(\bar x)}^{+\infty}
+ \left(\sum_{i=1}^{d-1}\frac{\partial\Phi_i}{\partial x_i}
+ +\frac{\partial\Phi_d}{\partial x_d}\right)\,\mathrm dx_d\,\mathrm d\bar x\\
+ &=\int_{\mathbb R^{d-1}}\sum_{i=1}^{d-1}
+ \frac{\partial}{\partial x_i}\left(\int_{a(\bar x)}^{+\infty}\Phi_i\,\mathrm dx_d\right)\,\mathrm d\bar x\\
+ &\quad+\int_{\mathbb R^{d-1}}\sum_{i=1}^{d-1}
+ \frac{\partial a}{\partial x_i}(\bar x)\Phi_i(\bar x,a(\bar x))\,\mathrm d\bar x\\
+ &\quad-\int_{\mathbb R^{d-1}}\Phi_d(\bar x,a(\bar x))\,\mathrm d\bar x.
+\end{aligned}
+\]
+由于 $\Phi$ 紧支, 分部积分表明右端第一项为零. 利用\eqref{eq:chap3-outward-normal-half-space}和\eqref{eq:chap3-boundary-integral-half-space}, 剩下
+\[
+\begin{aligned}
+ \int_{H_a}\operatorname{div}\Phi\,\mathrm dx
+ &=\int_{\mathbb R^{d-1}}\Phi(\bar x,a(\bar x))
+ \cdot\nu_{H_a}(\bar x,a(\bar x))J_a(\bar x)\,\mathrm d\bar x\\
+ &=\int_{\partial H_a}\Phi\cdot\nu_{H_a}\,\mathrm d\sigma,
+\end{aligned}
+\]
+光滑半空间的断言得证.
 
 \begin{figure}[H]
 \centering
-\begin{tikzpicture}[scale=.68]
-\draw[thick] (-4,0) .. controls (-2,1) and (1,-.8) .. (4,.2) node[right] {$\partial H_a$};
-\draw[dashed] (-4,.35) .. controls (-2,1.2) and (1,-.55) .. (4,.45) node[right] {$\partial H_{a_\gamma(\cdot,\varepsilon)}$};
-\end{tikzpicture}
+\includegraphics[width=0.82\textwidth]{figures/ch03-fig-iii-4.png}
 \caption{Lipschitz 半空间 $H_a$ 及其光滑逼近.}
 \label{fig:chap3-smooth-half-space-approximation}
 \end{figure}
 
-对 Lipschitz 图, 使用式\eqref{eq:chap3-regularized-graph}构造光滑半空间 $H_{a_\gamma(\cdot,\varepsilon)}$. 当 $\varepsilon\to0$, 特征函数、图函数和几乎处处的切向导数收敛, 并具有统一有界控制. Lebesgue 控制收敛定理允许在体积分和边界积分中传递到极限, 得式\eqref{eq:chap3-stokes-divergence}. 对向量场 $\psi\Phi$ 应用该式即得式\eqref{eq:chap3-stokes-product}.
+最后处理一般 Lipschitz 半空间 $H_a$. 考虑\eqref{eq:chap3-regularized-graph}中定义并在 Proposition~\ref{prop:chap3-regularized-graph-properties} 中研究的映射 $a_\gamma$. 对每个 $\varepsilon>0$, 定义光滑半空间
+\[
+ H_{a_\gamma}^\varepsilon
+ =\{x=(\bar x,x_d)\in\mathbb R^d:x_d>a_\gamma(\bar x,\varepsilon)\},
+\]
+它是 $H_a$ 的一个逼近. 在 $H_{a_\gamma}^\varepsilon$ 中应用 Stokes 公式:
+\[
+ \int_{H_{a_\gamma}^\varepsilon}\operatorname{div}\Phi\,\mathrm dx
+ =\int_{\partial H_{a_\gamma}^\varepsilon}
+ \Phi\cdot\nu_{H_{a_\gamma}^\varepsilon}\,\mathrm d\sigma.
+\]
+当 $\varepsilon\to0$ 时, 对每个 $\bar x$, $a_\gamma(\bar x,\varepsilon)\to a(\bar x)$. 因而 $H_{a_\gamma}^\varepsilon$ 的示性函数几乎处处收敛到 $H_a$ 的示性函数. Lebesgue 控制收敛定理给出左端积分收敛到 $\int_{H_a}\operatorname{div}\Phi\,\mathrm dx$.
+
+还需在右端传递到极限, 即考察
+\[
+ \int_{\mathbb R^{d-1}}\Phi(\bar x,a_\gamma(\bar x,\varepsilon))\cdot
+ (\partial_{x_1}a_\gamma(\bar x,\varepsilon),\ldots,
+ \partial_{x_{d-1}}a_\gamma(\bar x,\varepsilon),-1)^T\,\mathrm d\bar x.
+\]
+这同样可由 Lebesgue 控制收敛定理说明. 一方面, $\Phi$ 连续且紧支, 又有 $\operatorname{Lip}(a_\gamma)\leq\operatorname{Lip}(a)$, 因此被积函数可由一个与 $\varepsilon$ 无关的可积函数控制. 另一方面, Proposition~\ref{prop:chap3-regularized-graph-properties} 表明对每个 $\bar x$,
+\[
+ a_\gamma(\bar x,\varepsilon)\to a(\bar x),
+\]
+并且利用 Theorem~\ref{thm:chap2-rademacher}, 对几乎每个 $\bar x$,
+\[
+ \partial_{x_i}a_\gamma(\bar x,\varepsilon)	o\partial_{x_i}a(\bar x).
+\]
+最终得到
+\[
+\begin{aligned}
+ \int_{H_a}\operatorname{div}\Phi\,\mathrm dx
+ &=\int_{\mathbb R^{d-1}}\Phi(\bar x,a(\bar x))\cdot
+ (\partial_{x_1}a(\bar x),\ldots,\partial_{x_{d-1}}a(\bar x),-1)^T\,\mathrm d\bar x\\
+ &=\int_{\mathbb R^{d-1}}\Phi(\bar x,a(\bar x))\cdot
+ \nu_{H_a}(\bar x,a(\bar x))J_a(\bar x)\,\mathrm d\bar x\\
+ &=\int_{\partial H_a}\Phi\cdot\nu_{H_a}\,\mathrm d\sigma,
+\end{aligned}
+\]
+定理得证.
 \end{Proof}

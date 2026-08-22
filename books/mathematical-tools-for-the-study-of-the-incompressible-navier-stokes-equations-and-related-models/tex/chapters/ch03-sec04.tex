@@ -1,9 +1,11 @@
 \renewcommand{\thestatement}{4.\number\numexpr\value{statement}-78\relax}
+\newcounter{chapterthreesectionfourremark}
+\renewcommand{\thechapterthreesectionfourremark}{4.\arabic{chapterthreesectionfourremark}}
 
 \subsection{Laplace 问题}
 \label{sec:chap3-laplace-problem}
 
-本节先研究 Dirichlet 边界条件, 再研究 Neumann 边界条件. 存在唯一性由 Lax--Milgram 定理和迹提升得到; 正则性则用前面建立的 Nirenberg 平移方法自足地证明.
+本节证明 Laplace 问题的主要结果, 先研究 Dirichlet 边界条件, 再研究 Neumann 边界条件. 存在唯一性由 Lax--Milgram 定理和迹提升结果得到. 正则性也可由 Agmon、Douglis 和 Nirenberg 的椭圆系统一般理论推出, 参见\MBUnresolvedReference{bib:agmon-douglis-nirenberg}{[2, 3]}; 不过, 完整且自足的证明更具启发性, 因而这里采用前几节建立的 Nirenberg 平移方法. 下一章证明 Stokes 问题正则性时也使用同一方法.
 
 \subsubsection{Dirichlet 边界条件}
 \label{subsec:chap3-laplace-dirichlet}
@@ -13,8 +15,8 @@
 设 $\Omega\subset\mathbb R^d$ 为有界连通 Lipschitz 区域, $f\in H^{-1}(\Omega)$, $u_b\in H^{1/2}(\partial\Omega)$. 则问题
 \begin{equation}
  \begin{cases}
- -\Delta u=f,&\text{于 }\Omega,\\
- u=u_b,&\text{于 }\partial\Omega
+ -\Delta u=f,&\text{in }\Omega,\\
+ u=u_b,&\text{on }\partial\Omega
  \end{cases}
  \label{eq:chap3-laplace-dirichlet-problem}
 \end{equation}
@@ -25,11 +27,35 @@
 \end{Theorem}
 
 \begin{Proof}
-取 Theorem~\ref{thm:chap3-trace-lifting-operator} 的提升 $R_0u_b$. 则 $\widetilde u=u-R_0u_b\in H_0^1(\Omega)$ 满足齐次边界问题, 右端为 $\widetilde f=f+\Delta(R_0u_b)\in H^{-1}$. 在 $H_0^1(\Omega)$ 上定义
+先用 Theorem~\ref{thm:chap3-trace-lifting-operator} 的提升 $R_0u_b$. 函数 $u\in H^1(\Omega)$ 是式\eqref{eq:chap3-laplace-dirichlet-problem}的解, 当且仅当 $\widetilde u=u-R_0u_b\in H_0^1(\Omega)$ 满足
+\[
+ \begin{cases}
+ -\Delta\widetilde u=f+\Delta(R_0u_b),&\text{in }\Omega,\\
+ \widetilde u=0,&\text{on }\partial\Omega.
+ \end{cases}
+\]
+这里 $\widetilde f=f+\Delta(R_0u_b)\in H^{-1}(\Omega)$, 且
+\[
+ \|\Delta(R_0u_b)\|_{H^{-1}}
+ \leq\|R_0u_b\|_{H^1}\leq C\|u_b\|_{H^{1/2}}.
+\]
+因此 $\|\widetilde f\|_{H^{-1}}\leq\|f\|_{H^{-1}}+C\|u_b\|_{H^{1/2}}$, 而解存在时
+\[
+ \|u\|_{H^1}\leq\|\widetilde u\|_{H^1}+C\|u_b\|_{H^{1/2}}.
+\]
+所以只需处理 $u_b=0$.
+
+在 Hilbert 空间 $H_0^1(\Omega)$ 上定义
 \[
  a(u,v)=\int_\Omega\nabla u\cdot\nabla v\,\mathrm dx.
 \]
-Cauchy--Schwarz 不等式给出连续性, Proposition~\ref{prop:chap3-generalized-poincare} 给出强制性. Lax--Milgram 定理产生唯一 $\widetilde u$, 并给出所需估计. 对 $\mathcal D(\Omega)$ 测试即恢复分布方程, 而 Theorem~\ref{thm:chap3-zero-trace-characterization}给出边界条件.
+Cauchy--Schwarz 不等式给出连续性, Proposition~\ref{prop:chap3-generalized-poincare} 给出强制性. Lax--Milgram 定理 (Theorem~\ref{thm:chap2-lax-milgram}) 产生唯一 $u\in H_0^1(\Omega)$, 满足
+\[
+ \int_\Omega\nabla u\cdot\nabla v\,\mathrm dx
+ =\langle f,v\rangle_{H^{-1},H_0^1},
+ \qquad v\in H_0^1(\Omega).
+\]
+因 $\mathcal D(\Omega)\subset H_0^1(\Omega)$, 该公式说明 $-\Delta u=f$ 于分布意义成立. 边界条件由 $u\in H_0^1$ 及 Theorem~\ref{thm:chap3-zero-trace-characterization} 得到. Lax--Milgram 估计再给出所需范数界.
 \end{Proof}
 
 \begin{Theorem}
@@ -41,13 +67,30 @@ Cauchy--Schwarz 不等式给出连续性, Proposition~\ref{prop:chap3-generalize
 \end{Theorem}
 
 \begin{Proof}
-只详细处理 $k=0$; 高阶情形逐次微分重复同一论证. Theorem~\ref{thm:chap3-trace-lifting-operator} 的高阶性质把非齐次边界数据化为齐次情形.
+只详细处理 $k=0$; 高阶情形沿同一路线逐次微分. 此时 $\Omega$ 为 $C^{1,1}$, $f\in L^2(\Omega)$, $u_b\in H^{3/2}(\partial\Omega)$. Section~\ref{subsec:chap3-trace-lifting} 的高阶提升性质给出 $R_0u_b\in H^2(\Omega)$ 和 $\|R_0u_b\|_{H^2}\leq C\|u_b\|_{H^{3/2}}$. 与上一个证明相同, 只需处理 $u_b=0$.
 
 先证内部正则性. 对 $\varphi\in\mathcal D(\Omega)$, 令 $v=u\varphi$ 并在全空间计算
 \[
  -\Delta v=f\varphi-2\nabla u\cdot\nabla\varphi-u\Delta\varphi=:F\in L^2(\mathbb R^d).
 \]
-于是 $-\Delta(\delta_hv)=\delta_hF$. 以 $\delta_hv$ 测试并应用 Lemma~\ref{lem:chap3-translation-sobolev-bound}与 Young 不等式, 得 $\|\nabla\delta_hv\|_{L^2}\leq C|h|$. Proposition~\ref{prop:chap3-sobolev-difference-quotient-characterization}推出 $v\in H^2(\mathbb R^d)$, 故 $u\in H^2_{\mathrm{loc}}(\Omega)$.
+该恒等式可直接由分布测试得到: 对 $\psi\in\mathcal D(\mathbb R^d)$ 使用 $\varphi\Delta\psi=\Delta(\varphi\psi)-\psi\Delta\varphi-2\nabla\varphi\cdot\nabla\psi$. 于是 $-\Delta(\delta_hv)=\delta_hF$. 因 $\delta_hv$ 紧支, 可用它测试该方程:
+\[
+ \|\nabla\delta_hv\|_{L^2}^2
+ =\langle\delta_hF,\delta_hv\rangle_{H^{-1},H^1}
+ \leq\|\delta_hF\|_{H^{-1}}\|\delta_hv\|_{H^1}.
+\]
+Lemma~\ref{lem:chap3-translation-sobolev-bound} 给出
+\[
+ \|\nabla\delta_hv\|_{L^2}^2
+ \leq|h|\|F\|_{L^2}
+ \bigl(|h|\|v\|_{H^1}+\|\nabla\delta_hv\|_{L^2}\bigr).
+\]
+用 Young 不等式吸收最后一项, 得
+\[
+ \|\nabla\delta_hv\|_{L^2}^2
+ \leq C|h|^2(\|F\|_{L^2}^2+\|v\|_{L^2}^2).
+\]
+Proposition~\ref{prop:chap3-sobolev-difference-quotient-characterization} 推出 $\nabla v\in H^1(\mathbb R^d)^d$, 即 $v\in H^2(\mathbb R^d)$, 故 $u\in H^2_{\mathrm{loc}}(\Omega)$, 并得到相应估计.
 
 再证切向正则性. 齐次问题的变分式为
 \begin{equation}
@@ -57,10 +100,19 @@ Cauchy--Schwarz 不等式给出连续性, Proposition~\ref{prop:chap3-generalize
  \label{eq:chap3-dirichlet-variational-form}
 \end{equation}
 对满足式\eqref{eq:chap3-admissible-tangential-field}的 $\theta$, 取弯曲差商测试函数 $\delta_{-h}^\theta\delta_h^\theta u$. Proposition~\ref{prop:chap3-curved-translation-properties}和强制性给出
+更准确地, 利用 Section~\ref{subsec:chap3-tangential-sobolev-spaces} 的交换量记号, 变分式给出
+\begin{align*}
+ \int_\Omega|\nabla\delta_h^\theta u|^2\,\mathrm dx
+ ={}&\int_\Omega(\delta_h^\theta f)(\delta_h^\theta u)\,\mathrm dx
+ -\int_\Omega\{f,\delta_h^\theta u\}_h\,\mathrm dx\\
+ &+\int_\Omega\{\nabla u,\nabla\delta_h^\theta u\}_h\,\mathrm dx
+ +\int_\Omega[\nabla,\tau_h^\theta]u\cdot\nabla\delta_h^\theta u\,\mathrm dx.
+\end{align*}
+由 Proposition~\ref{prop:chap3-curved-translation-properties}, Lemma~\ref{lem:chap3-translation-sobolev-bound} 的弯曲对应估计以及 Poincar\'e 不等式,
 \[
  \|\delta_h^\theta u\|_{H_0^1}\leq C|h|(\|f\|_{L^2}+\|\nabla u\|_{L^2}).
 \]
-Theorem~\ref{thm:chap3-tangential-space-characterization}推出 $u\in H_{mathrm{tang}}^2(\Omega)$.
+Theorem~\ref{thm:chap3-tangential-space-characterization} 推出 $u\in H_{\mathrm{tang}}^2(\Omega)$.
 
 最后在边界条带上使用 Proposition~\ref{prop:chap3-laplacian-normal-tangential}:
 \begin{equation}
@@ -79,7 +131,12 @@ Theorem~\ref{thm:chap3-tangential-space-characterization}推出 $u\in H_{mathrm{
  \qquad\forall q<2.
  \label{eq:chap3-laplace-geometric-product-integrability}
 \end{equation}
-式\eqref{eq:chap3-laplace-normal-tangential-equation}于是给出 $u\in W^{2,q}$ 对每个 $q<2$. Sobolev 嵌入再提高 $\nabla u$ 的可积指数至某个 $r>2$, 从而式\eqref{eq:chap3-laplace-geometric-product-integrability}可取 $q=2$. 回代即得 $u\in H^2(\Omega)$ 及估计.
+式\eqref{eq:chap3-laplace-normal-tangential-equation}及 $u\in H_{\mathrm{tang}}^2$ 给出 $\nabla_N\nabla_Nu\in L^q$ 对每个 $q<2$. 又
+\[
+ \nabla(\nabla_Nu)=\nabla_T(\nabla_Nu)+(\nabla_N\nabla_Nu)\nu
+ =\nabla_T(\nabla u\cdot\nu)+(\nabla_N\nabla_Nu)\nu.
+\]
+第一项属于 $L^2$, 第二项属于每个 $L^q$, $q<2$, 因而 $\nabla_Nu\in W^{1,q}$. 同时按定义 $\nabla_Tu\in H^1\subset W^{1,q}$, 故 Theorem~\ref{thm:chap3-tangential-normal-regularity} 给出 $u\in W^{2,q}(\Omega)$ 对每个 $q<2$. Sobolev 嵌入再提高 $\nabla u$ 的可积指数至某个 $r>2$, 从而由式\eqref{eq:chap3-laplace-geometric-coefficient-bound}和 H\"older 不等式, 式\eqref{eq:chap3-laplace-geometric-product-integrability}可取 $q=2$. 重复上述各步即得 $u\in H^2(\Omega)$ 及估计.
 \end{Proof}
 
 \subsubsection{Neumann 边界条件}
@@ -95,8 +152,8 @@ Theorem~\ref{thm:chap3-tangential-space-characterization}推出 $u\in H_{mathrm{
 \end{equation}
 则存在唯一的 $u\in H^1(\Omega)\cap L_0^2(\Omega)$ 满足
 \[
- -\Delta u=f\quad\text{于 }\Omega,
- \qquad\partial_\nu u=f_b\quad\text{于 }\partial\Omega,
+ -\Delta u=f\quad\text{in }\Omega,
+ \qquad\partial_\nu u=f_b\quad\text{on }\partial\Omega,
 \]
 并且
 \begin{equation}
@@ -109,7 +166,12 @@ Theorem~\ref{thm:chap3-tangential-space-characterization}推出 $u\in H_{mathrm{
 \]
 \end{Theorem}
 
-\textbf{Remark 4.1:} 若 $u\in H^1$ 且 $-\Delta u=f$ 于分布意义成立, 则 $\nabla u$ 属于后文研究的 $H_{\mathrm{div}}$ 空间, 因而法向导数在 $H^{-1/2}(\partial\Omega)$ 中有弱意义. 广义 Stokes 公式表明式\eqref{eq:chap3-neumann-compatibility}是可解性的必要条件; 零均值则保证唯一性.
+\par\noindent\refstepcounter{chapterthreesectionfourremark}\textbf{Remark~\thechapterthreesectionfourremark:}\label{rem:chap3-weak-neumann-normal-trace}\quad 若 $u\in H^1(\Omega)$ 且 $-\Delta u=f$ 于分布意义成立, 则 $\nabla u$ 属于 Chapter~\MBUnresolvedReference{chap:fluid-mechanics-spaces}{IV}, Section~\MBUnresolvedReference{sec:chap4-hdiv}{3.2} 中研究的 $H_{\mathrm{div}}(\Omega)$ 空间. 因而法向导数在 $H^{-1/2}(\partial\Omega)$ 中有弱意义, 并满足广义 Stokes 公式\MBUnresolvedReference{eq:chap4-generalized-stokes}{(IV.10)}. 特别地,
+\[
+ \int_\Omega\operatorname{div}(\nabla u)\,\mathrm dx
+ =\langle\partial_\nu u,1\rangle_{H^{-1/2},H^{1/2}}.
+\]
+所以式\eqref{eq:chap3-neumann-compatibility}显然是可解性的必要条件. 要保证解唯一, 当然还必须要求 $u$ 的均值为零.
 
 \begin{Proof}
 令
@@ -119,14 +181,20 @@ Theorem~\ref{thm:chap3-tangential-space-characterization}推出 $u\in H_{mathrm{
 并在其上定义
 \[
  a(u,v)=\int_\Omega\nabla u\cdot\nabla v\,\mathrm dx,
- \quad L(v)=\int_\Omega fv\,\mathrm dx+langle f_b,\gamma_0v\rangle.
+ \quad L(v)=\int_\Omega fv\,\mathrm dx+\langle f_b,\gamma_0v\rangle.
 \]
-Proposition~\ref{prop:chap3-poincare-wirtinger}使 $a$ 强制, 故 Lax--Milgram 定理给出唯一零均值解和式\eqref{eq:chap3-neumann-energy-bound}. 式\eqref{eq:chap3-neumann-compatibility}说明 $L(1)=0$, 因而变分式对所有 $H^1$ 测试函数成立, 这同时给出方程与弱 Neumann 条件.
+$a,L$ 显然连续. Proposition~\ref{prop:chap3-poincare-wirtinger} 使 $a$ 在 $H_m^1$ 上强制, 故 Lax--Milgram 定理给出唯一 $u\in H_m^1$ 满足 $a(u,v)=L(v)$ 对所有 $v\in H_m^1$ 成立, 并给出式\eqref{eq:chap3-neumann-energy-bound}. 相容条件说明 $L(1)=0$, 同时 $a(u,1)=0$. 每个 $v\in H^1(\Omega)$ 都可写成一个常数与 $H_m^1$ 中元素之和, 因而变分式事实上对所有 $H^1$ 测试函数成立. 取 $v\in\mathcal D(\Omega)$ 得 $-\Delta u=f$ 于分布意义成立; 再用广义 Stokes 公式得到弱 Neumann 条件.
 
-正则性方面, 先用 Theorem~\ref{thm:chap3-normal-trace-lifting}提升 $f_b$, 化为齐次 Neumann 条件. 内部 $H^2$ 正则性与 Dirichlet 情形完全相同. 切向差商不再具有零迹, 但 Proposition~\ref{prop:chap3-curved-translation-properties}和 $\int_\Omega u=0$ 给出
+正则性方面, 先用 Theorem~\ref{thm:chap3-normal-trace-lifting} 提升 $f_b$, 化为齐次 Neumann 条件. Dirichlet 情形的内部正则性证明只使用 $u\in H^1$ 及 $-\Delta u=f$ 的分布方程, 与边界条件类型无关, 因而这里仍有 $u\in H^2_{\mathrm{loc}}(\Omega)$. 切向正则性证明只依赖变分式、可取 $\delta_{-h}^\theta\delta_h^\theta u$ 为测试函数以及 Poincar\'e 控制. 此处差商不再具有零迹, 但由 $\int_\Omega u=0$ 和式\eqref{eq:chap3-curved-translation-duality-volume},
 \[
  \left|\int_\Omega\delta_h^\theta u\,\mathrm dx\right|
+ =\left|\int_\Omega\{u,1\}_h\,\mathrm dx\right|
  \leq C|h|\|u\|_{L^2}.
 \]
-用 Poincar\'e--Wirtinger 不等式替代齐次 Poincar\'e 不等式, 可重复切向正则性论证. 最后通过式\eqref{eq:chap3-laplace-normal-tangential-equation}恢复完整正则性, 与边界条件类型无关.
+因此 Proposition~\ref{prop:chap3-poincare-wirtinger} 给出
+\[
+ \|\delta_h^\theta u\|_{H^1}
+ \leq C\|\nabla\delta_h^\theta u\|_{L^2}+C|h|\|u\|_{L^2}.
+\]
+用这个估计替代齐次 Poincar\'e 不等式, 其余切向差商论证不变, 得 $u\in H_{\mathrm{tang}}^2(\Omega)$. 最后通过式\eqref{eq:chap3-laplace-normal-tangential-equation}恢复完整正则性; 此步骤同样不使用边界条件类型. 高阶情形重复该过程.
 \end{Proof}

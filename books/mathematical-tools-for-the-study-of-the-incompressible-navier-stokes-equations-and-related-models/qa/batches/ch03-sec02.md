@@ -1,15 +1,13 @@
 # Batch QA: ch03-sec02
 
-> Invalidated: the numbered-object check passed, but substantial source exposition and proof calculations were omitted or condensed. This unit is `rework-required`.
-
-- Source: PDF pages 147-200, Chapter III, Section 2.
-- Structure and content: passed; all ten source subsections and source objects III.2.1--III.2.46 are present in source order.
-- Formula fidelity: passed; source equations (III.11)--(III.59) are registered once each and compile as 3.11--3.59.
-- Cross-references: passed in the integrated Chapter III build; stable semantic labels are unique and all targets resolve.
-- Names and terminology: passed; eponymic names retain their source spelling, and approved shared terminology is reused.
-- English environment headings and ASCII punctuation: passed.
-- Compilation: passed after two XeLaTeX/latexmk cycles; no undefined reference, multiply-defined label, or duplicate PDF destination was reported.
-- Visual QA: passed on the Section 2 opening, trace theory, and final zero-trace characterization pages.
-- Source and template integrity: passed; SHA-256 values remain unchanged.
+- Source scope: PDF pages 147-200, Chapter III, Section 2, from fractional Sobolev spaces through the zero-trace characterization.
+- Fidelity: passed after page-by-page remediation. Fifty-four source-page records are in `qa/translation/ch03-sec02-source-coverage.tsv`; previously omitted exposition, intermediate estimates, statements, and proof steps were restored without changing source claims.
+- Formula fidelity: passed. Forty-nine equations, (III.11)--(III.59), are registered in `formulae/ch03-sec02-formula-registry.jsonl` in exact continuous order.
+- Cross-references: passed. The final registry contains 87 resolved targets and 8 explicitly deferred bibliography or future-chapter targets; no unavailable target was guessed.
+- Environment headings and numbering: passed. The established English environment names are preserved. Objects III.2.1--III.2.46 retain their accepted counter sequence; Remarks 2.1--2.18 use independent stable labels and do not disturb the theorem counter.
+- Names and punctuation: passed. `Wirtinger` was added to the book-local exact-name registry; forbidden full-width punctuation and Chinese text in formula commands both occur zero times.
+- Compilation and deterministic QA: passed in the clean integrated Chapter III build; no LaTeX errors, undefined references, multiply-defined labels, wrong reference commands, or punctuation violations.
+- Visual QA: representative integrated pages 88, 98, and 110 were inspected; theorem boxes, long displays, page breaks, and prose render without clipping or overlap.
+- Integrity: source SHA-256 `dd2f1acd5d258334ad45aada857d5699d0a13daa553b89fd839ecab469c465e1`; template manifest hash `9c405f97accf0b769854f4fadf93c22b473ad72435ddf0fc27f58c9a302a882c`; both unchanged.
 - Blocking issues: none.
 - Result: passed.

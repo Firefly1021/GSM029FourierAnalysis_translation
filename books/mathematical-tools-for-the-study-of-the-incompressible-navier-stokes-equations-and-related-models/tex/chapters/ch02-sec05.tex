@@ -1,16 +1,22 @@
 \subsection{Banach 值函数空间}
 \label{sec:chap2-banach-valued-functions}
 \renewcommand{\thestatement}{5.\number\numexpr\value{statement}-70\relax}
+\newcounter{chapterfiveremark}
+\renewcommand{\thechapterfiveremark}{5.\arabic{chapterfiveremark}}
 
 \subsubsection{定义与主要性质}
 \label{subsec:chap2-bochner-spaces}
 
 \begin{Definition}
 \label{def:chap2-banach-valued-measurable}
-设 $X$ 为 Banach 空间, $I\subset\mathbb{R}$ 为区间. 若 $f:I\to X$ 满足: $X$ 的每个开集在 $f$ 下的逆像都是 $I$ 的 Borel 集; 并且可在零测集上修改 $f$, 使其值落在 $X$ 的某个可分子空间中, 则称 $f$ 为 Lebesgue 可测函数.
+设 $X$ 为 Banach 空间, $I$ 为 $\mathbb{R}$ 的一个区间. 若从 $I$ 到 $X$ 的函数 $f$ 满足下列条件, 则称 $f$ 为 Lebesgue 可测函数:
+\begin{itemize}
+ \item $X$ 的每个开集在 $f$ 下的逆像都是 $I$ 的 Borel 集.
+ \item 可以在 $I$ 的一个 Lebesgue 零测子集上改变 $f$, 使 $f$ 的值落在 $X$ 的某个可分子空间中.
+\end{itemize}
 \end{Definition}
 
-这一定义保证 $f$ 几乎处处是 $X$ 值简单函数序列的极限, 从而可以定义 Bochner 积分.
+当 $X$ 可分时, 这个定义与通常的可测性定义相同. 当 $X$ 不可分时, 这个定义保证这样的函数确实几乎处处是某个 $X$ 值简单函数序列的极限, 因而当 $f$ 的积分存在时可以无歧义地定义它. 这一理论称为 Bochner 积分理论.
 
 \begin{Proposition}
 \label{prop:chap2-bochner-lp-banach}
@@ -32,16 +38,33 @@
  \label{eq:chap2-banach-translation}
 \end{equation}
 
-\begin{Corollary}[Continuity of the translation operator]
+$\tau_hf$ 在区间 $I$ 上的限制当然属于 $L^p(I,X)$. 于是有下面的结果. 其证明与经典的 $X=\mathbb{R}$ 情形相同, 例如参见\MBUnresolvedReference{bib:translation-continuity}{[69]}.
+
+\begin{Corollary}{Continuity of the translation operator}
 \label{cor:chap2-banach-translation-continuity}
 若 $p<+\infty$ 且 $f\in L^p(I,X)$, 则 $\tau_hf\to f$ 于 $L^p(I,X)$ 当 $h\to0$.
 \end{Corollary}
 
-对 $f\in L^1(I,X)$ 可定义 $\int_If(t)\,\mathrm{d}t\in X$, 且对 $\varphi\in X'$,
+当 $p=+\infty$ 时, 上述结果当然不成立. 当 $p<+\infty$ 时, Proposition~\ref{prop:chap2-continuous-dense-bochner-lp} 还表明, 可以把 $L^p(I,X)$ 定义为 $C^0(I,X)$ 关于范数 $\|\cdot\|_{L^p(I,X)}$ 的完备化.
+
+对于任意 $f\in L^1(I,X)$, 因而也对于有界区间 $I$ 上的任意 $f\in L^p(I,X)$, 可以定义积分
 \[
- \int_I\langle\varphi,f(t)\rangle\,\mathrm{d}t
- =\left\langle\varphi,\int_If(t)\,\mathrm{d}t\right\rangle.
+ \int_I f(t)\,\mathrm{d}t\in X.
 \]
+其构造方式与实值函数的 Lebesgue 积分相同: 先对仅取有限多个值的简单可测函数构造积分, 再传递到简单函数逼近的极限. 下文将直接使用这一结果以及积分的所有通常性质, 包括线性性和 Chasles 关系等. 此外, 对每个线性泛函 $\varphi\in X'$ 都有
+\[
+ \int_I\langle\varphi,f(t)\rangle_{X',X}\,\mathrm{d}t
+ =\left\langle\varphi,\int_I f(t)\,\mathrm{d}t\right\rangle_{X',X}.
+\]
+
+这类空间中最先出现且在后文非常有用的例子是 $p,q\in[1,+\infty]$ 时的 $L^p(I,L^q(\Omega))$. 本节开头给出的 $L^p$ 空间性质自然地移植到这些空间中, 后文将直接使用而不再详述. 特别地, 若 $p<+\infty$ 且 $q<+\infty$, 则
+\[
+ \bigl(L^p(I,L^q(\Omega))\bigr)'
+ \equiv L^{p'}(I,L^{q'}(\Omega)).
+\]
+两个空间通过 Hilbert 空间 $L^2(I,L^2(\Omega))\simeq L^2(I\times\Omega)$ 的自然内积来等同. 因而, Propositions~\ref{prop:chap2-bounded-lp-weak-subsequence}, \ref{prop:chap2-bounded-linfty-weak-star-subsequence}, \ref{prop:chap2-lp-strong-times-weak} 和 \ref{prop:chap2-weak-plus-norm-implies-strong-lp} 可以立即移植到这些空间中.
+
+在特别值得记住的结果中, 下面给出一个插值结果及其推论. 该推论给出若干中间空间中的收敛性质.
 
 \begin{Theorem}
 \label{thm:chap2-mixed-lp-interpolation}
@@ -66,7 +89,14 @@
  \|f(t)\|_{L^{q_1}}^{p\theta}
  \|f(t)\|_{L^{q_2}}^{p(1-\theta)}.
 \]
-再以共轭指数 $p_1/(p\theta)$ 和 $p_2/(p(1-\theta))$ 应用 H\"older 不等式. 无穷指数情形直接得到.
+若先假设 $p_1$ 和 $p_2$ 均有限, 则以共轭指数 $p_1/(p\theta)$ 和 $p_2/(p(1-\theta))$ 应用 H\"older 不等式, 得
+\[
+ \int_I\|f(t)\|_{L^q}^p\,\mathrm{d}t
+ \leq
+ \left(\int_I\|f(t)\|_{L^{q_1}}^{p_1}\,\mathrm{d}t\right)^{p\theta/p_1}
+ \left(\int_I\|f(t)\|_{L^{q_2}}^{p_2}\,\mathrm{d}t\right)^{p(1-\theta)/p_2}.
+\]
+这就给出所需结论. $p_1$ 和 $p_2$ 中一个或两个为无穷的情形是直接的.
 \end{Proof}
 
 \begin{Corollary}
@@ -75,13 +105,26 @@
 \end{Corollary}
 
 \begin{Proof}
-对 $u-u_n$ 应用 Theorem~\ref{thm:chap2-mixed-lp-interpolation}. 强收敛因子趋于 $0$, 弱收敛因子有界.
+由 Theorem~\ref{thm:chap2-mixed-lp-interpolation}, 对每个 $n$ 都有
+\[
+ \|u-u_n\|_{L^p(I,L^q(\Omega))}
+ \leq
+ \|u-u_n\|_{L^{p_1}(I,L^{q_1}(\Omega))}^{\theta}
+ \|u-u_n\|_{L^{p_2}(I,L^{q_2}(\Omega))}^{1-\theta}.
+\]
+$L^{p_2}(I,L^{q_2}(\Omega))$ 中的弱收敛表明序列 $(u-u_n)_n$ 在该空间中有界, 而 $L^{p_1}(I,L^{q_1}(\Omega))$ 中的强收敛和 $\theta>0$ 给出结论.
 \end{Proof}
+
+本书将系统地使用以上所有结果, 但不一定每次都明确引用它们.
 
 \subsubsection{时间正则性}
 \label{subsec:chap2-time-regularity}
 
 \paragraph{弱时间导数}
+
+在抛物型偏微分方程的研究中, 一个自变量通常是时间, 它相对于其他通常为空间变量的自变量具有特殊作用. 因此我们在 $L^p((0,T),X)$ 型空间中工作, 其中 $X$ 是关于空间变量的函数空间.
+
+本节把弱导数概念推广到定义在 $\mathbb{R}$ 的一个区间上并取值于 Banach 空间的函数. 一般而言, 可以定义和研究 $X$ 值分布空间, 但这里不需要这一理论, 更详细的内容参见\MBUnresolvedReference{bib:vector-valued-distributions}{[113]}. 由于后文将说明的原因, 构造一种允许所研究函数的弱导数存在于比原空间更大的空间中的理论是有用的.
 
 \begin{Definition}
 \label{def:chap2-weak-time-derivative}
@@ -92,10 +135,19 @@
  \qquad\forall\varphi\in\mathcal{D}(I),
  \label{eq:chap2-weak-time-derivative}
 \end{equation}
-则称 $u$ 在 $L^q(I,Y)$ 中有弱导数, 并记 $\mathrm{d}u/\mathrm{d}t=g$.
+则称 $u$ 在 $L^q(I,Y)$ 中有弱导数.
 \end{Definition}
 
-\par\noindent\textbf{Remark 5.1:}\quad 在适当的稠密嵌入和可分性条件下, 同一函数在不同目标空间中得到的弱导数几乎处处相同.
+若这样的函数 $g$ 存在, 则它是唯一的, 并记为
+\[
+ \frac{\mathrm{d}u}{\mathrm{d}t}=g(t).
+\]
+应当注意, 在式\eqref{eq:chap2-weak-time-derivative}中, 左端是 $X$ 的元素, 右端是 $Y$ 的元素. 但由于 $X\subset Y$, 这个等式是有意义的.
+
+\par\noindent\refstepcounter{chapterfiveremark}\textbf{Remark~\thechapterfiveremark:}\quad
+\label{rem:chap2-weak-time-derivative-target-space}
+乍看之下, 这个定义依赖于寻找弱导数所用的空间 $L^q(I,Y)$. 可以证明, 若 $Y\subset Z$ 为稠密嵌入, $Z'$ 可分, 而 $g$ 和 $h$ 分别是 $u$ 在 $L^q(I,Y)$ 和 $L^r(I,Z)$ 中的弱导数, 则 $g=h$ 几乎处处成立. 因而, 记号 $\mathrm{d}u/\mathrm{d}t$ 是合理的.
+\par
 
 \paragraph{弱连续性}
 
@@ -103,6 +155,8 @@
 \label{def:chap2-weakly-continuous-function}
 设 $Y$ 为 Banach 空间. 若对每个 $\psi\in Y'$, 映射 $t\mapsto\langle\psi,u(t)\rangle$ 连续, 则称 $u:[0,T]\to Y$ 弱连续. 此类函数空间记为 $C^0([0,T],Y_{\mathrm{weak}})$.
 \end{Definition}
+
+下面证明一个重要结果, 例如可参见\MBUnresolvedReference{bib:weak-continuity-result}{[85]}.
 
 \begin{Lemma}
 \label{lem:chap2-weak-continuity-transfer}
@@ -114,17 +168,83 @@
 \end{Lemma}
 
 \begin{Proof}
-若 $u\in C^0([0,T],X_{\mathrm{weak}})$, 则 $Y'$ 中泛函限制到 $X$ 后属于 $X'$, 故 $u$ 在 $Y$ 中弱连续. 可分性给出可测性, Banach--Steinhaus 定理和对偶范数刻画给出 $\sup_t\|u(t)\|_X<+\infty$.
+空间 $X$ 连续嵌入 $Y$, 因而 $Y'$ 的元素限制到 $X$ 后属于 $X'$.
 
-反之, 延拓 $u$ 到 $\mathbb{R}$ 并令 $u_n=u*\eta_{1/n}$. 对固定 $t_0$, $(u_n(t_0))_n$ 在自反空间 $X$ 中有界, 可抽取弱收敛子序列. $Y$ 中的弱连续性说明该极限只能是 $u(t_0)$, 因而 $u(t_0)\in X$ 且
+先证明
+\[
+ C^0([0,T],X_{\mathrm{weak}})
+ \subset L^\infty((0,T),X)\cap C^0([0,T],Y_{\mathrm{weak}}).
+\]
+设 $u\in C^0([0,T],X_{\mathrm{weak}})$ 且 $\psi\in Y'$. 因为 $\psi|_X\in X'$, 按定义函数 $t\mapsto\langle\psi,u(t)\rangle$ 连续, 所以 $u\in C^0([0,T],Y_{\mathrm{weak}})$.
+
+下面证明 $u\in L^\infty((0,T),X)$. 首先, $u$ 是可测的. 事实上, $X$ 中关于强拓扑闭的任意球都是凸集, 因而关于 $X$ 的弱拓扑也是闭的. 所以闭球 $B$ 的逆像 $u^{-1}(B)$ 是闭集, 从而是 $(0,T)$ 的 Borel 集. 又因为 $X$ 可分, $X$ 的每个开集都是可数多个闭球的并. 确切地说, 若 $(x_n)_n$ 在 $X$ 中稠密, 则任意开集 $U$ 都是所有以某个 $x_n$ 为中心, 半径为有理数且包含于 $U$ 的闭球的并. 因而对每个开集 $U$, $u^{-1}(U)$ 都是 $(0,T)$ 的 Borel 集. 这证明了可测性.
+
+现在引入由 $t\in[0,T]$ 参数化的 $X''$ 中元素族
+\[
+ \Phi_t:\psi\in X'\longmapsto\langle\psi,u(t)\rangle.
+\]
+由假设, 对每个 $\psi\in X'$, 函数 $t\mapsto\Phi_t(\psi)$ 在 $[0,T]$ 上连续, 因而有界. 由 Banach--Steinhaus 定理, 算子族 $(\Phi_t)_{t\in(0,T)}$ 在 $X''$ 的范数意义下有界. 换言之, 存在 $C>0$ 使得
+\[
+ |\langle\psi,u(t)\rangle_{X',X}|=|\Phi_t(\psi)|
+ \leq C\|\psi\|_{X'},
+ \qquad\forall t\in(0,T),\quad\forall\psi\in X'.
+\]
+应用 Proposition~\ref{prop:chap2-norm-by-duality}, 得
+\[
+ \|u(t)\|_X
+ =\sup_{\substack{\psi\in X'\\\psi\neq0}}
+ \frac{|\langle\psi,u(t)\rangle_{X',X}|}{\|\psi\|_{X'}}
+ \leq C,
+ \qquad\forall t\in(0,T).
+\]
+因此 $u\in L^\infty((0,T),X)$.
+
+再证明反向包含. 设
+\[
+ u\in L^\infty((0,T),X)\cap C^0([0,T],Y_{\mathrm{weak}}).
+\]
+首先验证对每个 $t\in[0,T]$ 都有 $u(t)\in X$. 先验地只知道对所有 $t$ 有 $u(t)\in Y$, 而仅对几乎处处的 $t$ 有 $u(t)\in X$.
+
+首先把 $u$ 延拓到整个 $\mathbb{R}$, 例如依次作反射, 在 $[-T,0]$ 上令 $u(t)=u(-t)$, 并继续如此延拓. 显然
+\[
+ u\in L^\infty(\mathbb{R},X)\cap C^0(\mathbb{R},Y_{\mathrm{weak}}).
+\]
+设 $\eta:\mathbb{R}\to\mathbb{R}$ 为磨光核, 并令 $u_n=u*\eta_{1/n}$. 于是 $u_n$ 对所有 $t$ 都有定义且取值于 $X$.
+
+固定 $t_0\in\mathbb{R}$. 对每个 $n\geq1$,
+\[
+ \|u_n(t_0)\|_X=\|(u*\eta_{1/n})(t_0)\|_X
+ \leq\|u\|_{L^\infty(\mathbb{R},X)}.
+\]
+序列 $(u_n(t_0))_n$ 在自反空间 $X$ 中有界, 因而可以抽取一个在 $X$ 中弱收敛到某个 $\widetilde u(t_0)$ 的子序列 $(u_{n_k}(t_0))_k$. 另一方面, 对每个 $\psi\in Y'$,
+\[
+ \langle\psi,(u*\eta_{1/n})(t_0)-u(t_0)\rangle_{Y',Y}
+ =\bigl(\langle\psi,u\rangle_{Y',Y}*\eta_{1/n}\bigr)(t_0)
+  -\langle\psi,u(t_0)\rangle_{Y',Y}
+ \longrightarrow0,
+\]
+因为函数 $t\mapsto\langle\psi,u(t)\rangle_{Y',Y}$ 在 $\mathbb{R}$ 上连续, 而反射延拓保持这一性质. 因此 $(u_n(t_0))_n$ 在 $Y$ 中弱收敛到 $u(t_0)$. 由 $Y$ 中弱极限的唯一性,
+\[
+ u(t_0)=\widetilde u(t_0)\in X.
+\]
+这证明 $u$ 对所有 $t$ 都取值于 $X$, 并且存在 $C>0$ 使
 \begin{equation}
  \|u(t)\|_X\leq C,\qquad\forall t\in\mathbb{R}.
  \label{eq:chap2-weak-continuity-pointwise-bound}
 \end{equation}
-若 $t_n\to t$, 则式\eqref{eq:chap2-weak-continuity-pointwise-bound}和自反性允许抽取在 $X$ 中弱收敛的子序列; $Y$ 中弱极限的唯一性说明所有聚点均为 $u(t)$, 故整个序列在 $X$ 中弱收敛到 $u(t)$.
+
+现在可以对每个 $\psi\in X'$ 定义函数 $t\mapsto\langle\psi,u(t)\rangle_{X',X}$. 下面证明它连续. 设实数序列 $(t_n)_n$ 收敛到 $t\in\mathbb{R}$. 由式\eqref{eq:chap2-weak-continuity-pointwise-bound}, $(u(t_n))_n$ 在 $X$ 中有界, 因而可以抽取一个在 $X$ 中弱收敛到某个 $x$ 的子序列. 同时, $(u(t_n))_n$ 在 $Y$ 中弱收敛到 $u(t)$, 由 $Y$ 中弱极限的唯一性得到 $x=u(t)$. 这说明 $(u(t_n))_n$ 在 $X$ 中相对弱紧, 且只有一个聚点. 因此整个序列在 $X$ 中弱收敛到唯一聚点 $u(t)$.
 \end{Proof}
 
-\par\noindent\textbf{Remark 5.2:}\quad 若 $X,Y$ 可分且 $Y$ 稠密嵌入 $X$, 则 $L^\infty((0,T),X')\cap C^0([0,T],Y'_{\mathrm{weak-*}})\subset C^0([0,T],X'_{\mathrm{weak-*}})$.
+\par\noindent\refstepcounter{chapterfiveremark}\textbf{Remark~\thechapterfiveremark:}\quad
+\label{rem:chap2-weak-star-continuity-transfer}
+若 $X,Y$ 为可分 Banach 空间且 $Y$ 稠密嵌入 $X$, 则
+\[
+ L^\infty((0,T),X')\cap C^0([0,T],Y'_{\mathrm{weak-*}})
+ \subset C^0([0,T],X'_{\mathrm{weak-*}}).
+\]
+其证明与前面的证明相同. 如果再加上自反性假设, 则由上面的结果可知反向包含当然成立.
+\par
 
 \paragraph{强连续性}
 
@@ -144,10 +264,40 @@ $E_{p,q}$ 配以
 \end{Lemma}
 
 \begin{Proof}
-完备性直接由定义得到. 取和为 $1$ 的光滑单位分解分别支撑于区间两端, 将函数平移后再以磨光核卷积. Corollary~\ref{cor:chap2-banach-translation-continuity} 同时给出函数和弱导数的收敛.
+由定义直接得到 $E_{p,q}$ 的完备性.
+
+取两个非负函数 $\theta_1,\theta_2\in C^\infty([0,T],\mathbb{R})$, 使 $\theta_1+\theta_2=1$, 且
+\[
+ \operatorname{supp}(\theta_1)\subset[0,2T/3),
+ \qquad
+ \operatorname{supp}(\theta_2)\subset(T/3,T].
+\]
+设 $u\in E_{p,q}$. 为了用正则函数逼近 $u$, 只需分别逼近 $\theta_1u$ 和 $\theta_2u$, 因为 $u=\theta_1u+\theta_2u$.
+
+函数 $v=\theta_1u$ 属于
+\[
+ \left\{f\in L^p((0,+\infty),X):
+ \frac{\mathrm{d}f}{\mathrm{d}t}\in L^q((0,+\infty),Y)\right\}.
+\]
+令 $v_h(t)=v(t+h)$, 再令 $v_{h,\varepsilon}=v_h*\eta_\varepsilon$, 其中 $\varepsilon<h$, $\eta:\mathbb{R}\to\mathbb{R}$ 为磨光核. 结论由 Corollary~\ref{cor:chap2-banach-translation-continuity} 得到. 对函数 $\theta_2u$ 作同样的处理即可.
 \end{Proof}
 
-\par\noindent\textbf{Remark 5.3:}\quad 当某个指数为 $+\infty$ 且相应空间为对偶空间时, 同一构造在该 $L^\infty$ 因子上给出弱-$*$ 稠密性.
+\par\noindent\refstepcounter{chapterfiveremark}\textbf{Remark~\thechapterfiveremark:}\quad
+\label{rem:chap2-epq-weak-star-density}
+设 $p=+\infty$, $q<+\infty$, 且 $X$ 是某个 Banach 空间 $E$ 的对偶. 则容易看出, 前一证明中构造的正则函数族满足
+\[
+ v_{h,\varepsilon}\rightharpoonup^*v
+ \quad\text{于 }L^\infty((0,+\infty),E'),
+ \qquad (h,\varepsilon)\to0,
+\]
+以及
+\[
+ \frac{\mathrm{d}}{\mathrm{d}t}v_{h,\varepsilon}
+ \longrightarrow\frac{\mathrm{d}v}{\mathrm{d}t}
+ \quad\text{于 }L^q((0,T),Y).
+\]
+换言之, 在 $L^\infty((0,T),E')$ 上取弱-$*$ 拓扑时, 正则函数仍具有稠密性. 同样可以处理 $p<+\infty$, $q=+\infty$ 且 $Y=F'$ 的情形, 以及 $p=q=+\infty$, $X=E'$, $Y=F'$ 的情形.
+\par
 
 \begin{Proposition}
 \label{prop:chap2-epq-continuous-representative}
@@ -157,9 +307,25 @@ $E_{p,q}$ 配以
 \]
 \end{Proposition}
 
-\begin{Theorem}[Lions--Magenes]
+\begin{Proof}
+其证明与 Section~\ref{sec:chap2-one-real-variable} 中建立相应结果时的证明完全类似.
+\end{Proof}
+
+在 Hilbert 情形中, 可以把前面的结果改进如下.
+
+\begin{Theorem}{Lions--Magenes}
 \label{thm:chap2-lions-magenes-product}
-设 Hilbert 空间 $V$ 连续且稠密嵌入 $H$, 并作 $V\subset H\subset V'$ 的枢轴空间等同. 若 $u\in E_{p,q'}$ 且 $v\in E_{q,p'}$, 则 $t\mapsto(u(t),v(t))_H$ 在 $[0,T]$ 上有连续代表元, 且
+设 Hilbert 空间 $V$ 连续且稠密嵌入 $H$, 并作 $V\subset H\subset V'$ 的枢轴空间等同. 设 $1\leq p,q\leq+\infty$, 且 $u\in E_{p,q'}$, $v\in E_{q,p'}$, 其中
+\[
+ E_{p,q'}=\left\{f\in L^p((0,T),V):
+ \frac{\mathrm{d}f}{\mathrm{d}t}\in L^{q'}((0,T),V')\right\},
+\]
+以及
+\[
+ E_{q,p'}=\left\{f\in L^q((0,T),V):
+ \frac{\mathrm{d}f}{\mathrm{d}t}\in L^{p'}((0,T),V')\right\}.
+\]
+则函数 $t\mapsto(u(t),v(t))_H$ 在 $[0,T]$ 上有连续代表元, 且
 \[
  (u(t_2),v(t_2))_H-(u(t_1),v(t_1))_H
  =\int_{t_1}^{t_2}\left(
@@ -170,7 +336,66 @@ $E_{p,q}$ 配以
 \end{Theorem}
 
 \begin{Proof}
-对光滑 $u,v$ 这是内积的通常乘积法则. Lemma~\ref{lem:chap2-epq-banach-dense-smooth} 给出光滑逼近; H\"older 不等式说明内积映射和右端双线性映射连续进入 $L^1(0,T)$. 传递到极限后, $t\mapsto(u(t),v(t))_H$ 属于 $W^{1,1}(0,T)$, Corollary~\ref{cor:chap2-w11-continuous-representative} 给出结论.
+这里只给出 $1<p,q<+\infty$ 时的证明. 其他情形可利用 Remark~\ref{rem:chap2-epq-weak-star-density} 和 Proposition~\ref{prop:chap2-strong-weak-bilinear} 调整同一论证得到.
+
+考虑定义在 $E_{p,q'}\times E_{q,p'}$ 上且取值于 $L^1((0,T))$ 的两个双线性映射
+\[
+ \Psi_1(f,g)=\bigl(t\mapsto(f(t),g(t))_H\bigr),
+\]
+以及
+\[
+ \Psi_2(f,g)=
+ \left(t\mapsto
+ \left\langle\frac{\mathrm{d}f}{\mathrm{d}t}(t),g(t)\right\rangle_{V',V}
+ +\left\langle\frac{\mathrm{d}g}{\mathrm{d}t}(t),f(t)\right\rangle_{V',V}
+ \right).
+\]
+由于指数 $p,q$ 分别与 $p',q'$ 共轭, 这两个映射都有定义. 此外, 对任意 $(f,g)\in E_{p,q'}\times E_{q,p'}$,
+\begin{align*}
+ \|\Psi_1(f,g)\|_{L^1((0,T))}
+ &\leq\|f\|_{L^p((0,T),V)}\|g\|_{L^{p'}((0,T),V')}\\
+ &\leq T^{1/p'}\|f\|_{L^p((0,T),V)}\|g\|_{C^0((0,T),V')}\\
+ &\leq C\|f\|_{E_{p,q'}}\|g\|_{E_{q,p'}},
+\end{align*}
+并且
+\begin{align*}
+ \|\Psi_2(f,g)\|_{L^1((0,T))}
+ &\leq
+ \left\|\frac{\mathrm{d}f}{\mathrm{d}t}\right\|_{L^{q'}((0,T),V')}
+ \|g\|_{L^q((0,T),V)}\\
+ &\quad+
+ \left\|\frac{\mathrm{d}g}{\mathrm{d}t}\right\|_{L^{p'}((0,T),V')}
+ \|f\|_{L^p((0,T),V)}\\
+ &\leq C\|f\|_{E_{p,q'}}\|g\|_{E_{q,p'}}.
+\end{align*}
+因此 $\Psi_1$ 和 $\Psi_2$ 都是连续双线性映射.
+
+由 Lemma~\ref{lem:chap2-epq-banach-dense-smooth}, 可取两个序列
+\[
+ u_n,v_n\in C^\infty([0,T],V),
+\]
+使它们分别在 $E_{p,q'}$ 和 $E_{q,p'}$ 中收敛到 $u$ 和 $v$. 因为 $u_n,v_n$ 正则, 可以按通常意义对标量积 $(u_n(t),v_n(t))_H$ 求导. 特别地, 对每个 $\varphi\in\mathcal{D}((0,T))$,
+\begin{align*}
+ -\int_0^T\varphi'(t)(u_n(t),v_n(t))_H\,\mathrm{d}t
+ &=\int_0^T\left(
+ \left\langle\frac{\mathrm{d}u_n}{\mathrm{d}t}(t),v_n(t)\right\rangle_{V',V}
+ +\left\langle\frac{\mathrm{d}v_n}{\mathrm{d}t}(t),u_n(t)\right\rangle_{V',V}
+ \right)\varphi(t)\,\mathrm{d}t.
+\end{align*}
+换言之,
+\[
+ -\int_0^T\varphi'(t)\Psi_1(u_n,v_n)(t)\,\mathrm{d}t
+ =\int_0^T\varphi(t)\Psi_2(u_n,v_n)(t)\,\mathrm{d}t.
+\]
+由 $\Psi_1$ 和 $\Psi_2$ 的连续性, 可以在这个等式中令 $n\to\infty$, 得
+\begin{align*}
+ -\int_0^T\varphi'(t)(u(t),v(t))_H\,\mathrm{d}t
+ &=\int_0^T\left(
+ \left\langle\frac{\mathrm{d}u}{\mathrm{d}t}(t),v(t)\right\rangle_{V',V}
+ +\left\langle\frac{\mathrm{d}v}{\mathrm{d}t}(t),u(t)\right\rangle_{V',V}
+ \right)\varphi(t)\,\mathrm{d}t.
+\end{align*}
+函数 $\Psi_1(u,v):t\mapsto(u(t),v(t))_H$ 属于 $L^1((0,T))$. 因而上式对所有紧支集正则函数 $\varphi$ 成立, 说明 $\Psi_1(u,v)\in W^{1,1}((0,T))$, 且它的弱导数为 $\Psi_2(u,v)$. Corollary~\ref{cor:chap2-w11-continuous-representative} 给出结论.
 \end{Proof}
 
 \begin{Theorem}
@@ -183,13 +408,30 @@ $E_{p,q}$ 配以
 \end{Theorem}
 
 \begin{Proof}
-在 Theorem~\ref{thm:chap2-lions-magenes-product} 中取 $u=v$, 得 $t\mapsto\|u(t)\|_H^2$ 连续, 且
+在 Theorem~\ref{thm:chap2-lions-magenes-product} 中取 $p=q=2$ 以及 $u=v$, 立即得到函数 $t\mapsto\frac12\|u(t)\|_H^2$ 在 $[0,T]$ 上连续. 对所有 $t,s\in[0,T]$,
+\[
+ \frac12\|u(t)\|_H^2
+ =\frac12\|u(s)\|_H^2
+ +\int_s^t\left\langle\frac{\mathrm{d}u}{\mathrm{d}t},u\right\rangle_{V',V}\,\mathrm{d}\tau
+ \leq\frac12\|u(s)\|_H^2+C\|u\|_{E_{2,2}}^2.
+\]
+关于 $s$ 积分, 得
 \begin{equation}
- \|u(t)\|_H^2\leq C\|u\|_{E_{2,2}}^2.
+ \frac12\|u(t)\|_H^2
+ \leq\frac12\|u\|_{L^2((0,T),H)}^2+C\|u\|_{E_{2,2}}^2
+ \leq C\|u\|_{L^2((0,T),V)}^2+C\|u\|_{E_{2,2}}^2
+ \leq C\|u\|_{E_{2,2}}^2.
  \label{eq:chap2-lions-magenes-energy-bound}
 \end{equation}
-Proposition~\ref{prop:chap2-epq-continuous-representative} 给出 $V'$ 值连续性, Lemma~\ref{lem:chap2-weak-continuity-transfer} 给出 $H$ 值弱连续性. 范数连续与弱连续合起来给出 $H$ 值强连续性.
+这证明 $u\in L^\infty((0,T),H)$. 此外, Proposition~\ref{prop:chap2-epq-continuous-representative} 表明 $u$ 取值于 $V'$ 时连续. 于是可以应用 Lemma~\ref{lem:chap2-weak-continuity-transfer}, 得到 $u$ 取值于 $H$ 时弱连续. 这里不要忘记每个 Hilbert 空间都是自反的.
+
+$u$ 取值于 $H$ 时的强连续性现在由 $H$ 中的弱连续性, 函数 $t\mapsto\|u(t)\|_H^2$ 的连续性以及 Proposition~\ref{prop:chap2-hilbert-strong-convergence} 得到. 另外, 估计\eqref{eq:chap2-lions-magenes-energy-bound}给出
+\[
+ \|u\|_{C^0([0,T],H)}\leq C\|u\|_{E_{2,2}}.
+\]
 \end{Proof}
+
+这是下面这个更一般结果的一个特殊情形, 参见\MBUnresolvedReference{bib:lions-magenes-interpolation}{[85]}.
 
 \begin{Theorem}
 \label{thm:chap2-interpolation-time-continuity}
@@ -201,8 +443,12 @@ Proposition~\ref{prop:chap2-epq-continuous-representative} 给出 $V'$ 值连续
 其中 $[V,W]_{1/2}$ 是 $V,W$ 的 $1/2$ 阶插值空间.
 \end{Theorem}
 
+关于插值空间 $[V,W]_{1/2}$ 的精确定义, 参见\MBUnresolvedReference{bib:lions-magenes-interpolation-space}{[85]}. 在 Chapter~\MBUnresolvedReference{chap:future-chapter-iv}{IV} 中, 我们将给出该陈述一个特殊情形的证明, 见 Theorem~\MBUnresolvedReference{thm:future-iv-5-11}{IV.5.11}.
+
 \subsubsection{紧性定理}
 \label{subsec:chap2-time-compactness}
+
+先证明一个现在已成为经典的引理, 它由 J.-L. Lions 提出, 参见\MBUnresolvedReference{bib:lions-compactness-lemma}{[84]}. 该引理是后续大量紧性结果的基础.
 
 \begin{Lemma}
 \label{lem:chap2-lions-epsilon-inequality}
@@ -214,43 +460,170 @@ Proposition~\ref{prop:chap2-epq-continuous-representative} 给出 $V'$ 值连续
 \end{Lemma}
 
 \begin{Proof}
-反设不成立. 经齐次化可取序列 $\|u_n\|_{B_1}=1$, 同时 $(u_n)_n$ 在 $B_0$ 中有界且 $\|u_n\|_{B_2}\leq1/n$. 紧嵌入给出在 $B_1$ 中收敛到 $u_\infty$ 的子序列, 于是 $\|u_\infty\|_{B_1}=1$ 而 $\|u_\infty\|_{B_2}=0$, 矛盾.
+反设结论不成立. 则存在 $\varepsilon_0>0$ 和序列 $(u_n)_n\subset B_0$, 使
+\[
+ \|u_n\|_{B_1}\geq\varepsilon_0\|u_n\|_{B_0}+n\|u_n\|_{B_2},
+ \qquad\forall n\geq1.
+\]
+由齐次性, 可以在这个不等式中取 $\|u_n\|_{B_1}=1$. 因而 $(u_n)_n$ 在 $B_0$ 中有界, 且 $\|u_n\|_{B_2}\leq1/n$. 由于 $B_0$ 到 $B_1$ 的嵌入紧, 可以抽取一个在 $B_1$ 中收敛到某个 $u_\infty$ 的子序列. 显然 $\|u_\infty\|_{B_1}=1$, 同时 $\|u_\infty\|_{B_2}=0$. 这就是矛盾.
 \end{Proof}
 
-\begin{Theorem}[Aubin--Lions--Simon]
+现在可以证明非线性演化问题研究中的一个基本紧性结果.
+
+\begin{Theorem}{Aubin--Lions--Simon}
 \label{thm:chap2-aubin-lions-simon}
 沿用 Lemma~\ref{lem:chap2-lions-epsilon-inequality} 的空间, 并定义
 \[
  E_{p,r}=\left\{v\in L^p((0,T),B_0):\frac{\mathrm{d}v}{\mathrm{d}t}\in L^r((0,T),B_2)\right\}.
 \]
-若 $p<+\infty$, 则 $E_{p,r}\hookrightarrow L^p((0,T),B_1)$ 紧; 若 $p=+\infty$ 且 $r>1$, 则 $E_{p,r}\hookrightarrow C^0([0,T],B_1)$ 紧.
+\begin{enumerate}
+ \item 若 $p<+\infty$, 则嵌入 $E_{p,r}\hookrightarrow L^p((0,T),B_1)$ 是紧的.
+ \item 若 $p=+\infty$ 且 $r>1$, 则嵌入 $E_{p,r}\hookrightarrow C^0([0,T],B_1)$ 是紧的.
+\end{enumerate}
 \end{Theorem}
 
-\begin{Proof}
-只证第一种情形, 且可设 $r=1$. 对 $E_{p,1}$ 中有界序列 $(u_n)_n$, Lemma~\ref{lem:chap2-lions-epsilon-inequality} 表明, 只需抽取在 $L^p((0,T),B_2)$ 中 Cauchy 的子序列. 用光滑截断把 $u_n$ 分成在 $T$ 端消失和在 $0$ 端消失的两项, 两项处理相同.
+下面的证明来自\MBUnresolvedReference{bib:simon-compact-sets}{[109]}, 与\MBUnresolvedReference{bib:aubin-compactness}{[14]}中的证明不同, 它不假设所考虑的空间自反. 因而它也适用于 $L^1$ 和 $L^\infty$ 等空间.
 
-对在 $T$ 端消失并以零延拓的 $v_n$, 令
+\begin{Proof}
+只证明第一点, 第二点可以用完全类似的方法处理. 此外, 显然假设 $r=1$ 不损失一般性. 为证明定理, 设序列 $(u_n)_n$ 满足
+\[
+ (u_n)_n\text{ 在 }L^p((0,T),B_0)\text{ 中有界},
+ \qquad
+ \left(\frac{\mathrm{d}u_n}{\mathrm{d}t}\right)_n
+ \text{ 在 }L^1((0,T),B_2)\text{ 中有界}.
+\]
+需要证明可以抽取一个在 $L^p((0,T),B_1)$ 中为 Cauchy 序列的子序列.
+
+\emph{Step 1.} 由 Lemma~\ref{lem:chap2-lions-epsilon-inequality}, 只需找出一个在 $L^p((0,T),B_2)$ 中为 Cauchy 序列的子序列. 事实上, 设 $(v_n)_n$ 在 $L^p((0,T),B_2)$ 中满足 Cauchy 判据, 并在 $L^p((0,T),B_0)$ 中有界. 则对每个 $\varepsilon>0$,
+\begin{align*}
+ \|v_n-v_m\|_{L^p((0,T),B_1)}
+ &\leq\varepsilon\|v_n-v_m\|_{L^p((0,T),B_0)}
+ +C(\varepsilon)\|v_n-v_m\|_{L^p((0,T),B_2)}\\
+ &\leq2K\varepsilon
+ +C(\varepsilon)\|v_n-v_m\|_{L^p((0,T),B_2)},
+\end{align*}
+其中 $K$ 是 $(v_n)_n$ 在 $L^p((0,T),B_0)$ 中的一个上界. 因而
+\[
+ \limsup_{n,m\to\infty}\|v_n-v_m\|_{L^p((0,T),B_1)}
+ \leq2K\varepsilon.
+\]
+由于 $\varepsilon$ 任意, 结论成立.
+
+\emph{Step 2.} 取 $\theta\in C^\infty([0,T],\mathbb{R})$, 使 $\theta(T)=0$, 并写成
+\[
+ u_n=\theta u_n+(1-\theta)u_n\equiv v_n+w_n.
+\]
+下面证明可从 $(v_n)_n$ 中抽取一个在 $L^p((0,T),B_2)$ 中为 Cauchy 序列的子序列. 对 $(w_n)_n$ 可以作同样处理.
+
+把 $v_n$ 连续延拓到 $\mathbb{R}_+$, 对所有 $t\geq T$ 令 $v_n(t)=0$. 对每个 $h>0$, 分解
 \[
  v_n(t)=\frac1h\int_t^{t+h}v_n(s)\,\mathrm{d}s
  +\frac1h\int_t^{t+h}(v_n(t)-v_n(s))\,\mathrm{d}s
  =a_{n,h}(t)+b_{n,h}(t).
 \]
-固定 $h>0$. 序列 $(a_{n,h})_n$ 等度连续, 且其值位于 $B_0$ 的同一有界集, 从而位于 $B_2$ 的紧集. Theorem~\ref{thm:chap2-ascoli} 给出在 $C^0([0,T],B_2)$ 中收敛的子序列. Jensen 和 Fubini 定理给出
+固定 $h>0$. 证明序列 $(a_{n,h}(t))_n$ 一致有界且等度连续, 并且取值于 $B_2$ 的一个紧集. 由 Proposition~\ref{prop:chap2-epq-continuous-representative}, $a_{n,h}$ 连续. 而且
+\[
+ \sup_{t\in\mathbb{R}_+}\|a_{n,h}(t)\|_{B_0}
+ \leq\frac{h^{1/p'}}{h}\|v_n\|_{L^p((0,T),B_0)}.
+\]
+所以与 $n$ 无关地, 映射 $t\mapsto a_{n,h}(t)$ 的值落在 $B_0$ 的一个有界集内. 由于 $B_0$ 到 $B_2$ 的嵌入紧, 这个集合在 $B_2$ 中相对紧. 此外,
+\[
+ \frac{\mathrm{d}a_{n,h}}{\mathrm{d}t}
+ =\frac1h\bigl(v_n(t+h)-v_n(t)\bigr)
+ =\frac1h\int_t^{t+h}\frac{\mathrm{d}v_n}{\mathrm{d}t}(\tau)\,\mathrm{d}\tau,
+\]
+从而对所有 $t>0$,
+\[
+ \left\|\frac{\mathrm{d}a_{n,h}}{\mathrm{d}t}(t)\right\|_{B_2}
+ \leq\frac1h\int_t^{t+h}
+ \left\|\frac{\mathrm{d}v_n}{\mathrm{d}t}(\tau)\right\|_{B_2}\,\mathrm{d}\tau
+ \leq\frac1h
+ \left\|\frac{\mathrm{d}v_n}{\mathrm{d}t}\right\|_{L^1((0,T),B_2)}.
+\]
+因此, 固定 $h$ 后, $(a_{n,h})_n$ 等度连续且取值于 $B_2$ 的一个紧集. Ascoli 定理, 即 Theorem~\ref{thm:chap2-ascoli}, 表明可从 $(a_{n,h})_n$ 中抽取一个在 $C^0([0,T],B_2)$ 中收敛, 从而在 $L^p((0,T),B_2)$ 中收敛的子序列.
+
+另一方面,
+\begin{align*}
+ \|b_{n,h}(t)\|_{B_2}
+ &\leq\frac1h\int_t^{t+h}\|v_n(t)-v_n(s)\|_{B_2}\,\mathrm{d}s\\
+ &\leq\frac1h\int_t^{t+h}\int_t^s
+ \left\|\frac{\mathrm{d}v_n}{\mathrm{d}t}(\tau)\right\|_{B_2}
+ \,\mathrm{d}\tau\,\mathrm{d}s.
+\end{align*}
+利用 Jensen 不等式和 Fubini 定理, 得
+\begin{align*}
+ \int_0^T\|b_{n,h}(t)\|_{B_2}^p\,\mathrm{d}t
+ &\leq
+ \left\|\frac{\mathrm{d}v_n}{\mathrm{d}t}\right\|_{L^1((0,T),B_2)}^{p-1}
+ \int_0^T\frac1h\int_t^{t+h}\int_t^s
+ \left\|\frac{\mathrm{d}v_n}{\mathrm{d}t}(\tau)\right\|_{B_2}
+ \,\mathrm{d}\tau\,\mathrm{d}s\,\mathrm{d}t\\
+ &\leq
+ \left\|\frac{\mathrm{d}v_n}{\mathrm{d}t}\right\|_{L^1((0,T),B_2)}^{p-1}
+ \int_0^T\frac1h\int_t^{t+h}
+ \left\|\frac{\mathrm{d}v_n}{\mathrm{d}t}(\tau)\right\|_{B_2}
+ (t+h-\tau)\,\mathrm{d}\tau\,\mathrm{d}t\\
+ &\leq h
+ \left\|\frac{\mathrm{d}v_n}{\mathrm{d}t}\right\|_{L^1((0,T),B_2)}^p.
+\end{align*}
+因而
 \begin{equation}
  \|b_{n,h}\|_{L^p((0,T),B_2)}\leq C_T h^{1/p}.
  \label{eq:chap2-aubin-lions-remainder}
 \end{equation}
-取 $h_k=1/k$, 对各 $(a_{n,h_k})_n$ 逐次抽取并作对角选择. 式\eqref{eq:chap2-aubin-lions-remainder}说明所得子序列在 $L^p((0,T),B_2)$ 中为 Cauchy 序列, 再由 Lemma~\ref{lem:chap2-lions-epsilon-inequality} 得到 $L^p((0,T),B_1)$ 中的 Cauchy 性.
+
+\emph{Step 3.} 现在用对角过程构造 $(v_n)_n$ 的一个收敛子序列. 对 $k\geq1$, 令 $h_k=1/k$. 当 $k=1$ 时, 已知可从 $(a_{n,h_1})_n$ 中抽取一个收敛子序列 $(a_{\varphi_1(n),h_1})_n$. 当 $k=2$ 时, 再从 $(a_{\varphi_1(n),h_2})_n$ 中抽取一个收敛子序列 $(a_{\varphi_1\circ\varphi_2(n),h_2})_n$. 如此逐次抽取, 使对每个 $k\geq1$, 序列
+\[
+ \bigl(a_{\varphi_1\circ\cdots\circ\varphi_k(n),h_k}\bigr)_n
+\]
+都收敛.
+
+令 $\psi(k)=\varphi_1\circ\varphi_2\circ\cdots\circ\varphi_k(k)$. 验证 $(v_{\psi(k)})_k$ 为 Cauchy 序列. 给定 $\varepsilon>0$, 由式\eqref{eq:chap2-aubin-lions-remainder}, 存在 $k_0\geq1$ 使对所有 $n$ 和 $k\geq k_0$,
+\[
+ \|b_{n,h_k}\|_{L^p((0,T),B_2)}\leq\varepsilon.
+\]
+写成
+\[
+ v_{\psi(k)}=a_{\psi(k),h_{k_0}}+b_{\psi(k),h_{k_0}}.
+\]
+由对角抽取过程, 序列 $(a_{\psi(k),h_{k_0}})_{k\geq k_0}$ 是一个收敛序列的子序列, 因而满足 Cauchy 判据. 所以存在 $k_1\geq k_0$, 使对所有 $k,k'\geq k_1$,
+\[
+ \|a_{\psi(k),h_{k_0}}-a_{\psi(k'),h_{k_0}}\|_{L^p((0,T),B_2)}
+ \leq\varepsilon.
+\]
+最终, 对所有 $k,k'\geq k_1$,
+\begin{align*}
+ \|v_{\psi(k)}-v_{\psi(k')}\|_{L^p((0,T),B_2)}
+ &\leq
+ \|a_{\psi(k),h_{k_0}}-a_{\psi(k'),h_{k_0}}\|_{L^p((0,T),B_2)}\\
+ &\quad+\|b_{\psi(k),h_{k_0}}\|_{L^p((0,T),B_2)}
+ +\|b_{\psi(k'),h_{k_0}}\|_{L^p((0,T),B_2)}\\
+ &\leq3\varepsilon.
+\end{align*}
+这证明 $(v_{\psi(k)})_k$ 在 $L^p((0,T),B_2)$ 中为 Cauchy 序列. 再由 Step 1 得到它在 $L^p((0,T),B_1)$ 中的 Cauchy 性.
 \end{Proof}
 
-对 $1\leq q<+\infty$ 和 $0<\sigma<1$, 定义 Nikolskii 空间
+在某些情形中, 前一个定理不能应用, 此时需要更精细的结果. 设 $E$ 为 Banach 空间. 对 $f\in L^1((0,T),E)$, 仍以 $\tau_hf$ 表示式\eqref{eq:chap2-banach-translation}定义的平移函数. 对 $1\leq q<+\infty$ 和 $0<\sigma<1$, 定义 Nikolskii 空间
 \begin{equation}
  N_q^\sigma((0,T),E)=\left\{f\in L^q((0,T),E):
  \sup_{0<h<T}\frac{\|\tau_hf-f\|_{L^q((0,T-h),E)}}{h^\sigma}<+\infty\right\}.
  \label{eq:chap2-nikolskii-space}
 \end{equation}
 
-\begin{Theorem}[Simon]
+对 $f\in N_q^\sigma((0,T),E)$, 引入范数
+\[
+ \|f\|_{N_q^\sigma((0,T),E)}
+ =\left(
+ \|f\|_{L^q((0,T),E)}^q
+ +\sup_{0<h<T}
+ \left(\frac1{h^\sigma}
+ \|\tau_hf-f\|_{L^q((0,T-h),E)}\right)^q
+ \right)^{1/q}.
+\]
+
+直观地说, 这相当于用较弱但已经足够的 H\"older 型条件替换关于 $f$ 的时间导数的条件. 下面给出一个例子, 证明参见\MBUnresolvedReference{bib:simon-nikolskii-compactness}{[109]}.
+
+\begin{Theorem}{Simon}
 \label{thm:chap2-simon-nikolskii-compactness}
 设 $B_0\hookrightarrow B_1\hookrightarrow B_2$, 其中 $B_1\hookrightarrow B_2$ 连续且 $B_0\hookrightarrow B_1$ 紧. 对 $1\leq q\leq+\infty$ 和 $0<\sigma<1$,
 \[
@@ -263,43 +636,95 @@ Proposition~\ref{prop:chap2-epq-continuous-representative} 给出 $V'$ 值连续
 \subsubsection{Banach 值 Fourier 变换}
 \label{subsec:chap2-banach-fourier}
 
+为了得到紧性, 已经看到需要对所考虑函数序列的时间导数或时间平移建立估计. 如下文所示, 有多种方法可以得到这些估计. 其中一种方法是对时间变量使用 Fourier 变换. 沿着这个思路, Proposition~\ref{prop:chap2-fourier-nikolskii} 利用 Fourier 变换给出 Nikolskii 空间中有界函数序列的一种刻画. 在 Chapter~\MBUnresolvedReference{chap:future-chapter-vii}{VII} 的 Section~\MBUnresolvedReference{sec:future-vii-1}{1} 中, 我们将用这一技巧研究具有非标准边界条件的 Navier--Stokes 方程.
+
+在此之前, 需要回顾取值于 Banach 空间的时间变量函数的 Fourier 变换定义及其基本性质.
+
 \begin{Definition}
 \label{def:chap2-banach-fourier-transform}
-设 $X$ 为复 Banach 空间, $f\in L^1(\mathbb{R},X)$. 定义
+设 $X$ 为复 Banach 空间, $f\in L^1(\mathbb{R},X)$. 称函数 $\mathcal{F}(f)\in L^\infty(\mathbb{R},X)$ 为 $f$ 的 Fourier 变换, 其定义为
 \[
  \mathcal{F}(f)(\tau)=\frac1{\sqrt{2\pi}}\int_\mathbb{R}f(t)e^{-it\tau}\,\mathrm{d}t.
 \]
 \end{Definition}
 
-\begin{Theorem}[Hausdorff--Young]
+当 $X$ 为有限维空间时, 有下面这个经典而基本的定理. 例如可在\MBUnresolvedReference{bib:fourier-classic-source}{[100]}中找到证明.
+
+\begin{Theorem}{Hausdorff--Young}
 \label{thm:chap2-hausdorff-young-finite-dimensional}
-设 $X=\mathbb{C}^n$. Fourier 变换唯一延拓为 $L^2(\mathbb{R},\mathbb{C}^n)$ 上的等距映射. 此外, 对 $1\leq p\leq2$, 存在 $C>0$ 使
-\[
- \|\mathcal{F}(f)\|_{L^{p'}(\mathbb{R},\mathbb{C}^n)}
- \leq C\|f\|_{L^p(\mathbb{R},\mathbb{C}^n)}.
-\]
+设 $X=\mathbb{C}^n$.
+\begin{itemize}
+ \item 对每个 $f\in L^1(\mathbb{R},\mathbb{C}^n)\cap L^2(\mathbb{R},\mathbb{C}^n)$,
+ \[
+  \mathcal{F}(f)\in L^2(\mathbb{R},\mathbb{C}^n),
+  \qquad
+  \|\mathcal{F}(f)\|_{L^2}=\|f\|_{L^2}.
+ \]
+ 因而 $\mathcal{F}$ 唯一延拓为 $L^2(\mathbb{R},\mathbb{C}^n)$ 到自身的等距映射.
+ \item 对每个 $p\in[1,2]$, 存在 $C>0$, 使对所有
+ $f\in L^1(\mathbb{R},\mathbb{C}^n)\cap L^p(\mathbb{R},\mathbb{C}^n)$,
+ \[
+  \mathcal{F}(f)\in L^{p'}(\mathbb{R},\mathbb{C}^n),
+  \qquad
+  \|\mathcal{F}(f)\|_{L^{p'}}\leq C\|f\|_{L^p}.
+ \]
+\end{itemize}
 \end{Theorem}
 
-\begin{Theorem}[Hausdorff--Young for Lebesgue spaces]
+在这里的应用中, 需要在 $X$ 为 Banach 空间时使用 Fourier 变换. 必须注意, 前一个定理对一般 Banach 空间并不成立. 不过, 当 $X$ 是可积函数空间时, 可以找到使 Hausdorff--Young 不等式成立的合适框架. 关于这一主题更完整而精确的结果, 参见\MBUnresolvedReference{bib:banach-fourier-sources}{[8, 64, 96]}.
+
+\begin{Theorem}{Hausdorff--Young for Lebesgue spaces}
 \label{thm:chap2-hausdorff-young-lebesgue-valued}
-设 $(E,\mu)$ 为紧的局部分离拓扑空间, $\mu$ 为 Borel 集上的正则测度, $X=L^q(E,\mu)$. 若 $1\leq p\leq2$ 且 $p\leq q\leq p'$, 则
+设 $(E,\mu)$ 为紧的局部分离拓扑空间, $\mu$ 为定义在其 Borel 集上的正则测度. 设 $q\in[1,+\infty]$ 并令 $X=L^q(E,\mu)$. 对每个满足 $p\in[1,2]$ 且 $p\leq q\leq p'$ 的 $p$, 存在 $C>0$, 使对所有
+$f\in L^1(\mathbb{R},L^q(E,\mu))\cap L^p(\mathbb{R},L^q(E,\mu))$,
 \[
+ \mathcal{F}(f)\in L^{p'}(\mathbb{R},L^q(E,\mu)),
+ \qquad
  \|\mathcal{F}(f)\|_{L^{p'}(\mathbb{R},L^q(E,\mu))}
  \leq C\|f\|_{L^p(\mathbb{R},L^q(E,\mu))}.
 \]
 \end{Theorem}
 
+条件 $p\leq q\leq p'$ 是最优的, 反例见\MBUnresolvedReference{bib:hausdorff-young-counterexample}{[96]}.
+
 \begin{Proof}
-对光滑 $f$, 先以指数 $p'/q\geq1$ 应用 Minkowski 不等式, 再对固定 $x$ 的标量函数应用 Theorem~\ref{thm:chap2-hausdorff-young-finite-dimensional}, 最后以指数 $q/p\geq1$ 再用 Minkowski 不等式, 即得估计. 一般情形由稠密性得到.
+由稠密性, 只需对光滑函数 $f$ 证明结论. 依次以 $r=p'/q\geq1$ 应用 Minkowski 不等式, 对固定 $x$ 的标量函数 $t\mapsto f(t,x)$ 应用 Theorem~\ref{thm:chap2-hausdorff-young-finite-dimensional} 中的 Hausdorff--Young 不等式, 最后以 $r=q/p\geq1$ 再应用 Minkowski 不等式, 得
+\begin{align*}
+ \|\mathcal{F}(f)\|_{L^{p'}(\mathbb{R},L^q(E,\mu))}^{p'}
+ &=\int_\mathbb{R}
+ \left(\int_E|\mathcal{F}(f)(\tau,x)|^q\,\mathrm{d}\mu\right)^{p'/q}
+ \,\mathrm{d}\tau\\
+ &\leq\left(
+ \int_E\left(\int_\mathbb{R}|\mathcal{F}(f)(\tau,x)|^{p'}\,\mathrm{d}\tau\right)^{q/p'}
+ \,\mathrm{d}\mu\right)^{p'/q}\\
+ &\leq C\left(
+ \int_E\left(\int_\mathbb{R}|f(t,x)|^p\,\mathrm{d}t\right)^{q/p}
+ \,\mathrm{d}\mu\right)^{p'/q}\\
+ &\leq C\left(
+ \int_\mathbb{R}\left(\int_E|f(t,x)|^q\,\mathrm{d}\mu\right)^{p/q}
+ \,\mathrm{d}t\right)^{p'/p}\\
+ &=C\|f\|_{L^p(\mathbb{R},L^q(E,\mu))}^{p'}.
+\end{align*}
+这就证明了结论.
 \end{Proof}
 
 \begin{Corollary}
 \label{cor:chap2-fourier-hilbert-isometry}
 若 $X=H$ 为 Hilbert 空间, 则 $\mathcal{F}$ 延拓为 $L^2(\mathbb{R},H)$ 上的可逆等距映射, 且
 \[
- \mathcal{F}^{-1}(g)(t)=\frac1{\sqrt{2\pi}}\int_\mathbb{R}g(\tau)e^{i\tau t}\,\mathrm{d}\tau.
+ \mathcal{F}^{-1}(g)(t)=\frac1{\sqrt{2\pi}}\int_\mathbb{R}g(\tau)e^{i\tau t}\,\mathrm{d}\tau,
+ \qquad
+ \forall g\in L^1(\mathbb{R},H)\cap L^2(\mathbb{R},H).
 \]
 \end{Corollary}
+
+\begin{Proof}
+该结果由前一个定理得到, 因为任意 Hilbert 空间都与某个适当选择的 $L^2(E,\mu)$ 空间同构.
+
+还应注意, 这个性质刻画 Hilbert 空间: 若 Banach 空间 $X$ 满足 $\mathcal{F}$ 把 $L^2(\mathbb{R},X)$ 映入自身, 则 $X$ 与某个 Hilbert 空间同构.
+\end{Proof}
+
+最后还要使用下面的结果, 其证明是直接的分部积分.
 
 \begin{Proposition}
 \label{prop:chap2-fourier-time-derivative}
@@ -310,13 +735,24 @@ Proposition~\ref{prop:chap2-epq-continuous-representative} 给出 $V'$ 值连续
 \]
 \end{Proposition}
 
-若 $\widetilde f$ 是 $f\in W^{1,1}((0,T),X)$ 的零延拓, 则分布意义下
+遇到的第一个困难是, 所处理的函数只定义在有界时间区间 $(0,T)$ 上, 而不是整个实轴上. 因此作如下处理.
+
+设 $\widetilde f$ 是 $f\in W^{1,1}((0,T),X)$ 在 $(0,T)$ 外的零延拓. 这个函数不属于 $W^{1,1}(\mathbb{R},X)$, 但仍可在分布意义下求导, 得
+\[
+ \frac{\partial\widetilde f}{\partial t}
+ =\widetilde{\frac{\partial f}{\partial t}}+f(0)\delta_0-f(T)\delta_T.
+\]
+$f(0)$ 和 $f(T)$ 是完全有定义的, 因为 $W^{1,1}((0,T),X)$ 中的函数都具有取值于 $X$ 的 $[0,T]$ 上连续代表元, 参见 Corollary~\ref{cor:chap2-w11-continuous-representative}.
+
+此外, Fourier 变换可以推广到缓增分布, 特别是 Dirac 质量, 例如参见\MBUnresolvedReference{bib:tempered-distribution-fourier}{[101]}. 因而有
 \begin{equation}
  i\tau\mathcal{F}(\widetilde f)
- =\mathcal{F}\left(\frac{\partial f}{\partial t}\right)
+ =\mathcal{F}\left(\widetilde{\frac{\partial f}{\partial t}}\right)
  +\frac1{\sqrt{2\pi}}f(0)-\frac{e^{-i\tau T}}{\sqrt{2\pi}}f(T).
  \label{eq:chap2-fourier-zero-extension-derivative}
 \end{equation}
+
+对于非线性偏微分方程分析中关注的函数, 关键结果如下.
 
 \begin{Proposition}
 \label{prop:chap2-fourier-nikolskii}
@@ -334,20 +770,41 @@ Proposition~\ref{prop:chap2-epq-continuous-representative} 给出 $V'$ 值连续
 \end{Proposition}
 
 \begin{Proof}
-对 $0<h<T$, 令 $g_h(t)=\widetilde f(t+h)-\widetilde f(t)$. 则
+设 $f$ 满足式\eqref{eq:chap2-fourier-fractional-moment}, 并取 $h\in(0,T)$. 令 $g_h(t)=\widetilde f(t+h)-\widetilde f(t)$. 则
 \[
  \mathcal{F}(g_h)(\tau)=(e^{i\tau h}-1)\mathcal{F}(\widetilde f)(\tau).
 \]
-函数 $(e^{ix}-1)/x^\sigma$ 在 $\mathbb{R}$ 上有界, 故
+对 $\tau\neq0$, 写成
+\[
+ \mathcal{F}(g_h)(\tau)
+ =\frac{e^{i\tau h}-1}{\tau^\sigma h^\sigma}
+ h^\sigma\tau^\sigma\mathcal{F}(\widetilde f)(\tau).
+\]
+只要 $\sigma\leq1$, 函数 $x\mapsto(e^{ix}-1)/x^\sigma$ 在 $\mathbb{R}$ 上有界. 若以 $K_\sigma$ 表示其上界, 则
 \[
  \|\mathcal{F}(g_h)(\tau)\|_H
  \leq K_\sigma h^\sigma|\tau|^\sigma
  \|\mathcal{F}(\widetilde f)(\tau)\|_H.
 \]
-由 Corollary~\ref{cor:chap2-fourier-hilbert-isometry} 和式\eqref{eq:chap2-fourier-fractional-moment},
+于是
+\[
+ \int_\mathbb{R}\|\mathcal{F}(g_h)(\tau)\|_H^2\,\mathrm{d}\tau
+ \leq K_\sigma^2h^{2\sigma}
+ \int_\mathbb{R}|\tau|^{2\sigma}
+ \|\mathcal{F}(\widetilde f)(\tau)\|_H^2\,\mathrm{d}\tau
+ \leq K_\sigma^2C^2h^{2\sigma}.
+\]
+由 Corollary~\ref{cor:chap2-fourier-hilbert-isometry}, Fourier 变换是 $L^2(\mathbb{R},H)$ 上的等距映射. 根据 $g_h$ 的定义,
+\[
+ \int_\mathbb{R}\|\widetilde f(t+h)-\widetilde f(t)\|_H^2\,\mathrm{d}t
+ \leq K_\sigma^2C^2h^{2\sigma}.
+\]
+因而
 \[
  \int_0^{T-h}\|f(t+h)-f(t)\|_H^2\,\mathrm{d}t
  \leq K_\sigma^2C^2h^{2\sigma},
 \]
-这正是式\eqref{eq:chap2-nikolskii-space}中的估计.
+这证明 $f\in N_2^\sigma((0,T),H)$, 同时给出所陈述的估计.
 \end{Proof}
+
+因此, 为了得到演化问题的一族近似解的紧性, 可以尝试对这些解的时间 Fourier 变换建立式\eqref{eq:chap2-fourier-fractional-moment}类型的一致界. 这保证它们在某个 Nikolskii 空间中有界, 再由 Theorem~\ref{thm:chap2-simon-nikolskii-compactness} 得到紧性.

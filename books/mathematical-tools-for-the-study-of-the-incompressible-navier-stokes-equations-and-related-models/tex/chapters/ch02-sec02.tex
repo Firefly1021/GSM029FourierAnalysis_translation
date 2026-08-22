@@ -1,6 +1,9 @@
 \subsection{泛函分析的基本结果}
 \label{sec:chap2-functional-analysis}
 
+\newcounter{sourceremark}[section]
+\renewcommand{\thesourceremark}{\thesection.\arabic{sourceremark}}
+
 \subsubsection{Banach 空间}
 \label{subsec:chap2-banach-spaces}
 
@@ -83,7 +86,7 @@ Hahn--Banach 定理的另一个推论给出子空间的一个有用稠密性判�
 \subsubsection{弱收敛与弱-* 收敛}
 \label{subsec:chap2-weak-convergences}
 
-这里不详述弱拓扑和弱-* 拓扑的一般理论, 更完整的讨论见\MBUnresolvedReference{bib:source-27}{[27]}. 我们只回顾这些拓扑的序列性质, 后文主要在 Lebesgue 空间和 Sobolev 空间中使用它们.
+这里不详述弱拓扑和弱-* 拓扑的一般理论, 更完整的讨论见\MBUnresolvedReference{bib:source-27}{[27]}. 我们只回顾这些拓扑的序列性质, 这些性质在后文至关重要. 本书主要在 Lebesgue 空间和 Sobolev 空间的框架中使用这些概念, 见 Section~\ref{subsec:chap2-lebesgue-weak-convergences}.
 
 \begin{Definition}
 \label{def:chap2-weak-convergence}
@@ -104,7 +107,7 @@ Hahn--Banach 定理的另一个推论给出子空间的一个有用稠密性判�
 \end{itemize}
 \end{Definition}
 
-无限维空间中的闭有界集对范数拓扑未必紧, 但下面的结果给出闭有界集的弱紧性.
+只要所研究的空间是无限维的, 例如 $L^p(\Omega)$ 型函数空间, 该空间中的闭有界集对 $E$ 上的范数拓扑就未必紧. 不过, 下面的结果给出闭有界集的弱紧性.
 
 \begin{Theorem}[Weak and Weak-* compactness]
 \label{thm:chap2-weak-compactness}
@@ -160,7 +163,8 @@ Banach--Steinhaus 定理 Theorem~\ref{thm:chap2-banach-steinhaus} 的一个重�
 根据 Proposition~\ref{prop:chap2-unique-subsequence-limit}, 只需证明 $x$ 是 $(x_n)_n$ 的子序列在 $F$ 中可能具有的唯一弱极限. 若子序列 $(x_{\varphi(n)})_n$ 在 $F$ 中弱收敛到 $y\in F$, 则由 $F\subset G$ 的连续嵌入, 它在 $G$ 中弱收敛到 $y$. 另一方面, 由假设和 $E\subset G$ 的连续嵌入, 同一子序列在 $G$ 中弱收敛到 $x$. 因而 $y=x$.
 \end{Proof}
 
-\par\noindent\textbf{Remark:}\quad\label{rem:chap2-small-space-weak-star}
+\refstepcounter{sourceremark}\label{rem:chap2-small-space-weak-star}
+\par\noindent\textbf{Remark~\thesourceremark:}\quad
 上述结果容易推广到弱-* 收敛情形.
 
 下面给出 Hilbert 空间中弱收敛序列强收敛的一个有用判据.
@@ -186,13 +190,13 @@ Banach--Steinhaus 定理 Theorem~\ref{thm:chap2-banach-steinhaus} 的一个重�
 \]
 \end{Proof}
 
-后文将证明这一结果在某些 Banach 空间中也成立, 例如 $1<p<+\infty$ 时的 $L^p(\Omega)$, 见\MBUnresolvedReference{prop:chap2-lp-radon-riesz}{Proposition~II.2.32}.
+后文将证明这一结果在某些 Banach 空间中也成立, 例如 $1<p<+\infty$ 时的 $L^p(\Omega)$, 见 Proposition~\ref{prop:chap2-weak-plus-norm-implies-strong-lp}.
 
 弱收敛虽然更容易使用, 但通常不能对非线性项取极限. 例如在 $(0,1)$ 上定义 $u_n(x)=\sin(nx)$. 由 Riemann--Lebesgue 引理, $(u_n)_n$ 在 $L^2(0,1)$ 中弱收敛到 $0$, 但
 \[
   \int_0^1u_n^2\,\mathrm{d}x\longrightarrow\frac12.
 \]
-所以 $(u_n^2)_n$ 不弱收敛到 $0$; 它实际上弱收敛到常值函数 $1/2$.
+所以 $(u_n^2)_n$ 不在 $L^2(0,1)$ 中弱收敛到 $0$. 不过, $(u_n^2)_n$ 确实在 $L^2(0,1)$ 中弱收敛, 只是其极限为常值函数 $1/2$, 而不是 $0$.
 
 不过, 强收敛序列与弱收敛序列的乘积型双线性像仍弱收敛到极限的相应乘积.
 
@@ -202,17 +206,32 @@ Banach--Steinhaus 定理 Theorem~\ref{thm:chap2-banach-steinhaus} 的一个重�
 \end{Proposition}
 
 \begin{Proof}
-任取 $\varphi\in G'$. 由双线性,
+任取 $\varphi\in G'$. 需要证明
+\[
+  \langle\varphi,B(u_n,v_n)\rangle_{G',G}
+  \longrightarrow
+  \langle\varphi,B(u,v)\rangle_{G',G}.
+\]
+由 $B$ 的双线性,
 \begin{align*}
 |\langle\varphi,B(u_n,v_n)-B(u,v)\rangle_{G',G}|
-&\leq\|\varphi\|_{G'}\|B(u_n-u,v_n)\|_G\\
+&\leq\|\varphi\|_{G'}\|B(u-u_n,v_n)\|_G\\
 &\quad+|\langle\varphi,B(u,v_n-v)\rangle_{G',G}|.
 \end{align*}
-由 Corollary~\ref{cor:chap2-weak-lower-semicontinuity}, $(v_n)_n$ 有界. $B$ 的连续性和 $u_n\to u$ 说明第一项趋于 $0$. 映射 $x\mapsto\langle\varphi,B(u,x)\rangle_{G',G}$ 是 $F$ 上的连续线性泛函, 因而 $v_n\rightharpoonup v$ 说明第二项也趋于 $0$.
+由 Corollary~\ref{cor:chap2-weak-lower-semicontinuity}, $(v_n)_n$ 有界. 因此, 由 $B$ 的连续性, 第一项满足
+\[
+\|\varphi\|_{G'}\|B(u-u_n,v_n)\|_G
+\leq\|\varphi\|_{G'}\|B\|\|u-u_n\|_E\|v_n\|_F
+\leq C\|u-u_n\|_E\longrightarrow0.
+\]
+由于 $u\in E$ 固定且 $B$ 连续, 映射 $x\in F\mapsto\langle\varphi,B(u,x)\rangle_{G',G}$ 是 $F$ 上的连续线性泛函. 因而由弱收敛的定义, 当 $n\to\infty$ 时第二项也趋于 $0$.
 \end{Proof}
 
-\par\noindent\textbf{Remark:}\quad\label{rem:chap2-weak-products}
-若 $G$ 自反, 且 $(u_n)_n,(v_n)_n$ 仅分别弱收敛到 $u,v$, 则 $(B(u_n,v_n))_n$ 在 $G$ 中有界, 从而可抽取弱收敛子序列. 但没有强收敛时, 一般不能断定其极限就是 $B(u,v)$, 上面的正弦函数例子已经说明这一点. 为处理非线性, 必须通过某种方式获得强收敛. 一种方法是使用\MBUnresolvedReference{sec:chap2-compactness}{Section~3}中的紧性性质.
+\refstepcounter{sourceremark}\label{rem:chap2-weak-products}
+\par\noindent\textbf{Remark~\thesourceremark:}\quad
+若 $G$ 自反, 且 $(u_n)_n,(v_n)_n$ 仅分别弱收敛到 $u,v$, 则由 $B$ 的连续性以及两个序列的有界性, $(B(u_n,v_n))_n$ 在 $G$ 中有界. 因而 Theorem~\ref{thm:chap2-weak-compactness} 表明可以抽取一个在 $G$ 中弱收敛到某个 $g$ 的子序列.
+
+问题在于, 若没有强收敛性质, 一般不能断定 $g$ 等于预期极限 $B(u,v)$, 上面的例子已经说明了这一点. 后续各章将会看到, 为了把极限 $g$ 识别为乘积 $B(u,v)$, 需要在更大的空间中建立所研究序列的强收敛性质. 因此, 为了处理非线性, 必须以某种方式获得强收敛. 一种方法是使用 Section~\ref{sec:chap2-compactness} 中介绍的紧性性质.
 \subsubsection{Lebesgue 空间}
 \label{subsec:chap2-lebesgue-spaces}
 
@@ -241,6 +260,8 @@ $L^\infty(\Omega)$ 是本质有界的 Lebesgue 可测函数集合, 并定义
 严格说来, 这些空间的元素是除一个 Lebesgue 零测集外彼此相等的函数所构成的等价类.
 
 由 Proposition~\ref{prop:chap2-minkowski} 和 Remark~\ref{rem:chap2-minkowski-norm} 可知, $\|\cdot\|_{L^p}$ 是 $L^p(\Omega)$ 上的范数, 且这些空间都是 Banach 空间. 当 $1<p<+\infty$ 时, $L^p(\Omega)$ 可分且自反, 其对偶同 $L^{p'}(\Omega)$ 同构. $L^1(\Omega)$ 可分但不自反, 其对偶同 $L^\infty(\Omega)$ 同构. 相比之下, $L^\infty(\Omega)$ 既不可分也不自反, 且其对偶严格大于 $L^1(\Omega)$.
+
+最后, 作为这一引论的结束, 回顾下面这个换元定理的版本.
 
 \begin{Definition}
 \label{def:chap2-lipschitz-diffeomorphism}
@@ -279,7 +300,7 @@ $L^\infty(\Omega)$ 是本质有界的 Lebesgue 可测函数集合, 并定义
 \]
 \end{Proposition}
 
-其证明只需应用对数函数的凹性. 直接得到如下实用版本.
+这一不等式的证明只需应用对数函数的凹性. 由此可以直接推出下面这个实用版本.
 
 \begin{Corollary}
 \label{cor:chap2-young-epsilon}
@@ -291,6 +312,8 @@ x_1\cdots x_n\leq\varepsilon_1x_1^{p_1}+\cdots+\varepsilon_{n-1}x_{n-1}^{p_{n-1}
 \end{Corollary}
 
 换言之, Young 不等式中除一个系数外的所有系数都可预先指定. 当某个 $\varepsilon_i\to0$ 时, $C(\varepsilon_1,\ldots,\varepsilon_{n-1})$ 趋于无穷.
+
+由 Young 不等式可以推出如下形式的 Hölder 不等式.
 
 \begin{Proposition}[Hölder's inequality]
 \label{prop:chap2-holder-inequality}
@@ -304,13 +327,14 @@ x_1\cdots x_n\leq\varepsilon_1x_1^{p_1}+\cdots+\varepsilon_{n-1}x_{n-1}^{p_{n-1}
 \]
 \end{Proposition}
 
-还需要下面的 Fubini 定理推广.
+我们还需要下面的 Fubini 定理推广.
 
 \begin{Proposition}
 \label{prop:chap2-generalized-fubini}
 设 $d\geq2$, $f_1,\ldots,f_d:\mathbb{R}^{d-1}\to\mathbb{R}$ 均属于 $L^{d-1}(\mathbb{R}^{d-1})$. 定义
 \[
-f(x)=f_1(x_2,\ldots,x_d)f_2(x_1,x_3,\ldots,x_d)\cdots f_d(x_1,\ldots,x_{d-1}).
+f(x)=f_1(x_2,\ldots,x_d)f_2(x_1,x_3,\ldots,x_d)\cdots f_d(x_1,\ldots,x_{d-1}),
+\qquad\forall x\in\mathbb{R}^d.
 \]
 则 $f\in L^1(\mathbb{R}^d)$, 且
 \[
@@ -319,19 +343,49 @@ f(x)=f_1(x_2,\ldots,x_d)f_2(x_1,x_3,\ldots,x_d)\cdots f_d(x_1,\ldots,x_{d-1}).
 \end{Proposition}
 
 \begin{Proof}
-$d=2$ 时结论由 Fubini 定理直接得到, 且不等式实际为等式. 只证明 $d=3$ 的情形, 一般情形由 Hölder 不等式归纳得到. 对 $x_3$ 积分并应用 Cauchy--Schwarz 不等式,
+$d=2$ 时, $f(x_1,x_2)=f_1(x_1)f_2(x_2)$, 并且由假设 $f_1,f_2\in L^1(\mathbb{R})$. 因而 Fubini 定理说明 $f\in L^1(\mathbb{R}^2)$, 且
+\[
+  \|f\|_{L^1(\mathbb{R}^2)}
+  =\|f_1\|_{L^1(\mathbb{R})}\|f_2\|_{L^1(\mathbb{R})}.
+\]
+这就证明了该情形的结论; 在这一特殊情形中, 所述不等式实际上为等式.
+
+下面仅证明 $d=3$ 的情形, 因为一般情形可利用 Hölder 不等式作简单归纳得到, 完整证明例如见\MBUnresolvedReference{bib:source-27}{[27]}. 对定义式的绝对值关于变量 $x_3$ 积分, 再应用 Cauchy--Schwarz 不等式, 得
 \begin{align*}
 \int_{\mathbb{R}}|f|(x_1,x_2,x_3)\,\mathrm{d}x_3
+&=|f_3(x_1,x_2)|
+\int_{\mathbb{R}}|f_1(x_2,x_3)||f_2(x_1,x_3)|\,\mathrm{d}x_3\\
 &\leq|f_3(x_1,x_2)|
 \left(\int_{\mathbb{R}}|f_1(x_2,x_3)|^2\,\mathrm{d}x_3\right)^{1/2}\\
 &\quad\times\left(\int_{\mathbb{R}}|f_2(x_1,x_3)|^2\,\mathrm{d}x_3\right)^{1/2}.
 \end{align*}
-再应用一次 Cauchy--Schwarz 不等式和 Fubini 定理, 得
+记
 \[
-  \|f\|_{L^1(\mathbb{R}^3)}
-  \leq\|f_3\|_{L^2(\mathbb{R}^2)}\|f_1\|_{L^2(\mathbb{R}^2)}\|f_2\|_{L^2(\mathbb{R}^2)}.
+  g_1(x_2)=\int_{\mathbb{R}}|f_1(x_2,x_3)|^2\,\mathrm{d}x_3,
+  \qquad
+  g_2(x_1)=\int_{\mathbb{R}}|f_2(x_1,x_3)|^2\,\mathrm{d}x_3.
 \]
+再应用一次 Cauchy--Schwarz 不等式, 得
+\begin{align*}
+\int_{\mathbb{R}^3}|f|\,\mathrm{d}x
+&\leq
+\left(\int_{\mathbb{R}^2}|f_3(x_1,x_2)|^2\,\mathrm{d}x_1\mathrm{d}x_2\right)^{1/2}\\
+&\quad\times
+\left(\int_{\mathbb{R}^2}g_1(x_2)g_2(x_1)\,\mathrm{d}x_1\mathrm{d}x_2\right)^{1/2}.
+\end{align*}
+最后一项由归纳假设, 即此处的 Fubini 定理估计, 从而
+\begin{align*}
+\|f\|_{L^1(\mathbb{R}^3)}
+&\leq\|f_3\|_{L^2(\mathbb{R}^2)}
+\|g_1\|_{L^1(\mathbb{R})}^{1/2}
+\|g_2\|_{L^1(\mathbb{R})}^{1/2}\\
+&=\|f_3\|_{L^2(\mathbb{R}^2)}
+\|f_1\|_{L^2(\mathbb{R}^2)}
+\|f_2\|_{L^2(\mathbb{R}^2)}.
+\end{align*}
 \end{Proof}
+
+我们还需要下面这个 Jensen 不等式的版本.
 
 \begin{Proposition}[Jensen's inequality]
 \label{prop:chap2-jensen-inequality}
@@ -346,6 +400,8 @@ $d=2$ 时结论由 Fubini 定理直接得到, 且不等式实际为等式. 只�
 写成 $f\eta=(f\eta^{1/p})\eta^{1/p'}$, 并以指数 $p$ 和 $p'=p/(p-1)$ 应用 Hölder 不等式.
 \end{Proof}
 
+现在证明后文所需的经典 Minkowski 不等式的一般形式.
+
 \begin{Proposition}[Minkowski's inequality]
 \label{prop:chap2-minkowski}
 设 $(X_1,\mu_1)$ 和 $(X_2,\mu_2)$ 是两个 $\sigma$-有限测度空间. 对定义在 $X_1\times X_2$ 上的任意非负可测函数 $f$ 和任意 $r\geq1$,
@@ -355,7 +411,8 @@ $d=2$ 时结论由 Fubini 定理直接得到, 且不等式实际为等式. 只�
 \]
 \end{Proposition}
 
-\par\noindent\textbf{Remark:}\quad\label{rem:chap2-minkowski-norm}
+\refstepcounter{sourceremark}\label{rem:chap2-minkowski-norm}
+\par\noindent\textbf{Remark~\thesourceremark:}\quad
 若取 $X_2=\{0,1\}$ 且 $\mu_2$ 为计数测度, 则对任意非负 $f,g$ 和 $r\geq1$,
 \[
   \|f+g\|_{L^r}\leq\|f\|_{L^r}+\|g\|_{L^r}.
@@ -365,12 +422,17 @@ $d=2$ 时结论由 Fubini 定理直接得到, 且不等式实际为等式. 只�
 令 $J(x_1)=\int_{X_2}f(x_1,x_2)\,\mathrm{d}\mu_2$. 利用 Hölder 不等式和 Fubini 定理,
 \begin{align*}
 \int_{X_1}J(x_1)^r\,\mathrm{d}\mu_1
+&=\int_{X_1}J(x_1)^{r-1}
+\left(\int_{X_2}f(x_1,x_2)\,\mathrm{d}\mu_2\right)\mathrm{d}\mu_1\\
+&=\int_{X_1}\int_{X_2}J(x_1)^{r-1}f(x_1,x_2)\,\mathrm{d}\mu_2\mathrm{d}\mu_1\\
 &=\int_{X_2}\int_{X_1}J(x_1)^{r-1}f(x_1,x_2)\,\mathrm{d}\mu_1\mathrm{d}\mu_2\\
 &\leq\left(\int_{X_1}J(x_1)^r\,\mathrm{d}\mu_1\right)^{(r-1)/r}
 \int_{X_2}\left(\int_{X_1}f(x_1,x_2)^r\,\mathrm{d}\mu_1\right)^{1/r}\mathrm{d}\mu_2.
 \end{align*}
-约去公共因子即得结论.
+由此约去公共因子, 即得结论.
 \end{Proof}
+
+还要说明下面的反向 Minkowski 不等式; 我们只在足以满足本书需要的简单框架中陈述它.
 
 \begin{Proposition}
 \label{prop:chap2-reverse-minkowski}
@@ -386,7 +448,14 @@ $d=2$ 时结论由 Fubini 定理直接得到, 且不等式实际为等式. 只�
 \frac{f(x)+g(x)}{\|f\|_{L^q}+\|g\|_{L^q}}
 =\theta\frac{f(x)}{\|f\|_{L^q}}+(1-\theta)\frac{g(x)}{\|g\|_{L^q}}.
 \]
-因为 $s\mapsto s^q$ 在 $\mathbb{R}_+$ 上为凹函数, 对上式应用凹性并在 $\Omega$ 上积分, 右端积分等于 $1$, 立即得到结论.
+因为 $s\mapsto s^q$ 在 $\mathbb{R}_+$ 上为凹函数, 所以
+\[
+\left(\frac{f(x)+g(x)}{\|f\|_{L^q}+\|g\|_{L^q}}\right)^q
+\geq
+\theta\left(\frac{f(x)}{\|f\|_{L^q}}\right)^q
++(1-\theta)\left(\frac{g(x)}{\|g\|_{L^q}}\right)^q.
+\]
+在 $\Omega$ 上积分后, 右端等于 $1$, 结论立即成立.
 \end{Proof}
 
 \paragraph{磨光核与稠密性结果.}
@@ -456,9 +525,12 @@ $d=2$ 时结论由 Fubini 定理直接得到, 且不等式实际为等式. 只�
 \begin{Proof}
 $f*\eta_\varepsilon$ 的正则性来自核 $\eta$ 的正则性和积分号下求导. $L^\infty$ 估计由 Hölder 不等式及
 \[
-  \|\eta_\varepsilon\|_{L^{p'}}=\frac{\|\eta\|_{L^{p'}}}{\varepsilon^{d/p}}
+  \|\eta_\varepsilon\|_{L^{p'}}=\frac{\|\eta\|_{L^{p'}}}{\varepsilon^{d/p}},
+  \qquad
+  \|(\nabla\eta)_\varepsilon\|_{L^{p'}}
+  =\frac{\|\nabla\eta\|_{L^{p'}}}{\varepsilon^{d/p}},
 \]
-直接得到.
+以及 $\nabla(f*\eta_\varepsilon)=\varepsilon^{-1}f*(\nabla\eta)_\varepsilon$ 直接得到.
 
 为证明 $p<+\infty$ 时的式\eqref{eq:chap2-mollifier-lp-bound}, 对任意 $x\in\mathbb{R}^d$ 应用 Jensen 不等式 Proposition~\ref{prop:chap2-jensen-inequality}, 得
 \[
@@ -487,7 +559,16 @@ $f*\eta_\varepsilon$ 的正则性来自核 $\eta$ 的正则性和积分号下求
 \|f*\eta_\varepsilon-f\|_{L^p}
 \leq(1+C)\|f-f_n\|_{L^p}+C_n\omega_n(\varepsilon).
 \]
-先令 $\varepsilon\to0$, 再令 $n\to\infty$, 即得结论.
+对固定的任意 $n$, 令 $\varepsilon\to0$, 得
+\[
+  \limsup_{\varepsilon\to0}\|f*\eta_\varepsilon-f\|_{L^p}
+  \leq(1+C)\|f-f_n\|_{L^p}.
+\]
+再令 $n\to\infty$, 最终得到
+\[
+  \limsup_{\varepsilon\to0}\|f*\eta_\varepsilon-f\|_{L^p}=0,
+\]
+结论得证.
 \end{Proof}
 
 \begin{Theorem}
@@ -501,10 +582,16 @@ $f*\eta_\varepsilon$ 的正则性来自核 $\eta$ 的正则性和积分号下求
   \Omega_n=\{x\in\Omega:d(x,\partial\Omega)>1/n\},
   \qquad f_n=f\mathbf{1}_{\Omega_n}.
 \]
-由控制收敛定理, $f_n\to f$ 于 $L^p(\Omega)$. 再令 $f_{n,\varepsilon}=f_n*\eta_\varepsilon$. Proposition~\ref{prop:chap2-mollifier-properties} 给出 $f_{n,\varepsilon}\in C^\infty(\mathbb{R}^d)$. 当 $\varepsilon<1/n$ 时, $f_{n,\varepsilon}$ 的支集包含于 $\Omega$, 故 $f_{n,\varepsilon}\in\mathcal{D}(\Omega)$. 先令 $\varepsilon\to0$, 再令 $n\to\infty$, 得到稠密性.
+由控制收敛定理, $f_n\to f$ 于 $L^p(\Omega)$. 再令 $f_{n,\varepsilon}=\overline f_n*\eta_\varepsilon$. Proposition~\ref{prop:chap2-mollifier-properties} 给出 $f_{n,\varepsilon}\in C^\infty(\mathbb{R}^d)$. 当 $\varepsilon<1/n$ 时, $f_{n,\varepsilon}$ 的支集包含于 $\Omega$, 故 $f_{n,\varepsilon}\in\mathcal{D}(\Omega)$. 结论成立, 因为在 $L^p(\Omega)$ 中有
+\[
+  \lim_{\varepsilon\to+\infty}\left(\lim_{n\to+\infty}f_{n,\varepsilon}\right)=f.
+\]
 \end{Proof}
 
 \paragraph{$L^p$ 空间中的弱收敛与弱-$*$ 收敛}
+\label{subsec:chap2-lebesgue-weak-convergences}
+
+根据本节开头的回顾, 特别是 $L^p(\Omega)$ 对偶空间的刻画, 可以把 Theorem~\ref{thm:chap2-weak-compactness} 写成如下 $L^p$ 版本.
 
 \begin{Proposition}
 \label{prop:chap2-bounded-lp-weak-subsequence}
@@ -528,6 +615,8 @@ $L^1(\Omega)$ 不是自反空间, 因而上述结论在其中不成立. 但 $L^\
 \]
 \end{Proposition}
 
+利用 $L^\infty(\Omega)$ 中弱-* 收敛的这一刻画, 可以推广 Theorem~\ref{thm:chap2-test-functions-dense-lp} 中的稠密性结果.
+
 \begin{Theorem}
 \label{thm:chap2-test-functions-weak-star-dense-linfty}
 对 $\mathbb{R}^d$ 中任意开集 $\Omega$, $\mathcal{D}(\Omega)$ 关于弱-$*$ 拓扑在 $L^\infty(\Omega)$ 中稠密.
@@ -548,10 +637,14 @@ $L^1(\Omega)$ 不是自反空间, 因而上述结论在其中不成立. 但 $L^\
 右端两项分别由构造和 Lebesgue 控制收敛定理趋于 $0$. 再由 $(f_n)_n$ 在 $L^\infty$ 中有界以及 $\mathcal{D}(\Omega)$ 在 $L^1(\Omega)$ 中稠密, 对每个 $g\in L^1(\Omega)$ 都有 $\int_\Omega(f_n-f)g\,\mathrm{d}x\to0$.
 \end{Proof}
 
+把 Proposition~\ref{prop:chap2-strong-weak-bilinear} 应用于 $L^p$ 空间并使用 Hölder 不等式, 得到下面这个实用结果.
+
 \begin{Proposition}
 \label{prop:chap2-lp-strong-times-weak}
 设 $p,q,r\in[1,+\infty)$ 且 $1/r=1/p+1/q$. 若 $u_n\to u$ 于 $L^p(\Omega)$, 且 $v_n\rightharpoonup v$ 于 $L^q(\Omega)$, 则 $u_nv_n\rightharpoonup uv$ 于 $L^r(\Omega)$.
 \end{Proposition}
+
+下面陈述 $L^p$ 空间中的经典不等式. 除 $p=1$ 和 $p=+\infty$ 外, 这些不等式证明了 $L^p$ 空间的一致凸性, 见\MBUnresolvedReference{bib:clarkson-sources}{[27, 69]}. 可以把它们看作 Hilbert 空间中平行四边形恒等式的推广.
 
 \begin{Lemma}[Clarkson's inequalities]
 \label{lem:chap2-clarkson-inequalities}
@@ -576,13 +669,29 @@ $L^1(\Omega)$ 不是自反空间, 因而上述结论在其中不成立. 但 $L^\
 则 $u_n\to u$ 于 $L^p(\Omega)$.
 \end{Proposition}
 
+根据 Corollary~\ref{cor:chap2-weak-lower-semicontinuity}, 这一假设等价于范数序列 $(\|u_n\|_{L^p})_n$ 收敛到 $\|u\|_{L^p}$. 对 $L^p$ 空间而言, 该结果推广了处理 Hilbert 情形 $p=2$ 的 Proposition~\ref{prop:chap2-hilbert-strong-convergence}.
+
 \begin{Proof}
-令 $p\geq2$ 时 $\alpha=1$, $p<2$ 时 $\alpha=1/(p-1)$. 将 Lemma~\ref{lem:chap2-clarkson-inequalities} 应用于 $u_n$ 和 $u$, 得
+令 $p\geq2$ 时 $\alpha=1$, $p<2$ 时 $\alpha=1/(p-1)$. Lemma~\ref{lem:chap2-clarkson-inequalities} 中的 Clarkson 不等式可以统一写成
+\[
+\left\|\frac{f+g}{2}\right\|_{L^p}^{\alpha p}
++\left\|\frac{f-g}{2}\right\|_{L^p}^{\alpha p}
+\leq
+\left(\frac12\|f\|_{L^p}^p+\frac12\|g\|_{L^p}^p\right)^\alpha.
+\]
+将其应用于 $f=u_n$ 和 $g=u$, 得
+\[
+\left\|\frac{u_n+u}{2}\right\|_{L^p}^{\alpha p}
++\left\|\frac{u_n-u}{2}\right\|_{L^p}^{\alpha p}
+\leq
+\left(\frac12\|u_n\|_{L^p}^p+\frac12\|u\|_{L^p}^p\right)^\alpha.
+\]
+记该不等式的左端为 $a_n$. 对此不等式取上极限并使用假设, 得
 \begin{equation}
- \limsup_{n\to\infty}a_n\leq\|u\|_{L^p}^{\alpha p},
+ \limsup_{n\to\infty}a_n\leq\|u\|_{L^p}^{p\alpha},
  \label{eq:chap2-clarkson-limsup}
 \end{equation}
-其中 $a_n$ 为 Clarkson 不等式左端. 又有
+又有
 \begin{equation}
  \limsup_{n\to\infty}\left\|\frac{u_n-u}{2}\right\|_{L^p}^{\alpha p}
  \leq\limsup_{n\to\infty}a_n-
@@ -591,7 +700,7 @@ $L^1(\Omega)$ 不是自反空间, 因而上述结论在其中不成立. 但 $L^\
 \end{equation}
 由于 $(u_n+u)/2\rightharpoonup u$, 弱下半连续性给出
 \begin{equation}
- \|u\|_{L^p}^{\alpha p}\leq
+ \|u\|_{L^p}^{p\alpha}\leq
  \liminf_{n\to\infty}\left\|\frac{u_n+u}{2}\right\|_{L^p}^{\alpha p}.
  \label{eq:chap2-clarkson-liminf}
 \end{equation}
@@ -599,6 +708,8 @@ $L^1(\Omega)$ 不是自反空间, 因而上述结论在其中不成立. 但 $L^\
 \end{Proof}
 
 \paragraph{$L^p$ 空间之间的插值}
+
+现在证明一个插值不等式, 它本质上只是一个凸性性质.
 
 \begin{Lemma}
 \label{lem:chap2-lp-interpolation}
@@ -614,11 +725,13 @@ $L^1(\Omega)$ 不是自反空间, 因而上述结论在其中不成立. 但 $L^\
 
 \begin{Proof}
 由 $1=\theta r/p+(1-\theta)r/q$ 和 H\"older 不等式,
-\[
- \int_\Omega|u|^r\,\mathrm{d}x
- \leq\left(\int_\Omega|u|^p\,\mathrm{d}x\right)^{r\theta/p}
- \left(\int_\Omega|u|^q\,\mathrm{d}x\right)^{r(1-\theta)/q}.
-\]
+\begin{align*}
+\int_\Omega|u|^r\,\mathrm{d}x
+&=\int_\Omega|u|^{r\theta}|u|^{r(1-\theta)}\,\mathrm{d}x\\
+&\leq\left(\int_\Omega|u|^p\,\mathrm{d}x\right)^{r\theta/p}
+\left(\int_\Omega|u|^q\,\mathrm{d}x\right)^{r(1-\theta)/q}\\
+&\leq\|u\|_{L^p}^{r\theta}\|u\|_{L^q}^{r(1-\theta)}.
+\end{align*}
 \end{Proof}
 
 \begin{Corollary}
@@ -631,17 +744,19 @@ $L^1(\Omega)$ 不是自反空间, 因而上述结论在其中不成立. 但 $L^\
 \[
  \|u-u_n\|_{L^p}\leq\|u-u_n\|_{L^{p_1}}^\theta\|u-u_n\|_{L^{p_2}}^{1-\theta}.
 \]
-第二因子有界, 第一因子趋于 $0$.
+由于 $(u_n)_n$ 在 $L^{p_2}(\Omega)$ 中弱收敛, 或弱-* 收敛, 序列 $(u-u_n)_n$ 在该空间中有界. 另一方面, $L^{p_1}(\Omega)$ 中的强收敛保证第一因子趋于 $0$, 而 $\theta\neq0$. 因而右端趋于 $0$.
 \end{Proof}
 
 \paragraph{局部 Lebesgue 空间}
 
 \begin{Definition}
 \label{def:chap2-local-lebesgue-spaces}
-$L^p_{\mathrm{loc}}(\Omega)$ 表示绝对值的 $p$ 次幂在 $\Omega$ 的每个紧子集上可积的可测函数空间. $L^\infty_{\mathrm{loc}}(\Omega)$ 表示在每个这样的紧集上本质有界的可测函数空间.
+对 $\mathbb{R}^d$ 中任意开集 $\Omega$ 和任意 $p\in[1,+\infty)$, $L^p_{\mathrm{loc}}(\Omega)$ 表示绝对值的 $p$ 次幂局部可积的可测函数空间, 即其在 $\Omega$ 所包含的每个紧集上的积分有限. 类似地, $L^\infty_{\mathrm{loc}}(\Omega)$ 表示在 $\Omega$ 所包含的每个紧集上本质有界的可测函数空间.
 \end{Definition}
 
 若对每个满足 $\overline\omega\subset\Omega$ 的有界开集 $\omega$, $u_n\to u$ 于 $L^p(\omega)$, 则称 $u_n\to u$ 于 $L^p_{\mathrm{loc}}(\Omega)$.
+
+显然 $L^p(\Omega)\subset L^p_{\mathrm{loc}}(\Omega)$, 而反向包含关系当然不成立. 下面给出 $L^p_{\mathrm{loc}}(\Omega)$ 中函数序列的一个常用性质.
 
 \begin{Proposition}
 \label{prop:chap2-local-to-global-lp-convergence}
@@ -649,12 +764,38 @@ $L^p_{\mathrm{loc}}(\Omega)$ 表示绝对值的 $p$ 次幂在 $\Omega$ 的每个
 \end{Proposition}
 
 \begin{Proof}
-由 Propositions~\ref{prop:chap2-bounded-lp-weak-subsequence} 和 \ref{prop:chap2-bounded-linfty-weak-star-subsequence}, 可抽取子序列在 $L^q(\Omega)$ 中弱收敛 (若 $q=+\infty$, 则弱-$*$ 收敛) 到 $v\in L^q(\Omega)$. 局部强收敛说明 $u=v$. 令 $\omega_k=\{x\in\Omega:d(x,\partial\Omega)>1/k\}$. 则 $\|u_n-u\|_{L^p(\omega_k)}\to0$, 且
+由于 $(u_n)_n$ 在 $L^q(\Omega)$ 中有界, Propositions~\ref{prop:chap2-bounded-lp-weak-subsequence} 和 \ref{prop:chap2-bounded-linfty-weak-star-subsequence} 表明可以抽取一个子序列 $(u_{n_k})_k$, 它在 $L^q(\Omega)$ 中弱收敛到某个 $v\in L^q(\Omega)$; 当 $q=+\infty$ 时, 这里是弱-* 收敛. 特别地, 对任意满足 $\overline\omega\subset\Omega$ 的开集 $\omega$, $(u_{n_k})_k$ 在 $L^q(\omega)\subset L^p(\omega)$ 中弱收敛, 或弱-* 收敛到 $v$. $L^p_{\mathrm{loc}}(\Omega)$ 中的收敛则意味着它在 $L^p(\omega)$ 中强收敛到 $u$. 因而 $u=v\in L^q(\Omega)$.
+
+对任意 $k\geq1$, 令
+\[
+  \omega_k=\{x\in\Omega:d(x,\partial\Omega)>1/k\}.
+\]
+由于 $\overline{\omega_k}\subset\Omega$, 由假设
+\[
+  \|u_n-u\|_{L^p(\omega_k)}\longrightarrow0
+  \quad\text{当 $n\to\infty$}.
+\]
+另一方面, Hölder 不等式给出
 \[
  \|u_n-u\|_{L^p(\Omega\setminus\omega_k)}
- \leq2C|\Omega\setminus\omega_k|^{(q-p)/(pq)}.
+ \leq\|u_n-u\|_{L^q(\Omega)}|\Omega\setminus\omega_k|^{(q-p)/q}
+ \leq2C|\Omega\setminus\omega_k|^{(q-p)/q}.
 \]
-先令 $k\to\infty$, 再令 $n\to\infty$.
+这里 $C$ 同时控制序列 $(u_n)_n$ 和函数 $u$ 在 $L^q(\Omega)$ 中的范数. 给定 $\varepsilon>0$, 先取充分大的 $k$, 使
+\[
+  2C|\Omega\setminus\omega_k|^{(q-p)/q}<\varepsilon.
+\]
+再取充分大的 $n_0$, 使
+\[
+  \|u_n-u\|_{L^p(\Omega_k)}\leq\varepsilon,
+  \qquad\text{对所有 $n\geq n_0$}.
+\]
+于是
+\[
+  \|u_n-u\|_{L^p(\Omega)}\leq2\varepsilon,
+  \qquad\text{对所有 $n\geq n_0$},
+\]
+结论得证.
 \end{Proof}
 
 \subsubsection{单位分解}
@@ -666,7 +807,19 @@ $L^p_{\mathrm{loc}}(\Omega)$ 表示绝对值的 $p$ 次幂在 $\Omega$ 的每个
 \end{Lemma}
 
 \begin{Proof}
-令 $\delta=d(\overline\omega,\mathbb{R}^d\setminus\Omega)>0$ 及 $U=\{x\in\Omega:d(x,\omega)<\delta/2\}$. 则 $\mathbf{1}_U*\eta_{\delta/4}$ 满足结论.
+由假设, $\overline\omega$ 是紧集, 并且与闭集 $\mathbb{R}^d\setminus\Omega$ 不相交, 因而
+\[
+  \delta=d(\overline\omega,\mathbb{R}^d\setminus\Omega)>0.
+\]
+引入开集
+\[
+  U=\{x\in\Omega:d(x,\overline\omega)<\delta/2\}.
+\]
+显然 $\overline\omega\subset U$ 且 $\overline U\subset\Omega$. 容易验证, 将 $U$ 的示性函数与磨光核卷积所得的函数
+\[
+  \varphi=\mathbf{1}_U*\eta_{\delta/4}
+\]
+满足所述结论.
 \end{Proof}
 
 \begin{Lemma}[Partition of unity]
@@ -679,34 +832,93 @@ $L^p_{\mathrm{loc}}(\Omega)$ 表示绝对值的 $p$ 次幂在 $\Omega$ 的每个
 且该和局部有限. 除至多可数个指标外, $\psi_i$ 恒为零.
 \end{Lemma}
 
+这样的一个函数族称为与覆盖 $(\omega_i)_{i\in I}$ 相联系的单位分解.
+
 \begin{Proof}
-取可数球族 $(B_n)_n$ 覆盖 $A$, 每个球都包含于某个 $\omega_i$ 中; 令 $V_n$ 为同心半径减半的球. 由 Lemma~\ref{lem:chap2-cutoff-function}, 取 $\varphi_n\in C_c^\infty(B_n)$, $0\leq\varphi_n\leq1$, 且 $\varphi_n=1$ 于 $V_n$. 定义
+\begin{itemize}
+\item 考虑 $A$ 中坐标均为有理数的点集 $S$. 再考虑所有以 $S$ 中点为球心, 半径为有理数, 并且包含于某个 $\omega_i$ 中的球所组成的族 $(B_j)_{j\in J}$. 这个族显然可数, 因而用 $n\in\mathbb{N}$ 为其编号. 由 $\mathbb{Q}$ 在 $\mathbb{R}$ 中的稠密性, 显然有
 \[
- \alpha_0=\varphi_0,\qquad
- \alpha_n=(1-\varphi_0)\cdots(1-\varphi_{n-1})\varphi_n.
+  A\subset\bigcup_{n=0}^{+\infty}B_n.
 \]
-则
+
+\item 对每个 $n\geq0$, 令 $V_n$ 为与 $B_n$ 同心且半径为 $B_n$ 半径一半的球. 根据 Lemma~\ref{lem:chap2-cutoff-function}, 存在一个支集紧含于 $B_n$ 的非负光滑函数 $\varphi_n$, 并且 $\varphi_n$ 在 $V_n$ 上恒等于 $1$. 定义 $\alpha_0=\varphi_0$, 并对所有 $n\geq1$ 定义
+\[
+  \alpha_n=(1-\varphi_0)\cdots(1-\varphi_{n-1})\varphi_n.
+\]
+显然 $\alpha_n$ 光滑且非负. 此外, 按照定义, $\alpha_n$ 的支集包含于 $B_n$, 而 $B_n$ 本身包含于某个 $\omega_i$, 其中 $i\in I$.
+
+直接计算得到
+\[
+  \sum_{n=0}^{N}\alpha_n(x)
+  =1-(1-\varphi_0)\cdots(1-\varphi_N).
+\]
+由于 $0\leq\varphi_i\leq1$, 首先可知对所有 $N$ 都有
+\[
+  \sum_{n=0}^{N}\alpha_n(x)\leq1.
+\]
+又因为 $\varphi_i=1$ 于 $V_i$, 可知
+\[
+  \sum_{n=0}^{N}\alpha_n(x)=1,
+  \qquad\forall x\in V_1\cup\cdots\cup V_N.
+\]
+由于各 $\alpha_i$ 非负, 对所有 $n\geq N+1$, $\alpha_n$ 在 $V_1\cup\cdots\cup V_N$ 上为零. 这证明了和 $\sum_{n\geq0}\alpha_n$ 局部有限, 并且
 \begin{equation}
- \sum_{n\in\mathbb{N}}\alpha_n(x)=1,\qquad\forall x\in A,
- \label{eq:chap2-alpha-partition}
+  \sum_{n\in\mathbb{N}}\alpha_n(x)=1,
+  \qquad\forall x\in A.
+  \label{eq:chap2-alpha-partition}
 \end{equation}
-且该和局部有限. 把支集落在同一 $\omega_i$ 中的 $\alpha_n$ 分组相加, 即得 $(\psi_i)_{i\in I}$.
+
+\item 对任意 $n$, 记 $i(n)\in I$ 为满足 $\operatorname{Supp}\alpha_n\subset\omega_{i(n)}$ 的一个指标. 于是
+\[
+  A\subset\bigcup_{n=0}^{+\infty}\omega_{i(n)}.
+\]
+事实上, 式\eqref{eq:chap2-alpha-partition}说明 $A$ 中每一点都属于至少一个函数 $\alpha_n$ 的支集, 因而属于 $\omega_{i(n)}$.
+
+现在对任意 $i\in I\setminus\{i(n):n\in\mathbb{N}\}$ 令 $\psi_i=0$. 还需定义各函数 $\psi_{i(n)}$. 为此, 定义
+\[
+  \psi_{i(0)}(x)
+  =\sum_{\substack{k\in\mathbb{N}\,\text{满足}\\
+  \operatorname{Supp}(\alpha_k)\subset\omega_{i(0)}}}\alpha_k(x).
+\]
+这个和有良好定义, 因为函数族 $(\alpha_n)_n$ 的和在 $A$ 中局部有限. 此外, 显然 $\beta_{i(0)}$ 非负, 且其支集包含于 $\omega_{i(0)}$. 对 $n\geq1$, 再定义
+\[
+  \psi_{i(n)}(x)
+  =\sum_{\substack{k\in\mathbb{N}\,\text{满足}\\
+  \operatorname{Supp}(\alpha_k)\subset\omega_{i(n)}\\
+  \forall p\leq n-1,\ \operatorname{Supp}(\alpha_k)\not\subset\omega_{i(p)}}}
+  \alpha_k(x).
+\]
+容易验证这样得到的 $(\psi_i)_{i\in I}$ 满足结论.
+\end{itemize}
 \end{Proof}
 
 \subsubsection{分布理论简介}
 \label{subsec:chap2-distributions}
 
+先描述 $\mathcal{D}(\Omega)$ 的序列拓扑.
+
 若存在同一紧集包含 $\varphi$ 和所有 $\varphi_n$ 的支集, 且对每个多重指标 $\alpha$, $\partial^\alpha\varphi_n$ 一致收敛到 $\partial^\alpha\varphi$, 则称 $\varphi_n\to\varphi$ 于 $\mathcal{D}(\Omega)$.
 
 \begin{Definition}[Distributions]
 \label{def:chap2-distribution}
-连续线性映射 $T:\mathcal{D}(\Omega)\to\mathbb{R}$ 称为分布. 分布空间记为 $\mathcal{D}'(\Omega)$, 并记 $\langle T,\varphi\rangle_{\mathcal{D}',\mathcal{D}}=T(\varphi)$.
+线性映射 $T:\mathcal{D}(\Omega)\to\mathbb{R}$ 称为分布, 如果它具有如下意义下的连续性: 对任意在 $\mathcal{D}(\Omega)$ 中收敛到 $\varphi$ 的序列 $(\varphi_n)_n$, 都有
+\[
+  T(\varphi_n)\longrightarrow T(\varphi).
+\]
+分布空间记为 $\mathcal{D}'(\Omega)$.
 \end{Definition}
+
+虽然 $\mathcal{D}(\Omega)$ 不是 Banach 空间, 但仿照通常的对偶理论, 仍采用记号
+\[
+  \langle T,\varphi\rangle_{\mathcal{D}',\mathcal{D}}=T(\varphi).
+\]
 
 \begin{Definition}[Convergence of distributions]
 \label{def:chap2-distribution-convergence}
 若对每个 $\varphi\in\mathcal{D}(\Omega)$ 都有 $\langle T_n,\varphi\rangle\to\langle T,\varphi\rangle$, 则称 $T_n\to T$ 于 $\mathcal{D}'(\Omega)$.
 \end{Definition}
+
+注意, 分布序列 $(T_n)_n$ 的极限如果存在, 则必定唯一.
 
 \begin{Definition}[Derivatives of distributions]
 \label{def:chap2-distribution-derivative}
@@ -729,10 +941,44 @@ $L^p_{\mathrm{loc}}(\Omega)$ 表示绝对值的 $p$ 次幂在 $\Omega$ 的每个
 \end{Proposition}
 
 \begin{Proof}
-若 $T_f=T_g$, 对 $\overline\omega\subset\Omega$ 令 $h=\operatorname{sgn}(f-g)$. 由 Theorem~\ref{thm:chap2-test-functions-weak-star-dense-linfty}, 取 $\varphi_n\in\mathcal{D}(\omega)$ 弱-$*$ 收敛到 $h$. 于是 $\int_\omega(f-g)\varphi_n=0$, 令 $n\to\infty$ 得 $\int_\omega|f-g|=0$. 因 $\omega$ 任意, $f=g$ 几乎处处. 若 $f_n\to f$ 于 $L^1_{\mathrm{loc}}$, 则对每个测试函数 $\varphi$, $\varphi f_n\to\varphi f$ 于 $L^1$, 故 $T_{f_n}\to T_f$.
+设 $f,g\in L^1_{\mathrm{loc}}(\Omega)$ 且 $T_f=T_g$. 下面证明 $f=g$ 几乎处处.
+
+任取有界开集 $\omega$ 且 $\overline\omega\subset\Omega$, 并令 $h=\operatorname{sgn}(f-g)\in L^\infty(\omega)$. 由 Theorem~\ref{thm:chap2-test-functions-weak-star-dense-linfty}, 可取 $\varphi_n\in\mathcal{D}(\omega)$, 使 $(\varphi_n)_n$ 在 $L^\infty(\omega)$ 中弱-* 收敛到 $h$. 将 $\varphi_n$ 在 $\Omega$ 上作零延拓, 仍有 $\varphi_n\in\mathcal{D}(\Omega)$. 因此由假设
+\[
+  \langle T_f,\varphi_n\rangle_{\mathcal{D}',\mathcal{D}}
+  =\langle T_g,\varphi_n\rangle_{\mathcal{D}',\mathcal{D}},
+\]
+即
+\[
+  0=\int_\Omega(f-g)\varphi_n\,\mathrm{d}x
+  =\int_\omega(f-g)\varphi_n\,\mathrm{d}x.
+\]
+由于 $f-g\in L^1(\omega)$ 且 $(\varphi_n)_n$ 在 $L^\infty(\omega)$ 中弱-* 收敛, 可以在上式中取极限, 最终得到
+\[
+  0=\int_\omega(f-g)\operatorname{sgn}(f-g)\,\mathrm{d}x
+  =\int_\omega|f-g|\,\mathrm{d}x.
+\]
+所以 $f=g$ 几乎处处成立于 $\omega$. 由于对任意这样的 $\omega$ 都成立, 故 $f=g$ 于 $\Omega$.
+
+再设 $(f_n)_n\subset L^1_{\mathrm{loc}}(\Omega)$ 收敛到某个 $f\in L^1_{\mathrm{loc}}(\Omega)$. 对任意 $\varphi\in\mathcal{D}(\Omega)$, 因 $\varphi$ 具有紧支集, 序列 $(\varphi f_n)_n$ 在 $L^1(\Omega)$ 中收敛到 $\varphi f$. 因而
+\[
+  \langle T_{f_n},\varphi\rangle_{\mathcal{D}',\mathcal{D}}
+  \longrightarrow
+  \langle T_f,\varphi\rangle_{\mathcal{D}',\mathcal{D}},
+\]
+结论得证.
 \end{Proof}
 
-由此把 $L^1_{\mathrm{loc}}(\Omega)$ 视为 $\mathcal{D}'(\Omega)$ 的子空间. 对充分光滑的 $f$, 分布导数与经典导数一致.
+由上述结果, 映射 $T$ 使我们可以把 $L^1_{\mathrm{loc}}(\Omega)$ 识别为 $\mathcal{D}'(\Omega)$ 的一个子空间. 因此, 约定写作 $L^1_{\mathrm{loc}}(\Omega)\subset\mathcal{D}'(\Omega)$, 并始终把 $f$ 与分布 $T_f$ 等同. 反过来, 如果分布 $T\in\mathcal{D}'(\Omega)$ 对某个 $f\in L^1_{\mathrm{loc}}(\Omega)$ 满足 $T=T_f$, 就称 $T\in L^1_{\mathrm{loc}}(\Omega)$.
+
+还要注意, 只要 $f$ 足够光滑, 简单的分部积分就说明
+\[
+  \partial^\alpha(T_f)=T_{\partial^\alpha f}
+  \quad\text{于 $\mathcal{D}'(\Omega)$},
+\]
+所以分布意义下的导数与通常意义下的导数一致.
+
+还必须回顾, 函数在分布意义下的收敛比上面定义的所有弱收敛和弱-* 收敛都弱. 精确结果如下, 其证明是直接的.
 
 \begin{Proposition}
 \label{prop:chap2-weak-convergence-implies-distribution}
@@ -745,16 +991,106 @@ $L^p_{\mathrm{loc}}(\Omega)$ 表示绝对值的 $p$ 次幂在 $\Omega$ 的每个
 \end{Lemma}
 
 \begin{Proof}
-先设 $\Omega=(0,1)^d$. 固定非负 $\theta\in\mathcal{D}((0,1))$ 且 $\int_0^1\theta=1$. 对 $\varphi\in\mathcal{D}(\Omega)$ 逐坐标积分, 并依次使用 $\partial T/\partial x_i=0$, 得
+\begin{itemize}
+\item 先考虑 $\Omega=(0,1)^d$ 的情形. 固定非负函数 $\theta\in\mathcal{D}((0,1))$, 使其积分等于 $1$. 任取 $\varphi\in\mathcal{D}(\Omega)$. 记
 \[
- \langle T,\varphi\rangle
- =\langle T,\theta(x_1)\cdots\theta(x_d)\rangle\int_\Omega\varphi.
+  m_i(\varphi)(x_{i+1},\ldots,x_d)
+  =\int_0^1\cdots\int_0^1
+  \varphi(u_1,\ldots,u_i,x_{i+1},\ldots,x_d)
+  \,\mathrm{d}u_1\cdots\mathrm{d}u_i.
 \]
-平移和位似给出任意立方体情形. 对一般连通 $\Omega$, 取局部有限的立方体覆盖及由 Lemma~\ref{lem:chap2-partition-of-unity} 给出的单位分解. $T$ 在每个立方体上为常数 $\alpha_i$, 因而与光滑函数 $\sum_i\alpha_i\psi_i$ 相同. 该函数梯度为零, 由连通性知其为常数.
+令
+\begin{align*}
+\Phi_1(x_1,\ldots,x_d)
+&=\int_0^{x_1}\varphi(t,x_2,\ldots,x_d)\,\mathrm{d}t\\
+&\quad-m_1(\varphi)(x_2,\ldots,x_d)
+\int_0^{x_1}\theta(t)\,\mathrm{d}t.
+\end{align*}
+显然 $\Phi_1$ 光滑; 由 $\theta$ 的选取, 该函数在 $\Omega$ 中具有紧支集. 根据假设,
+\begin{align*}
+0
+&=\left\langle\frac{\partial T}{\partial x_1},\Phi_1\right\rangle_{\mathcal{D}',\mathcal{D}}\\
+&=-\left\langle T,\frac{\partial\Phi_1}{\partial x_1}\right\rangle_{\mathcal{D}',\mathcal{D}}\\
+&=-\left\langle T,
+\varphi-m_1(\varphi)(x_2,\ldots,x_d)\theta(x_1)
+\right\rangle_{\mathcal{D}',\mathcal{D}}.
+\end{align*}
+因此, 对任意 $\varphi\in\mathcal{D}(\Omega)$,
+\[
+  \langle T,\varphi\rangle_{\mathcal{D}',\mathcal{D}}
+  =\left\langle T,m_1(\varphi)\theta(x_1)\right\rangle_{\mathcal{D}',\mathcal{D}}.
+\]
+
+再令
+\begin{align*}
+\Phi_2(x_1,\ldots,x_d)
+&=\theta(x_1)\int_0^{x_2}m_1(\varphi)(t,x_3,\ldots,x_d)\,\mathrm{d}t\\
+&\quad-\theta(x_1)m_2(\varphi)(x_3,\ldots,x_d)
+\int_0^{x_2}\theta(t)\,\mathrm{d}t.
+\end{align*}
+对这个确实属于 $\mathcal{D}(\Omega)$ 的测试函数使用 $\partial T/\partial x_2=0$, 得
+\begin{align*}
+\langle T,\varphi\rangle_{\mathcal{D}',\mathcal{D}}
+&=\left\langle T,\theta(x_1)m_1(\varphi)(x_2,\ldots,x_d)\right\rangle_{\mathcal{D}',\mathcal{D}}\\
+&=\left\langle T,\theta(x_1)\theta(x_2)m_2(\varphi)(x_3,\ldots,x_d)\right\rangle_{\mathcal{D}',\mathcal{D}}.
+\end{align*}
+依此归纳得到
+\[
+  \langle T,\varphi\rangle_{\mathcal{D}',\mathcal{D}}
+  =\left\langle T,\theta(x_1)\cdots\theta(x_d)m_d(\varphi)\right\rangle_{\mathcal{D}',\mathcal{D}}.
+\]
+然而, $m_d(\varphi)$ 是一个常数, 就是 $\varphi$ 在 $\Omega$ 上的积分. 若定义
+\[
+  \alpha=\left\langle T,\theta(x_1)\cdots\theta(x_d)\right\rangle_{\mathcal{D}',\mathcal{D}},
+\]
+则
+\[
+  \langle T,\varphi\rangle_{\mathcal{D}',\mathcal{D}}
+  =\alpha m_d(\varphi)
+  =\int_\Omega\alpha\varphi\,\mathrm{d}x_1\cdots\mathrm{d}x_n.
+\]
+这证明了单位立方体情形. 显然, 通过平移和位似, 也就证明了任意立方体的情形.
+
+\item 再考虑任意连通开集. 先用一个局部有限的开立方体族 $(\omega_i)_i$ 覆盖 $\Omega$. 对所有 $i$, 分布 $T$ 在 $\omega_i$ 上的限制在 $\mathcal{D}'(\omega_i)$ 中梯度为零, 因而在 $\omega_i$ 上为常数. 换言之, 存在 $\alpha_i$, 使对支集包含于 $\omega_i$ 的所有 $\varphi$ 都有
+\[
+  \langle T,\varphi\rangle_{\mathcal{D}',\mathcal{D}}
+  =\int_{\omega_i}\alpha_i\varphi(x)\,\mathrm{d}x
+  =\alpha_i\int_\Omega\varphi(x)\,\mathrm{d}x.
+\]
+
+考虑与该覆盖相联系的一个局部有限 $C^\infty$ 单位分解 $(\psi_i)_i$, 见 Lemma~\ref{lem:chap2-partition-of-unity}. 对任意 $\varphi\in\mathcal{D}(\Omega)$, 因 $\varphi$ 的支集紧, 它包含在该族有限多个开集的并中. 因而
+\[
+  \varphi=\sum_i\varphi\psi_i,
+\]
+其中这个和实际上是有限和. 于是
+\[
+  \langle T,\varphi\rangle_{\mathcal{D}',\mathcal{D}}
+  =\sum_i\langle T,\varphi\psi_i\rangle_{\mathcal{D}',\mathcal{D}}.
+\]
+函数 $\varphi\psi_i$ 的支集包含于立方体 $\omega_i$, 所以
+\[
+  \langle T,\varphi\rangle_{\mathcal{D}',\mathcal{D}}
+  =\sum_i\left(\int_\Omega\alpha_i\varphi(x)\psi_i(x)\,\mathrm{d}x\right).
+\]
+对 $i$ 的求和实际上有限, 因而
+\[
+  \langle T,\varphi\rangle_{\mathcal{D}',\mathcal{D}}
+  =\int_\Omega\varphi(x)\left(\sum_i\alpha_i\psi_i(x)\right)\mathrm{d}x.
+\]
+由于这对所有 $\varphi$ 都成立, 分布 $T$ 与 $C^\infty$ 函数
+\[
+  T(x)=\sum_i\alpha_i\psi_i(x)
+\]
+一致. 但由假设, 这个函数在 $\Omega$ 上的经典梯度为 $0$. 因为 $\Omega$ 连通, 该函数在 $\Omega$ 上确实为常数.
+\end{itemize}
 \end{Proof}
 
 \subsubsection{Lipschitz 连续函数}
 \label{subsec:chap2-lipschitz-functions}
+
+这类函数在后文中十分重要, 因为本书主要在边界具有 Lipschitz 正则性的区域上研究流体力学方程; 这尤其包括多边形或多面体区域. 因此, 需要在这里陈述关于这类函数的一些基本结果.
+
+先给出这类函数的一个非常简单的延拓定理.
 
 \begin{Proposition}[McShane--Whitney extension]
 \label{prop:chap2-mcshane-whitney-extension}
@@ -762,44 +1098,87 @@ $L^p_{\mathrm{loc}}(\Omega)$ 表示绝对值的 $p$ 次幂在 $\Omega$ 的每个
 \end{Proposition}
 
 \begin{Proof}
-令 $L=\operatorname{Lip}(f)$, 则 $F(x)=\inf_{y\in A}(f(y)+L|x-y|)$ 满足要求.
+令 $L=\operatorname{Lip}(f)$. 容易验证
+\[
+  F(x)=\inf_{y\in A}\bigl(f(y)+L|x-y|\bigr)
+\]
+满足所需性质.
 \end{Proof}
+
+在本书后文, 特别是 Chapter~\ref{chap:sobolev-spaces} 中, 经常使用 Lipschitz 连续函数几乎处处可微这一事实. 精确结果如下, 其证明例如见\MBUnresolvedReference{bib:source-68}{[68]}.
 
 \begin{Theorem}[Rademacher]
 \label{thm:chap2-rademacher}
 定义在 $\mathbb{R}^d$ 开集上的任意局部 Lipschitz 连续函数几乎处处可微.
 \end{Theorem}
 
+还需要仔细分析磨光算子对 Lipschitz 连续映射的作用. 设 $\eta$ 是 Definition~\ref{def:chap2-mollifying-kernel} 中的磨光核, 并回顾对任意 $\varepsilon>0$, $f*\eta_\varepsilon$ 由式\eqref{eq:chap2-mollified-convolution}定义.
+
 \begin{Proposition}
 \label{prop:chap2-mollification-lipschitz}
-设 $f$ 在 $\mathbb{R}^d$ 上 Lipschitz 连续. 则 $\operatorname{Lip}(f*\eta_\varepsilon)\leq\operatorname{Lip}(f)$; 当 $\varepsilon\to0$ 时, $f*\eta_\varepsilon$ 一致收敛到 $f$; 且在 $f$ 的每个可微点 $x$,
+设 $f$ 在 $\mathbb{R}^d$ 上 Lipschitz 连续. 则:
+\begin{enumerate}
+\item 对任意 $\varepsilon>0$, 有
 \[
- \nabla(f*\eta_\varepsilon)(x)\longrightarrow\nabla f(x).
+  \operatorname{Lip}(f*\eta_\varepsilon)\leq\operatorname{Lip}(f).
 \]
+\item 当 $\varepsilon\to0$ 时, $f*\eta_\varepsilon$ 在 $\mathbb{R}^d$ 上一致收敛到 $f$.
+\item 对任意使 $f$ 在 $x$ 处可微的 $x\in\mathbb{R}^d$, 有
+\[
+  \nabla(f*\eta_\varepsilon)(x)\longrightarrow\nabla f(x).
+\]
+\end{enumerate}
 \end{Proposition}
 
 \begin{Proof}
-前两项由
+\begin{enumerate}
+\item $f*\eta_\varepsilon$ 的正则性来自核 $\eta$ 的正则性. Lipschitz 半范数的估计来自如下直接计算:
+\begin{align*}
+|f*\eta_\varepsilon(x)-f*\eta_\varepsilon(y)|
+&\leq\int_B|f(x-\varepsilon z)-f(y-\varepsilon z)|\eta(z)\,\mathrm{d}z\\
+&\leq\operatorname{Lip}(f)|x-y|,
+\qquad\forall x,y\in\mathbb{R}^d.
+\end{align*}
+
+\item 由于 $\int_{\mathbb{R}^d}\eta(z)\,\mathrm{d}z=1$, 有
+\begin{align*}
+|f*\eta_\varepsilon(x)-f(x)|
+&=\left|\int_B\bigl(f(x-\varepsilon z)-f(x)\bigr)\eta(z)\,\mathrm{d}z\right|\\
+&\leq\int_B|f(x-\varepsilon z)-f(x)|\eta(z)\,\mathrm{d}z\\
+&\leq\varepsilon\operatorname{Lip}(f)\int_B|z|\eta(z)\,\mathrm{d}z,
+\end{align*}
+结论得证.
+
+\item 设 $x$ 是 $f$ 的一个可微点. 则存在 $\tau:\mathbb{R}^d\to\mathbb{R}$, 使 $\lim_{h\to0}\tau(h)=0$, 且
 \[
- |f*\eta_\varepsilon(x)-f*\eta_\varepsilon(y)|\leq\operatorname{Lip}(f)|x-y|,
+  |f(x+h)-f(x)-\nabla f(x)\cdot h|
+  \leq|h|\tau(h),
+  \qquad\forall h\in\mathbb{R}^d.
 \]
-以及
+任取 $i\in\{1,\ldots,d\}$. 由式\eqref{eq:chap2-mollified-convolution},
 \[
- |f*\eta_\varepsilon(x)-f(x)|
- \leq\varepsilon\operatorname{Lip}(f)\int_B|z|\eta(z)\,\mathrm{d}z
+  \partial_{x_i}(f*\eta_\varepsilon)(x)
+  =\frac1\varepsilon\int_B f(x-\varepsilon z)\partial_{z_i}\eta(z)\,\mathrm{d}z.
 \]
-得到. 若 $f$ 在 $x$ 可微, 写成
+此外, 分部积分给出
 \[
- |f(x+h)-f(x)-\nabla f(x)\cdot h|\leq|h|\tau(h),\qquad\tau(h)\to0.
+  \int_B\partial_{z_i}\eta(z)\,\mathrm{d}z=0,
+  \qquad
+  \int_B z\partial_{z_i}\eta(z)\,\mathrm{d}z=-e_i.
 \]
-由式\eqref{eq:chap2-mollified-convolution} 以及
+所以
+\begin{align*}
+&\partial_{x_i}(f*\eta_\varepsilon)(x)-\partial_{x_i}f(x)\\
+&\quad=\frac1\varepsilon\int_B
+\bigl[f(x-\varepsilon z)-f(x)+\nabla f(x)\cdot(\varepsilon z)\bigr]
+\partial_{z_i}\eta(z)\,\mathrm{d}z.
+\end{align*}
+因此, 利用控制收敛定理,
 \[
- \int_B\partial_{z_i}\eta=0,\qquad \int_Bz\partial_{z_i}\eta=-e_i,
+|\partial_{x_i}(f*\eta_\varepsilon)(x)-\partial_{x_i}f(x)|
+\leq\int_B|z|\,|\tau(\varepsilon z)|\,|\partial_{z_i}\eta(z)|\,\mathrm{d}z
+\longrightarrow0.
 \]
-得到
-\[
- |\partial_{x_i}(f*\eta_\varepsilon)(x)-\partial_{x_i}f(x)|
- \leq\int_B|z|\,|\tau(\varepsilon z)|\,|\partial_{z_i}\eta(z)|\,\mathrm{d}z\longrightarrow0.
-\]
+\end{enumerate}
 \end{Proof}
 
