@@ -1,0 +1,512 @@
+\subsection{泛函分析的基本结果}
+\label{sec:chap2-functional-analysis}
+
+\subsubsection{Banach 空间}
+\label{subsec:chap2-banach-spaces}
+
+本节回顾泛函分析的基本结果, 不给出证明. 读者可在有关这一主题的经典专著中找到证明, 如\MBUnresolvedReference{bib:functional-analysis-sources}{[27, 104, 105]}.
+
+对任意赋范向量空间 $E$, 记其拓扑对偶为 $E'$, 即 $E$ 上连续线性泛函的空间. 对 $f\in E'$ 和 $x\in E$, 引入对偶括号
+\[
+  \langle f,x\rangle_{E',E}=f(x).
+\]
+记号 $(\cdot,\cdot)_H$ 专用于 Hilbert 空间 $H$ 中的内积.
+
+设 $E,F$ 是两个赋范向量空间, $S:E\to F$ 是连续线性映射. 定义其伴随或转置映射 ${}^tS:F'\to E'$ 为
+\[
+  \langle{}^tSf,x\rangle_{E',E}=\langle f,Sx\rangle_{F',F},
+  \qquad\text{对所有 $f\in F'$ 和 $x\in E$}.
+\]
+
+由 Hahn--Banach 定理, 赋范向量空间中元素的范数可通过对偶表示如下.
+
+\begin{Proposition}
+\label{prop:chap2-norm-by-duality}
+设 $E$ 是赋范向量空间. 则对所有 $x\in E$,
+\[
+  \|x\|_E=\sup_{\substack{f\in E'\\f\neq0}}
+  \frac{|\langle f,x\rangle_{E',E}|}{\|f\|_{E'}}
+  =\sup_{\|f\|_{E'}\leq1}|\langle f,x\rangle_{E',E}|.
+\]
+\end{Proposition}
+
+Hahn--Banach 定理的另一个推论给出子空间的一个有用稠密性判据.
+
+\begin{Proposition}
+\label{prop:chap2-density-by-annihilator}
+设 $E$ 是赋范向量空间, $F$ 是 $E$ 的向量子空间. 假定 $E$ 上任何在 $F$ 上为零的连续线性泛函都恒为零. 则 $F$ 在 $E$ 中稠密.
+\end{Proposition}
+
+下面由 Banach 得到的结果刻画 Banach 空间之间的同构.
+
+\begin{Theorem}[Open mapping]
+\label{thm:chap2-open-mapping}
+设 $E,F$ 是两个 Banach 空间. 若 $u:E\to F$ 是满射连续线性映射, 则 $u$ 是开映射, 即 $E$ 中任意开集在 $u$ 下的像是 $F$ 中的开集. 特别地, 若 $u$ 是双射, 则其逆映射连续, 因而 $E,F$ 在代数和拓扑意义下同构.
+\end{Theorem}
+
+下面有时称为一致有界原理的结果表明, 若定义在 Banach 空间上的一族连续线性映射逐点有界, 则它一致有界.
+
+\begin{Theorem}[Banach--Steinhaus]
+\label{thm:chap2-banach-steinhaus}
+设 $(u_i)_{i\in I}$ 是从 Banach 空间 $E$ 到赋范向量空间 $F$ 的一族连续线性映射. 假定对每个 $x\in E$, 族 $(u_i(x))_{i\in I}$ 在 $F$ 中有界. 则 $(u_i)_{i\in I}$ 在算子范数意义下一致有界, 即
+\[
+  \sup_{i\in I}\|u_i\|_{\mathcal{L}(E,F)}<+\infty.
+\]
+等价地, 存在 $C>0$, 使
+\[
+  \|u_i(x)\|_F\leq C\|x\|_E,
+  \qquad\text{对所有 $i\in I$ 和 $x\in E$}.
+\]
+\end{Theorem}
+
+最后介绍 Lax--Milgram 定理, 它是研究变分形式线性偏微分问题的重要工具.
+
+\begin{Theorem}[Lax--Milgram]
+\label{thm:chap2-lax-milgram}
+设 $V$ 是 Hilbert 空间, $a:V\times V\to\mathbb{R}$ 是双线性形式, $L:V\to\mathbb{R}$ 是线性形式. 假定 $a,L$ 连续, 且 $a$ 强制, 即
+\[
+  \text{存在 $\alpha>0$, 使 }a(v,v)\geq\alpha\|v\|_V^2,
+  \qquad\text{对所有 $v\in V$}.
+\]
+则问题
+\begin{equation}
+\label{eq:chap2-lax-milgram-problem}
+  a(v,w)=L(w),\qquad\text{对所有 $w\in V$},
+\end{equation}
+存在唯一解 $v\in V$. 此外,
+\begin{equation}
+\label{eq:chap2-lax-milgram-estimate}
+  \|v\|_V\leq\frac{\|L\|_{V'}}{\alpha}.
+\end{equation}
+\end{Theorem}
+
+\subsubsection{弱收敛与弱-* 收敛}
+\label{subsec:chap2-weak-convergences}
+
+这里不详述弱拓扑和弱-* 拓扑的一般理论, 更完整的讨论见\MBUnresolvedReference{bib:source-27}{[27]}. 我们只回顾这些拓扑的序列性质, 后文主要在 Lebesgue 空间和 Sobolev 空间中使用它们.
+
+\begin{Definition}
+\label{def:chap2-weak-convergence}
+设 $E$ 是 Banach 空间, $E'$ 是其对偶空间.
+\begin{itemize}
+\item 若对每个 $f\in E'$ 都有
+\[
+  f(u_n)=\langle f,u_n\rangle_{E',E}\longrightarrow
+  \langle f,u\rangle_{E',E}=f(u),
+\]
+则称 $E$ 中序列 $(u_n)_n$ 弱收敛到 $u\in E$.
+\item 若对每个 $u\in E$ 都有
+\[
+  f_n(u)=\langle f_n,u\rangle_{E',E}\longrightarrow
+  \langle f,u\rangle_{E',E}=f(u),
+\]
+则称 $E'$ 中序列 $(f_n)_n$ 弱-* 收敛到 $f\in E'$.
+\end{itemize}
+\end{Definition}
+
+无限维空间中的闭有界集对范数拓扑未必紧, 但下面的结果给出闭有界集的弱紧性.
+
+\begin{Theorem}[Weak and Weak-* compactness]
+\label{thm:chap2-weak-compactness}
+\begin{itemize}
+\item 设 $E$ 是自反 Banach 空间, 即通过自然嵌入 $E$ 与 $E''$ 同构. 则 $E$ 中任意有界序列都可抽取一个在 $E$ 中弱收敛的子序列.
+\item 设 $E$ 是可分 Banach 空间. 则 $E'$ 中任意有界序列都可抽取一个在 $E'$ 中弱-* 收敛的子序列.
+\end{itemize}
+\end{Theorem}
+
+Banach--Steinhaus 定理 Theorem~\ref{thm:chap2-banach-steinhaus} 的一个重要推论是范数关于弱拓扑和弱-* 拓扑的下半连续性.
+
+\begin{Corollary}
+\label{cor:chap2-weak-lower-semicontinuity}
+设 $E$ 是 Banach 空间, $(u_n)_n$ 是 $E$ 中弱收敛到 $u\in E$ 的序列. 则 $(u_n)_n$ 在 $E$ 中有界, 且
+\[
+  \|u\|_E\leq\liminf_{n\to\infty}\|u_n\|_E.
+\]
+相应地, 若 $(u_n)_n$ 是 $E'$ 中弱-* 收敛到 $u\in E'$ 的序列, 则它在 $E'$ 中有界, 且
+\[
+  \|u\|_{E'}\leq\liminf_{n\to\infty}\|u_n\|_{E'}.
+\]
+\end{Corollary}
+
+下面的命题常用于证明整个序列弱收敛或弱-* 收敛.
+
+\begin{Proposition}
+\label{prop:chap2-unique-subsequence-limit}
+设 $E$ 是自反 Banach 空间, 或者是可分 Banach 空间的对偶, $(x_n)_n$ 是 $E$ 中有界序列. 假定存在 $x\in E$, 使 $(x_n)_n$ 的每个弱收敛子序列, 或相应地每个弱-* 收敛子序列, 都以 $x$ 为极限. 则整个序列 $(x_n)_n$ 弱收敛, 或相应地弱-* 收敛到 $x$.
+\end{Proposition}
+
+\begin{Proof}
+只证明自反情形, 另一情形类似. 假设 $(x_n)_n$ 不弱收敛到 $x$. 则存在 $f\in E'$, 使 $(\langle f,x_n\rangle_{E',E})_n$ 不收敛到 $\langle f,x\rangle_{E',E}$. 因而存在 $\varepsilon>0$ 和子序列 $(x_{\varphi(n)})_n$, 满足
+\begin{equation}
+\label{eq:chap2-subsequence-separation}
+  |\langle f,x_{\varphi(n)}-x\rangle_{E',E}|\geq\varepsilon,
+  \qquad\text{对所有 $n\geq0$}.
+\end{equation}
+由于该子序列在自反空间 $E$ 中有界, Theorem~\ref{thm:chap2-weak-compactness} 保证它还有一个弱收敛子序列 $(x_{\varphi(\psi(n))})_n$. 由假设, 其弱极限只能是 $x$, 所以
+\[
+  \langle f,x_{\varphi(\psi(n))}-x\rangle_{E',E}\longrightarrow0,
+\]
+这与式\eqref{eq:chap2-subsequence-separation}矛盾.
+\end{Proof}
+
+下面的结果说明, 在较小空间中的有界性与在较大空间中的弱收敛, 蕴含在较小空间中的弱收敛.
+
+\begin{Proposition}
+\label{prop:chap2-small-space-weak-convergence}
+设 $E,F,G$ 是 Banach 空间, $E\subset G$, $F\subset G$, 且嵌入连续. 假定 $F$ 自反. 设 $(x_n)_n\subset E\cap F$, 并存在 $x\in E$, 使 $(x_n)_n$ 在 $F$ 中有界且在 $E$ 中弱收敛到 $x$. 则 $(x_n)_n$ 在 $F$ 中弱收敛到 $x$.
+\end{Proposition}
+
+\begin{Proof}
+根据 Proposition~\ref{prop:chap2-unique-subsequence-limit}, 只需证明 $x$ 是 $(x_n)_n$ 的子序列在 $F$ 中可能具有的唯一弱极限. 若子序列 $(x_{\varphi(n)})_n$ 在 $F$ 中弱收敛到 $y\in F$, 则由 $F\subset G$ 的连续嵌入, 它在 $G$ 中弱收敛到 $y$. 另一方面, 由假设和 $E\subset G$ 的连续嵌入, 同一子序列在 $G$ 中弱收敛到 $x$. 因而 $y=x$.
+\end{Proof}
+
+\begin{Remark}
+\label{rem:chap2-small-space-weak-star}
+上述结果容易推广到弱-* 收敛情形.
+\end{Remark}
+
+下面给出 Hilbert 空间中弱收敛序列强收敛的一个有用判据.
+
+\begin{Proposition}
+\label{prop:chap2-hilbert-strong-convergence}
+设 $H$ 是 Hilbert 空间, $(u_n)_n$ 在 $H$ 中弱收敛到 $u$. 若
+\[
+  \limsup_{n\to\infty}\|u_n\|_H\leq\|u\|_H,
+\]
+则 $(u_n)_n$ 在 $H$ 中强收敛到 $u$.
+\end{Proposition}
+
+\begin{Proof}
+只需写出
+\[
+  \|u-u_n\|_H^2=\|u\|_H^2+\|u_n\|_H^2-2(u,u_n)_H.
+\]
+弱收敛给出 $(u_n,u)_H\to\|u\|_H^2$, 所以由假设
+\[
+  \limsup_{n\to\infty}\|u-u_n\|_H^2
+  \leq\|u\|_H^2+\|u\|_H^2-2\|u\|_H^2=0.
+\]
+\end{Proof}
+
+后文将证明这一结果在某些 Banach 空间中也成立, 例如 $1<p<+\infty$ 时的 $L^p(\Omega)$, 见\MBUnresolvedReference{prop:chap2-lp-radon-riesz}{Proposition~II.2.32}.
+
+弱收敛虽然更容易使用, 但通常不能对非线性项取极限. 例如在 $(0,1)$ 上定义 $u_n(x)=\sin(nx)$. 由 Riemann--Lebesgue 引理, $(u_n)_n$ 在 $L^2(0,1)$ 中弱收敛到 $0$, 但
+\[
+  \int_0^1u_n^2\,\mathrm{d}x\longrightarrow\frac12.
+\]
+所以 $(u_n^2)_n$ 不弱收敛到 $0$; 它实际上弱收敛到常值函数 $1/2$.
+
+不过, 强收敛序列与弱收敛序列的乘积型双线性像仍弱收敛到极限的相应乘积.
+
+\begin{Proposition}
+\label{prop:chap2-strong-weak-bilinear}
+设 $E,F,G$ 是 Banach 空间, $B:E\times F\to G$ 是连续双线性映射. 若 $(u_n)_n$ 在 $E$ 中强收敛到 $u$, $(v_n)_n$ 在 $F$ 中弱收敛到 $v$, 则 $(B(u_n,v_n))_n$ 在 $G$ 中弱收敛到 $B(u,v)$.
+\end{Proposition}
+
+\begin{Proof}
+任取 $\varphi\in G'$. 由双线性,
+\begin{align*}
+|\langle\varphi,B(u_n,v_n)-B(u,v)\rangle_{G',G}|
+&\leq\|\varphi\|_{G'}\|B(u_n-u,v_n)\|_G\\
+&\quad+|\langle\varphi,B(u,v_n-v)\rangle_{G',G}|.
+\end{align*}
+由 Corollary~\ref{cor:chap2-weak-lower-semicontinuity}, $(v_n)_n$ 有界. $B$ 的连续性和 $u_n\to u$ 说明第一项趋于 $0$. 映射 $x\mapsto\langle\varphi,B(u,x)\rangle_{G',G}$ 是 $F$ 上的连续线性泛函, 因而 $v_n\rightharpoonup v$ 说明第二项也趋于 $0$.
+\end{Proof}
+
+\begin{Remark}
+\label{rem:chap2-weak-products}
+若 $G$ 自反, 且 $(u_n)_n,(v_n)_n$ 仅分别弱收敛到 $u,v$, 则 $(B(u_n,v_n))_n$ 在 $G$ 中有界, 从而可抽取弱收敛子序列. 但没有强收敛时, 一般不能断定其极限就是 $B(u,v)$, 上面的正弦函数例子已经说明这一点. 为处理非线性, 必须通过某种方式获得强收敛. 一种方法是使用\MBUnresolvedReference{sec:chap2-compactness}{Section~3}中的紧性性质.
+\end{Remark}
+\subsubsection{Lebesgue 空间}
+\label{subsec:chap2-lebesgue-spaces}
+
+\paragraph{定义与主要性质.}
+\label{subsec:chap2-lebesgue-definitions}
+
+\begin{Definition}[Conjugate exponent]
+\label{def:chap2-conjugate-exponent}
+对每个 $1\leq p\leq+\infty$, 以
+\[
+  \frac1p+\frac1{p'}=1
+\]
+定义 $p$ 的共轭指数 $p'$, 并对 $p=1$ 和 $p=+\infty$ 采用自然约定.
+\end{Definition}
+
+本书始终使用这一记号, 并且对每个 $p$ 都有 $(p')'=p$.
+
+当 $1\leq p<+\infty$ 时, $L^p(\Omega)$ 是开集 $\Omega$ 上所有实值 Lebesgue 可测函数中, 其绝对值的 $p$ 次幂关于 Lebesgue 测度可积的函数集合, 并定义
+\[
+  \|f\|_{L^p(\Omega)}=\left(\int_\Omega|f|^p\,\mathrm{d}x\right)^{1/p}.
+\]
+$L^\infty(\Omega)$ 是本质有界的 Lebesgue 可测函数集合, 并定义
+\[
+  \|f\|_{L^\infty(\Omega)}=\operatorname*{ess\,sup}_{\Omega}|f|.
+\]
+严格说来, 这些空间的元素是除一个 Lebesgue 零测集外彼此相等的函数所构成的等价类.
+
+由 Proposition~\ref{prop:chap2-minkowski} 和 Remark~\ref{rem:chap2-minkowski-norm} 可知, $\|\cdot\|_{L^p}$ 是 $L^p(\Omega)$ 上的范数, 且这些空间都是 Banach 空间. 当 $1<p<+\infty$ 时, $L^p(\Omega)$ 可分且自反, 其对偶同 $L^{p'}(\Omega)$ 同构. $L^1(\Omega)$ 可分但不自反, 其对偶同 $L^\infty(\Omega)$ 同构. 相比之下, $L^\infty(\Omega)$ 既不可分也不自反, 且其对偶严格大于 $L^1(\Omega)$.
+
+\begin{Definition}
+\label{def:chap2-lipschitz-diffeomorphism}
+设 $\Omega,\widetilde\Omega$ 是 $\mathbb{R}^d$ 中的开集. 映射 $T:\widetilde\Omega\to\Omega$ 称为 Lipschitz 微分同胚, 当且仅当 $T$ 是双射, 且 $T,T^{-1}$ 都 Lipschitz 连续.
+\end{Definition}
+
+这样的映射一般不是通常意义下的微分同胚, 特别是它不一定处处可微.
+
+\begin{Proposition}
+\label{prop:chap2-lipschitz-change-variables}
+设 $\Omega,\widetilde\Omega$ 是 $\mathbb{R}^d$ 中的开集, $T:\widetilde\Omega\to\Omega$ 是 Lipschitz 微分同胚. 对任意可测函数 $u:\Omega\to\mathbb{R}$ 和 $1\leq p\leq\infty$,
+\[
+  u\in L^p(\Omega)\quad\Longleftrightarrow\quad u\circ T\in L^p(\widetilde\Omega).
+\]
+此外, 存在只依赖于 $T$ 的常数 $C_1,C_2>0$, 使
+\[
+  C_1\|u\|_{L^p(\Omega)}\leq\|u\circ T\|_{L^p(\widetilde\Omega)}
+  \leq C_2\|u\|_{L^p(\Omega)}.
+\]
+\end{Proposition}
+
+\paragraph{初等不等式.}
+\label{subsec:chap2-elementary-inequalities}
+
+下面给出 Young 和 Hölder 不等式的较一般版本. 后文将反复使用它们, 而不一定每次明确引用.
+
+\begin{Proposition}[Young's inequality]
+\label{prop:chap2-young-inequality}
+设 $n\geq2$, $x_1,\ldots,x_n$ 是非负实数, $p_1,\ldots,p_n$ 是满足
+\[
+  \frac1{p_1}+\cdots+\frac1{p_n}=1
+\]
+的正实数. 则
+\[
+  x_1\cdots x_n\leq\frac{x_1^{p_1}}{p_1}+\cdots+\frac{x_n^{p_n}}{p_n}.
+\]
+\end{Proposition}
+
+其证明只需应用对数函数的凹性. 直接得到如下实用版本.
+
+\begin{Corollary}
+\label{cor:chap2-young-epsilon}
+设 $p_1,\ldots,p_n$ 满足 Proposition~\ref{prop:chap2-young-inequality}的假设. 对任意正数 $\varepsilon_1,\ldots,\varepsilon_{n-1}$, 存在 $C(\varepsilon_1,\ldots,\varepsilon_{n-1})>0$, 使对所有正数 $x_1,\ldots,x_n$,
+\[
+x_1\cdots x_n\leq\varepsilon_1x_1^{p_1}+\cdots+\varepsilon_{n-1}x_{n-1}^{p_{n-1}}
++C(\varepsilon_1,\ldots,\varepsilon_{n-1})x_n^{p_n}.
+\]
+\end{Corollary}
+
+换言之, Young 不等式中除一个系数外的所有系数都可预先指定. 当某个 $\varepsilon_i\to0$ 时, $C(\varepsilon_1,\ldots,\varepsilon_{n-1})$ 趋于无穷.
+
+\begin{Proposition}[Hölder's inequality]
+\label{prop:chap2-holder-inequality}
+设 $\Omega\subset\mathbb{R}^d$ 是开集, $p_1,\ldots,p_n$ 是正实数, 允许取无穷, 并设 $r\in[1,+\infty]$ 满足
+\[
+  \frac1r=\frac1{p_1}+\cdots+\frac1{p_n}.
+\]
+若 $f_i\in L^{p_i}(\Omega)$, 则 $f_1\cdots f_n\in L^r(\Omega)$, 且
+\[
+  \|f_1\cdots f_n\|_{L^r}\leq\|f_1\|_{L^{p_1}}\cdots\|f_n\|_{L^{p_n}}.
+\]
+\end{Proposition}
+
+还需要下面的 Fubini 定理推广.
+
+\begin{Proposition}
+\label{prop:chap2-generalized-fubini}
+设 $d\geq2$, $f_1,\ldots,f_d:\mathbb{R}^{d-1}\to\mathbb{R}$ 均属于 $L^{d-1}(\mathbb{R}^{d-1})$. 定义
+\[
+f(x)=f_1(x_2,\ldots,x_d)f_2(x_1,x_3,\ldots,x_d)\cdots f_d(x_1,\ldots,x_{d-1}).
+\]
+则 $f\in L^1(\mathbb{R}^d)$, 且
+\[
+  \|f\|_{L^1(\mathbb{R}^d)}\leq\prod_{i=1}^d\|f_i\|_{L^{d-1}(\mathbb{R}^{d-1})}.
+\]
+\end{Proposition}
+
+\begin{Proof}
+$d=2$ 时结论由 Fubini 定理直接得到, 且不等式实际为等式. 只证明 $d=3$ 的情形, 一般情形由 Hölder 不等式归纳得到. 对 $x_3$ 积分并应用 Cauchy--Schwarz 不等式,
+\begin{align*}
+\int_{\mathbb{R}}|f|(x_1,x_2,x_3)\,\mathrm{d}x_3
+&\leq|f_3(x_1,x_2)|
+\left(\int_{\mathbb{R}}|f_1(x_2,x_3)|^2\,\mathrm{d}x_3\right)^{1/2}\\
+&\quad\times\left(\int_{\mathbb{R}}|f_2(x_1,x_3)|^2\,\mathrm{d}x_3\right)^{1/2}.
+\end{align*}
+再应用一次 Cauchy--Schwarz 不等式和 Fubini 定理, 得
+\[
+  \|f\|_{L^1(\mathbb{R}^3)}
+  \leq\|f_3\|_{L^2(\mathbb{R}^2)}\|f_1\|_{L^2(\mathbb{R}^2)}\|f_2\|_{L^2(\mathbb{R}^2)}.
+\]
+\end{Proof}
+
+\begin{Proposition}[Jensen's inequality]
+\label{prop:chap2-jensen-inequality}
+设 $\Omega\subset\mathbb{R}^d$ 是开集, $\eta\in L^1(\Omega)$ 非负. 若对某个 $1\leq p<+\infty$ 有 $|f|^p\eta\in L^1(\Omega)$, 则 $f\eta\in L^1(\Omega)$, 且
+\[
+  \left|\int_\Omega f\eta\,\mathrm{d}x\right|^p
+  \leq\|\eta\|_{L^1}^{p-1}\int_\Omega|f|^p\eta\,\mathrm{d}x.
+\]
+\end{Proposition}
+
+\begin{Proof}
+写成 $f\eta=(f\eta^{1/p})\eta^{1/p'}$, 并以指数 $p$ 和 $p'=p/(p-1)$ 应用 Hölder 不等式.
+\end{Proof}
+
+\begin{Proposition}[Minkowski's inequality]
+\label{prop:chap2-minkowski}
+设 $(X_1,\mu_1)$ 和 $(X_2,\mu_2)$ 是两个 $\sigma$-有限测度空间. 对定义在 $X_1\times X_2$ 上的任意非负可测函数 $f$ 和任意 $r\geq1$,
+\[
+\left(\int_{X_1}\left(\int_{X_2}f(x_1,x_2)\,\mathrm{d}\mu_2\right)^r\mathrm{d}\mu_1\right)^{1/r}
+\leq\int_{X_2}\left(\int_{X_1}f(x_1,x_2)^r\,\mathrm{d}\mu_1\right)^{1/r}\mathrm{d}\mu_2.
+\]
+\end{Proposition}
+
+\begin{Remark}
+\label{rem:chap2-minkowski-norm}
+若取 $X_2=\{0,1\}$ 且 $\mu_2$ 为计数测度, 则对任意非负 $f,g$ 和 $r\geq1$,
+\[
+  \|f+g\|_{L^r}\leq\|f\|_{L^r}+\|g\|_{L^r}.
+\]
+\end{Remark}
+
+\begin{Proof}
+令 $J(x_1)=\int_{X_2}f(x_1,x_2)\,\mathrm{d}\mu_2$. 利用 Hölder 不等式和 Fubini 定理,
+\begin{align*}
+\int_{X_1}J(x_1)^r\,\mathrm{d}\mu_1
+&=\int_{X_2}\int_{X_1}J(x_1)^{r-1}f(x_1,x_2)\,\mathrm{d}\mu_1\mathrm{d}\mu_2\\
+&\leq\left(\int_{X_1}J(x_1)^r\,\mathrm{d}\mu_1\right)^{(r-1)/r}
+\int_{X_2}\left(\int_{X_1}f(x_1,x_2)^r\,\mathrm{d}\mu_1\right)^{1/r}\mathrm{d}\mu_2.
+\end{align*}
+约去公共因子即得结论.
+\end{Proof}
+
+\begin{Proposition}
+\label{prop:chap2-reverse-minkowski}
+设 $0<q<1$, $\Omega\subset\mathbb{R}^d$ 是开集. 对任意非负可测函数 $f,g:\Omega\to\mathbb{R}$,
+\[
+  \|f+g\|_{L^q}\geq\|f\|_{L^q}+\|g\|_{L^q}.
+\]
+\end{Proposition}
+
+\begin{Proof}
+令 $\theta=\|f\|_{L^q}/(\|f\|_{L^q}+\|g\|_{L^q})$. 则
+\[
+\frac{f(x)+g(x)}{\|f\|_{L^q}+\|g\|_{L^q}}
+=\theta\frac{f(x)}{\|f\|_{L^q}}+(1-\theta)\frac{g(x)}{\|g\|_{L^q}}.
+\]
+因为 $s\mapsto s^q$ 在 $\mathbb{R}_+$ 上为凹函数, 对上式应用凹性并在 $\Omega$ 上积分, 右端积分等于 $1$, 立即得到结论.
+\end{Proof}
+
+\paragraph{磨光核与稠密性结果.}
+\label{subsec:chap2-mollifiers-density}
+
+磨光是泛函分析中的核心步骤. 它特别用于证明与数学流体力学有关的适当函数空间中的稠密性结果, 也是\MBUnresolvedReference{chap:transport-nonhomogeneous}{Chapter~VI} 详细介绍的输运方程重整化解理论中的关键工具.
+
+\begin{Definition}
+\label{def:chap2-mollifying-kernel}
+若映射 $\eta:\mathbb{R}^d\to\mathbb{R}$ 满足
+\begin{itemize}
+\item $\eta\in C_c^\infty(\mathbb{R}^d)$, 且 $\operatorname{Supp}\eta\subset B$, 其中 $B$ 是 $\mathbb{R}^d$ 的单位球;
+\item $\eta\geq0$, 且 $\int_{\mathbb{R}^d}\eta\,\mathrm{d}x=\int_B\eta\,\mathrm{d}x=1$;
+\item $\eta(x)$ 只依赖于 $|x|$,
+\end{itemize}
+则称 $\eta$ 为磨光核.
+\end{Definition}
+
+最后一个条件不是必需的, 但有时能简化计算. 这样的函数确实存在. 对任意 $\varepsilon>0$, 定义
+\[
+  \eta_\varepsilon(x)=\frac1{\varepsilon^d}\eta\left(\frac{x}{\varepsilon}\right),
+  \qquad
+  (\nabla\eta)_\varepsilon(x)=\frac1{\varepsilon^d}(\nabla\eta)\left(\frac{x}{\varepsilon}\right),
+\]
+于是 $\nabla\eta_\varepsilon=\varepsilon^{-1}(\nabla\eta)_\varepsilon$.
+
+\begin{Definition}
+\label{def:chap2-mollified-convolution}
+对任意 $f\in L^p(\mathbb{R}^d)$, $1\leq p\leq\infty$, 以及任意 $\varepsilon>0$, 定义卷积
+\begin{equation}
+\label{eq:chap2-mollified-convolution}
+\begin{aligned}
+(f*\eta_\varepsilon)(x)
+&=\int_{\mathbb{R}^d}f(y)\eta_\varepsilon(x-y)\,\mathrm{d}y\\
+&=\int_{\mathbb{R}^d}f(x-y)\eta_\varepsilon(y)\,\mathrm{d}y
+=\int_B f(x-\varepsilon z)\eta(z)\,\mathrm{d}z.
+\end{aligned}
+\end{equation}
+\end{Definition}
+
+由于 $\eta$ 有界且具有紧支集, 上述积分均有意义.
+
+\begin{Proposition}
+\label{prop:chap2-mollifier-properties}
+对任意 $\varepsilon>0$,
+\[
+  f*\eta_\varepsilon\in C^\infty(\mathbb{R}^d),
+  \qquad
+  \|f*\eta_\varepsilon\|_{L^\infty}\leq\frac{C}{\varepsilon^{d/p}}\|f\|_{L^p},
+\]
+\[
+  \|\nabla(f*\eta_\varepsilon)\|_{L^\infty}
+  \leq\frac{C}{\varepsilon^{1+d/p}}\|f\|_{L^p},
+\]
+并且
+\begin{equation}
+\label{eq:chap2-mollifier-lp-bound}
+  \|f*\eta_\varepsilon\|_{L^p}\leq C\|f\|_{L^p},
+\end{equation}
+其中 $C>0$ 只依赖于 $\eta,p$. 最后, 若 $p<+\infty$, 则
+\[
+  f*\eta_\varepsilon\longrightarrow f
+  \quad\text{在 $L^p(\mathbb{R}^d)$ 中, 当 $\varepsilon\to0$}.
+\]
+\end{Proposition}
+
+\begin{Proof}
+$f*\eta_\varepsilon$ 的正则性来自核 $\eta$ 的正则性和积分号下求导. $L^\infty$ 估计由 Hölder 不等式及
+\[
+  \|\eta_\varepsilon\|_{L^{p'}}=\frac{\|\eta\|_{L^{p'}}}{\varepsilon^{d/p}}
+\]
+直接得到.
+
+为证明 $p<+\infty$ 时的式\eqref{eq:chap2-mollifier-lp-bound}, 对任意 $x\in\mathbb{R}^d$ 应用 Jensen 不等式 Proposition~\ref{prop:chap2-jensen-inequality}, 得
+\[
+  |(f*\eta_\varepsilon)(x)|^p
+  \leq\int_B|f(x-\varepsilon z)|^p\eta(z)\,\mathrm{d}z.
+\]
+对 $x$ 积分并使用 Fubini 定理,
+\[
+\|f*\eta_\varepsilon\|_{L^p}^p
+\leq\int_B\eta(z)\left(\int_{\mathbb{R}^d}|f(x-\varepsilon z)|^p\,\mathrm{d}x\right)\mathrm{d}z
+=\|f\|_{L^p}^p.
+\]
+
+再证明收敛性. 因 $p<+\infty$, $C_c^0(\mathbb{R}^d)$ 在 $L^p(\mathbb{R}^d)$ 中稠密. 取 $f_n\in C_c^0(\mathbb{R}^d)$ 使 $f_n\to f$ 于 $L^p$, 并以 $\omega_n$ 表示 $f_n$ 的连续模. 由磨光核性质,
+\[
+  |f_n*\eta_\varepsilon(x)-f_n(x)|
+  \leq\int_B|f_n(x-\varepsilon z)-f_n(x)|\eta(z)\,\mathrm{d}z
+  \leq\omega_n(\varepsilon).
+\]
+由于 $f_n$ 具有紧支集,
+\[
+  \|f_n*\eta_\varepsilon-f_n\|_{L^p}\leq C_n\omega_n(\varepsilon).
+\]
+由三角不等式和式\eqref{eq:chap2-mollifier-lp-bound},
+\[
+\|f*\eta_\varepsilon-f\|_{L^p}
+\leq(1+C)\|f-f_n\|_{L^p}+C_n\omega_n(\varepsilon).
+\]
+先令 $\varepsilon\to0$, 再令 $n\to\infty$, 即得结论.
+\end{Proof}
+
+\begin{Theorem}
+\label{thm:chap2-test-functions-dense-lp}
+对 $\mathbb{R}^d$ 中任意开集 $\Omega$ 和任意 $1\leq p<+\infty$, $\mathcal{D}(\Omega)$ 在 $L^p(\Omega)$ 中稠密.
+\end{Theorem}
+
+\begin{Proof}
+取 $f\in L^p(\Omega)$. 对 $n\geq1$, 令
+\[
+  \Omega_n=\{x\in\Omega:d(x,\partial\Omega)>1/n\},
+  \qquad f_n=f\mathbf{1}_{\Omega_n}.
+\]
+由控制收敛定理, $f_n\to f$ 于 $L^p(\Omega)$. 再令 $f_{n,\varepsilon}=f_n*\eta_\varepsilon$. Proposition~\ref{prop:chap2-mollifier-properties} 给出 $f_{n,\varepsilon}\in C^\infty(\mathbb{R}^d)$. 当 $\varepsilon<1/n$ 时, $f_{n,\varepsilon}$ 的支集包含于 $\Omega$, 故 $f_{n,\varepsilon}\in\mathcal{D}(\Omega)$. 先令 $\varepsilon\to0$, 再令 $n\to\infty$, 得到稠密性.
+\end{Proof}
+
