@@ -52,7 +52,7 @@
 - Formula references use `\eqref`; other supported references use `\ref` unless the project adopts `cleveref` consistently.
 - Never hard-code local object numbers. Record unavailable or uncertain targets in QA instead of guessing.
 - Preserve the accepted `Theorem`, `Definition`, `Lemma`, `Proposition`, `Corollary`, `Proof`, `Example`, `Remark`, and `Exercise` environments and their established visual distinctions.
-- Render those environment headings in English exactly as `Theorem`, `Definition`, `Lemma`, `Proposition`, `Corollary`, `Proof`, `Example`, `Remark`, and `Exercise`; never translate the displayed environment name into Chinese. This does not prevent translating the ordinary mathematical noun in Chinese prose.
+- Render those environment headings and object-reference prefixes in English exactly as `Theorem`, `Definition`, `Lemma`, `Proposition`, `Corollary`, `Proof`, `Example`, `Remark`, and `Exercise`; never translate an environment name into Chinese. This does not prevent translating the ordinary mathematical noun in Chinese prose when it is not functioning as an environment name or reference prefix.
 
 ## Supported block types
 

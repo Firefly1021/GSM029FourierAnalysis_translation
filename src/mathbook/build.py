@@ -17,6 +17,7 @@ from .qa import find_chinese_prose_punctuation
 
 LABEL = re.compile(r"\\label\{([^}]+)\}")
 REFERENCE = re.compile(r"\\(eqref|ref|cref)\{([^}]+)\}")
+TRANSLATED_ENVIRONMENT_REFERENCE = re.compile(r"(定理|定义|引理|命题|推论|证明|例|注|习题)\s*~?\s*\\(?:ref|cref)\{")
 
 
 def canonical_tex_files(book: BookPaths) -> list[Path]:
@@ -34,6 +35,7 @@ def latex_qa(book: BookPaths) -> dict[str, object]:
     labels: list[str] = []
     references: list[tuple[str, str]] = []
     punctuation = []
+    translated_environment_references = []
     for path in files:
         text = path.read_text(encoding="utf-8")
         labels.extend(LABEL.findall(text))
@@ -42,6 +44,13 @@ def latex_qa(book: BookPaths) -> dict[str, object]:
             {"file": path.relative_to(book.root).as_posix(), "line": item.line, "column": item.column, "character": item.character}
             for item in find_chinese_prose_punctuation(text)
         )
+        for line_number, line in enumerate(text.splitlines(), 1):
+            for match in TRANSLATED_ENVIRONMENT_REFERENCE.finditer(line):
+                translated_environment_references.append({
+                    "file": path.relative_to(book.root).as_posix(),
+                    "line": line_number,
+                    "environment_name": match.group(1),
+                })
     counts = Counter(labels)
     duplicates = sorted(label for label, count in counts.items() if count > 1)
     undefined = sorted({label for _, label in references} - set(labels))
@@ -53,8 +62,9 @@ def latex_qa(book: BookPaths) -> dict[str, object]:
         "references": len(references),
         "undefined_references": undefined,
         "wrong_reference_commands": wrong_commands,
+        "translated_environment_references": translated_environment_references,
         "punctuation_violations": punctuation,
-        "passed": not any((duplicates, undefined, wrong_commands, punctuation)),
+        "passed": not any((duplicates, undefined, wrong_commands, translated_environment_references, punctuation)),
     }
 
 

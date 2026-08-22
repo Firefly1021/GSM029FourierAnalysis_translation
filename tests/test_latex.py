@@ -2,6 +2,7 @@
 
 import unittest
 
+from mathbook.build import TRANSLATED_ENVIRONMENT_REFERENCE
 from mathbook.latex import adapter_environment_conflicts, emit_environment
 from mathbook.project import ROOT
 
@@ -37,6 +38,10 @@ class LatexTests(unittest.TestCase):
         self.assertIn("\\textbf{Proof:}", adapter)
         for translated in ("定理", "定义", "引理", "命题", "推论", "例~", "注~", "习题", "证明:"):
             self.assertNotIn(translated, adapter)
+
+    def test_translated_environment_reference_prefix_is_rejected(self) -> None:
+        self.assertIsNotNone(TRANSLATED_ENVIRONMENT_REFERENCE.search("见定理\\ref{thm:sample}."))
+        self.assertIsNone(TRANSLATED_ENVIRONMENT_REFERENCE.search("见 Theorem~\\ref{thm:sample}."))
 
 
 if __name__ == "__main__":
