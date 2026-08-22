@@ -1,0 +1,227 @@
+\subsection{单实变量函数}
+\label{sec:chap2-one-real-variable}
+\renewcommand{\thestatement}{4.\number\numexpr\value{statement}-58\relax}
+
+本节回顾弱导数与通常导数之间的联系, 限于后文所需的单实变量函数情形. 最后给出若干 Gronwall 型不等式, 它们用于建立演化偏微分方程解的先验估计.
+
+\subsubsection{微分与原函数}
+\label{subsec:chap2-differentiation-antiderivatives}
+
+设 $[a,b]\subset\mathbb{R}$. 空间 $W^{1,1}((a,b))$ 由 $L^1((a,b))$ 中分布导数仍属于 $L^1((a,b))$ 的函数组成.
+
+\begin{Lemma}
+\label{lem:chap2-integral-antiderivative}
+设 $g\in L^1((a,b))$, $C\in\mathbb{R}$, 并定义
+\[
+ f(t)=C+\int_a^t g(s)\,\mathrm{d}s.
+\]
+则 $f$ 在 $[a,b]$ 上连续, $f\in W^{1,1}((a,b))$, 且其分布导数为 $g$.
+\end{Lemma}
+
+\begin{Proof}
+对 $t_0\in[a,b)$ 和充分小的 $h>0$,
+\[
+ f(t_0+h)-f(t_0)=\int_a^b g(s)\mathbf{1}_{[t_0,t_0+h]}(s)\,\mathrm{d}s\longrightarrow0.
+\]
+控制收敛定理以及 $h<0$ 的同样论证给出连续性. 对 $\varphi\in\mathcal{D}((a,b))$, 由 Fubini 定理,
+\[
+ -\int_a^b f(t)\varphi'(t)\,\mathrm{d}t
+ =-\int_a^b\int_a^t g(s)\varphi'(t)\,\mathrm{d}s\,\mathrm{d}t
+ =\int_a^b g(s)\varphi(s)\,\mathrm{d}s.
+\]
+故分布导数为 $g$.
+\end{Proof}
+
+\begin{Corollary}
+\label{cor:chap2-w11-continuous-representative}
+每个 $f\in W^{1,1}((a,b))$ 都几乎处处等于 $[a,b]$ 上某个连续函数 $\widetilde f$, 且
+\[
+ \widetilde f(y)=\widetilde f(x)+\int_x^y f'(s)\,\mathrm{d}s,
+ \qquad\forall x,y\in[a,b].
+\]
+\end{Corollary}
+
+\begin{Proof}
+令 $g(t)=\int_a^t f'(s)\,\mathrm{d}s$. 由 Lemma~\ref{lem:chap2-integral-antiderivative}, $g$ 连续且分布导数为 $f'$. 因而 $f-g$ 的分布导数为零. 由 Lemma~\ref{lem:chap2-zero-gradient-distribution-constant}, $f-g=C$ 几乎处处. 取 $\widetilde f=C+g$, 直接相减即得公式.
+\end{Proof}
+
+对 $t_0\in[a,b]$, 以 $V_\eta(t_0)$ 表示 $[a,b]$ 中包含 $t_0$ 且测度小于 $\eta$ 的开邻域全体.
+
+\begin{Definition}[Lebesgue points]
+\label{def:chap2-lebesgue-point}
+设 $f\in L^1((a,b))$, $t_0\in(a,b)$. 若
+\[
+ \sup_{\omega\in V_\eta(t_0)}\frac1{|\omega|}
+ \int_\omega|f(t)-f(t_0)|\,\mathrm{d}t\longrightarrow0
+ \quad(\eta\to0),
+\]
+则称 $t_0$ 为 $f$ 的 Lebesgue 点.
+\end{Definition}
+
+\begin{Proposition}
+\label{prop:chap2-antiderivative-at-lebesgue-point}
+设 $f\in L^1((a,b))$, 且 $t_0$ 是 $f$ 的 Lebesgue 点. 则任意原函数
+\[
+ F(t)=C+\int_a^t f(s)\,\mathrm{d}s
+\]
+在 $t_0$ 按经典意义可微, 且 $F'(t_0)=f(t_0)$.
+\end{Proposition}
+
+\begin{Proof}
+有
+\[
+ \left|\frac{F(t_0+h)-F(t_0)}h-f(t_0)\right|
+ \leq\frac1{|h|}\int_{t_0}^{t_0+h}|f(s)-f(t_0)|\,\mathrm{d}s,
+\]
+右端由 Lebesgue 点定义趋于 $0$.
+\end{Proof}
+
+\begin{Theorem}
+\label{thm:chap2-almost-every-point-lebesgue}
+若 $f\in L^1((a,b))$, 则 $(a,b)$ 中几乎每一点都是 $f$ 的 Lebesgue 点.
+\end{Theorem}
+
+因此 $L^1$ 函数的原函数几乎处处可微, 且满足微积分基本定理.
+
+\begin{Proposition}
+\label{prop:chap2-continuity-point-lebesgue}
+设 $f\in L^1((a,b))$. $f$ 的每个连续点都是 Lebesgue 点. 特别地, $f$ 的任意原函数在每个连续点 $t_0$ 可微, 且导数为 $f(t_0)$.
+\end{Proposition}
+
+\par\noindent\textbf{Remark 4.1:}\quad $W^{1,1}((a,b))$ 中的函数恰好是 $(a,b)$ 上的绝对连续函数.
+
+\begin{Lemma}[Hardy's inequality]
+\label{lem:chap2-hardy-one-dimensional}
+对 $1<p<+\infty$、非负 $f\in L^p((0,+\infty))$ 以及任意 $M\in[0,+\infty]$,
+\[
+ \int_0^M\left(\frac1x\int_0^x f(s)\,\mathrm{d}s\right)^p\mathrm{d}x
+ \leq\left(\frac{p}{p-1}\right)^p\int_0^M f(s)^p\,\mathrm{d}s.
+\]
+\end{Lemma}
+
+\begin{Proof}
+只需证明 $M=+\infty$ 的情形, 一般情形可应用于 $f\mathbf{1}_{[0,M]}$. 由稠密性可设 $f\in C_c^\infty((0,+\infty))$, 并令 $F(x)=x^{-1}\int_0^x f(s)\,\mathrm{d}s$. 分部积分给出
+\[
+ \int_0^{+\infty}F(x)^p\,\mathrm{d}x
+ =\frac{p}{p-1}\int_0^{+\infty}F(x)^{p-1}f(x)\,\mathrm{d}x.
+\]
+再用 H\"older 不等式即得结论.
+\end{Proof}
+
+\begin{Corollary}
+\label{cor:chap2-hardy-boundary-quotient}
+设 $f\in W^{1,p}((a,b))$, $1<p<+\infty$, 且 $f(a)=0$. 则 $g(x)=f(x)/(x-a)$ 属于 $L^p((a,b))$, 且
+\[
+ \|g\|_{L^p}\leq C\|f'\|_{L^p}.
+\]
+\end{Corollary}
+
+\subsubsection{微分不等式与 Gronwall 引理}
+\label{subsec:chap2-gronwall}
+
+\begin{Lemma}
+\label{lem:chap2-linear-decay}
+设 $\alpha>0$, $\beta\geq0$, $y\in C^1([0,+\infty),\mathbb{R})$ 且
+\[
+ y'(t)+\alpha y(t)\leq\beta,
+ \qquad\forall t\geq0.
+\]
+则
+\[
+ y(t)\leq y(0)e^{-\alpha t}+\frac\beta\alpha,
+ \qquad\forall t\geq0.
+\]
+\end{Lemma}
+
+\begin{Proof}
+将不等式乘以 $e^{\alpha t}$ 后积分.
+\end{Proof}
+
+\begin{Lemma}[Gronwall--Bellman]
+\label{lem:chap2-gronwall}
+设 $y\in L^\infty((0,T))$, $g\in L^1((0,T))$ 非负, 且对几乎处处的 $t\in(0,T)$,
+\[
+ y(t)\leq y_0+\int_0^t g(s)y(s)\,\mathrm{d}s.
+\]
+则
+\[
+ y(t)\leq y_0\exp\left(\int_0^t g(s)\,\mathrm{d}s\right)
+\]
+对几乎处处的 $t\in(0,T)$ 成立.
+\end{Lemma}
+
+\begin{Proof}
+令 $h(t)=y_0+\int_0^t g(s)y(s)\,\mathrm{d}s$. 则 $h\in W^{1,1}$ 且 $h'=gy\leq gh$ 几乎处处. 因而
+\[
+ z(t)=h(t)\exp\left(-\int_0^t g(s)\,\mathrm{d}s\right)
+\]
+满足 $z'\leq0$. 由 Corollary~\ref{cor:chap2-w11-continuous-representative}, $z(t)\leq z(0)=y_0$, 再用 $y\leq h$ 得结论.
+\end{Proof}
+
+\begin{Lemma}[Uniform Gronwall lemma]
+\label{lem:chap2-uniform-gronwall}
+设非负函数 $g_1,g_2\in L^1_{\mathrm{loc}}(\mathbb{R}_+)$ 满足
+\[
+ \int_t^{t+1}g_1(s)\,\mathrm{d}s\leq k_1,
+ \qquad\int_t^{t+1}g_2(s)\,\mathrm{d}s\leq k_2,
+ \quad\forall t\geq0.
+\]
+设 $y\in C^1([0,+\infty),\mathbb{R}_+)$ 且
+\begin{align}
+ y'(t)&\leq g_1(t)+g_2(t)y(t),\quad\text{a.e. }t\geq0,
+ \label{eq:chap2-uniform-gronwall-differential}\\
+ y(0)&\leq k_3,\qquad \int_t^{t+1}y(s)\,\mathrm{d}s\leq k_3,
+ \quad\forall t\geq0.
+ \label{eq:chap2-uniform-gronwall-average}
+\end{align}
+则
+\[
+ y(t)\leq(k_1+k_3)e^{k_2},\qquad\forall t\geq0.
+\]
+\end{Lemma}
+
+\begin{Proof}
+在 $0\leq s\leq t$ 上积分并应用 Lemma~\ref{lem:chap2-gronwall}, 得
+\[
+ y(t)\leq\left(y(s)+\int_s^t g_1(\tau)\,\mathrm{d}\tau\right)
+ \exp\left(\int_s^t g_2(\tau)\,\mathrm{d}\tau\right).
+\]
+当 $t\leq1$ 时取 $s=0$. 当 $t\geq1$ 时取 $s\in[t-1,t]$, 再对 $s$ 积分, 两种情形都给出所述上界.
+\end{Proof}
+
+\begin{Lemma}[Bihari's inequality]
+\label{lem:chap2-bihari}
+设 $f:[0,+\infty)\to[0,+\infty)$ 连续且非减, 在 $(0,+\infty)$ 上为正, 并满足 $\int_1^{+\infty}1/f(x)\,\mathrm{d}x<+\infty$. 以 $F$ 表示在 $+\infty$ 处为零的 $-1/f$ 的原函数. 设 $y$ 在 $[0,+\infty)$ 上连续非负, $g\in L^1_{\mathrm{loc}}([0,+\infty))$ 非负, 且存在 $y_0>0$ 使
+\[
+ y(t)\leq y_0+\int_0^t g(s)\,\mathrm{d}s+\int_0^t f(y(s))\,\mathrm{d}s,
+ \qquad\forall t\geq0.
+\]
+则方程
+\begin{equation}
+ T^*=F\left(y_0+\int_0^{T^*}g(s)\,\mathrm{d}s\right)
+ \label{eq:chap2-bihari-critical-time}
+\end{equation}
+有唯一解 $T^*$, 且对每个 $T<T^*$,
+\[
+ \sup_{t\leq T}y(t)\leq
+ F^{-1}\left(F\left(y_0+\int_0^Tg(s)\,\mathrm{d}s\right)-T\right).
+\]
+\end{Lemma}
+
+\begin{Proof}
+$F$ 非增且在 $+\infty$ 趋于 $0$, $g$ 非负, 因而 $T^*$ 存在且唯一. 固定 $0<T<T^*$, 令
+\begin{equation}
+ z_T(t)=y_0+\int_0^Tg(s)\,\mathrm{d}s+\int_0^t f(y(s))\,\mathrm{d}s.
+ \label{eq:chap2-bihari-majorant}
+\end{equation}
+则 $y(t)\leq z_T(t)$, 且 $z_T'=f(y)\leq f(z_T)$. 因此
+\[
+ \frac{z_T'(t)}{f(z_T(t))}\leq1.
+\]
+积分后得到 $F(z_T(T))-F(z_T(0))\geq-T$. 由于 $F$ 非增,
+\begin{equation}
+ z_T(T)\leq F^{-1}\left(F\left(y_0+\int_0^Tg(s)\,\mathrm{d}s\right)-T\right).
+ \label{eq:chap2-bihari-bound}
+\end{equation}
+再由 $y(t)\leq z_T(t)\leq z_T(T)$ 得结论.
+\end{Proof}
