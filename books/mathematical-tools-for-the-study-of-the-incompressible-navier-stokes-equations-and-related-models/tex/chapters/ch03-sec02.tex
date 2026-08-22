@@ -1,0 +1,974 @@
+\renewcommand{\thestatement}{2.\number\numexpr\value{statement}-8\relax}
+
+\subsection{Lipschitz 区域上的 Sobolev 空间}
+\label{sec:chap3-sobolev-lipschitz-domains}
+
+下面给出 Sobolev 空间的主要定义和结果.
+
+\subsubsection{定义}
+\label{subsec:chap3-sobolev-definitions}
+
+\begin{Definition}
+\label{def:chap3-sobolev-space}
+设 $\Omega\subset\mathbb R^d$ 为开集, $m$ 为非负整数, $1\leq p\leq+\infty$. 定义
+\[
+ W^{m,p}(\Omega)=\{f\in L^p(\Omega):\partial^\alpha f\in L^p(\Omega),\ \forall |\alpha|\leq m\},
+\]
+其中导数取分布意义. 当 $p<+\infty$ 时赋予范数
+\[
+ \|f\|_{W^{m,p}}=\left(\sum_{|\alpha|\leq m}\|\partial^\alpha f\|_{L^p}^p\right)^{1/p},
+\]
+而 $p=+\infty$ 时取 $\|f\|_{W^{m,\infty}}=\sup_{|\alpha|\leq m}\|\partial^\alpha f\|_{L^\infty}$. 这是 Banach 空间. 记 $H^m(\Omega)=W^{m,2}(\Omega)$; 对 $p<+\infty$, 记 $W_0^{m,p}(\Omega)$ 为 $\mathcal D(\Omega)$ 在 $W^{m,p}(\Omega)$ 中的闭包.
+\end{Definition}
+
+\textbf{Remark 2.1:} 对任意 $s\geq0$, 可用 Fourier 变换定义
+\begin{equation}
+ H^s(\mathbb R^d)=\{f\in\mathcal S'(\mathbb R^d):(1+|\xi|^2)^{s/2}\widehat f(\xi)\in L^2(\mathbb R^d)\}.
+ \label{eq:chap3-fractional-sobolev-fourier}
+\end{equation}
+
+\begin{Definition}
+\label{def:chap3-local-sobolev-space}
+设 $f$ 在开集 $\Omega$ 上可测. 若对每个满足 $\overline\omega\subset\Omega$ 的有界开集 $\omega$, 均有 $f|_\omega\in W^{m,p}(\omega)$, 则称 $f\in W_{\mathrm{loc}}^{m,p}(\Omega)$.
+\end{Definition}
+
+\begin{Proposition}
+\label{prop:chap3-local-sobolev-characterization}
+在 Definition~\ref{def:chap3-local-sobolev-space} 的记号下,
+\[
+ f\in W_{\mathrm{loc}}^{m,p}(\Omega)
+ \Longleftrightarrow \varphi f\in W^{m,p}(\mathbb R^d),\quad\forall\varphi\in\mathcal D(\Omega),
+\]
+其中 $\varphi f$ 在 $\Omega$ 外延拓为零.
+\end{Proposition}
+
+\begin{Proof}
+结论直接由 Lemma~\ref{lem:chap2-cutoff-function} 得到.
+\end{Proof}
+
+\begin{Proposition}
+\label{prop:chap3-lipschitz-function-in-w1infty}
+设 $\Omega\subset\mathbb R^d$ 为任意开集, $f:\Omega\to\mathbb R$ 为有界 Lipschitz 连续函数. 由 Rademacher 定理, $\nabla f$ 几乎处处有定义. 则 $f\in W^{1,\infty}(\Omega)$, 且其分布梯度就是 $\nabla f$. 若存在连续函数 $G:\Omega\to\mathbb R^d$ 满足 $G=\nabla f$ 几乎处处成立, 则 $f\in C^1(\Omega)$, 且 $G$ 是其经典梯度.
+\end{Proposition}
+
+\begin{Proof}
+取 Proposition~\ref{prop:chap2-mcshane-whitney-extension} 给出的 Lipschitz 延拓 $F:\mathbb R^d\to\mathbb R$. 对 $\Phi\in\mathcal D(\Omega)^d$ 有
+\[
+ \int_\Omega(F*\eta_\varepsilon)\operatorname{div}\Phi\,\mathrm dx
+ =-\int_\Omega\nabla(F*\eta_\varepsilon)\cdot\Phi\,\mathrm dx.
+\]
+利用 Proposition~\ref{prop:chap2-mollification-lipschitz} 和控制收敛定理令 $\varepsilon\to0$, 即得分布梯度断言. 又 $\nabla(F*\eta_\varepsilon)=G*\eta_\varepsilon$ 在 $\Omega$ 的紧子集上一致趋于 $G$, 故 $f$ 处处可微且经典梯度为 $G$.
+\end{Proof}
+
+\subsubsection{磨光算子与 Friedrichs 交换子估计}
+\label{subsec:chap3-mollifiers-friedrichs}
+
+以下固定边界紧的 Lipschitz 区域 $\Omega$. 取非负递减的 $\beta\in C^\infty(\mathbb R)$, 使其在 $\mathbb R_-$ 上等于 $1$, 在 $(1,+\infty)$ 上等于 $0$, 并令 $\beta_\varepsilon(x)=\beta(|x|+\ln\varepsilon)$. 则
+\begin{equation}
+ \beta_\varepsilon=1\ \hbox{于 }B(0,|\ln\varepsilon|),\qquad
+ \operatorname{Supp}(\beta_\varepsilon)\subset B(0,1+|\ln\varepsilon|),
+ \label{eq:chap3-beta-support}
+\end{equation}
+\begin{equation}
+ \|\beta_\varepsilon\|_{L^p(\mathbb R^d)}\leq C_{p,d}(1+|\ln\varepsilon|)^{d/p},
+ \qquad1\leq p<+\infty,
+ \label{eq:chap3-beta-lp-bound}
+\end{equation}
+并且
+\begin{equation}
+ \|\beta_\varepsilon f-f\|_{L^p(\Omega)}\longrightarrow0,
+ \qquad f\in L^p(\Omega),
+ \label{eq:chap3-beta-convergence}
+\end{equation}
+\begin{equation}
+ \|(\partial^\alpha\beta_\varepsilon)f\|_{L^p(\Omega)}\longrightarrow0,
+ \qquad |\alpha|\geq1.
+ \label{eq:chap3-beta-derivative-convergence}
+\end{equation}
+令 $(U_i)_{0\leq i\leq N}$ 和 $(\psi_i)_{0\leq i\leq N}$ 分别为 Section~\ref{subsec:chap3-lipschitz-domains} 构造的覆盖及其单位分解.
+
+\begin{Lemma}
+\label{lem:chap3-shifted-mollifier-partition}
+对任意 $y\in\Omega$,
+\begin{equation}
+ \sum_{i=0}^N\psi_i(y)\int_\Omega\eta_\varepsilon(y-x+\varepsilon\nu_i)\,\mathrm dx=1,
+ \label{eq:chap3-inward-kernel-partition}
+\end{equation}
+\begin{equation}
+ \sum_{i=0}^N\psi_i(y)\int_{\mathbb R^d}\eta_\varepsilon(y-x-\varepsilon\nu_i)\,\mathrm dx=1.
+ \label{eq:chap3-outward-kernel-partition}
+\end{equation}
+\end{Lemma}
+
+\begin{Proof}
+若 $\psi_i(y)>0$, 则 $y\in U_i$, 且式\eqref{eq:chap3-inward-shifted-ball}给出 $B(y+\varepsilon\nu_i,\varepsilon)\subset\Omega$. 因而每个有关积分等于 $1$, 再用 $\sum_i\psi_i=1$. 第二式在全空间积分, 由变量替换立即得到.
+\end{Proof}
+
+\begin{Definition}
+\label{def:chap3-inward-mollifier}
+对 $f\in\mathcal D'(\Omega)$ 和 $\varepsilon<\varepsilon_0$, 定义
+\begin{equation}
+ S_\varepsilon f(y)=\sum_{i=0}^N\beta_\varepsilon(y)\psi_i(y)
+ \langle f,\eta_\varepsilon(y+\varepsilon\nu_i-\cdot)\rangle,
+ \qquad y\in\Omega.
+ \label{eq:chap3-inward-mollifier}
+\end{equation}
+\end{Definition}
+
+\textbf{Remark 2.2:} 式\eqref{eq:chap3-inward-shifted-ball}保证配对中的测试函数紧支于 $\Omega_{\varepsilon/2}$, 故定义有意义, 且 $S_\varepsilon f$ 实际定义于 $\overline\Omega$ 的一个开邻域上.
+
+\begin{Definition}
+\label{def:chap3-outward-mollifier}
+对 $f\in L^1(\Omega)+L^\infty(\Omega)$, 定义
+\[
+ \widetilde S_\varepsilon f(y)=\sum_{i=0}^N\beta_\varepsilon(y)\psi_i(y)
+ \int_\Omega f(x)\eta_\varepsilon(y-x-\varepsilon\nu_i)\,\mathrm dx.
+\]
+等价地,
+\begin{equation}
+ \widetilde S_\varepsilon f(y)=\sum_{i=0}^N\int_\Omega
+ \beta_\varepsilon(x)\psi_i(x)f(x)\eta_\varepsilon(y-x-\varepsilon\nu_i)\,\mathrm dx.
+ \label{eq:chap3-outward-mollifier}
+\end{equation}
+\end{Definition}
+
+\textbf{Remark 2.3:} $S_\varepsilon$ 与 $\widetilde S_\varepsilon$ 的差别是核中 $\varepsilon\nu_i$ 的符号. 因此 $\widetilde S_\varepsilon f$ 紧支于 $\Omega$, 但它不能直接定义在一般分布上. 对函数 $f$ 还有
+\begin{equation}
+ S_\varepsilon f(y)=\sum_{i=0}^N\beta_\varepsilon(y)\psi_i(y)
+ \int_\Omega f(x)\eta_\varepsilon(y-x+\varepsilon\nu_i)\,\mathrm dx.
+ \label{eq:chap3-inward-mollifier-integral}
+\end{equation}
+
+\begin{Proposition}
+\label{prop:chap3-mollifier-properties}
+有 $S_\varepsilon f\in C_c^\infty(\overline\Omega)$ 对每个 $f\in\mathcal D'(\Omega)$ 成立, 且 $\widetilde S_\varepsilon f\in C_c^\infty(\Omega)$ 对每个 $f\in L^1+L^\infty$ 成立. 对 $1\leq p\leq+\infty$,
+\begin{equation}
+ \|S_\varepsilon f\|_{L^p}\leq\|f\|_{L^p},\qquad
+ \|\widetilde S_\varepsilon f\|_{L^p}\leq\|f\|_{L^p},
+ \label{eq:chap3-mollifier-lp-contractions}
+\end{equation}
+且两者梯度的 $L^p$ 范数均不超过 $C\varepsilon^{-1}\|f\|_{L^p}$. 若 $q\geq p'$, $(p,q)\neq(+\infty,+\infty)$, $1/r=1/p+1/q$, 则对 $\alpha\in L^q$ 和 $f\in L^p$,
+\[
+ \|S_\varepsilon(\alpha f)-\alpha S_\varepsilon f\|_{L^r}\to0,
+ \qquad
+ \|\widetilde S_\varepsilon(\alpha f)-\alpha\widetilde S_\varepsilon f\|_{L^r}\to0.
+\]
+此外, 对 $p<+\infty$, $S_\varepsilon f\to f$ 和 $\widetilde S_\varepsilon f\to f$ 于 $L^p(\Omega)$.
+\end{Proposition}
+
+\begin{Proof}
+支集与光滑性来自核的支集性质和式\eqref{eq:chap3-beta-support}. 式\eqref{eq:chap3-inward-kernel-partition}--\eqref{eq:chap3-inward-mollifier-integral}表明两算子的绝对值由卷积的凸组合控制, 从而由 Jensen 不等式得到式\eqref{eq:chap3-mollifier-lp-contractions}. 对式\eqref{eq:chap3-inward-mollifier-integral}求导得
+\begin{equation}
+ \begin{split}
+ \nabla S_\varepsilon f(y)={}&\sum_i\nabla(\beta_\varepsilon\psi_i)(y)
+ \int_\Omega f(x)\eta_\varepsilon(y-x+\varepsilon\nu_i)\,\mathrm dx\\
+ &+\sum_i\beta_\varepsilon(y)\psi_i(y)
+ \int_\Omega f(x)(\nabla\eta)_\varepsilon(y-x+\varepsilon\nu_i)\,\mathrm dx.
+ \end{split}
+ \label{eq:chap3-mollifier-gradient}
+\end{equation}
+由 Young 不等式即得梯度界. 收敛性先对 $C_c^0(\Omega)$ 验证, 再用稠密性和一致算子界推广. 交换子收敛也先对连续有界的 $\alpha$ 验证, 再以 $L^q$ 逼近并使用 H\"older 与 Young 不等式.
+\end{Proof}
+
+\begin{Proposition}
+\label{prop:chap3-w1infty-lipschitz-representative}
+若 $\Omega$ 是边界紧的 Lipschitz 区域, 则每个 $f\in W^{1,\infty}(\Omega)$ 几乎处处等于一个 Lipschitz 连续函数, 且
+\begin{equation}
+ \operatorname{Lip}(S_\varepsilon f)\leq C\|f\|_{W^{1,\infty}(\Omega)},
+ \label{eq:chap3-mollified-lipschitz-bound}
+\end{equation}
+因而 $\operatorname{Lip}(f)\leq C\|f\|_{W^{1,\infty}(\Omega)}$.
+\end{Proposition}
+
+\begin{Proof}
+在式\eqref{eq:chap3-mollifier-gradient}的末项中分部积分, 并使用单位分解, 得到式\eqref{eq:chap3-mollified-lipschitz-bound}. 由 Proposition~\ref{prop:chap3-mollifier-properties}, $S_\varepsilon f\to f$ 于每个有限 $L^p$ 空间. 一致 Lipschitz 界和逐点子列极限给出所需代表元.
+\end{Proof}
+
+\begin{Theorem}
+\label{thm:chap3-friedrichs-commutator}
+设 $k\geq1$, $q\geq p'$, $(p,q)\neq(+\infty,+\infty)$, $1/r=1/p+1/q$, 且 $\alpha_j\in W^{1,q}(\Omega)^k$. 定义
+\begin{equation}
+ Du=\sum_{j=1}^d\frac{\partial}{\partial x_j}(\alpha_j\cdot u),
+ \qquad u\in L^p(\Omega)^k.
+ \label{eq:chap3-first-order-divergence-operator}
+\end{equation}
+则
+\begin{equation}
+ \|S_\varepsilon Du-DS_\varepsilon u\|_{L^r}
+ \leq C\|u\|_{L^p}\|\alpha\|_{W^{1,q}},
+ \label{eq:chap3-friedrichs-commutator-bound}
+\end{equation}
+且该交换子在 $L^r(\Omega)$ 中趋于零.
+\end{Theorem}
+
+\textbf{Remark 2.4:} 相同结论对局部 Sobolev 系数和局部 Lebesgue 空间仍成立.
+
+\begin{Theorem}
+\label{thm:chap3-smooth-density-sobolev}
+若 $\Omega$ 是边界紧的 Lipschitz 区域, $1\leq p<+\infty$, $m\geq1$, 则 $C_c^\infty(\overline\Omega)$ 在 $W^{m,p}(\Omega)$ 中稠密.
+\end{Theorem}
+
+\begin{Proof}
+只写 $m=1$ 的情形. 在 Theorem~\ref{thm:chap3-friedrichs-commutator} 中取 $\alpha_j=\delta_{j\ell}$, 得 $\partial_\ell S_\varepsilon u\to\partial_\ell u$ 于 $L^p$. 再结合 $S_\varepsilon u\to u$ 即得结论. 高阶情形逐阶应用同一交换子估计.
+\end{Proof}
+
+\textbf{Remark 2.5:} 若 $u\geq0$, 可取非负的光滑逼近; 若 $u\in L^\infty$, 逼近还可保持一致 $L^\infty$ 界.
+
+\begin{Proof}[Theorem~\ref{thm:chap3-friedrichs-commutator} 的证明]
+将 $R_\varepsilon=S_\varepsilon Du-DS_\varepsilon u$ 展开为单位分解各项. 零阶项满足
+\begin{equation}
+ R_{\varepsilon,0}\longrightarrow\sum_{i,j}(\alpha_j\psi_i)\cdot u
+ =\sum_j\alpha_j\cdot u\quad\text{于 }L^r,
+ \label{eq:chap3-commutator-zero-order-limit}
+\end{equation}
+且
+\begin{equation}
+ \|R_{\varepsilon,0}\|_{L^r}\leq C\|u\|_{L^p}
+ \sum_j\|\alpha_j\|_{W^{1,q}}.
+ \label{eq:chap3-commutator-zero-order-bound}
+\end{equation}
+其余项利用平移估计、H\"older 不等式及核的一阶矩得到
+\begin{equation}
+ \|R_{\varepsilon,j}\|_{L^r}\leq C\|u\|_{L^p}\|\nabla\alpha_j\|_{L^q},
+ \label{eq:chap3-commutator-derivative-bound}
+\end{equation}
+以及
+\begin{equation}
+ R_{\varepsilon,j}\longrightarrow-u\cdot\frac{\partial\alpha_j}{\partial x_j}
+ \quad\text{于 }L^r.
+ \label{eq:chap3-commutator-derivative-limit}
+\end{equation}
+合并各项即有
+\begin{equation}
+ \|R_\varepsilon(u,\alpha)\|_{L^r}
+ \leq C\|u\|_{L^p}\|\alpha\|_{W^{1,q}},
+ \label{eq:chap3-commutator-uniform-bound}
+\end{equation}
+并且对光滑 $u,\alpha$ 可直接验证 $R_\varepsilon\to0$. 再分别以光滑函数逼近 $u$ 和 $\alpha$, 使用式\eqref{eq:chap3-commutator-uniform-bound}, 即得一般情形.
+\end{Proof}
+
+\textbf{Remark 2.6:} 上述稠密性论证要求 $p,q,r$ 有限; 端点情形需另行处理.
+
+\begin{Theorem}
+\label{thm:chap3-adjoint-mollifier-commutator}
+在 Theorem~\ref{thm:chap3-friedrichs-commutator} 的假设下, 若 $u\in L^p(\Omega)^k$ 且 $D\overline u\in L^r(\mathbb R^d)$, 则
+\[
+ \|\widetilde S_\varepsilon Du-D\widetilde S_\varepsilon u\|_{L^r(\Omega)}\to0,
+ \qquad D\widetilde S_\varepsilon u\to Du.
+\]
+这里 $D\overline u=f$ 表示
+\begin{equation}
+ -\int_\Omega\alpha_j(x)\cdot u(x)\frac{\partial\varphi}{\partial x_j}(x)\,\mathrm dx
+ =\int_\Omega f(x)\varphi(x)\,\mathrm dx,
+ \quad\forall\varphi\in C_c^\infty(\mathbb R^d).
+ \label{eq:chap3-zero-extension-operator-identity}
+\end{equation}
+\end{Theorem}
+
+\begin{Proof}
+用式\eqref{eq:chap3-zero-extension-operator-identity}测试由外移核构造的函数. 核中法向平移的符号与 $S_\varepsilon$ 相反, 计算恰好化为 Theorem~\ref{thm:chap3-friedrichs-commutator} 的交换子估计, 因而结论成立.
+\end{Proof}
+
+\subsubsection{变量替换}
+\label{subsec:chap3-change-of-variables}
+
+\begin{Theorem}
+\label{thm:chap3-sobolev-change-of-variables}
+设 $\Omega,\widetilde\Omega$ 为 Lipschitz 区域, $m\geq1$, 且 $T:\widetilde\Omega\to\Omega$ 为同胚, 满足 $T\in C^{m-1,1}(\widetilde\Omega)^d$, $T^{-1}\in C^{m-1,1}(\Omega)^d$, 并且到 $m$ 阶的导数均有界. 则
+\[
+ u\in W^{m,p}(\Omega)\Longleftrightarrow u\circ T\in W^{m,p}(\widetilde\Omega),
+\]
+且存在与 $u$ 无关的 $C_1,C_2>0$ 使
+\[
+ C_1\|u\|_{W^{m,p}(\Omega)}\leq\|u\circ T\|_{W^{m,p}(\widetilde\Omega)}
+ \leq C_2\|u\|_{W^{m,p}(\Omega)}.
+\]
+\end{Theorem}
+
+\begin{Proof}
+对光滑函数应用链式法则和变量替换公式, 并利用 $T,T^{-1}$ 的 Jacobian 与导数界. 再由 Theorem~\ref{thm:chap3-smooth-density-sobolev} 逼近一般 $u$. 高阶情形重复链式法则.
+\end{Proof}
+
+\subsubsection{延拓算子}
+\label{subsec:chap3-extension-operator}
+
+目标是构造与 $p$ 无关的线性算子 $E_\Omega$, 对 $1<p<+\infty$ 满足
+\begin{equation}
+ E_\Omega:W^{1,p}(\Omega)\longrightarrow W^{1,p}(\mathbb R^d)\quad\text{连续},
+ \label{eq:chap3-extension-continuity}
+\end{equation}
+\begin{equation}
+ (E_\Omega u)|_\Omega=u,
+ \label{eq:chap3-extension-identity}
+\end{equation}
+\begin{equation}
+ (E_\Omega u)|_{\Omega^c}=0,\qquad u\in W_0^{1,p}(\Omega).
+ \label{eq:chap3-extension-zero-complement}
+\end{equation}
+
+\textbf{Remark 2.7:} 当 $p=1$ 时, 同时满足式\eqref{eq:chap3-extension-continuity}--\eqref{eq:chap3-extension-zero-complement}的算子一般不存在; 但可构造满足前两式的延拓.
+
+在平坦半空间中, 对 $u\in C^{0,1}(\mathbb R_+^d)$ 定义
+\[
+ [E_{\mathbb R_+^d}u](x)=
+ \begin{cases}
+ u(x),&x\in\mathbb R_+^d,\\
+ \varphi(x_d)\displaystyle\int_Bu(\bar x-x_dz,0)\eta(z)\,\mathrm dz,&x\in\mathbb R_-^d,
+ \end{cases}
+\]
+其中 $\varphi\in C_c^\infty(\mathbb R)$ 且 $\varphi(0)=1$.
+
+\begin{Proposition}
+\label{prop:chap3-flat-half-space-extension}
+对 $1<p<+\infty$, $E_{\mathbb R_+^d}$ 满足式\eqref{eq:chap3-extension-continuity}--\eqref{eq:chap3-extension-zero-complement}.
+\end{Proposition}
+
+\begin{Proof}
+恒等性质显然. 对 $u\in C_c^\infty(\overline{\mathbb R_+^d})$, Fubini 定理、Jensen 不等式和一维 Hardy 不等式给出
+\[
+ \|E_{\mathbb R_+^d}u\|_{W^{1,p}(\mathbb R^d)}
+ \leq C\|u\|_{W^{1,p}(\mathbb R_+^d)}.
+\]
+其中切向导数通过 $\int_B\partial_{z_i}\eta=0$ 写成差商, 法向导数同理处理. 利用 Theorem~\ref{thm:chap3-smooth-density-sobolev} 的稠密性即可唯一延拓到整个 $W^{1,p}$, 并保持零延拓性质.
+\end{Proof}
+
+\begin{Proposition}
+\label{prop:chap3-lipschitz-half-space-extension}
+对 Proposition~\ref{prop:chap3-regularized-graph-properties} 中的微分同胚 $T_a$, 定义
+\[
+ E_{H_a}u=\bigl[E_{\mathbb R_+^d}(u\circ T_a)\bigr]\circ T_a^{-1}.
+\]
+则 $E_{H_a}$ 满足式\eqref{eq:chap3-extension-continuity}--\eqref{eq:chap3-extension-zero-complement}.
+\end{Proposition}
+
+\begin{Proof}
+由 Proposition~\ref{prop:chap3-regularized-graph-properties}、Theorem~\ref{thm:chap3-sobolev-change-of-variables} 和 Proposition~\ref{prop:chap3-flat-half-space-extension} 立即得到.
+\end{Proof}
+
+\begin{Theorem}
+\label{thm:chap3-global-lipschitz-extension}
+令 $(U_i)$ 为边界覆盖, $(\psi_i)$ 为单位分解, $R_iH_{a_i}$ 为相应局部半空间. 定义
+\[
+ E_\Omega u=\sum_i\bigl[E_{H_{a_i}}((u\psi_i)\circ R_i^{-1})\bigr]\circ R_i.
+\]
+则 $E_\Omega$ 满足式\eqref{eq:chap3-extension-continuity}--\eqref{eq:chap3-extension-zero-complement}.
+\end{Theorem}
+
+\begin{Proof}
+每个 $u\psi_i$ 支持于 $\Omega\cap U_i=R_iH_{a_i}\cap U_i$. 将其旋转后在 $H_{a_i}$ 外延拓为零, 其 $W^{1,p}$ 范数由 $\|u\|_{W^{1,p}(\Omega)}$ 控制. 对有限个局部延拓求和即得结论.
+\end{Proof}
+
+\subsubsection{迹与迹提升算子}
+\label{subsec:chap3-trace-lifting}
+
+\paragraph{迹算子}
+
+\begin{Proposition}
+\label{prop:chap3-flat-trace-inequality}
+设 $1\leq p<+\infty$. 存在 $C>0$, 使每个紧支的 $\varphi\in C^{0,1}(\mathbb R^d)$ 满足
+\[
+ \|\varphi|_{\partial\mathbb R_+^d}\|_{L^p(\partial\mathbb R_+^d)}
+ \leq C\|\varphi\|_{L^p(\mathbb R_+^d)}^{1-1/p}
+ \|\varphi\|_{W^{1,p}(\mathbb R_+^d)}^{1/p}.
+\]
+\end{Proposition}
+
+\begin{Proof}
+先取 $\varphi\in C_c^\infty$. 对 $x=(\bar x,x_d)$ 使用微积分基本定理,
+\[
+ |\varphi(\bar x,0)|^p=-p\int_0^{+\infty}|\varphi|^{p-2}\varphi\,
+ \partial_{x_d}\varphi\,\mathrm ds.
+\]
+对 $\bar x$ 积分并应用 H\"older 不等式即得结论. 一般情形由光滑逼近得到.
+\end{Proof}
+
+\begin{Proposition}
+\label{prop:chap3-half-space-trace-inequality}
+设 $H_a$ 为 Lipschitz 半空间, $1\leq p<+\infty$. 存在 $C_a>0$, 使每个紧支 Lipschitz 函数 $\varphi$ 满足
+\[
+ \|\varphi|_{\partial H_a}\|_{L^p(\partial H_a)}
+ \leq C_a\|\varphi\|_{L^p(H_a)}^{1-1/p}
+ \|\varphi\|_{W^{1,p}(H_a)}^{1/p}.
+\]
+\end{Proposition}
+
+\begin{Proof}
+对 $\varphi\circ T_a$ 应用 Proposition~\ref{prop:chap3-flat-trace-inequality}, 再用 Theorem~\ref{thm:chap3-sobolev-change-of-variables}及边界面积元 $J_a(\bar x)\,\mathrm d\bar x$ 的上下界.
+\end{Proof}
+
+\begin{Theorem}
+\label{thm:chap3-trace-operator}
+设 $\Omega$ 为边界紧的 Lipschitz 区域, $1\leq p<+\infty$. 存在 $C>0$ 使
+\[
+ \|\varphi|_{\partial\Omega}\|_{L^p(\partial\Omega)}
+ \leq C\|\varphi\|_{L^p(\Omega)}^{1-1/p}
+ \|\varphi\|_{W^{1,p}(\Omega)}^{1/p},
+ \qquad\varphi\in\mathcal D(\mathbb R^d).
+\]
+因而存在唯一连续线性算子
+\[
+ \gamma_0:W^{1,p}(\Omega)\longrightarrow L^p(\partial\Omega),
+\]
+它在 $C_c^\infty(\overline\Omega)$ 上等于边界限制, 称为迹算子.
+\end{Theorem}
+
+\textbf{Remark 2.8:} Theorem~\ref{thm:chap3-zero-trace-characterization} 将证明 $\ker\gamma_0=W_0^{1,p}(\Omega)$.
+
+\begin{Proof}
+取边界的有限开覆盖及单位分解, 对每个 $\varphi\psi_i$ 旋转到 Lipschitz 半空间并应用 Proposition~\ref{prop:chap3-half-space-trace-inequality}. 对有限项求和即得估计; 再利用 Theorem~\ref{thm:chap3-smooth-density-sobolev} 延拓算子.
+\end{Proof}
+
+\begin{Definition}
+\label{def:chap3-boundary-trace-space}
+设 $1<p<+\infty$. 定义
+\[
+ W^{1-1/p,p}(\partial\Omega)=\gamma_0(W^{1,p}(\Omega)),
+ \quad
+ \|v\|_{W^{1-1/p,p}(\partial\Omega)}
+ =\inf_{\substack{u\in W^{1,p}(\Omega)\\\gamma_0u=v}}\|u\|_{W^{1,p}(\Omega)}.
+\]
+这是 Banach 空间.
+\end{Definition}
+
+\textbf{Remark 2.9:} 此空间只依赖流形 $\partial\Omega$, 不依赖选取边界哪一侧的区域. 它也可由边界图上的分数 Sobolev 范数内蕴定义. 当 $p=1$ 时约定 $W^{0,1}(\partial\Omega)=L^1(\partial\Omega)$.
+
+\begin{Theorem}
+\label{thm:chap3-trace-space-properties}
+在 Definition~\ref{def:chap3-boundary-trace-space} 的记号下:
+\begin{itemize}
+\item $\gamma_0$ 从 $W^{1,p}(\Omega)$ 连续满射到 $W^{1-1/p,p}(\partial\Omega)$;
+\item $C^{0,1}(\partial\Omega)$ 包含且稠密于 $W^{1-1/p,p}(\partial\Omega)$;
+\item $W^{1-1/p,p}(\partial\Omega)$ 稠密于 $L^p(\partial\Omega)$.
+\end{itemize}
+\end{Theorem}
+
+\begin{Proof}
+第一点由范数定义得到. 对 $v=\gamma_0u$, $S_\varepsilon u$ 的迹为 Lipschitz 函数, 并在迹空间中趋于 $v$, 得第二点. 第三点由 Lipschitz 函数在 $L^p(\partial\Omega)$ 中稠密得到.
+\end{Proof}
+
+对 $\varphi\in W^{1,p'}(\Omega)$ 和 $\Phi\in W^{1,p}(\Omega)^d$, Stokes 公式延拓为
+\begin{equation}
+ \int_\Omega\varphi\operatorname{div}\Phi\,\mathrm dx
+ +\int_\Omega\Phi\cdot\nabla\varphi\,\mathrm dx
+ =\int_{\partial\Omega}\gamma_0(\varphi)(\gamma_0(\Phi)\cdot\nu)\,\mathrm d\sigma.
+ \label{eq:chap3-sobolev-stokes-formula}
+\end{equation}
+
+\paragraph{迹提升算子}
+
+令 $\widetilde\Omega=\Omega^c$. 用内外两个延拓算子定义
+\[
+ \widetilde R_0u=\left.E_{\widetilde\Omega}\bigl((E_\Omega u)|_{\widetilde\Omega}\bigr)\right|_\Omega.
+\]
+由式\eqref{eq:chap3-extension-zero-complement}, $\widetilde R_0$ 在 $W_0^{1,p}(\Omega)$ 上为零, 因而只依赖 $u$ 的迹.
+
+\begin{Theorem}[Lifting operator]
+\label{thm:chap3-trace-lifting-operator}
+设 $\Omega$ 为边界紧的 Lipschitz 区域, $1<p<+\infty$. 存在线性连续算子
+\[
+ R_0:W^{1-1/p,p}(\partial\Omega)\longrightarrow W^{1,p}(\Omega),
+ \qquad\gamma_0\circ R_0=\operatorname{Id}.
+\]
+\end{Theorem}
+
+\begin{Proof}
+对 $v=\gamma_0u$ 定义 $R_0v=\widetilde R_0u$. 定义与代表元无关. 连续性由
+\[
+ \|R_0v\|_{W^{1,p}}\leq\|\widetilde R_0\|\|u\|_{W^{1,p}}
+\]
+并对所有满足 $\gamma_0u=v$ 的 $u$ 取下确界得到.
+\end{Proof}
+
+\textbf{Remark 2.10:} 当 $p=1$ 时不存在这样的连续线性提升, 但存在从 $L^1(\partial\Omega)$ 到 $W^{1,1}(\Omega)$ 的连续非线性提升.
+
+\paragraph{高阶迹}
+
+对 $k\geq1$ 和 $1<p<+\infty$, 定义 $W^{k-1/p,p}(\partial\Omega)=\gamma_0(W^{k,p}(\Omega))$. 若 $\Omega$ 为 $C^{k-1,1}$ 区域, 则 $R_0$ 连续映入 $W^{k,p}(\Omega)$. 关键估计是
+\begin{equation}
+ \|(E_\Omega u)|_{\Omega^c}\|_{W^{k,p}(\Omega^c)}
+ \leq C\|u\|_{W^{k,p}(\Omega)}.
+ \label{eq:chap3-higher-order-extension-bound}
+\end{equation}
+
+\textbf{Remark 2.11:} 一般不能断言 $E_\Omega u\in W^{k,p}(\mathbb R^d)$; 可构造具有该性质但不满足式\eqref{eq:chap3-extension-zero-complement}的其他延拓算子.
+
+若 $\Omega$ 为 $C^{1,1}$ 区域, 对 $u\in W^{2,p}(\Omega)$ 定义 $\gamma_\nu(u)=\gamma_0(\nabla u)\cdot\nu$.
+
+\begin{Theorem}
+\label{thm:chap3-normal-trace-lifting}
+设 $\Omega$ 为边界紧的 $C^{1,1}$ 区域. 存在连续线性算子
+\[
+ R_\nu:W^{1-1/p,p}(\partial\Omega)\longrightarrow W^{2,p}(\Omega)
+\]
+满足 $\gamma_\nu\circ R_\nu=\operatorname{Id}$ 且 $\gamma_0\circ R_\nu=0$.
+\end{Theorem}
+
+其证明推迟到 Section~\ref{subsec:chap3-regularized-distance}.
+
+\textbf{Remark 2.12:} 因而
+\[
+ R(g_0,g_1)=R_0g_0+R_\nu\bigl(g_1-\gamma_\nu(R_0g_0)\bigr)
+\]
+同时满足 $\gamma_0R(g_0,g_1)=g_0$ 和 $\gamma_\nu R(g_0,g_1)=g_1$.
+
+\subsubsection{Sobolev 空间的对偶理论}
+\label{subsec:chap3-sobolev-duality}
+
+对 $m\geq1$ 定义
+\begin{equation}
+ W^{-m,p'}(\Omega)=\left\{u\in\mathcal D'(\Omega):
+ u=\sum_{|\alpha|\leq m}\partial^\alpha f_\alpha,
+ \ f_\alpha\in L^{p'}(\Omega)\right\},
+ \label{eq:chap3-negative-sobolev-definition}
+\end{equation}
+并赋予商范数
+\begin{equation}
+ \|u\|_{W^{-m,p'}}=
+ \inf_{u=\sum\partial^\alpha f_\alpha}
+ \left(\sum_{|\alpha|\leq m}\|f_\alpha\|_{L^{p'}}^{p'}\right)^{1/p'},
+ \label{eq:chap3-negative-sobolev-norm}
+\end{equation}
+$p'=+\infty$ 时以相应的上确界代替求和范数.
+
+\begin{Theorem}
+\label{thm:chap3-negative-sobolev-duality}
+对所有 $m\geq1$:
+\begin{enumerate}
+\item $W^{-m,p'}(\Omega)$ 是 Banach 空间;
+\item 若 $1<p\leq+\infty$, 则 $W^{-m,p'}(\Omega)'$ 与 $W_0^{m,p}(\Omega)$ 同构;
+\item 若 $1\leq p<+\infty$, 则 $W_0^{m,p}(\Omega)'$ 与 $W^{-m,p'}(\Omega)$ 同构.
+\end{enumerate}
+\end{Theorem}
+
+\begin{Proof}
+令 $\Phi:(L^{p'}(\Omega))^{N_m}\to W^{-m,p'}(\Omega)$ 把 $(f_\alpha)$ 映到 $\sum\partial^\alpha f_\alpha$. 该映射连续满射, 式\eqref{eq:chap3-negative-sobolev-norm}正是商空间范数, 故像空间完备. 对 $\Phi$ 取伴随并识别 $(L^{p'})'$ 与 $L^p$, 可知消去 $\ker\Phi$ 的泛函恰对应
+$(\partial^\alpha v)_{|\alpha|\leq m}$, 其中 $v\in W_0^{m,p}(\Omega)$. 这给出后两项同构.
+\end{Proof}
+
+相应对偶作用写为
+\begin{equation}
+ \left\langle\sum_{|\alpha|\leq m}\partial^\alpha f_\alpha,\varphi\right\rangle
+ =\int_\Omega\sum_{|\alpha|\leq m}(-1)^{|\alpha|}f_\alpha\partial^\alpha\varphi\,\mathrm dx.
+ \label{eq:chap3-negative-sobolev-pairing}
+\end{equation}
+并且
+\begin{equation}
+ \|u\|_{W^{-m,p'}}=
+ \sup_{0\neq\varphi\in W_0^{m,p}(\Omega)}
+ \frac{\langle u,\varphi\rangle}{\|\varphi\|_{W_0^{m,p}}}.
+ \label{eq:chap3-negative-sobolev-dual-norm}
+\end{equation}
+
+\textbf{Remark 2.13:} 式\eqref{eq:chap3-negative-sobolev-dual-norm}在 $p=+\infty$ 时仍成立. 当 $p=2$ 时, 由此得到 $H^{-m}(\Omega)$ 的 Hilbert 范数.
+
+\begin{Definition}
+\label{def:chap3-negative-boundary-space}
+对边界紧的 Lipschitz 区域和 $1\leq p<+\infty$, 定义
+\[
+ W^{-1/p',p'}(\partial\Omega)=W^{1-1/p,p}(\partial\Omega)'.
+\]
+当 $p=1$ 时约定 $W^{0,\infty}(\partial\Omega)=L^\infty(\partial\Omega)$.
+\end{Definition}
+
+\begin{Proposition}
+\label{prop:chap3-negative-sobolev-mollification}
+对 $f\in W^{-1,p}(\Omega)$, $1\leq p<+\infty$, 有
+\[
+ \|S_\varepsilon f-f\|_{W^{-1,p}}\to0.
+\]
+\end{Proposition}
+
+\begin{Proof}
+写 $f=g_0+\sum_j\partial_jg_j$, 其中 $g_j\in L^p$. Proposition~\ref{prop:chap3-mollifier-properties}处理 $g_0$; 对导数项加入并减去 $\partial_jS_\varepsilon g_j$, 再用 Theorem~\ref{thm:chap3-friedrichs-commutator}和 $S_\varepsilon g_j\to g_j$.
+\end{Proof}
+
+\textbf{Remark 2.14:} 因此 $C_c^\infty(\overline\Omega)$ 在 $W^{-1,p}(\Omega)$ 中稠密.
+
+\begin{Theorem}
+\label{thm:chap3-negative-sobolev-commutator}
+设 $\alpha_j\in\mathbb R^k$ 为常向量, 并定义 $Df=\sum_j\partial_j(\alpha_j\cdot f)$. 对 $f\in W^{-1,p}(\Omega)^k$,
+\[
+ \|S_\varepsilon Df-DS_\varepsilon f\|_{W^{-1,p}}\to0.
+\]
+特别地, 若 $Df\in W^{-1,p}$, 则 $DS_\varepsilon f\to Df$ 于 $W^{-1,p}$.
+\end{Theorem}
+
+\begin{Proof}
+先对光滑 $f$ 使用 Theorem~\ref{thm:chap3-friedrichs-commutator}的计算, 再由 Proposition~\ref{prop:chap3-negative-sobolev-mollification}稠密逼近. 以 $W_0^{1,p'}$ 的测试函数估计每个交换子项即可保持一致界.
+\end{Proof}
+
+\subsubsection{平移估计}
+\label{subsec:chap3-translation-estimates}
+
+\begin{Definition}
+\label{def:chap3-translation-difference-operators}
+对 $h\in\mathbb R^d$, 定义 $\tau_hf(x)=f(x+h)$ 和 $\delta_hf=\tau_hf-f$.
+\end{Definition}
+
+\begin{Theorem}
+\label{thm:chap3-interior-translation-estimate}
+设 $\Omega$ 为任意开集, $1\leq p\leq+\infty$. 对 $h\in\mathbb R^d$ 和 $f\in W^{1,p}(\Omega)$,
+\[
+ \|\tau_hf-f\|_{L^p(\Omega_{2|h|})}\leq|h|\|\nabla f\|_{L^p(\Omega)}.
+\]
+\end{Theorem}
+
+\begin{Proof}
+以截断函数把 $f$ 延拓为 $g\in W^{1,p}(\mathbb R^d)$, 在 $\Omega_{2|h|}$ 上 $g=f$. 对光滑逼近 $g_\varepsilon$ 使用
+\[
+ g_\varepsilon(x+h)-g_\varepsilon(x)=\int_0^1\nabla g_\varepsilon(x+th)\cdot h\,\mathrm dt,
+\]
+再用 Jensen 不等式积分并令 $\varepsilon\to0$.
+\end{Proof}
+
+\begin{Lemma}
+\label{lem:chap3-translation-duality}
+若 $f\in L^p(\mathbb R^d)$, $g\in L^{p'}(\mathbb R^d)$, 则
+\[
+ \int\tau_h(f)g=\int f\tau_{-h}(g),\qquad
+ \int\delta_h(f)g=\int f\delta_{-h}(g).
+\]
+\end{Lemma}
+
+\begin{Proof}
+作仿射变量替换即可.
+\end{Proof}
+
+\begin{Lemma}
+\label{lem:chap3-translation-sobolev-bound}
+设 $k\geq0$, $f\in W^{k,p}(\mathbb R^d)$. 则
+\[
+ \|\delta_hf\|_{W^{k-1,p}}\leq|h|\|\nabla f\|_{W^{k-1,p}}
+ \leq|h|\|f\|_{W^{k,p}}.
+\]
+\end{Lemma}
+
+\begin{Proof}
+$k\geq1$ 时应用 Theorem~\ref{thm:chap3-interior-translation-estimate}于每个弱导数. $k=0$ 时用 Lemma~\ref{lem:chap3-translation-duality}和 $W^{1,p'}$ 对偶性.
+\end{Proof}
+
+对标准基 $(e_i)$ 定义
+\[
+ |||f|||_{k+1,p}=\|f\|_{W^{k,p}}+
+ \sum_{i=1}^d\sup_{0<h<1}\frac1h\|\delta_{he_i}f\|_{W^{k,p}}.
+\]
+
+\begin{Proposition}
+\label{prop:chap3-sobolev-difference-quotient-characterization}
+有
+\[
+ W^{k+1,p}(\mathbb R^d)=\{f\in W^{k,p}(\mathbb R^d):|||f|||_{k+1,p}<+\infty\},
+\]
+且 $\|\nabla f\|_{W^{k,p}}\leq|||f|||_{k+1,p}$.
+\end{Proposition}
+
+\begin{Proof}
+正向由 Lemma~\ref{lem:chap3-translation-sobolev-bound}得到. 反向中, 差商族 $\delta_{he_i}f/h$ 在 $W^{k,p}$ 中有界, 取弱收敛子列. Lemma~\ref{lem:chap3-translation-duality}表明其分布极限为 $\partial_if$, 因而 $\partial_if\in W^{k,p}$; 再由范数的弱下半连续性得到估计.
+\end{Proof}
+
+\subsubsection{Sobolev 嵌入}
+\label{subsec:chap3-sobolev-embeddings}
+
+\begin{Definition}
+\label{def:chap3-critical-exponent}
+对 $1\leq p\leq+\infty$, 定义临界指数 $p^*$ 为
+\[
+ \frac1{p^*}=\frac1p-\frac1d\quad(p<d),
+ \qquad 1\leq p^*<+\infty\quad(p=d),
+ \qquad p^*=+\infty\quad(p>d).
+\]
+\end{Definition}
+
+\begin{Theorem}[Sobolev embeddings]
+\label{thm:chap3-sobolev-embeddings}
+设 $\Omega$ 为 $\mathbb R^d$ 中的有界 Lipschitz 区域.
+\begin{enumerate}
+\item 若 $1\leq p<+\infty$ 且 $1\leq q\leq p^*$, 则
+\begin{equation}
+ W^{1,p}(\Omega)\subset L^q(\Omega),
+ \label{eq:chap3-sobolev-lq-embedding}
+\end{equation}
+当 $q<p^*$ 时嵌入紧. 若 $d<p\leq+\infty$ 且 $0\leq\alpha\leq1-d/p$, 则
+\begin{equation}
+ W^{1,p}(\Omega)\subset C^{0,\alpha}(\overline\Omega),
+ \label{eq:chap3-sobolev-holder-embedding}
+\end{equation}
+当 $\alpha<1-d/p$ 时嵌入紧.
+\item 对 $1\leq q<d'$, 有 $L^1(\Omega)\subset W^{-1,q}(\Omega)$; 对 $1<p<d$, 有 $L^p(\Omega)\subset W^{-1,p^*}(\Omega)$; 对 $p\geq d$, 有 $L^p(\Omega)\subset W^{-1,\infty}(\Omega)$.
+\end{enumerate}
+\end{Theorem}
+
+\begin{Proof}
+由延拓算子只需证明全空间结论. 当 $p=1$ 时, 对 $u\in\mathcal D(\mathbb R^d)$ 逐坐标积分并用 H\"older 不等式, 得
+\begin{equation}
+ \|u\|_{L^{d/(d-1)}(\mathbb R^d)}\leq C\|\nabla u\|_{L^1(\mathbb R^d)}.
+ \label{eq:chap3-gagliardo-nirenberg-l1}
+\end{equation}
+对一般 $1<p<d$, 将式\eqref{eq:chap3-gagliardo-nirenberg-l1}应用于 $v=|u|^\gamma$, 取 $\gamma=p(d-1)/(d-p)$, 得
+\begin{equation}
+ \|u\|_{L^{p^*}(\mathbb R^d)}\leq C\|\nabla u\|_{L^p(\mathbb R^d)}.
+ \label{eq:chap3-critical-sobolev-inequality}
+\end{equation}
+其余 $q$ 由插值得到. 紧性利用有限覆盖、平移估计 Theorem~\ref{thm:chap3-interior-translation-estimate}和 Riesz--Fr\'echet--Kolmogorov 判据. 当 $p>d$ 时, 对 $q>d$ 先有
+\begin{equation}
+ W_0^{1,q}(\Omega)\subset W^{1,q}(\Omega)\subset L^\infty(\Omega),
+ \label{eq:chap3-supercritical-linfty-embedding}
+\end{equation}
+再由局部平均与梯度估计得到 H\"older 连续性. 第二部分对第一部分取对偶即得.
+\end{Proof}
+
+\textbf{Remark 2.15:} 局部嵌入对任意 Lipschitz 区域均成立. 对 $u\in W^{1,p}(\Omega)$, 其局部正则性由截断 $\varphi u$ 与全空间嵌入得到.
+
+\textbf{Remark 2.16:} 当 $p<d$ 时, 临界嵌入 $W^{1,p}\subset L^{p^*}$ 连续但一般不紧; 平移或缩放序列给出典型反例.
+
+\begin{Proposition}
+\label{prop:chap3-gagliardo-nirenberg-interpolation}
+设 $\Omega$ 为边界紧的 Lipschitz 区域, $p\leq q\leq p^*$. 存在 $C>0$ 使
+\[
+ \|u\|_{L^q}\leq C\|u\|_{L^p}^{1+d/q-d/p}
+ \|u\|_{W^{1,p}}^{d/p-d/q},
+ \qquad u\in W^{1,p}(\Omega).
+\]
+\end{Proposition}
+
+\begin{Proof}
+延拓到全空间. 对 $v_\alpha(x)=u(\alpha x)$ 应用 Sobolev 嵌入,
+\begin{equation}
+ \|v_\alpha\|_{L^q}\leq C\bigl(\|v_\alpha\|_{L^p}+\|\nabla v_\alpha\|_{L^p}\bigr).
+ \label{eq:chap3-scaled-sobolev-bound}
+\end{equation}
+代入各范数的缩放律并优化 $\alpha$ 即得断言.
+\end{Proof}
+
+\textbf{Remark 2.17:} 若全空间中 $u$ 具有足够衰减, 可在估计右端只保留梯度半范数; 有界区域则必须保留低阶项.
+
+\begin{Theorem}
+\label{thm:chap3-boundary-sobolev-embedding}
+设 $1<p<d$. 对
+\[
+ p\leq r\leq\frac{p(d-1)}{d-p}
+\]
+有 $W^{1-1/p,p}(\partial\Omega)\subset L^r(\partial\Omega)$, 且
+\begin{equation}
+ \|\gamma_0u\|_{L^r(\partial\Omega)}
+ \leq C\|u\|_{L^p(\Omega)}^{1-d/p+(d-1)/r}
+ \|u\|_{W^{1,p}(\Omega)}^{d/p-(d-1)/r}.
+ \label{eq:chap3-boundary-interpolation-inequality}
+\end{equation}
+当 $p=d$ 时, 结论对每个 $p\leq r<+\infty$ 成立.
+\end{Theorem}
+
+\begin{Proof}
+在平坦半空间中沿法向对 $|\varphi|^r$ 使用微积分基本定理, 再依次应用 H\"older 与 Proposition~\ref{prop:chap3-gagliardo-nirenberg-interpolation}. Lipschitz 半空间通过 $T_a$ 变量替换处理, 一般区域再由有限覆盖和单位分解得到.
+\end{Proof}
+
+\textbf{Remark 2.18:} 这说明迹空间严格嵌入适当的边界 Lebesgue 空间. 端点指数对应临界迹嵌入.
+
+\begin{Theorem}[Product theorem]
+\label{thm:chap3-sobolev-product}
+设 $\Omega\subset\mathbb R^3$ 为有界 Lipschitz 区域.
+\begin{enumerate}
+\item 若 $1\leq p\leq q\leq+\infty$ 且 $1/q^*+1/p\leq1$, 令 $1/t=1/q^*+1/p$, 则乘法从 $W^{1,p}\times W^{1,q}$ 连续映到 $W^{1,t}$.
+\item 若 $1/p+1/q\leq1$, 令 $1/t_1=1/p^*+1/q^*$, 则乘法从 $W^{1,p}\times W^{-1,q}$ 连续映到 $W^{-1,\sigma}$; 当 $1/p+1/q=1$ 且 $p\leq3$ 时取任意 $\sigma<t_1$, 其余情形可取 $\sigma\leq t_1$.
+\end{enumerate}
+\end{Theorem}
+
+\begin{Proof}
+第一项由 Sobolev 嵌入、H\"older 不等式及分布恒等式
+\begin{equation}
+ \frac{\partial(uv)}{\partial x_i}
+ =u\frac{\partial v}{\partial x_i}+v\frac{\partial u}{\partial x_i}
+ \label{eq:chap3-sobolev-product-rule}
+\end{equation}
+得到. 对第二项写 $v=v_0+\sum_{j=1}^3\partial_jv_j$, 并定义
+\[
+ uv=uv_0+\sum_j\partial_j(uv_j)-\sum_jv_j\partial_ju.
+\]
+逐项使用第一项、Theorem~\ref{thm:chap3-sobolev-embeddings}及负阶 Sobolev 嵌入即可得到所列指数; 临界 $L^1$ 情形必须损失端点.
+\end{Proof}
+
+\subsubsection{Poincar\'e 与 Hardy 不等式}
+\label{subsec:chap3-poincare-hardy}
+
+\begin{Proposition}[Generalised Poincar\'e inequality]
+\label{prop:chap3-generalized-poincare}
+设 $\Omega$ 为有界连通 Lipschitz 区域, $\Gamma_1\subset\partial\Omega$ 的表面测度非零, 且
+\[
+ W_{0,\Gamma_1}^{1,p}(\Omega)=\{u\in W^{1,p}(\Omega):\gamma_0u|_{\Gamma_1}=0\}.
+\]
+则 $\|u\|_{L^p}\leq C\|\nabla u\|_{L^p}$ 对所有 $u\in W_{0,\Gamma_1}^{1,p}$ 成立.
+\end{Proposition}
+
+\begin{Proof}
+非零表面测度等价于
+\begin{equation}
+ \int_{\partial\Omega}\mathbf1_{\Gamma_1}\,\mathrm d\sigma>0.
+ \label{eq:chap3-boundary-part-positive-measure}
+\end{equation}
+若结论不成立, 归一化可取 $\|u_n\|_{L^p}=1$ 且 $\|\nabla u_n\|_{L^p}\to0$. 紧 Sobolev 嵌入给出 $u_n\to u$ 于 $L^p$, 因而
+\begin{equation}
+ \|u\|_{L^p}=1.
+ \label{eq:chap3-poincare-limit-normalization}
+\end{equation}
+但 $\nabla u=0$, 连通性推出 $u$ 为常数; 零迹与式\eqref{eq:chap3-boundary-part-positive-measure}又推出该常数为零, 与式\eqref{eq:chap3-poincare-limit-normalization}矛盾.
+\end{Proof}
+
+\begin{Proposition}[Poincar\'e--Wirtinger inequality]
+\label{prop:chap3-poincare-wirtinger}
+设 $\Omega$ 有界、连通且为 Lipschitz 区域. 则
+\[
+ \left\|u-\frac1{|\Omega|}\int_\Omega u\,\mathrm dx\right\|_{W^{1,p}}
+ \leq C\|\nabla u\|_{L^p}.
+\]
+等价地, $\|u\|_{L^p}\leq C(\|\nabla u\|_{L^p}+|\Omega|^{-1}|\int_\Omega u|)$.
+\end{Proposition}
+
+\begin{Proof}
+沿用 Proposition~\ref{prop:chap3-generalized-poincare} 的紧性反证法. 极限函数梯度为零而均值为零, 因而只能为零, 与归一化矛盾.
+\end{Proof}
+
+\begin{Proposition}[Hardy inequality in $W_0^{1,p}(\Omega)$]
+\label{prop:chap3-hardy-boundary-distance}
+设 $\Omega$ 为边界紧的 Lipschitz 区域, $1<p<+\infty$, $\delta(x)=d(x,\partial\Omega)$. 则
+\[
+ \left\|\frac u\delta\right\|_{L^p(\Omega)}\leq C\|\nabla u\|_{L^p(\Omega)},
+ \qquad u\in W_0^{1,p}(\Omega).
+\]
+该结论在 $p=1$ 时不成立.
+\end{Proposition}
+
+\begin{Proof}
+在 $\mathbb R_+^d$ 上对 $u(\bar x,x_d)/x_d$ 应用一维 Hardy 不等式. 对 $H_a$ 使用 $T_a$ 变量替换, 并由 Lipschitz 性证明 $|(T_a^{-1}x)_d|\leq C\delta(x)$. 一般区域取更细覆盖, 使
+\begin{equation}
+ \delta(x)=d(x,\partial\Omega)=d(x,R_{\sigma_i}\partial H_{a_i}),
+ \qquad x\in U_i\cap\Omega.
+ \label{eq:chap3-local-boundary-distance-identity}
+\end{equation}
+对单位分解的每一项应用半空间结论; 内部项由 $\inf_{U_0}\delta>0$ 控制. 求和后再用 Proposition~\ref{prop:chap3-generalized-poincare}消去低阶项.
+\end{Proof}
+
+\begin{Corollary}
+\label{cor:chap3-hardy-multiplier}
+若 $f\in L^\infty(\Omega)$ 且 $\delta\nabla f\in L^\infty(\Omega)$, 则对 $u\in W_0^{1,p}(\Omega)$ 有 $fu\in W_0^{1,p}(\Omega)$, 且
+\[
+ \|fu\|_{W_0^{1,p}}\leq C\|u\|_{W_0^{1,p}}.
+\]
+\end{Corollary}
+
+\begin{Proof}
+由稠密性只需考虑 $u\in\mathcal D(\Omega)$. 写
+$\nabla(fu)=f\nabla u+(\delta\nabla f)(u/\delta)$, 再用 Proposition~\ref{prop:chap3-hardy-boundary-distance}.
+\end{Proof}
+
+\subsubsection{一阶微分算子的定义域}
+\label{subsec:chap3-first-order-operator-domains}
+
+对式\eqref{eq:chap3-first-order-divergence-operator}中的 $D$, 定义
+\[
+ W_D^{p,r}(\Omega)=\{u\in L^p(\Omega)^k:Du\in L^r(\Omega)\},
+ \qquad\|u\|_{W_D^{p,r}}=\|u\|_{L^p}+\|Du\|_{L^r}.
+\]
+
+\begin{Theorem}
+\label{thm:chap3-graph-space-density}
+在 Theorem~\ref{thm:chap3-friedrichs-commutator} 的假设下, $W_D^{p,r}(\Omega)$ 是包含 $W^{1,p}(\Omega)^k$ 的 Banach 空间. 若 $p<+\infty$, 则 $C_c^\infty(\overline\Omega)^k$ 在其中稠密.
+\end{Theorem}
+
+\begin{Proof}
+图范数 Cauchy 列分别在 $L^p$ 与 $L^r$ 中收敛; 分布闭性表明极限仍满足 $Du\in L^r$. 稠密性由 $S_\varepsilon u\to u$ 及 Theorem~\ref{thm:chap3-friedrichs-commutator}得到.
+\end{Proof}
+
+\begin{Theorem}
+\label{thm:chap3-generalized-normal-trace}
+设 $1<p\leq+\infty$, $q\geq p'$, $(p,q)\neq(+\infty,+\infty)$, 并以
+\[
+ \frac1{\underline t}=\min\left(\frac1{p'},\frac1{r'}+\frac1d\right)
+\]
+定义 $\underline t$. 对每个 $t>\underline t$, 存在唯一连续线性算子
+$\gamma_{\alpha\cdot\nu}:W_D^{p,r}(\Omega)\to W^{-1/t',t'}(\partial\Omega)$, 使
+\begin{equation}
+ \gamma_{\alpha\cdot\nu}(u)=\gamma_0(u)\cdot(\gamma_0(\alpha)\nu),
+ \qquad u\in W^{1,p}(\Omega)^k,
+ \label{eq:chap3-generalized-normal-trace-definition}
+\end{equation}
+且对 $u\in W_D^{p,r}$, $\varphi\in W^{1,t}(\Omega)$ 有
+\begin{equation}
+ \int_\Omega(Du)\varphi\,\mathrm dx
+ +\int_\Omega\sum_{j=1}^d(u\cdot\alpha_j)\partial_j\varphi\,\mathrm dx
+ =\langle\gamma_{\alpha\cdot\nu}u,\gamma_0\varphi\rangle.
+ \label{eq:chap3-generalized-stokes-formula}
+\end{equation}
+除 $q=d$ 或 $q=p'>d$ 两种情形外, 还可取 $t=\underline t$.
+\end{Theorem}
+
+\begin{Proof}
+对光滑 $u$ 由式\eqref{eq:chap3-sobolev-stokes-formula}有
+\begin{equation}
+ \int_\Omega(Du)\varphi+\int_\Omega\sum_j(u\cdot\alpha_j)\partial_j\varphi
+ =\int_{\partial\Omega}\varphi u\cdot(\gamma_0(\alpha)\nu)\,\mathrm d\sigma.
+ \label{eq:chap3-smooth-generalized-stokes}
+\end{equation}
+令 $T_\varepsilon u=(S_\varepsilon u)\cdot(\gamma_0(\alpha)\nu)$. 对固定截断 $\theta=1$ 于边界, 两个参数的差满足
+\begin{equation}
+ \begin{split}
+ |\langle T_{\varepsilon_1}u-T_{\varepsilon_2}u,\gamma_0\varphi\rangle|
+ \leq{}&\|DS_{\varepsilon_1}u-DS_{\varepsilon_2}u\|_{L^r}\|\theta\varphi\|_{L^{r'}}\\
+ &+\sum_j\|(S_{\varepsilon_1}u-S_{\varepsilon_2}u)\alpha_j(|\theta|+|\nabla\theta|)\|_{L^{t'}}
+ \|\varphi\|_{W^{1,t}}.
+ \end{split}
+ \label{eq:chap3-normal-trace-cauchy-bound}
+\end{equation}
+Sobolev 嵌入与 Proposition~\ref{prop:chap3-mollifier-properties}说明右端趋于零, 因而 $T_\varepsilon u$ 在目标负阶迹空间中收敛. 其极限定义 $\gamma_{\alpha\cdot\nu}u$, 并由式\eqref{eq:chap3-smooth-generalized-stokes}得到式\eqref{eq:chap3-generalized-stokes-formula}. 两个例外恰对应所用的临界 $L^\infty$ 嵌入失效.
+\end{Proof}
+
+\begin{Definition}
+\label{def:chap3-zero-boundary-graph-space}
+定义 $W_{D,0}^{p,r}(\Omega)$ 为 $\mathcal D(\Omega)^k$ 在 $W_D^{p,r}(\Omega)$ 中的闭包.
+\end{Definition}
+
+\begin{Theorem}
+\label{thm:chap3-graph-space-zero-trace}
+对 $u\in W_D^{p,r}(\Omega)$,
+\[
+ u\in W_{D,0}^{p,r}(\Omega)
+ \Longleftrightarrow u\in\ker\gamma_{\alpha\cdot\nu}
+ \Longleftrightarrow\overline u\in W_D^{p,r}(\mathbb R^d).
+\]
+\end{Theorem}
+
+\begin{Proof}
+紧支光滑函数的广义法向迹为零, 连续性给出第一包含. 若迹为零, 式\eqref{eq:chap3-generalized-stokes-formula}表明零延拓的分布导数等于 $\overline{Du}\in L^r$, 故零延拓属于全空间图空间. 反之, 对零延拓应用 Theorem~\ref{thm:chap3-adjoint-mollifier-commutator}, $\widetilde S_\varepsilon\overline u\in\mathcal D(\Omega)^k$ 在图范数中趋于 $u$.
+\end{Proof}
+
+\begin{Theorem}
+\label{thm:chap3-zero-trace-characterization}
+设 $\Omega$ 为边界紧的 Lipschitz 区域, $1\leq p<+\infty$. 则
+\begin{equation}
+ W^{1,p}(\Omega)=\bigcap_{i=1}^dW_{\partial_{x_i}}^{p,p}(\Omega),
+ \label{eq:chap3-sobolev-intersection-graph-spaces}
+\end{equation}
+\begin{equation}
+ W_0^{1,p}(\Omega)=\bigcap_{i=1}^dW_{\partial_{x_i},0}^{p,p}(\Omega).
+ \label{eq:chap3-zero-sobolev-intersection-graph-spaces}
+\end{equation}
+此外, 对 $u\in W^{1,p}(\Omega)$,
+\begin{equation}
+ \gamma_0(u)\nu_i=\gamma_{\nu_i}(u),\qquad i=1,\ldots,d,
+ \label{eq:chap3-coordinate-normal-traces}
+\end{equation}
+且
+\begin{equation}
+ \gamma_0(u)=\sum_{i=1}^d\gamma_{\nu_i}(u)\nu_i.
+ \label{eq:chap3-reconstruct-scalar-trace}
+\end{equation}
+最后,
+\[
+ u\in W_0^{1,p}(\Omega)
+ \Longleftrightarrow u\in\ker\gamma_0
+ \Longleftrightarrow\overline u\in W^{1,p}(\mathbb R^d).
+\]
+\end{Theorem}
+
+\begin{Proof}
+式\eqref{eq:chap3-sobolev-intersection-graph-spaces}是定义. 对每个坐标导数应用 Theorem~\ref{thm:chap3-graph-space-zero-trace}, 并使用同一个外移磨光算子, 得式\eqref{eq:chap3-zero-sobolev-intersection-graph-spaces}. 在 Theorem~\ref{thm:chap3-generalized-normal-trace} 中取 $D=\partial_{x_i}$ 得式\eqref{eq:chap3-coordinate-normal-traces}; 再由 $\sum_i\nu_i^2=1$ 得式\eqref{eq:chap3-reconstruct-scalar-trace}. 最后的等价关系随即由式\eqref{eq:chap3-zero-sobolev-intersection-graph-spaces}与 Theorem~\ref{thm:chap3-graph-space-zero-trace}得到.
+\end{Proof}

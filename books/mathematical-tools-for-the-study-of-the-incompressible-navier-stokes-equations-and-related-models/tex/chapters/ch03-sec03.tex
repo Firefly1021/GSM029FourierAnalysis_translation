@@ -1,0 +1,513 @@
+\renewcommand{\thestatement}{3.\number\numexpr\value{statement}-54\relax}
+
+\subsection{区域边界附近的微积分}
+\label{sec:chap3-boundary-calculus}
+
+以下设 $\Omega$ 为边界 $\Gamma=\partial\Omega$ 紧的 $C^{k+1,1}$ 区域.
+
+\subsubsection{边界的局部坐标图描述}
+\label{subsec:chap3-boundary-local-charts}
+
+\begin{Proposition}[Definition and existence of local charts]
+\label{prop:chap3-boundary-local-chart}
+对每个 $\sigma\in\Gamma$, 存在包含 $0$ 的凸开集 $U_\sigma\subset\mathbb R^{d-1}$、包含 $\sigma$ 的开集 $V_\sigma\subset\mathbb R^d$ 和 $C^{k+1,1}$ 映射 $\varphi_\sigma:U_\sigma\to V_\sigma$, 使 $\varphi_\sigma(U_\sigma)=V_\sigma\cap\Gamma$, $\varphi_\sigma(0)=\sigma$, 且
+\begin{equation}
+ |u_1-u_2|\leq C|\varphi_\sigma(u_1)-\varphi_\sigma(u_2)|.
+ \label{eq:chap3-chart-inverse-lipschitz}
+\end{equation}
+称 $(U_\sigma,\varphi_\sigma)$ 为 $\Gamma$ 在 $\sigma$ 附近的局部坐标图. 坐标图可相容选取, 即重叠区上的转移映射 $\varphi_{\sigma_1}^{-1}\circ\varphi_{\sigma_2}$ 为 $C^{k+1,1}$ 微分同胚. 常数 $C$ 可由 $\Gamma$ 的有限坐标图覆盖统一选取.
+\end{Proposition}
+
+\begin{Proof}
+把 Definition~\ref{def:chap3-ckalpha-domain} 的边界图旋转后写成 $u\mapsto R_\sigma(u,a_\sigma(u))$. Lipschitz 逆估计给出式\eqref{eq:chap3-chart-inverse-lipschitz}; 坐标转移的正则性由逆函数定理得到.
+\end{Proof}
+
+\begin{Definition}
+\label{def:chap3-first-fundamental-form}
+在坐标图 $(U,\varphi)$ 中, 定义第一基本形式的矩阵
+\[
+ g(u)=(g_{ij}(u))_{1\leq i,j\leq d-1},
+ \qquad g_{ij}(u)=\left\langle\partial_{u_i}\varphi(u),\partial_{u_j}\varphi(u)\right\rangle.
+\]
+\end{Definition}
+
+\begin{Proposition}
+\label{prop:chap3-tangent-vector-metric}
+若 $\sigma=\varphi(u)$ 且 $F=\sum_if_i\partial_{u_i}\varphi(u)\in T_\sigma\Gamma$, 则
+\[
+ |F|^2={}^tf,g(u)f,
+ \qquad f=g(u)^{-1}\bigl(\langle F,\partial_{u_i}\varphi(u)\rangle\bigr)_i.
+\]
+\end{Proposition}
+
+\begin{Corollary}
+\label{cor:chap3-first-fundamental-positive}
+$g(u)$ 正定, 因而可逆且 $\det g(u)>0$.
+\end{Corollary}
+
+\subsubsection{到边界的距离与投影}
+\label{subsec:chap3-boundary-distance-projection}
+
+定义 $\psi_0(\sigma,s)=\sigma-s\nu(\sigma)$. 
+
+\begin{Theorem}
+\label{thm:chap3-tubular-neighborhood}
+存在 $\gamma,C>0$, 使
+\begin{equation}
+ |\sigma_1-\sigma_2|+|s_1-s_2|
+ \leq C|\psi_0(\sigma_1,s_1)-\psi_0(\sigma_2,s_2)|,
+ \label{eq:chap3-tubular-bi-lipschitz}
+\end{equation}
+对 $\sigma_i\in\Gamma$, $|s_i|<\gamma$ 成立. 此外 $\psi_0(\Gamma\times(0,\gamma))=O_\gamma$, 且 $\psi_0(\Gamma\times(-\gamma,0))\subset\Omega^c$.
+\end{Theorem}
+
+\begin{Proof}
+有限坐标图上的 Taylor 展开与法向正交性给出
+\begin{equation}
+ |\langle\sigma_2-\sigma_1,\nu(\sigma_1)\rangle|
+ \leq C|\sigma_1-\sigma_2|^2.
+ \label{eq:chap3-normal-quadratic-contact}
+\end{equation}
+若式\eqref{eq:chap3-tubular-bi-lipschitz}失败, 可取序列使
+\begin{equation}
+ n^{-1}(|\sigma_1^n-\sigma_2^n|+|s_1^n-s_2^n|)
+ >|\psi_0(\sigma_1^n,s_1^n)-\psi_0(\sigma_2^n,s_2^n)|.
+ \label{eq:chap3-tubular-contradiction-sequence}
+\end{equation}
+紧性和式\eqref{eq:chap3-normal-quadratic-contact}推出
+\begin{equation}
+ |s_1^n-s_2^n|\leq C\left(|\sigma_1^n-\sigma_2^n|^2+
+ |s_1^n|\,|\sigma_1^n-\sigma_2^n|\right),
+ \label{eq:chap3-normal-parameter-control}
+\end{equation}
+这与式\eqref{eq:chap3-tubular-contradiction-sequence}矛盾. 双射性和像集描述由法向线段与符号距离的定义得到.
+\end{Proof}
+
+因此存在唯一投影 $P_0:O_\gamma\to\Gamma$, 满足
+\begin{equation}
+ x=\psi_0(P_0(x),\delta(x))=P_0(x)-\delta(x)\nu(P_0(x)).
+ \label{eq:chap3-nearest-boundary-projection}
+\end{equation}
+若 $\Omega$ 为 $C^{1,1}$, 则 $P_0\in C^{1,1}$, $\delta\in C^{2,1}$, 并有
+\begin{equation}
+ \nabla\delta(x)=-\nu(P_0(x)),
+ \label{eq:chap3-distance-gradient-normal}
+\end{equation}
+以及
+\begin{equation}
+ \partial_{x_i}P_0(x)=
+ \bigl[I-\delta(x)d\nu(P_0(x))\bigr]^{-1}
+ \left(e_i+\partial_{x_i}\delta(x)\nu(P_0(x))\right).
+ \label{eq:chap3-boundary-projection-derivative}
+\end{equation}
+
+\subsubsection{正则化距离}
+\label{subsec:chap3-regularized-distance}
+
+取磨光核 $\eta$ 并令
+\[
+ G(x,\tau)=\int_B\delta\left(x+\frac\tau2z\right)\eta(z)\,\mathrm dz.
+\]
+$G$ 关于 $\tau$ 的 Lipschitz 常数不超过 $1/2$, 故 Banach 不动点定理给出唯一函数 $\rho$ 满足
+\begin{equation}
+ \rho(x)=G(x,\rho(x)).
+ \label{eq:chap3-regularized-distance-fixed-point}
+\end{equation}
+
+\begin{Definition}
+\label{def:chap3-regularized-distance}
+称式\eqref{eq:chap3-regularized-distance-fixed-point}定义的 $\rho$ 为 $\Omega$ 的正则化距离函数.
+\end{Definition}
+
+\begin{Proposition}
+\label{prop:chap3-regularized-distance-properties}
+$\rho(x)=0\Longleftrightarrow\delta(x)=0\Longleftrightarrow x\in\partial\Omega$, 且存在 $C_1,C_2>0$ 使
+\begin{equation}
+ C_1\leq\frac{\delta(x)}{\rho(x)}\leq C_2,
+ \qquad x\notin\partial\Omega.
+ \label{eq:chap3-distance-equivalence}
+\end{equation}
+$\rho\in C^{k+1,1}(\mathbb R^d)\cap C^\infty(\mathbb R^d\setminus\partial\Omega)$, 且 $|\partial^\alpha\rho(x)|\leq C/|\rho(x)|$ 当 $|\alpha|=k+3$. 在边界上 $\nabla\rho=\nabla\delta=-\nu$, 并且在边界的某邻域中 $|\nabla\rho|$ 有正下界.
+\end{Proposition}
+
+\begin{Proof}
+由固定点方程和 $\operatorname{Lip}(\delta)=1$ 得 $|\rho-\delta|\leq|\rho|/2$, 从而得到式\eqref{eq:chap3-distance-equivalence}. 隐函数定理给出边界外的光滑性; 对固定点方程求导并利用核的矩消失性质, 得到全局 $C^{k+1,1}$ 正则性和最高阶导数界. 在 $\rho=0$ 处利用 $\eta$ 的对称性即得 $\nabla\rho=\nabla\delta$.
+\end{Proof}
+
+\textbf{Remark 3.1:} $k+3$ 阶导数一般确会在边界附近增长, 否则边界将具有额外一级正则性.
+
+\textbf{Remark 3.2:} 即使通常距离 $\delta$ 在边界附近足够光滑, 它在区域内部也可能不光滑, 因而全局计算中仍宜使用 $\rho$.
+
+\begin{Proof}[Theorem~\ref{thm:chap3-normal-trace-lifting} 的证明]
+对 $g\in W^{1-1/p,p}(\partial\Omega)$ 取 $\alpha\leq C_1$ 且 $\alpha\operatorname{Lip}(\rho)<1$, 定义
+\[
+ R_\nu g(x)=-\rho(x)\int_B(R_0g)(x+\alpha\rho(x)z)\eta(z)\,\mathrm dz.
+\]
+微分并对核分部积分得到
+\begin{equation}
+ \begin{split}
+ \partial_{x_i}R_\nu g(x)={}&-\partial_{x_i}\rho(x)
+ \int_B(R_0g)(x+\alpha\rho(x)z)\psi(z)\,\mathrm dz\\
+ &-\frac1{\alpha^d\rho(x)^{d-1}}
+ \int_{\mathbb R^d}\partial_{x_i}(R_0g)(y)
+ \eta\left(\frac{y-x}{\alpha\rho(x)}\right)\,\mathrm dy,
+ \end{split}
+ \label{eq:chap3-normal-lifting-derivative}
+\end{equation}
+其中 $\psi=\eta-\operatorname{div}(\eta z)$. Jensen 不等式和变量替换 $x\mapsto x+\alpha\rho(x)z$ 给出 $\|R_\nu g\|_{W^{2,p}}\leq C\|g\|_{W^{1-1/p,p}}$. 边界上 $\rho=0$, $\nabla\rho=-\nu$, 因而 $\gamma_0R_\nu=0$, $\gamma_\nu R_\nu=g$.
+\end{Proof}
+
+\subsubsection{$\partial\Omega$ 邻域的参数化}
+\label{subsec:chap3-boundary-neighborhood-parametrization}
+
+令 $O_{s_0}^\rho=\{0<\rho<s_0\}$, $\Gamma_s=\{\rho=s\}$, 并定义
+$\nu=-\nabla\rho/|\nabla\rho|$, $w_N=\langle w,\nu\rangle$, $w_T=w-w_N\nu$, 以及 $\widetilde\nu=\nu/|\nabla\rho|$. 令 $\zeta$ 为流
+\begin{equation}
+ \frac{\mathrm d}{\mathrm ds}\zeta(s,x)=\widetilde\nu(\zeta(s,x)),
+ \qquad\zeta(0,x)=x.
+ \label{eq:chap3-normalized-normal-flow}
+\end{equation}
+则
+\begin{equation}
+ \rho(\zeta(s,x))=\rho(x)-s.
+ \label{eq:chap3-distance-along-flow}
+\end{equation}
+
+\begin{Proposition}
+\label{prop:chap3-normal-flow-regularity}
+$\zeta\in C^{k,1}(\mathbb R\times\mathbb R^d)$, 并在 $E=\{(s,x):x\in O_{s_0}^\rho,\ s<\rho(x)\}$ 中光滑. 当 $|\alpha|=k+2$ 时,
+\begin{equation}
+ |\partial^\alpha\zeta(s,x)|\leq C|\ln(\rho(x)-s)|,
+ \label{eq:chap3-flow-high-derivative-log}
+\end{equation}
+\begin{equation}
+ |\partial_s\partial^\alpha\zeta(s,x)|\leq\frac C{\rho(x)-s}.
+ \label{eq:chap3-flow-high-derivative-normal}
+\end{equation}
+\end{Proposition}
+
+\begin{Proof}
+常微分方程正则性给出第一项. 对流方程求两次空间导数得到
+\begin{equation}
+ \frac{\mathrm d}{\mathrm ds}\partial_{ij}^2\zeta
+ =\nabla\widetilde\nu(\zeta)\partial_{ij}^2\zeta
+ +D^2\widetilde\nu(\zeta)[\partial_i\zeta,\partial_j\zeta].
+ \label{eq:chap3-flow-second-derivative-equation}
+\end{equation}
+再用式\eqref{eq:chap3-distance-along-flow}和 Gronwall 引理积分即可.
+\end{Proof}
+
+\begin{Proposition}
+\label{prop:chap3-boundary-strip-parametrization}
+映射
+\[
+ \psi:(\sigma,s)\in\Gamma_{s_0}\times[0,s_0]
+ \longmapsto\zeta(s_0-s,\sigma)\in O_{s_0}^\rho
+\]
+为双射, 其逆为 $x\mapsto(P(x),\rho(x))$, 其中 $P(x)=\zeta(\rho(x)-s_0,x)$. $\psi$ 在闭条带上为 $C^{k,1}$, 在 $s>0$ 时光滑.
+\end{Proposition}
+
+\begin{Proof}
+式\eqref{eq:chap3-distance-along-flow}给出 $\rho(\psi(\sigma,s))=s$, 从而给出单射及逆映射公式. 流的群性质给出满射, 正则性由 Proposition~\ref{prop:chap3-normal-flow-regularity}得到.
+\end{Proof}
+
+\textbf{Remark 3.3:} 对光滑 $v$,
+\begin{equation}
+ (\nabla_Nv)\circ\psi=-\frac1{|\widetilde\nu|}\partial_s(v\circ\psi).
+ \label{eq:chap3-normal-derivative-parametrized}
+\end{equation}
+
+\begin{Proposition}
+\label{prop:chap3-level-surface-jacobian}
+对每个 $s\in[0,s_0]$, 存在 $J_s:\Gamma_{s_0}\to\mathbb R$, 使
+\[
+ \int_{\Gamma_s}v\,\mathrm d\sigma
+ =\int_{\Gamma_{s_0}}v\circ\psi(\sigma,s)J_s(\sigma)\,\mathrm d\sigma.
+\]
+\end{Proposition}
+
+\begin{Definition}
+\label{def:chap3-boundary-strip-jacobian}
+定义 $J(x)=J_{\rho(x)}(P(x))$.
+\end{Definition}
+
+\begin{Proposition}
+\label{prop:chap3-boundary-strip-change-variables}
+对可积函数 $v$,
+\[
+ \int_{O_{s_0}^\rho}v(x)\,\mathrm dx
+ =\int_0^{s_0}\int_{\Gamma_s}|\widetilde\nu|v\,\mathrm d\sigma\,\mathrm ds
+ =\int_0^{s_0}\int_{\Gamma_{s_0}}|\widetilde\nu|J(v\circ\psi)\,\mathrm d\sigma\,\mathrm ds.
+\]
+$J$ 在开条带内光滑; 当 $|\alpha|\leq k$ 时 $\partial^\alpha J\in L^\infty$, 当 $|\alpha|=k+1$ 时 $\partial^\alpha J/|\ln\rho|$ 与 $\rho\nabla_N\partial^\alpha J$ 有界.
+\end{Proposition}
+
+\begin{Proof}
+在每个坐标图中, $J_s$ 是第一基本形式行列式之比的平方根. 对 $(u,s)\mapsto\psi(\varphi(u),s)$ 使用变量替换, 并利用式\eqref{eq:chap3-normalized-normal-flow}计算 Jacobian. 正则性来自 Proposition~\ref{prop:chap3-normal-flow-regularity}.
+\end{Proof}
+
+\textbf{Remark 3.4:} 只需较低正则性时, 上述余面积公式仍可直接用于 Lipschitz 层面集.
+
+\begin{Proposition}
+\label{prop:chap3-normal-hardy-trace}
+设 $\Omega$ 为边界紧的 $C^{1,1}$ 区域, $1<p<+\infty$. 则
+\[
+ \left\|\frac{u-(\gamma_0u)\circ\psi(P(\cdot),0)}\rho\right\|_{L^p(O_{s_0}^\rho)}
+ \leq C\|u\|_{W^{1,p}(\Omega)}.
+\]
+\end{Proposition}
+
+\begin{Proof}
+沿 $s\mapsto\psi(P(x),s)$ 使用式\eqref{eq:chap3-normal-derivative-parametrized}, 对一维积分应用 Hardy 不等式, 再用 Proposition~\ref{prop:chap3-boundary-strip-change-variables}.
+\end{Proof}
+
+\subsubsection{切向 Sobolev 空间}
+\label{subsec:chap3-tangential-sobolev-spaces}
+
+\begin{Theorem}
+\label{thm:chap3-tangential-normal-regularity}
+设 $0\leq l\leq k+1$, $1\leq p<+\infty$, 且 $f\in W^{l,p}(\Omega)\cap W_{\mathrm{loc}}^{l+1,p}(\Omega)$. 则
+\[
+ f\in W^{l+1,p}(\Omega)
+ \Longleftrightarrow
+ \nabla_Tf\in W^{l,p}(O_{s_0}^\rho)^d,
+ \ \nabla_Nf\in W^{l,p}(O_{s_0}^\rho).
+\]
+\end{Theorem}
+
+\begin{Proof}
+利用 $\nabla_Nf=\langle\nabla f,\nu\rangle$ 和 $\nabla_Tf=\nabla f-(\nabla_Nf)\nu$, 结合 $\nu\in C^{k,1}$ 及 Leibniz 公式双向估计.
+\end{Proof}
+
+\begin{Definition}
+\label{def:chap3-weighted-tangential-sobolev}
+若 $\nabla_Tf\in W^{l,p}(O_{s_0}^\rho)^d$ 且 $\rho\nabla_Nf\in W^{l,p}(O_{s_0}^\rho)$, 则称 $f\in W_{\mathrm{tang}}^{l+1,p}(\Omega)$.
+\end{Definition}
+
+\begin{Proposition}
+\label{prop:chap3-tangential-derivatives-stability}
+若 $f\in W_{\mathrm{tang}}^{l+1,p}(\Omega)$, 则对 $|\alpha|=l$, 有 $\partial^\alpha f\in W_{\mathrm{tang}}^{1,p}(\Omega)$.
+\end{Proposition}
+
+\begin{Proof}
+对 $\partial^\alpha(\nabla_Tf)$ 和 $\partial^\alpha(\rho\nabla_Nf)$ 使用 Leibniz 公式, 并用 Proposition~\ref{prop:chap3-regularized-distance-properties}控制 $\rho$ 与法向场的高阶导数.
+\end{Proof}
+
+取满足
+\begin{equation}
+ \theta\in C_c^{k+1,1}(\mathbb R^d)^d,\quad
+ \theta\cdot\nu=0\text{ 于 }\partial\Omega,\quad
+ |\partial^\alpha\theta(x)|\leq C/\rho(x)\text{ 当 }|\alpha|=k+2
+ \label{eq:chap3-admissible-tangential-field}
+\end{equation}
+的向量场, 并定义其流 $\tau^\theta$ 为
+\begin{equation}
+ \partial_h\tau^\theta(h,x)=\theta(\tau^\theta(h,x)),
+ \qquad\tau^\theta(0,x)=x.
+ \label{eq:chap3-tangential-flow}
+\end{equation}
+
+\begin{Lemma}
+\label{lem:chap3-tangential-field-normal-component}
+有
+\begin{equation}
+ \langle\theta,\nu\rangle\in C^{k,1}(\overline\Omega),
+ \label{eq:chap3-tangential-normal-regularity}
+\end{equation}
+以及
+\begin{equation}
+ \frac{\langle\theta,\nu\rangle}{\rho}\in
+ \begin{cases}L^\infty(\Omega),&k=0,\\C^{k-1,1}(\overline\Omega),&k\geq1.
+ \end{cases}
+ \label{eq:chap3-tangential-normal-over-distance}
+\end{equation}
+\end{Lemma}
+
+\begin{Proof}
+第一式由乘积正则性得到. 因该内积在边界为零, 沿法向流积分并除以 $\rho$ 即得第二式.
+\end{Proof}
+
+\begin{Proposition}
+\label{prop:chap3-tangential-flow-estimates}
+对 $|h|\leq1$,
+\begin{equation}
+ \|\nabla\tau^\theta(h)-I\|_{W^{k,\infty}}\leq C(\theta)|h|,
+ \label{eq:chap3-tangential-flow-gradient}
+\end{equation}
+\begin{equation}
+ \|\operatorname{Jac}\tau^\theta(h)-1\|_{W^{k,\infty}}\leq C(\theta)|h|,
+ \label{eq:chap3-tangential-flow-jacobian}
+\end{equation}
+\begin{equation}
+ \|\rho\nabla\operatorname{Jac}\tau^\theta(h)\|_{W^{k,\infty}}
+ \leq C(\theta)|h|.
+ \label{eq:chap3-tangential-flow-weighted-jacobian}
+\end{equation}
+并且 $\tau^\theta(h,\Omega)=\Omega$.
+\end{Proposition}
+
+\begin{Proof}
+对流方程关于 $x$ 微分并应用 Gronwall 引理. 另外
+\begin{equation}
+ \partial_h\rho(\tau^\theta(h,x))
+ =\langle\nabla\rho,\theta\rangle(\tau^\theta(h,x)),
+ \label{eq:chap3-distance-along-tangential-flow}
+\end{equation}
+Lemma~\ref{lem:chap3-tangential-field-normal-component}给出 $\rho(\tau^\theta(h,x))\asymp\rho(x)$, 即
+\begin{equation}
+ \rho(\tau^\theta(h,x))\geq C'\rho(x),\qquad0<h<1.
+ \label{eq:chap3-tangential-flow-distance-lower-bound}
+\end{equation}
+由此控制最高阶导数并证明流不穿越边界.
+\end{Proof}
+
+定义 $\tau_h^\theta f=f\circ\tau^\theta(h,\cdot)$, 并令
+\begin{equation}
+ \{f,g\}_h=(\tau_h^\theta f)g-f\,\tau_{-h}^\theta g\,
+ \operatorname{Jac}(\tau_{-h}^\theta),
+ \label{eq:chap3-curved-translation-commutator}
+\end{equation}
+以及 $|||f|||_{\theta,l+1,p}=\|f\|_{W^{l,p}}+sup_{0<h<1}h^{-1}\|\tau_h^\theta f-f\|_{W^{l,p}}$.
+
+\begin{Proposition}
+\label{prop:chap3-curved-translation-properties}
+对 $-1\leq l\leq k+1$:
+\begin{equation}
+ \sup_{0<h<1}\|\tau_h^\theta f\|_{W^{l,p}}
+ \leq C(\theta)\|f\|_{W^{l,p}},
+ \label{eq:chap3-curved-translation-uniform-bound}
+\end{equation}
+\begin{equation}
+ \tau_h^\theta f\longrightarrow f\quad\text{于 }W^{l,p}(\Omega),
+ \label{eq:chap3-curved-translation-convergence}
+\end{equation}
+且
+\begin{equation}
+ \left|\int_\Omega\{f,g\}_h\,\mathrm dx\right|
+ \leq C(\theta)|h|\|f\|_{L^p}\|g\|_{L^{p'}},
+ \label{eq:chap3-curved-translation-duality-volume}
+\end{equation}
+边界积分也满足相同估计:
+\begin{equation}
+ \left|\int_{\partial\Omega}\{f,g\}_h\,\mathrm d\sigma\right|
+ \leq C(\theta)|h|\|f\|_{L^p(\partial\Omega)}\|g\|_{L^{p'}(\partial\Omega)}.
+ \label{eq:chap3-curved-translation-duality-boundary}
+\end{equation}
+若 $f\in W^{l+1,p}$, 则
+\begin{equation}
+ \|\tau_h^\theta f-f\|_{W^{l,p}}\leq C(\theta)|h|\|f\|_{W^{l+1,p}},
+ \label{eq:chap3-curved-translation-difference-bound}
+\end{equation}
+因而
+\begin{equation}
+ |||f|||_{\theta,l+1,p}\leq C(\theta)\|f\|_{W^{l+1,p}}.
+ \label{eq:chap3-curved-translation-seminorm-bound}
+\end{equation}
+\end{Proposition}
+
+\begin{Proof}
+正阶范数由链式法则和 Proposition~\ref{prop:chap3-tangential-flow-estimates}控制, 负一阶范数由变量替换和对偶性控制. 对光滑函数收敛显然, 一般情形用稠密性. 体积及边界交换子估计来自流的 Jacobian 估计. 最后利用
+\begin{equation}
+ f(\tau^\theta(h,x))-f(x)
+ =h\int_0^1\langle\nabla f(\tau^\theta(hu,x)),\theta(\tau^\theta(hu,x))\rangle\,\mathrm du
+ \label{eq:chap3-curved-translation-fundamental-theorem}
+\end{equation}
+并对 $l$ 归纳得到最后两式.
+\end{Proof}
+
+\begin{Theorem}
+\label{thm:chap3-tangential-space-characterization}
+设 $1<p<+\infty$, $0\leq l\leq k+1$. 则
+\[
+ W_{\mathrm{tang}}^{l+1,p}(\Omega)
+ =\{f\in W^{l,p}(\Omega):|||f|||_{\theta,l+1,p}<+\infty
+ \text{ 对每个满足式\eqref{eq:chap3-admissible-tangential-field}的 }\theta\}.
+\]
+\end{Theorem}
+
+\begin{Proof}
+在内部紧集上选取等于坐标向量的 $\theta$, 则
+\begin{equation}
+ \tau^\theta(h,x)=x+he_i
+ \label{eq:chap3-local-flow-is-translation}
+\end{equation}
+并对截断 $\varphi$ 有
+\begin{equation}
+ (f\varphi)(\tau^\theta(h,x))=(f\varphi)(x+he_i).
+ \label{eq:chap3-local-curved-flat-translation}
+\end{equation}
+由 Proposition~\ref{prop:chap3-sobolev-difference-quotient-characterization} 得局部 $W^{l+1,p}$ 正则性. 在边界条带中, 对所有切向场的差商弱极限给出切向导数, 而 Lemma~\ref{lem:chap3-tangential-field-normal-component}控制加权法向部分. 反向由式\eqref{eq:chap3-curved-translation-fundamental-theorem}及 Definition~\ref{def:chap3-weighted-tangential-sobolev}得到.
+\end{Proof}
+
+\subsubsection{切向/法向坐标中的微分算子}
+\label{subsec:chap3-tangential-normal-operators}
+
+在层面集 $\Gamma_s$ 的局部坐标图中, 切向散度定义为
+\begin{equation}
+ (\operatorname{div}_{\Gamma_s}w)\circ\varphi_s
+ =\frac1{\sqrt{\det g_s}}\sum_{i,j=1}^{d-1}
+ \partial_{u_i}\left(\sqrt{\det g_s}\,g_s^{ij}
+ \langle w\circ\varphi_s,\partial_{u_j}\varphi_s\rangle\right).
+ \label{eq:chap3-surface-divergence-local}
+\end{equation}
+
+\begin{Definition}
+\label{def:chap3-tangential-divergence}
+定义 $\operatorname{div}_Tw(x)=\operatorname{div}_{\Gamma_{\rho(x)}}w(x)$.
+\end{Definition}
+
+\begin{Proposition}
+\label{prop:chap3-tangential-divergence-decomposition}
+存在向量场 $G$ 使
+\begin{equation}
+ \operatorname{div}_Tw=\operatorname{Tr}(\nabla_Tw)+\langle w,G\rangle,
+ \label{eq:chap3-tangential-divergence-trace}
+\end{equation}
+以及
+\begin{equation}
+ \operatorname{div}_Tw=\operatorname{Tr}(\nabla_Tw_T)+\langle w_T,G\rangle.
+ \label{eq:chap3-tangential-divergence-tangential-part}
+\end{equation}
+$G$ 在开条带中光滑, 并具有与 $J$ 相应的加权导数界.
+\end{Proposition}
+
+\begin{Proof}
+在局部坐标中写 $w=\sum_i\alpha_i\partial_{u_i}\varphi_s+w_N\nu$, 展开式\eqref{eq:chap3-surface-divergence-local}. 第一基本形式恒等式把 $w$ 的一阶项化为 $\operatorname{Tr}(\nabla_Tw)$, 其余几何系数组成 $G$. 局部表达式中的关键 Jacobian 项为
+\begin{equation}
+ \frac1{\sqrt{\det g_s}}\partial_{u_i}(\sqrt{\det g_s}\,\alpha_i).
+ \label{eq:chap3-surface-divergence-jacobian-term}
+\end{equation}
+单位分解给出全局结论.
+\end{Proof}
+
+\begin{Proposition}
+\label{prop:chap3-divergence-normal-tangential}
+对光滑向量场 $w$,
+\[
+ \operatorname{div}w=\operatorname{div}w_T+\nabla_Nw_N+\frac{\nabla_NJ}{J}w_N
+ =\operatorname{Tr}(\nabla_Tw)+\nabla_Nw_N+\langle w,\widetilde G\rangle,
+\]
+其中 $\widetilde G=G+\nabla_T|\widetilde\nu|/|\widetilde\nu|+(\nabla_NJ/J)\nu$.
+\end{Proposition}
+
+\begin{Proof}
+对测试函数分解 $\nabla v=\nabla_Tv+(\nabla_Nv)\nu$, 分别对切向部分用层面集分部积分, 对法向部分用 Proposition~\ref{prop:chap3-boundary-strip-change-variables}沿 $s$ 分部积分, 再识别分布散度.
+\end{Proof}
+
+\begin{Proposition}
+\label{prop:chap3-laplacian-normal-tangential}
+对充分光滑的标量函数 $v$,
+\[
+ \Delta v=\operatorname{div}(\nabla_Tv)+\nabla_N(\nabla_Nv)
+ +\frac{\nabla_NJ}{J}\nabla_Nv,
+\]
+并且
+\[
+ \Delta v=\operatorname{Tr}(\nabla_T\nabla v)+\nabla_N\nabla_Nv
+ +\langle\nabla v,\widetilde G\rangle.
+\]
+\end{Proposition}
+
+\begin{Proof}
+在 Proposition~\ref{prop:chap3-divergence-normal-tangential} 中取 $w=\nabla v$ 即得.
+\end{Proof}
