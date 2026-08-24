@@ -23,4 +23,5 @@
 21. Completed: `ch03-sec04` was re-audited against PDF pages 234-240; the complete Dirichlet and Neumann analyses were restored; equations (III.100)--(III.106) and objects III.4.1--III.4.3 passed QA.
 22. Completed: Chapter III passed integrated deterministic QA, clean multi-pass XeLaTeX compilation with final reference convergence, representative visual QA, source/template integrity checks, and source-coverage review.
 23. Completed: `ch04-sec01` translated PDF pages 241-252 without omission; the complete Chapter IV opening and Nečas inequality section, equations (IV.1)--(IV.8), statements IV.1.1--IV.1.9, references, names, punctuation, clean compilation, and full-page visual QA passed.
-24. In progress: continue from `ch04-sec02`, the first incomplete natural unit, without regenerating any passed unit.
+24. Completed: `ch04-sec02` translated the full Section 2 scope through the top of PDF page 257 without omission; Definition IV.2.1, Remark IV.2.1, Theorems IV.2.2--IV.2.5, all proofs, references, names, punctuation, clean compilation, and full-page visual QA passed.
+25. In progress: continue from `ch04-sec03`, beginning at Section 3 on PDF page 257, without regenerating any passed unit.
