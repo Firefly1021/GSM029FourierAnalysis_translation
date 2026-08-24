@@ -1,0 +1,935 @@
+\clearpage
+\section{齐次流体的 Navier--Stokes 方程}
+\label{chap:homogeneous-navier-stokes}
+\renewcommand{\thestatement}{1.\arabic{statement}}
+\setcounter{statement}{0}
+\newcounter{chapterfivesectiononeremark}
+\renewcommand{\thechapterfivesectiononeremark}{1.\arabic{chapterfivesectiononeremark}}
+
+\subsection{Leray 定理}
+\label{sec:chap5-leray-theorem}
+
+设 $\Omega$ 是 $\mathbb R^d$ 中连通的有界 Lipschitz 区域 (下文总假设 $d=2$ 或 $d=3$), 固定 Reynolds 数 $\operatorname{Re}>0$, 给定
+$f\in L_{\mathrm{loc}}^2([0,+\infty[,(H^{-1}(\Omega))^d)$ 和 $v_0\in H$. 正如 Chapter~I 中所见, 在区域 $\Omega$ 内受体力场 $f$ 作用的不可压缩齐次流体流动可由 Navier--Stokes 方程很好地描述. 因而我们研究如下数学问题: 求向量场 $v$ 和标量场 $p$, 使
+\begin{equation}
+\left\{
+\begin{aligned}
+ \frac{\partial v}{\partial t}+(v\cdot\nabla)v-\frac1{\operatorname{Re}}\Delta v+\nabla p&=f,&&\text{于 }\Omega,\\
+ \operatorname{div}v&=0,&&\text{于 }\Omega,\\
+ v&=0,&&\text{于 }\partial\Omega,\\
+ v(0)&=v_0.
+\end{aligned}
+\right.
+\label{eq:chap5-navier-stokes-system}
+\end{equation}
+
+为研究这个系统, 需要定义寻找解的函数空间, 然后赋予上面系统中各方程一个 (弱) 意义, 最后证明所采用的弱形式确实存在解.
+
+先给出若干关于这些方程中唯一非线性项, 即惯性项 $(v\cdot\nabla)v$ 的技术结果. 这一点很重要, 因为与线性 Stokes 系统相比, 大部分新困难都来自这一项.
+
+\subsubsection{惯性项的性质}
+\label{subsec:chap5-inertia-properties}
+
+对任意 $u,v,w\in(H_0^1(\Omega))^d$, 定义
+\[
+ b(u,v,w)=\int_\Omega((u\cdot\nabla)v)\cdot w\,\mathrm dx
+ =\sum_{i,j=1}^d\int_\Omega u_j\frac{\partial v_i}{\partial x_j}w_i\,\mathrm dx.
+\]
+
+\begin{Lemma}
+\label{lem:chap5-inertia-trilinear-form}
+三线性型 $b$ 在 $(H_0^1(\Omega))^d\times(H_0^1(\Omega))^d\times(H_0^1(\Omega))^d$ 上连续, 并满足
+\begin{align}
+ b(u,v,w)+b(u,w,v)&=0,
+ &&\forall u\in V,\ \forall v,w\in(H_0^1(\Omega))^d,\notag\\
+ b(u,v,v)&=0,
+ &&\forall u\in V,\ \forall v\in(H_0^1(\Omega))^d.
+\label{eq:chap5-inertia-antisymmetry}
+\end{align}
+此外, 对任意 $u\in V$ 和任意 $v,w\in(H_0^1(\Omega))^d$, 有
+\begin{equation}
+ |b(u,v,w)|\leq C
+ \|u\|_{L^2}^{1-d/4}\|u\|_{H^1}^{d/4}
+ \|v\|_{L^2}^{1-d/4}\|v\|_{H^1}^{d/4}
+ \|w\|_{H^1}.
+\label{eq:chap5-inertia-estimate}
+\end{equation}
+\end{Lemma}
+
+下文对任意 $u,v\in V$, 用 $B(u,v)\in V'$ 表示 $V$ 上由
+\begin{equation}
+ \langle B(u,v),w\rangle_{V',V}=b(u,v,w)
+\label{eq:chap5-inertia-operator}
+\end{equation}
+定义的连续线性型. 估计\eqref{eq:chap5-inertia-estimate}表明, 双线性映射 $B$ 从 $V\times V$ 连续映到 $V'$, 并且
+\begin{equation}
+ \|B(u,u)\|_{V'}\leq C\|u\|_{L^2}^{2-d/2}\|u\|_{H^1}^{d/2},
+ \qquad\forall u\in V.
+\label{eq:chap5-inertia-operator-estimate}
+\end{equation}
+
+\par\noindent\refstepcounter{chapterfivesectiononeremark}\textbf{Remark~\thechapterfivesectiononeremark:}\label{rem:chap5-inertia-dimension}
+粗略地说, 正是由于这个估计中 $H^1$ 范数的幂在三维情形比二维情形更``差'' (即更高), 才产生某些困难, 特别是三维弱解的唯一性困难.
+
+\begin{Proof}
+连续性直接来自维数不超过 $4$ 时成立的 Sobolev 嵌入 $H^1(\Omega)\subset L^4(\Omega)$ (见 Theorem~\ref{thm:chap3-sobolev-embeddings}).
+
+反对称性质先对光滑函数证明, 再由稠密性得到一般结论. 使用 Stokes 公式 (因为 $u$ 在 $\partial\Omega$ 上为零, 边界项消失),
+\begin{align*}
+ b(u,v,w)
+ &=\sum_{i,j=1}^d\int_\Omega u_j\frac{\partial v_i}{\partial x_j}w_i\,\mathrm dx\\
+ &=-\sum_{i,j=1}^d\int_\Omega\frac{\partial u_j}{\partial x_j}v_iw_i\,\mathrm dx
+   -\sum_{i,j=1}^d\int_\Omega u_jv_i\frac{\partial w_i}{\partial x_j}\,\mathrm dx\\
+ &=-\int_\Omega(\operatorname{div}u)(v\cdot w)\,\mathrm dx-b(u,w,v)
+ =-b(u,w,v),
+\end{align*}
+因为 $u$ 的散度在 $\Omega$ 中为零.
+
+为证明\eqref{eq:chap5-inertia-estimate}, 使用 Hölder 不等式写成
+\[
+ |b(u,v,w)|=|b(u,w,v)|\leq\|u\|_{L^4}\|v\|_{L^4}\|w\|_{H^1},
+\]
+再应用 Proposition~\ref{prop:chap3-gagliardo-nirenberg-interpolation}即得结论.
+\end{Proof}
+
+\subsubsection{Navier--Stokes 方程的弱形式}
+\label{subsec:chap5-weak-formulations}
+
+在可能采用的各种等价 Navier--Stokes 方程表述中, 我们选择给出两个非常相近且看来最便于使用的形式. 主要思想来自 Leray, 即选取边界上为零的无散度测试函数. 这样做的优点是压力会从所考虑的形式中消失.
+
+正如下文将证明的 (见 Subsection~\ref{subsec:chap5-pressure}), 一旦解出这两个弱形式中的任一个, 就可以利用 Chapter~IV 中建立的 de Rham 定理恢复压力.
+
+\paragraph{与时间无关的测试函数}
+
+在第一个形式中, 只考虑与时间无关的测试函数. 更准确地说, 对系统\eqref{eq:chap5-navier-stokes-system}, 研究如下问题: 求 $v\in L^2(]0,T[,V)$, 使对任意 $\psi\in V$,
+\begin{equation}
+ \frac{\mathrm d}{\mathrm dt}\int_\Omega v(t)\cdot\psi\,\mathrm dx
+ +\int_\Omega((v(t)\cdot\nabla)v(t))\cdot\psi\,\mathrm dx
+ +\frac1{\operatorname{Re}}\int_\Omega\nabla v(t):\nabla\psi\,\mathrm dx
+ =\langle f(t),\psi\rangle_{H^{-1},H_0^1}
+\label{eq:chap5-weak-time-independent}
+\end{equation}
+在 $\mathcal D'(]0,T[)$ 意义下成立, 且 $v(0)=v_0$ 在 $V'$ 中以弱意义成立.
+
+说明最后一个条件的含义. 容易看出, 若 $v\in L^2(]0,T[,V)$ 且满足\eqref{eq:chap5-weak-time-independent}, 则对任意 $\psi\in V$, 实值函数
+$F_\psi:t\mapsto F_\psi(t)\equiv(v(t),\psi)_H=\langle v(t),\psi\rangle_{V',V}$ 的分布导数属于 $L^1(]0,T[)$. 因而 $F_\psi\in W^{1,1}(]0,T[)$, 所以该函数连续 (Corollary~\ref{cor:chap2-w11-continuous-representative}). 换言之, 上述形式的任意解都取值于 $V'$ 且弱连续, 因而可以赋予初值 $v(0)$ 意义.
+
+从某种意义上说, 第一个形式比下面的形式更简单. 遗憾的是, 为建立能量方程甚至证明解的唯一性, 需要把解本身或两个解之差作为测试函数. 只有使用随时间变化的测试函数时才能做到这一点.
+
+\paragraph{随时间变化的测试函数}
+
+与系统\eqref{eq:chap5-navier-stokes-system}相联系, 研究如下变分问题: 求函数 $v\in L^2(]0,T[,V)$, 使 $\mathrm dv/\mathrm dt\in L^1(]0,T[,V')$, 并且对任意测试函数 $\varphi\in C_c^0(]0,T[,V)$,
+\begin{align}
+ &\int_0^T\left\langle\frac{\mathrm dv}{\mathrm dt},\varphi(t)\right\rangle_{V',V}\,\mathrm dt
+ +\int_0^T\int_\Omega((v(t)\cdot\nabla)v(t))\cdot\varphi(t)\,\mathrm dx\,\mathrm dt\notag\\
+ &\qquad+\frac1{\operatorname{Re}}\int_0^T\int_\Omega\nabla v(t):\nabla\varphi(t)\,\mathrm dx\,\mathrm dt
+ =\int_0^T\langle f(t),\varphi(t)\rangle_{H^{-1},H_0^1}\,\mathrm dt,
+\label{eq:chap5-weak-time-dependent}
+\end{align}
+此外 $v(0)=v_0$ 于 $V'$.
+
+可以立即赋予最后一个条件意义, 因为满足 $v\in L^2(]0,T[,V)$ 及 $\mathrm dv/\mathrm dt\in L^1(]0,T[,V')$ 的函数在强拓扑下连续取值于 $V'$ (Proposition~\ref{prop:chap2-epq-continuous-representative}).
+
+还要注意, 若另知解 $v$ 对某个 $p\in]1,2]$ 满足 $\mathrm dv/\mathrm dt\in L^p(]0,T[,V')$, 则由稠密性, 这个形式可延拓到测试函数 $\varphi\in L^{p'}(]0,T[,V)$. 这点至关重要, 因为在二维情形中, 下文将证明所得解满足 $\mathrm dv/\mathrm dt\in L^2(]0,T[,V')$, 从而可以把形式延拓到 $\varphi\in L^2(]0,T[,V)$. 特别地, 二维情形可以把解 $v$ 本身作为测试函数. 三维情形并非如此, 这是三维问题格外困难的原因之一.
+
+\paragraph{两个形式的等价性}
+
+先证明一个关于``张量积''型函数稠密性的 Lemma.
+
+\begin{Lemma}
+\label{lem:chap5-tensor-test-density}
+由下列形式的函数 $\varphi$ 构成的集合 $E$ 在 $C_c^0(]0,T[,V)$ 中稠密:
+\[
+ \varphi(t,x)=\sum_{k=1}^N\eta_k(t)\psi_k(x),
+\]
+其中 $N$ 是任意整数, $\eta_k\in\mathcal D(]0,T[)$, $\psi_k\in V$.
+\end{Lemma}
+
+\begin{Proof}
+设 $\varphi\in C_c^0(]0,T[,V)$ 且 $\varepsilon>0$. 因为 $\varphi$ 在紧集 $[0,T]$ 上连续, 所以一致连续. 因而存在 $\delta>0$, 使任意满足 $|s-t|\leq\delta$ 的 $s,t\in[0,T]$ 都有 $\|\varphi(s)-\varphi(t)\|_V\leq\varepsilon$.
+
+现取 $t_0=0,\ldots,t_{N+1}=T$ 为区间 $[0,T]$ 的等距分割, 每个子区间长度小于 $\delta$, 并且足够细, 使 $\varphi=0$ 于 $[0,t_1]\cup[t_N,T]$. 区间族 $(]t_{k-1},t_{k+1}[)_{1\leq k\leq N}$ 是 $]0,T[$ 的开覆盖. 令 $(\psi_k)_k$ 为与此覆盖相联系的 $C^\infty$ 单位分解 (Lemma~\ref{lem:chap2-partition-of-unity}), 并令
+\[
+ \varphi_N(t)=\sum_{k=1}^N\psi_k(t)\varphi(t_k)\in V,
+\]
+它确实属于集合 $E$.
+
+现任取 $t\in[0,T]$. 由于 $\sum_k\psi_k(t)=1$ 且 $\psi_k\geq0$,
+\[
+ \|\varphi(t)-\varphi_N(t)\|_V
+ =\left\|\sum_{k=1}^N\psi_k(t)(\varphi(t)-\varphi(t_k))\right\|_V
+ \leq\sum_{k=1}^N\psi_k(t)\|\varphi(t)-\varphi(t_k)\|_V.
+\]
+然而, 只有当 $|t-t_k|<\delta$ 时 $\psi_k(t)$ 才可能非零, 此时由 $\delta$ 的定义有 $\|\varphi(t)-\varphi(t_k)\|_V\leq\varepsilon$. 因此已经证明, 对所有 $t\in[0,T]$ 都有 $\|\varphi(t)-\varphi_N(t)\|_V\leq\varepsilon$.
+\end{Proof}
+
+现在证明一个重要结果, 它表明可以任意使用前述两个形式中的一个.
+
+\begin{Proposition}
+\label{prop:chap5-weak-form-equivalence}
+设 $f\in L^1(]0,T[,V')$ 且 $v\in L^2(]0,T[,V)$. 下列断言等价:
+\begin{itemize}
+ \item $v$ 有弱导数 $\mathrm dv/\mathrm dt\in L^1(]0,T[,V')$, 且满足\eqref{eq:chap5-weak-time-dependent}.
+ \item $v$ 满足\eqref{eq:chap5-weak-time-independent}.
+\end{itemize}
+
+此外, 若 $v$ 满足这两个等价断言, 则几乎处处有下列 $V'$ 中的等式:
+\[
+ \frac{\mathrm dv}{\mathrm dt}+\frac1{\operatorname{Re}}Av(t)+B(v(t),v(t))=f(t).
+\]
+\end{Proposition}
+
+\begin{Proof}
+先假设 $\mathrm dv/\mathrm dt\in L^1(]0,T[,V')$ 且 $v$ 满足\eqref{eq:chap5-weak-time-dependent}. 取与时间无关的 $\psi\in V$, 并取实值光滑紧支撑函数 $\eta\in\mathcal D(]0,T[)$. 在\eqref{eq:chap5-weak-time-dependent}中以 $\varphi(t,x)=\eta(t)\psi(x)$ 为测试函数, 得到
+\begin{align}
+ &\int_0^T\left\langle\frac{\mathrm dv}{\mathrm dt},\eta(t)\psi\right\rangle_{V',V}\,\mathrm dt
+ +\int_0^T\eta(t)\int_\Omega((v(t)\cdot\nabla)v(t))\cdot\psi\,\mathrm dx\,\mathrm dt\notag\\
+ &\quad+\frac1{\operatorname{Re}}\int_0^T\eta(t)\int_\Omega\nabla v(t):\nabla\psi\,\mathrm dx\,\mathrm dt
+ =\int_0^T\eta(t)\langle f(t),\psi\rangle_{H^{-1},H_0^1}\,\mathrm dt.
+\label{eq:chap5-equivalence-separated-test}
+\end{align}
+由弱导数的定义 (Definition~\ref{def:chap2-weak-time-derivative}) 以及 $\eta$ 的正则性, 第一项还可写成
+\begin{align*}
+ \int_0^T\left\langle\frac{\mathrm dv}{\mathrm dt},\eta(t)\psi\right\rangle_{V',V}\,\mathrm dt
+ &=\left\langle\int_0^T\eta(t)\frac{\mathrm dv}{\mathrm dt}\,\mathrm dt,\psi\right\rangle_{V',V}\\
+ &=-\left\langle\int_0^T\eta'(t)v(t)\,\mathrm dt,\psi\right\rangle_{V',V}\\
+ &=-\int_0^T\eta'(t)\langle v(t),\psi\rangle_{V',V}\,\mathrm dt.
+\end{align*}
+由于几乎处处有 $v(t)\in V$, 并通过 $H$ 的自然内积把 $H$ 与其对偶等同, 已知几乎处处有 $\langle v(t),\psi\rangle_{V',V}=(v(t),\psi)_H$. 因而得到
+\begin{align}
+ &-\int_0^T\eta'(t)(v(t),\psi)_H\,\mathrm dt
+ +\int_0^T\eta(t)\int_\Omega((v(t)\cdot\nabla)v(t))\cdot\psi\,\mathrm dx\,\mathrm dt\notag\\
+ &\quad+\frac1{\operatorname{Re}}\int_0^T\eta(t)\int_\Omega\nabla v(t):\nabla\psi\,\mathrm dx\,\mathrm dt
+ =\int_0^T\eta(t)\langle f(t),\psi\rangle_{H^{-1},H_0^1}\,\mathrm dt.
+\label{eq:chap5-equivalence-distribution-form}
+\end{align}
+这对任意 $\eta\in\mathcal D(]0,T[)$ 成立, 因而确实证明\eqref{eq:chap5-weak-time-independent}在分布意义下成立. 初值条件在 $V'$ 中以强意义成立, 显然也以弱意义成立.
+
+反过来, 假设 $v$ 满足\eqref{eq:chap5-weak-time-independent}. 首先证明 $v$ 关于时间有属于 $L^1(]0,T[,V')$ 的弱导数. 反向进行上面的计算, 可知\eqref{eq:chap5-equivalence-distribution-form}仍成立. 利用 Stokes 算子定义\eqref{eq:chap4-stokes-operator-variational}以及双线性映射 $B$ 的定义\eqref{eq:chap5-inertia-operator}, 还可写成
+\begin{align*}
+ &\left\langle-\int_0^T\eta'(t)v(t)\,\mathrm dt,\psi\right\rangle_{V',V}
+ +\left\langle\int_0^T\eta(t)B(v(t),v(t))\,\mathrm dt,\psi\right\rangle_{V',V}\\
+ &\quad+\left\langle\frac1{\operatorname{Re}}\int_0^T\eta(t)Av(t)\,\mathrm dt,\psi\right\rangle_{V',V}
+ =\left\langle\int_0^T\eta(t)f(t)\,\mathrm dt,\psi\right\rangle_{V',V}.
+\end{align*}
+因为这对所有 $\psi\in V$ 成立, 可在 $V'$ 中推出
+\[
+ -\int_0^T\eta'(t)v(t)\,\mathrm dt
+ =-\int_0^T\eta(t)B(v(t),v(t))\,\mathrm dt
+ -\frac1{\operatorname{Re}}\int_0^T\eta(t)Av(t)\,\mathrm dt
+ +\int_0^T\eta(t)f(t)\,\mathrm dt.
+\]
+然而, 因为 Stokes 算子 $A$ 从 $V$ 连续映到 $V'$, 且双线性映射 $B$ 从 $V\times V$ 连续映到 $V'$, 有
+\[
+ \int_0^T\|B(v(t),v(t))\|_{V'}\,\mathrm dt
+ \leq C\int_0^T\|v(t)\|_V^2\,\mathrm dt
+ \leq C\|v\|_{L^2(]0,T[,V)}^2,
+\]
+以及
+\[
+ \int_0^T\|Av(t)\|_{V'}\,\mathrm dt
+ \leq C\int_0^T\|v(t)\|_V\,\mathrm dt
+ \leq C\sqrt T\|v\|_{L^2(]0,T[,V)}.
+\]
+所以, 因为\eqref{eq:chap5-equivalence-distribution-form}对任意 $\eta\in\mathcal D(]0,T[)$ 成立, 已经证明 $v$ 关于时间有属于 $L^1(]0,T[,V')$ 的弱导数, 并且几乎所有 $t\in]0,T[$ 都有
+\[
+ \frac{\mathrm dv}{\mathrm dt}=-\frac1{\operatorname{Re}}Av(t)-B(v(t),v(t))+f(t).
+\]
+
+既然知道 $\mathrm dv/\mathrm dt\in L^1(]0,T[,V')$, 由\eqref{eq:chap5-equivalence-distribution-form}可推出对所有 $\psi\in V$ 和 $\eta\in\mathcal D(]0,T[)$ 都有\eqref{eq:chap5-equivalence-separated-test}. 由稠密性, 显然该式对所有 $\eta\in C_c^0(]0,T[)$ 仍成立.
+
+此外, 由于\eqref{eq:chap5-equivalence-separated-test}关于测试函数 $\eta(t)\psi$ 线性, 可知形式\eqref{eq:chap5-weak-time-dependent}对 Lemma~\ref{lem:chap5-tensor-test-density}定义的集合 $E$ 中任意测试函数成立. 该 Lemma 表明, \eqref{eq:chap5-weak-time-dependent}对任意 $\varphi\in C_c^0(]0,T[,V)$ 成立. 事实上, 由 $v\in L^2(]0,T[,V)$ 和 $\mathrm dv/\mathrm dt\in L^1(]0,T[,V')$, 容易看出定义\eqref{eq:chap5-weak-time-dependent}的关于 $\varphi$ 的线性泛函在 $C_c^0(]0,T[,V)$ 的拓扑下连续.
+
+再者, 由 Proposition~\ref{prop:chap2-epq-continuous-representative}, $v$ 在强拓扑下连续取值于 $V'$. 而由假设, $v(0)=v_0$ 在取值于 $V'$ 的弱连续意义下成立. 因为弱极限唯一, 确实可以恢复 $V'$ 中强意义下的初值 $v(0)=v_0$.
+\end{Proof}
+
+\subsubsection{弱解的存在性与唯一性}
+\label{subsec:chap5-weak-existence-uniqueness}
+
+\paragraph{主要结果的陈述}
+
+现在可以给出 Navier--Stokes 方程 (所谓``弱''解) 的主要存在唯一性结果.
+
+\begin{Theorem}{Leray}
+\label{thm:chap5-leray}
+设 $\Omega$ 是 $\mathbb R^d$ 中连通的有界 Lipschitz 区域. 设 $\operatorname{Re}>0$, $v_0\in H$, 且 $f\in L_{\mathrm{loc}}^2([0,+\infty[,(H^{-1}(\Omega))^d)$. 则存在定义于整个 $\mathbb R^+$ 上的二元组 $(v,p)$, 它是\eqref{eq:chap5-navier-stokes-system}的解, 并且对任意 $T>0$,
+\[
+ (v,p)\in\bigl(L^\infty(]0,T[,H)\cap L^2(]0,T[,V)\bigr)
+ \times W^{-1,\infty}(]0,T[,L_0^2(\Omega)),
+\]
+且
+\[
+ \frac{\mathrm dv}{\mathrm dt}
+ \in L^{4/d}(]0,T[,V_{-1})\cap L^2(]0,T[,V_{-d/2}).
+\]
+\begin{itemize}
+ \item 若 $d=2$, 该解唯一, 且 $v$ 从 $[0,+\infty[$ 连续映入 $H$. 此外, 对任意 $t\in\mathbb R^+$, 它满足能量等式
+ \begin{equation}
+  \frac12\|v(t)\|_{L^2}^2
+  +\frac1{\operatorname{Re}}\int_0^t\|\nabla v(\tau)\|_{L^2}^2\,\mathrm d\tau
+  =\frac12\|v_0\|_{L^2}^2
+  +\int_0^t\langle f(\tau),v(\tau)\rangle_{H^{-1},H_0^1}\,\mathrm d\tau.
+  \label{eq:chap5-leray-energy-equality}
+ \end{equation}
+ \item 若 $d=3$, $v$ 从 $[0,+\infty[$ 连续映入 $V_{-1/4}$, 并从 $[0,+\infty[$ 弱连续映入 $H$. 对任意 $t\in\mathbb R^+$, 它满足能量不等式
+ \begin{equation}
+  \frac12\|v(t)\|_{L^2}^2
+  +\frac1{\operatorname{Re}}\int_0^t\|\nabla v(\tau)\|_{L^2}^2\,\mathrm d\tau
+  \leq\frac12\|v_0\|_{L^2}^2
+  +\int_0^t\langle f(\tau),v(\tau)\rangle_{H^{-1},H_0^1}\,\mathrm d\tau.
+  \label{eq:chap5-leray-energy-inequality}
+ \end{equation}
+ 这类解的唯一性仍是一个公开问题.
+\end{itemize}
+\end{Theorem}
+
+证明思路如下. 任取 $T>0$, 尝试在 $[0,T]$ 上求解两个等价形式\eqref{eq:chap5-weak-time-independent}或\eqref{eq:chap5-weak-time-dependent}中的一个. 为此, 引入一个有限维逼近问题, 利用 Cauchy--Lipschitz 定理很容易求解. 然后证明该逼近问题的解满足关于逼近参数一致的估计. 最后利用紧性定理得到强收敛, 从而可以在逼近形式中取极限, 特别是在非线性项中取极限. 这一策略给出满足所提出形式的速度场 $v$ 的存在性.
+
+二维情形中解的唯一性将在一个独立小节中证明. 随后说明在 $d=2$ 和 $d=3$ 两种维数下都可以构造整个 $\mathbb R^+$ 上的解.
+
+然后, 在得到解的某些时间正则性的同时证明能量等式 (或不等式). 注意, 三维情形中的能量不等式\eqref{eq:chap5-leray-energy-inequality}只对 Leray 定理证明中构造的特定弱解成立. 特别地, 即使问题碰巧存在其他弱解, 也没有理由假设它们同样满足这个能量不等式.
+
+最后, 所用弱形式不能直接给出压力 $p$, 因而需要间接找出压力, 以证明并保证确实在分布意义下解出了方程\eqref{eq:chap5-navier-stokes-system}.
+
+\paragraph{逼近问题}
+
+给定 $T>0$. 我们选择离散 Navier--Stokes 方程只含与时间无关测试函数的弱形式\eqref{eq:chap5-weak-time-independent}. 为此, 使用 Definition~\ref{def:chap4-stokes-special-basis}中引入的由 Stokes 算子特征函数构成的特殊基 $(w_k)_k$. 令 $H_N$ 为函数 $(w_k)_{k\leq N}$ 张成的有限维向量空间. 对源项 $f$ 作时间正则化, 记为 $(f_N)_N$, 定义为
+\begin{equation}
+ f_N(t)=N\int_{-1/N}^0f(t+h)\,\mathrm dh,
+ \qquad\forall t\geq0,
+\label{eq:chap5-source-time-regularization}
+\end{equation}
+其中把 $f$ 在 $\mathbb R$ 上作零延拓. 因此对每个 $N$, $f_N$ 关于时间连续取值于 $(H^{-1}(\Omega))^d$. 此外, 序列 $(f_N)_N$ 在 $L^2(]0,T[,(H^{-1}(\Omega))^d)$ 中收敛到 $f$. 事实上, 对任意 $t\geq0$, Jensen 不等式给出
+\[
+ \|f(t)-f_N(t)\|_{H^{-1}}^2
+ \leq N\int_{-1/N}^0\|f(t)-f(t+h)\|_{H^{-1}}^2\,\mathrm dh,
+\]
+因而
+\begin{align*}
+ \|f-f_N\|_{L^2(]0,T[,H^{-1})}^2
+ &\leq N\int_0^T\int_{-1/N}^0\|f(t)-f(t+h)\|_{H^{-1}}^2\,\mathrm dh\,\mathrm dt\\
+ &=N\int_{-1/N}^0\int_0^T\|f(t)-f(t+h)\|_{H^{-1}}^2\,\mathrm dt\,\mathrm dh\\
+ &\leq\sup_{|h|\leq1/N}\|f-\tau_hf\|_{L^2(]0,T[,H^{-1})}^2,
+\end{align*}
+其中 $\tau_hf$ 是\eqref{eq:chap2-banach-translation}定义的 $f$ 的时间平移. 结论由 Corollary~\ref{cor:chap2-banach-translation-continuity}得到. 另外注意, 对任意 $N$ 和 $T>0$,
+\begin{equation}
+ \|f_N\|_{L^2(]0,T[,X)}\leq\|f\|_{L^2(]0,T[,X)},
+\label{eq:chap5-source-regularization-bound}
+\end{equation}
+其中 $X$ 是任意满足 $f\in L^2(]0,T[,X)$ 的 Banach 空间.
+
+现考虑如下逼近问题: 求 $v_N\in C^1([0,T],H_N)$, 使得对任意 $\psi_N\in H_N$,
+\begin{equation}
+ \left(\frac{\mathrm d v_N}{\mathrm dt},\psi_N\right)_H
+ +\int_\Omega((v_N\cdot\nabla)v_N)\cdot\psi_N\,\mathrm dx
+ +\frac1{\operatorname{Re}}\int_\Omega\nabla v_N:\nabla\psi_N\,\mathrm dx
+ =\langle f_N,\psi_N\rangle_{H^{-1},H_0^1},
+\label{eq:chap5-galerkin-problem}
+\end{equation}
+并满足初值条件 $v_N(0)=P_N(v_0)$, 其中 $P_N$ 是 $H$ 到有限维空间 $H_N$ 上的正交投影. 上述变分形式的这种逼近问题称为 Galerkin 逼近.
+
+族 $(w_k)_k$ 在 $H$ 中正交. 记函数 $v_N$ 沿 $w_k$ 的分量为 $\alpha_k(t)$, 并记分量向量 $(\alpha_k(t))_{k\leq N}$ 为 $\alpha(t)$. 则该逼近问题可写成关于 $\alpha(t)$ 的常微分方程组
+\[
+ \frac{\mathrm d\alpha}{\mathrm dt}=F(t,\alpha),
+\]
+其中 $F$ 连续且关于 $\alpha$ 局部 Lipschitz 连续 (因为它是多项式).
+
+Cauchy--Lipschitz 定理给出唯一的 $C^1$ 解, 它定义在最大区间 $[0,T_N[$ 上, 其中 $0<T_N\leq T$.
+
+现在需要建立关于 $N$ 一致的 $v_N$ 能量估计. 这些估计首先借助常微分方程有限时间爆破定理保证 $T_N=T$. 此外, 它们还使我们能够在适当空间中得到弱收敛子列, 从而证明可以在逼近问题中取极限.
+
+\paragraph{能量估计}
+
+在等式\eqref{eq:chap5-galerkin-problem}中取 $\psi_N=v_N$, 选择梯度的 $L^2$ 范数作为 $H_0^1(\Omega)$ 上的范数, 并使用 Young 不等式, 得到
+\begin{align}
+ \frac12\frac{\mathrm d}{\mathrm dt}\|v_N\|_{L^2}^2
+ +\frac1{\operatorname{Re}}\|\nabla v_N\|_{L^2}^2
+ &\leq\|f_N\|_{H^{-1}}\|v_N\|_{H_0^1}
+ \leq\|f_N\|_{H^{-1}}\|\nabla v_N\|_{L^2}\notag\\
+ &\leq\frac{\operatorname{Re}}2\|f_N\|_{H^{-1}}^2
+ +\frac1{2\operatorname{Re}}\|\nabla v_N\|_{L^2}^2.
+\label{eq:chap5-galerkin-differential-energy}
+\end{align}
+这里使用了非线性项 $b(v_N,v_N,v_N)$ 为零这一事实 (见\eqref{eq:chap5-inertia-antisymmetry}), 所以它不出现在这个不等式中.
+
+对时间直接积分可得
+\begin{align}
+ \|v_N(t)\|_{L^2}^2
+ +\frac1{\operatorname{Re}}\int_0^t\|\nabla v_N(\tau)\|_{L^2}^2\,\mathrm d\tau
+ &\leq\|P_Nv_0\|_{L^2}^2
+ +\operatorname{Re}\int_0^t\|f_N(\tau)\|_{H^{-1}}^2\,\mathrm d\tau\notag\\
+ &\leq\|v_0\|_{L^2}^2
+ +\operatorname{Re}\int_0^t\|f_N(\tau)\|_{H^{-1}}^2\,\mathrm d\tau,
+\label{eq:chap5-galerkin-integrated-energy}
+\end{align}
+因为 $P_N$ 是 $(L^2(\Omega))^d$ 中的正交投影, 所以其范数为 $1$.
+
+由\eqref{eq:chap5-source-regularization-bound}, 已经证明如下结果.
+
+\begin{Lemma}
+\label{lem:chap5-galerkin-energy-bounds}
+对任意 $N\in\mathbb N$, 有估计
+\begin{equation}
+\left\{
+\begin{aligned}
+ \sup_{t\leq T_N}\|v_N(t)\|_{L^2}^2
+ &\leq\|v_0\|_{L^2}^2
+ +\operatorname{Re}\|f\|_{L^2(]0,T[,(H^{-1}(\Omega))^d)}^2,\\
+ \int_0^{T_N}\|\nabla v_N(\tau)\|_{L^2}^2\,\mathrm d\tau
+ &\leq\operatorname{Re}\|v_0\|_{L^2}^2
+ +\operatorname{Re}^2\|f\|_{L^2(]0,T[,(H^{-1}(\Omega))^d)}^2.
+\end{aligned}
+\right.
+\label{eq:chap5-galerkin-uniform-energy}
+\end{equation}
+\end{Lemma}
+
+该 Lemma 的第一个基本后果是: 固定 $N$ 时, 解 $v_N$ 在 $[0,T_N[$ 上关于 $L^2$ 范数有界, 且界与 $T_N$ 无关. 因而常微分方程有限时间爆破定理给出 $T_N=T$. 所以估计\eqref{eq:chap5-galerkin-uniform-energy}对 $T_N=T$ 成立.
+
+为在非线性项中取极限, 必须得到强收敛结果. 需要使用 Aubin--Lions--Simon 紧性定理 (Theorem~\ref{thm:chap2-aubin-lions-simon}). 为此需要估计逼近解关于时间的导数, 从而估计方程\eqref{eq:chap5-galerkin-problem}中的各项.
+
+\begin{Lemma}
+\label{lem:chap5-galerkin-time-derivative}
+存在 $K(T,v_0,f)>0$, 使得对任意 $N$,
+\[
+ \left\|\frac{\mathrm dv_N}{\mathrm dt}\right\|_{L^{4/d}(]0,T[,V')}
+ \leq K(T,v_0,f).
+\]
+\end{Lemma}
+
+\begin{Proof}
+空间 $H_N$ 建立在 Stokes 算子特征函数的一组基上. 如前所见, 该基在 $H$ 和 $V$ 中都正交. 因而算子 $P_N$ 也是 $V$ 到 $H_N$ 上的正交投影. 伴随算子 ${}^tP_N$ 是 $V'$ 上范数不超过 $1$ 的连续线性算子. 由伴随算子的定义, 在 $\mathcal D'(]0,T[)$ 中有
+\begin{equation}
+ \frac{\mathrm dv_N}{\mathrm dt}
+ =-\left(\frac1{\operatorname{Re}}Av_N+{}^tP_N(B(v_N,v_N))-{}^tP_N(f_N)\right).
+\label{eq:chap5-galerkin-time-equation}
+\end{equation}
+事实上, 对任意 $\psi\in V$, 因为 $\mathrm dv_N/\mathrm dt$ 和 $Av_N$ 属于 $H_N$,
+\begin{align*}
+ &\left\langle\frac{\mathrm dv_N}{\mathrm dt}
+ +\left(\frac1{\operatorname{Re}}Av_N+{}^tP_N(B(v_N,v_N))-{}^tP_N(f_N)\right),\psi\right\rangle_{V',V}\\
+ &=\left\langle\frac{\mathrm dv_N}{\mathrm dt}
+ +\frac1{\operatorname{Re}}Av_N+B(v_N,v_N)-f_N,P_N\psi\right\rangle_{V',V}=0,
+\end{align*}
+因为 $P_N\psi\in H_N$, 所以可在\eqref{eq:chap5-galerkin-problem}中取 $\psi_N=P_N\psi$.
+
+由于 Stokes 算子 $A$ 从 $V$ 连续映到 $V'$, 由\eqref{eq:chap5-galerkin-time-equation}和\eqref{eq:chap5-inertia-operator-estimate},
+\begin{align*}
+ \left\|\frac{\mathrm dv_N}{\mathrm dt}\right\|_{V'}
+ &\leq\frac1{\operatorname{Re}}\|Av_N\|_{V'}
+ +\|B(v_N,v_N)\|_{V'}+\|f_N(t)\|_{V'}\\
+ &\leq C\|v_N\|_V
+ +\|v_N\|_{L^2}^{2-d/2}\|v_N\|_{H^1}^{d/2}
+ +\|f_N(t)\|_{V'}
+ =g_N(t),
+\end{align*}
+根据\eqref{eq:chap5-source-regularization-bound}和 Lemma~\ref{lem:chap5-galerkin-energy-bounds}给出的估计, $(g_N)_N$ 在 $L^{4/d}(]0,T[)$ 中有界. 因而
+\[
+ \left\|\frac{\mathrm dv_N}{\mathrm dt}\right\|_{L^{4/d}(]0,T[,V')}
+ \leq\left(\int_0^Tg_N^{4/d}\,\mathrm dt\right)^{d/4},
+\]
+这给出所需估计.
+\end{Proof}
+
+\par\noindent\refstepcounter{chapterfivesectiononeremark}\textbf{Remark~\thechapterfivesectiononeremark:}\label{rem:chap5-galerkin-vminus-three-halves}
+三维情形中, 注意到 $(H^{1/2}(\Omega))^3$ (或 $V_{1/2}$) 连续嵌入 $(L^3(\Omega))^3$, 略微改变双线性项的估计写法, 还可以证明 $B(v_N,v_N)$ 在 $L^2(]0,T[,V_{-3/2})$ 中有界. 事实上,
+\[
+ b(v,v,w)=b(v,w,v)=\int_\Omega((v\cdot\nabla)w)\cdot v\,\mathrm dx,
+\]
+因而由 Hölder 不等式,
+\[
+ |b(v,v,w)|\leq\|v\|_{L^3}\|\nabla w\|_{L^3}\|v\|_{L^3}
+ \leq\|v\|_{L^2}\|v\|_{H^1}\|w\|_{V_{3/2}}.
+\]
+由对偶性可知
+\[
+ \|B(v,v)\|_{V_{-3/2}}\leq\|v\|_{L^2}\|v\|_{H^1}.
+\]
+由于 $(v_N)_N$ 在 $L^\infty(]0,T[,H)\cap L^2(]0,T[,V)$ 中有界, 可得
+\[
+ (B(v_N,v_N))_N\text{ 在 }L^2(]0,T[,V_{-3/2})\text{ 中有界},
+\]
+从而可证明 $\mathrm dv_N/\mathrm dt$ 在 $L^2(]0,T[,V_{-3/2})$ 中有界.
+
+\paragraph{取极限}
+
+在 Lemmas~\ref{lem:chap5-galerkin-energy-bounds}和~\ref{lem:chap5-galerkin-time-derivative}中, 已经证明序列 $(v_N)_N$ 在 $L^\infty(]0,T[,H)$ 和 $L^2(]0,T[,V)$ 中有界, 而 $(\mathrm dv_N/\mathrm dt)_N$ 在 $L^{4/d}(]0,T[,V')$ 中有界. 此外, 由 Sobolev 嵌入可知, 因为空间维数 $d\leq3$, $H^1(\Omega)$ 连续嵌入 $L^6(\Omega)$. 从而序列 $(v_N)_N$ 还在 $L^2(]0,T[,(L^6(\Omega))^d)$ 中有界.
+
+现在需要为非线性惯性项 $(v_N\cdot\nabla)v_N$ 得到一个界. 由 Hölder 不等式,
+\[
+ \|(v_N\cdot\nabla)v_N\|_{L^2(]0,T[,(L^1(\Omega))^d)}
+ \leq\|v_N\|_{L^\infty(]0,T[,(L^2(\Omega))^d)}
+ \|\nabla v_N\|_{L^2(]0,T[,(L^2(\Omega))^{d\times d})}
+ \leq C(T,v_0,f).
+\]
+另一方面,
+\begin{align*}
+ \|(v_N\cdot\nabla)v_N\|_{L^1(]0,T[,(L^{3/2}(\Omega))^d)}
+ &\leq\|v_N\|_{L^2(]0,T[,(L^6(\Omega))^d)}
+ \|\nabla v_N\|_{L^2(]0,T[,(L^2(\Omega))^{d\times d})}\\
+ &\leq\|v_N\|_{L^2(]0,T[,V)}^2
+ \leq C(T,v_0,f).
+\end{align*}
+所以序列 $((v_N\cdot\nabla)v_N)_N$ 在 $L^2(]0,T[,(L^1(\Omega))^d)$ 和 $L^1(]0,T[,(L^{3/2}(\Omega))^d)$ 中有界. 这些正则性空间在如下意义下是最优的: 关于时间的 $L^1$ 正则性或关于空间的 $L^1$ 正则性是 $L^p$ 空间类中最弱的正则性. 通常可以观察到, 时间正则性的增益会导致空间正则性的损失, 反之亦然. 上述两个空间中的界使我们能够由 Theorem~\ref{thm:chap2-mixed-lp-interpolation}推出许多中间空间中的其他界. 更准确地说, 对任意 $0\leq\theta\leq1$, 可由该定理推出序列 $((v_N\cdot\nabla)v_N)_N$ 在 $L^p(]0,T[,(L^q(\Omega))^d)$ 中有界, 其中
+\begin{equation}
+ \frac1p=\frac\theta1+\frac{1-\theta}2,
+ \qquad
+ \frac1q=\frac{2\theta}3+\frac{1-\theta}1.
+\label{eq:chap5-inertia-interpolation-exponents}
+\end{equation}
+
+需要什么估计? 为确定这一点, 回到准备取极限的逼近问题弱形式. 非线性项在形式中写成
+\[
+ \int_0^t\int_\Omega((v_N\cdot\nabla)v_N)\cdot\psi\,\mathrm dx,
+\]
+其中 $\psi$ 是 $(H^1(\Omega))^d$ 中与时间无关的函数, 因而属于 $L^\infty(]0,T[,(L^6(\Omega))^d)$. 为在这一项中取极限, 需要非线性项 $((v_N\cdot\nabla)v_N)_N$ 在对偶空间 $L^r(]0,T[,(L^{6/5}(\Omega))^d)$ 中弱收敛, 其中 $r>1$, 因为 $6/5$ 是 $6$ 的共轭指数. 回到\eqref{eq:chap5-inertia-interpolation-exponents}, 可见需要取 $\theta=1/2$ 得到 $q=6/5$, 从而 $p=4/3$. 总之, 对我们有用的估计为
+\begin{equation}
+ ((v_N\cdot\nabla)v_N)_N
+ \text{ 在 }L^{4/3}(]0,T[,(L^{6/5}(\Omega))^d)\text{ 中有界}.
+\label{eq:chap5-inertia-useful-bound}
+\end{equation}
+
+由 Theorem~\ref{prop:chap2-bounded-lp-weak-subsequence}, 存在函数 $v$ 和 $(v_N)_N$ 的一个子列. 为简化记号, 仍把该子列记为 $(v_N)_N$, 并且
+\[
+\left\{
+\begin{aligned}
+ v_N&\rightharpoonup^*v&&\text{于 }L^\infty(]0,T[,H),\\
+ v_N&\rightharpoonup v&&\text{于 }L^2(]0,T[,V),\\
+ v_N&\rightharpoonup v&&\text{于 }L^2(]0,T[,(L^6(\Omega))^d),\\
+ \frac{\mathrm dv_N}{\mathrm dt}&\rightharpoonup\frac{\mathrm dv}{\mathrm dt}
+ &&\text{于 }L^{4/d}(]0,T[,V').
+\end{aligned}
+\right.
+\]
+最初三个空间中的弱极限必然相同, 因为三个弱收敛都蕴含分布意义下 (在 $\mathcal D'(]0,T[\times\Omega)$ 中) 的收敛, 而分布意义下序列的极限唯一. 最后, $\mathrm dv_N/\mathrm dt$ 的弱极限等于 $\mathrm dv/\mathrm dt$, 因为关于时间求导算子在分布意义下连续.
+
+再次提取子列也无妨. 由 Theorem~\ref{prop:chap2-bounded-lp-weak-subsequence}和估计\eqref{eq:chap5-inertia-useful-bound}, 存在函数 $g$, 使
+\[
+ (v_N\cdot\nabla)v_N\rightharpoonup g
+ \quad\text{于 }L^{4/3}(]0,T[,(L^{6/5}(\Omega))^d)\text{ 中弱收敛}.
+\]
+在这个阶段尚不能断言 $g=(v\cdot\nabla)v$. 接下来的关键步骤正是利用至今尚未使用的紧性性质证明这个等式确实成立.
+
+首先注意, 由上述弱收敛, Theorem~\ref{thm:chap2-aubin-lions-simon}和 Proposition~\ref{prop:chap2-compact-map-weak-to-strong}直接给出
+\[
+ v_N\longrightarrow v\quad\text{于 }L^2(]0,T[,H).
+\]
+已知 $(v_N)_N$ 在 $L^2(]0,T[,(L^2(\Omega))^d)$ 中强收敛到 $v$, 而 $(\nabla v_N)_N$ 在 $L^2(]0,T[,(L^2(\Omega))^{d\times d})$ 中弱收敛到 $\nabla v$. 由 Proposition~\ref{prop:chap2-strong-weak-bilinear}, 序列 $((v_N\cdot\nabla)v_N)_N$ 在 $L^1(]0,T[,(L^1(\Omega))^d)$ 中弱收敛到 $(v\cdot\nabla)v$. 另一方面, 已知它在 $L^{4/3}(]0,T[,(L^{6/5}(\Omega))^d)$ 中弱收敛到 $g$. 这两个空间中的收敛都蕴含分布意义下的收敛, 因而由 $\mathcal D'(]0,T[\times\Omega)$ 中极限的唯一性推出 $g=(v\cdot\nabla)v$.
+
+这里强调一种非常一般的方法: 为处理非线性项, 先在尽可能精确的正则性空间中建立估计与弱收敛, 此时极限先验未知, 然后利用紧性, 在较大的空间 (即正则性较弱的函数空间) 中证明可以取极限, 进而识别这些极限. 这正是 Proposition~\ref{prop:chap2-strong-weak-bilinear}中以相当抽象的框架给出的策略.
+
+现在可以在弱形式中取极限. 固定 $\psi_K\in H_K$, 并取 $\theta(t)\in\mathcal D(]0,T[)$. 空间 $(H_N)_N$ 彼此嵌套, 因而当 $N$ 充分大时,
+\begin{align*}
+ &\int_0^T\left\langle\frac{\mathrm dv_N}{\mathrm dt},\psi_K\right\rangle_{V',V}\theta(\tau)\,\mathrm d\tau
+ +\int_0^T\int_\Omega((v_N\cdot\nabla)v_N)\cdot\psi_K\theta(\tau)\,\mathrm dx\,\mathrm d\tau\\
+ &\quad+\frac1{\operatorname{Re}}\int_0^T\int_\Omega\nabla v_N:\nabla\psi_K\theta(\tau)\,\mathrm dx\,\mathrm d\tau
+ =\int_0^T\langle f_N,\psi_K\rangle_{H^{-1},H_0^1}\theta(\tau)\,\mathrm d\tau.
+\end{align*}
+固定 $K$, 令 $N$ 趋于无穷, 利用上面建立的所有收敛, 得到
+\begin{align}
+ &\int_0^T\left\langle\frac{\mathrm dv}{\mathrm dt},\theta(\tau)\psi_K\right\rangle_{V',V}\,\mathrm d\tau
+ +\int_0^T\int_\Omega((v\cdot\nabla)v)\cdot(\theta(\tau)\psi_K)\,\mathrm dx\,\mathrm d\tau\notag\\
+ &\quad+\frac1{\operatorname{Re}}\int_0^T\int_\Omega\nabla v:\nabla(\theta(\tau)\psi_K)\,\mathrm dx\,\mathrm d\tau
+ =\int_0^T\langle f,\theta(\tau)\psi_K\rangle_{H^{-1},H_0^1}\,\mathrm d\tau.
+\label{eq:chap5-galerkin-limit-form}
+\end{align}
+注意这里仅使用弱收敛. $(v_N)_N$ 在 $L^2(]0,T[,H)$ 中强收敛到 $v$, 只用于识别乘积 $(v_N\cdot\nabla)v_N$ 的弱极限.
+
+现取 $\psi\in V$ 并令 $\psi_K=P_K\psi$. 因为 $(w_k)_k$ 在 $V$ 中完备, 已知 $\psi_K$ 在 $V$ 中收敛到 $\psi$. 于是 $\theta(\cdot)\psi_K$ 在 $C^0([0,T],V)$ 中收敛到 $\theta(\cdot)\psi$, 并由 Sobolev 嵌入, 也在 $C^0([0,T],(L^6(\Omega))^d)$ 中收敛.
+
+又因为
+\[
+ \frac{\mathrm dv}{\mathrm dt}\in L^{4/d}(]0,T[,V'),\qquad
+ (v\cdot\nabla)v\in L^{4/3}(]0,T[,(L^{6/5}(\Omega))^d),
+\]
+且 $f\in L^2(]0,T[,(H^{-1}(\Omega))^d)$, 可以在方程\eqref{eq:chap5-galerkin-limit-form}的所有项中令 $K$ 趋于无穷. 这恰好证明测试函数 $\psi$ 的形式\eqref{eq:chap5-weak-time-independent}.
+
+由 Proposition~\ref{prop:chap5-weak-form-equivalence}, 所得函数 $v$ 也满足方程\eqref{eq:chap5-weak-time-dependent}. 既然 $\mathrm dv/\mathrm dt\in L^{4/d}(]0,T[,V')$, 可由稠密性把形式\eqref{eq:chap5-weak-time-dependent}延拓到测试函数 $\varphi\in L^{4/(4-d)}(]0,T[,V)$.
+
+现在需要验证初值条件. 由 Proposition~\ref{prop:chap2-epq-continuous-representative}, 极限函数 $v$ 连续取值于 $V'$.
+
+此外, 由 Theorem~\ref{thm:chap2-aubin-lions-simon}, 已知序列 $(v_N)_N$ 在 $C^0([0,T],V')$ 中强收敛到 $v$, 特别地 $v_N(0)$ 在 $V'$ 中收敛到 $v(0)$. 然而按定义 $v_N(0)=P_N(v_0)$. 由于所选特殊基是 $H$ 的一组标准正交基, 序列 $v_N(0)$ 在 $H$ 中, 从而在 $V'$ 中收敛到 $v_0$. 由 $V'$ 中极限的唯一性, 确实得到 $v(0)=v_0$.
+
+\paragraph{唯一性问题}
+
+目前, 三维 Navier--Stokes 方程弱解的唯一性 (或非唯一性) 仍是公开问题. 这尤其与非线性项正则性不足有关; 如前所见, 它仅属于 $L^{4/3}(]0,T[,V')$. 这不允许在弱形式\eqref{eq:chap5-weak-time-dependent}中取属于 $L^2(]0,T[,V)$ 的测试函数, 而这正是刚刚构造的解的正则性. 相比之下, 这个障碍在二维中消失.
+
+因此本小节假设 $d=2$ (三维情形将在 \MBUnresolvedReference{subsec:chap5-strong-three-dimensional}{Subsection~2.3.2}进一步讨论). 设 $v_1$ 和 $v_2$ 是\eqref{eq:chap5-weak-time-dependent}的两个弱解, 并令 $v=v_2-v_1$. 则对任意 $\psi\in L^2(]0,T[,V)$, 函数 $v$ 满足
+\begin{align*}
+ &\int_0^T\left\langle\frac{\mathrm dv}{\mathrm dt}(\tau),\psi(\tau)\right\rangle_{V',V}\,\mathrm d\tau
+ +\frac1{\operatorname{Re}}\int_0^T\int_\Omega\nabla v(\tau):\nabla\psi(\tau)\,\mathrm dx\,\mathrm d\tau\\
+ &\quad+\int_0^T\int_\Omega((v_2(\tau)\cdot\nabla)v(\tau))\cdot\psi(\tau)\,\mathrm dx\,\mathrm d\tau
+ +\int_0^T\int_\Omega((v(\tau)\cdot\nabla)v_1(\tau))\cdot\psi(\tau)\,\mathrm dx\,\mathrm d\tau=0.
+\end{align*}
+任取 $t\in[0,T]$, 函数 $\psi(\tau)=\mathbf1_{[0,t]}(\tau)v(\tau)$ 属于 $L^2(]0,T[,V)$, 因而可在上式中取它为测试函数. 由 Theorem~\ref{thm:chap2-lions-magenes-product},
+\begin{align*}
+ \frac12\|v(t)\|_H^2
+ +\frac1{\operatorname{Re}}\int_0^t\int_\Omega|\nabla v(\tau)|^2\,\mathrm dx\,\mathrm d\tau
+ &+\int_0^tb(v_2(\tau),v(\tau),v(\tau))\,\mathrm d\tau\\
+ &+\int_0^tb(v(\tau),v_1(\tau),v(\tau))\,\mathrm d\tau
+ =\frac12\|v(0)\|_H^2.
+\end{align*}
+因为几乎处处有 $b(v_2(\tau),v(\tau),v(\tau))=0$ (见\eqref{eq:chap5-inertia-antisymmetry}), 使用估计\eqref{eq:chap5-inertia-estimate}和 Young 不等式,
+\begin{align*}
+ \frac12\|v(t)\|_{L^2}^2
+ +\frac1{\operatorname{Re}}\int_0^t\|\nabla v(\tau)\|_{L^2}^2\,\mathrm d\tau
+ &\leq\frac12\|v(0)\|_{L^2}^2
+ +\int_0^t|b(v(\tau),v_1(\tau),v(\tau))|\,\mathrm d\tau\\
+ &\leq\frac12\|v(0)\|_{L^2}^2
+ +\int_0^t\|\nabla v_1(\tau)\|_{L^2}\|v(\tau)\|_{L^2}\|\nabla v(\tau)\|_{L^2}\,\mathrm d\tau\\
+ &\leq\frac12\|v(0)\|_{L^2}^2
+ +\frac1{2\operatorname{Re}}\int_0^t\|\nabla v(\tau)\|_{L^2}^2\,\mathrm d\tau\\
+ &\quad+\frac{\operatorname{Re}}2\int_0^t\|\nabla v_1(\tau)\|_{L^2}^2\|v(\tau)\|_{L^2}^2\,\mathrm d\tau.
+\end{align*}
+从而
+\[
+ \|v(t)\|_{L^2}^2
+ \leq\|v(0)\|_{L^2}^2
+ +\operatorname{Re}\int_0^t\|\nabla v_1(\tau)\|_{L^2}^2\|v(\tau)\|_{L^2}^2\,\mathrm d\tau.
+\]
+因为 $v_1\in L^2(]0,T[,V)$, 实值函数 $\tau\mapsto g(\tau)=\|\nabla v_1(\tau)\|_{L^2}^2$ 属于 $L^1(]0,T[)$. 因而可应用 Gronwall Lemma~\ref{lem:chap2-gronwall}, 得到
+\[
+ \forall t\in[0,T],\qquad
+ \|v(t)\|_{L^2}^2\leq\|v(0)\|_{L^2}^2
+ \exp\left(\operatorname{Re}\int_0^tg(\tau)\,\mathrm d\tau\right).
+\]
+然而 $v_1(0)=v_2(0)=v_0$, 所以 $v(0)=0$, 进而对所有 $t\in[0,T]$ 都有 $v(t)=0$. 这证明弱解唯一.
+
+\paragraph{弱解的全局性}
+
+前面在任意预先指定的区间 $[0,T]$ 上构造了问题的弱解, 其中 $T>0$ 可任意大. 现在证明, 正如定理陈述所称, 实际上可以得到全局解, 即定义于所有时间上的解.
+
+\begin{itemize}
+ \item \textbf{二维情形:}
+
+ 已经得到整个区间 $[0,T]$ 上解的唯一性, 因而容易构造全局解. 事实上, 若以 $(v_n,p_n)$ 表示区间 $[0,n]$ 上问题的唯一解, 则由唯一性, 只要 $n<k$, 就有
+ \[
+  v_n=v_k,\qquad p_n=p_k,\qquad\text{于 }[0,n].
+ \]
+ 通过定义
+ \[
+  v(t)=v_n(t),\qquad p(t)=p_n(t),\qquad t\leq n,
+ \]
+ 得到整个 $\mathbb R^+$ 上的解.
+
+ \item \textbf{三维情形:}
+
+ 前面的论证不能使用, 因为解不具有唯一性, 无法保证各区间 $[0,n]$ 上的不同解彼此正确重合. 因而必须回到解的构造方式, 采用另一种方法. 我们引入了一个逼近问题, 其中把解记为 $(v_N)_N$ (压力在最后直接由解 $v$ 得到). 已经建立的能量估计表明, 这些逼近解唯一并存在于整个 $\mathbb R^+$ 上 (Cauchy--Lipschitz 定理).
+
+ 令 $K=1$, 考虑区间 $[0,K]=[0,1]$. 从 $(v_N)_N$ 中提取一个子列 $(v_{\varphi_1(N)})_N$, 它在 $[0,1]$ 上的适当空间中收敛, 极限给出该区间上问题的一个解 $v$ (见前面的取极限过程).
+
+ 再令 $K=2$, 考虑区间 $[0,K]=[0,2]$. 从序列 $(v_{\varphi_1(N)})_N$ 中提取一个子列 $(v_{\varphi_1(\varphi_2(N))})_N$, 它在 $[0,2]$ 上给出一个解, 依此类推.
+
+ 通过逐次提取, 可以得到从 $\mathbb N$ 到 $\mathbb N$ 的严格递增函数 $\varphi_i$, 使得 $(v_{\varphi_1\circ\cdots\circ\varphi_K(N)})_N$ 在极限给出初始问题在区间 $[0,K]$ 上的一个解.
+
+ 最后, 只需使用对角提取过程, 即考虑子列
+ \[
+  (v_{\varphi_1\circ\cdots\circ\varphi_N(N)})_N.
+ \]
+ 该序列在任意区间 $[0,K]$ 乃至任意区间 $[0,T]$ 上收敛到初始问题的一个解. 因而这个子列的极限确实是定义于整个 $\mathbb R^+$ 上的解.
+\end{itemize}
+
+\subsubsection{动能演化}
+\label{subsec:chap5-kinetic-energy}
+
+现在详述上述所得弱解关于时间的连续性性质.
+
+\begin{Proposition}
+\label{prop:chap5-weak-solution-time-continuity}
+在二维情形中, 前面构造的解 $v$ 满足
+\[
+ v\in C^0(\mathbb R^+,H).
+\]
+在三维情形中, 它满足
+\[
+ v\in C^0(\mathbb R^+,V_{-1/4}),
+\]
+以及
+\[
+ v\in C_{\mathrm{weak}}^0(\mathbb R^+,H),
+\]
+即 $v$ 弱连续取值于 $H$.
+\end{Proposition}
+
+\begin{Proof}
+二维情形中, 已知
+\[
+ v\in L^2(]0,T[,V),
+ \qquad
+ \frac{\mathrm dv}{\mathrm dt}\in L^2(]0,T[,V').
+\]
+Corollary~\ref{thm:chap2-lions-magenes-continuity-h}给出结论.
+
+三维情形中, 由 Remark~\ref{rem:chap5-galerkin-vminus-three-halves}, 有
+\[
+ v\in L^2(]0,T[,V),
+ \qquad
+ \frac{\mathrm dv}{\mathrm dt}\in L^2(]0,T[,V_{-3/2}).
+\]
+此时 Theorem~\ref{thm:chap4-stokes-time-continuity}给出第一个所需结果.
+
+注意, 因为 $v$ 强连续取值于 $V_{-1/4}$, 所以它也弱连续取值于该空间, 而且
+\[
+ v\in L^\infty(]0,T[,H).
+\]
+因此 Lemma~\ref{lem:chap2-weak-continuity-transfer}使我们能够推出 $v$ 弱连续取值于 $H$.
+\end{Proof}
+
+关于能量随时间的行为可以说些什么? 系统的物理能量是动能 $\frac12\int_\Omega|v|^2\,\mathrm dx$ (回忆在这个无量纲模型中, 流体密度取为 $1$). 我们证明二维情形可以写出能量方程\eqref{eq:chap5-leray-energy-equality}, 其物理解释为
+\[
+ \underbrace{\left(\frac12\|v(t)\|_{L^2}^2-\frac12\|v_0\|_{L^2}^2\right)}_{\text{动能变化}}
+ +\underbrace{\left(\frac1{\operatorname{Re}}\int_0^t\|\nabla v(\tau)\|_{L^2}^2\,\mathrm d\tau\right)}_{\text{耗散能量}}
+ =\underbrace{\left(\int_0^t\langle f(\tau),v(\tau)\rangle_{V',V}\,\mathrm d\tau\right)}_{\text{源项作功}}.
+\]
+三维情形中, 这个能量平衡等式变成一个不等式. 这一问题与三维弱解唯一性至今未解决的问题密切相关.
+
+\paragraph{二维情形}
+
+已知在二维中, 前面构造的弱解满足 $\mathrm dv/\mathrm dt\in L^2(]0,T[,V')$, 项 $(v\cdot\nabla)v$ 也如此. 正如前面已经说明的, 这意味着可以由稠密性把\eqref{eq:chap5-weak-time-dependent}延拓到所有 $\varphi\in L^2(]0,T[,V)$. 特别地, 可以在\eqref{eq:chap5-weak-time-dependent}中取 $\varphi=v$. 由 Theorem~\ref{thm:chap2-lions-magenes-product}, 恰好得到能量方程\eqref{eq:chap5-leray-energy-equality}.
+
+\paragraph{三维情形}
+
+这里如前所见, 不再有 $\mathrm dv/\mathrm dt\in L^2(]0,T[,V')$, 而只有
+\[
+ \frac{\mathrm dv}{\mathrm dt}\in L^2(]0,T[,V_{-3/2})\cap L^{4/3}(]0,T[,V').
+\]
+这不允许把\eqref{eq:chap5-weak-time-dependent}延拓到 $L^2(]0,T[,V)$ 中的测试函数, 因而不能作二维情形中的相同计算. 所以能量不等式的证明更为复杂.
+
+\begin{itemize}
+ \item \textbf{Step 1:}
+
+ 在逼近问题\eqref{eq:chap5-galerkin-problem}中可取 $\psi_N=v_N$, 得到
+ \begin{equation}
+  \frac12\frac{\mathrm d}{\mathrm dt}\|v_N\|_{L^2}^2
+  +\frac1{\operatorname{Re}}\int_\Omega|\nabla v_N|^2\,\mathrm dx
+  =\langle f_N,v_N\rangle_{H^{-1},H_0^1},
+  \label{eq:chap5-three-dimensional-approx-energy}
+ \end{equation}
+ 对时间积分后, 对任意 $t\in[0,T]$,
+ \begin{align}
+  \frac12\|v_N(t)\|_{L^2}^2
+  +\frac1{\operatorname{Re}}\int_0^t\|\nabla v_N\|_{L^2}^2\,\mathrm d\tau
+  &=\frac12\|P_Nv_0\|_{L^2}^2
+  +\int_0^t\langle f_N,v_N\rangle_{H^{-1},H_0^1}\,\mathrm ds\notag\\
+  &\leq\frac12\|v_0\|_{L^2}^2
+  +\int_0^t\langle f_N,v_N\rangle_{H^{-1},H_0^1}\,\mathrm d\tau.
+  \label{eq:chap5-three-dimensional-integrated-energy}
+ \end{align}
+ 证明的剩余步骤是说明可以在这个不等式中取极限.
+
+ \item \textbf{Step 2:}
+
+ 证明
+ \begin{equation}
+  \|v_0\|_H^2=\|v(0)\|_H^2
+  =\lim_{s\to0^+}\frac1s\int_0^s\|v(t)\|_H^2\,\mathrm dt.
+  \label{eq:chap5-initial-energy-average}
+ \end{equation}
+ 注意, 因为 $v$ 在 $[0,T]$ 上弱连续取值于 $H$, 这实质上等价于证明 $0$ 是映射 $t\mapsto\|v(t)\|_H^2$ 的 Lebesgue 点.
+
+ 为此, 在 $0$ 与 $s>0$ 之间对\eqref{eq:chap5-three-dimensional-integrated-energy}积分并除以 $s$, 得到
+ \begin{align}
+  &\frac1{2s}\int_0^s\|v_N\|_H^2\,\mathrm dt
+  +\frac1{\operatorname{Re}s}\int_0^s\left(\int_0^t\|\nabla v_N\|_{L^2}^2\,\mathrm d\tau\right)\mathrm dt\notag\\
+  &\qquad\leq\frac12\|v_0\|_H^2
+  +\frac1s\int_0^s\left(\int_0^t\langle f_N,v_N\rangle_{H^{-1},H_0^1}\,\mathrm d\tau\right)\mathrm dt.
+  \label{eq:chap5-averaged-approx-energy}
+ \end{align}
+ 固定 $s>0$, 由 $(v_N)_N$ 在 $L^2(]0,T[,H)$ 中强收敛到 $v$, 第一项在 $N$ 趋于无穷时可立即取极限.
+
+ 因为 $(v_N)_N$ 在 $L^2(]0,T[,V)$ 中有界, 且由\eqref{eq:chap5-source-regularization-bound}, 项 $\int_0^t\langle f_N,v_N\rangle_{H^{-1},H_0^1}\,\mathrm ds$ 关于 $t$ 和 $N$ 一致有界. 此外, 对任意 $t\in[0,T]$, 当 $N$ 趋于无穷时, 由于 $(v_N)_N$ 在 $L^2(]0,T[,V)$ 中弱收敛到 $v$, 而 $(f_N)_N$ 强收敛到 $f$, 该项收敛到 $\int_0^t\langle f,v\rangle_{H^{-1},H_0^1}\,\mathrm ds$. 所以由 Lebesgue 控制收敛定理,
+ \[
+  \frac1s\int_0^s\left(\int_0^t\langle f_N,v_N\rangle_{H^{-1},H_0^1}\,\mathrm d\tau\right)\mathrm dt
+  \longrightarrow
+  \frac1s\int_0^s\left(\int_0^t\langle f,v\rangle_{H^{-1},H_0^1}\,\mathrm d\tau\right)\mathrm dt.
+ \]
+ 再者, 序列 $(\nabla v_N)_N$ 在 $L^2(]0,T[,(L^2(\Omega))^{d\times d})$ 中弱收敛到 $\nabla v$. 记区间 $[0,t]$ 的示性函数为 $\mathbf1_{[0,t]}$, 则容易看出 $(\mathbf1_{[0,t]}\nabla v_N)_N$ 在该空间中弱收敛到 $\mathbf1_{[0,t]}\nabla v$. 因而由范数的弱下半连续性 (Corollary~\ref{cor:chap2-weak-lower-semicontinuity}),
+ \[
+  \int_0^t\|\nabla v\|_{L^2}^2\,\mathrm d\tau
+  \leq\liminf_{N\to\infty}\int_0^t\|\nabla v_N\|_{L^2}^2\,\mathrm d\tau,
+  \qquad\forall t\in[0,T].
+ \]
+ 由 Fatou Lemma,
+ \[
+  \frac1s\int_0^s\left(\int_0^t\|\nabla v\|_{L^2}^2\,\mathrm d\tau\right)\mathrm dt
+  \leq\liminf_{N\to\infty}
+  \frac1s\int_0^s\left(\int_0^t\|\nabla v_N\|_{L^2}^2\,\mathrm d\tau\right)\mathrm dt.
+ \]
+ 现在可在不等式\eqref{eq:chap5-averaged-approx-energy}中对 $N$ 取下极限, 得
+ \begin{align}
+  &\frac1{2s}\int_0^s\|v\|_H^2\,\mathrm dt
+  +\frac1{\operatorname{Re}s}\int_0^s\left(\int_0^t\|\nabla v\|_{L^2}^2\,\mathrm d\tau\right)\mathrm dt\notag\\
+  &\qquad\leq\frac12\|v_0\|_H^2
+  +\frac1s\int_0^s\left(\int_0^t\langle f,v\rangle_{H^{-1},H_0^1}\,\mathrm d\tau\right)\mathrm dt.
+  \label{eq:chap5-averaged-limit-energy}
+ \end{align}
+ 函数 $\tau\mapsto\|\nabla v(\tau)\|_{L^2}^2$ 和 $\tau\mapsto\langle f(\tau),v(\tau)\rangle_{H^{-1},H_0^1}$ 属于 $L^1(]0,T[)$. 因而它们的原函数
+ \[
+  t\mapsto\int_0^t\|\nabla v(\tau)\|_{L^2}^2\,\mathrm d\tau,
+  \qquad
+  t\mapsto\int_0^t\langle f(\tau),v(\tau)\rangle_{H^{-1},H_0^1}\,\mathrm d\tau
+ \]
+ 连续 (Lemma~\ref{lem:chap2-integral-antiderivative}) 且在零点为零. 因而它们各自的原函数在 $0$ 可微且导数为零 (Proposition~\ref{prop:chap2-antiderivative-at-lebesgue-point}). 换言之,
+ \[
+  \frac1s\int_0^s\left(\int_0^t\|\nabla v\|_{L^2}^2\,\mathrm d\tau\right)\mathrm dt\longrightarrow0,
+ \]
+以及
+ \[
+  \frac1s\int_0^s\left(\int_0^t\langle f,v\rangle_{H^{-1},H_0^1}\,\mathrm d\tau\right)\mathrm dt\longrightarrow0,
+  \qquad s\to0^+.
+ \]
+ 在\eqref{eq:chap5-averaged-limit-energy}中令 $s\to0^+$ 并取上极限, 得到
+ \begin{equation}
+  \limsup_{s\to0^+}\frac1s\int_0^s\|v\|_H^2\,\mathrm dt
+  \leq\|v_0\|_H^2.
+  \label{eq:chap5-initial-energy-limsup}
+ \end{equation}
+ 还需得到反向不等式. 使用 $v$ 弱连续取值于 $H$ (Proposition~\ref{prop:chap5-weak-solution-time-continuity}) 以及 Banach 空间中范数的弱下半连续性 (Corollary~\ref{cor:chap2-weak-lower-semicontinuity}), 有
+ \[
+  \|v_0\|_H^2=\|v(0)\|_H^2
+  \leq\liminf_{s\to0^+}\|v(s)\|_H^2
+  =\lim_{\sigma\to0^+}\inf_{t\in[0,\sigma]}\|v(t)\|_H^2.
+ \]
+ 然而对任意 $s>0$,
+ \[
+  \inf_{t\in[0,s]}\|v(t)\|_H^2
+  \leq\frac1s\int_0^s\|v(t)\|_H^2\,\mathrm dt.
+ \]
+ 对该不等式取下极限, 得
+ \begin{equation}
+  \|v_0\|_H^2
+  \leq\liminf_{s\to0^+}\frac1s\int_0^s\|v(t)\|_H^2\,\mathrm dt.
+  \label{eq:chap5-initial-energy-liminf}
+ \end{equation}
+ 联立\eqref{eq:chap5-initial-energy-limsup}和\eqref{eq:chap5-initial-energy-liminf}, 即证\eqref{eq:chap5-initial-energy-average}.
+
+ \item \textbf{Step 3:}
+
+ 取 $t\in]0,T]$. 对任意 $\delta<t/2$, 引入分片仿射函数 $\theta_\delta$:
+ \[
+ \theta_\delta(\tau)=
+ \left\{
+ \begin{aligned}
+  \tau/\delta,&\quad\tau\in[0,\delta],\\
+  1,&\quad\tau\in[\delta,t-\delta],\\
+  (t-\tau)/\delta,&\quad\tau\in[t-\delta,t],\\
+  0,&\quad\tau\in[t,T].
+ \end{aligned}
+ \right.
+ \]
+ 该函数属于 $W_0^{1,1}([0,T])$, 因而可用它乘\eqref{eq:chap5-three-dimensional-approx-energy}, 在 $[0,T]$ 上积分并作分部积分. 得到
+ \begin{align*}
+  &\frac1{2\delta}\int_{t-\delta}^t\|v_N\|_H^2\,\mathrm d\tau
+  +\frac1{\operatorname{Re}}\int_0^t\|\nabla v_N\|_{L^2}^2\theta_\delta(\tau)\,\mathrm d\tau\\
+  &\qquad=\frac1{2\delta}\int_0^\delta\|v_N\|_H^2\,\mathrm d\tau
+  +\int_0^t\langle f_N,v_N\rangle_{H^{-1},H_0^1}\theta_\delta(\tau)\,\mathrm d\tau.
+ \end{align*}
+ 与前一步相同的理由允许我们在这个等式中令 $N$ 趋于无穷并取下极限 (除含 $\nabla v_N$ 的项使用 Banach 空间中范数的弱下半连续性外, 所有项都收敛), 得
+ \[
+  \frac1{2\delta}\int_{t-\delta}^t\|v\|_H^2\,\mathrm d\tau
+  +\frac1{\operatorname{Re}}\int_0^t\|\nabla v\|_{L^2}^2\theta_\delta(s)\,\mathrm d\tau
+  \leq\frac1{2\delta}\int_0^\delta\|v\|_H^2\,\mathrm d\tau
+  +\int_0^t\langle f,v\rangle_{H^{-1},H_0^1}\theta_\delta(\tau)\,\mathrm d\tau.
+ \]
+ 现在令 $\delta$ 趋于零. 两个含 $\theta_\delta$ 的积分可直接用控制收敛定理处理.
+
+ 先假设 $t$ 是函数 $s\mapsto\|v(s)\|_H^2$ 的 Lebesgue 点. 利用 Proposition~\ref{prop:chap2-antiderivative-at-lebesgue-point}和收敛\eqref{eq:chap5-initial-energy-average}, 得到所需能量不等式
+ \[
+  \frac12\|v(t)\|_H^2
+  +\frac1{\operatorname{Re}}\int_0^t\|\nabla v\|_{L^2}^2\,\mathrm d\tau
+  \leq\frac12\|v_0\|_H^2
+  +\int_0^t\langle f,v\rangle_{H^{-1},H_0^1}\,\mathrm d\tau.
+ \]
+ $L^1(]0,T[)$ 中函数的 Lebesgue 点在 $]0,T[$ 中稠密 (Theorem~\ref{thm:chap2-almost-every-point-lebesgue}), 因而已经对 $[0,T]$ 的一个稠密点集证明能量不等式. 现取并非 $s\mapsto\|v(s)\|_H^2$ 的 Lebesgue 点的 $t\in[0,T]$. 存在由该函数的 Lebesgue 点组成且收敛到 $t$ 的序列 $(t_j)_j$, 并且能量不等式在这些点成立:
+ \[
+  \frac12\|v(t_j)\|_H^2
+  +\frac1{\operatorname{Re}}\int_0^{t_j}\|\nabla v\|_{L^2}^2\,\mathrm ds
+  \leq\frac12\|v_0\|_H^2
+  +\int_0^{t_j}\langle f,v\rangle_{H^{-1},H_0^1}\,\mathrm ds.
+ \]
+ 又因为函数 $v$ 在 $H$ 中弱连续,
+ \[
+  \|v(t)\|_H\leq\liminf_{j\to\infty}\|v(t_j)\|_H.
+ \]
+ 因而可在上面的能量不等式中取下极限, 对任意 $t\in[0,T]$ 得到所需结果
+ \[
+  \frac12\|v(t)\|_H^2
+  +\frac1{\operatorname{Re}}\int_0^t\|\nabla v\|_{L^2}^2\,\mathrm ds
+  \leq\frac12\|v_0\|_H^2
+  +\int_0^t\langle f,v\rangle_{H^{-1},H_0^1}\,\mathrm ds.
+ \]
+\end{itemize}
+
+\subsubsection{压力的存在性与正则性}
+\label{subsec:chap5-pressure}
+
+固定 $\psi\in V$, 并取 $\eta\in\mathcal D(]0,T[)$. 在形式\eqref{eq:chap5-weak-time-dependent}中取 $\varphi=\eta(t)\psi(x)$, 得
+\begin{align*}
+ &\int_0^T\eta(t)\left\langle\frac{\mathrm dv}{\mathrm dt},\psi\right\rangle_{V',V}\,\mathrm dt
+ +\int_0^T\eta(t)\left(\int_\Omega((v\cdot\nabla)v)\cdot\psi\,\mathrm dx\right)\mathrm dt\\
+ &\quad+\frac1{\operatorname{Re}}\int_0^T\eta(t)\left(\int_\Omega\nabla v:\nabla\psi\,\mathrm dx\right)\mathrm dt
+ -\int_0^T\eta(t)\langle f,\psi\rangle_{H^{-1},H_0^1}\,\mathrm dt=0.
+\end{align*}
+这对任意 $\eta$ 成立, 因而对 $]0,T[$ 中几乎所有 $t$,
+\[
+ \left\langle\frac{\mathrm dv}{\mathrm dt},\psi\right\rangle_{V',V}
+ +\int_\Omega((v\cdot\nabla)v)\cdot\psi\,\mathrm dx
+ +\frac1{\operatorname{Re}}\int_\Omega\nabla v:\nabla\psi\,\mathrm dx
+ -\langle f(t),\psi\rangle_{H^{-1},H_0^1}=0.
+\]
+还可写为
+\begin{equation}
+ \left\langle\frac{\mathrm dv}{\mathrm dt},\psi\right\rangle_{V',V}
+ +\left\langle(v\cdot\nabla)v-\frac1{\operatorname{Re}}\Delta v-f,\psi\right\rangle_{H^{-1},H_0^1}=0.
+\label{eq:chap5-pressure-instantaneous-orthogonality}
+\end{equation}
+
+利用 Theorem~\ref{thm:chap2-lions-magenes-product}以及 $\psi$ 与时间无关, 对\eqref{eq:chap5-pressure-instantaneous-orthogonality}作时间积分, 得
+\[
+ (v(t),\psi)_H-(v(0),\psi)_H
+ +\left\langle
+ \int_0^t(v\cdot\nabla)v\,\mathrm d\tau
+ -\frac1{\operatorname{Re}}\int_0^t\Delta v\,\mathrm d\tau
+ -\int_0^tf\,\mathrm d\tau,\psi
+ \right\rangle_{H^{-1},H_0^1}=0.
+\]
+$H$ 中的内积恰好是 $(L^2(\Omega))^d$ 的内积, 所以上式可写为
+\begin{equation}
+ \langle G(t),\psi\rangle_{H^{-1},H_0^1}=0,
+ \qquad\forall t\in[0,T],
+\label{eq:chap5-pressure-integrated-orthogonality}
+\end{equation}
+其中
+\[
+ G(t)=v(t)-v(0)
+ +\int_0^t(v\cdot\nabla)v\,\mathrm d\tau
+ -\frac1{\operatorname{Re}}\int_0^t\Delta v\,\mathrm d\tau
+ -\int_0^tf\,\mathrm d\tau.
+\]
+
+已经看到, 函数 $v$ 弱连续取值于 $H$, 因而也弱连续取值于 $(L^2(\Omega))^d$ 和 $(H^{-1}(\Omega))^d$. 此外 $v\in L^2(]0,T[,V)$, 从而 $v\in L^2(]0,T[,(H_0^1(\Omega))^d)$. 因为 Laplace 算子从 $H_0^1$ 连续映到 $H^{-1}$, 项 $\Delta v\in L^2(]0,T[,(H^{-1}(\Omega))^d)$. 同样, 由\eqref{eq:chap5-inertia-estimate}, 非线性项 $(v\cdot\nabla)v\in L^1(]0,T[,(H^{-1}(\Omega))^d)$. 所以\MBUnresolvedReference{eq:source-iv-59-pressure}{(IV.59)}中的所有积分项都是取值于 $(H^{-1}(\Omega))^d$ 的可积函数的原函数, 因而它们关于时间连续取值于 $(H^{-1}(\Omega))^d$.
+
+这表明 $G$ 在 $[0,T]$ 上弱连续取值于 $(H^{-1}(\Omega))^d$. 因而对任意 $t\in[0,T]$, $G(t)$ 是 $(H^{-1}(\Omega))^d$ 的元素, 并且对任意 $\psi\in V$ 满足\eqref{eq:chap5-pressure-integrated-orthogonality}. 由 de Rham Theorem~\ref{thm:chap4-de-rham-hminusone}, 对任意 $t\in[0,T]$, 存在唯一 $\pi(t)\in L_0^2(\Omega)$, 使
+\begin{equation}
+ G(t)=-\nabla\pi(t).
+\label{eq:chap5-integrated-pressure}
+\end{equation}
+
+证明 $t\mapsto\pi(t)$ 弱连续取值于 $L_0^2(\Omega)$. 事实上, 若 $g\in L^2(\Omega)$, 则由 Theorem~\ref{thm:chap4-divergence-right-inverse}, 存在 $h\in(H_0^1(\Omega))^d$, 使 $\operatorname{div}h=g-m(g)$. 因为 $\pi(t)$ 的平均值为零,
+\begin{align*}
+ (\pi(t),g)_{L^2}
+ &=(\pi(t),g-m(g))_{L^2}
+ =(\pi(t),\operatorname{div}h)_{L^2}\\
+ &=-\langle\nabla\pi(t),h\rangle_{H^{-1},H_0^1}
+ =\langle G(t),h\rangle_{H^{-1},H_0^1}.
+\end{align*}
+最后一个量关于时间连续, 因为 $G$ 关于时间弱连续取值于 $(H^{-1}(\Omega))^d$.
+
+特别地, 已经证明函数 $t\mapsto\pi(t)$ 属于 $L^\infty(]0,T[,L_0^2(\Omega))$. 现在可引入分布 $p=\partial\pi/\partial t$, 它属于 $W^{-1,\infty}(]0,T[,L_0^2(\Omega))$. 在\eqref{eq:chap5-integrated-pressure}中取形如 $\partial\varphi/\partial t$ 的测试函数, 其中 $\varphi\in\mathcal D(]0,T[\times\Omega)$, 容易证明 Navier--Stokes 方程
+\[
+ \frac{\partial v}{\partial t}+(v\cdot\nabla)v
+ -\frac1{\operatorname{Re}}\Delta v+\nabla p=f
+\]
+在 $]0,T[\times\Omega$ 上以分布意义成立. 注意, 若给定\eqref{eq:chap5-weak-time-dependent}的解 $v$, 则压力 $p\in W^{-1,\infty}(]0,T[,L_0^2(\Omega))$ 唯一.
+
+至此完成 Leray Theorem~\ref{thm:chap5-leray} 的证明.
