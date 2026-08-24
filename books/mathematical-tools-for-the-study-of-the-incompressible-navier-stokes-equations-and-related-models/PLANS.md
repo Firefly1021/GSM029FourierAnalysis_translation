@@ -22,4 +22,5 @@
 20. Completed: `ch03-sec03` was re-audited against PDF pages 201-233; the complete boundary-coordinate calculus, curved-translation arguments, tangential-space results, and differential-operator proofs were restored; equations (III.60)--(III.99) passed formula and reference QA.
 21. Completed: `ch03-sec04` was re-audited against PDF pages 234-240; the complete Dirichlet and Neumann analyses were restored; equations (III.100)--(III.106) and objects III.4.1--III.4.3 passed QA.
 22. Completed: Chapter III passed integrated deterministic QA, clean multi-pass XeLaTeX compilation with final reference convergence, representative visual QA, source/template integrity checks, and source-coverage review.
-23. Pending: resume from the first natural unit of Chapter IV (`ch04-sec01`) only after a subsequent user request.
+23. Completed: `ch04-sec01` translated PDF pages 241-252 without omission; the complete Chapter IV opening and Nečas inequality section, equations (IV.1)--(IV.8), statements IV.1.1--IV.1.9, references, names, punctuation, clean compilation, and full-page visual QA passed.
+24. In progress: continue from `ch04-sec02`, the first incomplete natural unit, without regenerating any passed unit.

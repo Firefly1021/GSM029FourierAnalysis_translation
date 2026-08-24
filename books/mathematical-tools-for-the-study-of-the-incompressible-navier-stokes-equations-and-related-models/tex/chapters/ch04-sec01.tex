@@ -1,0 +1,592 @@
+\clearpage
+\section{稳态 Stokes 方程}
+\label{chap:steady-stokes-equations}
+\renewcommand{\thestatement}{1.\arabic{statement}}
+\setcounter{statement}{0}
+\newcounter{chapterfoursectiononeremark}
+\renewcommand{\thechapterfoursectiononeremark}{1.\arabic{chapterfoursectiononeremark}}
+
+本章第一节专门证明 Nečas 不等式. 该不等式表明, 在空间 $L^2(\Omega)$ 中, $L^2$ 范数等价于函数及其梯度的 $H^{-1}$ 范数之和. 即使这看起来是一个非常自然的性质, 其证明 (这里对边界紧的任意 Lipschitz 区域给出) 也远非直截了当.
+
+利用 Nečas 不等式, 我们能够在\MBUnresolvedReference{sec:chap4-gradient-fields}{Section~2}中给出梯度场的一个基本刻画, 它通常称为 de Rham 定理: 这个结果表明, $(H^{-1}(\Omega))^d$ 中的一个向量场, 如果在对偶意义下与 $(H_0^1(\Omega))^d$ 中任意无散元素正交, 那么它必为一个梯度场. 该定理对于证明 Stokes 和 Navier--Stokes 系统中压力的存在性不可或缺.
+
+在\MBUnresolvedReference{sec:chap4-divergence}{Section~3}中, 我们研究散度算子及若干相关空间的各种性质. 特别地, 我们证明散度算子存在一个取值于 $(H_0^1(\Omega))^d$ 的连续右逆. 本节最后研究所谓的 Leray (或 Hodge--Helmholtz) 分解, 即把 $(L^2(\Omega))^d$ 中的向量场分解为无散部分与梯度部分.
+
+\MBUnresolvedReference{sec:chap4-curl}{Section~4}专门研究空间维数 $d=3$ 情形下的旋度算子及相关空间. 本节的主要结果是研究一些适当的假设, 它们保证无散向量场能够在 Sobolev 框架下写成另一个向量场的旋度. 这些结果可用于研究带非齐次 Dirichlet 边界数据的稳态 Navier--Stokes 方程.
+
+随后我们转向研究带 Dirichlet 边界条件的 Stokes 问题 (即不可压黏性流体流动的稳态线性模型). 在\MBUnresolvedReference{sec:chap4-stokes-problem}{Section~5}中, 我们表述并证明该系统的适定性定理, 并研究由此系统构造的 (无界) Stokes 算子的性质. 这使得我们能够证明 Stokes 问题存在一组特征函数基, 并在下一章中用它构造 Navier--Stokes 方程的 Galerkin 逼近. 我们还利用这些谱性质构造非稳态线性 Stokes 方程的解.
+
+\MBUnresolvedReference{sec:chap4-stokes-regularity}{Section~6}专门完整证明 Stokes 问题及相关系统的椭圆正则性. 这里使用 Nirenberg 平移方法, 并借助上一章所引入的形式体系展开证明.
+
+最后三节\MBUnresolvedReference{sec:chap4-stress-boundary}{7}、\MBUnresolvedReference{sec:chap4-interface-stokes}{8}和\MBUnresolvedReference{sec:chap4-vorticity-boundary}{9}专门研究带其他类型边界条件和传递条件的 Stokes 方程. 我们首先考虑类似 Neumann 的边界条件, 然后考虑具有物理意义的应力边界条件. 随后研究界面 Stokes 问题, 其中假设黏度分片光滑, 且源项模拟区域中的应力跳跃. 最后研究给定涡量边界条件的情形. 与其他情形不同, 最后一种框架的特点是压力计算可以与速度计算解耦.
+
+在这三节中的每一节里, 我们都证明存在性、唯一性和正则性结果.
+
+本章材料的一个重要部分受到该主题经典文献的启发, 如\MBUnresolvedReference{bib:chapter4-classic-references}{[92, 91, 54, 118, 119, 65, 122, 120]}.
+
+\paragraph{Convention}
+
+与通常一样, 建立能量估计时, 不等式中会出现一定数量的常数. 然而, 为避免记号过于繁复, 这些常数总以 $C$ 表示, 即使其值可能从一行变到另一行. 只有在必要时才指出这些常数对问题各参数的依赖关系.
+
+\subsection{Nečas 不等式}
+\label{sec:chap4-necas-inequality}
+
+对 $\mathbb R^d$ 中任意 Lipschitz 区域 $\Omega$, 定义空间
+\[
+ \chi(\Omega)=\{p\in H^{-1}(\Omega),\nabla p\in(H^{-1}(\Omega))^d\},
+\]
+并赋予范数
+\[
+ \|p\|_{\chi(\Omega)}=\|p\|_{H^{-1}}+\|\nabla p\|_{H^{-1}}.
+\]
+我们的目标是证明这个空间在代数和拓扑意义下都等于空间 $L^2(\Omega)$. 该结果最初由 Nečas 得到 (见\MBUnresolvedReference{bib:necas-inequality}{[91], [92]}). 它可以作为研究分析 Stokes 和 Navier--Stokes 方程所需函数空间的一个出发点, 特别参见\MBUnresolvedReference{bib:stokes-functional-spaces}{[118, 119]}.
+
+\begin{Theorem}
+\label{thm:chap4-necas-inequality}
+设 $\Omega$ 是 $\mathbb R^d$ 中边界紧的 Lipschitz 区域, 则 $\chi(\Omega)=L^2(\Omega)$; 此外, 存在 $C>0$, 使得
+\begin{equation}
+ \|p\|_{L^2(\Omega)}\leq C\|p\|_{\chi(\Omega)},
+ \qquad\forall p\in L^2(\Omega).
+ \label{eq:chap4-necas-inequality}
+\end{equation}
+\end{Theorem}
+
+\par\noindent\refstepcounter{chapterfoursectiononeremark}\textbf{Remark~\thechapterfoursectiononeremark:}\label{rem:chap4-necas-lq-version}\quad 对任意 $1<q<+\infty$, 还有
+\[
+ \|p\|_{L^q(\Omega)}
+ \leq C\bigl(\|p\|_{W^{-1,q}(\Omega)}+\|\nabla p\|_{W^{-1,q}(\Omega)}\bigr),
+ \qquad\forall p\in L^q(\Omega).
+\]
+下面给出的 Theorem~\ref{thm:chap4-necas-inequality} 的证明可以容易地适用于这个框架. 主要的新困难是像 Proposition~\ref{prop:chap4-necas-whole-space} 那样证明 $\Omega=\mathbb R^d$ 时的不等式. 事实上, 在 $q\neq2$ 的情形下, 这要求我们刻画把 $L^q(\mathbb R^d)$ 连续映到自身的 Fourier 乘子, 而这远远超出本书的主要范围 (见\MBUnresolvedReference{bib:necas-lq-fourier-multipliers}{[91]}). 不过, 证明的所有其他步骤都可以直接作相应调整.
+
+\par\noindent\refstepcounter{chapterfoursectiononeremark}\textbf{Remark~\thechapterfoursectiononeremark:}\label{rem:chap4-necas-smooth-reduction}\quad 为证明该定理, 只需对任意 $p\in C_c^\infty(\overline\Omega)$ 证明式\eqref{eq:chap4-necas-inequality}. 事实上, 假设这个不等式对任意这样的函数成立; 则由 Proposition~\ref{prop:chap3-negative-sobolev-mollification} 和 Theorem~\ref{thm:chap3-negative-sobolev-commutator} 可知, 对任意 $p\in\chi(\Omega)$, 族 $(S_\varepsilon p)\subset C_c^\infty(\overline\Omega)$ 在 $\chi(\Omega)$ 中收敛到 $p$. 因此, 由假设有
+\[
+ \|S_{\varepsilon_1}p-S_{\varepsilon_2}p\|_{L^2(\Omega)}
+ \leq C\|S_{\varepsilon_1}p-S_{\varepsilon_2}p\|_{\chi(\Omega)},
+\]
+从而推出 $(S_\varepsilon p)_\varepsilon$ 是 $L^2(\Omega)$ 中的 Cauchy 序列. 已知 $S_\varepsilon p\underset{\varepsilon\to0}{\longrightarrow}p$ 于 $H^{-1}(\Omega)$ 中, 故推出 $p$ 必属于 $L^2(\Omega)$, 并且在不等式
+\[
+ \|S_\varepsilon p\|_{L^2(\Omega)}
+ \leq C\|S_\varepsilon p\|_{\chi(\Omega)}
+\]
+中令 $\varepsilon\to0$, 即得式\eqref{eq:chap4-necas-inequality}.
+
+依照这个 Remark, 我们现在的目标是对任意足够光滑的函数证明式\eqref{eq:chap4-necas-inequality}. 首先研究 $\Omega=\mathbb R^d$ 的情形, 接着研究平坦半空间 $\Omega=\mathbb R_+^d$ 的情形. 然后推出任意 Lipschitz 半空间 $H_a$ 的结果, 最后得到边界紧的任意 Lipschitz 区域的结果.
+
+\subsubsection{不等式的证明}
+\label{subsec:chap4-necas-proof}
+
+\paragraph{全空间情形}
+\label{subsec:chap4-necas-whole-space}
+
+利用式\eqref{eq:chap3-fractional-sobolev-fourier}给出的通过 Fourier 变换刻画 Sobolev 空间的方法, 这个情形变得完全初等.
+
+\begin{Proposition}
+\label{prop:chap4-necas-whole-space}
+当 $\Omega=\mathbb R^d$ 时, Theorem~\ref{thm:chap4-necas-inequality} 成立.
+\end{Proposition}
+
+\begin{Proof}
+依照 Remark~\ref{rem:chap4-necas-smooth-reduction}, 考虑 $p\in\mathcal D(\mathbb R^d)$. 以 $\widehat p$ 表示 $p$ 的 Fourier 变换, 由式\eqref{eq:chap3-fractional-sobolev-fourier}有
+\[
+ \|p\|_{H^{-1}}^2
+ =C\int_{\mathbb R^d}(1+|\xi|^2)^{-1}|\widehat p(\xi)|^2\,\mathrm d\xi,
+\]
+\[
+ \|\nabla p\|_{H^{-1}}^2
+ =C\int_{\mathbb R^d}(1+|\xi|^2)^{-1}|\xi|^2|\widehat p(\xi)|^2\,\mathrm d\xi.
+\]
+于是, 利用
+\[
+ |\widehat p(\xi)|^2
+ =(1+|\xi|^2)^{-1}(1+|\xi|^2)|\widehat p(\xi)|^2
+ =(1+|\xi|^2)^{-1}|\widehat p(\xi)|^2
+ +(1+|\xi|^2)^{-1}|\xi|^2|\widehat p(\xi)|^2,
+\]
+由 Hausdorff--Young 定理推出
+\[
+ \|p\|_{L^2}^2=C\|\widehat p\|_{L^2}^2
+ \leq C\|p\|_{H^{-1}}^2+C\|\nabla p\|_{H^{-1}}^2
+ \leq C\|p\|_{\chi(\Omega)}^2.
+\]
+结论得证.
+\end{Proof}
+
+\paragraph{平坦半空间情形}
+\label{subsec:chap4-necas-flat-half-space}
+
+\begin{Lemma}
+\label{lem:chap4-zero-extension-and-adjoint-restriction}
+算子
+\[
+ \pi:p\in L^2(\mathbb R_+^d)\longmapsto\overline p\in L^2(\mathbb R^d),
+\]
+把任意 $p\in L^2(\mathbb R_+^d)$ 映为其在全空间上的零延拓, 它是连续的.
+
+此外, 它把 $H_0^1(\mathbb R_+^d)$ 连续映入 $H^1(\mathbb R^d)$.
+\end{Lemma}
+
+\begin{Proof}
+$\pi$ 在 $L^2$ 中的连续性是直接的. 由 Theorem~\ref{thm:chap3-zero-trace-characterization} 可知, $\pi$ 实际上把 $H_0^1(\mathbb R_+^d)$ 映入 $H^1(\mathbb R^d)$. 此外, 注意到 $\overline{\nabla p}=\nabla\overline p$ (因为 $p\in H_0^1(\Omega)$), 所以
+\[
+ \|\overline p\|_{L^2(\mathbb R^d)}=\|p\|_{L^2(\mathbb R_+^d)},
+\]
+\[
+ \|\nabla\overline p\|_{L^2(\mathbb R^d)}
+ =\|\overline{\nabla p}\|_{L^2(\mathbb R^d)}
+ =\|\nabla p\|_{L^2(\mathbb R_+^d)},
+\]
+因而
+\[
+ \|\pi p\|_{H^1(\mathbb R^d)}=\|p\|_{H_0^1(\mathbb R_+^d)}.
+\]
+\end{Proof}
+
+现在考虑伴随算子 ${}^{t}\!\pi:L^2(\mathbb R^d)\to L^2(\mathbb R_+^d)$, 它由
+\[
+ ({}^{t}\!\pi p,q)_{L^2(\mathbb R_+^d)}
+ =(p,\pi q)_{L^2(\mathbb R^d)},
+ \qquad\forall p\in L^2(\mathbb R^d),\quad\forall q\in L^2(\mathbb R_+^d)
+\]
+定义.
+
+对任意 $p\in L^2(\mathbb R^d)$ 和任意 $q\in H_0^1(\mathbb R_+^d)$, 利用前一 Lemma 和式\eqref{eq:chap3-negative-sobolev-norm}, 推出
+\[
+ ({}^{t}\!\pi p,q)_{L^2(\mathbb R_+^d)}
+ \leq\|p\|_{H^{-1}(\mathbb R^d)}\|\pi q\|_{H^1(\mathbb R^d)}
+ \leq C\|p\|_{H^{-1}(\mathbb R^d)}\|q\|_{H_0^1(\mathbb R_+^d)},
+\]
+这证明
+\[
+ \|{}^{t}\!\pi p\|_{H^{-1}(\mathbb R_+^d)}
+ \leq C\|p\|_{H^{-1}(\mathbb R^d)},
+ \qquad\forall p\in L^2(\mathbb R^d).
+\]
+由于 $L^2(\mathbb R^d)$ 在 $H^{-1}(\mathbb R^d)$ 中稠密, 推出 ${}^{t}\!\pi$ 存在唯一的连续延拓, 从 $H^{-1}(\mathbb R^d)$ 映入 $H^{-1}(\mathbb R_+^d)$. 仍以 ${}^{t}\!\pi$ 表示这个延拓.
+
+容易看出, 对所有 $p\in L^2(\mathbb R^d)$, 有 ${}^{t}\!\pi p=p|_{\mathbb R_+^d}$, 因而 ${}^{t}\!\pi$ 也可视为 $H^{-1}(\mathbb R^d)$ 元素的“限制到 $\mathbb R_+^d$”算子.
+
+\begin{Lemma}
+\label{lem:chap4-half-space-chi-extension}
+存在一个从 $\chi(\mathbb R_+^d)$ 到 $\chi(\mathbb R^d)$ 的线性连续算子 $P$, 满足
+\[
+ {}^{t}\!\pi\circ P=\operatorname{Id}_{\chi(\mathbb R_+^d)}.
+\]
+\end{Lemma}
+
+\begin{Proof}
+通过对偶性定义这个延拓算子.
+
+\begin{itemize}
+ \item 第一步:
+
+ 首先引入一个从 $H^1(\mathbb R^d)$ 到 $H_0^1(\mathbb R_+^d)$ 的投影算子.
+
+ 先对光滑函数 $p\in\mathcal D(\mathbb R^d)$ 定义这个算子. 对所有 $x=(x_i)_{1\leq i\leq d}\in\mathbb R_+^d$, 令
+ \[
+  Qp(x)=p(x)+\sum_{j=1}^2\alpha_jp(x_1,\ldots,x_{d-1},-jx_d).
+ \]
+ 显然函数 $Qp$ 是光滑的; 如果施加条件
+ \begin{equation}
+  1+\sum_{j=1}^2\alpha_j=0,
+  \label{eq:chap4-projection-zero-trace-condition}
+ \end{equation}
+ 则它在 $\partial\mathbb R_+^d=\mathbb R^{d-1}\times\{0\}$ 上的迹为零, 因而 $Qp\in H_0^1(\mathbb R_+^d)$. 此外, 容易验证, 对所有 $p\in\mathcal D(\mathbb R^d)$ 有
+ \[
+  \|Qp\|_{H_0^1(\mathbb R_+^d)}\leq C\|p\|_{H^1(\mathbb R^d)},
+ \]
+ 其中 $C>0$ 只依赖于 $(\alpha_i)_i$. 因此, 由 $\mathcal D(\mathbb R^d)$ 在 $H^1(\mathbb R^d)$ 中的稠密性, 这个算子能以唯一方式延拓为从 $H^1(\mathbb R^d)$ 到 $H_0^1(\mathbb R_+^d)$ 的连续算子.
+
+ 最后可以证明 (先对光滑函数证明, 再由稠密性推广)
+ \[
+  Q\circ\pi=\operatorname{Id}_{H_0^1(\mathbb R_+^d)}.
+ \]
+
+ \item 第二步:
+
+ 对上式取伴随, 得
+ \[
+  {}^{t}\!\pi\circ{}^{t}\!Q=\operatorname{Id}_{H^{-1}(\mathbb R_+^d)}.
+ \]
+ 因此, 把这个等式限制到 $H^{-1}(\mathbb R_+^d)$ 的子空间 $\chi(\mathbb R_+^d)$ 上, 得
+ \[
+  {}^{t}\!\pi\circ P=\operatorname{Id}_{\chi(\mathbb R_+^d)},
+ \]
+ 其中定义 $P={}^{t}\!Q|_{\chi(\mathbb R_+^d)}$.
+
+ 这样定义的算子 $P:\chi(\mathbb R_+^d)\longmapsto H^{-1}(\mathbb R^d)$ 是所求延拓算子的合适候选. 为完成证明, 还需证明 $P$ 取值于 $\chi(\mathbb R^d)$, 且对 $\chi(\mathbb R_+^d)$ 和 $\chi(\mathbb R^d)$ 各自的拓扑连续.
+
+ \item 第三步:
+
+ 令 $v$ 为 $\chi(\mathbb R_+^d)$ 中任意元素. 依定义, 算子 ${}^{t}\!Q$ 从 $H^{-1}(\mathbb R_+^d)$ 到 $H^{-1}(\mathbb R^d)$ 线性连续, 因而
+ \[
+  \|Pv\|_{H^{-1}(\mathbb R^d)}
+  =\|{}^{t}\!Qv\|_{H^{-1}(\mathbb R^d)}
+  \leq C\|v\|_{H^{-1}(\mathbb R_+^d)}.
+ \]
+
+ 现在需要证明 $Pv$ 的梯度属于 $(H^{-1}(\mathbb R^d))^d$. 对所有 $\varphi\in\mathcal D(\mathbb R^d)$ 和所有 $i\in\{1,\ldots,d\}$, 有
+ \[
+ \begin{aligned}
+  \langle\partial_{x_i}Pv,\varphi\rangle_{H^{-1},H_0^1}
+  &=\langle\partial_{x_i}{}^{t}\!Qv,\varphi\rangle_{H^{-1},H_0^1}\\
+  &=-\langle{}^{t}\!Qv,\partial_{x_i}\varphi\rangle_{H^{-1},H_0^1}\\
+  &=-\langle v,Q\partial_{x_i}\varphi\rangle_{H^{-1},H_0^1}.
+ \end{aligned}
+ \]
+ 为证明该结果, 必须使用假设 $\nabla v\in(H^{-1}(\mathbb R_+^d))^d$, 因此需要把算子 $Q\partial_{x_i}$ 表示为作用于 $H_0^1(\mathbb R_+^d)$ 中某些函数的散度算子. 为此必须考虑两种不同情形. 对所有 $x=(x_i)_i\in\mathbb R_+^d$, 记 $\bar x=(x_1,\ldots,x_{d-1})$.
+
+ \begin{itemize}
+  \item 若 $i<d$:
+
+  由 $Q$ 的定义,
+  \[
+  \begin{aligned}
+   Q\partial_{x_i}\varphi(x)
+   &=\partial_{x_i}\varphi(x)
+   +\sum_{j=1}^2\alpha_j(\partial_{x_i}\varphi)(\bar x,-jx_d)\\
+   &=\partial_{x_i}Q\varphi(x).
+  \end{aligned}
+  \]
+  于是
+  \[
+  \begin{aligned}
+   |\langle\partial_{x_i}Pv,\varphi\rangle_{H^{-1},H_0^1}|
+   &\leq\|\partial_{x_i}v\|_{H^{-1}(\mathbb R_+^d)}
+   \|Q\varphi\|_{H_0^1(\mathbb R_+^d)}\\
+   &\leq C\|\nabla v\|_{H^{-1}(\mathbb R_+^d)}\|\varphi\|_{H^1(\mathbb R^d)},
+  \end{aligned}
+  \]
+  这确实证明了 $\partial_{x_i}Pv\in H^{-1}(\mathbb R^d)$, 并且有估计
+  \[
+   \|\partial_{x_i}Pv\|_{H^{-1}(\mathbb R^d)}
+   \leq C\|\nabla v\|_{H^{-1}(\mathbb R_+^d)}.
+  \]
+
+  \item 若 $i=d$:
+
+  在这种情形下,
+  \[
+  \begin{aligned}
+   Q\partial_{x_d}\varphi(x)
+   &=\partial_{x_d}\varphi(x)
+   +\sum_{j=1}^2\alpha_j(\partial_{x_d}\varphi)(\bar x,-jx_d)\\
+   &=\partial_{x_d}\varphi(x)
+   -\sum_{j=1}^2\frac1j\alpha_j\partial_{x_d}\bigl(\varphi(\bar x,-jx_d)\bigr)\\
+   &=\partial_{x_d}R_d\varphi(x),
+  \end{aligned}
+  \]
+  其中算子 $R_d$ 定义为
+  \[
+   R_d\varphi(x)=\varphi(x)-\sum_{j=1}^2\frac1j\alpha_j\varphi(\bar x,-jx_d).
+  \]
+  可以验证 $R_d$ 把 $H^1(\mathbb R^d)$ 连续映入 $H^1(\mathbb R_+^d)$. 只需再保证 $R_d\varphi$ 的确属于 $H_0^1(\mathbb R_+^d)$. 一旦条件
+  \begin{equation}
+   1-\sum_{j=1}^2\frac{\alpha_j}{j}=0
+   \label{eq:chap4-projection-derivative-zero-trace-condition}
+  \end{equation}
+  满足, 便立即可以看出这一点. 假设这个条件成立, 写出
+  \[
+  \begin{aligned}
+   |\langle\partial_{x_d}Pv,\varphi\rangle_{H^{-1},H_0^1}|
+   &=|\langle\partial_{x_d}v,R_d\varphi\rangle_{H^{-1},H_0^1}|\\
+   &\leq\|\partial_{x_d}v\|_{H^{-1}(\mathbb R_+^d)}
+   \|R_d\varphi\|_{H_0^1(\mathbb R_+^d)}\\
+   &\leq C\|\partial_{x_d}v\|_{H^{-1}(\mathbb R_+^d)}\|\varphi\|_{H^1(\mathbb R^d)},
+  \end{aligned}
+  \]
+  可同时证明 $\partial_{x_d}Pv\in H^{-1}(\mathbb R^d)$, 并得到估计
+  \[
+   \|\partial_{x_d}Pv\|_{H^{-1}(\mathbb R^d)}
+   \leq C\|\nabla v\|_{H^{-1}(\mathbb R_+^d)}.
+  \]
+  最后还要指出, 取 $(\alpha_1,\alpha_2)=(3,-4)$ 即可同时满足式\eqref{eq:chap4-projection-zero-trace-condition}和式\eqref{eq:chap4-projection-derivative-zero-trace-condition}这两个条件.
+ \end{itemize}
+\end{itemize}
+\end{Proof}
+
+\begin{Proposition}
+\label{prop:chap4-necas-flat-half-space}
+当 $\Omega=\mathbb R_+^d$ 时, Theorem~\ref{thm:chap4-necas-inequality} 成立.
+\end{Proposition}
+
+\begin{Proof}
+设 $p\in\chi(\mathbb R_+^d)$; 由延拓算子的定义, $Pp\in\chi(\mathbb R^d)$. 由 Proposition~\ref{prop:chap4-necas-whole-space}, 推出 $Pp\in L^2(\mathbb R^d)$, 且
+\[
+ \|Pp\|_{L^2(\mathbb R^d)}
+ \leq C\|Pp\|_{\chi(\mathbb R^d)}
+ \leq C\|p\|_{\chi(\mathbb R_+^d)}.
+\]
+利用 Lemma~\ref{lem:chap4-half-space-chi-extension}, 得 $p={}^{t}\!\pi Pp$; 又因为 $Pp\in L^2(\mathbb R^d)$, 已知 ${}^{t}\!\pi(Pp)=(Pp)|_{\mathbb R_+^d}$.
+
+因此 $p\in L^2(\mathbb R_+^d)$, 且
+\[
+ \|p\|_{L^2(\mathbb R_+^d)}
+ \leq C\|p\|_{\chi(\mathbb R_+^d)},
+\]
+这就证明了结果.
+\end{Proof}
+
+\paragraph{Lipschitz 半空间情形}
+\label{subsec:chap4-necas-lipschitz-half-space}
+
+\begin{Proposition}
+\label{prop:chap4-necas-lipschitz-half-space}
+对于 Definition~\ref{def:chap3-ckalpha-half-space} 中定义的任意 Lipschitz 半空间 $H_a$, Theorem~\ref{thm:chap4-necas-inequality} 成立.
+\end{Proposition}
+
+\begin{Proof}
+使用 Chapter~\ref{chap:sobolev-spaces} 的 \MBUnresolvedReference{subsec:chap3-lipschitz-half-space}{Section~1.2.1} 中引入的 Lipschitz 微分同胚 $T_a:\mathbb R_+^d\to H_a$.
+
+设 $\varphi\in H_0^1(\mathbb R_+^d)$. 利用 Corollary~\ref{cor:chap3-hardy-multiplier} 以及 Proposition~\ref{prop:chap3-regularized-graph-properties} 中给出的 $T_a$ 的性质, 推出
+\[
+ \varphi\circ T_a^{-1}J_{T_a^{-1}}\in H_0^1(H_a),
+ \qquad
+ \|\varphi\circ T_a^{-1}J_{T_a^{-1}}\|_{H_0^1(H_a)}
+ \leq C\|\varphi\|_{H_0^1(\mathbb R_+^d)}.
+\]
+对任意 $p\in C_c^\infty(\overline{H_a})$, 可以写成
+\[
+\begin{aligned}
+ \langle p\circ T_a,\varphi\rangle_{H^{-1}(\mathbb R_+^d),H_0^1(\mathbb R_+^d)}
+ &=\int_{\mathbb R_+^d}(p\circ T_a)\varphi\,\mathrm dx\\
+ &=\int_{H_a}p(\varphi\circ T_a^{-1})J_{T_a^{-1}}\,\mathrm dy\\
+ &=\langle p,(\varphi\circ T_a^{-1})J_{T_a^{-1}}\rangle_{H^{-1}(H_a),H_0^1(H_a)},
+\end{aligned}
+\]
+进而
+\[
+ \langle p\circ T_a,\varphi\rangle_{H^{-1}(\mathbb R_+^d),H_0^1(\mathbb R_+^d)}
+ \leq C\|p\|_{H^{-1}(H_a)}\|\varphi\|_{H_0^1(\mathbb R_+^d)}.
+\]
+所以已经证明
+\begin{equation}
+ \|p\circ T_a\|_{H^{-1}(\mathbb R_+^d)}
+ \leq C\|p\|_{H^{-1}(H_a)}.
+ \label{eq:chap4-lipschitz-half-space-hminusone}
+\end{equation}
+
+现在使用链式法则得到
+\[
+ \nabla(p\circ T_a)={}^{t}(\nabla T_a)(\nabla p)\circ T_a,
+\]
+所以对任意 $\psi\in(H_0^1(\mathbb R_+^d))^d$ 有
+\[
+ \langle\nabla(p\circ T_a),\psi\rangle_{H^{-1}(\mathbb R_+^d),H_0^1(\mathbb R_+^d)}
+ =\int_{\mathbb R_+^d}((\nabla p)\circ T_a)\cdot((\nabla T_a)\psi)\,\mathrm dx.
+\]
+由于 $\nabla T_a$ 有界, 且其一阶导数具有与 $1/\rho$ 相同的行为, 可再次应用 Corollary~\ref{cor:chap3-hardy-multiplier}, 推出 $(\nabla T_a)\psi$ 属于 $(H_0^1(\mathbb R_+^d))^d$, 并有估计
+\[
+ \|(\nabla T_a)\psi\|_{H_0^1}
+ \leq C\|\psi\|_{H_0^1}.
+\]
+因此
+\[
+\begin{aligned}
+ \langle\nabla(p\circ T_a),\psi\rangle_{H^{-1}(\mathbb R_+^d),H_0^1(\mathbb R_+^d)}
+ &=\langle((\nabla p)\circ T_a),(\nabla T_a)\psi\rangle_{H^{-1}(\mathbb R_+^d),H_0^1(\mathbb R_+^d)}\\
+ &\leq\|(\nabla p)\circ T_a\|_{H^{-1}(\mathbb R_+^d)}
+ \|(\nabla T_a)\psi\|_{H_0^1(\mathbb R_+^d)}\\
+ &\leq C\|(\nabla p)\circ T_a\|_{H^{-1}(\mathbb R_+^d)}
+ \|\psi\|_{H_0^1(\mathbb R_+^d)}.
+\end{aligned}
+\]
+在式\eqref{eq:chap4-lipschitz-half-space-hminusone}中以 $\nabla p$ 代替 $p$, 最后推出
+\begin{equation}
+ \|\nabla(p\circ T_a)\|_{H^{-1}(\mathbb R_+^d)}
+ \leq C\|\nabla p\|_{H^{-1}(H_a)}.
+ \label{eq:chap4-lipschitz-half-space-gradient}
+\end{equation}
+最后, 由式\eqref{eq:chap4-lipschitz-half-space-hminusone}和式\eqref{eq:chap4-lipschitz-half-space-gradient}得到
+\[
+ \|p\circ T_a\|_{\chi(\mathbb R_+^d)}
+ \leq C\|p\|_{\chi(H_a)}.
+\]
+利用 Proposition~\ref{prop:chap4-necas-flat-half-space}, 对任意这样的光滑函数 $p$ 推出
+\[
+ \|p\circ T_a\|_{L^2(\mathbb R_+^d)}
+ \leq C\|p\|_{\chi(H_a)},
+\]
+最后, 利用 Proposition~\ref{prop:chap2-lipschitz-change-variables}, 得
+\[
+ \|p\|_{L^2(H_a)}
+ \leq C\|p\circ T_a\|_{L^2(\mathbb R_+^d)}
+ \leq C'\|p\|_{\chi(H_a)},
+\]
+这依照 Remark~\ref{rem:chap4-necas-smooth-reduction}完成了证明.
+\end{Proof}
+
+\paragraph{一般情形}
+\label{subsec:chap4-necas-general-domain}
+
+现在可以证明本节的主定理.
+
+\begin{Proof}
+考虑 Theorem~\ref{thm:chap3-lipschitz-cone-property} 给出的 $\partial\Omega$ 的有限开覆盖 $(U_i)_{1\leq i\leq N}$, 以及另一个开集 $U_0\subset\overline{U_0}\subset\Omega$, 使 $(U_i)_{0\leq i\leq N}$ 是 $\overline\Omega$ 的有限开覆盖. 设 $(\psi_i)_{0\leq i\leq N}$ 为相应的单位分解, 并设 $p\in C_c^\infty(\overline\Omega)$.
+
+\begin{itemize}
+ \item 函数 $p\psi_0$ 紧支于 $\Omega$. 因此, 它的零延拓 $\overline{p\psi_0}$ 满足 $\overline{\nabla(p\psi_0)}=\nabla(\overline{p\psi_0})$, 可以应用 Proposition~\ref{prop:chap4-necas-whole-space}得到
+ \[
+ \begin{aligned}
+  \|p\psi_0\|_{L^2(\Omega)}
+  &=\|\overline{p\psi_0}\|_{L^2(\mathbb R^d)}\\
+  &\leq C_0\bigl(\|\overline{p\psi_0}\|_{H^{-1}(\mathbb R^d)}
+  +\|\overline{\nabla(p\psi_0)}\|_{H^{-1}(\mathbb R^d)}\bigr)\\
+  &\leq C_0\bigl(\|p\|_{H^{-1}(\Omega)}+\|\nabla p\|_{H^{-1}(\Omega)}\bigr).
+ \end{aligned}
+ \]
+
+ \item 对任意 $1\leq i\leq N$, 函数 $p\psi_i$ 支撑在一个 (旋转后的) Lipschitz 半空间 $R_{\sigma_i}H_{a_i}$ 中. 由 Proposition~\ref{prop:chap4-necas-lipschitz-half-space} 推出
+ \begin{align}
+  \|p\psi_i\|_{L^2(\Omega)}
+  &=\|p\psi_i\|_{L^2(R_{\sigma_i}H_{a_i})}\notag\\
+  &\leq C_i\bigl(\|p\psi_i\|_{H^{-1}(R_{\sigma_i}H_{a_i})}
+  +\|\nabla(p\psi_i)\|_{H^{-1}(R_{\sigma_i}H_{a_i})}\bigr)\notag\\
+  &=C_i\bigl(\|p\psi_i\|_{H^{-1}(\Omega)}
+  +\|\nabla(p\psi_i)\|_{H^{-1}(\Omega)}\bigr).
+  \label{eq:chap4-localized-necas-bound}
+ \end{align}
+ 现在注意到, 对任意 $\varphi\in H_0^1(\Omega)$,
+ \[
+ \begin{aligned}
+  \langle p\psi_i,\varphi\rangle_{H^{-1}(\Omega),H_0^1(\Omega)}
+  &=\int_\Omega p\psi_i\varphi\,\mathrm dx
+  =\langle p,\psi_i\varphi\rangle_{H^{-1}(\Omega),H_0^1(\Omega)}\\
+  &\leq\|p\|_{H^{-1}(\Omega)}\|\psi_i\varphi\|_{H_0^1(\Omega)}
+  \leq C_{\psi_i}\|p\|_{H^{-1}(\Omega)}\|\varphi\|_{H_0^1(\Omega)},
+ \end{aligned}
+ \]
+ 因而
+ \[
+  \|p\psi_i\|_{H^{-1}(\Omega)}
+  \leq C_{\psi_i}\|p\|_{H^{-1}(\Omega)}.
+ \]
+ 类似地, 可以证明
+ \[
+ \begin{aligned}
+  \|\nabla(p\psi_i)\|_{H^{-1}(\Omega)}
+  &\leq\|(\nabla p)\psi_i\|_{H^{-1}(\Omega)}
+  +\|(\nabla\psi_i)p\|_{H^{-1}(\Omega)}\\
+  &\leq C'_{\psi_i}\bigl(\|p\|_{H^{-1}(\Omega)}
+  +\|\nabla p\|_{H^{-1}(\Omega)}\bigr).
+ \end{aligned}
+ \]
+ 因此式\eqref{eq:chap4-localized-necas-bound}给出
+ \[
+  \|p\psi_i\|_{L^2(\Omega)}
+  \leq C'_i\bigl(\|p\|_{H^{-1}(\Omega)}+\|\nabla p\|_{H^{-1}(\Omega)}\bigr)
+  =C'_i\|p\|_{\chi(\Omega)}.
+ \]
+\end{itemize}
+
+汇集以上所有不等式, 最终证明存在 $C>0$, 使
+\[
+ \|p\|_{L^2(\Omega)}\leq C\|p\|_{\chi(\Omega)},
+ \qquad\forall p\in C_c^\infty(\overline\Omega).
+\]
+利用 Remark~\ref{rem:chap4-necas-smooth-reduction}, 证明完成.
+\end{Proof}
+
+\subsubsection{相关的 Poincar\'e 不等式}
+\label{subsec:chap4-related-poincare-inequalities}
+
+Nečas 不等式现在使我们能够证明关于 $L^2(\Omega)$ 中函数的一个新 Poincar\'e 型不等式.
+
+\begin{Proposition}
+\label{prop:chap4-hminusone-poincare}
+设 $\Omega$ 是 $\mathbb R^d$ 中连通、有界的 Lipschitz 区域. 存在 $C>0$, 使对所有 $p\in L^2(\Omega)$,
+\[
+ \|p\|_{H^{-1}}
+ \leq C\left(\frac1{|\Omega|}\left|\int_\Omega p\,\mathrm dx\right|
+ +\|\nabla p\|_{H^{-1}}\right).
+\]
+\end{Proposition}
+
+\begin{Proof}
+这里采用与 Proposition~\ref{prop:chap3-generalized-poincare} 和 Proposition~\ref{prop:chap3-poincare-wirtinger} 相同的原理. 使用反证法, 先假设存在 $L^2(\Omega)$ 中的函数 $(p_n)_n$, 使
+\[
+ \|p_n\|_{H^{-1}}
+ \geq n\left(\frac1{|\Omega|}\left|\int_\Omega p_n\,\mathrm dx\right|
+ +\|\nabla p_n\|_{H^{-1}}\right).
+\]
+由齐次性, 假设 $\|p_n\|_{H^{-1}}=1$. 此时, 由于 $\|\nabla p_n\|_{H^{-1}}\leq1/n$, 根据 Theorem~\ref{thm:chap4-necas-inequality}, 可推出 $(p_n)_n$ 在 $L^2(\Omega)$ 中有界.
+
+$H_0^1(\Omega)$ 到 $L^2(\Omega)$ 的嵌入是紧的, 因而 $L^2(\Omega)$ 到 $H^{-1}(\Omega)$ 的伴随嵌入也是紧的 (Lemma~\ref{lem:chap2-adjoint-compact}). 因此, 可以从 $(p_n)_n$ 中抽取子列 $(p_{n_k})_k$, 它在 $L^2(\Omega)$ 中弱收敛并在 $H^{-1}(\Omega)$ 中强收敛到 $L^2(\Omega)$ 中的函数 $p$.
+
+由于 $\|\nabla p_n\|_{H^{-1}}\leq1/n$, 得到 $\nabla p=0$ 于分布意义, 而开集 $\Omega$ 连通, 所以极限 $p$ 必为常数 $\alpha\in\mathbb R$ (Lemma~\ref{lem:chap2-zero-gradient-distribution-constant}). 然而还有
+\[
+ \frac1{|\Omega|}\left|\int_\Omega p_{n_k}\,\mathrm dx\right|
+ \leq\frac{\|p_{n_k}\|_{H^{-1}}}{n_k}
+ =\frac1{n_k},
+\]
+因而在极限处 (由 $L^2(\Omega)$ 中的弱收敛, 可以对积分取极限) 得
+\[
+ |\alpha|\leq0.
+\]
+这表明 $p$ 为零, 与
+\[
+ \|p\|_{H^{-1}}
+ =\lim_{k\to\infty}\|p_{n_k}\|_{H^{-1}}=1
+\]
+矛盾, 这里使用了该空间中的强收敛.
+\end{Proof}
+
+当然, 我们不可能得到类似于 Proposition~\ref{prop:chap3-generalized-poincare} 的结果, 因为 $L^2(\Omega)$ 中的函数在 $\partial\Omega$ 上没有迹.
+
+现在定义一个在本书研究中有用的商空间, 因为正如后面在不可压模型中所示, 只要区域 $\Omega$ 连通, 压力就只能在相差一个常数的意义下定义.
+
+\begin{Definition}
+\label{def:chap4-zero-mean-quotient-space}
+设 $\Omega$ 是 $\mathbb R^d$ 中连通、有界的开集. 定义商空间
+\[
+ L_0^2(\Omega)=L^2(\Omega)/\mathbb R,
+\]
+它由 $L^2(\Omega)$ 中相差一个常数的函数类构成. 在这个空间上赋予商范数
+\[
+ \|u\|_{L_0^2}=\inf_{\alpha\in\mathbb R}\|u+\alpha\|_{L^2}.
+\]
+此外, 对 $L^2(\Omega)$ 中任意函数 $u$, 引入 $u$ 在 $\Omega$ 上的均值
+\[
+ m(u)=\frac1{|\Omega|}\int_\Omega u(x)\,\mathrm dx.
+\]
+\end{Definition}
+
+与通常一样, 我们把 $L_0^2(\Omega)$ 中的一个类与它的任意代表元等同. 容易验证, 赋予上述商范数后, 空间 $L_0^2(\Omega)$ 是 Banach 空间. 对于标量积
+\[
+ (u,v)_{L_0^2}=\int_\Omega(u-m(u))(v-m(v))\,\mathrm dx,
+\]
+它实际上是一个 Hilbert 空间. 事实上, 由下面的结果, 来自这个标量积的范数与商范数等价.
+
+\begin{Lemma}
+\label{lem:chap4-zero-mean-quotient-equivalence}
+对 $\mathbb R^d$ 中任意有界、连通的 Lipschitz 区域 $\Omega$, 存在 $C>0$, 使对所有 $p\in L_0^2(\Omega)$,
+\begin{equation}
+ \|p\|_{L_0^2}\leq\|p-m(p)\|_{L^2}\leq2\|p\|_{L_0^2},
+ \label{eq:chap4-zero-mean-norm-equivalence}
+\end{equation}
+以及
+\begin{equation}
+ \frac1C\|p\|_{L_0^2}\leq\|\nabla p\|_{H^{-1}}
+ \leq C\|p\|_{L_0^2}.
+ \label{eq:chap4-zero-mean-gradient-equivalence}
+\end{equation}
+\end{Lemma}
+
+\begin{Proof}
+式\eqref{eq:chap4-zero-mean-norm-equivalence}中的第一个不等式直接来自商范数的定义. 第二个不等式由下式得到: 对所有 $\alpha\in\mathbb R$,
+\[
+ \|p-m(p)\|_{L^2}
+ =\|p+\alpha-m(p+\alpha)\|_{L^2}
+ \leq\|p+\alpha\|_{L^2}+|\Omega|^{1/2}|m(p+\alpha)|.
+\]
+不过, 对 $L^2(\Omega)$ 中任意函数 $v$, H\"older 不等式给出
+\[
+ |m(v)|\leq\frac1{|\Omega|}\int_\Omega|v|\,\mathrm dx
+ \leq|\Omega|^{-1/2}\|v\|_{L^2},
+\]
+对所得不等式关于 $\alpha$ 取下确界, 即得所需结果.
+
+式\eqref{eq:chap4-zero-mean-gradient-equivalence}中的不等式由式\eqref{eq:chap4-zero-mean-norm-equivalence}、Theorem~\ref{thm:chap4-necas-inequality} 和 Proposition~\ref{prop:chap4-hminusone-poincare} 的 Poincar\'e 不等式得到.
+\end{Proof}
+
+这个 Lemma 证明空间 $L_0^2(\Omega)$ 与 $L^2(\Omega)$ 中由零均值函数组成的闭子空间同构. 通常, 我们选取唯一的零均值代表元作为 $L_0^2(\Omega)$ 中各类的代表元.
