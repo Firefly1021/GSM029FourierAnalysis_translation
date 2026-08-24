@@ -1,0 +1,822 @@
+\subsection{Stokes 问题}
+\label{sec:chap4-stokes-problem}
+
+\renewcommand{\thestatement}{5.\arabic{statement}}
+\renewcommand{\theHstatement}{ch04.sec05.\arabic{statement}}
+\setcounter{statement}{0}
+\newcounter{chapterfoursectionfiveremark}
+\renewcommand{\thechapterfoursectionfiveremark}{5.\arabic{chapterfoursectionfiveremark}}
+
+\subsubsection{Stokes 问题的适定性}
+\label{subsec:chap4-stokes-wellposedness}
+
+这里回忆 Section~\ref{subsec:chap4-leray-decomposition} 中引入并研究的空间:
+\[
+ \mathcal V=\{\varphi\in(\mathcal D(\Omega))^d,\ \operatorname{div}\varphi=0\},
+ \qquad
+ V=\{v\in(H_0^1(\Omega))^d,\ \operatorname{div}v=0\},
+\]
+\[
+ H=\{v\in(L^2(\Omega))^d,\ \operatorname{div}v=0,\ \gamma_\nu(v)=0\}.
+\]
+还回忆, $(L^2(\Omega))^d$ 中散度属于 $L^2(\Omega)$ 的向量场, 即属于 $H_{\operatorname{div}}(\Omega)$ 的向量场, 在 $H^{-1/2}(\partial\Omega)$ 中有良定义的法向迹, 见 Section~\ref{subsec:chap4-hdiv-space}.
+
+将 $H$ 与其对偶等同后, 空间 $V$ 的对偶记为 $V'$. 正如 Chapter~\ref{chap:analysis-tools} 中看到的, 有 $V\subset H\subset V'$, 且嵌入紧而稠密, 见 Proposition~\ref{prop:chap2-canonical-dual-embedding} 和 Corollary~\ref{cor:chap2-pivot-space-compact-embedding}.
+
+对任意 $f\in(H^{-1}(\Omega))^d$, 称下列方程组为具有 Dirichlet 边界条件的齐次 Stokes 问题:
+\begin{equation}
+ \left\{
+ \begin{aligned}
+  -\Delta v+\nabla p&=f,&&\text{于 }\Omega,\\
+  \operatorname{div}v&=0,&&\text{于 }\Omega,\\
+  v&=0,&&\text{于 }\partial\Omega.
+ \end{aligned}
+ \right.
+ \label{eq:chap4-homogeneous-stokes-problem}
+\end{equation}
+正如 Chapter~\ref{chap:fluid-mechanics-equations} 中看到的, 这些方程描述均匀不可压缩流体的层流稳态流动.
+
+如下可以证明具有齐次 Dirichlet 边界条件的 Stokes 问题之弱解的存在唯一性定理.
+
+\begin{Theorem}
+\label{thm:chap4-stokes-homogeneous-wellposedness}
+设 $\Omega$ 是 $\mathbb R^d$ 中有界、连通的 Lipschitz 区域, 且 $f\in(H^{-1}(\Omega))^d$. 则存在唯一的 $(v,p)\in V\times L_0^2(\Omega)$, 它是问题\eqref{eq:chap4-homogeneous-stokes-problem}的解.
+\end{Theorem}
+
+\begin{Proof}
+考虑本小节开头定义的 Hilbert 空间 $V$, 并在 $V$ 上定义双线性型
+\[
+ a(v,w)=\int_\Omega\nabla v:\nabla w\,\mathrm dx.
+\]
+这个双线性型在 $V$ 上连续且强制, 因为由 Poincaré 不等式, $v\mapsto a(v,v)$ 是 $(H_0^1(\Omega))^d$ 上的一个范数. 再定义线性型
+\[
+ L(w)=\langle f,w\rangle_{H^{-1},H_0^1}.
+\]
+这个线性型在 $V$ 上连续. 由 Lax--Milgram 定理, 即 Theorem~\ref{thm:chap2-lax-milgram}, 可知存在唯一的 $v\in V$ 满足
+\begin{equation}
+ a(v,w)=L(w),\qquad\forall w\in V.
+ \label{eq:chap4-stokes-variational-problem}
+\end{equation}
+因此, 由 Stokes 公式, 即 Theorem~\ref{thm:chap3-stokes-divergence} 及其推论, 以及由式\eqref{eq:chap3-negative-sobolev-pairing}给出的、通过 $L^2(\Omega)$ 内积定义的 $H^{-1}(\Omega)$ 与 $H_0^1(\Omega)$ 之间的对偶括号, 有
+\[
+ \langle-\Delta v-f,w\rangle_{H^{-1},H_0^1}=0,
+ \qquad\forall w\in V.
+\]
+因而由 Theorem~\ref{thm:chap4-de-rham-hminusone}, 存在 $p\in L^2(\Omega)$ 使得
+\[
+ -\Delta v+\nabla p=f.
+\]
+取 $p$ 的平均值为零, 就能保证压力的唯一性, 因为 $\Omega$ 连通.
+\end{Proof}
+
+\par\noindent\refstepcounter{chapterfoursectionfiveremark}\textbf{Remark~\thechapterfoursectionfiveremark:}\label{rem:chap4-stokes-energy-minimizer}\quad 很容易看出, 上面由 Lax--Milgram 定理得到的速度场 $v$ 是能量泛函
+\[
+ J(w)=\frac12\int_\Omega|\nabla w|^2\,\mathrm dx-\int_\Omega f\cdot w\,\mathrm dx,
+ \qquad\forall w\in V,
+\]
+在 $V$ 上的唯一极小元. 这是对称情形中变分问题解的一般性质.
+
+项 $-\Delta v-f\in(H^{-1}(\Omega))^d$ 正是把 $J$ 看作定义在 $(H_0^1(\Omega))^d$ 上的泛函时 $J$ 的梯度. 由于 $v$ 在无散度向量场子空间 $V$ 上使 $J$ 达到极小, Lagrange 乘子定理表明, 在最优点 $v$ 处, $J$ 的梯度在某种意义下必须与约束的梯度成比例. 更准确地说, 这里的约束是线性的, 并由算子
+\[
+ \operatorname{div}:(H_0^1(\Omega))^d\longrightarrow L_0^2(\Omega)
+\]
+定义, 因而必存在 $\Pi\in(L_0^2(\Omega))'$ 使得
+\[
+ (\nabla J)(v)=\Pi\circ\operatorname{div}\in(H^{-1}(\Omega))^d.
+\]
+由于 $(L_0^2(\Omega))'$ 可以与 $L_0^2(\Omega)$ 本身等同, 存在唯一的 $p\in L_0^2(\Omega)$ 使得
+\[
+ \langle\Pi,q\rangle_{(L_0^2)',L_0^2}=\int_\Omega pq\,\mathrm dx,
+ \qquad\forall q\in L_0^2(\Omega),
+\]
+于是
+\[
+ \langle\Pi\circ\operatorname{div},w\rangle_{H^{-1},H_0^1}
+ =\int_\Omega p\operatorname{div}w\,\mathrm dx
+ =-\langle\nabla p,w\rangle_{H^{-1},H_0^1},
+ \qquad\forall w\in(H_0^1(\Omega))^d;
+\]
+即 $\Pi\circ\operatorname{div}=-\nabla p$. 这些计算表明, 对于 Stokes 问题, 压力可以理解为与无散度约束相关的 Lagrange 乘子. Chapter~\ref{chap:fluid-mechanics-equations} 的 Section~\MBUnresolvedReference{sec:chap1-source-section-6}{6} 中已经提到这一点.
+
+现在可以研究稍微一般化的 Stokes 问题. 它不再假定无散度条件, 而是假定 $\operatorname{div}v$ 等于一个给定函数 $g$, 该函数表示区域中的质量源; 同时假定速度 $v$ 在 $\partial\Omega$ 上等于给定的边界数据.
+
+\begin{Theorem}
+\label{thm:chap4-stokes-nonhomogeneous-wellposedness}
+设 $\Omega$ 是 $\mathbb R^d$ 中有界、连通的 Lipschitz 区域. 设 $f\in(H^{-1}(\Omega))^d$, $v_b\in(H^{1/2}(\partial\Omega))^d$, $g\in L^2(\Omega)$, 并满足相容性条件
+\begin{equation}
+ \int_{\partial\Omega}v_b\cdot\nu\,\mathrm d\sigma
+ =\int_\Omega g\,\mathrm dx.
+ \label{eq:chap4-stokes-compatibility}
+\end{equation}
+则存在唯一的 $(v,p)\in(H^1(\Omega))^d\times L_0^2(\Omega)$, 它是问题
+\begin{equation}
+ \left\{
+ \begin{aligned}
+  -\Delta v+\nabla p&=f,&&\text{于 }\Omega,\\
+  \operatorname{div}v&=g,&&\text{于 }\Omega,\\
+  v&=v_b,&&\text{于 }\partial\Omega
+ \end{aligned}
+ \right.
+ \label{eq:chap4-nonhomogeneous-stokes-problem}
+\end{equation}
+的解. 此外, 存在仅依赖于 $\Omega$ 的 $C>0$, 使得
+\[
+ \|v\|_{H^1}+\|p\|_{L_0^2}
+ \leq C\bigl(\|f\|_{H^{-1}}+\|g\|_{L^2}+\|v_b\|_{H^{1/2}}\bigr).
+\]
+\end{Theorem}
+
+\par\noindent\refstepcounter{chapterfoursectionfiveremark}\textbf{Remark~\thechapterfoursectionfiveremark:}\label{rem:chap4-stokes-compatibility-necessary}\quad 由散度定理, 即 Theorem~\ref{thm:chap3-stokes-divergence}, 可知若问题\eqref{eq:chap4-nonhomogeneous-stokes-problem}存在解, 则相容性条件\eqref{eq:chap4-stokes-compatibility}必然成立.
+
+\begin{Proof}
+证明思路是构造迹与质量源项的提升, 从而把问题化为具有修正源项的经典 Stokes 问题, 即具有齐次边界数据与无散度条件的 Stokes 问题; 修正后的源项属于 $(H^{-1}(\Omega))^d$.
+
+由 Theorem~\ref{thm:chap3-trace-lifting-operator}, $G=R_0(v_b)\in(H^1(\Omega))^d$ 满足 $\gamma_0(G)=v_b$. 这个提升 $G$ 未必满足方程 $\operatorname{div}G=g$. 然而, 由数据的相容性条件和散度定理,
+\[
+ \int_\Omega\operatorname{div}G\,\mathrm dx
+ =\int_{\partial\Omega}G\cdot\nu\,\mathrm d\sigma
+ =\int_{\partial\Omega}v_b\cdot\nu\,\mathrm d\sigma
+ =\int_\Omega g\,\mathrm dx.
+\]
+因此 $g-\operatorname{div}G\in L^2(\Omega)$ 且平均值为零. 由 Theorem~\ref{thm:chap4-divergence-right-inverse}, 存在 $H\in(H_0^1(\Omega))^d$ 满足
+\[
+ \operatorname{div}H=g-\operatorname{div}G.
+\]
+所以 $G+H$ 同时满足
+\[
+ \operatorname{div}(G+H)=g\quad\text{于 }\Omega,
+ \qquad G+H=v_b\quad\text{于 }\partial\Omega.
+\]
+于是寻找形如 $v=G+H+w$ 的解, 其中 $w$ 必须满足
+\[
+ \left\{
+ \begin{aligned}
+  -\Delta w+\nabla p&=f+\Delta(G+H),&&\text{于 }\Omega,\\
+  \operatorname{div}w&=0,&&\text{于 }\Omega,\\
+  w&=0,&&\text{于 }\partial\Omega.
+ \end{aligned}
+ \right.
+\]
+源项 $f+\Delta(G+H)$ 属于 $(H^{-1}(\Omega))^d$, 因而 Theorem~\ref{thm:chap4-stokes-homogeneous-wellposedness} 给出上述问题唯一的解 $(w,p)\in(H_0^1(\Omega))^d\times L_0^2(\Omega)$. 于是 $(v=G+H+w,p)$ 是问题\eqref{eq:chap4-nonhomogeneous-stokes-problem}的唯一解. 此外,
+\[
+ \|w\|_{H_0^1}+\|p\|_{L_0^2}
+ \leq C\|f+\Delta(G+H)\|_{H^{-1}}
+ \leq C\bigl(\|f\|_{H^{-1}}+\|G\|_{H^1}+\|H\|_{H_0^1}\bigr).
+\]
+然而, 由 Theorem~\ref{thm:chap4-divergence-right-inverse}, 函数 $H$ 满足
+\[
+ \|H\|_{H_0^1}\leq C\|g-\operatorname{div}G\|_{L^2}
+ \leq C\bigl(\|g\|_{L^2}+\|G\|_{H^1}\bigr).
+\]
+此外, 由迹提升算子的连续性, 即 Theorem~\ref{thm:chap3-trace-lifting-operator}, 有
+\[
+ \|G\|_{H^1}\leq C\|v_b\|_{H^{1/2}}.
+\]
+最终得到
+\[
+ \|w\|_{H^1}\leq C\bigl(\|f\|_{H^{-1}}+\|g\|_{L^2}+\|v_b\|_{H^{1/2}}\bigr).
+\]
+因此, 由于 $v=w+G+H$, 已证明
+\[
+ \|v\|_{H^1}\leq C\bigl(\|f\|_{H^{-1}}+\|g\|_{L^2}+\|v_b\|_{H^{1/2}}\bigr).
+\]
+
+为得到压力估计, 把方程写成
+\[
+ \nabla p=f+\Delta v,
+\]
+由此推出
+\[
+ \|\nabla p\|_{H^{-1}}
+ \leq\|f\|_{H^{-1}}+\|v\|_{H^1}
+ \leq C\bigl(\|f\|_{H^{-1}}+\|g\|_{L^2}+\|v_b\|_{H^{1/2}}\bigr).
+\]
+于是, 由 Proposition~\ref{prop:chap4-hminusone-poincare} 给出的 Poincaré 不等式以及 $p$ 的平均值为零这一事实, 确有
+\[
+ \|p\|_{L^2}\leq C\bigl(\|f\|_{H^{-1}}+\|g\|_{L^2}+\|v_b\|_{H^{1/2}}\bigr).
+\]
+\end{Proof}
+
+\subsubsection{Stokes 算子}
+\label{subsec:chap4-stokes-operator}
+
+事实上, 在上一小节中, 对 $f\in V'$ 也可以应用 Lax--Milgram 定理, 而 $V'$ 比 $(H^{-1}(\Omega))^d$ 更大. 但是此时不再能把解解释为 Stokes 问题的解, 因为无法证明压力存在. 这本质上是由于空间 $V'$ 不是分布空间.
+
+尽管如此, 上述证明中定义的双线性型 $a$ 在 $V\times V$ 上连续, 所以可以定义算子 $A:V\to V'$:
+\begin{equation}
+ \langle Av,u\rangle_{V',V}=\int_\Omega\nabla u:\nabla v\,\mathrm dx,
+ \qquad\forall u,v\in V.
+ \label{eq:chap4-stokes-operator-variational}
+\end{equation}
+算子 $A$ 称为 Stokes 算子. 由 Lax--Milgram 定理, 这个算子是从 $V$ 到 $V'$ 的同构.
+
+现在可以把 $A$ 看作 $H$ 中的无界算子, 其定义域为
+\[
+ D(A)=\{u\in V,\ Au\in H\}.
+\]
+下面验证该算子 $(A,D(A))$ 属于 Chapter~\ref{chap:analysis-tools} 的 Section~\ref{sec:chap2-unbounded-operator-spectral-analysis} 中描述的框架.
+
+\begin{Lemma}
+\label{lem:chap4-stokes-operator-closed-graph}
+算子 $(A,D(A))$ 在 $H\times H$ 中具有闭图像.
+\end{Lemma}
+
+\begin{Proof}
+设 $(u_n)_n$ 是 $D(A)$ 中的序列, 它在 $H$ 中收敛到某个 $u\in H$, 并且 $(Au_n)_n$ 在 $H$ 中收敛到某个 $f$. 由于 $f\in H$, 存在唯一的 $v\in D(A)$ 使 $Av=f$. 需要证明 $v=u$.
+
+在 $H$ 中的收敛蕴含在 $V'$ 中的收敛, 因而 $(Au_n)_n$ 在 $V'$ 中收敛到 $Av$. 但 $A$ 是从 $V$ 到 $V'$ 的同构, 所以 $(u_n)_n$ 在 $V$ 中收敛到 $v$. 在 $V$ 中的收敛蕴含在 $H$ 中的收敛, 因此已经证明 $u=v$.
+\end{Proof}
+
+正如在无界算子的一般理论中看到的, 这个性质蕴含: 赋予式\eqref{eq:chap2-graph-inner-product}定义的内积后, $D(A)$ 是 Hilbert 空间, 且 $A$ 是从 $D(A)$ 到 $H$ 的同构. 此外, 对所有 $u\in D(A)$,
+\[
+ \|u\|_V\leq C\|Au\|_{V'}\leq C'\|Au\|_H\leq C''\|u\|_{D(A)},
+\]
+这表明从 $D(A)$ 到 $V$ 的典范嵌入连续. 最后, 由于从 $V$ 到 $H$ 的嵌入紧, 应用 Lemma~\ref{lem:chap2-compact-composition} 可知从 $D(A)$ 到 $H$ 的嵌入紧.
+
+最后有如下基本结果.
+
+\begin{Lemma}
+\label{lem:chap4-stokes-operator-self-adjoint}
+Stokes 算子 $(A,D(A))$ 在 $H$ 中自伴.
+\end{Lemma}
+
+\begin{Proof}
+\begin{itemize}
+ \item 首先, 由定义, 对任意 $u,v\in D(A)$,
+ \[
+  (Au,v)_H=\langle Au,v\rangle_{V',V}
+  =\int_\Omega\nabla u:\nabla v\,\mathrm dx,
+ \]
+ 因而显然
+ \begin{equation}
+  (Au,v)_H=(u,Av)_H,
+  \qquad\forall u,v\in D(A).
+  \label{eq:chap4-stokes-operator-symmetric}
+ \end{equation}
+ 特别地, 这蕴含 $D(A)\subset D(A^*)$, 且对所有 $u\in D(A)$ 有 $A^*u=Au$.
+
+ \item 现在需要证明 $D(A^*)=D(A)$. 设 $u\in D(A^*)$. 按定义, 存在 $f=A^*u\in H$, 使得对所有 $v\in D(A)$,
+ \[
+  (Av,u)_H=(v,f)_H.
+ \]
+ 然而, $A$ 是从 $D(A)$ 到 $H$ 的双射, 因而存在 $\widetilde u\in D(A)$ 使 $f=A\widetilde u$. 下面证明 $u=\widetilde u$. 任取 $w\in H$, 存在 $\widetilde w\in D(A)$ 使 $A\widetilde w=w$. 因而
+ \begin{equation}
+  (w,u-\widetilde u)_H=(A\widetilde w,u)_H-(A\widetilde w,\widetilde u)_H.
+  \label{eq:chap4-stokes-adjoint-comparison}
+ \end{equation}
+ 由伴随算子的定义,
+ \[
+  (A\widetilde w,u)_H=(\widetilde w,A^*u)_H,
+ \]
+ 而由式\eqref{eq:chap4-stokes-operator-symmetric}以及 $\widetilde u\in D(A)$,
+ \[
+  (A\widetilde w,\widetilde u)_H=(\widetilde w,A\widetilde u)_H.
+ \]
+ 根据 $\widetilde u$ 的定义, $A\widetilde u=A^*u$, 因而式\eqref{eq:chap4-stokes-adjoint-comparison}变成
+ \[
+  (w,u-\widetilde u)_H=0.
+ \]
+ 这对所有 $w\in H$ 成立, 所以 $u=\widetilde u$, 特别地 $u\in D(A)$.
+\end{itemize}
+\end{Proof}
+
+由前面所有结果可知, Stokes 算子属于 Chapter~\ref{chap:analysis-tools} 的 Section~\ref{sec:chap2-unbounded-operator-spectral-analysis} 中给出的一般框架. 因而可以构造 Stokes 算子的谱分解. 更准确地说, 有如下结果.
+
+\begin{Theorem}
+\label{thm:chap4-stokes-spectral-decomposition}
+设 $\Omega$ 是 $\mathbb R^d$ 中有界、连通的 Lipschitz 区域. 存在趋于 $+\infty$ 的单调递增正实数序列 $(\lambda_k)_{k\geq1}$, 以及在 $H$ 中标准正交、在 $V$ 与 $D(A)$ 中正交并在 $H$、$V$ 与 $D(A)$ 中均构成完备族的函数序列 $(w_k)_{k\geq1}$, 还有 $L_0^2(\Omega)$ 中的函数序列 $(p_k)_{k\geq1}$, 满足
+\begin{equation}
+ \left\{
+ \begin{aligned}
+  -\Delta w_k+\nabla p_k&=\lambda_kw_k,&&\text{于 }\Omega,\\
+  \operatorname{div}w_k&=0,&&\text{于 }\Omega,\\
+  w_k&=0,&&\text{于 }\partial\Omega.
+ \end{aligned}
+ \right.
+ \label{eq:chap4-stokes-eigenproblem}
+\end{equation}
+\end{Theorem}
+
+\begin{Proof}
+如上所述, Stokes 算子属于 Theorem~\ref{thm:chap2-compact-inverse-spectral} 的框架. 因而存在由 $A$ 对应于特征值 $(\lambda_k)_k$ 的特征向量构成的 $H$ 的标准正交基 $(w_k)_k$, 它也是 $D(A)$ 中的完备正交族.
+
+由 Stokes 算子的构造以及本章前面的结果, 即 Theorem~\ref{thm:chap4-de-rham-hminusone}, 显然存在压力 $p_k\in L_0^2(\Omega)$, 使方程组\eqref{eq:chap4-stokes-eigenproblem}成立. 此外,
+\[
+ \lambda_k\|w_k\|_H^2=(Aw_k,w_k)_H
+ =\int_\Omega|\nabla w_k|^2\,\mathrm dx>0,
+\]
+这说明特征值 $\lambda_k$ 为正, 因而可以把它们排列成发散的单调递增序列.
+
+还需证明 $(w_k)_k$ 是 $V$ 中的完备正交族. 首先, 由于 $D(A)\subset V$, 对每个 $k$ 确有 $w_k\in V$. 此外, 回忆将 $H$ 与其对偶等同后处于 $V\subset H\subset V'$ 的情形, 有
+\[
+ \begin{aligned}
+  (w_k,w_l)_V
+  &=\int_\Omega\nabla w_k:\nabla w_l\,\mathrm dx
+   =\langle Aw_k,w_l\rangle_{V',V}
+   =(Aw_k,w_l)_H\\
+  &=\lambda_k(w_k,w_l)_H=\lambda_k\delta_{kl}.
+ \end{aligned}
+\]
+这证明 $(w_k)_k$ 在 $V$ 中正交. 最后, $D(A)$ 在 $V$ 中稠密, 而 $(w_k)_k$ 在 $D(A)$ 中完备, 所以显然它在 $V$ 中也是完备族.
+\end{Proof}
+
+\begin{Definition}
+\label{def:chap4-stokes-special-basis}
+这样的一个函数系称为与定义域为 $D(A)$ 的 Stokes 算子 $A$ 相关的特殊基.
+\end{Definition}
+
+在后续各章中, 我们经常使用这个函数族来构造非稳态问题的近似解.
+
+给定由 Stokes 算子特征函数组成的 $H$ 的特殊基, 现在可以给出 Leray 投影 $P$, 即 Definition~\ref{def:chap4-leray-decomposition}, 的一个适当公式.
+
+\begin{Lemma}
+\label{lem:chap4-leray-projection-special-basis}
+设 $\Omega$ 是 $\mathbb R^d$ 中有界、连通的 Lipschitz 区域, $(w_k)_{k\geq1}$ 是由 Stokes 算子特征函数组成的 $H$ 的一个基. 则对任意 $u\in(L^2(\Omega))^d$,
+\[
+ Pu=\sum_{k=1}^{+\infty}(u,w_k)_{L^2}w_k.
+\]
+\end{Lemma}
+
+\begin{Proof}
+定义
+\[
+ v=\sum_{k=1}^{+\infty}(u,w_k)_{L^2}w_k.
+\]
+序列 $(w_k)_k$ 是 $H$ 中的标准正交族, 从而也是 $(L^2(\Omega))^d$ 中的正交族, 因此显然 $v\in H$. 此外, 对所有 $n\geq1$,
+\[
+ (v,w_n)_{L^2}
+ =\sum_{k=1}^{+\infty}(u,w_k)_{L^2}(w_k,w_n)_{L^2}
+ =(u,w_n)_{L^2}.
+\]
+所以 $u-v$ 与所有 $w_n$ 正交, 从而与整个 $H$ 正交. 这确实证明 $v$ 是 $u$ 在 $H$ 上的正交投影.
+\end{Proof}
+
+Stokes 算子满足与 Laplace 算子相似的椭圆正则性性质. 更准确地说, 有如下结果.
+
+\begin{Theorem}{Regularity of the Stokes problem}
+\label{thm:chap4-stokes-regularity}
+设 $\Omega$ 是 $\mathbb R^d$ 中 $C^{k+1,1}$ 类的有界连通区域, $k\geq0$. 则对任意 $f\in(H^k(\Omega))^d$, $g\in H^{k+1}(\Omega)$ 以及满足相容性条件\eqref{eq:chap4-stokes-compatibility}的 $v_b\in(H^{k+3/2}(\partial\Omega))^d$, 问题\eqref{eq:chap4-nonhomogeneous-stokes-problem}在 $V\times L_0^2(\Omega)$ 中的唯一解满足
+\[
+ (v,p)\in(H^{k+2}(\Omega))^d\times H^{k+1}(\Omega),
+\]
+且
+\[
+ \|v\|_{H^{k+2}}+\|p\|_{H^{k+1}}
+ \leq C\bigl(\|f\|_{H^k}+\|g\|_{H^{k+1}}+\|v_b\|_{H^{k+3/2}}\bigr),
+\]
+其中 $C>0$ 仅依赖于 $\Omega$.
+\end{Theorem}
+
+目前暂且承认这个结果. Section~\MBUnresolvedReference{sec:chap4-stokes-regularity-proof}{6} 将证明它. 注意, 当 $k=0$ 时, 例如在凸多边形区域中这个结果也成立, 见\MBUnresolvedReference{bib:stokes-convex-polygon-regularity}{[73]}.
+
+\par\noindent\refstepcounter{chapterfoursectionfiveremark}\textbf{Remark~\thechapterfoursectionfiveremark:}\label{rem:chap4-stokes-pressure-one-less-regularity}\quad 必须注意, 正如可以预期的那样, 压力 $p$ 比速度场 $v$ 少一级正则性.
+
+上述正则性理论允许如下精确描述 Stokes 算子的定义域.
+
+\begin{Proposition}{Domain of the Stokes operator}
+\label{prop:chap4-stokes-operator-domain}
+设 $\Omega$ 是 $\mathbb R^d$ 中 $C^{1,1}$ 类的有界区域, 则
+\[
+ D(A)=V\cap(H^2(\Omega))^d.
+\]
+此外,
+\[
+ Av=P(-\Delta v),\qquad\forall v\in D(A),
+\]
+其中 $P$ 是 Leray 投影, 并且存在 $C>0$ 使得
+\[
+ \frac1C\|v\|_{H^2}\leq\|Av\|_H\leq C\|v\|_{H^2},
+ \qquad\forall v\in D(A).
+\]
+特别地, 若 $\Omega$ 为 $C^{1,1}$ 类, 则 Stokes 算子的特征函数 $(w_k)_k$ 属于 $(H^2(\Omega))^d$, 相应的压力 $(p_k)_k$ 属于 $H^1(\Omega)$.
+\end{Proposition}
+
+\begin{Proof}
+\begin{itemize}
+ \item 先证明 $V\cap(H^2(\Omega))^d\subset D(A)$. 设 $v\in V\cap(H^2(\Omega))^d$, 则先验地 $Av\in V'$. 对 $\varphi\in V\subset H$, 由于 $v$ 足够光滑, 可以分部积分并使用 Leray 投影 $P$, 得
+ \[
+  \begin{aligned}
+  \langle Av,\varphi\rangle_{V',V}
+  &=\int_\Omega\nabla v:\nabla\varphi\,\mathrm dx
+   =\int_\Omega(-\Delta v)\cdot\varphi\,\mathrm dx\\
+  &=(-\Delta v,\varphi)_{L^2}
+   =(P(-\Delta v),\varphi)_H
+   =\langle P(-\Delta v),\varphi\rangle_{V',V}.
+  \end{aligned}
+ \]
+ 按定义, $\mathcal V$ 在 $V$ 中稠密, 因而这表明 $Av=P(-\Delta v)\in H$, 从而 $v\in D(A)$. 此外, 由于 $P$ 是 $(L^2(\Omega))^d$ 中的正交投影,
+ \[
+  \|Av\|_H\leq\|-\Delta v\|_{L^2}\leq C\|v\|_{H^2}.
+ \]
+
+ \item 还需证明 $D(A)\subset V\cap(H^2(\Omega))^d$. 设 $v\in D(A)$, 即 $f=Av\in H$. 对所有 $\varphi\in\mathcal V$ 可写
+ \[
+  \begin{aligned}
+  \langle f,\varphi\rangle_{H^{-1},H_0^1}
+  &=(f,\varphi)_{L^2}=(f,\varphi)_H
+   =\langle Av,\varphi\rangle_{V',V}\\
+  &=\int_\Omega\nabla v:\nabla\varphi\,\mathrm dx
+   =\langle-\Delta v,\varphi\rangle_{H^{-1},H_0^1}.
+  \end{aligned}
+ \]
+ 因而 $-\Delta v-f\in(H^{-1}(\Omega))^d$, 且对所有 $\varphi\in\mathcal V$ 有
+ \[
+  \langle-\Delta v-f,\varphi\rangle_{H^{-1},H_0^1}=0.
+ \]
+ 由 de Rham 定理, 即 Theorem~\ref{thm:chap4-de-rham}, 存在 $p\in L^2(\Omega)$ 使得
+ \[
+  -\Delta v+\nabla p=f.
+ \]
+ 由于 $f\in H\subset(L^2(\Omega))^d$, 正则性 Theorem~\ref{thm:chap4-stokes-regularity} 蕴含 $v\in(H^2(\Omega))^d$, 且
+ \[
+  \|v\|_{H^2}\leq C\|f\|_{L^2}=C\|Av\|_H,
+ \]
+ 证明结束.
+\end{itemize}
+\end{Proof}
+
+现在回到 Chapter~\ref{chap:analysis-tools} 的 Section~\ref{sec:chap2-unbounded-operator-spectral-analysis} 中描述的算子 $A$ 的分数幂定义, 并对所有 $s\in\mathbb R$ 记
+\[
+ V_s=D(A^{s/2}).
+\]
+将 $V_s$ 上的内积与范数分别记为 $(\cdot,\cdot)_s$ 和 $\|\cdot\|_s$. 有如下结果.
+
+\begin{Proposition}
+\label{prop:chap4-stokes-fractional-domains}
+若 $\Omega$ 为 $C^{1,1}$ 类且 $1\leq s\leq2$, 则
+\[
+ V_s=V\cap(H^s(\Omega))^d.
+\]
+若 $\Omega$ 为 $C^{k,1}$ 类, $k\geq2$, 且 $2<s\leq k+1$, 则仅有
+\[
+ V_s\subset V\cap(H^s(\Omega))^d.
+\]
+\end{Proposition}
+
+\begin{Proof}
+$s=2$ 的情形由前一命题给出. 这里只研究 $s=1$ 的情形, 命题其余部分暂且承认, 例如见\MBUnresolvedReference{bib:stokes-fractional-domains}{[44]}.
+
+现在要证明 $V_1=D(A^{1/2})$ 等于 $V$. 为此考虑 Stokes 算子的特征函数基 $(w_k)_k$, 如已看到的, 它们全都属于 $V$. 此外,
+\begin{equation}
+ \begin{aligned}
+ (w_k,w_l)_{D(A^{1/2})}
+ &=\delta_{kl}(1+\lambda_k)(w_k,w_k)_H\\
+ &=\delta_{kl}\left(\|w_k\|_H^2+(Aw_k,w_k)_H\right)\\
+ &=\delta_{kl}\left(\|w_k\|_H^2+\int_\Omega|\nabla w_k|^2\,\mathrm dx\right)\\
+ &=\delta_{kl}\left(\|w_k\|_H^2+\|w_k\|_V^2\right)
+  =(w_k,w_l)_H+(w_k,w_l)_V.
+ \end{aligned}
+ \label{eq:chap4-stokes-half-power-inner-product}
+\end{equation}
+任意 $u\in D(A^{1/2})$ 都是形如 $S_N=\sum_{k=1}^N\alpha_kw_k$ 的有限和在 $D(A^{1/2})$ 中的极限, 因而序列 $(S_N)_N$ 在 $D(A^{1/2})$ 中是 Cauchy 序列. 由式\eqref{eq:chap4-stokes-half-power-inner-product},
+\[
+ \|S_N-S_{N+p}\|_V\leq\|S_N-S_{N+p}\|_{D(A^{1/2})},
+\]
+所以 $(S_N)_N$ 在 $V$ 中是 Cauchy 序列, 从而在 $V$ 中收敛. 它的极限必为 $u$, 因为 $D(A^{1/2})$ 与 $V$ 到 $H$ 的嵌入连续, 而 $(S_N)_N$ 在 $H$ 中的极限唯一. 因此 $D(A^{1/2})\subset V$, 且式\eqref{eq:chap4-stokes-half-power-inner-product}给出
+\[
+ (u,v)_{D(A^{1/2})}=(u,v)_H+(u,v)_V,
+ \qquad\forall u,v\in D(A^{1/2}).
+\]
+所以 $V$ 与 $D(A^{1/2})$ 的范数在后一个空间中等价; 由于 $D(A^{1/2})$ 完备, 它是 $V$ 的闭子集.
+
+最后, 已知 $D(A^{1/2})$ 在 $V$ 中稠密, 因为在 $V$ 中构成完备族的 $(w_k)_k$ 全都属于 $D(A^{1/2})$. 这证明 $D(A^{1/2})=V$.
+\end{Proof}
+
+利用这些定义, 可以用插值证明一个连续性结果, 它正是 Theorem~\ref{thm:chap2-interpolation-time-continuity} 在这里所关心的特殊情形中的表述.
+
+\begin{Theorem}
+\label{thm:chap4-stokes-time-continuity}
+设 $(\alpha,\beta)$ 为满足 $\beta\leq\alpha$ 的两个实数. 令
+\[
+ E=\left\{u\in L^2(]0,T[,V_\alpha),\ 
+ \frac{\mathrm du}{\mathrm dt}\in L^2(]0,T[,V_\beta)\right\}.
+\]
+则 $E$ 连续嵌入 $C^0([0,T],V_{(\alpha+\beta)/2})$.
+\end{Theorem}
+
+\begin{Proof}
+\begin{itemize}
+ \item 首先取函数
+ \[
+  u(t)=\sum_{k=1}^N\alpha_k(t)w_k,
+ \]
+ 其中 $\alpha_k\in C^\infty([0,T])$. 可以写成
+ \[
+  \alpha_k(t)=\theta_1(t)\alpha_k(t)+(1-\theta_1(t))\alpha_k(t)
+  =\beta_k(t)+\gamma_k(t),
+ \]
+ 其中 $\theta_1$ 是支集包含于 $[0,T/2]$ 的正则函数, 例如在 $[0,T/3]$ 上恒等于 $1$. 令
+ \[
+  v(t)=\sum_{k=1}^N\beta_k(t)w_k,
+ \]
+ 并对 $v$ 证明结果, 对 $u-v$ 的论证完全相同. 注意到 $\beta_k(t)=(v(t),w_k)_H$, 有
+ \[
+  \frac12\frac{\mathrm d}{\mathrm dt}(v,v)_{(\alpha+\beta)/2}
+  =\left(\frac{\mathrm dv}{\mathrm dt},v\right)_{(\alpha+\beta)/2}
+  =\sum_{k=1}^N\left(1+\lambda_k^{(\alpha+\beta)/2}\right)\beta_k'(t)\beta_k(t).
+ \]
+ 因此, 由于 $v(+\infty)=0$, 对所有 $t\in[0,T]$,
+ \[
+  \begin{aligned}
+  \frac12\|v(t)\|_{(\alpha+\beta)/2}^2
+  &=-\int_t^T\sum_{k=1}^N
+  \left(1+\lambda_k^{(\alpha+\beta)/2}\right)\beta_k'(\tau)\beta_k(\tau)\,\mathrm d\tau\\
+  &\leq\frac12\int_0^T\left(
+  \sum_{k=1}^N(1+\lambda_k^\alpha)\beta_k(\tau)^2
+  +\sum_{k=1}^N(1+\lambda_k^\beta)\beta_k'(\tau)^2\right)\,\mathrm d\tau\\
+  &\leq\frac12\int_0^T\left(
+  \|v(\tau)\|_\alpha^2
+  +\left\|\frac{\mathrm dv}{\mathrm dt}(\tau)\right\|_\beta^2\right)\,\mathrm d\tau
+  \leq\frac12\|v\|_E^2.
+  \end{aligned}
+ \]
+ 函数 $u$, 从而 $v$, 显然连续取值于 $V_{(\alpha+\beta)/2}$, 这说明
+ \[
+  \|u\|_{C^0([0,T],V_{(\alpha+\beta)/2})}\leq C\|u\|_E.
+ \]
+
+ \item 由 $C^\infty([0,T])$ 在 $H^1(]0,T[)$ 中的稠密性, 可以把前面的结果推广到所有满足
+ \[
+  \alpha_k\in H^1(]0,T[)
+ \]
+ 的函数. 然而, $E$ 中任意函数 $u$ 都唯一分解为
+ \[
+  u(t)=\sum_{k=1}^{+\infty}\alpha_k(t)\omega_k,
+ \]
+ 其中 $\alpha_k\in H^1(]0,T[)$, 且级数在 $E$ 中收敛. 因而可以把结果推广到 $E$ 的所有函数.
+\end{itemize}
+\end{Proof}
+
+用关于 Poincaré 不等式的新视角结束本小节.
+
+\begin{Proposition}
+\label{prop:chap4-stokes-poincare-optimal}
+设 $\Omega$ 是 $\mathbb R^d$ 中有界的 Lipschitz 区域. 有如下 Poincaré 不等式:
+\begin{equation}
+ \|v\|_H^2\leq\frac1{\lambda_1}\|\nabla v\|_{L^2}^2,
+ \qquad\forall v\in V,
+ \label{eq:chap4-stokes-poincare-v}
+\end{equation}
+\[
+ \|\nabla v\|_{L^2}^2\leq\frac1{\lambda_1}\|Av\|_{L^2}^2,
+ \qquad\forall v\in D(A),
+\]
+其中 $\lambda_1$ 是 Stokes 算子的最小特征值. 此外, 常数 $1/\lambda_1$ 在这两个不等式中都是最优的.
+\end{Proposition}
+
+\begin{Proof}
+已经以更一般的方式证明了 Poincaré 不等式, 即 Proposition~\ref{prop:chap3-generalized-poincare}. 式\eqref{eq:chap4-stokes-poincare-v}给出无散度向量场情形中的最优常数值. 将 Stokes 算子的特征函数特殊基记为 $(w_k)_{k\geq1}$.
+\begin{itemize}
+ \item 先证明式\eqref{eq:chap4-stokes-poincare-v}. 设 $v=\sum_{k\geq1}v_kw_k\in V$, 则 $Av=\sum_{k\geq1}\lambda_kv_kw_k$. 因而
+ \[
+  \int_\Omega|\nabla v|^2\,\mathrm dx
+  =\langle Av,v\rangle_{V',V}
+  =\sum_{k\geq1}\lambda_kv_k^2.
+ \]
+ 由于 $\lambda_1$ 是 $A$ 的最小特征值,
+ \[
+  \int_\Omega|\nabla v|^2\,\mathrm dx
+  \geq\lambda_1\sum_{k\geq1}v_k^2
+  =\lambda_1\|v\|_H^2.
+ \]
+ 这个常数显然最优, 因为在式\eqref{eq:chap4-stokes-poincare-v}中取 $v=w_1$ 时等号成立.
+
+ \item 现在设 $v\in D(A)$, 仍在特殊基中写成 $v=\sum_{k\geq1}v_kw_k$. 有
+ \[
+  \|Av\|_{L^2}^2
+  =\sum_{k\geq1}\lambda_k^2v_k^2
+  \geq\lambda_1\sum_{k\geq1}\lambda_kv_k^2
+  =\lambda_1\langle Av,v\rangle_{V',V}
+  =\lambda_1\|\nabla v\|_{L^2}^2.
+ \]
+ 等号情形同样通过取 $v=w_1$ 得到.
+\end{itemize}
+\end{Proof}
+
+\subsubsection{非稳态 Stokes 问题}
+\label{subsec:chap4-unsteady-stokes}
+
+本小节利用前面关于 Stokes 算子引入的各个要素, 求解如下非稳态不可压缩 Stokes 问题:
+\begin{equation}
+ \left\{
+ \begin{aligned}
+  \frac{\partial v}{\partial t}-\Delta v+\nabla p&=f,&&\text{于 }\Omega,\\
+  \operatorname{div}v&=0,&&\text{于 }\Omega,\\
+  v&=0,&&\text{于 }\partial\Omega,\\
+  v(0)&=v_0.
+ \end{aligned}
+ \right.
+ \label{eq:chap4-unsteady-stokes-problem}
+\end{equation}
+注意 Reynolds 数取为 $1$. 由于问题是线性的, 这样做不失一般性.
+
+\pagebreak[4]
+\begin{Theorem}
+\label{thm:chap4-unsteady-stokes-wellposedness}
+设 $\Omega$ 是 $\mathbb R^d$ 中有界、连通的 Lipschitz 区域. 对任意 $v_0\in H$ 和 $f\in L_{\mathrm{loc}}^2([0,+\infty[,(H^{-1}(\Omega))^d)$, 存在定义在 $\mathbb R_+$ 上唯一的一对 $(v,p)$, 它解问题\eqref{eq:chap4-unsteady-stokes-problem}, 且对任意 $T>0$,
+\[
+ (v,p)\in\bigl(C^0([0,T],H)\cap L^2(]0,T[,V)\bigr)
+ \times W^{-1,\infty}(]0,T[,L_0^2(\Omega)),
+\]
+并且
+\[
+ \frac{\mathrm dv}{\mathrm dt}\in L^2(]0,T[,V').
+\]
+此外, 对任意 $t\geq0$, 它满足如下能量等式:
+\[
+ \frac12\|v(t)\|_{L^2}^2
+ +\frac1{\operatorname{Re}}\int_0^t\|\nabla v(\tau)\|_{L^2}^2\,\mathrm d\tau
+ =\frac12\|v_0\|_{L^2}^2
+ +\int_0^t\langle f(\tau),v(\tau)\rangle_{H^{-1},H_0^1}\,\mathrm d\tau.
+\]
+\end{Theorem}
+
+\begin{Proof}
+为说明半群理论的应用, 这里只对较正则的源项给出证明. 一般情形的证明可以按照 Chapter~\MBUnresolvedReference{chap:steady-navier-stokes}{V} 中处理 Navier--Stokes 问题的类似方式完成, 即采用问题的适当 Galerkin 近似.
+
+假设 $f\in C^1([0,+\infty[,(L^2(\Omega))^d)$. 可以应用 Theorem~\ref{thm:chap2-duhamel-semigroup}, 它表明线性问题
+\[
+ \frac{\mathrm dv}{\mathrm dt}+Av=Pf,
+\]
+连同 $v(0)=v_0$ 有唯一解
+\[
+ v\in C^0([0,+\infty[,H)\cap C^1(]0,+\infty[,H)
+ \cap C^0(]0,+\infty[,D(A)).
+\]
+这里使用了 Leray 投影 $P$, 因而 $Pf\in C^1([0,+\infty),H)$.
+
+设 $\varphi\in\mathcal V$ 是任意与时间无关的测试函数. 对任意 $t>0$,
+\[
+ \begin{aligned}
+ 0
+ &=\left(\frac{\mathrm dv}{\mathrm dt}(t)+Av(t)-Pf(t),\varphi\right)_H\\
+ &=\left(\frac{\mathrm dv}{\mathrm dt}(t)-Pf(t),\varphi\right)_{L^2}
+ +\langle Av(t),\varphi\rangle_{V',V}.
+ \end{aligned}
+\]
+由 Leray 投影的定义以及 $\varphi\in\mathcal V\subset H$,
+\[
+ (Pf(t),\varphi)_{L^2}=(f(t),\varphi)_{L^2},
+\]
+而由 Stokes 算子的定义和分部积分,
+\[
+ \langle Av(t),\varphi\rangle_{V',V}
+ =\int_\Omega\nabla v(t):\nabla\varphi\,\mathrm dx
+ =\langle-\Delta v(t),\varphi\rangle_{H^{-1},H_0^1}.
+\]
+由此
+\[
+ 0=\left\langle\frac{\mathrm dv}{\mathrm dt}(t)-\Delta v(t)-f(t),
+ \varphi\right\rangle_{H^{-1},H_0^1}.
+\]
+这对任意 $\varphi\in\mathcal V$ 成立, 因而可以应用 Theorem~\ref{thm:chap4-de-rham-hminusone}, 得到唯一的 $p(t)\in L_0^2(\Omega)$ 使得
+\begin{equation}
+ \frac{\mathrm dv}{\mathrm dt}(t)-\Delta v(t)-f(t)=-\nabla p(t)
+ \quad\text{于 }H^{-1}(\Omega).
+ \label{eq:chap4-unsteady-stokes-pressure}
+\end{equation}
+由 $v$ 与 $f$ 的正则性, 压力梯度满足
+\[
+ \nabla p\in C^0(]0,+\infty[,(H^{-1}(\Omega))^d).
+\]
+利用 Nečas 不等式, 即 Theorem~\ref{thm:chap4-necas-inequality}, 和 Poincaré 不等式, 即 Proposition~\ref{prop:chap4-hminusone-poincare}, 推出
+\[
+ p\in C^0(]0,+\infty[,L_0^2(\Omega)).
+\]
+最后注意式\eqref{eq:chap4-unsteady-stokes-pressure}对任意 $t>0$ 成立, 因而 $(v,p)$ 在分布意义下解非稳态 Stokes 问题.
+\end{Proof}
+
+\par\noindent\refstepcounter{chapterfoursectionfiveremark}\textbf{Remark~\thechapterfoursectionfiveremark:}\label{rem:chap4-unsteady-stokes-dimension-independent}\quad 注意上述结果与所考虑的空间维数 $d$ 无关. Chapter~\MBUnresolvedReference{chap:steady-navier-stokes}{V} 中将说明, 由于方程组中存在非线性项, 对 Navier--Stokes 方程情形会非常不同.
+
+\subsubsection{Stokes 问题的罚方法近似}
+\label{subsec:chap4-stokes-penalty}
+
+本小节介绍另一种证明 Stokes 问题适定性, 即证明 Theorem~\ref{thm:chap4-stokes-homogeneous-wellposedness}, 的方法. 除了理论意义外, 即它不直接使用 de Rham 定理而使用 Nečas 不等式, 该方法也有实践意义, 尤其是在 Stokes 问题解的数值近似方面.
+
+对任意 $\varepsilon>0$, 考虑方程组的如下罚方法近似:
+\begin{equation}
+ \left\{
+ \begin{aligned}
+  -\Delta v_\varepsilon+\nabla p_\varepsilon&=f,&&\text{于 }\Omega,\\
+  \operatorname{div}v_\varepsilon+\varepsilon p_\varepsilon&=0,&&\text{于 }\Omega,\\
+  v_\varepsilon&=0,&&\text{于 }\partial\Omega.
+ \end{aligned}
+ \right.
+ \label{eq:chap4-stokes-penalty-problem}
+\end{equation}
+这个新问题的主要优点是可以很容易地从方程组中消去压力 $p_\varepsilon$, 见式\eqref{eq:chap4-stokes-penalty-eliminated}. 因而很容易证明这个方程组适定.
+
+\begin{Lemma}
+\label{lem:chap4-stokes-penalty-wellposedness}
+设 $\Omega$ 是 $\mathbb R^d$ 中有界、连通的 Lipschitz 区域, $f\in(H^{-1}(\Omega))^d$. 对任意 $\varepsilon>0$, 存在唯一的 $(v_\varepsilon,p_\varepsilon)\in(H_0^1(\Omega))^d\times L_0^2(\Omega)$ 满足\eqref{eq:chap4-stokes-penalty-problem}.
+\end{Lemma}
+
+\begin{Proof}
+注意, 式\eqref{eq:chap4-stokes-penalty-problem}中的第二个方程可以立即解为
+\begin{equation}
+ p_\varepsilon=-\frac1\varepsilon\operatorname{div}v_\varepsilon,
+ \label{eq:chap4-stokes-penalty-pressure}
+\end{equation}
+于是式\eqref{eq:chap4-stokes-penalty-problem}中的第一个方程变成
+\begin{equation}
+ -\Delta v_\varepsilon-\frac1\varepsilon\nabla(\operatorname{div}v_\varepsilon)=f.
+ \label{eq:chap4-stokes-penalty-eliminated}
+\end{equation}
+只需用 Lax--Milgram 定理解这个新问题. 的确, 连续双线性型
+\[
+ a_\varepsilon:(H_0^1(\Omega))^d\times(H_0^1(\Omega))^d\longrightarrow\mathbb R
+\]
+定义为
+\[
+ a_\varepsilon(v,w)=\int_\Omega\nabla v:\nabla w\,\mathrm dx
+ +\frac1\varepsilon\int_\Omega(\operatorname{div}v)(\operatorname{div}w)\,\mathrm dx,
+ \qquad\forall v,w\in(H_0^1(\Omega))^d,
+\]
+它显然在 $(H_0^1(\Omega))^d$ 上强制, 结论得证.
+\end{Proof}
+
+\begin{Proposition}
+\label{prop:chap4-stokes-penalty-uniform-bound}
+在 Lemma~\ref{lem:chap4-stokes-penalty-wellposedness} 的相同假设下, 存在 $C>0$ 使得
+\[
+ \|v_\varepsilon\|_{H^1}+\|p_\varepsilon\|_{H^1}
+ \leq C\|f\|_{H^{-1}},
+ \qquad\forall\varepsilon>0.
+\]
+\end{Proposition}
+
+\begin{Proof}
+上面对 Lax--Milgram 定理的应用给出估计
+\[
+ \|\nabla v_\varepsilon\|_{L^2}^2
+ +\frac1\varepsilon\|\operatorname{div}v_\varepsilon\|_{L^2}^2
+ \leq\|f\|_{H^{-1}}\|v_\varepsilon\|_{H_0^1}.
+\]
+利用 Poincaré 不等式和式\eqref{eq:chap4-stokes-penalty-pressure}, 得
+\[
+ \|\nabla v_\varepsilon\|_{L^2}^2
+ +2\varepsilon\|p_\varepsilon\|_{L^2}^2
+ \leq\|f\|_{H^{-1}}^2.
+\]
+这个估计对压力项并不令人满意. 为得到所断言的 $p_\varepsilon$ 的界, 使用 Nečas 不等式, 即 Theorem~\ref{thm:chap4-necas-inequality}, 更准确地说是相关的 Poincaré 不等式\eqref{eq:chap4-zero-mean-gradient-equivalence}. 该不等式给出
+\[
+ \|p_\varepsilon\|_{L^2}
+ \leq C\|\nabla p_\varepsilon\|_{H^{-1}}
+ =C\|\Delta v_\varepsilon+f\|_{H^{-1}}
+ \leq C\|\nabla v_\varepsilon\|_{L^2}+C\|f\|_{H^{-1}}.
+\]
+把它与上面的估计结合, 得到结论.
+\end{Proof}
+
+由这个结果可以推出 Stokes 问题存在解 $(v,p)\in(H_0^1(\Omega))^d\times L_0^2(\Omega)$, 即证明 Theorem~\ref{thm:chap4-stokes-homogeneous-wellposedness}. 的确, 由 Proposition~\ref{prop:chap4-stokes-penalty-uniform-bound} 中得到的界, 可以找到子序列 $(v_{\varepsilon_n})_n$, 它在 $(H_0^1(\Omega))^d$ 中弱收敛到某个 $v$; 以及子序列 $(p_{\varepsilon_n})_n$, 它在 $L_0^2(\Omega)$ 中弱收敛到某个 $p$. 这些弱收敛允许在近似问题\eqref{eq:chap4-stokes-penalty-problem}中取极限, 并证明极限 $(v,p)$ 确实解 Stokes 问题. 这个解唯一, 因此可由 Proposition~\ref{prop:chap2-unique-subsequence-limit} 推出整个族 $(v_\varepsilon)_\varepsilon$ 和 $(p_\varepsilon)_\varepsilon$ 收敛. 此外,
+\[
+ \|\operatorname{div}v_\varepsilon\|_{L^2}\leq C\varepsilon.
+\]
+
+用这个近似方法的一阶误差估计结束本小节.
+
+\begin{Proposition}
+\label{prop:chap4-stokes-penalty-error}
+在 Lemma~\ref{lem:chap4-stokes-penalty-wellposedness} 的相同假设下, 存在 $C>0$ 使得
+\[
+ \|v-v_\varepsilon\|_{H^1}+\|p-p_\varepsilon\|_{L^2}\leq C\varepsilon.
+\]
+\end{Proposition}
+
+\begin{Proof}
+令 $w_\varepsilon=v-v_\varepsilon$, $q_\varepsilon=p-p_\varepsilon$, 并写出 $(w_\varepsilon,q_\varepsilon)$ 满足的方程:
+\begin{equation}
+ \left\{
+ \begin{aligned}
+  -\Delta w_\varepsilon+\nabla q_\varepsilon&=0,&&\text{于 }\Omega,\\
+  \operatorname{div}w_\varepsilon-\varepsilon p_\varepsilon&=0,&&\text{于 }\Omega,\\
+  w_\varepsilon&=0,&&\text{于 }\partial\Omega.
+ \end{aligned}
+ \right.
+ \label{eq:chap4-stokes-penalty-error-system}
+\end{equation}
+再次使用不等式\eqref{eq:chap4-zero-mean-gradient-equivalence}, 得
+\begin{equation}
+ \|q_\varepsilon\|_{L^2}
+ \leq C\|\nabla q_\varepsilon\|_{H^{-1}}
+ \leq C\|\Delta w_\varepsilon\|_{H^{-1}}
+ \leq C\|\nabla w_\varepsilon\|_{L^2}.
+ \label{eq:chap4-stokes-penalty-pressure-error}
+\end{equation}
+然后在式\eqref{eq:chap4-stokes-penalty-error-system}的第一个方程中取 $w_\varepsilon$ 为测试函数, 得
+\[
+ \|\nabla w_\varepsilon\|_{L^2}^2
+ =\int_\Omega(\operatorname{div}w_\varepsilon)q_\varepsilon\,\mathrm dx
+ \leq\|\operatorname{div}w_\varepsilon\|_{L^2}\|q_\varepsilon\|_{L^2}
+ \leq\varepsilon\|p_\varepsilon\|_{L^2}\|q_\varepsilon\|_{L^2}.
+\]
+由 Proposition~\ref{prop:chap4-stokes-penalty-uniform-bound} 给出的估计、式\eqref{eq:chap4-stokes-penalty-pressure-error}以及 Young 不等式, 得
+\[
+ \|\nabla w_\varepsilon\|_{L^2}^2\leq C\varepsilon^2.
+\]
+再回到式\eqref{eq:chap4-stokes-penalty-pressure-error}, 得
+\[
+ \|q_\varepsilon\|_{L^2}^2\leq C\varepsilon^2,
+\]
+结论得证.
+\end{Proof}
