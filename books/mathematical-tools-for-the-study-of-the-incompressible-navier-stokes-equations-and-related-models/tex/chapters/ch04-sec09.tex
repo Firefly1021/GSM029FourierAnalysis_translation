@@ -1,0 +1,819 @@
+\subsection{具有涡量边界条件的 Stokes 问题}
+\label{sec:chap4-vorticity-boundary}
+
+\renewcommand{\thestatement}{9.\arabic{statement}}
+\renewcommand{\theHstatement}{ch04.sec09.\arabic{statement}}
+\setcounter{statement}{0}
+\newcounter{chapterfoursectionnineremark}
+\renewcommand{\thechapterfoursectionnineremark}{9.\arabic{chapterfoursectionnineremark}}
+
+流动中的涡量定义为 $\omega=\operatorname{curl}v$. 为说明其物理意义, 考虑整个空间 $\mathbb R^3$ 中的旋转流体, 其速度场与刚体转动相同, 在柱坐标中由
+\[
+ v(r)=r\Omega\wedge e_r
+\]
+给出($\Omega$ 是角速度). 已在 \MBUnresolvedReference{eq:source-i-37}{(I.37)} 中看到
+\[
+ \operatorname{curl}v=2\Omega,
+\]
+所以涡量 $\omega=\operatorname{curl}v$ 恰好等于角速度 $\Omega$ 的两倍. 这就是为什么对一般流动而言, 涡量是流动中流体粒子局部角速度的一种度量.
+
+这里考虑具有不可穿透壁面条件的 Stokes 问题(即只把速度场的法向部分规定为在边界上等于零), 并附加一个涉及涡量(切向部分)的条件. 因此, 允许流体沿区域边界滑动. 为简单起见, 只考虑三维情形, 但所有结果都可以转化到二维情形.
+
+更准确地说, 所研究的问题如下:
+\begin{equation}
+ \left\{
+ \begin{aligned}
+  -\Delta v+\nabla p&=f,&&\text{于 }\Omega,\\
+  \operatorname{div}v&=0,&&\text{于 }\Omega,\\
+  v\cdot\nu&=0,&&\text{于 }\partial\Omega,\\
+  (\operatorname{curl}v)\wedge\nu&=g,&&\text{于 }\partial\Omega.
+ \end{aligned}
+ \right.
+ \label{eq:chap4-vorticity-stokes-problem}
+\end{equation}
+这个系统特别值得注意的性质是, 压力计算和速度计算可以解耦(见 Proposition~\ref{prop:chap4-vorticity-pressure-decoupling}). 对 Stokes 方程的其他类型边界条件, 如前面几节研究的边界条件, 一般没有这一性质.
+
+\par\noindent\refstepcounter{chapterfoursectionnineremark}\textbf{Remark~\thechapterfoursectionnineremark:}\label{rem:chap4-vorticity-nonhomogeneous-normal-data}\quad
+本节的所有结果都可以容易地推广到 $v\cdot\nu=v_b$ 这类非齐次边界数据的情形, 其中
+\[
+ \int_{\partial\Omega}v_b\,\mathrm d\sigma=0.
+\]
+为此, 只需解问题\eqref{eq:chap4-vorticity-stokes-problem}, 再把速度 $v$ 改为 $v+\nabla\phi$, 其中 $\phi$ 解下列 Laplace 问题:
+\[
+ \left\{
+ \begin{aligned}
+  -\Delta\phi&=0,&&\text{于 }\Omega,\\
+  \frac{\partial\phi}{\partial\nu}&=v_b,&&\text{于 }\partial\Omega.
+ \end{aligned}
+ \right.
+\]
+这个新速度场是无散度的, 因为 $\phi$ 是调和函数; 它还满足
+\[
+ -\Delta(v+\nabla\phi)=-\Delta v,
+\]
+因而以同一压力 $p$ 解 Stokes 方程. 最后, 涡量边界条件得到满足, 因为
+\[
+ \operatorname{curl}(v+\nabla\phi)=\operatorname{curl}v.
+\]
+
+\subsubsection{预备知识}
+\label{subsec:chap4-vorticity-preliminaries}
+
+定义 Hilbert 空间
+\[
+ H_\nu=(H^1(\Omega))^3\cap\ker\gamma_\nu
+ =\{v\in(H^1(\Omega))^3,\ \gamma_0(v)\cdot\nu=0\text{ 于 }\partial\Omega\}.
+\]
+首先需要定义并研究 $(H^{-1}(\Omega))^3$ 的一些特殊元素.
+
+回忆 $\delta$ 是 Subsection~\ref{subsec:chap3-boundary-distance-projection} 中研究的“到边界的距离”函数. 由于假设 $\Omega$ 为 $C^{1,1}$ 类, 已知 $\delta$ 在 $\partial\Omega$ 的一个邻域中也是 $C^{1,1}$ 类.
+
+对任意 $\varepsilon>0$, 引入 $\beta_\varepsilon:\mathbb R^+\to\mathbb R^+$, 定义为
+\[
+ \beta_\varepsilon(s)=
+ \begin{cases}
+  1,&s>\varepsilon,\\
+  s/\varepsilon,&s\leq\varepsilon.
+ \end{cases}
+\]
+
+\begin{Definition}
+\label{def:chap4-no-tangential-boundary-terms}
+称 $f\in(H^{-1}(\Omega))^3$ 不含切向边界项, 当且仅当对任意 $v\in H_\nu$,
+\begin{equation}
+ \bigl\langle f,\beta_\varepsilon(\delta)v\bigr\rangle_{H^{-1},H_0^1}
+ \quad\text{在 }\varepsilon\to0\text{ 时存在极限}.
+ \label{eq:chap4-no-tangential-boundary-terms}
+\end{equation}
+用 $H_\nu^{-1}\subset(H^{-1}(\Omega))^3$ 表示这类分布的集合.
+\end{Definition}
+
+\begin{Lemma}
+\label{lem:chap4-boundary-cutoff-convergence}
+对任意 $w\in(H_0^1(\Omega))^3$, 有
+\[
+ \beta_\varepsilon(\delta)w\longrightarrow w
+ \qquad\text{于 }(H_0^1(\Omega))^3,
+\]
+其中 $\varepsilon\to0$.
+\end{Lemma}
+
+\begin{Proof}
+利用控制收敛定理, $L^2$ 中的收敛是直接的. 然后写成
+\[
+ \left\|\partial_{x_i}(\beta_\varepsilon(\delta)w)-\partial_{x_i}w\right\|_{L^2}
+ \leq\left\|(\beta_\varepsilon(\delta)-1)\partial_{x_i}w\right\|_{L^2}
+ +\left\|\partial_{x_i}(\beta_\varepsilon(\delta))w\right\|_{L^2},
+\]
+并且利用控制收敛定理可知, 第一项在 $\varepsilon\to0$ 时也收敛到零.
+
+还需研究第二项. 使用 $|\nabla\delta|\leq1$ 以及 $\beta_\varepsilon$ 的表达式, 得到
+\[
+ \left\|\partial_{x_i}(\beta_\varepsilon(\delta))w\right\|_{L^2}^2
+ =\int_{O_\varepsilon}|\partial_{x_i}\delta|^2\frac{|w|^2}{\varepsilon^2}\,\mathrm dx
+ \leq\int_{O_\varepsilon}\frac{|w|^2}{\delta^2}\,\mathrm dx.
+\]
+回忆 $O_\varepsilon=\{x\in\Omega,\ \delta(x)<\varepsilon\}$. 由于 $w\in(H_0^1(\Omega))^3$, Hardy 不等式 Proposition~\ref{prop:chap3-hardy-boundary-distance}表明 $|w|/\delta$ 属于 $L^2(\Omega)$. 因此, 由控制收敛定理, 上面的最后一个积分在 $\varepsilon\to0$ 时趋于零.
+\end{Proof}
+
+\begin{Proposition}
+\label{prop:chap4-boundary-free-extension}
+对任意 $f\in H_\nu^{-1}$, 定义
+\[
+ \widetilde f:v\in H_\nu\longmapsto
+ \left(\lim_{\varepsilon\to0}\langle f,\beta_\varepsilon(\delta)v\rangle_{H^{-1},H_0^1}\right).
+\]
+则 $\widetilde f$ 属于 $H_\nu'$, 且 $\widetilde f=f$ 于 $(H_0^1(\Omega))^3$.
+\end{Proposition}
+
+\begin{Proof}
+对任意 $\varepsilon>0$, 映射
+\[
+ f_\varepsilon:v\in H_\nu\longmapsto
+ \langle f,\beta_\varepsilon(\delta)v\rangle_{H^{-1},H_0^1}
+\]
+是线性且连续的. 此外, 由假设\eqref{eq:chap4-no-tangential-boundary-terms}, 已知对任意 $v\in H_\nu$, $\langle f_\varepsilon,v\rangle_{H_\nu',H_\nu}$ 在 $\varepsilon\to0$ 时存在极限. 因此, 由 Banach--Steinhaus Theorem~\ref{thm:chap2-banach-steinhaus}, 可知 $\widetilde f$ 是 $H_\nu$ 上的连续线性型. 另外, 对任意 $v\in(\mathcal D(\Omega))^3$, 当 $\varepsilon>0$ 足够小时有 $\beta_\varepsilon(\delta)v=v$, 因而 $\widetilde f$ 和 $f$ 在 $(\mathcal D(\Omega))^3$ 上重合. 由稠密性, 推出它们在 $(H_0^1(\Omega))^3$ 上也重合.
+\end{Proof}
+
+现在证明 $L^2(\Omega)$ 中任意函数的梯度都属于类 $H_\nu^{-1}$.
+
+\begin{Lemma}
+\label{lem:chap4-gradient-no-tangential-boundary-terms}
+对任意 $q\in L^2(\Omega)$, 有 $\nabla q\in H_\nu^{-1}$; 更准确地,
+\[
+ \langle\widetilde{\nabla q},w\rangle_{H_\nu',H_\nu}
+ =-\int_\Omega q\operatorname{div}w\,\mathrm dx,
+ \qquad\forall w\in H_\nu.
+\]
+\end{Lemma}
+
+\begin{Proof}
+对任意 $\varepsilon>0$ 和任意 $w\in H_\nu$, 有
+\begin{align*}
+ \langle\nabla q,\beta_\varepsilon(\delta)w\rangle_{H^{-1},H_0^1}
+ &=-\int_\Omega q\operatorname{div}(\beta_\varepsilon(\delta)w)\,\mathrm dx\\
+ &=-\int_\Omega q(\operatorname{div}w)\beta_\varepsilon(\delta)\,\mathrm dx
+ -\int_\Omega q(w\cdot\nabla\beta_\varepsilon(\delta))\,\mathrm dx.
+\end{align*}
+利用控制收敛定理, 立即得到右端第一项收敛到
+\[
+ -\int_\Omega q\operatorname{div}w\,\mathrm dx.
+\]
+证明记作 $I_\varepsilon$ 的第二项趋于零. 首先注意
+\[
+ \nabla\beta_\varepsilon(\delta)=\beta_\varepsilon'(\delta)\nabla\delta,
+ \qquad
+ \beta_\varepsilon'(\delta)=
+ \begin{cases}
+  0,&\delta>\varepsilon,\\
+  1/\varepsilon,&\delta<\varepsilon.
+ \end{cases}
+\]
+因而
+\[
+ I_\varepsilon=-\frac1\varepsilon\int_{O_\varepsilon}q(w\cdot\nabla\delta)\,\mathrm dx.
+\]
+由 $O_\varepsilon$ 的定义, 在 $O_\varepsilon$ 中有 $1/\varepsilon\leq1/\delta$, 因此得到估计
+\begin{equation}
+ |I_\varepsilon|
+ \leq\int_{O_\varepsilon}|q|\frac{|w\cdot\nabla\delta|}{\delta}\,\mathrm dx
+ \leq\|q\|_{L^2}
+ \left(\int_{O_\varepsilon}\frac{|w\cdot\nabla\delta|^2}{\delta^2}\,\mathrm dx\right)^{1/2}.
+ \label{eq:chap4-gradient-boundary-cutoff-estimate}
+\end{equation}
+最后, 由于边界上 $\nabla\delta=-\nu$, 且 $w\in H_\nu$, 有 $w\cdot\nabla\delta=0$ 于 $\partial\Omega$. 特别地, $w\cdot\nabla\delta\in H_0^1(\Omega)$, Hardy 不等式 Proposition~\ref{prop:chap3-hardy-boundary-distance}表明 $(w\cdot\nabla\delta)/\delta$ 属于 $L^2(\Omega)$. 由\eqref{eq:chap4-gradient-boundary-cutoff-estimate}推出 $I_\varepsilon\to0$, 结论得证.
+\end{Proof}
+
+\subsubsection{向量 Laplace 问题}
+\label{subsec:chap4-vector-laplace-vorticity}
+
+先研究下列向量 Laplace 问题: 求向量场 $v:\Omega\to\mathbb R^3$ 满足
+\begin{equation}
+ \left\{
+ \begin{aligned}
+  -\Delta v&=f,&&\text{于 }\Omega,\\
+  v\cdot\nu&=0,&&\text{于 }\partial\Omega,\\
+  (\operatorname{curl}v)\wedge\nu&=g,&&\text{于 }\partial\Omega.
+ \end{aligned}
+ \right.
+ \label{eq:chap4-vector-laplace-vorticity}
+\end{equation}
+注意, $v$ 的所有分量通过边界条件相互耦合, 因而这个问题不能化为标量 Laplace 问题.
+
+\begin{Theorem}
+\label{thm:chap4-vector-laplace-vorticity-wellposedness}
+设 $\Omega$ 是 $\mathbb R^3$ 中 $C^{1,1}$ 类的有界单连通区域, $f\in H_\nu^{-1}$, 且 $g\in(H^{-1/2}(\partial\Omega))^3$ 在下列意义下与边界相切:
+\begin{equation}
+ \langle g,\varphi\nu\rangle_{H^{-1/2},H^{1/2}}=0,
+ \qquad\forall\varphi\in H^{1/2}(\partial\Omega).
+ \label{eq:chap4-vorticity-tangential-data}
+\end{equation}
+则问题\eqref{eq:chap4-vector-laplace-vorticity}存在唯一解 $v\in H_\nu$, 且满足
+\[
+ \|v\|_{H^1}\leq C\bigl(\|f\|_{H^{-1}}+\|g\|_{H^{-1/2}}\bigr),
+\]
+其中 $C>0$ 只依赖于 $\Omega$. 更准确地说, \eqref{eq:chap4-vector-laplace-vorticity}中的第三个边界条件在下列弱意义下成立:
+\begin{equation}
+ \left(\frac1\varepsilon\int_0^\varepsilon
+ (\operatorname{curl}v)(\,\cdot-s\nu(\,\cdot))\,\mathrm ds\right)\wedge\nu(\,\cdot)
+ \rightharpoonup g
+ \quad\text{于 }(H^{-1/2}(\partial\Omega))^3,
+ \qquad\varepsilon\to0.
+ \label{eq:chap4-vorticity-weak-boundary-trace}
+\end{equation}
+\end{Theorem}
+
+\par\noindent\refstepcounter{chapterfoursectionnineremark}\textbf{Remark~\thechapterfoursectionnineremark:}\label{rem:chap4-vorticity-weak-boundary-trace}\quad
+说明一下性质\eqref{eq:chap4-vorticity-weak-boundary-trace}. 由于 $\operatorname{curl}v\in(L^2(\Omega))^3$, 对任意 $\varepsilon>0$, 映射
+\[
+ \sigma\in\partial\Omega\longmapsto
+ \left(\frac1\varepsilon\int_0^\varepsilon
+ (\operatorname{curl}v)(\sigma-s\nu(\sigma))\,\mathrm ds\right)\wedge\nu(\sigma)
+\]
+属于 $(L^2(\partial\Omega))^3\subset(H^{-1/2}(\partial\Omega))^3$. 它对应于沿边界法向方向取 $(\operatorname{curl}v)\wedge\nu$ 的平均值.
+
+\eqref{eq:chap4-vorticity-weak-boundary-trace}断言这一函数族在 $\varepsilon\to0$ 时弱收敛到 $g$. 这种边界条件的弱解释不可避免, 因为先验上并不知道 $(\operatorname{curl}v)\wedge\nu$ 在任何通常强意义下具有迹, 原因是 $\operatorname{curl}v$ 只不过是 $(L^2(\Omega))^3$ 的元素. 当然, 下文将说明一旦解更正则, 就能在通常意义下证明这个边界条件.
+
+\par\noindent\refstepcounter{chapterfoursectionnineremark}\textbf{Remark~\thechapterfoursectionnineremark:}\label{rem:chap4-vorticity-lipschitz-nonsimply-connected}\quad
+若 $\Omega$ 只是 Lipschitz 区域, 不一定单连通, 可以证明存在唯一解 $v$ 属于\eqref{eq:chap4-hdivcurlnu-zero-space}定义的空间 $H_{\operatorname{div},\operatorname{curl},\nu,0}(\Omega)$. 事实上, 下面的证明仅在断言
+\[
+ H_{\operatorname{div},\operatorname{curl},\nu,0}(\Omega)=H_\nu
+\]
+时需要 $\Omega$ 的正则性和单连通性, 见 Theorem~\ref{thm:chap4-hdivcurlnu-equals-h1}.
+
+\begin{Proof}
+在 $H_\nu$ 上定义双线性型
+\[
+ a:(v,w)\in H_\nu\times H_\nu\longmapsto
+ \int_\Omega(\operatorname{curl}v)\cdot(\operatorname{curl}w)\,\mathrm dx
+ +\int_\Omega(\operatorname{div}v)(\operatorname{div}w)\,\mathrm dx.
+\]
+显然 $a$ 在 $H_\nu$ 上连续. 此外, 使用\eqref{eq:chap4-hdivcurlnu-h1-estimate}有
+\[
+ \|v\|_{H^1}^2
+ \leq C\bigl(\|\operatorname{div}v\|_{L^2}^2+\|\operatorname{curl}v\|_{L^2}^2\bigr)
+ =Ca(v,v),
+ \qquad\forall v\in H_\nu,
+\]
+所以 $a$ 在 $H_\nu$ 上强制.
+
+因此, 可用 Lax--Milgram Theorem~\ref{thm:chap2-lax-milgram}证明存在唯一 $v\in H_\nu$ 满足
+\begin{equation}
+ a(v,w)=\langle\widetilde f,w\rangle_{H_\nu',H_\nu}
+ +\langle g,\gamma_0(w)\rangle_{H^{-1/2},H^{1/2}},
+ \qquad\forall w\in H_\nu,
+ \label{eq:chap4-vector-laplace-vorticity-variational}
+\end{equation}
+其中 $\widetilde f$ 是 Proposition~\ref{prop:chap4-boundary-free-extension} 中定义的 $f$ 的延拓. 现在证明这个函数 $v$ 确实解所研究的问题.
+
+\begin{itemize}
+\item 取 $w\in(\mathcal D(\Omega))^3$, 在分布意义下分部积分并使用 \MBUnresolvedReference{eq:source-a-9}{(A.9)}, 首先推出 $v$ 解方程 $-\Delta v=f$.
+
+\item 边界条件 $v\cdot\nu=0$ 由空间 $H_\nu$ 的定义得到满足.
+
+\item 已经证明下列方程在 $(H^{-1}(\Omega))^3$ 意义下成立:
+\begin{equation}
+ \operatorname{curl}\operatorname{curl}v-\nabla\operatorname{div}v=f.
+ \label{eq:chap4-vector-laplace-curl-div}
+\end{equation}
+由于 $\operatorname{div}v\in L^2(\Omega)$, Lemma~\ref{lem:chap4-gradient-no-tangential-boundary-terms} 表明 $\nabla\operatorname{div}v\in H_\nu^{-1}$. 令 $w\in H_\nu$, 在\eqref{eq:chap4-vector-laplace-curl-div}中取 $\beta_\varepsilon(\delta)w$ 作为测试函数. 于是
+\begin{equation}
+ \int_\Omega(\operatorname{curl}v)\cdot\operatorname{curl}(\beta_\varepsilon(\delta)w)\,\mathrm dx
+ =\langle f+\nabla(\operatorname{div}v),\beta_\varepsilon(\delta)w\rangle_{H^{-1},H_0^1}.
+ \label{eq:chap4-vorticity-cutoff-identity}
+\end{equation}
+下面研究 $\varepsilon\to0$ 时这个方程中各项的极限.
+
+首先, 由 $\widetilde f$ 的定义以及 Lemma~\ref{lem:chap4-gradient-no-tangential-boundary-terms}, 已知右端项在 $\varepsilon\to0$ 时存在极限, 等于
+\[
+ \langle\widetilde f+\widetilde{\nabla(\operatorname{div}v)},w\rangle_{H_\nu',H_\nu}
+ =\langle\widetilde f,w\rangle_{H_\nu',H_\nu}
+ -\int_\Omega(\operatorname{div}v)(\operatorname{div}w)\,\mathrm dx.
+\]
+
+还需研究
+\begin{align*}
+ \int_\Omega(\operatorname{curl}v)\cdot\operatorname{curl}(\beta_\varepsilon(\delta)w)\,\mathrm dx
+ &=\int_\Omega\beta_\varepsilon(\delta)(\operatorname{curl}v)\cdot(\operatorname{curl}w)\,\mathrm dx\\
+ &\quad+\frac1\varepsilon\int_{O_\varepsilon}(\operatorname{curl}v)\cdot
+ \bigl((\nabla\delta)\wedge(\operatorname{curl}w)\bigr)\,\mathrm dx.
+\end{align*}
+利用控制收敛定理, 第一项可以容易地取极限. 由 $\beta_\varepsilon$ 的定义, 可把第二项写成
+\[
+ T_\varepsilon(w)=-\frac1\varepsilon\int_{O_\varepsilon}
+ \bigl((\operatorname{curl}v)\wedge(\nu\circ P_0)\bigr)\cdot w\,\mathrm dx,
+\]
+这里使用\eqref{eq:chap3-distance-gradient-normal}把 $\delta$ 的梯度表示为外法向场 $\nu$ 和 $\partial\Omega$ 上投影 $P_0$ 的函数.
+
+已经看到\eqref{eq:chap4-vorticity-cutoff-identity}右端各项存在极限; 因而 $T_\varepsilon(w)$ 也存在极限, 且
+\[
+ \lim_{\varepsilon\to0}T_\varepsilon(w)
+ =\langle\widetilde f,w\rangle_{H_\nu',H_\nu}
+ -\int_\Omega(\operatorname{curl}v)\cdot(\operatorname{curl}w)\,\mathrm dx
+ -\int_\Omega(\operatorname{div}v)(\operatorname{div}w)\,\mathrm dx.
+\]
+与变分形式\eqref{eq:chap4-vector-laplace-vorticity-variational}比较, 得到
+\begin{equation}
+ \lim_{\varepsilon\to0}T_\varepsilon(w)
+ =-\langle g,\gamma_0(w)\rangle_{H^{-1/2},H^{1/2}},
+ \label{eq:chap4-vorticity-boundary-limit}
+\end{equation}
+对任意 $w\in H_\nu$ 成立. 另外, 若 $w$ 是 $(H^1(\Omega))^3$ 的任意元素, 可引入
+\[
+ \widetilde w_T=w-\bigl(w\cdot(\nu\circ P_0)\bigr)(\nu\circ P_0)\in H_\nu,
+\]
+并把\eqref{eq:chap4-vorticity-boundary-limit}应用于 $\widetilde w_T$. 由于
+\[
+ (\nu\circ P_0)\cdot\bigl((\operatorname{curl}v)\wedge(\nu\circ P_0)\bigr)=0
+\]
+几乎处处成立, 再使用\eqref{eq:chap4-vorticity-tangential-data}, 最终得到\eqref{eq:chap4-vorticity-boundary-limit}对任意 $w\in(H^1(\Omega))^3$ 都成立.
+
+现在写成
+\begin{align*}
+ T_\varepsilon(w)
+ &=-\underbrace{\frac1\varepsilon\int_{O_\varepsilon}
+ [ (\operatorname{curl}v)\wedge(\nu\circ P_0)]\cdot(\gamma_0(w)\circ P_0)\,\mathrm dx}_{T_{\varepsilon,1}(w)}\\
+ &\quad-\underbrace{\frac1\varepsilon\int_{O_\varepsilon}
+ [ (\operatorname{curl}v)\wedge(\nu\circ P_0)]\cdot
+ (w-\gamma_0(w)\circ P_0)\,\mathrm dx}_{T_{\varepsilon,2}(w)}.
+\end{align*}
+使用广义 Hardy 不等式 Proposition~\ref{prop:chap3-normal-hardy-trace} 和 Remark~\ref{rem:chap3-projection-along-normal-flow}, 并使用与上面相同的论证, 得到对任意 $w\in(H^1(\Omega))^3$, 项 $T_{\varepsilon,2}(w)$ 趋于零.
+
+利用 Remark~\ref{rem:chap3-boundary-volume-parametrization} 中陈述的变量代换公式, 项 $T_{\varepsilon,1}(w)$ 可写成
+\[
+ T_{\varepsilon,1}(w)
+ =\int_{\partial\Omega}\left[-\frac1\varepsilon\int_0^\varepsilon
+ (\operatorname{curl}v)(\sigma-s\nu(\sigma))J_s'(\sigma)\,\mathrm ds
+ \wedge\nu(\sigma)\right]\cdot\gamma_0(w)(\sigma)\,\mathrm d\sigma.
+\]
+最后, 由于 $\delta\in C^{1,1}$, 有估计
+\[
+ |J_s'(\sigma)-1|=|J_s'(\sigma)-J_0'(\sigma)|\leq C|s|.
+\]
+因此
+\begin{align*}
+ \lim_{\varepsilon\to0}T_{\varepsilon,1}(w)
+ =\lim_{\varepsilon\to0}\int_{\partial\Omega}
+ \left[-\frac1\varepsilon\int_0^\varepsilon
+ (\operatorname{curl}v)(\sigma-s\nu(\sigma))\,\mathrm ds\wedge\nu(\sigma)\right]
+ \cdot\gamma_0(w)(\sigma)\,\mathrm d\sigma.
+\end{align*}
+右端的极限只依赖于 $w$ 的迹. 因而汇集由\eqref{eq:chap4-vorticity-boundary-limit}得到的所有结果, 有
+\[
+ \int_{\partial\Omega}\left[-\frac1\varepsilon\int_0^\varepsilon
+ (\operatorname{curl}v)(\sigma-s\nu(\sigma))\,\mathrm ds\wedge\nu(\sigma)\right]
+ \cdot\varphi(\sigma)\,\mathrm d\sigma
+ \longrightarrow-\langle g,\varphi\rangle_{H^{-1/2},H^{1/2}},
+\]
+对所有 $\varphi\in(H^{1/2}(\partial\Omega))^3$ 成立. 这恰好就是性质\eqref{eq:chap4-vorticity-weak-boundary-trace}.
+\end{itemize}
+\end{Proof}
+现在可以证明所研究问题的下列椭圆正则性结果.
+
+\begin{Theorem}
+\label{thm:chap4-vector-laplace-vorticity-regularity}
+使用前一个 Theorem 中相同的记号. 若 $\Omega$ 为 $C^{2,1}$ 类, $f\in(L^2(\Omega))^3$, 且 $g\in(H^{1/2}(\partial\Omega))^3$, 则问题\eqref{eq:chap4-vector-laplace-vorticity}的解 $v$ 属于 $(H^2(\Omega))^3$, 且
+\[
+ \|v\|_{H^2}\leq C\bigl(\|f\|_{L^2}+\|g\|_{H^{1/2}}\bigr),
+\]
+其中 $C>0$ 只依赖于 $\Omega$. 此外, $\operatorname{curl}v$ 的边界条件在强意义下成立:
+\[
+ \gamma_0(\operatorname{curl}v)\wedge\nu=g
+ \qquad\text{于 }\partial\Omega.
+\]
+\end{Theorem}
+
+\begin{Proof}
+首先注意 $(L^2(\Omega))^3\subset H_\nu^{-1}$, 因而前一个 Theorem 适用. 其次, 显然 $v\in(H_{\mathrm{loc}}^2(\Omega))^3$, 因为局部正则性不依赖于边界条件, 所以可以把标量 Laplace 问题的局部正则性结果应用于 $v$ 的每个分量 $v_i$(见 Theorem~\ref{thm:chap3-laplace-dirichlet-regularity} 的证明). 因而主要的新困难是证明直到边界的正则性.
+
+\begin{itemize}
+\item 先建立 $v\in(H_{\mathrm{tang}}^2(\Omega))^3$. 首先把变分形式\eqref{eq:chap4-vector-laplace-vorticity-variational}延拓到整个空间 $(H^1(\Omega))^3$. 为此, 对任意 $w\in(H^1(\Omega))^3$, 利用 Theorem~\ref{thm:chap3-laplace-neumann}, 定义 $\Phi[w]$ 为 $H^2(\Omega)$ 中满足下列问题的唯一函数:
+\[
+ \left\{
+ \begin{aligned}
+  -\Delta(\Phi[w])
+  &=\frac1{|\Omega|}\left(\int_{\partial\Omega}\gamma_0(w)\cdot\nu\,\mathrm d\sigma\right),&&\text{于 }\Omega,\\
+  -\frac{\partial\Phi[w]}{\partial\nu}&=\gamma_0(w)\cdot\nu,&&\text{于 }\partial\Omega,\\
+  \int_\Omega\Phi[w],\mathrm dx&=0.
+ \end{aligned}
+ \right.
+\]
+此外有估计
+\begin{equation}
+ \|\nabla\Phi[w]\|_{L^2}
+ \leq C\|\gamma_0(w)\cdot\nu\|_{H^{-1/2}(\partial\Omega)}.
+ \label{eq:chap4-vorticity-normal-lifting-estimate}
+\end{equation}
+注意, 对任意 $w\in H_\nu$ 有 $\nabla\Phi[w]=0$. 在\eqref{eq:chap4-vector-laplace-vorticity-variational}中使用 $w-\nabla\Phi[w]$, 得到 $v$ 满足
+\begin{align}
+ &\int_\Omega(\operatorname{curl}v)\cdot(\operatorname{curl}w)\,\mathrm dx
+ +\int_\Omega(\operatorname{div}v)(\operatorname{div}w)\,\mathrm dx\notag\\
+ &\quad=\int_\Omega f\cdot w\,\mathrm dx
+ -\int_\Omega f\cdot\nabla\Phi[w]\,\mathrm dx
+ +\int_{\partial\Omega}g\cdot\gamma_0(w)\,\mathrm d\sigma,
+ \qquad\forall w\in(H^1(\Omega))^3.
+ \label{eq:chap4-vorticity-extended-variational}
+\end{align}
+这里使用了 $g$ 与边界相切这一事实, 即假设\eqref{eq:chap4-vorticity-tangential-data}.
+
+令 $\theta$ 是满足\eqref{eq:chap3-admissible-tangential-field}的向量场. 再次使用 Chapter~\ref{chap:sobolev-spaces} 的 Subsection~\ref{subsec:chap3-tangential-sobolev-spaces} 中的记号. 现在在\eqref{eq:chap4-vorticity-extended-variational}中取 $w=\delta_{-h}^\theta\delta_h^\theta v$, 并根据交换子的定义得到
+\begin{align*}
+ &\int_\Omega(\operatorname{curl}v)\cdot\delta_{-h}^\theta(\operatorname{curl}\delta_h^\theta v)\,\mathrm dx
+ +\int_\Omega(\operatorname{div}v)\delta_{-h}^\theta(\operatorname{div}\delta_h^\theta v)\,\mathrm dx\\
+ &=-\underbrace{\int_\Omega(\operatorname{curl}v)\cdot[\operatorname{curl},\tau_{-h}^\theta]\delta_h^\theta v\,\mathrm dx}_{T_1}
+ -\underbrace{\int_\Omega(\operatorname{div}v)[\operatorname{div},\tau_{-h}^\theta]\delta_h^\theta v\,\mathrm dx}_{T_2}\\
+ &\quad+\underbrace{\int_\Omega f\cdot\delta_{-h}^\theta\delta_h^\theta v\,\mathrm dx}_{T_3}
+ -\underbrace{\int_\Omega f\cdot\nabla\Phi[\delta_{-h}^\theta\delta_h^\theta v]\,\mathrm dx}_{T_4}\\
+ &\quad+\underbrace{\int_{\partial\Omega}\delta_h^\theta g\cdot\gamma_0(\delta_h^\theta v)\,\mathrm d\sigma}_{T_5}
+ -\underbrace{\int_{\partial\Omega}\{g,\gamma_0(\delta_h^\theta v)\}_h\,\mathrm d\sigma}_{T_6}.
+\end{align*}
+因此
+\begin{align*}
+ &\int_\Omega\delta_h^\theta(\operatorname{curl}v)\cdot(\operatorname{curl}\delta_h^\theta v)\,\mathrm dx
+ +\int_\Omega\delta_h^\theta(\operatorname{div}v)(\operatorname{div}\delta_h^\theta v)\,\mathrm dx\\
+ &=-T_1-T_2-T_3-T_4+T_5-T_6
+ +\underbrace{\int_\Omega\{\operatorname{curl}v,\operatorname{curl}\delta_h^\theta v\}_h\,\mathrm dx}_{T_7}
+ +\underbrace{\int_\Omega\{\operatorname{div}v,\operatorname{div}\delta_h^\theta v\}_h\,\mathrm dx}_{T_8}.
+\end{align*}
+最后再次使用交换子的定义, 得到
+\begin{align*}
+ &\int_\Omega|\operatorname{curl}\delta_h^\theta v|^2\,\mathrm dx
+ +\int_\Omega|\operatorname{div}\delta_h^\theta v|^2\,\mathrm dx\\
+ &=-T_1-T_2-T_3-T_4+T_5-T_6+T_7+T_8\\
+ &\quad+\underbrace{\int_\Omega[\operatorname{curl},\tau_h^\theta]v\cdot
+ (\operatorname{curl}\delta_h^\theta v)\,\mathrm dx}_{T_9}
+ +\underbrace{\int_\Omega[\operatorname{div},\tau_h^\theta]v
+ (\operatorname{div}\delta_h^\theta v)\,\mathrm dx}_{T_{10}}.
+\end{align*}
+现在需要估计 $T_1,\ldots,T_{10}$. 使用 Proposition~\ref{prop:chap3-curved-translation-properties} 和 Lemma~\ref{lem:chap4-boundary-tangential-difference}, 得到
+\begin{align*}
+ |T_1|&\leq C|h|\|\operatorname{curl}v\|_{L^2}\|\delta_h^\theta v\|_{L^2}
+ \leq C|h|^2\|v\|_{H^1}^2,\\
+ |T_2|&\leq C|h|\|\operatorname{div}v\|_{L^2}\|\delta_h^\theta v\|_{L^2}
+ \leq C|h|^2\|v\|_{H^1}^2,\\
+ |T_3|&\leq C|h|\|f\|_{L^2}\|\delta_h^\theta v\|_{H^1},\\
+ |T_5|&\leq\|\delta_h^\theta g\|_{H^{-1/2}}\|\gamma_0(\delta_h^\theta w)\|_{H^{1/2}}
+ \leq C|h|\|g\|_{H^{1/2}}\|\delta_h^\theta v\|_{H^1},\\
+ |T_6|&\leq C|h|\|g\|_{L^2}\|\gamma_0(\delta_h^\theta w)\|_{L^2}
+ \leq C|h|\|g\|_{H^{1/2}}\|\delta_h^\theta v\|_{H^1},\\
+ |T_7|&\leq C|h|\|\operatorname{curl}v\|_{L^2}\|\operatorname{curl}\delta_h^\theta v\|_{L^2}
+ \leq C|h|\|v\|_{H^1}\|\delta_h^\theta v\|_{H^1},\\
+ |T_8|&\leq C|h|\|v\|_{H^1}\|\delta_h^\theta v\|_{H^1},\\
+ |T_9|&\leq C|h|\|v\|_{L^2}\|\operatorname{curl}\delta_h^\theta v\|_{L^2}
+ \leq C|h|\|v\|_{L^2}\|\delta_h^\theta v\|_{H^1},\\
+ |T_{10}|&\leq C|h|\|v\|_{L^2}\|\delta_h^\theta v\|_{H^1}.
+\end{align*}
+还需估计 $T_4$. 为此使用下列 Lemma.
+
+\begin{Lemma}
+\label{lem:chap4-double-tangential-normal-trace}
+对任意 $v\in H_\nu$, 有
+\[
+ \|\gamma_0(\delta_{-h}^\theta\delta_h^\theta v)\cdot\nu\|_{H^{-1/2}}
+ \leq Ch^2\|\nu\|_{W^{2,\infty}}\|v\|_{L^2}
+ +C|h|\|\nu\|_{W^{1,\infty}}
+ \bigl(\|\delta_{-h}^\theta v\|_{H^1}+\|\delta_h^\theta v\|_{H^1}\bigr).
+\]
+\end{Lemma}
+
+暂且推迟这个 Lemma 的证明. 使用这一估计和\eqref{eq:chap4-vorticity-normal-lifting-estimate}, 得到
+\begin{align*}
+ |T_4|
+ &\leq\|f\|_{L^2}\|\nabla\Phi[\delta_{-h}^\theta\delta_h^\theta v]\|_{L^2}\\
+ &\leq C\|f\|_{L^2}
+ \|\gamma_0(\delta_{-h}^\theta\delta_h^\theta v)\cdot\nu\|_{H^{-1/2}}\\
+ &\leq C\|f\|_{L^2}\bigl(h^2\|v\|_{L^2}
+ +|h|\|\delta_{-h}^\theta v\|_{H^1}
+ +|h|\|\delta_h^\theta v\|_{H^1}\bigr).
+\end{align*}
+最后, 已在\eqref{eq:chap4-divcurl-tangential-trace-estimate}中看到, 对任意 $v\in H_\nu$,
+\[
+ \|\gamma_0(\delta_h^\theta v)\cdot\nu\|_{H^{1/2}}
+ \leq C|h|\|v\|_{H^1}.
+\]
+汇集以上所有估计并使用\eqref{eq:chap4-hdivcurlnu-h1-estimate}, 推出
+\begin{align*}
+ \|\delta_h^\theta v\|_{H^1}^2
+ &\leq Ch^2\bigl(\|v\|_{H^1}^2+\|f\|_{L^2}^2\bigr)\\
+ &\quad+|h|\bigl(\|f\|_{L^2}+\|v\|_{H^1}+\|g\|_{H^{1/2}}\bigr)
+ \bigl(\|\delta_h^\theta v\|_{H^1}+\|\delta_{-h}^\theta v\|_{H^1}\bigr).
+\end{align*}
+把这个不等式与其中 $h$ 换成 $-h$ 后所得的不等式相加, 再使用 Young 不等式, 推出
+\[
+ \|\delta_h^\theta v\|_{H^1}^2+\|\delta_{-h}^\theta v\|_{H^1}^2
+ \leq Ch^2\bigl(\|v\|_{H^1}^2+\|f\|_{L^2}^2\bigr).
+\]
+这恰好证明 $v\in(H_{\mathrm{tang}}^2(\Omega))^3$.
+
+\item 对每个 $i\in\{1,\ldots,3\}$, $v$ 的分量 $v_i$ 属于 $H_{\mathrm{tang}}^2(\Omega)$ 且满足
+\[
+ -\Delta v_i=f_i\in L^2(\Omega).
+\]
+因此, 完全可以像 Theorem~\ref{thm:chap3-laplace-dirichlet-regularity} 证明的末尾那样, 推出直到边界的完全正则性.
+
+\item 现在证明 $\operatorname{curl}v$ 的边界条件在更强意义下成立. 首先注意, 因为 $v\in(H^2(\Omega))^3$, 有 $\operatorname{curl}v\in(H^1(\Omega))^3$, 因而可定义其迹
+\[
+ \gamma_0(\operatorname{curl}v)\in(H^{1/2}(\partial\Omega))^3.
+\]
+其思路是使用
+\[
+ \frac1\varepsilon\int_0^\varepsilon
+ (\operatorname{curl}v)(\,\cdot-\nu(\,\cdot))\,\mathrm ds
+ \longrightarrow\gamma_0(\operatorname{curl}v)
+ \quad\text{于 }(L^2(\partial\Omega))^3.
+\]
+更准确地, 对任意 $\sigma\in\partial\Omega$,
+\begin{align*}
+ &\frac1\varepsilon\int_0^\varepsilon
+ (\operatorname{curl}v)(\sigma-\nu(\sigma))\,\mathrm ds
+ -\gamma_0(\operatorname{curl}v)(\sigma)\\
+ &\qquad=\frac1\varepsilon\int_0^\varepsilon
+ \bigl((\operatorname{curl}v)(\sigma-\nu(\sigma))
+ -\gamma_0(\operatorname{curl}v)(\sigma)\bigr)\,\mathrm ds.
+\end{align*}
+因此, 关于 $\sigma$ 取 $L^2$ 范数并使用 Jensen 不等式, 得到
+\begin{align*}
+ &\int_{\partial\Omega}
+ \left|\frac1\varepsilon\int_0^\varepsilon
+ (\operatorname{curl}v)(\sigma-\nu(\sigma))\,\mathrm ds
+ -\gamma_0(\operatorname{curl}v)(\sigma)\right|^2\,\mathrm d\sigma\\
+ &\leq\frac1\varepsilon\int_{\partial\Omega}\int_0^\varepsilon
+ \left|(\operatorname{curl}v)(\sigma-\nu(\sigma))
+ -\gamma_0(\operatorname{curl}v)(\sigma)\right|^2\,\mathrm ds\,\mathrm d\sigma\\
+ &\leq\frac1\varepsilon\int_{O_\varepsilon}
+ |\operatorname{curl}v-\gamma_0(\operatorname{curl}v)\circ P_0|^2\,\mathrm dx\\
+ &\leq\varepsilon\int_{O_\varepsilon}
+ \frac{|\operatorname{curl}v-\gamma_0(\operatorname{curl}v)\circ P_0|^2}{\delta^2}\,\mathrm dx.
+\end{align*}
+利用广义 Hardy 不等式 Proposition~\ref{prop:chap3-normal-hardy-trace} 和 Remark~\ref{rem:chap3-projection-along-normal-flow}, 得到这一项趋于 $0$. 结论得证.
+\end{itemize}
+\end{Proof}
+
+还需证明上面的 Lemma.
+
+\begin{Proof}[of Lemma~\ref{lem:chap4-double-tangential-normal-trace}]
+把 $\nu$ 看作定义在整个区域 $\Omega$ 上(至少定义在边界的一个适当邻域中)的向量场, 并计算
+\begin{align*}
+ \delta_{-h}^\theta\delta_h^\theta(v\cdot\nu)
+ &=(\delta_{-h}^\theta\delta_h^\theta v)\cdot\nu
+ -(\delta_h^\theta v)\cdot(\delta_h^\theta\nu)
+ -(\delta_{-h}^\theta v)\cdot(\delta_{-h}^\theta\nu)
+ +v\cdot(\delta_{-h}^\theta\delta_h^\theta\nu).
+\end{align*}
+由于 $v\cdot\nu$ 在迹意义下于边界上消失, 注意到 $\delta_{-h}^\theta\delta_h^\theta(v\cdot\nu)$ 也在边界上消失. 因而
+\begin{align}
+ \gamma_0((\delta_{-h}^\theta\delta_h^\theta v)\cdot\nu)
+ &=\gamma_0((\delta_h^\theta v)\cdot(\delta_h^\theta\nu))
+ +\gamma_0((\delta_{-h}^\theta v)\cdot(\delta_{-h}^\theta\nu))\notag\\
+ &\quad-\gamma_0(v\cdot(\delta_{-h}^\theta\delta_h^\theta\nu)),
+ \label{eq:chap4-double-tangential-normal-trace}
+\end{align}
+需要估计这三项的 $H^{-1/2}$ 范数. 对第一项计算比所需更强的 $H^{1/2}$ 范数. 事实上,
+\begin{align*}
+ \|\gamma_0((\delta_h^\theta v)\cdot(\delta_h^\theta\nu))\|_{H^{1/2}(\partial\Omega)}
+ &\leq C\|(\delta_h^\theta v)\cdot(\delta_h^\theta\nu)\|_{H^1}\\
+ &\leq\|\delta_h^\theta v\|_{H^1}\|\delta_h^\theta\nu\|_{L^\infty}
+ +\|\delta_h^\theta v\|_{L^2}\|\nabla\delta_h^\theta\nu\|_{L^\infty}\\
+ &\leq C|h|\|\nu\|_{W^{1,\infty}}\|\delta_h^\theta v\|_{H^1}
+ +h^2\|v\|_{H^1}\|\nu\|_{W^{2,\infty}}.
+\end{align*}
+现在用 $L^2$ 范数估计\eqref{eq:chap4-double-tangential-normal-trace}中的最后一项(这也比所需更强):
+\[
+ \|\gamma_0(v\cdot(\delta_{-h}^\theta\delta_h^\theta\nu))\|_{L^2(\partial\Omega)}
+ \leq\|\gamma_0(v)\|_{L^2}\|\delta_{-h}^\theta\delta_h^\theta\nu\|_{L^\infty}
+ \leq C|h|^2\|v\|_{H^1}\|\nu\|_{W^{2,\infty}}.
+\]
+Lemma 的证明完成.
+\end{Proof}
+
+\subsubsection{Stokes 问题}
+\label{subsec:chap4-vorticity-stokes}
+
+现在研究 Stokes 问题\eqref{eq:chap4-vorticity-stokes-problem}.
+
+\begin{Theorem}
+\label{thm:chap4-vorticity-stokes-wellposedness}
+设 $\Omega$ 是 $\mathbb R^3$ 中 $C^{1,1}$ 类的有界单连通区域. 对任意 $f\in H_\nu^{-1}$ 和任意满足\eqref{eq:chap4-vorticity-tangential-data}的 $g\in(H^{-1/2}(\partial\Omega))^3$, 问题\eqref{eq:chap4-vorticity-stokes-problem}存在唯一解
+\[
+ (v,p)\in H_\nu\times L_0^2(\Omega).
+\]
+\end{Theorem}
+
+\begin{Proof}
+引入 Hilbert 空间
+\[
+ V_\nu=\{v\in H_\nu,\ \operatorname{div}v=0\},
+\]
+以及双线性型
+\[
+ a:(v,w)\in V_\nu\times V_\nu\longmapsto
+ a(v,w)=\int_\Omega(\operatorname{curl}v)\cdot(\operatorname{curl}w)\,\mathrm dx.
+\]
+显然 $a$ 连续. 此外, 使用 Theorem~\ref{thm:chap4-hdivcurlnu-equals-h1}, 可知 $a$ 在 $V_\nu$ 上强制. Lax--Milgram Theorem~\ref{thm:chap2-lax-milgram}表明, 下列问题存在唯一解 $v\in V_\nu$:
+\begin{equation}
+ a(v,w)=\langle\widetilde f,w\rangle_{H_\nu',H_\nu}
+ +\langle g,\gamma_0(w)\rangle_{H^{-1/2},H^{1/2}},
+ \qquad\forall w\in V_\nu.
+ \label{eq:chap4-vorticity-stokes-variational}
+\end{equation}
+由于 $\operatorname{div}v=0$ 且
+\[
+ -\Delta v=\operatorname{curl}\operatorname{curl}v-\nabla\operatorname{div}v,
+\]
+推出
+\[
+ \langle-\Delta v-f,w\rangle_{H^{-1},H_0^1}=0,
+ \qquad\forall\varphi\in(H_0^1(\Omega))^3,
+ \quad\operatorname{div}\varphi=0.
+\]
+使用 de Rham Theorem~\ref{thm:chap4-de-rham}, 得到存在唯一压力 $p\in L_0^2(\Omega)$ 使得
+\[
+ -\Delta v+\nabla p=f.
+\]
+由 Lemma~\ref{lem:chap4-gradient-no-tangential-boundary-terms}, 已知 $f-\nabla p\in H_\nu^{-1}$. 因此, 由 Theorem~\ref{thm:chap4-vector-laplace-vorticity-wellposedness}, 向量 Laplace 问题
+\[
+ -\Delta\widetilde v=f-\nabla p,
+ \qquad\widetilde v\cdot\nu=0,
+ \qquad(\operatorname{curl}\widetilde v)\wedge\nu=g
+\]
+存在唯一解 $\widetilde v\in H_\nu$. 下面证明 $\widetilde v=v$. 这将立即证明 $v$ 满足所断言的边界条件.
+
+\begin{itemize}
+\item 按定义, $\widetilde v$ 满足
+\begin{align}
+ &\int_\Omega(\operatorname{curl}\widetilde v)\cdot(\operatorname{curl}w)\,\mathrm dx
+ +\int_\Omega(\operatorname{div}\widetilde v)(\operatorname{div}w)\,\mathrm dx\notag\\
+ &\quad=\langle\widetilde f-\widetilde{\nabla p},w\rangle_{H_\nu',H_\nu}
+ +\langle g,\gamma_0(w)\rangle_{H^{-1/2},H^{1/2}},
+ \qquad\forall w\in H_\nu.
+ \label{eq:chap4-vorticity-laplace-comparison}
+\end{align}
+由 Theorem~\ref{thm:chap4-div-curl-normal-boundary}, 已知存在 $w\in H_\nu$ 使得
+\[
+ \operatorname{div}w=0,
+ \qquad\operatorname{curl}w=\operatorname{curl}(v-\widetilde v).
+\]
+在\eqref{eq:chap4-vorticity-laplace-comparison}中使用这个特殊测试函数 $w$, 得到
+\[
+ \int_\Omega(\operatorname{curl}\widetilde v)\cdot\operatorname{curl}(v-\widetilde v)\,\mathrm dx
+ =\langle\widetilde f,w\rangle_{H_\nu',H_\nu}
+ +\langle g,\gamma_0(w)\rangle_{H^{-1/2},H^{1/2}},
+\]
+因为 $\widetilde{\nabla p}$ 在无散度测试函数上的贡献消失. 另外, 由\eqref{eq:chap4-vorticity-stokes-variational}, 有
+\[
+ \int_\Omega(\operatorname{curl}v)\cdot\operatorname{curl}(v-\widetilde v)\,\mathrm dx
+ =\langle\widetilde f,w\rangle_{H_\nu',H_\nu}
+ +\langle g,\gamma_0(w)\rangle_{H^{-1/2},H^{1/2}}.
+\]
+两式相减得到
+\[
+ \int_\Omega|\operatorname{curl}(v-\widetilde v)|^2\,\mathrm dx=0,
+\]
+即 $\operatorname{curl}v=\operatorname{curl}\widetilde v$.
+
+\item 现在有下列两个在分布意义下成立的方程:
+\[
+ \operatorname{curl}\operatorname{curl}v-\nabla\underbrace{\operatorname{div}v}_{=0}
+ =-\Delta v=f-\nabla p,
+\]
+\[
+ \operatorname{curl}\operatorname{curl}\widetilde v-\nabla\operatorname{div}\widetilde v
+ =-\Delta\widetilde v=f-\nabla p.
+\]
+由于上面已证明 $\operatorname{curl}v=\operatorname{curl}\widetilde v$, 得到
+\[
+ \nabla(\operatorname{div}\widetilde v)=0
+\]
+于分布意义. 这意味着 $\operatorname{div}\widetilde v$ 在 $\Omega$ 上是常数. 散度定理给出
+\[
+ \int_\Omega\operatorname{div}\widetilde v\,\mathrm dx
+ =\int_{\partial\Omega}\widetilde v\cdot\nu\,\mathrm d\sigma=0,
+\]
+这是由 $H_\nu$ 的定义得到的, 因而已经证明 $\operatorname{div}\widetilde v=0$.
+
+\item 综上, 已证明
+\[
+ \operatorname{curl}v=\operatorname{curl}\widetilde v,
+ \qquad\operatorname{div}v=\operatorname{div}\widetilde v=0,
+ \qquad v\cdot\nu=\widetilde v\cdot\nu=0,
+\]
+所以 $v=\widetilde v$(例如见 Lemma~\ref{lem:chap4-divcurl-zero-kernel}). 因此, $\operatorname{curl}v=\operatorname{curl}\widetilde v$ 在\eqref{eq:chap4-vorticity-weak-boundary-trace}给出的弱意义下满足适当的边界条件.
+\end{itemize}
+\end{Proof}
+
+前一个 Theorem 的证明表明, 一旦压力已知, 只需解一个向量 Laplace 问题就可计算速度场 $v$.
+
+现在证明, 对 Stokes 方程的这种特殊边界条件选择, 实际上可以把压力计算和速度场计算分离.
+
+\begin{Proposition}
+\label{prop:chap4-vorticity-pressure-decoupling}
+使用 Theorem~\ref{thm:chap4-vorticity-stokes-wellposedness} 中相同的记号. 问题\eqref{eq:chap4-vorticity-stokes-problem}的解的压力 $p$ 可通过计算
+\[
+ p=-\operatorname{div}u
+\]
+得到, 其中 $u\in H_\nu$ 是下列向量 Laplace 问题的唯一解:
+\begin{equation}
+ \left\{
+ \begin{aligned}
+  -\Delta u&=f,&&\text{于 }\Omega,\\
+  u\cdot\nu&=0,&&\text{于 }\partial\Omega,\\
+  (\operatorname{curl}u)\wedge\nu&=g,&&\text{于 }\partial\Omega.
+ \end{aligned}
+ \right.
+ \label{eq:chap4-vorticity-pressure-laplace}
+\end{equation}
+\end{Proposition}
+
+\begin{Proof}
+以 $(v,p)\in H_\nu\times L_0^2(\Omega)$ 表示\eqref{eq:chap4-vorticity-stokes-problem}的唯一解. 由 Theorem~\ref{thm:chap4-vector-laplace-vorticity-wellposedness}, 已知问题\eqref{eq:chap4-vorticity-pressure-laplace}存在唯一解 $u\in H_\nu$. 令
+\[
+ q=-\operatorname{div}u\in L_0^2(\Omega),
+\]
+并证明 $q=p$.
+
+按 $u$ 的定义,
+\begin{align*}
+ &\int_\Omega(\operatorname{curl}u)\cdot(\operatorname{curl}w)\,\mathrm dx
+ +\int_\Omega(\operatorname{div}u)(\operatorname{div}w)\,\mathrm dx\\
+ &\quad=\langle\widetilde f,w\rangle_{H_\nu',H_\nu}
+ +\langle g,\gamma_0(w)\rangle_{H^{-1/2},H^{1/2}},
+ \qquad\forall w\in H_\nu.
+\end{align*}
+由 Lemma~\ref{lem:chap4-gradient-no-tangential-boundary-terms}, 可写为
+\[
+ \int_\Omega(\operatorname{curl}u)\cdot(\operatorname{curl}w)\,\mathrm dx
+ =\langle\widetilde f-\widetilde{\nabla q},w\rangle_{H_\nu',H_\nu}
+ +\langle g,\gamma_0(w)\rangle_{H^{-1/2},H^{1/2}},
+ \qquad\forall w\in H_\nu.
+\]
+从 $(v,p)$ 满足的变分形式中减去这个方程, 得到
+\begin{align}
+ \int_\Omega(\operatorname{curl}(u-v))\cdot(\operatorname{curl}w)\,\mathrm dx
+ &=-\langle\widetilde{\nabla(q-p)},w\rangle_{H_\nu',H_\nu}\notag\\
+ &=\int_\Omega(p-q)\operatorname{div}w\,\mathrm dx,
+ \qquad\forall w\in H_\nu.
+ \label{eq:chap4-vorticity-pressure-difference}
+\end{align}
+现在考虑下列标量 Laplace 问题:
+\[
+ \left\{
+ \begin{aligned}
+  -\Delta\psi&=p-q,&&\text{于 }\Omega,\\
+  \frac{\partial\psi}{\partial\nu}&=0,&&\text{于 }\partial\Omega.
+ \end{aligned}
+ \right.
+\]
+由于 $p-q\in L_0^2(\Omega)$, 上述问题有解 $\psi\in H^2(\Omega)$(这里使用 $\Omega$ 为 $C^{1,1}$ 类), 且在相差一个常数的意义下唯一. 在\eqref{eq:chap4-vorticity-pressure-difference}中取 $w=-\nabla\psi\in H_\nu$, 得到
+\[
+ \int_\Omega|p-q|^2\,\mathrm dx=0,
+\]
+结论得证.
+\end{Proof}
+
+\par\noindent\refstepcounter{chapterfoursectionnineremark}\textbf{Remark~\thechapterfoursectionnineremark:}\label{rem:chap4-vorticity-numerical-decoupling}\quad
+从数值观点看, 这个结果特别有意义, 因为 Stokes 问题\eqref{eq:chap4-vorticity-stokes-problem}的求解由此化为两个 Laplace 问题的求解. 对这两个问题应用某种 Galerkin 逼近(例如通过有限元方法), 将得到正定对称矩阵.
+
+与 Stokes--Dirichlet 或 Stokes--Neumann 问题的数值逼近相比, 这非常方便, 因为对后两种问题, $v$ 和 $p$ 的计算不能解耦. 离散化后, 这一般导致更复杂的非对称矩阵, 必须使用更专门的求解器.
+
+\par\noindent\refstepcounter{chapterfoursectionnineremark}\textbf{Remark~\thechapterfoursectionnineremark:}\label{rem:chap4-vorticity-second-step-scalar}\quad
+在上面的证明中, 已经说明求解 Stokes 问题\eqref{eq:chap4-vorticity-stokes-problem}可以化为先求解源项为 $f$ 的第一个向量 Laplace 问题(由此计算压力 $p$), 然后求解源项为 $f-\nabla p$ 的第二个向量 Laplace 问题(由此计算速度场 $v$).
+
+事实上, 第二步可以化为一个标量 Laplace 问题. 的确, 已知 $p=q$, 因而在\eqref{eq:chap4-vorticity-pressure-difference}中取 $w=u-v$, 得到附加性质
+\[
+ \operatorname{curl}(u-v)=0.
+\]
+由 Lemma~\ref{lem:chap4-curl-kernel-gradients}, 推出存在 $q=\pi\in H^1(\Omega)$ 使得
+\[
+ u-v=\nabla\pi.
+\]
+由于 $\operatorname{div}v=0$, $\operatorname{div}u=-p$, 且边界上 $u\cdot\nu=v\cdot\nu=0$, 推出 $\pi$ 解问题
+\begin{equation}
+ \left\{
+ \begin{aligned}
+  -\Delta\pi&=p,&&\text{于 }\Omega,\\
+  \frac{\partial\pi}{\partial\nu}&=0,&&\text{于 }\partial\Omega.
+ \end{aligned}
+ \right.
+ \label{eq:chap4-vorticity-velocity-potential}
+\end{equation}
+因此, 一旦 $u$ 已知, 只需解问题\eqref{eq:chap4-vorticity-velocity-potential}即可得到 $\pi$, 进而得到速度场 $v=u-\nabla\pi$.
+
+借助前面的 Proposition 和 Remarks, 现在只需使用上一小节研究的向量 Laplace 问题的相应正则性结果, 就能得到问题\eqref{eq:chap4-vorticity-stokes-problem}的正则性 Theorem.
+
+\begin{Theorem}
+\label{thm:chap4-vorticity-stokes-regularity}
+使用 Theorem~\ref{thm:chap4-vorticity-stokes-wellposedness} 中相同的记号. 若进一步假设
+\[
+ f\in(L^2(\Omega))^3,
+ \qquad g\in(H^{1/2}(\partial\Omega))^2,
+ \qquad\Omega\text{ 为 }C^{2,1}\text{ 类},
+\]
+则 $(v,p)\in(H^2(\Omega))^3\times H^1(\Omega)$, 且边界条件 $(\operatorname{curl}v)\wedge\nu=g$ 在强意义下成立.
+\end{Theorem}
+
+\begin{Proof}
+使用 Theorem~\ref{thm:chap4-vector-laplace-vorticity-wellposedness}, 已知\eqref{eq:chap4-vorticity-pressure-laplace}的解 $u$ 属于 $(H^2(\Omega))^3$. 因而压力 $p=-\operatorname{div}u$ 属于 $H^1(\Omega)$.
+
+于是 $f-\nabla p$ 属于 $(L^2(\Omega))^3$, 再次应用 Theorem~\ref{thm:chap4-vector-laplace-vorticity-wellposedness}, 推出速度场 $v$ 属于 $(H^2(\Omega))^3$. 结论得证.
+\end{Proof}
+
