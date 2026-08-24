@@ -1,0 +1,14 @@
+# Batch QA: ch05-sec02
+
+- Source scope: Chapter V, Section 2 from PDF page 381 through the end of Section 2 at the top of PDF page 402.
+- Source coverage: passed. Twenty-two page records are in `qa/translation/ch05-sec02-source-coverage.tsv`; every source statement, proof step, paragraph, bullet, displayed relation, and explicit omission by the source author is represented in source order.
+- Structure: passed. Subsections 2.1--2.5, Theorems V.2.1--V.2.3, V.2.7--V.2.8, V.2.10, and V.2.12, Propositions V.2.4--V.2.6, Lemma V.2.9, Corollary V.2.11, all supplied proofs, and Remarks V.2.1--V.2.3 were restored.
+- Formula fidelity: passed. Equations (V.32)--(V.56) are recorded in `formulae/ch05-sec02-formula-registry.jsonl`; all powers, Reynolds factors, Stokes projections, time ranges, regularity indices, binomial coefficients, equality directions, and compatibility conditions were checked against the source-page images.
+- Cross-references: passed for all determinate targets. There are 51 unique batch labels and 97 reference commands. The forward source reference to Section 3.4 and source bibliography numbers [106, 107, 116, 115] remain explicit and unresolved; duplicate labels, undefined targets, and equation/reference-command mismatches are zero.
+- Environment headings and numbering: passed. Theorem, Proposition, Lemma, Corollary, Proof, and Remark headings remain English. Objects render as 2.1--2.12 and numbered equations resolve to 5.32--5.56.
+- Names and punctuation: passed. Reynolds, Navier--Stokes, Galerkin, Stokes, Hölder, Sobolev, Young, Gronwall, Poincaré--Wirtinger, Leray, and Prodi--Serrin forms are preserved; no forbidden full-width punctuation occurs in Chinese translated prose.
+- Compilation: passed after clean-directory multi-pass XeLaTeX compilation. Final log counts: undefined references 0, multiply-defined labels 0, rerun requests 0, LaTeX errors 0. Three sub-point overfull boxes are inherited from previously passed files and this batch adds none. The integrated PDF has 258 pages, 1682003 bytes, and SHA-256 `3ef8fde7c21545fcb19f0f27dbbc537164d48929d8d88b78391cc0e14ef1f2ec`.
+- Visual QA: all integrated output pages 244--258 were rendered and inspected. English headings, breakable theorem boxes, equations (V.32)--(V.56), long estimates, odd/even induction, compatibility conditions, and the final time-regularization argument are legible; no clipping, overlap, broken box, or literal LaTeX command appears.
+- Integrity: source SHA-256 `dd2f1acd5d258334ad45aada857d5699d0a13daa553b89fd839ecab469c465e1`; template manifest hash `9c405f97accf0b769854f4fadf93c22b473ad72435ddf0fc27f58c9a302a882c`; style hash `8f2a2ea992fa2d43de675a0efe323ff9339d656158f7fe570f0c7f2da4c10555`; reference TeX hash `28ddd3a9e6c24423ce2a1046aeb07ff357f3be6b156778ce4a1496e25582bbd6`. All are unchanged.
+- Blocking issues: none.
+- Result: passed.

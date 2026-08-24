@@ -1,0 +1,981 @@
+\clearpage
+\subsection{强解}
+\label{sec:chap5-strong-solutions}
+\renewcommand{\thestatement}{2.\arabic{statement}}
+\setcounter{statement}{0}
+\newcounter{chapterfivesectiontworemark}
+\renewcommand{\thechapterfivesectiontworemark}{2.\arabic{chapterfivesectiontworemark}}
+
+为了避开 $d=3$ 时弱解不唯一的问题, 可以问是否存在更正则并且能够获得唯一性的解. 答案是肯定的, 但有一个重要限制: 在三维中, 这类解会失去时间上的全局性. 为建立强解的存在性, 我们回到使用特殊基的 Galerkin 逼近\eqref{eq:chap5-galerkin-problem}, 并寻找新的估计. 当然, 若希望得到更正则的解, 也需要从更正则的数据 $(v_0,f)$ 出发.
+
+先陈述关于这些强解的主要结果. 它们的证明将在以下各小节给出.
+
+\begin{Theorem}
+\label{thm:chap5-strong-solutions}
+设 $\Omega$ 是 $\mathbb R^d$ 中连通的有界 $C^{1,1}$ 区域. 设 $\operatorname{Re}>0$, $v_0\in V$, 且 $f\in L_{\mathrm{loc}}^2([0,+\infty[,(L^2(\Omega))^d)$.
+\begin{itemize}
+ \item 若 $d=2$, 则问题\eqref{eq:chap5-navier-stokes-system}存在唯一解, 满足
+ \[
+ v\in C^0([0,+\infty[,V)\cap L_{\mathrm{loc}}^2([0,+\infty[,(H^2(\Omega))^d\cap V),
+ \]
+ \[
+ \frac{\mathrm dv}{\mathrm dt}\in L_{\mathrm{loc}}^2([0,+\infty[,H),
+ \qquad
+ p\in L_{\mathrm{loc}}^2([0,+\infty[,H^1(\Omega)).
+ \]
+ 当然, 对所有 $t\in[0,+\infty[$, 该解满足能量等式
+ \begin{equation}
+ \frac12\|v(t)\|_{L^2}^2
+ +\frac1{\operatorname{Re}}\int_0^t\|\nabla v(\tau)\|_{L^2}^2\,\mathrm d\tau
+ =\frac12\|v_0\|_{L^2}^2+\int_0^t(f(\tau),v(\tau))_{L^2}\,\mathrm d\tau.
+ \label{eq:chap5-strong-energy-equality}
+ \end{equation}
+ \item 若 $d=3$, 则存在依赖于数据的 $T^*>0$, 使问题\eqref{eq:chap5-navier-stokes-system}存在唯一解, 满足
+ \[
+ v\in C^0([0,T^*[,V)\cap L_{\mathrm{loc}}^2([0,T^*[,(H^2(\Omega))^d\cap V),
+ \]
+ \[
+ \frac{\mathrm dv}{\mathrm dt}\in L_{\mathrm{loc}}^2([0,T^*[,H),
+ \qquad
+ p\in L_{\mathrm{loc}}^2([0,T^*[,H^1(\Omega)).
+ \]
+ 此外, 它也满足能量等式\eqref{eq:chap5-strong-energy-equality}.
+\end{itemize}
+\end{Theorem}
+
+再者, 由于 $\Omega$ 有界, 若数据充分小, 可以证明 $T^*=+\infty$. 从物理观点看, 这说明若黏性充分大, 正则解就是全局的. 也可以把该结果看作静止状态 $(v=0,p=0)$ 的稳定性结果 (关于稳态 Navier--Stokes 方程的类似结果见 \MBUnresolvedReference{subsec:chap5-steady-asymptotic-stability}{Section~3.4}). 下一个 Theorem 对此作出精确说明.
+
+\begin{Theorem}{Global strong solutions for small data}
+\label{thm:chap5-global-strong-small-data}
+在三维情形中, 若 $v_0\in V$ 且 $f\in L^\infty(\mathbb R^+,(L^2(\Omega))^d)$, 并满足
+\[
+ \|\nabla v_0\|_{L^2}^2\leq\frac{C(\Omega)}{\operatorname{Re}^2},
+ \qquad
+ \|f\|_{L^\infty(\mathbb R^+,L^2)}^2\leq\frac{C(\Omega)}{\operatorname{Re}^4},
+\]
+其中 $C(\Omega)$ 只依赖于区域 $\Omega$, 则 $T^*=+\infty$, 即相应的强解是全局的.
+\end{Theorem}
+
+在二维情形中, 若源项与时间无关, 还可证明如下附加估计.
+
+\begin{Theorem}{Uniform bound over time}
+\label{thm:chap5-uniform-strong-bound}
+设 $\Omega$ 是 $\mathbb R^2$ 中连通的有界 $C^{1,1}$ 区域, $v_0\in V$, 且 $f\in(L^2(\Omega))^2$ 与时间无关. 则存在 $C>0$, 使
+\[
+ \sup_{t\in\mathbb R^+}\|\nabla v(t)\|_{L^2}\leq C.
+\]
+\end{Theorem}
+
+\subsubsection{新的估计}
+\label{subsec:chap5-strong-new-estimates}
+
+回到 Galerkin 逼近. 对任意 $\psi_N\in H_N$, 寻找逼近解 $v_N\in C^1([0,T],H_N)$, 使
+\begin{equation}
+ \int_\Omega\frac{\mathrm dv_N}{\mathrm dt}\cdot\psi_N\,\mathrm dx
+ +\int_\Omega((v_N\cdot\nabla)v_N)\cdot\psi_N\,\mathrm dx
+ +\frac1{\operatorname{Re}}\int_\Omega\nabla v_N:\nabla\psi_N\,\mathrm dx
+ =\int_\Omega f_N\cdot\psi_N\,\mathrm dx.
+\label{eq:chap5-strong-galerkin-problem}
+\end{equation}
+
+基本想法是取 $-\Delta v_N$ 为测试函数, 但这不被允许, 因为 $\Delta v_N\notin H_N$. 不过可以取 $\psi_N=P_N(-\Delta v_N)$ 为测试函数. 由于逼近空间 $H_N$ 以 Stokes 算子的特征函数为基, 这等价于取
+\[
+ \psi_N=Av_N=-\Delta v_N+\nabla p_N\in H_N.
+\]
+注意 $Av_N\in H_N\subset V$, 并且通过 $(L^2(\Omega))^d$ 的内积把 $H$ 与其对偶等同后,
+\[
+ \int_\Omega\nabla w:\nabla v_N\,\mathrm dx
+ =\langle Av_N,w\rangle_{V',V}
+ =\int_\Omega w\cdot Av_N\,\mathrm dx,
+ \qquad\forall w\in H_N.
+\]
+特别地, 分别取 $w=v_N$, $w=\mathrm dv_N/\mathrm dt$ 和 $w=Av_N$, 得
+\[
+ \int_\Omega v_N\cdot Av_N\,\mathrm dx=\int_\Omega|\nabla v_N|^2\,\mathrm dx,
+\]
+\[
+ \int_\Omega\frac{\mathrm dv_N}{\mathrm dt}\cdot Av_N\,\mathrm dx
+ =\int_\Omega\nabla\frac{\mathrm dv_N}{\mathrm dt}:\nabla v_N\,\mathrm dx
+ =\frac12\frac{\mathrm d}{\mathrm dt}\int_\Omega|\nabla v_N|^2\,\mathrm dx,
+\]
+以及
+\[
+ \int_\Omega\nabla v_N:\nabla(Av_N)\,\mathrm dx=\int_\Omega|Av_N|^2\,\mathrm dx.
+\]
+这些计算成立, 因为逼近解 $v_N$ 关于时间和空间都是光滑的.
+
+因此, 在\eqref{eq:chap5-strong-galerkin-problem}中取 $\psi_N=Av_N$, 得
+\[
+ \frac12\frac{\mathrm d}{\mathrm dt}\|\nabla v_N\|_{L^2}^2
+ +\frac1{\operatorname{Re}}\|Av_N\|_{L^2}^2
+ =\int_\Omega f_N\cdot Av_N\,\mathrm dx
+ -\int_\Omega((v_N\cdot\nabla)v_N)\cdot Av_N\,\mathrm dx.
+\]
+现在需要估计等式右端. 依次使用 Hölder 不等式、精确的 Sobolev 不等式 (Proposition~\ref{prop:chap3-gagliardo-nirenberg-interpolation}) 和 Young 不等式,
+\begin{align*}
+ &\frac12\frac{\mathrm d}{\mathrm dt}\|\nabla v_N\|_{L^2}^2
+ +\frac1{\operatorname{Re}}\|Av_N\|_{L^2}^2\notag\\
+ &\leq\|f_N\|_{L^2}\|Av_N\|_{L^2}
+ +\|Av_N\|_{L^2}\|v_N\|_{L^6}\|\nabla v_N\|_{L^3}\notag\\
+ &\leq\|f_N\|_{L^2}\|Av_N\|_{L^2}
+ +C\|Av_N\|_{L^2}^{1+d/6}\|\nabla v_N\|_{L^2}^{1+d/6}
+ \|v_N\|_{L^2}^{1-2d/3}\notag\\
+ &\leq\frac1{2\operatorname{Re}}\|Av_N\|_{L^2}^2
+ +C\operatorname{Re}\|f_N\|_{L^2}^2
+ +C\operatorname{Re}^{(6+d)/(6-d)}
+ \|\nabla v_N\|_{L^2}^{2(6+d)/(6-d)}
+ \|v_N\|_{L^2}^{4(3-d)/(6-d)}.
+\end{align*}
+从而
+\begin{equation}
+ \frac{\mathrm d}{\mathrm dt}\|\nabla v_N\|_{L^2}^2
+ +\frac1{\operatorname{Re}}\|Av_N\|_{L^2}^2
+ \leq C\operatorname{Re}\|f_N\|_{L^2}^2
+ +C\operatorname{Re}^{(6+d)/(6-d)}
+ \|\nabla v_N\|_{L^2}^{2(6+d)/(6-d)}
+ \|v_N\|_{L^2}^{4(3-d)/(6-d)}.
+\label{eq:chap5-strong-master-estimate}
+\end{equation}
+此后需要区分 $d=2$ 和 $d=3$.
+
+\subsubsection{二维情形}
+\label{subsec:chap5-strong-two-dimensional}
+
+\paragraph{存在性}
+\label{subsec:chap5-strong-two-dimensional-existence}
+
+研究弱解时已经建立估计\eqref{eq:chap5-galerkin-integrated-energy}, 即
+\begin{equation}
+ \|v_N(t)\|_{L^2}^2
+ +\frac1{\operatorname{Re}}\int_0^t\|\nabla v_N(\tau)\|_{L^2}^2\,\mathrm d\tau
+ \leq\|v_0\|_{L^2}^2
+ +\operatorname{Re}\int_0^t\|f_N(\tau)\|_{H^{-1}}^2\,\mathrm d\tau.
+\label{eq:chap5-strong-basic-energy}
+\end{equation}
+另一方面, 令 $d=2$, \eqref{eq:chap5-strong-master-estimate}成为
+\begin{equation}
+ \frac{\mathrm d}{\mathrm dt}\|\nabla v_N\|_{L^2}^2
+ +\frac1{\operatorname{Re}}\|Av_N\|_{L^2}^2
+ \leq C\operatorname{Re}\|f_N\|_{L^2}^2
+ +C\operatorname{Re}^2\|\nabla v_N\|_{L^2}^4\|v_N\|_{L^2}.
+\label{eq:chap5-strong-two-dimensional-estimate}
+\end{equation}
+因此, 对时间积分并使用\eqref{eq:chap5-strong-basic-energy}, 得
+\begin{align}
+ \|\nabla v_N(t)\|_{L^2}^2
+ +\frac1{\operatorname{Re}}\int_0^t\|Av_N(\tau)\|_{L^2}^2\,\mathrm d\tau
+ &\leq\|\nabla v_N(0)\|_{L^2}^2
+ +C\operatorname{Re}\int_0^T\|f(\tau)\|_{L^2}^2\,\mathrm d\tau\notag\\
+ &\quad+C\operatorname{Re}^2
+ \left(\|v_0\|_{L^2}^2
+ +\operatorname{Re}\int_0^T\|f(s)\|_{H^{-1}}^2\,\mathrm ds\right)^{1/2}
+ \notag\\
+ &\qquad\times\int_0^t\|\nabla v_N(\tau)\|_{L^2}^2
+ \|\nabla v_N(\tau)\|_{L^2}^2\,\mathrm d\tau.
+\label{eq:chap5-strong-two-dimensional-integrated}
+\end{align}
+回忆 $v_N(0)=P_Nv_0$, 即 $v_0$ 在 $(L^2(\Omega))^d$ 中到 $H_N$ 的正交投影. 已经看到, 因为 $H_N$ 由 Stokes 算子的特征函数构造, $P_N$ 也是空间 $V$ 中到 $H_N$ 的正交投影. 因而
+\begin{equation}
+ \|\nabla v_N(0)\|_{L^2}=\|P_Nv_0\|_V
+ \leq\|v_0\|_V=\|\nabla v_0\|_{L^2}.
+\label{eq:chap5-strong-initial-projection}
+\end{equation}
+对 $y(t)=\|\nabla v_N(t)\|_{L^2}^2$ 在\eqref{eq:chap5-strong-two-dimensional-integrated}中应用 Gronwall Lemma~\ref{lem:chap2-gronwall}, 得
+\[
+ \|\nabla v_N(t)\|_{L^2}^2
+ \leq\left(\|\nabla v_0\|_{L^2}^2
+ +C\operatorname{Re}\int_0^T\|f(\tau)\|_{L^2}^2\,\mathrm d\tau\right)e^{k_N(t)},
+\]
+其中
+\[
+ k_N(t)=C\operatorname{Re}^2
+ \left(\|v_0\|_{L^2}^2+\operatorname{Re}\int_0^T\|f(s)\|_{H^{-1}}^2\,\mathrm ds\right)^{1/2}
+ \int_0^t\|\nabla v_N(\tau)\|_{L^2}^2\,\mathrm d\tau.
+\]
+再用\eqref{eq:chap5-strong-basic-energy}给出的 $\int_0^t\|\nabla v_N(\tau)\|_{L^2}^2\,\mathrm d\tau$ 估计, 可知对所有 $N$ 和 $t\in[0,T]$,
+\[
+ k_N(t)\leq C\operatorname{Re}^3
+ \left(\|v_0\|_{L^2}^2+\operatorname{Re}\int_0^T\|f(s)\|_{H^{-1}}^2\,\mathrm ds\right)^{3/2}.
+\]
+所以存在 $C(v_0,f,T)>0$, 使
+\[
+ \sup_{t\in[0,T]}\|\nabla v_N(t)\|_{L^2}\leq C(v_0,f,T).
+\]
+利用这个估计回到\eqref{eq:chap5-strong-two-dimensional-integrated}, 还得到另一个 $C(v_0,f,T)$, 使
+\[
+ \int_0^T\|Av_N(\tau)\|_{L^2}^2\,\mathrm d\tau\leq C(v_0,f,T).
+\]
+由于 $\Omega$ 属于 $C^{1,1}$ 类, 上述估计和 Proposition~\ref{thm:chap4-stokes-regularity}表明, 逼近解序列 $(v_N)_N$ 在 $L^\infty(]0,T[,V)$ 和 $L^2(]0,T[,V\cap(H^2(\Omega))^d)$ 中有界. 与弱解情形相似, 还容易推出 $(\mathrm dv_N/\mathrm dt)_N$ 在 $L^2(]0,T[,H)$ 中有界.
+
+因此, 再提取子列后, 可假定 $(v_N)_N$ 除了 Subsection~\ref{subsec:chap5-weak-existence-uniqueness} 中得到的收敛外, 还满足
+\[
+ \left\{
+ \begin{aligned}
+ v_N&\stackrel{*}{\rightharpoonup}v&&\text{于 }L^\infty(]0,T[,V),\\
+ v_N&\rightharpoonup v&&\text{于 }L^2(]0,T[,V\cap(H^2(\Omega))^d),\\
+ \frac{\mathrm dv_N}{\mathrm dt}&\rightharpoonup\frac{\mathrm dv}{\mathrm dt}&&\text{于 }L^2(]0,T[,H).
+ \end{aligned}
+ \right.
+\]
+由这些新性质, 得到方程\eqref{eq:chap5-navier-stokes-system}的唯一解, 满足
+\[
+ v\in C^0(\mathbb R^+,V)\cap L_{\mathrm{loc}}^2(\mathbb R^+,V\cap(H^2(\Omega))^d),
+ \qquad
+ \frac{\mathrm dv}{\mathrm dt}\in L_{\mathrm{loc}}^2(\mathbb R^+,H).
+\]
+事实上, 由于 $v\in L^2(]0,T[,D(A))$ 且 $\mathrm dv/\mathrm dt\in L^2(]0,T[,H)$, 解连续取值于 $V$ 来自 Theorem~\ref{thm:chap4-stokes-time-continuity}.
+
+此外, 现在知道 $\mathrm dv/\mathrm dt$ 和 $(v\cdot\nabla)v$ 都属于 $L^2(]0,T[,(L^2(\Omega))^d)$, 因而可写
+\[
+ \nabla p=-\frac{\mathrm dv}{\mathrm dt}+\frac1{\operatorname{Re}}\Delta v-(v\cdot\nabla)v+f
+ \in L^2(]0,T[,(L^2(\Omega))^d).
+\]
+由于 $p$ 的平均值为零, Poincaré--Wirtinger 不等式 (Proposition~\ref{prop:chap3-poincare-wirtinger}) 表明
+\[
+ p\in L^2(]0,T[,H^1(\Omega)).
+\]
+这证明了二维存在性结论.
+
+\paragraph{关于时间的一致界}
+\label{subsec:chap5-strong-uniform-time-bound}
+
+这里的关键工具是一致 Gronwall Lemma~\ref{lem:chap2-uniform-gronwall}.
+
+\begin{Proof}
+\textit{(of Theorem~\ref{thm:chap5-uniform-strong-bound})}\quad
+回忆已经假设 $f$ 与时间无关, 因而\eqref{eq:chap5-source-time-regularization}定义的时间正则化简化为 $f_N=f$. 记 Stokes 算子的最小特征值为 $\lambda_1$. Proposition~\ref{prop:chap4-stokes-poincare-optimal}给出 Poincaré 不等式 $\|v\|_{L^2}^2\leq\lambda_1^{-1}\|\nabla v\|_{L^2}^2$. 估计\eqref{eq:chap5-galerkin-differential-energy}给出
+\[
+ \frac{\mathrm d}{\mathrm dt}\|v_N\|_{L^2}^2
+ +\frac{\lambda_1}{\operatorname{Re}}\|v_N\|_{L^2}^2
+ \leq\operatorname{Re}\|f\|_{H^{-1}}^2.
+\]
+由 Lemma~\ref{lem:chap2-linear-decay},
+\[
+ \|v_N(t)\|_{L^2}^2
+ \leq\|v_0\|_{L^2}^2e^{-\lambda_1t/\operatorname{Re}}
+ +\frac{\operatorname{Re}^2}{\lambda_1}\|f\|_{H^{-1}}^2
+ \leq\|v_0\|_{L^2}^2+\frac{\operatorname{Re}^2}{\lambda_1}\|f\|_{H^{-1}}^2.
+\]
+在 $t$ 与 $t+1$ 之间对\eqref{eq:chap5-galerkin-differential-energy}积分并使用上式, 得
+\[
+ \frac1{\operatorname{Re}}\int_t^{t+1}\|\nabla v_N(\tau)\|_{L^2}^2\,\mathrm d\tau
+ \leq\|v_0\|_{L^2}^2
+ +\operatorname{Re}\|f\|_{H^{-1}}^2\left(1+\frac{\operatorname{Re}}{\lambda_1}\right).
+\]
+利用\eqref{eq:chap5-strong-two-dimensional-estimate}, 可对
+\[
+ y(t)=\|\nabla v_N\|_{L^2}^2,
+ \qquad g_1(t)=C\operatorname{Re}\|f\|_{L^2}^2,
+ \qquad g_2(t)=C\operatorname{Re}\|v_N\|_{L^2}\|\nabla v_N\|_{L^2}^2
+\]
+应用一致 Gronwall Lemma~\ref{lem:chap2-uniform-gronwall}. 由此得到关于 $N$ 一致的所需界
+\[
+ \|\nabla v_N\|_{L^\infty(\mathbb R^+,(L^2(\Omega))^{d\times d})}\leq C.
+\]
+由范数的弱下半连续性 (Corollary~\ref{cor:chap2-weak-lower-semicontinuity}), 该不等式可传到极限, 从而
+\[
+ \sup_{t\geq0}\|\nabla v(t)\|_{L^2}\leq C.
+\]
+\end{Proof}
+
+\subsubsection{三维情形}
+\label{subsec:chap5-strong-three-dimensional}
+
+令 $d=3$, 估计\eqref{eq:chap5-strong-master-estimate}成为
+\begin{equation}
+ \frac{\mathrm d}{\mathrm dt}\|\nabla v_N\|_{L^2}^2
+ +\frac1{\operatorname{Re}}\|Av_N\|_{L^2}^2
+ \leq C\operatorname{Re}\|f_N\|_{L^2}^2
+ +C\operatorname{Re}^3\|\nabla v_N\|_{L^2}^6.
+\label{eq:chap5-strong-three-dimensional-estimate}
+\end{equation}
+先研究一般情形, 再研究小数据情形.
+
+\paragraph{一般情形}
+\label{subsec:chap5-strong-three-dimensional-general}
+
+对任意 $t\in\mathbb R$, 置 $y_N(t)=\|\nabla v_N(t)\|_{L^2}^2$. 使用\eqref{eq:chap5-source-time-regularization}和\eqref{eq:chap5-strong-initial-projection}, 并对\eqref{eq:chap5-strong-three-dimensional-estimate}作时间积分, 对所有 $t\geq0$ 得
+\[
+ y_N(t)\leq\|\nabla v_0\|_{L^2}^2
+ +C\operatorname{Re}\int_0^t\|f(s)\|_{L^2}^2\,\mathrm ds
+ +C\operatorname{Re}^3\int_0^ty_N^3(s)\,\mathrm ds.
+\]
+令 $T^*>0$ 为满足下式的唯一实数:
+\begin{equation}
+ T^*=\frac1{2C\operatorname{Re}^3
+ \left(\|\nabla v_0\|_{L^2}^2
+ +C\operatorname{Re}\int_0^{T^*}\|f(s)\|_{L^2}^2\,\mathrm ds\right)^2}.
+\label{eq:chap5-strong-lifetime}
+\end{equation}
+由 Lemma~\ref{lem:chap2-bihari}, 对任意 $T<T^*$, 存在与 $N$ 无关的常数 $C(T,\|\nabla v_0\|_{L^2},\operatorname{Re},\|f\|_{L^2})$, 使对所有 $t<T$,
+\[
+ \|\nabla v_N(t)\|_{L^2}^2
+ +\frac1{\operatorname{Re}}\int_0^t\|Av_N(\tau)\|_{L^2}^2\,\mathrm d\tau
+ \leq C(T,\|\nabla v_0\|_{L^2},\operatorname{Re},\|f\|_{L^2}).
+\]
+注意当 $\|\nabla v_0\|_{L^2}$ 趋于无穷时, $T^*$ 趋于零; 当数据 $v_0$ 和 $f$ 趋于零时, 这个``寿命''趋于无穷. Subsection~\ref{subsec:chap5-strong-small-data}将详细描述后一性质.
+
+对 Stokes 问题应用正则性定理 (Proposition~\ref{thm:chap4-stokes-regularity}), 得到如下结论.
+
+\begin{Proposition}
+\label{prop:chap5-strong-three-dimensional-galerkin-bounds}
+设 $\operatorname{Re}>0$, $v_0\in V$, 且 $f\in L_{\mathrm{loc}}^2([0,+\infty[,(L^2(\Omega))^d)$. 则存在 $T^*>0$, 使对任意 $T<T^*$, 存在 $C(T,\|\nabla v_0\|_{L^2},\operatorname{Re},\|f\|_{L^2})>0$, 满足
+\begin{equation}
+ \|\nabla v_N(t)\|_{L^2}\leq C,quad\forall t\leq T,
+ \qquad
+ \int_0^T\|v_N(\tau)\|_{H^2}^2\,\mathrm d\tau\leq C.
+\label{eq:chap5-strong-three-dimensional-h2-bounds}
+\end{equation}
+\end{Proposition}
+
+现在估计非线性项 $(v_N\cdot\nabla)v_N$.
+
+\begin{Proposition}
+\label{prop:chap5-strong-nonlinear-l2-bound}
+对所有 $T<T^*$, 存在 $C>0$, 使
+\begin{equation}
+ \int_0^T\|(v_N(\tau)\cdot\nabla)v_N(\tau)\|_{L^2}^4\,\mathrm d\tau
+ \leq C,
+ \qquad\forall N\geq1.
+\label{eq:chap5-strong-nonlinear-fourth-power}
+\end{equation}
+\end{Proposition}
+
+\begin{Proof}
+由 Proposition~\ref{prop:chap3-gagliardo-nirenberg-interpolation},
+\[
+ \|(v_N\cdot\nabla)v_N\|_{L^2}^4
+ \leq\|v_N\|_{L^6}^4\|\nabla v_N\|_{L^3}^4
+ \leq\|\nabla v_N\|_{L^2}^4
+ \left(\|\nabla v_N\|_{L^2}^{1/2}\|Av_N\|_{L^2}^{1/2}\right)^4
+ \leq\|\nabla v_N\|_{L^2}^6\|Av_N\|_{L^2}^2.
+\]
+估计\eqref{eq:chap5-strong-three-dimensional-h2-bounds}即给出结论.
+\end{Proof}
+
+特别地, 这说明非线性项在 $L^2(]0,T[,(L^2(\Omega))^d)$ 中有界.
+
+\par\noindent\refstepcounter{chapterfivesectiontworemark}\textbf{Remark~\thechapterfivesectiontworemark:}\label{rem:chap5-strong-linear-lowest-regularity}
+估计 $v_N$ 的时间导数时, 在方程
+\begin{equation}
+ \frac{\mathrm dv_N}{\mathrm dt}
+ =-{}^tP_N(B(v_N,v_N))-\frac1{\operatorname{Re}}Av_N+{}^tP_N(f_N)
+\label{eq:chap5-strong-time-derivative-equation}
+\end{equation}
+中, 正则性最低的项现在是线性项, 与二维情形相反.
+
+\begin{Proposition}
+\label{prop:chap5-strong-time-derivative-l2}
+对所有 $T<T^*$, 存在 $C>0$, 使
+\begin{equation}
+ \left\|\frac{\mathrm dv_N}{\mathrm dt}\right\|_{L^2(]0,T[,(L^2(\Omega))^d)}
+ \leq C,
+ \qquad\forall N\geq1.
+\label{eq:chap5-strong-time-derivative-bound}
+\end{equation}
+\end{Proposition}
+
+\begin{Proof}
+由关于 $f$ 的假设、估计\eqref{eq:chap5-strong-three-dimensional-h2-bounds}和\eqref{eq:chap5-strong-nonlinear-fourth-power}, 以及方程\eqref{eq:chap5-strong-time-derivative-equation}, 容易得到结论.
+\end{Proof}
+
+与二维情形相同, 估计\eqref{eq:chap5-strong-three-dimensional-h2-bounds}和\eqref{eq:chap5-strong-time-derivative-bound}允许得到一个仍记为 $(v_N)_N$ 的子列, 使对所有 $T<T^*$,
+\[
+ \left\{
+ \begin{aligned}
+ v_N&\stackrel{*}{\rightharpoonup}v&&\text{于 }L^\infty(]0,T[,V),\\
+ v_N&\rightharpoonup v&&\text{于 }L^2(]0,T[,(H^2(\Omega))^d),\\
+ \frac{\mathrm dv_N}{\mathrm dt}&\rightharpoonup\frac{\mathrm dv}{\mathrm dt}&&\text{于 }L^2(]0,T[,H),\\
+ v_N&\longrightarrow v&&\text{于 }L^2(]0,T[,V).
+ \end{aligned}
+ \right.
+\]
+其中 $v$ 是\eqref{eq:chap5-navier-stokes-system}的一个解. 由此得到的 $v$ 确实是方程的强解. 正如二维情形已经看到的, 压力 $p$ 随后属于 $L^2(]0,T[,H^1(\Omega))$.
+
+\paragraph{强解的唯一性}
+\label{subsec:chap5-strong-uniqueness}
+
+设 $v_1$ 和 $v_2$ 是\eqref{eq:chap5-navier-stokes-system}关于相同初值 $v_0\in V$ 的两个强解, 并令 $v=v_2-v_1$. 对 $i\in\{1,2\}$, $(v_i\cdot\nabla)v_i$ 和 $\mathrm dv_i/\mathrm dt$ 都属于 $L^2(]0,T[,(L^2(\Omega))^d)$, 因而可把 $v_1$ 和 $v_2$ 的形式\eqref{eq:chap5-weak-time-dependent}延拓到测试函数 $\varphi\in L^2(]0,T[,V)$. 两式相减, 得对任意 $\varphi\in L^2(]0,T[,V)$,
+\begin{align*}
+ &\int_0^T\left\langle\frac{\mathrm dv}{\mathrm dt},\varphi\right\rangle_{V',V}\,\mathrm dt
+ +\frac1{\operatorname{Re}}\int_0^T\int_\Omega\nabla v:\nabla\varphi\,\mathrm dx\,\mathrm dt\\
+ &\quad+\int_0^T\int_\Omega((v_2\cdot\nabla)v)\cdot\varphi\,\mathrm dx\,\mathrm dt
+ +\int_0^T\int_\Omega((v\cdot\nabla)v_1)\cdot\varphi\,\mathrm dx\,\mathrm dt=0.
+\end{align*}
+现在对任意 $t\in]0,T[$, 可在上式取 $\varphi=\mathbf1_{[0,t]}v$. 由\eqref{eq:chap5-inertia-antisymmetry}有 $\int_\Omega((v_2\cdot\nabla)v)\cdot v\,\mathrm dx=0$, 再由 Theorem~\ref{thm:chap2-lions-magenes-product},
+\begin{align*}
+ \frac12\|v(t)\|_{L^2}^2
+ +\frac1{\operatorname{Re}}\int_0^t\|\nabla v(\tau)\|_{L^2}^2\,\mathrm d\tau
+ &\leq\frac12\|v(0)\|_{L^2}^2
+ +\int_0^t\|\nabla v_1(\tau)\|_{L^2}\|v(\tau)\|_{L^4}^2\,\mathrm d\tau\\
+ &\leq\frac12\|v(0)\|_{L^2}^2
+ +\int_0^tg(\tau)\bigl(\|v(\tau)\|_{L^2}^{1/4}
+ \|\nabla v(\tau)\|_{L^2}^{3/4}\bigr)^2\,\mathrm d\tau\\
+ &\leq\frac12\|v(0)\|_{L^2}^2
+ +\frac1{2\operatorname{Re}}\int_0^t\|\nabla v(\tau)\|_{L^2}^2\,\mathrm d\tau\\
+ &\quad+C\int_0^tg(\tau)^4\|v(\tau)\|_{L^2}^2\,\mathrm d\tau,
+\end{align*}
+其中 $g(\tau)=\|\nabla v_1(\tau)\|_{L^2}\in L^\infty(]0,T[)$, 因为 $v_1$ 是问题的强解. 因此
+\[
+ \frac12\|v(t)\|_{L^2}^2
+ \leq\frac12\|v(0)\|_{L^2}^2
+ +C\int_0^tg(\tau)^4\|v(\tau)\|_{L^2}^2\,\mathrm d\tau.
+\]
+Gronwall Lemma 给出
+\[
+ \|v(t)\|_{L^2}^2
+ \leq\|v(0)\|_{L^2}^2
+ \exp\left(2C\int_0^tg(\tau)^4\,\mathrm d\tau\right).
+\]
+但 $v(0)=v_1(0)-v_2(0)=v_0-v_0=0$, 所以上式蕴含对所有 $t$ 都有 $v(t)=0$, 从而完成唯一性的证明.
+
+实际上, 还有比上述结论更强的结果.
+
+\begin{Theorem}{Weak--strong uniqueness}
+\label{thm:chap5-weak-strong-uniqueness}
+在维数 $d=3$ 中, 设 $u$ 是满足能量不等式\eqref{eq:chap5-leray-energy-inequality}的\eqref{eq:chap5-navier-stokes-system}弱解, $v$ 是同一问题的弱解, 并且存在 $T>0$, 使
+\begin{equation}
+ v\in L^4(]0,T[,V).
+\label{eq:chap5-weak-strong-l4-condition}
+\end{equation}
+若 $u(0)=v(0)$, 则 $u$ 和 $v$ 在 $[0,T[$ 上相同.
+\end{Theorem}
+
+\begin{Proof}
+首先注意弱解 $v$ 满足能量等式\eqref{eq:chap5-strong-energy-equality}.
+
+事实上, 已经看到三维弱解满足 $\mathrm dv/\mathrm dt\in L^{4/3}(]0,T[,V')$ 且 $(v\cdot\nabla)v\in L^{4/3}(]0,T[,V')$, 因而弱形式\eqref{eq:chap5-weak-time-dependent}可延拓到测试函数 $\varphi\in L^4(]0,T[,V)$. 由假设 $v\in L^4(]0,T[,V)$, 可以在弱形式中取 $\varphi=v$, 并以通常方式得到能量等式\eqref{eq:chap5-strong-energy-equality}.
+
+此外, $v\in L^4(]0,T[,V)$, 所以容易证明 $(v\cdot\nabla)v\in L^2(]0,T[,V')$, 从而确有 $\mathrm dv/\mathrm dt\in L^2(]0,T[,V')$.
+
+由 $v\in L^4(]0,T[,V)$, 与上面相同的理由允许在解 $u$ 的弱形式\eqref{eq:chap5-weak-time-dependent}中取 $v$ 为测试函数. 同样, 可以在解 $v$ 的弱形式中取 $u\in L^2(]0,T[,V)$ 为测试函数. 因而对所有 $t\in[0,T]$,
+\[
+ \int_0^t\left\langle\frac{\mathrm du}{\mathrm dt},v\right\rangle_{V',V}\,\mathrm d\tau
+ +\frac1{\operatorname{Re}}\int_0^t\int_\Omega\nabla u:\nabla v\,\mathrm dx\,\mathrm d\tau
+ +\int_0^t\int_\Omega((u\cdot\nabla)u)\cdot v\,\mathrm dx\,\mathrm d\tau
+ =\int_0^t\langle f,v\rangle_{H^{-1},H_0^1}\,\mathrm d\tau,
+\]
+以及
+\[
+ \int_0^t\left\langle\frac{\mathrm dv}{\mathrm dt},u\right\rangle_{V',V}\,\mathrm d\tau
+ +\frac1{\operatorname{Re}}\int_0^t\int_\Omega\nabla v:\nabla u\,\mathrm dx\,\mathrm d\tau
+ +\int_0^t\int_\Omega((v\cdot\nabla)v)\cdot u\,\mathrm dx\,\mathrm d\tau
+ =\int_0^t\langle f,u\rangle_{H^{-1},H_0^1}\,\mathrm d\tau.
+\]
+对非线性项作纯代数计算, 并应用 Theorem~\ref{thm:chap2-lions-magenes-product}. 若记 $w=u-v$, 将上两式相加后得到
+\begin{align}
+ (u(t),v(t))_H
+ +\frac2{\operatorname{Re}}\int_0^t\int_\Omega\nabla u:\nabla v\,\mathrm dx\,\mathrm d\tau
+ &=(u(0),v(0))_H\notag\\
+ &\quad+\int_0^t\langle f,u+v\rangle_{H^{-1},H_0^1}\,\mathrm d\tau\notag\\
+ &\quad-\int_0^t\int_\Omega((w\cdot\nabla)w)\cdot v\,\mathrm dx\,\mathrm d\tau.
+\label{eq:chap5-weak-strong-cross-energy}
+\end{align}
+解 $u$ 的能量不等式和解 $v$ 的能量等式可写为
+\begin{equation}
+ (u(t),u(t))_H+\frac2{\operatorname{Re}}\int_0^t\|\nabla u\|_{L^2}^2\,\mathrm d\tau
+ \leq(u(0),u(0))_H+2\int_0^t\langle f,u\rangle_{H^{-1},H_0^1}\,\mathrm d\tau,
+\label{eq:chap5-weak-strong-u-energy}
+\end{equation}
+和
+\begin{equation}
+ (v(t),v(t))_H+\frac2{\operatorname{Re}}\int_0^t\|\nabla v\|_{L^2}^2\,\mathrm d\tau
+ =(v(0),v(0))_H+2\int_0^t\langle f,v\rangle_{H^{-1},H_0^1}\,\mathrm d\tau.
+\label{eq:chap5-weak-strong-v-energy}
+\end{equation}
+作\eqref{eq:chap5-weak-strong-u-energy}$+$\eqref{eq:chap5-weak-strong-v-energy}$-2\times$\eqref{eq:chap5-weak-strong-cross-energy}, 得
+\[
+ \|w(t)\|_{L^2}^2+\frac2{\operatorname{Re}}\int_0^t\|\nabla w(\tau)\|_{L^2}^2\,\mathrm d\tau
+ \leq\|w(0)\|_{L^2}^2
+ +2\int_0^t\int_\Omega((w\cdot\nabla)w)\cdot v\,\mathrm dx\,\mathrm d\tau.
+\]
+由假设 $w(0)=u(0)-v(0)=0$. 使用 Proposition~\ref{prop:chap3-gagliardo-nirenberg-interpolation}中的 Sobolev 不等式和 Young 不等式,
+\begin{align*}
+ \|w(t)\|_{L^2}^2+\frac2{\operatorname{Re}}\int_0^t\|\nabla w(\tau)\|_{L^2}^2\,\mathrm d\tau
+ &\leq2\int_0^t\|w(\tau)\|_{L^3}\|\nabla w(\tau)\|_{L^2}\|v(\tau)\|_{L^6}\,\mathrm d\tau\\
+ &\leq C\int_0^t\|w(\tau)\|_{L^2}^{1/2}
+ \|\nabla w(\tau)\|_{L^2}^{3/2}\|\nabla v(\tau)\|_{L^2}\,\mathrm d\tau\\
+ &\leq\frac1{\operatorname{Re}}\int_0^t\|\nabla w(\tau)\|_{L^2}^2\,\mathrm d\tau
+ +C\int_0^t\|w(\tau)\|_{L^2}^2\|\nabla v(\tau)\|_{L^2}^4\,\mathrm d\tau.
+\end{align*}
+特别地, 对所有 $t\in[0,T]$,
+\[
+ \|w(t)\|_{L^2}^2\leq C\int_0^t\|w(\tau)\|_{L^2}^2\|\nabla v(\tau)\|_{L^2}^4\,\mathrm d\tau.
+\]
+由假设 $\nabla v\in L^4(]0,T[,(L^2(\Omega))^{d\times d})$, Gronwall Lemma 给出结论.
+\end{Proof}
+
+\par\noindent\refstepcounter{chapterfivesectiontworemark}\textbf{Remark~\thechapterfivesectiontworemark:}\label{rem:chap5-weak-strong-remarks}
+\begin{itemize}
+ \item 若 $v$ 是上面构造的强解, 则对所有 $T<T^*$ 有 $v\in L^\infty(]0,T[,V)\subset L^4(]0,T[,V)$, 因而满足 Theorem~\ref{thm:chap5-weak-strong-uniqueness} 的假设.
+ \item 必须假设弱解 $u$ 满足能量不等式\eqref{eq:chap5-leray-energy-inequality}. 正如已经指出的, 唯一能够确定满足该不等式的弱解是由上述 Galerkin 方法构造的弱解. 三维弱解没有唯一性结果, 所以不能保证任何其他可能的弱解都满足这个能量不等式.
+\end{itemize}
+
+存在许多结果从适当的先验估计出发, 证明三维弱解的正则性和/或唯一性. 下面不加证明地给出一个例子 (见原书文献 \MBUnresolvedReference{bib:source-106-107-116-115}{[106, 107, 116, 115]}).
+
+\begin{Theorem}
+\label{thm:chap5-prodi-serrin-condition}
+设 $\Omega$ 是 $\mathbb R^3$ 中的有界区域, $v$ 是定义于时间区间 $]0,T[$ 上的任意 Navier--Stokes 弱解. 若对某些 $r,s$,
+\begin{equation}
+ v\in L^r(]0,T[,(L^s(\Omega))^3),
+\label{eq:chap5-prodi-serrin-space}
+\end{equation}
+且
+\begin{equation}
+ \frac2r+\frac3s=1,
+ \qquad 3<s\leq\infty,
+\label{eq:chap5-prodi-serrin-exponents}
+\end{equation}
+则 $v$ 满足能量等式\eqref{eq:chap5-strong-energy-equality}. 此外, 若 $2/r+3/s<1$, 则 $v$ 在 $]0,T[\times\Omega$ 中光滑. 最后, 若 $u$ 是与 $v$ 具有相同初值并满足能量不等式\eqref{eq:chap5-leray-energy-inequality}的弱解, 则 $u=v$.
+\end{Theorem}
+
+\par\noindent\refstepcounter{chapterfivesectiontworemark}\textbf{Remark~\thechapterfivesectiontworemark:}\label{rem:chap5-prodi-serrin-explanation}
+可以直观理解为什么条件\eqref{eq:chap5-prodi-serrin-exponents}在该理论中起关键作用. 任意弱解 $v$ 按定义满足
+\[
+ v\in L^2(]0,T[,(H^1(\Omega))^3)\subset L^2(]0,T[,(L^6(\Omega))^3),
+ \qquad
+ v\in L^\infty(]0,T[,(L^2(\Omega))^3).
+\]
+这不足以保证非线性项 $(v\cdot\nabla)v$ 属于空间
+\[
+ X=L^2(]0,T[,V)\cap L^\infty(]0,T[,H)
+\]
+的对偶, 而这是得到能量等式的基本性质. 现在说明附加假设\eqref{eq:chap5-prodi-serrin-space}和\eqref{eq:chap5-prodi-serrin-exponents}恰好蕴含非线性项的这种正则性.
+
+给定 $w\in L^2(]0,T[,V)\cap L^\infty(]0,T[,H)$, 先对空间变量使用 Hölder 不等式:
+\[
+ \left|\int_\Omega(v\cdot\nabla)v\cdot w\,\mathrm dx\right|
+ \leq\|v\|_{L^s}\|\nabla v\|_{L^2}
+ \|w\|_{L^2}^{1-\theta}\|w\|_{L^6}^{\theta},
+\]
+其中 $\theta\in[0,1]$ 由
+\[
+ \frac\theta6+\frac{1-\theta}2=\frac12-\frac1s,
+ \qquad\text{即}\qquad\theta=\frac3s
+\]
+定义. 再对时间变量使用 Hölder 不等式,
+\begin{align*}
+ \left|\int_0^T\int_\Omega(v\cdot\nabla)v\cdot w\,\mathrm dx\,\mathrm dt\right|
+ &\leq\|v\|_{L^r(]0,T[,L^s)}\|\nabla v\|_{L^2(]0,T[,L^2)}
+ \|w\|_{L^\infty(]0,T[,L^2)}^{1-\theta}
+ \|w\|_{L^{2r\theta/(r-2)}(]0,T[,L^6)}^\theta.
+\end{align*}
+条件\eqref{eq:chap5-prodi-serrin-exponents}恰好给出
+\[
+ \theta=\frac3s=1-\frac2r=\frac{r-2}r,
+ \qquad
+ \frac{2r\theta}{r-2}=2.
+\]
+因此
+\[
+ \left|\int_0^T\int_\Omega(v\cdot\nabla)v\cdot w\,\mathrm dx\,\mathrm dt\right|
+ \leq\|v\|_{L^r(]0,T[,L^s)}\|\nabla v\|_{L^2(]0,T[,L^2)}
+ \|w\|_{L^\infty(]0,T[,L^2)}^{1-\theta}
+ \|w\|_{L^2(]0,T[,L^6)}^\theta
+ \leq C_v\|w\|_X.
+\]
+这就证明了所声称的 $(v\cdot\nabla)v\in X'$.
+
+\paragraph{小数据情形}
+\label{subsec:chap5-strong-small-data}
+
+在\eqref{eq:chap5-strong-lifetime}中已经得到解寿命的下界. 该下界似乎表明, 数据越小, 寿命越长. 本小节的目标是证明, 在三维中, 若外力 $f$、Reynolds 数 $\operatorname{Re}$ 和初值 $v_0$ 充分小, 则 $T^*=+\infty$, 即与数据 $(v_0,f)$ 相联系的强解实际上是全局的. 先给出一个关于一类非线性微分不等式的初等结果.
+
+\begin{Lemma}
+\label{lem:chap5-nonlinear-small-data}
+设 $z$ 是非负的 $C^1$ 实值函数, 在时间区间 $[0,T[$ 上满足
+\[
+ z'(t)+\alpha z(t)\leq\beta+\gamma z(t)^3,
+ \qquad z(0)=z_0,
+\]
+其中 $0<T<+\infty$, 且 $\alpha,\beta,\gamma,z_0$ 是非负实数. 若
+\[
+ z_0\leq\frac12\sqrt{\frac\alpha{2\gamma}},
+ \qquad
+ \beta\leq\frac\alpha4\sqrt{\frac\alpha{2\gamma}},
+\]
+则
+\[
+ z(t)\leq\sqrt{\frac\alpha{2\gamma}},
+ \qquad\forall t\in[0,T[.
+\]
+\end{Lemma}
+
+\begin{Proof}
+设 $z_0\leq\frac12\sqrt{\alpha/(2\gamma)}$. 因为 $t\mapsto z(t)$ 连续, 存在最大时间 $T_1\in]0,T]$, 使 $z(t)$ 在 $[0,T_1[$ 上保持不超过 $\sqrt{\alpha/(2\gamma)}$. 若 $T_1=T$, Lemma 得证. 因此假设 $T_1<T$, 并证明这导致矛盾.
+
+对 $t\leq T_1$, $\gamma z(t)^2-\alpha\leq-\alpha/2$, 从而
+\[
+ z'(t)\leq\beta+z(t)(\gamma z(t)^2-\alpha)
+ \leq\beta-\frac\alpha2z(t).
+\]
+由 Lemma~\ref{lem:chap2-linear-decay}, 对所有 $t\leq T_1$,
+\[
+ z(t)\leq z_0e^{-\alpha t/2}+\frac{2\beta}\alpha.
+\]
+利用关于 $z_0,\alpha,\beta$ 的假设,
+\[
+ z(T_1)\leq z_0e^{-\alpha T_1/2}+\frac12\sqrt{\frac\alpha{2\gamma}}
+ <\sqrt{\frac\alpha{2\gamma}}.
+\]
+由连续性, 存在 $\varepsilon>0$, 使对所有 $t\in[T_1,T_1+\varepsilon]$ 仍有 $z(t)\leq\sqrt{\alpha/(2\gamma)}$, 与 $T_1$ 的定义矛盾.
+\end{Proof}
+
+\begin{Proof}
+\textit{(of Theorem~\ref{thm:chap5-global-strong-small-data})}\quad
+由 Proposition~\ref{prop:chap4-stokes-poincare-optimal}, 不等式\eqref{eq:chap5-strong-three-dimensional-estimate}给出
+\[
+ \frac{\mathrm d}{\mathrm dt}\|\nabla v_N(t)\|_{L^2}^2
+ +\frac{\lambda_1}{\operatorname{Re}}\|\nabla v_N(t)\|_{L^2}^2
+ \leq C\operatorname{Re}\|f_N\|_{L^2}^2
+ +C\operatorname{Re}^3\|\nabla v_N(t)\|_{L^2}^6
+\]
+以及
+\[
+ \frac{\mathrm d}{\mathrm dt}\|\nabla v_N(t)\|_{L^2}^2
+ +\frac{\lambda_1}{\operatorname{Re}}\|\nabla v_N(t)\|_{L^2}^2
+ \leq C\operatorname{Re}\|f\|_{L^\infty(\mathbb R^+,L^2)}^2
+ +C\operatorname{Re}^3\|\nabla v_N(t)\|_{L^2}^6.
+\]
+应用前一个 Lemma, 可知在
+\[
+ \|\nabla v_0\|_{L^2}^2\leq\frac{C(\Omega)}{\operatorname{Re}^2},
+ \qquad
+ \|f\|_{L^\infty(\mathbb R^+,L^2)}^2\leq\frac{C(\Omega)}{\operatorname{Re}^4}
+\]
+的假设下, 不会发生有限时间爆破. 这里 $C(\Omega)$ 依赖于 $\lambda_1$ 和开集 $\Omega$ 上的 Sobolev 常数. 因而 $T_N=+\infty$, 且序列 $(\nabla v_N)_N$ 在 $L^\infty(\mathbb R^+,(L^2(\Omega))^{d\times d})$ 中有界. 证明完成.
+\end{Proof}
+
+\subsubsection{抛物型正则性性质}
+\label{subsec:chap5-parabolic-regularity}
+
+\begin{Theorem}
+\label{thm:chap5-parabolic-regularity}
+设 $\Omega$ 是 $\mathbb R^d$ 中连通的有界 $C^{k,1}$ 区域, 其中 $k\geq1$. 设 $\operatorname{Re}>0$, $v_0\in V$, 且 $f\in L_{\mathrm{loc}}^2([0,+\infty[,(L^2(\Omega))^d)$. 由 Theorem~\ref{thm:chap5-strong-solutions}, 存在 $0<T^*\leq+\infty$ 以及唯一二元组 $(v,p)$, 其中 $m(p)=0$, 它是初值 $v_0$ 所对应的 Navier--Stokes 方程\eqref{eq:chap5-navier-stokes-system}的强解.
+
+现在进一步假设
+\[
+ v_0\in(H^k(\Omega))^d,
+\]
+且对所有 $s\leq k/2$,
+\[
+ \frac{\partial^sf}{\partial t^s}
+ \in L^2(]0,T[,(H^{k-2s-1}(\Omega))^d).
+\]
+若数据在边界上满足证明中详述的兼容性条件\eqref{eq:chap5-parabolic-compatibility}, 则 Navier--Stokes 方程的解 $(v,p)$ 具有以下正则性:
+\[
+ \frac{\partial^sv}{\partial t^s}
+ \in L^\infty(]0,T[,(H^{k-2s}(\Omega))^d\cap V),
+ \qquad\forall s\in\mathbb N, s\leq\frac k2,
+\]
+\[
+ \frac{\partial^sv}{\partial t^s}
+ \in L^2(]0,T[,(H^{k-2s+1}(\Omega))^d\cap V),
+ \qquad\forall s\in\mathbb N, s\leq\frac k2,
+\]
+\[
+ \frac{\partial^sv}{\partial t^s}
+ \in L^2(]0,T[,V_{k-2s+1}),
+ \qquad s=E\!\left(\frac k2+1\right),
+\]
+\[
+ \frac{\partial^sp}{\partial t^s}
+ \in L^\infty(]0,T[,H^{k-2s-1}(\Omega)),
+ \qquad\forall s\in\mathbb N, s\leq\frac k2-1,
+\]
+以及
+\[
+ \frac{\partial^sp}{\partial t^s}
+ \in L^2(]0,T[,H^{k-2s}(\Omega)),
+ \qquad\forall s\in\mathbb N, s<\frac k2.
+\]
+这里 $E$ 表示整数部分.
+\end{Theorem}
+
+在证明这个 Theorem 之前, 先陈述并证明其一个直接 Corollary.
+
+\begin{Corollary}
+\label{cor:chap5-parabolic-time-continuity}
+在前一个 Theorem 的条件下,
+\[
+ \frac{\partial^sv}{\partial t^s}
+ \in C^0([0,T],(H^{k-2s}(\Omega))^d\cap V),
+ \qquad\forall s\in\mathbb N, s<\frac k2,
+\]
+\[
+ \frac{\partial^sv}{\partial t^s}\in C^0([0,T],H),
+ \qquad\text{若 }s=\frac k2\in\mathbb N,
+\]
+以及
+\[
+ \frac{\partial^sp}{\partial t^s}
+ \in C^0([0,T],H^{k-2s-1}(\Omega)),
+ \qquad\forall s\in\mathbb N, s<\frac k2-1.
+\]
+\end{Corollary}
+
+\begin{Proof}
+\textit{(of Corollary~\ref{cor:chap5-parabolic-time-continuity})}\quad
+只需使用前一个 Theorem 的结果以及 Corollary~\ref{thm:chap2-lions-magenes-continuity-h} (或 Theorem~\ref{thm:chap4-stokes-time-continuity}).
+\end{Proof}
+
+\begin{Proof}
+\textit{(of Theorem~\ref{thm:chap5-parabolic-regularity})}\quad
+为简化计算, 在以下证明中令 Reynolds 数等于 $1$, 从而 $(v,p)$ 满足
+\[
+ \left\{
+ \begin{aligned}
+ \frac{\partial v}{\partial t}+(v\cdot\nabla)v-\Delta v+\nabla p&=f&&\text{于 }\Omega,\\
+ \operatorname{div}v&=0&&\text{于 }\Omega,\\
+ v&=0&&\text{于 }\partial\Omega.
+ \end{aligned}
+ \right.
+\]
+下面照例对这些方程作形式能量估计. 完整证明应当在解的 Galerkin 逼近上作这些估计 (只要区域充分正则, 逼近解便可以任意正则), 然后取极限. 这一过程现在已经是标准的, 细节留作读者练习.
+
+此外, 为保持计算易读, 在证明结束前记
+\[
+ v^{(s)}=\frac{\partial^sv}{\partial t^s},
+ \qquad p^{(s)}=\frac{\partial^sp}{\partial t^s},
+ \qquad f^{(s)}=\frac{\partial^sf}{\partial t^s}.
+\]
+采用归纳法. $k=1$ 的情形只是 Theorem~\ref{thm:chap5-strong-solutions}所得正则性的另一种表述. 设 $k\geq2$, 假设所需结果直到阶 $k-1$ 均成立, 并证明阶 $k$ 的结果. 证明随 $k$ 的奇偶性而不同.
+
+\begin{itemize}
+ \item \textbf{第一种情形: $k$ 为奇数.}
+
+ 写 $k=2S+1$. 对每个 $0\leq s\leq S$, 把方程关于时间求 $s$ 次导数:
+ \begin{equation}
+ \frac{\partial v^{(s)}}{\partial t}-\Delta v^{(s)}
+ +\sum_{r=0}^s\binom sr(v^{(r)}\cdot\nabla)v^{(s-r)}
+ +\nabla p^{(s)}=f^{(s)}.
+ \label{eq:chap5-parabolic-differentiated-equation}
+ \end{equation}
+ 特别地, 在 $t=0$ 时, 对所有 $s\leq S$,
+ \[
+ v_0^{(s)}=v^{(s)}|_{t=0}
+ =\left.\frac{\partial v^{(s-1)}}{\partial t}\right|_{t=0}
+ =\Delta v_0^{(s-1)}
+ -\sum_{r=0}^{s-1}\binom{s-1}r(v_0^{(r)}\cdot\nabla)v_0^{(s-1-r)}
+ -\nabla p_0^{(s-1)}+f_0^{(s-1)}.
+ \]
+ 将该方程投影到无散度向量场集合, 得
+ \begin{equation}
+ v_0^{(s)}=-Av_0^{(s-1)}
+ -\sum_{r=0}^{s-1}\binom{s-1}rP\bigl((v_0^{(r)}\cdot\nabla)v_0^{(s-1-r)}\bigr)
+ +Pf_0^{(s-1)}.
+ \label{eq:chap5-parabolic-initial-recursion}
+ \end{equation}
+ 这些等式确实有意义. 因为已经假设阶 $k-1$ 的结果成立, 可对阶 $k-1$ 应用 Corollary~\ref{cor:chap5-parabolic-time-continuity}, 从而对所有 $s\leq S$, $v^{(s)}$ 在 $t=0$ 的迹都已定义. 同样, 关于 $f$ 及其所有时间导数的正则性假设表明 $f_0^{(s)}$ 确实有定义, 且
+ \[
+ f_0^{(s)}\in(H^{k-2s-2}(\Omega))^d.
+ \]
+ 由 $v_0\in(H^k(\Omega))^d$ 和方程\eqref{eq:chap5-parabolic-initial-recursion}, 立即归纳可得对所有 $s\leq S$,
+ \begin{equation}
+ v_0^{(s)}\in(H^{k-2s}(\Omega))^d.
+ \label{eq:chap5-parabolic-initial-regularity}
+ \end{equation}
+ 这里使用了 Stokes 算子从 $(H^t(\Omega))^d$ 映到 $(H^{t-2}(\Omega))^d$ 的事实, 以及如下乘积性质: 两个分别属于 $H^{s_1}$ 和 $H^{s_2}$ 的函数 ($s_1,s_2>0$) 的乘积属于 $H^s$, 其中 $s=\min(s_1,s_2)$; 只有 $s_1=s_2=1$ 时取 $s=0$. 该结果的简单证明留给读者.
+
+ 现在给出为获得任意阶正则性所需的兼容性条件. 直观上, 由于 $v$ 在边界上为零, 若 $v$ 足够正则, 则 $v^{(s)}$ 在边界上也必须为零. 例如, 若希望 $v^{(s)}$ 连续到 $t=0$ 且取值于 $(H^1(\Omega))^d$, 就必须有 $v_0^{(s)}=0$ 于 $\partial\Omega$. 因而下文总假设由方程\eqref{eq:chap5-parabolic-initial-recursion}递归定义的 $v_0^{(s)}$ 满足
+ \begin{equation}
+ v_0^{(s)}=0\qquad\text{于 }\partial\Omega.
+ \label{eq:chap5-parabolic-compatibility}
+ \end{equation}
+ 在该假设下, 在\eqref{eq:chap5-parabolic-initial-regularity}中取 $s=S$, 特别得到
+ \[
+ v_0^{(S)}\in V.
+ \]
+ 回到 $s=S$ 时的方程\eqref{eq:chap5-parabolic-differentiated-equation}; 现在初值属于 $V$. 因而以 $Av^{(S)}$ 乘该方程并分部积分, 得能量估计
+ \begin{equation}
+ \frac12\frac{\mathrm d}{\mathrm dt}\|\nabla v^{(S)}\|_{L^2}^2
+ +\|Av^{(S)}\|_{L^2}^2
+ \leq\frac12\|Av^{(S)}\|_{L^2}^2
+ +C\sum_{r=0}^S\|(v^{(r)}\cdot\nabla)v^{(S-r)}\|_{L^2}^2
+ +C\|f^{(S)}\|_{L^2}^2.
+ \label{eq:chap5-parabolic-top-energy}
+ \end{equation}
+ 由归纳假设, 对所有 $r\leq S$,
+ \[
+ v^{(r)}\in L^\infty(]0,T[,(H^{k-2r-1}(\Omega))^d\cap V)
+ \cap L^2(]0,T[,(H^{k-2r}(\Omega))^d\cap V).
+ \]
+ 特别地, 对所有 $r\leq S-1$,
+ \begin{equation}
+ \left\{
+ \begin{aligned}
+ v^{(r)}&\in L^\infty(]0,T[,(H^2(\Omega))^d\cap V)
+ \cap L^2(]0,T[,(H^3(\Omega))^d\cap V),\\
+ v^{(S)}&\in L^\infty(]0,T[,H)\cap L^2(]0,T[,V).
+ \end{aligned}
+ \right.
+ \label{eq:chap5-parabolic-induction-bounds}
+ \end{equation}
+ 因而把 $r=S$ 的情形分离出来, 可估计\eqref{eq:chap5-parabolic-top-energy}中的非线性项:
+ \begin{align*}
+ \sum_{r=0}^S\|(v^{(r)}\cdot\nabla)v^{(S-r)}\|_{L^2}^2
+ &\leq\sum_{r=0}^{S-1}\|v^{(r)}\|_{L^\infty}^2
+ \|\nabla v^{(S-r)}\|_{L^2}^2
+ +\|v^{(S)}\|_{L^4}^2\|\nabla v^{(0)}\|_{L^4}^2\\
+ &\leq C\sum_{r=0}^{S-1}\|v^{(r)}\|_{H^2}^2
+ \|v^{(S-r)}\|_{H^1}^2
+ +\|v^{(S)}\|_{H^1}^2\|v^{(0)}\|_{H^1}^2\\
+ &\leq k_1(t)+k_2(t)\|\nabla v^{(S)}\|_{L^2}^2,
+ \end{align*}
+ 其中由\eqref{eq:chap5-parabolic-induction-bounds}, $k_1,k_2\in L^1(]0,T[)$. 最后, \eqref{eq:chap5-parabolic-top-energy}给出
+ \[
+ \frac{\mathrm d}{\mathrm dt}\|\nabla v^{(S)}\|_{L^2}^2
+ +\|Av^{(S)}\|_{L^2}^2
+ \leq C\|f^{(S)}\|_{L^2}^2+Ck_1(t)
+ +Ck_2(t)\|\nabla v^{(S)}\|_{L^2}^2.
+ \]
+ 使用 Gronwall Lemma 可得
+ \[
+ v^{(S)}\in L^\infty(]0,T[,V)\cap L^2(]0,T[,(H^2(\Omega))^d\cap V).
+ \]
+ 这证明了断言的第一部分.
+
+ 将 $s=S$ 代入方程\eqref{eq:chap5-parabolic-differentiated-equation}, 投影到无散度向量场集合后,
+ \[
+ v^{(S+1)}=\frac{\partial v^{(S)}}{\partial t}
+ =-Av^{(S)}-\sum_{r=0}^S\binom SrP\bigl((v^{(r)}\cdot\nabla)v^{(S-r)}\bigr)+Pf^{(S)}.
+ \]
+ 由关于 $f^{(s)}$ 的假设和刚得到的结果, 立即有
+ \[
+ v^{(S+1)}\in L^\infty(]0,T[,V')\cap L^2(]0,T[,H).
+ \]
+ 还可以把 $s=S$ 的方程\eqref{eq:chap5-parabolic-differentiated-equation}改写为
+ \[
+ Av^{(S)}=-\Delta v^{(S)}+\nabla p^{(S)}
+ =f^{(S)}-\frac{\partial v^{(S)}}{\partial t}
+ +\sum_{r=0}^S\binom Sr(v^{(r)}\cdot\nabla)v^{(S-r)}.
+ \]
+ 这把 $(v^{(S)},p^{(S)})$ 看作某个类 Stokes 问题的解. 关于 $v^{(S+1)}$ 的结果和关于 $f$ 的假设表明, 该类 Stokes 问题的源项属于 $L^\infty(]0,T[,V')\cap L^2(]0,T[,(L^2(\Omega))^d)$. 使用 Stokes 问题的正则性定理 (Proposition~\ref{thm:chap4-stokes-regularity}) 以及 $A$ 是从 $V$ 到 $V'$ 的同构这一事实, 得
+ \[
+ v^{(S)}\in L^\infty(]0,T[,V)\cap L^2(]0,T[,(H^2(\Omega))^d\cap V),
+ \qquad
+ p^{(S)}\in L^2(]0,T[,H^1(\Omega)).
+ \]
+ 证明的结尾现在很清楚. 从 $s=S$ 到 $s=0$ 作反向归纳, 每次把 $(v^{(s)},p^{(s)})$ 写成 Stokes 问题
+ \[
+ -\Delta v^{(s)}+\nabla p^{(s)}
+ =f^{(s)}-\frac{\partial v^{(s)}}{\partial t}
+ +\sum_{r=0}^s\binom sr(v^{(r)}\cdot\nabla)v^{(s-r)}
+ \]
+的解, 其中源项的正则性由第 $s+1$ 阶结果给出. 这就完成了 $k$ 为奇数时的证明.
+
+ \item \textbf{第二种情形: $k$ 为偶数.}
+
+ 写 $k=2S$. 原理与前一种情形完全相同, 证明也相当简单, 故不再详述. 首先, 证明的第一部分完全相同, 因而\eqref{eq:chap5-parabolic-initial-regularity}仍成立. 但现在 $k=2S$, 所以只有
+ \[
+ v_0^{(S)}\in H.
+ \]
+ 因此可以对 $s=S$ 的方程\eqref{eq:chap5-parabolic-differentiated-equation}作 $L^2$ 估计. 以 $v^{(S)}$ 乘方程并分部积分, 得
+ \begin{align*}
+ \frac12\frac{\mathrm d}{\mathrm dt}\|v^{(S)}\|_{L^2}^2
+ +\|\nabla v^{(S)}\|_{L^2}^2
+ &\leq\frac12\|\nabla v^{(S)}\|_{L^2}^2
+ +\frac12\|f^{(S)}\|_{H^{-1}}^2\\
+ &\quad+C\sum_{r=0}^S
+ \left|\int_\Omega(v^{(r)}\cdot\nabla)v^{(S-r)}\cdot v^{(S)}\,\mathrm dx\right|.
+ \end{align*}
+ 与 $r=0$ 对应的非线性项由性质\eqref{eq:chap5-inertia-antisymmetry}为零. 对 $1\leq r\leq S$ 的非线性项, 使用阶 $k-1$ 的归纳假设, 与 $k$ 为奇数时同样估计. 此外, 关于 $f$ 的假设说明 $f^{(S)}\in L^2(]0,T[,(H^{-1}(\Omega))^d)$. 最终得到
+ \[
+ v^{(S)}\in L^\infty(]0,T[,H)\cap L^2(]0,T[,V).
+ \]
+ 证明的结尾完全相同: 通过按 $s$ 递减归纳, 把 $(v^{(s)},p^{(s)})$ 写成源项正则性已知的 Stokes 问题的解, 从而得到 $v^{(s)}$ 和 $p^{(s)}$ 的各项正则性.
+\end{itemize}
+\end{Proof}
+
+\subsubsection{关于时间的正则化}
+\label{subsec:chap5-time-regularization}
+
+如同非退化抛物型问题 (最简单的模型是热方程), Navier--Stokes 方程的弱解会随时间正则化. 更准确地说, 在二维情形中, 若开集 $\Omega$ 属于 $C^\infty$ 类且数据 $f$ 足够光滑, 则从初值 $v_0\in H$ 出发的解对所有 $k$ 满足
+\[
+ v\in C^\infty(]0,T[,V\cap(H^k(\Omega))^d),
+\]
+而这样的正则性在整个区间 $[0,T[$ 上肯定不成立.
+
+该性质体现了扩散现象的不可逆性. 不要误以为三维弱解也会如此! 事实上, 由于这类解没有唯一性, 不可能期望如下形式的结果具有物理意义: ``在某些假设下, 存在随时间自行正则化的弱解.'' 相反, 若考虑三维局部强解, 它们也会在解存在的整个时间区间内随时间正则化.
+
+这里只在 $k\leq2$ 且 $f$ 与时间无关时建立该现象. 更一般的情形可把下面的证明与前一小节证明 Theorem~\ref{thm:chap5-parabolic-regularity}所用的方法结合起来得到.
+
+为得到结果, 采用 Galerkin 逼近并对逼近解作下列估计. 这个繁琐步骤读者已经熟悉, 原书予以省略; 以下只作形式计算.
+
+\begin{Theorem}
+\label{thm:chap5-time-regularization}
+设 $\Omega$ 是 $\mathbb R^2$ 中连通的有界 $C^{1,1}$ 区域, $\operatorname{Re}>0$, $v_0\in H$, 且 $f\in(L^2(\Omega))^d$ 与时间无关. 则对所有 $\varepsilon>0$, Navier--Stokes 方程的唯一弱解 $(v,p)$ 满足
+\[
+ v\in C^1([\varepsilon,+\infty[,H)
+ \cap C^0([\varepsilon,+\infty[,V)
+ \cap L_{\mathrm{loc}}^2(]\varepsilon,+\infty[,V\cap(H^2(\Omega))^d),
+\]
+且
+\[
+ p\in L_{\mathrm{loc}}^2([\varepsilon,+\infty[,H^1(\Omega)).
+\]
+\end{Theorem}
+
+\begin{Proof}
+为简化记号, 下文以 $\dot v$ 表示 $v$ 对时间的导数. 固定与时间无关的 $\psi\in V$. 几乎处处有
+\[
+ \langle\dot v,\psi\rangle_{V',V}
+ +\frac1{\operatorname{Re}}\int_\Omega\nabla v:\nabla\psi\,\mathrm dx
+ +\int_\Omega((v\cdot\nabla)v)\cdot\psi\,\mathrm dx
+ =\int_\Omega f\cdot\psi\,\mathrm dx.
+\]
+乘以 $t$ 后对时间求导, 并引入 $w=t\dot v$, 得
+\begin{align*}
+ \left\langle\frac{\mathrm dw}{\mathrm dt},\psi\right\rangle_{V',V}
+ &+\frac1{\operatorname{Re}}\int_\Omega\nabla w:\nabla\psi\,\mathrm dx
+ +\frac1{\operatorname{Re}}\int_\Omega\nabla v:\nabla\psi\,\mathrm dx\\
+ &+\int_\Omega((w\cdot\nabla)v)\cdot\psi\,\mathrm dx
+ +\int_\Omega((v\cdot\nabla)w)\cdot\psi\,\mathrm dx
+ +\int_\Omega((v\cdot\nabla)v)\cdot\psi\,\mathrm dx
+ =\int_\Omega f\cdot\psi\,\mathrm dx.
+\end{align*}
+在该恒等式中取 $\psi=w(t)$. 由\eqref{eq:chap5-inertia-antisymmetry}, $\int_\Omega((v\cdot\nabla)w)\cdot w\,\mathrm dx=0$. 因此 $w$ 满足能量估计
+\begin{align*}
+ \frac12\frac{\mathrm d}{\mathrm dt}\|w\|_{L^2}^2
+ +\frac1{\operatorname{Re}}\|\nabla w\|_{L^2}^2
+ &=-\frac1{\operatorname{Re}}\int_\Omega\nabla v:\nabla w\,\mathrm dx
+ -\int_\Omega((w\cdot\nabla)v)\cdot w\,\mathrm dx\\
+ &\quad-\int_\Omega((v\cdot\nabla)v)\cdot w\,\mathrm dx
+ +\int_\Omega f\cdot w\,\mathrm dx\\
+ &\leq\frac1{\operatorname{Re}}\|\nabla v\|_{L^2}\|\nabla w\|_{L^2}
+ +C\|\nabla v\|_{L^2}\|w\|_{L^2}\|\nabla w\|_{L^2}\\
+ &\quad+C\|v\|_{L^2}^{1/2}\|\nabla v\|_{L^2}^{3/2}
+ \|w\|_{L^2}^{1/2}\|\nabla w\|_{L^2}^{1/2}
+ +\|f\|_{L^2}\|w\|_{L^2}\\
+ &\leq g(t)\|w\|_{L^2}^2+h(t)
+ +\frac1{2\operatorname{Re}}\|\nabla w\|_{L^2}^2,
+\end{align*}
+其中对固定 $T>0$, $g,h\in L^1(]0,T[)$, 因为 $v$ 是问题的弱解并满足相应能量估计. 因此
+\[
+ \frac{\mathrm d}{\mathrm dt}\|w\|_{L^2}^2
+ +\frac1{\operatorname{Re}}\|\nabla w\|_{L^2}^2
+ \leq2g(t)\|w\|_{L^2}^2+2h(t).
+\]
+由于 $w(0)=0$, 由 Gronwall Lemma 可知对所有 $T>0$,
+\[
+ w\in L^\infty(]0,T[,H)\cap L^2(]0,T[,V).
+\]
+与 Leray Theorem~\ref{thm:chap5-leray}的证明相同, 这以经典方式蕴含
+\[
+ \frac{\mathrm dw}{\mathrm dt}\in L^2(]0,T[,V').
+\]
+由 Corollary~\ref{thm:chap2-lions-magenes-continuity-h},
+\[
+ w\in C^0([0,T],H).
+\]
+但 $w=t\,\mathrm dv/\mathrm dt$, 所以对所有 $\varepsilon>0$ 和 $T>0$,
+\[
+ v\in C^1([\varepsilon,T],H)\cap C^0([\varepsilon,T],V).
+\]
+由于 $v(\varepsilon)\in V$, 映射 $t\mapsto v(t)$ 也是区间 $[\varepsilon,T]$ 上 Navier--Stokes 方程的强解 (这里使用二维弱解的唯一性). 因而确有
+\[
+ v\in L^2(]\varepsilon,T[,V\cap(H^2(\Omega))^d),
+ \qquad
+ p\in L^2(]\varepsilon,T[,H^1(\Omega)).
+\]
+\end{Proof}
