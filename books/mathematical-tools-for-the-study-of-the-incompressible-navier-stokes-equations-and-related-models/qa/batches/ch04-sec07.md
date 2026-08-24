@@ -1,0 +1,15 @@
+# Batch QA: ch04-sec07
+
+- Source scope: Section 7 from PDF page 318 through its conclusion at the top of PDF page 335, Chapter IV. Section 8 on the same source page is excluded.
+- Source coverage: passed. Eighteen page records are in `qa/translation/ch04-sec07-source-coverage.tsv`; every statement, proof step, intervening paragraph, and displayed relation in Section 7 is represented in source order.
+- Structure: passed. Subsections 7.1--7.3, Theorems IV.7.1--IV.7.4, Lemmas IV.7.5--IV.7.6 and IV.7.8, Proposition IV.7.7, Remarks IV.7.1--IV.7.3, every proof, and all intervening exposition were restored.
+- Formula fidelity: passed. Equations (IV.71)--(IV.90) are recorded in `formulae/ch04-sec07-formula-registry.jsonl`; all numbered and unnumbered displays, test spaces, signs, factors, cross products, trace pairings, domains, exponents, and compatibility conditions were checked against the source-page text and rendered images.
+- Cross-references: passed. There are 38 unique batch labels and 76 resolved reference commands. Three cross-volume source references whose targets cannot be established reliably remain explicit unresolved references; duplicate labels, undefined targets, and equation/reference-command mismatches are zero.
+- Environment headings and numbering: passed. Theorem, Lemma, Proposition, Remark, and Proof headings remain English. Statement numbering is 7.1--7.8 with source gaps preserved, Remarks are 7.1--7.3, and all numbered equations resolve to 4.71--4.90.
+- Names and punctuation: passed. `Korn` and `Schwarz` remain byte-for-byte unchanged and are recorded at their first source occurrences. No forbidden full-width punctuation occurs in Chinese translated prose.
+- Compilation: passed after three clean-directory XeLaTeX passes, with the final two establishing reference convergence. Final log counts: undefined references 0, multiply-defined labels 0, rerun requests 0, LaTeX errors 0. The three sub-point overfull boxes are inherited from previously passed files; this batch adds none. The integrated PDF has 209 pages, 1450457 bytes, and SHA-256 `d67b01ab034769ede567607dede0393da3d6df0260b35d1b72f1cd4b10e322aa`.
+- Visual QA: integrated output pages 195--209 were rendered; representative pages 195, 199, 203, 207, and 209 were inspected. English environment headings, theorem boxes, equations, reference numbers, page breaks, and the final proof are legible with no clipping, overlap, broken box, or literal LaTeX command.
+- Integrity: source SHA-256 `dd2f1acd5d258334ad45aada857d5699d0a13daa553b89fd839ecab469c465e1`; template manifest hash `9c405f97accf0b769854f4fadf93c22b473ad72435ddf0fc27f58c9a302a882c`; style hash `8f2a2ea992fa2d43de675a0efe323ff9339d656158f7fe570f0c7f2da4c10555`; reference TeX hash `28ddd3a9e6c24423ce2a1046aeb07ff357f3be6b156778ce4a1496e25582bbd6`. All are unchanged.
+- Source issues: the printed spelling `Lax--Migram`, the test space `V` in (IV.77), and the terminal dimension symbol `d` in Proposition IV.7.7 were preserved without silent correction and recorded as nonblocking warnings in `qa/issues.jsonl`.
+- Blocking issues: none.
+- Result: passed.

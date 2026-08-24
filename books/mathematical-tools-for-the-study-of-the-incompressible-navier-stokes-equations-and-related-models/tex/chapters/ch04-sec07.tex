@@ -1,0 +1,1069 @@
+\subsection{具有应力边界条件的 Stokes 问题}
+\label{sec:chap4-stokes-stress-boundary}
+
+\renewcommand{\thestatement}{7.\arabic{statement}}
+\renewcommand{\theHstatement}{ch04.sec07.\arabic{statement}}
+\setcounter{statement}{0}
+\newcounter{chapterfoursectionsevenremark}
+\renewcommand{\thechapterfoursectionsevenremark}{7.\arabic{chapterfoursectionsevenremark}}
+
+前面各节考虑了具有 Dirichlet 型边界数据的 Stokes 问题. 现在考虑这个问题的 Neumann 型边界条件. 本节末尾还将考虑这一边界条件在物理上更相关的一种变体, 即应力边界条件, 见问题\eqref{eq:chap4-physical-stress-boundary-problem}.
+
+回忆 Stokes 方程写成
+\[
+ -\Delta v+\nabla p=f,
+\]
+或等价地写成
+\[
+ -\operatorname{div}(\nabla v-p\operatorname{Id})=f.
+\]
+假设 $v\in(H^1(\Omega))^d$, $p\in L^2(\Omega)$ 且 $f\in(L^2(\Omega))^d$, 由 Lemma~\ref{lem:chap4-tensor-stokes-formula}, 可以在 $(H^{-1/2}(\partial\Omega))^d$ 中定义 $\sigma\cdot\nu$ 的迹, 其中
+\[
+ \sigma=\nabla v-p\operatorname{Id}.
+\]
+
+因此, 对以上特定散度形式的 Stokes 问题, 自然 Neumann 问题可陈述为
+\begin{equation}
+ \left\{
+ \begin{aligned}
+  -\Delta v+\nabla p&=f,&&\text{于 }\Omega,\\
+  \operatorname{div}v&=g,&&\text{于 }\Omega,\\
+  \frac{\partial v}{\partial\nu}-p\nu&=f_b,&&\text{于 }\partial\Omega.
+ \end{aligned}
+ \right.
+ \label{eq:chap4-stokes-neumann-problem}
+\end{equation}
+我们要证明下列 Theorem.
+
+\begin{Theorem}
+\label{thm:chap4-stokes-neumann-wellposedness-regularity}
+设 $\Omega$ 是 $\mathbb R^d$ 中 $C^{1,1}$ 类的有界连通区域. 对所有满足相容性条件
+\begin{equation}
+ \int_\Omega f(x)\,\mathrm dx
+ +\langle f_b,1\rangle_{H^{-1/2},H^{1/2}}=0
+ \label{eq:chap4-stokes-neumann-compatibility}
+\end{equation}
+的数据
+\[
+ (f,g,f_b)\in(L^2(\Omega))^d\times L^2(\Omega)\times(H^{-1/2}(\partial\Omega))^d,
+\]
+问题\eqref{eq:chap4-stokes-neumann-problem}在空间
+\[
+ (H^1(\Omega)\cap L_0^2(\Omega))^d\times L^2(\Omega)
+\]
+中存在唯一解 $(v,p)$.
+
+此外, 若 $k\geq0$, 开集 $\Omega$ 为 $C^{k+2,1}$ 类, 且三元组 $(f,g,f_b)$ 属于
+\[
+ (H^k(\Omega))^d\times H^{k+1}(\Omega)\times(H^{k+1/2}(\partial\Omega))^d,
+\]
+则 $(v,p)\in(H^{k+2}(\Omega))^d\times H^{k+1}(\Omega)$, 并存在只依赖于 $\Omega$ 的 $C>0$ 使得
+\begin{equation}
+ \|v\|_{H^{k+2}}+\|p\|_{H^{k+1}}
+ \leq C\bigl(\|f\|_{H^k}+\|g\|_{H^{k+1}}+\|f_b\|_{H^{k+1/2}}\bigr).
+ \label{eq:chap4-stokes-neumann-regularity-estimate}
+\end{equation}
+\end{Theorem}
+
+注意, 在这个结果的证明中, 与 Dirichlet 边界条件情形相比, 区域 $\Omega$ 需要高一阶正则性, 见 Theorem~\ref{thm:chap4-stokes-regularity}.
+
+\subsubsection{Stokes--Neumann 问题}
+\label{subsec:chap4-stokes-neumann}
+
+这里证明 Theorem~\ref{thm:chap4-stokes-neumann-wellposedness-regularity} 的第一部分.
+
+\begin{Proof}
+
+\textbf{Step 1.}
+
+首先考虑质量源项的一个提升, 同时注意 $g$ 不一定属于 $L_0^2(\Omega)$.
+
+考虑光滑向量场
+\[
+ v_1(x)=\frac1d\,{}^t(x_1,\ldots,x_d),
+\]
+其中 $x_i$ 是点 $x$ 在 $\mathbb R^d$ 标准基下的坐标. 容易验证
+\[
+ \Delta v_1=0,\qquad\operatorname{div}v_1=1,
+ \qquad\frac{\partial v_1}{\partial\nu}=\frac1d\nu
+\]
+在 $\Omega$ 边界的每一点都成立.
+
+令
+\[
+ v=\widetilde v+m(g)v_1,
+\]
+其中 $m(g)$ 表示函数 $g$ 在 $\Omega$ 上的平均值. 现在可用 $\widetilde v$ 将问题\eqref{eq:chap4-stokes-neumann-problem}写成
+\begin{equation}
+ \left\{
+ \begin{aligned}
+  -\Delta\widetilde v+\nabla\widetilde p&=f,&&\text{于 }\Omega,\\
+  \operatorname{div}\widetilde v&=g-m(g),&&\text{于 }\Omega,\\
+  \frac{\partial\widetilde v}{\partial\nu}-\widetilde p\nu&=f_b,&&\text{于 }\partial\Omega,
+ \end{aligned}
+ \right.
+ \label{eq:chap4-stokes-neumann-zero-mean-reduction}
+\end{equation}
+其中新压力定义为
+\[
+ \widetilde p=p-\frac{m(g)}d.
+\]
+
+由于 $\widetilde g=g-m(g)$ 的平均值为零, 已在 Theorem~\ref{thm:chap4-stokes-nonhomogeneous-wellposedness} 中看到, 可以求解问题
+\[
+ \left\{
+ \begin{aligned}
+  -\Delta w_0+\nabla\pi_0&=0,&&\text{于 }\Omega,\\
+  \operatorname{div}w_0&=\widetilde g,&&\text{于 }\Omega,\\
+  w_0&=0,&&\text{于 }\partial\Omega.
+ \end{aligned}
+ \right.
+\]
+更准确地说, 存在唯一的
+\[
+ (w_0,\pi_0)\in(H_0^1(\Omega))^d\times L_0^2(\Omega)
+\]
+满足上面的方程组. 若令
+\[
+ \widetilde v=w+w_0,\qquad\widetilde p=\pi+\pi_0,
+\]
+则方程组\eqref{eq:chap4-stokes-neumann-zero-mean-reduction}变为
+\[
+ \left\{
+ \begin{aligned}
+  -\Delta w+\nabla\pi&=f,&&\text{于 }\Omega,\\
+  \operatorname{div}w&=0,&&\text{于 }\Omega,\\
+  \frac{\partial w}{\partial\nu}-\pi\nu&=F_b,&&\text{于 }\partial\Omega,
+ \end{aligned}
+ \right.
+\]
+其中
+\[
+ F_b=f_b-(\nabla w_0-\pi_0\operatorname{Id})\cdot\nu.
+\]
+由于
+\[
+ \nabla w_0-\pi_0\operatorname{Id}\in(L^2(\Omega))^{d\times d},
+ \qquad
+ \operatorname{div}(\nabla w_0-\pi_0\operatorname{Id})=0\in(L^2(\Omega))^d,
+\]
+Lemma~\ref{lem:chap4-tensor-stokes-formula} 表明 $(\nabla w_0-\pi_0\operatorname{Id})\cdot\nu$ 确实在边界上有定义并属于 $(H^{-1/2}(\partial\Omega))^d$. 因此已经证明, 可以回到问题\eqref{eq:chap4-stokes-neumann-problem}中 $g=0$ 的一般情形.
+
+\textbf{Step 2.}
+
+现在假设 $g=0$, 从而归结为问题
+\[
+ \left\{
+ \begin{aligned}
+  -\Delta v+\nabla p&=f,&&\text{于 }\Omega,\\
+  \operatorname{div}v&=0,&&\text{于 }\Omega,\\
+  \frac{\partial v}{\partial\nu}-p\nu&=f_b,&&\text{于 }\partial\Omega.
+ \end{aligned}
+ \right.
+\]
+引入 Hilbert 空间
+\[
+ W=\{v\in(H^1(\Omega))^d,\ \operatorname{div}v=0\}.
+\]
+它与现在常用的空间 $V$, 即 Section~\ref{subsec:chap4-leray-decomposition} 中定义的空间, 不同之处在于 $W$ 中的函数不必在 $\Omega$ 的边界上为零. 将下列变分形式与上面的问题联系起来, 它定义在 Hilbert 空间 $W\cap(L_0^2(\Omega))^d$ 上:
+\begin{equation}
+ \int_\Omega\nabla v:\nabla\psi\,\mathrm dx
+ -\langle f_b,\psi\rangle_{H^{-1/2},H^{1/2}}
+ =\int_\Omega f\cdot\psi\,\mathrm dx,
+ \qquad\forall\psi\in W\cap(L_0^2(\Omega))^d.
+ \label{eq:chap4-stokes-neumann-variational}
+\end{equation}
+$W\cap(L_0^2(\Omega))^d$ 中的函数平均值为零, 因而 Poincaré--Wirtinger 不等式 Proposition~\ref{prop:chap3-poincare-wirtinger} 表明, 该形式中出现的对称双线性型在 $W\cap(L_0^2(\Omega))^d$ 上确实连续且强制. 因此, Lax--Migram Theorem 表明, \eqref{eq:chap4-stokes-neumann-variational}在 $W\cap(L_0^2(\Omega))^d$ 中存在唯一解 $v$.
+
+设 $\varphi\in W$. 可在\eqref{eq:chap4-stokes-neumann-variational}中取显然属于 $W\cap(L_0^2(\Omega))^d$ 的
+\[
+ \psi=\varphi-m(\varphi)
+\]
+作为测试函数. 这给出
+\[
+ \int_\Omega\nabla v:\nabla\varphi\,\mathrm dx
+ -\langle f_b,\varphi\rangle_{H^{-1/2},H^{1/2}}
+ +m(\varphi)\cdot\langle f_b,1\rangle_{H^{-1/2},H^{1/2}}
+\]
+\[
+ =\int_\Omega f\cdot\varphi\,\mathrm dx
+ -m(\varphi)\cdot\int_\Omega f\,\mathrm dx.
+\]
+由相容性条件\eqref{eq:chap4-stokes-neumann-compatibility}, 含 $\varphi$ 平均值的两项相互抵消, 因而留下
+\begin{equation}
+ \int_\Omega\nabla v:\nabla\varphi\,\mathrm dx
+ -\langle f_b,\varphi\rangle_{H^{-1/2},H^{1/2}}
+ =\int_\Omega f\cdot\varphi\,\mathrm dx.
+ \label{eq:chap4-stokes-neumann-all-divfree}
+\end{equation}
+若限制到 $\varphi\in\mathcal V$, 则 de Rham Theorem~\ref{thm:chap4-de-rham} 表明存在唯一压力 $p\in L_0^2(\Omega)$ 使得
+\[
+ -\Delta v+\nabla p=f,\qquad\text{于 }\Omega.
+\]
+
+现在还需证明边界条件成立. 将方程写成
+\[
+ -\operatorname{div}(\nabla v-p\operatorname{Id})=f,
+\]
+Lemma~\ref{lem:chap4-tensor-stokes-formula} 的 Stokes 公式表明, 对任意 $\varphi\in W$,
+\[
+ \int_\Omega(\nabla v-p\operatorname{Id}):\nabla\varphi\,\mathrm dx
+ -\langle(\nabla v-p\operatorname{Id})\cdot\nu,\varphi\rangle_{H^{-1/2},H^{1/2}}
+ =\int_\Omega f\cdot\varphi\,\mathrm dx.
+\]
+由于 $\varphi$ 无散度,
+\[
+ p\operatorname{Id}:\nabla\varphi=p\operatorname{div}\varphi=0.
+\]
+所以对所有 $\varphi\in W$,
+\[
+ \int_\Omega\nabla v:\nabla\varphi\,\mathrm dx
+ -\langle(\nabla v-p\operatorname{Id})\cdot\nu,\varphi\rangle_{H^{-1/2},H^{1/2}}
+ =\int_\Omega f\cdot\varphi\,\mathrm dx.
+\]
+与\eqref{eq:chap4-stokes-neumann-all-divfree}比较, 得到关系
+\begin{equation}
+ \langle\sigma\cdot\nu-f_b,\varphi\rangle_{H^{-1/2},H^{1/2}}=0,
+ \qquad\forall\varphi\in V,
+ \label{eq:chap4-stokes-neumann-stress-orthogonality}
+\end{equation}
+其中 $\sigma=\nabla v-p\operatorname{Id}$. 这个公式表明, $\sigma\cdot\nu-f_b$ 与 $(H^1(\Omega))^d$ 中无散度函数的迹配对为零.
+
+设 $\psi\in(H^{1/2}(\partial\Omega))^d$. 已在 Theorem~\ref{thm:chap4-stokes-nonhomogeneous-wellposedness} 中看到, 只要
+\[
+ \int_{\partial\Omega}\psi\cdot\nu\,\mathrm d\sigma=0,
+\]
+就可以求解 Stokes 问题
+\[
+ \left\{
+ \begin{aligned}
+  -\Delta\varphi+\nabla\pi&=0,&&\text{于 }\Omega,\\
+  \operatorname{div}\varphi&=0,&&\text{于 }\Omega,\\
+  \varphi&=\psi,&&\text{于 }\partial\Omega,
+ \end{aligned}
+ \right.
+\]
+其中 $\varphi\in(H^1(\Omega))^d$, $\pi\in L_0^2(\Omega)$. 函数 $\varphi$ 是 $\psi$ 的无散度提升, 可将它代入\eqref{eq:chap4-stokes-neumann-stress-orthogonality}. 于是已经证明, 对所有满足上述零通量条件的 $\psi\in(H^{1/2}(\partial\Omega))^d$,
+\begin{equation}
+ \langle f_b-\sigma\cdot\nu,\psi\rangle_{H^{-1/2},H^{1/2}}=0.
+ \label{eq:chap4-stokes-neumann-zero-flux-duality}
+\end{equation}
+
+现在定义 $\psi_0=\nu$. 由于假设 $\Omega$ 为 $C^{1,1}$ 类, 它确实属于 $(H^{1/2}(\partial\Omega))^d$, 并满足
+\[
+ \int_{\partial\Omega}\psi_0\cdot\nu\,\mathrm d\sigma
+ =\int_{\partial\Omega}|\nu|^2\,\mathrm d\sigma
+ =|\partial\Omega|>0,
+\]
+其中 $|\partial\Omega|$ 是 $\partial\Omega$ 的 $(d-1)$ 维测度. 对任意 $\psi\in(H^{1/2}(\partial\Omega))^d$, 令
+\[
+ \psi_1=\psi-\frac1{|\partial\Omega|}
+ \left(\int_{\partial\Omega}\psi\cdot\nu\,\mathrm d\sigma\right)\psi_0,
+\]
+从而
+\[
+ \psi=\psi_1+\frac1{|\partial\Omega|}
+ \left(\int_{\partial\Omega}\psi\cdot\nu\,\mathrm d\sigma\right)\psi_0.
+\]
+根据定义, $\psi_1$ 满足
+\[
+ \int_{\partial\Omega}\psi_1\cdot\nu\,\mathrm d\sigma=0,
+\]
+因而由\eqref{eq:chap4-stokes-neumann-zero-flux-duality}推出
+\[
+ \langle f_b-\sigma\cdot\nu,\psi_1\rangle_{H^{-1/2},H^{1/2}}=0.
+\]
+于是
+\[
+ \langle f_b-\sigma\cdot\nu,\psi\rangle_{H^{-1/2},H^{1/2}}
+ =\frac1{|\partial\Omega|}
+ \left(\int_{\partial\Omega}\psi\cdot\nu\,\mathrm d\sigma\right)
+ \langle f_b-\sigma\cdot\nu,\psi_0\rangle_{H^{-1/2},H^{1/2}}.
+\]
+引入数
+\[
+ C_0=\frac1{|\partial\Omega|}
+ \langle f_b-\sigma\cdot\nu,\psi_0\rangle_{H^{-1/2},H^{1/2}},
+\]
+刚才已经证明, 对任意 $\psi\in(H^{1/2}(\partial\Omega))^d$,
+\[
+ \langle f_b-\sigma\cdot\nu,\psi\rangle_{H^{-1/2},H^{1/2}}
+ =\int_{\partial\Omega}\psi\cdot(C_0\nu)\,\mathrm d\sigma.
+\]
+这证明在 $(H^{-1/2}(\partial\Omega))^d$ 意义下
+\[
+ f_b-\sigma\cdot\nu=C_0\nu.
+\]
+因此, 若令 $\widetilde p=p+C_0$, 则确有
+\[
+ f_b=\widetilde\sigma\cdot\nu,\qquad\text{于 }\partial\Omega,
+\]
+其中 $\widetilde\sigma=\nabla v-\widetilde p\operatorname{Id}$. 新压力 $\widetilde p$ 与 $p$ 仅相差一个常数, 因而已经求解问题
+\[
+ \left\{
+ \begin{aligned}
+  -\Delta v+\nabla\widetilde p&=f,&&\text{于 }\Omega,\\
+  \operatorname{div}v&=0,&&\text{于 }\Omega,\\
+  \frac{\partial v}{\partial\nu}-\widetilde p\nu&=f_b,&&\text{于 }\partial\Omega.
+ \end{aligned}
+ \right.
+\]
+注意, 与 Dirichlet 边界条件的情形相反, 此处 Neumann 边界条件唯一确定压力. 相比之下, 只有规定速度场 $v$ 的平均值才能唯一确定它. 容易验证, 对任意 $\mathbb R^d$ 中的常向量 $t$, 任何形如 $v(x)+t$ 的其他速度场也是与同一压力 $p$ 对应的问题解.
+\end{Proof}
+
+\subsubsection{正则性性质}
+\label{subsec:chap4-stokes-neumann-regularity}
+
+为证明解的正则性, 回到 $g$ 不必为零的初始问题\eqref{eq:chap4-stokes-neumann-problem}.
+
+为简化下面的证明, 首先考虑边界条件的一个提升, 即引入满足
+\[
+ \frac{\partial w_1}{\partial\nu}=f_b
+\]
+的向量场 $w_1$. 在假设 $f_b\in(H^{1/2}(\partial\Omega))^d$ 下, 由迹提升 Theorem~\ref{thm:chap3-normal-trace-lifting}, 已知存在这样的 $w_1\in(H^2(\Omega))^d$, 且
+\[
+ \|w_1\|_{H^2}\leq C\|f_b\|_{H^{1/2}}.
+\]
+
+现在令 $\widetilde v=v-w_1$, 则 $(\widetilde v,p)$ 满足
+\[
+ \left\{
+ \begin{aligned}
+  -\Delta\widetilde v+\nabla p&=\widetilde f,&&\text{于 }\Omega,\\
+  \operatorname{div}\widetilde v&=\widetilde g,&&\text{于 }\Omega,\\
+  \frac{\partial\widetilde v}{\partial\nu}-p\nu&=0,&&\text{于 }\partial\Omega,
+ \end{aligned}
+ \right.
+\]
+其中
+\[
+ \widetilde f=f+\Delta w_1,
+ \qquad
+ \widetilde g=g-\operatorname{div}w_1.
+\]
+由于 $w_1\in(H^2(\Omega))^d$, 这些新源项具有与 $f$ 和 $g$ 相同的正则性, 且
+\[
+ \|\widetilde f\|_{L^2}\leq C\bigl(\|f\|_{L^2}+\|f_b\|_{H^{1/2}}\bigr),
+\]
+\[
+ \|\widetilde g\|_{H^1}\leq C\bigl(\|g\|_{H^1}+\|f_b\|_{H^{1/2}}\bigr),
+\]
+以及
+\[
+ \|v\|_{H^2}\leq C\bigl(\|\widetilde v\|_{H^2}+\|f_b\|_{H^{1/2}}\bigr).
+\]
+因此, 只需研究边界数据 $f_b=0$ 的问题\eqref{eq:chap4-stokes-neumann-problem}. 这完全不妨碍得到估计\eqref{eq:chap4-stokes-neumann-regularity-estimate}.
+
+于是我们关注 $(v,p)$ 的正则性, 其中 $(v,p)$ 是与所研究方程组等价的下列混合变分形式之解:
+\begin{equation}
+ \left\{
+ \begin{aligned}
+  \int_\Omega\nabla v:\nabla\psi\,\mathrm dx
+  -\int_\Omega p\operatorname{div}\psi\,\mathrm dx
+  &=\int_\Omega f\cdot\psi\,\mathrm dx,
+  &&\forall\psi\in(H^1(\Omega))^d,\\
+  \int_\Omega q\operatorname{div}v\,\mathrm dx
+  &=\int_\Omega qg\,\mathrm dx,
+  &&\forall q\in L^2(\Omega),
+ \end{aligned}
+ \right.
+ \label{eq:chap4-stokes-neumann-mixed-variational}
+\end{equation}
+其中 $f\in(L^2(\Omega))^d$, $g\in H^1(\Omega)$.
+
+由不依赖于所考虑边界条件类型的 Theorem~\ref{thm:chap4-stokes-local-regularity}, 已知\eqref{eq:chap4-stokes-neumann-mixed-variational}在 $(H^1(\Omega)\cap L_0^2(\Omega))^d\times L^2(\Omega)$ 中的唯一解 $(v,p)$ 属于 $(H_{\mathrm{loc}}^2(\Omega))^d\times H_{\mathrm{loc}}^1(\Omega)$.
+
+切向正则性的证明更具技术性. 与 Dirichlet 边界条件情形中的方法不同, 不能直接用平移来估计 Stokes 算子的交换子, 因为平移算子与边界条件不相容. 事实上, 若 $v$ 满足上面的 Neumann 边界条件, 则 $v\circ\tau^\theta(h,\cdot)$ 不一定满足这些边界条件.
+
+因此需要直接在变分形式上进行证明. 为此, 可以对问题\eqref{eq:chap4-stokes-neumann-mixed-variational}证明下列结果. 注意, 这里区域 $\Omega$ 所需的正则性比 Dirichlet 边界条件情形高一阶, 见证明末尾.
+
+\begin{Theorem}
+\label{thm:chap4-stokes-neumann-tangential-regularity}
+设 $\Omega$ 是 $\mathbb R^d$ 中 $C^{2,1}$ 类的有界区域. 假设数据满足
+\[
+ f\in(L^2(\Omega))^d,\qquad g\in H^1(\Omega).
+\]
+则\eqref{eq:chap4-stokes-neumann-mixed-variational}的解 $(v,p)$ 属于
+\[
+ (H_{\mathrm{tang}}^2(\Omega))^d\times H_{\mathrm{tang}}^1(\Omega),
+\]
+并且对所有满足\eqref{eq:chap3-admissible-tangential-field}中 $k=0$ 情形的向量场 $\theta$, 有估计
+\[
+ |||v|||_{\theta,2}+|||p|||_{\theta,1}
+ \leq C(\Omega,\theta)\bigl(\|f\|_{L^2}+\|g\|_{H^1}\bigr).
+\]
+\end{Theorem}
+
+\par\noindent\refstepcounter{chapterfoursectionsevenremark}\textbf{Remark~\thechapterfoursectionsevenremark:}\label{rem:chap4-stokes-neumann-nonhomogeneous-tangential}\quad
+对于非齐次问题\eqref{eq:chap4-stokes-neumann-problem}, 使用上面详述的边界条件提升过程, 得到估计
+\[
+ |||v|||_{\theta,2}+|||p|||_{\theta,1}
+ \leq C(\Omega,\theta)\bigl(\|f\|_{L^2}+\|f_b\|_{H^{1/2}}+\|g\|_{H^1}\bigr).
+\]
+若要直接对非齐次问题进行推理, 就需要通过平移方法建立分数阶 Sobolev 迹空间的刻画性质, 而这里希望避免这样做.
+
+\begin{Proof}
+首先建立 $\delta_h^\theta v$ 和 $\delta_h^\theta p$ 所满足的方程. 为此, 在方程组\eqref{eq:chap4-stokes-neumann-mixed-variational}的第一个方程中取
+\[
+ \psi=\delta_{-h}^\theta\varphi,
+\]
+其中 $\varphi$ 是 $H^1(\Omega)$ 中任意测试函数. 得到
+\[
+ \int_\Omega\nabla v:\nabla\delta_{-h}^\theta\varphi\,\mathrm dx
+ -\int_\Omega p\operatorname{div}(\delta_{-h}^\theta\varphi)\,\mathrm dx
+ =\int_\Omega f\cdot\delta_{-h}^\theta\varphi\,\mathrm dx.
+\]
+引入适当交换子, 得到
+\[
+ \int_\Omega\nabla v:\delta_{-h}^\theta(\nabla\varphi)\,\mathrm dx
+ -\int_\Omega p\delta_{-h}^\theta(\operatorname{div}\varphi)\,\mathrm dx
+\]
+\[
+ =\int_\Omega f\cdot\delta_{-h}^\theta\varphi\,\mathrm dx
+ -\underbrace{\int_\Omega\nabla v:[\nabla,\tau_{-h}^\theta]\varphi\,\mathrm dx}_{T_1(\varphi)}
+ +\underbrace{\int_\Omega p[\operatorname{div},\tau_{-h}^\theta]\varphi\,\mathrm dx}_{T_2(\varphi)}.
+\]
+
+现在要得到作用在 $\nabla v$ 和 $p$ 上的差分算子 $\delta_h^\theta$. 这是通过\eqref{eq:chap3-curved-translation-commutator}中定义的算子完成的. 得到
+\[
+ \int_\Omega(\delta_h^\theta\nabla v):\nabla\varphi\,\mathrm dx
+ -\int_\Omega(\delta_h^\theta p)\operatorname{div}\varphi\,\mathrm dx
+\]
+\[
+ =\int_\Omega f\cdot\delta_{-h}^\theta\varphi\,\mathrm dx
+ -T_1(\varphi)+T_2(\varphi)
+ +\underbrace{\int_\Omega\{\nabla v,\nabla\varphi\}_h\,\mathrm dx}_{T_3(\varphi)}
+ -\underbrace{\int_\Omega\{p,\operatorname{div}\varphi\}_h\,\mathrm dx}_{T_4(\varphi)}.
+\]
+再次使用 $\nabla$ 与 $\delta_h^\theta$ 之间的交换子, 最终得到
+\begin{align}
+ &\int_\Omega\nabla(\delta_h^\theta v):\nabla\varphi\,\mathrm dx
+ -\int_\Omega(\delta_h^\theta p)\operatorname{div}\varphi\,\mathrm dx\notag\\
+ &\quad=\int_\Omega f\cdot\delta_{-h}^\theta\varphi\,\mathrm dx
+ -T_1(\varphi)+T_2(\varphi)+T_3(\varphi)-T_4(\varphi)
+ +\underbrace{\int_\Omega[\nabla,\tau_h^\theta]v:\nabla\varphi\,\mathrm dx}_{T_5(\varphi)}.
+ \label{eq:chap4-stokes-neumann-tangential-identity}
+\end{align}
+由 Proposition~\ref{prop:chap3-curved-translation-properties}, 对 $T_1,\ldots,T_5$ 得到估计
+\[
+ |T_1(\varphi)|\leq C|h|\|\nabla v\|_{L^2}\|\nabla\varphi\|_{L^2},
+\]
+\[
+ |T_2(\varphi)|\leq C|h|\|p\|_{L^2}\|\operatorname{div}\varphi\|_{L^2},
+\]
+\[
+ |T_3(\varphi)|\leq C|h|\|\nabla v\|_{L^2}\|\nabla\varphi\|_{L^2},
+\]
+\[
+ |T_4(\varphi)|\leq C|h|\|p\|_{L^2}\|\operatorname{div}\varphi\|_{L^2},
+\]
+\[
+ |T_5(\varphi)|\leq C|h|\|\nabla v\|_{L^2}\|\nabla\varphi\|_{L^2},
+\]
+其中 $C$ 只依赖于 $\Omega$ 和 $\theta$. 回到\eqref{eq:chap4-stokes-neumann-tangential-identity}, 首先由这些估计推出
+\[
+ \left|\int_\Omega(\delta_h^\theta p)\operatorname{div}\varphi\,\mathrm dx\right|
+ \leq\|\nabla\delta_h^\theta v\|_{L^2}\|\nabla\varphi\|_{L^2}
+ +C|h|\bigl(\|\nabla v\|_{L^2}+\|p\|_{L^2}+\|f\|_{L^2}\bigr)
+ \|\varphi\|_{H_0^1},
+\]
+对所有 $\varphi\in(H_0^1(\Omega))^d$ 成立. 根据定义, 这给出估计
+\[
+ \|\nabla(\delta_h^\theta p)\|_{H^{-1}}
+ \leq\|\nabla\delta_h^\theta v\|_{L^2}
+ +C|h|\bigl(\|\nabla v\|_{L^2}+\|p\|_{L^2}+\|f\|_{L^2}\bigr).
+\]
+此外, 由\eqref{eq:chap3-curved-translation-uniform-bound}, 得到
+\[
+ \|\delta_h^\theta p\|_{H^{-1}}\leq C|h|\|p\|_{L^2}.
+\]
+合并前两个不等式并使用 Nečas 不等式 Theorem~\ref{thm:chap4-necas-inequality}, 得到
+\begin{equation}
+ \|\delta_h^\theta p\|_{L^2}
+ \leq C\|\nabla\delta_h^\theta v\|_{L^2}
+ +C|h|\bigl(\|\nabla v\|_{L^2}+\|p\|_{L^2}+\|f\|_{L^2}\bigr).
+ \label{eq:chap4-stokes-neumann-tangential-pressure}
+\end{equation}
+
+现在在\eqref{eq:chap4-stokes-neumann-mixed-variational}的第二个方程中取
+\[
+ q=\delta_{-h}^\theta\delta_h^\theta p,
+\]
+得到
+\[
+ \int_\Omega(\delta_{-h}^\theta\delta_h^\theta p)\operatorname{div}v\,\mathrm dx
+ =\int_\Omega g(\delta_{-h}^\theta\delta_h^\theta p)\,\mathrm dx.
+\]
+与前面相同的运算给出
+\begin{align}
+ \int_\Omega(\delta_h^\theta p)\operatorname{div}(\delta_h^\theta v)\,\mathrm dx
+ &=\underbrace{\int_\Omega\delta_h^\theta g\,\delta_h^\theta p\,\mathrm dx}_{T_1'}
+ +\underbrace{\int_\Omega\{\operatorname{div}v,\delta_h^\theta p\}_h\,\mathrm dx}_{T_2'}\notag\\
+ &\quad+\underbrace{\int_\Omega(\delta_h^\theta p)[\operatorname{div},\tau_h^\theta]v\,\mathrm dx}_{T_3'}
+ -\underbrace{\int_\Omega\{g,\delta_h^\theta p\}_h\,\mathrm dx}_{T_4'}.
+ \label{eq:chap4-stokes-neumann-tangential-divergence}
+\end{align}
+Proposition~\ref{prop:chap3-curved-translation-properties} 给出估计
+\[
+ |T_1'|\leq\|\delta_h^\theta g\|_{L^2}\|\delta_h^\theta p\|_{L^2}
+ \leq C|h|\|g\|_{H^1}\|\delta_h^\theta p\|_{L^2},
+\]
+\[
+ |T_2'|\leq C|h|\|\operatorname{div}v\|_{L^2}\|\delta_h^\theta p\|_{L^2},
+\]
+\[
+ |T_3'|\leq C|h|\|\delta_h^\theta p\|_{L^2}\|\operatorname{div}v\|_{L^2},
+\]
+\[
+ |T_4'|\leq C|h|\|g\|_{L^2}\|\delta_h^\theta p\|_{L^2}.
+\]
+现在可在\eqref{eq:chap4-stokes-neumann-tangential-identity}中取 $\varphi=\delta_h^\theta v$, 用\eqref{eq:chap4-stokes-neumann-tangential-divergence}消去压力项, 最后使用 $T_i$ 和 $T_j'$ 的估计, 得到
+\[
+ \|\nabla\delta_h^\theta v\|_{L^2}^2
+ \leq C|h|\bigl(\|v\|_{H^1}+\|p\|_{L^2}+\|f\|_{L^2}\bigr)
+ \|\delta_h^\theta v\|_{H^1}
+\]
+\[
+ \qquad+C\|f\|_{L^2}\|\delta_{-h}^\theta\delta_h^\theta v\|_{L^2}
+ +C|h|\bigl(\|g\|_{H^1}+\|v\|_{H^1}\bigr)\|\delta_h^\theta p\|_{L^2}
+\]
+\[
+ \leq C|h|\|\delta_h^\theta v\|_{H^1}.
+\]
+现在使用
+\[
+ \|\delta_h^\theta v\|_{L^2}\leq C|h|\|v\|_{H^1}
+\]
+以及\eqref{eq:chap4-stokes-neumann-tangential-pressure}给出的压力项估计, 得到
+\[
+ \|\nabla\delta_h^\theta v\|_{L^2}^2
+ \leq C|h|\bigl(\|v\|_{H^1}+\|p\|_{L^2}+\|f\|_{L^2}+\|g\|_{H^1}\bigr)
+ \|\nabla\delta_h^\theta v\|_{L^2}
+\]
+\[
+ \qquad+C|h|^2
+ \bigl(\|g\|_{H^1}+\|v\|_{H^1}+\|p\|_{L^2}+\|f\|_{L^2}\bigr)^2.
+\]
+由 Young 不等式, 最终得到
+\[
+ \|\nabla\delta_h^\theta v\|_{L^2}^2
+ \leq C|h|^2
+ \bigl(\|g\|_{H^1}+\|v\|_{H^1}+\|p\|_{L^2}+\|f\|_{L^2}\bigr)^2.
+\]
+由于 $\|\delta_h^\theta v\|_{L^2}\leq C|h|\|v\|_{H^1}$, 上面的估计表明 $|||v|||_{\theta,2,2}<+\infty$, 从而 $v\in(H_{\mathrm{tang}}^2(\Omega))^d$.
+
+回到\eqref{eq:chap4-stokes-neumann-tangential-pressure}, 推出
+\[
+ \|\delta_h^\theta p\|_{L^2}
+ \leq C|h|\bigl(\|v\|_{H^1}+\|p\|_{L^2}+\|f\|_{L^2}+\|g\|_{H^1}\bigr),
+\]
+因此已经证明 $p\in H_{\mathrm{tang}}^1(\Omega)$.
+
+解 $(v,p)$ 的切向正则性证明完毕.
+\end{Proof}
+
+直到边界的正则性可用与 Section~\ref{subsubsec:chap4-stokes-complete-boundary-regularity} 中 Dirichlet 问题相同的方法证明. 用法向和切向变量写出方程, 并利用切向正则性直接由这些公式推出解的所有其他导数直到边界的正则性.
+
+主要差别出现在\eqref{eq:chap4-stokes-normal-product-second}--\eqref{eq:chap4-stokes-laplacian-normal-term}的证明中, 其中需要使用只在 $v$ 于 $\Omega$ 的边界上为零时成立的 Hardy 不等式.
+
+这就是这里假设 $\Omega$ 为 $C^{2,1}$ 类的原因. 在这种情形,
+\[
+ \widetilde G\in C^{0,1}(\Omega),\qquad\nu\in C^{1,1}(\Omega),
+\]
+这意味着无需 Hardy 不等式也可得到\eqref{eq:chap4-stokes-normal-product-second}--\eqref{eq:chap4-stokes-laplacian-normal-term}. 特别地, 即使 $v$ 不在边界上为零, 证明仍然成立.
+
+概括本小节内容, 已经对具有非齐次边界数据的一般问题\eqref{eq:chap4-stokes-neumann-problem}证明了下列结果.
+
+\begin{Theorem}
+\label{thm:chap4-stokes-neumann-h2-regularity}
+设 $\Omega$ 是 $\mathbb R^d$ 中 $C^{2,1}$ 类的有界连通区域. 假设
+\[
+ (f,g,f_b)\in(L^2(\Omega))^d\times H^1(\Omega)\times(H^{1/2}(\partial\Omega))^d.
+\]
+则问题\eqref{eq:chap4-stokes-neumann-problem}的唯一解 $(v,p)$ 属于
+\[
+ (H^2(\Omega))^d\times H^1(\Omega),
+\]
+并有估计
+\[
+ \|v\|_{H^2}+\|p\|_{H^1}
+ \leq C\bigl(\|f\|_{L^2}+\|g\|_{H^1}+\|f_b\|_{H^{1/2}}\bigr).
+\]
+\end{Theorem}
+
+\subsubsection{应力边界条件}
+\label{subsec:chap4-physical-stress-boundary}
+
+正如本节开头所见, 把方程写成散度形式对于赋予 Neumann 型边界条件意义至关重要. 然而, 在 Chapter~\ref{chap:fluid-mechanics-equations} 中已经看到, 不可压缩 Stokes 问题实际上自然地写成
+\begin{equation}
+ \left\{
+ \begin{aligned}
+  -\operatorname{div}\sigma&=f,\\
+  \operatorname{div}v&=g,
+ \end{aligned}
+ \right.
+ \label{eq:chap4-stress-divergence-form}
+\end{equation}
+其中依 Newton 定律, 应力张量 $\sigma$ 为
+\[
+ \sigma=2D(v)-\left(p+\frac23\operatorname{div}v\right)\operatorname{Id}.
+\]
+为简化起见, 仍假设流体黏度等于 $1$. 回忆在这种表述中, $D(v)$ 是张量 $\nabla v$ 的对称部分, 定义为
+\[
+ D(v)=\frac12(\nabla v+{}^t\nabla v).
+\]
+
+现在作形式计算:
+\[
+ -\operatorname{div}\sigma
+ =-\operatorname{div}\left(\nabla v+{}^t\nabla v
+ -\left(p+\frac23\operatorname{div}v\right)\operatorname{Id}\right)
+\]
+\[
+ =-\Delta v+\nabla\left(p-\frac13\operatorname{div}v\right)
+ =-\Delta v+\nabla\left(p-\frac13g\right).
+\]
+因此, 把压力 $p$ 替换为 $p-\frac13g$, 问题\eqref{eq:chap4-stress-divergence-form}在形式上等价于\eqref{eq:chap4-stokes-neumann-problem}. 但是, 为赋予边界条件意义, 两种表述是不同的. 因此, 与散度形式\eqref{eq:chap4-stress-divergence-form}相联系的 Neumann 型问题为
+\begin{equation}
+ \left\{
+ \begin{aligned}
+  -\operatorname{div}(2D(v)-p\operatorname{Id})&=f,&&\text{于 }\Omega,\\
+  \operatorname{div}v&=g,&&\text{于 }\Omega,\\
+  (2D(v)-p\operatorname{Id})\cdot\nu&=f_b,&&\text{于 }\partial\Omega,
+ \end{aligned}
+ \right.
+ \label{eq:chap4-physical-stress-boundary-problem}
+\end{equation}
+其中为简化起见, 已用一个简单压力项 $p$ 代替 $p+\frac23g$.
+
+在这个问题中, 边界条件具有非常清楚的物理意义. 事实上, 已在 Chapter~\ref{chap:fluid-mechanics-equations} 中看到, 依定义, 边界上的量 $\sigma\cdot\nu$ 是壁面对流体施加的力. 换言之, 与 Dirichlet 边界条件情形中规定边界上的速度场不同, 这里规定实验者施加在流体上的力. 在 Chapter~\MBUnresolvedReference{chap:source-vii}{VII} 中, 我们研究非稳态 Navier--Stokes 方程的出流边界条件, 其中 $\sigma\cdot\nu$ 起关键作用.
+
+对这个模型, 只考虑 $d=3$ 的情形来说明思想. 我们证明与前面结果类似的解的存在性, 唯一性和正则性结果.
+
+将区域 $\Omega$ 的质心记为 $O$, 即由
+\[
+ O=\frac1{|\Omega|}\int_\Omega x\,\mathrm dx
+\]
+定义的点. 对所有 $x\in\Omega$, 将相对于上面固定的原点 $O$ 的位置向量记为
+\[
+ r=\overrightarrow{Ox}.
+\]
+
+\begin{Theorem}
+\label{thm:chap4-physical-stress-wellposedness-regularity}
+设 $\Omega$ 是 $\mathbb R^3$ 中有界连通的 Lipschitz 区域. 对所有满足相容性条件
+\[
+ \int_\Omega f\,\mathrm dx+\langle f_b,1\rangle_{H^{-1/2},H^{1/2}}=0,
+\]
+\[
+ \int_\Omega f\wedge r\,\mathrm dx
+ +\langle f_b\wedge r\rangle_{H^{-1/2},H^{1/2}}=0
+\]
+的数据
+\[
+ (f,g,f_b)\in(L^2(\Omega))^3\times L^2(\Omega)\times(H^{-1/2}(\partial\Omega))^3,
+\]
+问题\eqref{eq:chap4-physical-stress-boundary-problem}存在唯一的解
+\[
+ (v,p)\in(H^1(\Omega))^3\times L^2(\Omega),
+\]
+它满足
+\[
+ m(v)=0,
+ \qquad
+ m(\operatorname{curl}v)=0.
+\]
+
+此外, 若 $k\geq0$, 开集 $\Omega$ 为 $C^{k+1,1}$ 类, 且三元组 $(f,g,f_b)$ 属于
+\[
+ (H^k(\Omega))^3\times H^{k+1}(\Omega)\times(H^{k+1/2}(\partial\Omega))^3,
+\]
+则
+\[
+ (v,p)\in(H^{k+2}(\Omega))^3\times H^{k+1}(\Omega),
+\]
+并存在 $C>0$ 使得
+\[
+ \|v\|_{H^{k+2}}+\|p\|_{H^{k+1}}
+ \leq C\bigl(\|f\|_{H^k}+\|g\|_{H^{k+1}}+\|f_b\|_{H^{k+1/2}}\bigr).
+\]
+\end{Theorem}
+
+注意, 在这些条件下压力被唯一确定, 而速度场只确定到一个刚体运动.
+
+\par\noindent\refstepcounter{chapterfoursectionsevenremark}\textbf{Remark~\thechapterfoursectionsevenremark:}\label{rem:chap4-stress-vector-duality}\quad
+在第二个相容性条件中, 向量对偶括号
+\[
+ \langle f_b\wedge r\rangle_{H^{-1/2},H^{1/2}}
+\]
+按分量定义. 例如, 这个向量的第一个分量为
+\[
+ \langle(f_b)_2,r_3\rangle_{H^{-1/2},H^{1/2}}
+ -\langle(f_b)_3,r_2\rangle_{H^{-1/2},H^{1/2}}.
+\]
+
+\paragraph{预备说明}
+\label{subsubsec:chap4-stress-preliminaries}
+
+我们需要的第一个结果, Chapter~\ref{chap:fluid-mechanics-equations} 的\MBUnresolvedReference{rem:source-i-4-1}{Remark I.4.1} 中已经提到, 如下.
+
+\begin{Lemma}
+\label{lem:chap4-zero-deformation-rigid-motion}
+设 $\Omega$ 是 $\mathbb R^3$ 的连通开子集, $v\in(H^1(\Omega))^3$ 是满足几乎处处 $D(v)=0$ 的向量场. 则存在两个常向量 $t\in\mathbb R^3$ 和 $\omega\in\mathbb R^3$, 使得
+\[
+ v(x)=t+\frac12\omega\wedge r,
+ \qquad\text{对几乎所有 }x\in\Omega.
+\]
+此外,
+\[
+ m(v)=t,
+\]
+且
+\[
+ \operatorname{curl}v(x)=\omega,
+ \qquad\text{对几乎所有 }x\in\Omega.
+\]
+这对应于刚体运动.
+\end{Lemma}
+
+\begin{Proof}
+令
+\[
+ \omega(x)=
+ \begin{pmatrix}
+  \omega_1\\ \omega_2\\ \omega_3
+ \end{pmatrix}
+ =\operatorname{curl}v
+ =\begin{pmatrix}
+  \dfrac{\partial v_3}{\partial x_2}-\dfrac{\partial v_2}{\partial x_3}\\[3pt]
+  \dfrac{\partial v_1}{\partial x_3}-\dfrac{\partial v_3}{\partial x_1}\\[3pt]
+  \dfrac{\partial v_2}{\partial x_1}-\dfrac{\partial v_1}{\partial x_2}
+ \end{pmatrix}.
+\]
+由于 $D(v)=0$, $v$ 的梯度只剩反对称部分, 因而
+\[
+ \nabla v=\frac12
+ \begin{pmatrix}
+  0&-\omega_3&\omega_2\\
+  \omega_3&0&-\omega_1\\
+  -\omega_2&\omega_1&0
+ \end{pmatrix}.
+\]
+于是混合导数的 Schwarz Theorem 表明
+\[
+ \frac{\partial\omega_2}{\partial x_1}
+ =\frac{\partial\omega_3}{\partial x_1}=0,
+ \qquad
+ \frac{\partial\omega_1}{\partial x_2}
+ =\frac{\partial\omega_3}{\partial x_2}=0,
+ \qquad
+ \frac{\partial\omega_1}{\partial x_3}
+ =\frac{\partial\omega_2}{\partial x_3}=0,
+\]
+以及
+\[
+ -\frac{\partial\omega_3}{\partial x_3}
+ =\frac{\partial\omega_2}{\partial x_2},
+ \qquad
+ \frac{\partial\omega_3}{\partial x_3}
+ =-\frac{\partial\omega_1}{\partial x_1},
+ \qquad
+ -\frac{\partial\omega_2}{\partial x_2}
+ =\frac{\partial\omega_1}{\partial x_1}.
+\]
+从而 $\nabla\omega=0$, 这证明 $\omega$ 是常向量.
+
+接着容易证明
+\[
+ \nabla\left(v-\frac12\omega\wedge r\right)=0,
+\]
+因此存在常向量 $t$ 使得
+\[
+ v(x)=t+\frac12\omega\wedge r.
+\]
+于是可以计算 $v$ 的平均值:
+\[
+ m(v)=t+\frac1{2|\Omega|}\omega\wedge\int_\Omega r\,\mathrm dx=t,
+\]
+因为按原点 $O$ 是 $\Omega$ 的质心这一定义,
+\[
+ \int_\Omega r\,\mathrm dx=0.
+\]
+\end{Proof}
+
+同类计算还表明, 若 $(v,p)$ 是\eqref{eq:chap4-physical-stress-boundary-problem}的解, 则对所有常向量 $t\in\mathbb R^d$ 和 $\omega\in\mathbb R^d$, 数对
+\[
+ (v(x)+t+\omega\wedge r,p)
+\]
+也是解. 因此, 除非加上归一化条件
+\[
+ m(v)=0,
+ \qquad
+ m(\operatorname{curl}v)=0,
+\]
+否则不能期望证明\eqref{eq:chap4-physical-stress-boundary-problem}解的唯一性.
+
+此外, 若\eqref{eq:chap4-physical-stress-boundary-problem}成立, 则由散度 Theorem 必有
+\[
+ \int_\Omega f(x)\,\mathrm dx
+ +\langle f_b,1\rangle_{H^{-1/2},H^{1/2}}=0.
+\]
+同理, 对 Stokes 方程与位置向量 $r$ 作向量积并在 $\Omega$ 上积分, 利用张量 $\sigma$ 的对称性得到
+\[
+ \int_\Omega f(x)\wedge r\,\mathrm dx
+ =-\int_\Omega(\operatorname{div}\sigma)\wedge r\,\mathrm dx
+ =-\langle(\sigma\cdot\nu)\wedge r\rangle_{H^{-1/2},H^{1/2}}
+ =-\langle f_b\wedge r\rangle_{H^{-1/2},H^{1/2}},
+\]
+其中对偶括号按 Remark~\ref{rem:chap4-stress-vector-duality} 定义.
+
+由此清楚看出, 只有当陈述中 $f$ 与 $f_b$ 之间的两个相容性条件成立时, 才可能建立解的存在性.
+
+\paragraph{存在性}
+\label{subsubsec:chap4-stress-existence}
+
+与前面一样, 即使需要修改数据 $f$ 和 $f_b$, 也即使需要给压力加上一个常数, 我们仍可把注意力集中到 $g=0$, 即 $v$ 的散度为零的情形. 现在专注于这个情形, 并引入 Hilbert 空间
+\begin{equation}
+ W=\{v\in(H^1(\Omega))^3,\ \operatorname{div}v=0,\ m(v)=0,\ m(\operatorname{curl}v)=0\}.
+ \label{eq:chap4-stress-normalized-space}
+\end{equation}
+现在考虑 $g=0$ 时问题\eqref{eq:chap4-physical-stress-boundary-problem}的下列弱形式. 求 $v\in W$ 使得
+\begin{equation}
+ 2\int_\Omega D(v):D(\varphi)\,\mathrm dx
+ -\langle f_b,\varphi\rangle_{H^{-1/2},H^{1/2}}
+ =\int_\Omega f\cdot\varphi\,\mathrm dx,
+ \qquad\forall\varphi\in W.
+ \label{eq:chap4-stress-weak-formulation}
+\end{equation}
+为了应用 Lax--Milgram Theorem~\ref{thm:chap2-lax-milgram}, 必须保证双线性型
+\[
+ a(v,w)=2\int_\Omega D(v):D(w)\,\mathrm dx
+\]
+在上面引入的空间 $W$ 上强制.
+
+为此, 首先引入流体力学和弹性力学中的一个经典不等式.
+
+\begin{Lemma}{Korn inequality}
+\label{lem:chap4-korn-inequality}
+设 $\Omega$ 是 $\mathbb R^3$ 中的有界 Lipschitz 区域. 存在只依赖于 $\Omega$ 的 $C>0$, 使得
+\[
+ \|\nabla v\|_{L^2}\leq C\bigl(\|v\|_{L^2}+\|D(v)\|_{L^2}\bigr),
+ \qquad\forall v\in(H^1(\Omega))^3.
+\]
+\end{Lemma}
+
+\begin{Proof}
+设 $v\in(H^1(\Omega))^3$. 令
+\[
+ d_{ij}=\frac12\left(\frac{\partial v_i}{\partial x_j}
+ +\frac{\partial v_j}{\partial x_i}\right),
+ \qquad\forall i,j\in\{1,\ldots,3\},
+\]
+即矩阵 $D(v)$ 的各分量.
+
+注意, 在分布意义下有关系
+\[
+ \frac{\partial}{\partial x_j}\left(\frac{\partial v_i}{\partial x_k}\right)
+ =\frac{\partial d_{ij}}{\partial x_k}
+ +\frac{\partial d_{ik}}{\partial x_j}
+ -\frac{\partial d_{jk}}{\partial x_i}.
+\]
+因此
+\[
+ \left\|\frac{\partial}{\partial x_j}\left(\frac{\partial v_i}{\partial x_k}\right)\right\|_{H^{-1}}
+ \leq C\|D(v)\|_{L^2},
+\]
+而且还有
+\[
+ \left\|\frac{\partial v_i}{\partial x_k}\right\|_{H^{-1}}
+ \leq\|v\|_{L^2}.
+\]
+最终得到
+\[
+ \left\|\frac{\partial v_i}{\partial x_k}\right\|_{H^{-1}}
+ +\left\|\nabla\left(\frac{\partial v_i}{\partial x_k}\right)\right\|_{H^{-1}}
+ \leq C\bigl(\|v\|_{L^2}+\|D(v)\|_{L^2}\bigr).
+\]
+因此, 应用 Nečas 不等式 Theorem~\ref{thm:chap4-necas-inequality}, 对所有 $i,k$ 得到所需不等式
+\[
+ \left\|\frac{\partial v_i}{\partial x_k}\right\|_{L^2}
+ \leq C\bigl(\|v\|_{L^2}+\|D(v)\|_{L^2}\bigr).
+\]
+\end{Proof}
+
+\par\noindent\refstepcounter{chapterfoursectionsevenremark}\textbf{Remark~\thechapterfoursectionsevenremark:}\label{rem:chap4-korn-zero-boundary}\quad
+在空间 $(H_0^1(\Omega))^d$ 中, Korn 不等式容易得多. 事实上, 利用\MBUnresolvedReference{rem:source-i-4-2}{Remark I.4.2} 中给出的公式, 对任意 $v\in(\mathcal D(\Omega))^d$ 有
+\[
+ \int_\Omega\nabla v:{}^t\nabla v\,\mathrm dx
+ =-\int_\Omega v\cdot\operatorname{div}({}^t\nabla v)\,\mathrm dx
+ =-\int_\Omega v\cdot\nabla(\operatorname{div}v)\,\mathrm dx
+ =\int_\Omega|\operatorname{div}v|^2\,\mathrm dx\geq0.
+\]
+由此得到
+\begin{equation}
+ 2\int_\Omega|D(v)|^2\,\mathrm dx
+ =\int_\Omega\nabla v:(\nabla v+{}^t\nabla v)\,\mathrm dx
+ \geq\int_\Omega|\nabla v|^2\,\mathrm dx,
+ \label{eq:chap4-korn-zero-boundary}
+\end{equation}
+Korn 不等式由 $\mathcal D(\Omega)$ 在 $H_0^1(\Omega)$ 中的稠密性得到. 注意, 此时不等式中的常数 $C=\sqrt2$ 是普适的, 且右端不需要 $\|v\|_{L^2}$ 项. 这是因为 $(H_0^1(\Omega))^d$ 中不允许非平凡刚体运动.
+
+接下来可以证明如下 Poincaré 型不等式.
+
+\begin{Proposition}
+\label{prop:chap4-rigid-motion-poincare}
+设 $\Omega$ 是 $\mathbb R^3$ 中的有界 Lipschitz 区域. 存在只依赖于 $\Omega$ 的 $C>0$, 使得
+\[
+ \|v\|_{L^2}
+ \leq C\bigl(|m(v)|+|m(\operatorname{curl}v)|+\|D(v)\|_{L^2}\bigr),
+ \qquad\forall v\in(H^1(\Omega))^d.
+\]
+\end{Proposition}
+
+\begin{Proof}
+沿用 Poincaré--Wirtinger 不等式 Proposition~\ref{prop:chap3-poincare-wirtinger} 的证明方法. 用反证法, 假设对所有 $n$, 存在 $v_n\in(H^1(\Omega))^3$ 使得
+\[
+ \|v_n\|_{L^2}=1,
+\]
+且
+\[
+ |m(v_n)|+|m(\operatorname{curl}v_n)|+\|D(v_n)\|_{L^2}\leq\frac1n.
+\]
+由 Korn 不等式, 推出序列 $(v_n)_n$ 在 $(H^1(\Omega))^3$ 中有界. 可以提取一个子序列, 为简化记号仍记为 $(v_n)_n$, 它弱收敛到某个 $v\in(H^1(\Omega))^3$. 由 $H^1(\Omega)$ 到 $L^2(\Omega)$ 的嵌入紧性, 已知 $(v_n)_n$ 强收敛到 $(L^2(\Omega))^3$ 中的 $v$. 因而极限 $v$ 满足
+\[
+ \|v\|_{L^2}=1,
+ \qquad m(v)=0,
+ \qquad m(\operatorname{curl}v)=0,
+ \qquad D(v)=0.
+\]
+这是不可能的, 因为由 Lemma~\ref{lem:chap4-zero-deformation-rigid-motion}, 最后三个等式蕴含 $v=0$.
+\end{Proof}
+
+结合 Korn 不等式和上面的 Poincaré 不等式, 推出 $\|D(\cdot)\|_{L^2}$ 是空间 $W$, 即由\eqref{eq:chap4-stress-normalized-space}定义的空间上的一个范数, 且与 $H^1$ 范数等价.
+
+因此可应用 Lax--Milgram Theorem, 建立\eqref{eq:chap4-stress-weak-formulation}存在唯一解 $v\in W$.
+
+现在还需证明这个函数 $v$ 确实是初始问题的解. 为此, 考虑满足 $\operatorname{div}\psi=0$ 的 $\psi\in(H^1(\Omega))^3$, 并令
+\[
+ \varphi=\psi-m(\psi)-\frac12m(\operatorname{curl}\psi)\wedge r.
+\]
+根据定义, 它属于空间 $W$. 因此可在\eqref{eq:chap4-stress-weak-formulation}中使用 $\varphi$, 得到
+\[
+ 2\int_\Omega D(v):D(\psi)\,\mathrm dx
+ -\langle f_b,\psi\rangle_{H^{-1/2},H^{1/2}}
+ +m(\psi)\cdot\langle f_b,1\rangle_{H^{-1/2},H^{1/2}}
+\]
+\[
+ \qquad-\left\langle f_b,\frac12m(\operatorname{curl}\psi)\wedge r\right\rangle_{H^{-1/2},H^{1/2}}
+ =\int_\Omega f\cdot\psi\,\mathrm dx
+ -m(\psi)\cdot\int_\Omega f\,\mathrm dx
+ -\int_\Omega\left(\frac12m(\operatorname{curl}\psi)\wedge r\right)\cdot f\,\mathrm dx.
+\]
+由第一个相容性条件, 含 $\psi$ 平均值的项相互抵消. 利用关系
+\[
+ a\cdot(b\wedge c)=-b\cdot(a\wedge c)
+\]
+和第二个相容性条件, 可见含 $\operatorname{curl}\psi$ 平均值的项也相互抵消. 因而留下
+\[
+ 2\int_\Omega D(v):D(\psi)\,\mathrm dx
+ -\langle f_b,\psi\rangle_{H^{-1/2},H^{1/2}}
+ =\int_\Omega f\cdot\psi\,\mathrm dx
+\]
+对任意无散度函数 $\psi$ 成立. 特别地, 利用 $D(v)$ 的对称性, 得到
+\[
+ 2\int_\Omega D(v):\nabla\psi\,\mathrm dx
+ =\int_\Omega f\cdot\psi\,\mathrm dx,
+ \qquad\forall\psi\in\mathcal V.
+\]
+于是
+\[
+ \langle-\operatorname{div}(2D(v))-f,\psi\rangle_{\mathcal D',\mathcal D}=0,
+ \qquad\forall\psi\in\mathcal V.
+\]
+由 Theorem~\ref{thm:chap4-de-rham}, 推出存在唯一压力 $p\in L_0^2(\Omega)$ 使得
+\[
+ -\operatorname{div}(2D(v))+\nabla p=f,
+\]
+即
+\[
+ -\operatorname{div}(2D(v)-p\operatorname{Id})=f.
+\]
+然后可以像上面对 Neumann 问题第一种表述所做的那样恢复边界条件, 这会以唯一方式确定压力.
+
+\paragraph{正则性}
+\label{subsubsec:chap4-stress-regularity}
+
+现在难以构造不是经典 Neumann 条件的边界条件提升. 因此采用不同方法, 直接在弱形式中计入边界数据的正则性. 为此需要下列 Lemma.
+
+\begin{Lemma}
+\label{lem:chap4-boundary-tangential-difference}
+设 $\Omega$ 是 $\mathbb R^3$ 中 $C^{1,1}$ 类的有界连通区域. 设 $\theta$ 是 $\Omega$ 中满足\eqref{eq:chap3-admissible-tangential-field}之 $k=0$ 情形的向量场. 则对所有 $g\in H^{1/2}(\partial\Omega)$, 有估计
+\[
+ \|\delta_h^\theta g\|_{H^{-1/2}}
+ \leq C(\theta)|h|\|g\|_{H^{1/2}}.
+\]
+\end{Lemma}
+
+\begin{Proof}
+首先, 显然通过从 $g$ 中减去一个常数, 只需考虑 $g$ 在 $\partial\Omega$ 上平均值为零的情形.
+
+考虑标量 Neumann 问题
+\begin{equation}
+ \left\{
+ \begin{aligned}
+  -\Delta\phi&=0,&&\text{于 }\Omega,\\
+  \frac{\partial\phi}{\partial\nu}&=g,&&\text{于 }\partial\Omega,\\
+  \int_\Omega\phi\,\mathrm dx&=0.
+ \end{aligned}
+ \right.
+ \label{eq:chap4-boundary-neumann-lifting}
+\end{equation}
+由 Theorem~\ref{thm:chap3-laplace-neumann}, 因为 $g$ 的平均值为零, 已知上述问题在 $H^1(\Omega)$ 中存在唯一解. 此外, 只要 $g\in H^{1/2}(\partial\Omega)$, 就有 $\phi\in H^2(\Omega)$, 并有估计
+\begin{equation}
+ \|\phi\|_{H^2}\leq C\|g\|_{H^{1/2}}.
+ \label{eq:chap4-boundary-neumann-lifting-estimate}
+\end{equation}
+问题\eqref{eq:chap4-boundary-neumann-lifting}的变分形式为
+\begin{equation}
+ \int_\Omega\nabla\phi\cdot\nabla\psi\,\mathrm dx
+ -\int_{\partial\Omega}g\psi\,\mathrm d\sigma=0,
+ \qquad\forall\psi\in H^1(\Omega).
+ \label{eq:chap4-boundary-neumann-variational}
+\end{equation}
+注意, 先验上是对偶括号的边界项事实上是积分项, 因为 $g\in H^{1/2}(\partial\Omega)$.
+
+现在对任意 $v\in H^1(\Omega)$, 在\eqref{eq:chap4-boundary-neumann-variational}中取形如
+\[
+ \psi=\tau_{-h}^\theta v
+\]
+的测试函数. 得到
+\[
+ \int_\Omega(\delta_h^\theta\nabla\phi)\cdot\nabla v\,\mathrm dx
+ -\int_{\partial\Omega}(\delta_h^\theta g)\gamma_0(v)\,\mathrm d\sigma
+ =\int_\Omega\{\nabla\phi,\nabla v\}_h\,\mathrm dx
+ -\int_{\partial\Omega}\{g,\gamma_0(v)\}_h\,\mathrm d\sigma.
+\]
+由\eqref{eq:chap3-curved-translation-duality-boundary}, 得到
+\[
+ \langle\delta_h^\theta g,\gamma_0(v)\rangle_{H^{-1/2},H^{1/2}}
+ =\int_{\partial\Omega}(\delta_h^\theta g)\gamma_0(v)\,\mathrm d\sigma
+\]
+\[
+ \leq\|\delta_h^\theta\nabla\phi\|_{L^2}\|\nabla v\|_{L^2}
+ +C|h|\|\nabla\phi\|_{L^2}\|\nabla v\|_{L^2}
+ +C|h|\|g\|_{L^2(\partial\Omega)}\|\gamma_0(v)\|_{L^2(\partial\Omega)}
+\]
+\[
+ \leq C|h|\|\phi\|_{H^2}\|v\|_{H^1}
+ +C|h|\|g\|_{H^{1/2}}\|\gamma_0(v)\|_{H^{1/2}}.
+\]
+利用\eqref{eq:chap4-boundary-neumann-lifting-estimate}, 推出
+\[
+ \langle\delta_h^\theta g,\gamma_0(v)\rangle_{H^{-1/2},H^{1/2}}
+ \leq C|h|\|g\|_{H^{1/2}}\|v\|_{H^1},
+ \qquad\forall v\in H^1(\Omega).
+\]
+结论得证.
+\end{Proof}
+
+借助这个 Lemma 以及上面对 Stokes--Neumann 问题所用的方法, 可以容易地证明为应力边界条件所陈述的正则性性质.
