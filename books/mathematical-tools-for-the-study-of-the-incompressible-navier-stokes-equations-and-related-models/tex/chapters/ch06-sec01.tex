@@ -1,0 +1,1346 @@
+\clearpage
+\section{非齐次流体}
+\label{chap:nonhomogeneous-fluids}
+\renewcommand{\thestatement}{1.\arabic{statement}}
+\renewcommand{\theHstatement}{ch06.sec01.\arabic{statement}}
+\setcounter{statement}{0}
+\newcounter{chaptersixsectiononeremark}
+\renewcommand{\thechaptersixsectiononeremark}{1.\arabic{chaptersixsectiononeremark}}
+\begin{sloppypar}
+
+本章研究非齐次不可压缩 Navier--Stokes 方程. 它与上一章所研究方程的区别在于, 密度不再是常数, 而成为一个新的未知函数. 为简单起见, 本章令 $\Gamma=\partial\Omega$, 并对任意向量场 $v$ 和任意时刻 $t$, 将 $\Gamma$ 的流出部分和流入部分定义为
+\[
+ \Gamma_v^+(t)=\{x\in\Gamma:(v(t,x)\cdot\nu(x))>0\},
+ \qquad
+ \Gamma_v^-(t)=\{x\in\Gamma:(v(t,x)\cdot\nu(x))<0\},
+\]
+必要时以弱意义理解 $v$ 在 $\Gamma$ 上的迹.
+
+回顾所涉及的方程为质量平衡方程、动量平衡方程和不可压缩约束, 以及初始数据和边界数据:
+\[
+\left\{
+\begin{aligned}
+ \frac{\partial\rho}{\partial t}+\operatorname{div}(\rho v)&=0&&\text{于 }\Omega,\\
+ \frac{\partial(\rho v)}{\partial t}+\operatorname{div}(\rho v\otimes v)-2\operatorname{div}(\mu(\rho)D(v))+\nabla p&=\rho f&&\text{于 }\Omega,\\
+ \operatorname{div}v&=0&&\text{于 }\Omega,\\
+ v&=v_b&&\text{于 }\Gamma,\\
+ \rho&=\rho^{\mathrm{in}}&&\text{于 }\Gamma_v^-(t),
+\end{aligned}
+\right.
+\]
+并配有形如 $\rho(0)=\rho_0$, $v(0)=v_0$ 的初始条件. 我们将看到, 赋予这些初始条件的意义并不像齐次流体情形那样简单. 密度 $\rho$ 的边界条件也必须详加解释, 因为对于弱解, 密度 $\rho$ 不具有可积导数, 所以 Chapter~\ref{chap:sobolev-spaces} 中所述的 Sobolev 空间函数迹理论并不足够. 此外, 这一边界条件只施加在 $\Gamma$ 的流入部分.
+
+在这个模型中, 允许黏度按照给定定律 $\rho\mapsto\mu(\rho)$ 依赖于密度 $\rho$.
+
+正如在 Chapter~I 中所见, 利用质量平衡方程, 动量平衡方程也可写成
+\[
+ \rho\left(\frac{\partial v}{\partial t}+(v\cdot\nabla)v\right)
+ -2\operatorname{div}(\mu(\rho)D(v))+\nabla p=\rho f.
+\]
+这个方程的第一种形式称为守恒形式, 第二种形式称为非守恒形式. 同样, 利用不可压缩约束, 可将质量平衡方程写成非守恒形式
+\begin{equation}
+ \frac{D\rho}{Dt}=\frac{\partial\rho}{\partial t}+(v\cdot\nabla)\rho=0.
+\label{eq:chap6-transport-equation}
+\end{equation}
+最后这个方程称为输运方程. 正如在输运 Theorem~\ref{thm:chap1-transport} 中所见, 它描述量 $\rho$ 由速度场 $v$ 所作的输运.
+
+与 Chapter~\ref{chap:homogeneous-navier-stokes} 所研究的齐次模型相比, 出现了若干新的困难. 首先, 新的非线性反映了密度 $\rho$ 和黏度 $\mu(\rho)$ 不再是常数这一事实. 其次, 如果允许真空区域存在 (即密度为零或小到可以忽略的区域), 那么上述问题会退化 (动量方程在某种意义下变为椭圆型). 这就是为什么初始条件必须施加于质量密度/动量密度对 $(\rho,\rho v)$, 而不是质量密度/速度对 $(\rho,v)$. 我们强调, 尽管这个问题具有数学意义, 密度趋于零的极限在某种意义上与作为模型推导基础的连续介质假设相矛盾.
+
+于是很清楚, 假设 $\inf_\Omega\rho_0>0$ 且 $\inf\rho^{\mathrm{in}}>0$ 的子情形在某种意义下应当更简单, 定义和构造弱解时的困难也会较少. 我们将在本章末尾回到这个特殊情形.
+
+本章首先探究如何对给定速度场 $v$, 在初始数据和流入边界数据下求解输运方程\eqref{eq:chap6-transport-equation}. 这当然是求解完整耦合问题的一个基本组成部分. 首先值得注意的是, 当速度场 $v$ 与区域边界相切时, 因为 $v\cdot\nu=0$, 不再需要对密度施加边界数据. 在这个特殊情形下, 若数据正则, 则可用特征线法求解方程; 这相当于求解与 $v$ 相联系的特征方程 (见\MBUnresolvedReference{eq:chap1-characteristic-equation}{(I.4)}), 并观察到\MBUnresolvedReference{eq:chap1-advection-equation}{(I.2.1)}的解 $\rho$ 必须沿此流保持常数. 然而, 当数据较不正则时 (特别是速度场不满足 Cauchy--Lipschitz Theorem 的假设时), 就必须使用最初由 Di Perna 和 Lions 在\MBUnresolvedReference{bib:di-perna-lions}{[52]}中引入的、更为精细的重整化解理论. 这种方法使我们能够为较不正则的数据建立输运方程弱解的完整存在唯一性理论.
+
+这一方法可以推广到速度场不与边界相切的情形. 它允许我们在适当意义下为这种弱解定义迹. 这正是 Section~\ref{sec:chap6-weak-transport} 所介绍的框架, 其背景是稍微更一般的线性输运--反应方程, 这类方程还会出现在许多其他模型中.
+
+随后, 在\MBUnresolvedReference{sec:chap6-nonhomogeneous-navier-stokes}{Section 2}中, 我们为这里考虑的耦合系统引入一个完整的近似问题. 这个问题本身的求解并非显然, 它既使用 Schauder 不动点 Theorem, 也使用将在本节证明的输运方程解的稳定性结果.
+
+接着可以得到关于近似参数一致的估计. 它们给出足够的弱紧性和强紧性, 从而能在近似问题中证明极限过渡的合理性, 并得出该系统至少存在一个弱解.
+
+我们强调, 这里并未证明这些解的任何唯一性结果, 即使在二维也没有. 为此必须构造更正则的解. 对这种途径, 在 $v_b=0$ 的情形下, 当 $q>3$ 且假设黏度 $\mu$ 不依赖于 $\rho$ 时, 可在\MBUnresolvedReference{bib:nonhomogeneous-local-regular-solutions}{[77]}中找到如下类中的局部存在性和唯一性结果:
+\[
+ \left\{
+ \begin{aligned}
+ \rho&\in C^1([0,T]\times\overline\Omega),\\
+ v&\in L^q(]0,T[,(W^{2,q}(\Omega))^d\cap V),
+ &\frac{\partial v}{\partial t}&\in(L^q(]0,T[\times\Omega))^d.
+ \end{aligned}
+ \right.
+\]
+关于这一问题的结果也可见\MBUnresolvedReference{bib:nonhomogeneous-regular-solutions}{[12, 50, 51, 86, 83, 42, 45]}.
+
+最后, 因为二维情形 (一如通常) 比三维情形简单, 下文将只集中于维数 $d=3$. 本章所介绍的结果主要来自关于输运方程的\MBUnresolvedReference{bib:transport-renormalized-sources}{[52, 22]}, 以及关于密度可能为零的 Navier--Stokes 问题弱解的\MBUnresolvedReference{bib:nonhomogeneous-weak-sources}{[110, 86]}.
+
+我们继续使用 Chapter~IV Section~3.3 中定义的各个函数空间 $H$ 和 $V$.
+
+\subsection{输运方程的弱解}
+\label{sec:chap6-weak-transport}
+
+先给出本节所用的一个经典记号.
+
+\begin{Definition}
+\label{def:chap6-positive-negative-parts}
+任意实数 $x$ 的正部和负部分别定义为
+\[
+ x^+=\max(x,0),\qquad x^-=-\min(x,0),
+\]
+从而
+\[
+ x=x^+-x^-,\qquad |x|=x^++x^-.
+\]
+\end{Definition}
+
+\subsubsection{问题的设定}
+\label{subsec:chap6-transport-setting}
+
+设 $d\geq1$, $\Omega\subset\mathbb R^d$ 是有界 Lipschitz 区域, 并给定 $T>0$. 我们关注如下方程 (以守恒形式写出):
+\begin{equation}
+ \frac{\partial\rho}{\partial t}+\operatorname{div}(\rho v)+c\rho=0,
+ \qquad\text{于 }\Omega,
+\label{eq:chap6-linear-transport-reaction}
+\end{equation}
+以及如下初始条件和边界条件:
+\begin{equation}
+ \left\{
+ \begin{aligned}
+ \rho(0,\cdot)&=\rho_0,\\
+ \rho&=\rho^{\mathrm{in}}&&\text{于 }\Gamma_v^-(t),
+ \end{aligned}
+ \right.
+\label{eq:chap6-transport-initial-boundary}
+\end{equation}
+其中 $\rho_0\in L^\infty(\Omega)$ 和 $\rho^{\mathrm{in}}\in L^\infty(]0,T[\times\Gamma)$ 是给定数据. 需要如下假设:
+\begin{align}
+ c&\in L^1(]0,T[\times\Omega),
+\label{eq:chap6-transport-c-assumption}\\
+ v&\in L^1(]0,T[,(W^{1,1}(\Omega))^d),
+\label{eq:chap6-transport-v-assumption}\\
+ (c+\operatorname{div}v)^-&\in L^1(]0,T[,L^\infty(\Omega)),
+\label{eq:chap6-transport-negative-assumption}\\
+ (\operatorname{div}v)^+&\in L^1(]0,T[,L^\infty(\Omega)).
+\label{eq:chap6-transport-div-positive-assumption}
+\end{align}
+
+\par\noindent\refstepcounter{chaptersixsectiononeremark}\textbf{Remark~\thechaptersixsectiononeremark:}\label{rem:chap6-transport-general-equation}
+这里以及本节全文考虑的方程比研究非齐次不可压缩 Navier--Stokes 方程所严格需要的方程, 即平流方程\MBUnresolvedReference{eq:chap1-advection-equation-second}{(I.2.1)}, 稍微更一般. 这样便可涵盖更广泛的情形, 特别是非无散向量场, 例如可压缩模型或动理学理论中的 Vlasov 模型.
+\begin{itemize}
+ \item 在 $c=-\operatorname{div}v$ 的特殊情形下, 恢复通常的平流方程
+ \[
+  \frac{\partial\rho}{\partial t}+v\cdot\nabla\rho=0,
+ \]
+ 此时假设\eqref{eq:chap6-transport-negative-assumption}自动满足.
+ \item 在 $c=0$ 的特殊情形下, 所研究的方程恰为质量守恒方程
+ \[
+  \frac{\partial\rho}{\partial t}+\operatorname{div}(\rho v)=0,
+ \]
+ 此时假设\eqref{eq:chap6-transport-negative-assumption}和\eqref{eq:chap6-transport-div-positive-assumption}等价于要求 $\operatorname{div}v\in L^1(]0,T[,L^\infty(\Omega))$.
+\end{itemize}
+
+与向量场 $v$ 相联系, 引入测度
+\[
+ \mathrm d\mu_v=(v\cdot\nu)\,\mathrm dt\,\mathrm d\sigma,
+ \qquad\text{于 } ]0,T[\times\Gamma,
+\]
+并用 $\mathrm d\mu_v^+$ (分别地, $\mathrm d\mu_v^-$) 表示其正部 (分别地, 负部), 从而
+\[
+ |\mathrm d\mu_v|=\mathrm d\mu_v^++\mathrm d\mu_v^-.
+\]
+$\mathrm d\mu_v^+$ (分别地, $\mathrm d\mu_v^-$) 的支集是 $]0,T[\times\Gamma$ 的流出部分 (分别地, 流入部分).
+
+\begin{Definition}
+\label{def:chap6-transport-weak-solution}
+设 $v\in(L^1(]0,T[\times\Omega))^d$ 且 $c\in L^1(]0,T[\times\Omega)$. 若函数 $\rho\in L^\infty(]0,T[\times\Omega)$ 对任意满足 $\varphi(0,\cdot)=\varphi(T,\cdot)=0$ 且在 $[0,T]\times\Gamma$ 上 $\varphi=0$ 的测试函数 $\varphi\in C^{0,1}([0,T]\times\overline\Omega)$ 都满足
+\[
+ \int_0^T\int_\Omega
+ \rho\left(\frac{\partial\varphi}{\partial t}+v\cdot\nabla\varphi-c\varphi\right)
+ \,\mathrm dx\,\mathrm dt=0,
+\]
+则称 $\rho$ 是\eqref{eq:chap6-linear-transport-reaction}的一个弱解.
+\end{Definition}
+
+在下面各小节中, 将证明这些弱解的主要性质. 首先证明任意弱解都在某种弱意义下具有边界迹, 并且满足所谓的重整化性质. 然后证明 Cauchy--Dirichlet 输运问题是适定的, 最后证明其解连续依赖于数据, 特别是速度场.
+
+输运方程重整化解概念来自\MBUnresolvedReference{bib:di-perna-lions-renormalized}{[52]} (关于 $BV$ 向量场情形另见\MBUnresolvedReference{bib:bv-vector-fields}{[5]}). 这里所给的叙述包括迹理论, 主要取自\MBUnresolvedReference{bib:transport-trace-theory}{[22]}, 并作了一些改进, 特别是关于区域的正则性假设. 这些结果在输运问题有限体积格式收敛性分析中的应用见\MBUnresolvedReference{bib:finite-volume-transport}{[23]}.
+
+\subsubsection{迹定理与重整化性质}
+\label{subsec:chap6-trace-renormalization}
+
+输运问题弱解的研究首先要证明这种解在适当意义下具有边界迹. 这正是下面 Theorem 的目标.
+
+\begin{Theorem}
+\label{thm:chap6-trace-renormalization}
+设 $v$ 和 $c$ 满足假设\eqref{eq:chap6-transport-c-assumption}--\eqref{eq:chap6-transport-div-positive-assumption}, 且 $\rho\in L^\infty(]0,T[\times\Omega)$ 是\eqref{eq:chap6-linear-transport-reaction}的任意弱解. 则有如下性质.
+\begin{enumerate}
+ \item 时间连续性: 对任意 $1\leq p<+\infty$, 函数 $\rho\in C^0([0,T],L^p(\Omega))$.
+ \item 迹的存在唯一性: 存在唯一函数 $\gamma\rho\in L^\infty(]0,T[\times\Gamma,|\mathrm d\mu_v|)$, 使对任意测试函数 $\varphi\in C^{0,1}([0,T]\times\overline\Omega)$ 和任意 $[t_0,t_1]\subset[0,T]$, 都有
+ \begin{equation}
+ \begin{aligned}
+ &\int_{t_0}^{t_1}\int_\Omega
+ \rho\left(\frac{\partial\varphi}{\partial t}+v\cdot\nabla\varphi-c\varphi\right)
+ \,\mathrm dx\,\mathrm dt
+ -\int_{t_0}^{t_1}\int_\Gamma(\gamma\rho)\varphi(v\cdot\nu)\,\mathrm d\sigma\,\mathrm dt\\
+ &\qquad
+ +\int_\Omega\rho(t_0)\varphi(t_0)\,\mathrm dx
+ -\int_\Omega\rho(t_1)\varphi(t_1)\,\mathrm dx=0.
+ \end{aligned}
+ \label{eq:chap6-trace-green-formula}
+ \end{equation}
+ \item 重整化性质: 对任意 $C^1$ 类函数 $\beta:\mathbb R\to\mathbb R$, 任意 $\varphi\in C^{0,1}([0,T]\times\overline\Omega)$ 和任意 $[t_0,t_1]\subset[0,T]$, 都有
+ \begin{equation}
+ \begin{aligned}
+ &\int_{t_0}^{t_1}\int_\Omega
+ \beta(\rho)\left(\frac{\partial\varphi}{\partial t}+v\cdot\nabla\varphi\right)
+ \,\mathrm dx\,\mathrm dt
+ -\int_{t_0}^{t_1}\int_\Omega c\rho\beta'(\rho)\varphi\,\mathrm dx\,\mathrm dt\\
+ &\quad
+ -\int_{t_0}^{t_1}\int_\Omega(\operatorname{div}v)
+ \bigl(\rho\beta'(\rho)-\beta(\rho)\bigr)\varphi\,\mathrm dx\,\mathrm dt
+ -\int_{t_0}^{t_1}\int_\Gamma\beta(\gamma\rho)\varphi(v\cdot\nu)\,\mathrm d\sigma\,\mathrm dt\\
+ &\quad
+ +\int_\Omega\beta(\rho(t_0))\varphi(t_0)\,\mathrm dx
+ -\int_\Omega\beta(\rho(t_1))\varphi(t_1)\,\mathrm dx=0.
+ \end{aligned}
+ \label{eq:chap6-renormalization-formula}
+ \end{equation}
+\end{enumerate}
+\end{Theorem}
+
+重要的是要理解, 重整化性质只是要证明链式法则
+\[
+ \frac{\partial\beta(\rho)}{\partial t}+v\cdot\nabla\beta(\rho)
+ =\beta'(\rho)\left(\frac{\partial\rho}{\partial t}+v\cdot\nabla\rho\right)
+\]
+对于弱解和低正则速度场 $v$ 仍然成立.
+
+\par\noindent\refstepcounter{chaptersixsectiononeremark}\textbf{Remark~\thechaptersixsectiononeremark:}\label{rem:chap6-piecewise-renormalization}
+下面将在 Corollary~\ref{cor:chap6-piecewise-renormalization} 中证明, 重整化性质实际上对任意仅连续且分片 $C^1$ 的 $\beta$ 都成立.
+
+\par\noindent\refstepcounter{chaptersixsectiononeremark}\textbf{Remark~\thechaptersixsectiononeremark:}\label{rem:chap6-transport-source-term}
+若在输运方程\eqref{eq:chap6-linear-transport-reaction}右端加入给定源项 $f\in L^1(]0,T[\times\Omega)$, 同一结果仍然成立. 更准确地说, 必须在\eqref{eq:chap6-trace-green-formula}左端加入
+$\int_{t_0}^{t_1}\int_\Omega f\varphi\,\mathrm dx\,\mathrm dt$, 并在\eqref{eq:chap6-renormalization-formula}左端加入
+$\int_{t_0}^{t_1}\int_\Omega f\beta'(\rho)\varphi\,\mathrm dx\,\mathrm dt$.
+
+不过我们强调, 为证明该结果, 需要先验知道 $\rho$ 是有界弱解. 将这些结果推广到 $L^\infty(]0,T[,L^p(\Omega))$ 中的弱解 ($p<+\infty$) 的情形, 例如可见\MBUnresolvedReference{bib:renormalized-lp-solutions}{[52, 22]}.
+
+在证明 Theorem~\ref{thm:chap6-trace-renormalization}之前, 先给出一个用光滑函数逼近绝对值的预备技术结果. 其证明是直接的.
+
+\begin{Lemma}
+\label{lem:chap6-smooth-absolute-value}
+对任意 $\delta>0$, 由
+\[
+ \beta_\delta(\xi)=\frac{\xi^2}{\sqrt{\xi^2+\delta}}
+\]
+定义的函数 $\beta_\delta:\mathbb R\to\mathbb R$ 属于 $C^\infty$ 类, 并满足
+\[
+ |\beta_\delta(\xi)|\leq|\xi|,\quad\forall\xi\in\mathbb R,
+ \qquad
+ |\beta_\delta'(\xi)|\leq2,\quad\forall\xi\in\mathbb R,
+\]
+\[
+ |\xi\beta_\delta'(\xi)-\beta_\delta(\xi)|\leq\sqrt\delta,
+ \quad\forall\xi\in\mathbb R,\ \forall\delta>0,
+ \qquad
+ \beta_\delta(\xi)\xrightarrow[\delta\to0]{}|\xi|,
+ \quad\forall\xi\in\mathbb R.
+\]
+\end{Lemma}
+
+\begin{Proof}
+\textup{(of Theorem~\ref{thm:chap6-trace-renormalization})}
+
+这一结果的证明强烈依赖于 Chapter~\ref{chap:sobolev-spaces} Section~2.2 中引入的磨光算子和相应的 Friedrichs 交换估计.
+
+\begin{itemize}
+ \item 考虑\MBUnresolvedReference{eq:chap3-mollifier-family}{(III.18)}中定义的算子族 $(S_\varepsilon)_\varepsilon$, 并对任意 $t\in[0,T]$ 令
+ \[
+  \rho_\varepsilon(t,\cdot)=S_\varepsilon\rho(t,\cdot).
+ \]
+ 注意, 因为 $S_\varepsilon$ 只作用于空间变量, 在这一磨光过程中时间变量只是一个参数. 特别地, 微分算子 $\partial/\partial t$ 与 $S_\varepsilon$ 交换. 由正则性假设\eqref{eq:chap6-transport-c-assumption}和\eqref{eq:chap6-transport-v-assumption}, 可应用 Proposition~\ref{prop:chap3-mollifier-properties} 和 Theorem~\ref{thm:chap3-friedrichs-commutator}, 得出 $\rho_\varepsilon$ 在分布意义下满足
+ \begin{equation}
+  \frac{\partial\rho_\varepsilon}{\partial t}
+  +\operatorname{div}(\rho_\varepsilon v)+c\rho_\varepsilon=R_\varepsilon,
+ \label{eq:chap6-mollified-transport}
+ \end{equation}
+ 其中 $R_\varepsilon\in L^1(]0,T[\times\Omega)$ 且
+ $\|R_\varepsilon\|_{L^1}\to0$ 当 $\varepsilon\to0$.
+
+ 由 Proposition~\ref{prop:chap3-mollifier-properties}, 已知
+ \[
+  \rho_\varepsilon\in L^\infty(]0,T[,C^k(\overline\Omega)),
+  \qquad\forall k\geq0,
+ \]
+ 以及
+ \begin{equation}
+  \|\rho_\varepsilon\|_{L^\infty(]0,T[\times\Omega)}
+  \leq\|\rho\|_{L^\infty(]0,T[\times\Omega)}.
+ \label{eq:chap6-mollified-linfty-bound}
+ \end{equation}
+ 此外,
+ \[
+  \rho_\varepsilon(t)\xrightarrow[\varepsilon\to0]{}\rho(t)
+  \quad\text{于 }L^p(\Omega),
+  \qquad\forall p<+\infty,\ \forall t\in[0,T],
+ \]
+ 且
+ \[
+  \rho_\varepsilon\xrightarrow[\varepsilon\to0]{}\rho
+  \quad\text{于 }L^p(]0,T[\times\Omega),
+  \qquad\forall p<+\infty.
+ \]
+ 注意, 这些收敛以及对 $\rho_\varepsilon$ 的 $L^\infty$ 界蕴含
+ \begin{equation}
+  |\rho_\varepsilon-\rho|^2
+  \xrightharpoonup[\varepsilon\to0]{*}0
+  \quad\text{于 }L^\infty(]0,T[\times\Omega).
+ \label{eq:chap6-mollified-square-weak-star}
+ \end{equation}
+
+ 因为 $\rho_\varepsilon$ 关于空间变量光滑, 由\eqref{eq:chap6-mollified-transport}可知, 对任意 $\varepsilon>0$,
+ \[
+ \frac{\partial\rho_\varepsilon}{\partial t}
+ =R_\varepsilon-\operatorname{div}(\rho_\varepsilon v)-c\rho_\varepsilon
+ =R_\varepsilon-\rho_\varepsilon\operatorname{div}v-v\cdot\nabla\rho_\varepsilon-c\rho_\varepsilon
+ \in L^1(]0,T[\times\Omega).
+ \]
+ 特别地, $\rho_\varepsilon\in W^{1,1}(]0,T[\times\Omega)$. 由此性质以及例如 Proposition~\ref{prop:chap2-epq-continuous-representative}, 有 $\rho_\varepsilon\in C^0([0,T],L^1(\Omega))$. 再由\eqref{eq:chap6-mollified-linfty-bound}, 最终得到对任意 $p<+\infty$, $\rho_\varepsilon\in C^0([0,T],L^p(\Omega))$.
+
+ \item 现在证明 $(\rho_\varepsilon)_\varepsilon$ 是 $C^0([0,T],L^1(\Omega))$ 中的 Cauchy 序列. 对任意 $\varepsilon_1,\varepsilon_2>0$,
+ \begin{equation}
+  \frac{\partial(\rho_{\varepsilon_1}-\rho_{\varepsilon_2})}{\partial t}
+  +\operatorname{div}\bigl((\rho_{\varepsilon_1}-\rho_{\varepsilon_2})v\bigr)
+  +c(\rho_{\varepsilon_1}-\rho_{\varepsilon_2})
+  =R_{\varepsilon_1}-R_{\varepsilon_2}.
+ \label{eq:chap6-mollified-difference}
+ \end{equation}
+ 设 $\beta:\mathbb R\to\mathbb R$ 光滑且 $\beta'$ 有界. 将\eqref{eq:chap6-mollified-difference}乘以 $\beta'(\rho_{\varepsilon_1}-\rho_{\varepsilon_2})$ (这是允许的, 因为 $\rho_\varepsilon\in W^{1,1}(]0,T[\times\Omega)$), 在分布意义下得到
+ \begin{equation}
+ \begin{aligned}
+ &\frac{\partial}{\partial t}\beta(\rho_{\varepsilon_1}-\rho_{\varepsilon_2})
+ +\operatorname{div}\bigl(\beta(\rho_{\varepsilon_1}-\rho_{\varepsilon_2})v\bigr)
+ +c(\rho_{\varepsilon_1}-\rho_{\varepsilon_2})
+ \beta'(\rho_{\varepsilon_1}-\rho_{\varepsilon_2})\\
+ &\quad +(\operatorname{div}v)
+ \left((\rho_{\varepsilon_1}-\rho_{\varepsilon_2})
+ \beta'(\rho_{\varepsilon_1}-\rho_{\varepsilon_2})
+ -\beta(\rho_{\varepsilon_1}-\rho_{\varepsilon_2})\right)\\
+ &\qquad=\beta'(\rho_{\varepsilon_1}-\rho_{\varepsilon_2})
+ (R_{\varepsilon_1}-R_{\varepsilon_2}).
+ \end{aligned}
+ \label{eq:chap6-renormalized-mollified-difference}
+ \end{equation}
+ 设 $\varphi\in C^{0,1}(\overline\Omega)$ 是与时间无关的 Lipschitz 连续函数, 在 $\Gamma$ 上满足 $\varphi=0$, 并在 $\Omega$ 中满足 $0\leq\varphi\leq1$. 在\eqref{eq:chap6-renormalized-mollified-difference}中使用这一测试函数, 得
+ \[
+ \begin{aligned}
+ &\frac{\mathrm d}{\mathrm dt}\int_\Omega
+ \varphi\beta(\rho_{\varepsilon_1}-\rho_{\varepsilon_2})\,\mathrm dx
+ -\int_\Omega\beta(\rho_{\varepsilon_1}-\rho_{\varepsilon_2})v\cdot\nabla\varphi\,\mathrm dx\\
+ &\quad+\int_\Omega c(\rho_{\varepsilon_1}-\rho_{\varepsilon_2})
+ \beta'(\rho_{\varepsilon_1}-\rho_{\varepsilon_2})\varphi\,\mathrm dx\\
+ &\quad+\int_\Omega(\operatorname{div}v)
+ \left((\rho_{\varepsilon_1}-\rho_{\varepsilon_2})
+ \beta'(\rho_{\varepsilon_1}-\rho_{\varepsilon_2})
+ -\beta(\rho_{\varepsilon_1}-\rho_{\varepsilon_2})\right)\varphi\,\mathrm dx\\
+ &=\int_\Omega\beta'(\rho_{\varepsilon_1}-\rho_{\varepsilon_2})
+ (R_{\varepsilon_1}-R_{\varepsilon_2})\varphi\,\mathrm dx.
+ \end{aligned}
+ \]
+ 因而对任意 $s\in[0,T]$,
+ \[
+ \begin{aligned}
+ &\int_\Omega\varphi\beta(\rho_{\varepsilon_1}-\rho_{\varepsilon_2})(s)\,\mathrm dx
+ +\int_0^s\int_\Omega c(\rho_{\varepsilon_1}-\rho_{\varepsilon_2})
+ \beta'(\rho_{\varepsilon_1}-\rho_{\varepsilon_2})\varphi\,\mathrm dx\,\mathrm dt\\
+ &\quad+\int_0^s\int_\Omega(\operatorname{div}v)
+ \left((\rho_{\varepsilon_1}-\rho_{\varepsilon_2})
+ \beta'(\rho_{\varepsilon_1}-\rho_{\varepsilon_2})
+ -\beta(\rho_{\varepsilon_1}-\rho_{\varepsilon_2})\right)\varphi\,\mathrm dx\,\mathrm dt\\
+ &\leq\int_\Omega|\rho_{\varepsilon_1}(0,\cdot)-\rho_{\varepsilon_2}(0,\cdot)|\,\mathrm dx
+ +C\int_0^s\int_\Omega|R_{\varepsilon_1}-R_{\varepsilon_2}|\,\mathrm dx\,\mathrm dt\\
+ &\qquad+C\int_0^s\int_\Omega
+ |\rho_{\varepsilon_1}-\rho_{\varepsilon_2}|\,|v\cdot\nabla\varphi|
+ \,\mathrm dx\,\mathrm dt.
+ \end{aligned}
+ \]
+ 在此不等式中使用 Lemma~\ref{lem:chap6-smooth-absolute-value}, 取 $\beta=\beta_\delta$ (它足够光滑), 然后令 $\delta\to0$. 利用控制收敛 Theorem 和该 Lemma 中 $\beta_\delta$ 的收敛性质, 得
+ \[
+ \begin{aligned}
+ &\int_\Omega\varphi|\rho_{\varepsilon_1}-\rho_{\varepsilon_2}|(s)\,\mathrm dx
+ +\int_0^s\int_\Omega c|\rho_{\varepsilon_1}-\rho_{\varepsilon_2}|\varphi\,\mathrm dx\,\mathrm dt\\
+ &\leq\|\rho_{\varepsilon_1}(0)-\rho_{\varepsilon_2}(0)\|_{L^1(\Omega)}
+ +C\|R_{\varepsilon_1}-R_{\varepsilon_2}\|_{L^1(]0,T[\times\Omega)}\\
+ &\qquad+C\int_0^s\int_\Omega
+ |\rho_{\varepsilon_1}-\rho_{\varepsilon_2}|\,|v\cdot\nabla\varphi|
+ \,\mathrm dx\,\mathrm dt.
+ \end{aligned}
+ \]
+ 现在注意
+ \[
+  c=c+\operatorname{div}v-\operatorname{div}v
+  \geq-(c+\operatorname{div}v)^--(\operatorname{div}v)^+,
+ \]
+ 所以由\eqref{eq:chap6-transport-negative-assumption}和\eqref{eq:chap6-transport-div-positive-assumption},
+ \[
+  0\leq c^-\leq(c+\operatorname{div}v)^-+(\operatorname{div}v)^+
+  \in L^1(]0,T[,L^\infty(\Omega)).
+ \]
+ 因此对任意 $s\in[0,T]$ 可写成
+ \begin{equation}
+ \begin{aligned}
+ \int_\Omega\varphi|\rho_{\varepsilon_1}-\rho_{\varepsilon_2}|(s)\,\mathrm dx
+ &\leq\|\rho_{\varepsilon_1}(0)-\rho_{\varepsilon_2}(0)\|_{L^1(\Omega)}
+ +C\|R_{\varepsilon_1}-R_{\varepsilon_2}\|_{L^1(]0,T[\times\Omega)}\\
+ &\quad+\int_0^s\|c^-(t)\|_{L^\infty(\Omega)}
+ \|\rho_{\varepsilon_1}(t)-\rho_{\varepsilon_2}(t)\|_{L^1(\Omega)}\,\mathrm dt\\
+ &\quad+C\int_0^T\int_\Omega
+ |\rho_{\varepsilon_1}-\rho_{\varepsilon_2}|\,|v\cdot\nabla\varphi|
+ \,\mathrm dt\,\mathrm dx.
+ \end{aligned}
+ \label{eq:chap6-cauchy-pre-boundary-cutoff}
+ \end{equation}
+ 现在的想法是取 $\varphi=\varphi_h$, 使当 $h\to0$ 时 $\varphi_h\to1$ 于 $\Omega$, 于是\eqref{eq:chap6-cauchy-pre-boundary-cutoff}左端的极限恰为 $\rho_{\varepsilon_1}-\rho_{\varepsilon_2}$ 的 $L^1$ 范数. 唯一要处理的问题是右端最后一项.
+
+ 对 $h>0$, 定义
+ \[
+  \varphi_h(x)=\frac1h\min(h,\delta(x)),\qquad\forall x\in\Omega,
+ \]
+ 其中 $\delta(x)$ 是 $x$ 到 $\Omega$ 边界的距离. 由构造, $\varphi_h$ 在 $\mathbb R^d$ 上 Lipschitz 连续, 满足 $0\leq\varphi_h\leq1$, 且因为 $\operatorname{Lip}(\delta)\leq1$,
+ \[
+  |\nabla\varphi_h|=
+  \begin{cases}
+   0&\text{于 }\Omega_h,\\
+   1/h&\text{于 }O_h,
+  \end{cases}
+ \]
+ 这里采用 Chapter~\ref{chap:sobolev-spaces} Section~1 开头引入的记号. 对任意 $h,\varepsilon_1,\varepsilon_2$,
+ \[
+ \int_\Omega(1-\varphi_h)|\rho_{\varepsilon_1}-\rho_{\varepsilon_2}|(s,\cdot)\,\mathrm dx
+ \leq2\|\rho\|_{L^\infty}\int_\Omega(1-\varphi_h)\,\mathrm dx
+ \leq2\|\rho\|_{L^\infty}|O_h|.
+ \]
+ 所以对任意 $s\in[0,T]$, \eqref{eq:chap6-cauchy-pre-boundary-cutoff}给出
+ \begin{equation}
+ \begin{aligned}
+ \|\rho_{\varepsilon_1}(s)-\rho_{\varepsilon_2}(s)\|_{L^1(\Omega)}
+ &\leq2\|\rho\|_{L^\infty}|O_h|
+ +\|\rho_{\varepsilon_1}(0)-\rho_{\varepsilon_2}(0)\|_{L^1(\Omega)}\\
+ &\quad+\int_0^s\|c^-(t)\|_{L^\infty(\Omega)}
+ \|\rho_{\varepsilon_1}(t)-\rho_{\varepsilon_2}(t)\|_{L^1(\Omega)}\,\mathrm dt\\
+ &\quad+C\|R_{\varepsilon_1}-R_{\varepsilon_2}\|_{L^1(]0,T[\times\Omega)}
+ +I_{h,\varepsilon_1,\varepsilon_2}(v),
+ \end{aligned}
+ \label{eq:chap6-cauchy-boundary-cutoff}
+ \end{equation}
+ 其中
+ \[
+  I_{h,\varepsilon_1,\varepsilon_2}(v)
+  =\frac Ch\int_0^T\int_{O_h}|\rho_{\varepsilon_1}-\rho_{\varepsilon_2}|\,|v|\,\mathrm dx\,\mathrm dt.
+ \]
+ 研究 $I_{h,\varepsilon_1,\varepsilon_2}(v)$. 为此, 取一个光滑向量场 $w\in C^\infty([0,T]\times\overline\Omega)^d$, 并写成
+ \[
+ \begin{aligned}
+ I_{h,\varepsilon_1,\varepsilon_2}(v)
+ &\leq I_{h,\varepsilon_1,\varepsilon_2}(v-w)
+ +I_{h,\varepsilon_1,\varepsilon_2}(w)\\
+ &\leq\frac{2C\|\rho\|_{L^\infty}}h
+ \|v-w\|_{L^1(]0,T[\times\Omega)}
+ +\frac Ch\|w\|_{L^\infty(]0,T[\times\Omega)}
+ \|\rho_{\varepsilon_1}-\rho_{\varepsilon_2}\|_{L^1(]0,T[\times\Omega)}.
+ \end{aligned}
+ \]
+ 因为\eqref{eq:chap6-cauchy-boundary-cutoff}对任意 $s\in[0,T]$ 成立, 且 $c^-\in L^1(]0,T[,L^\infty(\Omega))$, 使用 Gronwall Lemma 得
+ \[
+ \begin{aligned}
+ \sup_{[0,T]}\|\rho_{\varepsilon_1}-\rho_{\varepsilon_2}\|_{L^1(\Omega)}
+ \leq C\Big(&|O_h|+\|\rho_{\varepsilon_1}(0)-\rho_{\varepsilon_2}(0)\|_{L^1(\Omega)}
+ +\|R_{\varepsilon_1}-R_{\varepsilon_2}\|_{L^1(]0,T[\times\Omega)}\\
+ &+\frac1h\|v-w\|_{L^1(]0,T[\times\Omega)}
+ +\frac1h\|w\|_{L^\infty(]0,T[\times\Omega)}
+ \|\rho_{\varepsilon_1}-\rho_{\varepsilon_2}\|_{L^1(]0,T[\times\Omega)}\Big).
+ \end{aligned}
+ \]
+ 注意, 上式左端只依赖于 $\varepsilon_1,\varepsilon_2$, 而右端还依赖于 $h,w$. 现取 $\zeta>0$. 先取 $h>0$ 使 $C|O_h|\leq\zeta$. 利用 $C^\infty([0,T]\times\overline\Omega)^d$ 在 $L^1(]0,T[\times\Omega)^d$ 中的稠密性, 再取 $w\in C^\infty([0,T]\times\overline\Omega)^d$ 使
+ \[
+  \frac Ch\|v-w\|_{L^1(]0,T[\times\Omega)}\leq\zeta.
+ \]
+ 现在利用 $\rho_\varepsilon(0)\to\rho_0$ 于 $L^1(\Omega)$, $\rho_\varepsilon\to\rho$ 于 $L^1(]0,T[\times\Omega)$, 以及 $R_\varepsilon\to0$ 于 $L^1(]0,T[\times\Omega)$. 因为 $w,h$ 已固定, 可找到 $\varepsilon_0>0$, 使对任意 $0<\varepsilon_1,\varepsilon_2<\varepsilon_0$,
+ \[
+ \begin{gathered}
+ C\|\rho_{\varepsilon_1}(0)-\rho_{\varepsilon_2}(0)\|_{L^1(\Omega)}\leq\zeta,\\
+ C\|R_{\varepsilon_1}-R_{\varepsilon_2}\|_{L^1(]0,T[\times\Omega)}\leq\zeta,\\
+ \frac Ch\|w\|_{L^\infty(]0,T[\times\Omega)}
+ \|\rho_{\varepsilon_1}-\rho_{\varepsilon_2}\|_{L^1(]0,T[\times\Omega)}\leq\zeta.
+ \end{gathered}
+ \]
+ 汇总这些估计, 最终得到
+ \[
+  \sup_{[0,T]}\|\rho_{\varepsilon_1}-\rho_{\varepsilon_2}\|_{L^1(\Omega)}
+  \leq5\zeta,
+  \qquad\forall0<\varepsilon_1,\varepsilon_2<\varepsilon_0.
+ \]
+ 这证明 $(\rho_\varepsilon)_\varepsilon$ 是 $C^0([0,T],L^1(\Omega))$ 中的 Cauchy 序列. 已知 $(\rho_\varepsilon)_\varepsilon$ 在 $L^1(]0,T[\times\Omega)$ 中收敛于 $\rho$, 因而
+ \[
+  \rho\in C^0([0,T],L^1(\Omega)),
+  \qquad
+  \rho_\varepsilon\xrightarrow[\varepsilon\to0]{}\rho
+  \quad\text{于 }C^0([0,T],L^1(\Omega)).
+ \]
+ 由\eqref{eq:chap6-mollified-linfty-bound}立即推出, 对任意 $p<+\infty$, 收敛也在 $C^0([0,T],L^p(\Omega))$ 中成立.
+\end{itemize}
+\begin{itemize}
+ \item 现在证明迹 $\gamma\rho$ 的存在性. 在\eqref{eq:chap6-renormalized-mollified-difference}中取 $\beta(s)=s^2$, 得
+ \begin{equation}
+ \begin{aligned}
+ \frac{\partial}{\partial t}(\rho_{\varepsilon_1}-\rho_{\varepsilon_2})^2
+ &+v\cdot\nabla(\rho_{\varepsilon_1}-\rho_{\varepsilon_2})^2
+ +2(c+\operatorname{div}v)(\rho_{\varepsilon_1}-\rho_{\varepsilon_2})^2\\
+ &=2(R_{\varepsilon_1}-R_{\varepsilon_2})
+ (\rho_{\varepsilon_1}-\rho_{\varepsilon_2}).
+ \end{aligned}
+ \label{eq:chap6-square-mollified-difference}
+ \end{equation}
+ 在\eqref{eq:chap6-square-mollified-difference}中取满足 $\psi(0,\cdot)=\psi(T,\cdot)=0$ 的测试函数 $\psi\in C^{0,1}([0,T]\times\overline\Omega)$. 分部积分, 并准确考察如下边界项:
+ \begin{equation}
+ \begin{aligned}
+ &\int_0^T\int_\Gamma|\rho_{\varepsilon_1}-\rho_{\varepsilon_2}|^2
+ \psi(v\cdot\nu)\,\mathrm d\sigma\,\mathrm dt\\
+ &=\int_0^T\int_\Omega|\rho_{\varepsilon_1}-\rho_{\varepsilon_2}|^2
+ \left(\frac{\partial\psi}{\partial t}+v\cdot\nabla\psi
+ -(\operatorname{div}v)\psi-2c\psi\right)\,\mathrm dx\,\mathrm dt\\
+ &\quad+2\int_0^T\int_\Omega(R_{\varepsilon_1}-R_{\varepsilon_2})
+ (\rho_{\varepsilon_1}-\rho_{\varepsilon_2})\psi\,\mathrm dx\,\mathrm dt.
+ \end{aligned}
+ \label{eq:chap6-boundary-trace-identity}
+ \end{equation}
+ 注意, 因为 $\rho_\varepsilon$ 关于空间变量光滑, 它在 $\Gamma$ 上具有通常意义的迹. 我们希望选择 $\psi$ 使其在边界上等于 $\operatorname{sgn}(v\cdot\nu)$, 但 $\psi$ 的正则性要求使这不可能. 不过, 例如利用 Theorem~\ref{thm:chap3-trace-space-properties}, 可找到一列 Lipschitz 连续函数 $\psi_n\in C^{0,1}([0,T]\times\overline\Omega)$, 满足
+ \[
+  \|\psi_n\|_{L^\infty(]0,T[\times\Omega)}\leq1,
+  \qquad \psi_n(0,\cdot)=\psi_n(T,\cdot)=0,
+ \]
+ 以及
+ \begin{equation}
+  \psi_n\xrightarrow[n\to\infty]{}\operatorname{sgn}(v\cdot\nu)
+  \quad\text{几乎处处于 } ]0,T[\times\Gamma.
+ \label{eq:chap6-sign-boundary-approximation}
+ \end{equation}
+ 在\eqref{eq:chap6-boundary-trace-identity}中取 $\psi=\psi_n$, 得
+ \begin{equation}
+ \begin{aligned}
+ &\int_0^T\int_\Gamma|\rho_{\varepsilon_1}-\rho_{\varepsilon_2}|^2
+ |v\cdot\nu|\,\mathrm d\sigma\,\mathrm dt\\
+ &\leq4\|\rho\|_{L^\infty}^2
+ \int_0^T\int_\Gamma|v\cdot\nu|
+ |\psi_n-\operatorname{sgn}(v\cdot\nu)|\,\mathrm d\sigma\,\mathrm dt\\
+ &\quad+\int_0^T\int_\Omega|\rho_{\varepsilon_1}-\rho_{\varepsilon_2}|^2F_n
+ \,\mathrm dx\,\mathrm dt
+ +C\|R_{\varepsilon_1}-R_{\varepsilon_2}\|_{L^1(]0,T[\times\Omega)},
+ \end{aligned}
+ \label{eq:chap6-trace-cauchy-estimate}
+ \end{equation}
+ 其中
+ \[
+  F_n=\frac{\partial\psi_n}{\partial t}+v\cdot\nabla\psi_n
+  -(\operatorname{div}v)\psi_n-2c\psi_n
+  \in L^1(]0,T[\times\Omega).
+ \]
+ 固定 $\zeta>0$. 由 Lebesgue 控制收敛 Theorem 和\eqref{eq:chap6-sign-boundary-approximation}, \eqref{eq:chap6-trace-cauchy-estimate}右端第一项当 $n\to\infty$ 时趋于 $0$. 因而可取某个 $n$, 使该项小于 $\zeta$. 固定这样的整数 $n$ 后, 利用\eqref{eq:chap6-mollified-square-weak-star}, 可取 $\varepsilon_0>0$, 使当 $\varepsilon_1<\varepsilon_0$, $\varepsilon_2<\varepsilon_0$ 时, 第二项和第三项都小于 $\zeta$.
+
+ 所有这些计算表明, $(\rho_\varepsilon)_\varepsilon$ 在 $]0,T[\times\Gamma$ 上的限制是空间 $L^2(]0,T[\times\Gamma,|\mathrm d\mu_v|)$ 中的 Cauchy 序列. 定义 $\gamma\rho\in L^2(]0,T[\times\Gamma,|\mathrm d\mu_v|)$ 为相应极限. 注意 $\gamma\rho$ 在 $|\mathrm d\mu_v|$ 几乎处处的意义下良定义.
+
+ 对任意 $\beta\in C^1(\mathbb R)$, 由\eqref{eq:chap6-mollified-transport}可计算得
+ \[
+  \frac{\partial\beta(\rho_\varepsilon)}{\partial t}
+  +v\cdot\nabla\beta(\rho_\varepsilon)
+  +(c+\operatorname{div}v)\rho_\varepsilon\beta'(\rho_\varepsilon)
+  =\beta'(\rho_\varepsilon)R_\varepsilon.
+ \]
+ 以函数 $\varphi\in C^1([t_0,t_1]\times\overline\Omega)$ 测试, 得
+ \[
+ \begin{aligned}
+ &\int_{t_0}^{t_1}\int_\Omega\beta(\rho_\varepsilon)
+ \left(\frac{\partial\varphi}{\partial t}+v\cdot\nabla\varphi\right)
+ \,\mathrm dx\,\mathrm dt
+ -\int_{t_0}^{t_1}\int_\Omega c\rho_\varepsilon\beta'(\rho_\varepsilon)\varphi
+ \,\mathrm dx\,\mathrm dt\\
+ &\quad-\int_{t_0}^{t_1}\int_\Omega(\operatorname{div}v)
+ \bigl(\rho_\varepsilon\beta'(\rho_\varepsilon)-\beta(\rho_\varepsilon)\bigr)\varphi
+ \,\mathrm dx\,\mathrm dt
+ -\int_{t_0}^{t_1}\int_\Gamma\beta(\rho_\varepsilon)\varphi(v\cdot\nu)
+ \,\mathrm d\sigma\,\mathrm dt\\
+ &\quad+\int_\Omega\beta(\rho_\varepsilon(t_0))\varphi(t_0)\,\mathrm dx
+ -\int_\Omega\beta(\rho_\varepsilon(t_1))\varphi(t_1)\,\mathrm dx
+ =\int_0^T\int_\Omega R_\varepsilon\varphi\,\mathrm dx\,\mathrm dt.
+ \end{aligned}
+ \]
+ 借助上面证明的所有收敛, 可令 $\varepsilon\to0$, 特别是可在边界项中取极限, 从而得到\eqref{eq:chap6-renormalization-formula}. 最后, 只需取 $\beta(s)=s$ 即得\eqref{eq:chap6-trace-green-formula}.
+
+ \item 还需证明唯一性. 假设 $\gamma_1\rho,\gamma_2\rho\in L^\infty(]0,T[\times\Gamma,|\mathrm d\mu_v|)$ 且二者都满足\eqref{eq:chap6-trace-green-formula}, 则对任意测试函数 $\varphi\in C^{0,1}([0,T]\times\overline\Omega)$,
+ \[
+  \int_0^T\int_\Gamma(\gamma_1\rho-\gamma_2\rho)
+  \varphi(v\cdot\nu)\,\mathrm d\sigma\,\mathrm dt=0.
+ \]
+ 由稠密性, 存在一列 Lipschitz 连续函数 $\varphi_n$, 使
+ \[
+  \sup_n\|\varphi_n\|_{L^\infty}<+\infty,
+  \qquad
+  \varphi_n\xrightarrow[n\to\infty]{}
+  (\gamma_1\rho-\gamma_2\rho)\operatorname{sgn}(v\cdot\nu)
+ \]
+ 几乎处处于 $]0,T[\times\Gamma$. 由控制收敛 Theorem,
+ \[
+  \int_0^T\int_\Gamma|\gamma_1\rho-\gamma_2\rho|^2
+  |v\cdot\nu|\,\mathrm d\sigma\,\mathrm dt=0,
+ \]
+ 因而 $\gamma_1\rho=\gamma_2\rho$ 对 $|\mathrm d\mu_v|$ 几乎处处的 $(t,\sigma)\in]0,T[\times\Gamma$ 成立.
+\end{itemize}
+\end{Proof}
+\begin{Corollary}
+\label{cor:chap6-piecewise-renormalization}
+设\eqref{eq:chap6-transport-c-assumption}--\eqref{eq:chap6-transport-div-positive-assumption}成立, 且 $\rho$ 是\eqref{eq:chap6-linear-transport-reaction}的一个有界弱解.
+\begin{enumerate}
+ \item 对任意 $\alpha\neq0$, 在水平集 $\{\rho=\alpha\}$ 上几乎处处有
+ \[
+  c+\operatorname{div}v=0.
+ \]
+ \item 对任意连续且分片 $C^1$ 的函数 $\beta:\mathbb R\to\mathbb R$, 无论在奇点处如何选择 $\beta'$ 的值, 重整化性质\eqref{eq:chap6-renormalization-formula}都成立.
+\end{enumerate}
+\end{Corollary}
+
+\begin{Proof}
+注意, 该 Lemma 的第一条性质对 $\alpha=0$ 不可能成立 (例如解 $\rho\equiv0$ 就是一个明显的反例).
+
+\begin{enumerate}
+ \item 对任意 $0<\varepsilon\leq1$, 定义
+ \[
+  \beta_\varepsilon(s)=\frac{\sqrt\varepsilon(s-\alpha)}{\sqrt{(s-\alpha)^2+\varepsilon}},
+ \]
+ 这是满足 $\|\beta_\varepsilon\|_{L^\infty}\leq1$ 和 $\|\beta_\varepsilon'\|_{L^\infty}\leq1$ 的光滑函数. 注意
+ \[
+  \beta_\varepsilon(s)\xrightarrow[\varepsilon\to0]{}0,
+  \qquad\forall s\in\mathbb R,
+ \]
+ 且
+ \[
+  s\beta_\varepsilon'(s)\xrightarrow[\varepsilon\to0]{}
+  \begin{cases}
+   \alpha,&s=\alpha,\\
+   0,&s\neq\alpha.
+  \end{cases}
+ \]
+ 对任意 $\varphi\in C_c^\infty(]0,T[\times\Omega)$ 应用\eqref{eq:chap6-renormalization-formula}, 得
+ \[
+ \begin{aligned}
+ &\int_0^T\int_\Omega\beta_\varepsilon(\rho)
+ \left(\frac{\partial\varphi}{\partial t}+v\cdot\nabla\varphi\right)
+ \,\mathrm dx\,\mathrm dt\\
+ &\quad+\int_0^T\int_\Omega
+ \left(\beta_\varepsilon(\rho)\operatorname{div}v
+ -\rho\beta_\varepsilon'(\rho)(c+\operatorname{div}v)\right)
+ \varphi\,\mathrm dx\,\mathrm dt=0.
+ \end{aligned}
+ \]
+ 由 Lebesgue 收敛 Theorem 令 $\varepsilon\to0$, 得
+ \[
+  \alpha\int_0^T\int_\Omega(c+\operatorname{div}v)
+  \varphi\mathbf1_{\{\rho=\alpha\}}\,\mathrm dx\,\mathrm dt=0.
+ \]
+ 因为 $\alpha\neq0$, $c+\operatorname{div}v\in L^1(]0,T[\times\Omega)$, 且 $C_c^\infty(]0,T[\times\Omega)$ 在 $L^\infty(]0,T[\times\Omega)$ 中弱星稠密, 可推出对任意 $\varphi\in L^\infty(]0,T[\times\Omega)$,
+ \[
+  \int_0^T\int_\Omega(c+\operatorname{div}v)
+  \varphi\mathbf1_{\{\rho=\alpha\}}\,\mathrm dx\,\mathrm dt=0.
+ \]
+ 断言得证.
+
+ \item 设 $\beta:\mathbb R\to\mathbb R$ 连续且分片 $C^1$. 即使 $\beta'$ 在某些点没有定义, \eqref{eq:chap6-renormalization-formula}仍有意义, 因为对每个这样的点 $\alpha\in\mathbb R$ (包括 $\alpha=0$), 由刚证明的第一条都有
+ \[
+  \int_0^T\int_\Omega(c+\operatorname{div}v)\rho
+  \mathbf1_{\{\rho=\alpha\}}\varphi\,\mathrm dx\,\mathrm dt=0,
+  \qquad\forall\varphi\in L^\infty(]0,T[\times\Omega).
+ \]
+ 这样的分片光滑函数 $\beta$ 可写成一个整体 $C^1$ 函数与有限多个形如 $s\mapsto|s-\alpha_i|$ 的函数的线性组合. 由问题的线性性和平移, 只需对 $\beta(s)=|s|$ 证明该断言. 为此使用 Lemma~\ref{lem:chap6-smooth-absolute-value} 中引入的光滑逼近 $\beta_\delta$, 并令 $\delta\to0$.
+\end{enumerate}
+\end{Proof}
+
+\par\noindent\refstepcounter{chaptersixsectiononeremark}\textbf{Remark~\thechaptersixsectiononeremark:}\label{rem:chap6-space-time-smoothing}
+在 Theorem~\ref{thm:chap6-trace-renormalization} 的证明中, 我们构造了一列弱解 $\rho$ 的近似 $(\rho_\varepsilon)_\varepsilon$. 它们关于空间变量光滑, 并且满足与 $\rho$ 相同的方程, 只多出一个在 $L^1(]0,T[\times\Omega)$ 中强收敛于 $0$ 的余项. 这里要指出, 也可以用关于时间和空间变量都光滑的近似函数得到类似结果. 这在某些应用中可能很重要, 例如见\MBUnresolvedReference{bib:finite-volume-transport-smoothing}{[23]}.
+
+为此, 对任意 $\xi>0$, 考虑与一维区域 $]0,T[$ 相联系的磨光算子 $\overline S_\xi$, 其定义见 Chapter~\ref{chap:sobolev-spaces} Section~2.2 (在符号 $S$ 上加横线, 是为强调与 $S_\varepsilon$ 不同, 它作用于依赖 $t$ 的函数).
+
+令
+\[
+ \rho_{\varepsilon,\xi}=\overline S_\xi\rho_\varepsilon
+ =\overline S_\xi(S_\varepsilon\rho).
+\]
+由构造, $\rho_{\varepsilon,\xi}$ 关于时间和空间变量都光滑. 此外, 它满足
+\[
+ \frac{\partial\rho_{\varepsilon,\xi}}{\partial t}
+ +\operatorname{div}(\rho_{\varepsilon,\xi}v)+c\rho_{\varepsilon,\xi}
+ =R_{\varepsilon,\xi},
+\]
+其中
+\[
+ \begin{aligned}
+ R_{\varepsilon,\xi}
+ &=\overline S_\xi R_\varepsilon
+ +\left(\frac{\partial\overline S_\xi\rho_\varepsilon}{\partial t}
+ -\overline S_\xi\frac{\partial\rho_\varepsilon}{\partial t}\right)\\
+ &\quad+\operatorname{div}\left((\overline S_\xi\rho_\varepsilon)v
+ -\overline S_\xi(\rho_\varepsilon v)\right)
+ +(\overline S_\xi\rho_\varepsilon)c
+ -\overline S_\xi(\rho_\varepsilon c).
+ \end{aligned}
+\]
+特别利用对任意给定 $\varepsilon>0$, $\partial\rho_\varepsilon/\partial t\in L^1$, 且 $\rho_\varepsilon$ 关于 $x$ 光滑, 得
+\[
+ R_{\varepsilon,\xi}\in L^1(]0,T[\times\Omega),
+ \qquad
+ R_{\varepsilon,\xi}\xrightarrow[\xi\to0]{}R_\varepsilon
+ \quad\text{于 }L^1(]0,T[\times\Omega),
+ \quad\forall\varepsilon>0.
+\]
+注意此时不需要 $v$ 关于时间的任何正则性, 因为算子 $\overline S_\xi$ 只作用于时间变量. 还立即得到, 当 $\xi\to0$ 时, $\rho_{\varepsilon,\xi}$ 对任意有限 $p$ 在 $C^0([0,T],L^p(\Omega))$ 中收敛于 $\rho_\varepsilon$.
+
+因为当 $\varepsilon\to0$ 时 $R_\varepsilon$ 趋于 $0$, 可将 $\xi$ 选为 $\varepsilon$ 的函数, 使 $\lim_{\varepsilon\to0}\xi(\varepsilon)=0$, 且
+\[
+ R_{\varepsilon,\xi(\varepsilon)}\xrightarrow[\varepsilon\to0]{}0
+ \quad\text{于 }L^1(]0,T[\times\Omega),
+\]
+\[
+ \rho_{\varepsilon,\xi(\varepsilon)}\xrightarrow[\varepsilon\to0]{}\rho
+ \quad\text{于 }C^0([0,T],L^p(\Omega)),
+ \qquad\forall p<+\infty,
+\]
+其中 $\rho_{\varepsilon,\xi(\varepsilon)}\in C^\infty([0,T]\times\overline\Omega)$. 迹的收敛以同样方式得到.
+
+我们强调, 不能直接使用与 $d+1$ 维 Lipschitz 区域 $]0,T[\times\Omega$ 相联系的磨光算子得到同一结果, 因为那将需要速度场 $v$ 具有更多时间正则性, 才能应用 Friedrichs 交换子估计.
+
+这里使用了 $d+1$ 维向量场 $(1,v(t,x))$ 的特殊结构, 它使我们能够先后应用关于 $x$ 的磨光算子和关于 $t$ 的磨光算子. 例如, \MBUnresolvedReference{bib:partial-w11-renormalization}{[78]}就使用了这类论证, 将重整化解理论推广到部分 $W^{1,1}$ 的速度场.
+
+\subsubsection{初边值问题}
+\label{subsec:chap6-transport-initial-boundary-problem}
+
+利用上面证明的迹 Theorem, 现在可以研究输运问题的 Cauchy--Dirichlet 问题的存在唯一性.
+
+\begin{Theorem}
+\label{thm:chap6-transport-wellposedness}
+设 $v,c$ 满足假设\eqref{eq:chap6-transport-c-assumption}--\eqref{eq:chap6-transport-div-positive-assumption}. 对任意初始数据 $\rho_0\in L^\infty(\Omega)$ 和任意流入边界数据 $\rho^{\mathrm{in}}\in L^\infty(]0,T[\times\Gamma,\mathrm d\mu_v^-)$, 存在唯一的 $\rho\in L^\infty(]0,T[\times\Omega)$, 使
+\begin{itemize}
+ \item $\rho$ 是输运方程\eqref{eq:chap6-linear-transport-reaction}的弱解;
+ \item 初始条件 $\rho(0)=\rho_0$ 成立;
+ \item 解 $\rho$ 的迹 $\gamma\rho$ 满足流入边界条件
+ \[
+  \gamma\rho=\rho^{\mathrm{in}},
+  \qquad\mathrm d\mu_v^-\text{-几乎处处于 } ]0,T[\times\Gamma.
+ \]
+\end{itemize}
+此外, 该解满足
+\begin{subequations}
+\begin{align}
+ \|\rho(t,\cdot)\|_{L^\infty(\Omega)}
+ &\leq M\exp\left(\int_0^t\alpha(s)\,\mathrm ds\right),
+ &&\forall t\in[0,T],
+\label{eq:chap6-transport-linfty-interior}\\
+ \|\gamma\rho\|_{L^\infty(]0,T[\times\Gamma,|\mathrm d\mu_v|)}
+ &\leq M\exp\left(\int_0^T\alpha(s)\,\mathrm ds\right),
+\label{eq:chap6-transport-linfty-trace}
+\end{align}
+\label{eq:chap6-transport-linfty-estimates}
+\end{subequations}
+其中
+\[
+ M=\max\left(\|\rho_0\|_{L^\infty},
+ \|\rho^{\mathrm{in}}\|_{L^\infty(]0,T[\times\Gamma,\mathrm d\mu_v^-)}\right),
+\]
+且
+\begin{equation}
+ \alpha(s)=\|(c+\operatorname{div}v)^-(s,\cdot)\|_{L^\infty(\Omega)},
+ \qquad\forall s\in[0,T].
+\label{eq:chap6-transport-alpha}
+\end{equation}
+\end{Theorem}
+
+\begin{Proof}
+\begin{itemize}
+ \item 先证明唯一性. 假设 $\rho_1,\rho_2$ 是具有相同初始数据和流入边界数据的两个弱解. 令 $\rho=\rho_1-\rho_2$, 则 $\rho$ 也是该问题的弱解, 并满足 $\rho(0)=0$ 以及 $\gamma\rho=0$, $\mathrm d\mu_v^-$ 几乎处处于 $]0,T[\times\Gamma$.
+
+ 对 $\rho$ 应用重整化性质\eqref{eq:chap6-renormalization-formula}, 取 $\beta(\xi)=|\xi|$, $\varphi=1$, $t_0=0$, $t_1=s$ (见 Corollary~\ref{cor:chap6-piecewise-renormalization}). 则对任意 $s\in[0,T]$,
+ \begin{equation}
+  \int_0^s\int_\Omega c|\rho|\,\mathrm dx\,\mathrm dt
+  +\int_\Omega|\rho(s,\cdot)|\,\mathrm dx
+  +\int_0^s\int_\Gamma|\gamma\rho|(v\cdot\nu)^+\,\mathrm d\sigma\,\mathrm dt=0.
+ \label{eq:chap6-transport-uniqueness-identity}
+ \end{equation}
+ 因为 $c^-\in L^1(]0,T[,L^\infty(\Omega))$, 首先推出
+ \[
+  \|\rho(s)\|_{L^1(\Omega)}
+  \leq\int_0^s\|c^-(t)\|_{L^\infty(\Omega)}
+  \|\rho(t)\|_{L^1(\Omega)}\,\mathrm dt,
+  \qquad\forall s\in[0,T].
+ \]
+ 利用 Gronwall Lemma 得 $\rho=0$ 于 $]0,T[\times\Omega$. 回到\eqref{eq:chap6-transport-uniqueness-identity}, 得 $\gamma\rho=0$, $\mathrm d\mu_v^+$ 几乎处处. 这就完成唯一性的证明.
+
+ \item 对任意 $\varepsilon>0$, 考虑如下抛物问题:
+ \[
+ \left\{
+ \begin{aligned}
+ \frac{\partial\widetilde\rho_\varepsilon}{\partial t}
+ +\operatorname{div}(\widetilde\rho_\varepsilon v)
+ +c\widetilde\rho_\varepsilon-\varepsilon\Delta\widetilde\rho_\varepsilon&=0&&\text{于 }\Omega,\\
+ \varepsilon\frac{\partial\widetilde\rho_\varepsilon}{\partial\nu}
+ +(\widetilde\rho_\varepsilon-\rho^{\mathrm{in}})(v\cdot\nu)^-&=0&&\text{于 }\Gamma,\\
+ \widetilde\rho_\varepsilon(0)&=\rho_0.
+ \end{aligned}
+ \right.
+ \]
+ 其弱形式为: 对任意 $\varphi\in C^{0,1}([0,T]\times\overline\Omega)$,
+ \begin{equation}
+ \begin{aligned}
+ &-\int_0^T\int_\Omega\widetilde\rho_\varepsilon
+ \left(\frac{\partial\varphi}{\partial t}+v\cdot\nabla\varphi-c\varphi\right)
+ \,\mathrm dx\,\mathrm dt
+ +\varepsilon\int_0^T\int_\Omega\nabla\widetilde\rho_\varepsilon\cdot\nabla\varphi
+ \,\mathrm dx\,\mathrm dt\\
+ &\quad+\int_0^T\int_\Gamma
+ \left(\widetilde\rho_\varepsilon(v\cdot\nu)^+\varphi
+ -\rho^{\mathrm{in}}(v\cdot\nu)^-\varphi\right)
+ \,\mathrm d\sigma\,\mathrm dt\\
+ &\quad+\int_\Omega\widetilde\rho_\varepsilon(T)\varphi(T)\,\mathrm dx
+ -\int_\Omega\rho_0\varphi(0)\,\mathrm dx=0.
+ \end{aligned}
+ \label{eq:chap6-parabolic-approximation-weak}
+ \end{equation}
+ 对这个问题使用标准 Galerkin 近似, 很容易证明, 对任意 $\rho_0\in L^\infty(\Omega)$ 和 $\rho^{\mathrm{in}}\in L^\infty(]0,T[\times\Gamma,\mathrm d\mu_v^-)$, \eqref{eq:chap6-parabolic-approximation-weak}存在唯一解
+ \[
+  \widetilde\rho_\varepsilon\in L^\infty(]0,T[,L^2(\Omega))
+  \cap L^2(]0,T[,H^1(\Omega)).
+ \]
+ 这里没有特殊困难, 因为问题是线性的, 并满足如下能量估计 (它们关于 Galerkin 近似一致):
+ \begin{equation}
+  \|\widetilde\rho_\varepsilon\|_{L^\infty(]0,T[,L^2(\Omega))}
+  +\|\sqrt\varepsilon\nabla\widetilde\rho_\varepsilon\|_{L^2(]0,T[,L^2(\Omega))}
+  \leq C,
+ \label{eq:chap6-parabolic-energy-bounds}
+ \end{equation}
+ \begin{equation}
+  \int_0^T\int_\Gamma|\gamma_0\widetilde\rho_\varepsilon|^2
+  (v\cdot\nu)^+\,\mathrm d\sigma\,\mathrm dt\leq C,
+ \label{eq:chap6-parabolic-outflow-bound}
+ \end{equation}
+ 其中 $C$ 不依赖于 $\varepsilon$. 这里利用了如下事实: 因为 $\widetilde\rho_\varepsilon$ 关于空间变量足够光滑, 它具有通常迹意义下的迹
+ \[
+  \gamma_0\widetilde\rho_\varepsilon\in L^2(]0,T[,H^{1/2}(\Gamma))
+  \subset L^2(]0,T[\times\Gamma)
+ \]
+ (见 Chapter~\ref{chap:sobolev-spaces} Section~2.5).
+
+ 为得到这些能量估计, 先在\eqref{eq:chap6-parabolic-approximation-weak}中取 $\varphi=\widetilde\rho_\varepsilon$. 得
+ \begin{equation}
+ \begin{aligned}
+ &\int_\Omega|\widetilde\rho_\varepsilon(T)|^2\,\mathrm dx
+ +\int_0^T\int_\Omega(2c+\operatorname{div}v)\widetilde\rho_\varepsilon^2
+ \,\mathrm dx\,\mathrm dt
+ +2\varepsilon\int_0^T\int_\Omega|\nabla\widetilde\rho_\varepsilon|^2
+ \,\mathrm dx\,\mathrm dt\\
+ &\quad+\int_0^T\int_\Gamma\widetilde\rho_\varepsilon^2(v\cdot\nu)^+
+ \,\mathrm d\sigma\,\mathrm dt
+ +\int_0^T\int_\Gamma(\widetilde\rho_\varepsilon-\rho^{\mathrm{in}})^2
+ (v\cdot\nu)^-\,\mathrm d\sigma\,\mathrm dt\\
+ &=\int_\Omega\rho_0^2\,\mathrm dx
+ +\int_0^T\int_\Gamma(\rho^{\mathrm{in}})^2(v\cdot\nu)^-
+ \,\mathrm d\sigma\,\mathrm dt.
+ \end{aligned}
+ \label{eq:chap6-parabolic-energy-identity}
+ \end{equation}
+ 然后注意, 由\eqref{eq:chap6-transport-negative-assumption}和\eqref{eq:chap6-transport-div-positive-assumption},
+ \[
+  0\leq(2c+\operatorname{div}v)^-
+  \leq(2c+2\operatorname{div}v)^--(\operatorname{div}v)^+
+  \in L^1(]0,T[,L^\infty(\Omega)).
+ \]
+ 因而可由\eqref{eq:chap6-parabolic-energy-identity}使用 Gronwall Lemma, 得到界\eqref{eq:chap6-parabolic-energy-bounds}和\eqref{eq:chap6-parabolic-outflow-bound}.
+
+ 现在陈述近似解 $\widetilde\rho_\varepsilon$ 的如下 $L^\infty$ 界; 暂时承认其证明.
+\end{itemize}
+\end{Proof}
+
+\begin{Lemma}
+\label{lem:chap6-parabolic-linfty-bound}
+对任意 $\varepsilon>0$, 有估计
+\[
+ \|\widetilde\rho_\varepsilon(t)\|_{L^\infty(\Omega)}
+ \leq M\exp\left(\int_0^t\alpha(s)\,\mathrm ds\right),
+ \qquad\forall t\in[0,T],
+\]
+其中 $\alpha$ 定义于\eqref{eq:chap6-transport-alpha}. 特别地, 序列 $(\widetilde\rho_\varepsilon)_\varepsilon$ 在 $L^\infty(]0,T[\times\Omega)$ 中有界, 而 $(\gamma_0\widetilde\rho_\varepsilon)_\varepsilon$ 在 $L^\infty(]0,T[\times\Gamma,\mathrm d\mu_v^+)$ 中有界.
+\end{Lemma}
+
+借助这一 Lemma 和 Proposition~\ref{prop:chap2-bounded-linfty-weak-star-subsequence}, 可找到一个序列 $(\varepsilon_k)_k$, 一个函数 $\rho\in L^\infty(]0,T[\times\Omega)$, 以及一个函数 $\rho^{\mathrm{out}}\in L^\infty(]0,T[\times\Gamma,\mathrm d\mu_v^+)$, 使
+\[
+ \widetilde\rho_{\varepsilon_k}\xrightharpoonup[k\to\infty]{*}\rho
+ \quad\text{于 }L^\infty(]0,T[\times\Omega),
+\]
+\[
+ \gamma_0\widetilde\rho_{\varepsilon_k}\xrightharpoonup[k\to\infty]{*}\rho^{\mathrm{out}}
+ \quad\text{于 }L^\infty(]0,T[\times\Gamma,\mathrm d\mu_v^+).
+\]
+利用这些收敛和估计\eqref{eq:chap6-parabolic-energy-bounds}, 现在很容易在线性方程\eqref{eq:chap6-parabolic-approximation-weak}中取极限. 这证明 $\rho$ 满足带有\eqref{eq:chap6-transport-initial-boundary}的 Problem~\eqref{eq:chap6-linear-transport-reaction}的弱形式. 估计\eqref{eq:chap6-transport-linfty-estimates}直接由 Lemma~\ref{lem:chap6-parabolic-linfty-bound}推出.
+
+还需证明所用的 $L^\infty$ 界.
+
+\begin{Proof}
+\textup{(of Lemma~\ref{lem:chap6-parabolic-linfty-bound})}
+将 $\widetilde\rho_\varepsilon$ 换成
+$\widetilde\rho_\varepsilon\exp\left(-\int_0^t\alpha(s)\,\mathrm ds\right)$, 可见只需考虑 $c+\operatorname{div}v\geq0$ 的情形, 并证明单调性性质
+\[
+ \rho_0\geq0\quad\text{且}\quad\rho^{\mathrm{in}}\geq0
+ \quad\Longrightarrow\quad\widetilde\rho_\varepsilon\geq0.
+\]
+为此, 定义 $C^2$ 类函数 $\beta:\mathbb R\to\mathbb R$:
+\[
+ \beta(\xi)=
+ \begin{cases}
+  |\xi|^3,&\xi\leq0,\\
+  0,&\xi>0.
+ \end{cases}
+\]
+然后在弱形式\eqref{eq:chap6-parabolic-approximation-weak}中取测试函数 $\varphi=\beta'(\widetilde\rho_\varepsilon)$. 经过计算, 对任意 $s\in[0,T]$ 有
+\[
+\begin{aligned}
+ &\int_\Omega\beta(\widetilde\rho_\varepsilon(s))\,\mathrm dx
+ +\int_0^s\int_\Omega(3c+2\operatorname{div}v)
+ \beta(\widetilde\rho_\varepsilon)\,\mathrm dx\,\mathrm dt\\
+ &\quad+\varepsilon\int_0^s\int_\Omega
+ \beta''(\widetilde\rho_\varepsilon)|\nabla\widetilde\rho_\varepsilon|^2
+ \,\mathrm dx\,\mathrm dt
+ +\int_0^s\int_\Gamma\beta(\widetilde\rho_\varepsilon)(v\cdot\nu)^+
+ \,\mathrm d\sigma\,\mathrm dt\\
+ &=\int_\Omega\beta(\rho_0)\,\mathrm dx
+ +\int_0^s\int_\Gamma
+ \left(\beta(\widetilde\rho_\varepsilon)
+ +\beta'(\widetilde\rho_\varepsilon)(\rho^{\mathrm{in}}-\widetilde\rho_\varepsilon)\right)
+ (v\cdot\nu)^-\,\mathrm d\sigma\,\mathrm dt.
+\end{aligned}
+\]
+因为 $\beta$ 凸且 $\rho^{\mathrm{in}}\geq0$,
+\[
+ \beta(\widetilde\rho_\varepsilon)
+ +\beta'(\widetilde\rho_\varepsilon)(\rho^{\mathrm{in}}-\widetilde\rho_\varepsilon)
+ \leq\beta(\rho^{\mathrm{in}})=0,
+\]
+且又因 $\rho_0\geq0$ 而 $\beta(\rho_0)=0$. 再次利用 $\beta$ 的凸性, 得
+\[
+ \int_\Omega\beta(\widetilde\rho_\varepsilon(s))\,\mathrm dx
+ +\int_0^s\int_\Omega(3c+2\operatorname{div}v)
+ \beta(\widetilde\rho_\varepsilon)\,\mathrm dx\,\mathrm dt\leq0,
+ \qquad\forall s\in[0,T].
+\]
+在开头已假设 $c+\operatorname{div}v\geq0$, 且 $\beta$ 非负, 因而最终得到
+\[
+\begin{aligned}
+ \int_\Omega\beta(\widetilde\rho_\varepsilon(s))\,\mathrm dx
+ &\leq\int_0^s\int_\Omega(\operatorname{div}v)^+
+ \beta(\widetilde\rho_\varepsilon)\,\mathrm dx\,\mathrm dt\\
+ &\leq\int_0^s\|(\operatorname{div}v)^+(t)\|_{L^\infty(\Omega)}
+ \left(\int_\Omega\beta(\widetilde\rho_\varepsilon(t))\,\mathrm dx\right)\mathrm dt.
+\end{aligned}
+\]
+再利用\eqref{eq:chap6-transport-div-positive-assumption}和 Gronwall Lemma, 推出
+\[
+ \int_\Omega\beta(\widetilde\rho_\varepsilon(s))\,\mathrm dx\leq0,
+ \qquad\forall s\in[0,T],
+\]
+由 $\beta$ 的定义得到 $\widetilde\rho_\varepsilon\geq0$ 于 $]0,T[\times\Omega$.
+\end{Proof}
+
+利用重整化性质以及上述证明中的同一函数 $\beta$, 很容易证明: 在 Theorem~\ref{thm:chap6-transport-wellposedness} 的同样假设下, 与非负初始数据和流入边界数据相联系的输运问题唯一弱解 $\rho$ 本身也非负.
+
+在对 $c,v$ 增加一个假设时, 可以证明这一结果的更强版本.
+
+\begin{Proposition}
+\label{prop:chap6-positive-lower-bound}
+考虑 Theorem~\ref{thm:chap6-transport-wellposedness} 的相同假设, 并进一步假设
+$(c+\operatorname{div}v)^+\in L^1(]0,T[,L^\infty(\Omega))$.
+
+若存在 $\rho_{\min}>0$, 使 $\rho_0\geq\rho_{\min}$ 且
+$\rho^{\mathrm{in}}\geq\rho_{\min}$, $\mathrm d\mu_v^-$ 几乎处处, 则输运问题弱解 $\rho$ 满足下界
+\[
+ \rho\geq\rho_{\min}
+ \exp\left(-\int_0^T\|(c+\operatorname{div}v)^+(t)\|_{L^\infty}\,\mathrm dt\right).
+\]
+\end{Proposition}
+
+证明与上面的证明非常类似; 细节留给读者.
+
+\subsubsection{稳定性定理}
+\label{subsec:chap6-transport-stability}
+
+本小节研究 Cauchy--Dirichlet 输运问题弱解关于所有数据的稳定性.
+
+\begin{Theorem}
+\label{thm:chap6-transport-stability}
+对任意 $k\geq1$, 设 $\rho_{0,k}\in L^\infty(\Omega)$,
+$\rho_k^{\mathrm{in}}\in L^\infty(]0,T[\times\Gamma)$, $c_k$ 满足\eqref{eq:chap6-transport-c-assumption}, 且 $v_k$ 满足\eqref{eq:chap6-transport-v-assumption}--\eqref{eq:chap6-transport-div-positive-assumption}.
+
+将 $\rho_k\in L^\infty(]0,T[\times\Omega)$ 定义为由 Theorem~\ref{thm:chap6-transport-wellposedness} 给出的如下初边值问题的唯一弱解:
+\begin{equation}
+ \left\{
+ \begin{aligned}
+ \frac{\partial\rho_k}{\partial t}+\operatorname{div}(\rho_kv_k)+c_k\rho_k&=0&&\text{于 }\Omega,\\
+ \gamma\rho_k&=\rho_k^{\mathrm{in}}&&\text{于 }\Gamma_{v_k}^-(t),\\
+ \rho_k(0)&=\rho_{0,k}.
+ \end{aligned}
+ \right.
+\label{eq:chap6-stability-transport-problem}
+\end{equation}
+假设存在 $c\in L^1(]0,T[\times\Omega)$,
+$v\in L^1(]0,T[,(W^{1,1}(\Omega))^d)$ 且
+$(\operatorname{div}v)^+\in L^1(]0,T[,L^\infty(\Omega))$,
+$\rho_0\in L^\infty(\Omega)$ 和 $\rho^{\mathrm{in}}\in L^\infty(]0,T[\times\Gamma)$, 使
+\begin{subequations}
+\begin{align}
+ v_k&\longrightarrow v&&\text{于 }(L^1(]0,T[\times\Omega))^d,
+\label{eq:chap6-stability-velocity}\\
+ \operatorname{div}v_k&\longrightarrow\operatorname{div}v
+ &&\text{于 }L^1(]0,T[\times\Omega),
+\label{eq:chap6-stability-divergence}\\
+ v_k\cdot\nu&\longrightarrow v\cdot\nu
+ &&\text{于 }L^1(]0,T[\times\Gamma),
+\label{eq:chap6-stability-normal-trace}\\
+ c_k&\longrightarrow c&&\text{于 }L^1(]0,T[\times\Omega),
+\label{eq:chap6-stability-reaction}\\
+ \rho_k^{\mathrm{in}}&\xrightharpoonup[k\to\infty]{*}\rho^{\mathrm{in}}
+ &&\text{于 }L^\infty(]0,T[\times\Gamma),
+\label{eq:chap6-stability-inflow-weak-star}\\
+ \rho_k^{\mathrm{in}}&\longrightarrow\rho^{\mathrm{in}}
+ &&\text{于 }L^1(]0,T[\times\Gamma,\mathrm d\mu_v^-),
+\label{eq:chap6-stability-inflow-weighted}\\
+ ((c_k+\operatorname{div}v_k)^-)_k&\text{在 }L^1(]0,T[,L^\infty(\Omega))\text{ 中有界},\notag\\
+ (\rho_{0,k})_k&\text{在 }L^\infty(\Omega)\text{ 中有界},
+ &\rho_{0,k}&\longrightarrow\rho_0\quad\text{于 }L^1(\Omega).
+\label{eq:chap6-stability-uniform-and-initial}
+\end{align}
+\label{eq:chap6-stability-assumptions}
+\end{subequations}
+那么, 若以 $\rho$ 表示与数据 $c,v,\rho_0,\rho^{\mathrm{in}}$ 相联系的输运问题\eqref{eq:chap6-linear-transport-reaction}--\eqref{eq:chap6-transport-initial-boundary}的唯一解, 则
+\[
+ \rho_k\longrightarrow\rho
+ \quad\text{于 }C^0([0,T],L^p(\Omega)),
+ \qquad\forall p<+\infty,
+\]
+并且
+\[
+ \gamma\rho_k\longrightarrow\gamma\rho
+ \quad\text{于 }L^p(]0,T[\times\Gamma,|\mathrm d\mu_v|),
+ \qquad\forall p<+\infty.
+\]
+\end{Theorem}
+
+\par\noindent\refstepcounter{chaptersixsectiononeremark}\textbf{Remark~\thechaptersixsectiononeremark:}\label{rem:chap6-stability-weak-velocity-requirement}
+注意, 不需要 $v_k$ 在空间 $L^1(]0,T[,(W^{1,1}(\Omega))^d)$ 中强收敛于 $v$, 只需它在 $(L^1(]0,T[\times\Omega))^d$ 中强收敛, 再加上 $(\operatorname{div}v_k)_k$ 和法向迹 $(v_k\cdot\nu)_k$ 在 $L^1$ 中强收敛. 对与边界相切的无散速度场, 后两个假设显然满足.
+
+还要注意, 不必假设 $((\operatorname{div}v_k)^+)_k$ 在 $L^1(]0,T[,L^\infty(\Omega))$ 中有界.
+
+\par\noindent\refstepcounter{chaptersixsectiononeremark}\textbf{Remark~\thechaptersixsectiononeremark:}\label{rem:chap6-stability-inflow-assumptions}
+\begin{itemize}
+ \item 由假设\eqref{eq:chap6-stability-inflow-weak-star}和 Corollary~\ref{cor:chap2-weak-lower-semicontinuity}, 推出 $(\rho_k^{\mathrm{in}})_k$ 在 $L^\infty(]0,T[\times\Gamma)$ 中有界.
+ \item 利用\eqref{eq:chap6-stability-inflow-weak-star}, 很容易证明假设\eqref{eq:chap6-stability-inflow-weighted}等价于
+ \[
+  \rho_k^{\mathrm{in}}(v_k\cdot\nu)^-\longrightarrow
+  \rho^{\mathrm{in}}(v\cdot\nu)^-
+  \quad\text{于 }L^1(]0,T[\times\Gamma),
+ \]
+ 在流体力学框架中, 这可解释为流入质量通量的收敛性质.
+\end{itemize}
+
+\begin{Proof}
+首先注意, $\gamma\rho_k$ 只在 $|\mathrm d\mu_{v_k}|$ 几乎处处的意义下良定义. 从现在起, 在集合
+$\{(t,\sigma)\in]0,T[\times\Gamma:v_k\cdot\nu=0\}$ 上令 $\gamma\rho_k=0$, 于是 $\gamma\rho_k$ 是 $L^\infty(]0,T[\times\Gamma)$ 中良定义的元素.
+
+\begin{itemize}
+ \item 利用估计\eqref{eq:chap6-transport-linfty-estimates}以及关于 $\rho_{0,k}$, $\rho_k^{\mathrm{in}}$ 和 $(c_k+\operatorname{div}v_k)^-$ 的假设, 立即得到
+ \begin{equation}
+ \left\{
+ \begin{aligned}
+ (\rho_k)_k&\text{在 }L^\infty(]0,T[\times\Omega)\text{ 中有界},\\
+ (\gamma\rho_k)_k&\text{在 }L^\infty(]0,T[\times\Gamma)\text{ 中有界}.
+ \end{aligned}
+ \right.
+ \label{eq:chap6-stability-uniform-bounds}
+ \end{equation}
+ 特别地, $(\gamma\rho_k)_k$ 在 $L^\infty(]0,T[\times\Gamma,|\mathrm d\mu_v|)$ 中有界. 因而可找到一个子列 (仍记作 $(\rho_k)_k$), 以及
+ $R\in L^\infty(]0,T[\times\Omega)$,
+ $g\in L^\infty(]0,T[\times\Gamma,|\mathrm d\mu_v|)$, 使
+ \begin{equation}
+ \begin{aligned}
+ \rho_k&\xrightharpoonup[k\to\infty]{*}R
+ &&\text{于 }L^\infty(]0,T[\times\Omega),\\
+ \gamma\rho_k&\xrightharpoonup[k\to\infty]{*}g
+ &&\text{于 }L^\infty(]0,T[\times\Gamma,|\mathrm d\mu_v|).
+ \end{aligned}
+ \label{eq:chap6-stability-weak-star-limits}
+ \end{equation}
+ 现在证明 $R=\rho$, $g=\gamma\rho$, 于是由 Proposition~\ref{prop:chap2-unique-subsequence-limit}, 上述收敛最终对整个初始序列 $(\rho_k)_k$ 成立.
+
+ 设 $\varphi\in C^{0,1}([0,T]\times\overline\Omega)$ 且 $\varphi(T,\cdot)=0$. $\rho_k$ 所满足的弱形式为
+ \[
+ \begin{aligned}
+ &\int_0^T\int_\Omega\rho_k
+ \left(\frac{\partial\varphi}{\partial t}+v_k\cdot\nabla\varphi-c_k\varphi\right)
+ \,\mathrm dx\,\mathrm dt
+ +\int_\Omega\rho_{0,k}\varphi(0)\,\mathrm dx\\
+ &\qquad-\int_0^T\int_\Gamma(\gamma\rho_k)\varphi(v_k\cdot\nu)
+ \,\mathrm d\sigma\,\mathrm dt=0.
+ \end{aligned}
+ \]
+ 由 $\rho_k$ 的弱收敛以及 $v_k,c_k$ 在 $L^1$ 中的强收敛, 可在第一个积分中取极限 (使用 Proposition~\ref{prop:chap2-lp-strong-times-weak}). 假设\eqref{eq:chap6-stability-uniform-and-initial}允许在第二项中取极限. 对边界项, 写成
+ \[
+ \begin{aligned}
+ &\left|\int_0^T\int_\Gamma(\gamma\rho_k)\varphi(v_k\cdot\nu)
+ \,\mathrm d\sigma\,\mathrm dt
+ -\int_0^T\int_\Gamma g\varphi(v\cdot\nu)\,\mathrm d\sigma\,\mathrm dt\right|\\
+ &\leq\left|\int_0^T\int_\Gamma(\gamma\rho_k-g)\varphi(v\cdot\nu)
+ \,\mathrm d\sigma\,\mathrm dt\right|
+ +C_\varphi\|v_k\cdot\nu-v\cdot\nu\|_{L^1(]0,T[\times\Gamma)}.
+ \end{aligned}
+ \]
+ 第一项由 $\gamma\rho_k$ 的弱星收敛趋于 $0$, 第二项也由\eqref{eq:chap6-stability-normal-trace}趋于 $0$.
+
+ 因此已证明 $R,g$ 满足
+ \begin{equation}
+ \begin{aligned}
+ &\int_0^T\int_\Omega R
+ \left(\frac{\partial\varphi}{\partial t}+v\cdot\nabla\varphi-c\varphi\right)
+ \,\mathrm dx\,\mathrm dt
+ +\int_\Omega\rho_0\varphi(0)\,\mathrm dx\\
+ &\qquad-\int_0^T\int_\Gamma g\varphi(v\cdot\nu)
+ \,\mathrm d\sigma\,\mathrm dt=0.
+ \end{aligned}
+ \label{eq:chap6-stability-limit-weak-form}
+ \end{equation}
+ 为得出结论, 只需证明 $g=\rho^{\mathrm{in}}$, $\mathrm d\mu_v^-$ 几乎处处. 对任意测试函数 $\psi\in L^\infty(]0,T[\times\Gamma)$,
+ \[
+ \begin{aligned}
+ &\left|\int_0^T\int_\Gamma\rho_k^{\mathrm{in}}(v_k\cdot\nu)^-\psi
+ \,\mathrm d\sigma\,\mathrm dt
+ -\int_0^T\int_\Gamma g(v\cdot\nu)^-\psi
+ \,\mathrm d\sigma\,\mathrm dt\right|\\
+ &\leq\left|\int_0^T\int_\Gamma((\gamma\rho_k)-g)(v\cdot\nu)^-\psi
+ \,\mathrm d\sigma\,\mathrm dt\right|\\
+ &\quad+\left|\int_0^T\int_\Gamma\rho_k^{\mathrm{in}}
+ \left((v_k\cdot\nu)^--(v\cdot\nu)^-\right)\psi
+ \,\mathrm d\sigma\,\mathrm dt\right|.
+ \end{aligned}
+ \]
+ 右端第一项由\eqref{eq:chap6-stability-weak-star-limits}趋于 $0$, 第二项利用 $\rho_k^{\mathrm{in}}$ 的 $L^\infty$ 界 (由\eqref{eq:chap6-stability-inflow-weak-star}得到) 以及\eqref{eq:chap6-stability-normal-trace}也趋于 $0$. 将此结果与\eqref{eq:chap6-stability-inflow-weighted}比较, 得
+ \[
+  \int_0^T\int_\Gamma g(v\cdot\nu)^-\psi\,\mathrm d\sigma\,\mathrm dt
+  =\int_0^T\int_\Gamma\rho^{\mathrm{in}}(v\cdot\nu)^-\psi
+  \,\mathrm d\sigma\,\mathrm dt,
+ \]
+ 对任意测试函数 $\psi$ 成立. 因而 $g=\rho^{\mathrm{in}}$, $\mathrm d\mu_v^-$ 几乎处处.
+
+ 最后由\eqref{eq:chap6-stability-limit-weak-form}推出, $R$ 解初始数据为 $\rho_0$、流入边界数据为 $\rho^{\mathrm{in}}$ 的输运问题. 由这种弱解的唯一性, 得 $R=\rho$, $g=\gamma\rho$.
+
+ 于是已证明 $\rho_k$ (分别地, 迹 $\gamma\rho_k$) 弱收敛于 $\rho$ (分别地, 迹 $\gamma\rho$).
+
+ \item 第二步证明, 上面得到的收敛事实上强得多.
+
+ 由假设, 问题\eqref{eq:chap6-stability-transport-problem}满足重整化性质. 特别地, 若定义 $\zeta_k=(\rho_k)^2$, 则 $\zeta_k$ 解如下初边值问题:
+ \begin{equation}
+ \left\{
+ \begin{aligned}
+ \frac{\partial\zeta_k}{\partial t}+\operatorname{div}(\zeta_kv_k)
+ +(2c_k+\operatorname{div}v_k)\zeta_k&=0&&\text{于 }\Omega,\\
+ \gamma(\zeta_k)&=(\rho_k^{\mathrm{in}})^2&&\text{于 }\Gamma_{v_k}^-(t),\\
+ \zeta_k(0)&=(\rho_{0,k})^2.
+ \end{aligned}
+ \right.
+ \label{eq:chap6-stability-square-problem}
+ \end{equation}
+ 类似地, $\zeta=\rho^2$ 解
+ \[
+ \left\{
+ \begin{aligned}
+ \frac{\partial\zeta}{\partial t}+\operatorname{div}(\zeta v)
+ +(2c+\operatorname{div}v)\zeta&=0&&\text{于 }\Omega,\\
+ \gamma(\zeta)&=(\rho^{\mathrm{in}})^2&&\text{于 }\Gamma_v^-(t),\\
+ \zeta(0)&=(\rho_0)^2.
+ \end{aligned}
+ \right.
+ \]
+ 问题\eqref{eq:chap6-stability-square-problem}与\eqref{eq:chap6-stability-transport-problem}具有相同形式, 其中 $c_k$ 被 $2c_k+\operatorname{div}v_k$ 替代, 并满足所有相应假设\eqref{eq:chap6-stability-assumptions}.
+
+ 因而可使用上一步证明的弱收敛结果, 它表明
+ \[
+  (\rho_k)^2=\zeta_k\xrightharpoonup[k\to\infty]{*}
+  \zeta=\rho^2
+  \quad\text{于 }L^\infty(]0,T[\times\Omega).
+ \]
+ 特别地, 这蕴含
+ \[
+  \|\rho_k\|_{L^2}^2
+  =\int_0^T\int_\Omega(\rho_k)^2\,\mathrm dx\,\mathrm dt
+  \xrightarrow[k\to\infty]{}
+  \int_0^T\int_\Omega\rho^2\,\mathrm dx\,\mathrm dt
+  =\|\rho\|_{L^2}^2.
+ \]
+ 因而 $(\rho_k)_k$ 在 $L^2(]0,T[\times\Omega)$ 中强收敛于 $\rho$ (由 Proposition~\ref{prop:chap2-weak-plus-norm-implies-strong-lp}). 借助界\eqref{eq:chap6-stability-uniform-bounds}, 可推出任意 $p<+\infty$ 时在 $L^p(]0,T[\times\Omega)$ 中的收敛.
+
+ 类似地, 得到 $(\gamma\rho_k)_k$ 在空间 $L^p(]0,T[\times\Gamma,|\mathrm d\mu_v|)$ 中强收敛于 $\gamma\rho$, 对任意 $p<+\infty$.
+
+ \item 还需证明 $(\rho_k)_k$ 在 $C^0([0,T],L^p(\Omega))$ 中强收敛, $p<+\infty$, 即关于时间变量一致. 同样, 借助一致界\eqref{eq:chap6-stability-uniform-bounds}, 例如只需考虑 $p=2$.
+
+ 基本想法是考察差 $\rho-\rho_k$ 所满足的方程. 遗憾的是, $\rho$ 不够光滑, 这不允许进行所有需要的计算. 因此用其正则化 $S_\varepsilon\rho$ 代替 $\rho$. 回顾在 Theorem~\ref{thm:chap6-trace-renormalization} 的证明中已经建立
+ \begin{equation}
+  \|S_\varepsilon\rho-\rho\|_{C^0([0,T],L^2(\Omega))}
+  \xrightarrow[\varepsilon\to0]{}0,
+ \label{eq:chap6-stability-mollified-interior}
+ \end{equation}
+ \begin{equation}
+  \gamma_0(S_\varepsilon\rho)\xrightarrow[\varepsilon\to0]{}\gamma\rho
+  \quad\text{于 }L^2(]0,T[\times\Gamma,|\mathrm d\mu_v|),
+ \label{eq:chap6-stability-mollified-trace}
+ \end{equation}
+ 且 $S_\varepsilon\rho$ 解
+ \[
+  \frac{\partial S_\varepsilon\rho}{\partial t}
+  +\operatorname{div}(S_\varepsilon\rho v)+cS_\varepsilon\rho=R_\varepsilon,
+ \]
+ 其中
+ \begin{equation}
+  \|R_\varepsilon\|_{L^1(]0,T[\times\Omega)}
+  \xrightarrow[\varepsilon\to0]{}0.
+ \label{eq:chap6-stability-mollified-remainder}
+ \end{equation}
+ 注意这里避免使用记号 $\rho_\varepsilon$, 因为它可能引起混淆. 于是
+ \[
+ \left\{
+ \begin{aligned}
+ \frac{\partial(S_\varepsilon\rho-\rho_k)}{\partial t}
+ +\operatorname{div}((S_\varepsilon\rho-\rho_k)v_k)
+ +c_k(S_\varepsilon\rho-\rho_k)&=R_{\varepsilon,k}&&\text{于 }\Omega,\\
+ \gamma(S_\varepsilon\rho-\rho_k)&=
+ \gamma_0(S_\varepsilon\rho)-\rho_k^{\mathrm{in}}
+ &&\text{于 }\Gamma_{v_k}^-(t),\\
+ (S_\varepsilon\rho-\rho_k)(0)&=S_\varepsilon\rho_0-\rho_{0,k},
+ \end{aligned}
+ \right.
+ \]
+ 其中
+ \[
+ \begin{aligned}
+ R_{\varepsilon,k}
+ &=R_\varepsilon+(S_\varepsilon\rho)\operatorname{div}(v_k-v)
+ +(\nabla S_\varepsilon\rho)\cdot(v_k-v)
+ +(c_k-c)(S_\varepsilon\rho),
+ \end{aligned}
+ \]
+ 且满足
+ \[
+ \|R_{\varepsilon,k}\|_{L^1(]0,T[\times\Omega)}
+ \leq\|R_\varepsilon\|_{L^1}
+ +\|\operatorname{div}v_k-\operatorname{div}v\|_{L^1}
+ +C_\varepsilon\|v_k-v\|_{L^1}
+ +\|c_k-c\|_{L^1}.
+ \]
+ 利用假设\eqref{eq:chap6-stability-velocity}, \eqref{eq:chap6-stability-divergence}, \eqref{eq:chap6-stability-reaction}和性质\eqref{eq:chap6-stability-mollified-remainder}, 推出
+ \begin{equation}
+  \lim_{\varepsilon\to0}\left(\limsup_{k\to\infty}
+  \|R_{\varepsilon,k}\|_{L^1}\right)=0.
+ \label{eq:chap6-stability-double-remainder-limit}
+ \end{equation}
+ 对该问题应用重整化性质 (见 Remark~\ref{rem:chap6-transport-source-term}), 得
+ \[
+ \left\{
+ \begin{aligned}
+ &\frac{\partial(S_\varepsilon\rho-\rho_k)^2}{\partial t}
+ +\operatorname{div}((S_\varepsilon\rho-\rho_k)^2v_k)\\
+ &\quad +(2c_k+\operatorname{div}v_k)(S_\varepsilon\rho-\rho_k)^2
+ =2R_{\varepsilon,k}(S_\varepsilon\rho-\rho_k)&&\text{于 }\Omega,\\
+ \gamma\bigl((S_\varepsilon\rho-\rho_k)^2\bigr)
+ &=(\gamma_0(S_\varepsilon\rho)-\rho_k^{\mathrm{in}})^2
+ &&\text{于 }\Gamma_{v_k}^-(t),\\
+ (S_\varepsilon\rho-\rho_k)^2(0)
+ &=(S_\varepsilon\rho_0-\rho_{0,k})^2.
+ \end{aligned}
+ \right.
+ \]
+ 将这一方程在 $\Omega$ 上以及时刻 $0$ 与 $s\in[0,T]$ 之间积分, 得
+ \[
+ \begin{aligned}
+ &\|(S_\varepsilon\rho-\rho_k)(s)\|_{L^2}^2
+ +\int_0^s\int_\Omega(2c_k+\operatorname{div}v_k)
+ (S_\varepsilon\rho-\rho_k)^2\,\mathrm dx\,\mathrm dt\\
+ &\quad+\int_0^s\int_\Gamma
+ \gamma\bigl((S_\varepsilon\rho-\rho_k)^2\bigr)
+ (v_k\cdot\nu)\,\mathrm d\sigma\,\mathrm dt\\
+ &=\|S_\varepsilon\rho_0-\rho_{0,k}\|_{L^2}^2
+ +2\int_0^s\int_\Omega R_{\varepsilon,k}
+ (S_\varepsilon\rho-\rho_k)\,\mathrm dx\,\mathrm dt.
+ \end{aligned}
+ \]
+ 由于
+ $\sup_\varepsilon\|S_\varepsilon\rho\|_{L^\infty}
+ +\sup_k\|\rho_k\|_{L^\infty}<+\infty$, 推出
+ \[
+ \begin{aligned}
+ \|(S_\varepsilon\rho-\rho_k)(s)\|_{L^2}^2
+ &\leq2\|S_\varepsilon\rho_0-\rho_0\|_{L^2}^2
+ +2\|\rho_0-\rho_{0,k}\|_{L^2}^2
+ +4C\|R_{\varepsilon,k}\|_{L^1(]0,T[\times\Omega)}\\
+ &\quad+\|\gamma_0(S_\varepsilon\rho)-\rho_k^{\mathrm{in}}\|_{L^2(]0,T[\times\Gamma,\mathrm d\mu_v^-)}^2\\
+ &\quad+\int_0^s\|(2c_k+\operatorname{div}v_k)^-(t)\|_{L^\infty}
+ \|(S_\varepsilon\rho-\rho_k)(t)\|_{L^2}^2\,\mathrm dt\\
+ &\quad+C\|(v_k\cdot\nu)^--(v\cdot\nu)^-\|_{L^1(]0,T[\times\Gamma)}.
+ \end{aligned}
+ \]
+ 利用 Gronwall Lemma, 得
+ \[
+ \begin{aligned}
+ \|S_\varepsilon\rho-\rho_k\|_{C^0([0,T],L^2(\Omega))}^2
+ \leq M\Big(&\|S_\varepsilon\rho_0-\rho_0\|_{L^2}^2
+ +\|\rho_0-\rho_{0,k}\|_{L^2}^2
+ +\|R_{\varepsilon,k}\|_{L^1}\\
+ &+\|(v_k\cdot\nu)^--(v\cdot\nu)^-\|_{L^1(]0,T[\times\Gamma)}\\
+ &+\|\gamma_0(S_\varepsilon\rho)-\gamma\rho\|_{L^2(]0,T[\times\Gamma,\mathrm d\mu_v^-)}^2
+ +\|\gamma\rho-\rho_k^{\mathrm{in}}\|_{L^2(]0,T[\times\Gamma,\mathrm d\mu_v^-)}^2\Big).
+ \end{aligned}
+ \]
+ 由三角不等式,
+ \[
+ \begin{aligned}
+ \|\rho-\rho_k\|_{C^0([0,T],L^2(\Omega))}^2
+ \leq M\Big(&\|S_\varepsilon\rho-\rho\|_{C^0([0,T],L^2(\Omega))}^2
+ +\|S_\varepsilon\rho_0-\rho_0\|_{L^2}^2
+ +\|\rho_0-\rho_{0,k}\|_{L^2}^2\\
+ &+\|R_{\varepsilon,k}\|_{L^1}
+ +\|(v_k\cdot\nu)^--(v\cdot\nu)^-\|_{L^1(]0,T[\times\Gamma)}\\
+ &+\|\gamma_0(S_\varepsilon\rho)-\gamma\rho\|_{L^2(]0,T[\times\Gamma,\mathrm d\mu_v^-)}^2
+ +\|\gamma\rho-\rho_k^{\mathrm{in}}\|_{L^2(]0,T[\times\Gamma,\mathrm d\mu_v^-)}^2\Big).
+ \end{aligned}
+ \]
+ 在此不等式中先取 $k\to\infty$ 的上极限, 得
+ \[
+ \begin{aligned}
+ \limsup_{k\to\infty}\|\rho-\rho_k\|_{C^0([0,T],L^2(\Omega))}^2
+ \leq M\Big(&\|S_\varepsilon\rho-\rho\|_{C^0([0,T],L^2(\Omega))}^2
+ +\|S_\varepsilon\rho_0-\rho_0\|_{L^2}^2\\
+ &+\limsup_{k\to\infty}\|R_{\varepsilon,k}\|_{L^1}
+ +\|\gamma_0(S_\varepsilon\rho)-\gamma\rho\|_{L^2(]0,T[\times\Gamma,\mathrm d\mu_v^-)}^2\Big).
+ \end{aligned}
+ \]
+ 左端不依赖于 $\varepsilon$, 因而可令右端 $\varepsilon\to0$. 利用\eqref{eq:chap6-stability-mollified-interior}, \eqref{eq:chap6-stability-mollified-trace}和\eqref{eq:chap6-stability-double-remainder-limit}, 最终得到
+ \[
+  \limsup_{k\to\infty}\|\rho_k-\rho\|_{C^0([0,T],L^2(\Omega))}^2=0,
+ \]
+ Theorem 证明完毕.
+\end{itemize}
+\end{Proof}
+
+\par\noindent\refstepcounter{chaptersixsectiononeremark}\textbf{Remark~\thechaptersixsectiononeremark:}\label{rem:chap6-stability-products}
+假设不知道 $v_k$ 在 $L^1$ 中强收敛于 $v$. 可以观察到, 若至少对一个子列知道
+\begin{itemize}
+ \item 乘积 $(\rho_kv_k)_k$ 弱收敛于乘积 $\rho v$;
+ \item 乘积 $(\rho_k^2v_k)_k$ 弱收敛于 $\zeta v$, 其中 $\zeta$ 是 $(\rho_k^2)_k$ 的弱极限,
+\end{itemize}
+则该 Theorem 的证明仍然成立. 下一节研究非齐次 Navier--Stokes 问题时将使用这一 Remark.
+\end{sloppypar}
+
