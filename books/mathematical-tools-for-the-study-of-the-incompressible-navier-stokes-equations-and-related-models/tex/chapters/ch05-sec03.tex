@@ -1,0 +1,813 @@
+\clearpage
+\subsection{稳态 Navier--Stokes 方程}
+\label{sec:chap5-steady-navier-stokes}
+\renewcommand{\thestatement}{3.\arabic{statement}}
+\renewcommand{\theHstatement}{ch05.sec03.\arabic{statement}}
+\setcounter{statement}{0}
+\newcounter{chapterfivesectionthreeremark}
+\renewcommand{\thechapterfivesectionthreeremark}{3.\arabic{chapterfivesectionthreeremark}}
+
+本节研究 Navier--Stokes 方程的稳态解. 首先在空间维数 $2$ 和 $3$ 中建立至少一个解的存在性. 我们考虑齐次和非齐次 Dirichlet 边界条件. 随后证明小数据时这类解的唯一性, 最后建立这类解的渐近稳定性性质.
+
+\subsubsection{齐次边界条件情形}
+\label{subsec:chap5-steady-homogeneous-boundary}
+
+\paragraph{存在性}
+\label{subsec:chap5-steady-homogeneous-existence}
+
+\begin{Theorem}
+\label{thm:chap5-steady-homogeneous-existence}
+设 $\Omega$ 是 $\mathbb R^d$ 中的有界 Lipschitz 区域, $d\in\{2,3\}$. 给定 $f\in(H^{-1}(\Omega))^d$. 则如下问题至少存在一个解 $(v,p)\in(H_0^1(\Omega))^d\times L_0^2(\Omega)$:
+\begin{equation}
+\left\{
+\begin{aligned}
+ -\frac1{\operatorname{Re}}\Delta v+(v\cdot\nabla)v+\nabla p&=f&&\text{于 }\Omega,\\
+ \operatorname{div}v&=0&&\text{于 }\Omega,\\
+ v&=0&&\text{于 }\partial\Omega.
+\end{aligned}
+\right.
+\label{eq:chap5-steady-homogeneous-problem}
+\end{equation}
+任意这样的解都满足
+\[
+ \|\nabla v\|_{L^2}\leq\operatorname{Re}\|f\|_{H^{-1}},
+ \qquad
+ \|p\|_{L^2}\leq C\left(\|f\|_{H^{-1}}+\operatorname{Re}^2\|f\|_{H^{-1}}^2\right).
+\]
+\end{Theorem}
+
+\begin{Proof}
+考虑 Definition~\ref{def:chap4-stokes-special-basis} 中引入的特殊基. 对 $N\geq1$, 以 $H_N$ 表示由 $(w_j)_{1\leq j\leq N}$ 张成的有限维向量空间. 寻找
+\[
+ v_N\in H_N,
+ \qquad v_N=\sum_{j=1}^N\alpha_jw_j,
+\]
+使
+\begin{equation}
+ \frac1{\operatorname{Re}}\int_\Omega\nabla v_N:\nabla\psi_N\,\mathrm dx
+ +\int_\Omega((v_N\cdot\nabla)v_N)\cdot\psi_N\,\mathrm dx
+ =\langle f,\psi_N\rangle_{H^{-1},H_0^1},
+ \qquad\forall\psi_N\in H_N.
+\label{eq:chap5-steady-galerkin-problem}
+\end{equation}
+为此, 定义映射 $P:\mathbb R^N\to\mathbb R^N$, $P(\alpha)=\beta$, 其中
+\[
+ \beta_j=\frac1{\operatorname{Re}}\int_\Omega\nabla v_N:\nabla w_j\,\mathrm dx
+ +\int_\Omega((v_N\cdot\nabla)v_N)\cdot w_j\,\mathrm dx
+ -\langle f,w_j\rangle_{H^{-1},H_0^1}.
+\]
+由方程\eqref{eq:chap5-steady-galerkin-problem},
+\begin{align}
+ a\cdot P(\alpha)
+ &=\frac1{\operatorname{Re}}\|\nabla v_N\|_{L^2}^2
+ +\underbrace{\int_\Omega((v_N\cdot\nabla)v_N)\cdot v_N\,\mathrm dx}_{=0\text{, 由\eqref{eq:chap5-inertia-antisymmetry}}}
+ -\langle f,v_N\rangle_{H^{-1},H_0^1}\notag\\
+ &\geq\frac1{\operatorname{Re}}\|\nabla v_N\|_{L^2}^2
+ -\|f\|_{H^{-1}}\|v_N\|_{H_0^1}.
+\label{eq:chap5-steady-brouwer-coercivity}
+\end{align}
+因为 $\|f\|_{H^{-1}}\|v_N\|_{H_0^1}=\|f\|_{H^{-1}}\|\nabla v_N\|_{L^2}$, 若 $|\alpha|=\rho$ 且 $\rho$ 充分大, 条件 $\|v_N\|_{H_0^1}\geq\operatorname{Re}\|f\|_{H^{-1}}$ 就得到满足, 从而 $a\cdot P(\alpha)\geq0$. 因此可应用 Brouwer Theorem~\ref{prop:chap2-brouwer-zero}, 它保证至少存在一个 $\alpha\in\mathbb R^N$ 使 $P(\alpha)=0$, 从而给出\eqref{eq:chap5-steady-galerkin-problem}的一个解.
+
+此外 $P(\alpha)=0$, 因而不等式\eqref{eq:chap5-steady-brouwer-coercivity}给出
+\[
+ \|\nabla v_N\|_{L^2}\leq\operatorname{Re}\|f\|_{H^{-1}}.
+\]
+所以存在 $v\in(H_0^1(\Omega))^d$ 以及子列 $(v_{N_k})_k$, 使
+\[
+ \left\{
+ \begin{aligned}
+ v_{N_k}&\rightharpoonup v&&\text{于 }(H_0^1(\Omega))^d,\\
+ v_{N_k}&\longrightarrow v&&\text{于 }(L^p(\Omega))^d,\quad\forall p<6.
+ \end{aligned}
+ \right.
+\]
+特别地, 由 Corollary~\ref{cor:chap2-weak-lower-semicontinuity},
+\[
+ \|\nabla v\|_{L^2}\leq\liminf_{k\to\infty}\|\nabla v_{N_k}\|_{L^2}
+ \leq\operatorname{Re}\|f\|_{H^{-1}}.
+\]
+上述收敛和 Proposition~\ref{prop:chap2-strong-weak-bilinear}蕴含对任意 $p<6/5$,
+\[
+ (v_{N_k}\cdot\nabla)v_{N_k}\rightharpoonup(v\cdot\nabla)v
+ \qquad\text{于 }(L^p(\Omega))^d.
+\]
+此外, 序列 $((v_{N_k}\cdot\nabla)v_{N_k})_k$ 在 $(L^{6/5}(\Omega))^d$ 中有界, 因而由 Proposition~\ref{prop:chap2-bounded-lp-weak-subsequence},
+\[
+ (v_{N_k}\cdot\nabla)v_{N_k}\rightharpoonup(v\cdot\nabla)v
+ \qquad\text{于 }(L^{6/5}(\Omega))^d.
+\]
+固定 $\psi_N\in H_N\subset(L^6(\Omega))^d$. 在\eqref{eq:chap5-steady-galerkin-problem}中令 $k\to\infty$, 得
+\[
+ \frac1{\operatorname{Re}}\int_\Omega\nabla v:\nabla\psi_N\,\mathrm dx
+ +\int_\Omega((v\cdot\nabla)v)\cdot\psi_N\,\mathrm dx
+ =\langle f,\psi_N\rangle_{H^{-1},H_0^1},
+ \qquad\forall\psi_N\in H_N.
+\]
+利用 $\bigcup_NH_N$ 在 $V$ 中的稠密性以及 $V\subset L^6(\Omega)$ 的嵌入 ($d\leq3$ 时成立), 得到 $v$ 满足
+\begin{equation}
+ \frac1{\operatorname{Re}}\int_\Omega\nabla v:\nabla\psi\,\mathrm dx
+ +\int_\Omega((v\cdot\nabla)v)\cdot\psi\,\mathrm dx
+ =\langle f,\psi\rangle_{H^{-1},H_0^1},
+ \qquad\forall\psi\in V.
+\label{eq:chap5-steady-limit-variational}
+\end{equation}
+令 $F\in(H^{-1}(\Omega))^d$ 定义为
+\[
+ F=-\frac1{\operatorname{Re}}\Delta v+(v\cdot\nabla)v-f.
+\]
+公式\eqref{eq:chap5-steady-limit-variational}表明
+\[
+ \langle F,\psi\rangle_{H^{-1},H_0^1}=0,
+ \qquad\forall\psi\in V.
+\]
+由 Theorem~\ref{thm:chap4-de-rham-hminusone}, 存在 $p\in L_0^2(\Omega)$ 使 $F=\nabla p$, 从而断言得证.
+\end{Proof}
+
+\paragraph{正则性}
+\label{subsec:chap5-steady-homogeneous-regularity}
+
+若进一步假设源项 $f\in(L^2(\Omega))^d$ 且区域 $\Omega$ 足够光滑, 则\eqref{eq:chap5-steady-homogeneous-problem}的解 $(v,p)$ 更正则. 更准确地说, 有如下结果.
+
+\begin{Theorem}
+\label{thm:chap5-steady-homogeneous-regularity}
+若 $\Omega$ 属于 $C^{1,1}$ 类且 $f\in(L^2(\Omega))^d$, 则
+\[
+ (v,p)\in(H^2(\Omega))^d\times H^1(\Omega).
+\]
+\end{Theorem}
+
+\begin{Proof}
+上面得到的\eqref{eq:chap5-steady-homogeneous-problem}的解 $(v,p)$ 满足
+\begin{equation}
+\left\{
+\begin{aligned}
+ -\frac1{\operatorname{Re}}\Delta v+\nabla p&=f-(v\cdot\nabla)v&&\text{于 }\Omega,\\
+ \operatorname{div}v&=0&&\text{于 }\Omega,\\
+ v&=0&&\text{于 }\partial\Omega.
+\end{aligned}
+\right.
+\label{eq:chap5-steady-stokes-bootstrap}
+\end{equation}
+先证明对任意 $q<+\infty$ 都有 $v\in(L^q(\Omega))^d$.
+\begin{itemize}
+ \item 若 $d=2$, 该性质显然来自 Sobolev 嵌入 Theorem~\ref{thm:chap3-sobolev-embeddings}, 因为 $H^1(\Omega)\subset L^q(\Omega)$ 对任意 $q<+\infty$ 成立.
+ \item 若 $d=3$, Sobolev 嵌入只给出 $H^1(\Omega)\subset L^6(\Omega)$. 由此及 $\nabla v\in(L^2(\Omega))^{3\times3}$, 得 $(v\cdot\nabla)v\in(L^{3/2}(\Omega))^3$, 因而
+ \[
+ f-(v\cdot\nabla)v\in(L^{3/2}(\Omega))^3.
+ \]
+ 对问题\eqref{eq:chap5-steady-stokes-bootstrap}应用 Theorem~\ref{thm:chap4-stokes-cattabriga}, 得 $v\in(W^{2,3/2}(\Omega))^3$. 由 Sobolev 嵌入, $v\in(W^{1,3}(\Omega))^3$, 进而对任意 $q<+\infty$ 有 $v\in(L^q(\Omega))^3$.
+\end{itemize}
+现在很清楚, 对任意 $p<2$, 乘积 $(v\cdot\nabla)v\in(L^p(\Omega))^d$, 因而\eqref{eq:chap5-steady-stokes-bootstrap}右端也属于 $(L^p(\Omega))^d$. 再用一次 Theorem~\ref{thm:chap4-stokes-cattabriga}, 得对任意 $p<+\infty$ 有 $v\in(W^{2,p}(\Omega))^d$, 最终 $v\in(L^\infty(\Omega))^d$.
+
+最后, $(v\cdot\nabla)v$ 实际上属于 $(L^2(\Omega))^d$. Theorem~\ref{thm:chap4-stokes-cattabriga} (另见 Theorem~\ref{thm:chap4-stokes-nonhomogeneous-wellposedness}) 给出 $(v,p)\in(H^2(\Omega))^d\times H^1(\Omega)$.
+\end{Proof}
+
+\par\noindent\refstepcounter{chapterfivesectionthreeremark}\textbf{Remark~\thechapterfivesectionthreeremark:}\label{rem:chap5-steady-lp-regularity}
+使用同一策略可证明, 若源项 $f\in(L^p(\Omega))^d$, $2<p<\infty$, 则解 $(v,p)\in(W^{2,p}(\Omega))^d\times W^{1,p}(\Omega)$.
+
+\subsubsection{非齐次边界条件情形}
+\label{subsec:chap5-steady-nonhomogeneous-boundary}
+
+现在研究速度场 $v$ 在 $\partial\Omega$ 上满足非齐次 Dirichlet 边界条件的情形. 为简单起见, 本小节只考虑 $d=3$, 但二维情形也有类似结果.
+
+对满足适当假设的给定数据 $f$ 和 $g$, 我们证明稳态 Navier--Stokes 问题
+\begin{equation}
+\left\{
+\begin{aligned}
+ -\frac1{\operatorname{Re}}\Delta v+(v\cdot\nabla)v+\nabla p&=f&&\text{于 }\Omega,\\
+ \operatorname{div}v&=0&&\text{于 }\Omega,\\
+ v&=g&&\text{于 }\partial\Omega
+\end{aligned}
+\right.
+\label{eq:chap5-steady-nonhomogeneous-problem}
+\end{equation}
+至少存在一个解. 关于 $g$ 的第一个自然兼容性条件来自无散度约束. 事实上, 散度定理表明, 若解存在, 则
+\[
+ 0=\int_\Omega\operatorname{div}v\,\mathrm dx
+ =\int_{\partial\Omega}g\cdot\nu\,\mathrm d\sigma.
+\]
+为简单起见, 本小节假设区域 $\Omega$ 单连通. 多连通区域也可用类似方法处理. 记 $(\Gamma_i)_{1\leq i\leq m}$ 为边界 $\partial\Omega$ 的连通分支. 对任意边界数据 $g$, 定义
+\[
+ Q_{\partial\Omega}(g)=\sum_{i=1}^m\left|\int_{\Gamma_i}g\cdot\nu\,\mathrm d\sigma\right|,
+\]
+即通过每个边界连通分支的全部流量之和.
+
+现在可以陈述并证明本小节的主要结果.
+
+\begin{Theorem}
+\label{thm:chap5-steady-nonhomogeneous-existence}
+设 $\Omega$ 是 $\mathbb R^d$ 中有界、单连通的 Lipschitz 区域, $d\in\{2,3\}$. 存在仅依赖于 $\Omega$ 的常数 $C_{1,\Omega},C_{2,\Omega}>0$, 使得对任意 $f\in(H^{-1}(\Omega))^d$ 和 $g\in(H^{1/2}(\partial\Omega))^d$, 若
+\begin{equation}
+\left\{
+\begin{aligned}
+ \int_{\partial\Omega}g\cdot\nu\,\mathrm d\sigma&=0,\\
+ Q_{\partial\Omega}(g)&\leq\frac{C_{1,\Omega}}{\operatorname{Re}},
+\end{aligned}
+\right.
+\label{eq:chap5-steady-boundary-smallness}
+\end{equation}
+则问题\eqref{eq:chap5-steady-nonhomogeneous-problem}至少存在一个解 $(v,p)\in(H^1(\Omega))^d\times L_0^2(\Omega)$, 且满足
+\begin{equation}
+ \|\nabla v\|_{L^2}
+ \leq C_{2,\Omega}\operatorname{Re}\|f\|_{H^{-1}}
+ +C_{2,\Omega}\|g\|_{H^{1/2}}
+ \exp\!\left(C_{2,\Omega}\operatorname{Re}\|g\|_{H^{1/2}}\right).
+\label{eq:chap5-steady-nonhomogeneous-estimate}
+\end{equation}
+\end{Theorem}
+
+在下面的证明中, 小性条件\eqref{eq:chap5-steady-boundary-smallness}确实有用. 不过, 目前尚不知道稳态 Navier--Stokes 问题存在解是否真的需要该条件. 关于这一问题的更详细讨论, 参见\MBUnresolvedReference{bib:steady-navier-stokes-smallness}{[63]}.
+
+证明这一 Theorem 的关键是构造适当的边界数据提升, 从而把问题转化为齐次 Dirichlet 边界条件情形. 由于问题是非线性的, 该提升必须足够小, 才能进行能量估计.
+
+考虑满足 Theorem 假设的边界数据 $g$, 并定义
+\[
+ \mu_i=\frac1{|\Gamma_i|}\int_{\Gamma_i}g\cdot\nu\,\mathrm d\sigma,
+ \qquad\forall i\in\{1,\ldots,m\}.
+\]
+由假设可见
+\[
+ \sum_{i=1}^m\mu_i|\Gamma_i|
+ =\int_{\partial\Omega}g\cdot\nu\,\mathrm d\sigma=0.
+\]
+因此, 根据 Theorem~\ref{thm:chap4-stokes-nonhomogeneous-wellposedness}, 可以找到向量场 $F_1\in(H^1(\Omega))^d$, 以及某个 $\pi_1\in L_0^2(\Omega)$, 使
+\begin{equation}
+\left\{
+\begin{aligned}
+ -\Delta F_1+\nabla\pi_1&=0&&\text{于 }\Omega,\\
+ \operatorname{div}F_1&=0&&\text{于 }\Omega,\\
+ F_1&=\mu_i\nu&&\text{于 }\Gamma_i,\quad\forall i\in\{1,\ldots,m\},\\
+ \|F_1\|_{H^1}&\leq C\sum_{i=1}^m|\mu_i|
+ \leq C Q_{\partial\Omega}(g).
+\end{aligned}
+\right.
+\label{eq:chap5-steady-first-lifting}
+\end{equation}
+这里只使用 $F_1$ 是边界迹 $\mu_i\nu$ 在 $\Gamma_i$ 上的无散度提升. 特别地, 标量场 $\pi_1$ 在后文中没有作用. 由构造, 函数 $g-F_1$ 在边界上满足
+\begin{equation}
+\left\{
+\begin{aligned}
+ \int_{\partial\Omega}(g-F_1)\cdot\nu\,\mathrm d\sigma&=0,\\
+ \int_{\Gamma_i}(g-F_1)\cdot\nu\,\mathrm d\sigma&=0,
+ \qquad\forall i\in\{1,\ldots,m\}.
+\end{aligned}
+\right.
+\label{eq:chap5-steady-lifting-flux}
+\end{equation}
+再次应用 Theorem~\ref{thm:chap4-stokes-nonhomogeneous-wellposedness}, 可以找到无散度向量场 $F_2\in(H^1(\Omega))^d$, 使得 $F_2=g-F_1$ 于 $\partial\Omega$, 且
+\[
+ \|F_2\|_{H^1}\leq C\|g-F_1\|_{H^{1/2}}.
+\]
+在假设\eqref{eq:chap5-steady-boundary-smallness}下, 估计\eqref{eq:chap5-steady-first-lifting}表明 $F_1$ 可以做得很小, 但我们对 $F_2$ 的大小一无所知. 下面的结果 (见\MBUnresolvedReference{bib:hopf-lemma-source}{[71]}) 表明, 可以在 $\Omega$ 内部修改 $F_2$, 使其在一种足以满足我们目的的弱意义下足够小.
+
+\begin{Lemma}[Hopf's lemma]
+\label{lem:chap5-hopf-lifting}
+对任意 $\alpha>0$, 存在向量场 $G\in(H^1(\Omega))^d$, 使得 $\operatorname{div}G=0$, $G=F_2$ 于 $\partial\Omega$, 并满足
+\begin{equation}
+ \|G\otimes w\|_{L^2}\leq\alpha\|w\|_{H_0^1},
+ \qquad\forall w\in(H_0^1(\Omega))^d,
+\label{eq:chap5-hopf-weak-smallness}
+\end{equation}
+以及
+\begin{equation}
+ \|\nabla G\|_{L^2}
+ \leq C\|g\|_{H^{1/2}}
+ \exp\!\left(\frac C\alpha\|g\|_{H^{1/2}}\right).
+\label{eq:chap5-hopf-gradient-estimate}
+\end{equation}
+\end{Lemma}
+
+关于保证此 Lemma 成立的区域和边界数据的更一般条件, 例如可参见\MBUnresolvedReference{bib:hopf-lemma-general-conditions}{[70]}中的讨论.
+
+\begin{Proof}
+回忆这里只考虑三维情形. 首先注意, 若 $\alpha$ 足够大, 可以直接取 $G=F_2$. 事实上,
+\[
+ \|F_2\otimes v\|_{L^2}
+ \leq\|F_2\|_{L^3}\|v\|_{L^6}
+ \leq C\|F_2\|_{H^1}\|v\|_{H_0^1}
+ \leq C'\|g-F_1\|_{H^{1/2}}\|v\|_{H_0^1}.
+\]
+所以只要 $\alpha\geq C'\|g-F_1\|_{H^{1/2}}$, 式\eqref{eq:chap5-hopf-weak-smallness}就成立. 此时式\eqref{eq:chap5-hopf-gradient-estimate}也成立.
+
+从现在起假设
+\begin{equation}
+ \alpha\leq C'\|g-F_1\|_{H^{1/2}}.
+\label{eq:chap5-hopf-alpha-small-case}
+\end{equation}
+由式\eqref{eq:chap5-steady-lifting-flux}, 对任意 $1\leq i\leq m$ 有
+\[
+ \langle\gamma_\nu(F_2),1\rangle_{H^{-1/2}(\Gamma_i),H^{1/2}(\Gamma_i)}
+ =\int_{\Gamma_i}F_2\cdot\nu\,\mathrm d\sigma=0.
+\]
+因此可应用 Theorem~\ref{thm:chap4-vector-potential}, 得到向量场 $\Phi\in(H^2(\Omega))^d$, 满足
+\[
+ \left\{
+ \begin{aligned}
+ \operatorname{curl}\Phi&=F_2&&\text{于 }\Omega,\\
+ \operatorname{div}\Phi&=0&&\text{于 }\Omega,\\
+ \|\Phi\|_{H^2}&\leq C\|F_2\|_{H^1}
+ \leq C'\|g-F_1\|_{H^{1/2}}.
+ \end{aligned}
+ \right.
+\]
+强调一下, 不需要对向量场 $\Phi$ 施加边界条件. 对所有 $\varepsilon>0$, 令 $\delta_\varepsilon=e^{-1/\varepsilon}$, 并引入函数 $\psi_\varepsilon:\mathbb R\to[0,+\infty[$:
+\[
+ \psi_\varepsilon(s)=
+ \begin{cases}
+ 1,&s\leq\delta_\varepsilon^2,\\
+ \varepsilon\log(\delta_\varepsilon/s),&
+ \delta_\varepsilon^2\leq s\leq\delta_\varepsilon,\\
+ 0,&s\geq\delta_\varepsilon.
+ \end{cases}
+\]
+令 $\eta:\mathbb R\to\mathbb R$ 是支撑包含于 $]-1,1[$ 的光滑化核. 定义 $C^\infty$ 函数
+\[
+ \beta_\varepsilon(s)
+ =\int_{\mathbb R}\frac4{\delta_\varepsilon^2}
+ \eta\!\left(\frac{s-t}{\delta_\varepsilon^2/4}\right)
+ \psi_\varepsilon(t)\,\mathrm dt.
+\]
+函数 $\beta_\varepsilon$ 满足
+\begin{equation}
+\left\{
+\begin{aligned}
+ \beta_\varepsilon(s)&=1&&\forall s\leq\frac34\delta_\varepsilon^2,\\
+ \beta_\varepsilon(s)&=0&&\forall s\geq\delta_\varepsilon+\frac14\delta_\varepsilon^2,\\
+ |\beta_\varepsilon'(s)|&\leq\frac{3\varepsilon}{2s}&&\forall s\geq0.
+\end{aligned}
+\right.
+\label{eq:chap5-hopf-cutoff-properties}
+\end{equation}
+这里只给出 $3\delta_\varepsilon^2/4\leq s\leq\delta_\varepsilon+\delta_\varepsilon^2/4$ 时对 $\beta_\varepsilon'(s)$ 的估计细节:
+\begin{align*}
+ \beta_\varepsilon'(s)
+ &=\int_{\mathbb R}\left(\frac4{\delta_\varepsilon^2}\right)^2
+ \eta'\!\left(\frac{s-t}{\delta_\varepsilon^2/4}\right)
+ \psi_\varepsilon(t)\,\mathrm dt\\
+ &=\int_{\mathbb R}\frac4{\delta_\varepsilon^2}
+ \eta\!\left(\frac{s-t}{\delta_\varepsilon^2/4}\right)
+ \psi_\varepsilon'(t)\,\mathrm dt\\
+ &=\frac4{\delta_\varepsilon^2}
+ \int_{s-\delta_\varepsilon^2/4}^{s+\delta_\varepsilon^2/4}
+ \eta\!\left(\frac{s-t}{\delta_\varepsilon^2/4}\right)
+ \psi_\varepsilon'(t)\,\mathrm dt.
+\end{align*}
+函数 $\psi_\varepsilon$ 的导数由 $\varepsilon/t$ 控制, 因而
+\[
+ |\beta_\varepsilon'(s)|
+ \leq\frac4{\delta_\varepsilon^2}
+ \int_{s-\delta_\varepsilon^2/4}^{s+\delta_\varepsilon^2/4}
+ \eta\!\left(\frac{s-t}{\delta_\varepsilon^2/4}\right)
+ \frac\varepsilon t\,\mathrm dt
+ \leq\frac\varepsilon{s-\delta_\varepsilon^2/4}.
+\]
+最后, 当 $3\delta_\varepsilon^2/4\leq s$ 时, 得到 $|\beta_\varepsilon'(s)|\leq3\varepsilon/(2s)$. 同理可以证明
+\begin{align*}
+ |\beta_\varepsilon''(s)|
+ &=\left|\int_{\mathbb R}\left(\frac4{\delta_\varepsilon^2}\right)^2
+ \eta'\!\left(\frac{s-t}{\delta_\varepsilon^2/4}\right)
+ \psi_\varepsilon'(t)\,\mathrm dt\right|\\
+ &\leq\left(\frac4{\delta_\varepsilon^2}\right)^2
+ \int_{\mathbb R}\left|\eta'\!\left(\frac{s-t}{\delta_\varepsilon^2/4}\right)\right|
+ \frac\varepsilon{s-\delta_\varepsilon^2/4}\,\mathrm dt
+ \leq\frac1s\varepsilon e^{1/\varepsilon}.
+\end{align*}
+因此, 由 $\delta_\varepsilon$ 的定义,
+\[
+ \|\beta_\varepsilon'\|_{L^\infty}\leq2\varepsilon e^{2/\varepsilon},
+ \qquad
+ \|\beta_\varepsilon''\|_{L^\infty}\leq C\varepsilon e^{3/\varepsilon}.
+\]
+
+现在对所有 $x\in\Omega$ 定义 $\chi_\varepsilon(x)=\beta_\varepsilon(\rho(x))$, 其中 $\rho$ 是 Chapter~\ref{chap:sobolev-spaces} 的 Section~\ref{sec:chap3-boundary-calculus} 中构造的正则化距离函数. 注意, 当 $\varepsilon>0$ 足够小时, $\chi_\varepsilon$ 是光滑的, 因为其支撑是边界 $\partial\Omega$ 的一个小邻域. 取
+\[
+ G=\operatorname{curl}(\chi_\varepsilon\Phi),
+\]
+则 $\operatorname{div}G=0$ 自动成立. 由于 $\chi_\varepsilon=1$ 于 $\Omega$ 边界附近, 还有 $G=F_2$ 于 $\partial\Omega$.
+
+由式\eqref{eq:chap5-hopf-cutoff-properties}, 容易验证 $G$ 满足
+\[
+ \left\{
+ \begin{aligned}
+ |G(x)|&\leq C\left(\frac\varepsilon{\rho(x)}|\Phi(x)|+|\nabla\Phi(x)|\right),
+ &&\forall x\in\Omega,\\
+ G(x)&=0,
+ &&\text{只要 }\rho(x)\geq\delta_\varepsilon+\delta_\varepsilon^2/4.
+ \end{aligned}
+ \right.
+\]
+现在估计 $G\otimes v$ 的 $L^2$ 范数, 其中 $v\in(H_0^1(\Omega))^d$. 有
+\begin{align*}
+ \int_\Omega|G|^2|v|^2\,\mathrm dx
+ &\leq C\varepsilon^2\|\Phi\|_{H^2}^2
+ \int_\Omega\left|\frac{v(x)}{\rho(x)}\right|^2\,\mathrm dx\\
+ &\quad+C\|v\|_{L^6}^2
+ \left(\int_{\rho(x)\leq\delta_\varepsilon+\delta_\varepsilon^2/4}
+ |\nabla\Phi|^3\,\mathrm dx\right)^{2/3}.
+\end{align*}
+根据 Hardy 不等式 Proposition~\ref{prop:chap3-hardy-boundary-distance} (并使用式\eqref{eq:chap3-distance-equivalence}), 已证明
+\[
+ \|G\otimes v\|_{L^2}
+ \leq C\left(\varepsilon\|\Phi\|_{H^2}+\theta(\varepsilon)\right)
+ \|\nabla v\|_{L^2},
+\]
+其中
+\[
+ \theta(\varepsilon)
+ =\left(\int_{\rho(x)\leq\delta_\varepsilon+\delta_\varepsilon^2/4}
+ |\nabla\Phi|^3\,\mathrm dx\right)^{1/3}
+ \leq C\delta_\varepsilon^{1/6}\|\Phi\|_{H^2}
+ \leq C\varepsilon\|\Phi\|_{H^2}.
+\]
+最后得到
+\[
+ \|G\otimes v\|_{L^2}
+ \leq C\varepsilon\|\Phi\|_{H^2}\|v\|_{L^2}
+ \leq C\varepsilon\|g-F_1\|_{H^{1/2}}\|v\|_{L^2},
+\]
+所以选择
+\[
+ \varepsilon=\frac\alpha{C\|g-F_1\|_{H^{1/2}}}
+\]
+即可证明式\eqref{eq:chap5-hopf-weak-smallness}. 由假设\eqref{eq:chap5-hopf-alpha-small-case}, 这个 $\varepsilon$ 值由某个仅依赖于 $\Omega$ 的数控制. 最后容易得到
+\begin{align*}
+ \|\nabla G\|_{L^2}
+ &\leq C\left(1+\|\beta_\varepsilon''\|_{L^\infty}
+ +\|\beta_\varepsilon'\|_{L^\infty}^2
+ +\|\beta_\varepsilon\|_{L^\infty}\right)\|\Phi\|_{H^2}\\
+ &\leq C\varepsilon^2e^{5/\varepsilon}\|\Phi\|_{H^2}
+ \leq\frac{\alpha^2}{C\|g-F_1\|_{H^{1/2}}}
+ \exp\!\left(\frac C\alpha\|g-F_1\|_{H^{1/2}}\right),
+\end{align*}
+再使用式\eqref{eq:chap5-hopf-alpha-small-case}和 $F_1$ 的定义, 即得式\eqref{eq:chap5-hopf-gradient-estimate}.
+\end{Proof}
+
+\begin{Proof}
+\textbf{(of Theorem~\ref{thm:chap5-steady-nonhomogeneous-existence})}\quad
+令 $\alpha>0$ 待定, $G$ 为前一 Lemma 给出的向量场. 定义 $\widetilde G=G+F_1$, 由构造有 $\widetilde G=g$ 于边界 $\partial\Omega$. 寻找系统\eqref{eq:chap5-steady-nonhomogeneous-problem}形如 $v=w+\widetilde G$ 的解. 此时 Navier--Stokes 系统等价于带齐次 Dirichlet 边界条件的问题
+\begin{equation}
+\left\{
+\begin{aligned}
+ -\frac1{\operatorname{Re}}\Delta w
+ +(w\cdot\nabla)\widetilde G+(\widetilde G\cdot\nabla)w
+ +(w\cdot\nabla)w+\nabla p
+ &=f+\widetilde f&&\text{于 }\Omega,\\
+ \operatorname{div}w&=0&&\text{于 }\Omega,\\
+ w&=0&&\text{于 }\partial\Omega,
+\end{aligned}
+\right.
+\label{eq:chap5-steady-lifted-problem}
+\end{equation}
+其中
+\begin{equation}
+ \widetilde f=\frac1{\operatorname{Re}}\Delta\widetilde G
+ -(\widetilde G\cdot\nabla)\widetilde G.
+\label{eq:chap5-steady-lifted-source}
+\end{equation}
+使用 Theorem~\ref{thm:chap5-steady-homogeneous-existence} 证明中相同的 Galerkin 逼近策略来寻找该系统的解. 这里不再给出这一过程的细节, 只给出证明逼近解一致有界所需的能量估计; 随后可用上述 Theorem 证明中的相同方法证明极限过程.
+
+由于 $w$ 满足齐次边界条件, 非线性项 $(w\cdot\nabla)w$ 不影响能量估计, 见式\eqref{eq:chap5-inertia-antisymmetry}. 因此新困难是估计线性项
+\[
+ I(\widetilde G,w)
+ =\int_\Omega((\widetilde G\cdot\nabla)w)\cdot w\,\mathrm dx
+ +\int_\Omega((w\cdot\nabla)\widetilde G)\cdot w\,\mathrm dx.
+\]
+对第二项分部积分, 得
+\[
+ I(\widetilde G,w)
+ =\int_\Omega(w\otimes\widetilde G):\nabla w\,\mathrm dx
+ -\int_\Omega(\widetilde G\otimes w):\nabla w\,\mathrm dx.
+\]
+回忆 $\widetilde G=G+F_1$, 因而 $I(\widetilde G,w)=I(G,w)+I(F_1,w)$. 由 Lemma~\ref{lem:chap5-hopf-lifting},
+\[
+ |I(G,w)|\leq2\alpha\|\nabla w\|_{L^2}^2.
+\]
+利用 Sobolev 嵌入和条件\eqref{eq:chap5-steady-boundary-smallness} (其中适当选取常数 $C_{1,\Omega}$), 有
+\[
+ |I(F_1,w)|
+ \leq2\|w\|_{L^6}\|F_1\|_{L^3}\|\nabla w\|_{L^2}
+ \leq C\|F_1\|_{H^1}\|\nabla w\|_{L^2}^2
+ \leq C Q_{\partial\Omega}(g)\|\nabla w\|_{L^2}^2
+ \leq\frac1{4\operatorname{Re}}\|\nabla w\|_{L^2}^2.
+\]
+所以方程\eqref{eq:chap5-steady-lifted-problem}的能量估计为
+\[
+ \frac1{\operatorname{Re}}\|\nabla w\|_{L^2}^2
+ \leq\left(2\alpha+\frac1{4\operatorname{Re}}\right)\|\nabla w\|_{L^2}^2
+\left(\|f\|_{H^{-1}}+\|\widetilde f\|_{H^{-1}}\right)\|\nabla w\|_{L^2}.
+\]
+例如可取 $\alpha=1/(8\operatorname{Re})$, 得
+\begin{equation}
+ \|\nabla w\|_{L^2}
+ \leq2\operatorname{Re}
+ \left(\|f\|_{H^{-1}}+\|\widetilde f\|_{H^{-1}}\right),
+\label{eq:chap5-steady-lifted-energy-estimate}
+\end{equation}
+并像齐次情形一样得出方程\eqref{eq:chap5-steady-nonhomogeneous-problem}至少存在一个解.
+
+由式\eqref{eq:chap5-steady-lifted-source}、\eqref{eq:chap5-hopf-gradient-estimate}和 $\alpha=1/(8\operatorname{Re})$ 的选择, 再使用假设\eqref{eq:chap5-steady-boundary-smallness}, 得
+\[
+ \|\widetilde f\|_{H^{-1}}
+ \leq\frac1{\operatorname{Re}}\|\nabla\widetilde G\|_{L^2}
+ +\|\widetilde G\otimes\widetilde G\|_{L^2}
+ \leq C\frac{\|g\|_{H^{1/2}}}{\operatorname{Re}}
+ \exp\!\left(C\operatorname{Re}\|g\|_{H^{1/2}}\right).
+\]
+由于 $v=w+\widetilde G$, 由式\eqref{eq:chap5-steady-lifted-energy-estimate}推出估计\eqref{eq:chap5-steady-nonhomogeneous-estimate}.
+\end{Proof}
+
+\subsubsection{小数据时的唯一性}
+\label{subsec:chap5-steady-small-data-uniqueness}
+
+\begin{Theorem}
+\label{thm:chap5-steady-small-data-uniqueness}
+设 $\Omega$ 是 $\mathbb R^d$ 中有界、单连通的 Lipschitz 区域, $d=3$. 存在仅依赖于 $\Omega$ 的常数 $C_{3,\Omega}>0$, 使得对任意 $f\in(H^{-1}(\Omega))^d$ 和 $g\in(H^{1/2}(\partial\Omega))^d$, 若
+\[
+ \left\{
+ \begin{aligned}
+ \int_{\partial\Omega}g\cdot\nu\,\mathrm d\sigma&=0,\\
+ Q_{\partial\Omega}(g)&\leq\frac{C_{1,\Omega}}{\operatorname{Re}},\\
+ \operatorname{Re}^2\|f\|_{H^{-1}}
+ +\operatorname{Re}\|g\|_{H^{1/2}}
+ \exp\!\left(C_{2,\Omega}\operatorname{Re}\|g\|_{H^{1/2}}\right)
+ &\leq C_{3,\Omega},
+ \end{aligned}
+ \right.
+\]
+则问题\eqref{eq:chap5-steady-nonhomogeneous-problem}有唯一解 $(v,p)\in(H^1(\Omega))^d\times L_0^2(\Omega)$.
+\end{Theorem}
+
+\par\noindent\refstepcounter{chapterfivesectionthreeremark}\textbf{Remark~\thechapterfivesectionthreeremark:}\label{rem:chap5-steady-high-reynolds-nonuniqueness}
+对某些特殊区域 $\Omega$, 可以证明 Reynolds 数很大时这一唯一性性质可能失效 (即使在齐次边界条件下也是如此); 例如参见\MBUnresolvedReference{bib:steady-navier-stokes-high-reynolds}{[63]}.
+
+\begin{Proof}
+在对 $Q_{\partial\Omega}(g)$ 的假设下, Theorem~\ref{thm:chap5-steady-nonhomogeneous-existence}证明至少存在一个满足估计\eqref{eq:chap5-steady-nonhomogeneous-estimate}的解 $(v,p)$. 设 $(\widetilde v,\widetilde p)\in(H^1(\Omega))^d\times L_0^2(\Omega)$ 是问题\eqref{eq:chap5-steady-nonhomogeneous-problem}的任意另一可能解, 并记 $w=\widetilde v-v$, $q=\widetilde p-p$. 两个系统相减可见 $(w,q)$ 满足
+\[
+ \left\{
+ \begin{aligned}
+ -\frac1{\operatorname{Re}}\Delta w
+ +(w\cdot\nabla)v+(\widetilde v\cdot\nabla)w+\nabla q&=0&&\text{于 }\Omega,\\
+ \operatorname{div}w&=0&&\text{于 }\Omega,\\
+ w&=0&&\text{于 }\partial\Omega.
+ \end{aligned}
+ \right.
+\]
+以 $w$ 测试该问题并分部积分. 由于 $w$ 在边界上为零, 由式\eqref{eq:chap5-inertia-antisymmetry}得
+\[
+ \frac1{\operatorname{Re}}\|\nabla w\|_{L^2}^2
+ =-\int_\Omega((w\cdot\nabla)v)\cdot w\,\mathrm dx
+ \leq C\|\nabla v\|_{L^2}\|\nabla w\|_{L^2}^2.
+\]
+利用估计\eqref{eq:chap5-steady-nonhomogeneous-estimate}, 可选取 $C_{2,\Omega}$ 和 $C_{3,\Omega}$, 使 $C\operatorname{Re}\|\nabla v\|_{L^2}\leq1/2$, 从而 $\nabla w=0$, 因此 $w=0$.
+\end{Proof}
+
+\par\noindent\refstepcounter{chapterfivesectionthreeremark}\textbf{Remark~\thechapterfivesectionthreeremark:}\label{rem:chap5-steady-homogeneous-uniqueness}
+在齐次 Dirichlet 条件下 $g=0$, 只要满足 $\operatorname{Re}^2\|f\|_{H^{-1}}\leq C_{3,\Omega}$, 解的唯一性就得到保证.
+
+\subsubsection{稳态解的渐近稳定性}
+\label{subsec:chap5-steady-asymptotic-stability}
+
+现在讨论稳态解的稳定性性质. 这里只集中考虑齐次 Dirichlet 边界条件情形, 但非齐次情形也可用完全相同的方法处理.
+
+给定不依赖时间的源项 $f$, 考虑与 $f$ 对应的稳态解 $(v_\infty,p_\infty)\in(H_0^1(\Omega))^d\times L_0^2(\Omega)$. 现在要问: 给定足够接近 $v_\infty$ 的初始数据 $v_0\in H$ (准确条件见下文), 非稳态 Navier--Stokes 问题
+\begin{equation}
+\left\{
+\begin{aligned}
+ \frac{\partial v}{\partial t}-\frac1{\operatorname{Re}}\Delta v
+ +(v\cdot\nabla)v+\nabla p&=f&&\text{于 }\Omega,\\
+ \operatorname{div}v&=0&&\text{于 }\Omega,\\
+ v&=0&&\text{于 }\partial\Omega,\\
+ v(0)&=v_0
+\end{aligned}
+\right.
+\label{eq:chap5-unsteady-around-steady-problem}
+\end{equation}
+是否存在唯一全局解 $(v,p)$, 且当 $t\to+\infty$ 时该解是否收敛到 $(v_\infty,p_\infty)$? 若是, 就称所研究的稳态解渐近稳定.
+
+当然, 情形随维数而异: 当 $d=2$ 时, 已知对任意初始数据存在唯一全局弱解 (Theorem~\ref{thm:chap5-strong-solutions}), 而当 $d=3$ 时, 全局弱解未必唯一, 强解也未必是全局的.
+
+从现在起, 寻找问题\eqref{eq:chap5-unsteady-around-steady-problem}形如 $v=v_\infty+w$、$p=p_\infty+\pi$ 的解, 其中 $(w,\pi)$ 满足
+\begin{equation}
+\left\{
+\begin{aligned}
+ \frac{\partial w}{\partial t}-\frac1{\operatorname{Re}}\Delta w
+ +(w\cdot\nabla)w+(v_\infty\cdot\nabla)w
+ +(w\cdot\nabla)v_\infty+\nabla\pi&=0&&\text{于 }\Omega,\\
+ \operatorname{div}w&=0&&\text{于 }\Omega,\\
+ w&=0&&\text{于 }\partial\Omega,\\
+ w(t=0)&=v_0-v_\infty.
+\end{aligned}
+\right.
+\label{eq:chap5-steady-perturbation-problem}
+\end{equation}
+先研究速度场 $v$ (或 $w$) 的渐近行为, 压力行为的讨论推迟到本小节末尾.
+
+\paragraph{二维情形}
+\label{subsec:chap5-steady-asymptotic-two-dimensional}
+
+下面证明, 只要稳态解足够小, 它就是渐近稳定的.
+
+\begin{Theorem}
+\label{thm:chap5-steady-asymptotic-two-dimensional}
+设 $\Omega$ 是有界、单连通的 Lipschitz 区域. 给定 $f\in(H^{-1}(\Omega))^2$, 设 $(v_\infty,p_\infty)\in(H_0^1(\Omega))^d\times L_0^2(\Omega)$ 是与源项 $f$ 对应的问题\eqref{eq:chap5-steady-nonhomogeneous-problem}的一个稳态解.
+
+存在仅依赖于 $\Omega$ 的 $C>0$ 和 $\alpha>0$, 使得在条件
+\[
+ \|\nabla v_\infty\|_{L^2}\leq\frac C{\operatorname{Re}}
+\]
+下, 对任意初始数据 $v_0\in H$, 问题\eqref{eq:chap5-unsteady-around-steady-problem}的唯一弱解 $(v,p)$ 满足
+\[
+ \|v(t)-v_\infty\|_{L^2}
+ \leq\|v_0-v_\infty\|_{L^2}e^{-\alpha t},
+ \qquad\forall t\geq0,
+\]
+以及
+\[
+ \|\nabla v(t)-\nabla v_\infty\|_{L^2}
+ \leq C\|v_0-v_\infty\|_{L^2}e^{-\alpha t},
+ \qquad\forall t\geq1.
+\]
+\end{Theorem}
+
+\begin{Proof}
+此时唯一全局弱解的存在性和唯一性已经知道, 因此只需给出 $w$ 的适当估计.
+
+以 $w$ 乘方程\eqref{eq:chap5-steady-perturbation-problem}, 并使用式\eqref{eq:chap5-inertia-estimate}, 得
+\[
+ \frac12\frac{\mathrm d}{\mathrm dt}\|w\|_{L^2}^2
+ +\frac1{\operatorname{Re}}\|\nabla w\|_{L^2}^2
+ \leq C\|\nabla v_\infty\|_{L^2}\|w\|_{L^2}\|\nabla w\|_{L^2}.
+\]
+由 Young 不等式,
+\[
+ \frac{\mathrm d}{\mathrm dt}\|w\|_{L^2}^2
+ +\frac1{\operatorname{Re}}\|\nabla w\|_{L^2}^2
+ \leq C\operatorname{Re}\|\nabla v_\infty\|_{L^2}^2\|w\|_{L^2}^2.
+\]
+最后使用 Poincaré 不等式 Proposition~\ref{prop:chap4-stokes-poincare-optimal}, 得
+\[
+ \frac{\mathrm d}{\mathrm dt}\|w\|_{L^2}^2
+ +\left(\frac {C_1}{\operatorname{Re}}
+ -C\operatorname{Re}\|\nabla v_\infty\|_{L^2}^2\right)\|w\|_{L^2}^2\leq0.
+\]
+只要 $C\operatorname{Re}^2\|\nabla v_\infty\|_{L^2}^2<C_1$, 就有
+\[
+ \frac{\mathrm d}{\mathrm dt}\|w\|_{L^2}^2+2\alpha\|w\|_{L^2}^2\leq0,
+\]
+最终给出预期的指数行为
+\[
+ \|w(t)\|_{L^2}^2\leq\|w_0\|_{L^2}^2e^{-2\alpha t}.
+\]
+对 $\nabla w$ 的估计可用下面三维情形中使用的相同论证证明.
+\end{Proof}
+
+\paragraph{三维情形}
+\label{subsec:chap5-steady-asymptotic-three-dimensional}
+
+此时需要考虑更光滑的初始数据, 因为弱解的唯一性未知. 不过, 一般也不知道强解的全局存在性, 所以还必须证明只要初始数据足够接近 $v_\infty$, 存在时间就是无穷大.
+
+注意, 如下所示, 即使我们关注强解, 也不需要假设源项属于 $(L^2(\Omega))^d$. 这是因为寻找的解具有 $v=v_\infty+w$ 的形式, 其中 $w$ 是没有源项的问题\eqref{eq:chap5-steady-perturbation-problem}的解.
+
+\begin{Theorem}
+\label{thm:chap5-steady-asymptotic-three-dimensional}
+设 $\Omega$ 是 $\mathbb R^3$ 中有界、单连通的 Lipschitz 区域. 给定 $f\in(H^{-1}(\Omega))^3$, 设 $(v_\infty,p_\infty)\in(H_0^1(\Omega))^3\times L_0^2(\Omega)$ 是问题\eqref{eq:chap5-steady-nonhomogeneous-problem}的一个稳态解. 存在仅依赖于 $\Omega$ 的 $C>0$ 和 $\alpha>0$, 使得在条件
+\[
+ \|\nabla v_\infty\|_{L^2}\leq\frac C{\operatorname{Re}}
+\]
+下, 对任意满足
+\[
+ \|\nabla v_0-\nabla v_\infty\|_{L^2}\leq\frac C{\operatorname{Re}}
+\]
+的初始数据 $v_0\in V$, 问题\eqref{eq:chap5-unsteady-around-steady-problem}存在唯一全局强解 $(v,p)$, 且
+\[
+ \|\nabla v(t)-\nabla v_\infty\|_{L^2}
+ \leq\|\nabla v_0-\nabla v_\infty\|_{L^2}e^{-\alpha t},
+ \qquad\forall t\geq0.
+\]
+\end{Theorem}
+
+\begin{Proof}
+\begin{sloppypar}
+证明问题\eqref{eq:chap5-steady-perturbation-problem}存在唯一全局强解. 这蕴含问题\eqref{eq:chap5-unsteady-around-steady-problem}存在唯一全局强解. 问题\eqref{eq:chap5-steady-perturbation-problem}的局部强解存在性和唯一性完全可以像 Theorem~\ref{thm:chap5-strong-solutions} 的证明那样得到. 这里只给出证明该解是全局的并收敛到 $v_\infty$ 所需的新估计.
+\end{sloppypar}
+
+以 $Aw$ 乘方程\eqref{eq:chap5-steady-perturbation-problem} (其中 $A$ 是 Stokes 算子), 并使用式\eqref{eq:chap5-inertia-estimate}, 得
+\begin{align*}
+ \frac12\frac{\mathrm d}{\mathrm dt}\|\nabla w\|_{L^2}^2
+ +\frac1{\operatorname{Re}}\|Aw\|_{L^2}^2
+ &\leq\|w\|_{L^\infty}\|\nabla w\|_{L^2}\|Aw\|_{L^2}\\
+ &\quad+\|v_\infty\|_{L^6}\|\nabla w\|_{L^3}\|Aw\|_{L^2}\\
+ &\quad+\|w\|_{L^\infty}\|\nabla v_\infty\|_{L^2}\|Aw\|_{L^2}\\
+ &\leq C\left(\|\nabla w\|_{L^2}^{3/2}\|Aw\|_{L^2}^{3/2}
+ +\|\nabla v_\infty\|_{L^2}\|\nabla w\|_{L^2}^{1/2}\|Aw\|_{L^2}^{3/2}\right).
+\end{align*}
+由 Young 不等式,
+\[
+ \frac{\mathrm d}{\mathrm dt}\|\nabla w\|_{L^2}^2
+ +\frac1{\operatorname{Re}}\|Aw\|_{L^2}^2
+ \leq C\operatorname{Re}^3\|\nabla v_\infty\|_{L^2}^4\|\nabla w\|_{L^2}^2
+ +C\operatorname{Re}^3\|\nabla w\|_{L^2}^6.
+\]
+再由 Proposition~\ref{prop:chap4-stokes-poincare-optimal} 中的 Poincaré 不等式,
+\[
+ \frac{\mathrm d}{\mathrm dt}\|\nabla w\|_{L^2}^2
+ +\frac {C_1}{\operatorname{Re}}\|\nabla w\|_{L^2}^2
+ \leq C\operatorname{Re}^3\|\nabla v_\infty\|_{L^2}^4\|\nabla w\|_{L^2}^2
+ +C\operatorname{Re}^3\|\nabla w\|_{L^2}^6.
+\]
+若 $v_\infty$ 满足 $2C\operatorname{Re}^4\|\nabla v_\infty\|_{L^2}^4\leq C_1$, 则上式给出
+\begin{equation}
+ \frac{\mathrm d}{\mathrm dt}\|\nabla w\|_{L^2}^2
+ +\left(\frac {C_1}{2\operatorname{Re}}
+ -C\operatorname{Re}^3\|\nabla w\|_{L^2}^4\right)
+ \|\nabla w\|_{L^2}^2\leq0.
+\label{eq:chap5-steady-strong-stability-differential}
+\end{equation}
+现在假设初始数据 $v_0$ 足够小, 即 $w(0)=v_0-v_\infty$ 满足
+\begin{equation}
+ \frac {C_1}{2\operatorname{Re}}
+ -C\operatorname{Re}^3\|\nabla w(0)\|_{L^2}^4
+ \geq\frac{C_1}{4\operatorname{Re}}.
+\label{eq:chap5-steady-strong-stability-initial-smallness}
+\end{equation}
+记 $T^*\in]0,+\infty]$ 为强解 $w$ 的最大存在时间. 定义
+\begin{equation}
+ T=\sup\left\{t\in[0,T^*[,
+ \ \frac {C_1}{2\operatorname{Re}}
+ -C\operatorname{Re}^3\|\nabla w(s)\|_{L^2}^4
+ \geq\frac{C_1}{8\operatorname{Re}},
+ \ \forall s\in[0,t]\right\}.
+\label{eq:chap5-steady-strong-stability-maximal-time}
+\end{equation}
+由连续性和假设\eqref{eq:chap5-steady-strong-stability-initial-smallness}, 可见 $T>0$. 下面证明必有 $T=+\infty$, 特别地这也蕴含 $T^*=+\infty$.
+
+反设 $T<+\infty$. 由于解在 $t\to T$ 时仍有界, 这蕴含 $T<T^*$. 由 $T$ 的定义和式\eqref{eq:chap5-steady-strong-stability-differential}, 有
+\begin{equation}
+ \frac{\mathrm d}{\mathrm dt}\|\nabla w\|_{L^2}^2
+ +\frac{C_1}{8\operatorname{Re}}\|\nabla w\|_{L^2}^2\leq0,
+ \qquad\forall t\in[0,T],
+\label{eq:chap5-steady-strong-stability-decay}
+\end{equation}
+因而
+\[
+ \|\nabla w(t)\|_{L^2}\leq\|\nabla w(0)\|_{L^2},
+ \qquad\forall t\in[0,T].
+\]
+特别地,
+\[
+ \frac {C_1}{2\operatorname{Re}}
+ -C\operatorname{Re}^3\|\nabla w(T)\|_{L^2}^4
+ \geq\frac{C_1}{4\operatorname{Re}}.
+\]
+由连续性, 存在 $\varepsilon>0$, 使得 $T+\varepsilon<T^*$, 且
+\[
+ \frac {C_1}{2\operatorname{Re}}
+ -C\operatorname{Re}^3\|\nabla w(t)\|_{L^2}^4
+ \geq\frac{C_1}{8\operatorname{Re}},
+ \qquad\forall t\in[0,T+\varepsilon[.
+\]
+这与 $T$ 的极大性, 即式\eqref{eq:chap5-steady-strong-stability-maximal-time}, 矛盾.
+
+最后已经证明 $T=T^*=+\infty$, 所考虑的强解因而是全局的. 又因为 $T=+\infty$, 由式\eqref{eq:chap5-steady-strong-stability-decay}得到
+\[
+ \|\nabla w(t)\|_{L^2}^2
+ \leq\|\nabla w(0)\|_{L^2}^2e^{-C_1t/(8\operatorname{Re})},
+ \qquad\forall t\geq0,
+\]
+断言得证.
+\end{Proof}
+
+\paragraph{压力的渐近行为}
+\label{subsec:chap5-steady-asymptotic-pressure}
+
+给定 $\tau>0$, 可以证明压力场有如下收敛:
+\[
+ \frac1\tau\int_t^{t+\tau}p(s,\cdot)\,\mathrm ds
+ \longrightarrow p_\infty
+ \qquad\text{于 }L^2(\Omega),\quad t\to+\infty.
+\]
+这等价于证明问题\eqref{eq:chap5-steady-perturbation-problem}中的压力 $\pi$ 满足映射 $t\mapsto\int_t^{t+\tau}\pi(s,\cdot)\,\mathrm dx$ 收敛到 $0$. 为此, 对方程作时间积分, 得
+\begin{align*}
+ \nabla\left(\int_t^{t+\tau}\pi(s,\cdot)\,\mathrm ds\right)
+ &=w(t)-w(t+\tau)\\
+ &\quad+\operatorname{div}\left(
+ \int_t^{t+\tau}\left(
+ \frac1{\operatorname{Re}}\nabla w-w\otimes w
+ -v_\infty\otimes w-w\otimes v_\infty
+ \right)\mathrm ds\right).
+\end{align*}
+因此, 使用 Nečas 不等式 Theorem~\ref{thm:chap4-necas-inequality} 和 Proposition~\ref{prop:chap4-hminusone-poincare}, 得
+\begin{align*}
+ \left\|\int_t^{t+\tau}\pi(s,\cdot)\,\mathrm ds\right\|_{L^2}
+ &\leq C\left\|\nabla\int_t^{t+\tau}\pi(s,\cdot)\,\mathrm ds\right\|_{H^{-1}}\\
+ &\leq\|w(t)\|_{H^{-1}}+\|w(t+\tau)\|_{H^{-1}}\\
+ &\quad+\left\|\int_t^{t+\tau}\left(
+ \frac1{\operatorname{Re}}\nabla w-w\otimes w
+ -v_\infty\otimes w-w\otimes v_\infty
+ \right)\mathrm ds\right\|_{L^2}\\
+ &\leq\|w(t)\|_{H^{-1}}+\|w(t+\tau)\|_{H^{-1}}\\
+ &\quad+C\int_t^{t+\tau}\left(
+ \|\nabla w\|_{L^2}+\|w\|_{L^4}^2
+ +\|w\|_{L^4}\|v_\infty\|_{L^4}\right)\mathrm ds.
+\end{align*}
+断言随即成立, 因为已经知道当 $t\to+\infty$ 时 $\|w(t)\|_{L^2}\to0$ 且 $\|\nabla w(t)\|_{L^2}\to0$.
