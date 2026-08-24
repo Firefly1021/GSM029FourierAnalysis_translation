@@ -1,0 +1,310 @@
+\subsection{界面 Stokes 问题}
+\label{sec:chap4-interface-stokes}
+
+\renewcommand{\thestatement}{8.\arabic{statement}}
+\renewcommand{\theHstatement}{ch04.sec08.\arabic{statement}}
+\setcounter{statement}{0}
+
+本节的目标是说明如何把本章的工具和技术应用于更复杂的情形.
+
+作为例子, 这里考虑下列广义 Stokes 问题
+\begin{equation}
+ \left\{
+ \begin{aligned}
+  \rho(x)v-\operatorname{div}\bigl(2\mu(x)D(v)-p\operatorname{Id}\bigr)&=f,&&\text{于 }\Omega,\\
+  \operatorname{div}v&=0,&&\text{于 }\Omega,\\
+  v&=0,&&\text{于 }\partial\Omega,
+ \end{aligned}
+ \right.
+ \label{eq:chap4-interface-generalized-stokes}
+\end{equation}
+其中 $\rho$ 和 $\mu$ 是给定函数, 分别表示所研究流体混合物的密度和黏度. 当然, 在实际的非稳态情形中, $\rho$ 和 $\mu$ 也随流动演化(例如见 \MBUnresolvedReference{chap:source-vi}{Chapter~VI}), 而且例如黏度 $\mu$ 是密度 $\rho$ 的函数. 不过, 非齐次 Stokes 方程的一种很常见的时间离散可具有下列形式
+\[
+ \left\{
+ \begin{aligned}
+  \frac{\rho^{n+1}-\rho^n}{\delta t}+v^n\cdot\nabla\rho^{n+1}&=0,\\
+  \frac{\rho^{n+1}v^{n+1}-\rho^nv^n}{\delta t}
+  -\operatorname{div}\bigl(2\mu(\rho^{n+1}(x))D(v^{n+1})\bigr)
+  +\nabla p^{n+1}&=f^{n+1},\\
+  \operatorname{div}v^{n+1}&=0.
+ \end{aligned}
+ \right.
+\]
+因此, 当 $\rho^n,v^n$ 已给定且 $\delta t$ 足够小时, 二元组 $(v^{n+1},p^{n+1})$ 是一个形式与\eqref{eq:chap4-interface-generalized-stokes}完全相同的系统的解.
+
+\subsubsection{存在性和唯一性}
+\label{subsec:chap4-interface-existence-uniqueness}
+
+在对 $\rho$ 和 $\mu$ 作最低限度正则性假设的情况下, 可以证明下列结果.
+
+\begin{Theorem}
+\label{thm:chap4-interface-wellposedness}
+设 $\Omega$ 是 $\mathbb R^d$ 中有界连通的 Lipschitz 区域. 假设 $\rho,\mu\in L^\infty(\Omega)$, 且 $\rho\geq0$ 以及 $\inf_\Omega\mu>0$; 则对任意 $f\in(H^{-1}(\Omega))^d$, 问题\eqref{eq:chap4-interface-generalized-stokes}存在唯一解
+\[
+ (v,p)\in(H_0^1(\Omega))^d\times L_0^2(\Omega).
+\]
+此外, 它满足
+\[
+ \|v\|_{H^1}+\|p\|_{L^2}\leq C\|f\|_{H^{-1}},
+\]
+其中 $C>0$ 不依赖于 $f$.
+\end{Theorem}
+
+\begin{Proof}
+这个证明现在是经典的. 引入双线性型
+\begin{align*}
+ a(v,w)
+ &=\int_\Omega\rho(x)v\cdot w\,\mathrm dx
+ +\int_\Omega2\mu(x)D(v):D(w)\,\mathrm dx\\
+ &=\int_\Omega\rho(x)v\cdot w\,\mathrm dx
+ +\int_\Omega2\mu(x)\nabla v:D(w)\,\mathrm dx,
+ \qquad\forall v,w\in V,
+\end{align*}
+它在 $V$ 上连续. 此外,
+\[
+ a(v,v)=\int_\Omega\rho(x)|v|^2\,\mathrm dx
+ +2\int_\Omega\mu(x)|D(v)|^2\,\mathrm dx
+ \geq2\bigl(\inf_\Omega\mu\bigr)\|D(v)\|_{L^2}^2,
+\]
+由 Korn 不等式 Lemma~\ref{lem:chap4-korn-inequality}, 推出对某个 $\alpha>0$ 有
+\[
+ a(v,v)\geq\alpha\|v\|_V^2.
+\]
+线性型
+\[
+ L:v\in V\longmapsto\langle f,v\rangle_{H^{-1},H_0^1}
+\]
+在 $V$ 上连续, 因而 Lax--Milgram Theorem~\ref{thm:chap2-lax-milgram}表明问题
+\[
+ a(v,w)=L(w),\qquad\forall w\in V,
+\]
+存在唯一解 $v\in V$. 特别地, 使用 Stokes 公式可知
+\[
+ \bigl\langle\rho v-\operatorname{div}(2\mu D(v))-f,w\bigr\rangle_{H^{-1},H_0^1}=0,
+ \qquad\forall w\in V.
+\]
+于是由 Theorem~\ref{thm:chap4-de-rham-hminusone}, 推出存在压力 $p\in L_0^2(\Omega)$, 使得 $(v,p)$ 解\eqref{eq:chap4-interface-generalized-stokes}. 此外, 因为 $\Omega$ 连通, 这个压力是唯一的.
+\end{Proof}
+
+现在假设给定 $\Omega$ 到两个 Lipschitz 开子域 $\Omega_1,\Omega_2$ 的分解, 满足
+\[
+ \Omega_1\cap\Omega_2=\varnothing,
+ \qquad\overline{\Omega_1\cup\Omega_2}=\overline\Omega,
+ \qquad\partial\Omega_1\cap\partial\Omega_2\cap\partial\Omega=\varnothing.
+\]
+定义两个子域之间的界面
+\[
+ S=\partial\Omega_1\cap\partial\Omega_2,
+\]
+并以
+\[
+ \gamma_S:H^1(\Omega)\longrightarrow H^{1/2}(S)
+\]
+表示 $S$ 上的迹算子. 它可以良好定义为 $u|_{\Omega_1}$ 在 $\partial\Omega_1$ 上的迹限制到 $S$ 的结果, 或等价地, 定义为 $u|_{\Omega_2}$ 在 $\partial\Omega_2$ 上的迹限制到 $S$ 的结果.
+
+给定 $j_S\in(H^{-1/2}(S))^d$, 考虑线性映射
+\[
+ J_S:v\in(H_0^1(\Omega))^d
+ \longmapsto\langle j_S,\gamma_S(v)\rangle_{H^{-1/2}(S),H^{1/2}(S)}.
+\]
+显然, 线性映射 $J_S$ 在 $(H_0^1(\Omega))^d$ 上连续, 因而定义了 $(H^{-1}(\Omega))^d$ 的一个元素.
+
+因此, 由 Theorem~\ref{thm:chap4-interface-wellposedness}, 已知对任意给定的 $f_0\in(L^2(\Omega))^d$, 存在唯一二元组
+\[
+ (v,p)\in(H_0^1(\Omega))^d\times L_0^2(\Omega),
+\]
+满足
+\begin{equation}
+ \left\{
+ \begin{aligned}
+  \rho(x)v-\operatorname{div}\bigl(2\mu(x)D(v)-p\operatorname{Id}\bigr)&=f_0+J_S,&&\text{于 }\Omega,\\
+  \operatorname{div}v&=0,&&\text{于 }\Omega,\\
+  v&=0,&&\text{于 }\partial\Omega.
+ \end{aligned}
+ \right.
+ \label{eq:chap4-interface-stokes-source-jump}
+\end{equation}
+下面对这个系统作些说明. 对 $i=1,2$, 以 $v_i,p_i$ 表示 $v,p$ 到 $\Omega_i$ 上的限制.
+
+\begin{itemize}
+\item 首先注意, 对任意测试函数
+\[
+ \varphi\in(\mathcal D(\Omega_i))^d\subset(\mathcal D(\Omega))^d,
+\]
+项 $\langle J_S,\varphi\rangle_{H^{-1},H_0^1}$ 消失. 因此, 二元组 $(v_i,p_i)$ 在 $\Omega_i$ 中解源项为 $f_0$ 的 Stokes 问题, 并满足 Dirichlet 边界条件 $v_i=0$ 于 $\partial\Omega_i\cap\partial\Omega$.
+
+\item 由上述事实, 推出对应力张量
+\[
+ \sigma_i=2\mu(x)D(v_i)-p_i\operatorname{Id}
+\]
+有 $\sigma_i\in(H_{\operatorname{div}}(\Omega_i))^d$, $i=1,2$. 因此, 可以定义这两个张量场的法向迹
+\[
+ \gamma_{\nu_i}(\sigma_i)\in(H^{-1/2}(\Omega_i))^d.
+\]
+在问题的弱形式中取测试函数
+\[
+ \varphi\in(\mathcal D(\Omega))^d.
+\]
+在两个子域 $\Omega_1$ 和 $\Omega_2$ 上分别使用 Stokes 公式, 即 Lemma~\ref{lem:chap4-tensor-stokes-formula} 中的公式. 最终得到
+\begin{align*}
+ &\bigl\langle\gamma_{\nu_1}(\sigma_1)+\gamma_{\nu_2}(\sigma_2),\gamma_S(\varphi)\bigr\rangle_{H^{-1/2}(S),H^{1/2}(S)}\\
+ &\qquad=\langle J_S,\gamma_S(\varphi)\rangle_{H^{-1},H_0^1}
+ =\langle j_S,\gamma_S(\varphi)\rangle_{H^{-1/2}(S),H^{1/2}(S)}.
+\end{align*}
+由于 $\gamma_S$ 到 $H^{1/2}(S)$ 上是满射, 最终得到公式
+\begin{equation}
+ \gamma_{\nu_1}(\sigma_1)+\gamma_{\nu_2}(\sigma_2)=j_S.
+ \label{eq:chap4-interface-stress-jump}
+\end{equation}
+\end{itemize}
+
+外法向量 $\nu_i$ 在 $S$ 上方向相反, 因而这恰好意味着构造出的解 $(v,p)$ 满足界面 $S$ 上由数据 $j_S$ 指定的应力跳跃条件.
+
+从建模观点来看, 例如应力跳跃可以描述两种流体之间的表面张力现象; 当 $S$ 模拟分隔两种流体的膜时, 它也可以描述界面的某些力学性质. 在这里, 物理上更相关的情形仍然是非稳态流动, 这将在后面几章中研究.
+
+\subsubsection{解的正则性}
+\label{subsec:chap4-interface-regularity}
+
+现在要证明, 在适当假设下, 上一小节研究的解 $(v,p)$ 在每个子域 $\Omega_1$ 和 $\Omega_2$ 上都是光滑的. 一般而言, 显然不能期望解在 $\Omega$ 上整体光滑, 因为跳跃条件\eqref{eq:chap4-interface-stress-jump}意味着压力或速度梯度应当在 $S$ 上不连续. 以
+\[
+ \mu_i:\Omega_i\longrightarrow\mathbb R
+\]
+表示黏度 $\mu$ 到区域 $\Omega_i$ 上的限制.
+
+\begin{Theorem}
+\label{thm:chap4-interface-piecewise-regularity}
+假设 $\Omega,\Omega_1,\Omega_2$ 为 $C^{2,1}$ 类, 对 $i=1,2$ 有 $\mu_i\in W^{1,\infty}(\Omega_i)$, 并且 $j_S\in H^{1/2}(S)$; 则问题\eqref{eq:chap4-interface-stokes-source-jump}的解 $(v,p)$ 满足
+\[
+ (v,p)\in(H^2(\Omega_i))^d\times H^1(\Omega_i),
+ \qquad i=1,2.
+\]
+\end{Theorem}
+
+\begin{Proof}
+首先注意
+\[
+ -\operatorname{div}\bigl(2\mu(x)D(v)-p\operatorname{Id}\bigr)=f_0-\rho v+J_S.
+\]
+由于 $-\rho v\in L^2$, 为研究 $(v,p)$ 的正则性性质, 可以把 $f_0$ 改为 $f_0-\rho v$. 换言之, 不失一般性, 可以假设对所有 $x\in\Omega$ 都有 $\rho(x)=0$. 因此, 从现在开始考虑的问题的弱形式如下:
+\begin{equation}
+ \left\{
+ \begin{aligned}
+  \int_\Omega2\mu(x)D(v):D(\psi)\,\mathrm dx
+  -\int_\Omega p\operatorname{div}\psi\,\mathrm dx
+  &=\int_\Omega f_0\cdot\psi\,\mathrm dx
+  +\int_S j_S\cdot\gamma_S(\psi)\,\mathrm d\sigma,
+  &&\forall\psi\in(H_0^1(\Omega))^d,\\
+  \int_\Omega q\operatorname{div}v\,\mathrm dx&=0,
+  &&\forall q\in L_0^2(\Omega).
+ \end{aligned}
+ \right.
+ \label{eq:chap4-interface-weak-formulation}
+\end{equation}
+注意, 现在跳跃项 $J_S$ 是积分项, 因为假设 $j_S\in(H^{1/2}(S))^d$.
+
+\begin{itemize}
+\item 令 $i\in\{1,2\}$, 首先研究解在 $\Omega_i$ 中的局部正则性. 对任意 $\widetilde\psi\in(H_0^1(\Omega_i))^d$, 由于 $\mu_i$ 是 Lipschitz 连续且不消失的, 可以在\eqref{eq:chap4-interface-weak-formulation}的第一个方程中取 $\psi=\mu_i^{-1}\widetilde\psi$ 作为测试函数.
+
+经过一些直接计算, 发现 $(v_i,\mu_i^{-1}p_i)$ 在 $\Omega_i$ 中解下列问题
+\begin{equation}
+ \left\{
+ \begin{aligned}
+  -\underbrace{\operatorname{div}(2D(v_i))}_{=\Delta v_i}
+  +\nabla(\mu_i^{-1}p_i)
+  &=\mu_i^{-1}f_0+2\mu_i^{-1}D(v_i)\cdot\nabla\mu_i
+  +p_i\nabla(\mu_i^{-1}),\\
+  \operatorname{div}v_i&=0.
+ \end{aligned}
+ \right.
+ \label{eq:chap4-interface-local-stokes}
+\end{equation}
+由于 $p_i\in L^2(\Omega_i)$, $v_i\in(H^1(\Omega_i))^d$, 且 $\mu_i$ 光滑, 可见这个问题中的源项属于 $L^2(\Omega_i)$, 因而 $(v_i,\mu_i^{-1}p_i)$ 解 $\Omega_i$ 中源项属于 $L^2$ 的通常 Stokes 问题. 因此, 可以应用 Theorem~\ref{thm:chap4-stokes-local-regularity}, 得到
+\[
+ v_i\in(H_{\mathrm{loc}}^2(\Omega_i))^d,
+ \qquad \mu_i^{-1}p_i\in H_{\mathrm{loc}}^1(\Omega_i),
+\]
+所以 $p_i\in H_{\mathrm{loc}}^1(\Omega_i)$, 结论得证. 注意, 正如预期的那样, 跳跃 $j_S$ 在每个 $\Omega_i$ 中的局部正则性证明中不起任何作用.
+
+\item 现在证明\eqref{eq:chap4-interface-weak-formulation}的解 $(v,p)$ 直到边界和界面的切向正则性. 证明的大部分与标准 Stokes 问题相同; 这里只关注与界面有关的特殊项.
+
+考虑对两个区域 $\Omega_1$ 和 $\Omega_2$ 都以 $k=0$ 满足\eqref{eq:chap3-admissible-tangential-field}的任意向量场 $\theta$, 因而特别地, $\theta$ 与 $S$ 相切. 使用 Subsection~\ref{subsubsec:chap4-stokes-tangential-regularity} 中相同的记号. 由于 $\theta$ 与 $S$ 相切, $\theta$ 的流满足
+\[
+ \tau^\theta(h,S)=S,
+ \qquad\forall h\in\mathbb R.
+\]
+特别地,
+\[
+ \gamma_S(\tau_h^\theta(v))=\tau_h^\theta(\gamma_Sv),
+ \qquad\forall v\in(H_0^1(\Omega))^d.
+\]
+对 $\varphi\in(H_0^1(\Omega))^d$ 和 $\pi\in L^2(\Omega)$, 在\eqref{eq:chap4-interface-weak-formulation}中取
+\[
+ \psi=\delta_{-h}^\theta\varphi,
+ \qquad q=\delta_{-h}^\theta\pi
+\]
+作为测试函数. 按照与前面各节相同的计算, 得到
+\begin{align}
+ &\int_\Omega2(\tau_h^\theta\mu)D(\delta_h^\theta v):D(\varphi)\,\mathrm dx
+ -\int_\Omega\delta_h^\theta p\operatorname{div}\varphi\,\mathrm dx\notag\\
+ &=\int_\Omega f_0\cdot\delta_{-h}^\theta\varphi\,\mathrm dx
+ -\int_\Omega2\mu D(v):[D,\tau_h^\theta]\varphi\,\mathrm dx
+ +2\int_\Omega\{\mu Dv,D(\varphi)\}_h\,\mathrm dx\notag\\
+ &\quad+\int_\Omega p[\operatorname{div},\tau_h^\theta]\varphi\,\mathrm dx
+ -\int_\Omega\{p,\operatorname{div}\varphi\}_h\,\mathrm dx
+ +\int_\Omega2(\tau_h^\theta\mu)D(\varphi):[D,\tau_h^\theta]v\,\mathrm dx\notag\\
+ &\quad-2\int_\Omega(\delta_h^\theta\mu)D(v):D(\varphi)\,\mathrm dx
+ +\int_S\delta_h^\theta j_S\cdot\gamma_0(\varphi)\,\mathrm d\sigma
+ -\int_S\{j_S,\gamma_0(\varphi)\}_h\,\mathrm d\sigma.
+ \label{eq:chap4-interface-tangential-identity}
+\end{align}
+右端除最后三项以外的所有项, 都可以与 Subsection~\ref{subsubsec:chap4-stokes-tangential-regularity} 中完全相同的方式估计, 另外使用 $\mu$ 是有界函数这一事实. 用 $T_1''(\varphi),T_2''(\varphi),T_3''(\varphi)$ 表示最后三项.
+
+由于 $\theta$ 与 $S$ 相切, 流 $\tau^\theta$ 把每个子域 $\Omega_i$ 映到自身. 因此, 由假设 $\mu$ 在每个子域上 Lipschitz 连续, 有
+\[
+ \|\delta_h^\theta\mu\|_{L^\infty}
+ \leq C|h|\bigl(\|\mu\|_{W^{1,\infty}(\Omega_1)}
+ +\|\mu\|_{W^{1,\infty}(\Omega_2)}\bigr).
+\]
+此外, 可以使用 Lemma~\ref{lem:chap4-boundary-tangential-difference}处理边界项 $T_2''$ 和 $T_3''$. 最终得到估计
+\begin{align*}
+ |T_1''(\varphi)|
+ &\leq C|h|\bigl(\|\mu\|_{W^{1,\infty}(\Omega_1)}
+ +\|\mu\|_{W^{1,\infty}(\Omega_2)}\bigr)\|v\|_{H^1}\|\varphi\|_{H^1},\\
+ |T_2''(\varphi)|
+ &\leq\|\delta_h^\theta j_S\|_{H^{-1/2}(S)}\|\gamma_0(\varphi)\|_{H^{1/2}(S)}
+ \leq C|h|\|j_S\|_{H^{1/2}(S)}\|\varphi\|_{H^1},\\
+ |T_3''(\varphi)|
+ &\leq C|h|\|j_S\|_{L^2(S)}\|\gamma_0(\varphi)\|_{L^2(S)}
+ \leq C|h|\|j_S\|_{H^{1/2}(S)}\|\varphi\|_{H^1}.
+\end{align*}
+汇集所有这些不等式, 得到
+\begin{align*}
+ \left|\int_\Omega(\delta_h^\theta p)\operatorname{div}\varphi\,\mathrm dx\right|
+ &\leq\|\nabla\delta_h^\theta v\|_{L^2}\|\nabla\varphi\|_{L^2}\\
+ &\quad+C|h|\bigl(\|\nabla v\|_{L^2}+\|p\|_{L^2}
+ +\|f_0\|_{L^2}+\|j_S\|_{H^{1/2}}\bigr)\|\varphi\|_{H_0^1},\\
+ &\qquad\forall\varphi\in(H_0^1(\Omega))^d.
+\end{align*}
+由 Nečas 不等式 Theorem~\ref{thm:chap4-necas-inequality}, 可以推出
+\begin{equation}
+ \|\delta_h^\theta p\|_{L^2}
+ \leq C\|\nabla\delta_h^\theta v\|_{L^2}
+ +C|h|\bigl(\|\nabla v\|_{L^2}+\|p\|_{L^2}
+ +\|f\|_{L^2}+\|j_S\|_{H^{1/2}}\bigr).
+ \label{eq:chap4-interface-tangential-pressure}
+\end{equation}
+回到\eqref{eq:chap4-interface-tangential-identity}, 取 $\varphi=\delta_h^\theta v$, 使用 $\inf_\Omega\mu>0$ 以及 Korn 不等式, 最终得到
+\[
+ \|\nabla\delta_h^\theta v\|_{L^2}^2
+ \leq C|h|^2\bigl(\|g\|_{H^1}+\|v\|_{H^1}+\|p\|_{L^2}
+ +\|f\|_{L^2}+\|j_S\|_{H^{1/2}}\bigr)^2,
+\]
+而 $\delta_h^\theta p$ 的估计由\eqref{eq:chap4-interface-tangential-pressure}得到. 这就证明了 $v$ 和 $p$ 在每个子域 $\Omega_1$ 和 $\Omega_2$ 中的切向正则性.
+
+\item 最后证明直到边界 $\partial\Omega$ 和界面 $S$ 的完全正则性. 为此, 回到\eqref{eq:chap4-interface-local-stokes}. 可以看到, 对固定的 $i\in\{1,2\}$, 二元组 $(v_i,\mu_i^{-1}p_i)$ 属于
+\[
+ (H_{\mathrm{tang}}^2(\Omega_i))^d\times H_{\mathrm{tang}}^1(\Omega_i),
+\]
+并解右端属于 $(L^2(\Omega_i))^d$ 的标准 Stokes 问题. 因此, 可以应用与 Subsection~\ref{subsubsec:chap4-stokes-complete-boundary-regularity} 中完全相同的策略, 得到解直到边界的法向正则性. 注意, 因为 $\Omega_i$ 为 $C^{2,1}$ 类, 正如研究 Stokes--Neumann 问题时所注意到的那样(见 Subsection~\ref{subsec:chap4-stokes-neumann-regularity}末尾的讨论), 这个证明不使用解所满足的边界条件.
+\end{itemize}
+\end{Proof}
