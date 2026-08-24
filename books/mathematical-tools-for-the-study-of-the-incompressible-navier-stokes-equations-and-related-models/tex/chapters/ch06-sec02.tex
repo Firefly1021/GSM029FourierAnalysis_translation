@@ -1,0 +1,959 @@
+\subsection{非齐次不可压缩 Navier--Stokes 方程}
+\label{sec:chap6-nonhomogeneous-navier-stokes}
+\renewcommand{\thestatement}{2.\arabic{statement}}
+\renewcommand{\theHstatement}{ch06.sec02.\arabic{statement}}
+\setcounter{statement}{0}
+\newcounter{chaptersixsectiontworemark}
+\renewcommand{\thechaptersixsectiontworemark}{2.\arabic{chaptersixsectiontworemark}}
+\begin{sloppypar}
+
+本节的目标是证明非齐次不可压缩 Navier--Stokes 方程弱解的 (整体) 存在性.
+
+\subsubsection{主要结果}
+\label{subsec:chap6-main-result}
+
+下文始终假设给出黏度关于密度的函数 $\mu$ 属于 $C^1$ 类, 并满足如下假设:
+\begin{equation}
+ \exists\mu_1,\mu_2>0,\qquad
+ \mu_1\leq\mu(x)\leq\mu_2,\quad\forall x\in\mathbb R,
+ \qquad\mu'\text{ 有界}.
+\label{eq:chap6-viscosity-assumptions}
+\end{equation}
+本章的最终目标是在空间维数 $3$ 中证明如下存在性结果.
+
+\begin{Theorem}[弱解的存在性]
+\label{thm:chap6-nonhomogeneous-weak-existence}
+设 $\Omega$ 是 $\mathbb R^d$ 中的有界 Lipschitz 区域, $d=3$, $T>0$, 且 $\mu$ 满足\eqref{eq:chap6-viscosity-assumptions}. 设
+\[
+ v_b\in(H^1(\Omega))^d,\quad \operatorname{div}v_b=0,\quad
+ v_0\in v_b+H,
+\]
+\[
+ \rho_0\in L^\infty(\Omega),\quad
+ \rho^{\mathrm{in}}\in L^\infty(]0,T[\times\Gamma),\quad
+ f\in L^1(]0,T[,(L^2(\Omega))^d),
+\]
+并且 $\rho_0\geq0$, $\rho^{\mathrm{in}}\geq0$.
+
+则至少存在一个三元组 $(v,\rho,p)$, 使
+\[
+ v\in v_b+L^2(]0,T[,(H_0^1(\Omega))^d),
+\]
+\[
+ \rho v\in L^\infty(]0,T[,(L^2(\Omega))^d)
+ \cap N_2^{1/4}(]0,T[,(W^{-1,3}(\Omega))^d),
+\]
+\[
+ p\in W^{-1,\infty}(]0,T[,L_0^2(\Omega)),
+ \qquad
+ \rho\in C^0([0,T],L^q(\Omega)),\quad\forall q<+\infty,
+\]
+\[
+ t\longmapsto\int_\Omega(\rho(t)v(t))\cdot\varphi\,\mathrm dx
+ \in C^0([0,T]),\qquad\forall\varphi\in V,
+\]
+且
+\[
+ \rho_{\min}\leq\rho(t,x)\leq\rho_{\max}
+ \quad\text{对几乎处处的 }(t,x)\in]0,T[\times\Omega,
+\]
+其中
+\[
+ \rho_{\min}=\min(\inf\rho_0,\inf\rho^{\mathrm{in}}),
+ \qquad
+ \rho_{\max}=\max(\sup\rho_0,\sup\rho^{\mathrm{in}}),
+\]
+并在分布意义下满足
+\begin{equation}
+\left\{
+\begin{aligned}
+ \frac{\partial\rho}{\partial t}+\operatorname{div}(\rho v)&=0&&\text{于 }\Omega,\\
+ \rho(0)&=\rho_0,\\
+ \gamma\rho&=\rho^{\mathrm{in}}&&\text{于 }\Gamma_v^-(t),
+\end{aligned}
+\right.
+\label{eq:chap6-nonhomogeneous-mass-system}
+\end{equation}
+\begin{equation}
+\left\{
+\begin{aligned}
+ \frac{\partial(\rho v)}{\partial t}
+ +\operatorname{div}(\rho v\otimes v)
+ -2\operatorname{div}(\mu(\rho)D(v))+\nabla p&=\rho f&&\text{于 }\Omega,\\
+ (\rho v)(0)&=\rho_0v_0,
+\end{aligned}
+\right.
+\label{eq:chap6-nonhomogeneous-momentum-system}
+\end{equation}
+\begin{equation}
+ \operatorname{div}v=0,\qquad\text{于 }\Omega.
+\label{eq:chap6-nonhomogeneous-incompressibility}
+\end{equation}
+此外, 若假设 $\inf_\Omega\rho_0>0$, 则
+\[
+ v\in L^\infty(]0,T[,H)\cap N_2^{1/4}(]0,T[,H).
+\]
+\end{Theorem}
+
+回顾 Nikolskii 空间 $N_q^\sigma(]0,T[,E)$ 定义于\MBUnresolvedReference{eq:chap2-nikolskii-space}{(II.26)}. 二维情形 $d=2$ 中有一个类似结果, 但函数空间略有不同.
+
+注意, \eqref{eq:chap6-nonhomogeneous-momentum-system}中 $\rho v$ 的初始条件必须在 $V'$ 中理解; 更准确地说, 其意义为
+\[
+ \left.\left(\int_\Omega\rho v\cdot\varphi\,\mathrm dx\right)\right|_{t=0}
+ =\int_\Omega\rho_0v_0\cdot\varphi\,\mathrm dx,
+ \qquad\forall\varphi\in V.
+\]
+若没有进一步的假设 (特别是关于初始数据 $\rho_0$ 的假设), 就不能加强这种对初始数据的弱解释. 特别地, 一般不能赋予 $(\rho v)(0)$ 意义, 当然也不能赋予 $v(0)$ 意义. 我们将在 Section~\ref{subsec:chap6-without-vacuum} 中简要回到这个问题.
+
+\par\noindent\refstepcounter{chaptersixsectiontworemark}\textbf{Remark~\thechaptersixsectiontworemark:}\label{rem:chap6-time-dependent-boundary-data}
+若速度边界数据 $v_b$ 依赖于时间, 只要该数据满足适当的时间正则性, 也可以证明相同结果.
+
+此外, 还可以考虑与 Chapter~\MBUnresolvedReference{chap:boundary-conditions-modelling}{VII} Section~\MBUnresolvedReference{sec:chap7-outflow-boundary-conditions}{1} 将要研究的同一类型的流出边界条件. 关于这一特殊问题使用与本章类似工具的研究, 参见\MBUnresolvedReference{bib:nonhomogeneous-outflow}{[25]}.
+
+\subsubsection{近似问题}
+\label{subsec:chap6-approximate-problem}
+
+\paragraph{近似问题的定义}
+\label{subsec:chap6-approximate-problem-definition}
+
+采用 Theorem~\ref{thm:chap6-nonhomogeneous-weak-existence} 中相同的假设和记号.
+
+对任意整数 $k\geq1$, 设 $V_k$ 是 $V\subset H$ 中的 $k$ 维 Galerkin 近似空间, 对任意 $k$ 满足 $V_k\subset V_{k+1}$. 例如, 可以像 Chapter~\ref{chap:homogeneous-navier-stokes} Section~\MBUnresolvedReference{sec:chap5-approximation-problem}{1.3.2} 中那样, 以 Stokes 算子的特征函数构造这个空间; 但这里并无必要, 因为这样做不会简化证明. 因此下文不规定 $V_k$ 的特定选择.
+
+引入如下数据近似:
+\begin{equation}
+ \rho_k^{\mathrm{in}}=\rho^{\mathrm{in}}+\frac1k,
+ \qquad
+ \rho_{0,k}=\rho_0+\frac1k,
+\label{eq:chap6-positive-density-approximations}
+\end{equation}
+从而
+\[
+ \inf\rho_k^{\mathrm{in}}\geq\frac1k,
+ \qquad
+ \inf\rho_{0,k}\geq\frac1k,
+\]
+即使允许初始和边界密度数据为零亦如此. 最后选择光滑向量场序列 $(f_k)_k$, 使其在 $L^1(]0,T[,(L^2(\Omega))^d)$ 中收敛于 $f$.
+
+考虑如下近似问题.
+
+\begin{Definition}
+\label{def:chap6-approximate-problem}
+令 $\widetilde v_{0,k}=P_{V_k}(v_0-v_b)$, 即 $v_0-v_b$ 在 $H$ 中到 $V_k$ 上的正交投影. 近似问题是寻找
+\[
+ v_k=v_b+\widetilde v_k\in v_b+C^1([0,T],V_k),
+ \qquad
+ \rho_k\in C^0([0,T],L^1(\Omega))\cap L^\infty(]0,T[\times\Omega),
+\]
+使得:
+\begin{enumerate}
+ \item $\rho_k$ 是与速度场 $v_k$, 初始数据 $\rho_{0,k}$ 和流入边界数据 $\rho_k^{\mathrm{in}}$ 相联系的输运问题之唯一解.
+ \item 二元组 $(\rho_k,v_k)$ 满足
+ \begin{equation}
+  \int_\Omega\rho_k\left(\frac{\partial v_k}{\partial t}+(v_k\cdot\nabla)v_k\right)\cdot\psi\,\mathrm dx
+  -\int_\Omega2\mu(\rho_k)D(v_k):D(\psi)\,\mathrm dx
+  =\int_\Omega\rho_kf_k\cdot\psi\,\mathrm dx,
+ \label{eq:chap6-approximate-momentum}
+ \end{equation}
+ 对任意 $\psi\in V_k$ 和任意 $t\in[0,T]$ 成立, 并满足初始数据 $v_k(0)=v_b+\widetilde v_{0,k}$.
+\end{enumerate}
+\end{Definition}
+
+注意, 近似密度 $\rho_k$ 以复杂的非局部方式依赖于 $v_k$. 因此, 近似问题的求解并不是常微分方程理论的直接推论.
+
+\paragraph{近似问题的求解}
+\label{subsec:chap6-approximate-problem-resolution}
+
+用不动点方法求解近似问题 (例如参见\MBUnresolvedReference{bib:nonhomogeneous-fixed-point}{[86]}). 为此引入 $(H^1(\Omega))^d$ 的有限维仿射子空间
+\[
+ \widetilde V_k=\mathbb Rv_b+V_k,
+\]
+以及无限维 Banach 空间
+\[
+ E_k=C^0([0,T],\widetilde V_k).
+\]
+
+现定义映射 $\Theta_k:E_k\to E_k$, 并寻找它的一个不动点. 这个不动点将是所研究近似问题的一个解.
+
+\begin{itemize}
+ \item 给定 $w_k\in E_k$. 首先考虑如下输运问题:
+ \begin{equation}
+ \left\{
+ \begin{aligned}
+  \frac{\partial\rho_k}{\partial t}+\operatorname{div}(\rho_kw_k)&=0&&\text{于 }\Omega,\\
+  \gamma(\rho_k)&=\rho_k^{\mathrm{in}}&&\text{于 }\Gamma_{w_k}^-(t),\\
+  \rho_k(0)&=\rho_0.
+ \end{aligned}
+ \right.
+ \label{eq:chap6-fixed-point-transport}
+ \end{equation}
+ 因为 $w_k$ 特别地属于 $L^1(]0,T[,(W^{1,1}(\Omega))^d)$ 且无散, 由 Theorem~\ref{thm:chap6-transport-wellposedness} 已知\eqref{eq:chap6-fixed-point-transport}存在唯一解 $\rho_k\geq0$, 满足
+ \begin{equation}
+  \sup_{]0,T[\times\Omega}\rho_k
+  \leq\max\bigl(\|\rho_0\|_{L^\infty},\|\rho^{\mathrm{in}}\|_{L^\infty}\bigr)+\frac1k,
+ \label{eq:chap6-approximate-density-upper-bound}
+ \end{equation}
+ 并且关于时间连续, 取值于任意 $q<+\infty$ 的 $L^q(\Omega)$ 中. 此外, 利用 Proposition~\ref{prop:chap6-positive-lower-bound}, $\operatorname{div}w_k=0$ 和\eqref{eq:chap6-positive-density-approximations}, 得
+ \begin{equation}
+  \inf_{]0,T[\times\Omega}\rho_k\geq\frac1k.
+ \label{eq:chap6-approximate-density-lower-bound}
+ \end{equation}
+
+ \item 构造出 $\rho_k$ 后, 寻找满足
+ $v_k\in v_b+C^1([0,T],V_k)\subset E_k$ 的 $v_k$, 使
+ \begin{equation}
+  \int_\Omega\rho_k\left(\frac{\partial v_k}{\partial t}+(w_k\cdot\nabla)v_k\right)\cdot\psi\,\mathrm dx
+ -\int_\Omega2\mu(\rho_k)D(v_k):D(\psi)\,\mathrm dx
+  =\int_\Omega\rho_kf_k\cdot\psi\,\mathrm dx,
+ \label{eq:chap6-linearized-approximate-momentum}
+ \end{equation}
+ 对任意 $\psi\in V_k$ 和任意 $t\in[0,T]$ 成立, 并满足初始数据 $v_k(0)=v_b+\widetilde v_{0,k}$. 该方程由原方程\eqref{eq:chap6-approximate-momentum}把惯性项中 (未知的) 平流向量场 $v_k$ 替换为给定向量场 $w_k$ 而得, 于是\eqref{eq:chap6-linearized-approximate-momentum}现在是一个有限维线性常微分方程.
+
+ 事实上, 若把解写成
+ \[
+  v_k=v_b+\sum_{i=1}^k\alpha_i(t)\psi_i,
+ \]
+ 则\eqref{eq:chap6-linearized-approximate-momentum}可写成
+ \begin{equation}
+  M(t)\frac{\mathrm d\alpha}{\mathrm dt}(t)=A(t)\alpha(t)+B(t),
+ \label{eq:chap6-finite-dimensional-ode}
+ \end{equation}
+ 其中 $\alpha(t)=(\alpha_i(t))_i\in\mathbb R^k$ 是未知向量, $A(t),M(t)$ 是 $k\times k$ 矩阵, $B(t)\in\mathbb R^k$ 是向量; 它们都关于时间变量 $t$ 连续 (回顾 $f_k$ 光滑).
+
+ 为证明\eqref{eq:chap6-finite-dimensional-ode}对任意初始数据存在唯一整体解, 只需证明矩阵 $M(t)$ 对任意 $t\in[0,T]$ 可逆, 从而可应用 Cauchy--Lipschitz 理论. 依定义,
+ \[
+  (M(t))_{ij}=\int_\Omega\rho_k(t,x)\psi_i(x)\cdot\psi_j(x)\,\mathrm dx,
+  \qquad\forall i,j\in\{1,\ldots,k\}.
+ \]
+ 因而对任意 $t\in[0,T]$, $M(t)$ 是基 $(\psi_i)_i$ 关于内积
+ \[
+  (f,g)\longmapsto\langle f,g\rangle_{\rho_k(t)}
+  =\int_\Omega\rho_k(t,x)f(x)\cdot g(x)\,\mathrm dx
+ \]
+ 的 Gram 矩阵. 注意, 由\eqref{eq:chap6-approximate-density-lower-bound}, $\langle\cdot,\cdot\rangle_{\rho_k(t)}$ 确为内积. 所以 $M(t)$ 对所有 $t$ 可逆, 从而\eqref{eq:chap6-finite-dimensional-ode}对任意初始数据存在唯一整体解. 于是存在唯一
+ $v_k\in v_b+C^1([0,T],V_k)\subset E_k$, 它是\eqref{eq:chap6-linearized-approximate-momentum}的解, 且 $v_k(0)=v_b+\widetilde v_{0,k}$.
+
+ \item 最后, 对任意 $w_k\in E_k$, 已经联系起唯一二元组 $(\rho_k,v_k)$, 它解前述方程组. 令 $\Theta_k(w_k)=v_k$.
+
+ 现证明映射 $\Theta_k$ 在 $E_k$ 的一个适当子集中有不动点. 很容易看出, 这样的不动点 $v_k$ (以及与之相联系的密度 $\rho_k$) 是 Section~\ref{subsec:chap6-approximate-problem-definition} 引入的非线性近似问题之解.
+
+ \item 初步计算:
+
+ 首先观察到, 对任意 $\psi\in C^0([0,T],V_k)$, 可以在\eqref{eq:chap6-linearized-approximate-momentum}中取 $\psi(t)$ 为测试函数, 并对所得方程关于时间积分. 得
+ \begin{equation}
+ \begin{aligned}
+ &\int_0^T\int_\Omega\rho_k
+ \left(\frac{\partial v_k}{\partial t}+(w_k\cdot\nabla)v_k\right)\cdot\psi
+ \,\mathrm dx\,\mathrm dt
+ +\int_0^T\int_\Omega2\mu(\rho_k)D(v_k):D(\psi)\,\mathrm dx\,\mathrm dt\\
+ &\qquad=\int_0^T\int_\Omega\rho_kf_k\cdot\psi\,\mathrm dx\,\mathrm dt.
+ \end{aligned}
+ \label{eq:chap6-integrated-linearized-momentum}
+ \end{equation}
+ 注意, 一旦 $w_k,v_k$ 关于时间连续, 对任意 $t$ 都有\eqref{eq:chap6-linearized-approximate-momentum}等价于\eqref{eq:chap6-integrated-linearized-momentum}.
+
+ 对任意 $\psi\in C^1([0,T],V_k)$, 在\eqref{eq:chap6-fixed-point-transport}中取 $\tfrac12(\widetilde v_k\cdot\psi)$ (它在边界上为零) 作为测试函数. 得
+ \begin{equation}
+ \begin{aligned}
+ &\frac12\int_0^T\int_\Omega\rho_k\Bigl(
+ \frac{\partial\widetilde v_k}{\partial t}\cdot\psi
+ +\frac{\partial\psi}{\partial t}\cdot\widetilde v_k
+ +((w_k\cdot\nabla)\widetilde v_k)\cdot\psi
+ +((w_k\cdot\nabla)\psi)\cdot\widetilde v_k\Bigr)\,\mathrm dx\,\mathrm dt\\
+ &\qquad=\frac12\int_\Omega\rho_k(T)(\widetilde v_k(T)\cdot\psi(T))\,\mathrm dx
+ -\frac12\int_\Omega\rho_{0,k}(\widetilde v_{0,k}\cdot\psi(0))\,\mathrm dx.
+ \end{aligned}
+ \label{eq:chap6-transport-product-identity}
+ \end{equation}
+ 从\eqref{eq:chap6-integrated-linearized-momentum}减去\eqref{eq:chap6-transport-product-identity}. 利用 $v_k=\widetilde v_k+v_b$ 且 $v_b$ 与时间无关, 得
+ \begin{equation}
+ \begin{aligned}
+ &\frac12\int_0^T\int_\Omega\rho_k\Bigl(
+ \frac{\partial\widetilde v_k}{\partial t}\cdot\psi
+ -\frac{\partial\psi}{\partial t}\cdot\widetilde v_k
+ +((w_k\cdot\nabla)\widetilde v_k)\cdot\psi
+ -((w_k\cdot\nabla)\psi)\cdot\widetilde v_k\Bigr)\,\mathrm dx\,\mathrm dt\\
+ &\quad+\frac12\int_\Omega\rho_k(T)(\widetilde v_k(T)\cdot\psi(T))\,\mathrm dx
+ -\frac12\int_\Omega\rho_{0,k}(\widetilde v_{0,k}\cdot\psi(0))\,\mathrm dx\\
+ &\quad+\int_0^T\int_\Omega2\mu(\rho_k)D(v_k):D(\psi)\,\mathrm dx\,\mathrm dt\\
+ &=\int_0^T\int_\Omega\rho_k\bigl(f_k-(w_k\cdot\nabla)v_b\bigr)\cdot\psi\,\mathrm dx\,\mathrm dt.
+ \end{aligned}
+ \label{eq:chap6-skew-linearized-momentum}
+ \end{equation}
+ 再从该方程减去\eqref{eq:chap6-transport-product-identity}, 得到近似动量方程的守恒形式
+ \begin{equation}
+ \begin{aligned}
+ &-\int_0^T\int_\Omega\rho_k\widetilde v_k\cdot
+ \left(\frac{\partial\psi}{\partial t}+(w_k\cdot\nabla)\psi\right)
+ \,\mathrm dx\,\mathrm dt
+ +\int_0^T\int_\Omega2\mu(\rho_k)D(v_k):D(\psi)\,\mathrm dx\,\mathrm dt\\
+ &\quad+\int_\Omega\rho_k(T)\widetilde v_k(T)\cdot\psi(T)\,\mathrm dx
+ -\int_\Omega\rho_{0,k}\widetilde v_{0,k}\cdot\psi(0)\,\mathrm dx\\
+ &=\int_0^T\int_\Omega\rho_k\bigl(f_k-(w_k\cdot\nabla)v_b\bigr)\cdot\psi
+ \,\mathrm dx\,\mathrm dt.
+ \end{aligned}
+ \label{eq:chap6-conservative-approximate-momentum}
+ \end{equation}
+ 后面分析 $k\to+\infty$ 的极限时, 这个公式很有用.
+
+ \item 能量估计:
+
+ 考虑 $w_k\in v_b+C^0([0,T],V_k)$, 并令 $v_k=\Theta_k(w_k)$ 如前所定义. 在\eqref{eq:chap6-skew-linearized-momentum}中取 $\psi=\widetilde v_k=v_k-v_b$ 为测试函数. 可见第一个积分为零, 从而
+ \[
+ \begin{aligned}
+ &\frac12\int_\Omega\rho_k(T)|\widetilde v_k(T)|^2\,\mathrm dx
+ +\int_0^T\int_\Omega2\mu(\rho_k)|D(\widetilde v_k)|^2\,\mathrm dx\,\mathrm dt\\
+ &=\frac12\int_\Omega\rho_{0,k}|\widetilde v_{0,k}|^2\,\mathrm dx
+ -\int_0^T\int_\Omega2\mu(\rho_k)D(\widetilde v_k):D(v_b)\,\mathrm dx\,\mathrm dt\\
+ &\quad+\int_0^T\int_\Omega\rho_k\widetilde v_k\cdot
+ \bigl(f_k-(w_k\cdot\nabla)v_b\bigr)\,\mathrm dx\,\mathrm dt.
+ \end{aligned}
+ \]
+ 利用\eqref{eq:chap6-approximate-density-upper-bound}给出的 $\rho_k$ 的 $L^\infty$ 界, 假设\eqref{eq:chap6-viscosity-assumptions}和 Korn 不等式\MBUnresolvedReference{eq:chap4-korn-inequality}{(IV.87)}, 得
+ \begin{equation}
+ \begin{aligned}
+ &\frac12\|\sqrt{\rho_k(T)}\widetilde v_k(T)\|_{L^2}^2
+ +\mu_1\int_0^T\|\nabla\widetilde v_k\|_{L^2}^2\,\mathrm dt\\
+ &\leq C\|\widetilde v_{0,k}\|_{L^2}^2
+ +C\int_0^T\|\nabla\widetilde v_k\|_{L^2}\|\nabla v_b\|_{L^2}\,\mathrm dt
+ +C\int_0^T\|f_k\|_{L^2}\|\widetilde v_k\|_{L^2}\,\mathrm dt\\
+ &\quad+\left|\int_0^T\int_\Omega
+ \rho_k\widetilde v_k\cdot((w_k\cdot\nabla)v_b)\,\mathrm dx\,\mathrm dt\right|.
+ \end{aligned}
+ \label{eq:chap6-fixed-point-energy-preestimate}
+ \end{equation}
+ 考察这个不等式的最后一项. 利用 H\"older 不等式和 Sobolev 嵌入 $H^1(\Omega)\subset L^6(\Omega)$, 得
+ \[
+ \begin{aligned}
+ &\left|\int_0^T\int_\Omega\rho_k\widetilde v_k\cdot((w_k\cdot\nabla)v_b)
+ \,\mathrm dx\,\mathrm dt\right|\\
+ &\leq\int_0^T\|\sqrt{\rho_k}\|_{L^\infty}
+ \|\sqrt{\rho_k}w_k\|_{L^3}\|\nabla v_b\|_{L^2}\|\widetilde v_k\|_{L^6}\,\mathrm dt\\
+ &\leq C\int_0^T\|\sqrt{\rho_k}w_k\|_{L^2}^{1/2}
+ \|\sqrt{\rho_k}w_k\|_{L^6}^{1/2}
+ \|v_b\|_{H^1}\|\nabla\widetilde v_k\|_{L^2}\,\mathrm dt\\
+ &\leq C\|v_b\|_{H^1}\int_0^T
+ \|\sqrt{\rho_k}w_k\|_{L^2}^{1/2}
+ \|\nabla w_k\|_{L^2}^{1/2}
+ \|\nabla\widetilde v_k\|_{L^2}\,\mathrm dt\\
+ &\leq C'
+ \left(\int_0^T\|\sqrt{\rho_k}w_k\|_{L^2}^2\,\mathrm dt\right)^{1/4}
+ \left(\int_0^T\|\nabla w_k\|_{L^2}^2\,\mathrm dt\right)^{1/4}
+ \left(\int_0^T\|\nabla\widetilde v_k\|_{L^2}^2\,\mathrm dt\right)^{1/2}.
+ \end{aligned}
+ \]
+ 把这个估计用于\eqref{eq:chap6-fixed-point-energy-preestimate}, 再用 Young 不等式, 得
+ \[
+ \begin{aligned}
+ &\|\sqrt{\rho_k(T)}\widetilde v_k(T)\|_{L^2}^2
+ +\mu_1\int_0^T\|\nabla\widetilde v_k\|_{L^2}^2\,\mathrm dt\\
+ &\leq C+C
+ \left(\int_0^T\|\sqrt{\rho_k}w_k\|_{L^2}^2\,\mathrm dt\right)^{1/2}
+ \left(\int_0^T\|\nabla w_k\|_{L^2}^2\,\mathrm dt\right)^{1/2},
+ \end{aligned}
+ \]
+ 其中 $C$ 仅依赖于数据 $f,v_b,\mu_1,\mu_2,\rho_0$. 最后写 $v_k=v_b+\widetilde v_k$, 推出
+ \begin{equation}
+ \begin{aligned}
+ &\|\sqrt{\rho_k(T)}v_k(T)\|_{L^2}^2
+ +\mu_1\int_0^T\|\nabla v_k\|_{L^2}^2\,\mathrm dt\\
+ &\leq C'+C'
+ \left(\int_0^T\|\sqrt{\rho_k}w_k\|_{L^2}^2\,\mathrm dt\right)^{1/2}
+ \left(\int_0^T\|\nabla w_k\|_{L^2}^2\,\mathrm dt\right)^{1/2}.
+ \end{aligned}
+ \label{eq:chap6-fixed-point-energy-estimate}
+ \end{equation}
+ 现利用如下事实: $k$ 固定时, 有限维空间 $\widetilde V_k$ 上的 $H^1$ 范数与 $L^2$ 范数等价 (等价常数依赖于 $k$), 并利用\eqref{eq:chap6-approximate-density-lower-bound}. 由\eqref{eq:chap6-fixed-point-energy-estimate}得
+ \[
+  \|v_k(T)\|_{L^2}^2\leq C_k+D_k\int_0^T\|w_k(t)\|_{L^2}^2\,\mathrm dt,
+ \]
+ 其中 $C_k,D_k$ 依赖于数据和 $k$, 但不依赖于 $w_k$. 上述估计对任意终止时刻 $T>0$ 都适用, 因而事实上已证明
+ \begin{equation}
+  \|v_k(t)\|_{L^2}^2\leq C_k+D_k\int_0^t\|w_k(s)\|_{L^2}^2\,\mathrm ds,
+  \qquad\forall t\in[0,T].
+ \label{eq:chap6-fixed-point-gronwall-estimate}
+ \end{equation}
+ 引入
+ \[
+  M_k(t)=C_ke^{D_kt},\qquad\forall t\geq0.
+ \]
+ 假设 $w_k$ 满足
+ \[
+  \|w_k(t)\|_{L^2}^2\leq M_k(t),\qquad\forall t\in[0,T],
+ \]
+ 则由\eqref{eq:chap6-fixed-point-gronwall-estimate}推出
+ \[
+  \|v_k(t)\|_{L^2}^2\leq M_k(t),\qquad\forall t\in[0,T].
+ \]
+ 换言之, 已证明 $\Theta_k$ 把 $E_k$ 的如下凸子集
+ \[
+  K_{0,k}=\{v\in v_b+C^1([0,T],V_k):
+  \|v(t)\|_{L^2}^2\leq M_k(t),\ \forall t\in[0,T]\}
+ \]
+ 映入自身. 特别地, $K_{0,k}$ 在 $L^\infty(]0,T[,(L^2(\Omega))^d)$ 中有界. 此外, 因为 $\widetilde V_k$ 是 $(H^1(\Omega))^d$ 的有限维子空间, $L^2$ 范数与 $H^1$ 范数在这个子空间上等价, 所以集合 $K_{0,k}$ 也在 $L^\infty(]0,T[,(H^1(\Omega))^d)$ 中有界. 相应的界当然依赖于 $k$.
+
+ \item 紧性:
+
+ 设 $w_k\in K_{0,k}$, $v_k=\Theta_k(w_k)\in K_{0,k}$. 在\eqref{eq:chap6-linearized-approximate-momentum}中取
+ $\psi=\partial\widetilde v_k/\partial t=\partial v_k/\partial t$ (回顾 $v_b$ 不依赖于时间). $V_k$ 上所有范数等价, 因而再次利用\eqref{eq:chap6-approximate-density-lower-bound}, 得到界
+ \[
+  \sup_{0\leq t\leq T}
+  \left\|\frac{\partial v_k}{\partial t}\right\|_{V_k}\leq C_k',
+ \]
+ 其中 $C_k'$ 仅依赖于 $T,k$ 和数据. 因而凸集
+ \[
+  K_{1,k}=\left\{v\in K_{0,k}:
+  \sup_{0\leq t\leq T}\left\|\frac{\partial v}{\partial t}\right\|_{V_k}\leq C_k'\right\}
+ \]
+ 在映射 $\Theta_k$ 下不变. 由 Ascoli Theorem~\ref{thm:chap2-ascoli}, 集合 $K_{1,k}$ 在 $E_k$ 中相对紧.
+
+ \item $\Theta_k$ 的连续性:
+
+ 为了把 Schauder 不动点 Theorem 应用于紧凸集 $K_{1,k}$ 上的映射 $\Theta_k$, 还需证明 $\Theta_k$ 对 $E_k$ 的拓扑连续. 事实上只需证明 $\Theta_k$ 序列连续.
+
+ 回顾 $k$ 是固定整数. 设 $(w_k^n)_n$ 是 $E_k$ 中收敛于某个 $w_k$ 的序列. 对任意 $n$, 令 $\rho_k^n$ 是\eqref{eq:chap6-fixed-point-transport}在 $w_k=w_k^n$ 时的唯一解. 令 $\rho_k$ 是极限速度场 $w_k$ 对应的\eqref{eq:chap6-fixed-point-transport}的唯一解. 因为 $k$ 固定, 所有这些输运问题具有相同的初始数据 $\rho_{0,k}$ 和边界数据 $\rho_k^{\mathrm{in}}$.
+
+ 依假设, 序列 $(w_k^n)_n$ 在 $C^0([0,T],(H^1(\Omega))^d)$ 中强收敛, 所以迹序列 $(w_k^n\cdot\nu)_n$ 在 $L^1(]0,T[\times\Gamma)$ 中收敛于 $(w_k\cdot\nu)$. 因而由 Theorem~\ref{thm:chap6-transport-stability}, 推出 $(\rho_k^n)_n$ 对任意 $q<+\infty$ 在 $C^0([0,T],L^q(\Omega))$ 中强收敛于 $\rho_k$, 且
+ \[
+  \gamma(\rho_k^n)(w_k^n\cdot\nu)^+
+  \longrightarrow\gamma(\rho_k)(w_k\cdot\nu)^+
+  \quad\text{于 }L^1(]0,T[\times\Gamma).
+ \]
+ 因为 $\mu$ 是 Lipschitz 连续有界函数, 由此推出对任意 $q<+\infty$, $(\mu(\rho_k^n))_n$ 在所有空间 $L^\infty(]0,T[,L^q(\Omega))$ 中收敛于 $\mu(\rho_k)$.
+
+ 现考虑\eqref{eq:chap6-linearized-approximate-momentum}对平流向量场 $w_k^n$ 和上述构造的密度 $\rho_k^n$ 的解
+ $v_k^n\in v_b+C^0([0,T],V_k)$. 因为 $(w_k^n)_n$ 在 $C^0([0,T],(H^1(\Omega))^d)$ 中有界, 能量估计\eqref{eq:chap6-fixed-point-gronwall-estimate}给出
+ \[
+  \sup_n\|v_k^n\|_{C^0([0,T],L^2)}<+\infty,
+ \]
+并且在\eqref{eq:chap6-linearized-approximate-momentum}中取 $\psi=\partial v_k^n/\partial t$, 也容易得到
+ \begin{equation}
+  \sup_n\left\|\frac{\partial v_k^n}{\partial t}\right\|_{C^0([0,T],L^2)}<+\infty.
+ \label{eq:chap6-fixed-point-time-derivative-bound}
+ \end{equation}
+ 再次使用 Ascoli Theorem, 可找到一个仍记为 $(v_k^n)_n$ 的子列, 它在 $v_b+C^0([0,T],V_k)$ 中强收敛于某个极限 $v_k$. 此外, 由\eqref{eq:chap6-fixed-point-time-derivative-bound}推出极限 $v_k$ 关于时间变量 Lipschitz 连续.
+
+ 借助上面得到的收敛性, 可以在 $v_k^n$ 所满足的方程中令 $n\to\infty$. 最终得到 $\rho_k,v_k,w_k$ 满足\eqref{eq:chap6-conservative-approximate-momentum}; 再加上两倍的\eqref{eq:chap6-transport-product-identity}, 得 $v_k$ 满足\eqref{eq:chap6-integrated-linearized-momentum}, 因而在 $\mathcal D'(]0,T[)$ 意义下满足微分方程\eqref{eq:chap6-linearized-approximate-momentum}. 一旦 $\rho_k,w_k$ 固定, \eqref{eq:chap6-linearized-approximate-momentum}的解唯一 (且等于 $\Theta_k(w_k)$), 因而用 Proposition~\ref{prop:chap2-unique-subsequence-limit} 证明中相同的论证, 推出整个序列 $(v_k^n)_n$, 而不只是一个子列, 实际上在 $C^0([0,T],(H^1(\Omega))^d)$ 中收敛于 $v_k=\Theta_k(w_k)$. 这就完成了映射 $\Theta_k$ 连续性的证明.
+
+ \item 结论:
+
+ 已证明 $\Theta_k$ 是从 $E_k$ 到自身的连续映射, 且紧凸集 $K_{1,k}$ 在 $\Theta_k$ 下不变. 由 Schauder 不动点 Theorem~\ref{thm:chap2-schauder-fixed-point}, 在 $K_{1,k}$ 中至少存在一个 $\Theta_k$ 的不动点 $v_k$. 这恰好给出了 Definition~\ref{def:chap6-approximate-problem} 所引入的近似问题至少存在一个解.
+\end{itemize}
+
+\subsubsection{近似解的估计}
+\label{subsec:chap6-approximate-estimates}
+
+到目前为止得到的是依赖于 $k$ 的估计. 本节将为这个近似解给出关于 $k$ 一致的估计, 以便在 $k\to+\infty$ 时取极限.
+
+\paragraph{一致能量估计}
+\label{subsec:chap6-uniform-energy-estimates}
+
+\begin{Lemma}
+\label{lem:chap6-uniform-energy-estimates}
+存在仅依赖于数据的 $C_0>0$, 使对任意 $k\geq1$,
+\begin{align}
+ \|\rho_k\|_{L^\infty(]0,T[\times\Omega)}&\leq C_0,
+\label{eq:chap6-uniform-density-bound}\\
+ \|\sqrt{\rho_k}v_k\|_{L^\infty(]0,T[,L^2)}
+ +\|v_k\|_{L^2(]0,T[,H^1)}&\leq C_0,
+\label{eq:chap6-uniform-energy-bound}\\
+ \|\sqrt{\rho_k}v_k\|_{L^{8/3}(]0,T[,L^4)}&\leq C_0.
+\label{eq:chap6-uniform-interpolation-bound}
+\end{align}
+\end{Lemma}
+
+\begin{Proof}
+估计\eqref{eq:chap6-uniform-density-bound}直接来自\eqref{eq:chap6-approximate-density-upper-bound}以及 $\rho_k\geq0$.
+
+因为对于 $\Theta_k$ 的一个不动点有 $w_k=v_k=\Theta_k(v_k)$, 对不等式\eqref{eq:chap6-fixed-point-energy-estimate}使用 Young 不等式和 Gronwall Lemma, 得到界\eqref{eq:chap6-uniform-energy-bound}.
+
+三维 Sobolev 嵌入 $H^1(\Omega)\subset L^6(\Omega)$ 和界\eqref{eq:chap6-approximate-density-upper-bound}给出
+\[
+ \|\sqrt{\rho_k}v_k\|_{L^2(]0,T[,L^6)}
+ \leq C\|v_k\|_{L^2(]0,T[,L^6)}
+ \leq C'\|v_k\|_{L^2(]0,T[,H^1)}.
+\]
+现用插值不等式 (Theorem~\ref{thm:chap2-mixed-lp-interpolation}) 得
+\[
+\begin{aligned}
+ \|\sqrt{\rho_k}v_k\|_{L^{8/3}(]0,T[,L^4)}
+ &\leq\|\sqrt{\rho_k}v_k\|_{L^\infty(]0,T[,L^2)}^{1/4}
+ \|\sqrt{\rho_k}v_k\|_{L^2(]0,T[,L^6)}^{3/4}\\
+ &\leq C''\|\sqrt{\rho_k}v_k\|_{L^\infty(]0,T[,L^2)}^{1/4}
+ \|v_k\|_{L^2(]0,T[,H^1)}^{3/4}.
+\end{aligned}
+\]
+利用\eqref{eq:chap6-uniform-energy-bound}, 得到估计\eqref{eq:chap6-uniform-interpolation-bound}.
+\end{Proof}
+
+\par\noindent\refstepcounter{chaptersixsectiontworemark}\textbf{Remark~\thechaptersixsectiontworemark:}\label{rem:chap6-vacuum-no-velocity-linfty-bound}
+因为当 $k\to+\infty$ 时 $\rho_k$ 可能为零, 所以不能由\eqref{eq:chap6-uniform-energy-bound}推出速度场 $v_k$ 的经典 $L^\infty(]0,T[,(L^2(\Omega))^d)$ 估计.
+
+\paragraph{密度的时间导数估计}
+\label{subsec:chap6-density-time-derivative-estimate}
+
+\begin{Lemma}
+\label{lem:chap6-density-time-derivative}
+对任意 $C^1$ 类函数 $\beta:\mathbb R\to\mathbb R$, 存在 $C_\beta>0$, 使对任意 $k\geq0$,
+\[
+ \left\|\frac{\partial\beta(\rho_k)}{\partial t}\right\|_{L^2(]0,T[,W^{-1,6})}
+ \leq C_\beta.
+\]
+\end{Lemma}
+
+\begin{Proof}
+因为 $\operatorname{div}v_k=0$, 把重整化性质应用于质量平衡方程可知 $\beta(\rho_k)$ 满足
+\[
+ \frac{\partial\beta(\rho_k)}{\partial t}
+ +\operatorname{div}(\beta(\rho_k)v_k)=0
+\]
+于分布意义. 因而
+\[
+\begin{aligned}
+ \left\|\frac{\partial\beta(\rho_k)}{\partial t}\right\|_{L^2(]0,T[,W^{-1,6})}
+ &=\|\operatorname{div}(\beta(\rho_k)v_k)\|_{L^2(]0,T[,W^{-1,6})}\\
+ &\leq\|\beta(\rho_k)v_k\|_{L^2(]0,T[,L^6)}.
+\end{aligned}
+\]
+此外, 由\eqref{eq:chap6-uniform-density-bound}和 Sobolev 嵌入 Theorem,
+\[
+ \|\beta(\rho_k)v_k\|_{L^2(]0,T[,L^6)}
+ \leq C\|v_k\|_{L^2(]0,T[,L^6)}
+ \leq C'\|v_k\|_{L^2(]0,T[,H^1)}.
+\]
+结论由\eqref{eq:chap6-uniform-energy-bound}得到.
+\end{Proof}
+
+\paragraph{速度的时间平移估计}
+\label{subsec:chap6-velocity-time-translations}
+
+为了在近似问题中取极限, 必须证明序列 $(v_k)_k$ 的某种紧性. 例如像\MBUnresolvedReference{bib:nonhomogeneous-time-translations}{[110]}中那样, 这种紧性来自分数阶时间导数, 更准确地说, 来自时间平移估计.
+
+为此使用 Section~\ref{sec:chap2-banach-valued-functions} 中引入的框架, 特别是时间平移算子 $\tau_h:f\mapsto f(\cdot+h)$.
+
+\begin{Lemma}
+\label{lem:chap6-weighted-velocity-time-translation}
+存在仅依赖于数据和终止时刻 $T$ 的 $C_2>0$, 使对任意 $k\geq0$ 和任意 $0<h<T$,
+\begin{equation}
+ \|\sqrt{\tau_h\rho_k}(\tau_hv_k-v_k)\|_{L^2(]0,T-h[,(L^2(\Omega))^d)}
+ \leq C_2h^{1/4}.
+\label{eq:chap6-weighted-velocity-time-translation}
+\end{equation}
+\end{Lemma}
+
+\begin{Proof}
+因为 $v_b$ 与时间无关, 注意到 $\tau_hv_k-v_k=\tau_h\widetilde v_k-\widetilde v_k$. 然后写如下代数恒等式:
+\begin{equation}
+\begin{aligned}
+ &\tau_h\rho_k(\tau_h\widetilde v_k-\widetilde v_k)
+ \cdot(\tau_h\widetilde v_k-\widetilde v_k)\\
+ &\quad=\underbrace{(\tau_h(\rho_k\widetilde v_k)-\rho_k\widetilde v_k)
+ \cdot(\tau_h\widetilde v_k-\widetilde v_k)}_{=A}
+ -\underbrace{(\tau_h\rho_k-\rho_k)\widetilde v_k
+ \cdot(\tau_h\widetilde v_k-\widetilde v_k)}_{=B}.
+\end{aligned}
+\label{eq:chap6-time-translation-algebraic-identity}
+\end{equation}
+
+\begin{itemize}
+ \item 项 $A$ 的估计:
+
+ 取 $\Psi\in C^1([0,T],V_k)$, 并令
+ $\psi(t,x)=\mathbf1_{[s,s+h]}(t)\Psi(s,x)$, 其中 $s<T-h$. 在守恒形式\eqref{eq:chap6-conservative-approximate-momentum}中以 $\psi$ 为测试函数; 这里回顾 $w_k=v_k$, 因为假设 $v_k$ 是 $\Theta_k$ 的不动点. 这一计算是允许的, 因为 $\rho_k$ 和 $\widetilde v_k$ 关于时间变量连续. 得
+ \[
+ \begin{aligned}
+ &\int_\Omega\bigl(\tau_h(\rho_k\widetilde v_k)(s)-\rho_k\widetilde v_k(s)\bigr)
+ \cdot\Psi(s)\,\mathrm dx\\
+ &=\int_s^{s+h}\int_\Omega\rho_k((v_k\cdot\nabla)\Psi(s))\cdot\widetilde v_k
+ \,\mathrm dx\,\mathrm dt
+ -\int_s^{s+h}\int_\Omega2\mu(\rho_k)D(v_k):D(\Psi(s))\,\mathrm dx\,\mathrm dt\\
+ &\quad+\int_s^{s+h}\int_\Omega\rho_k\bigl(f_k-((v_k\cdot\nabla)v_b)\bigr)
+ \cdot\Psi(s)\,\mathrm dx\,\mathrm dt.
+ \end{aligned}
+ \]
+ 利用\eqref{eq:chap6-uniform-density-bound}和 H\"older 不等式, 得
+ \[
+ \begin{aligned}
+ &\left|\int_\Omega\bigl(\tau_h(\rho_k\widetilde v_k)(s)-\rho_k\widetilde v_k(s)\bigr)
+ \cdot\Psi(s)\,\mathrm dx\right|\\
+ &\leq C\left(\int_s^{s+h}\|\sqrt{\rho_k}v_k\|_{L^4}
+ \bigl(\|\sqrt{\rho_k}\widetilde v_k\|_{L^4}+\|\nabla v_b\|_{L^2}\bigr)
+ \,\mathrm dt\right)\|\nabla\Psi(s)\|_{L^2}\\
+ &\quad+C\left(\int_s^{s+h}
+ (\|\nabla v_k\|_{L^2}+\|f_k\|_{L^2})\,\mathrm dt\right)
+ \|\nabla\Psi(s)\|_{L^2}.
+ \end{aligned}
+ \]
+ 对时间变量使用 H\"older 不等式, 推出
+ \[
+ \begin{aligned}
+ &\left|\int_\Omega\bigl(\tau_h(\rho_k\widetilde v_k)(s)-\rho_k\widetilde v_k(s)\bigr)
+ \cdot\Psi(s)\,\mathrm dx\right|\\
+ &\leq C\left(h^{3/5}\|\sqrt{\rho_k}v_k\|_{L^{8/3}(]0,T[,L^4)}
+ +h^{1/4}\|\sqrt{\rho_k}v_k\|_{L^{8/3}(]0,T[,L^4)}^2\right)
+ \|\nabla\Psi(s)\|_{L^2}\\
+ &\quad+Ch^{1/2}\left(\|v_k\|_{L^2(]0,T[,H^1)}
+ +\|f_k\|_{L^2(]0,T[,L^2)}\right)\|\nabla\Psi(s)\|_{L^2}.
+ \end{aligned}
+ \]
+ 利用 Lemma~\ref{lem:chap6-uniform-energy-estimates} 中的界, 最终证明
+ \[
+ \left|\int_\Omega\bigl(\tau_h(\rho_k\widetilde v_k)(s)-\rho_k\widetilde v_k(s)\bigr)
+ \cdot\Psi(s)\,\mathrm dx\right|
+ \leq Ch^{1/4}\|\nabla\Psi(s)\|_{L^2}.
+ \]
+ 现取 $\Psi(s)=\tau_h\widetilde v_k(s)-\widetilde v_k(s)$. 推出
+ \[
+ \left|\int_\Omega\bigl(\tau_h(\rho_k\widetilde v_k)(s)-\rho_k\widetilde v_k(s)\bigr)
+ \cdot(\tau_h\widetilde v_k(s)-\widetilde v_k(s))\,\mathrm dx\right|
+ \leq Ch^{1/4}\|\tau_h\widetilde v_k(s)-\widetilde v_k(s)\|_{H^1}.
+ \]
+ 对这个不等式关于 $s$ 积分, 并使用\eqref{eq:chap6-uniform-energy-bound}, 得
+ \begin{equation}
+ \begin{aligned}
+ &\left|\int_0^{T-h}\int_\Omega
+ \bigl(\tau_h(\rho_k\widetilde v_k)(s)-\rho_k\widetilde v_k(s)\bigr)
+ \cdot(\tau_h\widetilde v_k(s)-\widetilde v_k(s))\,\mathrm dx\,\mathrm ds\right|\\
+ &\qquad\leq Ch^{1/4}\|\widetilde v_k\|_{L^2(0,T-h,H^1)}
+ \leq K_1h^{1/4}.
+ \end{aligned}
+ \label{eq:chap6-time-translation-term-a}
+ \end{equation}
+ 这就是\eqref{eq:chap6-time-translation-algebraic-identity}中项 $A$ 的估计.
+
+ \item 项 $B$ 的估计:
+
+ 考虑给定时刻 $s\in]0,T-h[$, 并取一个与时间无关的函数 $\varphi\in H_0^1(\Omega)$. 在\eqref{eq:chap6-fixed-point-transport}中取
+ $(t,x)\mapsto\mathbf1_{[s,s+h]}(t)\varphi(x)$ 为测试函数, 其中 $w_k=v_k$ (这是允许的, 因为 $\rho_k$ 关于时间连续). 推出
+ \[
+  \int_\Omega(\tau_h\rho_k(s,x)-\rho_k(s,x))\varphi(x)\,\mathrm dx
+  =\int_\Omega\left(\int_s^{s+h}\rho_kv_k\,\mathrm dt\right)\cdot\nabla\varphi(x)\,\mathrm dx.
+ \]
+ 设 $\psi\in C^0([0,T],(H_0^1(\Omega))^d)$. 在上述恒等式中取
+ $\varphi(x)=\widetilde v_k(s,x)\cdot\psi(s,x)\in H_0^1(\Omega)$. 利用 Sobolev 嵌入和\eqref{eq:chap6-uniform-density-bound}, 得
+ \begin{equation}
+ \begin{aligned}
+ &\left|\int_\Omega(\tau_h\rho_k(s)-\rho_k(s))\widetilde v_k(s)\cdot\psi(s)\,\mathrm dx\right|\\
+ &\leq C\left(\int_s^{s+h}\|v_k(t)\|_{H^1}\,\mathrm dt\right)
+ \|\widetilde v_k(s)\|_{H^1}\|\psi(s)\|_{H_0^1}\\
+ &\leq Ch^{1/2}\|v_k\|_{L^2(]0,T[,H^1)}
+ \|\widetilde v_k(s)\|_{H^1}\|\psi(s)\|_{H^1}.
+ \end{aligned}
+ \label{eq:chap6-time-translation-density-test}
+ \end{equation}
+ 现取 $\psi(s)=\tau_h\widetilde v_k(s)-\widetilde v_k(s)$ 于\eqref{eq:chap6-time-translation-density-test}, 再关于 $s$ 积分, 得
+ \begin{equation}
+ \begin{aligned}
+ &\left|\int_0^{T-h}\int_\Omega
+ (\tau_h\rho_k-\rho_k)\widetilde v_k\cdot
+ (\tau_h\widetilde v_k-\widetilde v_k)\,\mathrm dx\,\mathrm ds\right|\\
+ &\qquad\leq Ch^{1/2}\|v_k\|_{L^2(]0,T[,H^1)}
+ \|\widetilde v_k\|_{L^2(]0,T[,H^1)}^2
+ \leq K_1'h^{1/2}.
+ \end{aligned}
+ \label{eq:chap6-time-translation-term-b}
+ \end{equation}
+ 合并估计\eqref{eq:chap6-time-translation-term-a}和\eqref{eq:chap6-time-translation-term-b}, 再用\eqref{eq:chap6-time-translation-algebraic-identity}, 即得结论.
+\end{itemize}
+\end{Proof}
+
+\begin{Lemma}
+\label{lem:chap6-density-translation-times-velocity}
+存在仅依赖于数据的 $C>0$, 使对任意 $h>0$,
+\[
+ \|(\tau_h\rho_k-\rho_k)v_k\|_{L^2(]0,T-h[,W^{-1,3})}
+ \leq Ch^{1/2}.
+\]
+\end{Lemma}
+
+\begin{Proof}
+先写
+\[
+ \rho_k(t+h)-\rho_k(t)=\int_t^{t+h}\frac{\partial\rho_k}{\partial t}(s)\,\mathrm ds,
+\]
+这个等式在 $W^{-1,6}(\Omega)$ 中成立. 在 Lemma~\ref{lem:chap6-density-time-derivative} 中已经看到, $(\partial\rho_k/\partial t)_k$ 在 $L^2(]0,T[,W^{-1,6})$ 中有界, 因而
+\[
+ \|\tau_h\rho_k-\rho_k\|_{L^\infty(]0,T-h[,W^{-1,6})}
+ \leq h^{1/2}
+ \left\|\frac{\partial\rho_k}{\partial t}\right\|_{L^2(]0,T[,W^{-1,6})}
+ \leq Ch^{1/2}.
+\]
+由 Theorem~\ref{thm:chap3-sobolev-product}, 乘法算子从 $W^{-1,6}(\Omega)\times H^1(\Omega)$ 连续映入 $W^{-1,3}(\Omega)$. 由上式和\eqref{eq:chap6-uniform-energy-bound}, 得到所要求的估计
+\[
+\begin{aligned}
+ \|(\tau_h\rho_k-\rho_k)v_k\|_{L^2(]0,T-h[,W^{-1,3})}
+ &\leq C\|\tau_h\rho_k-\rho_k\|_{L^\infty(]0,T[,W^{-1,6})}
+ \|v_k\|_{L^2(]0,T[,H^1)}\\
+ &\leq Ch^{1/2}.
+\end{aligned}
+\]
+\end{Proof}
+
+\begin{Proposition}
+\label{prop:chap6-momentum-nikolskii-bound}
+序列 $(\rho_kv_k)_k$ 在 Nikolskii 空间
+$N_2^{1/4}(]0,T[,(W^{-1,3}(\Omega))^d)$ 中有界; 即存在 $C>0$, 使对任意 $0<h<T$ 和任意 $k$,
+\[
+ \|\tau_h(\rho_kv_k)-\rho_kv_k\|_{L^2(]0,T-h[,W^{-1,3})}
+ \leq Ch^{1/4}.
+\]
+\end{Proposition}
+
+\begin{Proof}
+只需写
+\[
+ \tau_h(\rho_kv_k)-\rho_kv_k
+ =(\tau_h\rho_k-\rho_k)v_k
+ +\sqrt{\tau_h\rho_k}\sqrt{\tau_h\rho_k}(\tau_hv_k-v_k).
+\]
+第一项由 Lemma~\ref{lem:chap6-density-translation-times-velocity} 估计, 第二项由 Lemma~\ref{lem:chap6-weighted-velocity-time-translation} 估计 (使用从 $L^2$ 到 $W^{-1,3}$ 的连续嵌入).
+\end{Proof}
+
+\subsubsection{存在性 Theorem 证明的结束}
+\label{subsec:chap6-existence-proof-conclusion}
+
+现可通过建立问题\eqref{eq:chap6-nonhomogeneous-mass-system}--\eqref{eq:chap6-nonhomogeneous-incompressibility}至少存在一个弱解, 来完成 Theorem~\ref{thm:chap6-nonhomogeneous-weak-existence} 的证明. 证明的最后部分是说明上一节构造的近似解 $(\rho_k,v_k)$ 至少对一个子列在适当空间中有极限, 并且其极限是所求问题的一个解.
+
+\begin{itemize}
+ \item 密度的弱收敛:
+
+ 由 Theorem~\ref{thm:chap3-sobolev-embeddings}, 已知 $W_0^{1,6/5}(\Omega)$ 到 $L^1(\Omega)$ 的嵌入是紧的, 因而由对偶性 (Lemma~\ref{lem:chap2-adjoint-compact}), $L^\infty(\Omega)$ 到 $W^{-1,6}(\Omega)$ 的嵌入也是紧的.
+
+ 利用\eqref{eq:chap6-uniform-density-bound}, Lemma~\ref{lem:chap6-density-time-derivative}和 Theorem~\ref{thm:chap2-aubin-lions-simon}, 得到对任意 $C^1$ 类函数 $\beta:\mathbb R\to\mathbb R$, 序列 $(\beta(\rho_k))_k$ 在 $C^0([0,T],W^{-1,6}(\Omega))$ 中相对紧.
+
+ 分别把这个紧性用于 $\beta(s)=s$ 和 $\beta(s)=s^2$, 得到存在一个仍记为 $(\rho_k)_k$ 的子列以及两个函数 $\rho,\zeta\in L^\infty(]0,T[\times\Omega)$, 使
+ \[
+ \left\{
+ \begin{aligned}
+  \rho_k&\xrightharpoonup[k\to\infty]{*}\rho
+  &&\text{弱-* 于 }L^\infty(]0,T[\times\Omega),\\
+  \frac{\partial\rho_k}{\partial t}&\rightharpoonup_{k\to\infty}
+  \frac{\partial\rho}{\partial t}
+  &&\text{弱于 }L^2(]0,T[,W^{-1,6}(\Omega)),\\
+  \rho_k&\longrightarrow_{k\to\infty}\rho
+  &&\text{于 }C^0([0,T],W^{-1,6}(\Omega)),
+ \end{aligned}
+ \right.
+ \]
+以及
+ \[
+ \left\{
+ \begin{aligned}
+  \rho_k^2&\xrightharpoonup[k\to\infty]{*}\zeta
+  &&\text{弱-* 于 }L^\infty(]0,T[\times\Omega),\\
+  \frac{\partial\rho_k^2}{\partial t}&\rightharpoonup_{k\to\infty}
+  \frac{\partial\zeta}{\partial t}
+  &&\text{弱于 }L^2(]0,T[,W^{-1,6}(\Omega)),\\
+  \rho_k^2&\longrightarrow_{k\to\infty}\zeta
+  &&\text{于 }C^0([0,T],W^{-1,6}(\Omega)).
+ \end{aligned}
+ \right.
+ \]
+
+ 注意 $v_k\in v_b+C^0([0,T],V_k)$, 所以特别地, 迹 $v_k\cdot\nu$ 等于 $v_b\cdot\nu$, 不依赖于 $k$. 此外, 由重整化性质,
+ \[
+  \gamma(\rho_k^2)=(\gamma(\rho_k))^2=(\rho_k^{\mathrm{in}})^2
+  =\left(\rho^{\mathrm{in}}+\frac1k\right)^2,
+  \qquad\text{当 }(v_b\cdot\nu)<0.
+ \]
+ 因而
+ \[
+  \gamma(\rho_k)\longrightarrow_{k\to\infty}\rho^{\mathrm{in}}
+  \quad\text{于 }L^1(]0,T[\times\Gamma,\mathrm d\mu_{v_b}^-),
+ \]
+ \[
+  \gamma(\rho_k^2)\longrightarrow_{k\to\infty}(\rho^{\mathrm{in}})^2
+  \quad\text{于 }L^1(]0,T[\times\Gamma,\mathrm d\mu_{v_b}^-).
+ \]
+
+ \item 速度和动量的弱收敛:
+
+ 利用\eqref{eq:chap6-uniform-energy-bound}, 可找到另一个仍记为 $(v_k)_k$ 的子列和
+ $v\in v_b+L^2(]0,T[,V)$, 使
+ \begin{equation}
+  v_k\rightharpoonup_{k\to\infty}v
+  \quad\text{弱于 }L^2(]0,T[,(H^1(\Omega))^d).
+ \label{eq:chap6-velocity-weak-limit}
+ \end{equation}
+ 乘积映射 $(\rho,v)\mapsto\rho v$ 从 $W^{-1,6}(\Omega)\times(H^1(\Omega))^d$ 连续映入 $(W^{-1,3}(\Omega))^d$ (Theorem~\ref{thm:chap3-sobolev-product}). 利用 Proposition~\ref{prop:chap2-strong-weak-bilinear} 和上面为 $(\rho_k)_k$ 与 $(\rho_k^2)_k$ 证明的强收敛性, 得
+ \[
+  \rho_kv_k\rightharpoonup_{k\to\infty}\rho v
+  \quad\text{弱于 }L^2(]0,T[,(W^{-1,3}(\Omega))^d),
+ \]
+ \[
+  \rho_k^2v_k\rightharpoonup_{k\to\infty}\zeta v
+  \quad\text{弱于 }L^2(]0,T[,(W^{-1,3}(\Omega))^d).
+ \]
+ 此外, 由\eqref{eq:chap6-uniform-energy-bound}可知, $(\rho_kv_k)_k$ 和 $(\rho_k^2v_k)_k$ 在 $L^\infty(]0,T[,(L^2(\Omega))^d)$ 中有界. 因此使用 Proposition~\ref{prop:chap2-small-space-weak-convergence} (弱-* 收敛序列这一略有不同的情形见 Remark~\ref{rem:chap2-small-space-weak-star}), 得
+ \begin{equation}
+  \rho_kv_k\xrightharpoonup[k\to\infty]{*}\rho v
+  \quad\text{弱-* 于 }L^\infty(]0,T[,(L^2(\Omega))^d),
+ \label{eq:chap6-momentum-weak-star-limit}
+ \end{equation}
+ \begin{equation}
+  \rho_k^2v_k\xrightharpoonup[k\to\infty]{*}\zeta v
+  \quad\text{弱-* 于 }L^\infty(]0,T[,(L^2(\Omega))^d).
+ \label{eq:chap6-squared-density-momentum-weak-star-limit}
+ \end{equation}
+
+ \item 密度和黏度的强收敛:
+
+ 现可使用 Section~\ref{sec:chap6-weak-transport} 中得到的输运方程稳定性结果. 事实上, 由 Theorem~\ref{thm:chap6-transport-stability} 和 Remark~\ref{rem:chap6-stability-products}, \eqref{eq:chap6-momentum-weak-star-limit}和\eqref{eq:chap6-squared-density-momentum-weak-star-limit}中得到的 $(\rho_kv_k)_k$ 弱收敛于 $\rho v$ 以及 $(\rho_k^2v_k)_k$ 弱收敛于 $\zeta v$, 再加上初始数据和流入数据的强收敛, 首先可推出 $\zeta=\rho^2$, 并且对所有 $q<+\infty$, $(\rho_k)_k$ 在 $C^0([0,T],L^q(\Omega))$ 中强收敛于 $\rho$. 特别地,
+ \[
+  \rho(0)=\lim_{k\to\infty}\rho_k(0)
+  =\lim_{k\to\infty}\rho_k^0=\rho_0,
+ \]
+这里使用了初始近似数据 $\rho_k^0$ 的定义.
+
+最后, 由\eqref{eq:chap6-viscosity-assumptions},
+ \[
+  \|\mu(\rho_k)-\mu(\rho)\|_{L^\infty(]0,T[,L^q)}
+  \leq\|\mu'\|_\infty
+  \|\rho_k-\rho\|_{L^\infty(]0,T[,L^q)},
+ \]
+因而已证明强收敛
+ \begin{equation}
+  \mu(\rho_k)\longrightarrow_{k\to\infty}\mu(\rho)
+  \quad\text{于 }L^\infty(]0,T[,L^q(\Omega)).
+ \label{eq:chap6-viscosity-strong-limit}
+ \end{equation}
+
+ \item 惯性项的弱收敛:
+
+ Sobolev Theorem 表明, 对任意 $r>5/6$, 嵌入 $W_0^{1,r}(\Omega)\subset L^2(\Omega)$ 是紧的. 由对偶性推出, 对任意 $q<6$, 嵌入 $L^2(\Omega)\subset W^{-1,q}(\Omega)$ 是紧的.
+
+ 由 Proposition~\ref{prop:chap6-momentum-nikolskii-bound} 和 Theorem~\ref{thm:chap2-simon-nikolskii-compactness}, 对任意 $q<6$, $(\rho_kv_k)_k$ 在 $L^2(]0,T[,(W^{-1,q}(\Omega))^d)$ 中相对紧. 已得到\eqref{eq:chap6-momentum-weak-star-limit}, 因而与 Proposition~\ref{prop:chap2-unique-subsequence-limit} 证明中类似的论证表明
+ \begin{equation}
+  \rho_kv_k\longrightarrow_{k\to\infty}\rho v
+  \quad\text{于 }L^2(]0,T[,(W^{-1,q}(\Omega))^d),
+  \qquad\forall q<6.
+ \label{eq:chap6-momentum-strong-negative-limit}
+ \end{equation}
+ 乘积算子 $(w,v)\mapsto w\otimes v$ 从
+ $(W^{-1,q}(\Omega))^d\times(W^{1,2}(\Omega))^d$ 连续映入
+ $(W^{-1,\sigma}(\Omega))^{d\times d}$, 其中
+ $\sigma=6q/(6+q)$. 因而由\eqref{eq:chap6-velocity-weak-limit}, \eqref{eq:chap6-momentum-strong-negative-limit}和 Proposition~\ref{prop:chap2-strong-weak-bilinear},
+ \[
+  \rho_kv_k\otimes v_k\rightharpoonup_{k\to\infty}\rho v\otimes v
+  \quad\text{弱于 }L^1(]0,T[,(W^{-1,\sigma}(\Omega))^{d\times d}),
+  \qquad\forall\sigma<3.
+ \]
+ 最后, 由\eqref{eq:chap6-uniform-interpolation-bound}可知, 序列 $(\rho_kv_k\otimes v_k)_k$ 在 $L^{4/3}(]0,T[,(L^2(\Omega))^{d\times d})$ 中有界. 因而再次使用 Proposition~\ref{prop:chap2-small-space-weak-convergence}, 得
+ \[
+ \rho_kv_k\otimes v_k\rightharpoonup_{k\to\infty}\rho v\otimes v
+ \quad\text{弱于 }L^{4/3}(]0,T[,(L^2(\Omega))^{d\times d}).
+ \]
+
+ \item 在动量方程中取极限:
+
+ 设 $k\geq n$, $\theta\in C^1([0,T])$, $\theta(T)=0$, 且固定 $\psi_n\in V_n$. 通过分部积分, 前面定义的近似解满足
+ \[
+ \begin{aligned}
+ &-\int_0^T\int_\Omega(\rho_kv_k)\cdot\psi_n\frac{\partial\theta}{\partial t}
+ \,\mathrm dx\,\mathrm dt
+ -\int_0^T\int_\Omega(\rho_kv_k\otimes v_k):\nabla\psi_n\,\theta
+ \,\mathrm dx\,\mathrm dt\\
+ &\quad+\int_0^T\int_\Omega2\mu(\rho_k)D(v_k):D(\psi_n)\,\theta
+ \,\mathrm dx\,\mathrm dt
+ -\int_0^T\int_\Omega\rho_kf_k\cdot\psi_n\,\theta
+ \,\mathrm dx\,\mathrm dt\\
+ &=\theta(0)\int_\Omega\rho_{0,k}v_{0,k}\cdot\psi_n\,\mathrm dx.
+ \end{aligned}
+ \]
+ 测试函数 $\psi_n$ 固定, 上面得到的收敛\eqref{eq:chap6-momentum-weak-star-limit}和\eqref{eq:chap6-viscosity-strong-limit}允许在 $k$ 中取极限, 得
+ \[
+ \begin{aligned}
+ &-\int_0^T\int_\Omega(\rho v)\cdot\psi_n\frac{\partial\theta}{\partial t}
+ \,\mathrm dx\,\mathrm dt
+ -\int_0^T\int_\Omega(\rho v\otimes v):\nabla\psi_n\,\theta
+ \,\mathrm dx\,\mathrm dt\\
+ &\quad+\int_0^T\int_\Omega2\mu(\rho)D(v):D(\psi_n)\,\theta
+ \,\mathrm dx\,\mathrm dt
+ -\int_0^T\int_\Omega\rho f\cdot\psi_n\,\theta
+ \,\mathrm dx\,\mathrm dt\\
+ &=\theta(0)\int_\Omega\rho_0v_0\cdot\psi_n\,\mathrm dx.
+ \end{aligned}
+ \]
+ 对所有 $n\geq1$, 将 $\theta(t)\psi_n(x)$ 形式的测试函数作线性组合, 则对任意满足 $\varphi(T)=0$ 的测试函数 $\varphi\in C^1([0,T],H_n)$, 得
+ \begin{equation}
+ \begin{aligned}
+ &-\int_0^T\int_\Omega(\rho v)\cdot\frac{\partial\varphi}{\partial t}
+ \,\mathrm dx\,\mathrm dt
+ -\int_0^T\int_\Omega(\rho v\otimes v):\nabla\varphi\,\mathrm dx\,\mathrm dt\\
+ &\quad+\int_0^T\int_\Omega2\mu(\rho)D(v):D(\varphi)\,\mathrm dx\,\mathrm dt
+ -\int_0^T\int_\Omega\rho f\cdot\varphi\,\mathrm dx\,\mathrm dt\\
+ &=\int_\Omega\rho_0v_0\cdot\varphi(0)\,\mathrm dx.
+ \end{aligned}
+ \label{eq:chap6-limit-momentum-weak-form}
+ \end{equation}
+ 利用 Lemma~\ref{lem:chap5-tensor-test-density}, 由 $\rho$ 和 $v$ 的正则性, 可通过稠密性把上述恒等式推广到满足 $\varphi(T)=0$ 的 $C^1([0,T],V)$ 中测试函数 $\varphi$. 把测试函数限制为时间上紧支于 $]0,T[$ 的 $C^\infty$ 函数, 就确实得到分布意义下的方程; 与 Chapter~\ref{chap:homogeneous-navier-stokes} 中相同, 使用 Theorem~\ref{thm:chap4-de-rham-hminusone} 恢复压力.
+
+ \item $\rho v$ 初始条件的解释:
+
+ 现在必须解释初始速度数据. 若在\eqref{eq:chap6-limit-momentum-weak-form}中取形如 $\varphi(t,x)=\theta(t)\psi(x)$ 的测试函数, 其中 $\theta\in\mathcal D(]0,T[)$ 且固定 $\psi\in V$, 则依定义恰有
+ \begin{equation}
+ \begin{aligned}
+ \frac{\mathrm d}{\mathrm dt}\int_\Omega(\rho v)\cdot\psi\,\mathrm dx
+ &-\int_\Omega(\rho v\otimes v):\nabla\psi\,\mathrm dx
+ +\int_\Omega2\mu(\rho)D(v):D(\psi)\,\mathrm dx\\
+ &=\int_\Omega\rho f\cdot\psi\,\mathrm dx
+ \end{aligned}
+ \label{eq:chap6-momentum-distribution-identity}
+ \end{equation}
+ 于 $\mathcal D'(]0,T[)$ 的分布意义. 由 $\rho$ 和 $v$ 的正则性, 可推出
+ \[
+  \int_\Omega(\rho v)\cdot\psi\,\mathrm dx\in L^1(]0,T[),
+  \qquad
+  \frac{\mathrm d}{\mathrm dt}\int_\Omega(\rho v)\cdot\psi\,\mathrm dx
+  \in L^1(]0,T[).
+ \]
+ 因而 $t\mapsto\int_\Omega(\rho v)\cdot\psi\,\mathrm dx$ 属于 $W^{1,1}(]0,T[)$, 所以可视为 $t$ 的连续函数 (Corollary~\ref{cor:chap2-w11-continuous-representative}). 若现取 $\theta\in C^\infty([0,T])$, 利用\eqref{eq:chap6-momentum-distribution-identity}, 可把分部积分公式 (Corollary~\ref{cor:chap2-w11-continuous-representative}) 写成
+ \[
+ \begin{aligned}
+ &\left(\int_\Omega(\rho v)\cdot\psi\,\mathrm dx\right)(T)\theta(T)
+ -\left(\int_\Omega(\rho v)\cdot\psi\,\mathrm dx\right)(0)\theta(0)\\
+ &=\int_0^T\left\{
+ \frac{\mathrm d}{\mathrm dt}\left(\int_\Omega(\rho v)\cdot\psi\,\mathrm dx\right)\theta(t)
+ +\left(\int_\Omega(\rho v)\cdot\psi\,\mathrm dx\right)\frac{\mathrm d\theta}{\mathrm dt}
+ \right\}\,\mathrm dt\\
+ &=\int_0^T\int_\Omega(\rho v\otimes v):\nabla\psi\,\theta(t)\,\mathrm dx\,\mathrm dt
+ -\int_0^T\int_\Omega2\mu(\rho)D(v):D(\psi)\,\theta(t)\,\mathrm dx\,\mathrm dt\\
+ &\quad+\int_0^T\int_\Omega\rho f\cdot\psi\,\theta(t)\,\mathrm dx\,\mathrm dt
+ +\int_0^T\int_\Omega(\rho v)\cdot\psi\,\frac{\mathrm d\theta}{\mathrm dt}
+ \,\mathrm dx\,\mathrm dt.
+ \end{aligned}
+ \]
+ 若假设 $\theta(0)=1$, $\theta(T)=0$, 则把上述结果与\eqref{eq:chap6-limit-momentum-weak-form}在 $\varphi=\theta(t)\psi$ 时给出的结果比较, 得
+ \[
+  \left(\int_\Omega(\rho v)\cdot\psi\,\mathrm dx\right)(0)
+  =\int_\Omega\rho_0v_0\cdot\psi\,\mathrm dx,
+  \qquad\forall\psi\in V.
+ \]
+ 这给出了 $t=0$ 时 $\rho v$ 初始条件的适当弱意义. 提醒读者注意, 在这方面 $v(0)$ 没有精确意义, 只能为动量 $\rho v$ 定义初始条件.
+\end{itemize}
+
+\subsubsection{无真空情形}
+\label{subsec:chap6-without-vacuum}
+
+在 $\inf\rho_0>0$ 且 $\inf\rho^{\mathrm{in}}>0$ 的情形, 即所研究流体不含任何真空区域时, 结果可以改进. 更准确地说:
+\begin{itemize}
+ \item 对所有 $k$, 有
+ \[
+  \inf\rho_k\geq\min(\inf\rho_0,\inf\rho^{\mathrm{in}})>0.
+ \]
+ \item 由\eqref{eq:chap6-uniform-energy-bound}推出 $(v_k)_k$ 在
+ \[
+  L^\infty(]0,T[,(L^2(\Omega))^d)
+  \cap L^2(]0,T[,(H^1(\Omega))^d)
+ \]
+ 中有界.
+ \item 由\eqref{eq:chap6-weighted-velocity-time-translation}推出
+ \[
+  \|\tau_hv_k-v_k\|_{L^2(]0,T-h[,L^2)}\leq Ch^{1/4},
+ \]
+ 因而序列 $(v_k)_k$ 在 $N_2^{1/4}(]0,T[,(L^2(\Omega))^d)$ 中有界.
+\end{itemize}
+这使得最终能够像 Chapter~\ref{chap:homogeneous-navier-stokes} 所研究的齐次流体情形一样, 得到 $(v_k)_k$ 在 $L^2(]0,T[\times\Omega)^d$ 中强收敛于 $v$. 因而这个情形更简单, 在近似问题中证明极限过渡比一般情形更直接.
+
+此外, 仍在 $\inf\rho_0>0$ 且 $\inf\rho^{\mathrm{in}}>0$ 的情形下, 可以证明 (见\MBUnresolvedReference{bib:nonhomogeneous-no-vacuum}{[86]}) $\rho v$ 和 $v$ 关于时间变量连续, 在 $(L^2(\Omega))^d$ 中取弱拓扑值; 还可以证明当 $t\to0$ 时 $v(t)$ 在 $(L^2(\Omega))^d$ 的强拓扑中收敛于 $v_0$ (因为已经选择 $v_0$ 为无散的).
+\end{sloppypar}
