@@ -1,0 +1,12 @@
+# Batch QA: backmatter-index
+
+- Source scope: complete Index from PDF pages 533--535 (printed pages 523--525).
+- Source coverage and structure: passed. The two-column source was read visually rather than trusted in interleaved extractor order. All 190 index records (main entries, headings, and nested entries) are present in source order and with their original hierarchy.
+- Fidelity: passed. Mathematical space notation, accents, personal names, eponymic forms, capitalization, and every source-authored printed-page value are preserved. Ordinary mathematical nouns are translated consistently with the accepted book text; the `Theorem` category remains English under the project environment-name rule.
+- Page-reference handling: the numeric values are the original book's printed-page index data, not generated numbering of the translated volume. They are retained verbatim for source fidelity; no translated-page target is guessed and no passed chapter is modified to insert approximate page anchors.
+- Cross-reference and punctuation QA: the stable `backmatter:index` label is unique; there are no local references, duplicate labels, undefined labels, command mismatches, or forbidden Chinese full-width punctuation.
+- Names: passed by page-by-page visual comparison. Names including Hölder, Nečas, Poincaré, Agmon--Douglis--Nirenberg, Aubin--Lions--Simon, Banach--Steinhaus, Cauchy, Clausius, de Rham, Friedrichs, Hausdorff--Young, Lax--Milgram, Lions--Magenes, Rademacher, Schauder, and Simon remain in source form.
+- Compilation and visual QA: passed in a clean three-pass integrated XeLaTeX build. Output pages 359--361 are legible, with two stable columns and no clipping, overlap, or broken mathematical notation. The integrated PDF has 361 pages, 2285067 bytes, and SHA-256 `ce01da33a04b4b55b4ce97f3cda090e7ba705edf1d713710d5093ac348f09ed7`.
+- Deterministic QA: 41 chapter files, 1204 chapter labels, 1738 reference commands, and zero duplicate labels, undefined references, wrong reference commands, translated environment prefixes, or punctuation violations. The top-level backmatter files add the unique References and Index labels and 127 bibliography keys.
+- Integrity: source SHA-256 `dd2f1acd5d258334ad45aada857d5699d0a13daa553b89fd839ecab469c465e1`; template manifest hash `9c405f97accf0b769854f4fadf93c22b473ad72435ddf0fc27f58c9a302a882c`; user template files unchanged.
+- Blocking issues: none. Result: passed.
