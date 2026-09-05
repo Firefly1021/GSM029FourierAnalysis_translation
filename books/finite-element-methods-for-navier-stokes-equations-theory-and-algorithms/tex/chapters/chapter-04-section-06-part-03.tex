@@ -1,0 +1,370 @@
+% Reviewed translation: Section 6, PDF pages 377--381 / printed pages 363--367.
+\MathBookSourcePage{377}
+最简单的替代办法是把 \,\eqref{eq:navier-newton-iteration} 换成
+\begin{equation}
+\label{eq:navier-modified-newton-iteration}
+u^{n+1}=u^n-[D_uF(\lambda,u^0)]^{-1}\mathbin{\cdot}F(\lambda,u^n),
+\qquad n\geq0,
+\end{equation}
+或等价地
+\[
+D_uF(\lambda,u^0)\mathbin{\cdot}(u^{n+1}-u^n)=-F(\lambda,u^n).
+\]
+下面证明这两个格式都收敛.
+
+\setcounter{statement}{2}
+\begin{Theorem}
+\label{thm:navier-newton-local-convergence}
+假设 $D_uF(\lambda,v)$ 关于 $v$ 在球 $S(u;\alpha)$ 中 Lipschitz 连续, 即存在
+常数 $K>0$, 使得
+\begin{equation}
+\label{eq:navier-newton-derivative-lipschitz}
+\|D_uF(\lambda,v)-D_uF(\lambda,v^*)\|_{\mathcal L(X;\mathscr X)}
+\leq K\|v-v^*\|_X
+\qquad\forall v,v^*\in S(u;\alpha).
+\end{equation}
+则存在 $0<\alpha'\leq\alpha$, 使得对 $S(u;\alpha')$ 中的每个初始猜测
+$u^0$, Newton 算法 \,\eqref{eq:navier-newton-iteration} 都确定唯一序列
+$(u^n)\subset S(u;\alpha')$, 它收敛到 \,\eqref{eq:navier-newton-parameterized-problem}
+的解 $u$. 此外, 收敛是二次的:
+\begin{equation}
+\label{eq:navier-newton-quadratic-rate}
+\|u^{n+1}-u\|_X\leq C\|u^n-u\|_X^2,
+\qquad C>0.
+\end{equation}
+
+同样地, 存在 $0<\alpha''\leq\alpha$, 使得对 $S(u;\alpha'')$ 中的每个初值
+$u^0$, 格式 \,\eqref{eq:navier-modified-newton-iteration} 都确定唯一序列
+$(u^n)\subset S(u;\alpha'')$, 它收敛到 $u$. 但此时收敛仅为线性的:
+\begin{equation}
+\label{eq:navier-modified-newton-linear-rate}
+\|u^{n+1}-u\|_X\leq C\|u^n-u\|_X,
+\qquad C<1.
+\end{equation}
+\end{Theorem}
+
+\begin{Proof}
+首先, 由 \,\eqref{eq:navier-newton-derivative-lipschitz} 和
+Lemma~\ref{lem:navier-branch-derivative-perturbation} 可知, 存在
+$0<\alpha'\leq\alpha$, 使得对 $S(u;\alpha')$ 中所有 $v$,
+$D_uF(\lambda,v)$ 都是从 $X$ 到 $\mathscr X$ 的同构. 事实上, 若在该 Lemma 中取
+\[
+F_h=F,\qquad\widetilde u_h=v,
+\qquad\gamma=\|[D_uF(\lambda,u)]^{-1}\|_{\mathcal L(\mathscr X;X)},
+\]
+\[
+\mu=\|D_uF(\lambda,u)-D_uF(\lambda,v)\|_{\mathcal L(X;\mathscr X)},
+\]
+则该 Lemma 表明, 只要 $\gamma\mu<1$, $D_uF(\lambda,v)$ 就是从 $X$ 到
+$\mathscr X$ 的同构. 根据 \,\eqref{eq:navier-newton-derivative-lipschitz},
+若取 $\alpha'<\min(\alpha,1/(\gamma K))$, 这一不等式成立. 特别地, 可以取
+\begin{equation}
+\label{eq:navier-newton-radius-condition}
+\alpha'\leq\frac1{2\gamma K},
+\end{equation}
+而公式 \,\eqref{eq:navier-branch-inverse-perturbation-bound} 给出界
+\begin{equation}
+\label{eq:navier-newton-inverse-bound}
+\|[D_uF(\lambda,v)]^{-1}\|_{\mathcal L(\mathscr X;X)}\leq2\gamma.
+\end{equation}
+
+现在证明, 当 $u^0\in S(u;\alpha')$, 且 $\alpha'$ 满足
+\eqref{eq:navier-newton-radius-condition} 时, 格式 \,\eqref{eq:navier-newton-iteration}
+在 $S(u;\alpha')$ 中定义一个收敛到 $u$ 的序列 $(u^n)$. 使用归纳法: 假设
+$u^n\in S(u;\alpha')$, 则 $[D_uF(\lambda,u^n)]^{-1}$ 存在, 且
+\[
+u^{n+1}-u=u^n-u+[D_uF(\lambda,u^n)]^{-1}
+\mathbin{\cdot}[F(\lambda,u)-F(\lambda,u^n)].
+\]
+换言之,
+\[
+\begin{aligned}
+u^{n+1}-u
+={}&[D_uF(\lambda,u^n)]^{-1}
+[F(\lambda,u)-F(\lambda,u^n)-D_uF(\lambda,u^n)\mathbin{\cdot}(u-u^n)]\\
+={}&[D_uF(\lambda,u^n)]^{-1}
+\int_0^1[D_uF(\lambda,u^n+t(u-u^n))-D_uF(\lambda,u^n)]
+\mathbin{\cdot}(u-u^n)\,dt.
+\end{aligned}
+\]
+
+\MathBookSourcePage{378}
+因而 \,\eqref{eq:navier-newton-derivative-lipschitz} 和
+\eqref{eq:navier-newton-inverse-bound} 蕴含
+\[
+\|u^{n+1}-u\|_X\leq\gamma K\|u-u^n\|_X^2,
+\]
+又因为 $\alpha'\gamma K\leq1/2$, 所以
+\[
+\|u^{n+1}-u\|_X\leq\frac12\|u^n-u\|_X.
+\]
+因此 $u^{n+1}\in S(u;\alpha')$, 而这两个不等式表明序列 $(u^n)$ 二次收敛到 $u$.
+
+其次考虑格式 \,\eqref{eq:navier-modified-newton-iteration}. 与上面一样, 从某个随后
+指定的 $\alpha''\leq\alpha'$ 对应的 $u^0\in S(u;\alpha'')$ 出发. 于是
+\eqref{eq:navier-modified-newton-iteration} 确定唯一序列 $(u^n)$, 且类似地有
+\[
+u^{n+1}-u=[D_uF(\lambda,u^0)]^{-1}
+\int_0^1[D_uF(\lambda,u^n+t(u-u^n))-D_uF(\lambda,u^0)]
+\mathbin{\cdot}(u-u^n)\,dt.
+\]
+因而, 假设 $u^n$ 也属于 $S(u;\alpha'')$, 可得
+\[
+\begin{aligned}
+\|u^{n+1}-u\|_X
+&\leq\gamma K(\|u^n-u^0\|_X+\|u-u^0\|_X)\|u^n-u\|_X\\
+&\leq3\alpha''\gamma K\|u^n-u\|_X.
+\end{aligned}
+\]
+所以取
+\[
+\alpha''<\frac1{3\gamma K},
+\]
+便可得到 $u^{n+1}\in S(u;\alpha'')$, 且序列 $(u^n)$ 线性收敛到 $u$.
+\end{Proof}
+
+下面用 Theorem~\ref{thm:navier-newton-local-convergence} 求解熟知的一类问题
+\begin{equation}
+\label{eq:navier-newton-operator-problem}
+F(\lambda,u)\equiv u+TG(\lambda,u)=0
+\qquad\forall\lambda\in\Lambda,
+\end{equation}
+其中 $X$ 和 $Y$ 是两个 Banach 空间, $\Lambda$ 是 $\mathbb R$ 中的紧区间,
+$T\in\mathcal L(Y;X)$, 且 $G$ 是从 $\Lambda\times X$ 到 $Y$ 的 $\mathcal C^2$
+映射, $D^2G$ 在 $\Lambda\times X$ 的所有有界子集上有界. 最后一个性质蕴含
+Lipschitz 条件 \,\eqref{eq:navier-newton-derivative-lipschitz}. 因而, 如果
+$\lambda\mapsto u(\lambda)$ 是 \,\eqref{eq:navier-newton-operator-problem} 的一条
+非奇异解分支, Newton 方法定义了一个局部(且二次)收敛的算法:
+\begin{equation}
+\label{eq:navier-newton-operator-iteration}
+(I+TD_uG(\lambda,u^n))\mathbin{\cdot}u^{n+1}
+=T[D_uG(\lambda,u^n)\mathbin{\cdot}u^n-G(\lambda,u^n)].
+\end{equation}
+同样地, 变体 \,\eqref{eq:navier-modified-newton-iteration} 也局部收敛, 但仅为线性收敛:
+\begin{equation}
+\label{eq:navier-modified-newton-operator-iteration}
+(I+TD_uG(\lambda,u^0))\mathbin{\cdot}u^{n+1}
+=T[D_uG(\lambda,u^0)\mathbin{\cdot}u^n-G(\lambda,u^n)].
+\end{equation}
+
+作为例子, 考虑 Navier--Stokes 方程
+\begin{equation}
+\label{eq:navier-newton-navier-stokes-system}
+\left\{
+\begin{aligned}
+-\nu\Delta\boldsymbol u+
+\sum_{j=1}^Nu_j(\partial\boldsymbol u/\partial x_j)
++\operatorname{grad}p&=\boldsymbol f&&\text{in }\Omega,\\
+\operatorname{div}\boldsymbol u&=0&&\text{in }\Omega,\\
+\boldsymbol u&=\boldsymbol0&&\text{on }\Gamma.
+\end{aligned}
+\right.
+\end{equation}
+
+\MathBookSourcePage{379}
+Lemma~\ref{lem:navier-branch-ns-equivalence} 已经证明,
+\eqref{eq:navier-newton-navier-stokes-system} 通过如下对应关系属于这一类问题:
+\[
+X=H_0^1(\Omega)^N\times L_0^2(\Omega),
+\qquad Y=H^{-1}(\Omega)^N,
+\qquad T=\text{Stokes 算子},
+\]
+\[
+\lambda=1/\nu,
+\qquad
+G(\lambda,\boldsymbol u)=\lambda
+\left(\sum_{j=1}^Nu_j(\partial\boldsymbol u/\partial x_j)-\boldsymbol f\right).
+\]
+此外, $(\boldsymbol u,p)$ 是 \,\eqref{eq:navier-newton-navier-stokes-system} 的解,
+当且仅当 $\mathbf u=(\boldsymbol u,p/\nu)$ 是
+\eqref{eq:navier-newton-operator-problem} 的解. 此时 Newton 算法
+\eqref{eq:navier-newton-operator-iteration} 写成:
+求 $(\boldsymbol u^{n+1},p^{n+1})\in H_0^1(\Omega)^N\times L_0^2(\Omega)$, 使
+\begin{equation}
+\label{eq:navier-newton-navier-stokes-iteration}
+\left\{
+\begin{aligned}
+-\Delta\boldsymbol u^{n+1}
+&+\frac1\nu\sum_{j=1}^N
+u_j^n(\partial\boldsymbol u^{n+1}/\partial x_j)\\
+&+\frac1\nu\sum_{j=1}^N
+u_j^{n+1}(\partial\boldsymbol u^n/\partial x_j)
++\operatorname{grad}p^{n+1}\\
+&=\frac1\nu\left(
+\sum_{j=1}^Nu_j^n(\partial\boldsymbol u^n/\partial x_j)+\boldsymbol f
+\right)\qquad\text{in }\Omega,\\
+\operatorname{div}\boldsymbol u^{n+1}&=0&&\text{in }\Omega,\\
+\boldsymbol u^{n+1}&=\boldsymbol0&&\text{on }\Gamma.
+\end{aligned}
+\right.
+\end{equation}
+类似地, 较简单的变体 \,\eqref{eq:navier-modified-newton-operator-iteration} 写成:
+求 $(\boldsymbol u^{n+1},p^{n+1})\in H_0^1(\Omega)^N\times L_0^2(\Omega)$, 使
+\begin{equation}
+\label{eq:navier-modified-newton-navier-stokes-iteration}
+\left\{
+\begin{aligned}
+-\Delta\boldsymbol u^{n+1}
+&+\frac1\nu\sum_{j=1}^N
+u_j^0(\partial\boldsymbol u^{n+1}/\partial x_j)\\
+&+\frac1\nu\sum_{j=1}^N
+u_j^{n+1}(\partial\boldsymbol u^0/\partial x_j)
++\operatorname{grad}p^{n+1}\\
+&=\frac1\nu\left\{
+\sum_{j=1}^N(\partial\boldsymbol u^n/\partial x_j)(u_j^0-u_j^n)\right.\\
+&\hspace{27mm}\left.
++\sum_{j=1}^Nu_j^n(\partial\boldsymbol u^0/\partial x_j)+\boldsymbol f
+\right\}\qquad\text{in }\Omega,\\
+\operatorname{div}\boldsymbol u^{n+1}&=0&&\text{in }\Omega,\\
+\boldsymbol u^{n+1}&=\boldsymbol0&&\text{on }\Gamma.
+\end{aligned}
+\right.
+\end{equation}
+注意, 在这两种情形中, 下一次迭代 $(\boldsymbol u^{n+1},p^{n+1})$ 都与 $p^n$
+无关. 另外, $D_uF(\lambda,\mathbf u)$ 显然 Lipschitz 连续, 因为
+$D^2G(\lambda,\mathbf u)$ 是常量. 所以, 如果 $(\boldsymbol u,p)$ 是
+\eqref{eq:navier-newton-navier-stokes-system} 的非奇异解, 从充分接近 $\boldsymbol u$
+的初始猜测 $\boldsymbol u^0$ 和任意 $p^0$ 出发, 格式
+\eqref{eq:navier-newton-navier-stokes-iteration}(相应地,
+\eqref{eq:navier-modified-newton-navier-stokes-iteration})确定唯一序列
+$(\boldsymbol u^n,p^n)$, 它二次地(相应地, 线性地)收敛到
+$\mathbf u=(\boldsymbol u,p/\nu)$. 当然, 若 $u=u(\lambda)$ 属于紧区间
+$\Lambda$ 上的一条非奇异解分支, 则对所有 $\lambda\in\Lambda$, 该结果仍成立,
+且常数与 $\lambda$ 无关.
+
+Newton 方法的缺点是, 只有当初始猜测 $u^0$ 充分接近解 $u$ 时才能保证收敛.
+如果该解是一条非奇异解分支的一部分, 而且已知相邻点的解, 例如对适当增量
+$\Delta\lambda$ 已知 $u(\lambda-\Delta\lambda)$, 那么可以由这个值导出启动
+Newton 算法的初始猜测. 这就是延拓法; 下面更准确地描述它. 假设
+$\lambda\mapsto u(\lambda)$ 是 \,\eqref{eq:navier-newton-parameterized-problem}
+的一条非奇异解分支.
+
+\MathBookSourcePage{380}
+由于 $F$ 是 $\mathcal C^p$ 映射($p\geq2$), 映射 $u(\lambda)$ 也是如此,
+于是可以对 \,\eqref{eq:navier-newton-parameterized-problem} 的两端求导:
+\begin{equation}
+\label{eq:navier-continuation-differentiated-branch}
+D_uF(\lambda,u(\lambda))\mathbin{\cdot}\frac{du(\lambda)}{d\lambda}
++D_\lambda F(\lambda,u(\lambda))=0
+\qquad\forall\lambda\in\Lambda,
+\end{equation}
+即得到如下形式的一阶微分方程:
+\begin{equation}
+\label{eq:navier-continuation-branch-ode}
+\frac{du(\lambda)}{d\lambda}=-\phi(\lambda),
+\end{equation}
+其中
+\[
+\phi(\lambda)=[D_uF(\lambda,u(\lambda))]^{-1}
+D_\lambda F(\lambda,u(\lambda)).
+\]
+求解 \,\eqref{eq:navier-continuation-branch-ode} 的最简单方法是采用单步显式 Euler 方法;
+这促使我们选取
+\begin{equation}
+\label{eq:navier-continuation-euler-predictor}
+u^0(\lambda)=u(\lambda-\Delta\lambda)
+-\phi(\lambda-\Delta\lambda)\mathbin{\cdot}\Delta\lambda.
+\end{equation}
+换言之, $u^0(\lambda)$ 由
+\begin{equation}
+\label{eq:navier-continuation-predictor-linear-system}
+\begin{aligned}
+D_uF(\lambda-\Delta\lambda,u(\lambda-\Delta\lambda))
+\mathbin{\cdot}[u^0(\lambda)-u(\lambda-\Delta\lambda)]
+={}&-D_\lambda F(\lambda-\Delta\lambda,u(\lambda-\Delta\lambda))
+\mathbin{\cdot}\Delta\lambda
+\end{aligned}
+\end{equation}
+定义. 下面估计误差 $u(\lambda)-u^0(\lambda)$. 由
+\eqref{eq:navier-continuation-branch-ode} 推得
+\[
+u(\lambda)=u(\lambda-\Delta\lambda)
+-\int_{\lambda-\Delta\lambda}^{\lambda}\phi(\mu)\,d\mu;
+\]
+减去 \,\eqref{eq:navier-continuation-euler-predictor}, 得到
+\[
+\begin{aligned}
+u(\lambda)-u^0(\lambda)
+&=-\left[\int_{\lambda-\Delta\lambda}^{\lambda}\phi(\mu)\,d\mu
+-\phi(\lambda-\Delta\lambda)\mathbin{\cdot}\Delta\lambda\right]\\
+&=-\int_{\lambda-\Delta\lambda}^{\lambda}
+\phi'(\theta_\mu)\mathbin{\cdot}(\mu-\lambda+\Delta\lambda)\,d\mu.
+\end{aligned}
+\]
+因而
+\[
+\|u(\lambda)-u^0(\lambda)\|_X
+\leq\frac{(\Delta\lambda)^2}{2}
+\max_{\theta\in(\lambda-\Delta\lambda,\lambda)}\|\phi'(\theta)\|_X.
+\]
+所以 $\|u(\lambda)-u^0(\lambda)\|_X$ 是 $O((\Delta\lambda)^2)$; 如果
+$\Delta\lambda$ 充分小, 由 \,\eqref{eq:navier-continuation-euler-predictor} 定义的
+$u^0(\lambda)$ 就是 Newton 算法的适当初值.
+
+作为例子, 下面明确写出 Navier--Stokes 方程
+\eqref{eq:navier-newton-navier-stokes-system} 的公式
+\eqref{eq:navier-continuation-predictor-linear-system}. 为简化记号, 置
+\[
+\delta\boldsymbol u(\lambda)=
+\boldsymbol u^0(\lambda)-\boldsymbol u(\lambda-\Delta\lambda).
+\]
+于是 \,\eqref{eq:navier-continuation-predictor-linear-system} 等价于
+\MathBookSourcePage{381}
+\[
+\begin{aligned}
+\delta\boldsymbol u(\lambda)=-T\Bigg\{&
+(\lambda-\Delta\lambda)\sum_{j=1}^N
+\left[u_j(\lambda-\Delta\lambda)
+\frac{\partial\delta\boldsymbol u(\lambda)}{\partial x_j}
++\delta u_j(\lambda)
+\frac{\partial\boldsymbol u(\lambda-\Delta\lambda)}{\partial x_j}\right]\\
+&+\Delta\lambda\left(
+\sum_{j=1}^Nu_j(\lambda-\Delta\lambda)
+\frac{\partial\boldsymbol u(\lambda-\Delta\lambda)}{\partial x_j}
+-\boldsymbol f\right)\Bigg\}.
+\end{aligned}
+\]
+
+置
+\[
+\delta\mathbf u(\lambda)=
+(\delta\boldsymbol u(\lambda),(\lambda-\Delta\lambda)\delta p(\lambda)),
+\]
+该问题也可写成: 求
+$(\delta\boldsymbol u(\lambda),\delta p(\lambda))
+\in H_0^1(\Omega)^N\times L_0^2(\Omega)$, 使
+\[
+\left\{
+\begin{aligned}
+-\frac1{\lambda-\Delta\lambda}\Delta\delta\boldsymbol u(\lambda)
+&+\sum_{j=1}^N u_j(\lambda-\Delta\lambda)
+\frac{\partial\delta\boldsymbol u(\lambda)}{\partial x_j}\\
+&+\sum_{j=1}^N\delta u_j(\lambda)
+\frac{\partial\boldsymbol u(\lambda-\Delta\lambda)}{\partial x_j}
++\operatorname{grad}\delta p(\lambda)\\
+&=\frac{\Delta\lambda}{\lambda-\Delta\lambda}
+\left[\boldsymbol f-\sum_{j=1}^Nu_j(\lambda-\Delta\lambda)
+\frac{\partial\boldsymbol u(\lambda-\Delta\lambda)}{\partial x_j}\right]
+\qquad\text{in }\Omega,\\
+\operatorname{div}\delta\boldsymbol u(\lambda)&=0&&\text{in }\Omega,\\
+\boldsymbol u(\lambda)&=\boldsymbol0&&\text{on }\Gamma.
+\end{aligned}
+\right.
+\]
+注意, 该问题类似于 Newton 算法的一次迭代.
+
+\setcounter{statement}{0}
+\begin{Remark}
+\label{rem:navier-discrete-newton-nondifferentiable}
+采用适当的离散导数, 也可以导出 Newton 型算法来求解像
+Subsections~\ref{subsec:navier-nondifferentiable-branches} 和
+\ref{subsec:navier-upwind-stream-vorticity} 中分析的不可微格式. 在适当假设下,
+可以达到近乎二次的收敛(参见 Girault \& Raviart~\cite{GiraultRaviart34}).
+\end{Remark}
+
+\setcounter{statement}{1}
+\begin{Remark}
+\label{rem:navier-continuation-higher-order-integrators}
+也可以用 Runge--Kutta 方法或显式多步法求解
+\eqref{eq:navier-continuation-branch-ode}. 相应误差估计的证明与上述论证非常相似.
+\end{Remark}

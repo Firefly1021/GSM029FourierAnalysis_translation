@@ -1,0 +1,415 @@
+% Reviewed translation: PDF pages 256--260 / printed pages 242--246.
+% The original scan is authoritative; mathematical tokens were checked against it.
+\MathBookSourcePage{256}
+\subsection{$l$ 次三角形有限元逼近}
+\label{subsec:incompressible-hhj-triangular-approximation}
+
+现在逼近问题 \eqref{eq:incompressible-hhj-formulation}.
+为简化讨论, 假设 $\mathcal T_h$ 由三角形组成,
+但当前方法很容易推广到 $\mathcal T_h$ 还含四边形的情形.
+首先选择有限元空间. 像通常一样, 对某个整数 $l\geq1$, 取
+\begin{equation}\label{eq:incompressible-hhj-stream-fe-space}
+\Theta_h
+=\{\theta_h\in C^0(\overline\Omega);
+\ \theta_h|_\kappa\in P_l
+\ \forall\kappa\in\mathcal T_h\},
+\qquad
+\Phi_h=\Theta_h\cap\Phi.
+\end{equation}
+但对张量而言, 由于 $\mathcal X$ 中的张量不必整体连续,
+可用自由度更少的空间 $\mathcal X_h$ 来逼近:
+\begin{equation}\label{eq:incompressible-hhj-tensor-fe-space}
+\mathcal X_h
+=\{\boldsymbol\tau_h\in\mathcal X;
+\ \tau_{ij}|_\kappa\in P_{l-1}
+\ \forall\kappa\in\mathcal T_h,
+\ 1\leq i,j\leq2\}.
+\end{equation}
+用这些空间, 问题 \eqref{eq:incompressible-hhj-formulation}
+离散化为问题 $(Q_h)$:
+
+求 $(\boldsymbol\sigma_h,\psi_h)
+\in\mathcal X_h\times\Phi_h$, 使
+\begin{equation}\label{eq:incompressible-hhj-discrete-problem}
+\left\{
+\begin{aligned}
+\nu\sum_{\kappa\in\mathcal T_h}
+\int_\kappa\frac{\partial^2\phi_h}{\partial x_i\partial x_j}
+(\sigma_h)_{ij}\,dx
+-\nu\int_{\Gamma_h}M_n(\boldsymbol\sigma_h)
+S(\partial\phi_h/\partial n)\,ds
+&=(\mathbf f,\operatorname{curl}\phi_h)
+&&\forall\phi_h\in\Phi_h,\\
+\begin{split}
+\int_\Omega(\sigma_h)_{ij}(\tau_h)_{ij}\,dx
+-\sum_{\kappa\in\mathcal T_h}
+\int_\kappa\frac{\partial^2\psi_h}{\partial x_i\partial x_j}
+(\tau_h)_{ij}\,dx\\
+{}+\int_{\Gamma_h}M_n(\boldsymbol\tau_h)
+S(\partial\psi_h/\partial n)\,ds
+\end{split}
+&=0
+&&\forall\boldsymbol\tau_h\in\mathcal X_h.
+\end{aligned}
+\right.
+\end{equation}
+用 \eqref{eq:incompressible-hhj-form-a}
+和 \eqref{eq:incompressible-hhj-form-b}, 可简写为
+\begin{equation}\label{eq:incompressible-hhj-discrete-abstract}
+\left\{
+\begin{aligned}
+b_h(\boldsymbol\sigma_h,\phi_h)
+&=-\frac1\nu(\mathbf f,\operatorname{curl}\phi_h)
+&&\forall\phi_h\in\Phi_h,\\
+a_h(\boldsymbol\sigma_h,\boldsymbol\tau_h)
++b_h(\boldsymbol\tau_h,\psi_h)&=0
+&&\forall\boldsymbol\tau_h\in\mathcal X_h.
+\end{aligned}
+\right.
+\end{equation}
+
+分析该问题之前, 必须仔细研究上述有限元空间,
+特别是赋予适当范数并确定其自由度.
+由 $b_h$ 的表达式, 取
+\begin{equation}\label{eq:incompressible-hhj-tensor-mesh-norm}
+\|\boldsymbol\tau\|_{0,h}
+=\left(
+\|\boldsymbol\tau\|_{0,\Omega}^2
++h\|M_n(\boldsymbol\tau)\|_{0,\Gamma_h}^2
+\right)^{1/2}
+\qquad\forall\boldsymbol\tau\in\mathcal X,
+\end{equation}
+以及
+\begin{equation}\label{eq:incompressible-hhj-stream-mesh-norm}
+\|\phi\|_{2,h}
+=\left(
+\sum_{\kappa\in\mathcal T_h}|\phi|_{2,\kappa}^2
++\frac1h\|S(\partial\phi/\partial n)\|_{0,\Gamma_h}^2
+\right)^{1/2}
+\end{equation}
+对所有分片 $H^2$ 的 $\phi\in H^1(\Omega)$ 成立.
+注意它与
+\eqref{eq:incompressible-sfvp-mesh-norm-zero}
+和 \eqref{eq:incompressible-sfvp-mesh-norm-two} 的类比.
+还要注意
+\[
+|b_h(\boldsymbol\tau,\phi)|
+\leq\|\boldsymbol\tau\|_{0,h}\|\phi\|_{2,h},
+\qquad
+|a_h(\boldsymbol\tau,\boldsymbol\mu)|
+\leq\|\boldsymbol\tau\|_{0,\Omega}
+\|\boldsymbol\mu\|_{0,\Omega}.
+\]
+
+\MathBookSourcePage{257}
+现在确定 $\mathcal X_h$ 中张量的自由度.
+先考虑 $\kappa$ 是参考三角形 $\widehat\kappa$ 的特殊情形.
+
+\begin{Lemma}\label{lem:incompressible-hhj-reference-dofs}
+在参考单位三角形 $\widehat\kappa$ 上,
+对称张量值函数 $\boldsymbol\tau\in P_{l-1}^4$
+由下列矩唯一确定:
+\begin{equation}\label{eq:incompressible-hhj-reference-dofs}
+\left\{
+\begin{aligned}
+&\int_{\widehat\kappa'}M_n(\boldsymbol\tau)q\,ds,
+&&\forall q\in P_{l-1}(\widehat\kappa'),
+\quad\text{对 }\partial\widehat\kappa\text{ 的每条边 }\widehat\kappa',\\
+&\int_{\widehat\kappa}\tau_{ij}q\,d\widehat x,
+&&\forall q\in P_{l-2}(\widehat\kappa),
+\quad1\leq i\leq j\leq2.
+\end{aligned}
+\right.
+\end{equation}
+\end{Lemma}
+
+\begin{Proof}
+首先, \eqref{eq:incompressible-hhj-reference-dofs}
+包含
+\[
+3l+\frac32l(l-1)=\frac32l(l+1)
+\]
+个自由度, 而
+\[
+\dim P_{l-1}^4=3\dim P_{l-1}
+=\frac32l(l+1).
+\]
+因此只需证明相应齐次方程组
+\begin{equation}\label{eq:incompressible-hhj-reference-homogeneous-dofs}
+\left\{
+\begin{aligned}
+\int_{\widehat\kappa'}M_n(\boldsymbol\tau)q\,ds&=0
+&&\forall q\in P_{l-1}(\widehat\kappa'),
+\quad\forall\widehat\kappa'\subset\partial\widehat\kappa,\\
+\int_{\widehat\kappa}\tau_{ij}q\,d\widehat x&=0
+&&\forall q\in P_{l-2}(\widehat\kappa),
+\quad1\leq i\leq j\leq2
+\end{aligned}
+\right.
+\end{equation}
+只有零解.
+
+第一组方程等价于
+$M_n(\boldsymbol\tau)=0$ 于 $\partial\widehat\kappa$ 上.
+利用参考三角形的位置和形状, 即
+\[
+\tau_{22}=0\quad\text{on }\widehat x_2=0,
+\qquad
+\tau_{11}=0\quad\text{on }\widehat x_1=0,
+\]
+以及
+\[
+\tau_{11}+2\tau_{12}+\tau_{22}=0
+\quad\text{on }\widehat x_1+\widehat x_2=1.
+\]
+在 \eqref{eq:incompressible-hhj-reference-homogeneous-dofs}
+第二组方程中取 $q=\partial\tau_{ij}/\partial x_k$,
+结合上述三个等式, 先得到
+$\boldsymbol\tau=0$ 于 $x_1+x_2=1$, 再得到
+$\boldsymbol\tau=0$ 于整个 $\partial\widehat\kappa$.
+于是齐次矩条件立即蕴含
+$\boldsymbol\tau=0$ 于整个 $\widehat\kappa$.
+\end{Proof}
+
+为把 Lemma~\ref{lem:incompressible-hhj-reference-dofs}
+推广到任意三角形 $\kappa$, 必须引入适当变换,
+把 $\widehat\kappa$ 上的对称张量映到 $\kappa$ 上的对称张量,
+同时在某种意义下保持 $M_n(\cdot)$.
+回顾 $\kappa$ 的法向量 $\mathbf n$
+和 $\widehat\kappa$ 的法向量 $\widehat{\mathbf n}$ 满足
+\[
+\widehat{\mathbf n}
+=\frac{B_\kappa^T(\mathbf n\circ F_\kappa)}
+{\|B_\kappa^T(\mathbf n\circ F_\kappa)\|},
+\qquad
+\mathbf n\circ F_\kappa
+=\frac{B_\kappa^{-T}\widehat{\mathbf n}}
+{\|B_\kappa^{-T}\widehat{\mathbf n}\|},
+\]
+其中 $F_\kappa(\widehat x)=B_\kappa\widehat x+b_\kappa$,
+$B_\kappa$ 是常系数非奇异矩阵.
+另一方面,
+\[
+M_n(\boldsymbol\tau)(x)
+=((\boldsymbol\tau(x)\mathbf n(x),\mathbf n(x))),
+\]
+这里 $((\cdot,\cdot))$ 是 $\mathbb R^2$ 的 Euclidean 内积.
+
+\MathBookSourcePage{258}
+由此在每个 $\kappa$ 上建立张量值函数之间的对应
+\begin{equation}\label{eq:incompressible-hhj-tensor-piola-forward}
+\widehat{\boldsymbol\tau}
+=B_\kappa^{-1}(\boldsymbol\tau\circ F_\kappa)B_\kappa^{-T},
+\end{equation}
+等价地
+\begin{equation}\label{eq:incompressible-hhj-tensor-piola-backward}
+\boldsymbol\tau
+=B_\kappa(\widehat{\boldsymbol\tau}\circ F_\kappa^{-1})B_\kappa^T.
+\end{equation}
+第一式显式写成
+\[
+\widehat\tau_{ij}
+=\sum_{r,s=1}^2
+(\tau_{rs}\circ F_\kappa)
+\frac{\partial\widehat x_i}{\partial x_r}
+\frac{\partial\widehat x_j}{\partial x_s}.
+\]
+显然该变换保持张量的对称性和正则性, 并且
+\begin{equation}\label{eq:incompressible-hhj-normal-transform-forward}
+M_{\widehat n}(\widehat{\boldsymbol\tau})
+=\|B_\kappa^{-T}\widehat{\mathbf n}\|^2
+(M_n(\boldsymbol\tau)\circ F_\kappa),
+\end{equation}
+或
+\begin{equation}\label{eq:incompressible-hhj-normal-transform-backward}
+M_n(\boldsymbol\tau)
+=\|B_\kappa^T(\mathbf n\circ F_\kappa)\|^2
+M_{\widehat n}(\widehat{\boldsymbol\tau}),
+\end{equation}
+因为
+$\|B_\kappa^T(\mathbf n\circ F_\kappa)\|
+=\|B_\kappa^{-T}\widehat{\mathbf n}\|^{-1}$.
+
+因此容易验证 Lemma~\ref{lem:incompressible-hhj-reference-dofs}
+可推广到 $\mathcal T_h$ 的任意三角形 $\kappa$.
+从而可取下列量为 $\mathcal X_h$ 中张量的自由度:
+\[
+\int_{\kappa'}M_n(\boldsymbol\tau)q\,ds
+\quad\forall q\in P_{l-1}(\kappa'),
+\quad\forall\kappa'\subset\Gamma_h,
+\]
+以及
+\[
+\int_\kappa\tau_{ij}q\,dx
+\quad\forall q\in P_{l-2}(\kappa),
+\quad1\leq i\leq j\leq2,
+\quad\forall\kappa\in\mathcal T_h.
+\]
+
+\begin{Remark}\label{rem:incompressible-hhj-linear-tensor-space}
+$\mathcal X_h$ 最简单的例子对应 $l=1$:
+\[
+\mathcal X_h
+=\{\boldsymbol\tau\in L^2(\Omega)^4;
+\ \tau_{ij}=\tau_{ji},
+\ \tau_{ij}|_\kappa\text{ 为常数},
+\ \forall\kappa\in\mathcal T_h,
+\ M_n(\boldsymbol\tau)\text{ 在 }\Gamma_h\text{ 每条边上连续}\}.
+\]
+显然, $\mathcal X_h$ 中的张量由每条边上的数据
+$M_n(\boldsymbol\tau)$ 唯一确定.
+\end{Remark}
+
+\MathBookSourcePage{259}
+同时可方便地定义一个从 $\mathcal X$ 到 $\mathcal X_h$
+且具有良好性质的限制算子 $\Pi_h$.
+先对 $\boldsymbol\tau\in L^2(\kappa)^4$,
+$M_n(\boldsymbol\tau)\in L^1(\partial\kappa)$,
+由下式定义 $P_{l-1}^4$ 中的对称张量
+$\Pi_\kappa\boldsymbol\tau$:
+\begin{equation}\label{eq:incompressible-hhj-local-restriction}
+\left\{
+\begin{aligned}
+\int_{\kappa'}M_n(\Pi_\kappa\boldsymbol\tau
+-\boldsymbol\tau)q\,ds&=0
+&&\forall q\in P_{l-1}(\kappa'),
+\quad\forall\kappa'\subset\partial\kappa,\\
+\int_\kappa[(\Pi_\kappa\boldsymbol\tau)_{ij}-\tau_{ij}]q\,dx&=0
+&&\forall q\in P_{l-2}(\kappa),
+\quad1\leq i\leq j\leq2.
+\end{aligned}
+\right.
+\end{equation}
+再对 $\boldsymbol\tau\in\mathcal X$ 定义
+\begin{equation}\label{eq:incompressible-hhj-global-restriction}
+(\Pi_h\boldsymbol\tau)|_\kappa
+=\Pi_\kappa(\boldsymbol\tau|_\kappa)
+\qquad\forall\kappa\in\mathcal T_h.
+\end{equation}
+显然 $\Pi_h\boldsymbol\tau$ 对称,
+而 $M_n(\boldsymbol\tau)$ 的连续性蕴含
+$M_n(\Pi_h\boldsymbol\tau)$ 跨每条单元间边界连续,
+所以 $\Pi_h\boldsymbol\tau\in\mathcal X_h$.
+
+由 \eqref{eq:incompressible-hhj-tensor-piola-forward}
+和 \eqref{eq:incompressible-hhj-normal-transform-forward},
+\eqref{eq:incompressible-hhj-local-restriction}
+等价于参考单元上的对应矩条件.
+因此局部限制算子被仿射变换保持:
+\begin{equation}\label{eq:incompressible-hhj-restriction-affine-commuting}
+\widehat{\Pi_\kappa\boldsymbol\tau}
+=\widehat\Pi(\widehat{\boldsymbol\tau})
+\qquad\forall\kappa\in\mathcal T_h.
+\end{equation}
+其余性质由下一个 Lemma 给出.
+
+\begin{Lemma}\label{lem:incompressible-hhj-restriction-properties}
+假设剖分 $\mathcal T_h$ 正则.
+由 \eqref{eq:incompressible-hhj-local-restriction}
+和 \eqref{eq:incompressible-hhj-global-restriction}
+定义的 $\Pi_h$ 是从 $\mathcal X$ 到 $\mathcal X_h$ 的线性映射, 且
+\begin{equation}\label{eq:incompressible-hhj-restriction-orthogonality}
+b_h(\boldsymbol\tau-\Pi_h\boldsymbol\tau,\phi_h)=0
+\qquad\forall\phi_h\in\Phi_h,
+\quad\forall\boldsymbol\tau\in\mathcal X,
+\end{equation}
+\begin{equation}\label{eq:incompressible-hhj-restriction-stability}
+\|\Pi_h\boldsymbol\tau\|_{0,h}
+\leq C_1\|\boldsymbol\tau\|_{0,h}
+\qquad\forall\boldsymbol\tau\in\mathcal X.
+\end{equation}
+此外, 若某个实数 $k\in[1,l]$ 满足
+$\boldsymbol\tau\in H^k(\Omega)^4\cap\mathcal X$, 则
+\begin{equation}\label{eq:incompressible-hhj-restriction-error}
+\|\boldsymbol\tau-\Pi_h\boldsymbol\tau\|_{0,h}
+\leq C_2h^k|\boldsymbol\tau|_{k,\Omega}.
+\end{equation}
+\end{Lemma}
+
+\begin{Proof}
+由 \eqref{eq:incompressible-hhj-local-restriction},
+$\Pi_h$ 显然是从 $\mathcal X$ 到 $\mathcal X_h$ 的线性映射.
+又由同一式、$b_h$ 的表达式以及 $\Phi_h$ 的定义,
+立即得到
+\eqref{eq:incompressible-hhj-restriction-orthogonality}.
+
+证明稳定性时, 首先由局部矩条件得到
+\begin{equation}\label{eq:incompressible-hhj-normal-restriction-stability}
+\|M_n(\Pi_h\boldsymbol\tau)\|_{0,\Gamma_h}
+\leq\|M_n(\boldsymbol\tau)\|_{0,\Gamma_h}.
+\end{equation}
+
+\MathBookSourcePage{260}
+再证明存在与 $h$ 无关的常数 $C>0$, 使
+\begin{equation}\label{eq:incompressible-hhj-l2-restriction-stability}
+\|\Pi_h\boldsymbol\tau\|_{0,\Omega}
+\leq C\|\boldsymbol\tau\|_{0,h}.
+\end{equation}
+对每个 $\kappa\in\mathcal T_h$,
+\eqref{eq:incompressible-hhj-restriction-affine-commuting}
+和 \eqref{eq:incompressible-hhj-tensor-piola-forward} 给出
+\[
+\|\Pi_\kappa\boldsymbol\tau\|_{0,\kappa}^2
+\leq|\det B_\kappa|\|B_\kappa\|^4
+\|\widehat\Pi\widehat{\boldsymbol\tau}\|_{0,\widehat\kappa}^2.
+\]
+由参考单元上的矩条件,
+\[
+\|\widehat\Pi\widehat{\boldsymbol\tau}\|_{0,\widehat\kappa}
+\leq C_1\left(
+\|\widehat{\boldsymbol\tau}\|_{0,\widehat\kappa}
++\|M_{\widehat n}(\widehat{\boldsymbol\tau})\|_{0,\partial\widehat\kappa}
+\right).
+\]
+利用法向量变换、逆变换和尺度关系, 汇总后得到
+\[
+\|\Pi_\kappa\boldsymbol\tau\|_{0,\kappa}^2
+\leq C_2\sigma^6\left(
+\|\boldsymbol\tau\|_{0,\kappa}^2
++h_\kappa\|M_n(\boldsymbol\tau)\|_{0,\partial\kappa}^2
+\right).
+\]
+剖分正则性于是证明
+\eqref{eq:incompressible-hhj-l2-restriction-stability},
+进而结合
+\eqref{eq:incompressible-hhj-normal-restriction-stability}
+得到 \eqref{eq:incompressible-hhj-restriction-stability}.
+
+最后证明误差估计.
+同样有
+\[
+\|\boldsymbol\tau-\Pi_h\boldsymbol\tau\|_{0,\kappa}^2
+\leq|\det B_\kappa|\|B_\kappa\|^4
+\|\widehat{\boldsymbol\tau}
+-\widehat\Pi\widehat{\boldsymbol\tau}\|_{0,\widehat\kappa}^2.
+\]
+由于 $\widehat\Pi$ 保持系数属于 $P_{l-1}$ 的对称张量,
+Bramble--Hilbert 估计给出
+\[
+\|\widehat{\boldsymbol\tau}
+-\widehat\Pi\widehat{\boldsymbol\tau}\|_{0,\widehat\kappa}
+\leq C_3|\widehat{\boldsymbol\tau}|_{k,\widehat\kappa}.
+\]
+由 \eqref{eq:incompressible-hhj-tensor-piola-backward}
+和尺度关系,
+\[
+|\widehat{\boldsymbol\tau}|_{k,\widehat\kappa}
+\leq C_5\|B_\kappa^{-1}\|^2
+|\det B_\kappa^{-1}|^{1/2}
+h_\kappa^k|\boldsymbol\tau|_{k,\kappa}.
+\]
+剖分正则性于是给出
+\[
+\|\boldsymbol\tau-\Pi_h\boldsymbol\tau\|_{0,\Omega}
+\leq C_6h^k|\boldsymbol\tau|_{k,\Omega}.
+\]
+类似地, 由
+\eqref{eq:incompressible-hhj-normal-transform-backward}
+和 trace Theorem 得
+\[
+\|M_n(\boldsymbol\tau-\Pi_h\boldsymbol\tau)\|_{0,\partial\kappa}^2
+\leq C_9h^{2k-1}|\boldsymbol\tau|_{k,\kappa}^2.
+\]
+从而得到
+\eqref{eq:incompressible-hhj-restriction-error}.
+\end{Proof}

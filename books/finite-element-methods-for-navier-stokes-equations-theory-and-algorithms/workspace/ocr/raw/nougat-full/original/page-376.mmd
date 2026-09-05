@@ -1,0 +1,43 @@
+6\({}^{\circ}\)) find the solution \(\mathbf{w}^{m}\!\in\!H^{1}(\Omega)^{N}\) of
+
+\[-\nu\lambda\mathbf{w}^{m}+\,cw^{m} =\mathbf{t}^{m}\quad\text{in }\Omega,\] \[\mathbf{w}^{m} =\mathbf{0}\quad\text{on }\Gamma;\]
+
+7\({}^{\circ}\)) compute
+
+(6.39) \[D^{4}J(\mathbf{u}^{m})\!\cdot\!(\mathbf{g}^{m},\mathbf{g}^{m}, \mathbf{g}^{m},\mathbf{g}^{m})=\,v|\mathbf{w}^{m}|_{1,\Omega}^{2}+\,c\,\| \mathbf{w}^{m}\|_{0,\Omega}^{2};\]
+
+8\({}^{\circ}\)) find the positive root \(\rho^{m}\) of
+
+\[dJ(\mathbf{u}^{m}-\rho^{m}\mathbf{g}^{m})\!/d\rho=0\]
+
+and update \(\mathbf{u}^{m}\) by:
+
+\[\mathbf{u}^{m+1}=\mathbf{u}^{m}-\rho^{m}\mathbf{g}^{m}.\]
+
+Each iteration requires the solution of four Dirichlet problems.
+
+The implementation of the conjugate-gradient algorithm is much like above and is left as an exercise.
+
+### Newton's Method and the Continuation Method
+
+The methods discussed here are intended to solve the complete Navier-Stokes equations: incompressible and nonlinear. More generally, we want to solve equations of the type introduced in Section 3.1, namely:
+
+(6.40) \[F(\dot{\lambda},u)=0,\]
+
+where \(F\) is a \(\mathcal{C}^{p}\)-mapping (\(p\geqslant 1\)) defined on \(\Lambda\times X\) with values in \(\mathcal{X}\), \(X\) and \(\mathcal{X}\) being two Banach spaces and \(\Lambda\) an interval of \(\mathbb{R}\). Let us fix \(\dot{\lambda}\) for the moment and assume that \(u=u(\dot{\lambda})\!\in\!X\) is a nonsingular solution of (6.40), i.e.
+
+\[F(\dot{\lambda},u)=0,\quad\quad D_{u}F(\dot{\lambda},u)\text{ is an isomorphism from }X\text{ onto }\mathcal{X}.\]
+
+Then we know from the inverse function theorem (and also from the material of Section 3.2) that there exists a closed ball \(S(u;\omega)\) where the equation (6.40) has no other solution than \(u\).
+
+Since \(u\) is an isolated solution of (6.40) and since \(F\) is at least differentiable, an efficient way to approximate \(u\) is the _Newton's algorithm_:
+
+starting from an initial guess \(u^{0}\), construct the sequence \((u^{n})\) in \(X\) by:
+
+(6.41) \[u^{n+1}=u^{n}-[D_{u}F(\dot{\lambda},u^{n})]^{-1}\cdot F(\dot{\lambda},u^{n}) \quad\quad n\geqslant 0,\]
+
+or equivalently
+
+\[D_{u}F(\dot{\lambda},u^{n})\!\cdot\!(u^{n+1}-u^{n})=-F(\dot{\lambda},u^{n}).\]
+
+As \(D_{u}F(\dot{\lambda},u)\) is a linear operator, each step of Newton's method requires the solution of a different linear problem relative to \(D_{u}F(\dot{\lambda},u^{n})\). If this is too costly,

@@ -1,0 +1,506 @@
+% Reviewed translation: PDF pages 133--139 / printed pages 119--125.
+% Continues after Corollary 1.2; formulas are verified from the original scan.
+
+现在把 Aubin [3] 和 Nitsche [61] 的经典对偶论证推广到问题 $(P)$ 和
+$(P_h)$ 的情形. 为此, 引入 Hilbert 空间 $H$, 其标量积为
+$(\cdot,\cdot)$, 相应范数为 $|\cdot|$, 并满足
+\[
+X\subset H,
+\quad\text{$X$ 连续嵌入 $H$ 且在 $H$ 中稠密}.
+\]
+通过标量积 $(\cdot,\cdot)$ 把 $H$ 与其对偶空间 $H'$ 等同.
+于是, $H$ 可以与 $X'$ 的一个子空间等同:
+\[
+H\subset X',
+\quad\text{$H$ 连续且稠密地嵌入 $X'$}.
+\]
+为估计 $|u-u_h|$, 对每个 $g\in H$, 引入对偶问题的唯一解对
+$(\varphi_g,\xi_g)$:
+\begin{equation}\label{eq:primitive-dual-problem}
+\left\{
+\begin{aligned}
+a(v,\varphi_g)+b(v,\xi_g)&=(g,v)
+&&\forall v\in X,\\
+b(\varphi_g,\mu)&=0
+&&\forall\mu\in M.
+\end{aligned}
+\right.
+\end{equation}
+
+\setcounter{statement}{1}
+\begin{Theorem}\label{thm:primitive-duality-error}
+假设问题 $(P_h)$ 有唯一解 $u_h$. 则存在只依赖于 $\|a\|$ 和 $\|b\|$
+的常数 $C$, 使得
+\begin{equation}\label{eq:primitive-duality-error}
+\begin{split}
+|u-u_h|\leq{}&C\left\{
+\|u-u_h\|_X+\inf_{\mu_h\in M_h}\|\lambda-\mu_h\|_M
+\right\}\\
+&\times\sup_{g\in H}\frac{1}{|g|}\left\{
+\inf_{\varphi_h\in V_h}\|\varphi_g-\varphi_h\|_X
++\inf_{\xi_h\in M_h}\|\xi_g-\xi_h\|_M
+\right\}.
+\end{split}
+\end{equation}
+\end{Theorem}
+
+\begin{Proof}
+一方面,
+\[
+|u-u_h|=\sup_{g\in H}\frac{(g,u-u_h)}{|g|}.
+\]
+另一方面, 在 \eqref{eq:primitive-dual-problem} 中取 $v=u-u_h$, 得到
+\begin{equation}\label{eq:primitive-duality-identity}
+(g,u-u_h)=a(u-u_h,\varphi_g)+b(u-u_h,\xi_g).
+\end{equation}
+再考虑 \eqref{eq:primitive-abstract-q-first} 和
+\eqref{eq:primitive-discrete-kernel}, 得到
+\[
+a(u-u_h,\varphi_h)
+=-b(\varphi_h,\lambda)
+=-b(\varphi_h,\lambda-\mu_h)
+\quad\forall\varphi_h\in V_h,\quad\forall\mu_h\in M_h.
+\]
+
+\MathBookSourcePage{134}
+此外, 因为 $\varphi_g\in V$, 有
+\[
+b(\varphi_g,\lambda-\mu_h)=0
+\qquad\forall\mu_h\in M_h,
+\]
+而因为 $u\in V(\chi)$ 且 $u_h\in V_h(\chi)$, 还有
+\[
+b(u-u_h,\xi_h)=0
+\qquad\forall\xi_h\in M_h.
+\]
+把这三个等式代入 \eqref{eq:primitive-duality-identity}, 得到
+\[
+\begin{split}
+(g,u-u_h)={}&a(u-u_h,\varphi_g-\varphi_h)
++b(\varphi_g-\varphi_h,\lambda-\mu_h)\\
+&+b(u-u_h,\xi_g-\xi_h)
+\end{split}
+\]
+对所有 $\varphi_h\in V_h$ 和 $\mu_h,\xi_h\in M_h$ 成立. 因而
+\[
+\begin{split}
+|(g,u-u_h)|\leq{}&C
+\left\{\|u-u_h\|_X+\|\lambda-\mu_h\|_M\right\}\\
+&\times\left\{\|\varphi_g-\varphi_h\|_X
++\|\xi_g-\xi_h\|_M\right\},
+\end{split}
+\]
+其中 $C=\max(\|a\|,\|b\|)$.
+\end{Proof}
+
+\setcounter{statement}{5}
+\begin{Remark}\label{rem:primitive-duality-error-mixed-solution}
+若问题 $(Q_h)$ 有解 $(u_h,\lambda_h)$, 对上述论证作直接修改即可得到
+\[
+\begin{split}
+|u-u_h|\leq{}&C\left\{\|u-u_h\|_X+\|\lambda-\lambda_h\|_M\right\}\\
+&\times\sup_{g\in H}\frac{1}{|g|}\left\{
+\inf_{\varphi_h\in X_h}\|\varphi_g-\varphi_h\|_X
++\inf_{\xi_h\in M_h}\|\xi_g-\xi_h\|_M
+\right\},
+\end{split}
+\]
+其中 $C$ 是 \eqref{eq:primitive-duality-error} 中的常数.
+\end{Remark}
+
+\subsection{$u_h$ 与 $\lambda_h$ 计算的解耦}\label{subsec:primitive-decoupled-computation}
+
+本小节应用 Chapter~\ref{chap:stokes-foundations} 的 Section~\ref{sec:abstract-variational-problem}
+中正则化与梯度算法的技术, 将 $\lambda_h$ 的计算与 $u_h$ 的计算分离.
+这些方法在实际中经常使用.
+
+先考虑正则化过程. 回顾需要在 $M_h\times M_h$ 上给定连续双线性形式
+$c(\cdot,\cdot)$, 并假设它在 $M_h$ 上椭圆, 即存在常数 $\gamma^*>0$, 使得
+\begin{equation}\label{eq:primitive-discrete-c-ellipticity}
+c(\mu_h,\mu_h)\geq\gamma^*\|\mu_h\|_M^2
+\qquad\forall\mu_h\in M_h.
+\end{equation}
+照例, 与 $c(\cdot,\cdot)$ 相联系, 定义
+$C_h\in\mathcal L(M_h;M_h')$:
+\[
+\langle C_h\mu_h,\nu_h\rangle=c(\mu_h,\nu_h)
+\qquad\forall\mu_h,\nu_h\in M_h.
+\]
+与连续情形一样, 对每个 $\varepsilon>0$, 引入问题 $(Q_h^\varepsilon)$:
+
+求 $(u_h^\varepsilon,\lambda_h^\varepsilon)\in X_h\times M_h$, 使得
+\begin{equation}\label{eq:primitive-discrete-penalty-system}
+\left\{
+\begin{aligned}
+a(u_h^\varepsilon,v_h)+b(v_h,\lambda_h^\varepsilon)
+&=\langle l,v_h\rangle
+&&\forall v_h\in X_h,\\
+-\varepsilon c(\lambda_h^\varepsilon,\mu_h)
++b(u_h^\varepsilon,\mu_h)
+&=\langle\chi,\mu_h\rangle
+&&\forall\mu_h\in M_h.
+\end{aligned}
+\right.
+\end{equation}
+
+\MathBookSourcePage{135}
+由 \eqref{eq:primitive-discrete-c-ellipticity}, 算子 $C_h$ 非奇异,
+因而可以从上述方程中消去 $\lambda_h^\varepsilon$.
+所以问题 $(Q_h^\varepsilon)$ 等价于下列问题 $(P_h^\varepsilon)$:
+
+求 $u_h^\varepsilon\in X_h$, 使得
+\begin{equation}\label{eq:primitive-discrete-penalty-reduced}
+\begin{split}
+a(u_h^\varepsilon,v_h)
+&+\frac{1}{\varepsilon}
+\langle C_h^{-1}B_hu_h^\varepsilon,B_hv_h\rangle\\
+&=\langle l,v_h\rangle
++\frac{1}{\varepsilon}\langle C_h^{-1}\chi,B_hv_h\rangle
+\qquad\forall v_h\in X_h,
+\end{split}
+\end{equation}
+其中 $C_h^{-1}\in\mathcal L(M_h';M_h)$ 表示 $C_h$ 的逆.
+
+这里的情形与 Theorem~\ref{thm:abstract-penalty-error} 的情形完全相同,
+只是把算子 $B$ 和 $C$ 分别换成 $B_h$ 和 $C_h$. 因此该 Theorem 的结论
+对问题 $(P_h^\varepsilon)$ 和 $(Q_h^\varepsilon)$ 仍然成立.
+
+\setcounter{statement}{2}
+\begin{Theorem}\label{thm:primitive-discrete-penalty-error}
+除 \eqref{eq:primitive-discrete-inf-sup} 和
+\eqref{eq:primitive-discrete-c-ellipticity} 外, 再假设存在常数 $\alpha^*>0$, 使得
+\begin{equation}\label{eq:primitive-discrete-combined-ellipticity}
+a(v_h,v_h)+\langle C_h^{-1}B_hv_h,B_hv_h\rangle
+\geq\alpha^*\|v_h\|_X^2
+\qquad\forall v_h\in X_h.
+\end{equation}
+则当 $\varepsilon\leq1$ 时, 问题 $(Q_h)$ 与 $(Q_h^\varepsilon)$
+分别在 $X_h\times M_h$ 中有唯一解 $(u_h,\lambda_h)$ 和
+$(u_h^\varepsilon,\lambda_h^\varepsilon)$. 此外, 当
+$\varepsilon\leq\varepsilon_0$ 足够小时,
+\begin{equation}\label{eq:primitive-discrete-penalty-error}
+\|u_h^\varepsilon-u_h\|_X
++\|\lambda_h^\varepsilon-\lambda_h\|_M
+\leq K^*\varepsilon(\|l\|_{X'}+\|\chi\|_{M'}),
+\end{equation}
+其中常数 $K^*$ 只依赖于 $\alpha^*$, $\beta^*$,
+$\|a\|$, $\|b\|$ 和 $\|c\|$.
+\end{Theorem}
+
+同样, 可以改进 \eqref{eq:primitive-discrete-penalty-error}, 得到
+$(u_h^\varepsilon,\lambda_h^\varepsilon)$ 关于 $\varepsilon$ 的幂级数渐近展开.
+再次引入问题解序列 $(u_h^n,\lambda_h^n)\in X_h\times M_h$:
+\begin{equation}\label{eq:primitive-discrete-penalty-corrections}
+\left\{
+\begin{aligned}
+a(u_h^n,v_h)+b(v_h,\lambda_h^n)&=0
+&&\forall v_h\in X_h,\\
+b(u_h^n,\mu_h)&=c(\lambda_h^{n-1},\mu_h)
+&&\forall\mu_h\in M_h,
+\end{aligned}
+\right.
+\end{equation}
+其中从 $\lambda_h^0=\lambda_h$ 开始. 有
+Theorem~\ref{thm:abstract-penalty-asymptotic-expansion} 的离散对应结果.
+
+\setcounter{statement}{3}
+\begin{Theorem}\label{thm:primitive-discrete-penalty-expansion}
+在 Theorem~\ref{thm:primitive-discrete-penalty-error} 的假设下,
+对所有整数 $N\geq1$, 当 $\varepsilon\leq\varepsilon_0$ 足够小时,
+\begin{equation}\label{eq:primitive-discrete-penalty-expansion}
+\begin{split}
+&\left\|u_h^\varepsilon-u_h-
+\sum_{n=1}^N\varepsilon^nu_h^n\right\|_X
++\left\|\lambda_h^\varepsilon-\lambda_h-
+\sum_{n=1}^N\varepsilon^n\lambda_h^n\right\|_M\\
+&\hspace{4em}\leq K_N^*\varepsilon^{N+1}
+(\|l\|_{X'}+\|\chi\|_{M'}),
+\end{split}
+\end{equation}
+其中常数 $K_N^*$ 只依赖于 $N$, $\alpha^*$, $\beta^*$,
+$\|a\|$, $\|b\|$ 和 $\|c\|$.
+\end{Theorem}
+
+现在转向梯度算法. 沿用上述记号, 对每个实参数 $r\geq0$, 置
+\begin{equation}\label{eq:primitive-discrete-augmented-form}
+a_r^h(u,v)=a(u,v)+r\langle C_h^{-1}B_hu,B_hv\rangle
+\qquad\forall u,v\in X.
+\end{equation}
+
+\MathBookSourcePage{136}
+除 $c(\cdot,\cdot)$ 的椭圆性外, 再假设形式 $a_r^h(\cdot,\cdot)$
+在 $X_h$ 上椭圆: 存在常数 $\alpha^*>0$, 使得
+\begin{equation}\label{eq:primitive-discrete-augmented-ellipticity}
+a_r^h(v_h,v_h)\geq\alpha^*\|v_h\|_X^2
+\qquad\forall v_h\in X_h.
+\end{equation}
+于是带最优参数的简单梯度算法具有如下离散形式:
+
+$1^\circ)$ 给定初始猜测 $\lambda_h^0\in M_h$, 求解 $u_h^0\in X_h$:
+\[
+a_r^h(u_h^0,v_h)
+=\langle l,v_h\rangle+b(v_h,rC_h^{-1}\chi-\lambda_h^0)
+\qquad\forall v_h\in X_h.
+\]
+
+$2^\circ)$ 对 $m\geq0$, 已知
+$(u_h^m,\lambda_h^m)\in X_h\times M_h$, 按下式确定
+$(z_h^m,g_h^m)\in X_h\times M_h$, $\rho_h^m\in\mathbb R$ 以及
+$(u_h^{m+1},\lambda_h^{m+1})\in X_h\times M_h$:
+\begin{equation}\label{eq:primitive-discrete-simple-gradient}
+\left\{
+\begin{aligned}
+c(g_h^m,\mu_h)&=\langle\chi,\mu_h\rangle-b(u_h^m,\mu_h)
+&&\forall\mu_h\in M_h,\\
+a_r^h(z_h^m,v_h)&=b(v_h,g_h^m)
+&&\forall v_h\in X_h,\\
+\rho_h^m&=\frac{c(g_h^m,g_h^m)}{b(z_h^m,g_h^m)},\\
+\lambda_h^{m+1}&=\lambda_h^m-\rho_h^mg_h^m,\\
+u_h^{m+1}&=u_h^m+\rho_h^mz_h^m.
+\end{aligned}
+\right.
+\end{equation}
+不言而喻, 只有双线性形式 $a(\cdot,\cdot)$ 和 $c(\cdot,\cdot)$
+都对称时, 上述格式才是梯度算法. 下面的结果直接来自
+Corollary~\ref{cor:abstract-optimal-simple-gradient-convergence}.
+
+\setcounter{statement}{4}
+\begin{Theorem}\label{thm:primitive-discrete-simple-gradient-convergence}
+假设双线性形式 $a_r^h(\cdot,\cdot)$, $b(\cdot,\cdot)$ 和
+$c(\cdot,\cdot)$ 分别满足
+\eqref{eq:primitive-discrete-augmented-ellipticity},
+\eqref{eq:primitive-discrete-inf-sup} 和
+\eqref{eq:primitive-discrete-c-ellipticity}, 并假设
+$a(\cdot,\cdot)$ 和 $c(\cdot,\cdot)$ 对称. 则对每个初值
+$\lambda_h^0\in M_h$, 简单梯度算法
+\eqref{eq:primitive-discrete-simple-gradient} 都收敛:
+\[
+\lim_{m\to\infty}\left\{
+\|u_h^m-u_h\|_X+\|\lambda_h^m-\lambda_h\|_M
+\right\}=0.
+\]
+\end{Theorem}
+
+与连续情形一样, 简单梯度算法也可以在不使用最优参数时收敛.
+在这种情形下, 双线性形式 $a(\cdot,\cdot)$ 不必对称,
+并有 Theorem~\ref{thm:abstract-nonoptimal-gradient-convergence} 的对应结果.
+
+\setcounter{statement}{5}
+\begin{Theorem}\label{thm:primitive-discrete-nonoptimal-gradient-convergence}
+保留 Theorem~\ref{thm:primitive-discrete-simple-gradient-convergence} 的全部假设,
+但除去 $a(\cdot,\cdot)$ 的对称性假设. 则对每个初始猜测
+$\lambda_h^0\in M_h$ 以及满足
+\[
+0<\inf_m\rho_h^m\leq\sup_m\rho_h^m
+<2\gamma^*\widetilde\alpha_r^*
+\]
+的每个数列 $(\rho_h^m)$, 算法
+\eqref{eq:primitive-discrete-simple-gradient} 都收敛, 其中
+\[
+\widetilde\alpha_r^*
+=\inf_{v_h\in X_h}
+\frac{a_r^h(v_h,v_h)}{\|B_hv_h\|_{M_h'}^2}.
+\]
+\end{Theorem}
+
+\MathBookSourcePage{137}
+离散共轭梯度算法与连续格式完全类似. 为完整起见, 将其写出:
+
+$1^\circ)$ 从初始猜测 $\lambda_h^0\in M_h$ 出发, 求 $u_h^0\in X_h$:
+\[
+a_r^h(u_h^0,v_h)
+=\langle l,v_h\rangle+b(v_h,rC_h^{-1}\chi-\lambda_h^0)
+\qquad\forall v_h\in X_h.
+\]
+
+$2^\circ)$ 对 $m\geq0$, 已知
+$(u_h^m,\lambda_h^m)\in X_h\times M_h$, 按下式计算
+$g_h^m,\omega_h^m\in M_h$, $z_h^m\in X_h$,
+$\rho_h^m,\sigma_h^m\in\mathbb R$ 以及
+$(u_h^{m+1},\lambda_h^{m+1})\in X_h\times M_h$:
+\begin{equation}\label{eq:primitive-discrete-conjugate-gradient}
+\left\{
+\begin{aligned}
+c(g_h^m,\mu_h)&=\langle\chi,\mu_h\rangle-b(u_h^m,\mu_h)
+&&\forall\mu_h\in M_h,\\
+\sigma_h^m&=\frac{c(g_h^m,g_h^m)}{c(g_h^{m-1},g_h^{m-1})}
+&&\text{only if $m\geq1$},\\
+\omega_h^m&=g_h^m+\sigma_h^m\omega_h^{m-1},
+&&\omega_h^0=g_h^0\text{ otherwise},\\
+a_r^h(z_h^m,v_h)&=b(v_h,\omega_h^m)
+&&\forall v_h\in X_h,\\
+\rho_h^m&=\frac{c(g_h^m,g_h^m)}{b(z_h^m,g_h^m)},\\
+\lambda_h^{m+1}&=\lambda_h^m-\rho_h^m\omega_h^m,\\
+u_h^{m+1}&=u_h^m+\rho_h^mz_h^m.
+\end{aligned}
+\right.
+\end{equation}
+
+\setcounter{statement}{6}
+\begin{Theorem}\label{thm:primitive-discrete-conjugate-gradient-convergence}
+在 Theorem~\ref{thm:primitive-discrete-simple-gradient-convergence} 的假设下,
+共轭梯度算法收敛.
+\end{Theorem}
+
+\subsection{齐次 Stokes 问题的应用}\label{subsec:primitive-homogeneous-stokes}
+
+为简单起见, 只考虑齐次边界条件. 设 $\Omega$ 是 $\mathbb R^N$ 中有界,
+连通的开子集, 边界 $\Gamma$ 为 Lipschitz 连续的, 并给定
+$\mathbf f\in H^{-1}(\Omega)^N$. 回顾齐次 Stokes 方程:
+\begin{equation}\label{eq:primitive-homogeneous-stokes-strong}
+\left\{
+\begin{aligned}
+&\text{求 }(\mathbf u,p)\in H_0^1(\Omega)^N\times L_0^2(\Omega),\text{ 使得}\\
+-\nu\Delta\mathbf u+\operatorname{grad}p&=\mathbf f
+&&\text{in }\Omega,\\
+\operatorname{div}\mathbf u&=0
+&&\text{in }\Omega.
+\end{aligned}
+\right.
+\end{equation}
+该问题有唯一解. 此外, 若置
+\begin{equation}\label{eq:primitive-stokes-bilinear-forms}
+\left\{
+\begin{aligned}
+\text{(a)}\quad a(\mathbf u,\mathbf v)
+&=2\nu\sum_{i,j=1}^N(D_{ij}(\mathbf u),D_{ij}(\mathbf v)),\\
+\text{或}\qquad\\[-1.4em]
+\text{(b)}\quad a(\mathbf u,\mathbf v)
+&=\nu(\operatorname{grad}\mathbf u,\operatorname{grad}\mathbf v),
+\end{aligned}
+\right.
+\end{equation}
+则 \eqref{eq:primitive-homogeneous-stokes-strong} 等价于变分形式:
+
+\MathBookSourcePage{138}
+求 $(\mathbf u,p)\in H_0^1(\Omega)^N\times L_0^2(\Omega)$, 使得
+\begin{equation}\label{eq:primitive-homogeneous-stokes-weak}
+\left\{
+\begin{aligned}
+a(\mathbf u,\mathbf v)-(p,\operatorname{div}\mathbf v)
+&=\langle\mathbf f,\mathbf v\rangle
+&&\forall\mathbf v\in H_0^1(\Omega)^N,\\
+(q,\operatorname{div}\mathbf u)&=0
+&&\forall q\in L_0^2(\Omega).
+\end{aligned}
+\right.
+\end{equation}
+作如下替换:
+\[
+X=H_0^1(\Omega)^N,
+\quad M=L_0^2(\Omega),
+\quad\|\cdot\|_X=|\cdot|_{1,\Omega},
+\quad\|\cdot\|_M=\|\cdot\|_{0,\Omega},
+\]
+\[
+b(\mathbf v,q)=-(q,\operatorname{div}\mathbf v),
+\qquad
+\chi=0,
+\qquad
+l=\mathbf f,
+\]
+这恰好就是 Chapter~\ref{chap:stokes-foundations} 中齐次 Stokes 问题的抽象形式.
+
+现在, 对每个 $h$, 令 $W_h$ 和 $Q_h$ 是满足
+\[
+W_h\subset H^1(\Omega)^N,
+\qquad
+Q_h\subset L^2(\Omega)
+\]
+的两个有限维空间, 并在本小节始终假设 $Q_h$ 包含常数函数. 置
+\begin{equation}\label{eq:primitive-stokes-discrete-spaces}
+\left\{
+\begin{aligned}
+X_h&=W_h\cap H_0^1(\Omega)^N
+=\{\mathbf v_h\in W_h;\ \mathbf v_h|_\Gamma=\mathbf0\},\\
+M_h&=Q_h\cap L_0^2(\Omega)
+=\left\{q_h\in Q_h;\ \int_\Omega q_h\,dx=0\right\}.
+\end{aligned}
+\right.
+\end{equation}
+利用这些空间, 对 \eqref{eq:primitive-homogeneous-stokes-weak} 作如下逼近:
+
+求 $(\mathbf u_h,p_h)\in X_h\times M_h$, 使得
+\begin{equation}\label{eq:primitive-stokes-discrete-mixed}
+\left\{
+\begin{aligned}
+a(\mathbf u_h,\mathbf v_h)-(p_h,\operatorname{div}\mathbf v_h)
+&=\langle\mathbf f,\mathbf v_h\rangle
+&&\forall\mathbf v_h\in X_h,\\
+(q_h,\operatorname{div}\mathbf u_h)&=0
+&&\forall q_h\in M_h.
+\end{aligned}
+\right.
+\end{equation}
+因为 $\operatorname{div}\mathbf u_h\in L_0^2(\Omega)$,
+注意 \eqref{eq:primitive-stokes-discrete-mixed} 的第二个方程等价于
+\[
+(q_h,\operatorname{div}\mathbf u_h)=0
+\qquad\forall q_h\in Q_h.
+\]
+由此, 相应空间 $V_h$ 为
+\[
+V_h=\{\mathbf v_h\in X_h;\ (q_h,\operatorname{div}\mathbf v_h)=0
+\quad\forall q_h\in Q_h\}.
+\]
+所以, 与 \eqref{eq:primitive-stokes-discrete-mixed} 相联系的问题 $(P_h)$ 为:
+
+求 $\mathbf u_h\in V_h$, 使得
+\begin{equation}\label{eq:primitive-stokes-discrete-kernel-problem}
+a(\mathbf u_h,\mathbf v_h)=\langle\mathbf f,\mathbf v_h\rangle
+\qquad\forall\mathbf v_h\in V_h.
+\end{equation}
+
+\setcounter{statement}{6}
+\begin{Remark}\label{rem:primitive-discrete-velocity-not-divergence-free}
+如前一小节所述, $V_h$ 通常不包含在
+$V=\{\mathbf v\in H_0^1(\Omega)^N;\ \operatorname{div}\mathbf v=0\}$ 中;
+本章的全部例子都是如此. 因而 $V_h$ 中的函数并非无散, 而只满足
+\[
+\rho_h(\operatorname{div}\mathbf v_h)=0,
+\]
+其中 $\rho_h$ 是 $L^2(\Omega)$ 到 $Q_h$ 上的正交投影. 所以,
+\eqref{eq:primitive-stokes-bilinear-forms} 中双线性形式 $a(\cdot,\cdot)$
+的两种表达式用于 \eqref{eq:primitive-stokes-discrete-mixed} 时并不给出等价的变分形式.
+\end{Remark}
+
+\MathBookSourcePage{139}
+为研究问题 \eqref{eq:primitive-stokes-discrete-kernel-problem},
+通过下列假设把连续空间与离散空间联系起来.
+
+\noindent\textbf{Hypothesis H1 ($X_h$ 的逼近性质).}\quad
+存在算子
+\[
+r_h\in\mathcal L(H^2(\Omega)^N;W_h)
+\cap\mathcal L((H^2(\Omega)\cap H_0^1(\Omega))^N;X_h)
+\]
+以及整数 $l$, 使得
+\begin{equation}\label{eq:primitive-h1-approximation}
+|\mathbf v-r_h\mathbf v|_{1,\Omega}
+\leq Ch^m\|\mathbf v\|_{m+1,\Omega}
+\quad\forall\mathbf v\in H^{m+1}(\Omega)^N,
+\quad1\leq m\leq l.
+\end{equation}
+
+\noindent\textbf{Hypothesis H2 ($Q_h$ 的逼近性质).}\quad
+存在算子 $S_h\in\mathcal L(L^2(\Omega);Q_h)$, 使得
+\begin{equation}\label{eq:primitive-h2-approximation}
+\|q-S_hq\|_{0,\Omega}
+\leq Ch^m\|q\|_{m,\Omega}
+\quad\forall q\in H^m(\Omega),
+\quad0\leq m\leq l.
+\end{equation}
+
+\noindent\textbf{Hypothesis H3 (一致 inf-sup 条件).}\quad
+对每个 $q_h\in M_h$, 存在 $\mathbf v_h\in X_h$, 使得
+\begin{align}
+(q_h,\operatorname{div}\mathbf v_h)&=\|q_h\|_{0,\Omega}^2,
+\label{eq:primitive-h3-divergence-lifting}\\
+|\mathbf v_h|_{1,\Omega}&\leq C\|q_h\|_{0,\Omega},
+\label{eq:primitive-h3-stability}
+\end{align}
+其中常数 $C>0$ 与 $h$, $q_h$ 和 $\mathbf v_h$ 无关.
+
+回顾 Remark~\ref{rem:primitive-inf-sup-riesz-form}, Hypothesis H3
+等价于以 $\beta^*=1/C$ 成立的 inf-sup 条件
+\eqref{eq:primitive-discrete-inf-sup}.

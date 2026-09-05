@@ -1,0 +1,31 @@
+(6.31) \[D^{2}J(v)\cdot(w,w)\geqslant(\delta/2)\,\|\,w\,\|_{X}^{2}\qquad\forall v\in S(u; \rho),\qquad\forall w\in X,\]
+
+i.e. \(J\) is strictly convex in \(S(u;\rho)\). 
+
+As a consequence, Problem (6.24) is equivalent to solve:
+
+(6.32) \[\inf_{v\in S(u,\rho)}(1/2)\langle A^{-1}F(v),F(v)\rangle\]
+
+and this solution can be achieved by the gradient and conjugate-gradient methods of Section 6.1. Indeed, assume that \(D^{2}G\) is bounded on all bounded subsets of \(X\) so that \(F\), \(DF\) and \(D^{2}F\) are also bounded there, and assume that \(u\) is a _nonsingular solution_ of (6.24). Then we already know that the first part of (6.2) holds on the ball \(S(u;\rho)\), while the second part stems from (6.30), (6.26), the isomorphism property of \(DF(u)\) and the continuity of \(D^{2}J\). In addition, the boundedness of \(F\) implies that \(J\) is bounded in \(S(u;\rho)\). Thus, by choosing a starting value \(u^{0}\) in \(S(u;\rho)\) and setting \(J^{0}=J(u^{0})\) we can take
+
+\[D=\{v\in X;J(v)\leqslant J(u^{0})\}\cap S(u;\rho)\]
+
+and Theorems 6.1 and 6.2 guarantee the convergence of the gradient and conjugate-gradient algorithms.
+
+Let us examine the practical implementation of the _simple gradient method_. The symmetry and ellipticity of \(A\) induce us to equip \(X\) with the scalar product:
+
+\[(u,v)_{X}=\langle Au,v\rangle\]
+
+and associated norm \(\|\,u\|_{X}=\langle Au,u\rangle^{1/2}\). Hence, in view of (6.28), the gradient \(g(v)\) is defined by
+
+\[\langle Ag(v),w\rangle =\langle DJ(v),w\rangle\] \[=\langle A^{-1}F(v),DF(v)\cdot w\rangle\] \[=\langle(DF(v))^{\prime}A^{-1}F(v),w\rangle,\]
+
+i.e.
+
+(6.33) \[g(v)=A^{-1}(DF(v))^{\prime}A^{-1}F(v).\]
+
+Thus one step of the _simple gradient algorithm_ can be decomposed into the following operations:
+
+\[\begin{array}[]{lcl}\left\{\begin{array}[]{lcl}1^{\circ}\right)\mbox{compute}&z^{m}& =&A^{-1}F(u^{m}),\\ &&g^{m}&=&A^{-1}(DF(u^{m}))^{\prime}z^{m};\\ \\ 2^{\circ}\end{array}\right.\mbox{then minimize }J(u^{m}-\rho g^{m})\mbox{ with respect to }\rho,\mbox{ where}\\ \hskip 56.905512ptJ(u^{m}-\rho g^{m})=(1/2)\langle A^{-1}F(u^{m}-\rho g^{m}),F (u^{m}-\rho g^{m})\rangle.\end{array}\]
+
+Each iteration requires the resolution of two linear problems relative to the operator \(A\) plus the determination of \(\rho^{m}\). As an example, let us explicit the

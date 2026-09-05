@@ -1,0 +1,622 @@
+% Reviewed translation: PDF pages 212--218 / printed pages 198--204.
+% The original scan is authoritative; mathematical tokens were checked against it.
+\MathBookSourcePage{212}
+\section{二维 Stokes 问题的 "流函数--涡量--压力" 方法}
+\label{sec:incompressible-sfvp}
+
+二维 Stokes 方程组中广泛使用的 "流函数--涡量--压力" 表述
+建立在两个恒等式之上:
+\[
+\operatorname{curl}(\operatorname{curl}\mathbf u)
+=-\Delta\mathbf u+\operatorname{grad}(\operatorname{div}\mathbf u),
+\qquad
+\operatorname{curl}(\operatorname{curl}\phi)=-\Delta\phi.
+\]
+因此 Stokes 问题
+\[
+\left.
+\begin{aligned}
+-\nu\Delta\mathbf u+\operatorname{grad}p&=\mathbf f,\\
+\operatorname{div}\mathbf u&=0
+\end{aligned}
+\right\}\quad\text{in }\Omega,
+\qquad
+\mathbf u|_\Gamma=\mathbf0,
+\]
+既可表示为
+\[
+\left.
+\begin{aligned}
+\operatorname{curl}\mathbf u&=\omega,
+&\operatorname{div}\mathbf u&=0,\\
+\nu\operatorname{curl}\omega+\operatorname{grad}p&=\mathbf f
+\end{aligned}
+\right\}\quad\text{in }\Omega,
+\qquad
+\mathbf u|_\Gamma=\mathbf0,
+\]
+也可表示为
+\[
+\left.
+\begin{aligned}
+\mathbf u&=\operatorname{curl}\psi,
+&\omega&=-\Delta\psi,\\
+\nu\operatorname{curl}\omega+\operatorname{grad}p&=\mathbf f
+\end{aligned}
+\right\}\quad\text{in }\Omega,
+\qquad
+\operatorname{curl}\psi|_\Gamma=\mathbf0.
+\]
+本节和下一节讨论的混合方法由这两个表述导出.
+
+\subsection{一个混合表述}
+\label{subsec:incompressible-sfvp-mixed-formulation}
+
+令 $\Omega$ 为 $\mathbb R^2$ 中的有界区域,
+其 Lipschitz 连续边界 $\Gamma$ 的连通分支如
+Figure~\ref{fig:sec3-multiply-connected-domain} 所示,
+记为 $\Gamma_i$, $0\leq i\leq p$.
+给定 $\mathbf f\in L^r(\Omega)^2$, $r>1$,
+回顾 $\Omega$ 中 Stokes 方程的经典表述:
+
+求 $(\mathbf u,p)\in H_0^1(\Omega)^2\times L_0^2(\Omega)$, 使
+\begin{equation}\label{eq:incompressible-sfvp-stokes}
+\left\{
+\begin{aligned}
+\nu(\operatorname{grad}\mathbf u,\operatorname{grad}\mathbf v)
+-(p,\operatorname{div}\mathbf v)
+&=(\mathbf f,\mathbf v)
+&&\forall\mathbf v\in H_0^1(\Omega)^2,\\
+(q,\operatorname{div}\mathbf u)&=0
+&&\forall q\in L_0^2(\Omega).
+\end{aligned}
+\right.
+\end{equation}
+
+\long\gdef\ChapterThreeSectionTwoDeferredContinuation{%
+\MathBookSourcePage{215}
+\begin{Theorem}\label{thm:incompressible-stream-vorticity-wellposed}
+问题 \eqref{eq:incompressible-stream-vorticity-pair}
+在 $\Psi\times L^2(\Omega)$ 中有唯一解
+$(\psi,\omega=-\Delta\psi)$.
+并且存在唯一的 $p\in L_0^2(\Omega)$,
+使 $(\mathbf u=\operatorname{curl}\psi,\omega,p)$
+是问题
+\eqref{eq:incompressible-velocity-vorticity-pressure} 的解.
+\end{Theorem}
+
+然而, 这些问题都不能完全满足我们的目的,
+因为其内逼近要求构造有限维子空间, 其中要么速度严格无散并具有
+$H^1$ 正则性, 要么与之等价的流函数具有 $H^2$ 正则性.
+实际中这非常不理想.
+为解决这一困难, 我们放松测试速度 $\mathbf v$
+或流函数 $\phi$ 的正则性.
+
+先考虑问题 \eqref{eq:incompressible-sfvp-four-field}.
+双线性形式 $a(\cdot,\cdot)$ 可以保持不变,
+但包含 $\operatorname{curl}\mathbf v$ 和
+$\operatorname{div}\mathbf v$ 的形式 $b(\cdot,\cdot)$ 必须修改.
+对 $\mathbf v\in H_0^1(\Omega)^2$, 有
+\[
+\left.
+\begin{aligned}
+(\operatorname{curl}\mathbf v,\mu)
+&=(\mathbf v,\operatorname{curl}\mu),\\
+(q,\operatorname{div}\mathbf v)
+&=-(\operatorname{grad}q,\mathbf v)
+\end{aligned}
+\right\}
+\qquad\forall\mu,q\in H^1(\Omega).
+\]
+因此, 若提高 $\mu,q$ 的正则性, 就可以降低 $\mathbf v$ 的正则性.
+最直接的选择是
+$\mathbf v\in L^2(\Omega)^2$ 且 $\mu,q\in H^1(\Omega)$;
+对于 Stokes 问题, 这已经相当合适.
+但考虑到后续对 Navier--Stokes 方程的应用,
+最好允许 $\mu,q$ 属于更广的一类空间.
+
+为此, 固定实数 $s\geq2$, 并用
+\[
+\frac1r+\frac1s=1
+\]
+定义 $r\in\mathbb R$. 取
+\begin{equation}\label{eq:incompressible-weak-four-field-spaces}
+\widetilde X=L^s(\Omega)^2\times L^2(\Omega),
+\qquad
+\widetilde M=W^{1,r}(\Omega)
+\times[W^{1,r}(\Omega)\cap L_0^2(\Omega)],
+\end{equation}
+相应范数为
+\[
+\|(\mathbf v,\theta)\|_{\widetilde X}
+=\|\mathbf v\|_{0,s,\Omega}+\|\theta\|_{0,\Omega},
+\qquad
+\|(\mu,q)\|_{\widetilde M}
+=\|\mu\|_{1,r,\Omega}+\|q\|_{1,r,\Omega},
+\]
+并定义双线性形式
+\begin{equation}\label{eq:incompressible-weak-four-field-forms}
+\left\{
+\begin{aligned}
+\widetilde a((\mathbf u,\omega),(\mathbf v,\theta))
+&=\nu(\omega,\theta),\\
+\widetilde b((\mathbf v,\theta),(\mu,q))
+&=(\mathbf v,\operatorname{curl}\mu)
+-(\theta,\mu)+(\operatorname{grad}q,\mathbf v),
+\end{aligned}
+\right.
+\end{equation}
+其中 $(\mathbf u,\omega),(\mathbf v,\theta)\in\widetilde X$,
+$(\mu,q)\in\widetilde M$.
+
+\MathBookSourcePage{216}
+现在假设
+\eqref{eq:incompressible-sfvp-stokes} 的右端项
+$\mathbf f\in L^r(\Omega)^2$, 并考虑问题 $(\widetilde Q)$:
+
+求 $(\mathbf u,\omega)\in\widetilde X$ 和
+$(\lambda,p)\in\widetilde M$, 使
+\begin{equation}\label{eq:incompressible-weak-four-field}
+\left\{
+\begin{aligned}
+\nu(\omega,\theta)
++(\mathbf v,\operatorname{curl}\lambda)
+-(\theta,\lambda)+(\operatorname{grad}p,\mathbf v)
+&=(\mathbf f,\mathbf v)
+&&\forall(\mathbf v,\theta)\in\widetilde X,\\
+(\mathbf u,\operatorname{curl}\mu)
+-(\omega,\mu)+(\operatorname{grad}q,\mathbf u)
+&=0
+&&\forall(\mu,q)\in\widetilde M.
+\end{aligned}
+\right.
+\end{equation}
+在继续之前, 先考察问题 $(\widetilde Q)$ 相联系的空间
+\begin{equation}\label{eq:incompressible-weak-four-field-kernel}
+\widetilde V
+=\{(\mathbf v,\theta)\in\widetilde X;\
+(\mathbf v,\operatorname{curl}\mu)-(\theta,\mu)
++(\operatorname{grad}q,\mathbf v)=0
+\quad\forall(\mu,q)\in\widetilde M\}.
+\end{equation}
+在 $\widetilde X$ 上引入半范数
+\begin{equation}\label{eq:incompressible-vorticity-seminorm}
+|(\mathbf v,\theta)|=\|\theta\|_{0,\Omega}
+\qquad\forall(\mathbf v,\theta)\in\widetilde X.
+\end{equation}
+
+\begin{Lemma}\label{lem:incompressible-weak-kernel-coincidence}
+空间 $V$ 与 $\widetilde V$ 在代数和拓扑意义下相同.
+此外, 半范数
+\eqref{eq:incompressible-vorticity-seminorm}
+在 $V$ 上是一个与 $\|\cdot\|_{\widetilde X}$ 等价的范数:
+\[
+|(\mathbf v,\theta)|
+\simeq\|(\mathbf v,\theta)\|_{\widetilde X}
+\qquad\forall(\mathbf v,\theta)\in V.
+\]
+\end{Lemma}
+
+\begin{Proof}
+设 $(\mathbf v,\theta)\in\widetilde V$.
+直接应用 Green 公式依次得到
+\[
+\operatorname{div}\mathbf v=0\quad\text{in }\Omega,
+\qquad
+\mathbf v\cdot\mathbf n=0\quad\text{on }\Gamma,
+\]
+以及
+\[
+\theta=\operatorname{curl}\mathbf v\quad\text{in }\Omega,
+\qquad
+\mathbf v\cdot\boldsymbol\tau=0\quad\text{on }\Gamma.
+\]
+因而
+$\mathbf v\in H_0(\operatorname{div};\Omega)
+\cap H_0(\operatorname{curl};\Omega)$,
+并由 Corollary~\ref{cor:sec2-local-h1-hdiv-hcurl} 得
+\[
+\mathbf v\in H_0^1(\Omega)^2,
+\]
+且
+\begin{equation}\label{eq:incompressible-velocity-by-vorticity}
+|\mathbf v|_{1,\Omega}
+\leq C\|\theta\|_{0,\Omega}.
+\end{equation}
+所以 $\widetilde V\subset V$, 反向包含显然成立.
+范数等价性由更强的结果
+\eqref{eq:incompressible-velocity-by-vorticity}
+和 Sobolev 嵌入 Theorem 立即得到.
+\end{Proof}
+
+现在可以证明问题 $(Q)$ 和 $(\widetilde Q)$ 等价.
+
+\begin{Theorem}\label{thm:incompressible-weak-four-field-equivalence}
+假设 Stokes 问题
+\eqref{eq:incompressible-sfvp-stokes} 的解 $(\mathbf u,p)$ 满足
+\begin{equation}\label{eq:incompressible-stokes-weak-regularity}
+\operatorname{curl}\mathbf u\in W^{1,r}(\Omega),
+\qquad
+p\in W^{1,r}(\Omega)\cap L_0^2(\Omega).
+\end{equation}
+则问题 $(\widetilde Q)$ 有唯一解
+\[
+\mathbf u,\qquad
+\omega=\operatorname{curl}\mathbf u,\qquad
+\lambda=\nu\omega,\qquad
+p.
+\]
+\end{Theorem}
+
+\begin{Proof}
+这是 Theorem~\ref{thm:incompressible-weak-mixed-equivalence}
+和 Lemma~\ref{lem:incompressible-weak-kernel-coincidence}
+的直接应用.
+由 Sobolev 嵌入 Theorem 和相应的嵌入结果,
+$X$ 在 $\widetilde X$ 中稠密且连续,
+$\widetilde M$ 在 $M$ 中稠密且连续.
+等式
+\eqref{eq:incompressible-extended-a}
+与 \eqref{eq:incompressible-extended-b} 显然成立.
+椭圆性条件由
+\eqref{eq:incompressible-velocity-by-vorticity} 得到,
+而原有的两个假设此前已验证.
+结合
+\eqref{eq:incompressible-stokes-weak-regularity}
+与 Lemma~\ref{lem:incompressible-weak-kernel-coincidence},
+Theorem~\ref{thm:incompressible-weak-mixed-equivalence}
+的全部条件均成立.
+\end{Proof}
+
+\MathBookSourcePage{217}
+\begin{Remark}\label{rem:incompressible-weak-regularity-sufficient}
+若 $\Gamma$ 属于 $\mathcal C^2$ 类,
+或 $\Omega$ 是凸多边形,
+则相应的 Stokes 正则性结果表明,
+只要 $\mathbf f\in L^r(\Omega)^2$, 就有
+$\mathbf u\in W^{2,r}(\Omega)^2$ 和
+$p\in W^{1,r}(\Omega)$.
+因此, 对 $\mathbf f$ 和 $\Omega$ 的这一温和正则性假设足以保证
+问题 $(\widetilde Q)$ 有唯一解.
+\end{Remark}
+
+关于流函数, 回顾
+Corollary~\ref{cor:sec3-h-stream-functions}:
+$\operatorname{curl}$ 是从
+\[
+\Phi=\{\chi\in H^1(\Omega);\
+\chi|_{\Gamma_0}=0,\
+\chi|_{\Gamma_i}=c_i\text{ 为常数},\
+1\leq i\leq p\}
+\]
+到
+\[
+H=\{\mathbf v\in L^2(\Omega)^2;\
+\operatorname{div}\mathbf v=0,\
+\mathbf v\cdot\mathbf n|_\Gamma=0\}
+\]
+上的同构.
+这一结果立即蕴含,
+$\operatorname{curl}$ 也是从
+\begin{equation}\label{eq:incompressible-stream-space-phi-s}
+\Phi_s=\Phi\cap W^{1,s}(\Omega)
+\end{equation}
+到
+\[
+H\cap L^s(\Omega)^2
+=\{\mathbf v\in L^s(\Omega)^2;\
+\operatorname{div}\mathbf v=0,\
+\mathbf v\cdot\mathbf n|_\Gamma=0\}
+\]
+上的同构.
+因此, 若 $((\mathbf u,\omega),(\lambda,p))$
+是 \eqref{eq:incompressible-weak-four-field} 的解,
+则一方面由
+Lemma~\ref{lem:incompressible-weak-kernel-coincidence}
+有 $(\mathbf u,\omega)\in V$;
+另一方面, 在其中对每个 $\phi\in\Phi_s$
+取 $\mathbf v=\operatorname{curl}\phi$, 可得
+$\mathbf u=\operatorname{curl}\psi$, 其中
+$((\psi,\omega),\lambda)$ 是下列问题的解:
+
+求 $(\psi,\omega)\in\Phi_s\times L^2(\Omega)$ 和
+$\lambda\in W^{1,r}(\Omega)$, 使
+\begin{equation}\label{eq:incompressible-weak-stream-three-field}
+\left\{
+\begin{aligned}
+\nu(\omega,\theta)-(\lambda,\theta)
++(\operatorname{curl}\phi,\operatorname{curl}\lambda)
+&=(\mathbf f,\operatorname{curl}\phi)
+&&\forall(\phi,\theta)\in\Phi_s\times L^2(\Omega),\\
+(\operatorname{curl}\psi,\operatorname{curl}\mu)
+-(\omega,\mu)&=0
+&&\forall\mu\in W^{1,r}(\Omega).
+\end{aligned}
+\right.
+\end{equation}
+反之, 容易检验
+\eqref{eq:incompressible-weak-stream-three-field}
+至多有一个解. 因而得到如下两个重要结论.
+
+\begin{Corollary}\label{cor:incompressible-weak-stream-unique}
+在 Theorem~\ref{thm:incompressible-weak-four-field-equivalence}
+的假设下, 问题
+\eqref{eq:incompressible-weak-stream-three-field} 有唯一解
+\[
+\psi,\qquad
+\omega=-\Delta\psi,\qquad
+\lambda=\nu\omega,
+\]
+其中
+$\operatorname{curl}\psi=\mathbf u$,
+$\mathbf u$ 是
+\eqref{eq:incompressible-sfvp-stokes} 的解.
+\end{Corollary}
+
+\begin{Theorem}\label{thm:incompressible-decoupled-stream-pressure}
+在 Theorem~\ref{thm:incompressible-weak-four-field-equivalence}
+的假设下, 问题
+\eqref{eq:incompressible-weak-stream-three-field}
+等价于:
+
+求 $\psi\in\Phi_s$ 和 $\omega\in W^{1,r}(\Omega)$, 使
+\begin{equation}\label{eq:incompressible-decoupled-stream-vorticity}
+\left\{
+\begin{aligned}
+\nu(\operatorname{curl}\omega,\operatorname{curl}\phi)
+&=(\mathbf f,\operatorname{curl}\phi)
+&&\forall\phi\in\Phi_s,\\
+(\operatorname{curl}\psi,\operatorname{curl}\mu)
+&=(\omega,\mu)
+&&\forall\mu\in W^{1,r}(\Omega).
+\end{aligned}
+\right.
+\end{equation}
+
+\MathBookSourcePage{218}
+此外, 压力 $p$ 是下列问题的唯一解:
+
+求 $p\in W^{1,r}(\Omega)\cap L_0^2(\Omega)$, 使
+\begin{equation}\label{eq:incompressible-decoupled-pressure}
+(\operatorname{grad}p,\operatorname{grad}q)
+=(\mathbf f-\nu\operatorname{curl}\omega,
+\operatorname{grad}q)
+\qquad\forall q\in W^{1,s}(\Omega).
+\end{equation}
+\end{Theorem}
+
+\begin{Proof}
+在 \eqref{eq:incompressible-weak-four-field} 中,
+对每个 $q\in W^{1,s}(\Omega)$ 取
+$\mathbf v=\operatorname{grad}q$,
+并利用 $\lambda=\nu\omega$, 即得到
+\eqref{eq:incompressible-decoupled-pressure}.
+\end{Proof}
+
+后面各小节讨论的逼近主要建立在
+\eqref{eq:incompressible-decoupled-stream-vorticity}
+和 \eqref{eq:incompressible-decoupled-pressure} 上.
+需要指出,
+\eqref{eq:incompressible-decoupled-stream-vorticity}
+可解释为 Laplace 算子的两个 Dirichlet 问题.
+为简单起见, 考虑 $\Omega$ 单连通($p=0$)的情形.
+令 $\omega_0$ 表示 $\omega$ 在 $\Gamma$ 上的迹,
+则 \eqref{eq:incompressible-decoupled-stream-vorticity}
+可解释为
+\[
+-\nu\Delta\omega=\operatorname{curl}\mathbf f
+\quad\text{in }\Omega,
+\qquad
+\omega|_\Gamma=\omega_0,
+\]
+\[
+-\Delta\psi=\omega
+\quad\text{in }\Omega,
+\qquad
+\psi|_\Gamma=0.
+\]
+类似地,
+\eqref{eq:incompressible-decoupled-pressure}
+是 Laplace 算子的一个 Neumann 问题.
+虽然
+\eqref{eq:incompressible-decoupled-stream-vorticity}
+中的两个问题相互耦合(因为 $\omega_0$ 未知),
+但它与
+\eqref{eq:incompressible-decoupled-pressure}
+完全解耦: 先求解前者, 再求解后者.
+此外, 这两个表述非常适合构造具有下列性质的逼近:
+
+\textup{1)} 速度严格无散;
+
+\textup{2)} 压力连续.
+}
+\MathBookSourcePage{213}
+由于 $\operatorname{div}\mathbf u=0$, 已知
+\begin{equation}\label{eq:incompressible-grad-curl-identity}
+(\operatorname{grad}\mathbf u,\operatorname{grad}\mathbf v)
+=(\operatorname{curl}\mathbf u,\operatorname{curl}\mathbf v)
+\qquad\forall\mathbf v\in H_0^1(\Omega)^2.
+\end{equation}
+引入涡量 $\omega=\operatorname{curl}\mathbf u$,
+方程 \eqref{eq:incompressible-sfvp-stokes} 等价于:
+
+求 $(\mathbf u,\omega,p)
+\in H_0^1(\Omega)^2\times L^2(\Omega)\times L_0^2(\Omega)$, 使
+\begin{equation}\label{eq:incompressible-velocity-vorticity-pressure}
+\left\{
+\begin{aligned}
+\nu(\omega,\operatorname{curl}\mathbf v)
+-(p,\operatorname{div}\mathbf v)
+&=(\mathbf f,\mathbf v)
+&&\forall\mathbf v\in H_0^1(\Omega)^2,\\
+(\operatorname{curl}\mathbf u-\omega,\mu)
+-(q,\operatorname{div}\mathbf u)
+&=0
+&&\forall\mu\in L^2(\Omega),\quad
+\forall q\in L_0^2(\Omega).
+\end{aligned}
+\right.
+\end{equation}
+把问题 \eqref{eq:incompressible-velocity-vorticity-pressure}
+置于 Subsection~\ref{subsec:abstract-general-result} 的框架中.
+置
+\[
+X=H_0^1(\Omega)^2\times L^2(\Omega),
+\qquad
+\|(\mathbf v,\theta)\|_X
+=\bigl(|\mathbf v|_{1,\Omega}^2+\|\theta\|_{0,\Omega}^2\bigr)^{1/2},
+\]
+以及
+\[
+M=L^2(\Omega)\times L_0^2(\Omega),
+\qquad
+\|(\mu,q)\|_M
+=\bigl(\|\mu\|_{0,\Omega}^2+\|q\|_{0,\Omega}^2\bigr)^{1/2}.
+\]
+引入双线性形式
+\begin{equation}\label{eq:incompressible-sfvp-abstract-forms}
+\left\{
+\begin{aligned}
+a((\mathbf u,\omega),(\mathbf v,\theta))
+&=\nu(\omega,\theta),\\
+b((\mathbf v,\theta),(\mu,q))
+&=(\operatorname{curl}\mathbf v-\theta,\mu)
+-(q,\operatorname{div}\mathbf v),
+\end{aligned}
+\right.
+\end{equation}
+以及右端项
+\begin{equation}\label{eq:incompressible-sfvp-abstract-data}
+\langle l,(\mathbf v,\theta)\rangle=(\mathbf f,\mathbf v),
+\qquad
+\chi=0.
+\end{equation}
+
+\MathBookSourcePage{214}
+由这些数据得到的问题 $(Q)$ 为:
+
+求 $(\mathbf u,\omega)\in X$ 和 $(\lambda,p)\in M$, 使
+\begin{equation}\label{eq:incompressible-sfvp-four-field}
+\left\{
+\begin{aligned}
+\nu(\omega,\theta)
++(\operatorname{curl}\mathbf v-\theta,\lambda)
+-(p,\operatorname{div}\mathbf v)
+&=(\mathbf f,\mathbf v)
+&&\forall(\mathbf v,\theta)\in X,\\
+(\operatorname{curl}\mathbf u-\omega,\mu)
+-(q,\operatorname{div}\mathbf u)
+&=0
+&&\forall(\mu,q)\in M.
+\end{aligned}
+\right.
+\end{equation}
+其相联系的空间为
+\[
+V=\{(\mathbf v,\theta)\in X;\
+\theta=\operatorname{curl}\mathbf v,\
+\operatorname{div}\mathbf v=0\}.
+\]
+$a(\cdot,\cdot)$ 是 $V$-椭圆的,
+而关于 $b(\cdot,\cdot)$ 的 inf-sup 条件由
+Chapter~\ref{chap:stokes-foundations} 的结果直接得到.
+因此有如下等价性结论.
+
+\begin{Theorem}\label{thm:incompressible-sfvp-four-field-equivalence}
+问题 \eqref{eq:incompressible-sfvp-four-field} 在
+$X\times M$ 中有唯一解
+$((\mathbf u,\omega),(\lambda,p))$.
+此外, $(\mathbf u,p)$, 或等价地
+$(\mathbf u,\omega,p)$, 是 Stokes 问题
+\eqref{eq:incompressible-sfvp-stokes}, 或问题
+\eqref{eq:incompressible-velocity-vorticity-pressure} 的解,
+其中
+\[
+\omega=\operatorname{curl}\mathbf u,
+\qquad
+\lambda=\nu\omega.
+\]
+\end{Theorem}
+
+\begin{Proof}
+上述讨论蕴含问题
+\eqref{eq:incompressible-sfvp-four-field} 有唯一解.
+(唯一性也可由一个直接的简单论证得到.)
+此外, 直接检验可知, 若
+$(\mathbf u,\omega=\operatorname{curl}\mathbf u,p)$ 满足
+\eqref{eq:incompressible-velocity-vorticity-pressure},
+则 $((\mathbf u,\omega),(\nu\omega,p))$ 也满足
+\eqref{eq:incompressible-sfvp-four-field}.
+\end{Proof}
+
+问题 \eqref{eq:incompressible-velocity-vorticity-pressure}
+和 \eqref{eq:incompressible-sfvp-four-field}
+也可用流函数表示.
+回顾空间
+\begin{equation}\label{eq:incompressible-stream-space-psi}
+\Psi=\{\chi\in H^2(\Omega);\
+\chi|_{\Gamma_0}=0,\
+\chi|_{\Gamma_i}=c_i\text{ 为常数},\ 1\leq i\leq p,\
+\partial\chi/\partial n|_\Gamma=0\}.
+\end{equation}
+由 Corollary~\ref{cor:sec3-v-stream-functions},
+映射 $\operatorname{curl}$ 是从 $\Psi$ 到
+\[
+\{\mathbf v\in H_0^1(\Omega)^2;\
+\operatorname{div}\mathbf v=0\}
+\]
+上的同构. 因而存在唯一的 $\psi\in\Psi$, 使
+\[
+\mathbf u=\operatorname{curl}\psi.
+\]
+在 \eqref{eq:incompressible-velocity-vorticity-pressure}
+或 \eqref{eq:incompressible-sfvp-four-field} 中,
+对所有 $\phi\in\Psi$ 取
+$\mathbf v=\operatorname{curl}\phi$,
+可知前一问题解的两个分量 $\mathbf u,\omega$,
+或后一问题解的三个分量 $\mathbf u,\omega,\lambda$,
+可分别由下列问题确定:
+
+求 $(\psi,\omega)\in\Psi\times L^2(\Omega)$, 使
+\begin{equation}\label{eq:incompressible-stream-vorticity-pair}
+\left\{
+\begin{aligned}
+\nu(\omega,-\Delta\phi)
+&=(\mathbf f,\operatorname{curl}\phi)
+&&\forall\phi\in\Psi,\\
+(\Delta\psi+\omega,\mu)&=0
+&&\forall\mu\in L^2(\Omega);
+\end{aligned}
+\right.
+\end{equation}
+或者, 求
+$(\psi,\omega,\lambda)\in
+\Psi\times L^2(\Omega)\times L^2(\Omega)$, 使
+\begin{equation}\label{eq:incompressible-stream-vorticity-multiplier}
+\left\{
+\begin{aligned}
+\nu(\omega,\theta)-(\Delta\phi+\theta,\lambda)
+&=(\mathbf f,\operatorname{curl}\phi)
+&&\forall(\phi,\theta)\in\Psi\times L^2(\Omega),\\
+(\Delta\psi+\omega,\mu)&=0
+&&\forall\mu\in L^2(\Omega).
+\end{aligned}
+\right.
+\end{equation}
+这个问题属于 Subsection~\ref{subsec:abstract-general-result} 的框架,
+其中
+\begin{equation}\label{eq:incompressible-stream-abstract-interpretation}
+\left\{
+\begin{aligned}
+X&=\Psi\times L^2(\Omega),
+&M&=L^2(\Omega),\\
+a((\psi,\omega),(\phi,\theta))
+&=\nu(\omega,\theta),\\
+b((\phi,\theta),\mu)
+&=-(\Delta\phi+\theta,\mu),\\
+\langle l,(\phi,\theta)\rangle
+&=(\mathbf f,\operatorname{curl}\phi).
+\end{aligned}
+\right.
+\end{equation}
+\ChapterThreeSectionTwoDeferredContinuation

@@ -1,0 +1,384 @@
+% Reviewed translation: PDF pages 350(part)--355 / printed pages 336(part)--341.
+\MathBookSourcePage{350}
+\section{上风格式的数值分析}
+\label{sec:navier-upwind-analysis}
+
+当黏度 $\nu$ 很小时, 或者等价地, 当 Reynolds 数 $Re$ 与流体的其他参数相比很大时,
+在 $\Gamma$ 邻域会出现一个边界层; 黏性在该处占主导, 而在 $\Omega$ 内部则可忽略.
+与此同时, 流动变为湍流. 因而, 在高 Reynolds 数下, Navier--Stokes 方程的解具有严重的不连续性.
+
+这里的目的不是对湍流进行建模, 但仍值得考察 Navier--Stokes 方程不连续解的一种可能离散化.
+我们不采用迄今研究的中心格式, 而提出更适于描述不连续流动的上风格式. 后面的分析表明,
+这些格式几乎是最优的. 读者也可参见 Johnson \& Saranen~\cite{JohnsonSaranen47}
+关于另一种方法, 即适用于 Euler 和 Navier--Stokes 方程的流线扩散法.
+
+\subsection{流函数--涡量格式中的上风化}
+\label{subsec:navier-upwind-stream-vorticity}
+
+本节讨论的上风格式由 Fortin~\cite{Fortin31} 发展, 其灵感来自
+Lesaint \& Raviart~\cite{LesaintRaviart51} 为求解中子输运方程而提出的一种数值方法.
+它源自下面的启发式说明. 当光滑向量场 $\boldsymbol u$ 无散时, 对流项满足
+(采用重复指标表示求和的通常求和约定)
+\[
+u_j(\partial u_i/\partial x_j)=\partial(u_ju_i)/\partial x_j.
+\]
+
+现在设 $\Omega$ 是两个有界区域 $\Omega_1$ 和 $\Omega_2$ 的并, 它们由
+Figure~\ref{fig:navier-upwind-interface} 所示的界面 $S$ 分隔. 以 $\Gamma$ 表示
+$\Omega$ 的边界, 以 $\boldsymbol n_i$ 表示 $\Omega_i$ 在 $S$ 上的单位外法向量.
+
+\setcounter{figure}{20}
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.70\textwidth]{chapter-04-figure-21.png}
+  \caption{两个子区域之间的上风界面.}
+  \label{fig:navier-upwind-interface}
+\end{figure}
+
+\MathBookSourcePage{351}
+假设向量场 $\boldsymbol u$ 在 $\Omega$ 中不再整体光滑, 而是满足
+\[
+\boldsymbol u|_{\Omega_k}\in H^1(\Omega_k)^N,
+\qquad \boldsymbol u|_\Gamma=\boldsymbol0,
+\qquad \boldsymbol u\in H(\operatorname{div};\Omega),
+\qquad \operatorname{div}\boldsymbol u=0.
+\]
+于是乘积 $u_ju_i$ 在 $\Omega$ 中不再可微, 但它的分布导数具有如下形式:
+\[
+[\partial(u_ju_i)/\partial x_j]
+=\left.\partial(u_ju_i)/\partial x_j\right|_{\Omega_1\cup\Omega_2}
+\]
+再加上与场 $\boldsymbol u$ 跨界面 $S$ 的跳跃相对应的面分布, 即
+\[
+\boldsymbol u\cdot\boldsymbol n
+\bigl(u_i^{\mathrm{ext}}-u_i^{\mathrm{int}}\bigr)\,ds,
+\]
+其中 $\boldsymbol n$ 以及外部和内部的概念都相对于同一区域而言. 上风化依赖如下原则:
+\[
+\textit{$\Omega_k$ 中的流动仅依赖于通过 $S$ 进入的通量.}
+\]
+根据这一原则, 引入记号
+\begin{equation}\label{eq:navier-upwind-inflow-interface}
+\partial_-\Omega_k
+=\{x\in S;\ \boldsymbol u\cdot\boldsymbol n_k(x)<0\},
+\end{equation}
+表示流体进入 $\Omega_k$ 的界面 $S$ 的部分, 并把对流项定义为
+\begin{equation}\label{eq:navier-upwind-two-region-convection}
+\begin{aligned}
+\int_\Omega u_j(\partial u_i/\partial x_j)v_i\,dx
+\mathrel{\mathop{=}^{\mathrm{def}}}
+&\sum_{k=1}^2\int_{\Omega_k}u_j(\partial u_i/\partial x_j)v_i\,dx\\
+&+\sum_{k=1}^2\int_{\partial_-\Omega_k}
+\boldsymbol u\cdot\boldsymbol n_k
+(u_i^{\mathrm{ext}}-u_i^{\mathrm{int}})v_i^{\mathrm{int}}\,ds.
+\end{aligned}
+\end{equation}
+这里 $\boldsymbol u\in H(\operatorname{div};\Omega)$,
+$\operatorname{div}\boldsymbol u=0$,
+$\boldsymbol u|_{\Omega_k}\in H^1(\Omega_k)^N$, 且
+$\boldsymbol v|_{\Omega_k}\in H^1(\Omega_k)^N$.
+显然, 当 $\boldsymbol u$ 和 $\boldsymbol v$ 属于 $H^1(\Omega)^N$ 时, 面项消失,
+从而恢复熟悉的对流表达式. 但是, 当 $\boldsymbol u$ 和 $\boldsymbol v$ 并非整体属于
+$H^1$ 时, 必须把 \eqref{eq:navier-upwind-two-region-convection} 理解为一个定义.
+
+\MathBookSourcePage{352}
+我们拟把上述考虑推广到 $\Omega$ 已三角剖分的情形, 其中每个三角形都被视为
+$\Omega$ 的一个子区域. 但在此之前, 先回顾 Section~\ref{subsec:navier-centered-stream-vorticity}
+中发展的 Navier--Stokes 系统流函数--涡量表述及其逼近框架.
+
+设 $\Omega$ 是 $\mathbb R^2$ 中具有多边形边界 $\Gamma$ 的有界区域, 因而可被完全三角剖分;
+并假设 $\Omega$ 是凸的, 从而正则性条件
+\eqref{eq:navier-centered-stream-dual-regularity} 成立. 为简化讨论, 暂时略去压力,
+只考虑流函数和涡量. 令
+\[
+Y=L^r(\Omega)^2,
+\qquad
+X=\{\operatorname{curl}\phi;\ \phi\in\Phi_s\}\times L^2(\Omega),
+\]
+其中 $s\geq4$ 且 $1/r+1/s=1$. Stokes 算子 $T\in\mathcal L(Y;X)$ 定义为
+$T\boldsymbol f=(\operatorname{curl}\psi,\omega)$, 这里
+\begin{equation}\label{eq:navier-upwind-stokes-operator}
+\left\{
+\begin{aligned}
+(\operatorname{curl}\omega,\operatorname{curl}\phi)
+&=(\boldsymbol f,\operatorname{curl}\phi)
+&&\forall\phi\in\Phi_s,\\
+(\operatorname{curl}\psi,\operatorname{curl}\mu)
+&=(\omega,\mu)
+&&\forall\mu\in W^{1,r}(\Omega),
+\end{aligned}
+\right.
+\end{equation}
+其中 $\psi$ 和 $\omega$ 通过
+\begin{equation}\label{eq:navier-upwind-velocity-vorticity}
+\boldsymbol u=\operatorname{curl}\psi,
+\qquad
+\omega=\operatorname{curl}\boldsymbol u
+\end{equation}
+与速度 $\boldsymbol u$ 相联系. 像往常一样, 引入 $X$ 的子空间
+\begin{equation}\label{eq:navier-upwind-continuous-subspace}
+V=\{(\operatorname{curl}\phi,\theta)\in X;
+\ \phi\in H_0^2(\Omega),\ \theta=-\Delta\phi\}.
+\end{equation}
+由于 $\Omega$ 是凸的, $\Gamma$ 只有一个连通分支; 并且由
+Theorem~\ref{thm:incompressible-stream-vorticity-wellposed} 已知 $T\in\mathcal L(Y;V)$.
+非线性项的表达方式与 \eqref{eq:navier-centered-stream-nonlinearity} 大致相同:
+\begin{equation}\label{eq:navier-upwind-nonlinearity}
+G(u)=\omega\operatorname{grad}\psi-\boldsymbol f,
+\qquad
+u=(\operatorname{curl}\psi,\omega)\in X.
+\end{equation}
+于是 Navier--Stokes 问题如 \eqref{eq:navier-centered-stream-continuous} 那样表述:
+给定 $\boldsymbol f\in L^r(\Omega)^2$, 求
+$u=(\operatorname{curl}\psi,\omega)\in X$, 使
+\begin{equation}\label{eq:navier-upwind-continuous-problem}
+\left\{
+\begin{aligned}
+\nu(\operatorname{curl}\omega,\operatorname{curl}\phi)
++(\omega\operatorname{grad}\psi,\operatorname{curl}\phi)
+&=(\boldsymbol f,\operatorname{curl}\phi)
+&&\forall\phi\in\Phi_s,\\
+(\operatorname{curl}\psi,\operatorname{curl}\mu)
+&=(\omega,\mu)
+&&\forall\mu\in W^{1,r}(\Omega),
+\end{aligned}
+\right.
+\end{equation}
+其中 $\psi$ 和 $\omega$ 由 \eqref{eq:navier-upwind-velocity-vorticity} 与 $\boldsymbol u$
+相联系. 取上述 $T,G$ 和 $\lambda=1/\nu$, 可紧凑地写为
+\begin{equation}\label{eq:navier-upwind-continuous-operator}
+F(\lambda,u)=u+\lambda TG(u)=0.
+\end{equation}
+
+为进行逼近, 首先引入由 \eqref{eq:navier-centered-stream-discrete-spaces} 定义的
+两个有限维空间 $\Theta_h$ 和 $\Phi_h$:
+\[
+\Theta_h=\{\theta_h\in\mathcal C^0(\bar\Omega);
+\ \theta_h|_\kappa\in P_l\ \forall\kappa\in\mathcal T_h\},
+\qquad
+\Phi_h=\Theta_h\cap H_0^1(\Omega),
+\]
+其中 $\mathcal T_h$ 是 $\bar\Omega$ 的一个三角剖分, 且整数 $l\geq1$. 自然取
+\[
+X_h=\{\operatorname{curl}\phi_h;\ \phi_h\in\Phi_h\}\times\Theta_h\subset X.
+\]
+
+\MathBookSourcePage{353}
+并定义相应子空间
+\begin{equation}\label{eq:navier-upwind-discrete-subspace}
+V_h=\{(\operatorname{curl}\phi_h,\theta_h)\in X_h;
+(\operatorname{curl}\phi_h,\operatorname{curl}\mu_h)
+=(\theta_h,\mu_h)\ \forall\mu_h\in\Theta_h\}.
+\end{equation}
+离散 Stokes 算子可以定义在比 $Y$ 更宽的空间上, 即
+\[
+Y_h=\{\operatorname{curl}\phi_h;\ \phi_h\in\Phi_h\}'
+\]
+配备范数
+\[
+\|l\|_*=\sup_{\phi_h\in\Phi_h}
+\frac{\langle l,\operatorname{curl}\phi_h\rangle}{|\phi_h|_{1,s,\Omega}}.
+\]
+规定
+\[
+\langle l,v_h\rangle=\langle l,\operatorname{curl}\phi_h\rangle
+\quad\forall v_h=(\operatorname{curl}\phi_h,\theta_h)\in V_h,
+\]
+还可把空间 $Y_h$ 等同于 $V_h'$ 的一个子空间, 其中 $V_h'$ 是 $V_h$ 的对偶空间;
+因此有连续嵌入
+\[
+Y\hookrightarrow Y_h\hookrightarrow V_h'.
+\]
+以后还需要为 $Y_h$ 配备 $V_h'$ 的范数, 即令
+\[
+\|l\|_h=\sup_{v_h\in V_h}\frac{\langle l,v_h\rangle}{\|v_h\|_X}
+\quad\forall l\in Y_h;
+\]
+显然
+\[
+\|l\|_h\leq\|l\|_*
+\quad\forall l\in Y_h.
+\]
+然后定义逼近 Stokes 算子 $T_h\in\mathcal L(Y_h;X_h)$: 对 $l\in Y_h$,
+求 $T_hl=(\operatorname{curl}\psi_h,\omega_h)\in X_h$, 满足
+\begin{equation}\label{eq:navier-upwind-discrete-stokes}
+\left\{
+\begin{aligned}
+(\operatorname{curl}\omega_h,\operatorname{curl}\phi_h)
+&=\langle l,\operatorname{curl}\phi_h\rangle
+&&\forall\phi_h\in\Phi_h,\\
+(\operatorname{curl}\psi_h,\operatorname{curl}\mu_h)
+&=(\omega_h,\mu_h)
+&&\forall\mu_h\in\Theta_h.
+\end{aligned}
+\right.
+\end{equation}
+显然, 算子 $T_h$ 的值域就是空间 $V_h$.
+
+现在转向对流项的上风离散化. 把 $\Omega$ 看成 $\mathcal T_h$ 中所有三角形
+$\kappa$ 的并, 公式 \eqref{eq:navier-upwind-two-region-convection} 可推广为如下定义:
+\begin{equation}\label{eq:navier-upwind-mesh-convection}
+\begin{aligned}
+\int_\Omega u_j(\partial u_i/\partial x_j)v_i\,dx
+\mathrel{\mathop{=}^{\mathrm{def}}}
+\sum_{\kappa\in\mathcal T_h}\Bigg\{
+&\int_\kappa u_j(\partial u_i/\partial x_j)v_i\,dx\\
+&+\int_{\partial_-\kappa}
+\boldsymbol u\cdot\boldsymbol n
+(u_i^{\mathrm{ext}}-u_i^{\mathrm{int}})v_i^{\mathrm{int}}\,ds
+\Bigg\}.
+\end{aligned}
+\end{equation}
+这促使我们拆分对流项, 用两个形式代替单个三线性形式: 一个对应体积分, 一个对应线积分.
+因此, 对所有 $u=(\operatorname{curl}\psi,\omega)$ 和
+$v=(\operatorname{curl}\phi,\theta)\in X_h$, 以及所有形如
+$w_i=\partial\chi/\partial x_j$ 的 $\boldsymbol w$, 其中 $\chi\in\Phi_h$, 定义如下.
+
+\MathBookSourcePage{354}
+\begin{equation}\label{eq:navier-upwind-volume-form}
+a_1(u;v,\boldsymbol w)
+=\sum_{\kappa\in\mathcal T_h}\int_\kappa
+u_j(\partial v_i/\partial x_j)w_i\,dx,
+\end{equation}
+其中 $\boldsymbol u=\operatorname{curl}\psi$, $\boldsymbol v=\operatorname{curl}\phi$;
+类似地, 对 $z=(\operatorname{curl}\chi,\mu)\in X_h$, 取
+\begin{equation}\label{eq:navier-upwind-boundary-form}
+a_2^z(u;v,\boldsymbol w)
+=\sum_{\kappa\in\mathcal T_h}\int_{\partial_-\kappa(z)}
+\boldsymbol u\cdot\boldsymbol n
+(v_i^{\mathrm{ext}}-v_i^{\mathrm{int}})w_i^{\mathrm{int}}\,ds,
+\end{equation}
+其中 $\boldsymbol n$ 始终表示 $\kappa$ 的单位外法向量, 上标 $\mathrm{ext}$
+(相应地 $\mathrm{int}$)表示函数在 $\kappa$ 边界上的外部迹(相应地内部迹), 且
+\begin{equation}\label{eq:navier-upwind-element-inflow}
+\partial_-\kappa(z)
+=\{x\in\partial\kappa;\ (\boldsymbol z\cdot\boldsymbol n)(x)<0\},
+\qquad \boldsymbol z=\operatorname{curl}\chi.
+\end{equation}
+即 $\partial_-\kappa(z)$ 是速度为 $\boldsymbol z$ 的流体进入 $\kappa$ 的边界部分.
+最后, 引入形式
+\begin{equation}\label{eq:navier-upwind-combined-form}
+\widetilde a^z(u;v,\boldsymbol w)
+=a_1(u;v,\boldsymbol w)+a_2^z(u;v,\boldsymbol w),
+\end{equation}
+并由下式定义映射 $G_h:v\in X_h\mapsto G_h(v)\in Y_h$:
+\begin{equation}\label{eq:navier-upwind-discrete-nonlinearity}
+\langle G_h(v),\operatorname{curl}\chi\rangle
+=\widetilde a^v(v;v,\operatorname{curl}\chi)
+-(\boldsymbol f,\operatorname{curl}\chi)
+\quad\forall\chi\in\Phi_h.
+\end{equation}
+稍后将建立 $G_h$ 的连续性, 但立即可见, 由于
+$a_2^v(v;v,\boldsymbol w)$ 对 $\partial_-\kappa(v)$ 的依赖, 映射 $G_h$ 不可微.
+注意, 当 $\boldsymbol w\in H^1(\Omega)^2$ 时, 形式 $\widetilde a$ 满足说明
+定义 \eqref{eq:navier-upwind-mesh-convection} 合理性的关键性质:
+\begin{equation}\label{eq:navier-upwind-integration-by-parts}
+\widetilde a^z(u;v,\boldsymbol w)
+=-\int_\Omega u_j(\partial w_i/\partial x_j)v_i\,dx,
+\end{equation}
+无论函数 $z$ 为何, 当然这里要求
+$\operatorname{div}\boldsymbol u=0$ 于 $\Omega$ 且
+$\boldsymbol u\cdot\boldsymbol n=0$ 于 $\Gamma$.
+
+于是 Navier--Stokes Problem~\eqref{eq:navier-upwind-continuous-problem}
+具有如下上风离散化: 求 $\psi_h\in\Phi_h$ 和 $\omega_h\in\Theta_h$, 满足
+\begin{equation}\label{eq:navier-upwind-discrete-problem}
+\left\{
+\begin{aligned}
+\nu(\operatorname{curl}\omega_h,\operatorname{curl}\phi_h)
++\widetilde a^{u_h}(u_h;u_h,\operatorname{curl}\phi_h)
+&=(\boldsymbol f,\operatorname{curl}\phi_h)
+&&\forall\phi_h\in\Phi_h,\\
+(\operatorname{curl}\psi_h,\operatorname{curl}\mu_h)
+&=(\omega_h,\mu_h)
+&&\forall\mu_h\in\Theta_h,
+\end{aligned}
+\right.
+\end{equation}
+其中 $\widetilde a$ 由 \eqref{eq:navier-upwind-volume-form}--
+\eqref{eq:navier-upwind-combined-form} 定义. 采用上述记号, 此问题具有
+\eqref{eq:navier-branch-nondifferentiable-discrete-map} 的形式:
+\begin{equation}\label{eq:navier-upwind-discrete-operator}
+F_h(\lambda,u_h)=u_h+\lambda T_hG_h(u_h)=0,
+\end{equation}
+其中 $u_h=(\operatorname{curl}\psi_h,\omega_h)$ 且 $\lambda=1/\nu$.
+注意 $F_h$ 把 $\Lambda\times X_h$ 映到 $V_h$ 中.
+
+\subsection{上风格式的误差分析}
+\label{subsec:navier-upwind-error-analysis}
+
+在应用 Subsection~\ref{subsec:navier-nondifferentiable-branches} 的材料建立
+\eqref{eq:navier-upwind-discrete-problem} 的收敛性之前, 先证明形式
+$\widetilde a(\mathord\cdot;\mathord\cdot,\mathord\cdot)$ 的一些重要性质.
+读者会发现, 操作这个形式并不像初看起来那样困难. 首先, 从
+$\widetilde a(\mathord\cdot;\mathord\cdot,\mathord\cdot)$ 的表达式可清楚看出,
+它要求比空间 $\Phi$ 的 $W^{1,s}$ 范数更精细的范数. 具体而言, 希望采用半范数
+
+\MathBookSourcePage{355}
+\[
+\left(\sum_{\kappa\in\mathcal T_h}|\phi|_{2,\kappa}^2\right)^{1/2}.
+\]
+这正是空间 $V_h$ 的用途: Chapter~\ref{chap:incompressible-mixed-stokes} 已经证明,
+在适当条件下, $V_h$ 中的函数满足一致稳定性性质
+\begin{equation}\label{eq:navier-upwind-uniform-w1t}
+|\phi_h|_{1,t,\Omega}\leq C_t\|\theta_h\|_{0,\Omega}
+\quad\text{(参见 \eqref{eq:incompressible-sfvp-h1-bound})}
+\quad\forall v_h=(\operatorname{curl}\phi_h,\theta_h)\in V_h,
+\end{equation}
+以及
+\begin{equation}\label{eq:navier-upwind-uniform-broken-h2}
+\left(\sum_{\kappa\in\mathcal T_h}|\phi_h|_{2,\kappa}^2\right)^{1/2}
+\leq C\|\theta_h\|_{0,\Omega}
+\quad\text{(参见 \eqref{eq:incompressible-sfvp-auxiliary-h2-bound})},
+\end{equation}
+其中常数与 $h$ 无关. 换言之:
+\[
+\textit{$X$ 的半范数 $|v_h|=\|\theta_h\|_{0,\Omega}$ 是 $V_h$ 上的范数,}
+\]
+并且对于每个 $t\geq2$, 它与
+\[
+|\phi_h|_{1,t,\Omega}+\|\theta_h\|_{0,\Omega}
+\quad\text{以及}\quad
+\left(\sum_{\kappa\in\mathcal T_h}|\phi_h|_{2,\kappa}^2\right)^{1/2}
++\|\theta_h\|_{0,\Omega}
+\]
+都一致等价. 这提示采用如下网格相关范数:
+\begin{equation}\label{eq:navier-upwind-mesh-dependent-norm}
+[\phi]_t
+=\left(\sum_{\kappa\in\mathcal T_h}|\phi|_{2,\kappa}^2\right)^{1/2}
++h^{-2/t}|\phi|_{1,t,\Omega}
+\quad\forall t\geq2.
+\end{equation}
+
+其次, 由于 $X$ 中的函数正则性很低, 有时采用下面的光滑化算子会很有用:
+\[
+P\in\mathcal L\bigl(X;
+\{\operatorname{curl}\phi;\ \phi\in H^2(\Omega)\cap H_0^1(\Omega)\}
+\times L^2(\Omega)\bigr),
+\]
+定义如下: 对 $u=(\operatorname{curl}\psi,\omega)\in X$,
+$Pu=(\operatorname{curl}\phi,\omega)$, 其中 $\phi$ 是 Dirichlet 问题
+\begin{equation}\label{eq:navier-upwind-smoothing-dirichlet}
+-\Delta\phi=\omega\quad\text{in }\Omega,
+\qquad
+\phi=0\quad\text{on }\Gamma
+\end{equation}
+的解. 当 $\Omega$ 为凸域时, $\phi$ 确实属于 $H^2(\Omega)$, 且
+\begin{equation}\label{eq:navier-upwind-smoothing-regularity}
+\|\phi\|_{2,\Omega}\leq C\|\omega\|_{0,\Omega}.
+\end{equation}
+显然, 算子 $P$ 在 $V$ 上化为恒等映射. 此外, 当
+$u_h=(\operatorname{curl}\psi_h,\omega_h)\in V_h$ 时, 相应函数 $\phi$
+与 Lemma~\ref{lem:incompressible-sfvp-hypothesis-h1} 的证明中引入的函数
+$\phi(h)$ 相同. 换言之, $u_h=(\operatorname{curl}\psi_h,\omega_h)\in V_h$
+和 $Pu_h=(\operatorname{curl}\phi,\omega_h)$ 由
+\[
+\psi_h=\mathring P_h\phi
+\]
+联系, 其中 $\mathring P_h$ 是由 \eqref{eq:appendix-dirichlet-ritz-projection} 定义的
+$\Phi_h$ 上的 $H^1$ 投影:
+\begin{equation}\label{eq:navier-upwind-h1-projection}
+(\operatorname{curl}(\mathring P_h\phi-\phi),\operatorname{curl}\mu_h)=0
+\quad\forall\mu_h\in\Phi_h.
+\end{equation}
+下一个 Lemma 给出 $[\phi-\mathring P_h\phi]_t$ 的一个有用估计.

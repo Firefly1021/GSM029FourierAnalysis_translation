@@ -1,0 +1,545 @@
+% Reviewed translation: PDF pages 126--133 / printed pages 112--119.
+% The original scan is authoritative; environment headings remain English.
+\makeatletter
+\gdef\@chapapp{\chaptername}
+\gdef\thechapter{\arabic{chapter}}
+\gdef\theHchapter{\arabic{chapter}}
+\gdef\Hy@chapapp{chapter}
+\makeatother
+\ctexset{
+  chapter/name = {第,章},
+  chapter/number = \arabic{chapter},
+  chapter/numbering = true
+}
+\setcounter{chapter}{1}
+\chapter{原始变量下 Stokes 问题的数值解}\label{chap:stokes-primitive-variables}
+\counterwithin{equation}{section}
+\renewcommand{\thesection}{\arabic{section}}
+\renewcommand{\thesubsection}{\thesection.\arabic{subsection}}
+\renewcommand{\theequation}{\thesection.\arabic{equation}}
+\renewcommand{\thestatement}{\thesection.\arabic{statement}}
+\renewcommand{\thefigure}{\arabic{figure}}
+\setcounter{figure}{6}
+
+\MathBookSourcePage{126}
+\section{一般逼近}\label{sec:primitive-general-approximation}
+
+Chapter~\ref{chap:stokes-foundations} 的 Section~\ref{sec:abstract-variational-problem}
+所讨论的抽象问题很容易得到一种直接的逼近方法. 在合理假设下, 该逼近收敛,
+且误差与所涉及空间的逼近误差成正比. 将这种方法用于 Stokes 问题时,
+可以得到速度和压力的协调逼近, 尽管逼近速度场通常并非严格无散.
+本章其余部分所发展的各种有限元方法都以本节材料为基础.
+非协调方法也可以纳入这一框架(参见 Zine [85]), 但为了简洁起见,
+我们将其完全略去.
+
+\subsection{一个抽象逼近结果}\label{subsec:primitive-abstract-approximation}
+\setcounter{equation}{0}
+
+本小节研究 Chapter~\ref{chap:stokes-foundations} 的
+Section~\ref{sec:abstract-variational-problem} 中所分析的抽象变分问题的逼近.
+我们沿用相同的记号, 并把问题置于完全相同的情形中. 回顾问题 $(Q)$:
+
+给定 $l\in X'$ 和 $\chi\in M'$, 求 $(u,\lambda)\in X\times M$, 使得
+\begin{align}
+a(u,v)+b(v,\lambda)&=\langle l,v\rangle
+&&\forall v\in X,\label{eq:primitive-abstract-q-first}\\
+b(u,\mu)&=\langle\chi,\mu\rangle
+&&\forall\mu\in M.\label{eq:primitive-abstract-q-second}
+\end{align}
+这里, $X$ 和 $M$ 是两个实 Hilbert 空间, $a(\cdot,\cdot)$ 和
+$b(\cdot,\cdot)$ 分别是定义在 $X\times X$ 和 $X\times M$ 上的两个连续双线性形式.
+与形式 $b(\cdot,\cdot)$ 相联系, 定义线性算子 $B$ 和 $B'$:
+\[
+\langle Bv,\mu\rangle=\langle v,B'\mu\rangle=b(v,\mu)
+\qquad\forall v\in X,\quad\forall\mu\in M,
+\]
+并置
+\[
+V(\chi)=\{v\in X;\ Bv=\chi\},
+\qquad
+V=V(0)=\operatorname{Ker}(B).
+\]
+
+\MathBookSourcePage{127}
+回顾与问题 $(Q)$ 相联系的问题 $(P)$:
+
+给定 $l\in X'$ 和 $\chi\in M'$, 求 $u\in V(\chi)$, 使得
+\begin{equation}\label{eq:primitive-abstract-p}
+a(u,v)=\langle l,v\rangle
+\qquad\forall v\in V.
+\end{equation}
+我们保留下列两个保证问题 $(Q)$ 和 $(P)$ 等价且具有唯一解的假设
+(参见 Theorem~\ref{thm:abstract-well-posedness} 及其
+Corollary~\ref{cor:abstract-v-elliptic-well-posedness}):
+
+存在常数 $\alpha>0$, 使得
+\begin{equation}\label{eq:primitive-continuous-ellipticity}
+a(v,v)\geq\alpha\|v\|_X^2
+\qquad\forall v\in V;
+\end{equation}
+存在常数 $\beta>0$, 使得
+\begin{equation}\label{eq:primitive-continuous-inf-sup}
+\inf_{\mu\in M}\sup_{v\in X}
+\frac{b(v,\mu)}{\|v\|_X\|\mu\|_M}
+\geq\beta.
+\end{equation}
+
+令 $h$ 表示趋于零的离散化参数. 对每个 $h$, 令 $X_h$ 和 $M_h$
+为满足
+\[
+X_h\subset X,
+\qquad
+M_h\subset M
+\]
+的两个有限维空间. 记 $X_h'$ 和 $M_h'$ 为它们的对偶空间, 对偶范数为
+\[
+\|l_h\|_{X_h'}=
+\sup_{v_h\in X_h}\frac{\langle l_h,v_h\rangle}{\|v_h\|_X},
+\qquad
+\|\chi_h\|_{M_h'}=
+\sup_{\mu_h\in M_h}\frac{\langle\chi_h,\mu_h\rangle}{\|\mu_h\|_M}.
+\]
+显然,
+\[
+\|l\|_{X_h'}\leq\|l\|_{X'},
+\qquad
+\|\chi\|_{M_h'}\leq\|\chi\|_{M'}
+\qquad\forall l\in X',\quad\forall\chi\in M'.
+\]
+
+与连续情形一样, 对 $a(\cdot,\cdot)$ 和 $b(\cdot,\cdot)$ 定义算子
+\[
+A_h\in\mathcal L(X;X_h'),
+\qquad
+B_h\in\mathcal L(X;M_h'),
+\qquad
+B_h'\in\mathcal L(M;X_h')
+\]
+如下:
+\begin{align*}
+\langle A_hu,v_h\rangle&=a(u,v_h)
+&&\forall v_h\in X_h,\quad\forall u\in X,\\
+\langle B_hv,\mu_h\rangle&=b(v,\mu_h)
+&&\forall\mu_h\in M_h,\quad\forall v\in X,\\
+\langle v_h,B_h'\mu\rangle&=b(v_h,\mu)
+&&\forall v_h\in X_h,\quad\forall\mu\in M.
+\end{align*}
+严格地说, $B_h'$ 不是 $B_h$ 的对偶算子; 但把 $B_h$ 限制在 $X_h$ 上,
+把 $B_h'$ 限制在 $M_h$ 上时, 它们确实互为对偶算子. 此外, 显然有
+\[
+\|B_hv\|_{M_h'}\leq\|Bv\|_{M'}
+\qquad\forall v\in X,
+\]
+而 $\|A_hv\|_{X_h'}$ 和 $\|B_h'\mu\|_{X_h'}$ 也满足类似不等式.
+
+对每个 $\chi\in M'$, 定义 $V(\chi)$ 的有限维对应物
+\[
+V_h(\chi)=\{v_h\in X_h;\ b(v_h,\mu_h)=\langle\chi,\mu_h\rangle
+\quad\forall\mu_h\in M_h\},
+\]
+并置
+\[
+V_h=V_h(0)=\operatorname{Ker}(B_h)\cap X_h,
+\]
+即
+\begin{equation}\label{eq:primitive-discrete-kernel}
+V_h=\{v_h\in X_h;\ b(v_h,\mu_h)=0
+\quad\forall\mu_h\in M_h\}.
+\end{equation}
+
+\MathBookSourcePage{128}
+立即可以看到, 通常 $V_h\not\subset V$ 且
+$V_h(\chi)\not\subset V(\chi)$, 因为 $M_h$ 是 $M$ 的真子空间.
+
+现在用问题 $(Q_h)$ 逼近问题 $(Q)$:
+
+求 $(u_h,\lambda_h)\in X_h\times M_h$, 使得
+\begin{align}
+a(u_h,v_h)+b(v_h,\lambda_h)&=\langle l,v_h\rangle
+&&\forall v_h\in X_h,\label{eq:primitive-discrete-q-first}\\
+b(u_h,\mu_h)&=\langle\chi,\mu_h\rangle
+&&\forall\mu_h\in M_h.\label{eq:primitive-discrete-q-second}
+\end{align}
+与 $(Q_h)$ 相联系, 再定义问题 $(P_h)$:
+
+求 $u_h\in V_h(\chi)$, 使得
+\begin{equation}\label{eq:primitive-discrete-p}
+a(u_h,v_h)=\langle l,v_h\rangle
+\qquad\forall v_h\in V_h.
+\end{equation}
+由于 $V_h\not\subset V$, 问题 $(P_h)$ 可以看作问题 $(P)$ 的一个外逼近.
+这里同样有: 问题 $(Q_h)$ 的任一解 $(u_h,\lambda_h)$ 的第一分量 $u_h$
+也是问题 $(P_h)$ 的解. 其逆命题将在下面的 Theorem 中证明.
+
+\setcounter{statement}{0}
+\begin{Theorem}\label{thm:primitive-abstract-discrete-error}
+$1^\circ)$ 假设下列条件成立:
+
+(i) $V_h(\chi)$ 非空;
+
+(ii) 存在常数 $\alpha^*>0$, 使得
+\begin{equation}\label{eq:primitive-discrete-ellipticity}
+a(v_h,v_h)\geq\alpha^*\|v_h\|_X^2
+\qquad\forall v_h\in V_h.
+\end{equation}
+则问题 $(P_h)$ 有唯一解 $u_h\in V_h(\chi)$, 并且存在只依赖于
+$\alpha^*$, $\|a\|$ 和 $\|b\|$ 的常数 $C_1$, 使得下列``误差界''成立:
+\begin{equation}\label{eq:primitive-discrete-velocity-error}
+\|u-u_h\|_X
+\leq C_1\left\{
+\inf_{v_h\in V_h(\chi)}\|u-v_h\|_X
++\inf_{\mu_h\in M_h}\|\lambda-\mu_h\|_M
+\right\}.
+\end{equation}
+
+$2^\circ)$ 假设 (ii) 成立, 并且还满足:
+
+(iii) 存在常数 $\beta^*>0$, 使得
+\begin{equation}\label{eq:primitive-discrete-inf-sup}
+\sup_{v_h\in X_h}\frac{b(v_h,\mu_h)}{\|v_h\|_X}
+\geq\beta^*\|\mu_h\|_M
+\qquad\forall\mu_h\in M_h.
+\end{equation}
+则 $V_h(\chi)\neq\varnothing$, 并且存在唯一的 $\lambda_h\in M_h$,
+使得 $(u_h,\lambda_h)$ 是问题 $(Q_h)$ 的唯一解. 此外, 存在只依赖于
+$\alpha^*$, $\beta^*$, $\|a\|$ 和 $\|b\|$ 的常数 $C_2$, 使得
+\begin{equation}\label{eq:primitive-discrete-total-error}
+\|u-u_h\|_X+\|\lambda-\lambda_h\|_M
+\leq C_2\left\{
+\inf_{v_h\in X_h}\|u-v_h\|_X
++\inf_{\mu_h\in M_h}\|\lambda-\mu_h\|_M
+\right\}.
+\end{equation}
+\end{Theorem}
+
+\begin{Proof}
+$1^\circ)$ 由于 $V_h(\chi)$ 非空, 取 $u_h^0\in V_h(\chi)$, 并求解:
+
+求 $z_h\in V_h$, 使得
+\[
+a(z_h,v_h)=\langle l,v_h\rangle-a(u_h^0,v_h)
+\qquad\forall v_h\in V_h.
+\]
+由 \eqref{eq:primitive-discrete-ellipticity}, 该问题有唯一解 $z_h$, 因而
+\[
+u_h=z_h+u_h^0
+\]
+是问题 $(P_h)$ 的唯一解.
+
+\MathBookSourcePage{129}
+现任取 $w_h\in V_h(\chi)$, 则 $v_h=u_h-w_h\in V_h$, 且
+\begin{equation}\label{eq:primitive-proof-vh-energy}
+a(v_h,v_h)=\langle l,v_h\rangle-a(w_h,v_h).
+\end{equation}
+由于 $v_h\in X_h$, 可在 \eqref{eq:primitive-abstract-q-first} 中取 $v=v_h$,
+再代入 \eqref{eq:primitive-proof-vh-energy}, 得到
+\[
+a(v_h,v_h)=a(u-w_h,v_h)+b(v_h,\lambda).
+\]
+又因为 $v_h\in V_h$, 对所有 $\mu_h\in M_h$ 都有 $b(v_h,\mu_h)=0$. 因此
+\begin{equation}\label{eq:primitive-proof-vh-error-identity}
+a(v_h,v_h)=a(u-w_h,v_h)+b(v_h,\lambda-\mu_h)
+\qquad\forall\mu_h\in M_h.
+\end{equation}
+$a$ 在 $V_h$ 上的椭圆性以及 $a$ 和 $b$ 的连续性给出
+\[
+\|v_h\|_X
+\leq\frac{\|a\|\|u-w_h\|_X+\|b\|\|\lambda-\mu_h\|_M}{\alpha^*}.
+\]
+所以
+\[
+\|u-u_h\|_X
+\leq\left(1+\frac{\|a\|}{\alpha^*}\right)\|u-w_h\|_X
++\frac{\|b\|}{\alpha^*}\|\lambda-\mu_h\|_M
+\]
+对所有 $w_h\in V_h(\chi)$ 和 $\mu_h\in M_h$ 成立. 于是
+\eqref{eq:primitive-discrete-velocity-error} 成立, 其中
+\[
+C_1=\max\left(1+\frac{\|a\|}{\alpha^*},\frac{\|b\|}{\alpha^*}\right).
+\]
+
+$2^\circ)$ 把 Lemma~\ref{lem:ch4-abstract-div} 用于 $X_h$ 和 $M_h$.
+假设 (iii) 表明 $B_h$ 是从 $X_h$ 中的 $V_h^\perp$ 到 $M_h'$ 的同构.
+因此 $V_h(\chi)$ 非空, 由第 $1^\circ)$ 部分, 问题 $(P_h)$ 有唯一解 $u_h$.
+此外, 由 Corollary~\ref{cor:abstract-v-elliptic-well-posedness},
+存在唯一的 $\lambda_h\in M_h$, 使得 $(u_h,\lambda_h)$ 是问题 $(Q_h)$ 的唯一解.
+
+为导出误差界 \eqref{eq:primitive-discrete-total-error}, 先证明
+\begin{equation}\label{eq:primitive-discrete-affine-best-approximation}
+\inf_{w_h\in V_h(\chi)}\|u-w_h\|_X
+\leq\left(1+\frac{\|b\|}{\beta^*}\right)
+\inf_{v_h\in X_h}\|u-v_h\|_X.
+\end{equation}
+任取 $v_h\in X_h$. 与上面一样, 存在唯一的 $z_h\in V_h^\perp$, 使得
+\[
+B_hz_h=B_h(u-v_h),
+\]
+且
+\[
+\|z_h\|_X
+\leq\frac{1}{\beta^*}\|B_h(u-v_h)\|_{M_h'}
+\leq\frac{\|b\|}{\beta^*}\|u-v_h\|_X.
+\]
+若置 $w_h=z_h+v_h$, 则
+\[
+b(w_h,\mu_h)
+=b(u-v_h,\mu_h)+b(v_h,\mu_h)
+=\langle\chi,\mu_h\rangle
+\qquad\forall\mu_h\in M_h,
+\]
+所以 $w_h\in V_h(\chi)$. 此外,
+\[
+\|u-w_h\|_X
+\leq\|u-v_h\|_X+\|z_h\|_X
+\leq\left(1+\frac{\|b\|}{\beta^*}\right)\|u-v_h\|_X.
+\]
+由于 $v_h$ 任意, 这就证明了 \eqref{eq:primitive-discrete-affine-best-approximation}.
+
+\MathBookSourcePage{130}
+还需估计 $\|\lambda-\lambda_h\|_M$. 由
+\eqref{eq:primitive-abstract-q-first} 和 \eqref{eq:primitive-discrete-q-first} 得
+\[
+b(v_h,\lambda_h-\mu_h)
+=a(u-u_h,v_h)+b(v_h,\lambda-\mu_h)
+\quad\forall v_h\in X_h,\quad\forall\mu_h\in M_h.
+\]
+因此, 假设 \eqref{eq:primitive-discrete-inf-sup} 给出
+\begin{align*}
+\|\lambda_h-\mu_h\|_M
+&\leq\frac{1}{\beta^*}
+\sup_{v_h\in X_h}\frac{a(u-u_h,v_h)+b(v_h,\lambda-\mu_h)}{\|v_h\|_X}\\
+&\leq\frac{1}{\beta^*}
+\left\{\|a\|\|u-u_h\|_X+\|b\|\|\lambda-\mu_h\|_M\right\}.
+\end{align*}
+所以
+\begin{equation}\label{eq:primitive-pressure-error}
+\|\lambda-\lambda_h\|_M
+\leq\frac{1}{\beta^*}\left\{
+\|a\|\|u-u_h\|_X
++(\beta^*+\|b\|)\inf_{\mu_h\in M_h}\|\lambda-\mu_h\|_M
+\right\}.
+\end{equation}
+于是, 误差界 \eqref{eq:primitive-discrete-total-error} 立即由
+\eqref{eq:primitive-discrete-velocity-error},
+\eqref{eq:primitive-discrete-affine-best-approximation} 和
+\eqref{eq:primitive-pressure-error} 得到.
+\end{Proof}
+
+\setcounter{statement}{0}
+\begin{Remark}\label{rem:primitive-improved-velocity-error}
+不使用 inf-sup 条件 \eqref{eq:primitive-discrete-inf-sup},
+也可以略微改进误差界 \eqref{eq:primitive-discrete-velocity-error}.
+事实上, 对 \eqref{eq:primitive-proof-vh-error-identity} 应用
+\eqref{eq:primitive-discrete-ellipticity}, 得到
+\[
+\|v_h\|_X
+\leq\frac{1}{\alpha^*}\left(
+\|a\|\|u-w_h\|_X
++\sup_{v_h\in V_h}\frac{b(v_h,\lambda-\mu_h)}{\|v_h\|_X}
+\right).
+\]
+因此
+\begin{equation}\label{eq:primitive-improved-velocity-error}
+\begin{split}
+\|u-u_h\|_X
+\leq{}&\left(1+\frac{\|a\|}{\alpha^*}\right)
+\inf_{w_h\in V_h(\chi)}\|u-w_h\|_X\\
+&+\frac{1}{\alpha^*}\inf_{\mu_h\in M_h}
+\sup_{v_h\in V_h}\frac{b(v_h,\lambda-\mu_h)}{\|v_h\|_X}.
+\end{split}
+\end{equation}
+注意, 表达式
+\[
+\inf_{\mu_h\in M_h}\sup_{v_h\in V_h}
+\frac{b(v_h,\lambda-\mu_h)}{\|v_h\|_X}
+\]
+反映了 $V_h\not\subset V$ 这一事实: 当 $V_h\subset V$ 时, 它为零.
+\end{Remark}
+
+\setcounter{statement}{1}
+\begin{Remark}\label{rem:primitive-discrete-optimization}
+除假设 \eqref{eq:primitive-discrete-ellipticity} 和
+\eqref{eq:primitive-discrete-inf-sup} 外, 再假设双线性形式
+$a(\cdot,\cdot)$ 在 $X_h$ 上对称且半正定, 则可以把问题 $(P_h)$ 和 $(Q_h)$
+与最优化问题联系起来. 与连续情形一样, 并采用相同记号, 可以证明问题 $(P_h)$
+的解 $u_h$ 由下式刻画:
+\[
+J(u_h)=\inf_{v_h\in V_h(\chi)}J(v_h),
+\]
+而问题 $(Q_h)$ 的解 $(u_h,p_h)$ 由下式刻画:
+\[
+\mathcal L(u_h,p_h)
+=\min_{v_h\in X_h}\sup_{q_h\in M_h}\mathcal L(v_h,q_h)
+=\max_{q_h\in M_h}\inf_{v_h\in X_h}\mathcal L(v_h,q_h).
+\]
+\end{Remark}
+
+\MathBookSourcePage{131}
+\setcounter{statement}{2}
+\begin{Remark}\label{rem:primitive-discrete-solution-bound}
+由 Theorem~\ref{thm:primitive-abstract-discrete-error} 的论证立即得到:
+若假设 \eqref{eq:primitive-discrete-ellipticity} 和
+\eqref{eq:primitive-discrete-inf-sup} 成立, 则解 $(u_h,\lambda_h)$ 满足
+\[
+\|u_h\|_X
+\leq\frac{1}{\alpha^*}\left\{
+\|l\|_{X'}+\frac{1}{\beta^*}(\alpha^*+\|a\|)\|\chi\|_{M'}
+\right\},
+\]
+\[
+\|\lambda_h\|_M
+\leq\frac{1}{\beta^*}\left\{\|l\|_{X'}+\|a\|\|u_h\|_X\right\}.
+\]
+\end{Remark}
+
+只要对所有非零 $v_h$ 都有 $a(v_h,v_h)>0$, 双线性形式
+$a(\cdot,\cdot)$ 就在 $V_h$ 上椭圆. 类似地, 只要
+$\operatorname{Ker}(B_h')\cap M_h=\{0\}$, 双线性形式 $b(\cdot,\cdot)$
+就满足离散 inf-sup 条件 \eqref{eq:primitive-discrete-inf-sup}.
+当然, 在这两种情形中, 常数 $\alpha^*$ 和 $\beta^*$ 通常都依赖于 $h$.
+而为了在 Theorem~\ref{thm:primitive-abstract-discrete-error} 中得到最优误差界,
+显然必须使这两个常数都与 $h$ 无关. 由于通常 $V_h\not\subset V$,
+$a(\cdot,\cdot)$ 在 $V$ 上的椭圆性未必能传递到 $V_h$ 上.
+因此, 必须在每个具体情形中检验假设
+\eqref{eq:primitive-discrete-ellipticity}; 但对我们所考虑的应用而言,
+这并不是主要障碍. 另一方面, 离散 inf-sup 条件
+\eqref{eq:primitive-discrete-inf-sup} 是 $X_h$ 和 $M_h$ 之间的一致相容性条件,
+检验它要困难得多. 下面由 Fortin [28] 给出的 Lemma 为该条件建立了一个实用判据.
+
+\setcounter{statement}{0}
+\begin{Lemma}\label{lem:primitive-fortin-criterion}
+离散 inf-sup 条件 \eqref{eq:primitive-discrete-inf-sup} 以与 $h$ 无关的常数
+$\beta^*>0$ 成立, 当且仅当存在算子 $\Pi_h\in\mathcal L(X;X_h)$, 满足
+\begin{equation}\label{eq:primitive-fortin-orthogonality}
+b(v-\Pi_hv,\mu_h)=0
+\qquad\forall\mu_h\in M_h,\quad\forall v\in X,
+\end{equation}
+以及
+\begin{equation}\label{eq:primitive-fortin-stability}
+\|\Pi_hv\|_X\leq C\|v\|_X
+\qquad\forall v\in X,
+\end{equation}
+其中常数 $C>0$ 与 $h$ 无关.
+\end{Lemma}
+
+\begin{Proof}
+先假设存在这样的算子 $\Pi_h$. 对所有 $\mu_h\in M_h$, 由
+\eqref{eq:primitive-fortin-orthogonality} 有
+\[
+\sup_{v_h\in X_h}\frac{b(v_h,\mu_h)}{\|v_h\|_X}
+\geq\sup_{v\in X}\frac{b(\Pi_hv,\mu_h)}{\|\Pi_hv\|_X}
+=\sup_{v\in X}\frac{b(v,\mu_h)}{\|\Pi_hv\|_X}.
+\]
+于是, \eqref{eq:primitive-fortin-stability} 和
+\eqref{eq:primitive-continuous-inf-sup} 给出
+\[
+\sup_{v_h\in X_h}\frac{b(v_h,\mu_h)}{\|v_h\|_X}
+\geq\frac{1}{C}\sup_{v\in X}\frac{b(v,\mu_h)}{\|v\|_X}
+\geq\frac{\beta}{C}\|\mu_h\|_M.
+\]
+因此 \eqref{eq:primitive-discrete-inf-sup} 成立, 且 $\beta^*=\beta/C$.
+
+\MathBookSourcePage{132}
+反过来, 假设 \eqref{eq:primitive-discrete-inf-sup} 以与 $h$ 无关的常数
+$\beta^*>0$ 成立. 对每个 $v\in X$, 存在唯一的
+$\Pi_hv\in V_h^\perp$, 使得
+\[
+b(\Pi_hv,\mu_h)=b(v,\mu_h)
+\qquad\forall\mu_h\in M_h,
+\]
+并且
+\[
+\|\Pi_hv\|_X
+\leq\frac{1}{\beta^*}\|B_hv\|_{M_h'}
+\leq\frac{\|b\|}{\beta^*}\|v\|_X.
+\]
+显然, $\Pi_h\in\mathcal L(X;X_h)$, 并以
+$C=\|b\|/\beta^*$ 满足 \eqref{eq:primitive-fortin-stability}.
+\end{Proof}
+
+实际中, 构造 $\Pi_h$ 绝非易事. 读者将在 Section~\ref{subsec:primitive-discrete-inf-sup-methods}
+中看到如何在若干情形下不显式构造 $\Pi_h$ 而建立 inf-sup 条件.
+
+\setcounter{statement}{3}
+\begin{Remark}\label{rem:primitive-inf-sup-riesz-form}
+离散 inf-sup 条件 \eqref{eq:primitive-discrete-inf-sup} 还可以方便地写成:
+对每个 $\mu_h\in M_h$, 存在 $v_h\in X_h$ (在 $V_h^\perp$ 中唯一), 使得
+\[
+b(v_h,\mu_h)=\|\mu_h\|_M^2,
+\qquad
+\|v_h\|_X\leq\frac{1}{\beta^*}\|\mu_h\|_M.
+\]
+这个结果在连续情形中也成立, 并且明确使用了 $\|\cdot\|_M$ 是 Hilbert 范数这一事实.
+\end{Remark}
+
+\setcounter{statement}{4}
+\begin{Remark}\label{rem:primitive-pressure-error-inner-product}
+在双线性形式 $a(\cdot,\cdot)$ 恰好等于与 Hilbert 范数
+$\|\cdot\|_X$ 相联系的标量积 $((\cdot,\cdot))_X$ 的特殊情形中,
+公式 \eqref{eq:primitive-pressure-error} 简化为
+\begin{equation}\label{eq:primitive-pressure-error-prime}
+\|\lambda-\lambda_h\|_M
+\leq\frac{1}{\beta^*}\left\{
+\inf_{w_h\in V_h(\chi)}\|u-w_h\|_X
++(\beta^*+\|b\|)\inf_{\mu_h\in M_h}\|\lambda-\mu_h\|_M
+\right\}.
+\tag{1.17$'$}
+\end{equation}
+事实上,
+\[
+b(v_h,\lambda_h-\mu_h)
+=((u-w_h,v_h))_X+b(v_h,\lambda-\mu_h)
+\]
+对所有 $v_h\in V_h^\perp$, $w_h\in V_h(\chi)$ 和 $\mu_h\in M_h$ 成立,
+而 Remark~\ref{rem:primitive-inf-sup-riesz-form} 中的 $v_h\in V_h^\perp$
+给出 \eqref{eq:primitive-pressure-error-prime}.
+\end{Remark}
+
+Theorem~\ref{thm:primitive-abstract-discrete-error} 立即给出下列一般收敛结果.
+
+\setcounter{statement}{0}
+\begin{Corollary}\label{cor:primitive-general-velocity-convergence}
+假设下列条件成立:
+
+$1^\circ)$ 形式 $a(\cdot,\cdot)$ 以与 $h$ 无关的常数 $\alpha^*>0$
+满足 \eqref{eq:primitive-discrete-ellipticity};
+
+$2^\circ)$ 存在 $V(\chi)$ 的稠密子集 $\mathcal V(\chi)$,
+$M$ 的稠密子空间 $\mathcal M$, 以及两个映射
+\[
+r_h:\mathcal V(\chi)\longrightarrow V_h(\chi),
+\qquad
+\rho_h:\mathcal M\longrightarrow M_h,
+\]
+使得
+\[
+\lim_{h\to0}\|r_hv-v\|_X=0
+\qquad\forall v\in\mathcal V(\chi),
+\]
+以及
+\[
+\lim_{h\to0}\|\rho_h\mu-\mu\|_M=0
+\qquad\forall\mu\in\mathcal M.
+\]
+则
+\[
+\lim_{h\to0}\|u-u_h\|_X=0.
+\]
+\end{Corollary}
+
+\MathBookSourcePage{133}
+\setcounter{statement}{1}
+\begin{Corollary}\label{cor:primitive-general-mixed-convergence}
+保留上述关于 $a(\cdot,\cdot)$ 和 $M$ 的假设, 并假设
+$b(\cdot,\cdot)$ 一致地满足 inf-sup 条件
+\eqref{eq:primitive-discrete-inf-sup}. 若存在 $X$ 的稠密子空间
+$\mathcal X$ 和映射 $r_h:\mathcal X\to X_h$, 满足
+\[
+\lim_{h\to0}\|r_hv-v\|_X=0
+\qquad\forall v\in\mathcal X,
+\]
+则
+\[
+\lim_{h\to0}\left\{\|u-u_h\|_X+\|\lambda-\lambda_h\|_M\right\}=0.
+\]
+\end{Corollary}

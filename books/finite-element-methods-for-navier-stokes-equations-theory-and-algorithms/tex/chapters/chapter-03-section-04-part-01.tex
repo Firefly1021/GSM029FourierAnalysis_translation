@@ -1,0 +1,408 @@
+% Reviewed translation: PDF pages 251--255 / printed pages 237--241.
+% The original scan is authoritative; mathematical tokens were checked against it.
+\MathBookSourcePage{251}
+此外, 假设 $\Omega$ 是凸的, 则问题
+\eqref{eq:incompressible-sfvp-practical-problem} 的解
+$\mathbf u_h=(\operatorname{curl}\psi_h,\omega_h)$ 满足
+\begin{equation}\label{eq:incompressible-quadrilateral-velocity-superconvergence}
+\|\mathbf u-\mathbf u_h\|_{\widetilde X}
+\leq Ch^l\|\psi\|_{l+2,\Omega},
+\end{equation}
+其中使用另一个常数 $C>0$, 并假设 Stokes 问题
+\eqref{eq:incompressible-sfvp-stokes} 的流函数
+$\psi\in H^{l+2}(\Omega)$.
+当 $\Omega$ 不凸时, 若涡量
+$\omega\in H^{l+1}(\Omega)$, 仍可达到相同精度阶.
+
+最后, 若问题 \eqref{eq:incompressible-sfvp-stokes}
+的解 $(\mathbf u=(\operatorname{curl}\psi,\omega),p)$ 满足
+$\psi\in H^{l+2}(\Omega)$, $p\in H^l(\Omega)$,
+且 $\Omega$ 为凸域, 则问题
+\eqref{eq:incompressible-sfvp-discrete-pressure} 的压力解满足
+\begin{equation}\label{eq:incompressible-quadrilateral-pressure-superconvergence}
+\|p-p_h\|_{0,\Omega}
+\leq Ch^l\left(|p|_{l,\Omega}+\|\psi\|_{l+2,\Omega}\right).
+\end{equation}
+
+\section{二维 "流函数--速度梯度张量" 方法}
+\label{sec:incompressible-stream-gradient-tensor}
+
+本节讨论的方法以流函数 $\psi$ 和速度梯度
+\[
+\lambda_{ij}=\frac{\partial^2\psi}{\partial x_i\partial x_j},
+\qquad1\leq i,j\leq2,
+\]
+作为未知量. 换言之, 它求解流函数及其全部二阶导数,
+而不是像前一种方法那样只求 Laplacian.
+读者将看到, 这种方法得到一种经济且最优的格式,
+称为 Hellan--Herrmann--Johnson 格式.
+Brezzi \& Raviart~\cite{ref:brezzi-raviart-15}
+详尽分析了这一格式及相关格式.
+这里给出的分析是 Babuška et al.~\cite{ref:babuska-osborn-pitkaranta-5}
+提出的一种略有不同的分析, 它优雅地应用了依赖于网格的范数.
+
+\subsection{Hellan--Herrmann--Johnson 表述}
+\label{subsec:incompressible-hhj-formulation}
+
+令 $(\mathbf u,p)$ 是问题
+\eqref{eq:incompressible-sfvp-stokes} 的解.
+不引入涡量 $\omega$, 而先把非对称速度梯度张量
+$\boldsymbol\lambda=(\lambda_{ij})$
+作为新的未知量:
+\begin{equation}\label{eq:incompressible-hhj-velocity-gradient}
+\lambda_{ij}=\frac{\partial u_i}{\partial x_j},
+\qquad1\leq i,j\leq2.
+\end{equation}
+于是问题 \eqref{eq:incompressible-sfvp-stokes} 的方程可写为
+\begin{equation}\label{eq:incompressible-hhj-gradient-system}
+\left\{
+\begin{aligned}
+-\nu\sum_{j=1}^2\frac{\partial\lambda_{ij}}{\partial x_j}
++\frac{\partial p}{\partial x_i}&=f_i,
+&&i=1,2,\\
+\sum_{i=1}^2\lambda_{ii}&=0,
+\end{aligned}
+\right.
+\quad\text{in }\Omega.
+\end{equation}
+将通过适当的分部积分从中导出新表述.
+
+\MathBookSourcePage{252}
+更精确地, 令 $\kappa$ 是 $\mathbb R^2$ 中有界开集,
+其边界 $\partial\kappa$ Lipschitz 连续,
+外单位法向量 $\mathbf n=(n_1,n_2)$,
+单位切向量 $\mathbf t=(-n_2,n_1)$.
+对 $\mathbf v\in H^1(\kappa)^2$
+和张量 $\boldsymbol\tau=(\tau_{ij})\in H^1(\kappa)^4$,
+Green 公式给出
+\begin{equation}\label{eq:incompressible-hhj-green-component}
+\int_\kappa\frac{\partial v_i}{\partial x_j}\tau_{ij}\,dx
+=-\int_\kappa v_i\frac{\partial\tau_{ij}}{\partial x_j}\,dx
++\int_{\partial\kappa}v_i n_j\tau_{ij}\,ds.
+\end{equation}
+利用 $v_i=(\mathbf v\cdot\mathbf n)n_i
++(\mathbf v\cdot\mathbf t)t_i$, $i=1,2$,
+边界积分也可写成
+\[
+\int_{\partial\kappa}v_i n_j\tau_{ij}\,ds
+=\int_{\partial\kappa}(\mathbf v\cdot\mathbf n)
+\tau_{ij}n_jn_i\,ds
++\int_{\partial\kappa}(\mathbf v\cdot\mathbf t)
+\tau_{ij}n_jt_i\,ds.
+\]
+定义
+\begin{equation}\label{eq:incompressible-hhj-normal-moments}
+M_n(\boldsymbol\tau)
+=\sum_{i,j=1}^2\tau_{ij}n_in_j,
+\qquad
+M_{nt}(\boldsymbol\tau)
+=\sum_{i,j=1}^2\tau_{ij}n_jt_i,
+\end{equation}
+则对 $i,j$ 求和后,
+\eqref{eq:incompressible-hhj-green-component} 化为
+\[
+\int_\kappa\frac{\partial v_i}{\partial x_j}\tau_{ij}\,dx
+=-\int_\kappa v_i\frac{\partial\tau_{ij}}{\partial x_j}\,dx
++\int_{\partial\kappa}(\mathbf v\cdot\mathbf n)
+M_n(\boldsymbol\tau)\,ds
++\int_{\partial\kappa}(\mathbf v\cdot\mathbf t)
+M_{nt}(\boldsymbol\tau)\,ds.
+\]
+采用重复指标表示求和的惯例, 更紧凑地写成
+\begin{equation}\label{eq:incompressible-hhj-green-tensor}
+\begin{split}
+\int_\kappa\frac{\partial v_i}{\partial x_j}\tau_{ij}\,dx
+={}&-\int_\kappa v_i\frac{\partial\tau_{ij}}{\partial x_j}\,dx
++\int_{\partial\kappa}(\mathbf v\cdot\mathbf n)
+M_n(\boldsymbol\tau)\,ds\\
+&+\int_{\partial\kappa}(\mathbf v\cdot\mathbf t)
+M_{nt}(\boldsymbol\tau)\,ds,
+\end{split}
+\end{equation}
+对所有 $\mathbf v\in H^1(\kappa)^2$
+和 $\boldsymbol\tau\in H^1(\kappa)^4$ 成立.
+恒等式 \eqref{eq:incompressible-hhj-green-tensor}
+与 \eqref{eq:incompressible-hhj-gradient-system}
+共同构成包括 Hellan--Herrmann--Johnson 格式在内的若干格式的基础.
+
+这里同样有多种方法表述当前方法.
+我们采用与 Subsection~\ref{subsec:incompressible-sfvp-mesh-dependent}
+密切相关的依赖于网格的表述.
+设 $\Omega$ 是 $\mathbb R^2$ 中边界 $\Gamma$ 为多边形的有界区域,
+$\mathcal T_h$ 是由三角形和/或凸四边形组成的剖分,
+其单元直径由 $h$ 控制.
+与 Subsection~\ref{subsec:incompressible-sfvp-mesh-dependent} 一样,
+假设速度和右端项满足
+$\mathbf u\in H^2(\Omega)^2$, $\mathbf f\in L^2(\Omega)^2$.
+
+\MathBookSourcePage{253}
+结合 \eqref{eq:incompressible-hhj-velocity-gradient}
+和 \eqref{eq:incompressible-hhj-green-tensor}
+考察方程 \eqref{eq:incompressible-hhj-gradient-system}.
+若张量 $\boldsymbol\tau$ 整体属于 $H^1(\Omega)^4$,
+而向量场 $\mathbf v$ 属于
+\[
+H_0(\operatorname{div};\Omega)
+=\{\mathbf v\in L^2(\Omega)^2;
+\ \operatorname{div}\mathbf v\in L^2(\Omega),
+\ \mathbf v\cdot\mathbf n|_\Gamma=0\},
+\]
+则曲面积分之和
+$\sum_{\kappa\in\mathcal T_h}
+\int_{\partial\kappa}\mathbf v\cdot\mathbf n
+M_n(\boldsymbol\tau)\,ds$ 为零.
+因此 $\mathbf u\in H^2(\Omega)^2$ 的假设允许把
+\eqref{eq:incompressible-hhj-green-tensor}
+用于 \eqref{eq:incompressible-hhj-gradient-system} 的第一组方程, 得
+\begin{equation}\label{eq:incompressible-hhj-velocity-pressure-weak}
+\begin{split}
+\nu\sum_{\kappa\in\mathcal T_h}
+\biggl\{&\int_\kappa\lambda_{ij}
+\frac{\partial v_i}{\partial x_j}\,dx
+-\int_{\partial\kappa}M_{nt}(\boldsymbol\lambda)
+\mathbf v\cdot\mathbf t\,ds\biggr\}
+-\int_\Omega p\operatorname{div}\mathbf v\,dx\\
+&=\int_\Omega\mathbf f\cdot\mathbf v\,dx,
+\end{split}
+\end{equation}
+对所有 $\mathbf v\in H_0(\operatorname{div};\Omega)$,
+$\mathbf v|_\kappa\in H^1(\kappa)^2$
+于所有 $\kappa\in\mathcal T_h$ 成立.
+同样, 为与 \eqref{eq:incompressible-hhj-velocity-pressure-weak} 匹配,
+速度与梯度的关系可写成
+\begin{equation}\label{eq:incompressible-hhj-gradient-relation-weak}
+\int_\Omega\lambda_{ij}\tau_{ij}\,dx
+=\sum_{\kappa\in\mathcal T_h}
+\left\{
+\int_\kappa\tau_{ij}\frac{\partial u_i}{\partial x_j}\,dx
+-\int_{\partial\kappa}M_{nt}(\boldsymbol\tau)
+\mathbf u\cdot\mathbf t\,ds
+\right\}
+\end{equation}
+对所有 $\boldsymbol\tau\in H^1(\Omega)^4$ 成立,
+因为对 $\mathbf u\in H_0^1(\Omega)^2$
+和 $\boldsymbol\tau\in H^1(\Omega)^4$,
+边界项之和为零.
+
+观察 \eqref{eq:incompressible-hhj-velocity-pressure-weak}
+和 \eqref{eq:incompressible-hhj-gradient-relation-weak} 可见,
+测试函数 $\mathbf v$ 的正则性几乎不能降低,
+但测试张量 $\boldsymbol\tau$ 不必整体属于 $H^1(\Omega)^4$.
+事实上, 若 $\boldsymbol\tau|_\kappa\in H^1(\kappa)^4$
+于每个 $\kappa$ 上, 则
+\eqref{eq:incompressible-hhj-gradient-relation-weak} 已有意义.
+此外, 方便假设 $M_n(\boldsymbol\tau)$
+跨过所有单元间边界连续.
+
+综上, 若 Stokes 问题 \eqref{eq:incompressible-sfvp-stokes}
+的解 $(\mathbf u,p)$ 满足
+$\mathbf u\in(H^2(\Omega)\cap H_0^1(\Omega))^2$,
+$p\in H^1(\Omega)\cap L_0^2(\Omega)$,
+则 $(\mathbf u,\boldsymbol\lambda,p)$,
+$\lambda_{ij}=\partial u_i/\partial x_j$, 也是下列问题的解:
+\begin{equation}\label{eq:incompressible-hhj-three-field-problem}
+\left\{
+\begin{aligned}
+&\mathbf u\in H_0(\operatorname{div};\Omega),
+\quad\mathbf u|_\kappa\in H^1(\kappa)^2,\\
+&\boldsymbol\lambda|_\kappa\in H^1(\kappa)^4,
+\quad M_n(\boldsymbol\lambda)\text{ 在 }\Gamma_h\text{ 上连续},
+\quad p\in H^1(\Omega)\cap L_0^2(\Omega),\\
+&\nu\sum_{\kappa\in\mathcal T_h}
+\left\{\int_\kappa\lambda_{ij}\frac{\partial v_i}{\partial x_j}\,dx
+-\int_{\partial\kappa}M_{nt}(\boldsymbol\lambda)
+\mathbf v\cdot\mathbf t\,ds\right\}
+-\int_\Omega p\operatorname{div}\mathbf v\,dx
+=\int_\Omega\mathbf f\cdot\mathbf v\,dx,\\
+&\int_\Omega\lambda_{ij}\tau_{ij}\,dx
+-\sum_{\kappa\in\mathcal T_h}
+\left\{\int_\kappa\tau_{ij}\frac{\partial u_i}{\partial x_j}\,dx
+-\int_{\partial\kappa}M_{nt}(\boldsymbol\tau)
+\mathbf u\cdot\mathbf t\,ds\right\}=0.
+\end{aligned}
+\right.
+\end{equation}
+其中第三行对所有分片 $H^1$ 的
+$\mathbf v\in H_0(\operatorname{div};\Omega)$ 成立,
+第四行对所有分片 $H^1$ 且 $M_n(\boldsymbol\tau)$
+在 $\Gamma_h$ 上连续的张量成立.
+
+反过来, 常规论证表明问题
+\eqref{eq:incompressible-hhj-three-field-problem}
+至多有一个解. 事实上, 第二组方程蕴含
+$\lambda_{ij}=\partial u_i/\partial x_j$
+于每个单元中, 进而 $\operatorname{div}\mathbf u=0$ 于 $\Omega$ 中.
+
+\MathBookSourcePage{254}
+若再令 $\mathbf f=0$, 容易得到所有 $\lambda_{ij}=0$.
+于是 $\mathbf u$ 在每个单元中为常向量, 且
+\[
+\sum_{\kappa\in\mathcal T_h}
+\int_{\partial\kappa}M_{nt}(\boldsymbol\tau)
+\mathbf u\cdot\mathbf t\,ds=0
+\]
+对所有分片 $H^1$ 且 $M_n(\boldsymbol\tau)$
+跨 $\Gamma_h$ 连续的张量成立.
+结合 $\mathbf u\in H_0(\operatorname{div};\Omega)$,
+立即得到 $\mathbf u=0$ 于 $\Omega$ 中.
+所以只要原 Stokes 解具有足够正则性,
+问题 \eqref{eq:incompressible-hhj-three-field-problem}
+就是其等价表述.
+
+为消去压力, 也可用流函数表述该问题.
+回顾 $\mathbf v\in H_0(\operatorname{div};\Omega)$
+满足 $\operatorname{div}\mathbf v=0$ 当且仅当
+\[
+\mathbf v=\operatorname{curl}\phi,
+\qquad
+\phi\in\Phi
+=\{\phi\in H^1(\Omega);
+\ \phi|_{\Gamma_0}=0,
+\ \phi|_{\Gamma_i}\text{ 为常数},
+\ 1\leq i\leq p\}.
+\]
+若此外 $\mathbf v|_\kappa\in H^1(\kappa)^2$,
+则 $\phi|_\kappa\in H^2(\kappa)$, 反之亦然.
+可以直接用流函数改写
+\eqref{eq:incompressible-hhj-three-field-problem},
+但若不使用 $\boldsymbol\lambda$, 而引入对称张量
+\begin{equation}\label{eq:incompressible-hhj-symmetric-tensor}
+\sigma_{11}=-\lambda_{12},
+\qquad
+\sigma_{12}=\sigma_{21}=\lambda_{11},
+\qquad
+\sigma_{22}=\lambda_{21},
+\end{equation}
+记号会更简单. $\boldsymbol\sigma$ 与
+$\boldsymbol\lambda$ 的对应关系为
+\begin{equation}\label{eq:incompressible-hhj-tensor-correspondence}
+\lambda_{11}=-\sigma_{12},
+\quad\lambda_{12}=-\sigma_{22},
+\quad\lambda_{21}=\sigma_{11},
+\quad\lambda_{22}=\sigma_{12},
+\quad
+M_{nt}(\boldsymbol\lambda)=-M_n(\boldsymbol\sigma),
+\quad
+M_n(\boldsymbol\lambda)=M_{nt}(\boldsymbol\sigma).
+\end{equation}
+因此定义张量空间
+\begin{equation}\label{eq:incompressible-hhj-tensor-space}
+\mathcal X
+=\{\boldsymbol\tau\in L^2(\Omega)^4;
+\ \boldsymbol\tau|_\kappa\in H^1(\kappa)^4,
+\ \tau_{ij}=\tau_{ji},
+\ M_n(\boldsymbol\tau)\text{ 在 }\Gamma_h\text{ 的每条边上连续}\},
+\end{equation}
+以及 Subsection~\ref{subsec:incompressible-sfvp-mesh-dependent}
+已经引入的流函数空间
+\begin{equation}\label{eq:incompressible-hhj-stream-space}
+\widetilde\Psi
+=\{\phi\in\Phi;
+\ \phi|_\kappa\in H^2(\kappa)
+\ \forall\kappa\in\mathcal T_h\}.
+\end{equation}
+借助上述对应关系,
+\eqref{eq:incompressible-hhj-three-field-problem} 中曲面积分之和可写成
+\[
+\sum_{\kappa\in\mathcal T_h}
+\int_{\partial\kappa}M_{nt}(\boldsymbol\lambda)
+\mathbf u\cdot\mathbf t\,ds
+=\int_{\Gamma_h}M_n(\boldsymbol\sigma)
+S(\partial\psi/\partial n)\,ds,
+\]
+其中 $S(v)$ 表示 $v$ 跨 $\Gamma_h$ 各边的跳跃.
+因此得到称为 Hellan--Herrmann--Johnson 表述的等价问题:
+
+\MathBookSourcePage{255}
+求 $(\boldsymbol\sigma,\psi)\in\mathcal X\times\widetilde\Psi$, 使
+\begin{equation}\label{eq:incompressible-hhj-formulation}
+\left\{
+\begin{aligned}
+\nu\sum_{\kappa\in\mathcal T_h}
+\int_\kappa\frac{\partial^2\phi}{\partial x_i\partial x_j}
+\sigma_{ij}\,dx
+-\nu\int_{\Gamma_h}M_n(\boldsymbol\sigma)
+S(\partial\phi/\partial n)\,ds
+&=\int_\Omega\mathbf f\cdot\operatorname{curl}\phi\,dx
+&&\forall\phi\in\widetilde\Psi,\\
+\int_\Omega\sigma_{ij}\tau_{ij}\,dx
+-\sum_{\kappa\in\mathcal T_h}
+\int_\kappa\frac{\partial^2\psi}{\partial x_i\partial x_j}
+\tau_{ij}\,dx
++\int_{\Gamma_h}M_n(\boldsymbol\tau)
+S(\partial\psi/\partial n)\,ds
+&=0
+&&\forall\boldsymbol\tau\in\mathcal X.
+\end{aligned}
+\right.
+\end{equation}
+再次可用两个双线性形式表述它:
+\begin{equation}\label{eq:incompressible-hhj-form-a}
+a_h(\boldsymbol\sigma,\boldsymbol\tau)
+=\int_\Omega\sigma_{ij}\tau_{ij}\,dx
+\qquad\forall\boldsymbol\sigma,\boldsymbol\tau\in L^2(\Omega)^4,
+\end{equation}
+以及
+\begin{equation}\label{eq:incompressible-hhj-form-b}
+b_h(\boldsymbol\tau,\phi)
+=-\sum_{\kappa\in\mathcal T_h}
+\int_\kappa\frac{\partial^2\phi}{\partial x_i\partial x_j}
+\tau_{ij}\,dx
++\int_{\Gamma_h}M_n(\boldsymbol\tau)
+S(\partial\phi/\partial n)\,ds.
+\end{equation}
+于是问题 \eqref{eq:incompressible-hhj-formulation} 写成
+\begin{equation}\label{eq:incompressible-hhj-abstract-formulation}
+\left\{
+\begin{aligned}
+b_h(\boldsymbol\sigma,\phi)
+&=-\frac1\nu(\mathbf f,\operatorname{curl}\phi)
+&&\forall\phi\in\widetilde\Psi,\\
+a_h(\boldsymbol\sigma,\boldsymbol\tau)
++b_h(\boldsymbol\tau,\psi)&=0
+&&\forall\boldsymbol\tau\in\mathcal X.
+\end{aligned}
+\right.
+\end{equation}
+注意它与 Subsection~\ref{subsec:incompressible-sfvp-mesh-dependent}
+的问题 \eqref{eq:incompressible-sfvp-mesh-discrete-problem}
+和 \eqref{eq:incompressible-sfvp-mesh-abstract-problem} 的类比.
+还要注意, 当 $\boldsymbol\tau\in H^1(\Omega)^4$
+且 $\phi\in\widetilde\Psi$ 时,
+\begin{equation}\label{eq:incompressible-hhj-form-b-gradient}
+b_h(\boldsymbol\tau,\phi)
+=\int_\Omega
+\frac{\partial\phi}{\partial x_i}
+\frac{\partial\tau_{ij}}{\partial x_j}\,dx,
+\end{equation}
+这一性质类似于
+\eqref{eq:incompressible-sfvp-mesh-form-b-curl}.
+
+\begin{Theorem}\label{thm:incompressible-hhj-continuous-equivalence}
+令 $\Omega$ 是有界平面多边形,
+$\mathcal T_h$ 是 $\Omega$ 的一个剖分.
+假设 Stokes 问题 \eqref{eq:incompressible-sfvp-stokes}
+的解 $(\mathbf u=\operatorname{curl}\psi,p)$ 满足
+\[
+\mathbf u\in(H^2(\Omega)\cap H_0^1(\Omega))^2,
+\qquad p\in H^1(\Omega)\cap L_0^2(\Omega).
+\]
+则:
+
+\textup{1)} 三元组
+$(\mathbf u,(\lambda_{ij}=\partial u_i/\partial x_j),p)$
+是问题 \eqref{eq:incompressible-hhj-three-field-problem} 的唯一解;
+
+\textup{2)} 二元组
+$((\sigma_{ij}=\partial^2\psi/
+\partial x_i\partial x_j),\psi)$
+是问题 \eqref{eq:incompressible-hhj-formulation} 的唯一解.
+\end{Theorem}
+
+下一小节将假设
+\begin{equation}\label{eq:incompressible-hhj-regularity-assumption}
+\psi\in H^3(\Omega)\cap H_0^2(\Omega),
+\end{equation}
+以便可以使用问题
+\eqref{eq:incompressible-hhj-three-field-problem}
+或 \eqref{eq:incompressible-hhj-formulation} 中的任一个.

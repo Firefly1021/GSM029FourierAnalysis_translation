@@ -1,0 +1,403 @@
+% Reviewed translation: PDF pages 245--250 / printed pages 231--236.
+% The original scan is authoritative; mathematical tokens were checked against it.
+\MathBookSourcePage{245}
+\subsection{$l$ 次四边形有限元的超收敛}
+\label{subsec:incompressible-quadrilateral-superconvergence}
+
+本小节再次研究表达式
+\[
+\inf_{\phi_h\in\Phi_h}
+\sup_{\mu_h\in\Theta_h}
+\frac{|(\operatorname{curl}(\phi-\phi_h),
+\operatorname{curl}\mu_h)|}{\|\mu_h\|_{0,\Omega}},
+\]
+并证明, 若剖分 $\mathcal T_h$ 具有有利的构形,
+则对 $\phi\in H^{l+2}(\Omega)$, 它是 $h^l$ 阶的.
+这主要通过把 $\phi_h$ 选成 $\phi$ 的适当插值来实现.
+
+首先假设 $\mathcal T_h$ 完全由凸四边形组成,
+并采用 Section~\ref{sec:appendix-quadrilateral-finite-elements}
+中关于四边形的记号和逼近结果.
+固定整数 $l\geq1$, 令
+\[
+0\leq\alpha_0<\alpha_1<\cdots<\alpha_l\leq1
+\]
+为区间 $[0,1]$ 的 $l+1$ 个不同点.
+记 $I\in\mathcal L(C^0(\widehat\kappa);Q_l)$
+为参考单位正方形 $\widehat\kappa$ 上节点
+\[
+\{(\alpha_i,\alpha_j);\ 0\leq i,j\leq l\}
+\]
+处的标准插值算子.
+下列技术结果给出差 $\phi-I\phi$ 的第一个逼近.
+
+\begin{Lemma}\label{lem:incompressible-superconvergence-interpolation-remainder}
+令 $R\in\mathcal L(H^{l+2}(\widehat\kappa);P_{l+1,l+1})$ 定义为
+\[
+R(\phi)=\frac1{(l+1)!}
+\left\{
+\frac{\partial^{l+1}\phi}{\partial x_1^{l+1}}(0,x_2)
+\prod_{i=0}^l(x_1-\alpha_i)
++\frac{\partial^{l+1}\phi}{\partial x_2^{l+1}}(x_1,0)
+\prod_{j=0}^l(x_2-\alpha_j)
+\right\}.
+\]
+则对每个整数 $m$, $0\leq m\leq l+2$,
+存在只依赖于 $\widehat\kappa$, $I$, $R$, $m$ 和 $l$ 的正常数 $C$, 使
+\begin{equation}\label{eq:incompressible-superconvergence-interpolation-remainder}
+\|\phi-I\phi-R(\phi)\|_{m,\widehat\kappa}
+\leq C|\phi|_{l+2,\widehat\kappa}
+\qquad\forall\phi\in H^{l+2}(\widehat\kappa).
+\end{equation}
+\end{Lemma}
+
+\begin{Proof}
+先设 $\phi\in C^{l+1}(\widehat\kappa)$.
+回顾插值算子可写成
+\[
+I\phi(x_1,x_2)
+=\sum_{i=0}^l\sum_{j=0}^l
+L_i(x_1)L_j(x_2)\phi(\alpha_i,\alpha_j),
+\]
+其中 $L_i\in P_l$ 且 $L_i(\alpha_j)=\delta_{ij}$.
+熟知的插值误差余项公式分别沿两个坐标方向应用,
+可把 $\phi-I\phi$ 写成由
+$\prod_{i=0}^l(x_1-\alpha_i)$ 和
+$\prod_{j=0}^l(x_2-\alpha_j)$ 相乘的两个
+$(l+1)$ 阶导数项之和.
+将它与 $R(\phi)$ 比较, 并使用
+$\sum_{i=0}^lL_i(x)=1$, 容易看出映射
+$\phi\mapsto\phi-I\phi-R(\phi)$ 在 $P_{l+1,l+1}$ 上为零.
+该映射属于
+$\mathcal L(H^{l+2}(\widehat\kappa);H^m(\widehat\kappa))$,
+因此 \eqref{eq:incompressible-superconvergence-interpolation-remainder}
+由 Corollary~\ref{cor:appendix-abstract-interpolation-reference} 得到.
+\end{Proof}
+
+下一个结果通过简单重排各项得到.
+
+\MathBookSourcePage{246}
+\begin{Lemma}\label{lem:incompressible-superconvergence-mapped-gradient-identity}
+对所有 $\phi,\mu\in H^1(\kappa)$, 有
+\begin{equation}\label{eq:incompressible-superconvergence-mapped-gradient-identity}
+\begin{split}
+\int_\kappa\operatorname{grad}\phi\cdot
+\operatorname{grad}\mu\,dx
+={}&\int_{\widehat\kappa}\frac1{J_\kappa}
+\biggl[
+\left\|\frac{\partial F_\kappa}{\partial\widehat x_2}\right\|^2
+\frac{\partial\widehat\phi}{\partial\widehat x_1}
+\frac{\partial\widehat\mu}{\partial\widehat x_1}
++\left\|\frac{\partial F_\kappa}{\partial\widehat x_1}\right\|^2
+\frac{\partial\widehat\phi}{\partial\widehat x_2}
+\frac{\partial\widehat\mu}{\partial\widehat x_2}
+\biggr]d\widehat x\\
+&-\int_{\widehat\kappa}\frac1{J_\kappa}
+\biggl[
+\frac{\partial F_\kappa}{\partial\widehat x_1}\cdot
+\frac{\partial F_\kappa}{\partial\widehat x_2}
+\left(
+\frac{\partial\widehat\phi}{\partial\widehat x_1}
+\frac{\partial\widehat\mu}{\partial\widehat x_2}
++\frac{\partial\widehat\phi}{\partial\widehat x_2}
+\frac{\partial\widehat\mu}{\partial\widehat x_1}
+\right)\biggr]d\widehat x,
+\end{split}
+\end{equation}
+其中 $\|\cdot\|$ 表示 $\mathbb R^2$ 中的 Euclidean 范数,
+$J_\kappa$ 是双线性映射 $F_\kappa$ 的 Jacobian.
+\end{Lemma}
+
+为恰当地估计
+\eqref{eq:incompressible-superconvergence-mapped-gradient-identity}
+右端, 需要把含 $J_\kappa$ 和
+$\partial F_\kappa/\partial\widehat x_i$ 的因子移出积分.
+因为它们不是常数, 必须假设其导数 "很小".
+具体作如下假设: 存在与 $h$ 和 $\kappa$ 无关的常数 $C>0$, 使
+\begin{equation}\label{eq:incompressible-superconvergence-almost-parallelogram}
+\left|\frac{\partial^2F_\kappa}
+{\partial\widehat x_1\partial\widehat x_2}\right|
+\leq Ch_\kappa^2
+\qquad\forall\kappa\in\mathcal T_h.
+\end{equation}
+当 $\kappa$ 是平行四边形时, 上式左端为零;
+事实上, 它只在 $\kappa$ 几乎为平行四边形时成立.
+容易证明, 若
+\eqref{eq:incompressible-superconvergence-almost-parallelogram}
+成立, 则全半范数 $|\cdot|_{k,\kappa}$
+与方向半范数 $[\cdot]_{k,\kappa}$
+(参见 \eqref{eq:appendix-directional-seminorm})
+具有同阶上界.
+
+\begin{Lemma}\label{lem:incompressible-superconvergence-map-bounds}
+令凸四边形 $\kappa$ 满足
+\eqref{eq:incompressible-superconvergence-almost-parallelogram}.
+则对每个整数 $k\geq1$, 存在与 $h$ 和 $\kappa$ 无关的常数 $C>0$, 使
+\begin{equation}\label{eq:incompressible-superconvergence-directional-bound}
+|\phi|_{k,\kappa}
+\leq C\left(\sum_{i=1}^k[\phi]_{i,\kappa}^2\right)^{1/2}
+\qquad\forall\phi\in H^k(\kappa).
+\end{equation}
+此外,
+\begin{equation}\label{eq:incompressible-superconvergence-coefficient-derivative}
+\left\|
+\frac{\partial}{\partial\widehat x_k}
+\left[
+\frac1{J_\kappa}
+\frac{\partial F_\kappa}{\partial\widehat x_i}
+\cdot\frac{\partial F_\kappa}{\partial\widehat x_j}
+\right]\right\|_{0,\infty,\widehat\kappa}
+\leq C\sigma h_\kappa(1+\sigma),
+\end{equation}
+其中 $1\leq i,j,k\leq2$.
+\end{Lemma}
+
+\MathBookSourcePage{247}
+若剖分 $\mathcal T_h$ 正则,
+\eqref{eq:incompressible-superconvergence-coefficient-derivative}
+蕴含
+\[
+X_\kappa(\widehat x_1,\widehat x_2)
+=X_\kappa(1/2,1/2)+R_\kappa,
+\quad
+X_\kappa=\frac1{J_\kappa}
+\frac{\partial F_\kappa}{\partial\widehat x_i}
+\cdot\frac{\partial F_\kappa}{\partial\widehat x_j},
+\]
+且余项满足 $|R_\kappa|\leq C\sigma^2h_\kappa$.
+由于我们特别关注恢复一个 $h$ 次幂, 可把这个余项计入高阶项.
+因此, 由
+\eqref{eq:incompressible-superconvergence-mapped-gradient-identity}
+和 \eqref{eq:incompressible-superconvergence-coefficient-derivative},
+只需研究四类项
+\begin{equation}\label{eq:incompressible-superconvergence-four-terms}
+\int_{\widehat\kappa}
+\frac{\partial(\widehat\phi-\widehat\phi_h)}
+{\partial\widehat x_i}
+\frac{\partial\widehat\mu_h}{\partial\widehat x_j}
+\,d\widehat x,
+\qquad1\leq i,j\leq2.
+\end{equation}
+若取 $\phi_h=I_\kappa\phi$, 其中 $I_\kappa$
+是在 $\kappa$ 上与 $I$ 对应的插值算子,
+则 Lemma~\ref{lem:incompressible-superconvergence-interpolation-remainder}
+表明, 当 $i=j$ 时,
+\eqref{eq:incompressible-superconvergence-four-terms}
+特别含有形如
+\[
+\int_0^1w_i(x_i)
+\frac{\partial\widehat\mu_h}{\partial\widehat x_i}
+\,d\widehat x_i,
+\qquad
+w_i(x_i)=\prod_{p=0}^l(x_i-\alpha_p)
+\]
+的因子. 若 $\alpha_p$ 是高精度求积公式的节点,
+该积分可能为零. 这促使我们选择 $[0,1]$
+上 Gauss--Lobatto 求积公式的 $l+1$ 个节点;
+回顾该公式对 $2l-1$ 次多项式精确.
+
+\begin{Lemma}\label{lem:incompressible-superconvergence-diagonal-terms}
+令 $\kappa$ 如
+Lemma~\ref{lem:incompressible-superconvergence-map-bounds} 中所述,
+$\{\alpha_i\}_{i=0}^l$ 为 Gauss--Lobatto 求积公式的 $l+1$ 个节点.
+则存在与 $h$ 和 $\kappa$ 无关的常数 $C>0$, 使
+\begin{equation}\label{eq:incompressible-superconvergence-diagonal-terms}
+\left|
+\int_{\widehat\kappa}
+\frac{\partial(\widehat\phi-I\widehat\phi)}
+{\partial\widehat x_i}
+\frac{\partial\widehat\mu_h}{\partial\widehat x_i}
+\,d\widehat x
+\right|
+\leq C\sigma^2h_\kappa^l
+\|\phi\|_{l+2,\kappa}\|\mu_h\|_{0,\kappa},
+\quad i=1,2.
+\end{equation}
+\end{Lemma}
+
+\MathBookSourcePage{248}
+\begin{Proof}
+如上所述,
+Lemma~\ref{lem:incompressible-superconvergence-interpolation-remainder}
+把左端分成 $R(\widehat\phi)$ 所给主项与余项 $E_i$,
+其中由
+\eqref{eq:incompressible-superconvergence-directional-bound}
+和附录尺度估计,
+\[
+|E_i|
+\leq C_1|\widehat\phi|_{l+2,\widehat\kappa}
+|\widehat\mu_h|_{1,\widehat\kappa}
+\leq C_3\sigma^2h_\kappa^l
+\|\phi\|_{l+2,\kappa}\|\mu_h\|_{0,\kappa}.
+\]
+对主项作一次分部积分, 得
+\[
+\int_0^1w_i(x_i)
+\frac{\partial f_i}{\partial x_i}\,dx_i=0.
+\]
+这里 $w_i/f_i$ 在 $\widehat\kappa$ 的边界上为零,
+而被积函数 $w_i\partial^2f_i/\partial x_i^2$
+属于 $Q_{2l-1}$, 并在节点 $\{\alpha_i\}$ 上为零.
+这证明 \eqref{eq:incompressible-superconvergence-diagonal-terms}.
+\end{Proof}
+
+该 Lemma 处理了
+\eqref{eq:incompressible-superconvergence-four-terms}
+中前两项. 但当 $i\ne j$ 时的第三、第四项不易处理.
+从 $R(\phi)$ 可见, 上述论证会产生 $Q_{2l}$ 中多项式的积分,
+而 Gauss--Lobatto 公式只对 $2l-1$ 次多项式精确,
+所以节点的特殊选择在这里无效.
+
+仔细考察交叉项, 为消去 $\mu_h$ 的导数,
+对 $\widehat x_j$ 分部积分.
+再次应用 Lemma~\ref{lem:incompressible-superconvergence-interpolation-remainder}
+并利用 $i\ne j$ 时
+$\partial^2R(\phi)/(\partial\widehat x_i\partial\widehat x_j)=0$, 得
+\[
+\int_{\widehat\kappa}
+\frac{\partial(\widehat\phi-I\widehat\phi)}
+{\partial\widehat x_i}
+\frac{\partial\widehat\mu_h}{\partial\widehat x_j}
+\,d\widehat x
+=\int_{\partial\widehat\kappa}
+\frac{\partial(\widehat\phi-I\widehat\phi)}
+{\partial\widehat x_i}\widehat\mu_h n_j\,ds+E_i,
+\]
+其中
+\begin{equation}\label{eq:incompressible-superconvergence-cross-remainder}
+|E_i|\leq C_1\sigma^2h_\kappa^l
+\|\phi\|_{l+2,\kappa}\|\mu_h\|_{0,\kappa}.
+\end{equation}
+
+\MathBookSourcePage{249}
+但对 $i\ne j$,
+$[\partial(\phi-I_\kappa\phi)/\partial x_i]n_j$
+在单元边界间连续而符号相反, 并在 $\Gamma$ 上为零.
+单独估计一个单元只能得到
+\begin{equation}\label{eq:incompressible-superconvergence-crude-cross-bound}
+\left|
+\int_{\partial\kappa}
+\frac{\partial(\phi-I_\kappa\phi)}{\partial x_i}
+\mu_h n_j\,ds\right|
+\leq C\|\phi\|_{l+1,\kappa}\|\mu_h\|_{0,\kappa}
+\leq C\sigma h_\kappa^{l-1}
+\|\phi\|_{l+1,\kappa}\|\mu_h\|_{0,\kappa}.
+\end{equation}
+因此为改进这个估计, 必须先对 $\mathcal T_h$ 的所有单元求和,
+再估计它们在给定内部边界上的贡献.
+只有当相邻两个单元产生的因子
+\[
+X_\kappa
+=\frac1{J_\kappa}
+\frac{\partial F_\kappa}{\partial\widehat x_1}
+\cdot\frac{\partial F_\kappa}{\partial\widehat x_2}
+\]
+之差 "很小" 时, 才能得到更好估计.
+
+令 $\kappa_1,\kappa_2$ 为两个相邻单元.
+由 \eqref{eq:incompressible-superconvergence-coefficient-derivative},
+只需估计
+$X_{\kappa_1}(a_1,b_1)-X_{\kappa_2}(a_2,b_2)$,
+其中 $(a_i,b_i)$ 是 $\kappa_i$ 上任意一点.
+最简单的选择是在公共边 $\kappa'$ 上取一点 $(a,b)$,
+并置 $(a_1,b_1)=(a_2,b_2)=(a,b)$.
+令 $i$ 是使 $\partial F_{\kappa}/\partial\widehat x_i$
+跨过公共边连续的指标. 直接计算得
+\[
+|J_{\kappa_1}J_{\kappa_2}
+(X_{\kappa_1}-X_{\kappa_2})(a,b)|
+=\left\|\frac{\partial F}{\partial\widehat x_i}(a,b)\right\|^2
+\left|
+\frac{\partial F_{\kappa_1}}{\partial\widehat x_j}
+\times
+\frac{\partial F_{\kappa_2}}{\partial\widehat x_j}(a,b)
+\right|,
+\quad j\ne i.
+\]
+取 $(a,b)$ 为 $\kappa'$ 的一个端点,
+令 $L_1,L_2$ 分别表示在该端点与 $\kappa'$ 相交的
+$\kappa_1,\kappa_2$ 的另一条边. 则
+\begin{equation}\label{eq:incompressible-superconvergence-adjacent-geometry}
+|J_{\kappa_1}J_{\kappa_2}
+(X_{\kappa_1}-X_{\kappa_2})(a,b)|
+=\operatorname{meas}^2(\kappa')
+\operatorname{meas}(L_1)\operatorname{meas}(L_2)
+|\mathbf t_1\cdot\mathbf n_2|,
+\end{equation}
+其中 $\mathbf t_1$ 是 $L_1$ 的单位方向向量,
+$\mathbf n_2$ 是 $L_2$ 的单位法向量.
+
+\MathBookSourcePage{250}
+因此, 若 $|\mathbf t_1\cdot\mathbf n_2|$ 也是 $O(h)$,
+则 $X_{\kappa_1}-X_{\kappa_2}$ 为 $O(h)$;
+换言之, $L_1,L_2$ 几乎平行.
+采用如下假设: 存在与 $h$ 无关的常数 $C>0$, 使
+\begin{equation}\label{eq:incompressible-superconvergence-nearly-parallel}
+|\mathbf t_1\cdot\mathbf n_2|\leq Ch
+\end{equation}
+对 $\mathcal T_h$ 中所有这样的相邻线段对 $L_1,L_2$ 成立.
+该假设意味着, 同时满足
+\eqref{eq:incompressible-superconvergence-almost-parallelogram}
+和 \eqref{eq:incompressible-superconvergence-nearly-parallel}
+的网格可由两束平行直线作小扰动得到.
+这当然是很严格的网格条件, 只有很少的区域 $\Omega$
+容易接受这种剖分. 尽管如此, 它仍给出本小节开头宣布的结果.
+
+\begin{Lemma}\label{lem:incompressible-superconvergence-cross-terms}
+令 $\Omega$ 是有界多边形,
+$\mathcal T_h$ 是由满足
+\eqref{eq:incompressible-superconvergence-almost-parallelogram}
+和 \eqref{eq:incompressible-superconvergence-nearly-parallel}
+的凸四边形构成的正则剖分.
+则存在与 $h$ 无关的常数 $C>0$, 使当 $i\ne j$ 时
+\begin{equation}\label{eq:incompressible-superconvergence-cross-terms}
+\sum_{\kappa\in\mathcal T_h}
+\left|
+\int_{\widehat\kappa}
+\frac{\partial(\widehat\phi-I\widehat\phi)}
+{\partial\widehat x_i}
+\frac{\partial\widehat\mu_h}{\partial\widehat x_j}
+\,d\widehat x
+\right|
+\leq Ch^l\|\phi\|_{l+2,\Omega}\|\mu_h\|_{0,\Omega}.
+\end{equation}
+\end{Lemma}
+
+结合 Lemma~\ref{lem:incompressible-superconvergence-mapped-gradient-identity}
+至 Lemma~\ref{lem:incompressible-superconvergence-cross-terms},
+得到下列 Theorem.
+
+\begin{Theorem}\label{thm:incompressible-quadrilateral-superconvergence}
+令 $\Omega$ 和 $\mathcal T_h$ 如
+Lemma~\ref{lem:incompressible-superconvergence-cross-terms} 中所述,
+$I_\kappa$ 是 $\kappa$ 上与 $I$ 对应的插值算子:
+\[
+(I_\kappa\phi)\circ F_\kappa
+=I(\phi\circ F_\kappa)
+\qquad\text{on each }\kappa,
+\]
+其中 $I\in\mathcal L(C^0(\widehat\kappa);Q_l)$
+是在 $(l+1)^2$ 个 Gauss--Lobatto 求积节点上的标准插值算子.
+则存在与 $h$ 无关的常数 $C>0$, 使对所有
+$\phi\in H^{l+2}(\Omega)$,
+\begin{equation}\label{eq:incompressible-quadrilateral-superconvergence}
+\sup_{\mu_h\in\Theta_h}
+\frac{|(\operatorname{curl}(\phi-I_h\phi),
+\operatorname{curl}\mu_h)|}{\|\mu_h\|_{0,\Omega}}
+\leq Ch^l\|\phi\|_{l+2,\Omega}.
+\end{equation}
+\end{Theorem}
+
+利用上一小节的材料, 立即得到下列推论.
+
+\begin{Corollary}\label{cor:incompressible-quadrilateral-kernel-superconvergence}
+在 Theorem~\ref{thm:incompressible-quadrilateral-superconvergence}
+的假设下, 存在与 $h$ 无关的常数 $C>0$, 使
+\begin{equation}\label{eq:incompressible-quadrilateral-kernel-superconvergence}
+\inf_{\mathbf v_h\in\widetilde V_h}|\mathbf v-\mathbf v_h|
+\leq Ch^l\|\phi\|_{l+2,\Omega}
+\end{equation}
+对所有
+$\mathbf v=(\operatorname{curl}\phi,\theta)\in\widetilde V$
+且 $\phi\in H^{l+2}(\Omega)$ 成立.
+\end{Corollary}

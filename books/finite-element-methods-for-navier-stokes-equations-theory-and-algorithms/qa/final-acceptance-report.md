@@ -1,0 +1,21 @@
+# Final full-book acceptance report
+
+- Book: `finite-element-methods-for-navier-stokes-equations-theory-and-algorithms`.
+- Source scope completed: PDF pages 9--388 / printed pages v--x and 1--374.
+- Natural units passed in `qa/chapter-progress.tsv`: all.
+- Missing or duplicated source blocks reported by natural-unit QA: 0.
+- Full-book deterministic LaTeX QA: 69 files, 1673 unique labels, 2581 references; passed.
+- Explicit unresolved-reference markers remaining: 0.
+- Full-book formula QA: 1114 semantic equation labels; passed.
+- Personal-name registry QA: 127 rows, 0 missing; passed.
+- Chinese-prose punctuation QA: 0 violations; passed.
+- Unresolved terminology: 0.
+- Unresolved blocking issues: 0.
+- Source PDF SHA-256 unchanged: `43241660c6878c5bc123d4dfaebb786bb6704d0ae3e059ca93a487633c4d6f2a`.
+- Template manifest SHA-256 unchanged: `9c405f97accf0b769854f4fadf93c22b473ad72435ddf0fc27f58c9a302a882c`.
+- Automated tests: 34 of 34 passed.
+- Clean multi-pass compile: passed, 324 physical pages.
+- Final PDF SHA-256: `3c51645c1a3325a2bac0833405af1e1b970ad088dd498b5de84b068570c2291b`.
+- Canonical final output: `output/book-zh.pdf`.
+- Descriptive output alias: `output/finite-element-methods-for-navier-stokes-equations-theory-and-algorithms-chinese.pdf`.
+- Final status: complete.

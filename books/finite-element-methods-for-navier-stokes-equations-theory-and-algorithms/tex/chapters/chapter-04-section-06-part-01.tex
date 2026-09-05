@@ -1,0 +1,378 @@
+% Reviewed translation: Section 6, PDF pages 366(part)--371 / printed pages 352(part)--357.
+\MathBookSourcePage{366}
+\section{数值算法}
+\label{sec:navier-numerical-algorithms}
+
+Navier--Stokes 方程在实际中难以求解, 因为它们是非线性的. 这里介绍若干简单的收敛算法,
+以便处理这种非线性. 尽管这些算法旨在求解离散的(非线性)方程组, 但结合连续问题来介绍
+更为简单. 读者不难验证, 下面的收敛定理对逼近问题也成立.
+
+\subsection{一般下降法及其对梯度法的应用}
+\label{subsec:navier-general-descent}
+
+与每个非线性问题一样, Navier--Stokes 方程也可以置于一个优化问题的框架内. 因此,
+\MathBookSourcePage{367}
+首先考虑抽象(实) Hilbert 空间 $X$ 上局部凸泛函的极小化. 分别以 $\|\cdot\|_X$
+和 $(\cdot,\cdot)_X$ 表示 $X$ 的范数及相应的标量积, 并设 $J$ 是从 $X$ 到
+$\mathbb R$ 的一个 $\mathcal C^2$ 映射. 我们要在 $X$ 的一个适当子集 $D$ 上极小化
+$J$, 其中 $D$ 按如下方式选取. 首先, 由于我们只关心 $J$ 的一个极小值, 对某个常数
+$C_0$, 把讨论限制在集合
+\[
+\{v\in X;\ J(v)\leq C_0\}
+\]
+上; 当然, 假设该集合非空, 并取它的一个连通分支作为 $D$. 换言之, $D$ 是
+\begin{equation}
+\label{eq:navier-descent-sublevel}
+\{v\in X;\ J(v)\leq C_0\}
+\end{equation}
+的一个非空连通分支.
+
+现在假设泛函 $J$ 在 $D$ 中严格凸, 即存在两个常数 $\alpha>0$ 和 $M>0$, 使
+$D$ 中所有 $v$ 都满足
+\begin{equation}
+\label{eq:navier-descent-strong-convexity}
+\alpha\|w\|_X^2\leq D^2J(v)\mathbin{\cdot}(w,w)
+\leq M\|w\|_X^2
+\qquad\forall w\in X.
+\end{equation}
+于是众所周知, 问题
+\begin{equation}
+\label{eq:navier-descent-minimization}
+\inf_{v\in D}J(v)
+\end{equation}
+在 $D$ 中有唯一解 $u$, 它由
+\begin{equation}
+\label{eq:navier-descent-stationarity}
+DJ(u)=0
+\end{equation}
+刻画. 像通常一样, 与 $DJ$ 相联系地定义梯度 $g$:
+\[
+(g(v),w)_X=\langle DJ(v),w\rangle
+\qquad\forall w\in X,
+\]
+其中 $\langle\cdot,\cdot\rangle$ 表示 $X$ 与 $X'$ 之间的对偶配对.
+
+为求解 Problem~\eqref{eq:navier-descent-minimization}, 从 $u^0\in D$ 出发引入下面的
+一般下降法:
+\begin{enumerate}
+\item[1$^\circ$)] 对所有 $m\geq0$, 选取一个下降方向 $w^m\in X$, 并由
+\begin{equation}
+\label{eq:navier-descent-line-search}
+J(u^m-\rho^mw^m)
+=\inf_{\substack{\rho\geq0\\u^m-\rho w^m\in D}}J(u^m-\rho w^m)
+\end{equation}
+定义 $\rho^m\in\mathbb R_+$;
+\item[2$^\circ$)] 置
+\begin{equation}
+\label{eq:navier-descent-update}
+u^{m+1}=u^m-\rho^mw^m\in D.
+\end{equation}
+\end{enumerate}
+如下所示, 该算法在合理的假设下收敛.
+
+\setcounter{statement}{0}
+\begin{Theorem}
+\label{thm:navier-general-descent-convergence}
+设 $D$ 是 $X$ 中满足 \,\eqref{eq:navier-descent-sublevel} 的非空连通子集, 且 $J$
+在 $D$ 中满足 \,\eqref{eq:navier-descent-strong-convexity}. 如果对每个 $m$, 下降方向
+$w^m\in X$ 满足
+\begin{equation}
+\label{eq:navier-descent-angle-condition}
+(g(u^m),w^m)_X\geq\beta\|g(u^m)\|_X\|w^m\|_X
+\end{equation}
+其中常数 $\beta>0$ 与 $m$ 无关, 则下降算法
+\eqref{eq:navier-descent-line-search}--\eqref{eq:navier-descent-update} 定义了一个
+$D$ 中的序列 $(u^m)$, 它收敛到 \,\eqref{eq:navier-descent-minimization} 的唯一解 $u$.
+\end{Theorem}
+
+\MathBookSourcePage{368}
+\begin{Proof}
+首先注意到 $D$ 是 $X$ 的凸子集. 事实上, 因为 $J$ 在 $D$ 中凸, 对所有
+$v_1,v_2\in D$, 有
+\[
+\begin{aligned}
+J(\theta v_1+(1-\theta)v_2)
+&\leq \theta J(v_1)+(1-\theta)J(v_2)\qquad\forall\theta\in[0,1],\\
+&\leq C_0,
+\end{aligned}
+\]
+其中第二个不等式由 \,\eqref{eq:navier-descent-sublevel} 得到. 由于 $D$ 连通,
+这意味着 $\theta v_1+(1-\theta)v_2\in D$.
+
+其次, 置
+\[
+D'=\{v\in D;\ J(v)\leq J(u^0)\},
+\]
+并假设初值 $u^0$ 不是 \,\eqref{eq:navier-descent-minimization} 的解(否则下降算法给出
+常值 $u^m=u^0$). 同样地, $D'$ 是凸集; 又因为 $J$ 连续, $D'$ 显然是 $X$
+的闭子集. 下面证明 $D'$ 有界. Taylor 公式给出
+\[
+J(v)=J(u^0)+\langle DJ(u^0),v-u^0\rangle
++\frac12D^2J(u^0+t(v-u^0))\mathbin{\cdot}(v-u^0,v-u^0)
+\]
+其中某个 $t\in(0,1)$. 为简化记号, 记
+\[
+g^m=g(u^m).
+\]
+于是, 对 $D'$ 中所有 $v$, $D'$ 的凸性和
+\eqref{eq:navier-descent-strong-convexity} 蕴含
+\begin{equation}
+\label{eq:navier-descent-coercive-lower}
+J(v)\geq J(u^0)-\|g^0\|_X\|v-u^0\|_X
++\frac\alpha2\|v-u^0\|_X^2.
+\end{equation}
+但由于 $J(v)\leq J(u^0)$, 这给出
+\[
+J(u^0)\geq J(u^0)-\|g^0\|_X\|v-u^0\|_X
++\frac\alpha2\|v-u^0\|_X^2;
+\]
+换言之,
+\begin{equation}
+\label{eq:navier-descent-bounded-sublevel}
+\|v-u^0\|_X\leq\frac2\alpha\|g^0\|_X.
+\end{equation}
+这就证明了 $D'$ 的有界性. 还要注意, $J$ 在 $D'$ 中有下界, 因为
+\eqref{eq:navier-descent-coercive-lower} 和
+\eqref{eq:navier-descent-bounded-sublevel} 蕴含
+\begin{equation}
+\label{eq:navier-descent-functional-lower}
+J(v)\geq J(u^0)-\frac2\alpha\|g^0\|_X^2.
+\end{equation}
+
+现在说明, 对每一对满足 \,\eqref{eq:navier-descent-angle-condition} 的 $u^m$ 和
+$w^m$, 方程 \,\eqref{eq:navier-descent-line-search} 都定义了唯一的 $\rho^m\geq0$.
+事实上, 根据构造, $u^m$ 属于 $D$ 的内部, 且只要 $u^m-\rho w^m\in D$, 映射
+$\rho\mapsto J(u^m-\rho w^m)$ 就严格凸. 因而, $J(u^m-\rho w^m)$ 在 $D$
+中有唯一极小值, 且该极小值由唯一的内部元素 $u^m-\rho^mw^m$ 实现, 其中
+$\rho^m\geq0$. 所以 $u^m-\rho^mw^m$ 由
+\[
+\left.\frac{dJ(u^m-\rho w^m)}{d\rho}\right|_{\rho=\rho^m}
+=-\langle DJ(u^m-\rho^mw^m),w^m\rangle=0
+\]
+刻画. 结合 \,\eqref{eq:navier-descent-update}, 这也可以写成
+\begin{equation}
+\label{eq:navier-descent-line-orthogonality}
+\langle DJ(u^{m+1}),w^m\rangle=(g^{m+1},w^m)_X=0.
+\end{equation}
+\MathBookSourcePage{369}
+还要注意, \eqref{eq:navier-descent-line-orthogonality} 给出
+\[
+0=\langle DJ(u^m-\rho^mw^m),w^m\rangle
+=\langle DJ(u^m),w^m\rangle
+-\rho^mD^2J(u^m-t\rho^mw^m)\mathbin{\cdot}(w^m,w^m)
+\]
+其中某个 $t\in(0,1)$, 即
+\begin{equation}
+\label{eq:navier-descent-line-second-derivative}
+(g^m,w^m)_X
+=\rho^mD^2J(u^m-t\rho^mw^m)\mathbin{\cdot}(w^m,w^m).
+\end{equation}
+因此由 $D$ 的凸性, \eqref{eq:navier-descent-strong-convexity} 和
+\eqref{eq:navier-descent-angle-condition} 得到
+\[
+\beta\|g^m\|_X\|w^m\|_X\leq\rho^mM\|w^m\|_X^2,
+\]
+从而得到 $\rho^m$ 的如下下界:
+\begin{equation}
+\label{eq:navier-descent-step-lower}
+\rho^m\geq\frac\beta M\frac{\|g^m\|_X}{\|w^m\|_X}.
+\end{equation}
+
+其次, 根据构造, 序列 $J(u^m)$ 单调递减, 因而序列 $(u^m)$ 包含在 $D'$ 中.
+特别地, 对满足 $0\leq\rho\leq\rho^m$ 的所有 $\rho$, 有
+\[
+J(u^{m+1})\leq J(u^m-\rho w^m).
+\]
+所以, 对某个 $t\in(0,1)$,
+\[
+J(u^{m+1})\leq J(u^m)-\rho(g^m,w^m)_X
++\frac{\rho^2}{2}D^2J(u^m-t\rho w^m)\mathbin{\cdot}(w^m,w^m).
+\]
+再次利用 \,\eqref{eq:navier-descent-angle-condition} 和
+\eqref{eq:navier-descent-strong-convexity}, 得到
+\[
+J(u^{m+1})\leq J(u^m)-\rho\beta\|g^m\|_X\|w^m\|_X
++M\frac{\rho^2}{2}\|w^m\|_X^2.
+\]
+根据 \,\eqref{eq:navier-descent-step-lower}, 可以取
+$\rho=(\beta/M)(\|g^m\|_X/\|w^m\|_X)$, 从而得到
+\begin{equation}
+\label{eq:navier-descent-energy-decrease}
+J(u^{m+1})-J(u^m)\leq-\frac12\frac{\beta^2}{M}\|g^m\|_X^2.
+\end{equation}
+由于序列 $J(u^m)$ 单调递减且有下界(参见
+\eqref{eq:navier-descent-functional-lower}), 它收敛. 特别地,
+\eqref{eq:navier-descent-energy-decrease} 蕴含
+\begin{equation}
+\label{eq:navier-descent-gradient-vanishes}
+\lim_{m\to\infty}\|g^m\|_X^2
+\leq2\frac{M}{\beta^2}\lim_{m\to\infty}
+[J(u^m)-J(u^{m+1})]=0.
+\end{equation}
+此外,
+\[
+DJ(u^{m+p})-DJ(u^m)
+=D^2J(u^m+t u^{m+p})\mathbin{\cdot}(u^{m+p}-u^m)
+\]
+其中某个 $t\in(0,1)$. 因而 \,\eqref{eq:navier-descent-strong-convexity} 给出
+\[
+\begin{aligned}
+\alpha\|u^{m+p}-u^m\|_X^2
+&\leq\langle DJ(u^{m+p})-DJ(u^m),u^{m+p}-u^m\rangle\\
+&\leq(g^{m+p}-g^m,u^{m+p}-u^m)_X,
+\end{aligned}
+\]
+即
+\[
+\|u^{m+p}-u^m\|_X\leq\frac1\alpha\|g^{m+p}-g^m\|_X.
+\]
+由于 $(g^m)$ 在 $X$ 中收敛, 这意味着 $(u^m)$ 是 $X$ 中的 Cauchy 序列,
+因而是 $X$ 中的收敛序列. 所以存在 $u\in D'$, 使得
+\[
+\lim_{m\to\infty}u^m=u,
+\]
+而且 \,\eqref{eq:navier-descent-gradient-vanishes} 和 $DJ$ 的连续性蕴含
+\MathBookSourcePage{370}
+\[
+g(u)=DJ(u)=0.
+\]
+因此
+\[
+J(u)=\min_{v\in D}J(v).
+\]
+\end{Proof}
+
+简单梯度算法和共轭梯度算法是下降法最常见的应用之一. 取 $w^m=g^m$ 作为下降方向,
+便得到梯度算法. 显然, 这一选取满足 \,\eqref{eq:navier-descent-angle-condition},
+因而 Theorem~\ref{thm:navier-general-descent-convergence} 保证了采用 $w^m=g^m$ 的
+简单梯度算法 \,\eqref{eq:navier-descent-line-search}--
+\eqref{eq:navier-descent-update} 的局部收敛性.
+
+共轭梯度算法的 Polack--Ribiere 变体由下列选取定义:
+\begin{equation}
+\label{eq:navier-conjugate-gradient-direction}
+\left\{
+\begin{aligned}
+w^0&=g^0,\\
+w^m&=g^m+\sigma^mw^{m-1},
+\end{aligned}
+\right.
+\end{equation}
+其中
+\begin{equation}
+\label{eq:navier-conjugate-gradient-coefficient}
+\sigma^m=\frac{(g^m-g^{m-1},g^m)_X}{(g^{m-1},g^{m-1})_X},
+\qquad m\geq1
+\end{equation}
+(与公式 \,\eqref{eq:abstract-conjugate-gradient-system} 比较). 同样地,
+Theorem~\ref{thm:navier-general-descent-convergence}
+蕴含该格式收敛.
+
+\setcounter{statement}{1}
+\begin{Theorem}
+\label{thm:navier-conjugate-gradient-convergence}
+设 $D$ 由 \,\eqref{eq:navier-descent-sublevel} 和
+\eqref{eq:navier-descent-strong-convexity} 定义, 且 $u^0\in D$. 则共轭梯度算法
+\eqref{eq:navier-descent-line-search}, \eqref{eq:navier-descent-update},
+\eqref{eq:navier-conjugate-gradient-direction} 和
+\eqref{eq:navier-conjugate-gradient-coefficient} 在 $D$ 中收敛.
+\end{Theorem}
+
+\begin{Proof}
+下面证明由 \,\eqref{eq:navier-conjugate-gradient-direction} 和
+\eqref{eq:navier-conjugate-gradient-coefficient} 定义的 $w^m$ 满足
+\eqref{eq:navier-descent-angle-condition}. 首先注意,
+Theorem~\ref{thm:navier-general-descent-convergence} 中建立的性质
+\eqref{eq:navier-descent-line-orthogonality} 及其推论
+\eqref{eq:navier-descent-line-second-derivative} 并不需要
+\eqref{eq:navier-descent-angle-condition}, 而只要求 $(g^m,w^m)_X$ 为正.
+现在, 这种正性容易由归纳法证明: 它对 $m=0$ 显然成立; 如果它对 $m-1$ 成立,
+则 \,\eqref{eq:navier-descent-line-orthogonality} 和
+\eqref{eq:navier-conjugate-gradient-direction} 给出
+\[
+(g^m,w^{m-1})_X=0,
+\qquad
+(g^m,w^m)_X=\|g^m\|_X^2.
+\]
+因此
+\[
+(g^m,w^m)_X\geq0\qquad\forall m.
+\]
+此外, \eqref{eq:navier-descent-line-second-derivative} 蕴含
+\begin{equation}
+\label{eq:navier-conjugate-gradient-optimal-step}
+\rho^m=\frac{\|g^m\|_X^2}{D^2J^m\mathbin{\cdot}(w^m,w^m)},
+\end{equation}
+其中
+\[
+D^2J^m=D^2J(u^m-t\rho^mw^m),
+\]
+$t$ 由 \,\eqref{eq:navier-descent-line-second-derivative} 定义. 类似地, 采用相同记号,
+由 \,\eqref{eq:navier-conjugate-gradient-coefficient} 得到
+\[
+\begin{aligned}
+\sigma^m
+&=\frac{(g^m-g^{m-1},g^m)_X}{\|g^{m-1}\|_X^2}
+=\frac{\langle DJ(u^m)-DJ(u^{m-1}),g^m\rangle}{\|g^{m-1}\|_X^2}\\
+&=-\rho^{m-1}\frac{D^2J^{m-1}\mathbin{\cdot}(w^{m-1},g^m)}{\|g^{m-1}\|_X^2}\\
+&=-\frac{D^2J^{m-1}\mathbin{\cdot}(w^{m-1},g^m)}
+{D^2J^{m-1}\mathbin{\cdot}(w^{m-1},w^{m-1})},
+\end{aligned}
+\]
+其中最后一步使用了 \,\eqref{eq:navier-conjugate-gradient-optimal-step}. 因而
+\eqref{eq:navier-descent-strong-convexity} 给出
+\[
+|\sigma^m|\leq\frac M\alpha\frac{\|g^m\|_X}{\|w^{m-1}\|_X},
+\]
+从而
+\[
+\|w^m\|_X=\|g^m+\sigma^mw^{m-1}\|_X
+\leq(1+M/\alpha)\|g^m\|_X.
+\]
+所以
+\[
+(g^m,w^m)_X=\|g^m\|_X^2
+\geq\frac{\|g^m\|_X\|w^m\|_X}{1+M/\alpha},
+\]
+这就以 $\beta=1/(1+M/\alpha)$ 证明了
+\eqref{eq:navier-descent-angle-condition}.
+\end{Proof}
+
+\MathBookSourcePage{371}
+\subsection{求解 Navier--Stokes 方程的最小二乘法与梯度法}
+\label{subsec:navier-least-squares-gradient}
+
+首先, 我们提出用 Glowinski~\cite{Glowinski36} 引入的一种启发式交替方向法,
+将 Navier--Stokes 方程中的无散度约束与非线性解耦. 然后用前一节的梯度法求解
+由此得到的非线性方程.
+
+依照 Peaceman--Rachford 交替方向算法, 从初始对 $(\boldsymbol u^0,p^0)$ 出发,
+由下列问题构造序列 $(\boldsymbol u^m,p^m)$:
+\begin{equation}
+\label{eq:navier-alternating-stokes-step}
+\left\{
+\begin{aligned}
+-\nu\Delta\boldsymbol u^{m+1/2}+r^m\boldsymbol u^{m+1/2}
+-\operatorname{grad}p^{m+1/2}
+&=\boldsymbol f-\sum_{j=1}^N u_j^m\partial\boldsymbol u^m/\partial x_j
++r^m\boldsymbol u^m &&\text{in }\Omega,\\
+\operatorname{div}\boldsymbol u^{m+1/2}&=0 &&\text{in }\Omega,\\
+\boldsymbol u^{m+1/2}&=\boldsymbol0 &&\text{on }\Gamma;
+\end{aligned}
+\right.
+\end{equation}
+\begin{equation}
+\label{eq:navier-alternating-nonlinear-step}
+\left\{
+\begin{aligned}
+-\nu\Delta\boldsymbol u^{m+1}
++\sum_{j=1}^N u_j^{m+1}\partial\boldsymbol u^{m+1}/\partial x_j
++r^m\boldsymbol u^{m+1}
+&=\boldsymbol f-\operatorname{grad}p^{m+1/2}
++r^m\boldsymbol u^{m+1/2} &&\text{in }\Omega,\\
+\boldsymbol u^{m+1}&=\boldsymbol0 &&\text{on }\Gamma,
+\end{aligned}
+\right.
+\end{equation}
+其中参数 $r^m$ 要尽可能取为最佳值. 显然, Problem~\eqref{eq:navier-alternating-stokes-step}
+类似于前面各章已详尽研究的 Stokes 问题.

@@ -1,0 +1,490 @@
+% Reviewed translation: PDF pages 201--206 / printed pages 187--192.
+\MathBookSourcePage{201}
+为强调与连续情形的对应关系, 定义
+\[
+a_h(g_h,l_h)=\nu(\operatorname{grad}\mathbf u_h(g_h),
+\operatorname{grad}\mathbf u_h(l_h))
+\qquad\forall g_h,l_h\in G_h.
+\]
+显然, 问题 \eqref{eq:primitive-gp-discrete-zero-problems} 有唯一解; 对给定的
+$g_h$, 问题 \eqref{eq:primitive-gp-discrete-harmonic-problems} 也有唯一解.
+此外, 容易验证问题 \eqref{eq:primitive-gp-discrete-boundary-problem} 同样有唯一解
+$\rho_h$. 事实上, 若 $\mathbf u_h(\rho_h)=\mathbf0$, 则
+\[
+(\operatorname{grad}p_h(\rho_h),\mathbf v_h)=0
+\qquad\forall\mathbf v_h\in X_h.
+\]
+但 Corollary~\ref{cor:primitive-hood-taylor-global-inf-sup} 建立的 inf-sup 条件蕴含
+\[
+p_h(\rho_h)=\frac1{\operatorname{meas}(\Omega)}
+\int_\Omega p_h(\rho_h)\,dx,
+\]
+即 $p_h(\rho_h)$ 在 $\Omega$ 上为常数. 又因为
+$\int_\Gamma p_h(\rho_h)\,ds=0$, 所以 $p_h(\rho_h)=0$, 特别地
+$\rho_h=0$. 因而得到下列结果.
+
+\setcounter{statement}{2}
+\renewcommand{\theHstatement}{lemma.\thesection.\arabic{statement}}
+\begin{Lemma}\label{lem:primitive-gp-discrete-wellposedness}
+设右端项 $\mathbf f\in L^2(\Omega)^2$, 其中 $\Omega$ 是有界平面多边形,
+并假设三角剖分 $\mathcal T_h$ 满足
+\eqref{eq:primitive-hood-taylor-macroelement-partition}. 则 Glowinski--Pironneau
+格式 \eqref{eq:primitive-gp-discrete-zero-problems}--
+\eqref{eq:primitive-gp-discrete-solution} 确定唯一的
+$(\mathbf u_h,p_h)$, 其中 $\mathbf u_h\in X_h$, $p_h\in Q_h$, 且
+$\int_\Gamma p_h\,ds=0$.
+
+此外, $(\mathbf u_h,p_h)$ 满足
+\begin{equation}\label{eq:primitive-gp-discrete-combined-equation}
+\nu(\operatorname{grad}\mathbf u_h,\operatorname{grad}\mathbf v_h)
++(\operatorname{grad}p_h,\mathbf v_h-\operatorname{grad}q_h)
+=(\mathbf f,\mathbf v_h-\operatorname{grad}q_h)
+\quad\forall(\mathbf v_h,q_h)\in X_h\times\Phi_h.
+\end{equation}
+\end{Lemma}
+
+注意, \eqref{eq:primitive-gp-discrete-combined-equation} 相当于两个相互独立的方程:
+一个关于 $\mathbf u_h$, 另一个关于 $p_h$. 它们分别由合并
+\eqref{eq:primitive-gp-discrete-zero-problems} 与
+\eqref{eq:primitive-gp-discrete-harmonic-problems} 的最后一个方程和第一个方程得到.
+
+需要指出的是, 尽管有限元空间与 Hood--Taylor 方法中的空间相同, 且两种情形
+都满足取 $q_h=0$ 的 \eqref{eq:primitive-gp-discrete-combined-equation}, 上述
+$(\mathbf u_h,p_h)$ 一般不是 Hood--Taylor 算法的解, 因为它不满足离散无散度约束
+\[
+(\mathbf u_h,\operatorname{grad}q_h)=0
+\qquad\forall q_h\in Q_h.
+\]
+事实上, \eqref{eq:primitive-gp-discrete-harmonic-problems} 给出
+\[
+\begin{aligned}
+(\operatorname{grad}p_h(g_h),\mathbf u_h)
+&=-\nu(\operatorname{grad}\mathbf u_h(g_h),
+\operatorname{grad}\mathbf u_h)\\
+&=-\nu(\operatorname{grad}\mathbf u_h(g_h),
+\operatorname{grad}(\mathbf u_h^0+\mathbf u_h(\rho_h)))\\
+&=-(\mathbf u_h^0,\operatorname{grad}p_h(g_h))
+-\nu(\operatorname{grad}\mathbf u_h(g_h),
+\operatorname{grad}\mathbf u_h^0),
+\end{aligned}
+\]
+其中最后一步使用了 \eqref{eq:primitive-gp-discrete-boundary-problem}.
+再次应用 \eqref{eq:primitive-gp-discrete-harmonic-problems} 可得
+\[
+(\operatorname{grad}p_h(g_h),\mathbf u_h)=0
+\qquad\forall g_h\in G_h.
+\]
+不同于连续情形, 该等式未必推广到 $Q_h$ 中所有 $q_h$. 从这个意义上说,
+Glowinski--Pironneau 算法放松了无散度约束. 实际上, 为满足这一约束,
+必须给 $\mathbf u_h$ 加上一个修正项.
+
+\MathBookSourcePage{202}
+具体地, 在 $\Phi_h$ 中定义 $\lambda_h$:
+\begin{equation}\label{eq:primitive-gp-discrete-velocity-correction}
+(\operatorname{grad}\lambda_h,\operatorname{grad}q_h)
+=(\mathbf u_h,\operatorname{grad}q_h)
+\qquad\forall q_h\in\Phi_h.
+\end{equation}
+则 $\mathbf u_h-\operatorname{grad}\lambda_h$ 满足
+\[
+(\mathbf u_h-\operatorname{grad}\lambda_h,\operatorname{grad}q_h)=0
+\qquad\forall q_h\in Q_h.
+\]
+事实上, 取满足 $\int_\Gamma q_h\,ds=0$ 的 $q_h\in Q_h$, 并令
+$g_h\in G_h$ 表示 $q_h$ 的边界值, 即 $q_h|_\Gamma=g_h|_\Gamma$.
+于是, 关于 $|\cdot|_{1,\Omega}$, $q_h$ 有正交分解
+\[
+q_h=p_h(g_h)+q_h^0,
+\qquad q_h^0\in\Phi_h,
+\]
+其中 $p_h(g_h)$ 是 \eqref{eq:primitive-gp-discrete-harmonic-problems} 的解. 因而
+\[
+\begin{aligned}
+(\mathbf u_h,\operatorname{grad}q_h)
+&=(\mathbf u_h,\operatorname{grad}q_h^0)\\
+&=(\operatorname{grad}\lambda_h,\operatorname{grad}q_h^0)
+&&\text{由 \eqref{eq:primitive-gp-discrete-velocity-correction}}\\
+&=(\operatorname{grad}\lambda_h,\operatorname{grad}q_h)
+&&\text{由 \eqref{eq:primitive-gp-discrete-harmonic-problems}}.
+\end{aligned}
+\]
+下面将看到 $\lambda_h$ 确实很小, 因而 $\mathbf u_h$ 几乎“无散度”. 此外,
+虽然这里只为理论目的引入 $\lambda_h$, 它在实际中高效求解
+\eqref{eq:primitive-gp-discrete-boundary-problem} 时也很有用.
+
+\setcounter{statement}{4}
+\renewcommand{\theHstatement}{remark.\thesection.\arabic{statement}}
+\begin{Remark}\label{rem:primitive-gp-direct-three-field-formulation}
+三元组 $(\mathbf u_h,p_h,\lambda_h)$ 也可直接定义为
+$X_h\times(Q_h/\mathbb R)\times\Phi_h$ 中下列问题的唯一解:
+\[
+\left\{
+\begin{aligned}
+\nu(\operatorname{grad}\mathbf u_h,\operatorname{grad}\mathbf v_h)
++(\operatorname{grad}p_h,\mathbf v_h-\operatorname{grad}q_h)
+&=(\mathbf f,\mathbf v_h-\operatorname{grad}q_h)\\
+&\quad\forall(\mathbf v_h,q_h)\in X_h\times\Phi_h,\\
+(\mathbf u_h-\operatorname{grad}\lambda_h,\operatorname{grad}q_h)&=0
+\quad\forall q_h\in Q_h.
+\end{aligned}
+\right.
+\]
+但公式 \eqref{eq:primitive-gp-discrete-zero-problems}--
+\eqref{eq:primitive-gp-discrete-solution} 的优点是, 它们把解表示为 Laplace 算子
+一系列解耦 Dirichlet 问题的解.
+\end{Remark}
+
+误差分析与相应问题
+\eqref{eq:primitive-continuous-pressure-discrete-problem} 的误差分析非常相似.
+特别地, 它的 inf-sup 条件恰为
+\eqref{eq:primitive-continuous-pressure-inf-sup}, 因此 Theorem
+\ref{thm:primitive-hood-taylor-local-inf-sup} 及其 Corollary 均适用.
+
+\setcounter{statement}{5}
+\renewcommand{\theHstatement}{theorem.\thesection.\arabic{statement}}
+\begin{Theorem}\label{thm:primitive-gp-error}
+设 $\Omega$ 是有界凸平面多边形, 且 Stokes 问题
+\eqref{eq:primitive-continuous-pressure-stokes-system} 的右端项
+$\mathbf f\in L^2(\Omega)^2$. 若该问题的解 $(\mathbf u,p)$ 满足
+\[
+\mathbf u\in H^{k+1}(\Omega)^2,
+\qquad p\in H^k(\Omega)\cap L_0^2(\Omega),
+\qquad k=1,2,
+\]
+且三角剖分 $\mathcal T_h$ 一致正则并满足
+\eqref{eq:primitive-hood-taylor-macroelement-partition}, 则有误差估计
+\begin{equation}\label{eq:primitive-gp-primary-errors}
+|\mathbf u-\mathbf u_h|_{1,\Omega}
++|\lambda_h|_{1,\Omega}
++\|p-\bar p_h\|_{0,\Omega}
+\leq C_1h^k\{\|\mathbf u\|_{k+1,\Omega}+|p|_{k,\Omega}\},
+\end{equation}
+\MathBookSourcePage{203}
+\begin{equation}\label{eq:primitive-gp-pressure-h1-error}
+|p-p_h|_{1,\Omega}
+\leq C_2h^{k-1}\{\|\mathbf u\|_{k+1,\Omega}+|p|_{k,\Omega}\},
+\end{equation}
+\begin{equation}\label{eq:primitive-gp-corrected-velocity-l2-error}
+\|\mathbf u-\mathbf u_h+\operatorname{grad}\lambda_h\|_{0,\Omega}
+\leq C_3h^{k+1}\{\|\mathbf u\|_{k+1,\Omega}+|p|_{k,\Omega}\},
+\end{equation}
+其中 $(\mathbf u_h,p_h)$ 是
+\eqref{eq:primitive-gp-discrete-zero-problems}--
+\eqref{eq:primitive-gp-discrete-solution} 的解, $\lambda_h$ 由
+\eqref{eq:primitive-gp-discrete-velocity-correction} 给出, $\bar p_h$ 是
+$p_h$ 在 $L_0^2(\Omega)$ 中的代表元.
+\end{Theorem}
+
+\begin{Proof}
+有
+\begin{equation}\label{eq:primitive-gp-error-equations}
+\left\{
+\begin{aligned}
+\nu(\operatorname{grad}(\mathbf u-\mathbf u_h),\operatorname{grad}\mathbf v_h)
++(\operatorname{grad}(p-p_h),\mathbf v_h-\operatorname{grad}q_h)&=0\\
+&\quad\forall(\mathbf v_h,q_h)\in X_h\times\Phi_h,\\
+(\mathbf u_h-\operatorname{grad}\lambda_h,
+\operatorname{grad}q_h)&=0
+\quad\forall q_h\in Q_h.
+\end{aligned}
+\right.
+\end{equation}
+把 $(\mathbf v_h,q_h)$ 限制在空间
+\[
+B_h=\{(\mathbf v_h,q_h)\in X_h\times\Phi_h;
+(\mathbf v_h-\operatorname{grad}q_h,\operatorname{grad}\mu_h)=0
+\ \forall\mu_h\in Q_h\}.
+\]
+注意 $(\mathbf u_h,\lambda_h)\in B_h$. 于是
+\eqref{eq:primitive-gp-error-equations} 写成
+\[
+\nu(\operatorname{grad}(\mathbf u-\mathbf u_h),\operatorname{grad}\mathbf v_h)
++(\operatorname{grad}(p-\mu_h),
+\mathbf v_h-\operatorname{grad}q_h)=0
+\]
+对所有 $(\mathbf v_h,q_h)\in B_h$ 和所有 $\mu_h\in Q_h$ 成立.
+为消去 $\operatorname{grad}q_h$, 取
+$\mu_h=P_hp$, 其中 $P_hp$ 是由
+\eqref{eq:appendix-neumann-ritz-projection} 定义的 $p$ 在 $M_h$ 上的
+$H^1$ 投影. 因而
+\[
+\nu(\operatorname{grad}(\mathbf u-\mathbf u_h),\operatorname{grad}\mathbf v_h)
+=(\operatorname{div}\mathbf v_h,p-P_hp)
+\qquad\forall(\mathbf v_h,q_h)\in B_h.
+\]
+由于 $(\mathbf u_h,\lambda_h)\in B_h$, 该式立即给出
+\[
+|\mathbf u-\mathbf u_h|_{1,\Omega}
+\leq2|\mathbf u-\mathbf w_h|_{1,\Omega}
++\frac{\sqrt2}{\nu}\|p-P_hp\|_{0,\Omega}
+\qquad\forall(\mathbf w_h,q_h)\in B_h.
+\]
+这里显然可以取 $(\mathbf w_h,0)$, 其中 $\mathbf w_h\in V_h$.
+由于 $(X_h,M_h)$ 满足 inf-sup 条件
+\eqref{eq:primitive-continuous-pressure-inf-sup}, 可应用
+\eqref{eq:primitive-discrete-affine-best-approximation}:
+\[
+\inf_{\mathbf w_h\in V_h}|\mathbf u-\mathbf w_h|_{1,\Omega}
+\leq(1+\sqrt2/\beta^*)
+\inf_{\mathbf v_h\in X_h}|\mathbf u-\mathbf v_h|_{1,\Omega}.
+\]
+所以
+\[
+|\mathbf u-\mathbf u_h|_{1,\Omega}
+\leq2(1+\sqrt2/\beta^*)
+\inf_{\mathbf v_h\in X_h}|\mathbf u-\mathbf v_h|_{1,\Omega}
++\frac{\sqrt2}{\nu}\|p-P_hp\|_{0,\Omega}.
+\]
+\eqref{eq:primitive-gp-primary-errors} 中的速度界由
+\eqref{eq:primitive-hood-taylor-interpolation-error} 和
+\eqref{eq:appendix-ritz-projection-lp-error} 得到. 注意, 只有
+\eqref{eq:appendix-ritz-projection-lp-error} 需要 $\Omega$ 的凸性和
+$\mathcal T_h$ 的一致正则性.
+
+$\lambda_h$ 的界由上式和 $\operatorname{div}\mathbf u=0$ 得到:
+\begin{equation}\label{eq:primitive-gp-correction-identity}
+(\operatorname{grad}\lambda_h,\operatorname{grad}q_h)
+=-(\mathbf u-\mathbf u_h,\operatorname{grad}q_h)
+\qquad\forall q_h\in Q_h.
+\end{equation}
+因此
+\[
+|\lambda_h|_{1,\Omega}\leq\|\mathbf u-\mathbf u_h\|_{0,\Omega}.
+\]
+
+关于压力, 在 \eqref{eq:primitive-gp-error-equations} 中取 $q_h=0$,
+即可回到标准情形. 因而由 inf-sup 条件和
+\eqref{eq:primitive-pressure-error},
+\MathBookSourcePage{204}
+\[
+\|p-\bar p_h\|_{0,\Omega}
+\leq(1+\sqrt2/\beta^*)\inf_{q_h\in M_h}\|p-q_h\|_{0,\Omega}
++(\nu/\beta^*)|\mathbf u-\mathbf u_h|_{1,\Omega}.
+\]
+这给出 \eqref{eq:primitive-gp-primary-errors}; 再用熟知的论证得到
+\eqref{eq:primitive-gp-pressure-h1-error}.
+
+最后建立速度的 $L^2$ 估计. 证明是 Theorem
+\ref{thm:primitive-duality-error} 证明的简单变体. 因为 $\Omega$ 为凸集,
+存在唯一的
+$(\boldsymbol\phi,\mu)\in[V\cap H^2(\Omega)^2]
+\times[H^1(\Omega)\cap L_0^2(\Omega)]$ 使
+\begin{equation}\label{eq:primitive-gp-dual-problem}
+\begin{aligned}
+(\mathbf g,\mathbf u-\mathbf u_h)
+&=\nu(\operatorname{grad}\boldsymbol\phi,
+\operatorname{grad}(\mathbf u-\mathbf u_h))
++(\operatorname{grad}\mu,\mathbf u-\mathbf u_h),\\
+\|\boldsymbol\phi\|_{2,\Omega}+|\mu|_{1,\Omega}
+&\leq C\|\mathbf g\|_{0,\Omega}.
+\end{aligned}
+\end{equation}
+把该等式与 \eqref{eq:primitive-gp-error-equations} 结合, 得
+\[
+\begin{aligned}
+(\mathbf g,\mathbf u-\mathbf u_h)
+={}&\nu(\operatorname{grad}(\boldsymbol\phi-\boldsymbol\phi_h),
+\operatorname{grad}(\mathbf u-\mathbf u_h))\\
+&+(p-p_h,\operatorname{div}(\boldsymbol\phi_h-\boldsymbol\phi))
+-(\mu-q_h,\operatorname{div}(\mathbf u-\mathbf u_h))\\
+&+(\operatorname{grad}\lambda_h,
+\operatorname{grad}(\mu-q_h))
+-(\mathbf g,\operatorname{grad}\lambda_h)
+\end{aligned}
+\]
+对所有 $\boldsymbol\phi_h\in X_h$, $q_h\in Q_h$ 成立
+(这里使用 $\Delta\mu=\operatorname{div}\mathbf g$ in $\Omega$).
+因此取 $q_h=P_h\mu$, 得
+\[
+\begin{aligned}
+(\mathbf g,\mathbf u-\mathbf u_h+\operatorname{grad}\lambda_h)
+={}&\nu(\operatorname{grad}(\boldsymbol\phi-\boldsymbol\phi_h),
+\operatorname{grad}(\mathbf u-\mathbf u_h))\\
+&+(p-p_h,\operatorname{div}(\boldsymbol\phi_h-\boldsymbol\phi))
+-(\mu-P_h\mu,\operatorname{div}(\mathbf u-\mathbf u_h))
+\end{aligned}
+\]
+对所有 $\boldsymbol\phi_h\in X_h$ 成立. 根据
+\eqref{eq:primitive-gp-primary-errors} 和
+\eqref{eq:primitive-gp-dual-problem}, 这给出
+\eqref{eq:primitive-gp-corrected-velocity-l2-error}.
+\end{Proof}
+
+\setcounter{statement}{5}
+\renewcommand{\theHstatement}{remark.\thesection.\arabic{statement}}
+\begin{Remark}\label{rem:primitive-gp-no-uncorrected-l2-bound}
+似乎不可能只对 $\mathbf u-\mathbf u_h$ 建立类似
+\eqref{eq:primitive-gp-corrected-velocity-l2-error} 的 $L^2$ 界. 相反,
+\eqref{eq:primitive-gp-correction-identity} 蕴含
+\[
+\|\mathbf u-\mathbf u_h+\operatorname{grad}\lambda_h\|_{0,\Omega}^2
+=\|\mathbf u-\mathbf u_h\|_{0,\Omega}^2-|\lambda_h|_{1,\Omega}^2,
+\]
+因而不能从 \eqref{eq:primitive-gp-corrected-velocity-l2-error} 中单独分离出
+$\mathbf u-\mathbf u_h$ 或 $\lambda_h$. 这并不令人惊讶, 因为 $\lambda_h$
+充当速度 $\mathbf u_h$ 的修正.
+\end{Remark}
+
+当 $X_h$ 由 \eqref{eq:primitive-hood-taylor-refined-velocity-space} 定义
+(而 $M_h$ 不变)时, 可以应用相同的分析. 由于
+\eqref{eq:primitive-hood-taylor-refined-interpolation-error}, Theorem
+\ref{thm:primitive-gp-error} 的陈述只对 $k=1$ 成立.
+
+\subsection{Glowinski--Pironneau 格式的实现}
+\label{subsec:primitive-gp-implementation}
+
+计算 \eqref{eq:primitive-gp-discrete-zero-problems},
+\eqref{eq:primitive-gp-discrete-harmonic-problems} 和
+\eqref{eq:primitive-gp-discrete-boundary-problem} 的解并不完全直接, 因为测试函数
+$l_h$ 没有显式出现在 \eqref{eq:primitive-gp-discrete-boundary-problem} 左端.
+更容易的做法是通过计算
+\eqref{eq:primitive-gp-discrete-velocity-correction} 定义的辅助函数 $\lambda_h$
+来分解计算; 该函数补偿 $\mathbf u_h$ 不满足离散无散度约束这一事实.
+
+\MathBookSourcePage{205}
+具体地, 仿照 \eqref{eq:primitive-gp-discrete-zero-problems} 和
+\eqref{eq:primitive-gp-discrete-harmonic-problems}, 定义 $\lambda_h(g_h)$ 与
+$\lambda_h^0$:
+\begin{equation}\label{eq:primitive-gp-implementation-corrections}
+\left\{
+\begin{aligned}
+\lambda_h^0\in\Phi_h,\quad
+(\operatorname{grad}\lambda_h^0,\operatorname{grad}q_h)
+&=(\mathbf u_h^0,\operatorname{grad}q_h)
+&&\forall q_h\in\Phi_h,\\
+\lambda_h(g_h)\in\Phi_h,\quad
+(\operatorname{grad}\lambda_h(g_h),\operatorname{grad}q_h)
+&=(\mathbf u_h(g_h),\operatorname{grad}q_h)
+&&\forall q_h\in\Phi_h.
+\end{aligned}
+\right.
+\end{equation}
+于是 $\lambda_h=\lambda_h^0+\lambda_h(\rho_h)$, 并且双线性形式
+$a_h(\cdot,\cdot)$ 有另一种表达式.
+
+\setcounter{statement}{3}
+\renewcommand{\theHstatement}{lemma.\thesection.\arabic{statement}}
+\begin{Lemma}\label{lem:primitive-gp-implementation-bilinear-form}
+有
+\begin{equation}\label{eq:primitive-gp-implementation-bilinear-form}
+a_h(g_h,l_h)
+=(\operatorname{grad}\lambda_h(g_h)-\mathbf u_h(g_h),
+\operatorname{grad}l_h)
+\qquad\forall g_h,l_h\in G_h.
+\end{equation}
+类似地, \eqref{eq:primitive-gp-discrete-boundary-problem} 的右端写成
+\begin{equation}\label{eq:primitive-gp-implementation-right-hand-side}
+(\mathbf u_h^0,\operatorname{grad}p_h(l_h))
+=-(\operatorname{grad}\lambda_h^0-\mathbf u_h^0,
+\operatorname{grad}l_h)
+\qquad\forall l_h\in G_h.
+\end{equation}
+\end{Lemma}
+
+\begin{Proof}
+根据定义和 \eqref{eq:primitive-gp-discrete-harmonic-problems},
+\[
+\begin{aligned}
+a_h(g_h,l_h)
+&=\nu(\operatorname{grad}\mathbf u_h(g_h),
+\operatorname{grad}\mathbf u_h(l_h))\\
+&=-(\operatorname{grad}p_h(l_h),\mathbf u_h(g_h))\\
+&=-(\operatorname{grad}(p_h(l_h)-l_h),\mathbf u_h(g_h))
+-(\operatorname{grad}l_h,\mathbf u_h(g_h))\\
+&=-(\operatorname{grad}\lambda_h(g_h),
+\operatorname{grad}(p_h(l_h)-l_h))
+-(\operatorname{grad}l_h,\mathbf u_h(g_h)),
+\end{aligned}
+\]
+其中最后一步使用 \eqref{eq:primitive-gp-implementation-corrections}.
+再由 \eqref{eq:primitive-gp-discrete-harmonic-problems},
+\[
+a_h(g_h,l_h)
+=(\operatorname{grad}\lambda_h(g_h)-\mathbf u_h(g_h),
+\operatorname{grad}l_h),
+\]
+从而证明 \eqref{eq:primitive-gp-implementation-bilinear-form}.
+\eqref{eq:primitive-gp-implementation-right-hand-side} 的证明类似.
+\end{Proof}
+
+因此问题 \eqref{eq:primitive-gp-discrete-boundary-problem} 具有更易处理的形式:
+求 $\rho_h\in G_h$ 使
+\begin{equation}\label{eq:primitive-gp-implementation-boundary-problem}
+(\operatorname{grad}\lambda_h(\rho_h)-\mathbf u_h(\rho_h),
+\operatorname{grad}l_h)
+=(\operatorname{grad}\lambda_h^0-\mathbf u_h^0,
+\operatorname{grad}l_h)
+\qquad\forall l_h\in G_h.
+\end{equation}
+由前一 Lemma 和双线性形式 $a_h(\cdot,\cdot)$ 的定义可知,
+\eqref{eq:primitive-gp-implementation-boundary-problem} 左端是
+$G_h\times G_h$ 上的双线性、对称、正定形式. 下面简述实际中如何求解
+\eqref{eq:primitive-gp-implementation-boundary-problem}; 更多细节可见
+Glowinski et al. 的 Chapter 13.
+
+设 $\mathcal T_h\cap\Gamma$ 的节点编号为 $1$ 到 $N_h$, 并令
+$\{\mu_i\}_{1\leq i\leq N_h}$ 为 $Q_h$ 的一组基函数, 定义为
+\[
+\mu_i(a_i)=1\quad\text{对 }\mathcal T_h\cap\Gamma\text{ 的每个节点 }a_i,
+\qquad
+\mu_i(b_k)=0\quad\text{对 }\mathcal T_h\text{ 的所有其他节点}.
+\]
+暂时略去条件 $\int_\Gamma g_h\,ds=0$, 则 $G_h$ 中函数可表示为
+\MathBookSourcePage{206}
+\[
+g_h=\sum_{i=1}^{N_h}g_i\mu_i,
+\qquad g_i=g_h(a_i).
+\]
+用这一记号, \eqref{eq:primitive-gp-implementation-boundary-problem} 等价于
+\[
+\sum_{j=1}^{N_h}\rho_j a_h(\mu_j,\mu_i)
+=-(\operatorname{grad}\lambda_h^0-\mathbf u_h^0,
+\operatorname{grad}\mu_i)
+\qquad1\leq i\leq N_h.
+\]
+换言之, 需要求解线性方程组
+\begin{equation}\label{eq:primitive-gp-implementation-linear-system}
+A_h\boldsymbol\rho=\mathbf b,
+\end{equation}
+其中
+\[
+(A_h)_{i,j}=a_h(\mu_j,\mu_i)
+=(\operatorname{grad}\lambda_h(\mu_j)-\mathbf u_h(\mu_j),
+\operatorname{grad}\mu_i),
+\]
+\[
+b_i=-(\operatorname{grad}\lambda_h^0-\mathbf u_h^0,
+\operatorname{grad}\mu_i).
+\]
+为计算 $\mathbf b$, 需要求解
+\eqref{eq:primitive-gp-discrete-zero-problems} 的三个 Dirichlet 问题以得到
+$\mathbf u_h^0$, 再求解
+\eqref{eq:primitive-gp-implementation-corrections} 的第一个 Dirichlet 问题以得到
+$\lambda_h^0$, 共四个 Dirichlet 问题. 为计算矩阵 $A_h$ 的第 $j$ 列,
+必须在 $g_h=\mu_j$ 时求解
+\eqref{eq:primitive-gp-discrete-harmonic-problems} 的三个 Dirichlet 问题以得到
+$\mathbf u_h(\mu_j)$, 再求解
+\eqref{eq:primitive-gp-implementation-corrections} 的第二个问题以得到
+$\lambda_h(\mu_j)$, 同样共四个 Dirichlet 问题.
+
+由上述讨论, 矩阵 $A_h$ 对称且半正定, 并以 $0$ 为单重特征值. 此外,
+若 $\mathcal T_h$ 的节点适当编号, 可以证明
+$\operatorname{Ker}(A_h)$ 是常向量空间, 且主块
+\[
+\widetilde A_h=(a_h(\mu_j,\mu_i))_{1\leq i,j\leq N_h-1}
+\]
+正定. 因此令 $\widetilde\rho_{N_h}=0$, 可用 Cholesky 分解求解
+\eqref{eq:primitive-gp-implementation-linear-system}, 得到 $\rho$ 的一个代表元
+$\widetilde\rho$ 的前 $N_h-1$ 个分量. 随后, 满足
+$\int_\Gamma\rho_h\,ds=0$ 的
+\eqref{eq:primitive-gp-implementation-boundary-problem} 的解为
+\[
+\rho_h=\widetilde\rho_h-\frac1{\operatorname{meas}(\Gamma)}
+\int_\Gamma\widetilde\rho_h\,ds.
+\]
+一旦 $\rho_h$ 已知, 即可通过求解
+\eqref{eq:primitive-gp-discrete-harmonic-problems} 的三个 Dirichlet 问题计算压力
+$p_h(\rho_h)$ 和速度 $\mathbf u_h(\rho_h)$.
+
+问题 \eqref{eq:primitive-gp-implementation-boundary-problem} 也可用共轭梯度算法求解
+(参见 Glowinski et al. 的上述文献).

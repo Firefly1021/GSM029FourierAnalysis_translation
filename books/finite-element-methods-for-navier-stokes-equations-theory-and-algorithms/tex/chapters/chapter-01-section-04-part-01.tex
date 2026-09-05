@@ -1,0 +1,351 @@
+% Reviewed translation: PDF pages 70--75 / printed pages 56--61.
+% Begins after the completed Section 3 material on the shared PDF page 70.
+
+\setcounter{section}{3}
+\section{抽象变分问题的分析}\label{sec:abstract-variational-problem}
+
+\MathBookSourcePage{70}
+本节构造一个非常适合求解带约束的各类线性边值问题(如 Stokes 问题)的抽象框架.
+我们提出若干处理约束的算法. 虽然这些算法是结合连续问题引入的,
+但它们主要将在离散问题的求解中发挥作用.
+
+\setcounter{subsection}{0}
+\subsection{一般结果}\label{subsec:abstract-general-result}
+\setcounter{equation}{0}
+\setcounter{statement}{0}
+
+\MathBookSourcePage{71}
+设 $X$ 和 $M$ 是两个实 Hilbert 空间, 其范数分别为
+$\|\cdot\|_X$ 和 $\|\cdot\|_M$. 设 $X'$ 和 $M'$ 为相应的对偶空间,
+$\|\cdot\|_{X'}$ 和 $\|\cdot\|_{M'}$ 表示其对偶范数.
+照例, 用 $\langle\cdot,\cdot\rangle$ 表示 $X$ 与 $X'$ 之间或
+$M$ 与 $M'$ 之间的对偶配对.
+
+引入两个连续双线性形式
+\[
+a(\cdot,\cdot):X\times X\longrightarrow\mathbb R,
+\qquad
+b(\cdot,\cdot):X\times M\longrightarrow\mathbb R,
+\]
+其范数为
+\[
+\|a\|=\sup_{\substack{u,v\in X\\u,v\ne0}}
+\frac{a(u,v)}{\|u\|_X\|v\|_X},
+\qquad
+\|b\|=\sup_{\substack{v\in X,\ \mu\in M\\v\ne0,\ \mu\ne0}}
+\frac{b(v,\mu)}{\|v\|_X\|\mu\|_M}.
+\]
+考虑如下变分问题, 称为问题 $(Q)$:
+
+给定 $l\in X'$ 和 $\chi\in M'$, 求 $(u,\lambda)\in X\times M$, 使得
+\begin{equation}\label{eq:abstract-q-first}
+a(u,v)+b(v,\lambda)=\langle l,v\rangle
+\qquad\forall v\in X,
+\end{equation}
+\begin{equation}\label{eq:abstract-q-second}
+b(u,\mu)=\langle\chi,\mu\rangle
+\qquad\forall\mu\in M.
+\end{equation}
+
+为了研究问题 $(Q)$, 还需要一些记号. 对双线性形式
+$a(\cdot,\cdot)$ 和 $b(\cdot,\cdot)$, 分别定义线性算子
+$A\in\mathcal L(X;X')$ 和 $B\in\mathcal L(X;M')$:
+\begin{equation}\label{eq:abstract-operator-a}
+\langle Au,v\rangle=a(u,v)
+\qquad\forall u,v\in X,
+\end{equation}
+\begin{equation}\label{eq:abstract-operator-b}
+\langle Bv,\mu\rangle=b(v,\mu)
+\qquad\forall v\in X,\quad\forall\mu\in M.
+\end{equation}
+设 $B'\in\mathcal L(M;X')$ 为 $B$ 的对偶算子, 即
+\begin{equation}\label{eq:abstract-dual-operator-b}
+\langle B'\mu,v\rangle=\langle\mu,Bv\rangle=b(v,\mu)
+\qquad\forall v\in X,\quad\forall\mu\in M.
+\end{equation}
+容易验证
+\begin{equation}\label{eq:abstract-operator-norms}
+\|A\|_{\mathcal L(X;X')}=\|a\|,
+\qquad
+\|B\|_{\mathcal L(X;M')}=\|b\|.
+\end{equation}
+利用这些算子, 问题 $(Q)$ 等价地写为: 求 $(u,\lambda)\in X\times M$, 使
+\[
+Au+B'\lambda=l\quad\text{in }X',
+\qquad
+Bu=\chi\quad\text{in }M'.
+\]
+
+现在定义线性算子 $\Phi\in\mathcal L(X\times M;X'\times M')$:
+\[
+\Phi(v,\mu)=(Av+B'\mu,Bv).
+\]
+如果 $\Phi$ 是从 $X\times M$ 到 $X'\times M'$ 的同构,
+就称问题 $(Q)$ 适定. 我们的目的是导出问题 $(Q)$ 适定的充要条件.
+
+\MathBookSourcePage{72}
+置
+\[
+V=\Ker(B),
+\]
+更一般地, 对每个 $\chi\in M'$, 定义仿射流形
+\[
+V(\chi)=\{v\in X;\ Bv=\chi\}.
+\]
+等价地,
+\begin{equation}\label{eq:abstract-affine-manifold}
+\left\{
+\begin{aligned}
+V(\chi)&=\{v\in X;\ b(v,\mu)=\langle\chi,\mu\rangle
+\quad\forall\mu\in M\},\\
+V&=V(0).
+\end{aligned}
+\right.
+\end{equation}
+此外, 由算子 $B$ 的连续性可知 $V$ 是 $X$ 的闭子空间.
+
+与问题 $(Q)$ 相联系, 定义如下问题, 称为问题 $(P)$: 求 $u\in V(\chi)$, 使
+\begin{equation}\label{eq:abstract-problem-p}
+a(u,v)=\langle l,v\rangle
+\qquad\forall v\in V.
+\end{equation}
+显然, 如果 $(u,\lambda)\in X\times M$ 是问题 $(Q)$ 的解,
+那么 $u\in V(\chi)$ 且 $u$ 是 
+\eqref{eq:abstract-problem-p} 的解, 即问题 $(P)$ 的解.
+我们希望找到适当条件, 保证这个命题的逆命题成立. 为此, 定义 $V$ 的极集
+\[
+V^0=\{g\in X';\ \langle g,v\rangle=0\quad\forall v\in V\}.
+\]
+
+\begin{Lemma}\label{lem:ch4-abstract-div}
+下列三个性质等价:
+
+\textup{(i)} 存在常数 $\beta>0$, 使
+\begin{equation}\label{eq:abstract-inf-sup}
+\inf_{\mu\in M}\sup_{v\in X}
+\frac{b(v,\mu)}{\|v\|_X\|\mu\|_M}\ge\beta;
+\end{equation}
+
+\textup{(ii)} 算子 $B'$ 是从 $M$ 到 $V^0$ 的同构, 且
+\begin{equation}\label{eq:abstract-bprime-lower-bound}
+\|B'\mu\|_{X'}\ge\beta\|\mu\|_M
+\qquad\forall\mu\in M;
+\end{equation}
+
+\textup{(iii)} 算子 $B$ 是从 $V^\perp$ 到 $M'$ 的同构, 且
+\begin{equation}\label{eq:abstract-b-lower-bound}
+\|Bv\|_{M'}\ge\beta\|v\|_X
+\qquad\forall v\in V^\perp.
+\end{equation}
+\end{Lemma}
+\begin{Proof}
+1) 先证明性质 (i) 与 (ii) 等价. 由 
+\eqref{eq:abstract-dual-operator-b}, 性质 (i) 意味着
+\[
+\|B'\mu\|_{X'}
+=\sup_{\substack{v\in X\\v\ne0}}
+\frac{\langle B'\mu,v\rangle}{\|v\|_X}
+\ge\beta\|\mu\|_M
+\qquad\forall\mu\in M,
+\]
+所以 
+\eqref{eq:abstract-inf-sup} 等价于
+\eqref{eq:abstract-bprime-lower-bound}. 因而 (ii) 蕴含 (i).
+要证明 (i) 蕴含 (ii), 只需证明在条件
+\eqref{eq:abstract-bprime-lower-bound} 下, $B'$ 是从 $M$ 到 $V^0$ 的同构.
+显然, 由 
+\eqref{eq:abstract-bprime-lower-bound}, $B'$ 是从 $M$ 到其值域
+$\mathcal R(B')$ 的一一算子, 且其逆连续. 因此 $B'$ 是从 $M$ 到
+$\mathcal R(B')$ 的同构, 从而 $\mathcal R(B')$ 是 $X'$ 的闭子空间.
+
+\MathBookSourcePage{73}
+于是只需证明
+\[
+\mathcal R(B')=V^0.
+\]
+为此应用 Banach 闭值域定理(见 Yosida [84]), 它断言
+\[
+\mathcal R(B')=(\Ker(B))^0=V^0.
+\]
+这证明了 1).
+
+2) 现在证明性质 (ii) 与 (iii) 等价. 首先注意, $V^0$ 可与
+$(V^\perp)'$ 等距等同. 事实上, 对 $v\in X$, 以 $v^\perp$ 表示
+$v$ 在 $V^\perp$ 上的正交投影. 对每个 $g\in(V^\perp)'$, 定义
+$\widetilde g\in X'$:
+\[
+\langle\widetilde g,v\rangle=\langle g,v^\perp\rangle
+\qquad\forall v\in X.
+\]
+显然 $\widetilde g\in V^0$, 而且容易验证对应
+$g\mapsto\widetilde g$ 是从 $(V^\perp)'$ 到 $V^0$ 的等距双射.
+这使我们可以等同 $(V^\perp)'$ 与 $V^0$.
+
+因此, $B$ 是从 $V^\perp$ 到 $M'$ 的同构且
+\[
+\|B^{-1}\|_{\mathcal L(M';V^\perp)}\le1/\beta,
+\]
+当且仅当 $B'$ 是从 $M$ 到 $(V^\perp)'=V^0$ 的同构且
+\[
+\|(B')^{-1}\|_{\mathcal L(V^0;M)}\le1/\beta.
+\]
+所以性质 (ii) 与 (iii) 等价.
+\end{Proof}
+
+条件 
+\eqref{eq:abstract-inf-sup} 通常称为 ``inf-sup 条件'',
+它由 Babuška [4] 和 Brezzi [13] 各自独立引入.
+为陈述主要结果, 定义线性连续算子 $\pi\in\mathcal L(X';V')$:
+\[
+\langle\pi f,v\rangle=\langle f,v\rangle
+\qquad\forall f\in X',\quad\forall v\in V.
+\]
+显然
+\[
+\|\pi f\|_{V'}\le\|f\|_{X'}.
+\]
+
+\setcounter{statement}{0}
+\begin{Theorem}\label{thm:abstract-well-posedness}
+问题 $(Q)$ 适定(即算子 $\Phi$ 是从 $X\times M$ 到 $X'\times M'$ 的同构),
+当且仅当下列条件成立:
+
+\textup{(i)} 算子 $\pi A$ 是从 $V$ 到 $V'$ 的同构;
+
+\textup{(ii)} 双线性形式 $b(\cdot,\cdot)$ 满足 inf-sup 条件
+\eqref{eq:abstract-inf-sup}.
+\end{Theorem}
+\begin{Proof}
+1) 条件 (i) 和 (ii) 是充分的. 由 
+\eqref{eq:abstract-inf-sup} 和 Lemma~\ref{lem:ch4-abstract-div},
+存在唯一的 $u_0\in V^\perp$, 使
+\[
+Bu_0=\chi,
+\qquad
+\|u_0\|_X\le(1/\beta)\|\chi\|_{M'}.
+\]
+
+\MathBookSourcePage{74}
+因此问题 $(P)$ 等价地写成: 求 $w=u-u_0\in V$, 使
+\[
+a(w,v)=\langle l,v\rangle-a(u_0,v)
+\qquad\forall v\in V,
+\]
+或等价地满足
+\[
+\pi Aw=\pi(l-Au_0).
+\]
+因为 $\pi A$ 是从 $V$ 到 $V'$ 的同构, 问题 $(P)$ 有唯一解
+$u=u_0+w\in V(\chi)$, 且
+\[
+\|w\|_X\le C_1\|\pi(l-Au_0)\|_{V'}
+\le C_1\|l-Au_0\|_{X'},
+\]
+所以
+\[
+\|u\|_X\le C_2(\|l\|_{X'}+\|\chi\|_{M'}).
+\]
+现在 $l-Au\in V^0$. 因而由 Lemma~\ref{lem:ch4-abstract-div},
+存在唯一的 $\lambda\in M$, 使
+\[
+B'\lambda=l-Au,
+\]
+并且
+\[
+\|\lambda\|_M\le(1/\beta)\|l-Au\|_{X'}
+\le C_3(\|l\|_{X'}+\|\chi\|_{M'}).
+\]
+因此问题 $(Q)$ 有唯一解 $(u,\lambda)$, 且映射
+$(l,\chi)\mapsto(u,\lambda)$ 从 $X'\times M'$ 到 $X\times M$ 连续.
+这意味着 $\Phi$ 是从 $X\times M$ 到 $X'\times M'$ 的同构.
+
+2) 条件 (i) 和 (ii) 是必要的. 假设 $\Phi$ 是从 $X\times M$ 到
+$X'\times M'$ 的同构. 先证明 inf-sup 条件
+\eqref{eq:abstract-inf-sup}. 令 $\chi\in M'$ 并置
+$(u,\lambda)=\Phi^{-1}(0,\chi)$. 因为 $Bu=\chi$, 所以
+$\mathcal R(B)=M'$. 因此 $B$ 是从 $V^\perp$ 到 $M'$ 的连续一一映射,
+从而是从 $V^\perp$ 到 $M'$ 的同构. 由 Lemma~\ref{lem:ch4-abstract-div},
+条件 
+\eqref{eq:abstract-inf-sup} 成立.
+
+接着证明 $\pi A$ 是从 $V$ 到 $V'$ 的同构. 先验证 $\pi A$ 在 $V$ 上单射.
+设 $u\in V$ 满足 $\pi Au=0$, 则 $Au\in V^0$.
+由于 inf-sup 条件成立, 由 Lemma~\ref{lem:ch4-abstract-div}, $B'$ 是从
+$M$ 到 $V^0$ 的同构. 因而存在唯一的 $\lambda\in M$, 使
+$B'\lambda=-Au$. 于是 $\Phi(u,\lambda)=(0,0)$, 从而 $u=0$.
+
+现在验证 $\pi A$ 满射. 设 $g\in V'$. 由 Hahn--Banach Theorem,
+至少存在一个 $l\in X'$, 使 $g=\pi l$. 置
+$(u,\lambda)=\Phi^{-1}(l,0)$. 显然 $u\in V$, 且
+\[
+Au+B'\lambda=l.
+\]
+对所有 $v\in V$,
+\[
+\langle\pi B'\lambda,v\rangle
+=\langle B'\lambda,v\rangle
+=\langle\lambda,Bv\rangle=0,
+\]
+所以 $\pi B'\lambda=0$, 从而
+
+\MathBookSourcePage{75}
+\[
+\pi Au=\pi l=g.
+\]
+因此 $\pi A$ 是从 $V$ 到 $V'$ 的一一线性连续映射, 从而是同构.
+\end{Proof}
+
+\setcounter{statement}{0}
+\begin{Remark}\label{rem:abstract-problem-p-solvability}
+在 Theorem~\ref{thm:abstract-well-posedness} 证明的第一部分中,
+我们使用了如下事实: 只要 $\pi A$ 是从 $V$ 到 $V'$ 的同构且仿射流形
+$V(\chi)$ 非空, 问题 $(P)$ 就有唯一解. Inf-sup 条件
+\eqref{eq:abstract-inf-sup} 确实蕴含 $V(\chi)$ 非空.
+\end{Remark}
+
+\setcounter{statement}{0}
+\begin{Corollary}\label{cor:abstract-v-elliptic-well-posedness}
+假设双线性形式 $a(\cdot,\cdot)$ 是 $V$-椭圆的, 即存在常数 $\alpha>0$, 使
+\begin{equation}\label{eq:abstract-v-ellipticity}
+a(v,v)\ge\alpha\|v\|_X^2
+\qquad\forall v\in V.
+\end{equation}
+则问题 $(Q)$ 适定, 当且仅当双线性形式 $b(\cdot,\cdot)$ 满足 inf-sup 条件
+\eqref{eq:abstract-inf-sup}.
+\end{Corollary}
+\begin{Proof}
+设 $l\in V'$. 因为 $a(\cdot,\cdot)$ 是 $V$-椭圆的,
+可以应用 Lax \& Milgram Theorem~\ref{thm:lax-milgram}:
+存在唯一的 $u\in V$, 使
+\[
+a(u,v)=\langle l,v\rangle
+\qquad\forall v\in V,
+\]
+或等价地
+\[
+\pi Au=l.
+\]
+此外, 映射 $l\mapsto u$ 从 $V'$ 到 $V$ 连续. 因此 $\pi A$ 是从
+$V$ 到 $V'$ 的同构, 结论由 Theorem~\ref{thm:abstract-well-posedness} 得到.
+\end{Proof}
+
+\setcounter{statement}{1}
+\begin{Remark}\label{rem:abstract-reflexive-banach-extension}
+上述分析容易推广到 $X$ 和 $M$ 为自反 Banach 空间的情形.
+空间 $V$ 不变, 但 $V^\perp$ 要换成商空间 $X/V$.
+本小节的结果和证明只需极少修改即可适用.
+\end{Remark}
+
+\setcounter{subsection}{1}
+\subsection{鞍点方法}\label{subsec:abstract-saddle-point}
+
+在适当假设下, 问题 $(P)$ 和 $(Q)$ 可以表述为优化问题.
+除上一小节的记号外, 再引入两个二次泛函
+$J:X\to\mathbb R$ 和 $\mathcal L:X\times M\to\mathbb R$:
+\begin{equation}\label{eq:abstract-functional-j}
+J(v)=(1/2)a(v,v)-\langle l,v\rangle,
+\end{equation}
+以及
+\begin{equation}\label{eq:abstract-lagrangian}
+\mathcal L(v,\mu)=J(v)+b(v,\mu)-\langle\chi,\mu\rangle.
+\end{equation}
