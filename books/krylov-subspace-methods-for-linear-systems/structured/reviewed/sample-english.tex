@@ -1,0 +1,194 @@
+% Visually reconstructed source, complete Section 1.8 only.
+% Boldface vectors and all mathematical qualifications follow the supplied PDF.
+% block: heading page:32 type:section
+\subsection{Krylov Subspace Methods}\label{sec:krylov-subspace-methods}
+
+% block: history page:32 type:ordinary-paragraph
+Krylov subspace methods have a long history, dating from the mid-20th century, and the best-known method is the Conjugate Gradient (CG) method by Hestenes and Stiefel.\footnote{After the proposal of the CG method, Stiefel proposed the Conjugate Residual (CR) method in 1955, and he is also known for the Stiefel manifold that is an extension of the unit circle.}
+
+% block: introduction page:32 type:ordinary-paragraph
+Krylov subspace methods are iterative methods for solving linear systems \eqref{eq:linear-system} by utilizing Krylov subspace as defined next.
+
+% block: subspace-definition page:32 type:definition
+\begin{Definition}{Krylov subspace}\label{def:krylov-subspace}
+Let vectors $\bm v,A\bm v,\ldots,A^{n-1}\bm v\in\mathbb C^N$ be linearly independent, then
+\begin{equation}\label{eq:krylov-subspace-span}
+\begin{aligned}
+\mathcal K_n(A,\bm v)&=\{c_0\bm v+c_1A\bm v+\cdots+c_{n-1}A^{n-1}\bm v:c_0,c_1,\ldots,c_{n-1}\in\mathbb C\}\\
+&\quad(=\operatorname{span}\{\bm v,A\bm v,\ldots,A^{n-1}\bm v\})
+\end{aligned}
+\end{equation}
+is called an ($n$ dimensional) Krylov subspace.
+\end{Definition}
+
+% block: grade-introduction page:32 type:ordinary-paragraph
+The dimension of $\mathcal K_n(A,\bm v)$ depends on $\bm v$, and the largest dimension with respect to a given $\bm v$ is known as the grade of a Krylov subspace, as defined next.
+
+% block: grade-definition page:32 type:definition
+\begin{Definition}{Grade of Krylov subspace}\label{def:krylov-grade}
+The smallest number $n$ such that
+\begin{equation}\label{eq:krylov-grade-stabilization}
+\dim(\mathcal K_n(A,\bm v))=\dim(\mathcal K_{n+1}(A,\bm v))
+\end{equation}
+is called the grade of $A$ with respect to $\bm v$.
+\end{Definition}
+
+% block: finite-termination pages:32,33 type:ordinary-paragraph
+Consider $A\bm x=\bm b$ and let $m$ be the grade of $A$ with respect to $\bm r_0:=\bm b-A\bm x_0$, where $\bm x_0$ is an initial guess to the solution of $A\bm x=\bm b$. Then
+\[
+\dim(\mathcal K_m(A,\bm r_0))=\dim(\mathcal K_{m+1}(A,\bm r_0)).
+\]
+This means that there exist $c_0,c_1,\ldots,c_{m-1}$ such that
+\[
+A^m\bm r_0=c_0\bm r_0+c_1A\bm r_0+\cdots+c_{m-1}A^{m-1}\bm r_0.
+\]
+Multiplying the equation by $A^{-1}$ yields
+\[
+A^{m-1}\bm r_0=c_0A^{-1}\bm r_0+c_1\bm r_0+c_2A\bm r_0+\cdots+c_{m-1}A^{m-2}\bm r_0.
+\]
+Since $A^{-1}\bm r_0=A^{-1}(\bm b-A\bm x_0)=\bm x-\bm x_0$, the solution can be written as
+\[
+\bm x=\bm x_0+\frac{1}{c_0}(-c_1\bm r_0-c_2A\bm r_0-\cdots-c_{m-1}A^{m-2}\bm r_0+A^{m-1}\bm r_0)
+\]
+if $c_0\ne0$. Let $\bm z_m:=(-c_1\bm r_0-\cdots-c_{m-1}A^{m-2}\bm r_0+A^{m-1}\bm r_0)/c_0$. Then, $\bm z_m\in\mathcal K_m(A,\bm r_0)$, which means that the solution $\bm x$ satisfies
+\[
+\bm x=\bm x_0+\bm z_m,\quad\bm z_m\in\mathcal K_m(A,\bm r_0).
+\]
+
+% block: affine-space page:33 type:ordinary-paragraph
+From this we see that the solution $\bm x$ belongs to the affine space $\bm x_0+\mathcal K_m(A,\bm r_0)$. This fact leads to a natural idea to compute approximate solution $\bm x_n$ over the affine space $\bm x_n\in\bm x_0+\mathcal K_n(A,\bm r_0)$, or equivalently
+\[
+\bm x_n=\bm x_0+\bm z_n,\quad\bm z_n\in\mathcal K_n(A,\bm r_0)
+\]
+for $n=1,2,\ldots$. If $\bm z_n$ is appropriately determined, then this approach gives the exact solution at $m$ iteration steps, which is the basis of Krylov subspace methods.
+
+% block: framework page:33 type:ordinary-paragraph
+Now the framework of Krylov subspace methods is described below. Let $\bm x_0\in\mathbb C^N$ be an initial guess, and let $\bm r_0:=\bm b-A\bm x_0$ be the corresponding residual vector. Then, Krylov subspace methods produce the $n$th approximate solution over the following affine space:
+
+% block: krylov-condition page:33 type:equation
+\noindent\textbf{Krylov subspace condition}
+\begin{equation}\label{eq:krylov-iterate-condition}
+\bm x_n=\bm x_0+\bm z_n,\quad\bm z_n\in\mathcal K_n(A,\bm r_0).
+\end{equation}
+
+% block: residual page:33 type:equation
+Then, the corresponding residual vector $\bm r_n$ is given by
+\begin{equation}\label{eq:krylov-residual}
+\bm r_n:=\bm b-A\bm x_n=\bm r_0-A\bm z_n,\quad\bm r_n\in\mathcal K_{n+1}(A,\bm r_0).
+\end{equation}
+
+% block: uniqueness page:33 type:ordinary-paragraph
+Since $\bm x_n$ cannot be uniquely determined by utilizing the condition \eqref{eq:krylov-iterate-condition} above, one of the following conditions needs to be imposed for obtaining the unique approximate solution:
+
+% block: ritz-galerkin page:33 type:equation
+\noindent\textbf{Ritz--Galerkin approach}
+\begin{equation}\label{eq:ritz-galerkin-orthogonality}
+\bm r_n\perp\mathcal K_n(A,\bm r_0).
+\end{equation}
+
+% block: petrov-galerkin page:33 type:equation
+\noindent\textbf{Petrov--Galerkin approach}
+\begin{equation}\label{eq:petrov-galerkin-orthogonality}
+\bm r_n\perp W_n\subset\mathbb C^N,\quad\dim(W_n)=n.
+\end{equation}
+
+% block: minimal-residual page:33 type:equation
+\noindent\textbf{Minimal residual approach}
+\begin{equation}\label{eq:minimal-residual-problem}
+\min_{\bm x_n\in\bm x_0+\mathcal K_n(A,\bm r_0)}\|\bm b-A\bm x_n\|.
+\end{equation}
+
+% block: inclusions page:33 type:ordinary-paragraph
+The Petrov--Galerkin approach includes the Ritz--Galerkin approach and the minimal residual approach as described below.
+
+% block: equivalence-proposition page:34 type:proposition
+\begin{Proposition}\label{prop:projection-equivalences}
+The following statements holds true:
+\begin{itemize}
+\item The Ritz--Galerkin approach \eqref{eq:ritz-galerkin-orthogonality} is the Petrov--Galerkin approach \eqref{eq:petrov-galerkin-orthogonality} with the choice
+\[
+W_n=\mathcal K_n(A,\bm r_0).
+\]
+\item The minimal residual approach \eqref{eq:minimal-residual-problem} is the Petrov--Galerkin approach \eqref{eq:petrov-galerkin-orthogonality} with the choice
+\begin{equation}\label{eq:minimal-residual-test-space}
+W_n=A\mathcal K_n(A,\bm r_0),
+\end{equation}
+where $A\mathcal K_n(A,\bm r_0):=\{\sum_{k=1}^n c_kA\bm v_k:c_1,c_2,\ldots,c_n\in\mathbb C\}$, and $\bm v_1,\bm v_2,\ldots,\bm v_n$ are the basis vectors of $\mathcal K_n(A,\bm r_0)$.
+\end{itemize}
+\end{Proposition}
+
+% block: equivalence-proof pages:34,35 type:proof
+\begin{Proof}
+It is obvious for the Ritz--Galerkin approach, so the equivalence of \eqref{eq:minimal-residual-problem} and \eqref{eq:minimal-residual-test-space} will only be proved. Let $V_n=[\bm v_1,\bm v_2,\ldots,\bm v_n]$ be an $N$-by-$n$ matrix whose column vectors $\bm v_1,\bm v_2,\ldots,\bm v_n$ are the basis vectors of $\mathcal K_n(A,\bm r_0)$. Then $\bm z_n\in\mathcal K_n(A,\bm r_0)$ in \eqref{eq:krylov-iterate-condition} can be written as $\mathcal K_n(A,\bm r_0)\ni\bm z_n=\sum_{k=1}^n c_k\bm v_k=V_n\bm c_n$, where $\bm c_n=[c_1,c_2,\ldots,c_n]^\top\in\mathbb C^n$. Substitution of $\bm z_n=V_n\bm c_n$ into \eqref{eq:krylov-residual} yields
+\begin{equation}\label{eq:basis-residual}
+\bm r_n=\bm r_0-AV_n\bm c_n.
+\end{equation}
+Note that if $\bm r_n\perp A\bm v_k\ (k=1,2,\ldots,n)$, then it holds that $\bm r_n\perp A\mathcal K_n(A,\bm r_0)$ because it is easy to see that $\bm r_n\perp\sum_{k=1}^n c_kA\bm v_k$ for all $c_i\in\mathbb C$. The condition $\bm r_n\perp A\bm v_k\ (k=1,2,\ldots,n)$ is equivalent to $(AV_n)^{\mathrm H}\bm r_n=\bm 0\ (:= [0,\ldots,0]^\top)$, and thus it follows from \eqref{eq:basis-residual} that $\bm 0=(AV_n)^{\mathrm H}\bm r_n=(AV_n)^{\mathrm H}\bm r_0-(AV_n)^{\mathrm H}AV_n\bm c_n$. Thus, the vector $\bm c$ is determined by
+\begin{equation}\label{eq:normal-equation-coefficients}
+\bm c_n=[(AV_n)^{\mathrm H}AV_n]^{-1}(AV_n)^{\mathrm H}\bm r_0.
+\end{equation}
+We now show that $\bm c_n$ is the solution of the minimization problem \eqref{eq:minimal-residual-problem}. Since the minimized solution of $\|\bm b-A\bm x_n\|^2$ is the same as that of \eqref{eq:minimal-residual-problem}, we consider
+\begin{equation}\label{eq:residual-quadratic-problem}
+\begin{aligned}
+\min_{\bm x_n\in\bm x_0+\mathcal K_n(A,\bm r_0)}\|\bm b-A\bm x_n\|^2
+&=\min_{\bm c_n\in\mathbb C^n}\|\bm r_0-AV_n\bm c_n\|^2\\
+&=\min_{\bm c_n\in\mathbb C^n}(\bm r_0-AV_n\bm c_n)^{\mathrm H}(\bm r_0-AV_n\bm c_n).
+\end{aligned}
+\end{equation}
+The following decomposition is useful for finding the solution of \eqref{eq:residual-quadratic-problem}:
+\begin{equation}\label{eq:least-squares-decomposition}
+\|\bm d-M\bm x\|^2=(\bm d-M\bm x)^{\mathrm H}(\bm d-M\bm x)=f(\bm x)+c,
+\end{equation}
+where
+\[
+\begin{aligned}
+f(\bm x)&=(M^{\mathrm H}M\bm x-M^{\mathrm H}\bm d)^{\mathrm H}(M^{\mathrm H}M)^{-1}(M^{\mathrm H}M\bm x-M^{\mathrm H}\bm d),\\
+c&=-\bm d^{\mathrm H}M(M^{\mathrm H}M)^{-1}M^{\mathrm H}\bm d+\bm d^{\mathrm H}\bm d.
+\end{aligned}
+\]
+If $M$ is column full rank, then $M^{\mathrm H}M$ is Hermitian positive definite,\footnote{Matrix $G\in\mathbb C^{N\times N}$ is called Hermitian positive definite if $G$ is Hermitian and $\bm v^{\mathrm H}G\bm v>0$ for all $\bm v(\ne\bm 0)\in\mathbb C^N$, or equivalently, all the eigenvalues of Hermitian matrix $G$ are positive. From this, it follows that if $G$ is Hermitian positive definite, then $G^{-1}$ is also Hermitian positive definite. For the positive definiteness, see also Section~\ref{sec:symmetric-direct-methods}.} and thus $f(\bm x)\ge0$. This means the minimization of \eqref{eq:least-squares-decomposition} is achieved by minimizing $f(\bm x)$. It is easy to see that
+\begin{equation}\label{eq:least-squares-minimizer}
+\bm x=(M^{\mathrm H}M)^{-1}M^{\mathrm H}\bm d
+\end{equation}
+gives $f(\bm x)=0$, which is the solution of the minimization problem of \eqref{eq:least-squares-decomposition}.
+Letting $\bm x=(M^{\mathrm H}M)^{-1}M^{\mathrm H}\bm d$ with $M=AV_n$ and $\bm d=\bm r_0$ yields the same result as in \eqref{eq:normal-equation-coefficients}.
+\end{Proof}
+
+% block: scalar-minimization page:35 type:remark
+\begin{Remark}\label{rem:scalar-residual-minimization}
+The equation \eqref{eq:least-squares-decomposition} is also useful for solving the following minimization:
+\begin{equation}\label{eq:scalar-residual-problem}
+\min_{\omega\in\mathbb C}\|\bm a-\omega\bm b\|
+\end{equation}
+because setting $\bm d=\bm a$, $M=\bm b$, $\bm x=\omega$ in \eqref{eq:least-squares-minimizer} yields the solution of \eqref{eq:scalar-residual-problem} as follows:
+\begin{equation}\label{eq:scalar-residual-minimizer}
+\omega=\frac{\bm b^{\mathrm H}\bm a}{\bm b^{\mathrm H}\bm b}.
+\end{equation}
+The result will be used for Krylov subspace methods in Chapter~\ref{chap:krylov-classification}.
+\end{Remark}
+
+% block: comparison-introduction page:35 type:ordinary-paragraph
+Now, the relationship among representative Krylov subspace methods and three approaches \eqref{eq:ritz-galerkin-orthogonality}--\eqref{eq:minimal-residual-problem} is described in Tables~\ref{tab:hermitian-krylov-methods} and~\ref{tab:nonhermitian-krylov-methods}.
+
+% block: hermitian-table page:35 type:table
+\begin{table}[htbp]
+\centering
+\caption{Krylov subspace methods for Hermitian linear systems}\label{tab:hermitian-krylov-methods}
+\begin{tabular}{ll}\hline
+Ritz--Galerkin approach & Minimal residual approach\\\hline
+CG & MINRES, CR\\\hline
+\end{tabular}
+\end{table}
+
+% block: nonhermitian-table page:35 type:table
+\begin{table}[htbp]
+\centering
+\caption{Some Krylov subspace methods for non-Hermitian linear systems}\label{tab:nonhermitian-krylov-methods}
+\begin{tabular}{lll}\hline
+Ritz--Galerkin approach & Petrov--Galerkin approach & Minimal residual approach\\\hline
+FOM & BiCG, BiCR & GMRES, GCR\\\hline
+\end{tabular}
+\end{table}
+
+% block: method-relations page:36 type:ordinary-paragraph
+The relationship among Krylov subspace methods for Hermitian and non-Hermitian linear systems is as follows: the BiCG method and the FOM are extensions of the CG method; the GMRES method is an extension of the MINRES method; the BiCR method and the GCR method are extensions of the CR method. The details of these Krylov subspace methods are described in Chapter~\ref{chap:krylov-classification}.
