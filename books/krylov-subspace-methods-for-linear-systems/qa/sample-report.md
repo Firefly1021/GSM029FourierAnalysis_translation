@@ -44,10 +44,10 @@ The shared CLI has no configured shell sample processor. After the requested sta
 
 ## Review choices
 
-17 book-local terminology candidates are proposed. One nonblocking unresolved choice remains: grade is provisionally 级; 阶数 is an alternative for user review. No global approved term was overwritten.
+The book-local terminology file has 17 entries: 16 proposed and one user-approved. On 2026-10-15 the user explicitly approved grade -> 阶. All four sample occurrences are updated, the terminology issue is resolved, and unresolved terminology is now 0. The decision is recorded in glossary/decisions.json; no global terminology entry was overwritten.
 
 Statement headings follow the existing shared counter, so source Definition 1.2 / 1.3, Proposition 1.1 and Remark 1 render as Definition 1.1 / 1.2, Proposition 1.3 and Remark 1.4. Their source numbering is separately preserved. Formula numbers (1.20)--(1.34) are retained.
 
 Three sample-external references point to explicitly marked source locators, not fabricated translated chapters. Full-book integration must replace those locators with real translated chapter/section targets.
 
-Please review translation fidelity, grade terminology, statement numbering, bold math symbols, the Proposition proof and both table contents. No remote push was performed.
+Please review translation fidelity, statement numbering, bold math symbols, the Proposition proof and both table contents. Approval of grade -> 阶 does not imply approval of the entire sample. No remote push was performed.

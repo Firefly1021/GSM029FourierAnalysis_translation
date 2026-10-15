@@ -11,7 +11,8 @@ Sample: complete Section 1.8, PDF 32-36 / printed 19-23
 Sample QA: passed (agent reviewed)
 Sample output: output/sample-zh.pdf
 Blocking issues: None
-Unresolved terminology: 1 (grade)
+Unresolved terminology: 0
+Approved terminology: grade -> 阶 (user instruction, 2026-10-15)
 User sample approval: Pending
 Full-book translation started: No
 Remote push: No

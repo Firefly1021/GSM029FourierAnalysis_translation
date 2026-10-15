@@ -11,7 +11,7 @@
 
 ## After user approval
 
-- Review proposed terminology, especially grade (sample choice: 级).
+- Apply the user-approved term grade -> 阶. Review the remaining proposed terminology.
 - Use existing approval and natural-unit translation workflows.
 - Replace sample-only source locators with actual translated chapter targets.
 - Never regenerate an accepted unit.

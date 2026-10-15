@@ -310,7 +310,7 @@ def metadata():
         ("Petrov–Galerkin approach","Petrov–Galerkin 途径","residual orthogonality to a test space"),
         ("Hermitian positive definite","Hermitian 正定","complex Hermitian matrix with positive quadratic form"),
         ("column full rank","列满秩","full column rank of the least-squares matrix"),
-        ("grade","级","smallest n with K_n(A,v)=K_(n+1)(A,v)"),
+        ("grade","阶","smallest n with K_n(A,v)=K_(n+1)(A,v)"),
         ("linear systems","线性方程组","Ax=b in this book"),
         ("basis vectors","基向量","basis for a Krylov subspace"),
         ("approximate solution","近似解","iterate x_n"),
@@ -331,11 +331,14 @@ def metadata():
                 "Context":context,"Status":"proposed","First Source":BOOK_ID,"First Location":"Section 1.8 / PDF 32-36",
                 "Last Verified Source":BOOK_ID,"Last Verified Location":"Section 1.8 / PDF 32-36",
                 "Notes":"Book-local candidate; no change to global terminology"})
+            if english=="grade":
+                row.update({"Status":"approved","Forbidden Alternatives":"级; 阶数",
+                            "Notes":"User explicitly approved grade -> 阶 on 2026-10-15. Book-local approval; global promotion is separate."})
             candidates.append(row)
     table_write("glossary/candidates.tsv",TERM_COLUMNS,candidates)
     grade=next(r.copy() for r in candidates if r["English"]=="grade")
-    grade.update({"Status":"ambiguous","Notes":"Sample uses 级. Alternative 阶数 requires user terminology review; mathematical definition is unambiguous. Nonblocking stylistic choice."})
-    table_write("glossary/unresolved.tsv",TERM_COLUMNS,[grade])
+    unresolved=[] if grade["Status"]=="approved" else [grade]
+    table_write("glossary/unresolved.tsv",TERM_COLUMNS,unresolved)
     dump("qa/terminology/shared-lookup.json",lookups)
     name_rows=[]
     for name in ("Krylov","Hestenes","Stiefel","Ritz","Galerkin","Petrov","Hermitian"):
@@ -375,7 +378,7 @@ def metadata():
                           "scope":"sample" if label in labels else "verified-source-locator"})
     dump("qa/translation/cross-reference-registry.json",cross)
     print(json.dumps({"blocks":len(eb),"math_expressions":len(formula_rows),"numbered_equations":len(numbered),
-                      "reference_occurrences":len(cross),"term_candidates":len(candidates),"unresolved_terms":1}))
+                      "reference_occurrences":len(cross),"term_candidates":len(candidates),"unresolved_terms":len(unresolved)}))
 
 
 def compile_sample():
@@ -494,10 +497,10 @@ def finalize():
     dump("qa/structure/object-number-map.json",[
         {"source_object":source,"label":label,**label_data[label]} for label,source in object_sources.items()])
     issues=[
-      {"id":"sample-grade-terminology","category":"terminology","severity":"warning",
-       "message":"grade is provisionally translated as 级; review the alternative 阶数.",
-       "confidence":1.0,"review_status":"needs-review","source_location":{"page":32},
-       "details":{"blocking":False,"file":"glossary/unresolved.tsv"}},
+      {"id":"sample-grade-terminology","category":"terminology","severity":"info",
+       "message":"User approved grade -> 阶 on 2026-10-15; sample occurrences updated.",
+       "confidence":1.0,"review_status":"resolved","source_location":{"page":32},
+       "details":{"blocking":False,"file":"glossary/decisions.json","previous_translation":"级","approved_translation":"阶"}},
       {"id":"sample-outside-targets","category":"structure","severity":"info",
        "message":"Outside-sample references resolve to verified source locator objects; replace these with translated objects during full-book integration.",
        "confidence":1.0,"review_status":"reviewed","details":{"blocking":False}},
@@ -509,13 +512,15 @@ def finalize():
     for issue in issues:
         issue_validator.validate(issue)
     write("qa/issues.jsonl","".join(json.dumps(x,ensure_ascii=False)+"\n" for x in issues))
+    with BOOK.unresolved.open(encoding="utf-8",newline="") as handle:
+        unresolved_count=len(list(csv.DictReader(handle,delimiter="\t")))
     qa={"book_id":BOOK_ID,"status":"passed","template":"passed","source":"passed","structure":"passed",
         "formula":"passed","cross_references":"passed","proper_names":"passed","punctuation":"passed",
         "compile":"passed","schema":"passed","visual_review":"passed","blocking_issues":[],
         "source_pages":[32,33,34,35,36],"printed_pages":["19","20","21","22","23"],
         "sample_scope":"Complete Section 1.8 only","source_blocks":23,"math_expressions":96,
         "numbered_equations":15,"tables":2,"footnotes":2,"registered_names":7,
-        "unresolved_terminology":1,"pdf":str(pdf_path),"pdf_sha256":sha256_file(pdf_path),
+        "unresolved_terminology":unresolved_count,"pdf":str(pdf_path),"pdf_sha256":sha256_file(pdf_path),
         "full_book_translation_started":False,"user_approved":False}
     dump("qa/sample-qa.json",qa)
     plan=json.loads((BOOK.root/"qa/sample-plan.json").read_text(encoding="utf-8"))
@@ -544,7 +549,8 @@ def finalize():
         f"Source SHA-256: {before['source_sha256']}\nTemplate version: {config['template_version']}\n"
         "PDF diagnosis: 234 pages; 232 native, 1 mixed cover, 1 blank; no scanned pages\n"
         "Sample: complete Section 1.8, PDF 32-36 / printed 19-23\nSample QA: passed (agent reviewed)\n"
-        "Sample output: output/sample-zh.pdf\nBlocking issues: None\nUnresolved terminology: 1 (grade)\n"
+        f"Sample output: output/sample-zh.pdf\nBlocking issues: None\nUnresolved terminology: {unresolved_count}\n"
+        "Approved terminology: grade -> 阶 (user instruction, 2026-10-15)\n"
         "User sample approval: Pending\nFull-book translation started: No\nRemote push: No\n")
     outlines=json.loads((BOOK.root/"structured/source/book-outline.json").read_text(encoding="utf-8"))
     progress=[{"Unit ID":"frontmatter","Source":"Preface and Acknowledgements","QA Status":"pending","Notes":"Not translated"}]
@@ -570,7 +576,7 @@ def finalize():
          "visible_books":[p.name for p in PROJECT.books.iterdir() if p.is_dir()],
          "source_hash_unchanged":True,"template_hashes_unchanged":True,"remote_push":False})
     result.update({"sample_pages":[32,33,34,35,36],"pdf":str(pdf_path),"blocking_issues":[],
-                   "unresolved_terminology":1})
+                   "unresolved_terminology":unresolved_count})
     print(json.dumps(result,ensure_ascii=False))
 
 
