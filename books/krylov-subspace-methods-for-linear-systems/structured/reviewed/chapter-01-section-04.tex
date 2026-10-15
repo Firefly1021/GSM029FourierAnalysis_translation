@@ -1,0 +1,67 @@
+% block: symmetric-direct-heading page:22 type:section
+\subsection{{Direct Methods for Symmetric Linear Systems}}\label{sec:symmetric-direct-methods}
+{When matrix $A$ is symmetric, Cholesky decomposition and $LDL^\top$ decomposition are efficient direct methods that are variants of the LU decomposition. As a preliminary, let us define the notion of positive definite:}
+\begin{enumerate}
+\item {Positive Definite}
+\par{Matrix $A$ is called positive definite if $\bm x^\top A\bm x>0$ for all $\bm x\ne\bm0$.}
+\item {Symmetric Positive Definite}
+\par{Matrix $A$ is called symmetric positive definite if positive definite matrix $A$ is symmetric.}
+\end{enumerate}
+{It is known that matrix $A$ is symmetric positive definite if and only if all the eigenvalues of symmetric matrix $A$ are positive.}
+% block: cholesky-factorization pages:22,23 type:subsection
+\subsubsection{{Cholesky Decomposition}}\label{subsec:cholesky-decomposition}
+{If matrix $A$ is symmetric positive definite, there exists a lower triangular matrix $L$ such that}
+\[A=LL^\top.\]
+{The decomposition is referred to as Cholesky decomposition. The algorithm of the Cholesky decomposition is shown in Algorithm~\ref{alg:cholesky-decomposition}.}
+\begin{algorithm}[H]
+\caption{{Cholesky decomposition}}\label{alg:cholesky-decomposition}
+\begin{algorithmic}[1]
+\Statex\textbf{Input:} $A$
+\Statex\textbf{Output:} $L$
+\For{$i=1,\ldots,n$}
+\State $l_{ii}=(a_{ii}-\sum_{k=1}^{i-1}l_{ik}^2)^{1/2}$
+\For{$j=i+1,\ldots,n$}
+\State $l_{ji}=(a_{ji}-\sum_{k=1}^{i-1}l_{jk}\times l_{ik})/l_{ii}$
+\EndFor
+\EndFor
+\end{algorithmic}
+\end{algorithm}
+{The computational cost of the Cholesky decomposition is about half of that of the LU decomposition because of the use of the symmetric property.}
+{It is known that from the positive definiteness of $A$ the Cholesky decomposition never suffers from breakdown and does not need the pivoting technique as described in Section~\ref{subsec:lu-pivoting}.}
+% block: ldl-factorization page:23 type:subsection
+\subsubsection{{$LDL^\top$ Decomposition}}\label{subsec:ldl-decomposition}
+{When symmetric matrix $A$ is not positive definite, then the Cholesky decomposition cannot be used. On the other hand, if all the leading principal minors are non-negative, then there exists a diagonal matrix $D$ (i.e., all the off-diagonal elements are zero) and a unit lower triangular matrix $L$ (i.e., lower triangular matrix with all its diagonal elements being one) such that}
+\[A=LDL^\top.\]
+{The decomposition is referred to as $LDL^\top$ decomposition (or modified Cholesky decomposition) whose algorithm is shown in Algorithm~\ref{alg:ldl-decomposition}.}
+\begin{algorithm}[H]
+\caption{{$LDL^\top$ decomposition}}\label{alg:ldl-decomposition}
+\begin{algorithmic}[1]
+\Statex\textbf{Input:} $A$
+\Statex\textbf{Output:} $L,D$
+\For{$i=2,\ldots,n$}
+\For{$j=1,\ldots,i-1$}
+\State $l_{ij}=(a_{ij}-\sum_{k=1}^{j-1}l_{ik}\times l_{jk}\times d_{kk})/d_{jj}$
+\EndFor
+\State $d_{ii}=a_{ii}-\sum_{k=1}^{i-1}l_{ik}^2\times d_{kk}$
+\EndFor
+\end{algorithmic}
+\end{algorithm}
+% block: inertia-and-eigenvalue-count page:24 type:ordinary-paragraph
+{Algorithm~\ref{alg:ldl-decomposition} produces diagonal elements of diagonal matrix $D$, and $l_{ij}$ for lower triangular matrix $L$ with $l_{ii}=1$ for all $i$. Unlike the Cholesky decomposition, the square root does not appear in the $LDL^\top$ decomposition.}
+{The $LDL^\top$ decomposition is not only useful for solving linear systems but also gives a rough distribution of the eigenvalues of symmetric matrix $A$. To see this, let $S$ be a nonsingular matrix, then Sylvester's law of inertia ensures that the number of positive/zero/negative eigenvalues of symmetric matrix $A$ is the same as that of positive/zero/negative eigenvalues of $SAS^\top$. Thus, if we have $A=LDL^\top$, then the number of positive/zero/negative diagonal elements tells us the number of positive/zero/negative eigenvalues of $A$.}
+{Further, we can know the number of eigenvalues on a given closed interval $[\sigma_1,\sigma_2]$ by computing $LDL^\top$ factorizations of $A-\sigma_1 I=L_1D_1L_1^\top$ and $A-\sigma_2 I=L_2D_2L_2^\top$. To be specific, let $n_1(\ge0)$ be the number of nonnegative diagonal elements of $D_1$ and let $n_2^{(>0)}$ be the number of positive diagonal elements of $D_2$. Then the number of eigenvalues on the closed interval $[\sigma_1,\sigma_2]$ is given by $n_1^{(\ge0)}-n_2^{(>0)}$.}
+% block: generalized-eigenvalue-problem page:24 type:ordinary-paragraph
+{The fact is useful for the $k$th (generalized) eigenvalue problem:}
+\begin{equation}\label{eq:generalized-eigenproblem}A\bm x=\lambda B\bm x,\end{equation}
+{where $A$ is symmetric and $B$ is symmetric positive definite. It is known that all the eigenvalues are real numbers, and thus they can be written as $\lambda_1\le\lambda_2\le\cdots\le\lambda_k\le\cdots\le\lambda_n$. The $k$th (generalized) eigenvalue problem is to find $\lambda_k$ and the corresponding eigenvector of \eqref{eq:generalized-eigenproblem}. The generalized eigenvalue problem \eqref{eq:generalized-eigenproblem} is equivalent to the following shifted problem:}
+\begin{equation}\label{eq:shifted-generalized-eigenproblem}(A-\sigma B)\bm x=(\lambda-\sigma)B\bm x.\end{equation}
+{Since $B$ is symmetric positive definite, $B$ has the Cholesky decomposition, i.e., $B=L_BL_B^\top$. Thus from \eqref{eq:shifted-generalized-eigenproblem} we have}
+\[
+L_B^{-1}(A-\sigma B)L_B^{-\top}\tilde{\bm x}=(\lambda-\sigma)\tilde{\bm x},
+\]
+{where $\tilde{\bm x}=L_B^\top\bm x$. Now, let $D$ be the diagonal matrix of the $LDL^\top$ decomposition of $(A-\sigma B)$. Then,}
+\[
+L_B^{-1}LDL^\top L_B^{-\top}\tilde{\bm x}=(\lambda-\sigma)\tilde{\bm x}
+\iff GDG^\top\tilde{\bm x}=(\lambda-\sigma)\tilde{\bm x},
+\]
+{where $G=L_B^{-1}L$. This indicates that using Sylvester's law of inertia, the number of positive (or negative) diagonal elements of $D$ equals the number of the eigenvalues that are greater (or less) than $\sigma$. Thus, if the number of negative diagonal elements of $D$ is, e.g., 10, then we can know that the eigenvalue $\lambda$ closest to $\sigma$ with the condition $\lambda\le\sigma$ is the 10th eigenvalue, i.e., $\lambda=\lambda_{10}$. Based on this idea, together with several accelerating techniques, an algorithm to obtain the $k$th eigenvalue and eigenvector of the (generalized) eigenvalue problems was proposed in \BookCite{120}. For the $k$th eigenvalue problems, see also \BookCite{156}.}

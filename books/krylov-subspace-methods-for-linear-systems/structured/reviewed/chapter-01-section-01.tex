@@ -1,0 +1,87 @@
+% block: linear-systems-heading page:14 type:section
+\subsection{{Linear Systems}}\label{sec:linear-systems}
+% block: linear-system-model page:14 type:ordinary-paragraph
+{In this book, we consider linear systems of the following form:}
+\begin{equation}\label{eq:linear-system}
+A\bm x=\bm b,
+\end{equation}
+{where $A\in\mathbb C^{N\times N}$, $\bm b\in\mathbb C$, and the coefficient matrix $A$ is assumed to be nonsingular, i.e., there exists the inverse of $A$.}
+% block: norm-motivation page:14 type:ordinary-paragraph
+{Let $\tilde{\bm x}$ be an approximate solution of linear systems \eqref{eq:linear-system}. Then a quantitative way to know the distance between the solution $\bm x$ and the approximate solution $\tilde{\bm x}$ is to compute a vector norm of $\bm x-\tilde{\bm x}$. Further, a quantitative way to measure the distance between two matrices $A,B$ is given by a matrix norm of $A-B$. The definitions of a vector norm and a matrix norm are described in the next two subsections. The explanations are based on \BookCite{170}, and for the details of numerical linear algebra, see \BookCite{45}, \BookCite{79}, \BookCite{107}, \BookCite{191}.}
+% block: vector-norm-heading page:15 type:subsection
+\subsubsection{{Vector Norm}}\label{subsec:vector-norm}
+% block: vector-norm-definition page:15 type:ordinary-paragraph
+{The length of the vector $\bm x:=(x_1,x_2)^\top\in\mathbb R^2$ is given by $(x_1^2+x_2^2)^{1/2}$. The norm is the extension of the notion of the length and, the map $\|\cdot\|:\mathbb R^n\to\mathbb R$ is called a vector norm if for all $\bm x,\bm y\in\mathbb R^n,\alpha\in\mathbb R$, the map satisfies the following rules:\footnote{In general, given a vector space $V$, a map $\|\cdot\|:V\to\mathbb R$ is called a norm if the map satisfies (\ref{cond:vector-norm-positive})--(\ref{cond:vector-norm-triangle}) for all $\bm x,\bm y\in V,\alpha\in\mathbb K$ ($\mathbb K=\mathbb R$ or $\mathbb C$).}}
+\begin{enumerate}[label=(Nv\arabic*),ref=Nv\arabic*]
+\item\label{cond:vector-norm-positive} $\|\bm x\|\ge0;\quad\|\bm x\|=0\iff\bm x=\bm0$.\quad{(Positivity)}
+\item\label{cond:vector-norm-homogeneous} $\|\alpha\bm x\|=|\alpha|\|\bm x\|$.\quad{(Homogeneity)}
+\item\label{cond:vector-norm-triangle} $\|\bm x+\bm y\|\le\|\bm x\|+\|\bm y\|$.\quad{(Triangle inequality)}
+\end{enumerate}
+% block: vector-p-norms page:15 type:ordinary-paragraph
+{For example, a $p$-norm ($p\ge1$) is defined by}
+\[
+\|\bm x\|_p:=(|x_1|^p+|x_2|^p+\cdots+|x_n|^p)^{\frac1p}.
+\]
+{For $p=1,2,\infty$, the vector $p$-norm is written as}
+\begin{itemize}
+\item $\|\bm x\|_1=\sum_{i=1}^n|x_i|$,
+\item $\|\bm x\|_2=(\sum_{i=1}^n|x_i|^2)^{\frac12}\ (=\sqrt{\bm x^\top\bm x})$,
+\item $\|\bm x\|_\infty=\max_{1\le i\le n}|x_i|$.
+\end{itemize}
+% block: a-norm-convention page:15 type:ordinary-paragraph
+{Let $A$ be a symmetric positive definite matrix, i.e., $A$ is symmetric and all the eigenvalues are positive. Then $\|\bm x\|_A:=\bm x^\top A\bm x$ is called an $A$-norm of $\bm x$; this will be used in Section~\ref{subsec:conjugate-gradient}.}
+{Let $\tilde{\bm x}$ be an approximate solution of linear systems \eqref{eq:linear-system}. Then $\|\bm x-\tilde{\bm x}\|_p$ is the distance between the exact solution and approximate solution of \eqref{eq:linear-system}.}
+{Throughout this book, unless otherwise stated, the symbol $\|\cdot\|$ means 2-norm, i.e., $\|\cdot\|=\|\cdot\|_2$.}
+% block: matrix-norm-definition pages:15,16 type:ordinary-paragraph
+\subsubsection{{Matrix Norm}}\label{subsec:matrix-norm}
+{Similar to the definition of vector norm, matrix norm is defined as follows: a map $\|\cdot\|:\mathbb R^{m\times n}\to\mathbb R$ is called a matrix norm if for all $A,B\in\mathbb R^{m\times n},\alpha\in\mathbb R$ the map satisfies the following three items:}
+\begin{enumerate}[label=(Nm\arabic*),ref=Nm\arabic*]
+\item\label{cond:matrix-norm-positive} $\|A\|\ge0;\quad\|A\|=0\iff A=O$,\quad ($O$: {zero matrix})\quad{(Positivity)}
+\item\label{cond:matrix-norm-homogeneous} $\|\alpha A\|=|\alpha|\|A\|$,\quad{(Homogeneity)}
+\item\label{cond:matrix-norm-triangle} $\|A+B\|\le\|A\|+\|B\|$.\quad{(Triangle inequality)}
+\end{enumerate}
+{In addition, if the matrix norm satisfies}
+\begin{enumerate}[label=(Nm\arabic*),ref=Nm\arabic*,start=4]
+\item\label{cond:matrix-norm-product} $\|AB\|\le\|A\|\|B\|,\quad A\in\mathbb R^{m\times n},B\in\mathbb R^{n\times q}$,
+\end{enumerate}
+{then the matrix norm is called submultiplicative. Note that in some books the map satisfying (\ref{cond:matrix-norm-positive})--(\ref{cond:matrix-norm-product}) is also called a matrix norm. As an example of a submultiplicative matrix norm, the following subordinate matrix norm is widely used:\footnote{Sup can be replaced with max.}}
+\begin{equation}\label{eq:subordinate-matrix-norm}
+\|A\|_p:=\sup_{\bm x\ne\bm0}\frac{\|A\bm x\|_p}{\|\bm x\|_p}.
+\end{equation}
+% block: matrix-norm-examples page:16 type:ordinary-paragraph
+{If $p=1,2,\infty$, $\|A\|_p$ is given as follows:}
+\begin{itemize}
+\item $\|A\|_1=\max_j\sum_{i=1}^n|a_{ij}|$,
+\item $\|A\|_2=\sqrt{\text{maximum eigenvalue of }A^\top A}$,
+\item $\|A\|_\infty=\max_i\sum_{j=1}^n|a_{ij}|$.
+\end{itemize}
+{A Frobenius norm is also submultiplicative:}
+\begin{itemize}\item $\|A\|_{\mathrm F}:=\sqrt{\sum_{i=1}^m\sum_{j=1}^n|a_{ij}|^2}$.\end{itemize}
+{Let $\bm a_1,\ldots,\bm a_n$ be the column vectors of matrix $A\in\mathbb R^{m\times n}$, and let $\bm a=[\bm a_1^\top,\ldots,\bm a_n^\top]^\top$, i.e., all the columns are connected to get one long vector $\bm a$. Then, the Frobenius norm of $A$ equals the 2-norm of $\bm a$, i.e., $\|A\|_{\mathrm F}=\|\bm a\|_2$.}
+% block: max-norm page:16 type:ordinary-paragraph
+{The max norm of the form}
+\[
+\|A\|_{\max}:=\max_{i,j}|a_{ij}|
+\]
+{is not submultiplicative. For example, consider a 2-by-2 matrix $A$ with all the elements being 1. Then $\|AA\|_{\max}=\|A^2\|_{\max}=2$ and $\|A\|_{\max}\|A\|_{\max}=1$. Thus the max norm does not hold (\ref{cond:matrix-norm-product}) because $\|AA\|_{\max}>\|A\|_{\max}\|A\|_{\max}$.}
+% block: matrix-norm-properties page:16 type:theorem
+{Some properties of the matrix norm are given next.}
+\begin{Theorem}\label{thm:matrix-norm-properties}
+{The following properties hold true:}
+\begin{enumerate}[label=(\arabic*),ref=\arabic*]
+\item\label{part:matrix-norm-action} $\|A\bm x\|_p\le\|A\|_p\|\bm x\|_p,\quad\|A\bm x\|_2\le\|A\|_{\mathrm F}\|\bm x\|_2$,
+\item $\|AB\|_p\le\|A\|_p\|B\|_p,\quad\|AB\|_{\mathrm F}\le\|A\|_{\mathrm F}\|B\|_{\mathrm F}$,
+\item $\|QA\tilde Q\|_2=\|A\|_2,\quad\|QA\tilde Q\|_{\mathrm F}=\|A\|_{\mathrm F}$.
+\end{enumerate}
+{Here, $Q$ and $\tilde Q$ are orthogonal matrices.\footnote{A real square matrix $Q$ is called an orthogonal matrix if $Q^\top Q=I$, where $I$ is the identity matrix.}}
+\end{Theorem}
+% block: matrix-norm-comparisons page:16 type:theorem
+\begin{Theorem}\label{thm:matrix-norm-comparisons}
+{Let $A$ be an $n\times n$ matrix. Then,}
+\begin{enumerate}[label=(\arabic*)]
+\item $n^{-1/2}\|A\|_2\le\|A\|_1\le n^{1/2}\|A\|_2$,
+\item $n^{-1/2}\|A\|_2\le\|A\|_\infty\le n^{1/2}\|A\|_2$,
+\item $n^{-1}\|A\|_\infty\le\|A\|_1\le n\|A\|_\infty$,
+\item $\|A\|_1\le\|A\|_{\mathrm F}\le n^{1/2}\|A\|_2$.
+\end{enumerate}
+\end{Theorem}

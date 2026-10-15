@@ -1,0 +1,150 @@
+% block: direct-methods-introduction pages:17,18 type:section
+\subsection{{直接方法}}\label{sec:direct-methods}
+{为简化叙述, 仅考虑 $A\bm x=\bm b$, 其中 $A\in\mathbb R^{n\times n}$, $\bm b\in\mathbb R^n$. Section~\ref{subsec:lu-decomposition} 介绍用 LU 分解求解线性方程组, 随后的 Section~\ref{subsec:lu-pivoting} 说明带选主元技术的 LU 分解, 这种方法数值稳定, 在实践中广泛使用. Section~\ref{subsec:iterative-refinement} 介绍提高近似解精度的一种方法.}
+% block: lu-factorization page:18 type:subsection
+\subsubsection{{LU 分解}}\label{subsec:lu-decomposition}
+{设 $A$ 为方阵. 将 $A$ 分解为下三角矩阵 $L$ 与上三角矩阵 $U$ 的乘积, 就得到 $A$ 的 LU 分解, 其形式为}
+\begin{equation}\label{eq:lu-factorization}A=LU,\end{equation}
+{其中}
+\[
+L=\begin{pmatrix}l_{11}&&\\\vdots&\ddots&\\l_{n1}&\cdots&l_{nn}\end{pmatrix},\quad
+U=\begin{pmatrix}u_{11}&\cdots&u_{1n}\\&\ddots&\vdots\\&&u_{nn}\end{pmatrix}.
+\]
+{矩阵 $L$ 和 $U$ 中的空白表示相应元素均为零.}
+% block: triangular-substitutions page:18 type:ordinary-paragraph
+{若 $L$ 或 $U$ 的对角元素均为 1, 则 LU 分解唯一确定. 对所有 $i$ 都有 $l_{ii}=1$ 的 LU 分解称为 Doolittle 方法, 对所有 $i$ 都有 $u_{ii}=1$ 的 LU 分解称为 Crout 方法. 一旦得到 $A$ 的 LU 分解, 就容易通过下列过程得到线性方程组的解 $\bm x$:}
+\begin{equation}\label{eq:lu-triangular-solves}A=LU,\quad L\bm y=\bm b,\quad U\bm x=\bm y.\end{equation}
+{具体地, 前代过程}
+\[
+y_i=\frac1{l_{ii}}\left(b_i-\sum_{j=1}^{i-1}l_{ij}y_j\right)\quad(i=1,\ldots,n)
+\]
+{给出 $\bm y$, 随后的回代过程}
+\[
+x_i=\frac1{u_{ii}}\left(y_i-\sum_{j=i+1}^n u_{ij}x_j\right)\quad(i=n,\ldots,1)
+\]
+{给出解 $\bm x$, 其中 $y_1=b_1/l_{11}$, $x_n=y_n/u_{nn}$.}
+% block: lu-existence pages:18,19 type:ordinary-paragraph
+{LU 分解存在的充要条件是全部顺序主子式\footnote{使用 MATLAB 记号, $A$ 的全部顺序主子式定义为 $\det(A(1:1,1:1))$, $\det(A(1:2,1:2))$, \ldots, $\det(A(1:n,1:n))$.} 均不为零. 下面列出 LU 分解存在的几种情形.}
+\begin{enumerate}
+\item {严格对角占优矩阵:} $|a_{ii}|>\sum_{j\ne i}|a_{ij}|\quad(1\le i\le n)$.
+\item {M-矩阵: $a_{ij}\le0\ (i\ne j)$, 且 $A^{-1}$ 的全部元素均非负.}
+\item {矩阵 $A\in\mathbb R^{n\times n}$ 的对称部分正定. 对称部分指 $(A+A^\top)/2$, 正定指对任意非零向量 $\bm v$, 均有 $\bm v^\top A\bm v>0$. 对于任意方阵 $A$, 矩阵 $A$ 都可写成对称部分 $(A+A^\top)/2$ 与斜对称部分 $(A-A^\top)/2$ 之和.}
+\end{enumerate}
+% block: algorithm-lu page:19 type:ordinary-paragraph
+{LU 分解 (Doolittle 方法) 的算法见 Algorithm~\ref{alg:lu-decomposition}, 它生成满足 $A=LU$ 的 $L$ 和 $U$.}
+\begin{algorithm}[H]
+\caption{{LU 分解}}\label{alg:lu-decomposition}
+\begin{algorithmic}[1]
+\Statex \textbf{Input:} {一个 $n\times n$ 矩阵 $A$}
+\Statex \textbf{Output:} {单位下三角矩阵 $L$ 和上三角矩阵 $U$}
+\For{$i=1,\ldots,n$}
+\State $a_{ji}=a_{ji}/a_{ii}\quad(j=i+1,\ldots,n)$
+\For{$j=i+1,\ldots,n$}
+\State $a_{jk}=a_{jk}-a_{ji}\times a_{ik}\quad(k=i+1,\ldots,n)$
+\EndFor
+\EndFor
+\State $l_{ii}=1\quad(i=1,\ldots,n)$
+\State $l_{ij}=a_{ij}\quad(i>j)$
+\State $u_{ij}=a_{ij}\quad(i\le j)$
+\end{algorithmic}
+\end{algorithm}
+% block: pivoting-example pages:19,20 type:subsection
+\subsubsection{{选主元的 LU 分解}}\label{subsec:lu-pivoting}
+{对于某些 $A$, LU 分解可能不存在. 例如, 考虑}
+\[
+A=\begin{pmatrix}0&1\\2&3\end{pmatrix}.
+\]
+{容易看出, LU 分解 (Algorithm~\ref{alg:lu-decomposition}) 会因 $a_{11}=0$ 而发生零除并失败. 另一方面, 若交换第一行和第二行, 即}
+\[
+PA=\begin{pmatrix}0&1\\1&0\end{pmatrix}\begin{pmatrix}0&1\\2&3\end{pmatrix}
+=\begin{pmatrix}2&3\\0&1\end{pmatrix},
+\]
+{则 LU 分解不会失败, 并得到下列形式的 LU 分解}
+\[PA=LU,\]
+{其中}
+\[
+L=\begin{pmatrix}1&0\\0&1\end{pmatrix},\quad U=\begin{pmatrix}2&3\\0&1\end{pmatrix}.
+\]
+{这一技术称为选主元.}
+% block: partial-pivoting page:20 type:ordinary-paragraph
+{部分选主元的 LU 分解见 Algorithm~\ref{alg:lu-partial-pivoting}. 这里, 部分选主元一词对应于 Algorithm~\ref{alg:lu-partial-pivoting} 的第 2--6 行.}
+\begin{algorithm}[H]
+\caption{{部分选主元的 LU 分解}}\label{alg:lu-partial-pivoting}
+\begin{algorithmic}[1]
+\Statex \textbf{Input:} {一个 $n\times n$ 矩阵 $A$ 和 $n\times n$ 单位矩阵 $P(=I)$}
+\Statex \textbf{Output:} {单位下三角矩阵 $L$ 和上三角矩阵 $U$}
+\Statex \textbf{Output:} {置换矩阵 $P$}
+\For{$i=1,\ldots,n$}
+\State {从 $\{|a_{ii}|,\ldots,|a_{ni}|\}$ 中找出最大元素 $a_{p_i i}$.}
+\State {对 $j=1,\ldots,n$, 交换 $a_{ij}$ 和 $a_{p_i j}$.}
+\If{$i\ne n$}
+\State {交换矩阵 $P$ 的第 $i$ 行和第 $p_i$ 行.}
+\EndIf
+\State $a_{ji}=a_{ji}/a_{ii}\quad(j=i+1,\ldots,n)$
+\For{$j=i+1,\ldots,n$}
+\State $a_{jk}=a_{jk}-a_{ji}\times a_{ik}\quad(k=i+1,\ldots,n)$
+\EndFor
+\EndFor
+\State $l_{ii}=1\quad(i=1,\ldots,n)$
+\State $l_{ij}=a_{ij}\quad(i>j)$
+\State $u_{ij}=a_{ij}\quad(i\le j)$
+\end{algorithmic}
+\end{algorithm}
+{Algorithm~\ref{alg:lu-partial-pivoting} 生成 $L,U$ 和置换矩阵 $P$, 使得}
+\[PA=LU.\]
+{与 LU 分解不同, 部分选主元的 LU 分解不会发生中断 (零除).}
+% block: complete-pivoting pages:20,21 type:ordinary-paragraph
+{接下来, 完全选主元的 LU 分解见 Algorithm~\ref{alg:lu-complete-pivoting}. 完全选主元一词对应于 Algorithm~\ref{alg:lu-complete-pivoting} 的第 2--8 行.}
+{注意, 在第 $i$ 步, 部分选主元从 $\{|a_{k,i}|:k\in\{i,\ldots,n\}\}$ 中找最大值, 而完全选主元从 $\{|a_{k,l}|:k,l\in\{i,\ldots,n\}\}$ 中找最大值.}
+{Algorithm~\ref{alg:lu-complete-pivoting} 生成分解因子矩阵 $L$ 和 $U$ 以及置换矩阵 $P$ 和 $Q$, 使得}
+\[PAQ=LU.\]
+{通常使用部分选主元的 LU 分解; 如果分解精度不令人满意, 则可使用完全选主元.}
+\begin{algorithm}[H]
+\caption{{完全选主元的 LU 分解}}\label{alg:lu-complete-pivoting}
+\begin{algorithmic}[1]
+\Statex \textbf{Input:} {一个 $n\times n$ 矩阵 $A$ 和 $n\times n$ 单位矩阵 $P(=I),Q(=I)$}
+\Statex \textbf{Output:} {单位下三角矩阵 $L$ 和上三角矩阵 $U$}
+\Statex \textbf{Output:} {置换矩阵 $P,Q$}
+\For{$i=1,\ldots,n$}
+\State {从 $\{|a_{kl}|:i\le k\le n,i\le l\le n\}$ 中找出最大元素 $a_{p_iq_i}$.}
+\State {对 $j=1,\ldots,n$, 交换 $a_{ij}$ 和 $a_{p_i j}$.}
+\State {对 $j=1,\ldots,n$, 交换 $a_{ji}$ 和 $a_{jq_i}$.}
+\If{$i\ne n$}
+\State {交换矩阵 $P$ 的第 $i$ 行和第 $p_i$ 行.}
+\State {交换矩阵 $P$ 的第 $i$ 列和第 $q_i$ 行.}
+\EndIf
+\State $a_{ji}=a_{ji}/a_{ii}\quad(j=i+1,\ldots,n)$
+\For{$j=i+1,\ldots,n$}
+\State $a_{jk}=a_{jk}-a_{ji}\times a_{ik}\quad(k=i+1,\ldots,n)$
+\EndFor
+\EndFor
+\State $l_{ii}=1\quad(i=1,\ldots,n)$
+\State $l_{ij}=a_{ij}\quad(i>j)$
+\State $u_{ij}=a_{ij}\quad(i\le j)$
+\end{algorithmic}
+\end{algorithm}
+% block: multiple-right-hand-sides page:21 type:ordinary-paragraph
+{如果需要求解下列一组线性方程组}
+\[A\bm x_i=\bm b_i,\quad i=1,2,\ldots,m,\]
+{那么 LU 分解很有吸引力, 因为一旦得到 $L$ 和 $U$, 就只需进行前代和回代, 参见 \eqref{eq:lu-triangular-solves} 之后的说明.}
+% block: iterative-refinement pages:21,22 type:subsection
+\subsubsection{{迭代改进}}\label{subsec:iterative-refinement}
+{本小节考虑用 LU 分解得到的线性方程组 \eqref{eq:linear-system} 的近似解 $\tilde{\bm x}$ 精度不足的情形.}
+{此时, 如果知道使得 $\bm x=\tilde{\bm x}+\Delta\bm x$ 的修正向量 $\Delta\bm x$, 就能得到精确解 $\bm x$. 容易看出, 修正向量 $\Delta\bm x$ 对应于下列线性方程组的解:}
+\begin{equation}\label{eq:iterative-refinement-correction}A\Delta\bm x=\bm r,\end{equation}
+{其中 $\bm r:=\bm b-A\tilde{\bm x}$. 求解 \eqref{eq:iterative-refinement-correction}, 得到 \eqref{eq:iterative-refinement-correction} 的近似解 $\Delta\tilde{\bm x}$ 后, 预期修正后的近似解 $\tilde{\bm x}+\Delta\tilde{\bm x}$ 比 $\tilde{\bm x}$ 更精确. 这一过程可重复进行, 直到达到所需精度, 称为迭代改进. 迭代改进算法见 Algorithm~\ref{alg:iterative-refinement}.}
+\begin{algorithm}[H]
+\caption{{$A\bm x=\bm b$ 的迭代改进}}\label{alg:iterative-refinement}
+\begin{algorithmic}[1]
+\Statex \textbf{Input:} $A,\bm b$, {$A\bm x=\bm b$ 的近似解 $\tilde{\bm x}$}
+\Statex \textbf{Output:} {改进后的近似解 $\tilde{\bm x}$}
+\State {使用双倍精度运算计算 $\bm r=\bm b-A\tilde{\bm x}$.}
+\State {求解 $A\Delta\bm x=\bm r$, 得到近似解 $\Delta\tilde{\bm x}$.}
+\State {更新 $\tilde{\bm x}=\tilde{\bm x}+\Delta\tilde{\bm x}$.}
+\State {重复步骤 1--3, 直到达到所需精度.}
+\end{algorithmic}
+\end{algorithm}
+% block: refinement-cost-and-newton page:22 type:ordinary-paragraph
+{若使用 LU 分解求解 $A\bm x=\bm b$, 则很容易得到近似解 $\Delta\tilde{\bm x}$, 因为可以重用分解因子 $L$ 和 $U$, 因而只需进行前代和回代.}
+{注意, Algorithm~\ref{alg:iterative-refinement} 第 1 步中的双倍精度运算是指: 若使用单精度运算, 则用双精度运算计算 $\bm r=\bm b-A\tilde{\bm x}$; 若使用双精度运算, 则用四倍精度运算计算它.}
+{令 $\bm f(\bm x):=\bm b-A\bm x$, 并对 $\bm f(\bm x)=\bm0$ 应用 Newton 方法, 就可将 Algorithm~\ref{alg:iterative-refinement} 解释为 Newton 方法.}

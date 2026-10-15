@@ -1,0 +1,67 @@
+% block: symmetric-direct-heading page:22 type:section
+\subsection{\BT{Direct Methods for Symmetric Linear Systems}{对称线性方程组的直接方法}}\label{sec:symmetric-direct-methods}
+\BT{When matrix $A$ is symmetric, Cholesky decomposition and $LDL^\top$ decomposition are efficient direct methods that are variants of the LU decomposition. As a preliminary, let us define the notion of positive definite:}{当矩阵 $A$ 对称时, Cholesky 分解和 $LDL^\top$ 分解是 LU 分解的两种变形, 都是高效的直接方法. 作为准备, 先定义正定的概念:}
+\begin{enumerate}
+\item \BT{Positive Definite}{正定}
+\par\BT{Matrix $A$ is called positive definite if $\bm x^\top A\bm x>0$ for all $\bm x\ne\bm0$.}{如果对所有 $\bm x\ne\bm0$ 都有 $\bm x^\top A\bm x>0$, 则称矩阵 $A$ 正定.}
+\item \BT{Symmetric Positive Definite}{对称正定}
+\par\BT{Matrix $A$ is called symmetric positive definite if positive definite matrix $A$ is symmetric.}{如果正定矩阵 $A$ 对称, 则称矩阵 $A$ 对称正定.}
+\end{enumerate}
+\BT{It is known that matrix $A$ is symmetric positive definite if and only if all the eigenvalues of symmetric matrix $A$ are positive.}{已知矩阵 $A$ 对称正定, 当且仅当对称矩阵 $A$ 的全部特征值均为正.}
+% block: cholesky-factorization pages:22,23 type:subsection
+\subsubsection{\BT{Cholesky Decomposition}{Cholesky 分解}}\label{subsec:cholesky-decomposition}
+\BT{If matrix $A$ is symmetric positive definite, there exists a lower triangular matrix $L$ such that}{如果矩阵 $A$ 对称正定, 则存在下三角矩阵 $L$, 使得}
+\[A=LL^\top.\]
+\BT{The decomposition is referred to as Cholesky decomposition. The algorithm of the Cholesky decomposition is shown in Algorithm~\ref{alg:cholesky-decomposition}.}{这一分解称为 Cholesky 分解. Cholesky 分解的算法见 Algorithm~\ref{alg:cholesky-decomposition}.}
+\begin{algorithm}[H]
+\caption{\BT{Cholesky decomposition}{Cholesky 分解}}\label{alg:cholesky-decomposition}
+\begin{algorithmic}[1]
+\Statex\textbf{Input:} $A$
+\Statex\textbf{Output:} $L$
+\For{$i=1,\ldots,n$}
+\State $l_{ii}=(a_{ii}-\sum_{k=1}^{i-1}l_{ik}^2)^{1/2}$
+\For{$j=i+1,\ldots,n$}
+\State $l_{ji}=(a_{ji}-\sum_{k=1}^{i-1}l_{jk}\times l_{ik})/l_{ii}$
+\EndFor
+\EndFor
+\end{algorithmic}
+\end{algorithm}
+\BT{The computational cost of the Cholesky decomposition is about half of that of the LU decomposition because of the use of the symmetric property.}{由于利用了对称性, Cholesky 分解的计算量约为 LU 分解的一半.}
+\BT{It is known that from the positive definiteness of $A$ the Cholesky decomposition never suffers from breakdown and does not need the pivoting technique as described in Section~\ref{subsec:lu-pivoting}.}{已知由 $A$ 的正定性可知, Cholesky 分解不会发生中断, 也不需要 Section~\ref{subsec:lu-pivoting} 所述的选主元技术.}
+% block: ldl-factorization page:23 type:subsection
+\subsubsection{\BT{$LDL^\top$ Decomposition}{$LDL^\top$ 分解}}\label{subsec:ldl-decomposition}
+\BT{When symmetric matrix $A$ is not positive definite, then the Cholesky decomposition cannot be used. On the other hand, if all the leading principal minors are non-negative, then there exists a diagonal matrix $D$ (i.e., all the off-diagonal elements are zero) and a unit lower triangular matrix $L$ (i.e., lower triangular matrix with all its diagonal elements being one) such that}{当对称矩阵 $A$ 非正定时, 不能使用 Cholesky 分解. 另一方面, 如果全部顺序主子式均非负, 则存在对角矩阵 $D$ (即全部非对角元素均为零) 和单位下三角矩阵 $L$ (即全部对角元素均为 1 的下三角矩阵), 使得}
+\[A=LDL^\top.\]
+\BT{The decomposition is referred to as $LDL^\top$ decomposition (or modified Cholesky decomposition) whose algorithm is shown in Algorithm~\ref{alg:ldl-decomposition}.}{这一分解称为 $LDL^\top$ 分解 (或修正 Cholesky 分解), 算法见 Algorithm~\ref{alg:ldl-decomposition}.}
+\begin{algorithm}[H]
+\caption{\BT{$LDL^\top$ decomposition}{$LDL^\top$ 分解}}\label{alg:ldl-decomposition}
+\begin{algorithmic}[1]
+\Statex\textbf{Input:} $A$
+\Statex\textbf{Output:} $L,D$
+\For{$i=2,\ldots,n$}
+\For{$j=1,\ldots,i-1$}
+\State $l_{ij}=(a_{ij}-\sum_{k=1}^{j-1}l_{ik}\times l_{jk}\times d_{kk})/d_{jj}$
+\EndFor
+\State $d_{ii}=a_{ii}-\sum_{k=1}^{i-1}l_{ik}^2\times d_{kk}$
+\EndFor
+\end{algorithmic}
+\end{algorithm}
+% block: inertia-and-eigenvalue-count page:24 type:ordinary-paragraph
+\BT{Algorithm~\ref{alg:ldl-decomposition} produces diagonal elements of diagonal matrix $D$, and $l_{ij}$ for lower triangular matrix $L$ with $l_{ii}=1$ for all $i$. Unlike the Cholesky decomposition, the square root does not appear in the $LDL^\top$ decomposition.}{Algorithm~\ref{alg:ldl-decomposition} 生成对角矩阵 $D$ 的对角元素, 以及对所有 $i$ 均满足 $l_{ii}=1$ 的下三角矩阵 $L$ 的元素 $l_{ij}$. 与 Cholesky 分解不同, $LDL^\top$ 分解中不出现平方根.}
+\BT{The $LDL^\top$ decomposition is not only useful for solving linear systems but also gives a rough distribution of the eigenvalues of symmetric matrix $A$. To see this, let $S$ be a nonsingular matrix, then Sylvester's law of inertia ensures that the number of positive/zero/negative eigenvalues of symmetric matrix $A$ is the same as that of positive/zero/negative eigenvalues of $SAS^\top$. Thus, if we have $A=LDL^\top$, then the number of positive/zero/negative diagonal elements tells us the number of positive/zero/negative eigenvalues of $A$.}{令 $S$ 为非奇异矩阵, 则由 Sylvester 惯性定律可知, 对称矩阵 $A$ 的正/零/负特征值个数, 分别与 $SAS^\top$ 的正/零/负特征值个数相同. 这说明 $LDL^\top$ 分解不仅可用于求解线性方程组, 还可以给出对称矩阵 $A$ 的特征值的粗略分布. 因此, 若有 $A=LDL^\top$, 则正/零/负对角元素的个数就给出了 $A$ 的正/零/负特征值的个数.}
+\BT{Further, we can know the number of eigenvalues on a given closed interval $[\sigma_1,\sigma_2]$ by computing $LDL^\top$ factorizations of $A-\sigma_1 I=L_1D_1L_1^\top$ and $A-\sigma_2 I=L_2D_2L_2^\top$. To be specific, let $n_1(\ge0)$ be the number of nonnegative diagonal elements of $D_1$ and let $n_2^{(>0)}$ be the number of positive diagonal elements of $D_2$. Then the number of eigenvalues on the closed interval $[\sigma_1,\sigma_2]$ is given by $n_1^{(\ge0)}-n_2^{(>0)}$.}{进一步, 通过计算 $A-\sigma_1 I=L_1D_1L_1^\top$ 和 $A-\sigma_2 I=L_2D_2L_2^\top$ 的 $LDL^\top$ 分解, 就可知道给定闭区间 $[\sigma_1,\sigma_2]$ 上的特征值个数. 具体地, 设 $n_1(\ge0)$ 为 $D_1$ 的非负对角元素个数, $n_2^{(>0)}$ 为 $D_2$ 的正对角元素个数. 则闭区间 $[\sigma_1,\sigma_2]$ 上的特征值个数为 $n_1^{(\ge0)}-n_2^{(>0)}$.}
+% block: generalized-eigenvalue-problem page:24 type:ordinary-paragraph
+\BT{The fact is useful for the $k$th (generalized) eigenvalue problem:}{这一事实可用于第 $k$ 个 (广义) 特征值问题:}
+\begin{equation}\label{eq:generalized-eigenproblem}A\bm x=\lambda B\bm x,\end{equation}
+\BT{where $A$ is symmetric and $B$ is symmetric positive definite. It is known that all the eigenvalues are real numbers, and thus they can be written as $\lambda_1\le\lambda_2\le\cdots\le\lambda_k\le\cdots\le\lambda_n$. The $k$th (generalized) eigenvalue problem is to find $\lambda_k$ and the corresponding eigenvector of \eqref{eq:generalized-eigenproblem}. The generalized eigenvalue problem \eqref{eq:generalized-eigenproblem} is equivalent to the following shifted problem:}{其中 $A$ 对称, $B$ 对称正定. 已知全部特征值均为实数, 因而可写为 $\lambda_1\le\lambda_2\le\cdots\le\lambda_k\le\cdots\le\lambda_n$. 第 $k$ 个 (广义) 特征值问题就是求 $\lambda_k$ 及 \eqref{eq:generalized-eigenproblem} 的相应特征向量. 广义特征值问题 \eqref{eq:generalized-eigenproblem} 等价于下列移位问题:}
+\begin{equation}\label{eq:shifted-generalized-eigenproblem}(A-\sigma B)\bm x=(\lambda-\sigma)B\bm x.\end{equation}
+\BT{Since $B$ is symmetric positive definite, $B$ has the Cholesky decomposition, i.e., $B=L_BL_B^\top$. Thus from \eqref{eq:shifted-generalized-eigenproblem} we have}{由于 $B$ 对称正定, $B$ 有 Cholesky 分解, 即 $B=L_BL_B^\top$. 因此由 \eqref{eq:shifted-generalized-eigenproblem} 得到}
+\[
+L_B^{-1}(A-\sigma B)L_B^{-\top}\tilde{\bm x}=(\lambda-\sigma)\tilde{\bm x},
+\]
+\BT{where $\tilde{\bm x}=L_B^\top\bm x$. Now, let $D$ be the diagonal matrix of the $LDL^\top$ decomposition of $(A-\sigma B)$. Then,}{其中 $\tilde{\bm x}=L_B^\top\bm x$. 现在设 $D$ 为 $(A-\sigma B)$ 的 $LDL^\top$ 分解中的对角矩阵. 则}
+\[
+L_B^{-1}LDL^\top L_B^{-\top}\tilde{\bm x}=(\lambda-\sigma)\tilde{\bm x}
+\iff GDG^\top\tilde{\bm x}=(\lambda-\sigma)\tilde{\bm x},
+\]
+\BT{where $G=L_B^{-1}L$. This indicates that using Sylvester's law of inertia, the number of positive (or negative) diagonal elements of $D$ equals the number of the eigenvalues that are greater (or less) than $\sigma$. Thus, if the number of negative diagonal elements of $D$ is, e.g., 10, then we can know that the eigenvalue $\lambda$ closest to $\sigma$ with the condition $\lambda\le\sigma$ is the 10th eigenvalue, i.e., $\lambda=\lambda_{10}$. Based on this idea, together with several accelerating techniques, an algorithm to obtain the $k$th eigenvalue and eigenvector of the (generalized) eigenvalue problems was proposed in \BookCite{120}. For the $k$th eigenvalue problems, see also \BookCite{156}.}{其中 $G=L_B^{-1}L$. 这表明, 根据 Sylvester 惯性定律, $D$ 的正 (或负) 对角元素个数, 等于大于 (或小于) $\sigma$ 的特征值个数. 因此, 若 $D$ 的负对角元素个数例如为 10, 则可知道满足条件 $\lambda\le\sigma$ 且最接近 $\sigma$ 的特征值 $\lambda$ 是第 10 个特征值, 即 $\lambda=\lambda_{10}$. 文献 \BookCite{120} 基于这一思想并结合若干加速技术, 提出了一种求 (广义) 特征值问题的第 $k$ 个特征值和特征向量的算法. 关于第 $k$ 个特征值问题, 另见 \BookCite{156}.}

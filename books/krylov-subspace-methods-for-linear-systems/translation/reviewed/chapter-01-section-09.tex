@@ -1,0 +1,217 @@
+% block: orthogonalization-heading page:36 type:section
+\subsection{{Krylov 子空间的正交化方法}}\label{sec:krylov-orthogonalization}
+{为满足 Section~\ref{sec:krylov-subspace-methods} 中的 Ritz--Galerkin, Petrov--Galerkin 或最小残差途径, 需要构造 \linebreak[4]Krylov 子空间的基向量. 对于非 Hermitian 矩阵, 使用 Arnoldi 过程和双 Lanczos 过程构造 Krylov 子空间的基向量. 对于复对称矩阵, 使用复对称 Lanczos 过程; 对于 Hermitian 矩阵, 使用 Lanczos 过程.}
+% block: orthogonalization-properties page:36 type:ordinary-paragraph
+{Arnoldi 过程生成 Krylov 子空间 $\mathcal K_n(A,\bm v)$ 的标准正交基向量. Arnoldi 过程不会发生中断 (即零除), 但计算量随 $n$ 增大而线性增长. 双 Lanczos 过程生成 Krylov 子空间的双正交基向量. 其计算量不随 $n$ 增大而线性增长, 因而小于 Arnoldi 方法的计算量. 然而, 它可能发生中断, 接近中断时会导致基向量的正交性丧失. 复对称 Lanczos 过程和 Lanczos 过程都是双 Lanczos 过程的特例. 特别地, 由于 Lanczos 过程也是 Arnoldi 过程的特例, Lanczos 过程兼具 Arnoldi 过程和双 Lanczos 过程的优点, 即 Lanczos 过程生成标准正交基向量, 且计算量不随 $n$ 增大而线性增长.}
+{下面各小节将介绍这些方法, 并给出其算法以及将在推导 Krylov 子空间方法时使用的矩阵表示.}
+% block: arnoldi-inner-product page:36 type:subsection
+\subsubsection{{Arnoldi 过程}}\label{subsec:arnoldi-process}
+{Arnoldi 过程生成 Krylov 子空间 $\mathcal K_n(A,\bm v)$ 的正交化基向量, 即基向量 $\bm v_1,\bm v_2,\ldots,\bm v_n$ 满足}
+\[(\bm v_i,\bm v_j)=\delta_{i,j},\]
+{其中 $(\bm x,\bm y):=\bm x^{\mathrm H}\bm y=\sum_{i=1}^N\bar x_i y_i$ 为标准点积, $\delta_{i,j}$ 为 Kronecker 符号, 即 $i=j$ 时 $\delta_{i,j}=1$, $i\ne j$ 时 $\delta_{i,j}=0$.}
+{为简化叙述, 考虑 $n=3$ 时生成 $\mathcal K_n(A,\bm v)$ 的标准正交向量, 即由 $\operatorname{span}\{\bm v,A\bm v,A^2\bm v\}$ 生成 $\bm v_1,\bm v_2,\bm v_3$.}
+% block: gram-schmidt-comparison page:37 type:ordinary-paragraph
+{从 $\operatorname{span}\{\bm v,A\bm v,A^2\bm v\}$ 获得标准正交向量的一种方法是使用 Gram--Schmidt 过程, 按下式计算 $\bm v_1,\bm v_2$ 和 $\bm v_3$:}
+\[
+\begin{aligned}
+\bm v_1&=z_1\bm v,\\
+\bm v_2&=z_2(A\bm v-c_1\bm v_1),\\
+\bm v_3&=z_3(A^2\bm v-d_1\bm v_1-d_2\bm v_2).
+\end{aligned}
+\]
+{这里 $z_i\ (i=1,2,3)$ 是使归一化条件 $\|\bm v_i\|=1$ 成立的标量. 确定标量 $c_1$, 使 $\bm v_1$ 和 $\bm v_2$ 正交, 即 $(\bm v_1,\bm v_2)=0$. 类似地, 确定标量 $d_1$ 和 $d_2$, 使 $\bm v_3\perp\bm v_2$, $\bm v_3\perp\bm v_1$, 即 $(\bm v_1,\bm v_3)=(\bm v_2,\bm v_3)=0$. 然而, 已知这种途径数值不稳定, 因为当 $n$ 较大时, $A^n\bm v$ 和 $A^{n-1}\bm v$ 之间的夹角可能接近零, 从而导致严重的相消. 实际上, 在适当条件下, $A^n\bm v$ 收敛于 $A$ 的一个特征向量, 其对应特征值的模在 $A$ 的全部特征值中最大.}
+% block: arnoldi-three-vectors page:37 type:ordinary-paragraph
+{Arnoldi 过程对 (经典) Gram-Schmidt 过程作如下小幅修改:}
+\begin{equation}\label{eq:arnoldi-first-vector}\bm v_1=z_1\bm v,\end{equation}
+\begin{equation}\label{eq:arnoldi-second-vector}\bm v_2=z_2(A\bm v_1-c_1\bm v_1),\end{equation}
+\begin{equation}\label{eq:arnoldi-third-vector}\bm v_3=z_3(A\bm v_2-d_1\bm v_1-d_2\bm v_2).\end{equation}
+{与 Gram--Schmidt 过程不同, 这里不计算 $A^2\bm v$. 下面确定各个标量. 令 $z_1=1/(\bm v,\bm v)^{1/2}\in\mathbb R$, 等价地为 $1/\|\bm v\|$. 则 $\|\bm v_1\|=1$, 因为 $\|\bm v_1\|=(z_1\bm v,z_1\bm v)^{1/2}=(z_1^2(\bm v,\bm v))^{1/2}=z_1(\bm v,\bm v)^{1/2}=1$. 再确定 $c_1$, 使 $(\bm v_1,\bm v_2)=0$, 即}
+\[
+\begin{aligned}
+0&=(\bm v_1,\bm v_2)\\
+&=(\bm v_1,z_2(A\bm v_1-c_1\bm v_1))\\
+&=z_2((\bm v_1,A\bm v_1)-c_1(\bm v_1,\bm v_1))=z_2((\bm v_1,A\bm v_1)-c_1).
+\end{aligned}
+\]
+{因此 $c_1=(\bm v_1,A\bm v_1)$, 而 $z_2$ 由 $\|\bm v_2\|=1$ 确定, 即 $z_2=1/\|A\bm v_1-c_1\bm v_1\|$. 类似地, \eqref{eq:arnoldi-third-vector} 中的标量 $d_1,d_2$ 由 $(\bm v_1,\bm v_3)=(\bm v_2,\bm v_3)=0$ 确定, $z_3$ 由 $\|\bm v_3\|=1$ 确定.}
+% block: arnoldi-algorithms pages:37,38 type:ordinary-paragraph
+{经典 Gram--Schmidt 型 Arnoldi 过程见 Algorithm~\ref{alg:arnoldi-classical}; 更精确的改进 Gram--Schmidt 型 Arnoldi 过程见 Algorithm~\ref{alg:arnoldi-modified}.}
+\begin{algorithm}[H]\caption{{经典 Gram--Schmidt 型 Arnoldi 过程}}\label{alg:arnoldi-classical}
+\begin{algorithmic}[1]
+\Statex\textbf{Input:} {非 Hermitian 矩阵 $A\in\mathbb C^{N\times N}$, 并选择满足 $\|\bm v_1\|=1$ 的 $\bm v_1$}
+\Statex\textbf{Output:} $\bm v_1,\bm v_2,\ldots,\bm v_N$
+\For{$n=1,2,\ldots,N-1$}
+\State $h_{i,n}=(\bm v_i,A\bm v_n),\quad i=1,2,\ldots,n$
+\State $\tilde{\bm v}_{n+1}=A\bm v_n-\sum_{i=1}^n h_{i,n}\bm v_i$
+\State $h_{n+1,n}=\|\tilde{\bm v}_{n+1}\|$
+\State $\bm v_{n+1}=\tilde{\bm v}_{n+1}/h_{n+1,n}$
+\EndFor
+\end{algorithmic}\end{algorithm}
+\begin{algorithm}[H]\caption{{改进 Gram--Schmidt 型 Arnoldi 过程}}\label{alg:arnoldi-modified}
+\begin{algorithmic}[1]
+\Statex\textbf{Input:} {非 Hermitian 矩阵 $A\in\mathbb C^{N\times N}$, 并选择满足 $\|\bm v_1\|=1$ 的 $\bm v_1$}
+\Statex\textbf{Output:} $\bm v_1,\bm v_2,\ldots,\bm v_N$
+\For{$n=1,2,\ldots,N-1$}
+\State $\bm t=A\bm v_n$
+\For{$i=1,2,\ldots,n$}
+\State $h_{i,n}=(\bm v_i,\bm t)$
+\State $\bm t=\bm t-h_{i,n}\bm v_i$
+\EndFor
+\State $h_{n+1,n}=\|\bm t\|$
+\State $\bm v_{n+1}=\bm t/h_{n+1,n}$
+\EndFor
+\end{algorithmic}\end{algorithm}
+% block: arnoldi-matrix-example pages:37,38 type:ordinary-paragraph
+{Arnoldi 过程可表示为矩阵形式. 例如, 考虑递推式 \eqref{eq:arnoldi-second-vector} 和 \eqref{eq:arnoldi-third-vector} 的矩阵形式. 由 \eqref{eq:arnoldi-second-vector} 和 \eqref{eq:arnoldi-third-vector} 有}
+\[A\bm v_1=z_2^{-1}\bm v_2+c_1\bm v_1,\quad
+A\bm v_2=z_3^{-1}\bm v_3+d_1\bm v_1+d_2\bm v_2,\]
+{或等价地}
+\[
+A[\bm v_1,\bm v_2]=[\bm v_1,\bm v_2,\bm v_3]
+\begin{bmatrix}c_1&d_1\\z_2^{-1}&d_2\\0&z_3^{-1}\end{bmatrix}.
+\]
+{注意, $A[\bm v_1,\bm v_2]=[A\bm v_1,A\bm v_2]$. 类似地, 可按下面的方式得到 Algorithm~\ref{alg:arnoldi-classical} (或 Algorithm~\ref{alg:arnoldi-modified}) 的矩阵形式.}
+% block: hessenberg-matrices pages:38,39 type:ordinary-paragraph
+{设 $V_n$ 为 $N\times n$ 矩阵, 其列是 Algorithm~\ref{alg:arnoldi-classical} (或 Algorithm~\ref{alg:arnoldi-modified}) 给出的前 $n$ 个标准正交向量, 即}
+\[V_n=[\bm v_1,\bm v_2,\ldots,\bm v_n],\quad V_n^{\mathrm H}V_n=I_n,\]
+{设 $H_{n+1,n}$ 为 $(n+1)\times n$ Hessenberg 矩阵, 其元素在 $i>j+1$ 时满足 $h_{i,j}=0$, 并设 $H_n$ 为 $n\times n$ Hessenberg 矩阵, 如下:}
+\[
+H_{n+1,n}=\begin{bmatrix}
+h_{1,1}&h_{1,2}&\cdots&h_{1,n-1}&h_{1,n}\\
+h_{2,1}&h_{2,2}&\cdots&h_{2,n-1}&h_{2,n}\\
+&\ddots&\ddots&\vdots&\vdots\\
+&&\ddots&\ddots&\vdots\\
+&&&h_{n,n-1}&h_{n,n}\\
+&&&&h_{n+1,n}
+\end{bmatrix}
+\]
+{以及}
+\[
+H_n=\begin{bmatrix}
+h_{1,1}&h_{1,2}&\cdots&h_{1,n-1}&h_{1,n}\\
+h_{2,1}&h_{2,2}&\cdots&h_{2,n-1}&h_{2,n}\\
+&\ddots&\ddots&\vdots&\vdots\\
+&&\ddots&\ddots&\vdots\\
+&&&h_{n,n-1}&h_{n,n}
+\end{bmatrix},
+\]
+{其中 $h_{i,j}$ 是 Algorithm~\ref{alg:arnoldi-classical} (或 Algorithm~\ref{alg:arnoldi-modified}) 生成的标量. 则有}
+\begin{equation}\label{eq:arnoldi-matrix-relation}
+AV_n=V_{n+1}H_{n+1,n}=V_nH_n+h_{n+1,n}\bm v_{n+1}\bm e_n^\top,
+\end{equation}
+{其中 $\bm e_n=(0,0,\ldots,0,1)^\top\in\mathbb R^n$. 由上述矩阵形式以及 $V_n^{\mathrm H}V_n=I_n$, 得到下列形式的关系}
+\begin{equation}\label{eq:arnoldi-projected-matrix}H_n=V_n^{\mathrm H}AV_n.\end{equation}
+{如果 $A$ 是 Hermitian 的, 则由 $H_n^{\mathrm H}=(V_n^{\mathrm H}AV_n)^{\mathrm H}=V_n^{\mathrm H}A^{\mathrm H}V_n=V_n^{\mathrm H}AV_n=H_n$ 可知, Hessenberg 矩阵 $H_n$ 是 Hermitian 的. 因此, 此时 $H_n$ 为三对角矩阵. 这意味着, 若 $A$ 是 Hermitian 的, Arnoldi 过程就有短递推关系, 从而得到 Lanczos 过程. Lanczos 过程的详细内容将在 Section~\ref{subsec:lanczos-process} 介绍.}
+% block: bilanczos-introduction page:39 type:subsection
+\subsubsection{{双 Lanczos 过程}}\label{subsec:bi-lanczos-process}
+{双 Lanczos 过程是一种利用短递推获得 $\mathcal K_n(A,\bm v_0)$ 的双正交基的算法. 尽管该过程不生成标准正交基向量, 它在以较低内存需求求解线性方程组方面发挥着重要作用. 算法见 Algorithm~\ref{alg:bi-lanczos}.}
+{如果不发生中断, Algorithm~\ref{alg:bi-lanczos} 生成两个 Krylov 子空间的双正交基向量, 满足}
+\[(\bm w_i,\bm v_j)=\delta_{i,j},\]
+{其中 $\mathcal K_n(A,\bm v_1)=\operatorname{span}\{\bm v_1,\ldots,\bm v_n\}$, $\mathcal K_n(A^{\mathrm H},\bm w_1)=\operatorname{span}\{\bm w_1,\ldots,\bm w_n\}$.}
+% block: bilanczos-algorithm page:40 type:ordinary-paragraph
+\begin{algorithm}[H]\caption{{双 Lanczos 过程}}\label{alg:bi-lanczos}
+\begin{algorithmic}[1]
+\Statex\textbf{Input:} {非 Hermitian 矩阵 $A\in\mathbb C^{N\times N}$, 并选择满足 $(\bm v_0,\bm w_0)\ne0$ 的 $\bm v_0$ 和 $\bm w_0$}
+\Statex\textbf{Input:} $\bm v_1=\bm v_0/\|\bm v_0\|,\quad\bm w_1=\bm w_0/\overline{(\bm w_0,\bm v_1)}$
+\Statex\textbf{Output:} $\bm v_1,\bm v_2,\ldots,\bm v_N$ {和} $\bm w_1,\bm w_2,\ldots,\bm w_N$
+\For{$n=1,2,\ldots,N-1$}
+\State $\alpha_n=(\bm w_n,A\bm v_n),$
+\State $\tilde{\bm v}_{n+1}=A\bm v_n-\alpha_n\bm v_n-\beta_{n-1}\bm v_{n-1}$
+\State $\tilde{\bm w}_{n+1}=A^{\mathrm H}\bm w_n-\bar\alpha_n\bm w_n-\bar\gamma_{n-1}\bm w_{n-1}$
+\State $\gamma_n=\|\tilde{\bm v}_{n+1}\|$
+\State $\bm v_{n+1}=\tilde{\bm v}_{n+1}/\gamma_n$
+\State $\beta_n=(\tilde{\bm w}_{n+1},\bm v_{n+1})$
+\State $\bm w_{n+1}=\tilde{\bm w}_{n+1}/\bar\beta_n$
+\EndFor
+\end{algorithmic}\end{algorithm}
+% block: bilanczos-matrix page:40 type:ordinary-paragraph
+{与 Arnoldi 过程类似, 双 Lanczos 过程也可写成矩阵形式. 设 $T_{n+1,n}$ 为 $(n+1)\times n$ 三对角矩阵, 其元素为双 Lanczos 过程的递推系数, 即}
+\[
+T_{n+1,n}=\begin{bmatrix}
+\alpha_1&\beta_1&&\\
+\gamma_1&\alpha_2&\ddots&\\
+&\ddots&\ddots&\beta_{n-1}\\
+&&\gamma_{n-1}&\alpha_n\\
+&&&\gamma_n
+\end{bmatrix},\quad
+T_n=\begin{bmatrix}
+\alpha_1&\beta_1&&\\
+\gamma_1&\alpha_2&\ddots&\\
+&\ddots&\ddots&\beta_{n-1}\\
+&&\gamma_{n-1}&\alpha_n
+\end{bmatrix}.
+\]
+{则由双 Lanczos 过程有}
+\begin{equation}\label{eq:bilanczos-matrix-relation}
+AV_n=V_{n+1}T_{n+1,n}=V_nT_n+\gamma_n\bm v_{n+1}\bm e_n^\top,
+\end{equation}
+\[
+A^{\mathrm H}W_n=W_{n+1}T_{n+1,n}^{\mathrm H}
+=W_nT_n^{\mathrm H}+\bar\beta_n\bm w_{n+1}\bm e_n^\top.
+\]
+{由上式以及 $W_n^{\mathrm H}V_n=I_n$, 容易得到公式 $T_n=W_n^{\mathrm H}AV_n$.}
+% block: complex-lanczos-introduction pages:40,41 type:subsection
+\subsubsection{{复对称 Lanczos 过程}}\label{subsec:complex-symmetric-lanczos}
+{当系数矩阵为复对称矩阵, 即 $A=A^\top\ne A^{\mathrm H}$ 时, 复对称 Lanczos 过程是双 Lanczos 过程 (Algorithm~\ref{alg:bi-lanczos}) 的特例. 若 $A$ 复对称, 则令 $\bm w_0=\bar{\bm v}_0$, 就容易从 Algorithm~\ref{alg:bi-lanczos} 导出该过程, 得到的算法见 Algorithm~\ref{alg:complex-symmetric-lanczos}.}
+{如果不发生中断, Algorithm~\ref{alg:complex-symmetric-lanczos} 生成 Krylov 子空间的共轭正交基向量, 满足}
+\[(\bar{\bm v}_i,\bm v_j)=\delta_{ij},\]
+{其中 $\mathcal K_n(A,\bm v_1)=\operatorname{span}\{\bm v_1,\ldots,\bm v_n\}$.}
+% block: complex-lanczos-algorithm page:41 type:ordinary-paragraph
+\begin{algorithm}[H]\caption{{复对称 Lanczos 过程 (注意: $(\bar{\bm a},\bm b)=\bm a^\top\bm b$)}}\label{alg:complex-symmetric-lanczos}
+\begin{algorithmic}[1]
+\Statex\textbf{Input:} {复对称矩阵 $A\in\mathbb C^{N\times N}$, 并选择满足 $(\bar{\bm v}_1,\bm v_1)\ne0$ 的 $\bm v_1$}
+\Statex\textbf{Input:} $\bm v_1=\bm v_1/(\bar{\bm v}_1,\bm v_1)^{1/2}$
+\Statex\textbf{Output:} $\bm v_1,\bm v_2,\ldots,\bm v_N$
+\For{$n=1,2,\ldots,N-1$}
+\State $\alpha_n=(\bar{\bm v}_n,A\bm v_n)$
+\State $\tilde{\bm v}_{n+1}=A\bm v_n-\alpha_n\bm v_n-\beta_{n-1}\bm v_{n-1}$
+\State $\beta_n=(\overline{\tilde{\bm v}}_{n+1},\tilde{\bm v}_{n+1})^{1/2}$
+\State $\bm v_{n+1}=\tilde{\bm v}_{n+1}/\beta_n$
+\EndFor
+\end{algorithmic}\end{algorithm}
+% block: complex-lanczos-matrix page:41 type:ordinary-paragraph
+{与 Arnoldi 过程和双 Lanczos 过程类似, Algorithm~\ref{alg:complex-symmetric-lanczos} 也可写成矩阵形式. 设 $T_{n+1,n}$ 为 $(n+1)\times n$ 三对角矩阵, 其元素为复对称 Lanczos 过程的递推系数, 即}
+\[
+T_{n+1,n}=\begin{bmatrix}\alpha_1&\beta_1&&\\\beta_1&\alpha_2&\ddots&\\&\ddots&\ddots&\beta_{n-1}\\&&\beta_{n-1}&\alpha_n\\&&&\beta_n\end{bmatrix},\quad
+T_n=\begin{bmatrix}\alpha_1&\beta_1&&\\\beta_1&\alpha_2&\ddots&\\&\ddots&\ddots&\beta_{n-1}\\&&\beta_{n-1}&\alpha_n\end{bmatrix}.
+\]
+{则由 Algorithm~\ref{alg:complex-symmetric-lanczos} 有}
+\begin{equation}\label{eq:complex-lanczos-matrix-relation}
+AV_n=V_{n+1}T_{n+1,n}=V_nT_n+\beta_n\bm v_{n+1}\bm e_n^\top.
+\end{equation}
+{由上式可知, $T_n$ 也复对称, 即 $T_n=T_n^\top\ne T_n^{\mathrm H}$.}
+% block: lanczos-introduction page:41 type:subsection
+\subsubsection{{Lanczos 过程}}\label{subsec:lanczos-process}
+{Lanczos 过程是 Arnoldi 过程在 $A$ 为 Hermitian 矩阵时的特例. 由于 $H_n$ 既是 Hermitian 矩阵又是 Hessenberg 矩阵, 它是三对角矩阵. 这意味着, 在 Arnoldi 过程 (Algorithm~\ref{alg:arnoldi-classical}) 的内循环中, 从 1 到 $n$ 的求和可替换为从 $n-1$ 到 $n$ 的求和. 因此, Lanczos 过程在第 $n$ 步只需要三项递推, 而不需要 $(n+1)$ 项递推. 由于这一出色的性质, Lanczos 过程的每一步都比 Arnoldi 过程或双 Lanczos 过程的相应步骤简洁得多. Lanczos 过程见 Algorithm~\ref{alg:lanczos}.}
+% block: lanczos-algorithm page:42 type:ordinary-paragraph
+\begin{algorithm}[H]\caption{{Lanczos 过程}}\label{alg:lanczos}
+\begin{algorithmic}[1]
+\Statex\textbf{Input:} {Hermitian 矩阵 $A\in\mathbb C^{N\times N}$, 并选择满足 $\|\bm v_1\|=1$ 的 $\bm v_1$}
+\Statex\textbf{Input:} $\beta_0=0,\bm v_0=\bm0$
+\Statex\textbf{Output:} $\bm v_1,\bm v_2,\ldots,\bm v_N$
+\For{$n=1,2,\ldots,N-1$}
+\State $\alpha_n=(\bm v_n,A\bm v_n)$
+\State $\tilde{\bm v}_{n+1}=A\bm v_n-\alpha_n\bm v_n-\beta_{n-1}\bm v_{n-1}$
+\State $\beta_n=(\tilde{\bm v}_{n+1},\tilde{\bm v}_{n+1})^{1/2}$
+\State $\bm v_{n+1}=\tilde{\bm v}_{n+1}/\beta_n$
+\EndFor
+\end{algorithmic}\end{algorithm}
+% block: lanczos-basis page:42 type:ordinary-paragraph
+{令 $\bm w_0=\bm v_0$, 就容易从 Arnoldi 过程或双 Lanczos 过程导出 Lanczos 过程. 若不发生中断, 上述算法生成 $\mathcal K_n(A,\bm v_1)$ 的标准正交基, 满足}
+\[(\bm v_i,\bm v_j)=\delta_{ij},\]
+{其中 $\mathcal K_n(A,\bm v_1)=\operatorname{span}\{\bm v_1,\ldots,\bm v_n\}$.}
+% block: lanczos-matrix page:42 type:ordinary-paragraph
+{与 Arnoldi 过程和双 Lanczos 过程类似, Lanczos 过程也可写成矩阵形式. 设 $T_{n+1,n}$ 为 $(n+1)\times n$ 三对角矩阵, 其元素为 Lanczos 过程的递推系数, 即}
+\[
+T_{n+1,n}=\begin{bmatrix}\alpha_1&\beta_1&&\\\beta_1&\alpha_2&\ddots&\\&\ddots&\ddots&\beta_{n-1}\\&&\beta_{n-1}&\alpha_n\\&&&\beta_n\end{bmatrix},\quad
+T_n:=\begin{bmatrix}\alpha_1&\beta_1&&\\\beta_1&\alpha_2&\ddots&\\&\ddots&\ddots&\beta_{n-1}\\&&\beta_{n-1}&\alpha_n\end{bmatrix}.
+\]
+{则由 Lanczos 过程有}
+\begin{equation}\label{eq:lanczos-matrix-relation}
+AV_n=V_{n+1}T_{n+1,n}=V_nT_n+\beta_n\bm v_{n+1}\bm e_n^\top.
+\end{equation}
+{由上式以及 $V_n^{\mathrm H}V_n=I_n$, 容易得到下列公式:}
+\begin{equation}\label{eq:lanczos-projected-matrix}
+T_n=V_n^{\mathrm H}AV_n.
+\end{equation}
+{可见 $T_n$ 也是 Hermitian 的 (更确切地说, 是实对称的). Lanczos 过程用于求解 Hermitian 线性方程组.}

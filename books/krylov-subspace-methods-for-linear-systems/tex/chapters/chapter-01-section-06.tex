@@ -1,0 +1,133 @@
+% block: stationary-recurrences pages:26,27 type:section
+\subsection{{定常迭代方法}}\label{sec:stationary-iterations}
+{定常迭代方法通过下列递推生成近似解:}
+\begin{equation}\label{eq:stationary-fixed-point}
+\bm x_{k+1}=\bm f(\bm x_k),\quad k=0,1,\ldots
+\end{equation}
+{其中 $\bm x_0$ 是为 $A\bm x=\bm b$ 预先给定的初始猜测. 这里, 向量值函数 $\bm f$ 定义为}
+\begin{equation}\label{eq:stationary-map}
+\bm f(\bm y):=M^{-1}N\bm y+M^{-1}\bm b,
+\end{equation}
+{其中 $M$ 为非奇异矩阵, 矩阵 $N$ 使 \eqref{eq:linear-system} 中的矩阵 $A$ 满足 $A=M-N$. 解 $\bm x$ 对应于 $\bm f$ 的不动点, 即 $\bm x=\bm f(\bm x)$. 因此, 定常迭代方法可看作通过 \eqref{eq:stationary-fixed-point} 中的递推寻找 $\bm f$ 的不动点的迭代方法. 由于 $\bm f$ 不依赖于迭代次数 $k$, 所以称这些迭代方法为定常的. 由 \eqref{eq:stationary-fixed-point} 和 \eqref{eq:stationary-map}, 迭代向量 $\bm x_{k+1}$ 可写为}
+\begin{equation}\label{eq:stationary-splitting-iteration}
+\bm x_{k+1}=M^{-1}N\bm x_k+M^{-1}\bm b
+\end{equation}
+{其中 $k=0,1,\ldots$.}
+% block: stationary-storage-and-splitting page:27 type:ordinary-paragraph
+{定常迭代方法可用于求解大型稀疏线性方程组, 因为与 LU 分解等直接方法不同, 计算近似解时不必考虑填充元, 只需在内存中存储系数矩阵的非零元素和一些工作向量.}
+{下面介绍最著名的定常迭代方法, 即 Jacobi 方法, Gauss--Seidel (GS) 方法和逐次超松弛 (SOR) 方法. 设 $A=(a_{ij})$ 为 $A\bm x=\bm b$ 的系数矩阵, 并设}
+\[
+\begin{aligned}
+L&=(a_{ij}),\quad a_{ij}=0\quad(i\le j),\\
+D&=(a_{ij}),\quad a_{ij}=0\quad(i\ne j),\\
+U&=(a_{ij}),\quad a_{ij}=0\quad(i\ge j).
+\end{aligned}
+\]
+{则有}
+\[A=L+D+U.\]
+{$L,D$ 和 $U$ 分别称为严格下三角矩阵, 对角矩阵和严格上三角矩阵.}
+{用 $L,D$ 和 $U$ 选择 $M$ 与 $N$, 就得到 Jacobi, GS 和 SOR 方法. Table~\ref{tab:stationary-splittings} 列出了这些代表性定常迭代方法的选择.}
+% block: stationary-classification-table page:27 type:table
+\begin{table}[H]\centering
+\caption{{三种定常迭代方法的分类}}\label{tab:stationary-splittings}
+\begin{tabular}{lll}\hline
+& $M$ & $N$\\\hline
+Jacobi {方法} & $D$ & $-(L+U)$\\
+Gauss--Seidel {方法} & $D+L$ & $-U$\\
+SOR {方法} & $(D+\omega L)/\omega$ & $N=[(1-\omega)D-\omega U]/\omega$\\\hline
+\end{tabular}\end{table}
+% block: jacobi-method pages:27,28 type:subsection
+\subsubsection{{Jacobi 方法}}\label{subsec:jacobi-method}
+{由 \eqref{eq:stationary-splitting-iteration} 和 Table~\ref{tab:stationary-splittings}, Jacobi 方法的迭代向量 $\bm x_k$ 如下:}
+\[\bm x_{k+1}=-D^{-1}(L+U)\bm x_k+D^{-1}\bm b.\]
+{实际计算中, $\bm x_{k+1}$ 由下列递推关系计算:}
+\begin{equation}\label{eq:jacobi-components}
+x_i^{(k+1)}=\frac1{a_{ii}}\left(b_i-\sum_{j<i}a_{ij}x_j^{(k)}-\sum_{j>i}a_{ij}x_j^{(k)}\right)
+\end{equation}
+{其中 $i=1,2,\ldots,n$, $x_i^{(k)}$ 和 $b_i$ 分别为 $\bm x_k$ 和 $\bm b$ 的第 $i$ 个元素, 符号 $\sum_{j<i}$ 和 $\sum_{j>i}$ 分别表示 $\sum_{j=1}^{i-1}$ 和 $\sum_{j=i+1}^n$.}
+% block: gauss-seidel-method page:28 type:subsection
+\subsubsection{{Gauss--Seidel 方法}}\label{subsec:gauss-seidel-method}
+{由 \eqref{eq:stationary-splitting-iteration} 和 Table~\ref{tab:stationary-splittings}, Gauss--Seidel (GS) 方法的迭代向量 $\bm x_k$ 如下:}
+\[\bm x_{k+1}=-(D+L)^{-1}U\bm x_k+(D+L)^{-1}\bm b.\]
+{下面推导 GS 方法. 重新考虑 Jacobi 方法. 用 \eqref{eq:jacobi-components} 计算 Jacobi 方法的 $x_i^{(k+1)}$ 时, \linebreak[4]$x_1^{(k+1)},\ldots,x_{i-1}^{(k+1)}$ 已经计算出来, 可看作新的信息. 因此, 若用新信息 $\sum_{j<i}a_{ij}x_j^{(k+1)}$ 代替旧信息 $\sum_{j<i}a_{ij}x_j^{(k)}$, 就可期望更快的收敛. 这正是 Gauss--Seidel 方法的核心思想, 其形式如下:}
+\begin{equation}\label{eq:gauss-seidel-components}
+x_i^{(k+1)}=\frac1{a_{ii}}\left(b_i-\sum_{j<i}a_{ij}x_j^{(k+1)}-\sum_{j>i}a_{ij}x_j^{(k)}\right)
+\end{equation}
+{其中 $i=1,2,\ldots,n$.}
+% block: sor-method pages:28,29 type:subsection
+\subsubsection{{SOR 方法}}\label{subsec:sor-method}
+{由 \eqref{eq:stationary-splitting-iteration} 和 Table~\ref{tab:stationary-splittings}, SOR 方法的迭代向量 $\bm x_k$ 如下:}
+\[
+\begin{aligned}
+\bm x_{k+1}&=\left[\frac1\omega(D+\omega L)\right]^{-1}
+\left\{\frac1\omega[(1-\omega)D-\omega U]\right\}\bm x_k+
+\left[\frac1\omega(D+\omega L)\right]^{-1}\bm b\\
+&=(D+\omega L)^{-1}[(1-\omega)D-\omega U]\bm x_k+(D+\omega L)^{-1}\omega\bm b,
+\end{aligned}
+\]
+{等价地, SOR 方法的 $\bm x_{k+1}$ 可通过求解下列线性方程组得到:}
+\[(D+\omega L)\bm x_{k+1}=[(1-\omega)D-\omega U]\bm x_k+\omega\bm b.\]
+{SOR 方法逐元素的迭代如下:}
+\[
+\begin{aligned}
+\tilde x_i^{(k+1)}&=\frac1{a_{ii}}\left(b_i-\sum_{j<i}a_{ij}x_j^{(k+1)}-\sum_{j>i}a_{ij}x_j^{(k)}\right),\\
+x_i^{(k+1)}&=x_i^{(k)}+\omega(\tilde x_i^{(k+1)}-x_i^{(k)})
+\end{aligned}
+\]
+{其中 $i=1,2,\ldots,n$. 由此容易看出, SOR 方法是 Gauss--Seidel 方法的单参数推广, 因为第一个等式的右端与 Gauss--Seidel 方法 \eqref{eq:gauss-seidel-components} 相同. 若 $\omega=1$, SOR 方法就退化为 Gauss--Seidel 方法. 已知收敛的必要条件是 $0<\omega<2$.}
+% block: ssor-method page:29 type:ordinary-paragraph
+{当 $A$ 对称时, 对称 SOR (SSOR) 方法也很著名, 因为它可用作求解对称线性方程组的 Krylov 子空间方法的预条件子. 关于 SSOR 预条件子, 见 Section~\ref{subsec:stationary-preconditioners}. SSOR 方法的迭代如下:}
+\[
+\begin{aligned}
+(D+\omega L)\tilde{\bm x}_k&=[(1-\omega)D-\omega U]\bm x_k+\omega\bm b,\\
+(D+\omega U)\bm x_k&=[(1-\omega)D-\omega L]\tilde{\bm x}_k+\omega\bm b.
+\end{aligned}
+\]
+{对于 SSOR 方法, \eqref{eq:stationary-splitting-iteration} 中的 $M$ 和 $N$ 为}
+\begin{equation}\label{eq:ssor-matrix-m}
+M_{\mathrm{SSOR}}=\frac1{\omega(2-\omega)}(D+\omega L)D^{-1}(D+\omega U),
+\end{equation}
+\begin{equation}\label{eq:ssor-matrix-n}
+N_{\mathrm{SSOR}}=\frac1{\omega(2-\omega)}[(1-\omega)D-\omega L]D^{-1}[(1-\omega)D-\omega U].
+\end{equation}
+{由于 $A$ 对称, 有 $U=L^\top$. 因此, 由 \eqref{eq:ssor-matrix-m} 和 \eqref{eq:ssor-matrix-n} 可知, $M_{\mathrm{SSOR}}$ 和 $N_{\mathrm{SSOR}}$ 对称.}
+{文献 \BookCite{93} 总结了包括 SSOR 方法在内的许多 SOR 方法基本结果. 关于 SOR 方法的近期发展, 例如可参见 \BookCite{128}, \BookCite{130}, \BookCite{131} 及其中的参考文献. 文献 \BookCite{131} 基于 SOR 方法与 \BookCite{130} 中梯度系统的离散梯度方法之间的一种新联系, 提出了自适应 SOR 方法, 从而给出了 SOR 方法的几何视角.}
+% block: stationary-error-recurrence pages:29,30 type:subsection
+\subsubsection{{定常迭代方法的收敛性}}\label{subsec:stationary-convergence}
+{定常迭代方法的一个显著性质是, 可通过计算 $\|M^{-1}N\|$ 来估计误差的衰减率, 其中 $\|\cdot\|$ 是从属矩阵范数 \eqref{eq:subordinate-matrix-norm}. 为说明这一点, 由 \eqref{eq:stationary-splitting-iteration} 以及关系 $A\bm x=\bm b\iff\bm x=M^{-1}N\bm x+M^{-1}\bm b$, 误差为}
+\begin{equation}\label{eq:stationary-error-recurrence}
+\begin{aligned}
+\bm e_{k+1}&:=\bm x-\bm x_{k+1}\\
+&=(M^{-1}N\bm x+M^{-1}\bm b)-(M^{-1}N\bm x_k+M^{-1}\bm b)\\
+&=M^{-1}N(\bm x-\bm x_k)\\
+&=M^{-1}N\bm e_k.
+\end{aligned}
+\end{equation}
+{因此, 误差的范数满足}
+\[\|\bm e_{k+1}\|\le\|M^{-1}N\|\|\bm e_k\|.\]
+{误差的衰减率为 $\|M^{-1}N\|$, 这表明它线性收敛.}
+% block: spectral-radius-condition page:30 type:ordinary-paragraph
+{设 $\lambda_i\ (i=1,\ldots,n)$ 为一个 $n$ 行 $n$ 列矩阵 $G$ 的特征值, 并令 $\rho(G)=\max\{|\lambda_1|,\ldots,|\lambda_n|\}$. 则称 $\rho(G)$ 为 $G$ 的谱半径. 由 \eqref{eq:stationary-error-recurrence} 和 $M^{-1}N$ 的 Jordan 分解容易看出, 对任意初始猜测均收敛的充要条件是}
+\begin{equation}\label{eq:stationary-spectral-radius}\rho(M^{-1}N)<1.\end{equation}
+{下面介绍保证 \eqref{eq:stationary-spectral-radius} 成立的一个最著名的事实.}
+% block: regular-splitting-definition page:30 type:definition
+\begin{Definition}{{正则分裂}}\label{def:regular-splitting}
+{若 $M^{-1}\ge O$, $N\ge O$, 即 $M^{-1}$ 和 $N$ 的全部元素都大于或等于零, 则称 $A=M-N$ 为正则分裂.}
+\end{Definition}
+% block: regular-splitting-theorem page:30 type:theorem
+\begin{Theorem}\label{thm:regular-splitting-convergence}
+{若 $A=M-N$ 为正则分裂, 则}
+\[\rho(M^{-1}N)<1\iff A^{-1}\ge O.\]
+\end{Theorem}
+% block: regular-splitting-proof pages:30,31 type:proof
+\begin{Proof}
+{先证明 $\rho(M^{-1}N)<1\implies A^{-1}\ge O$. 令 $G:=M^{-1}N$, $\lambda_i$ 为 $G$ 的特征值. 则 $I-G$ 的特征值均非零 (即非奇异), 因为 $I-G$ 的特征值为 $1-\lambda_i$, 而由假设 $\rho(G)<1$ 可知 $|\lambda_i|<1$. 由于 $M$ 和 $I-G$ 非奇异, $A=M(I-G)$ 也非奇异, 即 $A^{-1}$ 存在. 由于 $\rho(G)<1$, 有}
+\[A^{-1}=(I-G)^{-1}M^{-1}=(I+G+G^2+\cdots)M^{-1}.\]
+{由于假设 $A=M-N$ 为正则分裂, 所以 $G\ge O$, $M^{-1}\ge O$. 因此 $A^{-1}\ge O$.}
+{接下来证明逆命题. 由于 $A=M-N$ 为正则分裂, 有 $M^{-1}\ge O$, $N\ge O$. 因此 $G\ge O$. 由 Perron--Frobenius 定理可知, 存在非负特征向量 $\bm x\ge\bm0$, 使得 $G\bm x=\rho(G)\bm x$. 容易看出, $A^{-1}N=(I-G)^{-1}G$, 因而有}
+\[A^{-1}N\bm x=(I-G)^{-1}G\bm x=\frac{\rho(G)}{1-\rho(G)}\bm x.\]
+{由于 $A^{-1}\ge O$, $N\ge O$, 有 $A^{-1}N\bm x\ge\bm0$. 这意味着 $\rho(G)/(1-\rho(G))\ge0$, 即 $(0\le)\rho(G)\le1$. 由于 $(I-G)^{-1}$ 存在, 所以 $\rho(G)\ne1$.}
+\end{Proof}
+% block: stationary-final-references page:31 type:ordinary-paragraph
+{关于定常迭代方法的更多收敛定理, 例如可参见 Varga 的优秀著作 \BookCite{200}.}
+{定常迭代方法还可用作 Section~\ref{subsec:stationary-preconditioners} 中 Krylov 子空间方法的预条件子.}

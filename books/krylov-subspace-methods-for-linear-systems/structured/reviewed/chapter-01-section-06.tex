@@ -1,0 +1,133 @@
+% block: stationary-recurrences pages:26,27 type:section
+\subsection{{Stationary Iterative Methods}}\label{sec:stationary-iterations}
+{Stationary iterative methods produce approximate solutions by the following recurrences:}
+\begin{equation}\label{eq:stationary-fixed-point}
+\bm x_{k+1}=\bm f(\bm x_k),\quad k=0,1,\ldots
+\end{equation}
+{with a prescribed initial guess $\bm x_0$ for $A\bm x=\bm b$. Here the vector-valued function $\bm f$ is defined by}
+\begin{equation}\label{eq:stationary-map}
+\bm f(\bm y):=M^{-1}N\bm y+M^{-1}\bm b,
+\end{equation}
+{where $M$ is a nonsingular matrix and $N$ is a matrix such that matrix $A$ in \eqref{eq:linear-system} satisfies $A=M-N$. The solution $\bm x$ corresponds to a fixed-point of $\bm f$, i.e., $\bm x=\bm f(\bm x)$. Therefore, the stationary iterative methods can be regarded as iterative methods finding the fixed-point of $\bm f$ via the recurrences in \eqref{eq:stationary-fixed-point}. Since $\bm f$ does not depend on the number of iterations $k$, the iterative methods are called stationary. From \eqref{eq:stationary-fixed-point} and \eqref{eq:stationary-map}, the iterates $\bm x_{k+1}$ are written as}
+\begin{equation}\label{eq:stationary-splitting-iteration}
+\bm x_{k+1}=M^{-1}N\bm x_k+M^{-1}\bm b
+\end{equation}
+{for $k=0,1,\ldots$.}
+% block: stationary-storage-and-splitting page:27 type:ordinary-paragraph
+{Stationary iterative methods are used for solving large and sparse linear systems because unlike the direct methods such as the LU decomposition, we do not need to consider fill-ins and only need to store nonzero elements of the coefficient matrix and some working vectors in memory for computing the approximate solutions.}
+{In what follows, the best-known stationary iterative methods are described, i.e., the Jacobi method, the Gauss--Seidel (GS) method, and the Successive Over-Relaxation (SOR) method. Let $A=(a_{ij})$ be the coefficient matrix for $A\bm x=\bm b$, and}
+\[
+\begin{aligned}
+L&=(a_{ij}),\quad a_{ij}=0\quad(i\le j),\\
+D&=(a_{ij}),\quad a_{ij}=0\quad(i\ne j),\\
+U&=(a_{ij}),\quad a_{ij}=0\quad(i\ge j).
+\end{aligned}
+\]
+{Then we have}
+\[A=L+D+U.\]
+{$L,D$, and $U$ are referred to as the strictly lower triangular matrix, diagonal matrix, and strictly upper triangular matrix.}
+{Choices of $M$ and $N$ using $L,D$, and $U$ yield the Jacobi, GS, and SOR methods. Table~\ref{tab:stationary-splittings} shows the choices for the representative stationary iterative methods.}
+% block: stationary-classification-table page:27 type:table
+\begin{table}[H]\centering
+\caption{{Classification of three stationary iterative methods}}\label{tab:stationary-splittings}
+\begin{tabular}{lll}\hline
+& $M$ & $N$\\\hline
+Jacobi {method} & $D$ & $-(L+U)$\\
+Gauss--Seidel {method} & $D+L$ & $-U$\\
+SOR {method} & $(D+\omega L)/\omega$ & $N=[(1-\omega)D-\omega U]/\omega$\\\hline
+\end{tabular}\end{table}
+% block: jacobi-method pages:27,28 type:subsection
+\subsubsection{{The Jacobi Method}}\label{subsec:jacobi-method}
+{From \eqref{eq:stationary-splitting-iteration} and Table~\ref{tab:stationary-splittings}, the iterates $\bm x_k$ of the Jacobi method are given as follows:}
+\[\bm x_{k+1}=-D^{-1}(L+U)\bm x_k+D^{-1}\bm b.\]
+{In practice, $\bm x_{k+1}$ is computed by the following recurrence relation:}
+\begin{equation}\label{eq:jacobi-components}
+x_i^{(k+1)}=\frac1{a_{ii}}\left(b_i-\sum_{j<i}a_{ij}x_j^{(k)}-\sum_{j>i}a_{ij}x_j^{(k)}\right)
+\end{equation}
+{for $i=1,2,\ldots,n$, where $x_i^{(k)}$ and $b_i$ are the $i$th element of $\bm x_k$ and $\bm b$ respectively, and the symbol $\sum_{j<i}$ and $\sum_{j>i}$ denotes $\sum_{j=1}^{i-1}$ and $\sum_{j=i+1}^n$ respectively.}
+% block: gauss-seidel-method page:28 type:subsection
+\subsubsection{{The Gauss--Seidel Method}}\label{subsec:gauss-seidel-method}
+{From \eqref{eq:stationary-splitting-iteration} and Table~\ref{tab:stationary-splittings}, the iterates $\bm x_k$ of the Gauss--Seidel (GS) method are given as follows:}
+\[\bm x_{k+1}=-(D+L)^{-1}U\bm x_k+(D+L)^{-1}\bm b.\]
+{A derivation of the GS method is given below. Let us reconsider the Jacobi method. When $x_i^{(k+1)}$ of the Jacobi method is computed by \eqref{eq:jacobi-components}, $x_1^{(k+1)},\ldots,x_{i-1}^{(k+1)}$ have already been computed, which can be regarded as new information. Thus, a faster convergence may be expected if we use the new information $\sum_{j<i}a_{ij}x_j^{(k+1)}$ instead of the old information $\sum_{j<i}a_{ij}x_j^{(k)}$. This is the key idea of the Gauss--Seidel method, which is written as follows:}
+\begin{equation}\label{eq:gauss-seidel-components}
+x_i^{(k+1)}=\frac1{a_{ii}}\left(b_i-\sum_{j<i}a_{ij}x_j^{(k+1)}-\sum_{j>i}a_{ij}x_j^{(k)}\right)
+\end{equation}
+{for $i=1,2,\ldots,n$.}
+% block: sor-method pages:28,29 type:subsection
+\subsubsection{{The SOR Method}}\label{subsec:sor-method}
+{From \eqref{eq:stationary-splitting-iteration} and Table~\ref{tab:stationary-splittings}, the iterates $\bm x_k$ of the SOR method are given as follows:}
+\[
+\begin{aligned}
+\bm x_{k+1}&=\left[\frac1\omega(D+\omega L)\right]^{-1}
+\left\{\frac1\omega[(1-\omega)D-\omega U]\right\}\bm x_k+
+\left[\frac1\omega(D+\omega L)\right]^{-1}\bm b\\
+&=(D+\omega L)^{-1}[(1-\omega)D-\omega U]\bm x_k+(D+\omega L)^{-1}\omega\bm b,
+\end{aligned}
+\]
+{or equivalently $\bm x_{k+1}$ of the SOR method is given by solving the following linear systems:}
+\[(D+\omega L)\bm x_{k+1}=[(1-\omega)D-\omega U]\bm x_k+\omega\bm b.\]
+{The element-wise iterates of the SOR method are described below:}
+\[
+\begin{aligned}
+\tilde x_i^{(k+1)}&=\frac1{a_{ii}}\left(b_i-\sum_{j<i}a_{ij}x_j^{(k+1)}-\sum_{j>i}a_{ij}x_j^{(k)}\right),\\
+x_i^{(k+1)}&=x_i^{(k)}+\omega(\tilde x_i^{(k+1)}-x_i^{(k)})
+\end{aligned}
+\]
+{for $i=1,2,\ldots,n$. From this, it is easy to see that the SOR method is a one-parameter generalization of the Gauss--Seidel method since the right-hand side of the first equation is the same as the Gauss--Seidel method \eqref{eq:gauss-seidel-components}. If $\omega=1$, the SOR method reduces to the Gauss--Seidel method. It is known that the necessary condition for convergence is $0<\omega<2$.}
+% block: ssor-method page:29 type:ordinary-paragraph
+{When $A$ is symmetric, the symmetric SOR (SSOR) method is also well known, since it can be used as a preconditioner for Krylov subspace methods to solve symmetric linear systems. For the SSOR preconditioner, see Section~\ref{subsec:stationary-preconditioners}. The iterates of the SSOR method are given as follows:}
+\[
+\begin{aligned}
+(D+\omega L)\tilde{\bm x}_k&=[(1-\omega)D-\omega U]\bm x_k+\omega\bm b,\\
+(D+\omega U)\bm x_k&=[(1-\omega)D-\omega L]\tilde{\bm x}_k+\omega\bm b.
+\end{aligned}
+\]
+{For the SSOR method, $M$ and $N$ in \eqref{eq:stationary-splitting-iteration} are given by}
+\begin{equation}\label{eq:ssor-matrix-m}
+M_{\mathrm{SSOR}}=\frac1{\omega(2-\omega)}(D+\omega L)D^{-1}(D+\omega U),
+\end{equation}
+\begin{equation}\label{eq:ssor-matrix-n}
+N_{\mathrm{SSOR}}=\frac1{\omega(2-\omega)}[(1-\omega)D-\omega L]D^{-1}[(1-\omega)D-\omega U].
+\end{equation}
+{Since $A$ is symmetric, we have $U=L^\top$. Thus, it follows from \eqref{eq:ssor-matrix-m} and \eqref{eq:ssor-matrix-n} that $M_{\mathrm{SSOR}}$ and $N_{\mathrm{SSOR}}$ are symmetric.}
+{Many basic results of the SOR method including the SSOR method are summarized in \BookCite{93}. For recent developments of the SOR methods, see, e.g., \BookCite{128}, \BookCite{130}, \BookCite{131} and the references therein. In \BookCite{131}, an adaptive SOR method is proposed based on a novel connection between the SOR method and discrete gradient methods for gradient systems in \BookCite{130}, which gives a geometric view of the SOR method.}
+% block: stationary-error-recurrence pages:29,30 type:subsection
+\subsubsection{{Convergence of the Stationary Iterative Methods}}\label{subsec:stationary-convergence}
+{A remarkable property of the stationary iterative methods is that we can estimate the rate of error reduction by computing $\|M^{-1}N\|$, where $\|\cdot\|$ is a subordinate matrix norm \eqref{eq:subordinate-matrix-norm}. To see this, from \eqref{eq:stationary-splitting-iteration} and the relation $A\bm x=\bm b\iff\bm x=M^{-1}N\bm x+M^{-1}\bm b$, the error is given by}
+\begin{equation}\label{eq:stationary-error-recurrence}
+\begin{aligned}
+\bm e_{k+1}&:=\bm x-\bm x_{k+1}\\
+&=(M^{-1}N\bm x+M^{-1}\bm b)-(M^{-1}N\bm x_k+M^{-1}\bm b)\\
+&=M^{-1}N(\bm x-\bm x_k)\\
+&=M^{-1}N\bm e_k.
+\end{aligned}
+\end{equation}
+{Thus the norm of the error is given by}
+\[\|\bm e_{k+1}\|\le\|M^{-1}N\|\|\bm e_k\|.\]
+{The rate of the reduction of the error is $\|M^{-1}N\|$, which shows linear convergence.}
+% block: spectral-radius-condition page:30 type:ordinary-paragraph
+{Let $\lambda_i\ (i=1,\ldots,n)$ be the eigenvalues of an $n$-by-$n$ matrix $G$ and let $\rho(G)=\max\{|\lambda_1|,\ldots,|\lambda_n|\}$. Then, $\rho(G)$ is referred to as the spectral radius of $G$. It is easy to see from \eqref{eq:stationary-error-recurrence} and the Jordan decomposition of $M^{-1}N$ that the necessary and sufficient condition of the convergence for an arbitrary initial guess is}
+\begin{equation}\label{eq:stationary-spectral-radius}\rho(M^{-1}N)<1.\end{equation}
+{In what follows, the best-known fact for satisfying \eqref{eq:stationary-spectral-radius} is described.}
+% block: regular-splitting-definition page:30 type:definition
+\begin{Definition}{{Regular splitting}}\label{def:regular-splitting}
+{$A=M-N$ is called regular splitting if $M^{-1}\ge O$ and $N\ge O$, i.e., all the elements of $M^{-1}$ and $N$ are greater than or equal to zero.}
+\end{Definition}
+% block: regular-splitting-theorem page:30 type:theorem
+\begin{Theorem}\label{thm:regular-splitting-convergence}
+{If $A=M-N$ is regular splitting, then}
+\[\rho(M^{-1}N)<1\iff A^{-1}\ge O.\]
+\end{Theorem}
+% block: regular-splitting-proof pages:30,31 type:proof
+\begin{Proof}
+{We first show $\rho(M^{-1}N)<1\implies A^{-1}\ge O$. Let $G:=M^{-1}N$ and $\lambda_i$ be the eigenvalues of $G$. Then, the eigenvalues of $I-G$ are nonzeros (i.e., nonsingular), because the eigenvalues of $I-G$ are $1-\lambda_i$, and $|\lambda_i|<1$ from the assumption $\rho(G)<1$. Since $M$ and $I-G$ are nonsingular, $A=M(I-G)$ is also nonsingular, i.e., there exists $A^{-1}$. Since $\rho(G)<1$, we have}
+\[A^{-1}=(I-G)^{-1}M^{-1}=(I+G+G^2+\cdots)M^{-1}.\]
+{Since $A=M-N$ is assumed to be regular splitting, $G\ge O$ and $M^{-1}\ge O$. Thus $A^{-1}\ge O$.}
+{Next, we show the converse. Since $A=M-N$ is regular splitting, $M^{-1}\ge O$ and $N\ge O$. Thus $G\ge O$. It follows from the Perron--Frobenius theorem that there exists a nonnegative eigenvector $\bm x\ge\bm0$ such that $G\bm x=\rho(G)\bm x$. It is easy to see that $A^{-1}N=(I-G)^{-1}G$, and thus we have}
+\[A^{-1}N\bm x=(I-G)^{-1}G\bm x=\frac{\rho(G)}{1-\rho(G)}\bm x.\]
+{Since $A^{-1}\ge O$ and $N\ge O$, we have $A^{-1}N\bm x\ge\bm0$. This implies $\rho(G)/(1-\rho(G))\ge0$, which means $(0\le)\rho(G)\le1$. Since there exists $(I-G)^{-1}$, we have $\rho(G)\ne1$.}
+\end{Proof}
+% block: stationary-final-references page:31 type:ordinary-paragraph
+{For further convergence theorems of the stationary iterative methods, see, e.g., an excellent book by Varga \BookCite{200}.}
+{The stationary iterative methods can also be used as a preconditioner for Krylov subspace methods in Section~\ref{subsec:stationary-preconditioners}.}

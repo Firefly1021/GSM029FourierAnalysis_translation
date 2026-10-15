@@ -1,0 +1,39 @@
+% block: sparse-direct-matrix page:25 type:section
+\subsection{{Direct Methods for Large and Sparse Linear Systems}}\label{sec:sparse-direct-methods}
+{Consider the following matrix:}
+\begin{equation}\label{eq:sparse-fill-example}
+A=\begin{pmatrix}2&-1&-1&-1\\1&1&0&0\\1&0&1&0\\1&0&0&1\end{pmatrix}.
+\end{equation}
+{If the number of zeros in a matrix is relatively large, then the matrix is called sparse. Conversely, if the number of zeros in a matrix is relatively small, it is called dense.}
+% block: fill-in-example page:25 type:ordinary-paragraph
+{Applying the LU decomposition (Algorithm~\ref{alg:lu-decomposition}) to \eqref{eq:sparse-fill-example} yields}
+\[
+A=LU=
+\begin{pmatrix}1&&&\\1/2&1&&\\1/2&1/3&1&\\1/2&1/3&1/4&1\end{pmatrix}
+\begin{pmatrix}2&-1&-1&-1\\&3/2&1/2&1/2\\&&4/3&1/3\\&&&5/4\end{pmatrix}.
+\]
+{For the lower part of $A$, we see that $a_{32}=a_{42}=a_{43}=0$ but the corresponding lower part of $L$, we have $l_{32}=l_{42}=l_{43}\ne0$. Similarly, for the upper part of $A$, we see that $a_{23}=a_{24}=a_{34}=0$ but $u_{23}=u_{24}=u_{34}\ne0$ for the upper part of $U$. The nonzero elements in $L$ and $U$ are called fill-ins if the elements in the original matrix $A$ are zero but the corresponding elements in $L$ and $U$ are not zero.}
+% block: sparse-storage page:25 type:ordinary-paragraph
+{The fill-ins can be a bottleneck to computing the LU decomposition when matrix $A$ is large and sparse. For a large and sparse matrix, we usually only use nonzero elements and do not store zero elements in memory. However, after the LU decomposition, the $L$ and $U$ may become dense, i.e., at worst $n^2$ elements should be stored in the memory. This indicates that if the matrix size $n$ is $n=1,000,000$ and we use real and double precision arithmetic, then we need $n^2\times8\approx8$ Terabytes of memory. If $n=10,000,000$, then a computer with 800 Terabytes of memory is required.}
+% block: sparse-permutation page:25 type:ordinary-paragraph
+{As we will see in Chapter~\ref{chap:computational-applications}, matrices arising from scientific computing are often large and sparse. Thus, for solving large and sparse linear systems by the LU decomposition, it is of prime importance to reduce the fill-ins. In what follows, the key idea to reduce the fill-ins is described.}
+{The key idea is to permute some rows and columns of sparse matrix $A$ to reduce fill-ins, and then apply the LU decomposition to the permuted matrix. To be specific, we apply the LU decomposition to $PAQ$, where $P$ and $Q$ are prescribed permutation matrices. Then we solve}
+\[PAQ\bm y=P\bm b\]
+{to obtain the solution $\bm x=Q\bm y$. Here, $P$ and $Q$ are chosen so that the number of fill-ins of $L$ and $U$ are small as possible.}
+% block: sparse-reordering-example page:26 type:ordinary-paragraph
+{Below is an example to reduce fill-ins of $A$ in \eqref{eq:sparse-fill-example}. Consider}
+\[
+P=Q=\begin{pmatrix}0&0&0&1\\0&0&1&0\\0&1&0&0\\1&0&0&0\end{pmatrix}.
+\]
+{Then, from \eqref{eq:sparse-fill-example} it follows that}
+\[
+PAQ=\begin{pmatrix}1&0&0&1\\0&1&0&1\\0&0&1&1\\-1&-1&-1&2\end{pmatrix}.
+\]
+{The LU decomposition of $PAQ$ yields}
+\[
+PAQ=LU=\begin{pmatrix}1&0&0&0\\0&1&0&0\\0&0&1&0\\-1&-1&-1&1\end{pmatrix}
+\begin{pmatrix}1&0&0&1\\0&1&0&1\\0&0&1&1\\0&0&0&5\end{pmatrix}.
+\]
+{In this case, fortunately, fill-ins do not occur. The result is memory-efficient by storing only nonzero elements in memory.}
+% block: sparse-reordering-methods page:26 type:ordinary-paragraph
+{Although it is difficult to choose optimal permutation matrices $P$ and $Q$ so that the number of fill-ins is minimum, approximate optimization methods have been developed. Well-known methods are the minimum degree method and the reverse Cuthill--McKee method. For the references of these methods see Section~\ref{subsec:preconditioner-reorderings}. For the details of sparse direct methods, see, e.g., \BookCite{44}.}
