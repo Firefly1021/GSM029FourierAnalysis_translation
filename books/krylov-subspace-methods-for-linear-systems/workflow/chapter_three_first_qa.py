@@ -1,4 +1,4 @@
-"""Book-local QA for the complete first natural section of Chapter 3."""
+"""Book-local QA for explicitly selected complete natural sections of Chapter 3."""
 import argparse,collections,csv,json,re,runpy,subprocess
 from pathlib import Path
 from pypdf import PdfReader
@@ -11,7 +11,7 @@ def audit():
     blocks=[];checks=[]
     with (B.root/"glossary/proper-names.tsv").open(encoding="utf8") as f:
         r=csv.DictReader(f,delimiter="\t");fields=r.fieldnames;names=list(r)
-    extras=["Golub","O’Leary","Chebyshev","Paige","Saunders","Givens","Fridman","Bank","Chan"]
+    extras=["Golub","O’Leary","Chebyshev","Paige","Saunders","Givens","Fridman","Bank","Chan","van der Vorst"]
     known=sorted({r["Source Form"] for r in names}|set(extras))
     for unit in units:
         en=[json.loads(x) for x in (B.root/f"structured/reviewed/{unit}.jsonl").read_text(encoding="utf8").splitlines()]
@@ -27,7 +27,8 @@ def audit():
     failures=[x for x in checks if not x["passed"]]
     m["dump"](f"qa/translation/{prefix}-names.json",{"passed":not failures,"checks":checks,"failures":failures});assert not failures,failures
     for name in extras:
-        hit=next(x for x in checks if x["name"]==name)
+        hit=next((x for x in checks if x["name"]==name),None)
+        if not hit:continue
         if any(x["Source Form"]==name for x in names):continue
         row=dict.fromkeys(fields,"");row.update({"Source Form":name,"Canonical Form":name,"Category":"person-or-eponym","First Occurrence":hit["block_id"],"Language or Script":"Latin","Preserve Exactly":"true","Review Status":"reviewed","Notes":"Exact source name preserved, including the internal apostrophe in O’Leary."});names.append(row)
     m["tsv"]("glossary/proper-names.tsv",fields,names)
@@ -42,6 +43,12 @@ def audit():
       ("Givens rotation","Givens 旋转","unitary rotation in the projected least-squares problem"),
       ("composite step","复合步","one-by-one or two-by-two block factorization to avoid breakdown"),
       ("hyperbolic pairs","双曲对","related remedy for indefinite projected systems")]
+    if prefix.endswith("02"):
+        termdata=[("Conjugate Orthogonal Conjugate Gradient","共轭正交共轭梯度","COCG method for complex symmetric systems"),
+          ("Conjugate Orthogonal Conjugate Residual","共轭正交共轭残差","COCR method for complex symmetric systems"),
+          ("Quasi-Minimal Residual","准最小残差","QMR_SYM method for complex symmetric systems"),
+          ("quasi-residual vector","准残差向量","projected residual beta e_1 minus T y"),
+          ("conjugate A-orthogonalization","共轭 A-正交化","bilinear A-orthogonal process without normalization")]
     lookups=[]
     for english,chinese,context in termdata:
         domain="numerical linear algebra"
@@ -52,7 +59,8 @@ def audit():
         assert not local or all(x["Preferred Chinese"]==chinese for x in local)
         lookups.append({"English":english,"Domain":domain,"Context":context,"global_matches":global_matches,"reused_book_records":local})
         if not local:
-            row=dict.fromkeys(fields,"");row.update({"English":english,"Preferred Chinese":chinese,"Domain":domain,"Context":context,"Status":"proposed","First Source":m["ID"],"First Location":"Section 3.1 / PDF 85-102","Last Verified Source":m["ID"],"Last Verified Location":"Section 3.1 / PDF 85-102","Notes":"Book-local proposal; no global promotion."});terms.append(row)
+            loc="Section 3.2 / PDF 102-112" if prefix.endswith("02") else "Section 3.1 / PDF 85-102"
+            row=dict.fromkeys(fields,"");row.update({"English":english,"Preferred Chinese":chinese,"Domain":domain,"Context":context,"Status":"proposed","First Source":m["ID"],"First Location":loc,"Last Verified Source":m["ID"],"Last Verified Location":loc,"Notes":"Book-local proposal; no global promotion."});terms.append(row)
     m["tsv"]("glossary/candidates.tsv",fields,terms);m["dump"](f"qa/terminology/{prefix}-lookup.json",lookups)
     aux=(Path(q["build_directory"])/"main.aux").read_text(encoding="utf8");labels={}
     for h in re.finditer(r"\\newlabel\{([^}]+)\}\{",aux):
@@ -60,13 +68,14 @@ def audit():
         while pos<len(body):v,pos=m["brace"](body,pos);row.append(v)
         labels[h[1]]=row
     objects=[]
-    for kind,count in [("eq:",39),("alg:",5)]:
-        entries=[(k,v) for k,v in labels.items() if k.startswith(kind) and re.fullmatch(r"3\.\d+",v[0])]
-        assert sorted(int(v[0].split(".")[1]) for k,v in entries)==list(range(1,count+1)),entries
+    for kind,first,last in ([("eq:",40,55),("alg:",6,11)] if prefix.endswith("02") else [("eq:",1,39),("alg:",1,5)]):
+        entries=[(k,v) for k,v in labels.items() if k.startswith(kind) and re.fullmatch(r"3\.\d+",v[0]) and first<=int(v[0].split(".")[1])<=last]
+        assert sorted(int(v[0].split(".")[1]) for k,v in entries)==list(range(first,last+1)),entries
         for k,v in entries:
             block=next(x for x in blocks if r"\label{"+k+"}" in x["source_latex"])
             objects.append({"label":k,"source_number":v[0],"rendered_number":v[0],"output_page":int(v[1]),"destination":v[3],"source_block":block["id"],"source_pages":block["source_pages"]})
     original={"prop:cg-orthogonality":"Proposition 3.1","cor:cg-krylov-orthogonality":"Corollary 3.1","thm:cg-energy-optimality":"Theorem 3.1","thm:cg-condition-number-bound":"Theorem 3.2"}
+    if prefix.endswith("02"):original={}
     for key,value in original.items():
         v=labels[key];objects.append({"label":key,"source_number":value,"rendered_number":v[0],"output_page":int(v[1]),"destination":v[3]})
     pdf=B.root/"output/translation-progress.pdf";reader=PdfReader(pdf);dest=reader.named_destinations
@@ -80,12 +89,13 @@ def audit():
                 key=str(action["/D"]);assert key in dest,key
                 links.append({"page":i,"destination":key,"target_page":reader.get_destination_page_number(dest[key])+1})
     refs=[{"block_id":b["id"],"source_pages":b["source_pages"],"command":c,"label":k,"output_target_page":int(labels[k][1])} for b in blocks for c,k in re.findall(r"\\(eqref|ref)\{([^}]+)\}",b["source_latex"])]
-    m["dump"](f"qa/translation/{prefix}-references.json",{"passed":True,"objects":objects,"references":refs,"pdf_links":links,"external_citation_locators":[{"reference_key":"160","section":"2.4"},{"reference_key":"16","theorem":"2.2"}],"note":"External publication locators are citation metadata, not hard-coded local book object references."})
+    external=[{"reference_key":"196","page":"112"}] if prefix.endswith("02") else [{"reference_key":"160","section":"2.4"},{"reference_key":"16","theorem":"2.2"}]
+    m["dump"](f"qa/translation/{prefix}-references.json",{"passed":True,"objects":objects,"references":refs,"pdf_links":links,"external_citation_locators":external,"note":"External publication locators are citation metadata, not hard-coded local book object references."})
     for x in m["load"]("qa/batches/chapter-02-protected-inputs.json")["accepted_files"]:
         assert m["sha256_file"](B.root/x["path"])==x["sha256"],x["path"]
     formulas=sum(m["load"](f"qa/batches/{u}-content.json")["math_expressions"] for u in units)
-    m["dump"](f"qa/batches/{prefix}-automated-qa.json",{"passed":True,"units":units,"blocks":len(blocks),"math_expressions":formulas,"numbered_equations":39,"algorithms":5,"name_checks":len(checks),"compile":q,"visual_review":"pending","whole_chapter_three_complete":False,"whole_book_complete":False})
-    start=int(labels["chap:krylov-classification"][1]);out=B.assert_write_path(B.root/"workspace/pages"/(prefix+"-review")/q["pdf_sha256"][:16]);out.mkdir(parents=True,exist_ok=True)
+    m["dump"](f"qa/batches/{prefix}-automated-qa.json",{"passed":True,"units":units,"blocks":len(blocks),"math_expressions":formulas,"numbered_equations":16 if prefix.endswith("02") else 39,"algorithms":6 if prefix.endswith("02") else 5,"name_checks":len(checks),"compile":q,"visual_review":"pending","whole_chapter_three_complete":False,"whole_book_complete":False})
+    start=int(labels["sec:complex-symmetric-linear-systems" if prefix.endswith("02") else "chap:krylov-classification"][1]);out=B.assert_write_path(B.root/"workspace/pages"/(prefix+"-review")/q["pdf_sha256"][:16]);out.mkdir(parents=True,exist_ok=True)
     files=sorted(Path(q["render_directory"]).glob("page-*.png"),key=lambda p:int(re.search(r"(\d+)\.png",p.name)[1]))
     for n in range(start-1,len(files),6):
         sheet=Image.new("RGB",(1200,1700),"white");draw=ImageDraw.Draw(sheet)
@@ -101,26 +111,33 @@ def accept():
     issues=[json.loads(x) for x in B.issues.read_text(encoding="utf8").splitlines() if x.strip()]
     issueid=prefix+"-source-observations"
     if not any(x["id"]==issueid for x in issues):
-        issues.append({"id":issueid,"category":"source","severity":"warning","message":"Source inconsistencies and notation preserved without silent correction; see detailed report.","source_location":{"page":85},"confidence":1.0,"review_status":"reviewed","details":{"blocking":False,"report":f"qa/source/{prefix}-source-observations.md"}})
+        issues.append({"id":issueid,"category":"source","severity":"warning","message":"Source inconsistencies and notation preserved without silent correction; see detailed report.","source_location":{"page":102 if prefix.endswith("02") else 85},"confidence":1.0,"review_status":"reviewed","details":{"blocking":False,"report":f"qa/source/{prefix}-source-observations.md"}})
     m["write"]("qa/issues.jsonl","".join(json.dumps(x,ensure_ascii=False)+"\n" for x in issues))
     cfg=B.load_config();cfg.update({"status":"translating","last_batch_report":f"qa/batches/{prefix}-report.md"});m["dump"]("config/book.yaml",cfg)
     from mathbook.workflow import translate_book,next_incomplete_unit
     def status():
         m["write"]("PROJECT_STATUS.md",f"Book ID: {m['ID']}\nTitle: Krylov Subspace Methods for Linear Systems\nBranch: {R.branch}\nWorktree: {P.root}\nPhase: translation\nStatus: translating\nSource SHA-256: {cfg['source']['sha256']}\nTemplate version: {cfg['template_version']}\nSample approved: Yes\nApproved terminology: grade -> 阶\nCompleted content: Preface, Acknowledgements, Chapters 1 and 2, Chapter 3 introduction and Section 3.1\nLast integrated batch: chapter-03-section-01\nProgress output: output/translation-progress.pdf\nNext incomplete unit: {next_incomplete_unit(B)}\nBlocking issues: None\nUnresolved terminology: 0\nFull-book translation complete: No\nRemote push: No\n")
+        if prefix.endswith("02"):
+            text=(B.root/"PROJECT_STATUS.md").read_text(encoding="utf8").replace("Chapter 3 introduction and Section 3.1","Chapter 3 introduction and Sections 3.1-3.2").replace("Last integrated batch: chapter-03-section-01","Last integrated batch: chapter-03-section-02")
+            m["write"]("PROJECT_STATUS.md",text)
     class NeedNextUnit(Exception):pass
     def processor(book,unit):
         if unit not in units:raise NeedNextUnit(unit)
         with B.chapter_progress.open(encoding="utf8") as f:
             r=csv.DictReader(f,delimiter="\t");fields=r.fieldnames;rows=list(r)
         row=next(x for x in rows if x["Unit ID"]==unit);assert row["QA Status"]=="pending"
-        row.update({"QA Status":"passed","Notes":"Complete Chapter 3 introductory material / Section 3.1; source/math/name/reference/punctuation/compile/visual QA passed"})
+        row.update({"QA Status":"passed","Notes":f"Complete {unit}; source/math/name/reference/punctuation/compile/visual QA passed"})
         m["tsv"]("qa/chapter-progress.tsv",fields,rows);status()
     try:result=translate_book(P,m["ID"],processor=processor)
     except NeedNextUnit:
         state=m["load"]("qa/workflow-state.json");state.update({"status":"translating","next_unit":next_incomplete_unit(B)})
         m["dump"]("qa/workflow-state.json",state);status();result={"status":"translating","next_unit":next_incomplete_unit(B)}
+    if prefix.endswith("02"):
+        s=(B.root/"PROJECT_STATUS.md").read_text(encoding="utf8").replace("Chapter 3 introduction and Section 3.1","Chapter 3 introduction and Sections 3.1-3.2").replace("Last integrated batch: chapter-03-section-01","Last integrated batch: chapter-03-section-02")
+        m["write"]("PROJECT_STATUS.md",s)
     m["guard"]();print(json.dumps(result))
 
 if __name__=="__main__":
-    p=argparse.ArgumentParser();p.add_argument("action",choices=["audit","accept"],default="audit",nargs="?");args=p.parse_args()
+    p=argparse.ArgumentParser();p.add_argument("action",choices=["audit","accept"],default="audit",nargs="?");p.add_argument("--section",choices=["01","02"],default="01");args=p.parse_args()
+    if args.section=="02":units=["chapter-03-section-02"];prefix="chapter-03-section-02"
     audit() if args.action=="audit" else accept()

@@ -64,9 +64,16 @@ def render_chapter_two():
     print("Chapter 2 original source pages rendered; no translation or review inferred.")
 
 def render_chapter_three_first_section():
+    return render_source_range(85,102)
+
+def render_chapter_three_second_section():
+    return render_source_range(102,112)
+
+def render_source_range(first,last):
     guard()
+    assert 1<=first<=last<=len(PdfReader(B.require_source_pdf()).pages)
     out=B.assert_write_path(B.root/"workspace/pages/full");out.mkdir(parents=True,exist_ok=True)
-    for n in range(85,103):
+    for n in range(first,last+1):
         target=out/f"pdf-{n:03}.png"
         if not target.exists():
             subprocess.run([shutil.which("pdftoppm"),"-f",str(n),"-l",str(n),"-r","150","-singlefile","-png",str(B.require_source_pdf()),str(target.with_suffix(""))],check=True)

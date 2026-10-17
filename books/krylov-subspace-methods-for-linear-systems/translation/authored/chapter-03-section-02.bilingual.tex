@@ -1,0 +1,235 @@
+% block: complex-symmetric-systems-heading pages:102,103 type:section
+\subsection{\BT{Complex Symmetric Linear Systems}{复对称线性方程组}}\label{sec:complex-symmetric-linear-systems}
+\BT{In this section, we consider complex symmetric linear systems of the form}{本节考虑下列形式的复对称线性方程组}
+\[A\bm x=\bm b,\]
+\BT{where $A$ is complex symmetric, i.e., $A=A^{\top}$ and $A\ne A^{\mathrm H}$. Note that complex symmetric matrix $A$ is not Hermitian. Below is an example of a complex symmetric matrix:}{其中 $A$ 为复对称矩阵, 即 $A=A^{\top}$ 且 $A\ne A^{\mathrm H}$. 注意, 复对称矩阵 $A$ 不是 Hermitian 矩阵. 下面是复对称矩阵的一个例子:}
+\[A=\begin{bmatrix}1+i&2+i\\2+i&3\end{bmatrix}.\]
+\BT{For applications of complex symmetric linear systems, see the Helmholtz equation in Sect.\ \ref{subsec:helmholtz-difference} and a large-scale electronic structure calculation in Sect.\ \ref{subsec:electronic-structure}. This section describes the COCG method, the COCR method, and the QMR\_SYM method for solving complex symmetric linear systems. These methods reduce to the CG method, the CR method, and the MINRES method if these methods are applied to real symmetric linear systems. Other Krylov subspace methods and applications for complex symmetric linear systems, see, e.g., \BookCite{1}, \BookCite{30}, \BookCite{37}, \BookCite{40}, \BookCite{83}, \BookCite{84}, \BookCite{124}, \BookCite{141} and the references therein.}{关于复对称线性方程组的应用, 见 Section\ \ref{subsec:helmholtz-difference} 中的 Helmholtz 方程和 Section\ \ref{subsec:electronic-structure} 中的大规模电子结构计算. 本节介绍求解复对称线性方程组的 COCG 方法, COCR 方法和 QMR\_SYM 方法. 若将这些方法应用于实对称线性方程组, 则它们分别退化为 CG 方法, CR 方法和 MINRES 方法. 关于复对称线性方程组的其他 Krylov 子空间方法及应用, 例如见 \BookCite{1}, \BookCite{30}, \BookCite{37}, \BookCite{40}, \BookCite{83}, \BookCite{84}, \BookCite{124}, \BookCite{141} 及其中的参考文献.}
+% block: cocg-heading page:103 type:subsection
+\subsubsection{\BT{The Conjugate Orthogonal Conjugate Gradient (COCG) Method}{共轭正交共轭梯度 (COCG) 方法}}\label{subsec:cocg-method}
+\BT{The COCG method \BookCite{197} is the best-known method for solving complex symmetric linear systems. The algorithm can be formally derived by the CG method with the change of the dot product $(\bm a,\bm b)$ into $(\bar{\bm a},\bm b)$. Here $\bar{\bm a}$ denotes the complex conjugate of $\bm a$. With this rewrite, the algorithm of the COCG method is described in Algorithm\ \ref{alg:cocg}.}{COCG 方法 \BookCite{197} 是求解复对称线性方程组最著名的方法. 将点积 $(\bm a,\bm b)$ 改为 $(\bar{\bm a},\bm b)$, 可从 CG 方法形式上导出该算法. 这里 $\bar{\bm a}$ 表示 $\bm a$ 的复共轭. 经过这一改写, COCG 方法的算法见 Algorithm\ \ref{alg:cocg}.}
+% block: cocg-algorithm page:103 type:ordinary-paragraph
+\begin{algorithm}[H]\caption{\BT{The COCG method (note: $(\bar{\bm a},\bm b)=\bm a^{\top}\bm b$)}{COCG 方法 (注意: $(\bar{\bm a},\bm b)=\bm a^{\top}\bm b$)}}\label{alg:cocg}\begin{algorithmic}[1]
+\Statex\textbf{Input:} $\bm x_0\in\mathbb C^N,\ \beta_{-1}=0,\ \bm p_{-1}=\bm0,\ \bm r_0=\bm b-A\bm x_0$
+\Statex\textbf{Output:} $\bm x_n$
+\For{$n=0,1,2,\ldots$, \BT{until convergence}{直至收敛}}
+\State $\bm p_n=\bm r_n+\beta_{n-1}\bm p_{n-1}$
+\State $\alpha_n=\frac{(\bar{\bm r}_n,\bm r_n)}{(\bar{\bm p}_n,A\bm p_n)}$
+\State $\bm x_{n+1}=\bm x_n+\alpha_n\bm p_n$
+\State $\bm r_{n+1}=\bm r_n-\alpha_nA\bm p_n$
+\State $\beta_n=\frac{(\bar{\bm r}_{n+1},\bm r_{n+1})}{(\bar{\bm r}_n,\bm r_n)}$
+\EndFor\end{algorithmic}\end{algorithm}
+% block: cocg-orthogonality page:103 type:ordinary-paragraph
+\BT{The residual vector $\bm r_n$ of the COCG method satisfies the following relation:}{COCG 方法的残差向量 $\bm r_n$ 满足下列关系:}
+\[\bm r_n\perp\overline{\mathcal K_n(A,\bm r_0)},\]
+\BT{where $\overline{\mathcal K_n(A,\bm r_0)}:=\mathcal K_n(\bar A,\bar{\bm r}_0)$. From Algorithm\ \ref{alg:cocg}, it is easy to see that if matrix $A$ is a real symmetric matrix, then the COCG method is the same as the CG method. The preconditioned COCG method is described in Algorithm\ \ref{alg:pcocg}.}{其中 $\overline{\mathcal K_n(A,\bm r_0)}:=\mathcal K_n(\bar A,\bar{\bm r}_0)$. 由 Algorithm\ \ref{alg:cocg} 容易看出, 若矩阵 $A$ 为实对称矩阵, 则 COCG 方法与 CG 方法相同. 预条件 COCG 方法见 Algorithm\ \ref{alg:pcocg}.}
+% block: pcocg-algorithm page:104 type:ordinary-paragraph
+\begin{algorithm}[H]\caption{\BT{The preconditioned COCG method (note: $(\bar{\bm a},\bm b)=\bm a^{\top}\bm b$)}{预条件 COCG 方法 (注意: $(\bar{\bm a},\bm b)=\bm a^{\top}\bm b$)}}\label{alg:pcocg}\begin{algorithmic}[1]
+\Statex\textbf{Input:} $\bm x_0\in\mathbb C^N,\ \bm r_0=\bm b-A\bm x_0,\ \bm p_{-1}=\bm0,\ \beta_{-1}=0$
+\Statex\textbf{Output:} $\bm x_n$
+\For{$n=0,1,2,\ldots$, \BT{until convergence}{直至收敛}}
+\State $\bm p_n=K^{-1}\bm r_n+\beta_{n-1}\bm p_{n-1}$
+\State $\alpha_n=\frac{(\overline{K^{-1}\bm r_n},\bm r_n)}{(\bar{\bm p}_n,A\bm p_n)}$
+\State $\bm x_{n+1}=\bm x_n+\alpha_n\bm p_n$
+\State $\bm r_{n+1}=\bm r_n-\alpha_nA\bm p_n$
+\State $\beta_n=\frac{(\overline{K^{-1}\bm r_{n+1}},\bm r_{n+1})}{(\overline{K^{-1}\bm r_n},\bm r_n)}$
+\EndFor\end{algorithmic}\end{algorithm}
+% block: cocr-heading page:104 type:subsection
+\subsubsection{\BT{The Conjugate Orthogonal Conjugate Residual (COCR) Method}{共轭正交共轭残差 (COCR) 方法}}\label{subsec:cocr-method}
+\BT{The COCR method \BookCite{171} is also a Krylov subspace method for solving complex symmetric linear systems. The algorithm can be formally derived by the CR method with the change of the dot product $(\bm a,\bm b)$ into $(\bar{\bm a},\bm b)$. The COCR method produces approximate solutions such that the residual vector satisfies}{COCR 方法 \BookCite{171} 也是求解复对称线性方程组的 Krylov 子空间方法. 将点积 $(\bm a,\bm b)$ 改为 $(\bar{\bm a},\bm b)$, 可由 CR 方法形式上导出该算法. COCR 方法产生的近似解使残差向量满足}
+\[\bm r_n\perp\overline{A\mathcal K_n(A,\bm r_0)},\]
+\BT{where $\overline{A\mathcal K_n(A,\bm r_0)}:=\bar A\mathcal K_n(\bar A,\bar{\bm r}_0)$. From this, if matrix $A$ is real symmetric, the COCR method is identical to the CR method. This indicates that if $A$ is complex symmetric and is close to the real matrix, then it can be expected that the residual 2-norm tends to decrease almost monotonically or tends to show smooth convergence behavior. In what follows, the COCR method is derived. To begin with, the conjugate $A$-orthogonalization process is introduced in Algorithm\ \ref{alg:conjugate-a-orthogonalization}.}{其中 $\overline{A\mathcal K_n(A,\bm r_0)}:=\bar A\mathcal K_n(\bar A,\bar{\bm r}_0)$. 由此, 若矩阵 $A$ 为实对称矩阵, COCR 方法就与 CR 方法相同. 这表明, 若 $A$ 复对称且接近实矩阵, 则可以预期残差的 2-范数趋向于几乎单调下降, 或表现出平滑的收敛行为. 下面推导 COCR 方法. 首先在 Algorithm\ \ref{alg:conjugate-a-orthogonalization} 中引入共轭 $A$-正交化过程.}
+% block: conjugate-a-orthogonalization-algorithm page:104 type:ordinary-paragraph
+\begin{algorithm}[H]\caption{\BT{The conjugate $A$-orthogonalization process without normalization (note: $(\bar{\bm a},\bm b)=\bm a^{\top}\bm b$)}{不作归一化的共轭 $A$-正交化过程 (注意: $(\bar{\bm a},\bm b)=\bm a^{\top}\bm b$)}}\label{alg:conjugate-a-orthogonalization}\begin{algorithmic}[1]
+\Statex\textbf{Input:} $\bm v_0=\bm r_0=\bm b-A\bm x_0$
+\Statex\textbf{Input:} $t_{0,0}=(\overline{A\bm v_0},A\bm v_0)/(\bar{\bm v}_0,A\bm v_0)$
+\Statex\textbf{Input:} $\bm v_1=-\alpha_0(A\bm v_0-t_{0,0}\bm v_0)$
+\State $t_{0,0}=(\overline{A\bm v_1}A\bm v_1)/(\bar{\bm v}_1,A\bm v_1)$
+\State $\bm v_1=-\alpha_0(A\bm v_1-t_{0,0}\bm v_1)$
+\For{$n=1,2,\ldots,N-1$}
+\State $t_{n-1,n}=(\overline{A\bm v_{n-1}},A\bm v_n)/(\bar{\bm v}_{n-1},A\bm v_{n-1})$
+\State $t_{n,n}=(\overline{A\bm v_n},A\bm v_n)/(\bar{\bm v}_n,A\bm v_n)$
+\State $\bm v_{n+1}=-\alpha_n(A\bm v_n-t_{n,n}\bm v_n-t_{n-1,n}\bm v_{n-1})$
+\EndFor\end{algorithmic}\end{algorithm}
+% block: cocr-matrix-form pages:104,105 type:ordinary-paragraph
+\BT{Similar to the Lanczos process (Algorithm\ \ref{alg:lanczos}), the vectors $\bm v_i$'s of Algorithm\ \ref{alg:conjugate-a-orthogonalization} satisfy the following relations:}{与 Lanczos 过程 (Algorithm\ \ref{alg:lanczos}) 类似, Algorithm\ \ref{alg:conjugate-a-orthogonalization} 中的向量 $\bm v_i$ 满足下列关系:}
+\[\operatorname{span}\{\bm v_1,\bm v_2,\ldots,\bm v_n\}=\mathcal K_n(A,\bm r_0),\]
+\begin{equation}\label{eq:cocr-a-orthogonality}(\bar{\bm v}_i,A\bm v_j)=0\quad\text{for }i\ne j.\end{equation}
+\BT{In what follows, the COCR method is derived from Algorithm\ \ref{alg:conjugate-a-orthogonalization}. Let $\bm r_0:=\bm b-A\bm x_0$ be the initial residual vector for a given initial guess $\bm x_0$. Then, Algorithm\ \ref{alg:conjugate-a-orthogonalization} can be expressed in the following matrix form:}{下面从 Algorithm\ \ref{alg:conjugate-a-orthogonalization} 推导 COCR 方法. 对给定的初始猜测 $\bm x_0$, 令 $\bm r_0:=\bm b-A\bm x_0$ 为初始残差向量. 则 Algorithm\ \ref{alg:conjugate-a-orthogonalization} 可表示为下列矩阵形式:}
+\[A\underbrace{[\bm r_0,\bm r_1,\ldots,\bm r_{n-1}]}_{R_n}
+=\underbrace{[\bm r_0,\bm r_1,\ldots,\bm r_{n-1},\bm r_n]}_{R_{n+1}}
+\underbrace{\begin{bmatrix}t_{0,0}&t_{0,1}&&\\-\alpha_0^{-1}&t_{1,1}&\ddots&\\&-\alpha_1^{-1}&\ddots&t_{n-2,n-1}\\&&\ddots&t_{n-1,n-1}\\&&&-\alpha_{n-1}^{-1}\end{bmatrix}}_{T_{n+1,n}},\]
+\BT{where $t_{k-1,k}=\frac{(\overline{A\bm r_{k-1}},A\bm r_k)}{(\bar{\bm r}_{k-1},A\bm r_{k-1})}$ and $t_{k,k}=\frac{(\overline{A\bm r_k},A\bm r_k)}{(\bar{\bm r}_k,A\bm r_k)}$. From the above matrix form, we obtain}{其中 $t_{k-1,k}=\frac{(\overline{A\bm r_{k-1}},A\bm r_k)}{(\bar{\bm r}_{k-1},A\bm r_{k-1})}$, $t_{k,k}=\frac{(\overline{A\bm r_k},A\bm r_k)}{(\bar{\bm r}_k,A\bm r_k)}$. 由上述矩阵形式得到}
+\begin{equation}\label{eq:cocr-lanczos-matrix}AR_n=R_{n+1}T_{n+1,n}.\end{equation}
+\BT{Since the matrix $R_n$ is generated by Algorithm\ \ref{alg:conjugate-a-orthogonalization}, it follows from $A$-orthogonal property \eqref{eq:cocr-a-orthogonality} that we have $R_n^{\top}AR_n=D_n$, where $D_n$ is an $n$-by-$n$ diagonal matrix. The scalar parameters $\alpha_0,\ldots,\alpha_{n-1}$ still remain unknown. We show that if we determine the scalar parameters such that approximate solutions $\bm x_0,\ldots,\bm x_{n-1}$ can be extracted from the information of $\bm r_0,\ldots,\bm r_{n-1}$, then we obtain the algorithm of the COCR method.}{由于矩阵 $R_n$ 由 Algorithm\ \ref{alg:conjugate-a-orthogonalization} 生成, 由 $A$-正交性质 \eqref{eq:cocr-a-orthogonality} 有 $R_n^{\top}AR_n=D_n$, 其中 $D_n$ 为 $n$ 行 $n$ 列的对角矩阵. 标量参数 $\alpha_0,\ldots,\alpha_{n-1}$ 仍未知. 我们将说明, 若确定这些标量参数, 使得能够从 $\bm r_0,\ldots,\bm r_{n-1}$ 的信息中提取近似解 $\bm x_0,\ldots,\bm x_{n-1}$, 就得到 COCR 方法的算法.}
+% block: cocr-residual-extraction-condition pages:105,106 type:ordinary-paragraph
+\BT{Let $X_n:=[\bm x_0,\ldots,\bm x_{n-1}]$ and $\bm1$ be $[1,\ldots,1]^{\top}$. Then $R_n:=[\bm r_0,\bm r_1,\ldots,\bm r_{n-1}]$ and $X_n$ are related as follows:}{设 $X_n:=[\bm x_0,\ldots,\bm x_{n-1}]$, $\bm1$ 为 $[1,\ldots,1]^{\top}$. 则 $R_n:=[\bm r_0,\bm r_1,\ldots,\bm r_{n-1}]$ 与 $X_n$ 有如下关系:}
+\begin{equation}\label{eq:cocr-residual-solution-matrix}R_n=[\bm b-A\bm x_0,\bm b-A\bm x_1,\ldots,\bm b-A\bm x_{n-1}]=\bm b\bm1_n^{\top}-AX_n.\end{equation}
+\BT{Substituting \eqref{eq:cocr-residual-solution-matrix} into \eqref{eq:cocr-lanczos-matrix} yields}{将 \eqref{eq:cocr-residual-solution-matrix} 代入 \eqref{eq:cocr-lanczos-matrix}, 得}
+\[AR_n=(\bm b\bm1_{n+1}^{\top}-AX_{n+1})T_{n+1,n}.\]
+\BT{Then,}{于是,}
+\[R_n=(\bm x\bm1_{n+1}^{\top}-X_{n+1})T_{n+1,n},\]
+\BT{where $\bm x$ is the exact solution of the linear system $A\bm x=\bm b$. If the condition of the form}{其中 $\bm x$ 为线性方程组 $A\bm x=\bm b$ 的精确解. 若如下形式的条件}
+\begin{equation}\label{eq:cocr-extraction-zero-condition}\bm x\bm1_{n+1}^{\top}T_{n+1,n}=O_n\end{equation}
+\BT{holds, then $R_n=-X_{n+1}T_{n+1,n}$. The relation $R_n=-X_{n+1}T_{n+1,n}$ implies that the approximate solution vectors can be obtained by residual vectors. Conversely, if the relationship does not hold, the approximate solution vectors cannot be obtained by residual vectors.}{成立, 则 $R_n=-X_{n+1}T_{n+1,n}$. 关系 $R_n=-X_{n+1}T_{n+1,n}$ 表明, 可以由残差向量得到近似解向量. 反之, 若这一关系不成立, 就不能由残差向量得到近似解向量.}
+\BT{Since unknown parameters $\alpha_0,\ldots,\alpha_{n-1}$ in $T_{n+1,n}$ have not yet been determined, we determine the parameters so that \eqref{eq:cocr-extraction-zero-condition} holds. This leads to}{由于 $T_{n+1,n}$ 中的未知参数 $\alpha_0,\ldots,\alpha_{n-1}$ 尚未确定, 现确定这些参数使 \eqref{eq:cocr-extraction-zero-condition} 成立. 由此得到}
+\[\begin{aligned}\alpha_0^{-1}&=t_{0,0},\\\alpha_k^{-1}&=t_{k,k}+t_{k-1,k},\quad1\le k\le n-1.\end{aligned}\]
+% block: cocr-bidiagonal-factorization page:106 type:ordinary-paragraph
+\BT{Substituting the above recurrence into $T_{n+1,n}$, we have}{将上述递推关系代入 $T_{n+1,n}$, 有}
+\[T_{n+1,n}=\begin{bmatrix}\alpha_0^{-1}&t_{0,1}&&\\-\alpha_0^{-1}&\alpha_1^{-1}-t_{0,1}&\ddots&\\&-\alpha_1^{-1}&\ddots&t_{n-2,n-1}\\&&\ddots&\alpha_{n-1}^{-1}-t_{n-2,n-1}\\&&&-\alpha_{n-1}^{-1}\end{bmatrix}.\]
+\BT{Then, $T_{n+1,n}$ can be factorized as follows:}{于是, $T_{n+1,n}$ 可分解如下:}
+\[\begin{aligned}
+T_{n+1,n}&=\begin{bmatrix}1&&\\-1&\ddots&\\&\ddots&1\\&&-1\end{bmatrix}
+\begin{bmatrix}\alpha_0^{-1}&&\\&\ddots&\\&&\alpha_{n-1}^{-1}\end{bmatrix}
+\begin{bmatrix}1&\alpha_0t_{0,1}&&\\&1&\ddots&\\&&\ddots&\alpha_{n-2}t_{n-2,n-1}\\&&&1\end{bmatrix}\\
+&=B_{n+1,n}^{(L)}\Omega_n^{-1}B_n^{(U)}.
+\end{aligned}\]
+\BT{From \eqref{eq:cocr-lanczos-matrix} and the above factorization, we obtain}{由 \eqref{eq:cocr-lanczos-matrix} 和上述分解得到}
+\begin{equation}\label{eq:cocr-factorized-lanczos}
+AR_n=R_{n+1}T_{n+1,n}=R_{n+1}B_{n+1,n}^{(L)}\Omega_n^{-1}B_n^{(U)}.
+\end{equation}
+\BT{Here, $P_n:=R_n(B_n^{(U)})^{-1}$. From \eqref{eq:cocr-factorized-lanczos}, it follows that}{这里 $P_n:=R_n(B_n^{(U)})^{-1}$. 由 \eqref{eq:cocr-factorized-lanczos} 有}
+\begin{equation}\label{eq:cocr-direction-matrix}
+AP_n=AR_n(B_n^{(U)})^{-1}=R_{n+1}B_{n+1,n}^{(L)}\Omega_n^{-1}.
+\end{equation}
+\BT{The above matrix forms are equivalent to the following recurrences:}{上述矩阵形式等价于下列递推关系:}
+\begin{equation}\label{eq:cocr-residual-recurrence}\bm r_k=\bm r_{k-1}-\alpha_{k-1}A\bm p_{k-1},\quad1\le k\le n.\end{equation}
+\BT{From $P_n=R_n(B_n^{(U)})^{-1}$ it follows that}{由 $P_n=R_n(B_n^{(U)})^{-1}$ 得}
+\begin{equation}\label{eq:cocr-direction-recurrence}\bm p_k=\bm r_k+\beta_{k-1}\bm p_{k-1},\quad1\le k\le n,\end{equation}
+% block: cocr-solution-recurrence page:107 type:ordinary-paragraph
+\BT{where $\beta_{k-1}:=-\alpha_{k-1}t_{k-1,k}$. We now give the computational formulas of the approximate solutions. From \eqref{eq:cocr-direction-matrix},}{其中 $\beta_{k-1}:=-\alpha_{k-1}t_{k-1,k}$. 现在给出近似解的计算公式. 由 \eqref{eq:cocr-direction-matrix},}
+\[\begin{aligned}
+AP_n&=R_{n+1}B_{n+1,n}^{(L)}\Omega_n^{-1}\\
+&=(\bm b\bm1^{\top}-AX_{n+1})B_{n+1,n}^{(L)}\Omega_n^{-1}\\
+&=-AX_{n+1}B_{n+1,n}^{(L)}\Omega_n^{-1}.
+\end{aligned}\]
+\BT{Thus, we obtain}{因此得到}
+\[P_n\Omega_n=X_{n+1}(-B_{n+1,n}^{(L)}),\]
+\BT{and it is equivalent to}{它等价于}
+\begin{equation}\label{eq:cocr-solution-recurrence}\bm x_k=\bm x_{k-1}+\alpha_{k-1}\bm p_{k-1},\quad1\le k\le n.\end{equation}
+% block: cocr-beta-and-bilinear-symmetry page:107 type:ordinary-paragraph
+\BT{Now, we give more practical computational formulas of $\alpha_k$ and $\beta_k$. From \eqref{eq:cocr-lanczos-matrix}, it follows that}{现在给出 $\alpha_k$ 和 $\beta_k$ 更实用的计算公式. 由 \eqref{eq:cocr-lanczos-matrix} 得}
+\[(AR_n)^{\top}AR_n=R_n^{\top}AR_{n+1}T_{n+1,n}.\]
+\BT{From the $(k+1,k)$ element of the above relation, we have $(\overline{A\bm r_k},A\bm r_{k-1})=-\alpha_{k-1}^{-1}(\bar{\bm r}_k,A\bm r_k)$. Thus from $\beta_{k-1}=-\alpha_{k-1}t_{k-1,k}$, we obtain}{由上述关系的 $(k+1,k)$ 元素有 $(\overline{A\bm r_k},A\bm r_{k-1})=-\alpha_{k-1}^{-1}(\bar{\bm r}_k,A\bm r_k)$. 因此由 $\beta_{k-1}=-\alpha_{k-1}t_{k-1,k}$ 得}
+\begin{equation}\label{eq:cocr-beta}
+\beta_k=-\alpha_kt_{k,k+1}=\frac{(\bar{\bm r}_{k+1},A\bm r_{k+1})}{(\overline{A\bm r_{k+1}},A\bm r_k)}\times\frac{(\overline{A\bm r_k},A\bm r_{k+1})}{(\bar{\bm r}_k,A\bm r_k)}=\frac{(\bar{\bm r}_{k+1},A\bm r_{k+1})}{(\bar{\bm r}_k,A\bm r_k)}.
+\end{equation}
+\BT{Here, we used the relation $(\bar{\bm r}_k,A\bm r_{k+1})=(\bar{\bm r}_{k+1},A\bm r_k)$ because}{这里使用了关系 $(\bar{\bm r}_k,A\bm r_{k+1})=(\bar{\bm r}_{k+1},A\bm r_k)$, 因为}
+\begin{equation}\label{eq:cocr-bilinear-symmetry}
+(\bar{\bm r}_k,A\bm r_{k+1})=(\bar{\bm r}_k,A\bm r_{k+1})^{\top}=(\bm r_k^{\top}A\bm r_{k+1})^{\top}=(\bar{\bm r}_{k+1},A^{\top}\bm r_k)=(\bar{\bm r}_{k+1},A\bm r_k).
+\end{equation}
+% block: cocr-alpha-and-direction-orthogonality pages:107,108 type:ordinary-paragraph
+\BT{From \eqref{eq:cocr-direction-matrix} and recalling $P_n=R_n(B_n^{(U)})^{-1}$, it follows that}{由 \eqref{eq:cocr-direction-matrix}, 并回顾 $P_n=R_n(B_n^{(U)})^{-1}$, 得}
+\[(AP_n)^{\top}AP_n=(AP_n)^{\top}R_{n+1}B_{n+1,n}^{(L)}\Omega_n^{-1}
+=(B_n^{(U)})^{-\top}R_n^{\top}AR_{n+1}B_{n+1,n}^{(L)}\Omega_n^{-1}.\]
+\BT{$(B_n^{(U)})^{-\top}$ is a lower triangular matrix, and $A$-orthogonal property \eqref{eq:cocr-a-orthogonality} indicates that the off-diagonal elements of $R_n^{\top}AR_{n+1}$ are zeros. From this, $(AP_n)^{\top}AP_n$ is a lower triangular matrix of the form}{$(B_n^{(U)})^{-\top}$ 为下三角矩阵, $A$-正交性质 \eqref{eq:cocr-a-orthogonality} 表明 $R_n^{\top}AR_{n+1}$ 的非对角元素为零. 因而 \linebreak[4]$(AP_n)^{\top}AP_n$ 为如下形式的下三角矩阵}
+\[(AP_n)^{\top}AP_n=\begin{bmatrix}d_0&&&\\ *&\ddots&&\\\vdots&\ddots&\ddots&\\ *&\cdots&*&d_{n-1}\end{bmatrix},\]
+\BT{where $d_k=(\bar{\bm r}_k,\bm r_k)\alpha_k^{-1}$. Thus, we obtain}{其中 $d_k=(\bar{\bm r}_k,\bm r_k)\alpha_k^{-1}$. 因此得到}
+\begin{equation}\label{eq:cocr-alpha}\alpha_k=\frac{(\bar{\bm r}_k,A\bm r_k)}{(\overline{A\bm p_k},A\bm p_k)}.\end{equation}
+\BT{Moreover, since $(AP_n)^{\top}AP_n$ is complex symmetric, we have}{此外, 由于 $(AP_n)^{\top}AP_n$ 是复对称的, 有}
+\[(AP_n)^{\top}AP_n=\begin{bmatrix}d_0&&&\\ *&\ddots&&\\\vdots&\ddots&\ddots&\\ *&\cdots&*&d_{n-1}\end{bmatrix}
+=\begin{bmatrix}d_0&*&\cdots&*\\&\ddots&\ddots&\vdots\\&&\ddots&*\\&&&d_{n-1}\end{bmatrix},\]
+\BT{which means $(AP_n)^{\top}AP_n=\operatorname{diag}(d_0,\ldots,d_{n-1})$. Thus $\bm p_i$ and $\bm p_j$ are conjugate $A^2$-orthogonal, i.e.,}{这意味着 $(AP_n)^{\top}AP_n=\operatorname{diag}(d_0,\ldots,d_{n-1})$. 因此 $\bm p_i$ 和 $\bm p_j$ 共轭 $A^2$-正交, 即}
+\[(\overline{A\bm p_i},A\bm p_j)=0\quad\text{for }i\ne j.\]
+\BT{From \eqref{eq:cocr-residual-recurrence}--\eqref{eq:cocr-alpha}, we obtain the algorithm of the COCR method, which is listed in Algorithm\ \ref{alg:cocr}.}{由 \eqref{eq:cocr-residual-recurrence}--\eqref{eq:cocr-alpha} 得到 COCR 方法的算法, 见 Algorithm\ \ref{alg:cocr}.}
+% block: cocr-algorithm page:108 type:ordinary-paragraph
+\begin{algorithm}[H]\caption{\BT{The COCR method (note: $(\bar{\bm a},\bm b)=\bm a^{\top}\bm b$)}{COCR 方法 (注意: $(\bar{\bm a},\bm b)=\bm a^{\top}\bm b$)}}\label{alg:cocr}\begin{algorithmic}[1]
+\Statex\textbf{Input:} $\bm x_0\in\mathbb C^N,\ \beta_{-1}=0,\ \bm p_{-1}=\bm0,\ \bm r_0=\bm b-A\bm x_0$
+\Statex\textbf{Output:} $\bm x_n$
+\For{$n=0,1,2,\ldots$, \BT{until convergence}{直至收敛}}
+\State $\bm p_n=\bm r_n+\beta_{n-1}\bm p_{n-1}$
+\State $A\bm p_n=A\bm r_n+\beta_{n-1}A\bm p_{n-1}$
+\State $\alpha_n=\frac{(\bar{\bm r}_n,A\bm r_n)}{(\overline{A\bm p_n},A\bm p_n)}$
+\State $\bm x_{n+1}=\bm x_n+\alpha_n\bm p_n$
+\State $\bm r_{n+1}=\bm r_n-\alpha_nA\bm p_n$
+\State $\beta_n=\frac{(\bar{\bm r}_{n+1},A\bm r_{n+1})}{(\bar{\bm r}_n,A\bm r_n)}$
+\EndFor\end{algorithmic}\end{algorithm}
+% block: pcocr-transformation page:108 type:ordinary-paragraph
+\BT{When the COCR method is applied to the linear systems $K_1^{-1}AK_1^{-\top}\widetilde{\bm x}=K_1^{-1}\bm b$ ($\widetilde{\bm x}=K_1^{\top}\bm x$), the preconditioned COCR method can be obtained by the following rewrites:}{对线性方程组 $K_1^{-1}AK_1^{-\top}\widetilde{\bm x}=K_1^{-1}\bm b$ ($\widetilde{\bm x}=K_1^{\top}\bm x$) 应用 COCR 方法, 通过下列改写即可得到预条件 COCR 方法:}
+\[\widetilde{\bm x}_n\Rightarrow K_1^{\top}\bm x_n,\quad\widetilde{\bm p}_n\Rightarrow K_1^{\top}\bm p_n,\quad\widetilde{\bm r}_n\Rightarrow K_1^{-1}\bm r_n,\]
+\BT{where $A\approx K=K_1K_1^{\top}$. Then, we have the preconditioned COCR method which is described in Algorithm\ \ref{alg:pcocr}.}{其中 $A\approx K=K_1K_1^{\top}$. 于是得到 Algorithm\ \ref{alg:pcocr} 所述的预条件 COCR 方法.}
+% block: pcocr-algorithm page:109 type:ordinary-paragraph
+\begin{algorithm}[H]\caption{\BT{The preconditioned COCR method (note: $(\bar{\bm a},\bm b)=\bm a^{\top}\bm b$)}{预条件 COCR 方法 (注意: $(\bar{\bm a},\bm b)=\bm a^{\top}\bm b$)}}\label{alg:pcocr}\begin{algorithmic}[1]
+\Statex\textbf{Input:} $\bm x_0\in\mathbb C^N,\ \bm r_0=\bm b-A\bm x_0,\ \bm p_{-1}=\bm0,\ \beta_{-1}=0$
+\Statex\textbf{Output:} $\bm x_n$
+\For{$n=0,1,2,\ldots$, \BT{until convergence}{直至收敛}}
+\State $\bm p_n=K^{-1}\bm r_n+\beta_{n-1}\bm p_{n-1}$
+\State $(A\bm p_n=AK^{-1}\bm r_n+\beta_{n-1}A\bm p_{n-1})$
+\State $\alpha_n=\frac{(\overline{K^{-1}\bm r_n},AK^{-1}\bm r_n)}{(\overline{A\bm p_n},K^{-1}A\bm p_n)}$
+\State $\bm x_{n+1}=\bm x_n+\alpha_n\bm p_n$
+\State $\bm r_{n+1}=\bm r_n-\alpha_nA\bm p_n$
+\State $(K^{-1}\bm r_{n+1}=K^{-1}\bm r_n-\alpha_nK^{-1}A\bm p_n)$
+\State $\beta_n=\frac{(\overline{K^{-1}\bm r_{n+1}},AK^{-1}\bm r_{n+1})}{(\overline{K^{-1}\bm r_n},AK^{-1}\bm r_n)}$
+\EndFor\end{algorithmic}\end{algorithm}
+% block: pcocr-operation-count page:109 type:ordinary-paragraph
+\BT{Note that lines 3 and 7 in Algorithm\ \ref{alg:pcocr} are added for reducing the number of matrix--vector multiplications of the form $A\bm v$ and solving linear systems of the form $K\bm v=\bm w$, which is the same technique as described in the preconditioned CR method in Sect.\ \ref{subsec:conjugate-residual}.}{注意, Algorithm\ \ref{alg:pcocr} 中加入第 3 和第 7 行, 是为了减少形如 $A\bm v$ 的矩阵向量乘法及形如 $K\bm v=\bm w$ 的线性方程组求解次数, 这与 Section\ \ref{subsec:conjugate-residual} 中预条件 CR 方法所述的技术相同.}
+% block: qmr-sym-heading page:109 type:subsection
+\subsubsection{\BT{The Quasi-Minimal Residual (QMR\_SYM) Method}{准最小残差 (QMR\_SYM) 方法}}\label{subsec:qmr-sym}
+\BT{The QMR\_SYM method \BookCite{61} that is named in van der Vorst's book \BookCite{196}, p.112 is also a well-known Krylov subspace method for solving complex symmetric linear systems, which can be derived from the complex symmetric Lanczos process described in Sect.\ \ref{subsec:complex-symmetric-lanczos}.}{van der Vorst 的著作 \BookCite{196}, 第 112 页中命名的 QMR\_SYM 方法 \BookCite{61}, 也是求解复对称线性方程组的一种著名 Krylov 子空间方法, 可从 Section\ \ref{subsec:complex-symmetric-lanczos} 所述的复对称 Lanczos 过程导出.}
+\BT{This subsection describes the derivation process of the QMR\_SYM method. Let $V_n$ be an $N$-by-$n$ matrix whose column vectors are produced by the complex symmetric Lanczos process (Algorithm\ \ref{alg:complex-symmetric-lanczos}). Then, the QMR\_SYM method finds an approximate solution from}{本小节介绍 QMR\_SYM 方法的推导过程. 设 $V_n$ 为 $N$ 行 $n$ 列的矩阵, 其列向量由复对称 Lanczos 过程 (Algorithm\ \ref{alg:complex-symmetric-lanczos}) 生成. 则 QMR\_SYM 方法从下式寻找近似解}
+\begin{equation}\label{eq:qmr-sym-affine-solution}\bm x_n=\bm x_0+V_n\bm y_n,\quad\bm y_n\in\mathbb C^n.\end{equation}
+\BT{Here, $\bm y_n$ is to be determined by a condition as described later. Note that $\bm x_n$ lies in the affine space $\bm x_0+\mathcal K_n(A,\bm r_0)$. The corresponding residual vector is}{这里 $\bm y_n$ 由稍后所述的条件确定. 注意 $\bm x_n$ 位于仿射空间 $\bm x_0+\mathcal K_n(A,\bm r_0)$ 中. 相应的残差向量为}
+\[\bm r_n=\bm r_0-AV_n\bm y_n.\]
+\BT{From the matrix form of the complex symmetric Lanczos process \eqref{eq:complex-lanczos-matrix-relation}, it follows that}{由复对称 Lanczos 过程的矩阵形式 \eqref{eq:complex-lanczos-matrix-relation} 得}
+\[\bm r_n=\bm r_0-V_{n+1}T_{n+1,n}\bm y_n=V_{n+1}(\beta\bm e_1-T_{n+1,n}\bm y_n)\]
+% block: qmr-sym-quasi-minimal-residual page:110 type:ordinary-paragraph
+\BT{with $\beta:=\|\bm r_0\|$. The above derivation process is similar to that of the MINRES method in Sect.\ \ref{subsec:minres}. The difference is that if we choose $\bm y_n$ such that the norm of the residual is minimized as well as the MINRES method, then it may lead to a large amount of computational costs since}{其中 $\beta:=\|\bm r_0\|$. 上述推导过程与 Section\ \ref{subsec:minres} 中 MINRES 方法的推导相似. 区别在于, 若像 MINRES 方法一样选择 $\bm y_n$ 使残差范数达到极小值, 则可能导致大量计算开销, 因为}
+\begin{equation}\label{eq:qmr-sym-residual-norm-distinction}
+\|\bm r_n\|=\|V_{n+1}(\beta\bm e_1-T_{n+1,n}\bm y_n)\|\ne\|(\beta\bm e_1-T_{n+1,n}\bm y_n)\|,
+\end{equation}
+\BT{due to the fact that $V_{n+1}^{\mathrm H}V_{n+1}\ne I$. This means that we need to minimize $\|V_{n+1}(\beta\bm e_1-T_{n+1,n}\bm y_n)\|$ if we try to obtain a minimal residual approximate solution. As a result, the computational costs and memory requirements grow as the number of iterations increases.}{这是由于 $V_{n+1}^{\mathrm H}V_{n+1}\ne I$. 这意味着, 若试图得到最小残差近似解, 就需要极小化 $\|V_{n+1}(\beta\bm e_1-T_{n+1,n}\bm y_n)\|$. 结果是计算开销和内存需求随迭代次数增加而增长.}
+\BT{The QMR\_SYM method, therefore, is designed not by the minimal residual approach but by a quasi-minimal residual approach, i.e., choosing $\bm y_n$ such that}{因此, QMR\_SYM 方法不按最小残差途径设计, 而按准最小残差途径设计, 即选择 $\bm y_n$ 使得}
+\begin{equation}\label{eq:qmr-sym-projected-minimization}\bm y_n:=\operatorname*{arg\,min}_{\bm y\in\mathbb C^n}\|\beta\bm e_1-T_{n+1,n}\bm y\|.\end{equation}
+\BT{The resulting vector $\beta\bm e_1-T_{n+1,n}\bm y_n$ is referred to as a quasi-residual vector. Here, we note that if $V_n$ satisfies the relation $V_n^{\mathrm H}V_n=I_n$, then the above choice leads to the minimization of the residual norm. Since $A$ is complex symmetric, in general $V_n$ does not satisfy the relation $V_n^{\mathrm H}V_n=I_n$ except some special cases. One of the special cases is given in \BookCite{61}, which has the form}{所得向量 $\beta\bm e_1-T_{n+1,n}\bm y_n$ 称为准残差向量. 这里注意, 若 $V_n$ 满足关系 $V_n^{\mathrm H}V_n=I_n$, 则上述选择使残差范数达到极小值. 由于 $A$ 复对称, 除一些特殊情形外, 一般的 $V_n$ 不满足关系 $V_n^{\mathrm H}V_n=I_n$. 文献 \BookCite{61} 给出的一种特殊情形具有下列形式}
+\[A=B+i\sigma I,\quad B=B^{\top}\in\mathbb R^{N\times N},\quad\sigma\in\mathbb R.\]
+% block: qmr-sym-givens-solution page:110 type:ordinary-paragraph
+\BT{To achieve the minimization \eqref{eq:qmr-sym-projected-minimization}, Givens rotations described in Sect.\ \ref{subsec:minres} play an important role. Multiplying $\beta\bm e_1-T_{n+1,n}\bm y$ by Givens rotations $Q_n=G_n\cdots G_1$ such that $Q_n^{\mathrm H}Q_n=I_n$ and}{为实现极小化 \eqref{eq:qmr-sym-projected-minimization}, Section\ \ref{subsec:minres} 所述的 Givens 旋转起重要作用. 用满足 $Q_n^{\mathrm H}Q_n=I_n$ 和下式的 Givens 旋转 $Q_n=G_n\cdots G_1$ 乘以 $\beta\bm e_1-T_{n+1,n}\bm y$}
+\[Q_nT_{n+1,n}=\begin{bmatrix}R_n\\\bm0^{\top}\end{bmatrix},\]
+\BT{we have}{有}
+\begin{equation}\label{eq:qmr-sym-triangular-minimization}
+\min_{\bm y\in\mathbb C^n}\|\beta\bm e_1-T_{n+1,n}\bm y\|=\min_{\bm y\in\mathbb C^n}\left\|\begin{bmatrix}\bm g_n\\g_{n+1}\end{bmatrix}-\begin{bmatrix}R_n\\\bm0^{\top}\end{bmatrix}\bm y\right\|,
+\end{equation}
+\BT{where}{其中}
+\[\begin{bmatrix}\bm g_n\\g_{n+1}\end{bmatrix}=\beta Q_n\bm e_1\]
+\BT{and $R_n$ is an upper triangular matrix. Thus, we have $\bm y_n=R_n^{-1}\bm g_n$ as the solution of \eqref{eq:qmr-sym-triangular-minimization}, from which, together with \eqref{eq:qmr-sym-affine-solution}, we obtain the approximate solution $\bm x_n=\bm x_0+V_nR_n^{-1}\bm g_n$. Similar to the MINRES method, introducing $P_n:=V_nR_n^{-1}$ gives a three-term recurrence relation. Then, we have a more practical formula of $\bm x_n$:}{且 $R_n$ 为上三角矩阵. 于是 \eqref{eq:qmr-sym-triangular-minimization} 的解为 $\bm y_n=R_n^{-1}\bm g_n$, 结合 \eqref{eq:qmr-sym-affine-solution}, 得到近似解 $\bm x_n=\bm x_0+V_nR_n^{-1}\bm g_n$. 与 MINRES 方法类似, 引入 $P_n:=V_nR_n^{-1}$ 可给出三项递推关系. 于是有 $\bm x_n$ 更实用的计算公式:}
+% block: qmr-sym-residual-update page:111 type:ordinary-paragraph
+\[\bm x_i=\bm x_{i-1}+g_i\bm p_i,\quad i=1,\ldots,n,\]
+\BT{where $g_i$ and $\bm p_i$ are the $i$th element of $\bm g_n$ and the $i$th column of $P_n$ respectively. The complete algorithm of the QMR\_SYM method is described in Algorithm\ \ref{alg:qmr-sym}. Unlike the MINRES method, the residual norm $\|\bm r_n\|$ is not obtained from \eqref{eq:qmr-sym-triangular-minimization} due to the relation \eqref{eq:qmr-sym-residual-norm-distinction}. Thus the problem is how to compute $\|\bm r_n\|$ for evaluating the quality of approximate solutions. One simple solution is to compute $\|\bm b-A\bm x_n\|$, which requires an additional matrix--vector multiplication per iteration. On the other hand, it is possible to circumvent the computation of the matrix--vector multiplication. The technique is given next. Similar to the MINRES method, the approximate solutions of the QMR\_SYM method are given by}{其中 $g_i$ 和 $\bm p_i$ 分别为 $\bm g_n$ 的第 $i$ 个元素和 $P_n$ 的第 $i$ 列. QMR\_SYM 方法的完整算法见 Algorithm\ \ref{alg:qmr-sym}. 与 MINRES 方法不同, 由于关系 \eqref{eq:qmr-sym-residual-norm-distinction}, 不能从 \eqref{eq:qmr-sym-triangular-minimization} 得到残差范数 $\|\bm r_n\|$. 因此问题是如何计算 $\|\bm r_n\|$ 以评价近似解的质量. 一种简单办法是计算 $\|\bm b-A\bm x_n\|$, 但每次迭代需要额外一次矩阵向量乘法. 另一方面, 可以避免这次矩阵向量乘法计算. 下面给出这一技术. 与 MINRES 方法类似, QMR\_SYM 方法的近似解由下式给出}
+\[\begin{aligned}\bm p_n&=\frac1{t_{n,n}}(\bm v_n-t_{n-2,n}\bm p_{n-2}-t_{n-1,n}\bm p_{n-1}),\\\bm x_n&=\bm x_{n-1}+g_n\bm p_n.\end{aligned}\]
+\BT{Since $\bm r_n=\bm b-A\bm x_n$, we have}{由于 $\bm r_n=\bm b-A\bm x_n$, 有}
+\[\bm r_n=\bm r_{n-1}-g_nA\bm p_n.\]
+\BT{Here, $A\bm p_n$ can be updated by}{这里 $A\bm p_n$ 可按下式更新}
+\[A\bm p_n=\frac1{t_{n,n}}(A\bm v_n-t_{n-2,n}A\bm p_{n-2}-t_{n-1,n}A\bm p_{n-1}).\]
+\BT{Since $A\bm v_n$ is computed by the complex symmetric Lanczos process, we can compute the residual 2-norm $\|\bm r_n\|$ without the direct computation of $\|\bm b-A\bm x_n\|$, leading to a cost-efficient evaluation of $\|\bm r_n\|$ to check the convergence. These recurrences are added to lines 24--26 in Algorithm\ \ref{alg:qmr-sym}.}{由于复对称 Lanczos 过程中已计算 $A\bm v_n$, 可以不直接计算 $\|\bm b-A\bm x_n\|$ 而计算残差的 2-范数 $\|\bm r_n\|$, 从而以较低开销评价 $\|\bm r_n\|$ 来检查收敛. 这些递推式加入 Algorithm\ \ref{alg:qmr-sym} 的第 24--26 行.}
+% block: qmr-sym-algorithm page:112 type:ordinary-paragraph
+\begin{algorithm}[H]\caption{\BT{The QMR\_SYM method (note: $(\bar{\bm a},\bm b)=\bm a^{\top}\bm b$)}{QMR\_SYM 方法 (注意: $(\bar{\bm a},\bm b)=\bm a^{\top}\bm b$)}}\label{alg:qmr-sym}\begin{algorithmic}[1]
+\Statex\textbf{Input:} $\bm x_0\in\mathbb C^N,\ \beta_0=0,\ \bm v_0=\bm p_{-1}=\bm p_0=\bm0,\ \bm r_0=\bm b-A\bm x_0$
+\Statex\textbf{Output:} $\bm x_n$
+\State $\bm g=(\|\bm r_0\|,0,\ldots,0)^{\top},\ \bm v_1=\bm r_0/\|\bm r_0\|$
+\For{$n=1,2,\ldots$}
+\State (\BT{Complex symmetric Lanczos process}{复对称 Lanczos 过程})
+\State $\alpha_n=(\bar{\bm v}_n,A\bm v_n)$
+\State $\widetilde{\bm v}_{n+1}=A\bm v_n-\alpha_n\bm v_n-\beta_{n-1}\bm v_{n-1}$
+\State $\beta_n=(\overline{\widetilde{\bm v}_{n+1}},\widetilde{\bm v}_{n+1})^{1/2}$
+\State $\bm v_{n+1}=\widetilde{\bm v}_{n+1}/\beta_n$
+\State $t_{n-1,n}=\beta_{n-1},\ t_{n,n}=\alpha_n$
+\State $t_{n+1,n}=\beta_n$
+\State (Givens \BT{rotations}{旋转})
+\State \textbf{for} $i=\max\{1,n-2\},\ldots,n-1$ \textbf{do}
+\State $\begin{bmatrix}t_{i,n}\\t_{i+1,n}\end{bmatrix}=\begin{bmatrix}c_i&s_i\\-\bar s_i&c_i\end{bmatrix}\begin{bmatrix}t_{i,n}\\t_{i+1,n}\end{bmatrix}$
+\State \textbf{end for}
+\State $c_n=\frac{|t_{n,n}|}{\sqrt{|t_{n,n}|^2+|t_{n+1,n}|^2}}$
+\State $\bar s_n=\frac{t_{n+1,n}}{t_{n,n}}c_n$
+\State $t_{n,n}=c_nt_{n,n}+s_nt_{n+1,n}$
+\State $t_{n+1,n}=0$
+\State $\begin{bmatrix}g_n\\g_{n+1}\end{bmatrix}=\begin{bmatrix}c_n&s_n\\-\bar s_n&c_n\end{bmatrix}\begin{bmatrix}g_n\\0\end{bmatrix}$
+\State (\BT{Update}{更新} $\bm x_n$)
+\State $\bm p_n=(\bm v_n-t_{n-2,n}\bm p_{n-2}$
+\State $\qquad-t_{n-1,n}\bm p_{n-1})/t_{n,n}$
+\State $\bm x_n=\bm x_{n-1}+g_n\bm p_n$
+\State (\BT{Check convergence}{检查收敛})
+\State $A\bm p_n=(A\bm v_n-t_{n-2,n}A\bm p_{n-2}$
+\State $\qquad-t_{n-1,n}A\bm p_{n-1})/t_{n,n}$
+\State $\bm r_n=\bm r_{n-1}-g_nA\bm p_n$
+\State \BT{if $\|\bm r_n\|/\|\bm b\|\le\epsilon$, then stop}{若 $\|\bm r_n\|/\|\bm b\|\le\epsilon$, 则停止}
+\EndFor\end{algorithmic}\end{algorithm}
