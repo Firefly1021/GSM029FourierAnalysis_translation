@@ -52,6 +52,26 @@ def prepare():
     guard()
     print("Full text extracted as UNREVIEWED. First-chapter source pages rendered.")
 
+def render_chapter_two():
+    guard()
+    out=B.assert_write_path(B.root/"workspace/pages/full");out.mkdir(parents=True,exist_ok=True)
+    for n in range(43,85):
+        target=out/f"pdf-{n:03}.png"
+        if not target.exists():
+            subprocess.run([shutil.which("pdftoppm"),"-f",str(n),"-l",str(n),"-r","150","-singlefile","-png",
+                            str(B.require_source_pdf()),str(target.with_suffix(""))],check=True)
+    guard()
+    print("Chapter 2 original source pages rendered; no translation or review inferred.")
+
+def render_chapter_three_first_section():
+    guard()
+    out=B.assert_write_path(B.root/"workspace/pages/full");out.mkdir(parents=True,exist_ok=True)
+    for n in range(85,103):
+        target=out/f"pdf-{n:03}.png"
+        if not target.exists():
+            subprocess.run([shutil.which("pdftoppm"),"-f",str(n),"-l",str(n),"-r","150","-singlefile","-png",str(B.require_source_pdf()),str(target.with_suffix(""))],check=True)
+    guard()
+
 def brace(text,start):
     assert text[start]=="{"
     depth=1;i=start+1
@@ -81,6 +101,8 @@ def math(text):
 MARK=re.compile(r"^% block: ([\w-]+) pages?:([\d,]+) type:([\w-]+)\n",re.M)
 def metadata(unit):
     guard()
+    rows=list(csv.DictReader(B.chapter_progress.open(encoding="utf-8"),delimiter="\t"))
+    assert next(r for r in rows if r["Unit ID"]==unit)["QA Status"]!="passed", "Accepted units are immutable"
     data=(B.root/f"translation/authored/{unit}.bilingual.tex").read_text(encoding="utf-8")
     en,zh=language(data,0),language(data,1)
     em,zm=list(MARK.finditer(en)),list(MARK.finditer(zh))
@@ -157,6 +179,10 @@ def assemble():
 \input{translation-macros.tex}
 \renewcommand{\thetable}{\thesection.\arabic{table}}
 \counterwithin{algorithm}{section}
+\counterwithin{table}{section}
+\counterwithin{figure}{section}
+\setcounter{secnumdepth}{4}
+\newcounter{applicationexample}[section]
 \newcommand{\BookCite}[1]{\hyperref[bib:source-#1]{[\ref*{bib:source-#1}]}}
 \begin{document}
 \begin{center}{\Large Krylov Subspace Methods for Linear Systems}\\全书翻译进度稿\end{center}
@@ -186,6 +212,10 @@ def assemble():
       "chap:shifted-linear-systems":("4",175,"163","Applications to Shifted Linear Systems"),
       "chap:matrix-functions":("5",201,"189","Applications to Matrix Functions"),
       "subsec:conjugate-gradient":("3.1.1",85,"73","The Conjugate Gradient (CG) Method"),
+      "sec:hermitian-linear-systems":("3.1",85,"73","Hermitian Linear Systems"),
+      "sec:complex-symmetric-linear-systems":("3.2",102,"90","Complex Symmetric Linear Systems"),
+      "sec:nonhermitian-linear-systems":("3.3",111,"99","Non-Hermitian Linear Systems"),
+      "subsec:newton-matrix-square-root":("5.3.1",206,"194","Matrix Square Root"),
       "sec:symmetric-direct-methods":("1.4",22,"9","Direct Methods for Symmetric Linear Systems"),
       "subsec:stationary-preconditioners":("3.5.4",172,"160","Preconditioners Based on Stationary Iterative Methods"),
       "subsec:preconditioner-reorderings":("3.5.5",173,"161","Reorderings for Preconditioners"),

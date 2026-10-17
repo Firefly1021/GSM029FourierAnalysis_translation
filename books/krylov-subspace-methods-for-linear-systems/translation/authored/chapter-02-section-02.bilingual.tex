@@ -1,0 +1,116 @@
+% block: computational-physics-heading page:63 type:section
+\subsection{\BT{Computational Physics}{计算物理}}\label{sec:computational-physics}
+% block: electronic-structure-heading page:63 type:subsection
+\subsubsection{\BT{Large-Scale Electronic Structure Calculation}{大规模电子结构计算}}\label{subsec:electronic-structure}
+\BT{Molecular dynamics simulations in large scale systems can be efficiently computed by using the one-body density matrix $\rho$, which is based on the fact that any physical quantity $\langle X\rangle$ can be obtained by}{利用单体密度矩阵 $\rho$, 可以高效计算大规模系统的分子动力学模拟, 其依据是任意物理量 $\langle X\rangle$ 均可由下式得到}
+\[\langle X\rangle=\operatorname{Tr}(\rho X)=\iint\rho(\boldsymbol{r},\boldsymbol{r}')X(\boldsymbol{r}',\boldsymbol{r})\,\mathrm d\boldsymbol{r}\mathrm d\boldsymbol{r}'\]
+\BT{and the corresponding discretization form is written as}{相应的离散形式为}
+\[\sum_{i,j}\rho_{ij}X_{ji}.\]
+\BT{It is important to note here that if $X$ is a short-range operator, we only need the short-range behavior of the density matrix. As an extreme example, if $X$ is a diagonal matrix (i.e., off-diagonal elements are zeros), then we only need the diagonal element of the density matrix because $\sum_{i,j}\rho_{ij}X_{ji}=\sum_i\rho_{ii}X_{ii}$, leading to very efficient computation.}{这里需特别注意, 若 $X$ 是短程算子, 则只需密度矩阵的短程行为. 作为极端例子, 若 $X$ 为对角矩阵 (即非对角元素为零), 则因为 $\sum_{i,j}\rho_{ij}X_{ji}=\sum_i\rho_{ii}X_{ii}$, 只需密度矩阵的对角元素, 从而计算非常高效.}
+% block: density-matrix-green-function pages:63,64 type:ordinary-paragraph
+\BT{In what follows, we explain the density matrix $\rho$ in detail. It is known that the $(i,j)$ element of the density matrix $\rho$ is given by}{下面详细说明密度矩阵 $\rho$. 已知密度矩阵 $\rho$ 的 $(i,j)$ 元素为}
+\begin{equation}\label{eq:density-matrix-green-integral}
+\rho_{ij}=-\frac1\pi\int_{-\infty}^{\infty}\operatorname{Im}G_{ij}(\epsilon)f\left(\frac{\epsilon-\mu}{K_BT}\right)\,\mathrm d\epsilon,
+\end{equation}
+\BT{where $f(x)$ is the Fermi distribution function, $\mu$ is a chemical potential that may be determined so that the total number of electrons equals the sum of the diagonal elements of the density matrix. Here, $G_{ij}(\epsilon)$ is the $(i,j)$ element of the following matrix:}{其中 $f(x)$ 是 Fermi 分布函数, $\mu$ 是化学势, 可由电子总数等于密度矩阵对角元素之和这一要求确定. 这里 $G_{ij}(\epsilon)$ 是下列矩阵的 $(i,j)$ 元素:}
+\begin{equation}\label{eq:green-function-resolvent}
+G(\epsilon)=[(\epsilon+i\delta)I-H]^{-1},
+\end{equation}
+\BT{where $i$ is the unit imaginary number, $\delta$ is an (infinitely) small positive number ($\delta\to0_+$), and $I$ and $H$ are the identity matrix and a Hamiltonian matrix. The matrix $G$ is referred to as Green's function. The $(i,j)$ element of the Hamiltonian matrix $H$ may be given by the following real space integration:}{其中 $i$ 是虚数单位, $\delta$ 为一个 (无穷) 小的正数 ($\delta\to0_+$), $I$ 和 $H$ 分别为单位矩阵和 Hamiltonian 矩阵. 矩阵 $G$ 称为 Green 函数. Hamiltonian 矩阵 $H$ 的 $(i,j)$ 元素可由下列实空间积分给出:}
+\[H_{ij}=\int f_i(\boldsymbol{r})\left(\frac{-\hbar}{2m}\Delta+V(\boldsymbol{r})\right)f_j(\boldsymbol{r})\,\mathrm d\boldsymbol{r},\]
+\BT{where $m$ and $\hbar$ are the mass of the electron and the (reduced) Planck constant, $\Delta$ is the Laplacian. $f_j(\boldsymbol{r})$'s are prescribed functions that are linearly independent. $V(\boldsymbol{r})$ is a prescribed function regarding the interactions between electrons and nuclei. For the details, see, e.g., \BookCite{184}, \BookCite{190} and the references therein.}{其中 $m$ 和 $\hbar$ 分别为电子质量和 (约化) Planck 常数, $\Delta$ 是 Laplacian 算子. $f_j(\boldsymbol{r})$ 为给定的线性无关函数. $V(\boldsymbol{r})$ 为描述电子与原子核间相互作用的给定函数. 详情例如见 \BookCite{184}, \BookCite{190} 及其中的参考文献.}
+% block: electronic-shifted-systems page:64 type:ordinary-paragraph
+\BT{We now describe how linear systems arise from the above computation. Let $\boldsymbol{e}_i$ be the $i$th unit vector. Then from \eqref{eq:green-function-resolvent}, the $(i,j)$ element of $G(\epsilon)$ is calculated by}{现在说明上述计算如何产生线性方程组. 设 $\boldsymbol{e}_i$ 为第 $i$ 个单位向量. 则由 \eqref{eq:green-function-resolvent}, $G(\epsilon)$ 的 $(i,j)$ 元素由下式计算}
+\[G_{ij}(\epsilon)=\boldsymbol{e}_i^{\top}[(\epsilon+i\delta)I-H]^{-1}\boldsymbol{e}_j.\]
+\BT{Therefore, letting $\boldsymbol{x}_j=[(\epsilon+i\delta)I-H]^{-1}\boldsymbol{e}_j$ yields}{因此, 令 $\boldsymbol{x}_j=[(\epsilon+i\delta)I-H]^{-1}\boldsymbol{e}_j$, 得}
+\[[(\epsilon+i\delta)I-H]\boldsymbol{x}_j=\boldsymbol{e}_j,\]
+\BT{which is a linear system. In computational physics, the Hamiltonian matrix $H$ is Hermitian or real symmetric. If $H$ is real symmetric, the coefficient matrix $(\epsilon+i\delta)I-H$ is complex symmetric. Furthermore, for computing the integration in \eqref{eq:density-matrix-green-integral}, a suitable numerical quadrature formula is used, which requires $G_{ij}(\epsilon_k)$ for $k=1,2,\ldots,m$. Thus, for computing the $(i,j)$ element of the density matrix $\rho_{i,j}$, we need to solve linear systems of the form}{这是一个线性方程组. 在计算物理中, Hamiltonian 矩阵 $H$ 为 Hermitian 矩阵或实对称矩阵. 若 $H$ 为实对称矩阵, 则系数矩阵 $(\epsilon+i\delta)I-H$ 为复对称矩阵. 此外, 计算 \eqref{eq:density-matrix-green-integral} 中的积分时, 使用适当的数值求积公式, 需要计算 $k=1,2,\ldots,m$ 时的 $G_{ij}(\epsilon_k)$. 因而, 为计算密度矩阵的 $(i,j)$ 元素 $\rho_{i,j}$, 需要求解下列形式的线性方程组}
+\[(A+\sigma_kI)\boldsymbol{x}_j^{(k)}=\boldsymbol{b},\quad k=1,2,\ldots,m,\]
+\BT{where $A:=i\delta I-H$, $\boldsymbol{b}:=\boldsymbol{e}_j$ and $\sigma_k:=\epsilon_k$. These are known as shifted linear systems, which are efficiently solved by Krylov subspace methods by utilizing the shift-invariance of Krylov subspace. Krylov subspace methods for shifted linear systems are described in Chap.\ \ref{chap:shifted-linear-systems}.}{其中 $A:=i\delta I-H$, $\boldsymbol{b}:=\boldsymbol{e}_j$, $\sigma_k:=\epsilon_k$. 这称为移位线性方程组, 利用 Krylov 子空间的移位不变性, 可用 Krylov 子空间方法高效求解. 移位线性方程组的 Krylov 子空间方法将在 Chapter\ \ref{chap:shifted-linear-systems} 中介绍.}
+% block: lattice-qcd-heading pages:64,65 type:subsection
+\subsubsection{\BT{Lattice Quantum Chromodynamics}{格点量子色动力学}}\label{subsec:lattice-qcd}
+\BT{Quantum chromodynamics (QCD) is the theory of the strong interaction between quarks and gluons, and lattice QCD is a non-perturbative approach to solving QCD, where the theory is formulated on a lattice in space and time. It is known that the most time-consuming part of lattice QCD is solving linear systems}{量子色动力学 (QCD) 是描述夸克和胶子之间强相互作用的理论, 而格点 QCD 是求解 QCD 的一种非微扰途径, 将该理论建立在时空格点上. 已知格点 QCD 中最耗时的部分是求解线性方程组}
+\[A\boldsymbol{x}=\boldsymbol{b},\]
+\BT{which are often written as $A\psi=\phi$ and the solution is used for obtaining quark propagators. For the details of the quark propagators including a summary of lattice QCD, see, e.g., \BookCite{69}. In the following, we describe the structure of the Wilson fermion matrix $A$.}{它常写成 $A\psi=\phi$, 所得解用于获得夸克传播子. 关于夸克传播子的详情及格点 QCD 的概述, 例如见 \BookCite{69}. 下面介绍 Wilson 费米子矩阵 $A$ 的结构.}
+% block: wilson-hopping-matrix page:65 type:ordinary-paragraph
+\BT{The Wilson fermion matrix is written as $A=I-\kappa D$, where $I$ is the identity matrix, and $\kappa$ is a real nonnegative parameter, referred to as the hopping parameter. Matrix $D$ is called the hopping matrix. We now explain the structure of the hopping matrix.}{Wilson 费米子矩阵可写成 $A=I-\kappa D$, 其中 $I$ 是单位矩阵, $\kappa$ 是非负实参数, 称为跃迁参数. 矩阵 $D$ 称为跃迁矩阵. 现在说明跃迁矩阵的结构.}
+\BT{Let us consider a four-dimensional hypercubic lattice which can be regarded as an equispaced grid of the hypercube. Each grid point can be written as a vector $\boldsymbol{x}$ such that}{考虑四维超立方格点, 它可看作超立方体的等距网格. 每个网格点可写成向量 $\boldsymbol{x}$, 满足}
+\[\boldsymbol{x}\in\Omega:=\{(x_1,x_2,x_3,x_4):x_1,x_2,x_3,x_4\in\{1,2,\ldots,N\}\}.\]
+\BT{For simplicity, we assume that $x_1,x_2,x_3,x_4$ run from 1 to the same number $N$. Then it is easy to see that the number of elements of $\Omega$ is $N^4$. Using $\boldsymbol{x},\boldsymbol{y}\in\Omega$, the hopping matrix $D$ is written by block matrix form}{为简单起见, 假设 $x_1,x_2,x_3,x_4$ 均从 1 取到相同的数 $N$. 容易看出, $\Omega$ 的元素个数为 $N^4$. 利用 $\boldsymbol{x},\boldsymbol{y}\in\Omega$, 将跃迁矩阵 $D$ 写成分块矩阵形式}
+\begin{equation}\label{eq:wilson-hopping-block}
+D(\boldsymbol{x};\boldsymbol{y})=\sum_{\mu=1}^4\left\{[(I_4-\gamma_\mu)\otimes U_\mu(\boldsymbol{x})]\delta_{\boldsymbol{x},\boldsymbol{y}-\boldsymbol{e}_\mu}
++[(I_4+\gamma_\mu)\otimes U_\mu^{\mathrm H}(\boldsymbol{x}-\boldsymbol{e}_\mu)]\delta_{\boldsymbol{x},\boldsymbol{y}+\boldsymbol{e}_\mu}\right\}.
+\end{equation}
+% block: wilson-full-block-matrix page:65 type:ordinary-paragraph
+\BT{Here, $\delta_{\boldsymbol{x},\boldsymbol{y}}$ is the Kronecker delta, i.e., $\delta_{\boldsymbol{x},\boldsymbol{y}}=1$ if $\boldsymbol{x}=\boldsymbol{y}$ and $\delta_{\boldsymbol{x},\boldsymbol{y}}=0$ if $\boldsymbol{x}\ne\boldsymbol{y}$. $D(\boldsymbol{x};\boldsymbol{y})$ is a small matrix of the size $12\times12$ and the hopping matrix $D$ is given as follows:}{这里 $\delta_{\boldsymbol{x},\boldsymbol{y}}$ 为 Kronecker 符号, 即当 $\boldsymbol{x}=\boldsymbol{y}$ 时 $\delta_{\boldsymbol{x},\boldsymbol{y}}=1$, 当 $\boldsymbol{x}\ne\boldsymbol{y}$ 时 $\delta_{\boldsymbol{x},\boldsymbol{y}}=0$. $D(\boldsymbol{x};\boldsymbol{y})$ 是规模为 $12\times12$ 的小矩阵, 跃迁矩阵 $D$ 如下:}
+\[\begin{aligned}
+D&=\begin{bmatrix}D_{1,1}&D_{1,2}&\cdots&D_{1,N^4}\\D_{2,1}&D_{2,2}&\cdots&D_{2,N^4}\\\vdots&\vdots&\ddots&\vdots\\D_{N^4,1}&D_{N^4,2}&\cdots&D_{N^4,N^4}\end{bmatrix}\\
+&=\begin{bmatrix}
+D(1,1,1,1;1,1,1,1)&D(1,1,1,1;1,1,1,2)&\cdots&D(1,1,1,1;N,N,N,N)\\
+D(1,1,1,2;1,1,1,1)&D(1,1,1,2;1,1,1,2)&\cdots&D(1,1,1,2;N,N,N,N)\\
+\vdots&\vdots&\ddots&\vdots\\
+D(N,N,N,N;1,1,1,1)&D(N,N,N,N;1,1,1,2)&\cdots&D(N,N,N,N;N,N,N,N)
+\end{bmatrix}.
+\end{aligned}\]
+\BT{The size of the hopping matrix $D$ is thus $12N^4\times12N^4$. If $N=64$, then the number of unknowns for the linear systems is about 200 million! The size grows much more rapidly than that arising from the discretization of three-dimensional partial differential equations in Sect.\ \ref{subsec:nonsymmetric-difference}.}{因此跃迁矩阵 $D$ 的规模为 $12N^4\times12N^4$. 若 $N=64$, 则线性方程组的未知数个数约为两亿! 这一规模的增长速度, 远快于 Section\ \ref{subsec:nonsymmetric-difference} 中三维偏微分方程离散所产生的规模.}
+% block: wilson-gamma-and-pauli page:66 type:ordinary-paragraph
+\BT{The details of \eqref{eq:wilson-hopping-block} are explained as follows: $I_4$ is the 4-by-4 identity matrix, $\delta_{\boldsymbol{x},\boldsymbol{y}}$ is a function ($\delta:\mathbb{R}^4\times\mathbb{R}^4\to\mathbb{R}$), where $\delta_{\boldsymbol{x},\boldsymbol{y}}=0$ if $\boldsymbol{x}\ne\boldsymbol{y}$, and $\delta_{\boldsymbol{x},\boldsymbol{y}}=1$ if $\boldsymbol{x}=\boldsymbol{y}$. The symbol $\boldsymbol{e}_\mu$ is the transpose of the $\mu$th unit vector, or equivalently the $\mu$th row of the $4\times4$ identity matrix $I_4$. For each $\mu$, the symbol $\gamma_\mu$ is a matrix given by}{\eqref{eq:wilson-hopping-block} 中各符号详述如下: $I_4$ 是四阶单位矩阵, $\delta_{\boldsymbol{x},\boldsymbol{y}}$ 是一个函数 ($\delta:\mathbb{R}^4\times\mathbb{R}^4\to\mathbb{R}$), 当 $\boldsymbol{x}\ne\boldsymbol{y}$ 时 $\delta_{\boldsymbol{x},\boldsymbol{y}}=0$, 当 $\boldsymbol{x}=\boldsymbol{y}$ 时 $\delta_{\boldsymbol{x},\boldsymbol{y}}=1$. 符号 $\boldsymbol{e}_\mu$ 为第 $\mu$ 个单位向量的转置, 或等价地, 为 $4\times4$ 单位矩阵 $I_4$ 的第 $\mu$ 行. 对每个 $\mu$, 符号 $\gamma_\mu$ 为下列矩阵}
+\[\gamma_1=\sigma_y\otimes\sigma_x,\quad\gamma_2=\sigma_y\otimes\sigma_y,\quad\gamma_3=\sigma_y\otimes\sigma_z,\quad\gamma_4=\sigma_z\otimes I_2,\]
+\BT{where $I_2$ is the 2-by-2 identity matrix, and $\sigma_x,\sigma_y$, and $\sigma_z$ are the Pauli matrices, i.e.,}{其中 $I_2$ 是二阶单位矩阵, $\sigma_x,\sigma_y$ 和 $\sigma_z$ 是 Pauli 矩阵, 即}
+\[\sigma_x=\begin{bmatrix}0&1\\1&0\end{bmatrix},\quad\sigma_y=\begin{bmatrix}0&-i\\i&0\end{bmatrix},\quad\sigma_z=\begin{bmatrix}1&0\\0&-1\end{bmatrix}.\]
+% block: wilson-gauge-field page:66 type:ordinary-paragraph
+\BT{Finally, for each $\mu$ and $\boldsymbol{x}$, the symbol $U_\mu(\boldsymbol{x})(=U_\mu([x_1,x_2,x_3,x_4])$ for $\mu=1,2,3,4$ belongs to $\operatorname{SU}(3)$, i.e., a 3-by-3 unitary matrix whose determinant is one. $U_\mu(\boldsymbol{x})$ corresponds to the background gauge field. $U_\mu(\boldsymbol{x})$ is called ``cold'' if $U_\mu(\boldsymbol{x})=I_3$ and ``hot'' if the $U_\mu(\boldsymbol{x})\in\operatorname{SU}(3)$ is randomly chosen. Below are some examples for $D(\boldsymbol{x},\boldsymbol{y})$ when $N=2$:}{最后, 对每个 $\mu$ 和 $\boldsymbol{x}$, 当 $\mu=1,2,3,4$ 时, 符号 $U_\mu(\boldsymbol{x})(=U_\mu([x_1,x_2,x_3,x_4])$ 属于 $\operatorname{SU}(3)$, 即为行列式为一的三阶酉矩阵. $U_\mu(\boldsymbol{x})$ 对应于背景规范场. 若 $U_\mu(\boldsymbol{x})=I_3$, 则称 $U_\mu(\boldsymbol{x})$ 为 ``冷''; 若随机选择 $U_\mu(\boldsymbol{x})\in\operatorname{SU}(3)$, 则称其为 ``热''. 下面给出 $N=2$ 时 $D(\boldsymbol{x},\boldsymbol{y})$ 的若干例子:}
+\[\begin{aligned}
+D_{1,1}&=D(1,1,1,1;1,1,1,1)=O,\\
+D_{1,2}&=D(1,1,1,1;1,1,1,2)=(I_4-\gamma_4)\otimes U_4([1,1,1,1]),\\
+D_{1,3}&=D(1,1,1,1;1,1,2,1)=(I_4-\gamma_3)\otimes U_3([1,1,1,1]),\\
+D_{1,4}&=D(1,1,1,1;1,1,2,2)=O,\\
+D_{1,5}&=D(1,1,1,1;1,2,1,1)=(I_4-\gamma_2)\otimes U_2([1,1,1,1]),\\
+D_{1,6}&=D(1,1,1,1;1,2,1,2)=O,\\
+D_{1,7}&=D(1,1,1,1;1,2,2,1)=O,\\
+D_{1,8}&=D(1,1,1,1;1,2,2,2)=O,\\
+D_{1,9}&=D(1,1,1,1;2,1,1,1)=(I_4-\gamma_1)\otimes U_1([1,1,1,1]),\\
+&\vdots\\
+D_{2,1}&=D(1,1,1,2;1,1,1,1)=(I_4+\gamma_4)\otimes U_4^{\mathrm H}([1,1,1,1]),\\
+D_{2,2}&=D(1,1,1,2;1,1,1,2)=O,\\
+D_{2,3}&=D(1,1,1,2;1,1,2,1)=O,\\
+D_{2,4}&=D(1,1,1,2;1,1,2,2)=(I_4-\gamma_3)\otimes U_3([1,1,1,2]),\\
+&\vdots\\
+D_{16,16}&=D([2,2,2,2;2,2,2,2])=O.
+\end{aligned}\]
+\BT{Note that $D_{2,1}=(I_4+\gamma_4)\otimes U_4^{\mathrm H}([1,1,1,2]-\boldsymbol{e}_4)=(I_4+\gamma_4)\otimes U_4^{\mathrm H}([1,1,1,1])$. Matrix $D$ is neither symmetric nor Hermitian, but it has a hidden symmetry as described next. Let}{注意 $D_{2,1}=(I_4+\gamma_4)\otimes U_4^{\mathrm H}([1,1,1,2]-\boldsymbol{e}_4)=(I_4+\gamma_4)\otimes U_4^{\mathrm H}([1,1,1,1])$. 矩阵 $D$ 既不对称也不为 Hermitian 矩阵, 但它具有下面所述的隐含对称性. 令}
+% block: gamma-five-symmetry page:67 type:ordinary-paragraph
+\[\gamma_5=\sigma_x\otimes I_2.\]
+\BT{Then, the hopping matrix $D$ has the following property:}{则跃迁矩阵 $D$ 具有以下性质:}
+\begin{equation}\label{eq:gamma-five-hermiticity}
+\Gamma_5D=D^{\mathrm H}\Gamma_5,
+\end{equation}
+\BT{where $\Gamma_5=I_{N^4}\otimes\gamma_5\otimes I_3$. This property is known as $\gamma_5$-symmetric (or $\gamma_5$-Hermitian). From Theorem\ \ref{thm:kronecker-product-properties}-(5), matrix $\gamma_5$ is real symmetric and matrix $\Gamma_5$ is also real symmetric, and thus we have $\Gamma_5=\Gamma_5^{\mathrm H}$. Then, we can rewrite \eqref{eq:gamma-five-hermiticity} as}{其中 $\Gamma_5=I_{N^4}\otimes\gamma_5\otimes I_3$. 这一性质称为 $\gamma_5$-对称 (或 $\gamma_5$-Hermitian). 由 Theorem\ \ref{thm:kronecker-product-properties} 的第 (5) 项, 矩阵 $\gamma_5$ 为实对称矩阵, 矩阵 $\Gamma_5$ 也为实对称矩阵, 因而有 $\Gamma_5=\Gamma_5^{\mathrm H}$. 于是可将 \eqref{eq:gamma-five-hermiticity} 改写为}
+\[\Gamma_5D=(\Gamma_5D)^{\mathrm H}.\]
+\BT{This means that $\Gamma_5D$ is Hermitian. From Corollary\ \ref{cor:kronecker-inverse}, we have $\Gamma_5^{-1}=I_{N^4}^{-1}\otimes\gamma_5^{-1}\otimes I_3^{-1}=I_{N^4}\otimes\gamma_5\otimes I_3=\Gamma_5$. Thus we have another representation of \eqref{eq:gamma-five-hermiticity}:}{这表明 $\Gamma_5D$ 为 Hermitian 矩阵. 由 Corollary\ \ref{cor:kronecker-inverse} 有 $\Gamma_5^{-1}=I_{N^4}^{-1}\otimes\gamma_5^{-1}\otimes I_3^{-1}=I_{N^4}\otimes\gamma_5\otimes I_3=\Gamma_5$. 因而得到 \eqref{eq:gamma-five-hermiticity} 的另一种表示:}
+\begin{equation}\label{eq:gamma-five-similarity}
+\Gamma_5D\Gamma_5=D^{\mathrm H}.
+\end{equation}
+% block: gamma-five-block-verification page:67 type:ordinary-paragraph
+\BT{Now, let us confirm \eqref{eq:gamma-five-similarity} for $N=2$. Let $P=\gamma_5\otimes I_3$. Then the $(i,j)$ block element of $D$ is}{现在验证 $N=2$ 时的 \eqref{eq:gamma-five-similarity}. 令 $P=\gamma_5\otimes I_3$. 则 $D$ 的 $(i,j)$ 块元素为}
+\[\begin{aligned}
+(\Gamma_5D\Gamma_5)_{i,j}
+&=\left(\begin{bmatrix}P&&\\&\ddots&\\&&P\end{bmatrix}
+\begin{bmatrix}D_{1,1}&\cdots&D_{1,16}\\\vdots&\ddots&\vdots\\D_{16,1}&\cdots&D_{16,16}\end{bmatrix}
+\begin{bmatrix}P&&\\&\ddots&\\&&P\end{bmatrix}\right)_{i,j}\\
+&=\left(\begin{bmatrix}PD_{1,1}P&\cdots&PD_{1,16}P\\\vdots&\ddots&\vdots\\PD_{16,1}P&\cdots&PD_{16,16}P\end{bmatrix}\right)_{i,j}\\
+&=PD_{i,j}P.
+\end{aligned}\]
+\BT{As an example, consider $(i,j)=(1,2)$. Then, from Theorem\ \ref{thm:kronecker-product-properties}-(5) and (6), it follows that}{例如, 考虑 $(i,j)=(1,2)$. 由 Theorem\ \ref{thm:kronecker-product-properties} 的第 (5) 和 (6) 项, 有}
+\[\begin{aligned}
+(\Gamma_5D\Gamma_5)_{1,2}&=PD_{1,2}P\\
+&=(\gamma_5\otimes I_3)[(I_4-\gamma_4)\otimes U_4([1,1,1,1])](\gamma_5\otimes I_3)\\
+&=\gamma_5(I_4-\gamma_4)\gamma_5\otimes U_4([1,1,1,1])\\
+&=(I_4-\gamma_5\gamma_4\gamma_5)\otimes U_4([1,1,1,1])\\
+&=(I_4+\gamma_4)\otimes U_4([1,1,1,1])\\
+&=[(I_4+\gamma_4)^{\mathrm H}\otimes U_4^{\mathrm H}([1,1,1,1])]^{\mathrm H}\\
+&=[(I_4+\gamma_4)\otimes U_4^{\mathrm H}([1,1,1,1])]^{\mathrm H}\\
+&=D_{2,1}^{\mathrm H}.
+\end{aligned}\]
+% block: lattice-eigenvalue-problems page:68 type:ordinary-paragraph
+\BT{Similarly, we can confirm that $(\Gamma_5D\Gamma_5)_{i,j}=D_{j,i}^{\mathrm H}$ for the other $i,j$'s. Thus we see that \eqref{eq:gamma-five-similarity} holds true for the case $N=2$. In lattice QCD, there is a need to compute some small eigenvalues in magnitude. In this case, the shift-and-invert Lanczos (Arnoldi) method may be used. The method requires solving linear systems at each iteration. See \BookCite{12} for algorithms to compute eigenvalue problems. A thick-restart Lanczos type method for eigenvalue problems arising in lattice QCD was proposed in \BookCite{108}.}{类似地, 对其余的 $i,j$, 可验证 $(\Gamma_5D\Gamma_5)_{i,j}=D_{j,i}^{\mathrm H}$. 因此可见, \eqref{eq:gamma-five-similarity} 在 $N=2$ 时成立. 在格点 QCD 中, 需要计算一些模较小的特征值. 此时可使用移位求逆 Lanczos (Arnoldi) 方法. 这一方法每次迭代都需要求解线性方程组. 关于特征值问题的计算算法, 见 \BookCite{12}. 文献 \BookCite{108} 针对格点 QCD 中产生的特征值问题提出了一种厚重启 Lanczos 型方法.}

@@ -1,0 +1,553 @@
+% block: partial-differential-equations-heading page:43 type:section
+\subsection{{Partial Differential Equations}}\label{sec:partial-differential-equations}
+{In this section, the finite difference method and the finite element method are described using some partial differential equations, and we will see that the more accurate solution we need, the larger the linear systems we need to solve.}
+% block: finite-differences-heading page:43 type:subsection
+\subsubsection{{Finite Difference Methods}}\label{subsec:finite-differences}
+{This subsection describes the finite difference methods using several simple partial differential equations. The notion of tensor products is also explained, which comes in handy to describe the coefficient matrix of the linear systems arising from the finite difference discretization of the partial differential equations. First of all, a mathematical preliminary is given next.}
+% block: difference-preliminary-heading page:44 type:subsection
+\paragraph{{Preliminary}}\label{subsec:difference-preliminary}
+{This subsection describes several formulas for approximating derivatives $f'(x),f''(x)$ of a smooth function $f(x)$ at $x$ using $f(x),f(x-h)$, and $f(x+h)$ with $0<h<1$. Consider how to approximate $f'(x)$. The Taylor series of $f(x)$ is given by}
+\begin{equation}\label{eq:taylor-difference-expansion}
+f(x+h)=f(x)+f'(x)h+\frac{1}{2!}f''(x)h^2+\frac{1}{3!}f'''(x)h^3+\cdots.
+\end{equation}
+{Then, $f'(x)$ is written as}
+\[\begin{aligned}
+f'(x)&=\frac{f(x+h)-f(x)}{h}-\frac{1}{2!}f''(x)h-\frac{1}{3!}f'''(x)h^2-\cdots\\
+&=\frac{f(x+h)-f(x)}{h}+O(h).
+\end{aligned}\]
+% block: forward-backward-differences page:44 type:ordinary-paragraph
+{$O(\cdot)$ is the big O notation. Roughly speaking, $O(h)$ in this case means that $-\frac{1}{2!}f''(x)h-\frac{1}{3!}f'''(x)h^2-\cdots$ can be written as $ch$ for a suitable constant value $c$ as $h\to0$. The approximation to $f'(x)$ by the recurrence}
+\begin{equation}\label{eq:forward-difference}
+f'(x)\approx\frac{f(x+h)-f(x)}{h}
+\end{equation}
+{is referred to as the forward difference. The accuracy of the forward difference is of order $h$. A similar approximation}
+\begin{equation}\label{eq:backward-difference}
+f'(x)\approx\frac{f(x)-f(x-h)}{h}
+\end{equation}
+{is referred to as the backward difference. The accuracy of the backward difference is also of order $h$. For a more accurate formula, it follows from \eqref{eq:taylor-difference-expansion} that we have}
+\[\frac{f(x+h)-f(x-h)}{2h}=f'(x)+O(h^2),\]
+{from which, we have}
+\begin{equation}\label{eq:central-first-difference}
+f'(x)\approx\frac{f(x+h)-f(x-h)}{2h},
+\end{equation}
+{and this is referred to as the central difference for the first derivative of $f(x)$, whose accuracy is of order $h^2$.}
+% block: central-second-difference pages:44,45 type:ordinary-paragraph
+{We now consider approximating the second derivative $f''(x)$. From the Taylor series \eqref{eq:taylor-difference-expansion} of $f(x+h)$ and $f(x-h)$, we have}
+\[f(x+h)-2f(x)+f(x-h)=f''(x)h^2+O(h^4).\]
+{Thus}
+\[f''(x)=\frac{f(x+h)-2f(x)+f(x-h)}{h^2}+O(h^2).\]
+{The following approximation}
+\begin{equation}\label{eq:central-second-difference}
+f''(x)\approx\frac{f(x+h)-2f(x)+f(x-h)}{h^2}
+\end{equation}
+{is referred to as the central difference for the second derivative of $f(x)$, whose accuracy is of order $h^2$.}
+% block: laplace-example-heading page:45 type:subsection
+\refstepcounter{applicationexample}
+\paragraph{Example~\theapplicationexample\space({Symmetric Matrix})}\label{subsec:laplace-difference}
+\begingroup\makeatletter\edef\@currentlabel{\theapplicationexample}\label{ex:laplace-difference}\makeatother\endgroup
+{Consider the Laplace equation of the form}
+\[\begin{aligned}
+u_{xx}+u_{yy}&=0,&(x,y)&\in(0,1)\times(0,1),\\
+u(x,y)&=g(x,y),&(x,y)&\in\Gamma,
+\end{aligned}\]
+{where $\Gamma$ is the boundary of $(0,1)\times(0,1)$. To be specific, the boundary condition is given by $u(0,y)=g(0,y)$, $u(1,y)=g(1,y)$, $u(x,0)=g(x,0)$, and $u(x,1)=g(x,1)$.}
+{We now approximately solve the Laplace equation by using central difference \eqref{eq:central-second-difference}. To this end, an equispaced grid of $N\times N$ points in $(0,1)\times(0,1)$ is used. The case $N=3$ ($h=1/4$) is shown in Fig.\ \ref{fig:laplace-grid}.}
+% block: laplace-grid-figure page:45 type:figure
+\begin{figure}[htbp]\centering
+\includegraphics[width=.48\linewidth]{figures/laplace-grid.png}
+\caption{{Mesh grid on the region for example\ \ref{ex:laplace-difference} (the Laplace equation)}}\label{fig:laplace-grid}
+\end{figure}
+% block: five-point-discretization page:46 type:ordinary-paragraph
+{In the following, we use the mesh in Fig.\ \ref{fig:laplace-grid} and we will see how linear systems are obtained. Central difference \eqref{eq:central-second-difference} for approximating $u_{xx}$ and $u_{yy}$ is given by}
+\begin{equation}\label{eq:laplace-xx-discretization}
+u_{xx}(x,y)\approx\frac{1}{h^2}(u(x+h,y)-2u(x,y)+u(x-h,y)),
+\end{equation}
+\begin{equation}\label{eq:laplace-yy-discretization}
+u_{yy}(x,y)\approx\frac{1}{h^2}(u(x,y+h)-2u(x,y)+u(x,y-h)).
+\end{equation}
+{It is convenient to introduce an abbreviated notation $u_{i,j}=u(x_i,y_j)$. Then we obtain the following five-point formula:}
+\begin{equation}\label{eq:laplace-five-point}
+u_{xx}(x_i,y_j)+u_{yy}(x_i,y_j)\approx\frac{1}{h^2}(u_{i+1,j}+u_{i-1,j}-4u_{i,j}+u_{i,j+1}+u_{i,j-1}),
+\end{equation}
+{where $u(x_i,y_j)=g(x_i,y_j)$ on the boundary. Let $u_1:=u(x_1,y_1)$, $u_2:=u(x_1,y_2)$,\ldots, $u_9:=u(x_3,y_3)$ and $g_{i,j}:=u(x_i,y_j)$ on the boundary. Then from Fig.\ \ref{fig:laplace-grid} and \eqref{eq:laplace-five-point}, unknowns $u_1,u_2,\ldots,u_9$ have the following relations:}
+\[\begin{aligned}
+u_2+g_{0,1}-4u_1+u_4+g_{1,0}&=0,\\
+u_3+u_1-4u_2+u_5+g_{2,0}&=0,\\
+g_{4,1}+u_2-4u_3+u_6+g_{3,0}&=0,\\
+u_5+g_{0,2}-4u_4+u_7+u_1&=0,\\
+&\vdots\\
+g_{4,3}+u_8-4u_9+g_{3,4}+u_6&=0.
+\end{aligned}\]
+% block: laplace-matrix page:46 type:equation
+{The corresponding matrix form is}
+\begin{equation}\label{eq:laplace-grid-system}
+\underbrace{\left[\begin{array}{rrr|rrr|rrr}
+-4&1&0&1&0&0&0&0&0\\1&-4&1&0&1&0&0&0&0\\0&1&-4&0&0&1&0&0&0\\\hline
+1&0&0&-4&1&0&1&0&0\\0&1&0&1&-4&1&0&1&0\\0&0&1&0&1&-4&0&0&1\\\hline
+0&0&0&1&0&0&-4&1&0\\0&0&0&0&1&0&1&-4&1\\0&0&0&0&0&1&0&1&-4
+\end{array}\right]}_A
+\underbrace{\begin{bmatrix}u_1\\u_2\\u_3\\u_4\\u_5\\u_6\\u_7\\u_8\\u_9\end{bmatrix}}_{\boldsymbol{x}}
+=\underbrace{-\begin{bmatrix}g_{1,0}\\g_{2,0}\\g_{3,0}\\0\\0\\0\\0\\0\\0\end{bmatrix}
+-\begin{bmatrix}0\\0\\0\\0\\0\\0\\g_{1,4}\\g_{2,4}\\g_{3,4}\end{bmatrix}
+-\begin{bmatrix}g_{0,1}\\0\\0\\g_{0,2}\\0\\0\\g_{0,3}\\0\\0\end{bmatrix}
+-\begin{bmatrix}0\\0\\g_{4,1}\\0\\0\\g_{4,2}\\0\\0\\g_{4,3}\end{bmatrix}}_{\boldsymbol{b}}.
+\end{equation}
+{By solving the linear systems, we obtain the approximate solution $u_1,\ldots,u_9$ on the mesh grid.}
+% block: kronecker-definition pages:46,47 type:ordinary-paragraph
+{The matrix of the linear systems \eqref{eq:laplace-grid-system} has a special nonzero structure, which can be rewritten in a simple form using Kronecker product. Let $A(=\{a_{ij}\})$ and $B$ are matrices. Then, the symbol $A\otimes B$ is called the Kronecker product (or Tensor product), defined by}
+\begin{equation}\label{eq:kronecker-product-definition}
+A\otimes B:=\begin{bmatrix}a_{11}B&\cdots&a_{1m}B\\\vdots&\ddots&\vdots\\a_{n1}B&\cdots&a_{nm}B\end{bmatrix}.
+\end{equation}
+{Below is an example for $A,B$ being 2-by-2 matrices:}
+\[A\otimes B=\left[\begin{array}{c|c}a_{11}B&a_{12}B\\\hline a_{21}B&a_{22}B\end{array}\right]
+=\left[\begin{array}{cc|cc}
+a_{11}b_{11}&a_{11}b_{12}&a_{12}b_{11}&a_{12}b_{12}\\
+a_{11}b_{21}&a_{11}b_{22}&a_{12}b_{21}&a_{12}b_{22}\\\hline
+a_{21}b_{11}&a_{21}b_{12}&a_{22}b_{11}&a_{22}b_{12}\\
+a_{21}b_{21}&a_{21}b_{22}&a_{22}b_{21}&a_{22}b_{22}
+\end{array}\right].\]
+{Now, let}
+\[M=\begin{bmatrix}-2&1&0\\1&-2&1\\0&1&-2\end{bmatrix},\quad I=\begin{bmatrix}1&0&0\\0&1&0\\0&0&1\end{bmatrix}.\]
+{Then, the coefficient matrix $A$ in \eqref{eq:laplace-grid-system} can be written as}
+\begin{equation}\label{eq:laplace-kronecker-sum}
+A=I\otimes M+M\otimes I.
+\end{equation}
+{The size of the matrix $A$ is $3^2\times3^2$. In general, $N\times N$ grid yields an $N^2\times N^2$ matrix, which can be very large and symmetric. Krylov subspace methods for symmetric linear systems are described in Sect.\ \ref{sec:hermitian-linear-systems}. Finally, some properties of the Kronecker product are listed below.}
+% block: kronecker-properties pages:47,48 type:theorem
+\begin{Theorem}\label{thm:kronecker-product-properties}
+{The Kronecker product has the following properties:}
+\begin{enumerate}
+\item {For $A\in\mathbb{C}^{m\times n},B\in\mathbb{C}^{p\times q},C\in\mathbb{C}^{r\times s}$,}
+\[(A\otimes B)\otimes C=A\otimes(B\otimes C).\]
+\item {For $A,B\in\mathbb{C}^{m\times n},C\in\mathbb{C}^{p\times q}$,}
+\[(A+B)\otimes C=A\otimes C+B\otimes C.\]
+\item {For $A\in\mathbb{C}^{m\times n},B,C\in\mathbb{C}^{p\times q}$,}
+\[A\otimes(B+C)=A\otimes B+A\otimes C.\]
+\item {For $c\in\mathbb{C},A\in\mathbb{C}^{m\times n},B\in\mathbb{C}^{p\times q}$,}
+\[(cA)\otimes B=A\otimes(cB)=c(A\otimes B).\]
+\item {For $A\in\mathbb{C}^{m\times n},B\in\mathbb{C}^{p\times q}$,}
+\[(A\otimes B)^{\mathrm H}=A^{\mathrm H}\otimes B^{\mathrm H}.\]
+\item {For $A\in\mathbb{C}^{m\times n},B\in\mathbb{C}^{p\times q},C\in\mathbb{C}^{n\times r},D\in\mathbb{C}^{q\times s}$,}
+\[(A\otimes B)(C\otimes D)=(AC)\otimes(BD).\]
+\end{enumerate}
+\end{Theorem}
+% block: kronecker-properties-proof page:48 type:proof
+\begin{Proof}
+{We only give a proof of (6). The $(i,k)$ block element of $A\otimes B$ is $a_{i,k}B$, and the $(k,j)$ block element of $C\otimes D$ is $c_{k,j}D$. Thus the $(i,j)$ block element of $(A\otimes B)(C\otimes D)$ is given as}
+\[\begin{aligned}
+((A\otimes B)(C\otimes D))_{i,j}&=\sum_{k=1}^n(a_{i,k}B)(c_{k,j}D)=\left(\sum_{k=1}^na_{i,k}c_{k,j}\right)BD\\
+&=(AC)_{i,j}BD=((AC)\otimes(BD))_{i,j},
+\end{aligned}\]
+{which concludes the proof.}
+\end{Proof}
+% block: block-matrix-meaning page:48 type:ordinary-paragraph
+{Note that $(i,j)$ ``block'' element is not a scalar but a matrix. For example, consider the following 2-by-2 block matrices of the form}
+\[A=\begin{bmatrix}A_{11}&A_{12}\\A_{21}&A_{22}\end{bmatrix},\quad B=\begin{bmatrix}B_{11}&B_{12}\\B_{21}&B_{22}\end{bmatrix}.\]
+{Then the $(1,1)$ block element of $A$ is matrix $A_{11}$, and the $(1,2)$ block element of $B$ is matrix $B_{12}$. Furthermore, we can calculate $AB$ as if the submatrices $A_{i,j}$ and $B_{i,j}$ are scalars when the matrix multiplication $A_{i,j}B_{j,k}$ is defined. For example, The $(1,1)$ block element of $AB$ is given by $A_{11}B_{11}+A_{12}B_{21}$. From Theorem\ \ref{thm:kronecker-product-properties}-(6), the following properties hold true.}
+% block: kronecker-inverse page:48 type:corollary
+\begin{Corollary}\label{cor:kronecker-inverse}
+{Let $A$ and $B$ be invertible matrices. Then}
+\[(A\otimes B)^{-1}=A^{-1}\otimes B^{-1}.\]
+\end{Corollary}
+% block: kronecker-inverse-proof page:48 type:proof
+\begin{Proof}
+{From Theorem\ \ref{thm:kronecker-product-properties}-(6), we have $(A^{-1}\otimes B^{-1})(A\otimes B)=(A^{-1}A)\otimes(B^{-1}B)=I\otimes I$, which is the Kronecker product of the two identity matrices. It is easy to see that the Kronecker product of the identity matrices is the identity matrix.}
+\end{Proof}
+% block: kronecker-eigenpairs page:48 type:corollary
+\begin{Corollary}\label{cor:kronecker-eigenpairs}
+{Let $\boldsymbol{p}_i^{(A)}$ and $\boldsymbol{p}_j^{(B)}$ be eigenvectors of $A$ and $B$, and the corresponding eigenvalues are $\lambda_i^{(A)}$ and $\lambda_j^{(B)}$. Then an eigenvector of $A\otimes B$ is $\boldsymbol{p}_i^{(A)}\otimes\boldsymbol{p}_j^{(B)}$, and the corresponding eigenvalue is $\lambda_i^{(A)}\lambda_j^{(B)}$, i.e.,}
+\[(A\otimes B)\left(\boldsymbol{p}_i^{(A)}\otimes\boldsymbol{p}_j^{(B)}\right)=\lambda_i^{(A)}\lambda_j^{(B)}\left(\boldsymbol{p}_i^{(A)}\otimes\boldsymbol{p}_j^{(B)}\right).\]
+\end{Corollary}
+% block: kronecker-eigenpairs-proof pages:48,49 type:proof
+\begin{Proof}
+{From Theorem\ \ref{thm:kronecker-product-properties}-(4) and (6), we have}
+\[(A\otimes B)\left(\boldsymbol{p}_i^{(A)}\otimes\boldsymbol{p}_j^{(B)}\right)=\left(A\boldsymbol{p}_i^{(A)}\right)\otimes\left(B\boldsymbol{p}_j^{(B)}\right)=\lambda_i\lambda_j\left(\boldsymbol{p}_i^{(A)}\otimes\boldsymbol{p}_j^{(B)}\right),\]
+{which concludes the proof.}
+\end{Proof}
+% block: kronecker-sum-eigenpairs page:49 type:corollary
+\begin{Corollary}\label{cor:kronecker-sum-eigenpairs}
+{Using the same notations as in Corollary\ \ref{cor:kronecker-eigenpairs}, it follows that}
+\[(A\otimes I+I\otimes B)\left(\boldsymbol{p}_i^{(A)}\otimes\boldsymbol{p}_j^{(B)}\right)=\left(\lambda_i^{(A)}+\lambda_j^{(B)}\right)\left(\boldsymbol{p}_i^{(A)}\otimes\boldsymbol{p}_j^{(B)}\right),\]
+{where $I$ is the identity matrix.}
+\end{Corollary}
+% block: kronecker-sum-invertibility page:49 type:ordinary-paragraph
+{The matrix $A\otimes I+I\otimes B$ is referred to as a Kronecker sum (or Tensor sum). It follows from Corollary\ \ref{cor:kronecker-sum-eigenpairs} that eigenvectors and eigenvalues of matrix $A$ in \eqref{eq:laplace-kronecker-sum} can be given by $(\boldsymbol{p}_i\otimes\boldsymbol{p}_j,\lambda_i+\lambda_j)$, where $\boldsymbol{p}_i$ and $\lambda_i$ are the $i$th eigenvector and eigenvalue of $M$. This indicates that matrix $A$ in \eqref{eq:laplace-kronecker-sum} is not invertible if and only if there exist $i,j$ such that $\lambda_i=-\lambda_j$. Thus, the distribution of eigenvalues of much smaller matrices $M$ than $A$ determines whether matrix $A$ is invertible or not.}
+{In general, Kronecker product does not commute, i.e.,}
+\[A\otimes B\ne B\otimes A,\]
+{where $A\in\mathbb{C}^{m\times n}$, $B\in\mathbb{C}^{p\times q}$. However, there are permutation matrices $P_{mp}\in\mathbb{R}^{mp\times mp}$ and $P_{nq}\in\mathbb{R}^{nq\times nq}$ such that}
+\[P_{mp}^{\top}(A\otimes B)P_{nq}=B\otimes A.\]
+{We describe this fact in detail as given next.}
+% block: kronecker-permutation-theorem pages:49,50 type:theorem
+\begin{Theorem}\label{thm:kronecker-permutation}
+{Let $P_{mn}\in\mathbb{R}^{mn\times mn}$ be a matrix of the form}
+\begin{equation}\label{eq:kronecker-commutation-matrix}
+P_{mn}=\begin{bmatrix}
+(E_{11})^{\top}&(E_{12})^{\top}&\cdots&(E_{1n})^{\top}\\
+(E_{21})^{\top}&(E_{22})^{\top}&\cdots&(E_{2n})^{\top}\\
+\vdots&\vdots&\ddots&\vdots\\
+(E_{m1})^{\top}&(E_{m2})^{\top}&\cdots&(E_{mn})^{\top}
+\end{bmatrix},
+\end{equation}
+{where $E_{i,j}\in\mathbb{R}^{m\times n}$ is a matrix whose $(i,j)$ element is one and the other elements are zeros. Then,}
+\[P_{mn}=P_{nm}^{\top}=P_{nm}^{-1}\]
+{and for $A\in\mathbb{C}^{m\times n},B\in\mathbb{C}^{p\times q}$,}
+\begin{equation}\label{eq:kronecker-swapping-permutation}
+\underbrace{P_{mp}^{\top}}_{mp\times mp}\underbrace{(A\otimes B)}_{mp\times nq}\underbrace{P_{nq}}_{nq\times nq}=B\otimes A.
+\end{equation}
+{If $A$ and $B$ are square matrices (i.e., $m=n$, $p=q$),}
+\[P_{mp}^{\top}(A\otimes B)P_{mp}=B\otimes A.\]
+\end{Theorem}
+% block: kronecker-permutation-proof page:50 type:proof
+\begin{Proof}
+{We give a proof of \eqref{eq:kronecker-swapping-permutation}. The $(i,j)$ block element of $P_{m,n}$ in \eqref{eq:kronecker-commutation-matrix} is $E_{ij}^{\top}$, and $E_{ij}$ can be factorized as}
+\[E_{ij}=\boldsymbol{e}_i\boldsymbol{e}_j^{\top},\]
+{where $\boldsymbol{e}_i$ is the $i$th unit vector, i.e., the $i$th element is one, and the others are zeros. Let $a_{ij}$ and $b_{ij}$ be the $(i,j)$ elements of $A$ and $B$. Then, from \eqref{eq:kronecker-commutation-matrix}, the $(i,j)$ block element of $P_{mp}^{\top}(A\otimes B)P_{nq}$ is calculated as}
+\[\begin{aligned}
+\left(P_{mp}^{\top}(A\otimes B)P_{nq}\right)_{ij}
+&=\sum_{k,\ell}E_{ki}(a_{k\ell}B)E_{\ell j}^{\top}=\sum_{k,\ell}a_{k\ell}\left(E_{ki}BE_{j\ell}\right)\\
+&=\sum_{k,\ell}a_{k\ell}\left(\boldsymbol{e}_k\boldsymbol{e}_i^{\top}B\boldsymbol{e}_j\boldsymbol{e}_\ell^{\top}\right)
+=\sum_{k,\ell}a_{k\ell}\left(\boldsymbol{e}_kb_{ij}\boldsymbol{e}_\ell^{\top}\right)\\
+&=b_{ij}\sum_{k,\ell}a_{k\ell}\left(\boldsymbol{e}_k\boldsymbol{e}_\ell^{\top}\right)
+=b_{ij}\left(\sum_{k,\ell}a_{k\ell}E_{k\ell}\right)=b_{ij}A\\
+&=(B\otimes A)_{ij},
+\end{aligned}\]
+{which concludes the proof.}
+\end{Proof}
+% block: helmholtz-example-heading page:50 type:subsection
+\refstepcounter{applicationexample}
+\paragraph{Example~\theapplicationexample\space({Complex Symmetric Matrix})}\label{subsec:helmholtz-difference}
+\begingroup\makeatletter\edef\@currentlabel{\theapplicationexample}\label{ex:helmholtz-difference}\makeatother\endgroup
+{We consider the following boundary value problem:}
+\[\begin{aligned}
+u_{xx}+u_{yy}+\sigma^2u&=0,&(x,y)&\in(0,\pi)\times(0,\pi),\\
+u_x|_{x=0}&=i\sqrt{\sigma^2-\tfrac14}\cos\tfrac y2,&&\text{Neumann Condition (1)},\\
+u_x|_{x=\pi}-i\sqrt{\sigma^2-\tfrac14}u|_{x=\pi}&=0,&&\text{Radiation Condition},\\
+u_y|_{y=0}&=0,&&\text{Neumann Condition (2)},\\
+u|_{y=\pi}&=0,&&\text{Dirichlet Condition},
+\end{aligned}\]
+{The elliptic partial differential equation is known as the Helmholtz equation, see, e.g., \BookCite{19}. For simplicity, we use a 3-by-3 mesh grid as shown in Figs.\ \ref{fig:helmholtz-grid} and \ref{fig:helmholtz-ghost-grid}. Similar to Example\ \ref{ex:laplace-difference} in the previous section, applying \eqref{eq:laplace-xx-discretization}--\eqref{eq:laplace-five-point} to the Helmholtz equation yields}
+\begin{equation}\label{eq:helmholtz-five-point}
+-u_{i+1,j}-u_{i-1,j}+(4-h^2\sigma^2)u_{i,j}-u_{i,j+1}-u_{i,j-1}=0.
+\end{equation}
+{Considering Eq.\ \eqref{eq:helmholtz-five-point} over the mesh points given in Fig.\ \ref{fig:helmholtz-ghost-grid} leads to the following six equations:}
+% block: helmholtz-grid-figure page:51 type:figure
+\begin{figure}[htbp]\centering
+\includegraphics[width=.48\linewidth]{figures/helmholtz-grid.png}
+\caption{{Mesh points on the region}}\label{fig:helmholtz-grid}
+\end{figure}
+% block: helmholtz-ghost-grid-figure page:51 type:figure
+\begin{figure}[htbp]\centering
+\includegraphics[width=.48\linewidth]{figures/helmholtz-ghost-grid.png}
+\caption{{Mesh points on the region satisfying the boundary conditions}}\label{fig:helmholtz-ghost-grid}
+\end{figure}
+% block: helmholtz-six-equations page:51 type:equation
+\begin{equation}\label{eq:helmholtz-six-equations}
+\left\{\begin{aligned}
+-u_2-g_4-u_4-g_1+(4-h^2\sigma^2)u_1&=0,\\
+-u_3-u_1-u_5-g_2+(4-h^2\sigma^2)u_2&=0,\\
+-g_5-u_2-u_6-g_3+(4-h^2\sigma^2)u_3&=0,\\
+-u_5-g_6-g_8-u_1+(4-h^2\sigma^2)u_4&=0,\\
+-u_6-u_4-g_9-u_2+(4-h^2\sigma^2)u_5&=0,\\
+-g_7-u_5-g_{10}-u_3+(4-h^2\sigma^2)u_3&=0,
+\end{aligned}\right.
+\end{equation}
+{where $u_1:=u_{1,1}=u(0,0)$, $u_2:=u_{2,1}=u(h,0)$, $u_3:=u_{3,1}=u(2h,0)$, $u_4:=u_{1,2}=u(0,h)$, $u_5:=u_{2,2}=u(h,h)$, $u_6:=u_{3,2}=u(2h,h)$ and $h=\pi/2$. Here $g_k$'s for $k=1,\ldots,10$ in Fig.\ \ref{fig:helmholtz-ghost-grid} can be computed by considering the four boundary conditions as follows: first, from Neumann Condition (2) it follows that}
+\[\frac{u_4-g_1}{2h}=\frac{u_5-g_2}{2h}=\frac{u_6-g_3}{2h}=0,\]
+{and thus}
+\[g_1=u_4,\quad g_2=u_5,\quad g_3=u_6.\]
+{Second, from Neumann Condition (1), we have}
+% block: helmholtz-boundary-elimination page:52 type:ordinary-paragraph
+\[u_x(0,0)\approx\frac{u_2-g_4}{2h}=id\cos\left(\frac02\right),\quad
+u_x(0,h)\approx\frac{u_5-g_6}{2h}=id\cos\left(\frac12\times\frac h2\right).\]
+{or equivalently,}
+\[g_4=u_2-2idh,\quad g_6=u_5-2idh\cos\left(\frac h4\right),\]
+{where $d=\sqrt{\sigma^2-1/4}$. Third, from the Radiation Condition we obtain}
+\[\frac{g_5-u_2}{2h}-idu_3=\frac{g_7-u_5}{2h}-idu_6=0\]
+{or equivalently,}
+\[g_5=u_2+2idhu_3,\quad g_7=u_5+2idhu_6.\]
+{Finally, it follows from the Dirichlet Condition that $g_8,g_9$ and $g_{10}$ satisfy}
+\[g_8=g_9=g_{10}=0.\]
+% block: helmholtz-unscaled-system page:52 type:equation
+{Substituting $g_1,g_2,\ldots,g_{10}$ into the six equations \eqref{eq:helmholtz-six-equations} yields the following linear systems:}
+\begin{equation}\label{eq:helmholtz-unscaled-system}
+\begin{bmatrix}
+a&-2&0&-2&0&0\\-1&a&-1&0&-2&0\\0&-2&a-idh&0&0&-2\\
+-1&0&0&a&-2&0\\0&-1&0&-1&a&-1\\0&0&-1&0&-2&a-idh
+\end{bmatrix}
+\begin{bmatrix}u_1\\u_2\\u_3\\u_4\\u_5\\u_6\end{bmatrix}
+=\begin{bmatrix}f_1\\0\\0\\f_4\\0\\0\end{bmatrix},
+\end{equation}
+{where $a=\sqrt{\sigma^2-1/4}$, $f_1=-2idh$, and $f_4=-2idh\cos(h/4)$. The coefficient matrix of the linear systems \eqref{eq:helmholtz-unscaled-system} is not symmetric. By scaling each equation, we obtain symmetric linear systems of the form}
+\begin{equation}\label{eq:helmholtz-symmetric-system}
+\begin{bmatrix}
+a/4&-1/2&0&-1/2&0&0\\-1/2&a/2&-1/2&0&-1&0\\0&-1/2&(a-idh)/4&0&0&-1/2\\
+-1/2&0&0&a/2&-1&0\\0&-1&0&-1&a&-1\\0&0&-1/2&0&-1&(a-idh)/2
+\end{bmatrix}
+\begin{bmatrix}u_1\\u_2\\u_3\\u_4\\u_5\\u_6\end{bmatrix}
+=\begin{bmatrix}f_1/4\\0\\0\\f_4/2\\0\\0\end{bmatrix}.
+\end{equation}
+{The coefficient matrix of the form \eqref{eq:helmholtz-symmetric-system} is non-Hermitian but symmetric, i.e., complex symmetric. Krylov subspace methods for solving complex symmetric linear systems are described in Sect.\ \ref{sec:complex-symmetric-linear-systems}.}
+% block: nonsymmetric-example-heading page:53 type:subsection
+\refstepcounter{applicationexample}
+\paragraph{Example~\theapplicationexample\space({Nonsymmetric Matrix})}\label{subsec:nonsymmetric-difference}
+\begingroup\makeatletter\edef\@currentlabel{\theapplicationexample}\label{ex:nonsymmetric-difference}\makeatother\endgroup
+{Consider the following three-dimensional partial differential equation:}
+\[\begin{aligned}
+[\boldsymbol{a}\cdot(\nabla*\nabla)+\boldsymbol{b}\cdot\nabla+c]u(x,y,z)&=g(x,y,z),&&\text{in }\Omega,\\
+u(x,y,z)&=0,&&\text{on }\partial\Omega.
+\end{aligned}\]
+{Here, $\Omega$ is the cubic domain, i.e., $(0,1)\times(0,1)\times(0,1)$ and $\partial\Omega$ is the boundary. The symbol ``$*$'' denotes element-wise multiplication. Equivalently, the operator $\boldsymbol{a}\cdot(\nabla*\nabla)+\boldsymbol{b}\cdot\nabla+c$ is rewritten as}
+\[a_1\frac{\partial^2}{\partial x^2}+a_2\frac{\partial^2}{\partial y^2}+a_3\frac{\partial^2}{\partial z^2}+b_1\frac{\partial}{\partial x}+b_2\frac{\partial}{\partial y}+b_3\frac{\partial}{\partial z}+c\]
+{with $\boldsymbol{a}=[a_1,a_2,a_3]^{\top}$, $\boldsymbol{b}=[b_1,b_2,b_3]^{\top}$ and $\boldsymbol{c}=[c_1,c_2,c_3]^{\top}$. Using central difference \eqref{eq:central-second-difference} for the second derivative of $u$ yields}
+\[\begin{aligned}
+a_1u_{xx}(x,y,z)&\approx\frac{a_1}{h^2}(u(x+h,y,z)-2u(x,y,z)+u(x-h,y,z)),\\
+a_2u_{yy}(x,y,z)&\approx\frac{a_2}{h^2}(u(x,y+h,z)-2u(x,y,z)+u(x,y-h,z)),\\
+a_3u_{zz}(x,y,z)&\approx\frac{a_3}{h^2}(u(x,y,z+h)-2u(x,y,z)+u(x,y,z-h)).
+\end{aligned}\]
+{Similarly, using central difference \eqref{eq:central-first-difference} for the first derivative of $u$ gives}
+\[\begin{aligned}
+b_1u_x(x,y,z)&\approx\frac{b_1}{2h}(u(x+h,y,z)-u(x-h,y,z)),\\
+b_2u_y(x,y,z)&\approx\frac{b_2}{2h}(u(x,y+h,z)-u(x,y-h,z)),\\
+b_3u_z(x,y,z)&\approx\frac{b_3}{2h}(u(x,y,z+h)-u(x,y,z-h)).
+\end{aligned}\]
+% block: nonsymmetric-grid-operator pages:53,54 type:ordinary-paragraph
+{Considering an $(N+1)\times(N+1)\times(N+1)$ grid, together with the central differences above, leads to}
+\[\begin{aligned}
+&[\boldsymbol{a}\cdot(\nabla*\nabla)+\boldsymbol{b}\cdot\nabla+c]u(x,y,z)\\
+&\quad\approx\frac{a_1}{h^2}(u_{i+1,j,k}-2u_{i,j,k}+u_{i-1,j,k})+\frac{b_1}{2h}(u_{i+1,j,k}-u_{i-1,j,k})+cu_{i,j,k}\\
+&\qquad+\frac{a_2}{h^2}(u_{i,j+1,k}-2u_{i,j,k}+u_{i,j-1,k})+\frac{b_2}{2h}(u_{i,j+1,k}-u_{i,j-1,k})\\
+&\qquad+\frac{a_3}{h^2}(u_{i,j,k+1}-2u_{i,j,k}+u_{i,j,k-1})+\frac{b_3}{2h}(u_{i,j,k+1}-u_{i,j,k-1}),
+\end{aligned}\]
+{where $h=1/(N+1)$. Since $u=0$ on the boundary, following Sect.\ \ref{subsec:laplace-difference}, we obtain}
+\begin{equation}\label{eq:three-dimensional-difference-system}
+(I_N\otimes I_N\otimes A+I_N\otimes B\otimes I_N+C\otimes I_N\otimes I_N)\boldsymbol{u}=\boldsymbol{g},
+\end{equation}
+{where $I_N$ is the $N$-by-$N$ identity matrix, each element of $\boldsymbol{u}$ and $\boldsymbol{g}$ corresponds to $u(x_i,y_i,z_i)$ and $g(x_i,y_i,z_i)$, and}
+\[\begin{aligned}
+A&:=\frac{a_1}{h^2}M_1+\frac{b_1}{2h}M_2+cI_N,\\
+B&:=\frac{a_2}{h^2}M_1+\frac{b_2}{2h}M_2,\\
+C&:=\frac{a_3}{h^2}M_1+\frac{b_3}{2h}M_2.
+\end{aligned}\]
+{Here, $M_1$ and $M_2$ are defined by}
+\[M_1:=\begin{bmatrix}-2&1&&&\\1&-2&1&&\\&\ddots&\ddots&\ddots&\\&&1&-2&1\\&&&1&-2\end{bmatrix},\quad
+M_2:=\begin{bmatrix}0&1&&&\\-1&0&1&&\\&\ddots&\ddots&\ddots&\\&&-1&0&1\\&&&-1&0\end{bmatrix}.\]
+{$M_1$ and $M_2$ are $N$-by-$N$ (tridiagonal Toeplitz) matrices, and blanks in the matrices are zeros.}
+% block: difference-system-size page:54 type:ordinary-paragraph
+{The size of linear systems \eqref{eq:three-dimensional-difference-system} is $N^3\times N^3$. If $N=100$, which is an equispaced grid with $h\approx0.01$, then the size of the matrix is a million. If $N=1000$, then the size is now a billion! Therefore, efficient numerical solvers for solving very large (and sparse) linear systems are required for a well approximate solution to the partial differential equation.}
+{The matrix in \eqref{eq:three-dimensional-difference-system} is (real) nonsymmetric if $\boldsymbol{b}\ne0$. Krylov subspace methods for nonsymmetric (non-Hermitian) linear systems are described in Sect.\ \ref{sec:nonhermitian-linear-systems}.}
+% block: finite-elements-heading page:54 type:subsection
+\subsubsection{{The Finite Element Method}}\label{subsec:finite-elements}
+{In the previous section, we have seen that a finite difference approximation to (partial) derivatives yields linear recurrence relations, leading to linear systems by using the recurrence relations. The approximate solution corresponds to the values of given grid points, which are the elements of the solution vector for the linear systems. In this section, the Finite Element Method (FEM, hereafter) is introduced, and we will see how linear systems are obtained through a simple example. The advantages of the FEM over the finite difference method are (i) square (or rectangular) grid points on the domain are not necessarily needed, and thus it is suitable for not only square or rectangular but other various domains; (ii) there are many mathematical results for the error analysis based on functional analysis.}
+% block: poisson-domain-figure page:55 type:figure
+\begin{figure}[htbp]\centering
+\includegraphics[width=.48\linewidth]{figures/poisson-domain.png}
+\caption{{The domain and the boundary of the Poisson Eqs.\ \eqref{eq:poisson-equation}--\eqref{eq:poisson-neumann}}}\label{fig:poisson-domain}
+\end{figure}
+% block: poisson-boundary-problem page:55 type:ordinary-paragraph
+{In this section, we consider applying the FEM to the following Poisson equation:}
+\begin{equation}\label{eq:poisson-equation}
+-\Delta u(x,y)=f,\quad(x,y)\in\Omega,
+\end{equation}
+\begin{equation}\label{eq:poisson-dirichlet}
+\cdot\ u(x,y)=g,\quad(x,y)\in\Gamma_1,\quad\text{Dirichlet Condition},
+\end{equation}
+\begin{equation}\label{eq:poisson-neumann}
+\cdot\ \frac{\partial}{\partial n}u(x,y)=0,\quad(x,y)\in\Gamma_2,\quad\text{Neumann Condition},
+\end{equation}
+{where $\Delta:=\partial^2/\partial x^2+\partial^2/\partial y^2$. The domain and the boundary with the boundary conditions are illustrated in Fig.\ \ref{fig:poisson-domain}. In the following, the explanations are based on \BookCite{118}, \BookCite{170}.}
+% block: weak-form-heading page:55 type:subsection
+\subsubsection{{Weak Form}}\label{subsec:weak-form}
+{In this section, an integral equation called the weak form is derived from the Poisson equation. Consider integrating \eqref{eq:poisson-equation} multiplied by an arbitrary function over the domain $\Omega$:}
+\begin{equation}\label{eq:poisson-weighted-integral}
+-\int_\Omega v\Delta u\,\mathrm d\Omega=\int_\Omega vf\,\mathrm d\Omega.
+\end{equation}
+{If we can find a function $u$ that satisfies \eqref{eq:poisson-weighted-integral} for all $v$, then $u$ is the solution of \eqref{eq:poisson-equation}. The FEM tries to find the solution $u$ that satisfies \eqref{eq:poisson-weighted-integral} instead of solving \eqref{eq:poisson-equation}, which differs from the finite difference methods. Here, function $v$ is referred to as the test function or the weight function.}
+% block: gauss-green-weak-form pages:55,56 type:ordinary-paragraph
+{Now, in order to simplify the mathematical formulas, let $v$ be an arbitrary smooth function but $v=0$ on $\Gamma_1$. Applying the Gauss--Green theorem to the left-hand side of \eqref{eq:poisson-weighted-integral}, the integration by parts yields}
+\begin{equation}\label{eq:poisson-integration-by-parts}
+\begin{aligned}
+\int_\Omega v\Delta u\,\mathrm d\Omega
+&=\int_\Gamma v\frac{\partial u}{\partial n}\,\mathrm d\Gamma-\int_\Omega\nabla v\cdot\nabla u\,\mathrm d\Omega\quad\text{(the Gauss--Green theorem)}\\
+&=\int_{\Gamma_1}v\frac{\partial u}{\partial n}\,\mathrm d\Gamma_1+\int_{\Gamma_2}v\frac{\partial u}{\partial n}\,\mathrm d\Gamma_2-\int_\Omega\nabla v\cdot\nabla u\,\mathrm d\Omega\\
+&=-\int_\Omega\nabla v\cdot\nabla u\,\mathrm d\Omega.
+\end{aligned}
+\end{equation}
+{Here we used the assumption $v=0$ on $\Gamma_1$ and Neumann condition \eqref{eq:poisson-neumann} on $\Gamma_2$, i.e., $\frac{\partial u}{\partial n}=0$ on $\Gamma_2$. Substituting \eqref{eq:poisson-integration-by-parts} into \eqref{eq:poisson-weighted-integral} gives}
+\[\int_\Omega\nabla v\cdot\nabla u\,\mathrm d\Omega=\int_\Omega vf\,\mathrm d\Omega.\]
+{Thus all we have to do is to find $u$ such that}
+\begin{equation}\label{eq:poisson-weak-form}
+\iint_\Omega\left(\frac{\partial v}{\partial x}\frac{\partial u}{\partial x}+\frac{\partial v}{\partial y}\frac{\partial u}{\partial y}\right)\mathrm dx\mathrm dy=\iint_\Omega vf\,\mathrm dx\mathrm dy.
+\end{equation}
+{The equation does not have the second-order derivative, whereas the original Eq.\ \eqref{eq:poisson-equation} does. In other words, the condition of differentiability of $u$ in \eqref{eq:poisson-weak-form} looks to be weak. Therefore, \eqref{eq:poisson-weak-form} is referred to as the weak form.}
+% block: elementwise-weak-form page:56 type:ordinary-paragraph
+{As seen in \eqref{eq:poisson-weak-form}, the weak form is the integral over the whole domain. Now consider that the whole domain is divided into finite elements $e_i$, i.e., $\Omega=\bigcup_{i=1}^n e_i$ and $e_i\cap e_j=\emptyset$ for $i\ne j$. Then we have}
+\begin{equation}\label{eq:elementwise-poisson-weak-form}
+\iint_{e_i}\left(\frac{\partial v}{\partial x}\frac{\partial u}{\partial x}+\frac{\partial v}{\partial y}\frac{\partial u}{\partial y}\right)\mathrm dx\mathrm dy=\iint_{e_i}vf\,\mathrm dx\mathrm dy
+\end{equation}
+{for $i=1,2,\ldots,n$. An example of the domain decomposition by triangle elements is shown in Fig.\ \ref{fig:triangular-domain-decomposition}. In the next section, we will see how linear systems are obtained from \eqref{eq:elementwise-poisson-weak-form}.}
+% block: element-system-derivation-heading page:56 type:subsection
+\subsubsection{{Derivation of Linear Systems}}\label{subsec:element-system-derivation}
+{Let finite elements $e_i$ in \eqref{eq:elementwise-poisson-weak-form} be triangular, see Fig.\ \ref{fig:triangular-domain-decomposition}. Each node of the triangular element $e_i$ is given the position and a number, and the node numbers of the triangle are given clockwise, see Fig.\ \ref{fig:triangle-node-order}. As seen in Fig.\ \ref{fig:triangle-node-order}, the position of node $i$ is $(x_i,y_i)$ for $i=1,2,3$.}
+% block: triangular-domain-decomposition-figure page:57 type:figure
+\begin{figure}[htbp]\centering\includegraphics[width=.48\linewidth]{figures/triangular-domain-decomposition.png}
+\caption{{The domain decomposition by triangular finite elements}}\label{fig:triangular-domain-decomposition}\end{figure}
+% block: triangle-node-order-figure page:57 type:figure
+\begin{figure}[htbp]\centering\includegraphics[width=.4\linewidth]{figures/triangle-node-order.png}
+\caption{{The numbering of triangular finite elements}}\label{fig:triangle-node-order}\end{figure}
+% block: triangular-shape-functions page:57 type:ordinary-paragraph
+{Now we introduce the following vector-valued function:}
+\begin{equation}\label{eq:triangle-shape-functions}
+\boldsymbol{h}(x,y)=\begin{pmatrix}h_1(x,y)\\h_2(x,y)\\h_3(x,y)\end{pmatrix}
+=\begin{pmatrix}1&1&1\\x_1&x_2&x_3\\y_1&y_2&y_3\end{pmatrix}^{-1}\begin{pmatrix}1\\x\\y\end{pmatrix},
+\end{equation}
+{and let $\widetilde u$ be an approximate function to the solution function $u$ over the triangular domain such that $\widetilde u$ is a linear function of $x,y$ with $\widetilde u(x_i,y_i)=u_i$ for $i=1,2,3$. Then $\widetilde u$ is given by}
+\begin{equation}\label{eq:triangle-linear-interpolant}
+\widetilde u=\boldsymbol{h}^{\top}\boldsymbol{u}_e=(1\ x\ y)\begin{pmatrix}1&1&1\\x_1&x_2&x_3\\y_1&y_2&y_3\end{pmatrix}^{-\top}\begin{pmatrix}u_1\\u_2\\u_3\end{pmatrix}.
+\end{equation}
+{Confirming equalities $\widetilde u(x_i,y_i)=u_i$ for $1\le i\le3$ is left as an exercise for the reader.}
+% block: element-gradient-integrand pages:57,58 type:ordinary-paragraph
+{Now substituting $\widetilde u$ into the left integrand in \eqref{eq:elementwise-poisson-weak-form} and choosing $v$ as the same form of $\widetilde u$, i.e., $v=\boldsymbol{h}^{\top}\boldsymbol{v}_e$ with $\boldsymbol{v}_e:=(v_1,v_2,v_3)^{\top}$ gives}
+\[\begin{aligned}
+\frac{\partial v}{\partial x}\frac{\partial\widetilde u}{\partial x}+\frac{\partial v}{\partial y}\frac{\partial\widetilde u}{\partial y}
+&=\frac{\partial}{\partial x}\boldsymbol{v}_e^{\top}\boldsymbol{h}\frac{\partial}{\partial x}\boldsymbol{h}^{\top}\boldsymbol{u}_e+\frac{\partial}{\partial y}\boldsymbol{v}_e^{\top}\boldsymbol{h}\frac{\partial}{\partial y}\boldsymbol{h}^{\top}\boldsymbol{u}_e\\
+&=\boldsymbol{v}_e^{\top}\left(\frac{\partial}{\partial x}\boldsymbol{h}\frac{\partial}{\partial x}\boldsymbol{h}^{\top}+\frac{\partial}{\partial y}\boldsymbol{h}\frac{\partial}{\partial y}\boldsymbol{h}^{\top}\right)\boldsymbol{u}_e,
+\end{aligned}\]
+{where we used the relation $\boldsymbol{h}^{\top}\boldsymbol{v}_e=\boldsymbol{v}_e^{\top}\boldsymbol{h}$. Here, from \eqref{eq:triangle-shape-functions}, it follows that}
+\begin{equation}\label{eq:triangle-shape-x-derivative}
+\boldsymbol{h}_x:=\frac{\partial\boldsymbol{h}}{\partial x}
+=\begin{pmatrix}1&1&1\\x_1&x_2&x_3\\y_1&y_2&y_3\end{pmatrix}^{-1}\begin{pmatrix}0\\1\\0\end{pmatrix}
+=\frac1D\begin{pmatrix}y_2-y_3\\y_3-y_1\\y_1-y_2\end{pmatrix}:=\begin{pmatrix}b_1\\b_2\\b_3\end{pmatrix},
+\end{equation}
+\begin{equation}\label{eq:triangle-shape-y-derivative}
+\boldsymbol{h}_y:=\frac{\partial\boldsymbol{h}}{\partial y}
+=\begin{pmatrix}1&1&1\\x_1&x_2&x_3\\y_1&y_2&y_3\end{pmatrix}^{-1}\begin{pmatrix}0\\0\\1\end{pmatrix}
+=\frac1D\begin{pmatrix}x_3-x_2\\x_1-x_3\\x_2-x_1\end{pmatrix}:=\begin{pmatrix}c_1\\c_2\\c_3\end{pmatrix},
+\end{equation}
+{where $D$ is defined by}
+\[D:=\det\begin{pmatrix}1&1&1\\x_1&x_2&x_3\\y_1&y_2&y_3\end{pmatrix}.\]
+% block: element-stiffness-matrix page:58 type:ordinary-paragraph
+{$D$ is twice the area of the triangle. Since $\boldsymbol{h}_x$ and $\boldsymbol{h}_y$ do not depend on $x,y$, the left side of \eqref{eq:elementwise-poisson-weak-form} is calculated as follows:}
+\[\begin{aligned}
+\iint_{e_i}\left(\frac{\partial v}{\partial x}\frac{\partial\widetilde u}{\partial x}+\frac{\partial v}{\partial y}\frac{\partial\widetilde u}{\partial y}\right)\mathrm dx\mathrm dy
+&=\boldsymbol{v}_e^{\top}(\boldsymbol{h}_x\boldsymbol{h}_x^{\top}+\boldsymbol{h}_y\boldsymbol{h}_y^{\top})\boldsymbol{u}_e\iint_{e_i}\mathrm dx\mathrm dy\\
+&=\boldsymbol{v}_e^{\top}\frac{(\boldsymbol{h}_x\boldsymbol{h}_x^{\top}+\boldsymbol{h}_y\boldsymbol{h}_y^{\top})D}{2}\boldsymbol{u}_e\\
+&=\boldsymbol{v}_e^{\top}A_e\boldsymbol{u}_e.
+\end{aligned}\]
+{Here, $\iint_{e_i}\mathrm dx\mathrm dy$ is the area of triangle $e_i$, i.e., $D/2$. Matrix $A_e$ is a $3\times3$ symmetric matrix whose $(i,j)$ element, $a_{ij}^{(e)}$, is given by}
+\begin{equation}\label{eq:element-stiffness-entry}
+a_{ij}^{(e)}=\frac D2(b_ib_j+c_ic_j),
+\end{equation}
+{from \eqref{eq:triangle-shape-x-derivative} and \eqref{eq:triangle-shape-y-derivative}. The right-hand side of \eqref{eq:elementwise-poisson-weak-form} is written as}
+\begin{equation}\label{eq:element-load-vector}
+\boldsymbol{f}_e:=\begin{pmatrix}f_1^{(e)}\\f_2^{(e)}\\f_3^{(e)}\end{pmatrix}
+=\begin{pmatrix}\iint_{e_i}f_0h_1\,\mathrm dx\mathrm dy\\\iint_{e_i}f_0h_2\,\mathrm dx\mathrm dy\\\iint_{e_i}f_0h_3\,\mathrm dx\mathrm dy\end{pmatrix}
+=\frac{f_0D}{6}\begin{pmatrix}1\\1\\1\end{pmatrix},
+\end{equation}
+{where we used $f(x,y)=f_0$ (constant function) for simplicity. Then, we have}
+\[\iint_{e_i}vf\,\mathrm dx\mathrm dy=\boldsymbol{v}_e^{\top}\boldsymbol{f}_e.\]
+% block: element-assembly-principle page:59 type:ordinary-paragraph
+{On calculating the right-hand side of \eqref{eq:element-load-vector}, the integrand $h_i$ ($1\le i\le3$) is a triangular pyramid with the height being 1 and the area of the base being $D/2$. Thus the volume of the triangle pyramid is $(D/2)\cdot1\cdot1/3=D/6$. From this, the left-hand side and the right-hand side of \eqref{eq:elementwise-poisson-weak-form} are approximated by}
+\begin{equation}\label{eq:element-weak-matrix-pair}
+\boldsymbol{v}_e^{\top}A_e\boldsymbol{u}_e,\quad\boldsymbol{v}_e^{\top}\boldsymbol{f}_e.
+\end{equation}
+{The above process is the derivation of \eqref{eq:element-weak-matrix-pair} regarding a small area $e_i$. Considering all the linear systems for all $e_i$'s together with boundary conditions leads to large linear systems. By solving the large linear systems, the approximate solution $u_i$ on each node can be obtained. In the next subsection, we will see how large linear systems can be obtained.}
+% block: finite-element-example-heading page:59 type:subsection
+\subsubsection{Example}\label{subsec:finite-element-example}
+{As an example of the previous subsection, we consider Poisson Eq.\ \eqref{eq:poisson-equation} on the $(0,1)\times(0,1)$ square domain $\Omega$ in Fig.\ \ref{fig:square-poisson-domain}, and we will see how linear systems are obtained.}
+{We first decompose the square domain in Fig.\ \ref{fig:square-poisson-domain} into eight triangles in Fig.\ \ref{fig:eight-triangle-mesh}. Next, calculate \eqref{eq:element-weak-matrix-pair} for $A_e$ and $\boldsymbol{f}_e$ in each triangle element in Fig.\ \ref{fig:eight-triangle-mesh}, and finally, combine all the information, leading to linear systems.}
+{In what follows, we calculate \eqref{eq:element-weak-matrix-pair} for $A_e$ and $\boldsymbol{f}_e$. We see from Fig.\ \ref{fig:eight-triangle-mesh} that there are two kinds of triangles, i.e., type I for $e_1^{\mathrm I},e_3^{\mathrm I},e_5^{\mathrm I},e_7^{\mathrm I}$ and type II for $e_2^{\mathrm {II}},e_4^{\mathrm {II}},e_6^{\mathrm {II}},e_8^{\mathrm {II}}$, leading to two types of linear systems corresponding to \eqref{eq:laplace-five-point}. The details of the two triangles are shown in Fig.\ \ref{fig:two-triangle-types}.}
+% block: square-poisson-domain-figure page:59 type:figure
+\begin{figure}[htbp]\centering\includegraphics[width=.48\linewidth]{figures/square-poisson-domain.png}
+\caption{{The $(0,1)\times(0,1)$ square domain}}\label{fig:square-poisson-domain}\end{figure}
+% block: eight-triangle-mesh-figure page:60 type:figure
+\begin{figure}[htbp]\centering\includegraphics[width=.48\linewidth]{figures/eight-triangle-mesh.png}
+\caption{{Triangle mesh}}\label{fig:eight-triangle-mesh}\end{figure}
+% block: two-triangle-types-figure page:60 type:figure
+\begin{figure}[htbp]\centering\includegraphics[width=.55\linewidth]{figures/two-triangle-types.png}
+\caption{{Two types of triangles}}\label{fig:two-triangle-types}\end{figure}
+% block: type-one-element pages:59,60 type:ordinary-paragraph
+{For the type I triangle, it follows from \eqref{eq:triangle-shape-x-derivative}, \eqref{eq:triangle-shape-y-derivative}, and recalling $D$ being twice the area of the triangle (i.e., $D=h^2$), we have}
+\[\begin{pmatrix}b_1\\b_2\\b_3\end{pmatrix}=\frac1{h^2}\begin{pmatrix}-h\\h\\0\end{pmatrix},\quad
+\begin{pmatrix}c_1\\c_2\\c_3\end{pmatrix}=\frac1{h^2}\begin{pmatrix}-h\\0\\h\end{pmatrix}.\]
+{Then, from \eqref{eq:element-stiffness-entry} and \eqref{eq:element-load-vector}, we obtain}
+\begin{equation}\label{eq:type-one-element-matrix}
+A_{e^{\mathrm I}}=\frac12\begin{pmatrix}2&-1&-1\\-1&1&0\\-1&0&1\end{pmatrix},\quad
+\boldsymbol{f}_{e^{\mathrm I}}=\frac{f_0h^2}{6}\begin{pmatrix}1\\1\\1\end{pmatrix},
+\end{equation}
+{which correspond to \eqref{eq:element-weak-matrix-pair}. Similarly, for the type II triangle, we have}
+\[\begin{pmatrix}b_1\\b_2\\b_3\end{pmatrix}=\frac1{h^2}\begin{pmatrix}0\\h\\-h\end{pmatrix},\quad
+\begin{pmatrix}c_1\\c_2\\c_3\end{pmatrix}=\frac1{h^2}\begin{pmatrix}-h\\h\\0\end{pmatrix},\]
+{and thus}
+\begin{equation}\label{eq:type-two-element-matrix}
+A_{e^{\mathrm {II}}}=\frac12\begin{pmatrix}1&-1&0\\-1&2&-1\\0&-1&1\end{pmatrix},\quad
+\boldsymbol{f}_{e^{\mathrm {II}}}=\frac{f_0h^2}{6}\begin{pmatrix}1\\1\\1\end{pmatrix}.
+\end{equation}
+% block: local-global-node-table page:61 type:table
+\begin{table}[htbp]\centering
+\caption{{Relation between local node numbers and global node numbers.}}\label{tab:local-global-node-numbers}
+\begin{tabular}{c|cccccccc}\hline
+{Element}&$e_1^{\mathrm I}$&$e_2^{\mathrm {II}}$&$e_3^{\mathrm I}$&$e_4^{\mathrm {II}}$&$e_5^{\mathrm I}$&$e_6^{\mathrm {II}}$&$e_7^{\mathrm I}$&$e_8^{\mathrm {II}}$\\\hline
+\shortstack{{Node number of}\\{triangle element}}&\multicolumn{8}{c}{{Whole node numbers}}\\\hline
+1&1&2&2&3&4&5&5&6\\2&2&5&3&6&5&8&6&9\\3&4&4&5&5&7&7&8&8\\\hline
+\end{tabular}\end{table}
+% block: first-element-assembly page:61 type:ordinary-paragraph
+{In the following, we explain how to combine all the information to obtain linear systems. In order to combine them, it is required to relate global node numbers 1--9 in Fig.\ \ref{fig:eight-triangle-mesh} with local node numbers 1, 2, and 3 in Fig.\ \ref{fig:two-triangle-types}, and the resulting table is shown in Table\ \ref{tab:local-global-node-numbers}. Finally, linear systems are derived as follows. We first consider triangle element $e_1^{\mathrm I}$. From \eqref{eq:type-one-element-matrix} and Table\ \ref{tab:local-global-node-numbers}, we have}
+\[A_{e_1^{\mathrm I}}=\frac12\begin{array}{c@{}c}
+\begin{pmatrix}2&-1&-1\\-1&1&0\\-1&0&1\end{pmatrix}&\begin{matrix}1\\2\\4\end{matrix}\\
+\begin{matrix}1&2&4\end{matrix}&\end{array},\quad
+\boldsymbol{f}_{e^{\mathrm I}}=\frac{f_0h^2}{6}\begin{array}{c@{}c}\begin{pmatrix}1\\1\\1\end{pmatrix}&\begin{matrix}1\\2\\4\end{matrix}\end{array}\]
+{and by using the information we construct the following matrix and right-hand side:}
+\[\frac12\begin{array}{c@{}c}
+\begin{pmatrix}
+\mathbf2&\mathbf{-1}&0&\mathbf{-1}&0&0&0&0&0\\
+\mathbf{-1}&\mathbf1&0&\mathbf0&0&0&0&0&0\\
+0&0&0&0&0&0&0&0&0\\
+\mathbf{-1}&\mathbf0&0&\mathbf1&0&0&0&0&0\\
+0&0&0&0&0&0&0&0&0\\0&0&0&0&0&0&0&0&0\\0&0&0&0&0&0&0&0&0\\0&0&0&0&0&0&0&0&0\\0&0&0&0&0&0&0&0&0
+\end{pmatrix}&\begin{matrix}\mathbf1\\\mathbf2\\3\\\mathbf4\\5\\6\\7\\8\\9\end{matrix}\\
+\begin{matrix}\mathbf1&\mathbf2&3&\mathbf4&5&6&7&8&9\end{matrix}&
+\end{array},\quad\frac{f_0h^2}{6}\begin{array}{c@{}c}
+\begin{pmatrix}\mathbf1\\\mathbf1\\0\\\mathbf1\\0\\0\\0\\0\\0\end{pmatrix}&\begin{matrix}\mathbf1\\\mathbf2\\3\\\mathbf4\\5\\6\\7\\8\\9\end{matrix}
+\end{array}\]
+{for the linear systems. We next consider triangle element $e_2^{\mathrm {II}}$. From \eqref{eq:type-two-element-matrix} and Table\ \ref{tab:local-global-node-numbers}, we have}
+\[A_{e_2^{\mathrm {II}}}=\frac12\begin{array}{c@{}c}
+\begin{pmatrix}1&-1&0\\-1&2&-1\\0&-1&1\end{pmatrix}&\begin{matrix}2\\5\\4\end{matrix}\\
+\begin{matrix}2&5&4\end{matrix}&\end{array},\quad
+\boldsymbol{f}_{e^{\mathrm {II}}}=\frac{f_0h^2}{6}\begin{array}{c@{}c}\begin{pmatrix}1\\1\\1\end{pmatrix}&\begin{matrix}2\\5\\4\end{matrix}\end{array}\]
+% block: second-element-assembly page:62 type:ordinary-paragraph
+{and adding the information to the aforementioned matrix and the right-hand side yields}
+\[\frac12\begin{array}{c@{}c}
+\begin{pmatrix}
+2&-1&0&-1&0&0&0&0&0\\
+-1&\mathbf2&0&\mathbf0&\mathbf{-1}&0&0&0&0\\
+0&0&0&0&0&0&0&0&0\\
+-1&\mathbf0&0&\mathbf2&\mathbf{-1}&0&0&0&0\\
+0&\mathbf{-1}&0&\mathbf{-1}&\mathbf2&0&0&0&0\\
+0&0&0&0&0&0&0&0&0\\0&0&0&0&0&0&0&0&0\\0&0&0&0&0&0&0&0&0\\0&0&0&0&0&0&0&0&0
+\end{pmatrix}&\begin{matrix}1\\\mathbf2\\3\\\mathbf4\\\mathbf5\\6\\7\\8\\9\end{matrix}\\
+\begin{matrix}1&\mathbf2&3&\mathbf4&\mathbf5&6&7&8&9\end{matrix}&
+\end{array},\quad\frac{f_0h^2}{6}\begin{array}{c@{}c}
+\begin{pmatrix}1\\\mathbf2\\0\\\mathbf2\\\mathbf1\\0\\0\\0\\0\end{pmatrix}&\begin{matrix}1\\\mathbf2\\3\\\mathbf4\\\mathbf5\\6\\7\\8\\9\end{matrix}
+\end{array}\]
+{and similarly for the remaining elements $e_3^{\mathrm I},e_4^{\mathrm {II}},\ldots,e_8^{\mathrm {II}}$, we finally have}
+\[\frac12\begin{pmatrix}
+2&-1&0&-1&0&0&0&0&0\\-1&4&-1&0&-2&0&0&0&0\\0&-1&2&0&0&-1&0&0&0\\
+-1&0&0&4&-2&0&-1&0&0\\0&-2&0&-2&8&-2&0&-2&0\\0&0&-1&0&-2&4&0&0&-1\\
+0&0&0&-1&0&0&2&-1&0\\0&0&0&0&-2&0&-1&4&-1\\0&0&0&0&0&-1&0&-1&2
+\end{pmatrix}\begin{pmatrix}u_1\\u_2\\u_3\\u_4\\u_5\\u_6\\u_7\\u_8\\u_9\end{pmatrix}
+=\frac{f_0h^2}{6}\begin{pmatrix}1\\3\\2\\3\\6\\3\\2\\3\\1\end{pmatrix}.\]
+% block: finite-element-dirichlet-elimination page:62 type:ordinary-paragraph
+{The linear systems do not include the information of Dirichlet condition ($u(x,0)=0$ for $x\in[0,1]$). It follows from Figs.\ \ref{fig:square-poisson-domain} and \ref{fig:eight-triangle-mesh} that the following condition is required for satisfying the Dirichlet condition:}
+\[u_1=u_2=u_3=0.\]
+{Thus, removing the first three rows from the linear systems and substituting $u_1=u_2=u_3=0$ into the resulting linear systems yields:}
+\begin{equation}\label{eq:finite-element-square-system}
+\frac12\begin{pmatrix}
+4&-2&0&-1&0&0\\-2&8&-2&0&-2&0\\0&-2&4&0&0&-1\\
+-1&0&0&2&-1&0\\0&-2&0&-1&4&-1\\0&0&-1&0&-1&2
+\end{pmatrix}\begin{pmatrix}u_4\\u_5\\u_6\\u_7\\u_8\\u_9\end{pmatrix}
+=\frac{f_0h^2}{6}\begin{pmatrix}3\\6\\3\\2\\3\\1\end{pmatrix}.
+\end{equation}
+{By solving the linear systems we have $u_4,u_5,\ldots,u_9$.}
+% block: finite-element-exact-comparison page:63 type:ordinary-paragraph
+{Finally, we compare the approximate solution with the exact solution. The exact solution of the Poisson equation is $u(x,y)=f_0y-\frac12f_0y^2$. When $f_0=1$, the values of $u_4,u_5,u_6$ for the exact solution are 0.375 and $u_7,u_8,u_9$ are 0.5. Solving linear systems \eqref{eq:finite-element-square-system} with $f_0=1$ and $h=\frac12$ yields $u_4\approx0.381,u_5\approx0.375,u_6\approx0.369$ and $u_7\approx0.524,u_8\approx0.500,u_9\approx0.476$.}
+{If a more accurate approximate solution is required, the number of nodes should be increased. From the above derivation, we see that the size of the linear systems is almost the same as the number of the whole nodes.}

@@ -1,0 +1,67 @@
+% block: matrix-equations-heading page:75 type:section
+\subsection{{矩阵方程}}\label{sec:matrix-equations}
+{考虑下列矩阵方程:}
+\begin{equation}\label{eq:sylvester-equation}
+AX+XB=C,
+\end{equation}
+{其中 $A$ 和 $B$ 分别为 $m$ 行 $m$ 列和 $n$ 行 $n$ 列的矩阵. 这一矩阵方程称为 Sylvester 方程, 出现在控制理论领域中. 在推导计算矩阵平方根的 Newton 方法时, 也会产生 Sylvester 方程, 见 Section\ \ref{subsec:newton-matrix-square-root}.}
+{Sylvester 方程可以转换为形如 $M\boldsymbol{x}=\boldsymbol{c}$ 的线性方程组, 下面说明 Sylvester 方程 \eqref{eq:sylvester-equation} 与线性方程组 $M\boldsymbol{x}=\boldsymbol{c}$ 之间的联系.}
+% block: vectorization-definition page:75 type:ordinary-paragraph
+{设 $G$ 为 $n$ 行 $m$ 列的矩阵, 其列向量记为 $\boldsymbol{g}_1,\boldsymbol{g}_2,\ldots,\boldsymbol{g}_m$. 则矩阵 $G$ 可写成 $G=[\boldsymbol{g}_1,\boldsymbol{g}_2,\ldots,\boldsymbol{g}_m]$. 现在定义 vec 算子. vec 算子是从 $\mathbb{C}^{n\times m}$ 到 $\mathbb{C}^{nm}$ 的映射, $\operatorname{vec}(G)$ 写成}
+\begin{equation}\label{eq:vectorization-definition}
+\operatorname{vec}(G)=\begin{bmatrix}\boldsymbol{g}_1\\\vdots\\\boldsymbol{g}_m\end{bmatrix}.
+\end{equation}
+{下面列出 vec 算子的一些性质.}
+% block: vectorization-properties page:76 type:theorem
+\begin{Theorem}\label{thm:vectorization-properties}
+{设 $X\in\mathbb{C}^{m\times n}$, $A_i\in\mathbb{C}^{m\times m}$, $B_i\in\mathbb{C}^{n\times n}$, 且 $P_{mn}$ 是 Theorem\ \ref{thm:kronecker-permutation} 中给出的置换矩阵. 则}
+\begin{enumerate}
+\item $\operatorname{vec}(A_1XB_1+\cdots+A_kXB_k)=(B_1^{\top}\otimes A_1+\cdots+B_k^{\top}\otimes A_k)\operatorname{vec}(X)$,
+\item $\operatorname{vec}(X^{\top})=P_{mn}\operatorname{vec}(X)$.
+\end{enumerate}
+\end{Theorem}
+% block: vectorization-transpose-proof page:76 type:proof
+\begin{Proof}
+{先证明第 (2) 项. 由 Theorem\ \ref{thm:kronecker-permutation} 中 $P_{mn}$ 的定义,}
+\[P_{mn}\operatorname{vec}(X)=\begin{bmatrix}
+(E_{11})^{\top}&\cdots&(E_{1n})^{\top}\\\vdots&\ddots&\vdots\\(E_{m1})^{\top}&\cdots&(E_{mn})^{\top}
+\end{bmatrix}\begin{bmatrix}\boldsymbol{x}_1\\\vdots\\\boldsymbol{x}_n\end{bmatrix},\]
+{因此 $P_{mn}\operatorname{vec}(X)$ 的第 $k$ 个块元素为}
+\[\begin{aligned}
+(P_{mn}\operatorname{vec}(X))_k&=\sum_{j=1}^nE_{kj}^{\top}\boldsymbol{x}_j
+=\sum_{j=1}^nE_{jk}\boldsymbol{x}_j=\sum_{j=1}^n\boldsymbol{e}_j\boldsymbol{e}_k^{\top}\boldsymbol{x}_j
+=\sum_{j=1}^n\boldsymbol{e}_jx_{kj}=\begin{bmatrix}x_{k1}\\\vdots\\x_{kn}\end{bmatrix},
+\end{aligned}\]
+{这就是 $X^{\top}$ 的第 $k$ 列. 因此,}
+\[P_{mn}\operatorname{vec}(X)=\begin{bmatrix}(P_{mn}\operatorname{vec}(X))_1\\\vdots\\(P_{mn}\operatorname{vec}(X))_n\end{bmatrix}=\operatorname{vec}(X^{\top}).\]
+{接着证明第 (1) 项. 由于 $\operatorname{vec}(X+Y)=\operatorname{vec}(X)+\operatorname{vec}(Y)$, 只需证明 $\operatorname{vec}(AXB)=(B^{\top}\otimes A)\operatorname{vec}(X)$. 令 $M=XB$, $M=[\boldsymbol{m}_1,\ldots,\boldsymbol{m}_n]$, 则 $AM=[A\boldsymbol{m}_1,\ldots,A\boldsymbol{m}_n]$. 因此}
+\begin{equation}\label{eq:vectorized-left-multiplication}
+\operatorname{vec}(AXB)=\operatorname{vec}(AM)=\begin{bmatrix}A\boldsymbol{m}_1\\\vdots\\A\boldsymbol{m}_n\end{bmatrix}
+=(I\otimes A)\begin{bmatrix}\boldsymbol{m}_1\\\vdots\\\boldsymbol{m}_n\end{bmatrix}=(I_n\otimes A)\operatorname{vec}(M),
+\end{equation}
+{而 $\operatorname{vec}(M)$ 计算如下}
+\[\begin{aligned}
+\operatorname{vec}(XB)&=\operatorname{vec}((B^{\top}X^{\top})^{\top})=P_{nm}\operatorname{vec}(B^{\top}X^{\top})=P_{nm}(I_m\otimes B^{\top})\operatorname{vec}(X^{\top})\\
+&=P_{nm}(I_m\otimes B^{\top})P_{mn}\operatorname{vec}(X)
+=P_{mn}^{\top}(I_m\otimes B^{\top})P_{mn}\operatorname{vec}(X)=(B^{\top}\otimes I_m)\operatorname{vec}(X).
+\end{aligned}\]
+{最后一个等式由 \eqref{eq:kronecker-swapping-permutation} 得到, 将此结果与 \eqref{eq:vectorized-left-multiplication} 结合, 得}
+\[\operatorname{vec}(AXB)=(I_n\otimes A)\operatorname{vec}(XB)=(I_n\otimes A)(B^{\top}\otimes I_m)\operatorname{vec}(X)=(B^{\top}\otimes A)\operatorname{vec}(X).\]
+{最后一个等式由 Theorem\ \ref{thm:kronecker-product-properties} 的第 (6) 项得到. 证明完毕.}
+\end{Proof}
+% block: sylvester-linear-system page:77 type:ordinary-paragraph
+{现在可以说明 Sylvester 方程与线性方程组之间的关系. 对 Sylvester 方程 \eqref{eq:sylvester-equation} 应用 Theorem\ \ref{thm:vectorization-properties} 的第 (1) 项, 得}
+\[\operatorname{vec}(AX+XB)=\operatorname{vec}(C)\Leftrightarrow
+\underbrace{[(I_n\otimes A)+(B^{\top}\otimes I_m)]}_M
+\underbrace{\operatorname{vec}(X)}_{\boldsymbol{x}}=\underbrace{\operatorname{vec}(C)}_{\boldsymbol{c}},\]
+{其中 $I_m$ 为 $m$ 行 $m$ 列的单位矩阵. 这里考虑稍作修改的如下矩阵方程}
+\[AX+X^{\top}B=C.\]
+{该矩阵称为 T-合同 Sylvester 方程. 应用 vec 算子并使用 Theorem\ \ref{thm:vectorization-properties} 的第 (2) 项, 得}
+\[\begin{aligned}
+AX+X^{\top}B=C&\Leftrightarrow\operatorname{vec}(AX+X^{\top}B)=\operatorname{vec}(C)\\
+&\Leftrightarrow\operatorname{vec}(AX)+\operatorname{vec}(X^{\top}B)=\operatorname{vec}(C)\\
+&\Leftrightarrow\operatorname{vec}(I_n\otimes A)\operatorname{vec}(X)+(B^{\top}\otimes I_m)\operatorname{vec}(X^{\top})=\operatorname{vec}(C)\\
+&\Leftrightarrow(I_n\otimes A)\operatorname{vec}(X)+(B^{\top}\otimes I_m)P_{mn}\operatorname{vec}(X)=\operatorname{vec}(C)\\
+&\Leftrightarrow\underbrace{[(I_n\otimes A)+(B^{\top}\otimes I_m)P_{mn}]}_{\widetilde M}\underbrace{\operatorname{vec}(X)}_{\boldsymbol{x}}=\underbrace{\operatorname{vec}(C)}_{\boldsymbol{c}}.
+\end{aligned}\]
+{因此, T-合同 Sylvester 方程同样等价于形如 $\widetilde M\boldsymbol{x}=\boldsymbol{c}$ 的线性方程组.}

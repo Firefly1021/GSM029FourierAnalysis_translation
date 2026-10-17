@@ -1,0 +1,154 @@
+% block: optimization-heading page:77 type:section
+\subsection{\BT{Optimization}{优化}}\label{sec:optimization}
+\BT{Consider unconstrained optimization problems of the form}{考虑下列形式的无约束优化问题}
+\begin{equation}\label{eq:unconstrained-minimization}
+\min_{\boldsymbol{x}\in\mathbb{R}^n}f(\boldsymbol{x}),
+\end{equation}
+\BT{where $f(\boldsymbol{x})$ is a smooth function. Unless function $f(\boldsymbol{x})$ has a special structure, e.g., a convex function, it is in general difficult to find the solution of the minimization problems. In order to find the solution, as is known in standard calculus, the critical points, $\boldsymbol{x}_c$ such that $\nabla f(\boldsymbol{x}_c)=\boldsymbol{0}$, are usually important.}{其中 $f(\boldsymbol{x})$ 为光滑函数. 除非函数 $f(\boldsymbol{x})$ 具有特殊结构, 例如为凸函数, 否则一般很难找到极小化问题的解. 如通常的微积分所述, 为找到解, 临界点, 即满足 $\nabla f(\boldsymbol{x}_c)=\boldsymbol{0}$ 的 $\boldsymbol{x}_c$, 通常很重要.}
+\BT{In this section, Newton's method is introduced over a Euclidean space and a Riemannian manifold (Grassmann manifold) to obtain the critical points, and we will see how linear systems arise in each iteration step of Newton's method. As a preliminary, tensor notations are introduced in the next subsection. We will see that tensor notations enable us to describe the Taylor series systematically and concisely.}{本节介绍 Euclidean 空间和 Riemannian 流形 (Grassmann 流形) 上用于求临界点的 Newton 方法, 并说明 Newton 方法的每次迭代如何产生线性方程组. 作为预备知识, 下一小节先介绍张量记号. 我们将看到, 张量记号能够系统而简洁地描述 Taylor 级数.}
+% block: tensor-notations-heading page:78 type:subsection
+\subsubsection{\BT{Tensor Notations}{张量记号}}\label{subsec:tensor-notations}
+\BT{A matrix denoted by $A$ is a two-dimensional array that has $(i,j)$ elements, which are written as $(A)_{ij}$ or $a_{ij}$. A tensor denoted by $\mathcal{A}$ is a multidimensional array that has, for a three-dimensional array, $(i,j,k)$ elements, which are written as $(\mathcal{A})_{ijk}$ or $a_{ijk}$. More generally, an $N$th-order tensor (or an $N$-way tensor) $\mathcal{A}$ is an $N$-dimensional array whose $i_1,i_2,\ldots,i_N$ elements are written as $(\mathcal{A})_{i_1,i_2,\ldots,i_N}$ or $a_{i_1,i_2,\ldots,i_N}$. If all the elements $a_{i_1,i_2,\ldots,i_N}\in\mathbb{R}$ with $i_1,i_2,\ldots,i_N$ running from $i_1=i_2=\cdots=i_N=1$ to $i_1=I_1,i_2=I_2,\ldots,i_N=I_N$, then $\mathcal{A}\in\mathbb{R}^{I_1\times I_2\times\cdots\times I_N}$.}{记为 $A$ 的矩阵是二维数组, 其 $(i,j)$ 元素写作 $(A)_{ij}$ 或 $a_{ij}$. 记为 $\mathcal{A}$ 的张量是多维数组; 对三维数组, 其 $(i,j,k)$ 元素写作 $(\mathcal{A})_{ijk}$ 或 $a_{ijk}$. 更一般地, $N$ 阶张量 (或 $N$ 路张量) $\mathcal{A}$ 是一个 $N$ 维数组, 其 $i_1,i_2,\ldots,i_N$ 元素写作 $(\mathcal{A})_{i_1,i_2,\ldots,i_N}$ 或 $a_{i_1,i_2,\ldots,i_N}$. 若所有元素 $a_{i_1,i_2,\ldots,i_N}\in\mathbb{R}$, 且 $i_1,i_2,\ldots,i_N$ 从 $i_1=i_2=\cdots=i_N=1$ 取到 $i_1=I_1,i_2=I_2,\ldots,i_N=I_N$, 则 $\mathcal{A}\in\mathbb{R}^{I_1\times I_2\times\cdots\times I_N}$.}
+\BT{Given two tensors $\mathcal{X},\mathcal{Y}\in\mathbb{R}^{I_1\times I_2\times\cdots\times I_N}$ and a scalar value $\alpha\in\mathbb{R}$, tensor addition and scalar multiplication are defined by}{给定两个张量 $\mathcal{X},\mathcal{Y}\in\mathbb{R}^{I_1\times I_2\times\cdots\times I_N}$ 和标量值 $\alpha\in\mathbb{R}$, 张量加法和标量乘法定义为}
+\[(\mathcal{X}+\mathcal{Y})_{i_1,i_2,\ldots,i_N}=x_{i_1,i_2,\ldots,i_N}+y_{i_1,i_2,\ldots,i_N},\quad
+(\alpha\mathcal{X})_{i_1,i_2,\ldots,i_N}=\alpha x_{i_1,i_2,\ldots,i_N}.\]
+% block: tensor-mode-products page:78 type:ordinary-paragraph
+\BT{A tensor--matrix multiplication, or $n$-mode product, is defined next. Let $\mathcal{X}\in\mathbb{R}^{I_1\times I_2\times\cdots\times I_N}$ and $U\in\mathbb{R}^{J\times I_n}$. The $n$-mode product of $\mathcal{X}$ and $U$ is defined as}{下面定义张量与矩阵的乘法, 或称 $n$-模乘积. 设 $\mathcal{X}\in\mathbb{R}^{I_1\times I_2\times\cdots\times I_N}$, $U\in\mathbb{R}^{J\times I_n}$. $\mathcal{X}$ 与 $U$ 的 $n$-模乘积定义为}
+\[(\mathcal{X}\times_nU)_{i_1,\ldots,i_{n-1},j,i_{n+1},\ldots,i_N}
+=\sum_{k=1}^{I_n}x_{i_1,i_2,\ldots,i_{n-1},k,i_{n+1},\ldots,i_N}u_{j,k}.\]
+\BT{For a third-order tensor,}{对三阶张量,}
+\[\begin{aligned}
+(\mathcal{X}\times_1U)_{j,i_2,i_3}&=\sum_{k=1}^{I_1}x_{k,i_2,i_3}u_{j,k},\\
+(\mathcal{X}\times_2U)_{i_1,j,i_3}&=\sum_{k=1}^{I_2}x_{i_1,k,i_3}u_{j,k},\\
+(\mathcal{X}\times_3U)_{i_1,i_2,j}&=\sum_{k=1}^{I_3}x_{i_1,i_2,k}u_{j,k}.
+\end{aligned}\]
+\BT{From the definition, it is easy to see}{由定义容易看出}
+\begin{equation}\label{eq:tensor-mode-product-commutation}
+(\mathcal{X}\times_1A)\times_2B=(\mathcal{X}\times_2B)\times_1A.
+\end{equation}
+\BT{Thus, one may write}{因此可写成}
+\[\mathcal{X}\times_1A\times_2B,\]
+\BT{and more generally $\mathcal{X}\times_1A_1\times_2A_2\times_3\cdots\times_NA_N$. If $\mathcal{X}$ is a matrix (rewritten as $X$, instead of $\mathcal{X}$), \eqref{eq:tensor-mode-product-commutation} is equivalent to}{更一般地可写成 $\mathcal{X}\times_1A_1\times_2A_2\times_3\cdots\times_NA_N$. 若 $\mathcal{X}$ 为矩阵 (改记为 $X$, 不用 $\mathcal{X}$), 则 \eqref{eq:tensor-mode-product-commutation} 等价于}
+\[(AX)B^{\top}=A(XB^{\top}).\]
+% block: tensor-svd-and-contractions page:79 type:ordinary-paragraph
+\BT{Thus, in standard linear algebra, the parentheses are omitted, i.e., $AXB^{\top}$. The singular value decomposition of matrix $X$ is $U\Sigma V^{\mathrm H}$, where $U$ and $V$ are unitary matrices and $\Sigma$ is a diagonal matrix whose diagonal elements are $(\Sigma)_{i,i}=\sigma_i\ge0$. Then using tensor notations, the singular value decomposition of $X$ can be rewritten as}{因此在通常的线性代数中省略括号, 即写成 $AXB^{\top}$. 矩阵 $X$ 的奇异值分解为 $U\Sigma V^{\mathrm H}$, 其中 $U$ 和 $V$ 为酉矩阵, $\Sigma$ 为对角矩阵, 其对角元素为 $(\Sigma)_{i,i}=\sigma_i\ge0$. 利用张量记号, $X$ 的奇异值分解可改写为}
+\[X=U\Sigma V^{\top}=\Sigma\times_1U\times_2V.\]
+\BT{A more general product is a contracted product $\langle\cdot,\cdot\rangle$, which is the following map:}{更一般的乘积是缩并乘积 $\langle\cdot,\cdot\rangle$, 它是下列映射:}
+\[\begin{aligned}
+\langle\cdot,\cdot\rangle_{1,\ldots,m;1,\ldots,m}:&\ \mathbb{R}^{I_1\times\cdots\times I_m\times J_1\times\cdots\times J_N}\times\mathbb{R}^{I_1\times\cdots\times I_m\times K_1\times\cdots\times K_p}\\
+&\to\mathbb{R}^{J_1\times\cdots\times J_N\times K_1\times\cdots\times K_p},\\
+\langle\mathcal{X},\mathcal{Y}\rangle_{1,\ldots,m;1,\ldots,m}:&=\sum_{i_1=1}^{I_1}\cdots\sum_{i_m=1}^{I_m}x_{i_1,\ldots,i_m,j_1,\ldots,j_N}y_{i_1,\ldots,i_m,k_1,\ldots,k_p}.
+\end{aligned}\]
+\BT{More generally, some examples of contracted products of two tensors are given next. For $\mathcal{X}\in\mathbb{R}^{I_1\times I_2\times I_3}$ and $\mathcal{Y}\in\mathbb{R}^{J_1\times J_2\times J_3\times J_4}$, below is an example of contracted products of the two tensors.}{下面给出两个张量的缩并乘积的若干更一般的例子. 对 $\mathcal{X}\in\mathbb{R}^{I_1\times I_2\times I_3}$ 和 $\mathcal{Y}\in\mathbb{R}^{J_1\times J_2\times J_3\times J_4}$, 下式是两张量缩并乘积的一个例子.}
+\[\langle\mathcal{X},\mathcal{Y}\rangle_{1,3:2,3}=\sum_{k=1}^{I_1}\sum_{l=1}^{I_3}x_{k,i_2,l}\times y_{j_1,k,l,j_4},\]
+\BT{where we assumed $I_1=J_2$ and $I_3=J_3$. Another example is as follows:}{其中假设 $I_1=J_2$, $I_3=J_3$. 另一个例子如下:}
+\[\langle\mathcal{X},\mathcal{Y}\rangle_{1,2:2,4}=\sum_{k=1}^{I_1}\sum_{l=1}^{I_2}x_{k,l,i_3}\times y_{j_1,k,j_3,l},\]
+\BT{where we assumed $I_1=J_2$ and $I_2=J_4$.}{其中假设 $I_1=J_2$, $I_2=J_4$.}
+% block: euclidean-newton-heading page:79 type:subsection
+\subsubsection{\BT{Newton's Method on Euclidean Space}{Euclidean 空间上的 Newton 方法}}\label{subsec:euclidean-newton}
+\BT{For a smooth function $f(\boldsymbol{x})$ with $\boldsymbol{x}\in\mathbb{R}^n$, the mode-$n$ product of a tensor and a vector (a matrix having only one column) is useful for describing the Taylor series of $f(\boldsymbol{x}+\boldsymbol{h})$ at $\boldsymbol{x}$:}{对 $\boldsymbol{x}\in\mathbb{R}^n$ 上的光滑函数 $f(\boldsymbol{x})$, 张量与向量 (仅有一列的矩阵) 的 $n$-模乘积有助于描述 $f(\boldsymbol{x}+\boldsymbol{h})$ 在 $\boldsymbol{x}$ 处的 Taylor 级数:}
+\begin{align}
+f(\boldsymbol{x}+\boldsymbol{h})&=f(\boldsymbol{x})+\frac1{1!}[f^{(1)}(\boldsymbol{x})]\times_1\boldsymbol{h}\label{eq:tensor-taylor-first-line}\\
+&\quad+\frac1{2!}[f^{(2)}(\boldsymbol{x})]\times_1\boldsymbol{h}\times_2\boldsymbol{h}+\frac1{3!}[f^{(3)}(\boldsymbol{x})]\times_1\boldsymbol{h}\times_2\boldsymbol{h}\times_3\boldsymbol{h}+\cdots,\label{eq:tensor-taylor-series}
+\end{align}
+% block: derivative-tensors page:80 type:ordinary-paragraph
+\BT{where}{其中}
+\[\begin{aligned}
+[f^{(1)}(\boldsymbol{x})]_{i_1}&=\frac{\partial}{\partial x_{i_1}}f(\boldsymbol{x}),&[f^{(1)}(\boldsymbol{x})]&\in\mathbb{R}^n,\\
+[f^{(2)}(\boldsymbol{x})]_{i_1i_2}&=\frac{\partial^2}{\partial x_{i_1}\partial x_{i_2}}f(\boldsymbol{x}),&[f^{(2)}(\boldsymbol{x})]&\in\mathbb{R}^{n\times n},\\
+[f^{(3)}(\boldsymbol{x})]_{i_1i_2i_3}&=\frac{\partial^3}{\partial x_{i_1}\partial x_{i_2}\partial x_{i_3}}f(\boldsymbol{x}),&[f^{(3)}(\boldsymbol{x})]&\in\mathbb{R}^{n\times n\times n},\\
+&\vdots
+\end{aligned}\]
+\BT{for $i_1,i_2,i_3,\ldots\in\{1,2,\ldots,n\}$. The vector $f^{(1)}(\boldsymbol{x})$ is the gradient of $f(\boldsymbol{x})$, i.e., $f^{(1)}(\boldsymbol{x})=\nabla f(\boldsymbol{x})$. The matrix $f^{(2)}(\boldsymbol{x})$ is called a Hessian matrix, which is denoted by $H(\boldsymbol{x})$. With this notation, the Taylor series \eqref{eq:tensor-taylor-series} can be rewritten as}{这里 $i_1,i_2,i_3,\ldots\in\{1,2,\ldots,n\}$. 向量 $f^{(1)}(\boldsymbol{x})$ 是 $f(\boldsymbol{x})$ 的梯度, 即 $f^{(1)}(\boldsymbol{x})=\nabla f(\boldsymbol{x})$. 矩阵 $f^{(2)}(\boldsymbol{x})$ 称为 Hessian 矩阵, 记为 $H(\boldsymbol{x})$. 用这些记号, Taylor 级数 \eqref{eq:tensor-taylor-series} 可改写为}
+\begin{equation}\label{eq:gradient-hessian-taylor-series}
+f(\boldsymbol{x}+\boldsymbol{h})=f(\boldsymbol{x})+\boldsymbol{h}^{\top}\nabla f(\boldsymbol{x})+\frac12\boldsymbol{h}^{\top}H(\boldsymbol{x})\boldsymbol{h}+\frac1{3!}[f^{(3)}(\boldsymbol{x})]\times_1\boldsymbol{h}\times_2\boldsymbol{h}\times_3\boldsymbol{h}+\cdots.
+\end{equation}
+% block: newton-quadratic-model page:80 type:ordinary-paragraph
+\BT{We now consider finding a local minimizer $\boldsymbol{x}^*$ that locally minimizes $f(\boldsymbol{x})$. Let $\boldsymbol{x}_n$ be an approximate minimizer of $f(\boldsymbol{x})$ (i.e., $\boldsymbol{x}_n\approx\boldsymbol{x}^*$). Then, the original problem is transformed into finding a correction vector $\boldsymbol{h}$ so that $f(\boldsymbol{x}_k+\boldsymbol{h})$ is minimized.}{现在考虑寻找使 $f(\boldsymbol{x})$ 达到局部极小值的局部极小点 $\boldsymbol{x}^*$. 设 $\boldsymbol{x}_n$ 是 $f(\boldsymbol{x})$ 的近似极小点 (即 $\boldsymbol{x}_n\approx\boldsymbol{x}^*$). 则原问题转化为寻找修正向量 $\boldsymbol{h}$, 使 $f(\boldsymbol{x}_k+\boldsymbol{h})$ 达到极小值.}
+\BT{Newton's method finds a correction vector $\boldsymbol{h}$ such that $\boldsymbol{x}_k+\boldsymbol{h}$ minimizes not $f(\boldsymbol{x}_k+\boldsymbol{h})$ but the quadratic approximation of $f(\boldsymbol{x}_k+\boldsymbol{h})$, i.e.,}{Newton 方法寻找修正向量 $\boldsymbol{h}$, 使 $\boldsymbol{x}_k+\boldsymbol{h}$ 极小化的不是 $f(\boldsymbol{x}_k+\boldsymbol{h})$ 本身, 而是 $f(\boldsymbol{x}_k+\boldsymbol{h})$ 的二次近似, 即}
+\[\min_{\boldsymbol{h}\in\mathbb{R}^n}q(\boldsymbol{h}),\quad q(\boldsymbol{h}):=f(\boldsymbol{x}_k)+\boldsymbol{h}^{\top}\nabla f(\boldsymbol{x}_k)+\frac12\boldsymbol{h}^{\top}H(\boldsymbol{x}_k)\boldsymbol{h}.\]
+\BT{If $H(\boldsymbol{x}_k)$ is positive definite, the minimizer of $q(\boldsymbol{h})$ is unique and is given by the solution of $\nabla q(\boldsymbol{h})=\boldsymbol{0}$. Since $\nabla q(\boldsymbol{h})=\nabla f(\boldsymbol{x}_k)+H(\boldsymbol{x}_k)\boldsymbol{h}$, the correction vector $\boldsymbol{h}$ at the $k$th iteration step, denoted by $\boldsymbol{h}_k$, can be obtained by solving linear systems of the form}{若 $H(\boldsymbol{x}_k)$ 正定, 则 $q(\boldsymbol{h})$ 的极小点唯一, 由 $\nabla q(\boldsymbol{h})=\boldsymbol{0}$ 的解给出. 由于 $\nabla q(\boldsymbol{h})=\nabla f(\boldsymbol{x}_k)+H(\boldsymbol{x}_k)\boldsymbol{h}$, 第 $k$ 次迭代的修正向量 $\boldsymbol{h}$, 记为 $\boldsymbol{h}_k$, 可由求解下列形式的线性方程组得到}
+\begin{equation}\label{eq:euclidean-newton-system}
+H(\boldsymbol{x}_k)\boldsymbol{h}_k=-\nabla f(\boldsymbol{x}_k).
+\end{equation}
+\BT{After solving \eqref{eq:euclidean-newton-system}, we obtain a new approximate minimizer $\boldsymbol{x}_{k+1}(=\boldsymbol{x}_k+\boldsymbol{h}_k)$. At each iteration $k$, we need to solve the linear systems \eqref{eq:euclidean-newton-system}.}{求解 \eqref{eq:euclidean-newton-system} 后, 得到新的近似极小点 $\boldsymbol{x}_{k+1}(=\boldsymbol{x}_k+\boldsymbol{h}_k)$. 每次迭代 $k$ 都需要求解线性方程组 \eqref{eq:euclidean-newton-system}.}
+% block: riemannian-newton-heading pages:80,81 type:subsection
+\subsubsection{\BT{Newton's Method on Riemannian Manifold}{Riemannian 流形上的 Newton 方法}}\label{subsec:riemannian-newton}
+\BT{Similar to the previous section, linear systems also arise in minimization problems over Riemannian manifolds when we consider Newton's method over Riemannian manifolds. As an example, we consider an optimization problem over the Grassmann manifold, which is an example of Riemannian manifolds. We consider the following minimization problems}{与上一小节类似, 考虑 Riemannian 流形上的 Newton 方法时, Riemannian 流形上的极小化问题也会产生线性方程组. 作为例子, 考虑 Grassmann 流形上的优化问题, 它是 Riemannian 流形的一个例子. 考虑下列极小化问题}
+\begin{equation}\label{eq:matrix-variable-minimization}
+\min_{X\in\mathbb{R}^{n\times p}}f(X),
+\end{equation}
+\BT{where $f$ is assumed to be a smooth function. Using vec operator \eqref{eq:vectorization-definition}, the function in \eqref{eq:matrix-variable-minimization} is equivalent to $f(\widetilde{\boldsymbol{x}})$, where $\widetilde{\boldsymbol{x}}=\operatorname{vec}(X)$. Thus the minimization problem \eqref{eq:matrix-variable-minimization} is essentially the same as \eqref{eq:unconstrained-minimization}. If $X$ satisfies the condition $X^{\top}X=I_p$, then the minimization problem \eqref{eq:matrix-variable-minimization} can be written as}{其中假设 $f$ 为光滑函数. 利用 vec 算子 \eqref{eq:vectorization-definition}, \eqref{eq:matrix-variable-minimization} 中的函数等价于 $f(\widetilde{\boldsymbol{x}})$, 其中 $\widetilde{\boldsymbol{x}}=\operatorname{vec}(X)$. 因而极小化问题 \eqref{eq:matrix-variable-minimization} 本质上与 \eqref{eq:unconstrained-minimization} 相同. 若 $X$ 满足条件 $X^{\top}X=I_p$, 则极小化问题 \eqref{eq:matrix-variable-minimization} 可写成}
+\begin{equation}\label{eq:stiefel-minimization}
+\min_{X\in\operatorname{St}(p,n)}f(X),
+\end{equation}
+\BT{where $\operatorname{St}(p,n)=\{X\in\mathbb{R}^{n\times p}:X^{\top}X=I_p\}$ ($p\le n$) and $\operatorname{St}(p,n)$ is referred to as the Stiefel manifold. The condition $X^{\top}X=I_p$ means that all the column vectors $\boldsymbol{x}_i$ ($i=1,\ldots,p$) of $X$ are orthonormal, i.e., $\boldsymbol{x}_i^{\top}\boldsymbol{x}_j=0$ for $i\ne j$ and $\boldsymbol{x}_i^{\top}\boldsymbol{x}_j=1$ for $i=j$. We now further assume that the function $f$ has the following property:}{其中 $\operatorname{St}(p,n)=\{X\in\mathbb{R}^{n\times p}:X^{\top}X=I_p\}$ ($p\le n$), $\operatorname{St}(p,n)$ 称为 Stiefel 流形. 条件 $X^{\top}X=I_p$ 表示 $X$ 的所有列向量 $\boldsymbol{x}_i$ ($i=1,\ldots,p$) 都是标准正交的, 即当 $i\ne j$ 时 $\boldsymbol{x}_i^{\top}\boldsymbol{x}_j=0$, 当 $i=j$ 时 $\boldsymbol{x}_i^{\top}\boldsymbol{x}_j=1$. 现在进一步假设函数 $f$ 具有以下性质:}
+\begin{equation}\label{eq:orthogonal-invariance}
+f(XQ)=f(X)
+\end{equation}
+% block: grassmann-equivalence-classes page:81 type:ordinary-paragraph
+\BT{for any orthogonal matrix $Q\in\mathbb{R}^{p\times p}$. This property leads to difficulty in solving the minimization problem. To be specific, let $X_k$ be an approximate minimizer of $f(X)$ and let $X_{k+1}$ be the next iterate given by $X_kQ_k$ for some orthogonal matrix $Q_k$. Then the iterate $X_{k+1}$ is not an improved approximate solution because the value of the objective function does not change. In order to avoid such a situation, one promising approach is that for a given $X_k\in\operatorname{St}(p,n)$ we regard the set $[X_k]:=\{X_kQ:Q^{\top}Q=I_p\}$ as one element. Then the next iterate $[X_{k+1}](\ne[X_k])$ is meaningful because $X_{k+1}$ can avoid the situation $f(X_k)=f(X_{k+1})$ caused by $X_{k+1}=X_kQ_k$.}{其中 $Q\in\mathbb{R}^{p\times p}$ 为任意正交矩阵. 这一性质会使极小化问题的求解变得困难. 具体而言, 设 $X_k$ 为 $f(X)$ 的近似极小点, $X_{k+1}$ 为对某个正交矩阵 $Q_k$ 由 $X_kQ_k$ 给出的下一迭代值. 则由于目标函数值没有改变, 迭代值 $X_{k+1}$ 并不是得到改进的近似解. 为避免这一情形, 一种有希望的方法是: 对给定的 $X_k\in\operatorname{St}(p,n)$, 将集合 $[X_k]:=\{X_kQ:Q^{\top}Q=I_p\}$ 视为一个元素. 这样, 下一迭代值 $[X_{k+1}](\ne[X_k])$ 就有意义, 因为 $X_{k+1}$ 可以避免由 $X_{k+1}=X_kQ_k$ 导致的 $f(X_k)=f(X_{k+1})$ 情形.}
+\BT{In general, the set $\operatorname{Grass}(p,n):=\{[X]:X\in\operatorname{St}(p,n)\}$ is referred to as the Grassmann manifold. The approach mentioned above corresponds to considering the following minimization problem:}{一般地, 集合 $\operatorname{Grass}(p,n):=\{[X]:X\in\operatorname{St}(p,n)\}$ 称为 Grassmann 流形. 上述方法对应于考虑下列极小化问题:}
+\begin{equation}\label{eq:grassmann-minimization}
+\min_{[Y]\in\operatorname{Grass}(p,n)}f(Y),
+\end{equation}
+\BT{instead of considering \eqref{eq:stiefel-minimization} with \eqref{eq:orthogonal-invariance}. In numerical computation, the following approximate solutions are produced: $X_0\in[Y_0],X_1\in[Y_1],\ldots$, i.e., representatives of the equivalence class $[Y_k]$ for $k=0,1,\ldots$.}{而不是考虑具有 \eqref{eq:orthogonal-invariance} 的 \eqref{eq:stiefel-minimization}. 数值计算中产生下列近似解: $X_0\in[Y_0],X_1\in[Y_1],\ldots$, 即 $k=0,1,\ldots$ 时等价类 $[Y_k]$ 的代表元.}
+% block: newton-grassmann-equation pages:81,82 type:ordinary-paragraph
+\BT{The minimization problem \eqref{eq:grassmann-minimization} can be regarded as an unconstrained minimization problem over the Grassmann manifold. Similar to \eqref{eq:euclidean-newton-system}, Newton's method over the Grassmann manifold requires us to solve the following linear systems (Newton-Grassmann equation):}{极小化问题 \eqref{eq:grassmann-minimization} 可看作 Grassmann 流形上的无约束极小化问题. 与 \eqref{eq:euclidean-newton-system} 类似, Grassmann 流形上的 Newton 方法要求求解下列线性方程组 (Newton-Grassmann 方程):}
+\begin{equation}\label{eq:newton-grassmann-equation}
+Y_{k\perp}^{\top}\partial^2f(Y_k)[Y_{k\perp}C_k]-C_kY_k^{\top}\partial f(Y_k)
+=\underbrace{-Y_{k\perp}^{\top}\partial f(Y_k)}_{(n-p)\times p},
+\end{equation}
+\BT{where $Y_k\in\operatorname{St}(p,n)$, $Y_{k\perp}\in\operatorname{St}(n-p,n)$ whose column vectors are orthogonal to the column vectors of $Y_k$, and the unknown matrix to be solved is $C_k\in\mathbb{R}^{(n-p)\times p}$. Here the $(i,j)$ elements of $\partial f(Y)\in\mathbb{R}^{n\times p}$ ($Y\in\mathbb{R}^{n\times p}$) and $\partial^2f(Y)[Z]\in\mathbb{R}^{n\times p}$ ($Z\in\mathbb{R}^{n\times p}$) are given by}{其中 $Y_k\in\operatorname{St}(p,n)$, $Y_{k\perp}\in\operatorname{St}(n-p,n)$, 后者的列向量与 $Y_k$ 的列向量正交, 待求未知矩阵为 $C_k\in\mathbb{R}^{(n-p)\times p}$. 这里 $\partial f(Y)\in\mathbb{R}^{n\times p}$ ($Y\in\mathbb{R}^{n\times p}$) 和 $\partial^2f(Y)[Z]\in\mathbb{R}^{n\times p}$ ($Z\in\mathbb{R}^{n\times p}$) 的 $(i,j)$ 元素为}
+\[\begin{aligned}
+(\partial f(Y))_{ij}&=\frac{\partial}{\partial y_{ij}}f(Y),\\
+(\partial^2f(Y)[Z])_{ij}&=\sum_{k=1}^n\sum_{l=1}^p\frac{\partial^2}{\partial y_{ij}\partial y_{kl}}f(Y)\times z_{kl}.
+\end{aligned}\]
+% block: fourth-order-derivative-tensor page:82 type:ordinary-paragraph
+\BT{We now use a fourth-order tensor $\mathcal{G}\in\mathbb{R}^{n\times p\times n\times p}$ whose $(i,j,k,l)$ element is defined by}{现在使用四阶张量 $\mathcal{G}\in\mathbb{R}^{n\times p\times n\times p}$, 其 $(i,j,k,l)$ 元素定义为}
+\[(\mathcal{G})_{ijkl}=\frac{\partial^2}{\partial y_{ij}\partial y_{kl}}f(Y).\]
+\BT{Then, $\partial^2f(Y_k)[Z]$ can be regarded as the following contracted product of $\mathcal{G}$ and $Z$:}{于是, $\partial^2f(Y_k)[Z]$ 可看作 $\mathcal{G}$ 和 $Z$ 的下列缩并乘积:}
+\[\partial^2f(Y_k)[Y_{k\perp}C_k]=\langle\mathcal{G},Z\rangle_{3,4;1,2}.\]
+\BT{For the contracted product, see Sect.\ \ref{subsec:tensor-notations}. After obtaining $C_k$ by solving \eqref{eq:newton-grassmann-equation}, one may think the next iterate is $Y_{k+1}=Y_{k\perp}C_k$. However, in general, $Y_{k\perp}C_k$ does not belong to the Grassmann manifold. Therefore $Y_{k\perp}C_k$ needs to be mapped to the Grassmann manifold, and the geometrically suitable map is referred to as retraction. The next iterate $Y_{k+1}$ is the matrix over the Grassmann manifold that is obtained from $Y_{k\perp}C_k$ by using one of the retractions. For the details of optimization over matrix manifolds, see \BookCite{3}, \BookCite{56}, \BookCite{155}.}{关于缩并乘积, 见 Section\ \ref{subsec:tensor-notations}. 求解 \eqref{eq:newton-grassmann-equation} 得到 $C_k$ 后, 可能会认为下一迭代值为 $Y_{k+1}=Y_{k\perp}C_k$. 但一般而言, $Y_{k\perp}C_k$ 不属于 Grassmann 流形. 因此需要将 $Y_{k\perp}C_k$ 映射到 Grassmann 流形上, 几何上适当的映射称为回缩. 下一迭代值 $Y_{k+1}$ 是利用某个回缩, 从 $Y_{k\perp}C_k$ 得到的 Grassmann 流形上的矩阵. 关于矩阵流形上优化的详情, 见 \BookCite{3}, \BookCite{56}, \BookCite{155}.}
+% block: grassmann-rayleigh-example-heading page:82 type:subsection
+\paragraph{Example}\label{ex:grassmann-rayleigh}
+\BT{As an example, we consider minimizing the following Rayleigh quotient on the Grassman manifold:}{作为例子, 考虑在 Grassman 流形上极小化下列 Rayleigh 商:}
+\[\min_{[Y]\in\operatorname{Grass}(p,n)}f(Y),\quad f(Y):=\frac12\operatorname{tr}(Y^{\top}AY),\]
+\BT{where $Y\in\mathbb{R}^{n\times p}$ and $A\in\mathbb{R}^{n\times n}$. Let $Q\in\mathbb{R}^{p\times p}$ be an orthogonal matrix. Then, $f(YQ)=\operatorname{tr}((YQ)^{\top}AYQ)/2=\operatorname{tr}(Q^{\top}Y^{\top}AYQ)/2=\operatorname{tr}(Y^{\top}AYQQ^{\top})/2=\operatorname{tr}(Y^{\top}AY)/2=f(Y)$. Thus we consider $\{YQ\in\mathbb{R}^{n\times p}:Q^{\top}Q=I_p\}$ as one element (i.e., equivalence class), which is denoted by $[Y]$. In what follows, we calculate $\partial f(Y)$ and $\partial^2f(Y)[Z]$.}{其中 $Y\in\mathbb{R}^{n\times p}$, $A\in\mathbb{R}^{n\times n}$. 设 $Q\in\mathbb{R}^{p\times p}$ 为正交矩阵. 则 $f(YQ)=\operatorname{tr}((YQ)^{\top}AYQ)/2=\operatorname{tr}(Q^{\top}Y^{\top}AYQ)/2=\operatorname{tr}(Y^{\top}AYQQ^{\top})/2=\operatorname{tr}(Y^{\top}AY)/2=f(Y)$. 因此将 $\{YQ\in\mathbb{R}^{n\times p}:Q^{\top}Q=I_p\}$ 视为一个元素 (即等价类), 记为 $[Y]$. 下面计算 $\partial f(Y)$ 和 $\partial^2f(Y)[Z]$.}
+% block: rayleigh-gradient-derivation page:83 type:ordinary-paragraph
+\BT{The $(i,j)$ element of $\partial f(Y)$ can be calculated as follows:}{$\partial f(Y)$ 的 $(i,j)$ 元素计算如下:}
+\[\begin{aligned}
+(\partial f(Y))_{ij}&=\frac{\partial}{\partial y_{ij}}f(Y)=\frac{\partial}{\partial y_{ij}}\frac12\operatorname{tr}(Y^{\top}AY)=\frac12\frac{\partial}{\partial y_{ij}}\sum_{k,l,m}y_{kl}^{\top}a_{lm}y_{mk}\\
+&=\frac12\frac{\partial}{\partial y_{ij}}\sum_{k,l,m}y_{lk}a_{lm}y_{mk}
+=\frac12\sum_{k,l,m}\frac{\partial y_{lk}}{\partial y_{ij}}a_{lm}y_{mk}+\frac12\sum_{k,l,m}y_{lk}a_{lm}\frac{\partial y_{mk}}{\partial y_{ij}}\\
+&=\frac12\sum_m\frac{\partial y_{ij}}{\partial y_{ij}}a_{im}y_{mj}+\frac12\sum_ly_{lj}a_{li}\frac{\partial y_{ij}}{\partial y_{ij}}
+=\frac12\sum_ma_{im}y_{mj}+\frac12\sum_ly_{lj}a_{li}\\
+&=\frac12\sum_ma_{im}y_{mj}+\frac12\sum_la_{il}^{\top}y_{lj}\\
+&=\frac12(AY)_{ij}+\frac12(A^{\top}Y)_{ij}.
+\end{aligned}\]
+\BT{Here we used the symbol ``$\top$'' for scalar value $y_{kl}^{\top}$, which means $y_{lk}$. The notation is convenient if one calculates the $(i,j)$ element of $A^{\top}B$. From the definition of matrix--matrix multiplications, we have $(AB)_{ij}=\sum_ka_{ik}b_{kj}$. Using the notation, for the $(i,j)$ element of $A^{\top}B$, we have $(A^{\top}B)_{ij}=\sum_ka_{ik}^{\top}b_{kj}=\sum_ka_{ki}b_{kj}$. Since $A=A^{\top}$, it follows that}{这里对标量值 $y_{kl}^{\top}$ 使用符号 ``$\top$'', 它表示 $y_{lk}$. 计算 $A^{\top}B$ 的 $(i,j)$ 元素时, 这一记号很方便. 由矩阵乘矩阵的定义, 有 $(AB)_{ij}=\sum_ka_{ik}b_{kj}$. 使用上述记号, 对 $A^{\top}B$ 的 $(i,j)$ 元素有 $(A^{\top}B)_{ij}=\sum_ka_{ik}^{\top}b_{kj}=\sum_ka_{ki}b_{kj}$. 由于 $A=A^{\top}$, 得}
+\begin{equation}\label{eq:rayleigh-gradient}
+\partial f(Y)=AY.
+\end{equation}
+% block: rayleigh-hessian-derivation page:83 type:ordinary-paragraph
+\BT{Next, the $(i,j)$ element of $\partial^2f(Y)[Z]$ is given by}{接着, $\partial^2f(Y)[Z]$ 的 $(i,j)$ 元素为}
+\[\begin{aligned}
+(\partial^2f(Y)[Z])_{ij}&=\sum_{k,l}\frac{\partial^2}{\partial y_{ij}\partial y_{kl}}f(Y)\times z_{kl}
+=\sum_{k,l}\frac{\partial}{\partial y_{ij}}\left(\frac{\partial}{\partial y_{kl}}f(Y)\right)\times z_{kl}\\
+&=\sum_{k,l}\frac{\partial}{\partial y_{ij}}\left(\frac12\sum_ma_{km}y_{ml}+\frac12\sum_ma_{km}^{\top}y_{ml}\right)\times z_{kl}\\
+&=\sum_{k,l}\left(\frac12\sum_ma_{km}\frac{\partial y_{ml}}{\partial y_{ij}}+\frac12\sum_ma_{km}^{\top}\frac{\partial y_{ml}}{\partial y_{ij}}\right)\times z_{kl}\\
+&=\sum_k\left(\frac12a_{ki}\frac{\partial y_{ij}}{\partial y_{ij}}+\frac12a_{ki}^{\top}\frac{\partial y_{ij}}{\partial y_{ij}}\right)\times z_{kj}\\
+&=\sum_k\left(\frac12a_{ki}z_{kj}+\frac12a_{ki}^{\top}z_{kj}\right)\\
+&=\sum_k\left(\frac12a_{ik}^{\top}z_{kj}+\frac12a_{ik}z_{kj}\right)\\
+&=\left(\frac12(A^{\top}Z)_{ij}+\frac12(AZ)_{ij}\right).
+\end{aligned}\]
+% block: rayleigh-newton-sylvester-system page:84 type:ordinary-paragraph
+\BT{Since $A=A^{\top}$, we obtain}{由于 $A=A^{\top}$, 得}
+\begin{equation}\label{eq:rayleigh-hessian-action}
+\partial^2\bar f(Y)[Z]=AZ.
+\end{equation}
+\BT{Substituting \eqref{eq:rayleigh-gradient} and \eqref{eq:rayleigh-hessian-action} into Newton--Grassmann Eq.\ \eqref{eq:newton-grassmann-equation} yields}{将 \eqref{eq:rayleigh-gradient} 和 \eqref{eq:rayleigh-hessian-action} 代入 Newton--Grassmann 方程 \eqref{eq:newton-grassmann-equation}, 得}
+\begin{equation}\label{eq:rayleigh-newton-sylvester-system}
+(Y_{k\perp}^{\top}AY_{k\perp})C_k-C_k(Y_k^{\top}AY_k)=-Y_{k\perp}^{\top}AY_k,
+\end{equation}
+\BT{where $C$ is an unknown matrix to be solved. This is the Sylvester equation as described in \eqref{eq:sylvester-equation}. After obtaining $C_k$ by solving \eqref{eq:rayleigh-newton-sylvester-system}, the next iterate $Y_{k+1}$ is, for example, given by $Y_{k+1}=Q_k$, where $Q_k$ is the (thin) QR factorization of $Y_{k\perp}C_k$.}{其中 $C$ 为待求的未知矩阵. 这就是 \eqref{eq:sylvester-equation} 中所述的 Sylvester 方程. 求解 \eqref{eq:rayleigh-newton-sylvester-system} 得到 $C_k$ 后, 下一迭代值 $Y_{k+1}$ 例如可取为 $Y_{k+1}=Q_k$, 其中 $Q_k$ 是 $Y_{k\perp}C_k$ 的 (薄) QR 分解.}

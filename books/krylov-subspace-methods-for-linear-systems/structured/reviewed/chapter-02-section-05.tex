@@ -1,0 +1,154 @@
+% block: optimization-heading page:77 type:section
+\subsection{{Optimization}}\label{sec:optimization}
+{Consider unconstrained optimization problems of the form}
+\begin{equation}\label{eq:unconstrained-minimization}
+\min_{\boldsymbol{x}\in\mathbb{R}^n}f(\boldsymbol{x}),
+\end{equation}
+{where $f(\boldsymbol{x})$ is a smooth function. Unless function $f(\boldsymbol{x})$ has a special structure, e.g., a convex function, it is in general difficult to find the solution of the minimization problems. In order to find the solution, as is known in standard calculus, the critical points, $\boldsymbol{x}_c$ such that $\nabla f(\boldsymbol{x}_c)=\boldsymbol{0}$, are usually important.}
+{In this section, Newton's method is introduced over a Euclidean space and a Riemannian manifold (Grassmann manifold) to obtain the critical points, and we will see how linear systems arise in each iteration step of Newton's method. As a preliminary, tensor notations are introduced in the next subsection. We will see that tensor notations enable us to describe the Taylor series systematically and concisely.}
+% block: tensor-notations-heading page:78 type:subsection
+\subsubsection{{Tensor Notations}}\label{subsec:tensor-notations}
+{A matrix denoted by $A$ is a two-dimensional array that has $(i,j)$ elements, which are written as $(A)_{ij}$ or $a_{ij}$. A tensor denoted by $\mathcal{A}$ is a multidimensional array that has, for a three-dimensional array, $(i,j,k)$ elements, which are written as $(\mathcal{A})_{ijk}$ or $a_{ijk}$. More generally, an $N$th-order tensor (or an $N$-way tensor) $\mathcal{A}$ is an $N$-dimensional array whose $i_1,i_2,\ldots,i_N$ elements are written as $(\mathcal{A})_{i_1,i_2,\ldots,i_N}$ or $a_{i_1,i_2,\ldots,i_N}$. If all the elements $a_{i_1,i_2,\ldots,i_N}\in\mathbb{R}$ with $i_1,i_2,\ldots,i_N$ running from $i_1=i_2=\cdots=i_N=1$ to $i_1=I_1,i_2=I_2,\ldots,i_N=I_N$, then $\mathcal{A}\in\mathbb{R}^{I_1\times I_2\times\cdots\times I_N}$.}
+{Given two tensors $\mathcal{X},\mathcal{Y}\in\mathbb{R}^{I_1\times I_2\times\cdots\times I_N}$ and a scalar value $\alpha\in\mathbb{R}$, tensor addition and scalar multiplication are defined by}
+\[(\mathcal{X}+\mathcal{Y})_{i_1,i_2,\ldots,i_N}=x_{i_1,i_2,\ldots,i_N}+y_{i_1,i_2,\ldots,i_N},\quad
+(\alpha\mathcal{X})_{i_1,i_2,\ldots,i_N}=\alpha x_{i_1,i_2,\ldots,i_N}.\]
+% block: tensor-mode-products page:78 type:ordinary-paragraph
+{A tensor--matrix multiplication, or $n$-mode product, is defined next. Let $\mathcal{X}\in\mathbb{R}^{I_1\times I_2\times\cdots\times I_N}$ and $U\in\mathbb{R}^{J\times I_n}$. The $n$-mode product of $\mathcal{X}$ and $U$ is defined as}
+\[(\mathcal{X}\times_nU)_{i_1,\ldots,i_{n-1},j,i_{n+1},\ldots,i_N}
+=\sum_{k=1}^{I_n}x_{i_1,i_2,\ldots,i_{n-1},k,i_{n+1},\ldots,i_N}u_{j,k}.\]
+{For a third-order tensor,}
+\[\begin{aligned}
+(\mathcal{X}\times_1U)_{j,i_2,i_3}&=\sum_{k=1}^{I_1}x_{k,i_2,i_3}u_{j,k},\\
+(\mathcal{X}\times_2U)_{i_1,j,i_3}&=\sum_{k=1}^{I_2}x_{i_1,k,i_3}u_{j,k},\\
+(\mathcal{X}\times_3U)_{i_1,i_2,j}&=\sum_{k=1}^{I_3}x_{i_1,i_2,k}u_{j,k}.
+\end{aligned}\]
+{From the definition, it is easy to see}
+\begin{equation}\label{eq:tensor-mode-product-commutation}
+(\mathcal{X}\times_1A)\times_2B=(\mathcal{X}\times_2B)\times_1A.
+\end{equation}
+{Thus, one may write}
+\[\mathcal{X}\times_1A\times_2B,\]
+{and more generally $\mathcal{X}\times_1A_1\times_2A_2\times_3\cdots\times_NA_N$. If $\mathcal{X}$ is a matrix (rewritten as $X$, instead of $\mathcal{X}$), \eqref{eq:tensor-mode-product-commutation} is equivalent to}
+\[(AX)B^{\top}=A(XB^{\top}).\]
+% block: tensor-svd-and-contractions page:79 type:ordinary-paragraph
+{Thus, in standard linear algebra, the parentheses are omitted, i.e., $AXB^{\top}$. The singular value decomposition of matrix $X$ is $U\Sigma V^{\mathrm H}$, where $U$ and $V$ are unitary matrices and $\Sigma$ is a diagonal matrix whose diagonal elements are $(\Sigma)_{i,i}=\sigma_i\ge0$. Then using tensor notations, the singular value decomposition of $X$ can be rewritten as}
+\[X=U\Sigma V^{\top}=\Sigma\times_1U\times_2V.\]
+{A more general product is a contracted product $\langle\cdot,\cdot\rangle$, which is the following map:}
+\[\begin{aligned}
+\langle\cdot,\cdot\rangle_{1,\ldots,m;1,\ldots,m}:&\ \mathbb{R}^{I_1\times\cdots\times I_m\times J_1\times\cdots\times J_N}\times\mathbb{R}^{I_1\times\cdots\times I_m\times K_1\times\cdots\times K_p}\\
+&\to\mathbb{R}^{J_1\times\cdots\times J_N\times K_1\times\cdots\times K_p},\\
+\langle\mathcal{X},\mathcal{Y}\rangle_{1,\ldots,m;1,\ldots,m}:&=\sum_{i_1=1}^{I_1}\cdots\sum_{i_m=1}^{I_m}x_{i_1,\ldots,i_m,j_1,\ldots,j_N}y_{i_1,\ldots,i_m,k_1,\ldots,k_p}.
+\end{aligned}\]
+{More generally, some examples of contracted products of two tensors are given next. For $\mathcal{X}\in\mathbb{R}^{I_1\times I_2\times I_3}$ and $\mathcal{Y}\in\mathbb{R}^{J_1\times J_2\times J_3\times J_4}$, below is an example of contracted products of the two tensors.}
+\[\langle\mathcal{X},\mathcal{Y}\rangle_{1,3:2,3}=\sum_{k=1}^{I_1}\sum_{l=1}^{I_3}x_{k,i_2,l}\times y_{j_1,k,l,j_4},\]
+{where we assumed $I_1=J_2$ and $I_3=J_3$. Another example is as follows:}
+\[\langle\mathcal{X},\mathcal{Y}\rangle_{1,2:2,4}=\sum_{k=1}^{I_1}\sum_{l=1}^{I_2}x_{k,l,i_3}\times y_{j_1,k,j_3,l},\]
+{where we assumed $I_1=J_2$ and $I_2=J_4$.}
+% block: euclidean-newton-heading page:79 type:subsection
+\subsubsection{{Newton's Method on Euclidean Space}}\label{subsec:euclidean-newton}
+{For a smooth function $f(\boldsymbol{x})$ with $\boldsymbol{x}\in\mathbb{R}^n$, the mode-$n$ product of a tensor and a vector (a matrix having only one column) is useful for describing the Taylor series of $f(\boldsymbol{x}+\boldsymbol{h})$ at $\boldsymbol{x}$:}
+\begin{align}
+f(\boldsymbol{x}+\boldsymbol{h})&=f(\boldsymbol{x})+\frac1{1!}[f^{(1)}(\boldsymbol{x})]\times_1\boldsymbol{h}\label{eq:tensor-taylor-first-line}\\
+&\quad+\frac1{2!}[f^{(2)}(\boldsymbol{x})]\times_1\boldsymbol{h}\times_2\boldsymbol{h}+\frac1{3!}[f^{(3)}(\boldsymbol{x})]\times_1\boldsymbol{h}\times_2\boldsymbol{h}\times_3\boldsymbol{h}+\cdots,\label{eq:tensor-taylor-series}
+\end{align}
+% block: derivative-tensors page:80 type:ordinary-paragraph
+{where}
+\[\begin{aligned}
+[f^{(1)}(\boldsymbol{x})]_{i_1}&=\frac{\partial}{\partial x_{i_1}}f(\boldsymbol{x}),&[f^{(1)}(\boldsymbol{x})]&\in\mathbb{R}^n,\\
+[f^{(2)}(\boldsymbol{x})]_{i_1i_2}&=\frac{\partial^2}{\partial x_{i_1}\partial x_{i_2}}f(\boldsymbol{x}),&[f^{(2)}(\boldsymbol{x})]&\in\mathbb{R}^{n\times n},\\
+[f^{(3)}(\boldsymbol{x})]_{i_1i_2i_3}&=\frac{\partial^3}{\partial x_{i_1}\partial x_{i_2}\partial x_{i_3}}f(\boldsymbol{x}),&[f^{(3)}(\boldsymbol{x})]&\in\mathbb{R}^{n\times n\times n},\\
+&\vdots
+\end{aligned}\]
+{for $i_1,i_2,i_3,\ldots\in\{1,2,\ldots,n\}$. The vector $f^{(1)}(\boldsymbol{x})$ is the gradient of $f(\boldsymbol{x})$, i.e., $f^{(1)}(\boldsymbol{x})=\nabla f(\boldsymbol{x})$. The matrix $f^{(2)}(\boldsymbol{x})$ is called a Hessian matrix, which is denoted by $H(\boldsymbol{x})$. With this notation, the Taylor series \eqref{eq:tensor-taylor-series} can be rewritten as}
+\begin{equation}\label{eq:gradient-hessian-taylor-series}
+f(\boldsymbol{x}+\boldsymbol{h})=f(\boldsymbol{x})+\boldsymbol{h}^{\top}\nabla f(\boldsymbol{x})+\frac12\boldsymbol{h}^{\top}H(\boldsymbol{x})\boldsymbol{h}+\frac1{3!}[f^{(3)}(\boldsymbol{x})]\times_1\boldsymbol{h}\times_2\boldsymbol{h}\times_3\boldsymbol{h}+\cdots.
+\end{equation}
+% block: newton-quadratic-model page:80 type:ordinary-paragraph
+{We now consider finding a local minimizer $\boldsymbol{x}^*$ that locally minimizes $f(\boldsymbol{x})$. Let $\boldsymbol{x}_n$ be an approximate minimizer of $f(\boldsymbol{x})$ (i.e., $\boldsymbol{x}_n\approx\boldsymbol{x}^*$). Then, the original problem is transformed into finding a correction vector $\boldsymbol{h}$ so that $f(\boldsymbol{x}_k+\boldsymbol{h})$ is minimized.}
+{Newton's method finds a correction vector $\boldsymbol{h}$ such that $\boldsymbol{x}_k+\boldsymbol{h}$ minimizes not $f(\boldsymbol{x}_k+\boldsymbol{h})$ but the quadratic approximation of $f(\boldsymbol{x}_k+\boldsymbol{h})$, i.e.,}
+\[\min_{\boldsymbol{h}\in\mathbb{R}^n}q(\boldsymbol{h}),\quad q(\boldsymbol{h}):=f(\boldsymbol{x}_k)+\boldsymbol{h}^{\top}\nabla f(\boldsymbol{x}_k)+\frac12\boldsymbol{h}^{\top}H(\boldsymbol{x}_k)\boldsymbol{h}.\]
+{If $H(\boldsymbol{x}_k)$ is positive definite, the minimizer of $q(\boldsymbol{h})$ is unique and is given by the solution of $\nabla q(\boldsymbol{h})=\boldsymbol{0}$. Since $\nabla q(\boldsymbol{h})=\nabla f(\boldsymbol{x}_k)+H(\boldsymbol{x}_k)\boldsymbol{h}$, the correction vector $\boldsymbol{h}$ at the $k$th iteration step, denoted by $\boldsymbol{h}_k$, can be obtained by solving linear systems of the form}
+\begin{equation}\label{eq:euclidean-newton-system}
+H(\boldsymbol{x}_k)\boldsymbol{h}_k=-\nabla f(\boldsymbol{x}_k).
+\end{equation}
+{After solving \eqref{eq:euclidean-newton-system}, we obtain a new approximate minimizer $\boldsymbol{x}_{k+1}(=\boldsymbol{x}_k+\boldsymbol{h}_k)$. At each iteration $k$, we need to solve the linear systems \eqref{eq:euclidean-newton-system}.}
+% block: riemannian-newton-heading pages:80,81 type:subsection
+\subsubsection{{Newton's Method on Riemannian Manifold}}\label{subsec:riemannian-newton}
+{Similar to the previous section, linear systems also arise in minimization problems over Riemannian manifolds when we consider Newton's method over Riemannian manifolds. As an example, we consider an optimization problem over the Grassmann manifold, which is an example of Riemannian manifolds. We consider the following minimization problems}
+\begin{equation}\label{eq:matrix-variable-minimization}
+\min_{X\in\mathbb{R}^{n\times p}}f(X),
+\end{equation}
+{where $f$ is assumed to be a smooth function. Using vec operator \eqref{eq:vectorization-definition}, the function in \eqref{eq:matrix-variable-minimization} is equivalent to $f(\widetilde{\boldsymbol{x}})$, where $\widetilde{\boldsymbol{x}}=\operatorname{vec}(X)$. Thus the minimization problem \eqref{eq:matrix-variable-minimization} is essentially the same as \eqref{eq:unconstrained-minimization}. If $X$ satisfies the condition $X^{\top}X=I_p$, then the minimization problem \eqref{eq:matrix-variable-minimization} can be written as}
+\begin{equation}\label{eq:stiefel-minimization}
+\min_{X\in\operatorname{St}(p,n)}f(X),
+\end{equation}
+{where $\operatorname{St}(p,n)=\{X\in\mathbb{R}^{n\times p}:X^{\top}X=I_p\}$ ($p\le n$) and $\operatorname{St}(p,n)$ is referred to as the Stiefel manifold. The condition $X^{\top}X=I_p$ means that all the column vectors $\boldsymbol{x}_i$ ($i=1,\ldots,p$) of $X$ are orthonormal, i.e., $\boldsymbol{x}_i^{\top}\boldsymbol{x}_j=0$ for $i\ne j$ and $\boldsymbol{x}_i^{\top}\boldsymbol{x}_j=1$ for $i=j$. We now further assume that the function $f$ has the following property:}
+\begin{equation}\label{eq:orthogonal-invariance}
+f(XQ)=f(X)
+\end{equation}
+% block: grassmann-equivalence-classes page:81 type:ordinary-paragraph
+{for any orthogonal matrix $Q\in\mathbb{R}^{p\times p}$. This property leads to difficulty in solving the minimization problem. To be specific, let $X_k$ be an approximate minimizer of $f(X)$ and let $X_{k+1}$ be the next iterate given by $X_kQ_k$ for some orthogonal matrix $Q_k$. Then the iterate $X_{k+1}$ is not an improved approximate solution because the value of the objective function does not change. In order to avoid such a situation, one promising approach is that for a given $X_k\in\operatorname{St}(p,n)$ we regard the set $[X_k]:=\{X_kQ:Q^{\top}Q=I_p\}$ as one element. Then the next iterate $[X_{k+1}](\ne[X_k])$ is meaningful because $X_{k+1}$ can avoid the situation $f(X_k)=f(X_{k+1})$ caused by $X_{k+1}=X_kQ_k$.}
+{In general, the set $\operatorname{Grass}(p,n):=\{[X]:X\in\operatorname{St}(p,n)\}$ is referred to as the Grassmann manifold. The approach mentioned above corresponds to considering the following minimization problem:}
+\begin{equation}\label{eq:grassmann-minimization}
+\min_{[Y]\in\operatorname{Grass}(p,n)}f(Y),
+\end{equation}
+{instead of considering \eqref{eq:stiefel-minimization} with \eqref{eq:orthogonal-invariance}. In numerical computation, the following approximate solutions are produced: $X_0\in[Y_0],X_1\in[Y_1],\ldots$, i.e., representatives of the equivalence class $[Y_k]$ for $k=0,1,\ldots$.}
+% block: newton-grassmann-equation pages:81,82 type:ordinary-paragraph
+{The minimization problem \eqref{eq:grassmann-minimization} can be regarded as an unconstrained minimization problem over the Grassmann manifold. Similar to \eqref{eq:euclidean-newton-system}, Newton's method over the Grassmann manifold requires us to solve the following linear systems (Newton-Grassmann equation):}
+\begin{equation}\label{eq:newton-grassmann-equation}
+Y_{k\perp}^{\top}\partial^2f(Y_k)[Y_{k\perp}C_k]-C_kY_k^{\top}\partial f(Y_k)
+=\underbrace{-Y_{k\perp}^{\top}\partial f(Y_k)}_{(n-p)\times p},
+\end{equation}
+{where $Y_k\in\operatorname{St}(p,n)$, $Y_{k\perp}\in\operatorname{St}(n-p,n)$ whose column vectors are orthogonal to the column vectors of $Y_k$, and the unknown matrix to be solved is $C_k\in\mathbb{R}^{(n-p)\times p}$. Here the $(i,j)$ elements of $\partial f(Y)\in\mathbb{R}^{n\times p}$ ($Y\in\mathbb{R}^{n\times p}$) and $\partial^2f(Y)[Z]\in\mathbb{R}^{n\times p}$ ($Z\in\mathbb{R}^{n\times p}$) are given by}
+\[\begin{aligned}
+(\partial f(Y))_{ij}&=\frac{\partial}{\partial y_{ij}}f(Y),\\
+(\partial^2f(Y)[Z])_{ij}&=\sum_{k=1}^n\sum_{l=1}^p\frac{\partial^2}{\partial y_{ij}\partial y_{kl}}f(Y)\times z_{kl}.
+\end{aligned}\]
+% block: fourth-order-derivative-tensor page:82 type:ordinary-paragraph
+{We now use a fourth-order tensor $\mathcal{G}\in\mathbb{R}^{n\times p\times n\times p}$ whose $(i,j,k,l)$ element is defined by}
+\[(\mathcal{G})_{ijkl}=\frac{\partial^2}{\partial y_{ij}\partial y_{kl}}f(Y).\]
+{Then, $\partial^2f(Y_k)[Z]$ can be regarded as the following contracted product of $\mathcal{G}$ and $Z$:}
+\[\partial^2f(Y_k)[Y_{k\perp}C_k]=\langle\mathcal{G},Z\rangle_{3,4;1,2}.\]
+{For the contracted product, see Sect.\ \ref{subsec:tensor-notations}. After obtaining $C_k$ by solving \eqref{eq:newton-grassmann-equation}, one may think the next iterate is $Y_{k+1}=Y_{k\perp}C_k$. However, in general, $Y_{k\perp}C_k$ does not belong to the Grassmann manifold. Therefore $Y_{k\perp}C_k$ needs to be mapped to the Grassmann manifold, and the geometrically suitable map is referred to as retraction. The next iterate $Y_{k+1}$ is the matrix over the Grassmann manifold that is obtained from $Y_{k\perp}C_k$ by using one of the retractions. For the details of optimization over matrix manifolds, see \BookCite{3}, \BookCite{56}, \BookCite{155}.}
+% block: grassmann-rayleigh-example-heading page:82 type:subsection
+\paragraph{Example}\label{ex:grassmann-rayleigh}
+{As an example, we consider minimizing the following Rayleigh quotient on the Grassman manifold:}
+\[\min_{[Y]\in\operatorname{Grass}(p,n)}f(Y),\quad f(Y):=\frac12\operatorname{tr}(Y^{\top}AY),\]
+{where $Y\in\mathbb{R}^{n\times p}$ and $A\in\mathbb{R}^{n\times n}$. Let $Q\in\mathbb{R}^{p\times p}$ be an orthogonal matrix. Then, $f(YQ)=\operatorname{tr}((YQ)^{\top}AYQ)/2=\operatorname{tr}(Q^{\top}Y^{\top}AYQ)/2=\operatorname{tr}(Y^{\top}AYQQ^{\top})/2=\operatorname{tr}(Y^{\top}AY)/2=f(Y)$. Thus we consider $\{YQ\in\mathbb{R}^{n\times p}:Q^{\top}Q=I_p\}$ as one element (i.e., equivalence class), which is denoted by $[Y]$. In what follows, we calculate $\partial f(Y)$ and $\partial^2f(Y)[Z]$.}
+% block: rayleigh-gradient-derivation page:83 type:ordinary-paragraph
+{The $(i,j)$ element of $\partial f(Y)$ can be calculated as follows:}
+\[\begin{aligned}
+(\partial f(Y))_{ij}&=\frac{\partial}{\partial y_{ij}}f(Y)=\frac{\partial}{\partial y_{ij}}\frac12\operatorname{tr}(Y^{\top}AY)=\frac12\frac{\partial}{\partial y_{ij}}\sum_{k,l,m}y_{kl}^{\top}a_{lm}y_{mk}\\
+&=\frac12\frac{\partial}{\partial y_{ij}}\sum_{k,l,m}y_{lk}a_{lm}y_{mk}
+=\frac12\sum_{k,l,m}\frac{\partial y_{lk}}{\partial y_{ij}}a_{lm}y_{mk}+\frac12\sum_{k,l,m}y_{lk}a_{lm}\frac{\partial y_{mk}}{\partial y_{ij}}\\
+&=\frac12\sum_m\frac{\partial y_{ij}}{\partial y_{ij}}a_{im}y_{mj}+\frac12\sum_ly_{lj}a_{li}\frac{\partial y_{ij}}{\partial y_{ij}}
+=\frac12\sum_ma_{im}y_{mj}+\frac12\sum_ly_{lj}a_{li}\\
+&=\frac12\sum_ma_{im}y_{mj}+\frac12\sum_la_{il}^{\top}y_{lj}\\
+&=\frac12(AY)_{ij}+\frac12(A^{\top}Y)_{ij}.
+\end{aligned}\]
+{Here we used the symbol ``$\top$'' for scalar value $y_{kl}^{\top}$, which means $y_{lk}$. The notation is convenient if one calculates the $(i,j)$ element of $A^{\top}B$. From the definition of matrix--matrix multiplications, we have $(AB)_{ij}=\sum_ka_{ik}b_{kj}$. Using the notation, for the $(i,j)$ element of $A^{\top}B$, we have $(A^{\top}B)_{ij}=\sum_ka_{ik}^{\top}b_{kj}=\sum_ka_{ki}b_{kj}$. Since $A=A^{\top}$, it follows that}
+\begin{equation}\label{eq:rayleigh-gradient}
+\partial f(Y)=AY.
+\end{equation}
+% block: rayleigh-hessian-derivation page:83 type:ordinary-paragraph
+{Next, the $(i,j)$ element of $\partial^2f(Y)[Z]$ is given by}
+\[\begin{aligned}
+(\partial^2f(Y)[Z])_{ij}&=\sum_{k,l}\frac{\partial^2}{\partial y_{ij}\partial y_{kl}}f(Y)\times z_{kl}
+=\sum_{k,l}\frac{\partial}{\partial y_{ij}}\left(\frac{\partial}{\partial y_{kl}}f(Y)\right)\times z_{kl}\\
+&=\sum_{k,l}\frac{\partial}{\partial y_{ij}}\left(\frac12\sum_ma_{km}y_{ml}+\frac12\sum_ma_{km}^{\top}y_{ml}\right)\times z_{kl}\\
+&=\sum_{k,l}\left(\frac12\sum_ma_{km}\frac{\partial y_{ml}}{\partial y_{ij}}+\frac12\sum_ma_{km}^{\top}\frac{\partial y_{ml}}{\partial y_{ij}}\right)\times z_{kl}\\
+&=\sum_k\left(\frac12a_{ki}\frac{\partial y_{ij}}{\partial y_{ij}}+\frac12a_{ki}^{\top}\frac{\partial y_{ij}}{\partial y_{ij}}\right)\times z_{kj}\\
+&=\sum_k\left(\frac12a_{ki}z_{kj}+\frac12a_{ki}^{\top}z_{kj}\right)\\
+&=\sum_k\left(\frac12a_{ik}^{\top}z_{kj}+\frac12a_{ik}z_{kj}\right)\\
+&=\left(\frac12(A^{\top}Z)_{ij}+\frac12(AZ)_{ij}\right).
+\end{aligned}\]
+% block: rayleigh-newton-sylvester-system page:84 type:ordinary-paragraph
+{Since $A=A^{\top}$, we obtain}
+\begin{equation}\label{eq:rayleigh-hessian-action}
+\partial^2\bar f(Y)[Z]=AZ.
+\end{equation}
+{Substituting \eqref{eq:rayleigh-gradient} and \eqref{eq:rayleigh-hessian-action} into Newton--Grassmann Eq.\ \eqref{eq:newton-grassmann-equation} yields}
+\begin{equation}\label{eq:rayleigh-newton-sylvester-system}
+(Y_{k\perp}^{\top}AY_{k\perp})C_k-C_k(Y_k^{\top}AY_k)=-Y_{k\perp}^{\top}AY_k,
+\end{equation}
+{where $C$ is an unknown matrix to be solved. This is the Sylvester equation as described in \eqref{eq:sylvester-equation}. After obtaining $C_k$ by solving \eqref{eq:rayleigh-newton-sylvester-system}, the next iterate $Y_{k+1}$ is, for example, given by $Y_{k+1}=Q_k$, where $Q_k$ is the (thin) QR factorization of $Y_{k\perp}C_k$.}

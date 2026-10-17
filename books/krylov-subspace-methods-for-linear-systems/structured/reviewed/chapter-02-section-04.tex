@@ -1,0 +1,67 @@
+% block: matrix-equations-heading page:75 type:section
+\subsection{{Matrix Equations}}\label{sec:matrix-equations}
+{Consider the following matrix equation:}
+\begin{equation}\label{eq:sylvester-equation}
+AX+XB=C,
+\end{equation}
+{where $A$ and $B$ are $m$-by-$m$ and $n$-by-$n$ matrices. The matrix equation is known as the Sylvester equation, which arises in the field of control theory. The Sylvester equation also arises in a derivation of Newton's method for computing the matrix square root, see Sect.\ \ref{subsec:newton-matrix-square-root}.}
+{The Sylvester equation can be transformed into linear systems of the form $M\boldsymbol{x}=\boldsymbol{c}$, and in what follows, we will see the connection between the Sylvester equation in \eqref{eq:sylvester-equation} and linear systems $M\boldsymbol{x}=\boldsymbol{c}$.}
+% block: vectorization-definition page:75 type:ordinary-paragraph
+{Let $G$ be an $n$-by-$m$ matrix whose column vectors are written as $\boldsymbol{g}_1,\boldsymbol{g}_2,\ldots,\boldsymbol{g}_m$. Then, matrix $G$ is written as $G=[\boldsymbol{g}_1,\boldsymbol{g}_2,\ldots,\boldsymbol{g}_m]$. We now define vec operator. The vec operator is a map from $\mathbb{C}^{n\times m}$ to $\mathbb{C}^{nm}$, and $\operatorname{vec}(G)$ is written as}
+\begin{equation}\label{eq:vectorization-definition}
+\operatorname{vec}(G)=\begin{bmatrix}\boldsymbol{g}_1\\\vdots\\\boldsymbol{g}_m\end{bmatrix}.
+\end{equation}
+{Some properties of the vec operator are listed next.}
+% block: vectorization-properties page:76 type:theorem
+\begin{Theorem}\label{thm:vectorization-properties}
+{Let $X\in\mathbb{C}^{m\times n}$, $A_i\in\mathbb{C}^{m\times m}$, $B_i\in\mathbb{C}^{n\times n}$, and $P_{mn}$ be a permutation matrix given in Theorem\ \ref{thm:kronecker-permutation}. Then,}
+\begin{enumerate}
+\item $\operatorname{vec}(A_1XB_1+\cdots+A_kXB_k)=(B_1^{\top}\otimes A_1+\cdots+B_k^{\top}\otimes A_k)\operatorname{vec}(X)$,
+\item $\operatorname{vec}(X^{\top})=P_{mn}\operatorname{vec}(X)$.
+\end{enumerate}
+\end{Theorem}
+% block: vectorization-transpose-proof page:76 type:proof
+\begin{Proof}
+{We first give a proof of (2). From the definition of $P_{mn}$ in Theorem\ \ref{thm:kronecker-permutation},}
+\[P_{mn}\operatorname{vec}(X)=\begin{bmatrix}
+(E_{11})^{\top}&\cdots&(E_{1n})^{\top}\\\vdots&\ddots&\vdots\\(E_{m1})^{\top}&\cdots&(E_{mn})^{\top}
+\end{bmatrix}\begin{bmatrix}\boldsymbol{x}_1\\\vdots\\\boldsymbol{x}_n\end{bmatrix},\]
+{and thus the $k$th block element of $P_{mn}\operatorname{vec}(X)$ is given by}
+\[\begin{aligned}
+(P_{mn}\operatorname{vec}(X))_k&=\sum_{j=1}^nE_{kj}^{\top}\boldsymbol{x}_j
+=\sum_{j=1}^nE_{jk}\boldsymbol{x}_j=\sum_{j=1}^n\boldsymbol{e}_j\boldsymbol{e}_k^{\top}\boldsymbol{x}_j
+=\sum_{j=1}^n\boldsymbol{e}_jx_{kj}=\begin{bmatrix}x_{k1}\\\vdots\\x_{kn}\end{bmatrix},
+\end{aligned}\]
+{which is the $k$th column of $X^{\top}$. Therefore,}
+\[P_{mn}\operatorname{vec}(X)=\begin{bmatrix}(P_{mn}\operatorname{vec}(X))_1\\\vdots\\(P_{mn}\operatorname{vec}(X))_n\end{bmatrix}=\operatorname{vec}(X^{\top}).\]
+{Next, we give a proof of (1). Since $\operatorname{vec}(X+Y)=\operatorname{vec}(X)+\operatorname{vec}(Y)$, it is sufficient to prove $\operatorname{vec}(AXB)=(B^{\top}\otimes A)\operatorname{vec}(X)$. Let $M=XB$ and $M=[\boldsymbol{m}_1,\ldots,\boldsymbol{m}_n]$, then $AM=[A\boldsymbol{m}_1,\ldots,A\boldsymbol{m}_n]$. Thus}
+\begin{equation}\label{eq:vectorized-left-multiplication}
+\operatorname{vec}(AXB)=\operatorname{vec}(AM)=\begin{bmatrix}A\boldsymbol{m}_1\\\vdots\\A\boldsymbol{m}_n\end{bmatrix}
+=(I\otimes A)\begin{bmatrix}\boldsymbol{m}_1\\\vdots\\\boldsymbol{m}_n\end{bmatrix}=(I_n\otimes A)\operatorname{vec}(M),
+\end{equation}
+{and the $\operatorname{vec}(M)$ is calculated as}
+\[\begin{aligned}
+\operatorname{vec}(XB)&=\operatorname{vec}((B^{\top}X^{\top})^{\top})=P_{nm}\operatorname{vec}(B^{\top}X^{\top})=P_{nm}(I_m\otimes B^{\top})\operatorname{vec}(X^{\top})\\
+&=P_{nm}(I_m\otimes B^{\top})P_{mn}\operatorname{vec}(X)
+=P_{mn}^{\top}(I_m\otimes B^{\top})P_{mn}\operatorname{vec}(X)=(B^{\top}\otimes I_m)\operatorname{vec}(X).
+\end{aligned}\]
+{The last equation holds from \eqref{eq:kronecker-swapping-permutation}, and this result together with \eqref{eq:vectorized-left-multiplication} yields}
+\[\operatorname{vec}(AXB)=(I_n\otimes A)\operatorname{vec}(XB)=(I_n\otimes A)(B^{\top}\otimes I_m)\operatorname{vec}(X)=(B^{\top}\otimes A)\operatorname{vec}(X).\]
+{The last equation follows from Theorem\ \ref{thm:kronecker-product-properties}-(6), which concludes the proof.}
+\end{Proof}
+% block: sylvester-linear-system page:77 type:ordinary-paragraph
+{We are now ready to describe a relation between the Sylvester equation and linear systems. Applying Theorem\ \ref{thm:vectorization-properties}-(1) to Sylvester Eq.\ \eqref{eq:sylvester-equation} yields}
+\[\operatorname{vec}(AX+XB)=\operatorname{vec}(C)\Leftrightarrow
+\underbrace{[(I_n\otimes A)+(B^{\top}\otimes I_m)]}_M
+\underbrace{\operatorname{vec}(X)}_{\boldsymbol{x}}=\underbrace{\operatorname{vec}(C)}_{\boldsymbol{c}},\]
+{where $I_m$ is the $m$-by-$m$ identity matrix. Here we consider a slightly modified matrix equation of the form}
+\[AX+X^{\top}B=C.\]
+{The matrix is referred to as the T-congruence Sylvester equation. Applying the vec operator and using Theorem\ \ref{thm:vectorization-properties}-(2) yields}
+\[\begin{aligned}
+AX+X^{\top}B=C&\Leftrightarrow\operatorname{vec}(AX+X^{\top}B)=\operatorname{vec}(C)\\
+&\Leftrightarrow\operatorname{vec}(AX)+\operatorname{vec}(X^{\top}B)=\operatorname{vec}(C)\\
+&\Leftrightarrow\operatorname{vec}(I_n\otimes A)\operatorname{vec}(X)+(B^{\top}\otimes I_m)\operatorname{vec}(X^{\top})=\operatorname{vec}(C)\\
+&\Leftrightarrow(I_n\otimes A)\operatorname{vec}(X)+(B^{\top}\otimes I_m)P_{mn}\operatorname{vec}(X)=\operatorname{vec}(C)\\
+&\Leftrightarrow\underbrace{[(I_n\otimes A)+(B^{\top}\otimes I_m)P_{mn}]}_{\widetilde M}\underbrace{\operatorname{vec}(X)}_{\boldsymbol{x}}=\underbrace{\operatorname{vec}(C)}_{\boldsymbol{c}}.
+\end{aligned}\]
+{Therefore, the T-congruence Sylvester equation is also equivalent to linear systems of the form $\widetilde M\boldsymbol{x}=\boldsymbol{c}$.}
