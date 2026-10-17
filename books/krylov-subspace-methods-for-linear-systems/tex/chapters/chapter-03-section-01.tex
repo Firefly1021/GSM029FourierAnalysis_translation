@@ -1,0 +1,423 @@
+% block: hermitian-linear-systems-heading page:85 type:section
+\subsection{{Hermitian 线性方程组}}\label{sec:hermitian-linear-systems}
+{本节推导共轭梯度 (CG) 方法, 共轭残差 (CR) 方法和最小残差 (MINRES) 方法. 这些方法用于矩阵 $A$ 为 Hermitian (或实对称) 矩阵的情形. CG 方法通常用于 $A$ 为 Hermitian 正定矩阵的情形, CR 方法和 MINRES 方法则用于 Hermitian (不定) 矩阵. 在精确算术下, CR 方法和 MINRES 方法产生相同的近似解. 我们将看到, 这些方法在每次迭代都找到最佳近似解. 具体而言, 对 Hermitian 正定矩阵, CG 方法找到使误差的某个加权范数达到极小值的最佳近似解. 另一方面, CR 方法和 MINRES 方法找到使残差的 2-范数达到极小值的最佳近似解.}
+% block: cg-heading pages:85,86 type:subsection
+\subsubsection{{共轭梯度 (CG) 方法}}\label{subsec:conjugate-gradient}
+{CG 方法 \BookCite{95} 由 Hestenes (1906--1991) 和 Stiefel (1909--1978) 于 1952 年提出, 是最著名的 Krylov 子空间方法. 在精确算术下, 与其他 Krylov 子空间方法一样, CG 方法在有限次迭代内给出精确解. 这意味着 CG 方法具有双重特点: 既是 Section\ \ref{sec:direct-methods} 中的直接方法, 也是 Section\ \ref{sec:stationary-iterations} 中的迭代方法. 关于 CG 方法发展的编年史, 见 Golub 和 O’Leary 的精彩综述 \BookCite{80}.}
+% block: cg-lanczos-residual-matrix page:86 type:ordinary-paragraph
+{下面从 Lanczos 过程 (Algorithm\ \ref{alg:lanczos}) 推导 CG 方法. 由 \eqref{eq:lanczos-matrix-relation}, Lanczos 过程的矩阵形式为}
+\begin{equation}\label{eq:cg-lanczos-residual-matrix}AR_n=R_{n+1}T_{n+1,n},\end{equation}
+{其中}
+\[\begin{gathered}
+R_n:=[\bm r_0,\bm r_1,\ldots,\bm r_{n-1}],\\
+T_{n+1,n}=\begin{bmatrix}t_{0,0}&t_{0,1}&&\\-\alpha_0^{-1}&t_{1,1}&\ddots&\\&-\alpha_1^{-1}&\ddots&t_{n-2,n-1}\\&&\ddots&t_{n-1,n-1}\\&&&-\alpha_{n-1}^{-1}\end{bmatrix},\\
+t_{k-1,k}:=\frac{(\bm r_{k-1},A\bm r_k)}{(\bm r_{k-1},\bm r_{k-1})},\quad(k=1,2,\ldots,n-1),\\
+t_{k,k}:=\frac{(\bm r_k,A\bm r_k)}{(\bm r_k,\bm r_k)},\quad(k=0,1,\ldots,n-1).
+\end{gathered}\]
+{这里尺度参数 ($\alpha_k$) 尚未确定. 设 $\bm x_k$ 为 $A\bm x=\bm b$ 的第 $k$ 个近似解, 且这些 $\bm x_k$ 满足下列等式:}
+\[R_n=[\bm b-A\bm x_0,\bm b-A\bm x_1,\ldots,\bm b-A\bm x_{n-1}]=\bm b\bm1_n^{\top}-AX_n,\]
+{其中 $\bm1_n:=[1,1,\ldots,1]^{\top}\in\mathbb R^n$, $X_n:=[\bm x_0,\bm x_1,\ldots,\bm x_{n-1}]$. 注意, $R_n$ 就是 \eqref{eq:cg-lanczos-residual-matrix} 中给出的矩阵. 于是有}
+\begin{equation}\label{eq:cg-residual-solution-matrix}
+\begin{aligned}
+AR_n&=R_{n+1}T_{n+1,n}=(\bm b\bm1_{n+1}^{\top}-AX_{n+1})T_{n+1,n}\\
+\Leftrightarrow R_n&=A^{-1}(\bm b\bm1_{n+1}^{\top}-AX_{n+1})T_{n+1,n}=\bm x\bm1_{n+1}^{\top}T_{n+1,n}-X_{n+1}T_{n+1,n}.
+\end{aligned}\end{equation}
+% block: cg-scaling-and-ldu pages:86,87 type:ordinary-paragraph
+{现在用条件 $\bm1_{n+1}^{\top}T_{n+1,n}=[0,0,\ldots,0]$ 确定尺度参数 $\alpha_k$, 即 $\alpha_0^{-1}=t_{0,0}$, 且对 $k=2,3,\ldots,n$, 有 $\alpha_{k-1}^{-1}=t_{k-1,k-1}+t_{k-2,k-1}$. 于是, 这一条件和 \eqref{eq:cg-residual-solution-matrix} 给出}
+\begin{equation}\label{eq:cg-residual-negative-product}R_n=-X_{n+1}T_{n+1,n},\end{equation}
+{其中 \eqref{eq:cg-lanczos-residual-matrix} 中的矩阵 $T_{n+1,n}$ 改写为}
+\[T_{n+1,n}=\begin{bmatrix}
+\alpha_0^{-1}&t_{0,1}&&\\-\alpha_0^{-1}&\alpha_1^{-1}-t_{0,1}&\ddots&\\
+&-\alpha_1^{-1}&\ddots&t_{n-2,n-1}\\&&\ddots&\alpha_{n-1}^{-1}-t_{n-2,n-1}\\&&&-\alpha_{n-1}^{-1}
+\end{bmatrix}\]
+{且矩阵 $T_{n+1,n}$ 具有下列 LDU 分解:}
+\begin{equation}\label{eq:cg-lanczos-ldu}
+T_{n+1,n}=\underbrace{\begin{bmatrix}1&&\\-1&1&\\\ddots&\ddots&\\&-1&1\end{bmatrix}}_L
+\underbrace{\begin{bmatrix}\alpha_0^{-1}&&&\\&\alpha_1^{-1}&&\\&&\ddots&\\&&&\alpha_{n-1}^{-1}\end{bmatrix}}_{D^{-1}}
+\underbrace{\begin{bmatrix}1&\alpha_0t_{0,1}&&\\&1&\ddots&\\&&\ddots&\alpha_{n-1}t_{n-1,n}\\&&&1\end{bmatrix}}_U,
+\end{equation}
+{其中 $L$ 为 $n+1$ 行 $n$ 列的下双对角矩阵, $D^{-1}$ 为 $n$ 行 $n$ 列的对角矩阵, $U$ 为 $n$ 行 $n$ 列的上双对角矩阵. 因此得到}
+\begin{equation}\label{eq:cg-residual-ldu}R_n=-X_{n+1}LD^{-1}U.\end{equation}
+% block: cg-three-recurrences page:87 type:ordinary-paragraph
+{现在定义 $P_n(=[\bm p_0,\bm p_1,\ldots,\bm p_{n-1}]):=R_nU^{-1}$. 则 \eqref{eq:cg-residual-ldu} 可改写为}
+\begin{equation}\label{eq:cg-direction-matrix}P_nD=X_{n+1}(-L),\end{equation}
+{它等价于}
+\begin{equation}\label{eq:cg-solution-recurrence}\bm x_{k+1}=\bm x_k+\alpha_k\bm p_k,\quad k=0,1,\ldots,n-1.\end{equation}
+{由关系 $\bm r_k=\bm b-A\bm x_k$ 和 \eqref{eq:cg-solution-recurrence} 得}
+\begin{equation}\label{eq:cg-residual-recurrence}\bm r_{k+1}=\bm r_k-\alpha_kA\bm p_k,\quad k=0,1,\ldots,n-1.\end{equation}
+{定义 $P_n=R_nU^{-1}$ 给出 $P_nU=R_n$, 它等价于}
+\begin{equation}\label{eq:cg-initial-direction}\bm p_0=\bm r_0,\end{equation}
+\begin{equation}\label{eq:cg-direction-recurrence}\bm p_k=\bm r_k+\beta_{k-1}\bm p_{k-1},\quad k=1,2,\ldots,n-1,\end{equation}
+{其中 $\beta_{k-1}:=-\alpha_{k-1}t_{k-1,k}$. 如上所述, 计算 $\alpha_k$ 需要 $A\bm r_k$, 因为 $\alpha_k=(t_{k,k}+t_{k-1,k})^{-1}$; 这意味着若使用迭代式 \eqref{eq:cg-solution-recurrence}--\eqref{eq:cg-direction-recurrence}, 每次迭代需要两次矩阵向量乘法, 即 $A\bm r_k$ 和 $A\bm p_k$. 下面将说明不需要 $A\bm r_k$. 为此先推导 $\alpha_k$ 的计算公式.}
+% block: cg-step-length page:88 type:ordinary-paragraph
+{由 \eqref{eq:cg-lanczos-residual-matrix}, \eqref{eq:cg-lanczos-ldu} 及 $P_n$ 的定义, 有}
+\[AP_n=R_{n+1}LD^{-1}.\]
+{由此得到}
+\begin{equation}\label{eq:cg-projected-diagonal-product}P_n^{\mathrm H}AP_nD=U^{-\mathrm H}R_n^{\mathrm H}R_{n+1}L.\end{equation}
+{由于 \eqref{eq:cg-lanczos-residual-matrix} 中的 $R_n=[\bm r_0,\bm r_1,\ldots,\bm r_{n-1}]$ 由 Lanczos 过程生成, 当 $i\ne j$ 时有 $\bm r_i^{\mathrm H}\bm r_j=0$. 用矩阵形式表示, 即当 $i\ne j$ 时 $R_n^{\mathrm H}R_{n+1}$ 的 $(i,j)$ 元素为零. 由于 $L$ 和 $U^{-\mathrm H}$ 都是对角元素全为一的下三角矩阵, 这一事实给出 \eqref{eq:cg-projected-diagonal-product} 中 $U^{-\mathrm H}R_n^{\mathrm H}R_{n+1}L$ 的 $(k+1,k+1)$ 元素为 $\bm r_k^{\mathrm H}\bm r_k$. 因此由 \eqref{eq:cg-projected-diagonal-product} 的 $(k+1,k+1)$ 元素有 $\bm p_k^{\mathrm H}A\bm p_k\alpha_k=\bm r_k^{\mathrm H}\bm r_k$, 即}
+\begin{equation}\label{eq:cg-alpha}\alpha_k=\frac{\bm r_k^{\mathrm H}\bm r_k}{\bm p_k^{\mathrm H}A\bm p_k}.\end{equation}
+{由于 $A$ 为 Hermitian 矩阵, 对所有 $k$, $\alpha_k$ 都是实数, 稍后推导 $\beta_k$ 的计算公式时将使用这一点.}
+% block: cg-direction-coefficient page:88 type:ordinary-paragraph
+{接着给出 $\beta_k$ 的计算公式. 由 \eqref{eq:cg-lanczos-residual-matrix} 得}
+\begin{equation}\label{eq:cg-residual-projected-matrix}R_n^{\mathrm H}AR_n=R_n^{\mathrm H}R_{n+1}T_{n+1,n},\end{equation}
+{$R_n^{\mathrm H}AR_n$ 的 $(k+1,k)$ 元素为 $\bm r_k^{\mathrm H}A\bm r_{k-1}$. 如 \eqref{eq:cg-projected-diagonal-product} 所示, $R_n^{\mathrm H}R_{n+1}$ 在 $k=1,2,\ldots,n$ 时的 $(k,k)$ 元素为 $\bm r_{k-1}^{\mathrm H}\bm r_{k-1}$, 其余元素为零. 由此可见, $R_n^{\mathrm H}R_{n+1}T_{n+1,n}$ 的 $(k+1,k)$ 元素为 $\bm r_k^{\mathrm H}\bm r_k\times(-\alpha_{k-1})^{-1}$. 因此得到 $\bm r_k^{\mathrm H}A\bm r_{k-1}=\bm r_k^{\mathrm H}\bm r_k\times(-\alpha_{k-1})^{-1}$. 由于前述 $\alpha_{k-1}$ 为实数, $\bm r_k^{\mathrm H}A\bm r_{k-1}$ 也是实数. 因而 $\bm r_k^{\mathrm H}A\bm r_{k-1}=(\bm r_k^{\mathrm H}A\bm r_{k-1})^{\mathrm H}=\bm r_{k-1}^{\mathrm H}A^{\mathrm H}\bm r_k=\bm r_{k-1}^{\mathrm H}A\bm r_k$. 由此得 $\bm r_{k-1}^{\mathrm H}A\bm r_k=\bm r_k^{\mathrm H}\bm r_k\times(-\alpha_{k-1})^{-1}$. 回顾 $\beta_{k-1}=-\alpha_{k-1}t_{k-1,k}$, 得}
+\begin{equation}\label{eq:cg-beta}
+\beta_{k-1}=-\alpha_{k-1}t_{k-1,k}=\frac{\bm r_k^{\mathrm H}\bm r_k}{\bm r_{k-1}^{\mathrm H}A\bm r_k}\frac{\bm r_{k-1}^{\mathrm H}A\bm r_k}{\bm r_{k-1}^{\mathrm H}\bm r_{k-1}}=\frac{\bm r_k^{\mathrm H}\bm r_k}{\bm r_{k-1}^{\mathrm H}\bm r_{k-1}}.
+\end{equation}
+{由 \eqref{eq:cg-solution-recurrence}--\eqref{eq:cg-direction-recurrence}, \eqref{eq:cg-alpha} 和 \eqref{eq:cg-beta} 得到 CG 方法的算法, 见 Algorithm\ \ref{alg:cg}. CG 方法的性质见 Proposition\ \ref{prop:cg-orthogonality}.}
+% block: cg-algorithm page:89 type:ordinary-paragraph
+\begin{algorithm}[H]\caption{{CG 方法}}\label{alg:cg}
+\begin{algorithmic}[1]
+\Statex\textbf{Input:} $\bm x_0\in\mathbb C^N,\ \beta_{-1}=0,\ \bm p_{-1}=\bm0,\ \bm r_0=\bm b-A\bm x_0$
+\Statex\textbf{Output:} $\bm x_n$
+\For{$n=0,1,2,\ldots$, {直至收敛}}
+\State $\bm p_n=\bm r_n+\beta_{n-1}\bm p_{n-1}$
+\State $\alpha_n=\frac{(\bm r_n,\bm r_n)}{(\bm p_n,A\bm p_n)}$
+\State $\bm x_{n+1}=\bm x_n+\alpha_n\bm p_n$
+\State $\bm r_{n+1}=\bm r_n-\alpha_nA\bm p_n$
+\State $\beta_n=\frac{(\bm r_{n+1},\bm r_{n+1})}{(\bm r_n,\bm r_n)}$
+\EndFor\end{algorithmic}\end{algorithm}
+% block: cg-orthogonality-proposition page:88 type:proposition
+\begin{Proposition}\label{prop:cg-orthogonality}
+{设 $\bm p_n,\bm r_n$ 为 CG 方法中的向量, 则:}
+\begin{enumerate}\item $(\bm r_i,\bm r_j)=0\quad\text{for }i\ne j$,\item $(\bm p_i,A\bm p_j)=0\quad\text{for }i\ne j$.\end{enumerate}
+\end{Proposition}
+% block: cg-orthogonality-proof pages:88,89 type:proof
+\begin{Proof}
+{第一个性质由 \eqref{eq:cg-lanczos-residual-matrix} 来自 Lanczos 过程这一事实立即得到. 对第二个性质, 由 \eqref{eq:cg-projected-diagonal-product} 有}
+\[P_n^{\mathrm H}AP_n=U^{-\mathrm H}R_n^{\mathrm H}R_{n+1}LD^{-1}.\]
+{由于 $A$ 为 Hermitian 矩阵, $P_n^{\mathrm H}AP_n$ 为 Hermitian 矩阵. 因此 $U^{-\mathrm H}R_n^{\mathrm H}R_{n+1}LD^{-1}$ 为 Hermitian 矩阵. 由于 $i\ne j$ 时 $R_n^{\mathrm H}R_{n+1}$ 的 $(i,j)$ 元素为零, 矩阵 $U^{-\mathrm H}R_n^{\mathrm H}R_{n+1}LD^{-1}$ 是下三角矩阵. 这表明 $P_n^{\mathrm H}AP_n$ 既是 Hermitian 矩阵, 又是下三角矩阵. 因而 $P_n^{\mathrm H}AP_n$ 为对角矩阵, 这等价于第二个性质.}
+\end{Proof}
+% block: cg-krylov-corollary page:89 type:corollary
+{由 Proposition\ \ref{prop:cg-orthogonality}, 有 CG 方法的下列性质:}
+\begin{Corollary}\label{cor:cg-krylov-orthogonality}
+{设 $\bm p_n$ 和 $\bm r_n$ 为 CG 方法中的向量, 则:}
+\begin{enumerate}\item $\bm r_n\perp\mathcal K_n(A,\bm r_0)$,\item $A\bm p_n\perp\mathcal K_n(A,\bm r_0)$.\end{enumerate}
+\end{Corollary}
+% block: cg-krylov-corollary-proof page:89 type:proof
+\begin{Proof}
+{由 \eqref{eq:cg-residual-recurrence} 和 \eqref{eq:cg-initial-direction} 有 $\bm r_1=\bm r_0-\alpha_0A\bm r_0$. 这意味着 $\operatorname{span}\{\bm r_0,\bm r_1\}=\mathcal K_2(A,\bm r_0)$. 类似地, $\operatorname{span}\{\bm r_0,\bm r_1,\ldots,\bm r_{n-1}\}=\mathcal K_n(A,\bm r_0)$. 由 Proposition\ \ref{prop:cg-orthogonality} 的第一个性质, 得 $\bm r_n\perp\bm r_0,\bm r_1,\ldots,\bm r_{n-1}$. 因此 $\bm r_n\perp\mathcal K_n(A,\bm r_0)$. 接着, 由 \eqref{eq:cg-residual-recurrence} 和 Proposition\ \ref{prop:cg-orthogonality} 的第一个性质, 得 $A\bm p_n=(\bm r_n-\bm r_{n+1})/\alpha_n\perp\bm r_0,\bm r_1,\ldots,\bm r_{n-1}$, 因而 $A\bm p_n\perp\mathcal K_n(A,\bm r_0)$.}
+\end{Proof}
+% block: cg-search-space-and-optimality page:89 type:ordinary-paragraph
+{由 Corollary\ \ref{cor:cg-krylov-orthogonality} 的证明容易看出}
+\begin{equation}\label{eq:cg-krylov-membership}
+\bm r_n\in\mathcal K_{n+1}(A,\bm r_0),\quad\bm p_n\in\mathcal K_{n+1}(A,\bm r_0),\quad\bm x_n-\bm x_0\in\mathcal K_n(A,\bm r_0).
+\end{equation}
+{若系数矩阵 $A$ 为 Hermitian (或实对称) 正定矩阵, 则 CG 方法给出关于误差 $A$-范数的最优近似解, 如下所述.}
+% block: cg-optimality-theorem page:89 type:theorem
+\begin{Theorem}\label{thm:cg-energy-optimality}
+{设 $A\bm x=\bm b$ 为 Hermitian 正定线性方程组. 则 CG 方法产生使误差的 $A$-范数达到极小值的近似解:}
+\[\min_{\bm x_n\in\bm x_0+\mathcal K_n(A,\bm r_0)}\|\bm e_n\|_A,\]
+{其中 $\|\bm e_n\|_A=(\bm e_n^{\mathrm H}A\bm e_n)^{1/2}$, $\bm e_n=\bm x-\bm x_n$ 为 CG 方法第 $n$ 个近似解的误差.}
+\end{Theorem}
+% block: cg-optimality-proof page:90 type:proof
+\begin{Proof}
+{由于 $A$ 为 Hermitian 正定矩阵, Cholesky 分解存在, 即 $A=LL^{\mathrm H}$. (实对称正定矩阵的 Cholesky 分解见 Section\ \ref{subsec:cholesky-decomposition}.) 回顾 CG 方法的近似解满足}
+\[\bm x_n=\bm x_0+\bm z_n,\quad\bm z_n\in\mathcal K_n(A,\bm r_0),\]
+{其中 $\bm z_n$ 由 $\bm r_n\perp\mathcal K_n(A,\bm r_0)$ 确定, 见 Corollary\ \ref{cor:cg-krylov-orthogonality}. 设 $V_n$ 为列向量对应于 $\mathcal K_n(A,\bm r_0)$ 的标准正交基向量的矩阵. 则}
+\begin{equation}\label{eq:cg-orthonormal-coordinate-solution}\bm x_n=\bm x_0+V_n\bm y_n,\quad\bm y_n\in\mathbb C^n,\end{equation}
+{其中 $\bm y_n$ 由 $V_n^{\mathrm H}\bm r_n=\bm0$ 确定. 由 \eqref{eq:cg-orthonormal-coordinate-solution} 和 $\bm e_n=\bm x-\bm x_n$, 得}
+\[\bm e_n=\bm e_0-V_n\bm y_n,\]
+{其中 $\bm y_n$ 由 $V_n^{\mathrm H}LL^{\mathrm H}\bm e_n=\bm0$ 确定, 因为 $V_n^{\mathrm H}\bm r_n=\bm0$, 且 $\bm r_n=\bm b-A\bm x_n=A\bm x-A\bm x_n=A\bm e_n=LL^{\mathrm H}\bm e_n$. 这里使用了 Cholesky 分解 $A=LL^{\mathrm H}$. 等价地, 有}
+\[L^{\mathrm H}\bm e_n=L^{\mathrm H}\bm e_0-L^{\mathrm H}V_n\bm y_n,\]
+{其中 $\bm y_n$ 由 $(L^{\mathrm H}V_n)^{\mathrm H}L^{\mathrm H}\bm e_n=\bm0$ 确定. 这意味着 CG 方法寻找满足下列条件的近似解}
+\begin{equation}\label{eq:cg-transformed-least-squares}\min_{\bm y_n\in\mathbb C^n}\|L^{\mathrm H}\bm e_n\|,\end{equation}
+{因为 $(L^{\mathrm H}V_n)^{\mathrm H}L^{\mathrm H}\bm e_n=\bm0$ 等价于正规方程 $(L^{\mathrm H}V_n)^{\mathrm H}(L^{\mathrm H}V_n)\bm y_n=(L^{\mathrm H}V_n)^{\mathrm H}L^{\mathrm H}\bm e_0$. 极小化问题 \eqref{eq:cg-transformed-least-squares} 等价于}
+\[\min_{\bm x_n\in\bm x_0+\mathcal K_n(A,\bm r_0)}\|L^{\mathrm H}\bm e_n\|.\]
+{由于 $\|L^{\mathrm H}\bm e_n\|^2=(L^{\mathrm H}\bm e_n)^{\mathrm H}(L^{\mathrm H}\bm e_n)=\bm e_n^{\mathrm H}LL^{\mathrm H}\bm e_n=\bm e_n^{\mathrm H}A\bm e_n$, 最终有}
+\[\min_{\bm x_n\in\bm x_0+\mathcal K_n(A,\bm r_0)}\|\bm e_n\|_A,\]
+{证明完毕.}\end{Proof}
+% block: cg-polynomial-representation pages:90,91 type:ordinary-paragraph
+{Theorem\ \ref{thm:cg-energy-optimality} 给出 CG 方法的一种最优性. 另一方面, 尚无法由此看出 CG 方法收敛得多快. 为稍后考察收敛速度, 先介绍 CG 方法的矩阵多项式表示. CG 方法的残差向量 $\bm r_n$ 和辅助向量 $\bm p_n$ 可用两个多项式 $R_n$ 和 $P_n$ 表示,}
+\begin{equation}\label{eq:cg-residual-direction-polynomials}\bm r_n=R_n(A)\bm r_0,\quad\bm p_n=P_n(A)\bm r_0,\end{equation}
+{其中 $R_n(\lambda)$ 表示 Lanczos 多项式, 它满足下列三项递推关系:}
+\begin{equation}\label{eq:cg-polynomial-initial-zero}R_0(\lambda)=1,\end{equation}
+\begin{equation}\label{eq:cg-polynomial-initial-one}R_1(\lambda)=(1-\alpha_0\lambda)R_0(\lambda),\end{equation}
+\begin{equation}\label{eq:cg-polynomial-three-term}
+\begin{aligned}R_n(\lambda)&=\left(1+\frac{\beta_{n-2}}{\alpha_{n-2}}\alpha_{n-1}-\alpha_{n-1}\lambda\right)R_{n-1}(\lambda)\\
+&\quad-\frac{\beta_{n-2}}{\alpha_{n-2}}\alpha_{n-1}R_{n-2}(\lambda),\quad n=2,3,\ldots,
+\end{aligned}\end{equation}
+{其中 $R_n(0)=1$. $R_n$ 和 $P_n$ 满足下列两项递推关系:}
+\begin{equation}\label{eq:cg-two-term-polynomial-initial}R_0(\lambda)=1,\quad P_0(\lambda)=1,\end{equation}
+\begin{equation}\label{eq:cg-residual-polynomial-recurrence}R_n(\lambda)=R_{n-1}(\lambda)-\alpha_{n-1}\lambda P_{n-1}(\lambda),\end{equation}
+\begin{equation}\label{eq:cg-direction-polynomial-recurrence}P_n(\lambda)=R_n(\lambda)+\beta_{n-1}P_{n-1}(\lambda)\quad n=1,2,\ldots.\end{equation}
+% block: cg-convergence-theorem page:91 type:theorem
+{CG 方法的收敛速度见 Theorem\ \ref{thm:cg-condition-number-bound}.}
+\Needspace{7\baselineskip}
+\begin{Theorem}\label{thm:cg-condition-number-bound}
+{CG 方法误差的 $A$-范数满足}
+\begin{equation}\label{eq:cg-condition-number-bound}
+\|\bm e_n\|_A\le2\left(\frac{\sqrt\kappa-1}{\sqrt\kappa+1}\right)^n\|\bm e_0\|_A,
+\end{equation}
+{其中 $\kappa$ 为 $A$ 的条件数.}
+\end{Theorem}
+% block: cg-convergence-proof-diagonalization page:91 type:proof
+\begin{Proof}
+{由于 CG 方法的残差向量可表示为 $\bm r_n=R(A)\bm r_0$, 且 $\bm r_n=A\bm e_n$, 得到 $\bm e_n=R_n(A)\bm e_0$. 由 \eqref{eq:cg-condition-number-bound} 有}
+\[\|\bm e_n\|_A=\|R_n(A)\bm e_0\|_A=\min_{p_n\in\mathcal P_n}\|p_n(A)\bm e_0\|_A,\]
+{其中 $\mathcal P_n$ 为次数为 $n$ 且满足 $\mathcal P_0=1$ 的多项式的集合. 利用 Hermitian 正定矩阵 $A$ 的对角化, 有 $A=PDP^{\mathrm H}$, 其中 $P$ 为酉矩阵, $D$ 为对角元素是 $A$ 的特征值的对角矩阵. 令 $A^{1/2}=PD^{1/2}P^{\mathrm H}$, 其中 $D^{1/2}$ 的对角元素为 $A$ 的特征值的平方根. 注意, $A$ 的所有特征值均为正, 且 $A^{1/2}$ 为 Hermitian 矩阵, 即 $(A^{1/2})^{\mathrm H}=A^{1/2}$. 可见 $A^{1/2}A^{1/2}=PD^{1/2}P^{\mathrm H}PD^{1/2}P^{\mathrm H}=PD^{1/2}D^{1/2}P^{\mathrm H}=PDP^{\mathrm H}=A$. 于是有}
+% block: cg-convergence-proof-norm-chain page:92 type:proof
+\[\begin{aligned}
+\|\bm e_n\|_A&=\min_{p_n\in\mathcal P_n}\|p_n(A)\bm e_0\|_A,\\
+&=\min_{p_n\in\mathcal P_n}\sqrt{(p_n(A)\bm e_0)^{\mathrm H}A(p_n(A)\bm e_0)}\\
+&=\min_{p_n\in\mathcal P_n}\sqrt{(p_n(A)\bm e_0)^{\mathrm H}(A^{1/2})^{\mathrm H}A^{1/2}(p_n(A)\bm e_0)}\\
+&=\min_{p_n\in\mathcal P_n}\sqrt{(A^{1/2}p_n(A)\bm e_0)^{\mathrm H}(A^{1/2}p_n(A)\bm e_0)}\\
+&=\min_{p_n\in\mathcal P_n}\|A^{1/2}p_n(A)\bm e_0\|.
+\end{aligned}\]
+{利用 $A=PDP^{\mathrm H}$ 和 $A^{1/2}=PD^{1/2}P^{\mathrm H}$, 得}
+\[\begin{aligned}
+\|\bm e_n\|_A&=\min_{p_n\in\mathcal P_n}\|A^{1/2}p_n(A)\bm e_0\|=\min_{p_n\in\mathcal P_n}\|PD^{1/2}P^{\mathrm H}p_n(PDP^{\mathrm H})\bm e_0\|\\
+&=\min_{p_n\in\mathcal P_n}\|PD^{1/2}P^{\mathrm H}Pp_n(D)P^{\mathrm H}\bm e_0\|
+=\min_{p_n\in\mathcal P_n}\|PD^{1/2}p_n(D)P^{\mathrm H}\bm e_0\|\\
+&=\min_{p_n\in\mathcal P_n}\|Pp_n(D)D^{1/2}P^{\mathrm H}\bm e_0\|
+=\min_{p_n\in\mathcal P_n}\|Pp_n(D)P^{\mathrm H}PD^{1/2}P^{\mathrm H}\bm e_0\|\\
+&=\min_{p_n\in\mathcal P_n}\|Pp_n(D)P^{\mathrm H}A^{1/2}\bm e_0\|\\
+&\le\min_{p_n\in\mathcal P_n}\|Pp_n(D)P^{\mathrm H}\|\|A^{1/2}\bm e_0\|\\
+&=\min_{p_n\in\mathcal P_n}\|p_n(D)\|\|\bm e_0\|_A\\
+&=\min_{p_n\in\mathcal P_n}\max_{i=1,2,\ldots,N}|p_n(\lambda_i)|\times\|\bm e_0\|_A.
+\end{aligned}\]
+{因此有}
+\[\frac{\|\bm e_n\|_A}{\|\bm e_0\|_A}\le\min_{p_n\in\mathcal P_n}\max_{i=1,2,\ldots,N}|p_n(\lambda_i)|.\]
+{设 $a$ 和 $b$ 分别为 $A$ 的最小和最大特征值. 则所有特征值 $\lambda_i$ 都属于闭区间 $[a,b]$. 因此有下列不等式:}
+\[\frac{\|\bm e_n\|_A}{\|\bm e_0\|_A}\le\min_{p_n\in\mathcal P_n}\max_{i=1,2,\ldots,N}|p_n(\lambda_i)|\le\min_{p_n\in\mathcal P_n}\max_{\lambda\in[a,b]}|p_n(\lambda)|.\]
+{极小极大问题的解可用 Chebyshev 多项式改写如下:}
+\[\min_{p_n\in\mathcal P_n}\max_{\lambda\in[a,b]}|p_n(\lambda)|=\max_{\lambda\in[a,b]}\frac{|T_n(\frac{2\lambda-b-a}{b-a})|}{T_n(\frac{-b-a}{b-a})},\]
+% block: cg-convergence-proof-chebyshev page:93 type:proof
+{其中}
+\begin{equation}\label{eq:chebyshev-explicit-form}
+T_n(x)=\frac12\left[\left(x+\sqrt{x^2-1}\right)^n+\left(x-\sqrt{x^2-1}\right)^n\right]\quad\text{for }|x|\ge1.
+\end{equation}
+{由 Chebyshev 多项式的性质, $|T_n(\frac{2\lambda-b-a}{b-a})|\le1$, 从而有}
+\[\min_{p_n\in\mathcal P_n}\max_{\lambda\in[a,b]}|p_n(\lambda)|\le\frac1{|T_n(\frac{-b-a}{b-a})|}=\frac1{|T_n(\frac{-\kappa-1}{\kappa-1})|},\]
+{其中 $\kappa=b/a$ 是 $A$ 的条件数. 利用 \eqref{eq:chebyshev-explicit-form}, 得}
+\[\begin{aligned}
+\min_{p_n\in\mathcal P_n}\max_{\lambda\in[a,b]}|p_n(\lambda)|&\le\frac1{|T_n(\frac{-\kappa-1}{\kappa-1})|}
+=\frac2{\left(\frac{\sqrt\kappa-1}{\sqrt\kappa+1}\right)^n+\left(\frac{\sqrt\kappa+1}{\sqrt\kappa-1}\right)^n}
+\le\frac2{\left(\frac{\sqrt\kappa+1}{\sqrt\kappa-1}\right)^n}\\
+&=2\left(\frac{\sqrt\kappa-1}{\sqrt\kappa+1}\right)^n,
+\end{aligned}\]
+{证明完毕.}\end{Proof}
+% block: cg-preconditioning-transformation page:93 type:ordinary-paragraph
+{Theorem\ \ref{thm:cg-condition-number-bound} 表明, CG 方法的收敛速度依赖于系数矩阵 $A$ 的条件数, 即条件数越小, CG 方法收敛越快. 因此很自然地考虑下列等价线性方程组:}
+\[A\bm x=\bm b\Leftrightarrow\widetilde A\widetilde{\bm x}=\widetilde{\bm b},\]
+{使得 $\widetilde A$ 的条件数远小于 $A$ 的条件数, 然后不对 $A\bm x=\bm b$, 而对变换后的线性方程组 $\widetilde A\widetilde{\bm x}=\widetilde{\bm b}$ 应用 CG 方法. 所得算法称为预条件 (PCG) 方法. 构造 $\widetilde A$ 的技术称为预条件技术, 将在 Section\ \ref{sec:preconditioning-techniques} 中讨论.}
+{现在介绍预条件 CG 方法的算法. 令 $A\approx K=LL^{\mathrm H}$. 则预期 $\widetilde A=L^{-1}AL^{-\mathrm H}$ 接近条件数为一的单位矩阵. 现在考虑对下列变换后的线性方程组应用 CG 方法}
+\[\widetilde A\widetilde{\bm x}=\widetilde{\bm b},\]
+{其中 $\widetilde A=L^{-1}AL^{-\mathrm H}$, $\widetilde{\bm x}=L^{\mathrm H}\bm x$, $\widetilde{\bm b}=L^{-1}\bm b$. 则预期用于 $\widetilde A\widetilde{\bm x}=\widetilde{\bm b}$ 的 CG 方法, 比用于 $A\bm x=\bm b$ 的 CG 方法收敛快得多. 由 Algorithm\ \ref{alg:cg}, 用于 $\widetilde A\widetilde{\bm x}=\widetilde{\bm b}$ 的 CG 方法的迭代式为}
+% block: pcg-recurrence-transformation page:94 type:ordinary-paragraph
+\[\begin{aligned}
+\widetilde{\bm p}_n&=\widetilde{\bm r}_n+\beta_{n-1}\widetilde{\bm p}_{n-1},\\
+\alpha_n&=\frac{(\widetilde{\bm r}_n,\widetilde{\bm r}_n)}{(\widetilde{\bm p}_n,\widetilde A\widetilde{\bm p}_n)},\\
+\widetilde{\bm x}_{n+1}&=\widetilde{\bm x}_n+\alpha_n\widetilde{\bm p}_n,\\
+\widetilde{\bm r}_{n+1}&=\widetilde{\bm r}_n-\alpha_n\widetilde A\widetilde{\bm p}_n,\\
+\beta_n&=\frac{(\widetilde{\bm r}_{n+1},\widetilde{\bm r}_{n+1})}{(\widetilde{\bm r}_n,\widetilde{\bm r}_n)}.
+\end{aligned}\]
+{作下列改写:}
+\[\widetilde{\bm x}\Rightarrow L^{\mathrm H}\bm x,\quad\widetilde{\bm p}\Rightarrow L^{\mathrm H}\bm p,\quad\widetilde{\bm r}\Rightarrow L^{-1}\bm r,\]
+{得到}
+\[\begin{aligned}
+\bm p_n&=L^{-\mathrm H}L^{-1}\bm r_n+\beta_{n-1}L^{-\mathrm H}L^{\mathrm H}\bm p_{n-1}=L^{-\mathrm H}L^{-1}\bm r_n+\beta_{n-1}\bm p_{n-1},\\
+\alpha_n&=\frac{(L^{-1}\bm r_n,L^{-1}\bm r_n)}{(L^{\mathrm H}\bm p_n,L^{-1}AL^{-\mathrm H}L^{\mathrm H}\bm p_n)}=\frac{(L^{-\mathrm H}L^{-1}\bm r_n,\bm r_n)}{(\bm p_n,A\bm p_n)},\\
+\bm x_{n+1}&=L^{-\mathrm H}L^{\mathrm H}\bm x_n+\alpha_nL^{-\mathrm H}L^{\mathrm H}\bm p_n=\bm x_n+\alpha_n\bm p_n,\\
+\bm r_{n+1}&=LL^{-1}\bm r_n-\alpha_nLL^{-1}AL^{-\mathrm H}L^{\mathrm H}\bm p_n=\bm r_n-\alpha_nA\bm p_n,\\
+\beta_n&=\frac{(L^{-1}\bm r_{n+1},L^{-1}\bm r_{n+1})}{(L^{-\mathrm H}L^{-1}\bm r_n,\bm r_n)}=\frac{(L^{-\mathrm H}L^{-1}\bm r_{n+1},\bm r_{n+1})}{(L^{-\mathrm H}L^{-1}\bm r_n,\bm r_n)}.
+\end{aligned}\]
+{由于 $K^{-1}=L^{-\mathrm H}L^{-1}$, 得到 Algorithm\ \ref{alg:pcg} 所述的 PCG 方法.}
+% block: pcg-algorithm page:94 type:ordinary-paragraph
+\begin{algorithm}[H]\caption{{预条件 CG 方法}}\label{alg:pcg}
+\begin{algorithmic}[1]
+\Statex\textbf{Input:} $\bm x_0\in\mathbb C^N,\ \beta_{-1}=0,\ \bm p_{-1}=\bm0,\ \bm r_0=\bm b-A\bm x_0$
+\Statex\textbf{Output:} $\bm x_n$
+\For{$n=0,1,2,\ldots$, {直至收敛}}
+\State $\bm p_n=K^{-1}\bm r_n+\beta_{n-1}\bm p_{n-1}$
+\State $\alpha_n=\frac{(K^{-1}\bm r_n,\bm r_n)}{(\bm p_n,A\bm p_n)}$
+\State $\bm x_{n+1}=\bm x_n+\alpha_n\bm p_n$
+\State $\bm r_{n+1}=\bm r_n-\alpha_nA\bm p_n$
+\State $\beta_n=\frac{(K^{-1}\bm r_{n+1},\bm r_{n+1})}{(K^{-1}\bm r_n,\bm r_n)}$
+\EndFor\end{algorithmic}\end{algorithm}
+% block: cg-notes pages:94,95 type:ordinary-paragraph
+{下面列出关于 CG 方法的几点说明.}
+\begin{enumerate}
+\item {由 Theorem\ \ref{thm:cg-energy-optimality}, 在精确算术下, CG 方法在 $N$ 次迭代内找到精确解.}
+\item {即使系数矩阵不正定, 仍可使用 CG 方法. 此时, Theorem\ \ref{thm:cg-energy-optimality} 中的最优性不再成立, CG 方法可能发生中断, 即除以零, 因为对任意 $\bm p_n\ne\bm0$ 都有 $(\bm p_n,A\bm p_n)>0$ 这一性质不再成立, 见 Algorithm\ \ref{alg:cg} 的第 3 行. 实际计算中不会发生中断 (除以零), 但可能发生近中断, 即 $(\bm p_n,A\bm p_n)\approx0$, 导致数值不稳定.}
+\item {在精确算术下, 若不发生中断, 用于 Hermitian 不定矩阵的 CG 方法也在 $N$ 次迭代内找到精确解.}
+\end{enumerate}
+{接下来两小节介绍 Hermitian 线性方程组的 CR 方法和 MINRES 方法.}
+% block: conjugate-residual-heading page:95 type:subsection
+\subsubsection{{共轭残差 (CR) 方法}}\label{subsec:conjugate-residual}
+{共轭残差 (CR) 方法 \BookCite{177} 由 CG 方法的提出者之一 Stiefel 于 1955 年提出. CR 方法的特点是关于残差范数具有最优性, 稍后将予以说明.}
+{可以像推导 CG 方法一样推导 CR 方法, 但这里利用 CG 方法的算法给出 CR 方法的简洁推导. 这一推导的缺点是, 假设 $A$ 为 Hermitian 正定矩阵, 而 CR 方法可用于 Hermitian 不定线性方程组. 另一方面, 我们将看到这一推导比 CG 方法的推导简单得多. 与 CG 方法推导相似的 CR 方法推导见 Section\ \ref{subsec:cocr-method}: 将复对称线性方程组的 COCR 方法的推导限制到实对称情形即可得到.}
+% block: cr-square-root-transformation page:95 type:ordinary-paragraph
+{现在从 CG 方法推导 CR 方法. 若 $A$ 为 Hermitian 正定矩阵, 则 $A$ 存在平方根: $A$ 的 Cholesky 分解 (见 Section\ \ref{subsec:cholesky-decomposition}) 为 $LL^{\mathrm H}$, 利用奇异值分解又可将 $L$ 分解为 $U\Sigma V^{\mathrm H}$.}\footnote{{$U$ 和 $V$ 为酉矩阵, $\Sigma$ 为对角元素非负的对角矩阵.}}
+{于是有}
+\[A=LL^{\mathrm H}=(U\Sigma V^{\mathrm H})(V\Sigma U^{\mathrm H})=U\Sigma^2U^{\mathrm H}=(U\Sigma U^{\mathrm H})(U\Sigma U^{\mathrm H})=A^{\frac12}A^{\frac12}.\]
+{因此 $A$ 的平方根为 $A^{\frac12}=U\Sigma U^{\mathrm H}$. 这里说明, 若 $A$ 为 Hermitian 正定矩阵, 则对下列线性方程组应用 CG 方法即可得到 CR 方法的算法:}
+\begin{equation}\label{eq:cr-square-root-system}A\widetilde{\bm x}=A^{\frac12}\bm b,\quad\widetilde{\bm x}=A^{\frac12}\bm x.\end{equation}
+{由 CG 方法的算法可得}
+% block: cr-transformed-recurrences page:96 type:ordinary-paragraph
+\[\begin{aligned}
+\widetilde{\bm p}_n&=\widetilde{\bm r}_n+\beta_{n-1}\widetilde{\bm p}_{n-1},\\
+\alpha_n&=\frac{(\widetilde{\bm r}_n,\widetilde{\bm r}_n)}{(\widetilde{\bm p}_n,A\widetilde{\bm p}_n)},\\
+\widetilde{\bm x}_{n+1}&=\widetilde{\bm x}_n+\alpha_n\widetilde{\bm p}_n,\\
+\widetilde{\bm r}_{n+1}&=\widetilde{\bm r}_n-\alpha_nA\widetilde{\bm p}_n,\\
+\beta_n&=\frac{(\widetilde{\bm r}_{n+1},\widetilde{\bm r}_{n+1})}{(\widetilde{\bm r}_n,\widetilde{\bm r}_n)}.
+\end{aligned}\]
+{原方程组 $A\bm x=\bm b$ 的残差向量为 $\bm r_n=\bm b-A\bm x_n$, 由 \eqref{eq:cr-square-root-system} 有 $\widetilde{\bm r}_n=A^{\frac12}\bm b-A\widetilde{\bm x}_n=A^{\frac12}(\bm b-A\bm x_n)=A^{\frac12}\bm r_n$. 将 $\widetilde{\bm r}_n=A^{\frac12}\bm r_n$, $\widetilde{\bm p}_n=A^{\frac12}\bm p_n$, $\widetilde{\bm x}_n=A^{\frac12}\bm x_n$ 代入上述递推式, 得到 CR 方法的算法 (Algorithm\ \ref{alg:cr}).}
+% block: cr-algorithm page:96 type:ordinary-paragraph
+\begin{algorithm}[H]\caption{{CR 方法}}\label{alg:cr}\begin{algorithmic}[1]
+\Statex\textbf{Input:} $\bm x_0\in\mathbb C^N,\ \beta_{-1}=0,\ \bm p_{-1}=\bm0,\ \bm r_0=\bm b-A\bm x_0$
+\Statex\textbf{Output:} $\bm x_n$
+\For{$n=0,1,2,\ldots$, {直至收敛}}
+\State $\bm p_n=\bm r_n+\beta_{n-1}\bm p_{n-1}$
+\State $A\bm p_n=A\bm r_n+\beta_{n-1}A\bm p_{n-1}$
+\State $\alpha_n=\frac{(\bm r_n,A\bm r_n)}{(A\bm p_n,A\bm p_n)}$
+\State $\bm x_{n+1}=\bm x_n+\alpha_n\bm p_n$
+\State $\bm r_{n+1}=\bm r_n-\alpha_nA\bm p_n$
+\State $\beta_n=\frac{(\bm r_{n+1},A\bm r_{n+1})}{(\bm r_n,A\bm r_n)}$
+\EndFor\end{algorithmic}\end{algorithm}
+% block: cr-orthogonality-and-optimality pages:96,97 type:ordinary-paragraph
+{由 Algorithm\ \ref{alg:cr} 的第 7 行, 若 Hermitian 矩阵 $A$ 不定, CR 方法可能发生中断, 即 $(\bm r_n,A\bm r_n)=0$. 利用归纳法可证明, CR 方法生成的迭代向量 $\bm r_i,\bm p_i$ 满足}
+\begin{equation}\label{eq:cr-residual-orthogonality}(\bm r_i,A\bm r_j)=0\quad\text{for }i\ne j,\end{equation}
+\begin{equation}\label{eq:cr-direction-orthogonality}(A\bm p_i,A\bm p_j)=0\quad\text{for }i\ne j.\end{equation}
+{将两个性质 (\eqref{eq:cr-residual-orthogonality} 和 \eqref{eq:cr-direction-orthogonality}) 与 CG 方法的性质比较, CR 方法寻找满足下列条件的近似解}
+\[\bm x_n=\bm x_0+\bm z_n,\quad\bm z_n\in\mathcal K_n(A,\bm r_0),\]
+{其中 $\bm z_n$ 由 $\bm r_n\perp A\mathcal K_n(A,\bm r_0)(:=\mathcal K_n(A,A\bm r_0))$ 确定, 或等价地,}
+\[\bm x_n=\bm x_0+V_n\bm y_n,\quad\bm y_n\in\mathbb C^n,\]
+{其中 $\bm y_n$ 由 $(AV_n)^{\mathrm H}\bm r_n=\bm0$ 确定. 沿用 Theorem\ \ref{thm:cg-energy-optimality} 的证明, 得}
+\[\min_{\bm x_n\in\bm x_0+\mathcal K_n(A,\bm r_0)}\|\bm e_n\|_{A^2}.\]
+{由于 $\|\bm e_n\|_{A^2}^2=\bm e_n^{\mathrm H}A^2\bm e_n=(A\bm e_n)^{\mathrm H}A\bm e_n=\bm r_n^{\mathrm H}\bm r_n=\|\bm r_n\|^2$, CR 方法寻找满足下列条件的近似解}
+\[\min_{\bm x_n\in\bm x_0+\mathcal K_n(A,\bm r_0)}\|\bm r_n\|.\]
+{因此, CR 方法产生关于残差范数的最优近似解. 与预条件 CG 方法的推导类似, 对变换后的线性方程组 $\widetilde A\widetilde{\bm x}=\widetilde{\bm b}$ 应用 CR 方法, 可推导出预条件 CR 方法. 所得算法见 Algorithm\ \ref{alg:pcr}.}
+% block: pcr-algorithm page:97 type:ordinary-paragraph
+\begin{algorithm}[H]\caption{{预条件 CR 方法}}\label{alg:pcr}\begin{algorithmic}[1]
+\Statex\textbf{Input:} $\bm x_0\in\mathbb C^N,\ \beta_{-1}=0,\ \bm p_{-1}=\bm0,\ \bm r_0=\bm b-A\bm x_0$
+\Statex\textbf{Output:} $\bm x_n$
+\For{$n=0,1,2,\ldots$, {直至收敛}}
+\State $\bm p_n=K^{-1}\bm r_n+\beta_{n-1}\bm p_{n-1}$
+\State $(A\bm p_n=AK^{-1}\bm r_n+\beta_{n-1}A\bm p_{n-1})$
+\State $\alpha_n=\frac{(K^{-1}\bm r_n,AK^{-1}\bm r_n)}{(A\bm p_n,K^{-1}A\bm p_n)}$
+\State $\bm x_{n+1}=\bm x_n+\alpha_n\bm p_n$
+\State $\bm r_{n+1}=\bm r_n-\alpha_nA\bm p_n$
+\State $(K^{-1}\bm r_{n+1}=K^{-1}\bm r_n-\alpha_nK^{-1}A\bm p_n)$
+\State $\beta_n=\frac{(K^{-1}\bm r_{n+1},AK^{-1}\bm r_{n+1})}{(K^{-1}\bm r_n,AK^{-1}\bm r_n)}$
+\EndFor\end{algorithmic}\end{algorithm}
+% block: pcr-operation-count page:97 type:ordinary-paragraph
+{注意, Algorithm\ \ref{alg:pcr} 中加入第 3 和第 7 行, 是为了减少形如 $A\bm v$ 的矩阵向量乘法及形如 $K\bm v=\bm w$ 的线性方程组求解次数. 实际上, 每次迭代似乎都需要计算}
+\[A\bm p_n,\quad K^{-1}\bm r_{n+1},\quad A(K^{-1}\bm r_n),\quad K^{-1}(A\bm p_n).\]
+{但由第 3 和第 7 行, 除第一次迭代需要计算 $K^{-1}\bm r_0$ 外, 不必计算 $A\bm p_n$ 和 $K^{-1}\bm r_{n+1}$. 因此, 每次迭代实质上只需计算下列形式:}
+\[A\bm v,\quad K^{-1}\bm w\]
+{这里 $\bm v:=K^{-1}\bm r_{n+1}$ 由第 7 行得到, $\bm w:=A\bm p_n$ 由第 3 行得到.}
+% block: minres-heading page:98 type:subsection
+\subsubsection{{最小残差 (MINRES) 方法}}\label{subsec:minres}
+{最小残差 (MINRES) 方法 \BookCite{143} 由 Paige 和 Saunders 于 1975 年提出. MINRES 方法生成在仿射空间 $\bm x_0+\mathcal K_n(A,\bm r_0)$ 上使 $\|\bm b-A\bm x_n\|$ 达到极小值的 $\bm x_n$. 因此在精确算术下, MINRES 方法与 CR 方法产生相同的近似解. 这一极小化可利用 Lanczos 过程实现.}
+{这里给出 MINRES 方法的推导过程. 设 $V_n$ 为 $\mathcal K_n(A,\bm r_0)$ 的标准正交基. MINRES 方法在仿射空间 $\bm x_0+\mathcal K_n(A,\bm r_0)$ 上寻找 $\bm x_n$, 即}
+\begin{equation}\label{eq:minres-affine-solution}\bm x_n=\bm x_0+V_n\bm y_n,\quad\bm y_n\in\mathbb C^n.\end{equation}
+{相应的残差向量为}
+\[\bm r_n=\bm r_0-AV_n\bm y_n.\]
+{由 \eqref{eq:lanczos-matrix-relation} 中 Lanczos 过程的矩阵形式, 得}
+\[\bm r_n=\bm r_0-V_{n+1}T_{n+1,n}\bm y_n=V_{n+1}(\beta\bm e_1-T_{n+1,n}\bm y_n),\]
+{其中 $\beta:=\|\bm r_0\|$. 残差向量的 2-范数写成}
+\[\begin{aligned}
+\|\bm r_n\|&=\|V_{n+1}(\beta\bm e_1-T_{n+1,n}\bm y_n)\|\\
+&=\sqrt{[V_{n+1}(\beta\bm e_1-T_{n+1,n}\bm y_n)]^{\mathrm H}V_{n+1}(\beta\bm e_1-T_{n+1,n}\bm y_n)}\\
+&=\sqrt{(\beta\bm e_1-T_{n+1,n}\bm y_n)^{\mathrm H}V_{n+1}^{\mathrm H}V_{n+1}(\beta\bm e_1-T_{n+1,n}\bm y_n)}\\
+&=\sqrt{(\beta\bm e_1-T_{n+1,n}\bm y_n)^{\mathrm H}(\beta\bm e_1-T_{n+1,n}\bm y_n)}\\
+&=\|\beta\bm e_1-T_{n+1,n}\bm y_n\|.
+\end{aligned}\]
+{MINRES 方法寻找使残差向量的 2-范数达到极小值的近似解, 即选择 $\bm y_n$ 使得}
+\begin{equation}\label{eq:minres-projected-least-squares}\bm y_n:=\operatorname*{arg\,min}_{\bm y\in\mathbb C^n}\|\beta\bm e_1-T_{n+1,n}\bm y\|.\end{equation}
+{利用作为酉矩阵的一种 Givens 旋转求解 \eqref{eq:minres-projected-least-squares} 中的最小二乘问题, 就得到 MINRES 方法. 下面说明 Givens 旋转如何用于求解 \eqref{eq:minres-projected-least-squares}. 为简单起见, 考虑 $n=4$ 的情形. $\beta\bm e_1-T_{5,4}\bm y$ 写成}
+% block: minres-first-givens page:99 type:ordinary-paragraph
+\[\beta\bm e_1-T_{5,4}\bm y=\begin{bmatrix}\beta\\0\\0\\0\\0\end{bmatrix}
+-\begin{bmatrix}t_{11}&t_{12}&&\\t_{21}&t_{22}&t_{23}&\\&t_{32}&t_{33}&t_{34}\\&&t_{43}&t_{44}\\&&&t_{54}\end{bmatrix}\begin{bmatrix}y_1\\y_2\\y_3\\y_4\end{bmatrix},\]
+{其中 $t_{ij}=t_{ji}$, $1\le i,j\le4$. 设 $G_1$ 为 Givens 旋转矩阵, 即}
+\[G_1=\begin{bmatrix}c_1&s_1&&&\\-\bar s_1&c_1&&&\\&&1&&\\&&&1&\\&&&&1\end{bmatrix}
+\quad\text{with }c_1=\frac{|t_{11}|}{\sqrt{|t_{11}|^2+|t_{21}|^2}},\quad\bar s_1=\frac{t_{21}}{t_{11}}c_1,\]
+{其中 $s_1$ 取为 $\bar s_1$ 的共轭. 有一种例外: 若 $t_{11}=0$, 则令 $s_1=\bar s_1=1$. 于是 $G_1$ 为酉矩阵, 因而 $\|\beta\bm e_1-T_{n+1,n}\bm y\|=\|G_1(\beta\bm e_1-T_{n+1,n}\bm y)\|$. 由此得到}
+\[G_1(\beta\bm e_1-T_{5,4}\bm y)=\begin{bmatrix}g_1^{(1)}\\g_2^{(1)}\\0\\0\\0\end{bmatrix}
+-\begin{bmatrix}t_{11}^{(1)}&t_{12}^{(1)}&t_{13}^{(1)}&\\&t_{22}^{(1)}&t_{23}^{(1)}&\\&t_{32}&t_{33}&t_{34}\\&&t_{43}&t_{44}\\&&&t_{54}\end{bmatrix}\begin{bmatrix}y_1\\y_2\\y_3\\y_4\end{bmatrix},\]
+% block: minres-second-givens page:99 type:ordinary-paragraph
+{其中 $g_2^{(1)}=-\bar s_1\beta$. 接着定义酉矩阵 $G_2$ 为}
+\[G_2=\begin{bmatrix}1&&&&\\&c_2&s_2&&\\&-\bar s_2&c_2&&\\&&&1&\\&&&&1\end{bmatrix}
+\quad\text{with }c_2=\frac{|t_{22}^{(1)}|}{\sqrt{|t_{22}^{(1)}|^2+|t_{32}|^2}},\quad\bar s_2=\frac{t_{32}}{t_{22}^{(1)}}c_2.\]
+{有一种例外: 若 $t_{22}^{(1)}=0$, 则令 $s_2=\bar s_2=1$. 于是 $G_2$ 和 $G_2G_1$ 为酉矩阵, 因而 $\|\beta\bm e_1-T_{n+1,n}\bm y\|=\|G_2G_1(\beta\bm e_1-T_{n+1,n}\bm y)\|$. 由此得到}
+\[G_2G_1(\beta\bm e_1-T_{5,4}\bm y)=\begin{bmatrix}g_1^{(1)}\\g_2^{(2)}\\g_3^{(2)}\\0\\0\end{bmatrix}
+-\begin{bmatrix}t_{11}^{(1)}&t_{12}^{(1)}&t_{13}^{(1)}&\\&t_{22}^{(2)}&t_{23}^{(2)}&t_{24}^{(2)}\\&&t_{33}^{(2)}&t_{34}^{(2)}\\&&t_{43}&t_{44}\\&&&t_{54}\end{bmatrix}\begin{bmatrix}y_1\\y_2\\y_3\\y_4\end{bmatrix},\]
+{其中 $g_3^{(2)}=(-1)^2\bar s_2\bar s_1\beta$. 类似地, 利用 $G_3$ 和 $G_4$, 最终得到}
+% block: minres-triangular-problem page:100 type:ordinary-paragraph
+\[\begin{aligned}
+Q_4(\beta\bm e_1-T_{5,4}\bm y)&=\begin{bmatrix}g_1^{(1)}\\g_2^{(2)}\\g_3^{(3)}\\g_4^{(4)}\\g_5^{(5)}\end{bmatrix}
+-\begin{bmatrix}t_{11}^{(1)}&t_{12}^{(1)}&t_{13}^{(1)}&\\&t_{22}^{(2)}&t_{23}^{(2)}&t_{24}^{(2)}\\&&t_{33}^{(3)}&t_{34}^{(3)}\\&&&t_{44}^{(4)}\\&&&\end{bmatrix}\begin{bmatrix}y_1\\y_2\\y_3\\y_4\end{bmatrix}\\
+&=\begin{bmatrix}\bm g_4\\g_5^{(5)}\end{bmatrix}-\begin{bmatrix}R_4\\\bm0^{\top}\end{bmatrix}\bm y_4,
+\end{aligned}\]
+{其中 $Q_4=G_4G_3G_2G_1$, $g_5^{(5)}=(-1)^4\bar s_4\bar s_3\bar s_2\bar s_1\beta$. 因此, 通过回代求解下列方程, 得到 $\bm y_4$:}
+\begin{equation}\label{eq:minres-upper-triangular-system}R_4\bm y_4=\bm g_4\end{equation}
+{有趣的是, 不必求解方程 $R_4\bm y_4=\bm g_4$, 即可得到 $\min_{\bm y\in\mathbb C^4}\|\beta\bm e_1-T_{5,4}\bm y\|$ 的值, 因为该值满足}
+\[\begin{aligned}
+\|\bm r_4\|&=\min_{\bm y\in\mathbb C^4}\|\beta\bm e_1-T_{5,4}\bm y\|
+=\min_{\bm y\in\mathbb C^4}\|Q_4(\beta\bm e_1-T_{5,4}\bm y)\|\\
+&=\left\|\begin{bmatrix}\bm g_4\\g_5^{(5)}\end{bmatrix}-\begin{bmatrix}R_4\\\bm0^{\top}\end{bmatrix}\bm y_4\right\|
+=\left\|\begin{bmatrix}\bm0\\g_5^{(5)}\end{bmatrix}\right\|\\
+&=|g_5^{(5)}|.
+\end{aligned}\]
+% block: minres-solution-recurrences pages:100,101 type:ordinary-paragraph
+{因此, $|g_5^{(5)}|$ 对应于 $\bm r_4$ 的残差范数, 可用作停止准则. 为得到近似解, 由 \eqref{eq:minres-affine-solution} 和 \eqref{eq:minres-upper-triangular-system} 有}
+\begin{equation}\label{eq:minres-solution-triangular-inverse}\bm x_4=\bm x_0+V_4R_4^{-1}\bm g_4.\end{equation}
+{这里引入矩阵 $P_4:=V_4R_4^{-1}$, 其列为 $[\bm p_1,\bm p_2,\bm p_3,\bm p_4]$. 于是由 $[\bm p_1,\bm p_2,\bm p_3,\bm p_4]R_4=[\bm v_1,\bm v_2,\bm v_3,\bm v_4]$, 有下列递推关系:}
+\begin{equation}\label{eq:minres-direction-one}\bm p_1=\bm v_1/t_{11}^{(1)},\end{equation}
+\begin{equation}\label{eq:minres-direction-two}\bm p_2=(\bm v_2-t_{12}^{(1)}\bm p_1)/t_{22}^{(2)},\end{equation}
+\begin{equation}\label{eq:minres-direction-three}\bm p_3=(\bm v_3-t_{13}^{(1)}\bm p_1-t_{23}^{(2)}\bm p_2)/t_{33}^{(3)},\end{equation}
+\begin{equation}\label{eq:minres-direction-four}\bm p_4=(\bm v_4-t_{24}^{(2)}\bm p_2-t_{34}^{(3)}\bm p_3)/t_{44}^{(4)}.\end{equation}
+{由 \eqref{eq:minres-solution-triangular-inverse}, $\bm x_4=\bm x_0+P_4\bm g_4=\bm x_0+\sum_{i=1}^4g_i\bm p_i$, 因此}
+\begin{equation}\label{eq:minres-solution-updates}\bm x_i=\bm x_{i-1}+g_i\bm p_i,\quad i=1,\ldots,4,\end{equation}
+{其中 $g_i$ 是 $\bm g_4$ 的第 $i$ 个元素. MINRES 方法的近似解 $\bm x_1,\ldots,\bm x_4$ 由 \eqref{eq:minres-solution-updates} 及递推式 \eqref{eq:minres-direction-one}--\eqref{eq:minres-direction-four} 得到. $n=4$ 时的推导容易推广到第 $n$ 次迭代, 得到 Algorithm\ \ref{alg:minres}. 由 Algorithm\ \ref{alg:minres}, MINRES 方法从不发生中断, 因为除非 $\widetilde{\bm v}_{n+1}=\bm0$, 否则 $\beta_n\ne0$.}
+% block: minres-algorithm page:101 type:ordinary-paragraph
+\begin{algorithm}[H]\caption{{MINRES 方法}}\label{alg:minres}\begin{algorithmic}[1]
+\Statex\textbf{Input:} $\bm x_0\in\mathbb C^N,\ \beta_0=0,\ \bm v_0=\bm0,\ \bm r_0=\bm b-A\bm x_0$
+\Statex\textbf{Output:} $\bm x_n$
+\State $\bm g=(\|\bm r_0\|,0,\ldots,0)^{\top},\ \bm v_1=\bm r_0/\|\bm r_0\|$
+\For{$n=1,2,\ldots$}
+\State (Lanczos {过程})
+\State $\alpha_n=(\bm v_n,A\bm v_n)$
+\State $\widetilde{\bm v}_{n+1}=A\bm v_n-\alpha_n\bm v_n-\beta_{n-1}\bm v_{n-1}$
+\State $\beta_n=(\widetilde{\bm v}_{n+1},\widetilde{\bm v}_{n+1})^{1/2}$
+\State $\bm v_{n+1}=\widetilde{\bm v}_{n+1}/\beta_n$
+\State $t_{n-1,n}=\beta_{n-1},\ t_{n,n}=\alpha_n$
+\State $t_{n+1,n}=\beta_n$
+\State (Givens {旋转})
+\For{$i=\max\{1,n-2\},\ldots,n-1$}
+\State $\begin{bmatrix}t_{i,n}\\t_{i+1,n}\end{bmatrix}=\begin{bmatrix}c_i&s_i\\-\bar s_i&c_i\end{bmatrix}\begin{bmatrix}t_{i,n}\\t_{i+1,n}\end{bmatrix}$
+\EndFor
+\State $c_n=\frac{|t_{n,n}|}{\sqrt{|t_{n,n}|^2+|t_{n+1,n}|^2}}$
+\State $\bar s_n=\frac{t_{n+1,n}}{t_{n,n}}c_n$
+\State $t_{n,n}=c_nt_{n,n}+s_nt_{n+1,n}$
+\State $t_{n+1,n}=0$
+\State $\begin{bmatrix}g_n\\g_{n+1}\end{bmatrix}=\begin{bmatrix}c_n&s_n\\-\bar s_n&c_n\end{bmatrix}\begin{bmatrix}g_n\\0\end{bmatrix}$
+\State ({更新} $\bm x_n$)
+\State $\bm p_n=(\bm v_n-t_{n-2,n}\bm p_{n-2}$
+\State $\qquad-t_{n-1,n}\bm p_{n-1})/t_{n,n}$
+\State $\bm x_n=\bm x_{n-1}+g_n\bm p_n$
+\State ({检查收敛})
+\State {若 $|g_{n+1}|/\|\bm b\|\le\epsilon$, 则停止}
+\EndFor\end{algorithmic}\end{algorithm}
+% block: symmlq-projected-system pages:101,102 type:ordinary-paragraph
+{如上所述, MINRES 方法从不发生中断. Paige 和 Saunders 还在 \BookCite{143} 中提出了 CG 方法的一种变体 SYMMLQ 方法, 以避免 Hermitian 不定线性方程组求解中的中断. 下面作简要说明. 回顾 CG 方法的近似解 $\bm x_n$ 为}
+\[\begin{aligned}
+\bm x_n&=\bm x_0+V_n\bm y_n,\\
+\bm r_n&=\bm r_0-V_{n+1}T_{n+1,n}\bm y_n=V_{n+1}(\beta\bm e_1-T_{n+1,n}\bm y_n),
+\end{aligned}\]
+{其中 $\bm y_n$ 由 $\bm r_n\perp\mathcal K_n(A,\bm r_0)$ 确定 (见 Corollary\ \ref{cor:cg-krylov-orthogonality}), 即 $V^{\mathrm H}\bm r_n=\bm0$. 由此得到}
+\begin{equation}\label{eq:symmlq-projected-system}T_n\bm y_n=\beta\bm e_1,\end{equation}
+{其中 $T_n$ 是删除 $T_{n+1,n}$ 最后一行得到的三对角矩阵. CG 方法通过 $T_n$ 的 $LDL^{\mathrm H}$ 分解得到, 即}
+\[T_n=LDL^{\mathrm H},\]
+{其中 $L$ 为单位下双对角矩阵, $D$ 为对角矩阵. 若 $A$ 为 Hermitian 正定矩阵, 则 $T_n$ 也是 Hermitian 正定矩阵. 因此这一分解从不发生中断. 另一方面, 当 $A$ 不定时, 可能因中断而无法得到 $T_n$ 的 $LDL^{\mathrm H}$ 分解.}
+% block: symmlq-lq-factorization page:102 type:ordinary-paragraph
+{为绕过这一问题, Paige 和 Saunders 提议使用 $T_n$ 的 LQ 分解, 即}
+\[T_n=L_nQ_n,\quad Q_n^{\mathrm H}Q_n=I,\]
+{其中 $L_n$ 为下三角矩阵, 该分解通过 Givens 旋转得到, 因而不发生中断. 所得算法称为 \linebreak[4]SYMMLQ 方法. 当系数矩阵 $A$ 为 Hermitian 正定矩阵时, 在精确算术下 SYMMLQ 方法给出与 CG 方法相同的结果; 在不定情形下, SYMMLQ 方法在求解 \eqref{eq:symmlq-projected-system} 时成功避免了中断. 关于简要历史说明, 包括 SYMMLQ 方法与 1962 年 (较少为人所知的) Fridman 方法之间的关系, 见 \BookCite{160} 的 Section\ 2.4.}
+% block: composite-step-factorization page:102 type:ordinary-paragraph
+{另一种重要的补救方法是 Bank 和 Chan 的 ``复合步'' 技术 \BookCite{16}, 以及 \BookCite{58}, \BookCite{126} 中的类似技术 (双曲对). 复合步的关键思想是将 \eqref{eq:symmlq-projected-system} 中的 $T_n$ 分解为}
+\[T_n=\widetilde L\widetilde D\widetilde L^{\mathrm H},\]
+{其中 $\widetilde L$ 为单位下分块双对角矩阵, $\widetilde D$ 为块大小为 $1\times1$ 或 $2\times2$ 的分块对角矩阵, 即}
+\[\widetilde D=\begin{bmatrix}D_1&&\\&\ddots&\\&&D_m\end{bmatrix},\]
+{其中 $D_i$ 为标量或 $2\times2$ 矩阵. 这一分解也不发生中断, 例如见 \BookCite{16} 的 Theorem 2.2. 复合步技术的算法说明 (复合步 BiCG 方法) 见 Section\ \ref{subsec:composite-step-bicg}.}

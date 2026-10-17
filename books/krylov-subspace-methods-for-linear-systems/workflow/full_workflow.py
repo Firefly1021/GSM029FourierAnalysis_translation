@@ -176,6 +176,7 @@ def assemble():
     start=r"""\documentclass[a4paper,UTF8,12pt]{ctexart}
 \usepackage{Mystyle}
 \usepackage{translation-adapter}
+\usepackage{needspace}
 \input{translation-macros.tex}
 \renewcommand{\thetable}{\thesection.\arabic{table}}
 \counterwithin{algorithm}{section}
@@ -216,6 +217,9 @@ def assemble():
       "sec:complex-symmetric-linear-systems":("3.2",102,"90","Complex Symmetric Linear Systems"),
       "sec:nonhermitian-linear-systems":("3.3",111,"99","Non-Hermitian Linear Systems"),
       "subsec:newton-matrix-square-root":("5.3.1",206,"194","Matrix Square Root"),
+      "sec:preconditioning-techniques":("3.5",163,"151","Preconditioning Techniques"),
+      "subsec:cocr-method":("3.2.2",104,"92","The Conjugate Orthogonal Conjugate Residual (COCR) Method"),
+      "subsec:composite-step-bicg":("3.3.2",116,"104","The Composite Step Bi-Conjugate Gradient (CSBiCG) Method"),
       "sec:symmetric-direct-methods":("1.4",22,"9","Direct Methods for Symmetric Linear Systems"),
       "subsec:stationary-preconditioners":("3.5.4",172,"160","Preconditioners Based on Stationary Iterative Methods"),
       "subsec:preconditioner-reorderings":("3.5.5",173,"161","Reorderings for Preconditioners"),

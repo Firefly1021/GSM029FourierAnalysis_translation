@@ -1,0 +1,423 @@
+% block: hermitian-linear-systems-heading page:85 type:section
+\subsection{{Hermitian Linear Systems}}\label{sec:hermitian-linear-systems}
+{In this section, we give derivations of the Conjugate Gradient (CG) method, the Conjugate Residual (CR) method, and the Minimal Residual (MINRES) method. These methods are used for the case where matrix $A$ is Hermitian (or real symmetric). The CG method is usually used for the case where $A$ is a Hermitian positive definite matrix, and the CR method and the MINRES method are used for a Hermitian (indefinite) matrix. In exact precision arithmetic, the CR method and the MINRES method produce the same approximate solutions. We will see that these methods find the best approximate solutions at each iteration step. To be specific, the CG method for a Hermitian positive definite matrix finds the best approximate solution such that a weighted norm of the error is minimized. On the other hand, the CR method and the MINRES method find the best approximate solution such that the 2-norm of the residual is minimized.}
+% block: cg-heading pages:85,86 type:subsection
+\subsubsection{{The Conjugate Gradient (CG) Method}}\label{subsec:conjugate-gradient}
+{The CG method \BookCite{95} was proposed by Hestenes (1906--1991) and Stiefel (1909--1978) in 1952, and is the best-known Krylov subspace method. In exact precision arithmetic, as well as other Krylov subspace methods the CG method produces the exact solution within finite iteration steps. This means that the CG method has two features: a direct method as in Sect.\ \ref{sec:direct-methods} and an iterative method as in Sect.\ \ref{sec:stationary-iterations}. For the chronological history of the development of the CG method, see an excellent review by Golub and O’Leary \BookCite{80}.}
+% block: cg-lanczos-residual-matrix page:86 type:ordinary-paragraph
+{In what follows, the CG method is derived from the Lanczos process (Algorithm\ \ref{alg:lanczos}). From \eqref{eq:lanczos-matrix-relation}, the Lanczos process in matrix form is given by}
+\begin{equation}\label{eq:cg-lanczos-residual-matrix}AR_n=R_{n+1}T_{n+1,n},\end{equation}
+{where}
+\[\begin{gathered}
+R_n:=[\bm r_0,\bm r_1,\ldots,\bm r_{n-1}],\\
+T_{n+1,n}=\begin{bmatrix}t_{0,0}&t_{0,1}&&\\-\alpha_0^{-1}&t_{1,1}&\ddots&\\&-\alpha_1^{-1}&\ddots&t_{n-2,n-1}\\&&\ddots&t_{n-1,n-1}\\&&&-\alpha_{n-1}^{-1}\end{bmatrix},\\
+t_{k-1,k}:=\frac{(\bm r_{k-1},A\bm r_k)}{(\bm r_{k-1},\bm r_{k-1})},\quad(k=1,2,\ldots,n-1),\\
+t_{k,k}:=\frac{(\bm r_k,A\bm r_k)}{(\bm r_k,\bm r_k)},\quad(k=0,1,\ldots,n-1).
+\end{gathered}\]
+{Here, the scaling parameters ($\alpha_k$'s) have not been determined yet. Let $\bm x_k$ be the $k$th approximate solution of $A\bm x=\bm b$ such that $\bm x_k$'s satisfy the following equation:}
+\[R_n=[\bm b-A\bm x_0,\bm b-A\bm x_1,\ldots,\bm b-A\bm x_{n-1}]=\bm b\bm1_n^{\top}-AX_n,\]
+{where $\bm1_n:=[1,1,\ldots,1]^{\top}\in\mathbb R^n$ and $X_n:=[\bm x_0,\bm x_1,\ldots,\bm x_{n-1}]$. Notice that $R_n$ is the matrix given in \eqref{eq:cg-lanczos-residual-matrix}. Then, it follows that}
+\begin{equation}\label{eq:cg-residual-solution-matrix}
+\begin{aligned}
+AR_n&=R_{n+1}T_{n+1,n}=(\bm b\bm1_{n+1}^{\top}-AX_{n+1})T_{n+1,n}\\
+\Leftrightarrow R_n&=A^{-1}(\bm b\bm1_{n+1}^{\top}-AX_{n+1})T_{n+1,n}=\bm x\bm1_{n+1}^{\top}T_{n+1,n}-X_{n+1}T_{n+1,n}.
+\end{aligned}\end{equation}
+% block: cg-scaling-and-ldu pages:86,87 type:ordinary-paragraph
+{Now we use the condition $\bm1_{n+1}^{\top}T_{n+1,n}=[0,0,\ldots,0]$ to determine scaling parameters $\alpha_k$, i.e., $\alpha_0^{-1}=t_{0,0}$ and $\alpha_{k-1}^{-1}=t_{k-1,k-1}+t_{k-2,k-1}$ for $k=2,3,\ldots,n$. Then, the condition and \eqref{eq:cg-residual-solution-matrix} yield}
+\begin{equation}\label{eq:cg-residual-negative-product}R_n=-X_{n+1}T_{n+1,n},\end{equation}
+{where the matrix $T_{n+1,n}$ in \eqref{eq:cg-lanczos-residual-matrix} is rewritten as}
+\[T_{n+1,n}=\begin{bmatrix}
+\alpha_0^{-1}&t_{0,1}&&\\-\alpha_0^{-1}&\alpha_1^{-1}-t_{0,1}&\ddots&\\
+&-\alpha_1^{-1}&\ddots&t_{n-2,n-1}\\&&\ddots&\alpha_{n-1}^{-1}-t_{n-2,n-1}\\&&&-\alpha_{n-1}^{-1}
+\end{bmatrix}\]
+{and the matrix $T_{n+1,n}$ has the following LDU decomposition:}
+\begin{equation}\label{eq:cg-lanczos-ldu}
+T_{n+1,n}=\underbrace{\begin{bmatrix}1&&\\-1&1&\\\ddots&\ddots&\\&-1&1\end{bmatrix}}_L
+\underbrace{\begin{bmatrix}\alpha_0^{-1}&&&\\&\alpha_1^{-1}&&\\&&\ddots&\\&&&\alpha_{n-1}^{-1}\end{bmatrix}}_{D^{-1}}
+\underbrace{\begin{bmatrix}1&\alpha_0t_{0,1}&&\\&1&\ddots&\\&&\ddots&\alpha_{n-1}t_{n-1,n}\\&&&1\end{bmatrix}}_U,
+\end{equation}
+{where $L$ is the $n+1$-by-$n$ lower bidiagonal matrix, $D^{-1}$ is the $n$-by-$n$ diagonal matrix, and $U$ is the $n$-by-$n$ upper bidiagonal matrix. Thus, we obtain}
+\begin{equation}\label{eq:cg-residual-ldu}R_n=-X_{n+1}LD^{-1}U.\end{equation}
+% block: cg-three-recurrences page:87 type:ordinary-paragraph
+{We now define $P_n(=[\bm p_0,\bm p_1,\ldots,\bm p_{n-1}]):=R_nU^{-1}$. Then, \eqref{eq:cg-residual-ldu} can be rewritten as}
+\begin{equation}\label{eq:cg-direction-matrix}P_nD=X_{n+1}(-L),\end{equation}
+{which is equivalent to}
+\begin{equation}\label{eq:cg-solution-recurrence}\bm x_{k+1}=\bm x_k+\alpha_k\bm p_k,\quad k=0,1,\ldots,n-1.\end{equation}
+{The relation between $\bm r_k=\bm b-A\bm x_k$ and \eqref{eq:cg-solution-recurrence} yields}
+\begin{equation}\label{eq:cg-residual-recurrence}\bm r_{k+1}=\bm r_k-\alpha_kA\bm p_k,\quad k=0,1,\ldots,n-1.\end{equation}
+{The definition $P_n=R_nU^{-1}$ leads to $P_nU=R_n$, which is equivalent to}
+\begin{equation}\label{eq:cg-initial-direction}\bm p_0=\bm r_0,\end{equation}
+\begin{equation}\label{eq:cg-direction-recurrence}\bm p_k=\bm r_k+\beta_{k-1}\bm p_{k-1},\quad k=1,2,\ldots,n-1,\end{equation}
+{where $\beta_{k-1}:=-\alpha_{k-1}t_{k-1,k}$. As described above, computing $\alpha_k$ requires $A\bm r_k$ because $\alpha_k=(t_{k,k}+t_{k-1,k})^{-1}$, which means two matrix--vector multiplications are required per iteration step, i.e., $A\bm r_k$ and $A\bm p_k$ if we use the iterates \eqref{eq:cg-solution-recurrence}--\eqref{eq:cg-direction-recurrence}. In what follows, we will see that $A\bm r_k$ is not required. To see this, first we derive a computational formula for $\alpha_k$.}
+% block: cg-step-length page:88 type:ordinary-paragraph
+{From \eqref{eq:cg-lanczos-residual-matrix}, \eqref{eq:cg-lanczos-ldu}, and the definition of $P_n$, it follows that}
+\[AP_n=R_{n+1}LD^{-1}.\]
+{This leads to}
+\begin{equation}\label{eq:cg-projected-diagonal-product}P_n^{\mathrm H}AP_nD=U^{-\mathrm H}R_n^{\mathrm H}R_{n+1}L.\end{equation}
+{Since $R_n=[\bm r_0,\bm r_1,\ldots,\bm r_{n-1}]$ in \eqref{eq:cg-lanczos-residual-matrix} is generated by the Lanczos process, we have $\bm r_i^{\mathrm H}\bm r_j=0$ for $i\ne j$. In matrix form, this means $(i,j)$ elements of $R_n^{\mathrm H}R_{n+1}$ is zero for $i\ne j$. This fact yields that the $(k+1,k+1)$ element of $U^{-\mathrm H}R_n^{\mathrm H}R_{n+1}L$ in \eqref{eq:cg-projected-diagonal-product} is $\bm r_k^{\mathrm H}\bm r_k$ because $L$ and $U^{-\mathrm H}$ are the lower triangular matrices with all the diagonals being one. Thus from the $(k+1,k+1)$ element in \eqref{eq:cg-projected-diagonal-product}, we have $\bm p_k^{\mathrm H}A\bm p_k\alpha_k=\bm r_k^{\mathrm H}\bm r_k$, or}
+\begin{equation}\label{eq:cg-alpha}\alpha_k=\frac{\bm r_k^{\mathrm H}\bm r_k}{\bm p_k^{\mathrm H}A\bm p_k}.\end{equation}
+{Since $A$ is Hermitian, $\alpha_k$ is a real number for all $k$, which will be later used for deriving the computational formula for $\beta_k$.}
+% block: cg-direction-coefficient page:88 type:ordinary-paragraph
+{Next, we give a computational formula for $\beta_k$. From \eqref{eq:cg-lanczos-residual-matrix}, it follows that}
+\begin{equation}\label{eq:cg-residual-projected-matrix}R_n^{\mathrm H}AR_n=R_n^{\mathrm H}R_{n+1}T_{n+1,n},\end{equation}
+{The $(k+1,k)$ element of $R_n^{\mathrm H}AR_n$ is $\bm r_k^{\mathrm H}A\bm r_{k-1}$. As seen in \eqref{eq:cg-projected-diagonal-product}, $R_n^{\mathrm H}R_{n+1}$ is a matrix whose $(k,k)$ elements are $\bm r_{k-1}^{\mathrm H}\bm r_{k-1}$ for $k=1,2,\ldots,n$ and the other elements are zero. From this, it is seen that the $(k+1,k)$ element of $R_n^{\mathrm H}R_{n+1}T_{n+1,n}$ is $\bm r_k^{\mathrm H}\bm r_k\times(-\alpha_{k-1})^{-1}$. Thus we obtain $\bm r_k^{\mathrm H}A\bm r_{k-1}=\bm r_k^{\mathrm H}\bm r_k\times(-\alpha_{k-1})^{-1}$. Because $\alpha_{k-1}$ is a real number as mentioned before, $\bm r_k^{\mathrm H}A\bm r_{k-1}$ is also a real number. Thus $\bm r_k^{\mathrm H}A\bm r_{k-1}=(\bm r_k^{\mathrm H}A\bm r_{k-1})^{\mathrm H}=\bm r_{k-1}^{\mathrm H}A^{\mathrm H}\bm r_k=\bm r_{k-1}^{\mathrm H}A\bm r_k$. From this fact it follows that $\bm r_{k-1}^{\mathrm H}A\bm r_k=\bm r_k^{\mathrm H}\bm r_k\times(-\alpha_{k-1})^{-1}$. Recalling $\beta_{k-1}=-\alpha_{k-1}t_{k-1,k}$ yields}
+\begin{equation}\label{eq:cg-beta}
+\beta_{k-1}=-\alpha_{k-1}t_{k-1,k}=\frac{\bm r_k^{\mathrm H}\bm r_k}{\bm r_{k-1}^{\mathrm H}A\bm r_k}\frac{\bm r_{k-1}^{\mathrm H}A\bm r_k}{\bm r_{k-1}^{\mathrm H}\bm r_{k-1}}=\frac{\bm r_k^{\mathrm H}\bm r_k}{\bm r_{k-1}^{\mathrm H}\bm r_{k-1}}.
+\end{equation}
+{From \eqref{eq:cg-solution-recurrence}--\eqref{eq:cg-direction-recurrence}, \eqref{eq:cg-alpha}, and \eqref{eq:cg-beta}, the algorithm of the CG method is obtained, which is listed in Algorithm\ \ref{alg:cg}. Properties of the CG method are described in Proposition\ \ref{prop:cg-orthogonality}.}
+% block: cg-algorithm page:89 type:ordinary-paragraph
+\begin{algorithm}[H]\caption{{The CG method}}\label{alg:cg}
+\begin{algorithmic}[1]
+\Statex\textbf{Input:} $\bm x_0\in\mathbb C^N,\ \beta_{-1}=0,\ \bm p_{-1}=\bm0,\ \bm r_0=\bm b-A\bm x_0$
+\Statex\textbf{Output:} $\bm x_n$
+\For{$n=0,1,2,\ldots$, {until convergence}}
+\State $\bm p_n=\bm r_n+\beta_{n-1}\bm p_{n-1}$
+\State $\alpha_n=\frac{(\bm r_n,\bm r_n)}{(\bm p_n,A\bm p_n)}$
+\State $\bm x_{n+1}=\bm x_n+\alpha_n\bm p_n$
+\State $\bm r_{n+1}=\bm r_n-\alpha_nA\bm p_n$
+\State $\beta_n=\frac{(\bm r_{n+1},\bm r_{n+1})}{(\bm r_n,\bm r_n)}$
+\EndFor\end{algorithmic}\end{algorithm}
+% block: cg-orthogonality-proposition page:88 type:proposition
+\begin{Proposition}\label{prop:cg-orthogonality}
+{Let $\bm p_n,\bm r_n$ be the vectors in the CG method, then:}
+\begin{enumerate}\item $(\bm r_i,\bm r_j)=0\quad\text{for }i\ne j$,\item $(\bm p_i,A\bm p_j)=0\quad\text{for }i\ne j$.\end{enumerate}
+\end{Proposition}
+% block: cg-orthogonality-proof pages:88,89 type:proof
+\begin{Proof}
+{The first property readily follows from the fact that \eqref{eq:cg-lanczos-residual-matrix} is obtained from the Lanczos process. For the second property, it follows from \eqref{eq:cg-projected-diagonal-product} that we have}
+\[P_n^{\mathrm H}AP_n=U^{-\mathrm H}R_n^{\mathrm H}R_{n+1}LD^{-1}.\]
+{$P_n^{\mathrm H}AP_n$ is Hermitian because $A$ is Hermitian. Thus, $U^{-\mathrm H}R_n^{\mathrm H}R_{n+1}LD^{-1}$ is Hermitian. Since the $(i,j)$ element $R_n^{\mathrm H}R_{n+1}$ is zero for $i\ne j$, matrix $U^{-\mathrm H}R_n^{\mathrm H}R_{n+1}LD^{-1}$ is a lower triangular matrix. This means that $P_n^{\mathrm H}AP_n$ is a Hermitian and lower triangular matrix. Thus $P_n^{\mathrm H}AP_n$ is a diagonal matrix, which is equivalent to the second property.}
+\end{Proof}
+% block: cg-krylov-corollary page:89 type:corollary
+{From Proposition\ \ref{prop:cg-orthogonality}, we have the following properties of the CG method:}
+\begin{Corollary}\label{cor:cg-krylov-orthogonality}
+{Let $\bm p_n$ and $\bm r_n$ be the vectors in the CG method, then:}
+\begin{enumerate}\item $\bm r_n\perp\mathcal K_n(A,\bm r_0)$,\item $A\bm p_n\perp\mathcal K_n(A,\bm r_0)$.\end{enumerate}
+\end{Corollary}
+% block: cg-krylov-corollary-proof page:89 type:proof
+\begin{Proof}
+{From \eqref{eq:cg-residual-recurrence} and \eqref{eq:cg-initial-direction}, we have $\bm r_1=\bm r_0-\alpha_0A\bm r_0$. This means that $\operatorname{span}\{\bm r_0,\bm r_1\}=\mathcal K_2(A,\bm r_0)$. Similarly, $\operatorname{span}\{\bm r_0,\bm r_1,\ldots,\bm r_{n-1}\}=\mathcal K_n(A,\bm r_0)$. From the first property of Proposition\ \ref{prop:cg-orthogonality}, it follows that $\bm r_n\perp\bm r_0,\bm r_1,\ldots,\bm r_{n-1}$. Thus $\bm r_n\perp\mathcal K_n(A,\bm r_0)$. Next, from \eqref{eq:cg-residual-recurrence} and the first property of Proposition\ \ref{prop:cg-orthogonality}, it follows that $A\bm p_n=(\bm r_n-\bm r_{n+1})/\alpha_n\perp\bm r_0,\bm r_1,\ldots,\bm r_{n-1}$, and thus $A\bm p_n\perp\mathcal K_n(A,\bm r_0)$.}
+\end{Proof}
+% block: cg-search-space-and-optimality page:89 type:ordinary-paragraph
+{From the proof of Corollary\ \ref{cor:cg-krylov-orthogonality}, it is easy to see that}
+\begin{equation}\label{eq:cg-krylov-membership}
+\bm r_n\in\mathcal K_{n+1}(A,\bm r_0),\quad\bm p_n\in\mathcal K_{n+1}(A,\bm r_0),\quad\bm x_n-\bm x_0\in\mathcal K_n(A,\bm r_0).
+\end{equation}
+{If the coefficient matrix $A$ is a Hermitian (or real symmetric) positive definite matrix, then the CG method produces the optimal approximate solution in terms of $A$-norm of the error as described below.}
+% block: cg-optimality-theorem page:89 type:theorem
+\begin{Theorem}\label{thm:cg-energy-optimality}
+{Let $A\bm x=\bm b$ be Hermitian positive definite linear systems. Then the CG method produces approximate solutions such that $A$-norm of the error is minimized:}
+\[\min_{\bm x_n\in\bm x_0+\mathcal K_n(A,\bm r_0)}\|\bm e_n\|_A,\]
+{where $\|\bm e_n\|_A=(\bm e_n^{\mathrm H}A\bm e_n)^{1/2}$ and $\bm e_n=\bm x-\bm x_n$ is the error of the $n$th approximate solution of the CG method.}
+\end{Theorem}
+% block: cg-optimality-proof page:90 type:proof
+\begin{Proof}
+{Since $A$ is Hermitian positive definite, the Cholesky decomposition exists, i.e., $A=LL^{\mathrm H}$. (The Cholesky decomposition for a real symmetric positive definite matrix is described in Sect.\ \ref{subsec:cholesky-decomposition}.) Recall that the approximate solutions of the CG method satisfy}
+\[\bm x_n=\bm x_0+\bm z_n,\quad\bm z_n\in\mathcal K_n(A,\bm r_0),\]
+{where $\bm z_n$ is determined by $\bm r_n\perp\mathcal K_n(A,\bm r_0)$, see Corollary\ \ref{cor:cg-krylov-orthogonality}. Let $V_n$ be a matrix whose column vectors correspond to orthonormalized basis vectors of $\mathcal K_n(A,\bm r_0)$. Then,}
+\begin{equation}\label{eq:cg-orthonormal-coordinate-solution}\bm x_n=\bm x_0+V_n\bm y_n,\quad\bm y_n\in\mathbb C^n,\end{equation}
+{where $\bm y_n$ is determined by $V_n^{\mathrm H}\bm r_n=\bm0$. From \eqref{eq:cg-orthonormal-coordinate-solution} and $\bm e_n=\bm x-\bm x_n$, it follows that}
+\[\bm e_n=\bm e_0-V_n\bm y_n,\]
+{where $\bm y_n$ is determined by $V_n^{\mathrm H}LL^{\mathrm H}\bm e_n=\bm0$ since $V_n^{\mathrm H}\bm r_n=\bm0$ and $\bm r_n=\bm b-A\bm x_n=A\bm x-A\bm x_n=A\bm e_n=LL^{\mathrm H}\bm e_n$. Here we used the Cholesky decomposition $A=LL^{\mathrm H}$. Equivalently, we have}
+\[L^{\mathrm H}\bm e_n=L^{\mathrm H}\bm e_0-L^{\mathrm H}V_n\bm y_n,\]
+{where $\bm y_n$ is determined by $(L^{\mathrm H}V_n)^{\mathrm H}L^{\mathrm H}\bm e_n=\bm0$. This means that the CG method finds approximate solutions such that}
+\begin{equation}\label{eq:cg-transformed-least-squares}\min_{\bm y_n\in\mathbb C^n}\|L^{\mathrm H}\bm e_n\|,\end{equation}
+{because $(L^{\mathrm H}V_n)^{\mathrm H}L^{\mathrm H}\bm e_n=\bm0$ is equivalent to the normal equation $(L^{\mathrm H}V_n)^{\mathrm H}(L^{\mathrm H}V_n)\bm y_n=(L^{\mathrm H}V_n)^{\mathrm H}L^{\mathrm H}\bm e_0$. The minimization \eqref{eq:cg-transformed-least-squares} is equivalent to}
+\[\min_{\bm x_n\in\bm x_0+\mathcal K_n(A,\bm r_0)}\|L^{\mathrm H}\bm e_n\|.\]
+{Since $\|L^{\mathrm H}\bm e_n\|^2=(L^{\mathrm H}\bm e_n)^{\mathrm H}(L^{\mathrm H}\bm e_n)=\bm e_n^{\mathrm H}LL^{\mathrm H}\bm e_n=\bm e_n^{\mathrm H}A\bm e_n$, we finally have}
+\[\min_{\bm x_n\in\bm x_0+\mathcal K_n(A,\bm r_0)}\|\bm e_n\|_A,\]
+{which concludes the proof.}\end{Proof}
+% block: cg-polynomial-representation pages:90,91 type:ordinary-paragraph
+{Theorem\ \ref{thm:cg-energy-optimality} shows an optimality of the CG method. On the other hand, we cannot see how fast the CG method converges. To see the convergence rate later, the matrix polynomial representation of the CG method is described. The residual vector $\bm r_n$ and the auxiliary vector $\bm p_n$ of the CG method can be expressed by using two polynomials $R_n$ and $P_n$,}
+\begin{equation}\label{eq:cg-residual-direction-polynomials}\bm r_n=R_n(A)\bm r_0,\quad\bm p_n=P_n(A)\bm r_0,\end{equation}
+{where $R_n(\lambda)$ denotes Lanczos polynomials, which satisfy the following three-term recurrence relations:}
+\begin{equation}\label{eq:cg-polynomial-initial-zero}R_0(\lambda)=1,\end{equation}
+\begin{equation}\label{eq:cg-polynomial-initial-one}R_1(\lambda)=(1-\alpha_0\lambda)R_0(\lambda),\end{equation}
+\begin{equation}\label{eq:cg-polynomial-three-term}
+\begin{aligned}R_n(\lambda)&=\left(1+\frac{\beta_{n-2}}{\alpha_{n-2}}\alpha_{n-1}-\alpha_{n-1}\lambda\right)R_{n-1}(\lambda)\\
+&\quad-\frac{\beta_{n-2}}{\alpha_{n-2}}\alpha_{n-1}R_{n-2}(\lambda),\quad n=2,3,\ldots,
+\end{aligned}\end{equation}
+{where $R_n(0)=1$. $R_n$ and $P_n$ satisfy the following two-term recurrences:}
+\begin{equation}\label{eq:cg-two-term-polynomial-initial}R_0(\lambda)=1,\quad P_0(\lambda)=1,\end{equation}
+\begin{equation}\label{eq:cg-residual-polynomial-recurrence}R_n(\lambda)=R_{n-1}(\lambda)-\alpha_{n-1}\lambda P_{n-1}(\lambda),\end{equation}
+\begin{equation}\label{eq:cg-direction-polynomial-recurrence}P_n(\lambda)=R_n(\lambda)+\beta_{n-1}P_{n-1}(\lambda)\quad n=1,2,\ldots.\end{equation}
+% block: cg-convergence-theorem page:91 type:theorem
+{The rate of the convergence of the CG method is described in Theorem\ \ref{thm:cg-condition-number-bound}.}
+\Needspace{7\baselineskip}
+\begin{Theorem}\label{thm:cg-condition-number-bound}
+{The $A$-norm of the error of the CG method satisfies}
+\begin{equation}\label{eq:cg-condition-number-bound}
+\|\bm e_n\|_A\le2\left(\frac{\sqrt\kappa-1}{\sqrt\kappa+1}\right)^n\|\bm e_0\|_A,
+\end{equation}
+{where $\kappa$ is the condition number of $A$.}
+\end{Theorem}
+% block: cg-convergence-proof-diagonalization page:91 type:proof
+\begin{Proof}
+{Since the residual vector of the CG method can be described as $\bm r_n=R(A)\bm r_0$ and $\bm r_n=A\bm e_n$, we obtain $\bm e_n=R_n(A)\bm e_0$. From \eqref{eq:cg-condition-number-bound} it follows that}
+\[\|\bm e_n\|_A=\|R_n(A)\bm e_0\|_A=\min_{p_n\in\mathcal P_n}\|p_n(A)\bm e_0\|_A,\]
+{where $\mathcal P_n$ is the set of polynomials of degree $n$ with $\mathcal P_0=1$. Using the diagonalization of Hermitian positive definite matrix $A$, we have $A=PDP^{\mathrm H}$ with unitary matrix $P$ and diagonal matrix $D$ whose diagonal elements are eigenvalues of $A$. Let $A^{1/2}=PD^{1/2}P^{\mathrm H}$, where $D^{1/2}$ is a diagonal matrix whose diagonal elements are square roots of eigenvalues of $A$. Note that all the eigenvalues of $A$ are positive and $A^{1/2}$ is Hermitian, i.e., $(A^{1/2})^{\mathrm H}=A^{1/2}$. We see that $A^{1/2}A^{1/2}=PD^{1/2}P^{\mathrm H}PD^{1/2}P^{\mathrm H}=PD^{1/2}D^{1/2}P^{\mathrm H}=PDP^{\mathrm H}=A$. Then we have}
+% block: cg-convergence-proof-norm-chain page:92 type:proof
+\[\begin{aligned}
+\|\bm e_n\|_A&=\min_{p_n\in\mathcal P_n}\|p_n(A)\bm e_0\|_A,\\
+&=\min_{p_n\in\mathcal P_n}\sqrt{(p_n(A)\bm e_0)^{\mathrm H}A(p_n(A)\bm e_0)}\\
+&=\min_{p_n\in\mathcal P_n}\sqrt{(p_n(A)\bm e_0)^{\mathrm H}(A^{1/2})^{\mathrm H}A^{1/2}(p_n(A)\bm e_0)}\\
+&=\min_{p_n\in\mathcal P_n}\sqrt{(A^{1/2}p_n(A)\bm e_0)^{\mathrm H}(A^{1/2}p_n(A)\bm e_0)}\\
+&=\min_{p_n\in\mathcal P_n}\|A^{1/2}p_n(A)\bm e_0\|.
+\end{aligned}\]
+{Using $A=PDP^{\mathrm H}$ and $A^{1/2}=PD^{1/2}P^{\mathrm H}$ yields}
+\[\begin{aligned}
+\|\bm e_n\|_A&=\min_{p_n\in\mathcal P_n}\|A^{1/2}p_n(A)\bm e_0\|=\min_{p_n\in\mathcal P_n}\|PD^{1/2}P^{\mathrm H}p_n(PDP^{\mathrm H})\bm e_0\|\\
+&=\min_{p_n\in\mathcal P_n}\|PD^{1/2}P^{\mathrm H}Pp_n(D)P^{\mathrm H}\bm e_0\|
+=\min_{p_n\in\mathcal P_n}\|PD^{1/2}p_n(D)P^{\mathrm H}\bm e_0\|\\
+&=\min_{p_n\in\mathcal P_n}\|Pp_n(D)D^{1/2}P^{\mathrm H}\bm e_0\|
+=\min_{p_n\in\mathcal P_n}\|Pp_n(D)P^{\mathrm H}PD^{1/2}P^{\mathrm H}\bm e_0\|\\
+&=\min_{p_n\in\mathcal P_n}\|Pp_n(D)P^{\mathrm H}A^{1/2}\bm e_0\|\\
+&\le\min_{p_n\in\mathcal P_n}\|Pp_n(D)P^{\mathrm H}\|\|A^{1/2}\bm e_0\|\\
+&=\min_{p_n\in\mathcal P_n}\|p_n(D)\|\|\bm e_0\|_A\\
+&=\min_{p_n\in\mathcal P_n}\max_{i=1,2,\ldots,N}|p_n(\lambda_i)|\times\|\bm e_0\|_A.
+\end{aligned}\]
+{Thus, we have}
+\[\frac{\|\bm e_n\|_A}{\|\bm e_0\|_A}\le\min_{p_n\in\mathcal P_n}\max_{i=1,2,\ldots,N}|p_n(\lambda_i)|.\]
+{Let $a$ be the smallest eigenvalue and $b$ be the largest eigenvalue of $A$. Then all the eigenvalues $\lambda_i$ belong to the closed interval $[a,b]$. Thus we have the following inequalities:}
+\[\frac{\|\bm e_n\|_A}{\|\bm e_0\|_A}\le\min_{p_n\in\mathcal P_n}\max_{i=1,2,\ldots,N}|p_n(\lambda_i)|\le\min_{p_n\in\mathcal P_n}\max_{\lambda\in[a,b]}|p_n(\lambda)|.\]
+{The solution of the min-max problem can be rewritten using Chebyshev polynomials as follows:}
+\[\min_{p_n\in\mathcal P_n}\max_{\lambda\in[a,b]}|p_n(\lambda)|=\max_{\lambda\in[a,b]}\frac{|T_n(\frac{2\lambda-b-a}{b-a})|}{T_n(\frac{-b-a}{b-a})},\]
+% block: cg-convergence-proof-chebyshev page:93 type:proof
+{where}
+\begin{equation}\label{eq:chebyshev-explicit-form}
+T_n(x)=\frac12\left[\left(x+\sqrt{x^2-1}\right)^n+\left(x-\sqrt{x^2-1}\right)^n\right]\quad\text{for }|x|\ge1.
+\end{equation}
+{From the property of Chebyshev polynomials, $|T_n(\frac{2\lambda-b-a}{b-a})|\le1$, from which we have}
+\[\min_{p_n\in\mathcal P_n}\max_{\lambda\in[a,b]}|p_n(\lambda)|\le\frac1{|T_n(\frac{-b-a}{b-a})|}=\frac1{|T_n(\frac{-\kappa-1}{\kappa-1})|},\]
+{where $\kappa=b/a$ is the condition number of $A$. Using \eqref{eq:chebyshev-explicit-form} yields}
+\[\begin{aligned}
+\min_{p_n\in\mathcal P_n}\max_{\lambda\in[a,b]}|p_n(\lambda)|&\le\frac1{|T_n(\frac{-\kappa-1}{\kappa-1})|}
+=\frac2{\left(\frac{\sqrt\kappa-1}{\sqrt\kappa+1}\right)^n+\left(\frac{\sqrt\kappa+1}{\sqrt\kappa-1}\right)^n}
+\le\frac2{\left(\frac{\sqrt\kappa+1}{\sqrt\kappa-1}\right)^n}\\
+&=2\left(\frac{\sqrt\kappa-1}{\sqrt\kappa+1}\right)^n,
+\end{aligned}\]
+{which concludes the proof.}\end{Proof}
+% block: cg-preconditioning-transformation page:93 type:ordinary-paragraph
+{Theorem\ \ref{thm:cg-condition-number-bound} indicates that the speed of convergence of the CG method depends on the condition number of the coefficient matrix $A$, i.e., the smaller the condition number is, the faster the CG method converges. It is therefore natural to consider the following equivalent linear systems:}
+\[A\bm x=\bm b\Leftrightarrow\widetilde A\widetilde{\bm x}=\widetilde{\bm b},\]
+{so that the condition number of $\widetilde A$ is much smaller than that of $A$, and then apply the CG method not to $A\bm x=\bm b$ but to the transformed linear systems $\widetilde A\widetilde{\bm x}=\widetilde{\bm b}$. The resulting algorithm is called the preconditioned (PCG) method. The technique to construct $\widetilde A$ is called preconditioning, which will be discussed in Sect.\ \ref{sec:preconditioning-techniques}.}
+{We now describe the algorithm of the preconditioned CG method. Let $A\approx K=LL^{\mathrm H}$. Then $\widetilde A=L^{-1}AL^{-\mathrm H}$ is expected to be close to the identity matrix whose condition number is one. We now consider applying the CG method to the following transformed linear system}
+\[\widetilde A\widetilde{\bm x}=\widetilde{\bm b},\]
+{where $\widetilde A=L^{-1}AL^{-\mathrm H}$, $\widetilde{\bm x}=L^{\mathrm H}\bm x$, and $\widetilde{\bm b}=L^{-1}\bm b$. Then, the CG method for $\widetilde A\widetilde{\bm x}=\widetilde{\bm b}$ is expected to converge much faster than the CG method for $A\bm x=\bm b$. From Algorithm\ \ref{alg:cg}, the iterates of the CG method for $\widetilde A\widetilde{\bm x}=\widetilde{\bm b}$ are written as}
+% block: pcg-recurrence-transformation page:94 type:ordinary-paragraph
+\[\begin{aligned}
+\widetilde{\bm p}_n&=\widetilde{\bm r}_n+\beta_{n-1}\widetilde{\bm p}_{n-1},\\
+\alpha_n&=\frac{(\widetilde{\bm r}_n,\widetilde{\bm r}_n)}{(\widetilde{\bm p}_n,\widetilde A\widetilde{\bm p}_n)},\\
+\widetilde{\bm x}_{n+1}&=\widetilde{\bm x}_n+\alpha_n\widetilde{\bm p}_n,\\
+\widetilde{\bm r}_{n+1}&=\widetilde{\bm r}_n-\alpha_n\widetilde A\widetilde{\bm p}_n,\\
+\beta_n&=\frac{(\widetilde{\bm r}_{n+1},\widetilde{\bm r}_{n+1})}{(\widetilde{\bm r}_n,\widetilde{\bm r}_n)}.
+\end{aligned}\]
+{Using the following rewrites:}
+\[\widetilde{\bm x}\Rightarrow L^{\mathrm H}\bm x,\quad\widetilde{\bm p}\Rightarrow L^{\mathrm H}\bm p,\quad\widetilde{\bm r}\Rightarrow L^{-1}\bm r,\]
+{we have}
+\[\begin{aligned}
+\bm p_n&=L^{-\mathrm H}L^{-1}\bm r_n+\beta_{n-1}L^{-\mathrm H}L^{\mathrm H}\bm p_{n-1}=L^{-\mathrm H}L^{-1}\bm r_n+\beta_{n-1}\bm p_{n-1},\\
+\alpha_n&=\frac{(L^{-1}\bm r_n,L^{-1}\bm r_n)}{(L^{\mathrm H}\bm p_n,L^{-1}AL^{-\mathrm H}L^{\mathrm H}\bm p_n)}=\frac{(L^{-\mathrm H}L^{-1}\bm r_n,\bm r_n)}{(\bm p_n,A\bm p_n)},\\
+\bm x_{n+1}&=L^{-\mathrm H}L^{\mathrm H}\bm x_n+\alpha_nL^{-\mathrm H}L^{\mathrm H}\bm p_n=\bm x_n+\alpha_n\bm p_n,\\
+\bm r_{n+1}&=LL^{-1}\bm r_n-\alpha_nLL^{-1}AL^{-\mathrm H}L^{\mathrm H}\bm p_n=\bm r_n-\alpha_nA\bm p_n,\\
+\beta_n&=\frac{(L^{-1}\bm r_{n+1},L^{-1}\bm r_{n+1})}{(L^{-\mathrm H}L^{-1}\bm r_n,\bm r_n)}=\frac{(L^{-\mathrm H}L^{-1}\bm r_{n+1},\bm r_{n+1})}{(L^{-\mathrm H}L^{-1}\bm r_n,\bm r_n)}.
+\end{aligned}\]
+{Since $K^{-1}=L^{-\mathrm H}L^{-1}$, we have the PCG method that is described in Algorithm\ \ref{alg:pcg}.}
+% block: pcg-algorithm page:94 type:ordinary-paragraph
+\begin{algorithm}[H]\caption{{The preconditioned CG method}}\label{alg:pcg}
+\begin{algorithmic}[1]
+\Statex\textbf{Input:} $\bm x_0\in\mathbb C^N,\ \beta_{-1}=0,\ \bm p_{-1}=\bm0,\ \bm r_0=\bm b-A\bm x_0$
+\Statex\textbf{Output:} $\bm x_n$
+\For{$n=0,1,2,\ldots$, {until convergence}}
+\State $\bm p_n=K^{-1}\bm r_n+\beta_{n-1}\bm p_{n-1}$
+\State $\alpha_n=\frac{(K^{-1}\bm r_n,\bm r_n)}{(\bm p_n,A\bm p_n)}$
+\State $\bm x_{n+1}=\bm x_n+\alpha_n\bm p_n$
+\State $\bm r_{n+1}=\bm r_n-\alpha_nA\bm p_n$
+\State $\beta_n=\frac{(K^{-1}\bm r_{n+1},\bm r_{n+1})}{(K^{-1}\bm r_n,\bm r_n)}$
+\EndFor\end{algorithmic}\end{algorithm}
+% block: cg-notes pages:94,95 type:ordinary-paragraph
+{Some notes on the CG method are listed next.}
+\begin{enumerate}
+\item {From Theorem\ \ref{thm:cg-energy-optimality}, in exact precision arithmetic, the CG method finds the exact solution within $N$ iteration steps.}
+\item {We can still use the CG method even if the coefficient matrix is not positive definite. In this case, the optimality in Theorem\ \ref{thm:cg-energy-optimality} does not hold anymore, and the CG method may suffer from breakdown, i.e., zero division, because $(\bm p_n,A\bm p_n)>0$ for any $\bm p_n\ne\bm0$ does not hold anymore, see line 3 of Algorithm\ \ref{alg:cg}. In practice, breakdown (zero division) does not occur, but near breakdown may occur, i.e., $(\bm p_n,A\bm p_n)\approx0$, leading to numerical instability.}
+\item {In exact precision arithmetic, the CG method for Hermitian indefinite matrices also finds the exact solution within $N$ iteration steps if breakdown does not occur.}
+\end{enumerate}
+{In the next two subsections, the CR method and the MINRES method for Hermitian linear systems are described.}
+% block: conjugate-residual-heading page:95 type:subsection
+\subsubsection{{The Conjugate Residual (CR) Method}}\label{subsec:conjugate-residual}
+{The Conjugate Residual (CR) method \BookCite{177} was proposed by in 1955 Stiefel, who is one of the authors of the CG method. The feature of the CR method is that it has optimality in terms of the residual norm, which will be described later.}
+{It is possible to derive the CR method like the derivation of the CG method, but here we give a concise derivation of the CR method using the algorithm of the CG method. A drawback of the derivation here is that $A$ is assumed to be Hermitian positive definite, whereas the CR method can be used for Hermitian indefinite linear systems. On the other hand, we will see the derivation is much simpler than that of the CG method. A derivation of the CR method similar to that of the CG method can be found in Sect.\ \ref{subsec:cocr-method} by restricting the derivation of the COCR method for complex symmetric linear systems to that for real symmetric ones.}
+% block: cr-square-root-transformation page:95 type:ordinary-paragraph
+{We now derive the CR method from the CG method. If $A$ is Hermitian positive definite, then there exists a square root of $A$: the Cholesky factorization of $A$, see Sect.\ \ref{subsec:cholesky-decomposition}, is obtained as $LL^{\mathrm H}$, and $L$ can be decomposed as $U\Sigma V^{\mathrm H}$ by using singular value decomposition.}\footnote{{$U$ and $V$ are unitary matrices, and $\Sigma$ is a diagonal matrix whose diagonal elements are nonnegative.}}
+{Then, we have}
+\[A=LL^{\mathrm H}=(U\Sigma V^{\mathrm H})(V\Sigma U^{\mathrm H})=U\Sigma^2U^{\mathrm H}=(U\Sigma U^{\mathrm H})(U\Sigma U^{\mathrm H})=A^{\frac12}A^{\frac12}.\]
+{Thus, the square root of $A$ is $A^{\frac12}=U\Sigma U^{\mathrm H}$. Here, we show that if $A$ is Hermitian positive definite, then the algorithm of the CR method is obtained by applying the CG method to the following linear systems:}
+\begin{equation}\label{eq:cr-square-root-system}A\widetilde{\bm x}=A^{\frac12}\bm b,\quad\widetilde{\bm x}=A^{\frac12}\bm x.\end{equation}
+{It follows from the algorithm of the CG method that}
+% block: cr-transformed-recurrences page:96 type:ordinary-paragraph
+\[\begin{aligned}
+\widetilde{\bm p}_n&=\widetilde{\bm r}_n+\beta_{n-1}\widetilde{\bm p}_{n-1},\\
+\alpha_n&=\frac{(\widetilde{\bm r}_n,\widetilde{\bm r}_n)}{(\widetilde{\bm p}_n,A\widetilde{\bm p}_n)},\\
+\widetilde{\bm x}_{n+1}&=\widetilde{\bm x}_n+\alpha_n\widetilde{\bm p}_n,\\
+\widetilde{\bm r}_{n+1}&=\widetilde{\bm r}_n-\alpha_nA\widetilde{\bm p}_n,\\
+\beta_n&=\frac{(\widetilde{\bm r}_{n+1},\widetilde{\bm r}_{n+1})}{(\widetilde{\bm r}_n,\widetilde{\bm r}_n)}.
+\end{aligned}\]
+{The residual vector of the original system $A\bm x=\bm b$ is $\bm r_n=\bm b-A\bm x_n$, and then from \eqref{eq:cr-square-root-system} we have $\widetilde{\bm r}_n=A^{\frac12}\bm b-A\widetilde{\bm x}_n=A^{\frac12}(\bm b-A\bm x_n)=A^{\frac12}\bm r_n$. Substituting $\widetilde{\bm r}_n=A^{\frac12}\bm r_n$, $\widetilde{\bm p}_n=A^{\frac12}\bm p_n$, and $\widetilde{\bm x}_n=A^{\frac12}\bm x_n$ into the above recurrences, we have the algorithm of the CR method (Algorithm\ \ref{alg:cr}).}
+% block: cr-algorithm page:96 type:ordinary-paragraph
+\begin{algorithm}[H]\caption{{The CR method}}\label{alg:cr}\begin{algorithmic}[1]
+\Statex\textbf{Input:} $\bm x_0\in\mathbb C^N,\ \beta_{-1}=0,\ \bm p_{-1}=\bm0,\ \bm r_0=\bm b-A\bm x_0$
+\Statex\textbf{Output:} $\bm x_n$
+\For{$n=0,1,2,\ldots$, {until convergence}}
+\State $\bm p_n=\bm r_n+\beta_{n-1}\bm p_{n-1}$
+\State $A\bm p_n=A\bm r_n+\beta_{n-1}A\bm p_{n-1}$
+\State $\alpha_n=\frac{(\bm r_n,A\bm r_n)}{(A\bm p_n,A\bm p_n)}$
+\State $\bm x_{n+1}=\bm x_n+\alpha_n\bm p_n$
+\State $\bm r_{n+1}=\bm r_n-\alpha_nA\bm p_n$
+\State $\beta_n=\frac{(\bm r_{n+1},A\bm r_{n+1})}{(\bm r_n,A\bm r_n)}$
+\EndFor\end{algorithmic}\end{algorithm}
+% block: cr-orthogonality-and-optimality pages:96,97 type:ordinary-paragraph
+{From line 7 of Algorithm\ \ref{alg:cr}, the CR method may suffer from breakdown if Hermitian matrix $A$ is indefinite, i.e., $(\bm r_n,A\bm r_n)=0$. By induction, it can be shown that the CR method generates iterates $\bm r_i,\bm p_i$ that satisfy}
+\begin{equation}\label{eq:cr-residual-orthogonality}(\bm r_i,A\bm r_j)=0\quad\text{for }i\ne j,\end{equation}
+\begin{equation}\label{eq:cr-direction-orthogonality}(A\bm p_i,A\bm p_j)=0\quad\text{for }i\ne j.\end{equation}
+{Comparing the two properties (\eqref{eq:cr-residual-orthogonality} and \eqref{eq:cr-direction-orthogonality}) and those of the CG method, the CR method finds approximate solutions such that}
+\[\bm x_n=\bm x_0+\bm z_n,\quad\bm z_n\in\mathcal K_n(A,\bm r_0),\]
+{where $\bm z_n$ is determined by $\bm r_n\perp A\mathcal K_n(A,\bm r_0)(:=\mathcal K_n(A,A\bm r_0))$, or equivalently}
+\[\bm x_n=\bm x_0+V_n\bm y_n,\quad\bm y_n\in\mathbb C^n,\]
+{where $\bm y_n$ is determined by $(AV_n)^{\mathrm H}\bm r_n=\bm0$. Following the proof of Theorem\ \ref{thm:cg-energy-optimality}, we have}
+\[\min_{\bm x_n\in\bm x_0+\mathcal K_n(A,\bm r_0)}\|\bm e_n\|_{A^2}.\]
+{Since $\|\bm e_n\|_{A^2}^2=\bm e_n^{\mathrm H}A^2\bm e_n=(A\bm e_n)^{\mathrm H}A\bm e_n=\bm r_n^{\mathrm H}\bm r_n=\|\bm r_n\|^2$, the CR method finds approximate solutions such that}
+\[\min_{\bm x_n\in\bm x_0+\mathcal K_n(A,\bm r_0)}\|\bm r_n\|.\]
+{Therefore, the CR method produces the optimal approximate solution in terms of the residual norm. Similar to the derivation of the preconditioned CG method, the preconditioned CR method can be derived from applying the CR method to the transformed linear systems $\widetilde A\widetilde{\bm x}=\widetilde{\bm b}$. The resulting algorithm is described in Algorithm\ \ref{alg:pcr}.}
+% block: pcr-algorithm page:97 type:ordinary-paragraph
+\begin{algorithm}[H]\caption{{The preconditioned CR method}}\label{alg:pcr}\begin{algorithmic}[1]
+\Statex\textbf{Input:} $\bm x_0\in\mathbb C^N,\ \beta_{-1}=0,\ \bm p_{-1}=\bm0,\ \bm r_0=\bm b-A\bm x_0$
+\Statex\textbf{Output:} $\bm x_n$
+\For{$n=0,1,2,\ldots$, {until convergence}}
+\State $\bm p_n=K^{-1}\bm r_n+\beta_{n-1}\bm p_{n-1}$
+\State $(A\bm p_n=AK^{-1}\bm r_n+\beta_{n-1}A\bm p_{n-1})$
+\State $\alpha_n=\frac{(K^{-1}\bm r_n,AK^{-1}\bm r_n)}{(A\bm p_n,K^{-1}A\bm p_n)}$
+\State $\bm x_{n+1}=\bm x_n+\alpha_n\bm p_n$
+\State $\bm r_{n+1}=\bm r_n-\alpha_nA\bm p_n$
+\State $(K^{-1}\bm r_{n+1}=K^{-1}\bm r_n-\alpha_nK^{-1}A\bm p_n)$
+\State $\beta_n=\frac{(K^{-1}\bm r_{n+1},AK^{-1}\bm r_{n+1})}{(K^{-1}\bm r_n,AK^{-1}\bm r_n)}$
+\EndFor\end{algorithmic}\end{algorithm}
+% block: pcr-operation-count page:97 type:ordinary-paragraph
+{Note that lines 3 and 7 in Algorithm\ \ref{alg:pcr} are added for reducing the number of matrix--vector multiplications of the form $A\bm v$ and solving linear systems of the form $K\bm v=\bm w$. In fact, at each iteration, it seems that we need to compute}
+\[A\bm p_n,\quad K^{-1}\bm r_{n+1},\quad A(K^{-1}\bm r_n),\quad K^{-1}(A\bm p_n).\]
+{But from lines 3 and 7, we do not need to compute $A\bm p_n$ and $K^{-1}\bm r_{n+1}$, except $K^{-1}\bm r_0$ at the first iteration step. Thus, essentially we only need to compute the following form:}
+\[A\bm v,\quad K^{-1}\bm w\]
+{at each iteration step. Here, $\bm v:=K^{-1}\bm r_{n+1}$ is obtained by line 7 and $\bm w:=A\bm p_n$ is obtained by line 3.}
+% block: minres-heading page:98 type:subsection
+\subsubsection{{The Minimal Residual (MINRES) Method}}\label{subsec:minres}
+{The Minimal Residual (MINRES) method \BookCite{143} was proposed by Paige and Saunders in 1975. The MINRES method generates $\bm x_n$ that minimizes $\|\bm b-A\bm x_n\|$ over the affine space $\bm x_0+\mathcal K_n(A,\bm r_0)$. Therefore, in exact precision arithmetic, the MINRES method and the CR method produce the same approximate solutions. The minimization can be achieved by using the Lanczos process.}
+{Here, we give a derivation process of the MINRES method. Let $V_n$ be the orthonormal basis of $\mathcal K_n(A,\bm r_0)$. The MINRES method finds $\bm x_n$ over the affine space $\bm x_0+\mathcal K_n(A,\bm r_0)$, i.e.,}
+\begin{equation}\label{eq:minres-affine-solution}\bm x_n=\bm x_0+V_n\bm y_n,\quad\bm y_n\in\mathbb C^n.\end{equation}
+{The corresponding residual vector is given by}
+\[\bm r_n=\bm r_0-AV_n\bm y_n.\]
+{From the matrix form of the Lanczos process in \eqref{eq:lanczos-matrix-relation}, it follows that}
+\[\bm r_n=\bm r_0-V_{n+1}T_{n+1,n}\bm y_n=V_{n+1}(\beta\bm e_1-T_{n+1,n}\bm y_n),\]
+{where $\beta:=\|\bm r_0\|$. The 2-norm of the residual vector is written as}
+\[\begin{aligned}
+\|\bm r_n\|&=\|V_{n+1}(\beta\bm e_1-T_{n+1,n}\bm y_n)\|\\
+&=\sqrt{[V_{n+1}(\beta\bm e_1-T_{n+1,n}\bm y_n)]^{\mathrm H}V_{n+1}(\beta\bm e_1-T_{n+1,n}\bm y_n)}\\
+&=\sqrt{(\beta\bm e_1-T_{n+1,n}\bm y_n)^{\mathrm H}V_{n+1}^{\mathrm H}V_{n+1}(\beta\bm e_1-T_{n+1,n}\bm y_n)}\\
+&=\sqrt{(\beta\bm e_1-T_{n+1,n}\bm y_n)^{\mathrm H}(\beta\bm e_1-T_{n+1,n}\bm y_n)}\\
+&=\|\beta\bm e_1-T_{n+1,n}\bm y_n\|.
+\end{aligned}\]
+{The MINRES method finds approximate solutions such that the 2-norm of the residual vector is minimized, i.e., $\bm y_n$ is chosen such that}
+\begin{equation}\label{eq:minres-projected-least-squares}\bm y_n:=\operatorname*{arg\,min}_{\bm y\in\mathbb C^n}\|\beta\bm e_1-T_{n+1,n}\bm y\|.\end{equation}
+{By solving the least-squares problem in \eqref{eq:minres-projected-least-squares} using a Givens rotation that is one of the unitary matrices, the MINRES method is obtained. In the following, we describe how Givens rotations work for solving \eqref{eq:minres-projected-least-squares}. For simplicity, we consider the case $n=4$ for solving it. $\beta\bm e_1-T_{5,4}\bm y$ is written as}
+% block: minres-first-givens page:99 type:ordinary-paragraph
+\[\beta\bm e_1-T_{5,4}\bm y=\begin{bmatrix}\beta\\0\\0\\0\\0\end{bmatrix}
+-\begin{bmatrix}t_{11}&t_{12}&&\\t_{21}&t_{22}&t_{23}&\\&t_{32}&t_{33}&t_{34}\\&&t_{43}&t_{44}\\&&&t_{54}\end{bmatrix}\begin{bmatrix}y_1\\y_2\\y_3\\y_4\end{bmatrix},\]
+{where $t_{ij}=t_{ji}$, $1\le i,j\le4$. Let $G_1$ be a matrix of the Givens rotation, i.e.,}
+\[G_1=\begin{bmatrix}c_1&s_1&&&\\-\bar s_1&c_1&&&\\&&1&&\\&&&1&\\&&&&1\end{bmatrix}
+\quad\text{with }c_1=\frac{|t_{11}|}{\sqrt{|t_{11}|^2+|t_{21}|^2}},\quad\bar s_1=\frac{t_{21}}{t_{11}}c_1,\]
+{and $s_1$ is obtained by the conjugate of $\bar s_1$. There is one exception: set $s_1=\bar s_1=1$ if $t_{11}=0$. Then, $G_1$ is a unitary matrix, and thus $\|\beta\bm e_1-T_{n+1,n}\bm y\|=\|G_1(\beta\bm e_1-T_{n+1,n}\bm y)\|$. This leads to}
+\[G_1(\beta\bm e_1-T_{5,4}\bm y)=\begin{bmatrix}g_1^{(1)}\\g_2^{(1)}\\0\\0\\0\end{bmatrix}
+-\begin{bmatrix}t_{11}^{(1)}&t_{12}^{(1)}&t_{13}^{(1)}&\\&t_{22}^{(1)}&t_{23}^{(1)}&\\&t_{32}&t_{33}&t_{34}\\&&t_{43}&t_{44}\\&&&t_{54}\end{bmatrix}\begin{bmatrix}y_1\\y_2\\y_3\\y_4\end{bmatrix},\]
+% block: minres-second-givens page:99 type:ordinary-paragraph
+{where $g_2^{(1)}=-\bar s_1\beta$. Next, let $G_2$ be a unitary matrix defined by}
+\[G_2=\begin{bmatrix}1&&&&\\&c_2&s_2&&\\&-\bar s_2&c_2&&\\&&&1&\\&&&&1\end{bmatrix}
+\quad\text{with }c_2=\frac{|t_{22}^{(1)}|}{\sqrt{|t_{22}^{(1)}|^2+|t_{32}|^2}},\quad\bar s_2=\frac{t_{32}}{t_{22}^{(1)}}c_2.\]
+{There is one exception: set $s_2=\bar s_2=1$ if $t_{22}^{(1)}=0$. Then, $G_2$ and $G_2G_1$ are unitary matrices, and thus $\|\beta\bm e_1-T_{n+1,n}\bm y\|=\|G_2G_1(\beta\bm e_1-T_{n+1,n}\bm y)\|$. This leads to}
+\[G_2G_1(\beta\bm e_1-T_{5,4}\bm y)=\begin{bmatrix}g_1^{(1)}\\g_2^{(2)}\\g_3^{(2)}\\0\\0\end{bmatrix}
+-\begin{bmatrix}t_{11}^{(1)}&t_{12}^{(1)}&t_{13}^{(1)}&\\&t_{22}^{(2)}&t_{23}^{(2)}&t_{24}^{(2)}\\&&t_{33}^{(2)}&t_{34}^{(2)}\\&&t_{43}&t_{44}\\&&&t_{54}\end{bmatrix}\begin{bmatrix}y_1\\y_2\\y_3\\y_4\end{bmatrix},\]
+{where $g_3^{(2)}=(-1)^2\bar s_2\bar s_1\beta$. Similarly, using $G_3$ and $G_4$, we finally obtain}
+% block: minres-triangular-problem page:100 type:ordinary-paragraph
+\[\begin{aligned}
+Q_4(\beta\bm e_1-T_{5,4}\bm y)&=\begin{bmatrix}g_1^{(1)}\\g_2^{(2)}\\g_3^{(3)}\\g_4^{(4)}\\g_5^{(5)}\end{bmatrix}
+-\begin{bmatrix}t_{11}^{(1)}&t_{12}^{(1)}&t_{13}^{(1)}&\\&t_{22}^{(2)}&t_{23}^{(2)}&t_{24}^{(2)}\\&&t_{33}^{(3)}&t_{34}^{(3)}\\&&&t_{44}^{(4)}\\&&&\end{bmatrix}\begin{bmatrix}y_1\\y_2\\y_3\\y_4\end{bmatrix}\\
+&=\begin{bmatrix}\bm g_4\\g_5^{(5)}\end{bmatrix}-\begin{bmatrix}R_4\\\bm0^{\top}\end{bmatrix}\bm y_4,
+\end{aligned}\]
+{where $Q_4=G_4G_3G_2G_1$ and $g_5^{(5)}=(-1)^4\bar s_4\bar s_3\bar s_2\bar s_1\beta$. Hence, we obtain $\bm y_4$ by solving the following equation:}
+\begin{equation}\label{eq:minres-upper-triangular-system}R_4\bm y_4=\bm g_4\end{equation}
+{using backward substitution. It is interesting to see that we can obtain the value of $\min_{\bm y\in\mathbb C^4}\|\beta\bm e_1-T_{5,4}\bm y\|$ without solving the equation $R_4\bm y_4=\bm g_4$, since the value satisfies}
+\[\begin{aligned}
+\|\bm r_4\|&=\min_{\bm y\in\mathbb C^4}\|\beta\bm e_1-T_{5,4}\bm y\|
+=\min_{\bm y\in\mathbb C^4}\|Q_4(\beta\bm e_1-T_{5,4}\bm y)\|\\
+&=\left\|\begin{bmatrix}\bm g_4\\g_5^{(5)}\end{bmatrix}-\begin{bmatrix}R_4\\\bm0^{\top}\end{bmatrix}\bm y_4\right\|
+=\left\|\begin{bmatrix}\bm0\\g_5^{(5)}\end{bmatrix}\right\|\\
+&=|g_5^{(5)}|.
+\end{aligned}\]
+% block: minres-solution-recurrences pages:100,101 type:ordinary-paragraph
+{Thus, $|g_5^{(5)}|$ corresponds to the residual norm of $\bm r_4$, and this can be used as a stopping criterion. To obtain the approximate solution, it follows from \eqref{eq:minres-affine-solution} and \eqref{eq:minres-upper-triangular-system} that}
+\begin{equation}\label{eq:minres-solution-triangular-inverse}\bm x_4=\bm x_0+V_4R_4^{-1}\bm g_4.\end{equation}
+{Here, we introduce a matrix $P_4:=V_4R_4^{-1}$ with columns $[\bm p_1,\bm p_2,\bm p_3,\bm p_4]$. Then, from $[\bm p_1,\bm p_2,\bm p_3,\bm p_4]R_4=[\bm v_1,\bm v_2,\bm v_3,\bm v_4]$, we have the following recurrences:}
+\begin{equation}\label{eq:minres-direction-one}\bm p_1=\bm v_1/t_{11}^{(1)},\end{equation}
+\begin{equation}\label{eq:minres-direction-two}\bm p_2=(\bm v_2-t_{12}^{(1)}\bm p_1)/t_{22}^{(2)},\end{equation}
+\begin{equation}\label{eq:minres-direction-three}\bm p_3=(\bm v_3-t_{13}^{(1)}\bm p_1-t_{23}^{(2)}\bm p_2)/t_{33}^{(3)},\end{equation}
+\begin{equation}\label{eq:minres-direction-four}\bm p_4=(\bm v_4-t_{24}^{(2)}\bm p_2-t_{34}^{(3)}\bm p_3)/t_{44}^{(4)}.\end{equation}
+{From \eqref{eq:minres-solution-triangular-inverse}, $\bm x_4=\bm x_0+P_4\bm g_4=\bm x_0+\sum_{i=1}^4g_i\bm p_i$ and thus}
+\begin{equation}\label{eq:minres-solution-updates}\bm x_i=\bm x_{i-1}+g_i\bm p_i,\quad i=1,\ldots,4,\end{equation}
+{where $g_i$ is the $i$th element of $\bm g_4$. The approximate solutions $\bm x_1,\ldots,\bm x_4$ of the MINRES method are obtained by \eqref{eq:minres-solution-updates} with the recurrences \eqref{eq:minres-direction-one}--\eqref{eq:minres-direction-four}. The derivation for the case $n=4$ can be easily generalized to the $n$th iteration step, leading to Algorithm\ \ref{alg:minres}. From Algorithm\ \ref{alg:minres}, the MINRES method never suffers from breakdown since $\beta_n\ne0$ unless $\widetilde{\bm v}_{n+1}=\bm0$.}
+% block: minres-algorithm page:101 type:ordinary-paragraph
+\begin{algorithm}[H]\caption{{The MINRES method}}\label{alg:minres}\begin{algorithmic}[1]
+\Statex\textbf{Input:} $\bm x_0\in\mathbb C^N,\ \beta_0=0,\ \bm v_0=\bm0,\ \bm r_0=\bm b-A\bm x_0$
+\Statex\textbf{Output:} $\bm x_n$
+\State $\bm g=(\|\bm r_0\|,0,\ldots,0)^{\top},\ \bm v_1=\bm r_0/\|\bm r_0\|$
+\For{$n=1,2,\ldots$}
+\State (Lanczos {process})
+\State $\alpha_n=(\bm v_n,A\bm v_n)$
+\State $\widetilde{\bm v}_{n+1}=A\bm v_n-\alpha_n\bm v_n-\beta_{n-1}\bm v_{n-1}$
+\State $\beta_n=(\widetilde{\bm v}_{n+1},\widetilde{\bm v}_{n+1})^{1/2}$
+\State $\bm v_{n+1}=\widetilde{\bm v}_{n+1}/\beta_n$
+\State $t_{n-1,n}=\beta_{n-1},\ t_{n,n}=\alpha_n$
+\State $t_{n+1,n}=\beta_n$
+\State (Givens {rotations})
+\For{$i=\max\{1,n-2\},\ldots,n-1$}
+\State $\begin{bmatrix}t_{i,n}\\t_{i+1,n}\end{bmatrix}=\begin{bmatrix}c_i&s_i\\-\bar s_i&c_i\end{bmatrix}\begin{bmatrix}t_{i,n}\\t_{i+1,n}\end{bmatrix}$
+\EndFor
+\State $c_n=\frac{|t_{n,n}|}{\sqrt{|t_{n,n}|^2+|t_{n+1,n}|^2}}$
+\State $\bar s_n=\frac{t_{n+1,n}}{t_{n,n}}c_n$
+\State $t_{n,n}=c_nt_{n,n}+s_nt_{n+1,n}$
+\State $t_{n+1,n}=0$
+\State $\begin{bmatrix}g_n\\g_{n+1}\end{bmatrix}=\begin{bmatrix}c_n&s_n\\-\bar s_n&c_n\end{bmatrix}\begin{bmatrix}g_n\\0\end{bmatrix}$
+\State ({Update} $\bm x_n$)
+\State $\bm p_n=(\bm v_n-t_{n-2,n}\bm p_{n-2}$
+\State $\qquad-t_{n-1,n}\bm p_{n-1})/t_{n,n}$
+\State $\bm x_n=\bm x_{n-1}+g_n\bm p_n$
+\State ({Check convergence})
+\State {if $|g_{n+1}|/\|\bm b\|\le\epsilon$, then stop}
+\EndFor\end{algorithmic}\end{algorithm}
+% block: symmlq-projected-system pages:101,102 type:ordinary-paragraph
+{As mentioned above, the MINRES method never suffers from breakdown. Paige and Saunders also proposed the SYMMLQ method in \BookCite{143}, which is a variant of the CG method, to avoid breakdown for Hermitian indefinite linear systems. A brief explanation is given next. Recall that the approximate solution $\bm x_n$ of the CG method is given by}
+\[\begin{aligned}
+\bm x_n&=\bm x_0+V_n\bm y_n,\\
+\bm r_n&=\bm r_0-V_{n+1}T_{n+1,n}\bm y_n=V_{n+1}(\beta\bm e_1-T_{n+1,n}\bm y_n),
+\end{aligned}\]
+{where $\bm y_n$ is determined by $\bm r_n\perp\mathcal K_n(A,\bm r_0)$ (see Corollary\ \ref{cor:cg-krylov-orthogonality}), i.e., $V^{\mathrm H}\bm r_n=\bm0$. This yields}
+\begin{equation}\label{eq:symmlq-projected-system}T_n\bm y_n=\beta\bm e_1,\end{equation}
+{where $T_n$ is the tridiagonal matrix obtained by removing the last row of $T_{n+1,n}$. The CG method is obtained by the $LDL^{\mathrm H}$ decomposition of $T_n$, i.e.,}
+\[T_n=LDL^{\mathrm H},\]
+{where $L$ is a unit lower bidiagonal matrix and $D$ is a diagonal matrix. If $A$ is Hermitian positive definite, $T_n$ is also Hermitian positive definite. Thus this decomposition never suffers from breakdown. On the other hand, when $A$ is indefinite, $LDL^{\mathrm H}$ of $T_n$ may not be obtained due to breakdown.}
+% block: symmlq-lq-factorization page:102 type:ordinary-paragraph
+{In order to circumvent the problem, Paige and Saunders proposed to use the LQ factorization of $T_n$, i.e.,}
+\[T_n=L_nQ_n,\quad Q_n^{\mathrm H}Q_n=I,\]
+{where $L_n$ is a lower triangular matrix and the decomposition is obtained by Givens rotations. Thus the decomposition is free from breakdown. The resulting algorithm is known as the SYMMLQ method. When the coefficient matrix $A$ is Hermitian positive definite, the SYMMLQ method gives the same result as the CG method in exact precision arithmetic, and for indefinite cases, the SYMMLQ method succeeded in avoiding breakdown when solving \eqref{eq:symmlq-projected-system}. For a brief historical note including the relation between the SYMMLQ method and (less-known) Fridman's method of 1962, see Sect.\ 2.4 in \BookCite{160}.}
+% block: composite-step-factorization page:102 type:ordinary-paragraph
+{Another important remedy is ``composite step'' technique by Bank and Chan \BookCite{16} and similar techniques (hyperbolic pairs) in \BookCite{58}, \BookCite{126}. The key idea of the composite step is decomposing $T_n$ in \eqref{eq:symmlq-projected-system} into}
+\[T_n=\widetilde L\widetilde D\widetilde L^{\mathrm H},\]
+{where $\widetilde L$ is a unit lower block bidiagonal matrix and $\widetilde D$ is a block diagonal matrix whose block is of size $1\times1$ or $2\times2$, i.e.,}
+\[\widetilde D=\begin{bmatrix}D_1&&\\&\ddots&\\&&D_m\end{bmatrix},\]
+{where $D_i$ is a scalar or a $2\times2$ matrix. This decomposition is also free from breakdown, see, e.g., \BookCite{16}, Theorem 2.2. An algorithmic explanation of the composite step technique (the composite step BiCG method) is described in Sect.\ \ref{subsec:composite-step-bicg}.}
