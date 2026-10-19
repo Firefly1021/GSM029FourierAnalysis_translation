@@ -11,7 +11,7 @@ Approved terminology: grade -> 阶
 Completed content: Preface, Acknowledgements, Chapters 1-5 in full
 Last integrated batch: chapter-05-section-07
 Progress output: output/translation-progress.pdf
-Next incomplete unit: chapter-05-section-07
+Next incomplete unit: software
 Blocking issues: None
 Unresolved terminology: 0
 Full-book translation complete: No
