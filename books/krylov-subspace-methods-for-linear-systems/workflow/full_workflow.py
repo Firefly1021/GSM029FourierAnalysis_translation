@@ -184,6 +184,7 @@ def assemble():
 \usepackage{Mystyle}
 \usepackage{translation-adapter}
 \usepackage{needspace}
+\usepackage{xurl}
 \input{translation-macros.tex}
 \renewcommand{\thetable}{\thesection.\arabic{table}}
 \counterwithin{algorithm}{section}
@@ -200,6 +201,8 @@ def assemble():
         start+=r"\input{frontmatter.tex}"+"\n"
         contents.append((B.root/"tex/frontmatter.tex").read_text(encoding="utf-8"))
     units=sorted((B.root/"tex/chapters").glob("chapter-*.tex"))
+    units += [B.root/f"tex/chapters/{name}.tex" for name in ("software","references","index")
+              if (B.root/f"tex/chapters/{name}.tex").is_file()]
     included_sample=False
     for file in units:
         # Insert the accepted Section 1.8 in its natural position, byte-for-byte.
@@ -249,6 +252,8 @@ def assemble():
     bibliography=load("structured/source/bibliography-targets.json")
     for number in cited:
         assert number in bibliography,number
+        if "bib:source-"+number in labels:
+            continue
         record=bibliography[number]
         locators.append("\\makeatletter\\phantomsection\\def\\@currentlabel{"+number+"}\\label{bib:source-"+number+"}\\makeatother\n")
         locators.append("Reference ["+number+"], PDF "+str(record["pdf_page"])+", printed "+record["printed_page"]+".\\par\n")
