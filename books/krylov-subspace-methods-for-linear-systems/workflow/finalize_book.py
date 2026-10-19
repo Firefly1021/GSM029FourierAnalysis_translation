@@ -54,7 +54,7 @@ def register():
     git(P.root,"merge-base","--is-ancestor","main","HEAD")
     git(main.root,"merge","--ff-only","book/"+ID)
     before=main.projects_file.read_text(encoding="utf8");record=project_record(main,ID)
-    record.phase="completed";record.status="completed";record.final_output=f"books/{ID}/output/book-zh.pdf";record.blocking_issues=""
+    record.title=B.load_config()["title"];record.phase="completed";record.status="completed";record.final_output=f"books/{ID}/output/book-zh.pdf";record.blocking_issues=""
     update_project_record(main,record)
     after=main.projects_file.read_text(encoding="utf8")
     other=lambda s:[line for line in s.splitlines() if not line.startswith("| "+ID+" |")]
