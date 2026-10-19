@@ -231,6 +231,7 @@ def assemble():
       "sec:symmetric-direct-methods":("1.4",22,"9","Direct Methods for Symmetric Linear Systems"),
       "subsec:stationary-preconditioners":("3.5.4",172,"160","Preconditioners Based on Stationary Iterative Methods"),
       "subsec:preconditioner-reorderings":("3.5.5",173,"161","Reorderings for Preconditioners"),
+      "subsec:shifted-gmres":("4.4.3",192,"180","The Shifted GMRES Method"),
     }
     unresolved=references-labels
     assert unresolved<=set(known),unresolved-set(known)

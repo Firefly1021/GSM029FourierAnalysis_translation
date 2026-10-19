@@ -1,0 +1,153 @@
+% block: shifted-hermitian-heading page:177 type:section
+\subsection{\BT{Shifted Hermitian Linear Systems}{移位 Hermitian 线性方程组}}\label{sec:shifted-hermitian-systems}
+\BT{Throughout this section, the coefficient matrix $A^{(k)}$ in \eqref{eq:shifted-linear-systems} is assumed to be Hermitian,}{本节始终假设 \eqref{eq:shifted-linear-systems} 中的系数矩阵 $A^{(k)}$ 为 Hermitian 矩阵,}\footnote{\BT{Since $A^{(k)}$ is Hermitian, it follows that $\sigma\in\mathbb R$.}{由于 $A^{(k)}$ 为 Hermitian 矩阵, 有 $\sigma\in\mathbb R$.}}\BT{i.e., $A^{(k)}=(A^{(k)})^{\mathrm H}$.}{即 $A^{(k)}=(A^{(k)})^{\mathrm H}$.}
+% block: shifted-cg-heading page:177 type:subsection
+\subsubsection{\BT{The Shifted CG Method}{移位 CG 方法}}\label{subsec:shifted-cg}
+\BT{In this subsection, the algorithm of the CG method utilizing the shift-invariance property \eqref{eq:krylov-shift-invariance} is described. The CG method applied to the shifted linear systems was considered in \BookCite{207}, \BookCite{208}, where all the Lanczos vectors have to be stored. In what follows, the memory-efficient algorithm based on \BookCite{67}, \BookCite{70} is described.}{本小节介绍利用移位不变性 \eqref{eq:krylov-shift-invariance} 的 CG 方法算法. 文献 \BookCite{207}, \BookCite{208} 考虑了将 CG 方法应用于移位线性方程组, 其中必须存储所有 Lanczos 向量. 下面介绍基于 \BookCite{67}, \BookCite{70} 的节省存储空间的算法.}
+% block: shifted-cg-collinearity page:177 type:ordinary-paragraph
+\BT{It follows from Corollary\ \ref{cor:cg-krylov-orthogonality}, \eqref{eq:cg-krylov-membership}, and \eqref{eq:krylov-shift-invariance} that applying the CG method (Algorithm\ \ref{alg:cg}) with $\bm x_0=\bm x_0^{(k)}=\bm0$ to $A\bm x=\bm b$ and $A^{(k)}\bm x^{(k)}=\bm b$ produces residual vectors $\bm r_n$ and $\bm r_n^{(k)}:=\bm b-A^{(k)}\bm x_n^{(k)}$ with}{由 Corollary\ \ref{cor:cg-krylov-orthogonality}, \eqref{eq:cg-krylov-membership} 和 \eqref{eq:krylov-shift-invariance} 可知, 以 $\bm x_0=\bm x_0^{(k)}=\bm0$ 将 CG 方法 (Algorithm\ \ref{alg:cg}) 应用于 $A\bm x=\bm b$ 和 $A^{(k)}\bm x^{(k)}=\bm b$, 产生的残差向量 $\bm r_n$ 和 $\bm r_n^{(k)}:=\bm b-A^{(k)}\bm x_n^{(k)}$ 满足}
+\[\bm r_n,\bm r_n^{(k)}\in\mathcal K_{n+1}(A,\bm b)\perp\mathcal K_n(A,\bm b),\quad k=1,2,\ldots,m.\]
+\BT{This means that $\bm r_n,\bm r_n^{(k)}\in\mathcal K_{n+1}(A,\bm b)\cap\mathcal K_n(A,\bm b)^{\perp}$, where $\mathcal K_n(A,\bm b)^{\perp}$ is the orthogonal complement of $\mathcal K_n(A,\bm b)$. Since $\mathcal K_n(A,\bm b)\subset\mathcal K_{n+1}(A,\bm b)$,}{这意味着 $\bm r_n,\bm r_n^{(k)}\in\mathcal K_{n+1}(A,\bm b)\cap\mathcal K_n(A,\bm b)^{\perp}$, 其中 $\mathcal K_n(A,\bm b)^{\perp}$ 为 $\mathcal K_n(A,\bm b)$ 的正交补. 由于 $\mathcal K_n(A,\bm b)\subset\mathcal K_{n+1}(A,\bm b)$,}
+\begin{equation}\label{eq:shifted-cg-one-dimensional-intersection}\dim(\mathcal K_{n+1}(A,\bm b)\cap\mathcal K_n(A,\bm b)^{\perp})=1.\end{equation}
+\BT{Therefore $\bm r_n$ and all $\bm r_n^{(k)}$'s belong to the same one-dimensional subspace of $\mathbb C^N$, i.e., there exists scalar values $\pi_n^{(k)}\in\mathbb C$ such that}{因此 $\bm r_n$ 和所有 $\bm r_n^{(k)}$ 都属于 $\mathbb C^N$ 中同一个一维子空间, 即存在标量 $\pi_n^{(k)}\in\mathbb C$, 使得}
+\begin{equation}\label{eq:shifted-cg-residual-collinearity}\bm r_n=\pi_n^{(k)}\bm r_n^{(k)},\quad k=1,2,\ldots,m.\end{equation}
+\BT{The relation \eqref{eq:shifted-cg-residual-collinearity} implies that if $\pi_n^{(k)}$ is known, all the residuals $\bm r_n^{(k)}$ can be produced by the residual $\bm r_n$. In what follows, $\pi_n^{(k)}$ is determined.}{关系 \eqref{eq:shifted-cg-residual-collinearity} 表明, 若已知 $\pi_n^{(k)}$, 就可由残差 $\bm r_n$ 产生所有残差 $\bm r_n^{(k)}$. 下面确定 $\pi_n^{(k)}$.}
+% block: shifted-cg-residual-recurrences pages:177,178 type:ordinary-paragraph
+\BT{From \eqref{eq:cg-residual-direction-polynomials}, the residual vector $\bm r_{n+1}$ can be written as}{由 \eqref{eq:cg-residual-direction-polynomials}, 残差向量 $\bm r_{n+1}$ 可写为}
+\begin{equation}\label{eq:shifted-cg-seed-residual-recurrence}\bm r_{n+1}=\left(1+\frac{\beta_{n-1}}{\alpha_{n-1}}\alpha_n-\alpha_nA\right)\bm r_n-\frac{\beta_{n-1}}{\alpha_{n-1}}\alpha_n\bm r_{n-1}.\end{equation}
+\BT{Similarly, the residual vector $\bm r_{n+1}^{(k)}$ can also be written as}{类似地, 残差向量 $\bm r_{n+1}^{(k)}$ 也可写为}
+\begin{equation}\label{eq:shifted-cg-shifted-residual-recurrence}\bm r_{n+1}^{(k)}=\left\{1+\frac{\beta_{n-1}^{(k)}}{\alpha_{n-1}^{(k)}}\alpha_n^{(k)}-\alpha_n^{(k)}(A+\sigma_k I)\right\}\bm r_n^{(k)}-\frac{\beta_{n-1}^{(k)}}{\alpha_{n-1}^{(k)}}\alpha_n^{(k)}\bm r_{n-1}^{(k)}.\end{equation}
+\BT{Substituting \eqref{eq:shifted-cg-residual-collinearity} into \eqref{eq:shifted-cg-shifted-residual-recurrence} yields}{将 \eqref{eq:shifted-cg-residual-collinearity} 代入 \eqref{eq:shifted-cg-shifted-residual-recurrence}, 得}
+\begin{equation}\label{eq:shifted-cg-scaled-residual-recurrence}\begin{aligned}\bm r_{n+1}&=\left\{1+\frac{\beta_{n-1}^{(k)}}{\alpha_{n-1}^{(k)}}\alpha_n^{(k)}-\alpha_n^{(k)}(A+\sigma_k I)\right\}\frac{\pi_{n+1}^{(k)}}{\pi_n^{(k)}}\bm r_n\\&\quad-\frac{\beta_{n-1}^{(k)}\alpha_n^{(k)}\pi_{n+1}^{(k)}}{\alpha_{n-1}^{(k)}\pi_{n-1}^{(k)}}\bm r_{n-1}.\end{aligned}\end{equation}
+% block: shifted-cg-coefficient-matching page:178 type:ordinary-paragraph
+\BT{Comparing the coefficients of $A\bm r_n$, $\bm r_n$, and $\bm r_{n-1}$ in \eqref{eq:shifted-cg-seed-residual-recurrence} and \eqref{eq:shifted-cg-scaled-residual-recurrence} yields}{比较 \eqref{eq:shifted-cg-seed-residual-recurrence} 和 \eqref{eq:shifted-cg-scaled-residual-recurrence} 中 $A\bm r_n$, $\bm r_n$ 和 $\bm r_{n-1}$ 的系数, 得}
+\begin{equation}\label{eq:shifted-cg-alpha}\alpha_n^{(k)}=\frac{\pi_n^{(k)}}{\pi_{n+1}^{(k)}}\alpha_n,\end{equation}
+\begin{equation}\label{eq:shifted-cg-middle-coefficient}\left(1+\frac{\beta_{n-1}^{(k)}}{\alpha_{n-1}^{(k)}}\alpha_n^{(k)}-\alpha_n^{(k)}\sigma_k\right)\frac{\pi_{n+1}^{(k)}}{\pi_n^{(k)}}=1+\frac{\beta_{n-1}}{\alpha_{n-1}}\alpha_n,\end{equation}
+\begin{equation}\label{eq:shifted-cg-last-coefficient}\frac{\beta_{n-1}}{\alpha_{n-1}}\alpha_n=\frac{\beta_{n-1}^{(k)}\alpha_n^{(k)}\pi_{n+1}^{(k)}}{\alpha_{n-1}^{(k)}\pi_{n-1}^{(k)}}.\end{equation}
+\BT{Substituting \eqref{eq:shifted-cg-alpha} into \eqref{eq:shifted-cg-last-coefficient} gives}{将 \eqref{eq:shifted-cg-alpha} 代入 \eqref{eq:shifted-cg-last-coefficient}, 得}
+\begin{equation}\label{eq:shifted-cg-beta}\beta_{n-1}^{(k)}=\left(\frac{\pi_{n-1}^{(k)}}{\pi_n^{(k)}}\right)^2\beta_{n-1}.\end{equation}
+\BT{Substituting \eqref{eq:shifted-cg-alpha} and \eqref{eq:shifted-cg-beta} into \eqref{eq:shifted-cg-middle-coefficient} leads to}{将 \eqref{eq:shifted-cg-alpha} 和 \eqref{eq:shifted-cg-beta} 代入 \eqref{eq:shifted-cg-middle-coefficient}, 得}
+\begin{equation}\label{eq:shifted-cg-pi-recurrence}\pi_{n+1}^{(k)}=\left(1+\frac{\beta_{n-1}}{\alpha_{n-1}}\alpha_n+\alpha_n\sigma_k\right)\pi_n^{(k)}-\frac{\beta_{n-1}}{\alpha_{n-1}}\alpha_n\pi_{n-1}^{(k)}.\end{equation}
+\BT{Since $\bm r_0=\bm r_0^{(k)}$, it follows that $\pi_0^{(k)}=1$. From \eqref{eq:cg-polynomial-three-term} and \eqref{eq:shifted-cg-pi-recurrence}, we have the following relation:}{由于 $\bm r_0=\bm r_0^{(k)}$, 有 $\pi_0^{(k)}=1$. 由 \eqref{eq:cg-polynomial-three-term} 和 \eqref{eq:shifted-cg-pi-recurrence}, 得下列关系:}
+\begin{equation}\label{eq:shifted-cg-polynomial-evaluation}\pi_{n+1}^{(k)}=R_{n+1}(-\sigma_k).\end{equation}
+% block: shifted-cg-solution-recurrences pages:178,179 type:ordinary-paragraph
+\BT{In what follows, the computational formula of the approximate solution vector $\bm x_{n+1}^{(k)}$ for \eqref{eq:shifted-linear-systems} is derived from \eqref{eq:shifted-cg-shifted-residual-recurrence}. Let $\bm p_{n-1}^{(k)}:=(A+\sigma_k I)^{-1}(\bm r_{n-1}^{(k)}-\bm r_n^{(k)})/\alpha_{n-1}^{(k)}$, then from \eqref{eq:shifted-cg-shifted-residual-recurrence} we have}{下面从 \eqref{eq:shifted-cg-shifted-residual-recurrence} 推导 \eqref{eq:shifted-linear-systems} 的近似解向量 $\bm x_{n+1}^{(k)}$ 的计算公式. 令 $\bm p_{n-1}^{(k)}:=(A+\sigma_k I)^{-1}(\bm r_{n-1}^{(k)}-\bm r_n^{(k)})/\alpha_{n-1}^{(k)}$, 则由 \eqref{eq:shifted-cg-shifted-residual-recurrence}, 有}
+\begin{equation}\label{eq:shifted-cg-direction-recurrence}\bm p_n^{(k)}=\bm r_n^{(k)}+\beta_{n-1}^{(k)}\bm p_{n-1}^{(k)},\end{equation}
+\begin{equation}\label{eq:shifted-cg-residual-update}\bm r_{n+1}^{(k)}=\bm r_n^{(k)}-\alpha_n^{(k)}(A+\sigma_k I)\bm p_n^{(k)}.\end{equation}
+\BT{Substituting $\bm r_n^{(k)}=\bm b-(A+\sigma_k I)\bm x_n^{(k)}$ into \eqref{eq:shifted-cg-residual-update} yields}{将 $\bm r_n^{(k)}=\bm b-(A+\sigma_k I)\bm x_n^{(k)}$ 代入 \eqref{eq:shifted-cg-residual-update}, 得}
+\begin{equation}\label{eq:shifted-cg-solution-update}\bm x_{n+1}^{(k)}=\bm x_n^{(k)}+\alpha_n^{(k)}\bm p_n^{(k)}.\end{equation}
+\BT{From \eqref{eq:shifted-cg-residual-collinearity} the search direction $\bm p_n^{(k)}$ is updated by}{由 \eqref{eq:shifted-cg-residual-collinearity}, 搜索方向 $\bm p_n^{(k)}$ 按下式更新}
+\begin{equation}\label{eq:shifted-cg-shared-direction}\bm p_n^{(k)}=\frac1{\pi_n^{(k)}}\bm r_n+\beta_{n-1}^{(k)}\bm p_{n-1}^{(k)}.\end{equation}
+% block: shifted-cg-cost-and-seed page:179 type:ordinary-paragraph
+\BT{It is worth mentioning that approximate solutions are computed without using the recurrence \eqref{eq:shifted-cg-residual-update}. Thus, matrix--vector multiplications $(A+\sigma_k I)\bm p_n^{(k)}$ for all $k$'s are not required, which is much cost-efficient.}{值得指出, 近似解的计算不使用递推关系 \eqref{eq:shifted-cg-residual-update}. 因而不需要对所有 $k$ 计算矩阵向量乘积 $(A+\sigma_k I)\bm p_n^{(k)}$, 这大大节省了计算开销.}
+\BT{Using \eqref{eq:shifted-cg-residual-collinearity}, \eqref{eq:shifted-cg-alpha}--\eqref{eq:shifted-cg-polynomial-evaluation}, \eqref{eq:shifted-cg-solution-update}, and \eqref{eq:shifted-cg-shared-direction}, we obtain the shifted CG method described in Algorithm\ \ref{alg:shifted-cg}. In Algorithm\ \ref{alg:shifted-cg}, the CG method is applied to $A^{(s)}\bm x=\bm b$ for a given $s\in\{1,2,\ldots,m\}$ that is referred to as a seed system, and approximate solutions $\bm x_n^{(k)}$ for the other shifted linear systems $A^{(k)}\bm x=\bm b$ are computed by using the residual vector $\bm r_n$ produced by the CG method.}{利用 \eqref{eq:shifted-cg-residual-collinearity}, \eqref{eq:shifted-cg-alpha}--\eqref{eq:shifted-cg-polynomial-evaluation}, \eqref{eq:shifted-cg-solution-update} 和 \eqref{eq:shifted-cg-shared-direction}, 就得到 Algorithm\ \ref{alg:shifted-cg} 中的移位 CG 方法. 在 Algorithm\ \ref{alg:shifted-cg} 中, 对给定的 $s\in\{1,2,\ldots,m\}$, 将 CG 方法应用于称为种子系统的 $A^{(s)}\bm x=\bm b$, 并利用 CG 方法产生的残差向量 $\bm r_n$ 计算其他移位线性方程组 $A^{(k)}\bm x=\bm b$ 的近似解 $\bm x_n^{(k)}$.}
+% block: shifted-cg-properties page:179 type:ordinary-paragraph
+\BT{Algorithm\ \ref{alg:shifted-cg} has the following properties:}{Algorithm\ \ref{alg:shifted-cg} 具有下列性质:}
+\begin{enumerate}
+\item \BT{the multiplication of $A^{(s)}$ and a vector is required, but the multiplications of $A^{(k)}$ for the other $k$ and a vector are not required;}{需要计算 $A^{(s)}$ 与向量的乘积, 但不需要计算其他 $k$ 对应的 $A^{(k)}$ 与向量的乘积;}
+\item \BT{the approximate solution $\bm x_n^{(k)}$ of the shifted CG method is the same as the $n$th approximate solution of the CG method (with $\bm x_0=\bm0$) applied to $A^{(k)}\bm x^{(k)}=\bm b$.}{移位 CG 方法的近似解 $\bm x_n^{(k)}$ 与将 CG 方法 (以 $\bm x_0=\bm0$) 应用于 $A^{(k)}\bm x^{(k)}=\bm b$ 得到的第 $n$ 个近似解相同.}
+\end{enumerate}
+\BT{It is obvious from Algorithm\ \ref{alg:shifted-cg} that the first property holds. The second property is also obvious from the derivation process of the shifted CG method. In Algorithm\ \ref{alg:shifted-cg}, the relation $\|\bm r_n^{(k)}\|=\|\bm r_n\|/|\pi_n^{(k)}|$ can be used for monitoring the convergence of the approximate solution $\bm x_n^{(k)}$. Finally, notice that for computing $A^{(s)}\bm v$, we compute $A\bm v+\sigma_s\bm v$.}{由 Algorithm\ \ref{alg:shifted-cg} 显然可见第一条性质成立. 由移位 CG 方法的推导过程也显然可见第二条性质成立. 在 Algorithm\ \ref{alg:shifted-cg} 中, 可利用关系 $\|\bm r_n^{(k)}\|=\|\bm r_n\|/|\pi_n^{(k)}|$ 监测近似解 $\bm x_n^{(k)}$ 的收敛性. 最后注意, 为计算 $A^{(s)}\bm v$, 实际计算 $A\bm v+\sigma_s\bm v$.}
+% block: shifted-cr-heading page:179 type:subsection
+\subsubsection{\BT{The Shifted CR Method}{移位 CR 方法}}\label{subsec:shifted-cr}
+\BT{The shifted CR method can be very similarly derived from the CR method in Sect.\ \ref{subsec:conjugate-residual} and the derivation process given in Sect.\ \ref{subsec:shifted-cg}. The algorithm of the shifted CR method is described in Algorithm\ \ref{alg:shifted-cr}.}{由 Section\ \ref{subsec:conjugate-residual} 中的 CR 方法和 Section\ \ref{subsec:shifted-cg} 给出的推导过程, 可以非常类似地推导移位 CR 方法. 移位 CR 方法的算法见 Algorithm\ \ref{alg:shifted-cr}.}
+% block: shifted-cr-properties page:179 type:ordinary-paragraph
+\BT{The main differences between the shifted CG method and the shifted CR method are the computational formulas for $\alpha_n^{(s)}$ and $\beta_n^{(s)}$. The shifted CR method (Algorithm\ \ref{alg:shifted-cr}) has the following properties:}{移位 CG 方法与移位 CR 方法的主要区别是 $\alpha_n^{(s)}$ 和 $\beta_n^{(s)}$ 的计算公式. 移位 CR 方法 (Algorithm\ \ref{alg:shifted-cr}) 具有下列性质:}
+\begin{enumerate}
+\item \BT{the multiplication of $A^{(s)}$ and a vector is required, but the multiplications of $A^{(k)}$ for the other $k$ and a vector are not required, which is the same property as that of the shifted CG method;}{需要计算 $A^{(s)}$ 与向量的乘积, 但不需要计算其他 $k$ 对应的 $A^{(k)}$ 与向量的乘积, 这一性质与移位 CG 方法相同;}
+\item \BT{Unlike the shifted CG method, the approximate solution $\bm x_n^{(k)}$ of the shifted CR method is not the same as the $n$th approximate solution of the CR method (with $\bm x_0=\bm0$) applied to $A^{(k)}\bm x^{(k)}=\bm b$.}{与移位 CG 方法不同, 移位 CR 方法的近似解 $\bm x_n^{(k)}$ 与将 CR 方法 (以 $\bm x_0=\bm0$) 应用于 $A^{(k)}\bm x^{(k)}=\bm b$ 得到的第 $n$ 个近似解不同.}
+\end{enumerate}
+% block: shifted-cg-algorithm page:180 type:ordinary-paragraph
+\begin{algorithm}[H]\caption{\BT{The shifted CG method}{移位 CG 方法}}\label{alg:shifted-cg}\begin{algorithmic}[1]
+\Statex\textbf{Input:} \BT{Choose a seed system $s\in S=\{1,2,\ldots,m\}$ and set $\bm r_0^{(s)}=\bm b,\ \beta_{-1}^{(s)}=0$}{选择种子系统 $s\in S=\{1,2,\ldots,m\}$ 并令 $\bm r_0^{(s)}=\bm b,\ \beta_{-1}^{(s)}=0$}
+\Statex\textbf{Input:} $A$ \BT{and}{和} $\sigma_s$ \BT{for}{对于} $k=1,2,\ldots,m$
+\Statex\textbf{Input:} $\bm x_0^{(k)}=\bm p_{-1}^{(k)}=\bm0,\ \pi_0^{(s,k)}=\pi_{-1}^{(s,k)}=1$ \BT{for}{对于} $k=1,2,\ldots,m$
+\Statex\textbf{Output:} $\bm x_n^{(k)}$ \BT{for}{对于} $k=1,2,\ldots,m$
+\For{$n=0,1,\ldots$, \BT{until convergence}{直至收敛}}
+\State $\bm p_n^{(s)}=\bm r_n^{(s)}+\beta_{n-1}^{(s)}\bm p_{n-1}^{(s)}$
+\State $\alpha_n^{(s)}=\dfrac{(\bm r_n^{(s)},\bm r_n^{(s)})}{(\bm p_n^{(s)},A^{(s)}\bm p_n^{(s)})}$
+\State $\bm x_{n+1}^{(s)}=\bm x_n^{(s)}+\alpha_n^{(s)}\bm p_n^{(s)}$
+\State \{\BT{Begin shifted system}{移位系统开始}\}
+\For{$k(\ne s)=1,2,\ldots,m$}
+\If{$\|\bm r_n^{(k)}\|(=\|\bm r_n^{(s)}\|/|\pi_n^{(k)}|)>\epsilon_2\|\bm b\|$}
+\State $\pi_{n+1}^{(s,k)}=R_{n+1}^{(s)}(\sigma_s-\sigma_k)$ \{\BT{$\leftarrow$ see \eqref{eq:shifted-cg-polynomial-evaluation}}{$\leftarrow$ 见 \eqref{eq:shifted-cg-polynomial-evaluation}}\}
+\State $\phantom{\pi_{n+1}^{(s,k)}}=\left[1+\dfrac{\beta_{n-1}^{(s)}}{\alpha_{n-1}^{(s)}}\alpha_n^{(s)}-\alpha_n^{(s)}(\sigma_s-\sigma_k)\right]\pi_n^{(s,k)}-\dfrac{\beta_{n-1}^{(s)}}{\alpha_{n-1}^{(s)}}\alpha_n^{(s)}\pi_{n-1}^{(s,k)}$
+\State $\beta_{n-1}^{(k)}=\left(\dfrac{\pi_{n-1}^{(s,k)}}{\pi_n^{(s,k)}}\right)^2\beta_{n-1}^{(s)}$
+\State $\alpha_n^{(k)}=\dfrac{\pi_n^{(s,k)}}{\pi_{n+1}^{(s,k)}}\alpha_n^{(s)}$
+\State $\bm p_n^{(k)}=\dfrac1{\pi_n^{(s,k)}}\bm r_n^{(s)}+\beta_{n-1}^{(k)}\bm p_{n-1}^{(k)}$
+\State $\bm x_{n+1}^{(k)}=\bm x_n^{(k)}+\alpha_n^{(k)}\bm p_n^{(k)}$
+\EndIf\EndFor
+\State \{\BT{End shifted system}{移位系统结束}\}
+\State $\bm r_{n+1}^{(s)}=\bm r_n^{(s)}-\alpha_n^{(s)}A^{(s)}\bm p_n^{(s)}$
+\State $\beta_n^{(s)}=\dfrac{(\bm r_{n+1}^{(s)},\bm r_{n+1}^{(s)})}{(\bm r_n^{(s)},\bm r_n^{(s)})}$
+\EndFor\end{algorithmic}\end{algorithm}
+% block: shifted-cr-algorithm page:180 type:ordinary-paragraph
+\begin{algorithm}[H]\caption{\BT{The shifted CR method}{移位 CR 方法}}\label{alg:shifted-cr}\begin{algorithmic}[1]
+\Statex\textbf{Input:} \BT{Choose a seed system $s\in S=\{1,2,\ldots,m\}$ and set $\bm r_0^{(s)}=\bm b,\ \beta_{-1}^{(s)}=0$}{选择种子系统 $s\in S=\{1,2,\ldots,m\}$ 并令 $\bm r_0^{(s)}=\bm b,\ \beta_{-1}^{(s)}=0$}
+\Statex\textbf{Input:} $\bm x_0^{(k)}=\bm p_{-1}^{(k)}=\bm0,\ \pi_0^{(s,k)}=\pi_{-1}^{(s,k)}=1$ \BT{for}{对于} $k=1,2,\ldots,m$
+\Statex\textbf{Output:} $\bm x_n^{(k)}$ \BT{for}{对于} $k=1,2,\ldots,m$
+\For{$n=0,1,\ldots$, \BT{until convergence}{直至收敛}}
+\State $\bm p_n^{(s)}=\bm r_n^{(s)}+\beta_{n-1}^{(s)}\bm p_{n-1}^{(s)}$
+\State $(A^{(s)}\bm p_n^{(s)}=A^{(s)}\bm r_n^{(s)}+\beta_{n-1}^{(s)}A^{(s)}\bm p_{n-1}^{(s)})$
+\State $\alpha_n^{(s)}=\dfrac{(\bm r_n^{(s)},A^{(s)}\bm r_n^{(s)})}{(A^{(s)}\bm p_n^{(s)},A^{(s)}\bm p_n^{(s)})}$
+\State $\bm x_{n+1}^{(s)}=\bm x_n^{(s)}+\alpha_n^{(s)}\bm p_n^{(s)}$
+\State \{\BT{Begin shifted system}{移位系统开始}\}
+\State \BT{Run lines 6--15 of the shifted CG method (Algorithm\ \ref{alg:shifted-cg}).}{执行移位 CG 方法 (Algorithm\ \ref{alg:shifted-cg}) 的第 6--15 行.}
+\State \{\BT{End shifted system}{移位系统结束}\}
+\State $\bm r_{n+1}^{(s)}=\bm r_n^{(s)}-\alpha_n^{(s)}A^{(s)}\bm p_n^{(s)}$
+\State $\beta_n^{(s)}=\dfrac{(\bm r_{n+1}^{(s)},A^{(s)}\bm r_{n+1}^{(s)})}{(\bm r_n^{(s)},A^{(s)}\bm r_n^{(s)})}$
+\EndFor\end{algorithmic}\end{algorithm}
+% block: shifted-cr-noncollinearity page:181 type:ordinary-paragraph
+\BT{The second property comes from the fact that the $n$th residual vectors of the CR method for $A\bm x=\bm b$ and $A^{(k)}\bm x=\bm b$ do not belong to the same one-dimensional subspace because the residual vectors belong to}{第二条性质源于以下事实: 对 $A\bm x=\bm b$ 和 $A^{(k)}\bm x=\bm b$ 应用 CR 方法所得的第 $n$ 个残差向量不属于同一个一维子空间, 因为这些残差向量属于}
+\[\begin{aligned}\bm r_n^{\mathrm{CR}}&\in\mathcal K_{n+1}(A,\bm b)\cap A\mathcal K_n(A,\bm b)^{\perp},\\\bm r_n^{(k)\mathrm{CR}}&\in\mathcal K_{n+1}(A^{(k)},\bm b)\cap A^{(k)}\mathcal K_n(A^{(k)},\bm b)^{\perp}.\end{aligned}\]
+\BT{Notice that $\mathcal K_{n+1}(A,\bm b)=\mathcal K_{n+1}(A^{(k)},\bm b)$ holds true from the shift invariance property \eqref{eq:krylov-shift-invariance}, but in general $A\mathcal K_n(A,\bm b)\ne A^{(k)}\mathcal K_n(A^{(k)},\bm b)$. Thus,}{注意, 由移位不变性 \eqref{eq:krylov-shift-invariance}, 有 $\mathcal K_{n+1}(A,\bm b)=\mathcal K_{n+1}(A^{(k)},\bm b)$, \newline{}但一般而言 $A\mathcal K_n(A,\bm b)\ne A^{(k)}\mathcal K_n(A^{(k)},\bm b)$. 因此,}
+\[\mathcal K_{n+1}(A,\bm b)\cap A\mathcal K_n(A,\bm b)^{\perp}\ne\mathcal K_{n+1}(A^{(k)},\bm b)\cap A^{(k)}\mathcal K_n(A^{(k)},\bm b)^{\perp}.\]
+\BT{This means that $\bm r_n^{\mathrm{CR}}$ and $\bm r_n^{(k)\mathrm{CR}}$ are not produced by the same one-dimensional subspace, which are not collinear.}{这意味着 $\bm r_n^{\mathrm{CR}}$ 和 $\bm r_n^{(k)\mathrm{CR}}$ 不是由同一个一维子空间产生的, 它们并不共线.}
+% block: shifted-minres-heading page:181 type:subsection
+\subsubsection{\BT{The Shifted MINRES Method}{移位 MINRES 方法}}\label{subsec:shifted-minres}
+\BT{The shifted MINRES method is based on the MINRES method in Sect.\ \ref{subsec:minres}, which achieves the minimization of residual 2-norms:}{移位 MINRES 方法基于 Section\ \ref{subsec:minres} 中的 MINRES 方法, 它实现残差 2-范数的极小化:}
+\begin{equation}\label{eq:shifted-minres-residual-minimization}\min_{\bm x_n^{(k)}\in\mathcal K_n(A^{(k)},\bm b)(=\mathcal K_n(A,\bm b))}\|\bm b-A^{(k)}\bm x_n^{(k)}\|.\end{equation}
+\BT{In what follows, we will see how the above minimization problems can efficiently be solved, and note that the idea below corresponds to the special case of the shifted GMRES method \BookCite{43} that will be described in Sect.\ \ref{subsec:shifted-gmres}.}{下面介绍如何高效求解上述极小化问题, 并注意, 以下思想对应于 Section\ \ref{subsec:shifted-gmres} 将介绍的移位 GMRES 方法 \BookCite{43} 的特殊情形.}
+% block: shifted-minres-projected-residual page:181 type:ordinary-paragraph
+\BT{From the Lanczos process in Sect.\ \ref{subsec:lanczos-process}, $\bm x_n^{(k)}\in\mathcal K_n(A,\bm b)$ can be rewritten as}{由 Section\ \ref{subsec:lanczos-process} 中的 Lanczos 过程, $\bm x_n^{(k)}\in\mathcal K_n(A,\bm b)$ 可改写为}
+\begin{equation}\label{eq:shifted-minres-coordinate-solution}\bm x_n^{(k)}=V_n\bm y_n^{(k)},\quad k=1,2,\ldots,m,\end{equation}
+\BT{where $\bm y_n^{(k)}\in\mathbb C^n$. The corresponding residual vectors for \eqref{eq:shifted-linear-systems} are $\bm r_n^{(k)}:=\bm b-A^{(k)}\bm x_n^{(k)}=\bm b-(A+\sigma_k I)\bm x_n^{(k)}$. From \eqref{eq:shifted-minres-coordinate-solution} and the matrix form of the Lanczos process \eqref{eq:lanczos-matrix-relation}, it follows that}{其中 $\bm y_n^{(k)}\in\mathbb C^n$. 对于 \eqref{eq:shifted-linear-systems}, 相应残差向量为 $\bm r_n^{(k)}:=\bm b-A^{(k)}\bm x_n^{(k)}=\bm b-(A+\sigma_k I)\bm x_n^{(k)}$. 由 \eqref{eq:shifted-minres-coordinate-solution} 和 Lanczos 过程的矩阵形式 \eqref{eq:lanczos-matrix-relation}, 得}
+\begin{equation}\label{eq:shifted-minres-projected-residual}\begin{aligned}\bm r_n^{(k)}&=\bm b-(A+\sigma_k I)V_n\bm y_n^{(k)}\\&=V_{n+1}g_1\bm e_1-(AV_n+\sigma_kV_n)\bm y_n^{(k)}\\&=V_{n+1}(g_1\bm e_1-T_{n+1,n}^{(k)}\bm y_n^{(k)}),\quad T_{n+1,n}^{(k)}:=T_{n+1,n}+\sigma_k\begin{bmatrix}I_n\\\bm0^{\top}\end{bmatrix}.\end{aligned}\end{equation}
+% block: shifted-minres-least-squares page:182 type:ordinary-paragraph
+\BT{Here, $\bm e_1=(1,0,\ldots,0)^{\top}$ is the first unit vector and $g_1=(\bm b,\bm b)^{1/2}$. From \eqref{eq:shifted-minres-residual-minimization} and \eqref{eq:shifted-minres-projected-residual}, we have}{这里 $\bm e_1=(1,0,\ldots,0)^{\top}$ 为第一个单位向量, $g_1=(\bm b,\bm b)^{1/2}$. 由 \eqref{eq:shifted-minres-residual-minimization} 和 \eqref{eq:shifted-minres-projected-residual}, 有}
+\begin{equation}\label{eq:shifted-minres-least-squares}\begin{aligned}\min_{\bm x_n\in\mathcal K_n(A,\bm b)}\|\bm b-A^{(k)}\bm x_n\|&=\min_{\bm y_n^{(k)}\in\mathbb C^n}\|V_{n+1}(g_1\bm e_1-T_{n+1,n}^{(k)}\bm y_n^{(k)})\|\\&=\min_{\bm y_n^{(k)}\in\mathbb C^n}\|g_1\bm e_1-T_{n+1,n}^{(k)}\bm y_n^{(k)}\|.\end{aligned}\end{equation}
+\BT{The minimization problem \eqref{eq:shifted-minres-least-squares} can be solved by Givens rotations that are described in Sect.\ \ref{subsec:minres}. The algorithm of the shifted MINRES method is shown in Algorithm\ \ref{alg:shifted-minres}.}{极小化问题 \eqref{eq:shifted-minres-least-squares} 可利用 Section\ \ref{subsec:minres} 中介绍的 Givens 旋转求解. 移位 MINRES 方法的算法见 Algorithm\ \ref{alg:shifted-minres}.}
+% block: shifted-minres-algorithm page:182 type:ordinary-paragraph
+\begin{algorithm}[H]\caption{\BT{The shifted MINRES method}{移位 MINRES 方法}}\label{alg:shifted-minres}\begin{algorithmic}[1]
+\Statex\textbf{Input:} $\bm x_0^{(k)}=\bm p_{-1}^{(k)}=\bm p_0^{(k)}=\bm0,\ \bm v_1=\bm b/(\bm b,\bm b)^{1/2},\ g_1^{(k)}=(\bm b,\bm b)^{1/2},\ \beta_{-1}=0$
+\Statex\textbf{Output:} $\bm x_n^{(k)}$ \BT{for}{对于} $l=1,2,\ldots,m$
+\For{$n=1,2,\ldots$}
+\State \{\BT{The Lanczos process}{Lanczos 过程}\}
+\State $\alpha_n=(\bm v_n,A\bm v_n)$
+\State $\widetilde{\bm v}_{n+1}=A\bm v_n-\alpha_n\bm v_n-\beta_{n-1}\bm v_{n-1}$
+\State $\beta_n=(\widetilde{\bm v}_{n+1},\widetilde{\bm v}_{n+1})^{1/2}$
+\State $\bm v_{n+1}=\widetilde{\bm v}_{n+1}/\beta_n$
+\State $t_{n-1,n}^{(k)}=\beta_{n-1},\ t_{n,n}^{(k)}=\alpha_n+\sigma_{\ell},\ t_{n+1,n}^{(k)}=\beta_n$
+\State \{\BT{Solve least-squares problems by Givens rotations}{用 Givens 旋转求解最小二乘问题}\}
+\For{$k=1,2,\ldots,m$}
+\If{$|g_{n+1}^{(k)}|/\|\bm b\|>\epsilon$}
+\For{$i=\max\{1,n-2\},\ldots,n-1$}
+\State $\begin{bmatrix}t_{i,n}^{(k)}\\t_{i+1,n}^{(k)}\end{bmatrix}=\begin{bmatrix}c_i^{(k)}&s_i^{(k)}\\-\bar s_i^{(k)}&c_i^{(k)}\end{bmatrix}\begin{bmatrix}t_{i,n}^{(k)}\\t_{i+1,n}^{(k)}\end{bmatrix}$
+\EndFor
+\State $c_n^{(k)}=\dfrac{|t_{n,n}^{(k)}|}{\sqrt{|t_{n,n}^{(k)}|^2+|t_{n+1,n}^{(k)}|^2}}$
+\State $\bar s_n^{(k)}=\dfrac{t_{n+1,n}^{(k)}}{t_{n,n}^{(k)}}c_n^{(k)}$
+\State $t_{n,n}^{(k)}=c_n^{(k)}t_{n,n}^{(k)}+s_n^{(k)}t_{n+1,n}^{(k)}$
+\State $t_{n+1,n}^{(k)}=0$
+\State $\begin{bmatrix}g_n^{(k)}\\g_{n+1}^{(k)}\end{bmatrix}=\begin{bmatrix}c_n^{(k)}&s_n^{(k)}\\-\bar s_n^{(k)}&c_n^{(k)}\end{bmatrix}\begin{bmatrix}g_n^{(k)}\\0\end{bmatrix}$
+\State \{\BT{Update approximate solutions $\bm x_n^{(k)}$}{更新近似解 $\bm x_n^{(k)}$}\}
+\State $\bm p_n^{(k)}=\bm v_n-(t_{n-2,n}^{(k)}/t_{n-2,n-2}^{(k)})\bm p_{n-2}^{(k)}-(t_{n-1,n}^{(k)}/t_{n-1,n-1}^{(k)})\bm p_{n-1}^{(k)}$
+\State $\bm x_n^{(k)}=\bm x_{n-1}^{(k)}+(g_n^{(k)}/t_{n,n}^{(k)})\bm p_n^{(k)}$
+\EndIf\EndFor
+\State \BT{if $|g_{n+1}^{(k)}|/\|\bm b\|\le\epsilon$ for all $\ell$, then exit.}{if 对所有 $\ell$ 有 $|g_{n+1}^{(k)}|/\|\bm b\|\le\epsilon$, then 退出.}
+\EndFor\end{algorithmic}\end{algorithm}
+% block: shifted-minres-properties pages:182,183 type:ordinary-paragraph
+\BT{From Algorithm\ \ref{alg:shifted-minres} and the derivation process, we see that:}{由 Algorithm\ \ref{alg:shifted-minres} 和推导过程可见:}
+\begin{enumerate}
+\item \BT{the multiplication of $A^{(s)}$ and a vector is required, but the multiplications of $A^{(k)}$ for the other $k$ and a vector are not required, which is the same property as that of the shifted CG method and the shifted CR method;}{需要计算 $A^{(s)}$ 与向量的乘积, 但不需要计算其他 $k$ 对应的 $A^{(k)}$ 与向量的乘积, 这一性质与移位 CG 方法和移位 CR 方法相同;}
+\item \BT{the approximate solution $\bm x_n^{(k)}$ of the shifted MINRES method is the same as the $n$th approximate solution of the MINRES method (with $\bm x_0=\bm0$) applied to $A^{(k)}\bm x^{(k)}=\bm b$.}{移位 MINRES 方法的近似解 $\bm x_n^{(k)}$ 与将 MINRES 方法 (以 $\bm x_0=\bm0$) 应用于 $A^{(k)}\bm x^{(k)}=\bm b$ 得到的第 $n$ 个近似解相同.}
+\end{enumerate}

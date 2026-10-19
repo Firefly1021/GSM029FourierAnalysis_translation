@@ -1,0 +1,153 @@
+% block: shifted-hermitian-heading page:177 type:section
+\subsection{{Shifted Hermitian Linear Systems}}\label{sec:shifted-hermitian-systems}
+{Throughout this section, the coefficient matrix $A^{(k)}$ in \eqref{eq:shifted-linear-systems} is assumed to be Hermitian,}\footnote{{Since $A^{(k)}$ is Hermitian, it follows that $\sigma\in\mathbb R$.}}{i.e., $A^{(k)}=(A^{(k)})^{\mathrm H}$.}
+% block: shifted-cg-heading page:177 type:subsection
+\subsubsection{{The Shifted CG Method}}\label{subsec:shifted-cg}
+{In this subsection, the algorithm of the CG method utilizing the shift-invariance property \eqref{eq:krylov-shift-invariance} is described. The CG method applied to the shifted linear systems was considered in \BookCite{207}, \BookCite{208}, where all the Lanczos vectors have to be stored. In what follows, the memory-efficient algorithm based on \BookCite{67}, \BookCite{70} is described.}
+% block: shifted-cg-collinearity page:177 type:ordinary-paragraph
+{It follows from Corollary\ \ref{cor:cg-krylov-orthogonality}, \eqref{eq:cg-krylov-membership}, and \eqref{eq:krylov-shift-invariance} that applying the CG method (Algorithm\ \ref{alg:cg}) with $\bm x_0=\bm x_0^{(k)}=\bm0$ to $A\bm x=\bm b$ and $A^{(k)}\bm x^{(k)}=\bm b$ produces residual vectors $\bm r_n$ and $\bm r_n^{(k)}:=\bm b-A^{(k)}\bm x_n^{(k)}$ with}
+\[\bm r_n,\bm r_n^{(k)}\in\mathcal K_{n+1}(A,\bm b)\perp\mathcal K_n(A,\bm b),\quad k=1,2,\ldots,m.\]
+{This means that $\bm r_n,\bm r_n^{(k)}\in\mathcal K_{n+1}(A,\bm b)\cap\mathcal K_n(A,\bm b)^{\perp}$, where $\mathcal K_n(A,\bm b)^{\perp}$ is the orthogonal complement of $\mathcal K_n(A,\bm b)$. Since $\mathcal K_n(A,\bm b)\subset\mathcal K_{n+1}(A,\bm b)$,}
+\begin{equation}\label{eq:shifted-cg-one-dimensional-intersection}\dim(\mathcal K_{n+1}(A,\bm b)\cap\mathcal K_n(A,\bm b)^{\perp})=1.\end{equation}
+{Therefore $\bm r_n$ and all $\bm r_n^{(k)}$'s belong to the same one-dimensional subspace of $\mathbb C^N$, i.e., there exists scalar values $\pi_n^{(k)}\in\mathbb C$ such that}
+\begin{equation}\label{eq:shifted-cg-residual-collinearity}\bm r_n=\pi_n^{(k)}\bm r_n^{(k)},\quad k=1,2,\ldots,m.\end{equation}
+{The relation \eqref{eq:shifted-cg-residual-collinearity} implies that if $\pi_n^{(k)}$ is known, all the residuals $\bm r_n^{(k)}$ can be produced by the residual $\bm r_n$. In what follows, $\pi_n^{(k)}$ is determined.}
+% block: shifted-cg-residual-recurrences pages:177,178 type:ordinary-paragraph
+{From \eqref{eq:cg-residual-direction-polynomials}, the residual vector $\bm r_{n+1}$ can be written as}
+\begin{equation}\label{eq:shifted-cg-seed-residual-recurrence}\bm r_{n+1}=\left(1+\frac{\beta_{n-1}}{\alpha_{n-1}}\alpha_n-\alpha_nA\right)\bm r_n-\frac{\beta_{n-1}}{\alpha_{n-1}}\alpha_n\bm r_{n-1}.\end{equation}
+{Similarly, the residual vector $\bm r_{n+1}^{(k)}$ can also be written as}
+\begin{equation}\label{eq:shifted-cg-shifted-residual-recurrence}\bm r_{n+1}^{(k)}=\left\{1+\frac{\beta_{n-1}^{(k)}}{\alpha_{n-1}^{(k)}}\alpha_n^{(k)}-\alpha_n^{(k)}(A+\sigma_k I)\right\}\bm r_n^{(k)}-\frac{\beta_{n-1}^{(k)}}{\alpha_{n-1}^{(k)}}\alpha_n^{(k)}\bm r_{n-1}^{(k)}.\end{equation}
+{Substituting \eqref{eq:shifted-cg-residual-collinearity} into \eqref{eq:shifted-cg-shifted-residual-recurrence} yields}
+\begin{equation}\label{eq:shifted-cg-scaled-residual-recurrence}\begin{aligned}\bm r_{n+1}&=\left\{1+\frac{\beta_{n-1}^{(k)}}{\alpha_{n-1}^{(k)}}\alpha_n^{(k)}-\alpha_n^{(k)}(A+\sigma_k I)\right\}\frac{\pi_{n+1}^{(k)}}{\pi_n^{(k)}}\bm r_n\\&\quad-\frac{\beta_{n-1}^{(k)}\alpha_n^{(k)}\pi_{n+1}^{(k)}}{\alpha_{n-1}^{(k)}\pi_{n-1}^{(k)}}\bm r_{n-1}.\end{aligned}\end{equation}
+% block: shifted-cg-coefficient-matching page:178 type:ordinary-paragraph
+{Comparing the coefficients of $A\bm r_n$, $\bm r_n$, and $\bm r_{n-1}$ in \eqref{eq:shifted-cg-seed-residual-recurrence} and \eqref{eq:shifted-cg-scaled-residual-recurrence} yields}
+\begin{equation}\label{eq:shifted-cg-alpha}\alpha_n^{(k)}=\frac{\pi_n^{(k)}}{\pi_{n+1}^{(k)}}\alpha_n,\end{equation}
+\begin{equation}\label{eq:shifted-cg-middle-coefficient}\left(1+\frac{\beta_{n-1}^{(k)}}{\alpha_{n-1}^{(k)}}\alpha_n^{(k)}-\alpha_n^{(k)}\sigma_k\right)\frac{\pi_{n+1}^{(k)}}{\pi_n^{(k)}}=1+\frac{\beta_{n-1}}{\alpha_{n-1}}\alpha_n,\end{equation}
+\begin{equation}\label{eq:shifted-cg-last-coefficient}\frac{\beta_{n-1}}{\alpha_{n-1}}\alpha_n=\frac{\beta_{n-1}^{(k)}\alpha_n^{(k)}\pi_{n+1}^{(k)}}{\alpha_{n-1}^{(k)}\pi_{n-1}^{(k)}}.\end{equation}
+{Substituting \eqref{eq:shifted-cg-alpha} into \eqref{eq:shifted-cg-last-coefficient} gives}
+\begin{equation}\label{eq:shifted-cg-beta}\beta_{n-1}^{(k)}=\left(\frac{\pi_{n-1}^{(k)}}{\pi_n^{(k)}}\right)^2\beta_{n-1}.\end{equation}
+{Substituting \eqref{eq:shifted-cg-alpha} and \eqref{eq:shifted-cg-beta} into \eqref{eq:shifted-cg-middle-coefficient} leads to}
+\begin{equation}\label{eq:shifted-cg-pi-recurrence}\pi_{n+1}^{(k)}=\left(1+\frac{\beta_{n-1}}{\alpha_{n-1}}\alpha_n+\alpha_n\sigma_k\right)\pi_n^{(k)}-\frac{\beta_{n-1}}{\alpha_{n-1}}\alpha_n\pi_{n-1}^{(k)}.\end{equation}
+{Since $\bm r_0=\bm r_0^{(k)}$, it follows that $\pi_0^{(k)}=1$. From \eqref{eq:cg-polynomial-three-term} and \eqref{eq:shifted-cg-pi-recurrence}, we have the following relation:}
+\begin{equation}\label{eq:shifted-cg-polynomial-evaluation}\pi_{n+1}^{(k)}=R_{n+1}(-\sigma_k).\end{equation}
+% block: shifted-cg-solution-recurrences pages:178,179 type:ordinary-paragraph
+{In what follows, the computational formula of the approximate solution vector $\bm x_{n+1}^{(k)}$ for \eqref{eq:shifted-linear-systems} is derived from \eqref{eq:shifted-cg-shifted-residual-recurrence}. Let $\bm p_{n-1}^{(k)}:=(A+\sigma_k I)^{-1}(\bm r_{n-1}^{(k)}-\bm r_n^{(k)})/\alpha_{n-1}^{(k)}$, then from \eqref{eq:shifted-cg-shifted-residual-recurrence} we have}
+\begin{equation}\label{eq:shifted-cg-direction-recurrence}\bm p_n^{(k)}=\bm r_n^{(k)}+\beta_{n-1}^{(k)}\bm p_{n-1}^{(k)},\end{equation}
+\begin{equation}\label{eq:shifted-cg-residual-update}\bm r_{n+1}^{(k)}=\bm r_n^{(k)}-\alpha_n^{(k)}(A+\sigma_k I)\bm p_n^{(k)}.\end{equation}
+{Substituting $\bm r_n^{(k)}=\bm b-(A+\sigma_k I)\bm x_n^{(k)}$ into \eqref{eq:shifted-cg-residual-update} yields}
+\begin{equation}\label{eq:shifted-cg-solution-update}\bm x_{n+1}^{(k)}=\bm x_n^{(k)}+\alpha_n^{(k)}\bm p_n^{(k)}.\end{equation}
+{From \eqref{eq:shifted-cg-residual-collinearity} the search direction $\bm p_n^{(k)}$ is updated by}
+\begin{equation}\label{eq:shifted-cg-shared-direction}\bm p_n^{(k)}=\frac1{\pi_n^{(k)}}\bm r_n+\beta_{n-1}^{(k)}\bm p_{n-1}^{(k)}.\end{equation}
+% block: shifted-cg-cost-and-seed page:179 type:ordinary-paragraph
+{It is worth mentioning that approximate solutions are computed without using the recurrence \eqref{eq:shifted-cg-residual-update}. Thus, matrix--vector multiplications $(A+\sigma_k I)\bm p_n^{(k)}$ for all $k$'s are not required, which is much cost-efficient.}
+{Using \eqref{eq:shifted-cg-residual-collinearity}, \eqref{eq:shifted-cg-alpha}--\eqref{eq:shifted-cg-polynomial-evaluation}, \eqref{eq:shifted-cg-solution-update}, and \eqref{eq:shifted-cg-shared-direction}, we obtain the shifted CG method described in Algorithm\ \ref{alg:shifted-cg}. In Algorithm\ \ref{alg:shifted-cg}, the CG method is applied to $A^{(s)}\bm x=\bm b$ for a given $s\in\{1,2,\ldots,m\}$ that is referred to as a seed system, and approximate solutions $\bm x_n^{(k)}$ for the other shifted linear systems $A^{(k)}\bm x=\bm b$ are computed by using the residual vector $\bm r_n$ produced by the CG method.}
+% block: shifted-cg-properties page:179 type:ordinary-paragraph
+{Algorithm\ \ref{alg:shifted-cg} has the following properties:}
+\begin{enumerate}
+\item {the multiplication of $A^{(s)}$ and a vector is required, but the multiplications of $A^{(k)}$ for the other $k$ and a vector are not required;}
+\item {the approximate solution $\bm x_n^{(k)}$ of the shifted CG method is the same as the $n$th approximate solution of the CG method (with $\bm x_0=\bm0$) applied to $A^{(k)}\bm x^{(k)}=\bm b$.}
+\end{enumerate}
+{It is obvious from Algorithm\ \ref{alg:shifted-cg} that the first property holds. The second property is also obvious from the derivation process of the shifted CG method. In Algorithm\ \ref{alg:shifted-cg}, the relation $\|\bm r_n^{(k)}\|=\|\bm r_n\|/|\pi_n^{(k)}|$ can be used for monitoring the convergence of the approximate solution $\bm x_n^{(k)}$. Finally, notice that for computing $A^{(s)}\bm v$, we compute $A\bm v+\sigma_s\bm v$.}
+% block: shifted-cr-heading page:179 type:subsection
+\subsubsection{{The Shifted CR Method}}\label{subsec:shifted-cr}
+{The shifted CR method can be very similarly derived from the CR method in Sect.\ \ref{subsec:conjugate-residual} and the derivation process given in Sect.\ \ref{subsec:shifted-cg}. The algorithm of the shifted CR method is described in Algorithm\ \ref{alg:shifted-cr}.}
+% block: shifted-cr-properties page:179 type:ordinary-paragraph
+{The main differences between the shifted CG method and the shifted CR method are the computational formulas for $\alpha_n^{(s)}$ and $\beta_n^{(s)}$. The shifted CR method (Algorithm\ \ref{alg:shifted-cr}) has the following properties:}
+\begin{enumerate}
+\item {the multiplication of $A^{(s)}$ and a vector is required, but the multiplications of $A^{(k)}$ for the other $k$ and a vector are not required, which is the same property as that of the shifted CG method;}
+\item {Unlike the shifted CG method, the approximate solution $\bm x_n^{(k)}$ of the shifted CR method is not the same as the $n$th approximate solution of the CR method (with $\bm x_0=\bm0$) applied to $A^{(k)}\bm x^{(k)}=\bm b$.}
+\end{enumerate}
+% block: shifted-cg-algorithm page:180 type:ordinary-paragraph
+\begin{algorithm}[H]\caption{{The shifted CG method}}\label{alg:shifted-cg}\begin{algorithmic}[1]
+\Statex\textbf{Input:} {Choose a seed system $s\in S=\{1,2,\ldots,m\}$ and set $\bm r_0^{(s)}=\bm b,\ \beta_{-1}^{(s)}=0$}
+\Statex\textbf{Input:} $A$ {and} $\sigma_s$ {for} $k=1,2,\ldots,m$
+\Statex\textbf{Input:} $\bm x_0^{(k)}=\bm p_{-1}^{(k)}=\bm0,\ \pi_0^{(s,k)}=\pi_{-1}^{(s,k)}=1$ {for} $k=1,2,\ldots,m$
+\Statex\textbf{Output:} $\bm x_n^{(k)}$ {for} $k=1,2,\ldots,m$
+\For{$n=0,1,\ldots$, {until convergence}}
+\State $\bm p_n^{(s)}=\bm r_n^{(s)}+\beta_{n-1}^{(s)}\bm p_{n-1}^{(s)}$
+\State $\alpha_n^{(s)}=\dfrac{(\bm r_n^{(s)},\bm r_n^{(s)})}{(\bm p_n^{(s)},A^{(s)}\bm p_n^{(s)})}$
+\State $\bm x_{n+1}^{(s)}=\bm x_n^{(s)}+\alpha_n^{(s)}\bm p_n^{(s)}$
+\State \{{Begin shifted system}\}
+\For{$k(\ne s)=1,2,\ldots,m$}
+\If{$\|\bm r_n^{(k)}\|(=\|\bm r_n^{(s)}\|/|\pi_n^{(k)}|)>\epsilon_2\|\bm b\|$}
+\State $\pi_{n+1}^{(s,k)}=R_{n+1}^{(s)}(\sigma_s-\sigma_k)$ \{{$\leftarrow$ see \eqref{eq:shifted-cg-polynomial-evaluation}}\}
+\State $\phantom{\pi_{n+1}^{(s,k)}}=\left[1+\dfrac{\beta_{n-1}^{(s)}}{\alpha_{n-1}^{(s)}}\alpha_n^{(s)}-\alpha_n^{(s)}(\sigma_s-\sigma_k)\right]\pi_n^{(s,k)}-\dfrac{\beta_{n-1}^{(s)}}{\alpha_{n-1}^{(s)}}\alpha_n^{(s)}\pi_{n-1}^{(s,k)}$
+\State $\beta_{n-1}^{(k)}=\left(\dfrac{\pi_{n-1}^{(s,k)}}{\pi_n^{(s,k)}}\right)^2\beta_{n-1}^{(s)}$
+\State $\alpha_n^{(k)}=\dfrac{\pi_n^{(s,k)}}{\pi_{n+1}^{(s,k)}}\alpha_n^{(s)}$
+\State $\bm p_n^{(k)}=\dfrac1{\pi_n^{(s,k)}}\bm r_n^{(s)}+\beta_{n-1}^{(k)}\bm p_{n-1}^{(k)}$
+\State $\bm x_{n+1}^{(k)}=\bm x_n^{(k)}+\alpha_n^{(k)}\bm p_n^{(k)}$
+\EndIf\EndFor
+\State \{{End shifted system}\}
+\State $\bm r_{n+1}^{(s)}=\bm r_n^{(s)}-\alpha_n^{(s)}A^{(s)}\bm p_n^{(s)}$
+\State $\beta_n^{(s)}=\dfrac{(\bm r_{n+1}^{(s)},\bm r_{n+1}^{(s)})}{(\bm r_n^{(s)},\bm r_n^{(s)})}$
+\EndFor\end{algorithmic}\end{algorithm}
+% block: shifted-cr-algorithm page:180 type:ordinary-paragraph
+\begin{algorithm}[H]\caption{{The shifted CR method}}\label{alg:shifted-cr}\begin{algorithmic}[1]
+\Statex\textbf{Input:} {Choose a seed system $s\in S=\{1,2,\ldots,m\}$ and set $\bm r_0^{(s)}=\bm b,\ \beta_{-1}^{(s)}=0$}
+\Statex\textbf{Input:} $\bm x_0^{(k)}=\bm p_{-1}^{(k)}=\bm0,\ \pi_0^{(s,k)}=\pi_{-1}^{(s,k)}=1$ {for} $k=1,2,\ldots,m$
+\Statex\textbf{Output:} $\bm x_n^{(k)}$ {for} $k=1,2,\ldots,m$
+\For{$n=0,1,\ldots$, {until convergence}}
+\State $\bm p_n^{(s)}=\bm r_n^{(s)}+\beta_{n-1}^{(s)}\bm p_{n-1}^{(s)}$
+\State $(A^{(s)}\bm p_n^{(s)}=A^{(s)}\bm r_n^{(s)}+\beta_{n-1}^{(s)}A^{(s)}\bm p_{n-1}^{(s)})$
+\State $\alpha_n^{(s)}=\dfrac{(\bm r_n^{(s)},A^{(s)}\bm r_n^{(s)})}{(A^{(s)}\bm p_n^{(s)},A^{(s)}\bm p_n^{(s)})}$
+\State $\bm x_{n+1}^{(s)}=\bm x_n^{(s)}+\alpha_n^{(s)}\bm p_n^{(s)}$
+\State \{{Begin shifted system}\}
+\State {Run lines 6--15 of the shifted CG method (Algorithm\ \ref{alg:shifted-cg}).}
+\State \{{End shifted system}\}
+\State $\bm r_{n+1}^{(s)}=\bm r_n^{(s)}-\alpha_n^{(s)}A^{(s)}\bm p_n^{(s)}$
+\State $\beta_n^{(s)}=\dfrac{(\bm r_{n+1}^{(s)},A^{(s)}\bm r_{n+1}^{(s)})}{(\bm r_n^{(s)},A^{(s)}\bm r_n^{(s)})}$
+\EndFor\end{algorithmic}\end{algorithm}
+% block: shifted-cr-noncollinearity page:181 type:ordinary-paragraph
+{The second property comes from the fact that the $n$th residual vectors of the CR method for $A\bm x=\bm b$ and $A^{(k)}\bm x=\bm b$ do not belong to the same one-dimensional subspace because the residual vectors belong to}
+\[\begin{aligned}\bm r_n^{\mathrm{CR}}&\in\mathcal K_{n+1}(A,\bm b)\cap A\mathcal K_n(A,\bm b)^{\perp},\\\bm r_n^{(k)\mathrm{CR}}&\in\mathcal K_{n+1}(A^{(k)},\bm b)\cap A^{(k)}\mathcal K_n(A^{(k)},\bm b)^{\perp}.\end{aligned}\]
+{Notice that $\mathcal K_{n+1}(A,\bm b)=\mathcal K_{n+1}(A^{(k)},\bm b)$ holds true from the shift invariance property \eqref{eq:krylov-shift-invariance}, but in general $A\mathcal K_n(A,\bm b)\ne A^{(k)}\mathcal K_n(A^{(k)},\bm b)$. Thus,}
+\[\mathcal K_{n+1}(A,\bm b)\cap A\mathcal K_n(A,\bm b)^{\perp}\ne\mathcal K_{n+1}(A^{(k)},\bm b)\cap A^{(k)}\mathcal K_n(A^{(k)},\bm b)^{\perp}.\]
+{This means that $\bm r_n^{\mathrm{CR}}$ and $\bm r_n^{(k)\mathrm{CR}}$ are not produced by the same one-dimensional subspace, which are not collinear.}
+% block: shifted-minres-heading page:181 type:subsection
+\subsubsection{{The Shifted MINRES Method}}\label{subsec:shifted-minres}
+{The shifted MINRES method is based on the MINRES method in Sect.\ \ref{subsec:minres}, which achieves the minimization of residual 2-norms:}
+\begin{equation}\label{eq:shifted-minres-residual-minimization}\min_{\bm x_n^{(k)}\in\mathcal K_n(A^{(k)},\bm b)(=\mathcal K_n(A,\bm b))}\|\bm b-A^{(k)}\bm x_n^{(k)}\|.\end{equation}
+{In what follows, we will see how the above minimization problems can efficiently be solved, and note that the idea below corresponds to the special case of the shifted GMRES method \BookCite{43} that will be described in Sect.\ \ref{subsec:shifted-gmres}.}
+% block: shifted-minres-projected-residual page:181 type:ordinary-paragraph
+{From the Lanczos process in Sect.\ \ref{subsec:lanczos-process}, $\bm x_n^{(k)}\in\mathcal K_n(A,\bm b)$ can be rewritten as}
+\begin{equation}\label{eq:shifted-minres-coordinate-solution}\bm x_n^{(k)}=V_n\bm y_n^{(k)},\quad k=1,2,\ldots,m,\end{equation}
+{where $\bm y_n^{(k)}\in\mathbb C^n$. The corresponding residual vectors for \eqref{eq:shifted-linear-systems} are $\bm r_n^{(k)}:=\bm b-A^{(k)}\bm x_n^{(k)}=\bm b-(A+\sigma_k I)\bm x_n^{(k)}$. From \eqref{eq:shifted-minres-coordinate-solution} and the matrix form of the Lanczos process \eqref{eq:lanczos-matrix-relation}, it follows that}
+\begin{equation}\label{eq:shifted-minres-projected-residual}\begin{aligned}\bm r_n^{(k)}&=\bm b-(A+\sigma_k I)V_n\bm y_n^{(k)}\\&=V_{n+1}g_1\bm e_1-(AV_n+\sigma_kV_n)\bm y_n^{(k)}\\&=V_{n+1}(g_1\bm e_1-T_{n+1,n}^{(k)}\bm y_n^{(k)}),\quad T_{n+1,n}^{(k)}:=T_{n+1,n}+\sigma_k\begin{bmatrix}I_n\\\bm0^{\top}\end{bmatrix}.\end{aligned}\end{equation}
+% block: shifted-minres-least-squares page:182 type:ordinary-paragraph
+{Here, $\bm e_1=(1,0,\ldots,0)^{\top}$ is the first unit vector and $g_1=(\bm b,\bm b)^{1/2}$. From \eqref{eq:shifted-minres-residual-minimization} and \eqref{eq:shifted-minres-projected-residual}, we have}
+\begin{equation}\label{eq:shifted-minres-least-squares}\begin{aligned}\min_{\bm x_n\in\mathcal K_n(A,\bm b)}\|\bm b-A^{(k)}\bm x_n\|&=\min_{\bm y_n^{(k)}\in\mathbb C^n}\|V_{n+1}(g_1\bm e_1-T_{n+1,n}^{(k)}\bm y_n^{(k)})\|\\&=\min_{\bm y_n^{(k)}\in\mathbb C^n}\|g_1\bm e_1-T_{n+1,n}^{(k)}\bm y_n^{(k)}\|.\end{aligned}\end{equation}
+{The minimization problem \eqref{eq:shifted-minres-least-squares} can be solved by Givens rotations that are described in Sect.\ \ref{subsec:minres}. The algorithm of the shifted MINRES method is shown in Algorithm\ \ref{alg:shifted-minres}.}
+% block: shifted-minres-algorithm page:182 type:ordinary-paragraph
+\begin{algorithm}[H]\caption{{The shifted MINRES method}}\label{alg:shifted-minres}\begin{algorithmic}[1]
+\Statex\textbf{Input:} $\bm x_0^{(k)}=\bm p_{-1}^{(k)}=\bm p_0^{(k)}=\bm0,\ \bm v_1=\bm b/(\bm b,\bm b)^{1/2},\ g_1^{(k)}=(\bm b,\bm b)^{1/2},\ \beta_{-1}=0$
+\Statex\textbf{Output:} $\bm x_n^{(k)}$ {for} $l=1,2,\ldots,m$
+\For{$n=1,2,\ldots$}
+\State \{{The Lanczos process}\}
+\State $\alpha_n=(\bm v_n,A\bm v_n)$
+\State $\widetilde{\bm v}_{n+1}=A\bm v_n-\alpha_n\bm v_n-\beta_{n-1}\bm v_{n-1}$
+\State $\beta_n=(\widetilde{\bm v}_{n+1},\widetilde{\bm v}_{n+1})^{1/2}$
+\State $\bm v_{n+1}=\widetilde{\bm v}_{n+1}/\beta_n$
+\State $t_{n-1,n}^{(k)}=\beta_{n-1},\ t_{n,n}^{(k)}=\alpha_n+\sigma_{\ell},\ t_{n+1,n}^{(k)}=\beta_n$
+\State \{{Solve least-squares problems by Givens rotations}\}
+\For{$k=1,2,\ldots,m$}
+\If{$|g_{n+1}^{(k)}|/\|\bm b\|>\epsilon$}
+\For{$i=\max\{1,n-2\},\ldots,n-1$}
+\State $\begin{bmatrix}t_{i,n}^{(k)}\\t_{i+1,n}^{(k)}\end{bmatrix}=\begin{bmatrix}c_i^{(k)}&s_i^{(k)}\\-\bar s_i^{(k)}&c_i^{(k)}\end{bmatrix}\begin{bmatrix}t_{i,n}^{(k)}\\t_{i+1,n}^{(k)}\end{bmatrix}$
+\EndFor
+\State $c_n^{(k)}=\dfrac{|t_{n,n}^{(k)}|}{\sqrt{|t_{n,n}^{(k)}|^2+|t_{n+1,n}^{(k)}|^2}}$
+\State $\bar s_n^{(k)}=\dfrac{t_{n+1,n}^{(k)}}{t_{n,n}^{(k)}}c_n^{(k)}$
+\State $t_{n,n}^{(k)}=c_n^{(k)}t_{n,n}^{(k)}+s_n^{(k)}t_{n+1,n}^{(k)}$
+\State $t_{n+1,n}^{(k)}=0$
+\State $\begin{bmatrix}g_n^{(k)}\\g_{n+1}^{(k)}\end{bmatrix}=\begin{bmatrix}c_n^{(k)}&s_n^{(k)}\\-\bar s_n^{(k)}&c_n^{(k)}\end{bmatrix}\begin{bmatrix}g_n^{(k)}\\0\end{bmatrix}$
+\State \{{Update approximate solutions $\bm x_n^{(k)}$}\}
+\State $\bm p_n^{(k)}=\bm v_n-(t_{n-2,n}^{(k)}/t_{n-2,n-2}^{(k)})\bm p_{n-2}^{(k)}-(t_{n-1,n}^{(k)}/t_{n-1,n-1}^{(k)})\bm p_{n-1}^{(k)}$
+\State $\bm x_n^{(k)}=\bm x_{n-1}^{(k)}+(g_n^{(k)}/t_{n,n}^{(k)})\bm p_n^{(k)}$
+\EndIf\EndFor
+\State {if $|g_{n+1}^{(k)}|/\|\bm b\|\le\epsilon$ for all $\ell$, then exit.}
+\EndFor\end{algorithmic}\end{algorithm}
+% block: shifted-minres-properties pages:182,183 type:ordinary-paragraph
+{From Algorithm\ \ref{alg:shifted-minres} and the derivation process, we see that:}
+\begin{enumerate}
+\item {the multiplication of $A^{(s)}$ and a vector is required, but the multiplications of $A^{(k)}$ for the other $k$ and a vector are not required, which is the same property as that of the shifted CG method and the shifted CR method;}
+\item {the approximate solution $\bm x_n^{(k)}$ of the shifted MINRES method is the same as the $n$th approximate solution of the MINRES method (with $\bm x_0=\bm0$) applied to $A^{(k)}\bm x^{(k)}=\bm b$.}
+\end{enumerate}
