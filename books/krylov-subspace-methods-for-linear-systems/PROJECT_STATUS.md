@@ -8,10 +8,10 @@ Source SHA-256: 1e5e8bffab227a238c29f9dbb8e9746fc632d21429ddc2cb639a28e18cf2e375
 Template version: 2.0.1-english-environment-headings-20260822
 Sample approved: Yes
 Approved terminology: grade -> 阶
-Completed content: Preface, Acknowledgements, Chapters 1-4 in full
-Last integrated batch: chapter-04-section-04
+Completed content: Preface, Acknowledgements, Chapters 1-4 in full; Chapter 5 introduction and Sections 5.1-5.2
+Last integrated batch: chapter-05-section-02
 Progress output: output/translation-progress.pdf
-Next incomplete unit: chapter-05-introduction
+Next incomplete unit: chapter-05-section-01
 Blocking issues: None
 Unresolved terminology: 0
 Full-book translation complete: No
