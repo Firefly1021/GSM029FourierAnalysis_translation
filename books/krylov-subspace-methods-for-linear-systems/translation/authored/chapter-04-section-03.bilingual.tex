@@ -1,0 +1,124 @@
+% block: shifted-complex-symmetric-heading page:183 type:section
+\subsection{\BT{Shifted Complex Symmetric Linear Systems}{移位复对称线性方程组}}\label{sec:shifted-complex-symmetric-systems}
+\BT{Throughout this section, the coefficient matrix $A^{(k)}$ in \eqref{eq:shifted-linear-systems} is assumed to be complex symmetric, i.e., $A^{(k)}=(A^{(k)})^{\top}\ne(A^{(k)})^{\mathrm H}$.}{本节始终假设 \eqref{eq:shifted-linear-systems} 中的系数矩阵 $A^{(k)}$ 为复对称矩阵, 即 $A^{(k)}=(A^{(k)})^{\top}\ne(A^{(k)})^{\mathrm H}$.}
+% block: shifted-cocg-heading page:183 type:subsection
+\subsubsection{\BT{The Shifted COCG Method}{移位 COCG 方法}}\label{subsec:shifted-cocg}
+\BT{The derivation of the shifted COCG method \BookCite{184} is the same as in \eqref{eq:shifted-cg-residual-collinearity}--\eqref{eq:shifted-cg-shared-direction}. The only differences between the shifted CG method and the shifted COCG methods are $\alpha_n$ and $\beta_n$. The algorithm of the shifted COCG method is described in Algorithm\ \ref{alg:shifted-cocg}.}{移位 COCG 方法 \BookCite{184} 的推导与 \eqref{eq:shifted-cg-residual-collinearity}--\eqref{eq:shifted-cg-shared-direction} 相同. 移位 CG 方法与移位 COCG 方法的唯一区别是 $\alpha_n$ 和 $\beta_n$. 移位 COCG 方法的算法见 Algorithm\ \ref{alg:shifted-cocg}.}
+% block: shifted-cocg-algorithm page:183 type:ordinary-paragraph
+\begin{algorithm}[H]\caption{\BT{The shifted COCG method (note: $(\bar{\bm a},\bm b)=\bm a^{\top}\bm b$)}{移位 COCG 方法 (注意: $(\bar{\bm a},\bm b)=\bm a^{\top}\bm b$)}}\label{alg:shifted-cocg}\begin{algorithmic}[1]
+\Statex\textbf{Input:} \BT{Choose a seed system $s\in S=\{1,2,\ldots,m\}$ and set $\bm r_0^{(s)}=\bm b,\ \beta_{-1}^{(s)}=0$}{选择种子系统 $s\in S=\{1,2,\ldots,m\}$ 并令 $\bm r_0^{(s)}=\bm b,\ \beta_{-1}^{(s)}=0$}
+\Statex\textbf{Input:} $\bm x_0^{(k)}=\bm p_{-1}^{(k)}=\bm0,\ \pi_0^{(s,k)}=\pi_{-1}^{(s,k)}=1$ \BT{for}{对于} $k=1,2,\ldots,m$
+\Statex\textbf{Output:} $\bm x_n^{(k)}$ \BT{for}{对于} $k=1,2,\ldots,m$
+\For{$n=0,1,\ldots$, \BT{until convergence}{直至收敛}}
+\State $\bm p_n^{(s)}=\bm r_n^{(s)}+\beta_{n-1}^{(s)}\bm p_{n-1}^{(s)}$
+\State $\alpha_n^{(s)}=\dfrac{(\bar{\bm r}_n^{(s)},\bm r_n^{(s)})}{(\bar{\bm p}_n^{(s)},A^{(s)}\bm p_n^{(s)})}$
+\State $\bm x_{n+1}^{(s)}=\bm x_n^{(s)}+\alpha_n^{(s)}\bm p_n^{(s)}$
+\State \{\BT{Begin shifted system}{移位系统开始}\}
+\State \BT{Run lines 6--15 of the shifted CG method (Algorithm\ \ref{alg:shifted-cg}).}{执行移位 CG 方法 (Algorithm\ \ref{alg:shifted-cg}) 的第 6--15 行.}
+\State \{\BT{End shifted system}{移位系统结束}\}
+\State $\bm r_{n+1}^{(s)}=\bm r_n^{(s)}-\alpha_n^{(s)}A^{(s)}\bm p_n^{(s)}$
+\State $\beta_n^{(s)}=\dfrac{(\bar{\bm r}_{n+1}^{(s)},\bm r_{n+1}^{(s)})}{(\bar{\bm r}_n^{(s)},\bm r_n^{(s)})}$
+\EndFor\end{algorithmic}\end{algorithm}
+% block: shifted-cocg-properties pages:183,184 type:ordinary-paragraph
+\BT{Algorithm\ \ref{alg:shifted-cocg} has the following properties:}{Algorithm\ \ref{alg:shifted-cocg} 具有下列性质:}
+\begin{enumerate}
+\item \BT{the multiplication of $A^{(s)}$ and a vector is required, but the multiplications of $A^{(k)}$ for the other $k$ and a vector are not required;}{需要计算 $A^{(s)}$ 与向量的乘积, 但不需要计算其他 $k$ 对应的 $A^{(k)}$ 与向量的乘积;}
+\item \BT{the approximate solution $\bm x_n^{(k)}$ of the shifted COCG method is the same as the $n$th approximate solution of the COCG method (with $\bm x_0=\bm0$) applied to $A^{(k)}\bm x^{(k)}=\bm b$.}{移位 COCG 方法的近似解 $\bm x_n^{(k)}$ 与将 COCG 方法 (以 $\bm x_0=\bm0$) 应用于 $A^{(k)}\bm x^{(k)}=\bm b$ 得到的第 $n$ 个近似解相同.}
+\end{enumerate}
+\BT{When matrix $A^{(k)}$ is real symmetric for all $k$, the shifted COCG method is equivalent to the shifted CG method.}{当对所有 $k$ 矩阵 $A^{(k)}$ 都为实对称矩阵时, 移位 COCG 方法等价于移位 CG 方法.}
+% block: generalized-shifted-cocg page:184 type:ordinary-paragraph
+\BT{In \BookCite{190}, the shifted COCG method is generalized to solving the following linear systems:}{文献 \BookCite{190} 将移位 COCG 方法推广到求解下列线性方程组:}
+\begin{equation}\label{eq:generalized-shifted-systems}(A+\sigma_kB)\bm x^{(k)}=\bm b,\end{equation}
+\BT{which are referred to as generalized shifted linear systems. Here $A$ and $B$ are real symmetric and $\sigma_k$'s are complex numbers, and thus the coefficient matrix $A+\sigma_kB$ is complex symmetric. It is easy to see that if $B$ is the identity matrix, then the generalized shifted linear systems \eqref{eq:generalized-shifted-systems} reduce to the shifted linear systems.}{它们称为广义移位线性方程组. 这里 $A$ 和 $B$ 为实对称矩阵, $\sigma_k$ 为复数, 因而系数矩阵 $A+\sigma_kB$ 为复对称矩阵. 容易看出, 若 $B$ 为单位矩阵, 则广义移位线性方程组 \eqref{eq:generalized-shifted-systems} 退化为移位线性方程组.}
+\BT{We note that the shifted COCG method and the other shifted Krylov subspace methods cannot be applied to \eqref{eq:generalized-shifted-systems} because the shift invariance properties do not hold any longer, i.e., $\mathcal K_n(A+\sigma_iB,\bm b)\ne\mathcal K_n(A+\sigma_jB,\bm b)$ for $i\ne j$. One remedy is to consider the following shifted linear systems:}{注意, 移位 COCG 方法和其他移位 Krylov 子空间方法不能应用于 \eqref{eq:generalized-shifted-systems}, 因为移位不变性不再成立, 即当 $i\ne j$ 时 $\mathcal K_n(A+\sigma_iB,\bm b)\ne\mathcal K_n(A+\sigma_jB,\bm b)$. 一种补救方法是考虑下列移位线性方程组:}
+\[(B^{-1}A+\sigma_k I)\bm x^{(k)}=B^{-1}\bm b,\]
+\BT{where $B$ is assumed to be nonsingular. However, $B^{-1}A+\sigma_k I$ is non-Hermitian, and thus one may use shifted Krylov subspace methods for non-Hermitian linear systems. On the other hand, without using such general solvers, it is shown that an algorithm similar to the shifted COCG method is constructed, which is referred to as the generalized shifted COCG method \BookCite{190}. If $B=I$, the generalized shifted COCG method reduces to the shifted COCG method.}{其中假设 $B$ 非奇异. 然而, $B^{-1}A+\sigma_k I$ 为非 Hermitian 矩阵, 因而可以使用非 Hermitian 线性方程组的移位 Krylov 子空间方法. 另一方面, 已有研究表明, 无需采用这种通用求解器, 就能构造与移位 COCG 方法类似的算法, 称为广义移位 COCG 方法 \BookCite{190}. 若 $B=I$, 则广义移位 COCG 方法退化为移位 COCG 方法.}
+% block: generalized-shifted-applications page:184 type:ordinary-paragraph
+\BT{As pointed out in Sect.\ \ref{subsec:electronic-structure}, if the Hamiltonian matrix is real symmetric, then the coefficient matrices $(\epsilon+i\delta)I-H$ of the shifted linear systems are complex symmetric. Thus the shifted COCG method is a method of choice, and applications to computational physics are found in, e.g., \BookCite{73}, \BookCite{110}, \BookCite{111}. An open-source library of the shifted COCG method and related solvers is developed in \BookCite{100}.}{如 Section\ \ref{subsec:electronic-structure} 所指出, 若 Hamiltonian 矩阵为实对称矩阵, 则移位线性方程组的系数矩阵 $(\epsilon+i\delta)I-H$ 为复对称矩阵. 因此, 移位 COCG 方法是一种可选方法, 其在计算物理中的应用例如见 \BookCite{73}, \BookCite{110}, \BookCite{111}. 文献 \BookCite{100} 开发了移位 COCG 方法及相关求解器的开源库.}
+\BT{The generalized shifted linear systems also arise in the following linear systems:}{广义移位线性方程组也出现在下列线性方程组中:}
+\begin{equation}\label{eq:quadratic-parameter-linear-system}(\sigma^2A+\sigma B+C)\bm x=\bm b,\end{equation}
+\BT{where $A,B,C$ are complex symmetric. Parameterized linear systems of this type are considered in \BookCite{158}, \BookCite{159}, together with their application to structural dynamics. The interesting observation in \BookCite{158}, \S3 is that \eqref{eq:quadratic-parameter-linear-system} can be transformed into the following linear systems:}{其中 $A,B,C$ 为复对称矩阵. 文献 \BookCite{158}, \BookCite{159} 考虑了这种类型的参数化线性方程组及其在结构动力学中的应用. 文献 \BookCite{158}, \S3 中一个有趣的观察是, 可以将 \eqref{eq:quadratic-parameter-linear-system} 变换为下列线性方程组:}
+\begin{equation}\label{eq:quadratic-system-shifted-linearization}\left(\begin{bmatrix}B&C\\C^{\top}&O\end{bmatrix}+\sigma\begin{bmatrix}A&O\\O&-C^{\top}\end{bmatrix}\right)\begin{bmatrix}\bm y\\\bm x\end{bmatrix}=\begin{bmatrix}\bm b\\\bm0\end{bmatrix}\end{equation}
+\BT{if $C$ is nonsingular. Since $A,B,C$ are complex symmetric, the coefficient matrices of \eqref{eq:quadratic-system-shifted-linearization} are complex symmetric generalized shifted linear systems. Thus, the generalized shifted COCG method can also be used to solve \eqref{eq:quadratic-parameter-linear-system}.}{前提是 $C$ 非奇异. 由于 $A,B,C$ 为复对称矩阵, \eqref{eq:quadratic-system-shifted-linearization} 的系数矩阵构成复对称的广义移位线性方程组. 因此, 广义移位 COCG 方法也可用于求解 \eqref{eq:quadratic-parameter-linear-system}.}
+% block: seed-switching-heading page:185 type:subsection
+\paragraph{\BT{Seed Switching Technique}{种子切换技术}}\label{subsubsec:seed-switching}\mbox{}\par
+\BT{We can see from Algorithm\ \ref{alg:shifted-cocg} (see also line 8 of Algorithm\ \ref{alg:shifted-cg}) that if $|\pi_n^{(s,k)}|=|R_n^{(s)}(\sigma_s-\sigma_k)|\ge1$, then $\|\bm r_n^{(k)}\|\le\|\bm r_n^{(s)}\|$. Hence, if we could find a seed system such that $|R_n^{(s)}(\sigma_s-\sigma_k)|\ge1$, then all the shifted systems could be solved. However, it is extremely difficult to find such a system in advance except for some special cases discussed in \BookCite{67}, Corollary 1. The seed switching technique \BookCite{166} will avoid such a problem, and consists of the following steps:}{由 Algorithm\ \ref{alg:shifted-cocg} (另见 Algorithm\ \ref{alg:shifted-cg} 的第 8 行) 可知, 若 $|\pi_n^{(s,k)}|=|R_n^{(s)}(\sigma_s-\sigma_k)|\ge1$, 则 $\|\bm r_n^{(k)}\|\le\|\bm r_n^{(s)}\|$. 因而, 若能找到满足 $|R_n^{(s)}(\sigma_s-\sigma_k)|\ge1$ 的种子系统, 就可求解所有移位系统. 然而, 除 \BookCite{67}, Corollary 1 中讨论的一些特殊情形外, 预先找到这样的系统极其困难. 种子切换技术 \BookCite{166} 可以避免这一问题, 包含下列步骤:}
+\begin{enumerate}[label=(S\arabic*)]
+\item \BT{Choose a seed system, and then start Algorithm\ \ref{alg:shifted-cocg}.}{选择一个种子系统, 然后启动 Algorithm\ \ref{alg:shifted-cocg}.}
+\item \BT{If the seed system was solved at the $n$th iteration, then find a new one that remained unsolved.}{若在第 $n$ 次迭代已求解种子系统, 则从尚未求解的系统中选取一个新种子系统.}
+\item \BT{Start Algorithm\ \ref{alg:shifted-cocg} from the $(n+1)$th iteration using the new seed system.}{利用新种子系统从第 $(n+1)$ 次迭代开始执行 Algorithm\ \ref{alg:shifted-cocg}.}
+\end{enumerate}
+% block: seed-switching-first-stage page:185 type:ordinary-paragraph
+\BT{In (S2), one of the criteria for choosing the new seed system $\widetilde s$ may be}{在 (S2) 中, 选取新种子系统 $\widetilde s$ 的一个准则可以是}
+\[\widetilde s=\operatorname*{arg\,max}_{i\in I}\{\|\bm r_n^{(i)}\|\},\]
+\BT{where $I$ denotes an index set of the unsolved linear systems. In (S3), we need two steps to switch the old seed system to the new one. First, compute}{其中 $I$ 表示尚未求解的线性方程组的指标集. 在 (S3) 中, 需要两个步骤将旧种子系统切换为新种子系统. 首先, 计算}
+\[\pi_{n+1}^{(s,\widetilde s)}=R_{n+1}^{(s)}(\sigma_s-\sigma_{\widetilde s}),\quad\beta_n^{(\widetilde s)}=\left(\pi_n^{(s,\widetilde s)}/\pi_{n+1}^{(s,\widetilde s)}\right)^2\beta_n\]
+\BT{to obtain $\bm r_{n+1}^{(\widetilde s)}$ and $\beta_n^{(\widetilde s)}\bm p_n^{(\widetilde s)}$. Since it follows from $\bm r_{n+1}^{(\widetilde s)}+\beta_n^{(\widetilde s)}\bm p_n^{(\widetilde s)}$ that we obtain $\bm p_{n+1}^{(\widetilde s)}$, one can start the COCG method solving the system $(A+\sigma_{\widetilde s}I)\bm x^{(\widetilde s)}=\bm b$ from the $(n+1)$th iteration step. Second, to solve the remaining linear systems by using the new seed $\widetilde s$, the parameters $\alpha_{n+1}^{(i)}$ and $\beta_n^{(i)}$ must be generated from the new seed. We see that they can readily be generated by the following polynomial:}{以得到 $\bm r_{n+1}^{(\widetilde s)}$ 和 $\beta_n^{(\widetilde s)}\bm p_n^{(\widetilde s)}$. 由于从 $\bm r_{n+1}^{(\widetilde s)}+\beta_n^{(\widetilde s)}\bm p_n^{(\widetilde s)}$ 可以得到 $\bm p_{n+1}^{(\widetilde s)}$, 因而可以从第 $(n+1)$ 次迭代开始, 用 COCG 方法求解系统 $(A+\sigma_{\widetilde s}I)\bm x^{(\widetilde s)}=\bm b$. 其次, 为利用新种子 $\widetilde s$ 求解其余线性方程组, 必须从新种子生成参数 $\alpha_{n+1}^{(i)}$ 和 $\beta_n^{(i)}$. 可见, 利用下列多项式很容易生成这些参数:}
+\[\pi_{n+1}^{(\widetilde s,i)}=R_{n+1}^{(\widetilde s)}(\sigma_{\widetilde s}-\sigma_i)\quad\text{for all }i\in I.\]
+% block: seed-switching-second-stage page:185 type:ordinary-paragraph
+\BT{To obtain the above polynomial, one needs to compute}{为得到上述多项式, 需要计算}
+\[\alpha_i^{(\widetilde s)}=\left(\pi_i^{(s,\widetilde s)}/\pi_{i+1}^{(s,\widetilde s)}\right)\alpha_i,\quad\beta_j^{(\widetilde s)}=\left(\pi_j^{(s,\widetilde s)}/\pi_{j+1}^{(s,\widetilde s)}\right)^2\beta_j\]
+\BT{for $i=0,\ldots,n$, $j=0,\ldots,n-1$. Hence, the switching strategy requires only scalar operations, and moreover we can see that if breakdown does not occur, iterating the process from (S2) to (S3) enables us to keep solving the systems without losing the dimension of the Krylov subspace that has been generated until the last switching. The seed switching technique enables us to be free from the problem of the choice of the seed system, and can also be applied to the shifted CG method in Sect.\ \ref{subsec:shifted-cg} and the shifted BiCG method in Sect.\ \ref{subsec:shifted-bicg}, since the residual vectors of the shifted CG (BiCG) method for shifted systems are true CG (BiCG) residuals.}{其中 $i=0,\ldots,n$, $j=0,\ldots,n-1$. 因此, 切换策略只需标量运算, 而且可见, 若不发生中断, 反复执行 (S2) 至 (S3) 的过程, 就能在不损失上一次切换之前已生成的 Krylov 子空间维数的情况下继续求解这些系统. 种子切换技术使我们摆脱种子系统选择问题, 也可应用于 Section\ \ref{subsec:shifted-cg} 中的移位 CG 方法和 Section\ \ref{subsec:shifted-bicg} 中的移位 BiCG 方法, 因为移位系统的移位 CG (BiCG) 方法的残差向量就是真正的 CG (BiCG) 残差.}
+% block: shifted-cocr-heading page:186 type:subsection
+\subsubsection{\BT{The Shifted COCR Method}{移位 COCR 方法}}\label{subsec:shifted-cocr}
+\BT{The derivation of the shifted COCR method \BookCite{172} is also the same as in \eqref{eq:shifted-cg-residual-collinearity}--\eqref{eq:shifted-cg-shared-direction}. The only differences between the shifted CR method and the shifted COCR methods are $\alpha_n$ and $\beta_n$. The algorithm of the shifted COCR method is described in Algorithm\ \ref{alg:shifted-cocr}.}{移位 COCR 方法 \BookCite{172} 的推导也与 \eqref{eq:shifted-cg-residual-collinearity}--\eqref{eq:shifted-cg-shared-direction} 相同. 移位 CR 方法与移位 COCR 方法的唯一区别是 $\alpha_n$ 和 $\beta_n$. 移位 COCR 方法的算法见 Algorithm\ \ref{alg:shifted-cocr}.}
+% block: shifted-cocr-properties page:186 type:ordinary-paragraph
+\BT{Algorithm\ \ref{alg:shifted-cocr} has the following properties:}{Algorithm\ \ref{alg:shifted-cocr} 具有下列性质:}
+\begin{enumerate}
+\item \BT{the multiplication of $A^{(s)}$ and a vector is required, but the multiplications of $A^{(k)}$ for the other $k$ and a vector are not required, which is the same property as that of the shifted COCG method;}{需要计算 $A^{(s)}$ 与向量的乘积, 但不需要计算其他 $k$ 对应的 $A^{(k)}$ 与向量的乘积, 这一性质与移位 COCG 方法相同;}
+\item \BT{unlike the shifted COCG method, $\bm x_n^{(k)}$ of the shifted COCR method is not the same as the $n$th approximate solution of the COCR method (with $\bm x_0=\bm0$) applied to $A^{(k)}\bm x^{(k)}=\bm b$.}{与移位 COCG 方法不同, 移位 COCR 方法的 $\bm x_n^{(k)}$ 与将 COCR 方法 (以 $\bm x_0=\bm0$) 应用于 $A^{(k)}\bm x^{(k)}=\bm b$ 得到的第 $n$ 个近似解不同.}
+\end{enumerate}
+% block: shifted-cocr-algorithm page:186 type:ordinary-paragraph
+\begin{algorithm}[H]\caption{\BT{The shifted COCR method (note: $(\bar{\bm a},\bm b)=\bm a^{\top}\bm b$)}{移位 COCR 方法 (注意: $(\bar{\bm a},\bm b)=\bm a^{\top}\bm b$)}}\label{alg:shifted-cocr}\begin{algorithmic}[1]
+\Statex\textbf{Input:} \BT{Choose a seed system $s\in S=\{1,2,\ldots,m\}$ and set $\bm r_0^{(s)}=\bm b,\ \beta_{-1}^{(s)}=0$}{选择种子系统 $s\in S=\{1,2,\ldots,m\}$ 并令 $\bm r_0^{(s)}=\bm b,\ \beta_{-1}^{(s)}=0$}
+\Statex\textbf{Input:} $\bm x_0^{(k)}=\bm p_{-1}^{(k)}=\bm0,\ \pi_0^{(s,k)}=\pi_{-1}^{(s,k)}=1$ \BT{for}{对于} $k=1,2,\ldots,m$
+\Statex\textbf{Output:} $\bm x_n^{(k)}$ \BT{for}{对于} $k=1,2,\ldots,m$
+\For{$n=0,1,\ldots$, \BT{until convergence}{直至收敛}}
+\State $\bm p_n^{(s)}=\bm r_n^{(s)}+\beta_{n-1}^{(s)}\bm p_{n-1}^{(s)}$
+\State $(A^{(s)}\bm p_n^{(s)}=A^{(s)}\bm r_n^{(s)}+\beta_{n-1}^{(s)}A^{(s)}\bm p_{n-1}^{(s)})$
+\State $\alpha_n^{(s)}=\dfrac{(\bar{\bm r}_n^{(s)},A^{(s)}\bm r_n^{(s)})}{(\overline{A^{(\sigma_s)}\bm p_n^{(s)}},A^{(s)}\bm p_n^{(s)})}$
+\State $\bm x_{n+1}^{(s)}=\bm x_n^{(s)}+\alpha_n^{(s)}\bm p_n^{(s)}$
+\State \{\BT{Begin shifted system}{移位系统开始}\}
+\State \BT{Run lines 6--15 of the shifted CG method (Algorithm\ \ref{alg:shifted-cg}).}{执行移位 CG 方法 (Algorithm\ \ref{alg:shifted-cg}) 的第 6--15 行.}
+\State \{\BT{End shifted system}{移位系统结束}\}
+\State $\bm r_{n+1}^{(s)}=\bm r_n^{(s)}-\alpha_n^{(s)}A^{(s)}\bm p_n^{(s)}$
+\State $\beta_n^{(s)}=\dfrac{(\bar{\bm r}_{n+1}^{(s)},A^{(s)}\bm r_{n+1}^{(s)})}{(\bar{\bm r}_n^{(s)},A^{(s)}\bm r_n^{(s)})}$
+\EndFor\end{algorithmic}\end{algorithm}
+% block: shifted-qmr-sym-heading page:186 type:subsection
+\BT{When matrix $A^{(k)}$ is real symmetric for all $k$, the shifted COCR method is equivalent to the shifted CR method.}{当对所有 $k$ 矩阵 $A^{(k)}$ 都为实对称矩阵时, 移位 COCR 方法等价于移位 CR 方法.}
+\subsubsection{\BT{The Shifted QMR\_SYM Method}{移位 QMR\_SYM 方法}}\label{subsec:shifted-qmr-sym}
+\BT{The shifted QMR method for solving non-Hermitian linear systems was proposed in \BookCite{62}. As is known in \BookCite{61}, the shifted QMR\_SYM method is a simplification of the shifted QMR method, and the derivation of the shifted QMR\_SYM is similar to the shifted MINRES method.}{文献 \BookCite{62} 提出了求解非 Hermitian 线性方程组的移位 QMR 方法. 如 \BookCite{61} 所知, 移位 QMR\_SYM 方法是移位 QMR 方法的简化, 且移位 QMR\_SYM 的推导与移位 MINRES 方法类似.}
+% block: shifted-qmr-sym-projection page:187 type:ordinary-paragraph
+\BT{From the complex symmetric Lanczos process in Sect.\ \ref{subsec:complex-symmetric-lanczos}, $\bm x_n\in\mathcal K_n(A,\bm b)$ can be rewritten as}{由 Section\ \ref{subsec:complex-symmetric-lanczos} 中的复对称 Lanczos 过程, $\bm x_n\in\mathcal K_n(A,\bm b)$ 可改写为}
+\begin{equation}\label{eq:shifted-qmr-sym-coordinate-solution}\bm x_n^{(k)}=V_n\bm y_n^{(k)},\quad k=1,2,\ldots,m,\end{equation}
+\BT{where $\bm y_n^{(k)}\in\mathbb C^n$. The corresponding residual vectors for \eqref{eq:shifted-linear-systems} are $\bm r_n^{(k)}:=\bm b-(A+\sigma_k I)\bm x_n^{(k)}$. From \eqref{eq:shifted-qmr-sym-coordinate-solution} and the matrix form of the complex symmetric Lanczos process \eqref{eq:complex-lanczos-matrix-relation}, it follows that}{其中 $\bm y_n^{(k)}\in\mathbb C^n$. 对于 \eqref{eq:shifted-linear-systems}, 相应残差向量为 $\bm r_n^{(k)}:=\bm b-(A+\sigma_k I)\bm x_n^{(k)}$. 由 \eqref{eq:shifted-qmr-sym-coordinate-solution} 和复对称 Lanczos 过程的矩阵形式 \eqref{eq:complex-lanczos-matrix-relation}, 得}
+\begin{equation}\label{eq:shifted-qmr-sym-projected-residual}\begin{aligned}\bm r_n^{(k)}&=\bm b-(A+\sigma_k I)V_n\bm y_n^{(k)}\\&=V_{n+1}g_1\bm e_1-(AV_n+\sigma_kV_n)\bm y_n^{(k)}\\&=V_{n+1}(g_1\bm e_1-T_{n+1,n}^{(k)}\bm y_n^{(k)}),\quad T_{n+1,n}^{(k)}:=T_{n+1,n}+\sigma_k\begin{bmatrix}I_n\\\bm0^{\top}\end{bmatrix}.\end{aligned}\end{equation}
+\BT{Here, $\bm e_1=(1,0,\ldots,0)^{\top}$ is the first unit vector and $g_1=(\bar{\bm b},\bm b)^{1/2}$. As well as the QMR\_SYM method in Sect.\ \ref{subsec:qmr-sym}, $\bm y_n^{(k)}$ is determined by solving the following minimization problem.}{这里 $\bm e_1=(1,0,\ldots,0)^{\top}$ 为第一个单位向量, $g_1=(\bar{\bm b},\bm b)^{1/2}$. 与 Section\ \ref{subsec:qmr-sym} 中的 QMR\_SYM 方法一样, $\bm y_n^{(k)}$ 通过求解下列极小化问题确定.}
+\begin{equation}\label{eq:shifted-qmr-sym-least-squares}\min_{\bm y_n^{(k)}\in\mathbb C^n}\|g_1\bm e_1-T_{n+1,n}^{(k)}\bm y_n^{(k)}\|.\end{equation}
+\BT{The minimization problem \eqref{eq:shifted-qmr-sym-least-squares} can be solved by Givens rotations that are described in Sect.\ \ref{subsec:minres}. The algorithm of the shifted QMR\_SYM method is shown in Algorithm\ \ref{alg:shifted-qmr-sym}.}{极小化问题 \eqref{eq:shifted-qmr-sym-least-squares} 可利用 Section\ \ref{subsec:minres} 中介绍的 Givens 旋转求解. 移位 QMR\_SYM 方法的算法见 Algorithm\ \ref{alg:shifted-qmr-sym}.}
+% block: shifted-qmr-sym-properties page:187 type:ordinary-paragraph
+\BT{Algorithm\ \ref{alg:shifted-qmr-sym} holds the following properties:}{Algorithm\ \ref{alg:shifted-qmr-sym} 具有下列性质:}
+\begin{enumerate}
+\item \BT{the multiplication of $A^{(s)}$ and a vector is required, but the multiplications of $A^{(k)}$ for the other $k$ and a vector are not required, which is the same property as those of the shifted CG method and the shifted CR method;}{需要计算 $A^{(s)}$ 与向量的乘积, 但不需要计算其他 $k$ 对应的 $A^{(k)}$ 与向量的乘积, 这一性质与移位 CG 方法和移位 CR 方法相同;}
+\item \BT{the approximate solution $\bm x_n^{(k)}$ of the shifted QMR\_SYM method is the same as the $n$th approximate solution of the QMR\_SYM method (with $\bm x_0=\bm0$) applied to $A^{(k)}\bm x^{(k)}=\bm b$.}{移位 QMR\_SYM 方法的近似解 $\bm x_n^{(k)}$ 与将 QMR\_SYM 方法 (以 $\bm x_0=\bm0$) 应用于 $A^{(k)}\bm x^{(k)}=\bm b$ 得到的第 $n$ 个近似解相同.}
+\end{enumerate}
+% block: shifted-qmr-sym-algorithm page:187 type:ordinary-paragraph
+\begin{algorithm}[H]\caption{\BT{The shifted QMR\_SYM method (note: $(\bar{\bm a},\bm b)=\bm a^{\top}\bm b$)}{移位 QMR\_SYM 方法 (注意: $(\bar{\bm a},\bm b)=\bm a^{\top}\bm b$)}}\label{alg:shifted-qmr-sym}\begin{algorithmic}[1]
+\Statex\textbf{Input:} $\bm x_0^{(k)}=\bm p_{-1}^{(k)}=\bm p_0^{(k)}=\bm0,\ \bm v_1=\bm b/(\bar{\bm b},\bm b)^{1/2},\ g_1^{(k)}=(\bar{\bm b},\bm b)^{1/2},\ \beta_{-1}=0$
+\Statex\textbf{Output:} $\bm x_n^{(k)}$ \BT{for}{对于} $l=1,2,\ldots,m$
+\For{$n=1,2,\ldots$}
+\State (\BT{The complex symmetric Lanczos process}{复对称 Lanczos 过程})
+\State $\alpha_n=(\bar{\bm v}_n,A\bm v_n)$
+\State $\widetilde{\bm v}_{n+1}=A\bm v_n-\alpha_n\bm v_n-\beta_{n-1}\bm v_{n-1}$
+\State $\beta_n=(\overline{\widetilde{\bm v}_{n+1}},\widetilde{\bm v}_{n+1})^{1/2}$
+\State $\bm v_{n+1}=\widetilde{\bm v}_{n+1}/\beta_n$
+\State $t_{n-1,n}^{(\ell)}=\beta_{n-1},\ t_{n,n}^{(\ell)}=\alpha_n+\sigma_{\ell},\ t_{n+1,n}^{(\ell)}=\beta_n$
+\State (\BT{Solve least-squares problems by Givens rotations}{用 Givens 旋转求解最小二乘问题})
+\State \BT{Run lines 9--24 of the shifted MINRES method (Algorithm\ \ref{alg:shifted-minres}).}{执行移位 MINRES 方法 (Algorithm\ \ref{alg:shifted-minres}) 的第 9--24 行.}
+\EndFor\end{algorithmic}\end{algorithm}
+% block: hermitian-complex-shift-qmr page:188 type:ordinary-paragraph
+\BT{In \BookCite{60}, the following shifted linear systems are considered:}{文献 \BookCite{60} 考虑了下列移位线性方程组:}
+\begin{equation}\label{eq:hermitian-matrix-complex-shift}(A+\sigma_k I)\bm x^{(k)}=\bm b,\end{equation}
+\BT{where $A$ is Hermitian and $\sigma_k$'s are complex numbers. Thus the coefficient matrix $(A+\sigma_k I)$ is neither Hermitian nor complex symmetric. In this case, one may use the shifted QMR method for non-Hermitian shifted linear systems. On the other hand, there is an algorithm in \BookCite{60} that is more efficient than the shifted QMR method so that the multiplication of $(A+\sigma_k I)^{\mathrm H}$ and a vector is not required, i.e., the number of required matrix--vector multiplications is only one per each iteration step. The key idea is to generate a Krylov subspace of $\mathcal K_n(A,\bm b)$ by the Lanczos process, and the basis vectors are used to solve \eqref{eq:hermitian-matrix-complex-shift}. Note that if we generate $\mathcal K_n(A+\sigma I,\bm b)$ with $\sigma$ being a complex number instead of $\mathcal K_n(A,\bm b)$, then we need the bi-Lanczos process whose computational cost is about twice as large as that of the Lanczos process when the matrix--vector multiplication is the most time-consuming part.}{其中 $A$ 为 Hermitian 矩阵, $\sigma_k$ 为复数. 因而系数矩阵 $(A+\sigma_k I)$ 既非 Hermitian, 也非复对称. 在这种情况下, 可以使用非 Hermitian 移位线性方程组的移位 QMR 方法. 另一方面, 文献 \BookCite{60} 中有一个比移位 QMR 方法更高效的算法, 它不需要计算 $(A+\sigma_k I)^{\mathrm H}$ 与向量的乘积, 即每步迭代所需的矩阵向量乘法次数仅为一次. 其关键思想是用 Lanczos 过程生成 Krylov 子空间 $\mathcal K_n(A,\bm b)$, 并利用其基向量求解 \eqref{eq:hermitian-matrix-complex-shift}. 注意, 若不生成 $\mathcal K_n(A,\bm b)$, 而生成 $\sigma$ 为复数时的 $\mathcal K_n(A+\sigma I,\bm b)$, 则需要双 Lanczos 过程; 在矩阵向量乘法最耗时的情况下, 其计算开销约为 Lanczos 过程的两倍.}
+% block: generalized-shifted-qmr page:188 type:ordinary-paragraph
+\BT{In \BookCite{168}, the shifted QMR\_SYM method is generalized to solving (complex symmetric) generalized shifted linear systems \eqref{eq:generalized-shifted-systems}. Similar to the generalized shifted COCG method as mentioned in Sect.\ \ref{subsec:shifted-cocg}, the generalized shifted QMR\_SYM method \BookCite{168} reduces to the shifted QMR\_SYM method when $B=I$. Furthermore, based on the shifted weighted QMR\_SYM method in \BookCite{167} for complex symmetric shifted linear systems, the corresponding algorithm for solving complex symmetric generalized shifted linear systems is proposed in \BookCite{168}.}{文献 \BookCite{168} 将移位 QMR\_SYM 方法推广到求解 (复对称) 广义移位线性方程组 \eqref{eq:generalized-shifted-systems}. 与 Section\ \ref{subsec:shifted-cocg} 所述的广义移位 COCG 方法类似, 当 $B=I$ 时, 广义移位 QMR\_SYM 方法 \BookCite{168} 退化为移位 QMR\_SYM 方法. 此外, 文献 \BookCite{168} 基于 \BookCite{167} 中用于复对称移位线性方程组的移位加权 QMR\_SYM 方法, 提出了求解复对称广义移位线性方程组的相应算法.}
