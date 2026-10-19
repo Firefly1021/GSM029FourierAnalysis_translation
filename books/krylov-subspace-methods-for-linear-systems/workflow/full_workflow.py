@@ -242,7 +242,10 @@ def assemble():
         number,page,printed,title=known[key]
         locators.append("\\subsection*{"+title+"}\n\\makeatletter\\phantomsection\\def\\@currentlabel{"+number+"}\\label{"+key+"}\\makeatother\n")
         locators.append("Source "+number+", PDF "+str(page)+", printed "+printed+".\\par\n")
-    cited=sorted(set(re.findall(r"\\BookCite\{(\d+)\}","\n".join(contents))),key=int)
+    # Page/theorem-qualified citations use explicit source-bibliography links.
+    # Register those targets too; they are not book-local equation numbers.
+    cited=sorted(set(re.findall(r"\\BookCite\{(\d+)\}","\n".join(contents))
+                     +re.findall(r"bib:source-(\d+)","\n".join(contents))),key=int)
     bibliography=load("structured/source/bibliography-targets.json")
     for number in cited:
         assert number in bibliography,number
