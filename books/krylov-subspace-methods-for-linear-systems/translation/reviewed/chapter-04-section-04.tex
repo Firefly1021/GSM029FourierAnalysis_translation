@@ -1,0 +1,315 @@
+% block: shifted-nonhermitian-heading page:188 type:section
+\subsection{{移位非 Hermitian 线性方程组}}\label{sec:shifted-nonhermitian-systems}
+{本节始终假设 \eqref{eq:shifted-linear-systems} 中的系数矩阵 $A^{(k)}$ 为非 Hermitian 矩阵, 即 $A^{(k)}\ne(A^{(k)})^{\mathrm H}$.}
+% block: shifted-bicg-heading page:188 type:subsection
+\subsubsection{{移位 BiCG 方法}}\label{subsec:shifted-bicg}
+{如 Section\ \ref{subsec:shifted-cg} 所见, 种子系统 $A\bm x=\bm b$ 的 CG 方法的第 $i$ 个残差向量 $\bm r_i$, 与移位系统 $(A+\sigma I)\bm x^{\sigma}=\bm b$ 的第 $i$ 个残差向量 $\bm r_i^{\sigma}$ 共线. Theorem\ \ref{thm:shifted-residual-collinearity} 给出了 Krylov 子空间方法的两个残差向量共线条件的推广结果.}
+% block: shifted-collinearity-theorem pages:188,189 type:theorem
+\par\Needspace{14\baselineskip}
+\begin{Theorem}[\BookCite{67}]\label{thm:shifted-residual-collinearity}
+{设 $W_1\subseteq W_2\subseteq\cdots\subseteq W_k$ 为 $\mathbb C^N$ 的子空间序列, 当 $i=1,2,\ldots,k$ 时满足 $\dim(W_i)=i$ 和 $W_i\cap\mathcal K_{i+1}(A,\bm b)^{\perp}=\{\bm0\}$. 设 $\bm x_i\in\mathcal K_i(A,\bm b)^{\perp}$ 为 $A\bm x=\bm b$ 的近似解, 由残差 $\bm r_i=\bm b-A\bm x_i=p_i(A)\bm b$ 的下列 Petrov--Galerkin 条件定义:}
+\[\bm r_i\perp W_i\quad\text{for }i=1,2,\ldots,k,\]
+{其中 $p_i(A)=\sum_{k=0}^i c_kA^i$. 类似地, 设 $\bm x_i^{\sigma}\in\mathcal K_i(A+\sigma I,\bm b)=\mathcal K_i(A,\bm b)$ 为 $(A+\sigma I)\bm x^{\sigma}=\bm b$ 的解的近似, 其残差 $\bm r^{\sigma}=\bm b-(A+\sigma I)\bm x_i^{\sigma}=p_i^{\sigma}(A+\sigma I)\bm b$ 同样满足}
+\[\bm r_i^{\sigma}\perp W_i\quad\text{for }i=1,2,\ldots,k.\]
+{则 $\bm r_i$ 与 $\bm r_i^{\sigma}$ 共线, 即存在 $\pi_i^{\sigma}\in\mathbb C$, 使得 $\bm r_i=\pi_i^{\sigma}\bm r_i^{\sigma}$.}
+\end{Theorem}
+% block: shifted-collinearity-proof page:189 type:proof
+\begin{Proof}
+{设 $U_1,U_2$ 为 $\mathbb C^N$ 的子空间. 由标准线性代数可知, $(U_1\cap U_2)^{\perp}=U_1^{\perp}+U_2^{\perp}$. 由假设 $W_i\cap\mathcal K_{i+1}(A,\bm b)^{\perp}=\{\bm0\}$, 有}
+\begin{equation}\label{eq:shifted-collinearity-complement-sum}(W_i\cap\mathcal K_{i+1}(A,\bm b)^{\perp})^{\perp}=\{\bm0\}^{\perp}\Leftrightarrow W_i^{\perp}+\mathcal K_{i+1}(A,\bm b)=\mathbb C^N.\end{equation}
+{有 $\dim W_i^{\perp}=N-i$ 和 $\mathcal K_{i+1}(A,\bm b)=i+1$, 因而 $\dim W_i^{\perp}+\dim\mathcal K_{i+1}(A,\bm b)=N+1$. 另一方面, 由 \eqref{eq:shifted-collinearity-complement-sum}, 有 $\dim(W_i^{\perp}+\mathcal K_{i+1}(A,\bm b))=\dim\mathbb C^N=N$. 因此}
+\[\dim(W_i^{\perp}\cap\mathcal K_{i+1}(A,\bm b))=1.\]
+{由于 $\bm r_i,\bm r_i^{\sigma}\in\mathcal K_{i+1}(A,\bm b)\cap W_i^{\perp}$, 两个残差向量 $\bm r_i,\bm r_i^{\sigma}$ 位于同一个一维子空间中, 这意味着 $\bm r_i,\bm r_i^{\sigma}$ 共线.}\par\nopagebreak[4]\end{Proof}
+% block: shifted-bicg-application page:189 type:ordinary-paragraph
+{Theorem\ \ref{thm:shifted-residual-collinearity} 表明, 利用关系 $W_n=\mathcal K_n(A^{\mathrm H},\bm r_0^*)$, $A\bm x=\bm b$ 的 BiCG 残差向量 $\bm r_n$ 与 $(A+\sigma_k I)\bm x^{(k)}=\bm b$ 的 BiCG 残差向量 $\bm r_n^{(k)}$ 共线, 即}
+\[\bm r_n=\pi_n^{(k)}\bm r_n^{(k)}.\]
+{因此, 沿用 Section\ \ref{subsec:shifted-cg} 中移位 CG 方法的推导, 得到 Algorithm\ \ref{alg:shifted-bicg} 所列的移位 BiCG 方法算法. 类似地, Section\ \ref{subsec:bicr-method} 中的 BiCR 方法也被发展用于求解移位线性方程组, 在 \BookCite{85} 中称为移位 BiCR 方法.}
+% block: shifted-bicgstab-heading page:189 type:subsection
+\subsubsection{{移位 BiCGSTAB 方法}}\label{subsec:shifted-bicgstab}
+{文献 \BookCite{67} 提出了移位 BiCGSTAB 方法和移位 BiCGSTAB($\ell$) 方法. \newline{}由于移位 BiCGSTAB($\ell$) 方法的推导较为复杂, 这里基于 \BookCite{140} 中的说明介绍移位 BiCGSTAB 方法的推导. 为推导移位 BiCGSTAB 方法, 考虑种子系统 $A\bm x=\bm b$ 和移位系统 $(A+\sigma I)\bm x^{\sigma}=\bm b$. 首先回顾 Section\ \ref{subsec:product-type-krylov} 中的 BiCGSTAB 方法. 设 $\bm r_{n+1}$ 为 BiCGSTAB 方法的残差向量. 则 $\bm r_{n+1}$ 和其他迭代量 $\bm t_n,\bm p_n,\bm x_n$ 表示为}
+% block: shifted-bicg-algorithm page:190 type:ordinary-paragraph
+\begin{algorithm}[H]\caption{{移位 BiCG 方法}}\label{alg:shifted-bicg}\begin{algorithmic}[1]
+\Statex\textbf{Input:} {选择种子系统 $s\in S=\{1,2,\ldots,m\}$ 并令 $\bm r_0^{(s)}=\bm b,\ \beta_{-1}^{(s)}=0$}
+\Statex\textbf{Input:} $A$ {和} $\sigma_s$ {对于} $k=1,2,\ldots,m$
+\Statex\textbf{Input:} $\bm x_0^{(k)}=\bm p_{-1}^{(k)}=\bm p_{-1}^{*(k)}=\bm0,\ \pi_0^{(s,k)}=\pi_{-1}^{(s,k)}=1$ {对于} $k=1,2,\ldots,m$
+\Statex\textbf{Input:} {选择 $\bm r_0^*\in\mathbb C^N$, 例如 $\bm r_0^*=\bm r_0$}
+\Statex\textbf{Output:} $\bm x_n^{(k)}$ {对于} $k=1,2,\ldots,m$
+\For{$n=0,1,\ldots$, {直至收敛}}
+\State $\bm p_n^{(s)}=\bm r_n^{(s)}+\beta_{n-1}^{(s)}\bm p_{n-1}^{(s)},\quad\bm p_n^{*(s)}=\bm r_n^{*(s)}+\bar\beta_{n-1}^{(s)}\bm p_{n-1}^{*(s)}$
+\State $\alpha_n^{(s)}=\dfrac{(\bm r_n^{*(s)},\bm r_n^{(s)})}{(\bm p_n^{*(s)},A^{(s)}\bm p_n^{(s)})}$
+\State $\bm x_{n+1}^{(s)}=\bm x_n^{(s)}+\alpha_n^{(s)}\bm p_n^{(s)}$
+\State \{{移位系统开始}\}
+\State {执行移位 CG 方法 (Algorithm\ \ref{alg:shifted-cg}) 的第 6--15 行.}
+\State \{{移位系统结束}\}
+\State $\bm r_{n+1}^{(s)}=\bm r_n^{(s)}-\alpha_n^{(s)}A^{(s)}\bm p_n^{(s)},\quad\bm r_{n+1}^{*(s)}=\bm r_n^{*(s)}-\bar\alpha_nA^{(s)\mathrm H}\bm p_n^{*(s)}$
+\State $\beta_n^{(s)}=\dfrac{(\bm r_{n+1}^{*(s)},\bm r_{n+1}^{(s)})}{(\bm r_n^{*(s)},\bm r_n^{(s)})}$
+\EndFor\end{algorithmic}\end{algorithm}
+% block: bicgstab-polynomial-recollection page:190 type:ordinary-paragraph
+\[\begin{aligned}\bm p_n&:=Q_n(A)\bm p_n^{\mathrm{BiCG}}=\bm r_n+\beta_{n-1}(\bm p_{n-1}-\zeta_{n-1}A\bm p_{n-1})\\&=\bm r_n+\beta_{n-1}\left[\bm p_{n-1}+\frac{\zeta_{n-1}}{\alpha_{n-1}}(\bm t_{n-1}-\bm r_{n-1})\right],\\
+\bm t_n&:=Q_n(A)\bm r_{n+1}^{\mathrm{BiCG}}=\bm r_n-\alpha_nA\bm p_n,\\
+\bm r_{n+1}&:=Q_{n+1}(A)\bm r_{n+1}^{\mathrm{BiCG}}=\bm t_n-\zeta_nA\bm t_n,\\
+\bm x_{n+1}&:=\bm x_n+\alpha_n\bm p_n+\zeta_n\bm t_n,\end{aligned}\]
+{其中 $\bm r_{n+1}^{\mathrm{BiCG}}$ 和 $\bm p_n^{\mathrm{BiCG}}$ 分别为第 $n+1$ 次迭代的 BiCG 残差向量和第 $n$ 次迭代的 BiCG 搜索方向, 多项式 $Q_{n+1}(z)$ 定义为}
+\begin{equation}\label{eq:shifted-bicgstab-seed-polynomial-initial}Q_0(\lambda):=1,\end{equation}
+\begin{equation}\label{eq:shifted-bicgstab-seed-polynomial-recurrence}Q_{n+1}(\lambda):=(1-\zeta_n\lambda)Q_n(\lambda),\quad n=0,1,\ldots\end{equation}
+{对于 BiCGSTAB 方法, $\zeta_n$ 取为使 $\|\bm r_{n+1}\|$ 极小. 回顾 Section\ \ref{subsec:shifted-bicg} 中, $(A+\sigma I)\bm x^{\sigma}=\bm b$ 的移位 BiCG 方法残差向量写为}
+\[\bm r_{n+1}^{\sigma,\mathrm{BiCG}}=\xi_{n+1}^{\sigma}\bm r_{n+1}^{\mathrm{BiCG}},\quad\xi_{n+1}^{\sigma}\in\mathbb C.\]
+% block: shifted-bicgstab-xi-recurrence pages:190,191 type:ordinary-paragraph
+{这里, 由 \eqref{eq:shifted-cg-pi-recurrence}, 对所有 $n$ 将标量 $\xi_{n+1}^{\sigma}$ 定义为 $\xi_{n+1}^{\sigma}:=(\pi_{n+1}^{\sigma})^{-1}$, 因而有}
+\begin{equation}\label{eq:shifted-bicgstab-xi-recurrence}\begin{aligned}\xi_{n+1}^{\sigma}&=\frac1{\left(1+\frac{\beta_{n-1}}{\alpha_{n-1}}\alpha_n+\alpha_n\sigma\right)\pi_n^{\sigma}-\frac{\beta_{n-1}}{\alpha_{n-1}}\alpha_n\pi_{n-1}^{\sigma}}\\
+&=\frac1{\left(1+\frac{\beta_{n-1}}{\alpha_{n-1}}\alpha_n+\alpha_n\sigma\right)(\xi_n^{\sigma})^{-1}-\frac{\beta_{n-1}}{\alpha_{n-1}}\alpha_n(\xi_{n-1}^{\sigma})^{-1}}\\
+&=\frac{\xi_n^{\sigma}\xi_{n-1}^{\sigma}\alpha_{n-1}}{(1+\alpha_n\sigma)\xi_{n-1}^{\sigma}\alpha_{n-1}+\alpha_n\beta_{n-1}(\xi_{n-1}^{\sigma}-\xi_n^{\sigma})},\end{aligned}\end{equation}
+{其中 $\xi_{-1}^{\sigma}=\xi_0^{\sigma}=1$.}
+% block: shifted-bicgstab-smoothing page:191 type:ordinary-paragraph
+{现在可以介绍移位 BiCGSTAB 方法. 移位 BiCGSTAB 方法的残差向量定义为}
+\[\bm r_{n+1}^{\sigma,\mathrm{STAB}}:=Q_{n+1}^{\sigma}(A)\bm r_{n+1}^{\sigma,\mathrm{BiCG}},\]
+{其中 $Q_{n+1}^{\sigma}(\lambda)$ 递归定义为}
+\begin{equation}\label{eq:shifted-bicgstab-shifted-polynomial}Q_{n+1}^{\sigma}(\lambda):=[1-\zeta_n^{\sigma}(\lambda+\sigma)]Q_n^{\sigma}(\lambda),\quad n=0,1,\ldots\end{equation}
+{这里 $Q_0^{\sigma}(\lambda):=1$. $\zeta_n^{\sigma}$ 取为使移位 BiCGSTAB 残差与 BiCGSTAB 残差共线, 即}
+\[\bm r_{n+1}^{\sigma,\mathrm{STAB}}=c_n\bm r_{n+1}^{\mathrm{STAB}},\quad c_n\in\mathbb C.\]
+{为此, 确定 $\zeta_n^{\sigma}$ 使}
+\begin{equation}\label{eq:shifted-bicgstab-polynomial-collinearity}Q_{n+1}^{\sigma}(\lambda)=\tau_{n+1}^{\sigma}Q_{n+1}(\lambda),\quad\tau_{n+1}^{\sigma}\in\mathbb C.\end{equation}
+{于是, 移位 BiCGSTAB 方法的残差向量定义并表示为}
+\begin{equation}\label{eq:shifted-bicgstab-residual-collinearity}\begin{aligned}\bm r_{n+1}^{\sigma,\mathrm{STAB}}&:=Q_{n+1}^{\sigma}(A)\bm r_{n+1}^{\sigma,\mathrm{BiCG}}\\&=\tau_{n+1}^{\sigma}Q_{n+1}(A)\xi_{n+1}^{\sigma}\bm r_{n+1}^{\mathrm{BiCG}}\\&=\tau_{n+1}^{\sigma}\xi_{n+1}^{\sigma}Q_{n+1}(A)\bm r_{n+1}^{\mathrm{BiCG}}\\&=\tau_{n+1}^{\sigma}\xi_{n+1}^{\sigma}\bm r_{n+1}^{\mathrm{STAB}}.\end{aligned}\end{equation}
+% block: shifted-bicgstab-tau-zeta pages:191,192 type:ordinary-paragraph
+{下面确定 \eqref{eq:shifted-bicgstab-residual-collinearity} 中的参数 $\tau_{n+1}^{\sigma},\xi_{n+1}^{\sigma}$. 由 \eqref{eq:shifted-bicgstab-seed-polynomial-recurrence}, \eqref{eq:shifted-bicgstab-shifted-polynomial} 和 \eqref{eq:shifted-bicgstab-polynomial-collinearity} 得}
+\begin{equation}\label{eq:shifted-bicgstab-polynomial-matching}\underbrace{\tau_{n+1}^{\sigma}(1-\zeta_n\lambda)Q_n(\lambda)}_{Q_{n+1}^{\sigma}(\lambda)}=[1-\zeta_n^{\sigma}(\lambda+\sigma)]\underbrace{\tau_n^{\sigma}Q_n(\lambda)}_{Q_n^{\sigma}(\lambda)}.\end{equation}
+{比较 \eqref{eq:shifted-bicgstab-polynomial-matching} 两边的系数, 得}
+\[\zeta_n\tau_{n+1}^{\sigma}=\zeta_n^{\sigma}\tau_n^{\sigma},\quad\tau_{n+1}^{\sigma}=(1-\zeta_n^{\sigma}\sigma)\tau_n^{\sigma},\]
+{由此得到}
+\begin{equation}\label{eq:shifted-bicgstab-tau-zeta}\tau_{n+1}^{\sigma}=\frac{\tau_n^{\sigma}}{1+\zeta_n\sigma},\quad\zeta_n^{\sigma}=\frac{\zeta_n}{1+\zeta_n\sigma},\end{equation}
+{其中由关系 \eqref{eq:shifted-bicgstab-polynomial-collinearity} 和 $Q_0^{\sigma}(\lambda)=Q_0(\lambda)=1$ 得 $\tau_0^{\sigma}=1$. 现在, $(A+\sigma I)\bm x^{\sigma}=\bm b$ 的移位 BiCGSTAB 迭代量为}
+\begin{equation}\label{eq:shifted-bicgstab-direction}\begin{aligned}\bm p_n^{\sigma}&:=Q_n^{\sigma}(A)\bm p_n^{\sigma,\mathrm{BiCG}}=\bm r_n^{\sigma}+\beta_{n-1}^{\sigma}\left[\bm p_{n-1}^{\sigma}+\frac{\zeta_{n-1}^{\sigma}}{\alpha_{n-1}^{\sigma}}(\bm t_{n-1}^{\sigma}-\bm r_{n-1}^{\sigma})\right]\\&=\tau_n^{\sigma}\xi_n^{\sigma}\bm r_n+\beta_{n-1}^{\sigma}\left[\bm p_{n-1}^{\sigma}+\frac{\zeta_{n-1}^{\sigma}}{\alpha_{n-1}^{\sigma}}\tau_{n-1}^{\sigma}(\xi_n^{\sigma}\bm t_{n-1}-\xi_{n-1}^{\sigma}\bm r_{n-1})\right],\end{aligned}\end{equation}
+\begin{equation}\label{eq:shifted-bicgstab-intermediate}\bm t_n^{\sigma}:=Q_n^{\sigma}(A)\bm r_{n+1}^{\sigma,\mathrm{BiCG}}=\tau_n^{\sigma}\xi_{n+1}^{\sigma}Q_n\bm r_{n+1}^{\mathrm{BiCG}}=\tau_n^{\sigma}\xi_{n+1}^{\sigma}\bm t_n,\end{equation}
+\begin{equation}\label{eq:shifted-bicgstab-residual-update}\bm r_{n+1}^{\sigma}:=Q_{n+1}^{\sigma}(A)\bm r_{n+1}^{\sigma,\mathrm{BiCG}}=\tau_{n+1}^{\sigma}\xi_{n+1}^{\sigma}Q_{n+1}\bm r_{n+1}^{\mathrm{BiCG}}=\tau_{n+1}^{\sigma}\xi_{n+1}^{\sigma}\bm r_{n+1}^{\mathrm{STAB}},\end{equation}
+\begin{equation}\label{eq:shifted-bicgstab-solution-update}\bm x_{n+1}^{\sigma}:=\bm x_n^{\sigma}+\alpha_n^{\sigma}\bm p_n^{\sigma}+\zeta_n^{\sigma}\bm t_n^{\sigma}.\end{equation}
+{由 \eqref{eq:shifted-bicgstab-xi-recurrence}, \eqref{eq:shifted-bicgstab-tau-zeta}, \eqref{eq:shifted-bicgstab-direction}--\eqref{eq:shifted-bicgstab-solution-update}, 就得到移位 BiCGSTAB 方法, 其算法见 Algorithm\ \ref{alg:shifted-bicgstab}.}
+% block: shifted-gmres-heading page:192 type:subsection
+\subsubsection{{移位 GMRES 方法}}\label{subsec:shifted-gmres}
+{本小节推导移位 GMRES 方法 \BookCite{43}. 为此, 考虑将 GMRES 方法应用于移位线性方程组 $(A+\sigma I)\bm x=\bm b$. 为简便起见, 令初始猜测为 $\bm x_0=\bm0$. 则 GMRES 方法在下列 Krylov 子空间上寻找近似解:}
+\begin{equation}\label{eq:shifted-gmres-krylov-membership}\bm x_n^{\sigma}\in\mathcal K_n(A+\sigma I,\bm b).\end{equation}
+{由移位不变性 \eqref{eq:krylov-shift-invariance}, 有 $\mathcal K_n(A+\sigma I,\bm b)=\mathcal K_n(A,\bm b)$. 因此, 使用 Arnoldi 过程时, $\mathcal K_n(A+\sigma I,\bm b)$ 的标准正交基向量等价于 $\mathcal K_n(A,\bm b)$ 的标准正交基向量, 即 Section\ \ref{subsec:arnoldi-process} 中的 $V_n$. 于是, \eqref{eq:shifted-gmres-krylov-membership} 及相应残差表示为}
+\[\bm x_n^{\sigma}=V_n\bm y_n,\quad\bm y_n\in\mathbb C^n\]
+% block: shifted-bicgstab-algorithm page:193 type:ordinary-paragraph
+\begin{algorithm}[H]\caption{{移位 BiCGSTAB 方法}}\label{alg:shifted-bicgstab}\begin{algorithmic}[1]
+\Statex\textbf{Input:} $\bm x_0=\bm0,\ \bm p_{-1}=\bm0,\ \bm r_0=\bm b,\ \beta_{-1}=0$
+\Statex\textbf{Input:} {选择 $\bm r_0^*\in\mathbb C^N$, 例如 $\bm r_0^*=\bm r_0$}
+\Statex\textbf{Input:} $\bm x_0^{(k)}=\bm0,\ \bm p_0^{(k)}=\bm b,\ \beta_{-1}^{(k)}=0,\ \alpha_{-1}^{(k)}=\xi_{-1}^{(k)}=\xi_0^{(k)}=\tau_0^{(k)}=1$ {对于} $k=1,2,\ldots,m$
+\Statex\textbf{Output:} $\bm x_n^{(k)}$
+\For{$n=0,1,\ldots$}
+\State $\bm p_n=\bm r_n+\beta_{n-1}(\bm p_{n-1}-\zeta_{n-1}A\bm p_{n-1})$
+\State $\alpha_n=\dfrac{(\bm r_0^*,\bm r_n)}{(\bm r_0^*,A\bm p_n)}$
+\State $\bm t_n=\bm r_n-\alpha_nA\bm p_n$
+\State $\zeta_n=\dfrac{(A\bm t_n,\bm t_n)}{(A\bm t_n,A\bm t_n)}$
+\State $\bm x_{n+1}=\bm x_n+\alpha_n\bm p_n+\zeta_n\bm t_n$
+\State $\bm r_{n+1}=\bm t_n-\zeta_nA\bm t_n$
+\State $\beta_n=\dfrac{\alpha_n}{\zeta_n}\times\dfrac{(\bm r_0^*,\bm r_{n+1})}{(\bm r_0^*,\bm r_n)}$
+\State \{{移位系统开始}\}
+\For{$k=1,2,\ldots,m$}
+\State $\xi_{n+1}^{(k)}=\dfrac{\xi_n^{(k)}\xi_{n-1}^{(k)}\alpha_{n-1}}{(1+\alpha_n\sigma)\xi_{n-1}^{(k)}\alpha_{n-1}+\alpha_n\beta_{n-1}(\xi_{n-1}^{(k)}-\xi_n^{(k)})}$
+\State $\alpha_n^{(k)}=\dfrac{\xi_{n+1}^{(k)}}{\xi_n^{(k)}}\alpha_k$
+\State $\zeta_n^{(k)}=\dfrac{\zeta_n}{1+\zeta_n\sigma}$
+\State $\bm x_{n+1}^{(k)}=\bm x_n^{(k)}+\alpha_n^{(k)}\bm p_n^{(k)}+\zeta_n^{(k)}\bm t_n^{(k)}$
+\State $\tau_{n+1}^{(k)}=\dfrac{\tau_n^{(k)}}{1+\zeta_n\sigma}$
+\State $\beta_n^{(k)}=\left(\dfrac{\xi_{n+1}^{(k)}}{\xi_n^{(k)}}\right)^2\beta_k$
+\State $\begin{aligned}\bm p_{n+1}^{(k)}&=\tau_{n+1}^{(k)}\xi_{n+1}^{(k)}\bm r_{n+1}\\&\quad+\beta_n^{(k)}\left[\bm p_n^{(k)}+\frac{\zeta_n^{(k)}}{\alpha_n^{(k)}}\tau_n^{(k)}(\xi_{n+1}^{(k)}\bm t_n^{(k)}-\xi_n^{(k)}\bm r_n)\right]\end{aligned}$
+\EndFor
+\State \{{移位系统结束}\}
+\EndFor\end{algorithmic}\end{algorithm}
+% block: shifted-gmres-residual-expansion page:193 type:ordinary-paragraph
+{以及}
+\[\begin{aligned}\bm r_n^{\sigma}&=\bm b-(A+\sigma I)\bm x_n^{\sigma}\\
+&=\|\bm b\|V_{n+1}\bm e_1-AV_n\bm y_n-\sigma V_n\bm y_n\\
+&=\|\bm b\|V_{n+1}\bm e_1-V_{n+1}H_{n+1,n}\bm y_n-\sigma V_{n+1}\begin{bmatrix}\bm y_n\\0\end{bmatrix}\\
+&=\|\bm b\|V_{n+1}\bm e_1-V_{n+1}H_{n+1,n}\bm y_n-\sigma V_{n+1}\begin{bmatrix}I_n\\\bm0^{\top}\end{bmatrix}\bm y_n\\
+&=V_{n+1}\left[\|\bm b\|\bm e_1-\left(H_{n+1,n}+\begin{bmatrix}\sigma I_n\\\bm0^{\top}\end{bmatrix}\right)\bm y_n\right]\\
+&=V_{n+1}(\|\bm b\|\bm e_1-H_{n+1,n}^{\sigma}\bm y_n),\end{aligned}\]
+% block: shifted-gmres-least-squares page:194 type:ordinary-paragraph
+{其中 $I_n$ 为 $n\times n$ 单位矩阵, $H_{n+1,n}^{\sigma}$ 为所谓的移位 Hessenberg 矩阵, 其元素在 $i\ne j$ 时满足 $(H_{n+1,n}^{\sigma})_{i,j}=(H_{n+1,n})_{i,j}$, 在 $i=j$ 时满足 $(H_{n+1,n}^{\sigma})_{i,j}=(H_{n+1,n})_{i,j}+\sigma$. 于是, 类似于 \eqref{eq:gmres-projected-minimization}, 通过求解下式可使残差范数极小}
+\[\bm y_n^{\sigma}:=\operatorname*{arg\,min}_{\bm y\in\mathbb C^n}\|\beta\bm e_1-H_{n+1,n}^{\sigma}\bm y\|.\]
+{上述最小二乘问题可利用 Section\ \ref{subsec:minres} 中介绍的 Givens 旋转高效求解. 利用 $\bm y_n^{\sigma}$, 近似解现为}
+\[\bm x_n^{\sigma}=V_n\bm y_n^{\sigma}.\]
+{若系数矩阵 $A$ 为 Hermitian 矩阵且 $\sigma\in\mathbb R$, 则移位 GMRES 方法退化为 Section\ \ref{subsec:shifted-minres} 中的移位 MINRES 方法. 移位 GMRES 方法的算法见 Algorithm\ \ref{alg:shifted-gmres}.}
+% block: shifted-gmres-algorithm page:194 type:ordinary-paragraph
+\begin{algorithm}[H]\caption{{移位 GMRES 方法}}\label{alg:shifted-gmres}\begin{algorithmic}[1]
+\Statex\textbf{Input:} $\sigma_k\ (k=1,2,\ldots,m)$
+\Statex\textbf{Output:} $\bm x_n^{(k)}\ (k=1,2,\ldots,m)$
+\State $\bm g=(\|\bm b\|,0,\ldots,0)^{\top},\ \bm v_1=\bm b/\|\bm b\|$
+\For{$n=1,2,\ldots$}
+\State ({Arnoldi 过程})
+\State $\bm t=A\bm v_n$
+\For{$i=1,2,\ldots,n$}
+\State $h_{i,n}=(\bm v_i,\bm t)$
+\State $\bm t=\bm t-h_{i,n}\bm v_i$
+\EndFor
+\State $h_{n+1,n}=\|\bm t\|$
+\State $\bm v_{n+1}=\bm t/h_{n+1,n}$
+\State \{{移位系统开始}\}
+\State $h_{i,n}^{(k)}=h_{i,n}$ {对于} $i\ne n$
+\State $h_{n,n}^{(k)}=h_{n,n}+\sigma_k$
+\For{$k=1,2,\ldots,m$}
+\State \{{Givens 旋转}\}
+\For{$i=1,2,\ldots,n-1$}
+\State $\begin{bmatrix}h_{i,n}^{(k)}\\h_{i+1,n}^{(k)}\end{bmatrix}=\begin{bmatrix}c_i^{(k)}&s_i^{(k)}\\-\bar s_i^{(k)}&c_i^{(k)}\end{bmatrix}\begin{bmatrix}h_{i,n}^{(k)}\\h_{i+1,n}^{(k)}\end{bmatrix}$
+\EndFor
+\State $c_n^{(k)}=\dfrac{|h_{n,n}^{(k)}|}{\sqrt{|h_{n,n}^{(k)}|^2+|h_{n+1,n}^{(k)}|^2}}$
+\State $\bar s_n=\dfrac{h_{n+1,n}^{(k)}}{h_{n,n}^{(k)}}c_n$
+\State $h_{n,n}^{(k)}=c_n^{(k)}h_{n,n}^{(k)}+s_n^{(k)}h_{n+1,n}^{(k)}$
+\State $h_{n+1,n}^{(k)}=0$
+\State $\begin{bmatrix}g_n^{(k)}\\g_{n+1}^{(k)}\end{bmatrix}=\begin{bmatrix}c_n^{(k)}&s_n^{(k)}\\-\bar s_n^{(k)}&c_n^{(k)}\end{bmatrix}\begin{bmatrix}g_n^{(k)}\\0\end{bmatrix}$
+\State ({检查收敛性})
+\If{$|g_{n+1}^{(k)}|/\|\bm b\|\le\epsilon$,}
+\State $\bm x_n^{(k)}=V_n(H_n^{(k)})^{-1}\bm g^{(k)}$
+\EndIf\EndFor
+\State \{{移位系统结束}\}
+\EndFor\end{algorithmic}\end{algorithm}
+% block: shifted-gmres-restart-difficulty pages:194,195 type:ordinary-paragraph
+{GMRES 方法与移位 GMRES 方法的区别在于初始猜测 $\bm x_0=\bm0$ 和 Algorithm\ \ref{alg:shifted-gmres} 中对应于生成 $H_{n+1,n}^{\sigma}$ 的第 13 行. 注意, 经过 Givens 旋转后, $H_n$ 成为上三角矩阵, 因而第 26 行的 $\bm c^{(k)}:=(H_n^{(k)})^{-1}\bm g$ 可通过求解 $H_n^{(k)}\bm c^{(k)}=\bm g$ 容易地得到.}
+{如 Section\ \ref{subsec:gmres-method} 所述, 由于存储需求和计算开销增长, 当迭代次数很多时, GMRES 方法并不实用. 相比之下, Algorithm\ \ref{alg:gmres-restarted} 中介绍的重启 GMRES 方法在实践中很有用. 出于同样原因, 当迭代次数很多时, 移位 GMRES 方法也不实用. 因而自然可以考虑移位线性方程组的重启版本. 然而, 若采用 Algorithm\ \ref{alg:gmres-restarted} 的思想, 就面临一个困难: 重启后初始残差向量 $\bm r_0^{(i)}$ 和 $\bm r_0^{(j)}$ 一般不再共线, 因而无法共享 Krylov 子空间的基向量来求解移位线性方程组.}
+% block: restarted-shifted-gmres-collinearity page:195 type:ordinary-paragraph
+{Frommer 和 Gräsner \BookCite{68} 巧妙地绕过了这一困难. 下面介绍其思想和相应算法. 设 $\bm r_n$ 为 $A\bm x=\bm b$ 的 GMRES 方法残差向量. 他们考虑强制使移位系统 $(A+\sigma I)\bm x^{\sigma}=\bm b$ 的残差向量 $\bm r_n^{\sigma}$ 与 $\bm r_n$ 共线, 即寻找近似解 $\bm x^{\sigma}=\bm x_0^{\sigma}+V_n\bm y_n^{\sigma}$ 使得}
+\[\bm r_n^{\sigma}=\beta_n\bm r_n.\]
+{$\bm r_n$ 表示为}
+\[\bm r_n=\bm b-A\bm x_n=V_{n+1}\bm z_{n+1},\]
+{其中 $\bm z_{n+1}:=\|\bm r_0\|\bm e_1-H_{n+1,n}\bm y_n$. 现在有下列等式:}
+\[\begin{aligned}\bm r_n^{\sigma}=\beta_n\bm r_n&\Leftrightarrow\bm b-A^{\sigma}\bm x_n^{\sigma}=\beta_nV_{n+1}\bm z_{n+1}\\
+&\Leftrightarrow\bm b-A^{\sigma}(\bm x_0^{\sigma}+V_n\bm y_n^{\sigma})=\beta_nV_{n+1}\bm z_{n+1}\\
+&\Leftrightarrow\beta_0\bm r_0-A^{\sigma}V_n\bm y_n^{\sigma}=\beta_nV_{n+1}\bm z_{n+1}\\
+&\Leftrightarrow\beta_0\bm r_0-V_{n+1}H_{n+1,n}^{\sigma}\bm y_n^{\sigma}=\beta_nV_{n+1}\bm z_{n+1}\\
+&\Leftrightarrow\beta_0\bm r_0=V_{n+1}(\beta_n\bm z_{n+1}+H_{n+1,n}^{\sigma}\bm y_n^{\sigma})\\
+&\Leftrightarrow V_{n+1}(H_{n+1,n}^{\sigma}\bm y_n^{\sigma}+\beta_n\bm z_{n+1})=\beta_0\bm r_0\\
+&\Leftrightarrow V_{n+1}(H_{n+1,n}^{\sigma}\bm y_n^{\sigma}+\beta_n\bm z_{n+1})=\beta_0\|\bm r_0\|V_{n+1}\bm e_1\\
+&\Leftrightarrow H_{n+1,n}^{\sigma}\bm y_n^{\sigma}+\beta_n\bm z_{n+1}=\beta_0\|\bm r_0\|\bm e_1,\end{aligned}\]
+{由此, 通过求解下列 $(n+1)\times(n+1)$ 线性方程组确定 $\beta_n$ 和 $\bm y_n^{\sigma}$:}
+\begin{equation}\label{eq:restarted-shifted-gmres-collinearity-system}[H_{n+1,n}^{\sigma}\ \bm z_{n+1}]\begin{bmatrix}\bm y_n^{\sigma}\\\beta_n\end{bmatrix}=\beta_0\|\bm r_0\|\bm e_1.\end{equation}
+% block: restarted-shifted-gmres-monitoring pages:195,196 type:ordinary-paragraph
+{重启后, 新初始残差向量 $\bm r_0(=\bm r_n),\bm r_0^{\sigma}(=\bm r_n^{\sigma})$ 共线. 因此, 可利用 $A\bm x=\bm b$ 的 Krylov 子空间 $\mathcal K_n(A,\bm b)$ 求解移位线性方程组 $(A+\sigma I)\bm x^{\sigma}=\bm b^{\sigma}$. 重启移位 GMRES 方法的算法见 Algorithm\ \ref{alg:restarted-shifted-gmres}.}
+{注意, 由关系 $\|\bm r_n^{(k)}\|=\|\beta_n^{(k)}\bm r_n\|$, 可通过监测 $|\beta_n^{(k)}|\times\|\bm r_n\|$ 检查 Algorithm\ \ref{alg:restarted-shifted-gmres} 中 $\|\bm r_n^{(k)}\|$ 的收敛性. 关于 (重启) 移位 GMRES 方法的进一步发展, 见 \BookCite{55}, \BookCite{105}, \BookCite{115}, \BookCite{175} 及其中参考文献.}
+% block: shifted-fom-initial-observation page:196 type:ordinary-paragraph
+{完全正交化方法 (FOM) \BookCite{149} 是 CG 方法在求解非 Hermitian 线性方程组方面的推广. 与 CG 方法一样, FOM 的残差向量 $\bm r_n^{\mathrm{FOM}}$ 满足}
+\[\bm r_n^{\mathrm{FOM}}(\in\mathcal K_{n+1}(A,\bm b))\perp\mathcal K_n(A,\bm b).\]
+% block: restarted-shifted-gmres-algorithm page:196 type:ordinary-paragraph
+\begin{algorithm}[H]\caption{{重启移位 GMRES 方法}}\label{alg:restarted-shifted-gmres}\begin{algorithmic}[1]
+\Statex\textbf{Input:} $\sigma_k\ (k=1,2,\ldots,m)$
+\Statex\textbf{Input:} $\bm x_0\in\mathbb C^N$
+\Statex\textbf{Input:} {令 $\bm x_0^{(k)}\in\mathbb C^N$ 使 $\bm r_0^{(k)}=\beta_0^{(k)}\bm r_0$, 例如对所有 $k$ 令 $\bm x_0=\bm x_0^{(k)}=\bm0$.}
+\Statex\textbf{Output:} $\bm x_n^{(k)}\ (k=1,2,\ldots,m)$
+\State $\bm r_0=\bm b-A\bm x_0,\ \beta=\|\bm r_0\|$
+\State {以 $\bm v_1=\bm r_0/\beta$ 执行 Algorithm\ \ref{alg:arnoldi-modified} 中的 Arnoldi 过程.}
+\State {计算 $\bm y_n$ 使 $\|\beta\bm e_1-H_{n+1,n}\bm y_n\|$ 极小.}
+\State $\bm x_n=\bm x_0+V_n\bm y_n,\ \bm z_{n+1}=\beta\bm e_1-H_{n+1,n}\bm y_n$
+\State \{{移位系统}\}
+\For{$k=1,2,\ldots,m$}
+\State $H_{n+1,n}^{(k)}=H_{n+1,n}+\begin{bmatrix}\sigma_k I_n\\\bm0^{\top}\end{bmatrix}$
+\State {求解} $[H_{n+1,n}^{(k)}\ \bm z_{n+1}]\begin{bmatrix}\bm y_n^{(k)}\\\beta_n^{(k)}\end{bmatrix}=\beta_0^{(k)}\beta\bm e_1$.
+\State $\bm x_n^{(k)}=\bm x_0^{(k)}+V_m\bm y_m^{(k)}$
+\EndFor
+\If{{尚未收敛}}
+\State {令 $\bm x_0=\bm x_n,\ \bm x_0^{(k)}=\bm x_n^{(k)},\ \beta_0^{(k)}=\beta_n^{(k)}$, 并转到第 1 行.}
+\EndIf\end{algorithmic}\end{algorithm}
+% block: restarted-shifted-fom pages:196,197 type:ordinary-paragraph
+{将 FOM 应用于移位线性方程组时, 有}
+\[\bm r_n^{\sigma,\mathrm{FOM}}(\in\mathcal K_{n+1}(A+\sigma I,\bm b))\perp\mathcal K_n(A+\sigma I,\bm b).\]
+{于是由移位不变性 $\mathcal K_n(A+\sigma I,\bm b)=\mathcal K_n(A,\bm b)$, 得}
+\[\bm r_n^{\mathrm{FOM}},\bm r_n^{\sigma,\mathrm{FOM}}\in\mathcal K_{n+1}(A,\bm b)\cap\mathcal K_n(A,\bm b)^{\perp}.\]
+{由 \eqref{eq:shifted-cg-one-dimensional-intersection}, 两个残差向量 $\bm r_n^{\mathrm{FOM}},\bm r_n^{\sigma,\mathrm{FOM}}$ 属于一维子空间. 因此, 应用于 $A\bm x=\bm b$ 和 $(A+\sigma I)\bm x^{\sigma}=\bm b$ 的残差向量共线. 这意味着考虑重启时, 无需采用 \eqref{eq:restarted-shifted-gmres-collinearity-system} 的技巧来保持共线性, 因为每步迭代的残差向量都共线. 关于重启移位 FOM 的细节, 见 \BookCite{158}. 关于重启移位 FOM 的进一步发展, 见 \BookCite{55}, \BookCite{112} 及其中参考文献.}
+% block: shifted-idr-heading page:197 type:subsection
+\subsubsection{{移位 IDR($s$) 方法}}\label{subsec:shifted-idr}
+{Section\ \ref{subsec:idr-method} 中的 IDR($s$) 方法被推广用于求解移位线性方程组, \newline{}相应算法称为移位 IDR($s$) 方法 \BookCite{48}. \newline{}在推导移位 IDR($s$) 方法之前, 先介绍 IDR 定理 (Theorem\ \ref{thm:idr-dimension-reduction}) 的一个变型.}
+% block: shifted-idr-corollary page:197 type:corollary
+\par\Needspace{8\baselineskip}
+\begin{Corollary}[\BookCite{48}]\label{cor:shifted-idr-common-subspaces}
+{设 $\bm r_0^{(i)}\ (i=1,\ldots,m)$ 彼此共线, $\mathcal G_0^{(i)}=\mathcal K_n(A+\sigma_i I,\bm r_0^{(i)})$, $\mathcal S$ 为 $\mathbb R^n$ 的子空间, 并如下定义子空间序列 $\mathcal G_j^{(i)}$}
+\[\mathcal G_j^{(i)}=[I-\omega_j^{(i)}(A+\sigma_i I)](\mathcal G_{j-1}^{(i)}\cap\mathcal S),\quad\omega_j^{(i)}\ne0,\quad j=1,2,\ldots,\]
+{则有 $\mathcal G_j^{(1)}=\mathcal G_j^{(2)}=\cdots=\mathcal G_j^{(m)}$.}
+\end{Corollary}
+% block: shifted-idr-collinear-approach page:197 type:ordinary-paragraph
+{Corollary\ \ref{cor:shifted-idr-common-subspaces} 表明, 若考虑求解下列线性方程组 (种子系统) 和移位线性方程组:}
+\[A\bm x=\bm b,\quad(A+\sigma I)\bm x^{\sigma}=\bm b,\]
+{则移位 BiCGSTAB 方法中所述的共线方式 $\bm r_i=\pi_i^{\sigma}\bm r_i^{\sigma}$ 很有前景, 因为 $\bm r_i=\bm0$ 和 $\pi_i^{\sigma}\ne0$ 导出 $\bm r_i^{\sigma}=\bm0$. 这里 $\bm r_i$ 为原线性方程组 (种子系统) $A\bm x=\bm b$ 的第 $i$ 个残差向量, $\bm r_i^{\sigma}$ 为移位线性方程组 $(A+\sigma I)\bm x^{\sigma}=\bm b$ 的第 $i$ 个残差向量. 现在介绍当 $\bm r_i=\pi_i^{\sigma}\bm r_i^{\sigma}\ (\pi_i^{\sigma}\in\mathbb C,\ i=0,1,\ldots,k)$ 时, 如何从 $\bm r_{k+1}$ 的信息计算 $\bm r_{k+1}^{\sigma}$.}
+% block: shifted-idr-initial-residuals page:197 type:ordinary-paragraph
+{由 Algorithm\ \ref{alg:idr} 中 IDR($s$) 方法的初始步骤, 种子系统的初始残差向量为}
+\begin{equation}\label{eq:shifted-idr-seed-initial-residual}\bm r_{k+1}=\bm r_k-\omega_kA\bm r_k,\quad(k=0,\ldots,s-1).\end{equation}
+{类似于 \eqref{eq:shifted-idr-seed-initial-residual}, 移位系统的初始残差向量如下:}
+\begin{equation}\label{eq:shifted-idr-shifted-initial-residual}\bm r_{k+1}^{\sigma}=\bm r_k^{\sigma}-\omega_k^{\sigma}(A+\sigma I)\bm r_k^{\sigma}=(1-\sigma\omega_k^{\sigma})\bm r_k^{\sigma}-\omega_k^{\sigma}A\bm r_k^{\sigma},\end{equation}
+{其中参数 $\omega_k^{\sigma}\in\mathbb C$ 未知. 将关系 $\bm r_i=\pi_i^{\sigma}\bm r_i^{\sigma}\ (i=0,\ldots,k)$ 代入 \eqref{eq:shifted-idr-seed-initial-residual}, 得}
+\begin{equation}\label{eq:shifted-idr-scaled-initial-residual}\bm r_{k+1}^{\sigma}=\frac{\pi_k^{\sigma}}{\pi_{k+1}^{\sigma}}\bm r_k^{\sigma}-\omega_k\frac{\pi_k^{\sigma}}{\pi_{k+1}^{\sigma}}A\bm r_k^{\sigma}.\end{equation}
+% block: shifted-idr-initial-parameters page:198 type:ordinary-paragraph
+{由关系 $\bm r_i=\pi_i^{\sigma}\bm r_i^{\sigma}$, \eqref{eq:shifted-idr-seed-initial-residual} 和残差多项式 $R_i(0)=1$, $\bm r_i=R_i(A)\bm r_0$, 得}
+\[\begin{cases}\pi_k^{\sigma}=R_k(-\sigma),\\\pi_{k+1}^{\sigma}=\pi_k^{\sigma}+\omega_k\sigma\pi_k^{\sigma}.\end{cases}\]
+{因此, 算出 $\pi_k^{\sigma}$ 后就可得到 \eqref{eq:shifted-idr-scaled-initial-residual} 中的参数 $\pi_{k+1}^{\sigma}$. 比较 \eqref{eq:shifted-idr-shifted-initial-residual} 和 \eqref{eq:shifted-idr-scaled-initial-residual} 的系数, 得到 $\omega_k^{\sigma}=\omega_k\pi_k^{\sigma}/\pi_{k+1}^{\sigma}$. 移位系统相应的近似解表示为}
+\begin{equation}\label{eq:shifted-idr-initial-solution}\bm x_{k+1}^{\sigma}=\bm x_k^{\sigma}+\omega_k^{\sigma}\bm r_k^{\sigma}.\end{equation}
+% block: shifted-idr-main-seed page:198 type:ordinary-paragraph
+{接下来介绍在 Algorithm\ \ref{alg:idr} 中 IDR($s$) 方法的主步骤里利用 $\bm r_{k+1}$ 推导 $\bm r_{k+1}^{\sigma}$ 的过程. 由 \eqref{eq:idr-first-projected-vector} 和 \eqref{eq:idr-first-reduced-residual}, IDR($s$) 方法的 $\bm v_k$ 和 $\bm r_{k+1}$ 表示为}
+\begin{equation}\label{eq:shifted-idr-seed-projected-vector}\bm v_k=\bm r_k-\sum_{l=1}^{s}\gamma_l\Delta\bm r_{k-l}=(1-\gamma_1)\bm r_k+\sum_{l=1}^{s-1}(\gamma_l-\gamma_{l+1})v\bm r_{k-l}+\gamma_s\bm r_{k-s},\end{equation}
+\begin{equation}\label{eq:shifted-idr-seed-main-residual}\bm r_{k+1}=(I-\omega_jA)\bm v_k.\end{equation}
+{由 \eqref{eq:shifted-idr-seed-projected-vector} 和 \eqref{eq:shifted-idr-seed-main-residual}, 得}
+\begin{equation}\label{eq:shifted-idr-seed-expanded-residual}\bm r_{k+1}=(I-\omega_jA)\left((1-\gamma_1)\bm r_k+\sum_{l=1}^{s-1}(\gamma_l-\gamma_{l+1})\bm r_{k-l}+\gamma_s\bm r_{k-s}\right).\end{equation}
+% block: shifted-idr-main-shifted-residual page:198 type:ordinary-paragraph
+{将移位系统的残差向量定义为与 \eqref{eq:shifted-idr-seed-expanded-residual} 相同的形式如下:}
+\begin{equation}\label{eq:shifted-idr-shifted-expanded-residual}\begin{aligned}\bm r_{k+1}^{\sigma}&=(I-\omega_j^{\sigma}(A+\sigma I))\left((1-\gamma_1^{\sigma})\bm r_k^{\sigma}+\sum_{l=1}^{s-1}(\gamma_l^{\sigma}-\gamma_{l+1}^{\sigma})\bm r_{k-l}^{\sigma}+\gamma_s^{\sigma}\bm r_{k-s}^{\sigma}\right)\\
+&=\left(I-\frac{\omega_j^{\sigma}}{1-\sigma\omega_j^{\sigma}}A\right)(1-\sigma\omega_j^{\sigma})\left((1-\gamma_1^{\sigma})\bm r_k^{\sigma}+\sum_{l=1}^{s-1}(\gamma_l^{\sigma}-\gamma_{l+1}^{\sigma})\bm r_{k-l}^{\sigma}+\gamma_s^{\sigma}\bm r_{k-s}^{\sigma}\right),\end{aligned}\end{equation}
+{其中参数 $\omega_j^{\sigma},\gamma_1^{\sigma},\ldots,\gamma_s^{\sigma}\in\mathbb C$ 未知. 将 $\bm r_i=\pi_i^{\sigma}\bm r_i^{\sigma}\ (i=0,1,\ldots,k+1)$ 代入 \eqref{eq:shifted-idr-seed-expanded-residual}, 得}
+\begin{equation}\label{eq:shifted-idr-scaled-main-residual}\bm r_{k+1}^{\sigma}=(I-\omega_jA)\left((1-\gamma_1)\frac{\pi_k^{\sigma}}{\pi_{k+1}^{\sigma}}\bm r_k^{\sigma}+\sum_{l=1}^{s-1}(\gamma_l-\gamma_{l+1})\frac{\pi_{k-l}^{\sigma}}{\pi_{k+1}^{\sigma}}\bm r_{k-l}^{\sigma}+\gamma_s\frac{\pi_{k-s}^{\sigma}}{\pi_{k+1}^{\sigma}}\bm r_{k-s}^{\sigma}\right).\end{equation}
+% block: shifted-idr-main-parameters page:199 type:ordinary-paragraph
+{由 \eqref{eq:shifted-idr-seed-expanded-residual}, $\bm r_i=\pi_i^{\sigma}\bm r_i^{\sigma}\ (i=0,1,\ldots,k+1)$ 和 $R_i(0)=1$, 得到 $\pi_{k+1}^{\sigma}$ 如下:}
+\begin{equation}\label{eq:shifted-idr-main-pi}\pi_{k+1}^{\sigma}=(1+\omega_j\sigma)\left((1-\gamma_1)\pi_k^{\sigma}+\sum_{l=1}^{s-1}(\gamma_l-\gamma_{l+1})\pi_{k-l}^{\sigma}+\gamma_s\pi_{k-s}^{\sigma}\right).\end{equation}
+{比较 \eqref{eq:shifted-idr-shifted-expanded-residual} 和 \eqref{eq:shifted-idr-scaled-main-residual} 的相应系数, 得}
+\begin{equation}\label{eq:shifted-idr-coefficient-matching}\begin{cases}\dfrac{\omega_j^{\sigma}}{1-\sigma\omega_j^{\sigma}}=\omega_j,\\
+1-\gamma_1^{\sigma}=\dfrac{1-\gamma_1}{1-\sigma\omega_j^{\sigma}}\times\dfrac{\pi_k^{\sigma}}{\pi_{k+1}^{\sigma}},\\
+\gamma_l^{\sigma}-\gamma_{l+1}^{\sigma}=\dfrac{\gamma_l-\gamma_{l+1}}{1-\sigma\omega_j^{\sigma}}\times\dfrac{\pi_{k-l}^{\sigma}}{\pi_{k+1}^{\sigma}},\\
+\gamma_s^{\sigma}=\dfrac{\gamma_s}{1-\sigma\omega_j^{\sigma}}\times\dfrac{\pi_{k-s}^{\sigma}}{\pi_{k+1}^{\sigma}}\end{cases}\end{equation}
+{其中 $l=1,2,\ldots,s-1$. 由 \eqref{eq:shifted-idr-coefficient-matching}, 参数 $\omega_k^{\sigma},\gamma_1^{\sigma},\ldots,\gamma_s^{\sigma}$ 确定为}
+\begin{equation}\label{eq:shifted-idr-parameters}\begin{cases}\omega_j^{\sigma}=\dfrac{\omega_j}{1+\sigma\omega_j},\\
+\gamma_1^{\sigma}=1-(1-\gamma_1)(1+\sigma\omega_j)\dfrac{\pi_k^{\sigma}}{\pi_{k+1}^{\sigma}},\\
+\gamma_{l+1}^{\sigma}=\gamma_l^{\sigma}-(\gamma_l-\gamma_{l+1})(1+\sigma\omega_j)\dfrac{\pi_{k-l}^{\sigma}}{\pi_{k+1}^{\sigma}}\end{cases}\end{equation}
+{其中 $l=1,2,\ldots,s-1$.}
+% block: shifted-idr-main-solution page:199 type:ordinary-paragraph
+{利用关系 $\bm r_{k+1}^{\sigma}=\bm b-(A+\sigma I)\bm x_{k+1}^{\sigma}$, 可由 \eqref{eq:shifted-idr-shifted-expanded-residual} 导出近似解 $\bm x_{k+1}^{\sigma}$ 为}
+\begin{equation}\label{eq:shifted-idr-main-solution}\bm x_{k+1}^{\sigma}=\bm x_k^{\sigma}+\omega_j^{\sigma}\bm v_k^{\sigma}-\sum_{l=1}^{s}\gamma_l^{\sigma}\Delta\bm x_{k-l}^{\sigma},\end{equation}
+{其中 $\bm v_k^{\sigma}=\bm r_k^{\sigma}-\sum_{l=1}^{s}\gamma_l^{\sigma}\Delta\bm r_{k-l}^{\sigma}$. 实际计算时, 可以用种子系统的残差向量 $\bm r_{k-s},\ldots,\bm r_k$ 表示 $\bm v_k^{\sigma}$. 上述所有步骤给出 Algorithm\ \ref{alg:shifted-idr} 中的移位 IDR($s$) 方法.}
+% block: shifted-idr-algorithm page:200 type:ordinary-paragraph
+\begin{algorithm}[H]\caption{{移位 IDR($s$) 方法 (种子系统: $(A+\sigma_f I)\bm x=\bm b$)}}\label{alg:shifted-idr}\begin{algorithmic}[1]
+\Statex\textbf{Input:} $\bm x_0^{(i)}=\bm0,\ \bm r_0=\bm b,\ P\in\mathbb C^{n\times s},\ \pi_0^{(f,i)}=1,\ \sigma_i$ {对于} $i=1,\ldots,m$
+\Statex\textbf{Output:} $\bm x^{(i)}$ {对于} $i=1,\ldots,m$
+\For{$k=0,1,\ldots,s-1$}
+\State $\bm v=(A+\sigma_f I)\bm r_k,\ \omega=\bm v^{\mathrm H}\bm r_k/\bm v^{\mathrm H}\bm v$
+\State $\Delta X(:,k+1)=\omega\bm r_k,\ \Delta R(:,k+1)=-\omega\bm v$
+\State $\bm x_{k+1}^{(f)}=\bm x_k^{(f)}+\Delta X(:,k+1),\ \bm r_{k+1}=\bm r_k+\Delta R(:,k+1)$
+\State ({移位系统的迭代})
+\For{$i(\ne f)=1,2,\ldots,m$}
+\If{$\|\bm r_k^{(i)}\|>\varepsilon\|\bm b\|$}
+\State $\pi_{k+1}^{(f,i)}=\pi_k^{(f,i)}+\omega(\sigma_i-\sigma_f)\pi_k^{(f,i)},\quad\omega^{(f,i)}=\dfrac{\omega}{1+\omega(\sigma_i-\sigma_f)}$
+\State $\bm x_{k+1}^{(i)}=\bm x_k^{(i)}+\dfrac{\omega^{(f,i)}}{\pi_k^{(f,i)}}\bm r_k$
+\EndIf\EndFor\EndFor
+\State $j=1,\ k=s,\ M=P^{\mathrm H}\Delta R,\ \bm h=P^{\mathrm H}\bm r_k$
+\While{{尚未满足停止准则}}
+\For{$l=0,1,\ldots,s$}
+\State {从 $M\bm c=\bm h$ 解出 $\bm c$}
+\State $\bm q=-\Delta R\bm c,\ \bm v=\bm r_k+\bm q$
+\If{$l=0$}
+\State $\bm t=(A+\sigma_f I)\bm v,\ \omega=\bm t^{\mathrm H}\bm v/\bm t^{\mathrm H}\bm t$
+\State $\Delta R(:,j)=\bm q-\omega\bm t,\ \Delta X(:,j)=-\Delta X\bm c+\omega\bm v$
+\Else
+\State $\Delta X(:,j)=-\Delta X\bm c+\omega\bm v,\ \Delta R(:,j)=-(A+\sigma_f I)\Delta X(:,j)$
+\EndIf
+\State $\bm r_{k+1}=\bm r_k+\Delta R(:,j),\ \bm x_{k+1}^{(f)}=\bm x_k^{(f)}+\Delta X(:,j)$
+\State $\delta\bm m=P^{\mathrm H}\Delta R(:,j),\ M(:,j)=\delta\bm m,\ \bm h=\bm h+\delta\bm m$
+\algstore{shiftedidrcontinued}
+\end{algorithmic}\end{algorithm}
+\begin{algorithm}[H]\ContinuedFloat\caption[]{{移位 IDR($s$) 方法 (续)}}\begin{algorithmic}[1]
+\algrestore{shiftedidrcontinued}
+\State ({移位系统的迭代})
+\State $\gamma_1=c_{j-1},\ \gamma_2=c_{j-2},\ldots,\gamma_{j-1}=c_1$
+\State $\gamma_j=c_s,\ \gamma_{j+2}=c_{s-1},\ldots,\gamma_s=c_j$
+\For{$i(\ne f)=1,2,\ldots,m$}
+\If{$\|\bm r_k^{(i)}\|>\varepsilon\|\bm b\|$}
+\State $\alpha_i=1+\omega(\sigma_i-\sigma_f)$
+\State $\pi_{k+1}^{(f,i)}=\alpha_i\left((1-\gamma_1)\pi_k^{(f,i)}+\sum_{g=1}^{s-1}(\gamma_g-\gamma_{g+1})\pi_{k-g}^{(f,i)}+\gamma_s\pi_{k-s}^{(f,i)}\right)$
+\State $\gamma_1^{(f,i)}=1-\alpha_i(1-\gamma_1)\pi_k^{(f,i)}/\pi_{k+1}^{(f,i)}$
+\State $\gamma_{g+1}^{(f,i)}=\gamma_g^{(f,i)}-(\gamma_g-\gamma_{g+1})\alpha_i\pi_{k-g}^{(f,i)}/\pi_{k+1}^{(f,i)}\quad(g=1,\ldots,s-1)$
+\State $\bm x_{k+1}^{(i)}=\bm x_k^{(i)}+\omega\bm v/\pi_{k+1}^{(f,i)}-\sum_{g=1}^{s}\gamma_g^{(f,i)}(\bm x_{k+1-g}^{(i)}-\bm x_{k-g}^{(i)})$
+\EndIf\EndFor
+\State $k=k+1,\ j=j+1$
+\State $j=(j-1)\%s+1$ {($\%$: 取模运算, 即 $a\%n=r$, 其中 $a=mn+r$.)}
+\EndFor\EndWhile\end{algorithmic}\end{algorithm}
