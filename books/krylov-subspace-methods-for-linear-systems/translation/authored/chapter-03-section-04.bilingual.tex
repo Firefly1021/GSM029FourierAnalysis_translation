@@ -1,0 +1,139 @@
+% block: other-krylov-heading page:158 type:section
+\subsection{\BT{Other Krylov Subspace Methods}{其他 Krylov 子空间方法}}\label{sec:other-krylov-methods}
+\BT{This section describes the Krylov subspace methods based on normal equations and augmented linear systems: the CGNE method, the CGNR method, and the LSQR method.}{本节介绍基于正规方程和增广线性方程组的 Krylov 子空间方法: CGNE 方法, CGNR 方法和 LSQR 方法.}
+% block: normal-equation-krylov-heading page:159 type:subsection
+\subsubsection{\BT{Krylov Subspace Methods for Normal Equations}{正规方程的 Krylov 子空间方法}}\label{subsec:cg-normal-equations}
+\BT{As described in the introduction in Sect.\ \ref{sec:nonhermitian-linear-systems}, we can apply the CG method to normal equation \eqref{eq:nonhermitian-normal-equations} because $A^{\mathrm H}A$ is Hermitian positive definite. In this subsection, the details are described. Instead of non-Hermitian linear systems $A\bm x=\bm b$, we consider the following normal equations:}{如 Section\ \ref{sec:nonhermitian-linear-systems} 的引言所述, 由于 $A^{\mathrm H}A$ 为 Hermitian 正定矩阵, 可将 CG 方法应用于正规方程 \eqref{eq:nonhermitian-normal-equations}. 本小节介绍其细节. 不直接考虑非 Hermitian 线性方程组 $A\bm x=\bm b$, 而考虑下列正规方程:}
+\begin{equation}\label{eq:cgnr-normal-equation}A^{\mathrm H}A\bm x=A^{\mathrm H}\bm b\end{equation}
+\BT{or}{或}
+\begin{equation}\label{eq:cgne-normal-equation}AA^{\mathrm H}\bm y=\bm b,\quad\bm x=A^{\mathrm H}\bm y.\end{equation}
+% block: cgnr-introduction page:159 type:ordinary-paragraph
+\BT{As mentioned before, it is natural to solve the normal equations by the CG method, since $A^{\mathrm H}A$ and $AA^{\mathrm H}$ are Hermitian positive definite. If we apply the CG method to \eqref{eq:cgnr-normal-equation}, then we have the CGNR method (or the CGLS method) \BookCite{95} given in Algorithm\ \ref{alg:cgnr}.}{如前所述, 由于 $A^{\mathrm H}A$ 和 $AA^{\mathrm H}$ 为 Hermitian 正定矩阵, 用 CG 方法求解正规方程是自然的. 将 CG 方法应用于 \eqref{eq:cgnr-normal-equation}, 就得到 Algorithm\ \ref{alg:cgnr} 中的 CGNR 方法 (或 CGLS 方法) \BookCite{95}.}
+% block: cgnr-algorithm page:159 type:ordinary-paragraph
+\begin{algorithm}[H]\caption{\BT{The CGNR method}{CGNR 方法}}\label{alg:cgnr}\begin{algorithmic}[1]
+\Statex\textbf{Input:} $\bm x_0\in\mathbb C^N,\ \beta_{-1}=0,\ \bm p_{-1}=\bm0,\ \bm r_0=\bm b-A\bm x_0$
+\Statex\textbf{Output:} $\bm x_n$
+\For{$n=0,1,\ldots$, \BT{until convergence}{直至收敛}}
+\State $\bm p_n=A^{\mathrm H}\bm r_n+\beta_{n-1}\bm p_{n-1}$
+\State $\alpha_n=\dfrac{(A^{\mathrm H}\bm r_n,A^{\mathrm H}\bm r_n)}{(A\bm p_n,A\bm p_n)}$
+\State $\bm x_{n+1}=\bm x_n+\alpha_n\bm p_n$
+\State $\bm r_{n+1}=\bm r_n-\alpha_nA\bm p_n$
+\State $\beta_n=\dfrac{(A^{\mathrm H}\bm r_{n+1},A^{\mathrm H}\bm r_{n+1})}{(A^{\mathrm H}\bm r_n,A^{\mathrm H}\bm r_n)}$
+\EndFor\end{algorithmic}\end{algorithm}
+% block: cgnr-optimality page:159 type:ordinary-paragraph
+\BT{It readily follows from the algorithm of the CGNR method and Theorem\ \ref{thm:cg-energy-optimality} that the CGNR method minimizes the $A^{\mathrm H}A$-norm of the error, or the 2-norm of the residual vector:}{由 CGNR 方法的算法和 Theorem\ \ref{thm:cg-energy-optimality} 易知, CGNR 方法使误差的 $A^{\mathrm H}A$-范数极小, 或使残差向量的 2-范数极小:}
+\[\min_{\bm x_n\in\bm x_0+\mathcal K_n(A^{\mathrm H}A,A^{\mathrm H}\bm r_0)}\|\bm x-\bm x_n\|_{A^{\mathrm H}A}=\min_{\bm x_n\in\bm x_0+\mathcal K_n(A^{\mathrm H}A,A^{\mathrm H}\bm r_0)}\|\bm r_n\|,\]
+\BT{where $\bm r_n:=\bm b-A\bm x_n$.}{其中 $\bm r_n:=\bm b-A\bm x_n$.}
+% block: cgne-introduction page:159 type:ordinary-paragraph
+\BT{On the other hand, if we apply the CG method to \eqref{eq:cgne-normal-equation}, then we have the CGNE method \BookCite{41} (or Craig's method) given in Algorithm\ \ref{alg:cgne}. It readily follows from the algorithm of the CGNE method and \eqref{eq:cg-orthonormal-coordinate-solution} that the CGNE method minimizes the $AA^{\mathrm H}$-norm of the error on the linear systems $AA^{\mathrm H}\bm y=\bm b$:}{另一方面, 将 CG 方法应用于 \eqref{eq:cgne-normal-equation}, 就得到 Algorithm\ \ref{alg:cgne} 中的 CGNE 方法 \BookCite{41} (或 Craig 方法). 由 CGNE 方法的算法和 \eqref{eq:cg-orthonormal-coordinate-solution} 易知, CGNE 方法使线性方程组 $AA^{\mathrm H}\bm y=\bm b$ 的误差的 $AA^{\mathrm H}$-范数极小:}
+\[\min_{\bm y_n\in\bm y_0+\mathcal K_n(AA^{\mathrm H},\bm b-AA^{\mathrm H}\bm y_0)}\|\bm y-\bm y_n\|_{AA^{\mathrm H}}.\]
+% block: cgne-algorithm page:160 type:ordinary-paragraph
+\begin{algorithm}[H]\caption{\BT{The CGNE method}{CGNE 方法}}\label{alg:cgne}\begin{algorithmic}[1]
+\Statex\textbf{Input:} $\bm x_0\in\mathbb C^N,\ \beta_{-1}=0,\ \bm p_{-1}=\bm0,\ \bm r_0=\bm b-A\bm x_0$
+\Statex\textbf{Output:} $\bm x_n$
+\For{$n=0,1,\ldots$, \BT{until convergence}{直至收敛}}
+\State $\bm p_n=A^{\mathrm H}\bm r_n+\beta_{n-1}\bm p_{n-1}$
+\State $\alpha_n=\dfrac{(\bm r_n,\bm r_n)}{(\bm p_n,\bm p_n)}$
+\State $\bm x_{n+1}=\bm x_n+\alpha_n\bm p_n$
+\State $\bm r_{n+1}=\bm r_n-\alpha_nA\bm p_n$
+\State $\beta_n=\dfrac{(\bm r_{n+1},\bm r_{n+1})}{(\bm r_n,\bm r_n)}$
+\EndFor\end{algorithmic}\end{algorithm}
+% block: cgne-optimality-chain page:160 type:ordinary-paragraph
+\BT{It follows from the above fact and $\bm y_n=A^{-\mathrm H}\bm x_n$ that the CGNE method generates $\bm x_n$ such that}{由上述事实和 $\bm y_n=A^{-\mathrm H}\bm x_n$ 可知, CGNE 方法生成的 $\bm x_n$ 满足}
+\[\begin{aligned}
+&\min_{\bm y_n\in\bm y_0+\mathcal K_n(AA^{\mathrm H},\bm b-AA^{\mathrm H}\bm y_0)}\|\bm y-\bm y_n\|_{AA^{\mathrm H}}\\
+&=\min_{A^{-\mathrm H}\bm x_n\in A^{-\mathrm H}\bm x_0+\mathcal K_n(AA^{\mathrm H},\bm b-A\bm x_0)}\|A^{-\mathrm H}\bm x-A^{-\mathrm H}\bm x_n\|_{AA^{\mathrm H}}\\
+&=\min_{A^{-\mathrm H}\bm x_n\in A^{-\mathrm H}\bm x_0+\mathcal K_n(AA^{\mathrm H},\bm b-A\bm x_0)}\|\bm x-\bm x_n\|\\
+&=\min_{\bm x_n\in\bm x_0+A^{\mathrm H}\mathcal K_n(AA^{\mathrm H},\bm b-A\bm x_0)}\|\bm x-\bm x_n\|\\
+&=\min_{\bm x_n\in\bm x_0+\mathcal K_n(A^{\mathrm H}A,A^{\mathrm H}\bm r_0)}\|\bm x-\bm x_n\|,
+\end{aligned}\]
+\BT{where $\bm r_0:=\bm b-A\bm x_0$. Thus, the CGNE method minimizes the 2-norm of the error on the linear systems $A\bm x=\bm b$.}{其中 $\bm r_0:=\bm b-A\bm x_0$. 因此, CGNE 方法使线性方程组 $A\bm x=\bm b$ 的误差的 2-范数极小.}
+% block: normal-equation-convergence page:160 type:ordinary-paragraph
+\BT{The convergence of the CGNR method and the CGNE method performs very well in some special cases \BookCite{64}, \BookCite{138}. However, since the condition number of $A^{\mathrm H}A$ (or $AA^{\mathrm H}$) is twice that of $A$, these methods may show slow convergence from Theorem\ \ref{thm:cg-condition-number-bound}.}{在一些特殊情形下, CGNR 方法和 CGNE 方法的收敛表现很好 \BookCite{64}, \BookCite{138}. 然而, 由于 $A^{\mathrm H}A$ (或 $AA^{\mathrm H}$) 的条件数为 $A$ 的两倍, 由 Theorem\ \ref{thm:cg-condition-number-bound}, 这些方法可能收敛缓慢.}
+% block: lsqr-augmented-system page:160 type:ordinary-paragraph
+\BT{If the coefficient matrix is ill-conditioned, the LSQR method \BookCite{144} is often preferred. This algorithm is based on the Golub--Kahan bidiagonalization process \BookCite{78} and the process is obtained by applying the Lanczos process to the following augmented linear systems of the form}{若系数矩阵病态, 通常优先采用 LSQR 方法 \BookCite{144}. 该算法基于 Golub--Kahan 双对角化过程 \BookCite{78}, 而这一过程是将 Lanczos 过程应用于下列形式的增广线性方程组得到的}
+\[\begin{bmatrix}I&A\\A^{\mathrm H}&O\end{bmatrix}\begin{bmatrix}\bm r\\\bm x\end{bmatrix}=\begin{bmatrix}\bm b\\\bm0\end{bmatrix}.\]
+\BT{We write it as $\widetilde A\widetilde{\bm x}=\widetilde{\bm b}$. The process begins with a unit vector:}{将其记为 $\widetilde A\widetilde{\bm x}=\widetilde{\bm b}$. 该过程从一个单位向量开始:}
+\[\bm w_1:=\begin{bmatrix}\bm u_1\\\bm0\end{bmatrix}=\frac1{\|\bm b\|}\begin{bmatrix}\bm b\\\bm0\end{bmatrix}.\]
+% block: golub-kahan-first-step page:161 type:ordinary-paragraph
+\BT{Let $h_{0,1}:=\|\bm b\|$. Then we have $h_{01}\bm u_1=\bm b$. For the first step, applying the Lanczos process (Algorithm\ \ref{alg:lanczos}) to $\widetilde A$ yields}{令 $h_{0,1}:=\|\bm b\|$. 则有 $h_{01}\bm u_1=\bm b$. 第一步, 将 Lanczos 过程 (Algorithm\ \ref{alg:lanczos}) 应用于 $\widetilde A$, 得}
+\[\begin{aligned}\widetilde{\bm w}_2&=\widetilde A\bm w_1-\alpha_1\bm w_1=\begin{bmatrix}\bm0\\A^{\mathrm H}\bm u_1\end{bmatrix},\\
+\bm w_2&=\begin{bmatrix}\bm0\\\bm v_1\end{bmatrix}=\frac1{\|A^{\mathrm H}\bm u_1\|}\begin{bmatrix}\bm0\\A^{\mathrm H}\bm u_1\end{bmatrix}.\end{aligned}\]
+\BT{Using $h_{1,1}:=\|A^{\mathrm H}\bm u_1\|$ gives}{利用 $h_{1,1}:=\|A^{\mathrm H}\bm u_1\|$, 得}
+\begin{equation}\label{eq:golub-kahan-first-adjoint}h_{1,1}\bm v_1=A^{\mathrm H}\bm u_1.\end{equation}
+% block: golub-kahan-second-step page:161 type:ordinary-paragraph
+\BT{For the second step, we have}{第二步, 有}
+\[\begin{aligned}\widetilde{\bm w}_3&=\widetilde A\bm w_2-\alpha_2\bm w_2-\beta_1\bm w_1=\begin{bmatrix}A\bm v_1-\beta_1\bm u_1\\\bm0\end{bmatrix},\\
+\bm w_3&=\begin{bmatrix}\bm u_2\\\bm0\end{bmatrix}=\frac1{\|A\bm v_1-h_{1,1}\bm u_1\|}\begin{bmatrix}A\bm v_1-h_{1,1}\bm u_1\\\bm0\end{bmatrix}.\end{aligned}\]
+\BT{Using $h_{2,1}:=\|A\bm v_1-h_{1,1}\bm u_1\|$, the equation on $\bm w_3$ is rewritten as}{利用 $h_{2,1}:=\|A\bm v_1-h_{1,1}\bm u_1\|$, 将关于 $\bm w_3$ 的等式改写为}
+\begin{equation}\label{eq:golub-kahan-first-forward}h_{2,1}\bm u_2=A\bm v_1-h_{1,1}\bm u_1.\end{equation}
+% block: golub-kahan-third-step page:161 type:ordinary-paragraph
+\BT{For the third step, it follows that}{第三步, 得}
+\[\begin{aligned}\widetilde{\bm w}_4&=\widetilde A\bm w_3-\alpha_3\bm w_3-\beta_2\bm w_2=\begin{bmatrix}\bm0\\A^{\mathrm H}\bm u_2-\beta_2\bm v_1\end{bmatrix},\\
+\bm w_4&=\begin{bmatrix}\bm0\\\bm v_2\end{bmatrix}=\frac1{\|A^{\mathrm H}\bm u_2-h_{2,1}\bm v_1\|}\begin{bmatrix}\bm0\\A^{\mathrm H}\bm u_2-h_{2,1}\bm v_1\end{bmatrix}.\end{aligned}\]
+\BT{The equation on $\bm w_4$ is rewritten as}{将关于 $\bm w_4$ 的等式改写为}
+\begin{equation}\label{eq:golub-kahan-second-adjoint}h_{2,2}\bm v_2=A^{\mathrm H}\bm u_2-h_{2,1}\bm v_1\end{equation}
+\BT{by using $h_{2,2}:=\|A^{\mathrm H}\bm u_2-h_{2,1}\bm v_1\|$. Hence, from \eqref{eq:golub-kahan-first-adjoint}--\eqref{eq:golub-kahan-second-adjoint}, we have the following matrix form:}{这里使用 $h_{2,2}:=\|A^{\mathrm H}\bm u_2-h_{2,1}\bm v_1\|$. 因此, 由 \eqref{eq:golub-kahan-first-adjoint}--\eqref{eq:golub-kahan-second-adjoint}, 得下列矩阵形式:}
+\[\begin{aligned}A\bm v_1&=[\bm u_1,\bm u_2]\begin{bmatrix}h_{1,1}\\h_{2,1}\end{bmatrix}\Leftrightarrow AV_1=U_2B_{2,1},\\
+A^{\mathrm H}[\bm u_1,\bm u_2]&=[\bm v_1,\bm v_2]\begin{bmatrix}h_{1,1}&h_{2,1}\\0&h_{2,2}\end{bmatrix}\Leftrightarrow A^{\mathrm H}U_2=V_1B_{2,1}^{\top}+h_{2,2}\bm v_2\bm e_2^{\top},\end{aligned}\]
+% block: golub-kahan-algorithm-introduction page:162 type:ordinary-paragraph
+\BT{where $U_2=[\bm u_1,\bm u_2]$, $V_1=\bm v_1$, and $B_{2,1}^{\top}=[h_{1,1},h_{2,1}]$. The above recurrences correspond to the first few steps of the Golub--Kahan bidiagonalization process \BookCite{78}. The algorithm of the Golub--Kahan bidiagonalization process is described in Algorithm\ \ref{alg:golub-kahan}.}{其中 $U_2=[\bm u_1,\bm u_2]$, $V_1=\bm v_1$, $B_{2,1}^{\top}=[h_{1,1},h_{2,1}]$. 上述递推关系对应于 Golub--Kahan 双对角化过程 \BookCite{78} 的前几步. Golub--Kahan 双对角化过程的算法见 Algorithm\ \ref{alg:golub-kahan}.}
+% block: golub-kahan-algorithm page:162 type:ordinary-paragraph
+\begin{algorithm}[H]\caption{\BT{The Golub--Kahan bidiagonalization process}{Golub--Kahan 双对角化过程}}\label{alg:golub-kahan}\begin{algorithmic}[1]
+\Statex\textbf{Input:} $A\in\mathbb C^{N\times N},\ \bm b\in\mathbb C^N$
+\Statex\textbf{Output:} $\bm u_i,\ \bm v_i\ (i=1,2,\ldots)$
+\State $h_{0,1}=\|\bm b\|,\ \bm u_1=\bm b/h_{0,1}$
+\State $h_{1,1}=\|A^{\mathrm H}\bm u_1\|,\ \bm v_1=A^{\mathrm H}\bm u_1/h_{1,1}$
+\For{$n=1,2,\ldots$}
+\State $\widetilde{\bm u}_{n+1}=A\bm v_n-h_{n,n}\bm u_n$
+\State $h_{n+1,n}=\|\widetilde{\bm u}_{n+1}\|$
+\State $\bm u_{n+1}=\widetilde{\bm u}_{n+1}/h_{n+1,n}$
+\State $\widetilde{\bm v}_{n+1}=A^{\mathrm H}\bm u_{n+1}-h_{n+1,n}\bm v_n$
+\State $h_{n+1,n+1}=\|\widetilde{\bm v}_{n+1}\|$
+\State $\bm v_{n+1}=\widetilde{\bm v}_{n+1}/h_{n+1,n+1}$
+\EndFor\end{algorithmic}\end{algorithm}
+% block: golub-kahan-matrix-form page:162 type:ordinary-paragraph
+\BT{The Golub--Kahan bidiagonalization process can be written in matrix form}{Golub--Kahan 双对角化过程可写成矩阵形式}
+\begin{equation}\label{eq:golub-kahan-matrix-forward}AV_n=U_{n+1}B_{n+1,n},\end{equation}
+\[A^{\mathrm H}U_{n+1}=V_nB_{n+1,n}^{\top}+h_{n+1,n+1}\bm v_{n+1}\bm e_{n+1}^{\top},\]
+\BT{where}{其中}
+\[U_n:=[\bm u_1,\ldots,\bm u_n],\quad V_n:=[\bm v_1,\ldots,\bm v_n],\quad B_{n+1,n}:=\begin{bmatrix}h_{1,1}&&\\h_{2,1}&\ddots&\\&\ddots&h_{n,n}\\&&h_{n+1,n}\end{bmatrix}.\]
+\BT{It is clear from the bidiagonalization process that $U_n$ and $V_n$ satisfy the following properties:}{由双对角化过程显然可知, $U_n$ 和 $V_n$ 满足下列性质:}
+\begin{equation}\label{eq:golub-kahan-orthonormality}U_n^{\mathrm H}U_n=V_n^{\mathrm H}V_n=I_n.\end{equation}
+% block: lsqr-residual pages:162,163 type:ordinary-paragraph
+\BT{We are now ready for the derivation of the LSQR method. The LSQR method generates the $n$th approximate solution with $V_n$ and $\bm x_0=\bm0$, i.e., $\bm x_n=V_n\bm y_n$, where $\bm y$ is determined by minimizing the 2-norm of the corresponding residual vector}{现在可以推导 LSQR 方法. LSQR 方法利用 $V_n$ 和 $\bm x_0=\bm0$ 生成第 $n$ 个近似解, 即 $\bm x_n=V_n\bm y_n$, 其中 $\bm y$ 由相应残差向量的 2-范数极小化确定}
+\begin{equation}\label{eq:lsqr-residual}\bm r_n=\bm b-AV_n\bm y_n.\end{equation}
+\BT{Substituting \eqref{eq:golub-kahan-matrix-forward} into \eqref{eq:lsqr-residual} leads to}{将 \eqref{eq:golub-kahan-matrix-forward} 代入 \eqref{eq:lsqr-residual}, 得}
+\[\begin{aligned}\bm r_n&=\bm b-U_{n+1}B_{n+1,n}\bm y_n\\&=U_{n+1}(h_{0,1}\bm e_1-B_{n+1,n}\bm y_n).\end{aligned}\]
+\BT{From the property \eqref{eq:golub-kahan-orthonormality} it follows that}{由性质 \eqref{eq:golub-kahan-orthonormality} 得}
+\begin{equation}\label{eq:lsqr-projected-least-squares}\min_{\bm y_n\in\mathbb C^n}\|\bm r_n\|=\min_{\bm y_n\in\mathbb C^n}\|h_{0,1}\bm e_1-B_{n+1,n}\bm y_n\|.\end{equation}
+\BT{Hence, similar to the MINRES method in Sect.\ \ref{subsec:minres}, the solution of $\bm y_n$ in \eqref{eq:lsqr-projected-least-squares} can be obtained by using Givens rotations, and following the derivation of the MINRES method, we have the LSQR algorithm described in Algorithm\ \ref{alg:lsqr}.}{因此, 类似于 Section\ \ref{subsec:minres} 中的 MINRES 方法, 可利用 Givens 旋转求得 \eqref{eq:lsqr-projected-least-squares} 中的 $\bm y_n$, 并且沿用 MINRES 方法的推导, 就得到 Algorithm\ \ref{alg:lsqr} 中的 LSQR 算法.}
+% block: lsqr-algorithm page:163 type:ordinary-paragraph
+\begin{algorithm}[H]\caption{\BT{The LSQR method}{LSQR 方法}}\label{alg:lsqr}\begin{algorithmic}[1]
+\Statex\textbf{Input:} $A\in\mathbb C^{N\times N},\ \bm b\in\mathbb C^N$
+\Statex\textbf{Output:} $\bm x_n$
+\State $\bm x_0=\bm0,\ h_{0,1}=\|\bm b\|,\ \bm u_1=\bm b/h_{0,1}$
+\State $h_{1,1}=\|A^{\mathrm H}\bm u_1\|,\ \bm v_1=A^{\mathrm H}\bm u_1/h_{1,1}$
+\For{$n=1,2,\ldots$}
+\State \BT{(G.-K. bidiagonalization process)}{(G.-K. 双对角化过程)}
+\State $\widetilde{\bm u}_{n+1}=A\bm v_n-h_{n,n}\bm u_n$
+\State $h_{n+1,n}=\|\widetilde{\bm u}_{n+1}\|$
+\State $\bm u_{n+1}=\widetilde{\bm u}_{n+1}/h_{n+1,n}$
+\State $\widetilde{\bm v}_{n+1}=A^{\mathrm H}\bm u_{n+1}-h_{n+1,n}\bm v_n$
+\State $h_{n+1,n+1}=\|\widetilde{\bm v}_{n+1}\|$
+\State $\bm v_{n+1}=\widetilde{\bm v}_{n+1}/h_{n+1,n+1}$
+\State \BT{(Givens rotations)}{(Givens 旋转)}
+\For{$i=\max\{1,n-1\},\ldots,n-1$}
+\State $\begin{bmatrix}t_{i,n}\\t_{i+1,n}\end{bmatrix}=\begin{bmatrix}c_i&s_i\\-\bar s_i&c_i\end{bmatrix}\begin{bmatrix}t_{i,n}\\t_{i+1,n}\end{bmatrix}$
+\EndFor
+\State $c_n=\dfrac{|t_{n,n}|}{\sqrt{|t_{n,n}|^2+|t_{n+1,n}|^2}}$
+\State $\bar s_n=\dfrac{t_{n+1,n}}{t_{n,n}}c_n$
+\State $t_{n,n}=c_nt_{n,n}+s_nt_{n+1,n}$
+\State $t_{n+1,n}=0$
+\State $\begin{bmatrix}g_n\\g_{n+1}\end{bmatrix}=\begin{bmatrix}c_n&s_n\\-\bar s_n&c_n\end{bmatrix}\begin{bmatrix}g_n\\0\end{bmatrix}$
+\State \BT{(Update $\bm x_n$)}{(更新 $\bm x_n$)}
+\State $\bm p_n=(\bm v_n-t_{n-1,n}\bm p_{n-1})/t_{n,n}$
+\State $\bm x_n=\bm x_{n-1}+g_n\bm p_n$
+\State \BT{(Check convergence)}{(检查收敛性)}
+\State \BT{\textbf{if} $|g_{n+1}|/\|\bm b\|\le\epsilon$, \textbf{then stop}.}{\textbf{if} $|g_{n+1}|/\|\bm b\|\le\epsilon$, \textbf{then} 停止.}
+\EndFor\end{algorithmic}\end{algorithm}

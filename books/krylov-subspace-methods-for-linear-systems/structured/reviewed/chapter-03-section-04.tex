@@ -1,0 +1,139 @@
+% block: other-krylov-heading page:158 type:section
+\subsection{{Other Krylov Subspace Methods}}\label{sec:other-krylov-methods}
+{This section describes the Krylov subspace methods based on normal equations and augmented linear systems: the CGNE method, the CGNR method, and the LSQR method.}
+% block: normal-equation-krylov-heading page:159 type:subsection
+\subsubsection{{Krylov Subspace Methods for Normal Equations}}\label{subsec:cg-normal-equations}
+{As described in the introduction in Sect.\ \ref{sec:nonhermitian-linear-systems}, we can apply the CG method to normal equation \eqref{eq:nonhermitian-normal-equations} because $A^{\mathrm H}A$ is Hermitian positive definite. In this subsection, the details are described. Instead of non-Hermitian linear systems $A\bm x=\bm b$, we consider the following normal equations:}
+\begin{equation}\label{eq:cgnr-normal-equation}A^{\mathrm H}A\bm x=A^{\mathrm H}\bm b\end{equation}
+{or}
+\begin{equation}\label{eq:cgne-normal-equation}AA^{\mathrm H}\bm y=\bm b,\quad\bm x=A^{\mathrm H}\bm y.\end{equation}
+% block: cgnr-introduction page:159 type:ordinary-paragraph
+{As mentioned before, it is natural to solve the normal equations by the CG method, since $A^{\mathrm H}A$ and $AA^{\mathrm H}$ are Hermitian positive definite. If we apply the CG method to \eqref{eq:cgnr-normal-equation}, then we have the CGNR method (or the CGLS method) \BookCite{95} given in Algorithm\ \ref{alg:cgnr}.}
+% block: cgnr-algorithm page:159 type:ordinary-paragraph
+\begin{algorithm}[H]\caption{{The CGNR method}}\label{alg:cgnr}\begin{algorithmic}[1]
+\Statex\textbf{Input:} $\bm x_0\in\mathbb C^N,\ \beta_{-1}=0,\ \bm p_{-1}=\bm0,\ \bm r_0=\bm b-A\bm x_0$
+\Statex\textbf{Output:} $\bm x_n$
+\For{$n=0,1,\ldots$, {until convergence}}
+\State $\bm p_n=A^{\mathrm H}\bm r_n+\beta_{n-1}\bm p_{n-1}$
+\State $\alpha_n=\dfrac{(A^{\mathrm H}\bm r_n,A^{\mathrm H}\bm r_n)}{(A\bm p_n,A\bm p_n)}$
+\State $\bm x_{n+1}=\bm x_n+\alpha_n\bm p_n$
+\State $\bm r_{n+1}=\bm r_n-\alpha_nA\bm p_n$
+\State $\beta_n=\dfrac{(A^{\mathrm H}\bm r_{n+1},A^{\mathrm H}\bm r_{n+1})}{(A^{\mathrm H}\bm r_n,A^{\mathrm H}\bm r_n)}$
+\EndFor\end{algorithmic}\end{algorithm}
+% block: cgnr-optimality page:159 type:ordinary-paragraph
+{It readily follows from the algorithm of the CGNR method and Theorem\ \ref{thm:cg-energy-optimality} that the CGNR method minimizes the $A^{\mathrm H}A$-norm of the error, or the 2-norm of the residual vector:}
+\[\min_{\bm x_n\in\bm x_0+\mathcal K_n(A^{\mathrm H}A,A^{\mathrm H}\bm r_0)}\|\bm x-\bm x_n\|_{A^{\mathrm H}A}=\min_{\bm x_n\in\bm x_0+\mathcal K_n(A^{\mathrm H}A,A^{\mathrm H}\bm r_0)}\|\bm r_n\|,\]
+{where $\bm r_n:=\bm b-A\bm x_n$.}
+% block: cgne-introduction page:159 type:ordinary-paragraph
+{On the other hand, if we apply the CG method to \eqref{eq:cgne-normal-equation}, then we have the CGNE method \BookCite{41} (or Craig's method) given in Algorithm\ \ref{alg:cgne}. It readily follows from the algorithm of the CGNE method and \eqref{eq:cg-orthonormal-coordinate-solution} that the CGNE method minimizes the $AA^{\mathrm H}$-norm of the error on the linear systems $AA^{\mathrm H}\bm y=\bm b$:}
+\[\min_{\bm y_n\in\bm y_0+\mathcal K_n(AA^{\mathrm H},\bm b-AA^{\mathrm H}\bm y_0)}\|\bm y-\bm y_n\|_{AA^{\mathrm H}}.\]
+% block: cgne-algorithm page:160 type:ordinary-paragraph
+\begin{algorithm}[H]\caption{{The CGNE method}}\label{alg:cgne}\begin{algorithmic}[1]
+\Statex\textbf{Input:} $\bm x_0\in\mathbb C^N,\ \beta_{-1}=0,\ \bm p_{-1}=\bm0,\ \bm r_0=\bm b-A\bm x_0$
+\Statex\textbf{Output:} $\bm x_n$
+\For{$n=0,1,\ldots$, {until convergence}}
+\State $\bm p_n=A^{\mathrm H}\bm r_n+\beta_{n-1}\bm p_{n-1}$
+\State $\alpha_n=\dfrac{(\bm r_n,\bm r_n)}{(\bm p_n,\bm p_n)}$
+\State $\bm x_{n+1}=\bm x_n+\alpha_n\bm p_n$
+\State $\bm r_{n+1}=\bm r_n-\alpha_nA\bm p_n$
+\State $\beta_n=\dfrac{(\bm r_{n+1},\bm r_{n+1})}{(\bm r_n,\bm r_n)}$
+\EndFor\end{algorithmic}\end{algorithm}
+% block: cgne-optimality-chain page:160 type:ordinary-paragraph
+{It follows from the above fact and $\bm y_n=A^{-\mathrm H}\bm x_n$ that the CGNE method generates $\bm x_n$ such that}
+\[\begin{aligned}
+&\min_{\bm y_n\in\bm y_0+\mathcal K_n(AA^{\mathrm H},\bm b-AA^{\mathrm H}\bm y_0)}\|\bm y-\bm y_n\|_{AA^{\mathrm H}}\\
+&=\min_{A^{-\mathrm H}\bm x_n\in A^{-\mathrm H}\bm x_0+\mathcal K_n(AA^{\mathrm H},\bm b-A\bm x_0)}\|A^{-\mathrm H}\bm x-A^{-\mathrm H}\bm x_n\|_{AA^{\mathrm H}}\\
+&=\min_{A^{-\mathrm H}\bm x_n\in A^{-\mathrm H}\bm x_0+\mathcal K_n(AA^{\mathrm H},\bm b-A\bm x_0)}\|\bm x-\bm x_n\|\\
+&=\min_{\bm x_n\in\bm x_0+A^{\mathrm H}\mathcal K_n(AA^{\mathrm H},\bm b-A\bm x_0)}\|\bm x-\bm x_n\|\\
+&=\min_{\bm x_n\in\bm x_0+\mathcal K_n(A^{\mathrm H}A,A^{\mathrm H}\bm r_0)}\|\bm x-\bm x_n\|,
+\end{aligned}\]
+{where $\bm r_0:=\bm b-A\bm x_0$. Thus, the CGNE method minimizes the 2-norm of the error on the linear systems $A\bm x=\bm b$.}
+% block: normal-equation-convergence page:160 type:ordinary-paragraph
+{The convergence of the CGNR method and the CGNE method performs very well in some special cases \BookCite{64}, \BookCite{138}. However, since the condition number of $A^{\mathrm H}A$ (or $AA^{\mathrm H}$) is twice that of $A$, these methods may show slow convergence from Theorem\ \ref{thm:cg-condition-number-bound}.}
+% block: lsqr-augmented-system page:160 type:ordinary-paragraph
+{If the coefficient matrix is ill-conditioned, the LSQR method \BookCite{144} is often preferred. This algorithm is based on the Golub--Kahan bidiagonalization process \BookCite{78} and the process is obtained by applying the Lanczos process to the following augmented linear systems of the form}
+\[\begin{bmatrix}I&A\\A^{\mathrm H}&O\end{bmatrix}\begin{bmatrix}\bm r\\\bm x\end{bmatrix}=\begin{bmatrix}\bm b\\\bm0\end{bmatrix}.\]
+{We write it as $\widetilde A\widetilde{\bm x}=\widetilde{\bm b}$. The process begins with a unit vector:}
+\[\bm w_1:=\begin{bmatrix}\bm u_1\\\bm0\end{bmatrix}=\frac1{\|\bm b\|}\begin{bmatrix}\bm b\\\bm0\end{bmatrix}.\]
+% block: golub-kahan-first-step page:161 type:ordinary-paragraph
+{Let $h_{0,1}:=\|\bm b\|$. Then we have $h_{01}\bm u_1=\bm b$. For the first step, applying the Lanczos process (Algorithm\ \ref{alg:lanczos}) to $\widetilde A$ yields}
+\[\begin{aligned}\widetilde{\bm w}_2&=\widetilde A\bm w_1-\alpha_1\bm w_1=\begin{bmatrix}\bm0\\A^{\mathrm H}\bm u_1\end{bmatrix},\\
+\bm w_2&=\begin{bmatrix}\bm0\\\bm v_1\end{bmatrix}=\frac1{\|A^{\mathrm H}\bm u_1\|}\begin{bmatrix}\bm0\\A^{\mathrm H}\bm u_1\end{bmatrix}.\end{aligned}\]
+{Using $h_{1,1}:=\|A^{\mathrm H}\bm u_1\|$ gives}
+\begin{equation}\label{eq:golub-kahan-first-adjoint}h_{1,1}\bm v_1=A^{\mathrm H}\bm u_1.\end{equation}
+% block: golub-kahan-second-step page:161 type:ordinary-paragraph
+{For the second step, we have}
+\[\begin{aligned}\widetilde{\bm w}_3&=\widetilde A\bm w_2-\alpha_2\bm w_2-\beta_1\bm w_1=\begin{bmatrix}A\bm v_1-\beta_1\bm u_1\\\bm0\end{bmatrix},\\
+\bm w_3&=\begin{bmatrix}\bm u_2\\\bm0\end{bmatrix}=\frac1{\|A\bm v_1-h_{1,1}\bm u_1\|}\begin{bmatrix}A\bm v_1-h_{1,1}\bm u_1\\\bm0\end{bmatrix}.\end{aligned}\]
+{Using $h_{2,1}:=\|A\bm v_1-h_{1,1}\bm u_1\|$, the equation on $\bm w_3$ is rewritten as}
+\begin{equation}\label{eq:golub-kahan-first-forward}h_{2,1}\bm u_2=A\bm v_1-h_{1,1}\bm u_1.\end{equation}
+% block: golub-kahan-third-step page:161 type:ordinary-paragraph
+{For the third step, it follows that}
+\[\begin{aligned}\widetilde{\bm w}_4&=\widetilde A\bm w_3-\alpha_3\bm w_3-\beta_2\bm w_2=\begin{bmatrix}\bm0\\A^{\mathrm H}\bm u_2-\beta_2\bm v_1\end{bmatrix},\\
+\bm w_4&=\begin{bmatrix}\bm0\\\bm v_2\end{bmatrix}=\frac1{\|A^{\mathrm H}\bm u_2-h_{2,1}\bm v_1\|}\begin{bmatrix}\bm0\\A^{\mathrm H}\bm u_2-h_{2,1}\bm v_1\end{bmatrix}.\end{aligned}\]
+{The equation on $\bm w_4$ is rewritten as}
+\begin{equation}\label{eq:golub-kahan-second-adjoint}h_{2,2}\bm v_2=A^{\mathrm H}\bm u_2-h_{2,1}\bm v_1\end{equation}
+{by using $h_{2,2}:=\|A^{\mathrm H}\bm u_2-h_{2,1}\bm v_1\|$. Hence, from \eqref{eq:golub-kahan-first-adjoint}--\eqref{eq:golub-kahan-second-adjoint}, we have the following matrix form:}
+\[\begin{aligned}A\bm v_1&=[\bm u_1,\bm u_2]\begin{bmatrix}h_{1,1}\\h_{2,1}\end{bmatrix}\Leftrightarrow AV_1=U_2B_{2,1},\\
+A^{\mathrm H}[\bm u_1,\bm u_2]&=[\bm v_1,\bm v_2]\begin{bmatrix}h_{1,1}&h_{2,1}\\0&h_{2,2}\end{bmatrix}\Leftrightarrow A^{\mathrm H}U_2=V_1B_{2,1}^{\top}+h_{2,2}\bm v_2\bm e_2^{\top},\end{aligned}\]
+% block: golub-kahan-algorithm-introduction page:162 type:ordinary-paragraph
+{where $U_2=[\bm u_1,\bm u_2]$, $V_1=\bm v_1$, and $B_{2,1}^{\top}=[h_{1,1},h_{2,1}]$. The above recurrences correspond to the first few steps of the Golub--Kahan bidiagonalization process \BookCite{78}. The algorithm of the Golub--Kahan bidiagonalization process is described in Algorithm\ \ref{alg:golub-kahan}.}
+% block: golub-kahan-algorithm page:162 type:ordinary-paragraph
+\begin{algorithm}[H]\caption{{The Golub--Kahan bidiagonalization process}}\label{alg:golub-kahan}\begin{algorithmic}[1]
+\Statex\textbf{Input:} $A\in\mathbb C^{N\times N},\ \bm b\in\mathbb C^N$
+\Statex\textbf{Output:} $\bm u_i,\ \bm v_i\ (i=1,2,\ldots)$
+\State $h_{0,1}=\|\bm b\|,\ \bm u_1=\bm b/h_{0,1}$
+\State $h_{1,1}=\|A^{\mathrm H}\bm u_1\|,\ \bm v_1=A^{\mathrm H}\bm u_1/h_{1,1}$
+\For{$n=1,2,\ldots$}
+\State $\widetilde{\bm u}_{n+1}=A\bm v_n-h_{n,n}\bm u_n$
+\State $h_{n+1,n}=\|\widetilde{\bm u}_{n+1}\|$
+\State $\bm u_{n+1}=\widetilde{\bm u}_{n+1}/h_{n+1,n}$
+\State $\widetilde{\bm v}_{n+1}=A^{\mathrm H}\bm u_{n+1}-h_{n+1,n}\bm v_n$
+\State $h_{n+1,n+1}=\|\widetilde{\bm v}_{n+1}\|$
+\State $\bm v_{n+1}=\widetilde{\bm v}_{n+1}/h_{n+1,n+1}$
+\EndFor\end{algorithmic}\end{algorithm}
+% block: golub-kahan-matrix-form page:162 type:ordinary-paragraph
+{The Golub--Kahan bidiagonalization process can be written in matrix form}
+\begin{equation}\label{eq:golub-kahan-matrix-forward}AV_n=U_{n+1}B_{n+1,n},\end{equation}
+\[A^{\mathrm H}U_{n+1}=V_nB_{n+1,n}^{\top}+h_{n+1,n+1}\bm v_{n+1}\bm e_{n+1}^{\top},\]
+{where}
+\[U_n:=[\bm u_1,\ldots,\bm u_n],\quad V_n:=[\bm v_1,\ldots,\bm v_n],\quad B_{n+1,n}:=\begin{bmatrix}h_{1,1}&&\\h_{2,1}&\ddots&\\&\ddots&h_{n,n}\\&&h_{n+1,n}\end{bmatrix}.\]
+{It is clear from the bidiagonalization process that $U_n$ and $V_n$ satisfy the following properties:}
+\begin{equation}\label{eq:golub-kahan-orthonormality}U_n^{\mathrm H}U_n=V_n^{\mathrm H}V_n=I_n.\end{equation}
+% block: lsqr-residual pages:162,163 type:ordinary-paragraph
+{We are now ready for the derivation of the LSQR method. The LSQR method generates the $n$th approximate solution with $V_n$ and $\bm x_0=\bm0$, i.e., $\bm x_n=V_n\bm y_n$, where $\bm y$ is determined by minimizing the 2-norm of the corresponding residual vector}
+\begin{equation}\label{eq:lsqr-residual}\bm r_n=\bm b-AV_n\bm y_n.\end{equation}
+{Substituting \eqref{eq:golub-kahan-matrix-forward} into \eqref{eq:lsqr-residual} leads to}
+\[\begin{aligned}\bm r_n&=\bm b-U_{n+1}B_{n+1,n}\bm y_n\\&=U_{n+1}(h_{0,1}\bm e_1-B_{n+1,n}\bm y_n).\end{aligned}\]
+{From the property \eqref{eq:golub-kahan-orthonormality} it follows that}
+\begin{equation}\label{eq:lsqr-projected-least-squares}\min_{\bm y_n\in\mathbb C^n}\|\bm r_n\|=\min_{\bm y_n\in\mathbb C^n}\|h_{0,1}\bm e_1-B_{n+1,n}\bm y_n\|.\end{equation}
+{Hence, similar to the MINRES method in Sect.\ \ref{subsec:minres}, the solution of $\bm y_n$ in \eqref{eq:lsqr-projected-least-squares} can be obtained by using Givens rotations, and following the derivation of the MINRES method, we have the LSQR algorithm described in Algorithm\ \ref{alg:lsqr}.}
+% block: lsqr-algorithm page:163 type:ordinary-paragraph
+\begin{algorithm}[H]\caption{{The LSQR method}}\label{alg:lsqr}\begin{algorithmic}[1]
+\Statex\textbf{Input:} $A\in\mathbb C^{N\times N},\ \bm b\in\mathbb C^N$
+\Statex\textbf{Output:} $\bm x_n$
+\State $\bm x_0=\bm0,\ h_{0,1}=\|\bm b\|,\ \bm u_1=\bm b/h_{0,1}$
+\State $h_{1,1}=\|A^{\mathrm H}\bm u_1\|,\ \bm v_1=A^{\mathrm H}\bm u_1/h_{1,1}$
+\For{$n=1,2,\ldots$}
+\State {(G.-K. bidiagonalization process)}
+\State $\widetilde{\bm u}_{n+1}=A\bm v_n-h_{n,n}\bm u_n$
+\State $h_{n+1,n}=\|\widetilde{\bm u}_{n+1}\|$
+\State $\bm u_{n+1}=\widetilde{\bm u}_{n+1}/h_{n+1,n}$
+\State $\widetilde{\bm v}_{n+1}=A^{\mathrm H}\bm u_{n+1}-h_{n+1,n}\bm v_n$
+\State $h_{n+1,n+1}=\|\widetilde{\bm v}_{n+1}\|$
+\State $\bm v_{n+1}=\widetilde{\bm v}_{n+1}/h_{n+1,n+1}$
+\State {(Givens rotations)}
+\For{$i=\max\{1,n-1\},\ldots,n-1$}
+\State $\begin{bmatrix}t_{i,n}\\t_{i+1,n}\end{bmatrix}=\begin{bmatrix}c_i&s_i\\-\bar s_i&c_i\end{bmatrix}\begin{bmatrix}t_{i,n}\\t_{i+1,n}\end{bmatrix}$
+\EndFor
+\State $c_n=\dfrac{|t_{n,n}|}{\sqrt{|t_{n,n}|^2+|t_{n+1,n}|^2}}$
+\State $\bar s_n=\dfrac{t_{n+1,n}}{t_{n,n}}c_n$
+\State $t_{n,n}=c_nt_{n,n}+s_nt_{n+1,n}$
+\State $t_{n+1,n}=0$
+\State $\begin{bmatrix}g_n\\g_{n+1}\end{bmatrix}=\begin{bmatrix}c_n&s_n\\-\bar s_n&c_n\end{bmatrix}\begin{bmatrix}g_n\\0\end{bmatrix}$
+\State {(Update $\bm x_n$)}
+\State $\bm p_n=(\bm v_n-t_{n-1,n}\bm p_{n-1})/t_{n,n}$
+\State $\bm x_n=\bm x_{n-1}+g_n\bm p_n$
+\State {(Check convergence)}
+\State {\textbf{if} $|g_{n+1}|/\|\bm b\|\le\epsilon$, \textbf{then stop}.}
+\EndFor\end{algorithmic}\end{algorithm}
