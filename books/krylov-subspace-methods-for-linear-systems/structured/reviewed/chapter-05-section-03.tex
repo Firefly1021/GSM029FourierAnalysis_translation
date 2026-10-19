@@ -1,0 +1,158 @@
+% block: matrix-roots-heading page:206 type:section
+\subsection{{Matrix Square Root and Matrix $p$th Root}}\label{sec:matrix-roots}
+
+% block: matrix-square-root-heading page:206 type:subsection
+\subsubsection{{Matrix Square Root}}\label{subsec:newton-matrix-square-root}
+
+% block: principal-scalar-square-root page:206 type:ordinary-paragraph
+{Square roots of real number $a>0$ are $a^{1/2}$ and $-a^{1/2}$, and the principal square root is $a^{1/2}$. The notion of the principal square root is extended to complex numbers as follows: let $z$ be a complex number, and for $z=re^{i\theta}$ $(r>0,-\pi<\theta<\pi)$, we define $z^{1/2}=r^{1/2}e^{i\theta/2}$. This is called the principal square root of $z$.}
+
+% block: infinitely-many-matrix-square-roots page:206 type:ordinary-paragraph
+{Now we consider the case of matrix square roots and define the principal square root of $A$. $X$ is called a square root of $A$ if $X^2=A$. The square roots of a matrix differ from square roots of complex or real numbers in that there may be infinitely many square roots. For example, let}
+\[S_1=\begin{bmatrix}1&0\\0&1\end{bmatrix},\quad S_2=\begin{bmatrix}-1&0\\0&-1\end{bmatrix},\quad S(\theta)=\begin{bmatrix}\cos\theta&\sin\theta\\\sin\theta&-\cos\theta\end{bmatrix}.\]
+{Then $S_1^2=S_2^2=S(\theta)^2=I$ for any $\theta$. These are square roots of the identity matrix. Thus this is an example for which there are infinitely many square roots. While there are infinitely many square roots, there is a unique square root whose eigenvalues lie in the right half-plane of the complex plane. The unique square root is called the principal matrix square root. In the above example, $S_1$ is the principal matrix square root of the identity matrix $I$.}
+
+% block: principal-square-root-transition page:206 type:ordinary-paragraph
+{The next theorem presents the notion of the principal matrix square root.}
+
+% block: principal-matrix-square-root-theorem page:207 type:theorem
+\Needspace{14\baselineskip}
+\begin{Theorem}{{principal matrix square root}}\label{thm:principal-matrix-square-root}
+{Let $A$ be a complex square matrix whose eigenvalues $(\lambda_k\ne0)$ do not lie in the negative real axis of the complex plane. Then there exists a unique square root of $A$ such that all the eigenvalues of the square root lie in the right half-plane of the complex plane.}
+\end{Theorem}
+
+% block: principal-square-root-notation page:207 type:ordinary-paragraph
+{In Theorem~\ref{thm:principal-matrix-square-root}, the unique matrix square root is referred to as the principal matrix square root of $A$, and denoted by $A^{1/2}$.}
+
+% block: square-root-algorithm-transition page:207 type:ordinary-paragraph
+{In what follows, numerical algorithms, a direct method, and an iterative method are described for the (principal) matrix square root.}
+
+% block: schur-square-root-derivation page:207 type:ordinary-paragraph
+{First, a well-known direct method based on the Schur decomposition is described. The Schur decomposition is to decompose matrix $A$ as $QTQ^{\mathrm H}$, where $T$ is an upper triangular matrix, $Q$ is a unitary matrix. If we can compute $U:=T^{1/2}$, then $(QUQ^{\mathrm H})^2=QU^2Q^{\mathrm H}=QTQ^{\mathrm H}=A$. Thus the (principal) matrix square root is given by $A^{1/2}=QUQ^{\mathrm H}$. Since $U$ is also an upper tridiagonal matrix, $U$ can be obtained by sequentially solving $U^2=T$. The resulting algorithm is shown in Algorithm~\ref{alg:schur-matrix-square-root}. Here $(i,j)$ element of matrix $T$ (and $U$) is denoted by $t_{ij}$ (and $u_{ij}$).}
+
+% block: schur-square-root-algorithm page:207 type:ordinary-paragraph
+\begin{algorithm}[H]\caption{{(Direct method) The Schur method for $X=A^{1/2}$}}\label{alg:schur-matrix-square-root}\begin{algorithmic}[1]
+\State {Compute the Schur decomposition of $A$, i.e., $A=QTQ^{\mathrm H}$.}
+\For{$i=1,2,\ldots,n$}
+\State $u_{ii}=t_{ii}^{1/2}$
+\EndFor
+\For{$j=2,3,\ldots,n$}
+\For{$i=j-1,j-2,\ldots,1$}
+\State $u_{ij}=\frac{1}{u_{ii}+u_{jj}}(t_{ij}-\sum_{k=i+1}^{j-1}u_{ik}u_{kj})$
+\EndFor
+\EndFor
+\State $X=QUQ^{\mathrm H}$
+\end{algorithmic}\end{algorithm}
+
+% block: schur-square-root-no-breakdown page:207 type:ordinary-paragraph
+{Assume that matrix $A$ satisfies the condition in Theorem~\ref{thm:principal-matrix-square-root}. Then from line 3 in Algorithm~\ref{alg:schur-matrix-square-root}, we see that $u_{ii}=t_{ii}^{1/2}$ $(i=1,2,\ldots,n)$ and $u_{ii}$ is the principal square root of complex number $t_{ii}$. From the assumption of matrix $A$, all the $u_{ii}$'s lie in the right half-plane of the complex plane. Thus $u_{ii}+u_{jj}\ne0$, which is the denominator in line 7 in Algorithm~\ref{alg:schur-matrix-square-root}. Thus Algorithm~\ref{alg:schur-matrix-square-root} never suffers from breakdown.}
+
+% block: newton-square-root-introduction page:207 type:ordinary-paragraph
+{Next, some iterative methods are described. The iterative methods can be regarded as Newton's method (Newton--Raphson method) for $X^2=A$. We now give a well-known derivation of Newton's method for matrix square roots.}
+
+% block: newton-square-root-error-equation pages:207,208 type:ordinary-paragraph
+{Let $X_k$ be an approximate solution of $A^{1/2}$ and let $E$ be the corresponding error matrix such that $X_k+E=A^{1/2}$. If we can obtain $E$ so that $(X_k+E)^2=(A^{1/2})^2\Leftrightarrow X_k^2+EX_k+X_kE+E^2=A$, then we have $X_k+E=A^{1/2}$. But it may be more difficult to solve the original problem since there are additional terms $EX_k+X_kE$. On the other hand, from the assumption that $X_k\approx A^{1/2}$, we can expect that $E\approx O$ (zero matrix). Thus instead of considering the correction equation above, we consider obtaining $E_k$ from $X_k^2+E_kX_k+X_kE_k=A$, which is a Sylvester equation in \eqref{eq:sylvester-equation}. Then we have the following Newton's method:}
+\begin{enumerate}[label=\arabic*.]
+\item {Set an initial guess $X_0$,}
+\item {For $k=1,2,\ldots$, until convergence,}
+\item {Solve $E_kX_k+X_kE_k=A-X_k^2$ to obtain $E_k$,}
+\item $X_{k+1}=X_k+E_k$.
+\item {End}
+\end{enumerate}
+
+% block: newton-square-root-commuting-initial-guess page:208 type:ordinary-paragraph
+{If we choose an initial guess $X_0$ such that $AX_0=X_0A$, then the Sylvester equation is simplified. By the choice, it can be shown that $E_kX_k=X_kE_k$. Then from $E_k=(1/2)X_k^{-1}(A-X_k^2)=(1/2)(X_k^{-1}A-X_k)$, it follows that $X_k+E_k=(1/2)(X_k+X_k^{-1}A)$. We now describe Newton's method for the matrix square root in Algorithm~\ref{alg:newton-matrix-square-root}.}
+
+% block: newton-square-root-frechet-citation page:208 type:ordinary-paragraph
+{For the details of the above derivation and a derivation based on Fréchet derivative, see \BookCite{96}.}
+
+% block: newton-square-root-algorithm page:208 type:ordinary-paragraph
+\begin{algorithm}[H]\caption{{(Iterative method) Newton's method for $X=A^{1/2}$}}\label{alg:newton-matrix-square-root}\begin{algorithmic}[1]
+\State {Choose $X_0$ such that $AX_0=X_0A$, e.g., $X_0=I$.}
+\For{{$k=0,1,\ldots$, until convergence}}
+\State $X_{k+1}=\frac{1}{2}(X_k+X_k^{-1}A)$
+\EndFor
+\end{algorithmic}\end{algorithm}
+
+% block: newton-square-root-convergence page:208 type:ordinary-paragraph
+{Let $A$ be a matrix satisfying the condition in Theorem~\ref{thm:principal-matrix-square-root}. If all the eigenvalues of $A^{1/2}X_0$ lie in the right-half plane of the complex plane, then $X_k$ quadratically converges to the matrix square root $A^{1/2}$ [\hyperref[bib:source-97]{\ref*{bib:source-97}}, p.140].}
+
+% block: newton-square-root-polynomial-initialization page:208 type:ordinary-paragraph
+{In Algorithm~\ref{alg:newton-matrix-square-root}, there is a restriction for the choice of an initial guess, i.e., $AX_0=X_0A$. The usual choice is $X_0=A$ or $X_0=I$. Since matrix polynomial $c_0I+c_1A+c_2A^2+\cdots+c_nA^n$ and $A$ commute, it is natural to choose $X_0(=c_0I+c_1A+c_2A^2+\cdots+c_nA^n)$ such that the norm of the residual $\|X_0^2-A\|$ is minimized. An approximate minimization using a Gröbner basis and a low degree matrix polynomial is proposed in \BookCite{132}.}
+
+% block: incremental-newton-square-root-transition page:208 type:ordinary-paragraph
+{A numerically stable variant of Algorithm~\ref{alg:newton-matrix-square-root} is the incremental Newton (IN) iteration \BookCite{101} that is described in Algorithm~\ref{alg:incremental-newton-square-root}.}
+
+% block: incremental-newton-square-root-algorithm page:208 type:ordinary-paragraph
+\begin{algorithm}[H]\caption{{(Iterative method) The IN method for $X=A^{1/2}$}}\label{alg:incremental-newton-square-root}\begin{algorithmic}[1]
+\State $X_0=A$; $E_0=\frac{1}{2}(I-A)$
+\For{{$k=0,1,\ldots$, until convergence}}
+\State $X_{k+1}=X_k+E_k$
+\State $E_{k+1}=-\frac{1}{2}E_kX_{k+1}^{-1}E_k$
+\EndFor
+\end{algorithmic}\end{algorithm}
+
+% block: incremental-newton-square-root-cost page:208 type:ordinary-paragraph
+{A feature of Algorithm~\ref{alg:incremental-newton-square-root} is that matrix $A$ does not appear in the main iteration, i.e., line 3. Though Algorithm~\ref{alg:incremental-newton-square-root} is more numerically stable than Algorithm~\ref{alg:newton-matrix-square-root}, additional matrix--matrix multiplications are required. The computational cost of Algorithm~\ref{alg:incremental-newton-square-root} is about 7/4 times higher than that of Algorithm~\ref{alg:newton-matrix-square-root} per iteration step.}
+
+% block: matrix-pth-root-heading page:209 type:subsection
+\subsubsection{{Matrix $p$th Root}}\label{subsec:matrix-pth-root}
+
+% block: matrix-pth-root-introduction page:209 type:ordinary-paragraph
+{In this section, direct and iterative methods are described for solving matrix $p$th roots.}
+
+% block: matrix-pth-root-definition-transition page:209 type:ordinary-paragraph
+{A matrix $X$ such that $X^p=A$ is called a matrix $p$th root. As described in Section~\ref{subsec:newton-matrix-square-root}, there may be infinitely many matrix square roots. Among them, there is the principal matrix square root that is characterized in Theorem~\ref{thm:principal-matrix-square-root}. Similarly, the notion of the principal matrix $p$th root is given as follows:}
+
+% block: principal-matrix-pth-root-theorem page:209 type:theorem
+\Needspace{14\baselineskip}
+\begin{Theorem}{{principal matrix $p$th root}}\label{thm:principal-matrix-pth-root}
+{Let $A$ be a complex square matrix whose eigenvalues $(\lambda_k\ne0)$ do not lie in the negative real axis of the complex plane. Then there exists a unique $p$th root of $A$ such that all the eigenvalues of the $p$th root lie in sector area $\{z\in\mathbb{C}:-\pi/p<\arg(z)<\pi/p\}$.}
+\end{Theorem}
+
+% block: principal-matrix-pth-root-notation page:209 type:ordinary-paragraph
+{The unique matrix $p$th root is called the principal matrix $p$th root of $A$ and is denoted by $A^{1/p}$. If $p=2$, then Theorem~\ref{thm:principal-matrix-pth-root} is equivalent to Theorem~\ref{thm:principal-matrix-square-root}.}
+
+% block: schur-pth-root-derivation page:209 type:ordinary-paragraph
+{In what follows, direct methods for $A^{1/p}$ are described. The Schur method is a direct method based on the Schur decomposition. After the Schur decomposition of matrix $A$ $(A=QTQ^{\mathrm H})$, it follows that $A^{1/p}=QT^{1/p}Q^{\mathrm H}$. For obtaining $T^{1/p}$, let $U:=T^{1/p}$. Since $U$ is an upper tridiagonal matrix, $U^p$ is also an upper tridiagonal matrix. Then, all we have to do is to solve $U^p=T$. The resulting algorithm is summarized in Algorithm~\ref{alg:schur-matrix-pth-root}.}
+
+% block: schur-pth-root-algorithm page:209 type:ordinary-paragraph
+\begin{algorithm}[H]\caption{{(Direct method) Schur method for $X=A^{1/p}$}}\label{alg:schur-matrix-pth-root}\begin{algorithmic}[1]
+\State {Compute Schur decomposition of $A=QTQ^{\mathrm H}$.}
+\For{$j=1,2,\ldots,n$}
+\State $u_{jj}=t_{jj}^{1/p}$, $v_{jj}^{(1)}=1$, $v_{jj}^{(k+2)}=u_{jj}^{k+1}$ $(k=0,1,\ldots,p-2)$
+\For{$i=j-1,j-2,\ldots,1$}
+\For{$k=0,1,\ldots,p-2$}
+\State $w_{k+2}=\sum_{\ell=i+1}^{j-1}u_{i\ell}v_{\ell j}^{(k+2)}$
+\EndFor
+\State $u_{ij}=(t_{ij}-\sum_{k=0}^{p-2}v_{ii}^{(p-k-1)}w_{k+2})/(\sum_{k=0}^{p-1}v_{ii}^{(p-k)}v_{jj}^{(k+1)})$
+\For{$k=0,1,\ldots,p-2$}
+\State $v_{ij}^{(k+2)}=\sum_{\ell=0}^k v_{ii}^{(k-\ell+1)}u_{ij}v_{jj}^{(\ell+1)}+\sum_{\ell=0}^{k-1}v_{ii}^{(k-\ell)}w_{\ell+2}$
+\EndFor
+\EndFor
+\EndFor
+\State $X=QUQ^{\mathrm H}$
+\end{algorithmic}\end{algorithm}
+
+% block: pth-root-iteration-transition page:209 type:ordinary-paragraph
+{As for iterative methods, Algorithms~\ref{alg:newton-matrix-pth-root} and~\ref{alg:incremental-newton-pth-root} are known as extensions of Algorithms~\ref{alg:newton-matrix-square-root} and~\ref{alg:incremental-newton-square-root}, respectively.}
+
+% block: newton-pth-root-algorithm page:210 type:ordinary-paragraph
+\begin{algorithm}[H]\caption{{(Iterative method) Newton's method for $A^{1/p}$}}\label{alg:newton-matrix-pth-root}\begin{algorithmic}[1]
+\State {Set $p$, and choose $X_0$ such that $AX_0=X_0A$, e.g., $X_0=A$.}
+\For{{$k=0,1,\ldots$, until convergence}}
+\State $X_{k+1}=\frac{1}{p}[(p-1)X_k+X_k^{1-p}A]$
+\EndFor
+\end{algorithmic}\end{algorithm}
+
+% block: pth-root-stability-and-variants page:210 type:ordinary-paragraph
+{The computational cost of Algorithm~\ref{alg:incremental-newton-pth-root} is higher than Algorithm~\ref{alg:newton-matrix-pth-root}. On the other hand, it is known in \BookCite{102} that Algorithm~\ref{alg:incremental-newton-pth-root} has numerical stability. For other useful variants of Newton's method, see, e.g., [\hyperref[bib:source-102]{\ref*{bib:source-102}}, Eqs. (3.6), (3.9)]. A cost-efficient variant of Algorithm~\ref{alg:incremental-newton-pth-root} having numerical stability is found in \BookCite{187}.}
+
+% block: incremental-newton-pth-root-algorithm page:210 type:ordinary-paragraph
+\begin{algorithm}[H]\caption{{(Iterative method) The incremental Newton's method for $A^{1/p}$}}\label{alg:incremental-newton-pth-root}\begin{algorithmic}[1]
+\State {Set $p$, $X_0=I$, $E_0=\frac{1}{p}(A-I)$.}
+\For{{$k=0,1,\ldots$, until convergence}}
+\State $X_{k+1}=X_k+E_k$, $F_k=X_kX_{k+1}^{-1}$
+\State $E_{k+1}=-\frac{1}{p}E_k\left[X_{k+1}^{-1}I+2X_{k+1}^{-1}F_k+\cdots+(p-1)X_{k+1}^{-1}F_k^{p-2}\right]E_k$
+\EndFor
+\end{algorithmic}\end{algorithm}
