@@ -223,6 +223,7 @@ def assemble():
       "sec:hermitian-linear-systems":("3.1",85,"73","Hermitian Linear Systems"),
       "sec:complex-symmetric-linear-systems":("3.2",102,"90","Complex Symmetric Linear Systems"),
       "sec:nonhermitian-linear-systems":("3.3",111,"99","Non-Hermitian Linear Systems"),
+      "subsec:cg-normal-equations":("3.4.1",159,"147","Krylov Subspace Methods for Normal Equations"),
       "subsec:newton-matrix-square-root":("5.3.1",206,"194","Matrix Square Root"),
       "sec:preconditioning-techniques":("3.5",163,"151","Preconditioning Techniques"),
       "subsec:cocr-method":("3.2.2",104,"92","The Conjugate Orthogonal Conjugate Residual (COCR) Method"),
