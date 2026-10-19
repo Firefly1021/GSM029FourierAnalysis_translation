@@ -1,0 +1,136 @@
+% block: matrix-logarithm-heading page:215 type:section
+\subsection{{Matrix Logarithm}}\label{sec:matrix-logarithm}
+
+% block: matrix-logarithm-introduction page:215 type:ordinary-paragraph
+{A matrix $X$ satisfying $e^X=A$ for $A\in\mathbb{C}^{n\times n}$ is referred to as a matrix logarithm. Recall that the notion of the principal matrix square root is described in Theorem~\ref{thm:principal-matrix-square-root}. Similarly, the notion of the principal matrix logarithm is described in Theorem~\ref{thm:principal-matrix-logarithm}.}
+
+% block: principal-matrix-logarithm-theorem page:215 type:theorem
+\Needspace{14\baselineskip}
+\begin{Theorem}{{Principal matrix logarithm}}\label{thm:principal-matrix-logarithm}
+{Let $A$ be a complex square matrix whose eigenvalues $(\lambda_k\ne0)$ do not lie in the negative real axis of the complex plane. Then there exists a unique matrix logarithm of $A$ such that all the eigenvalues of the square root lie in the strip $\{z\in\mathbb{C}:-\pi<\operatorname{Im}(z)<\pi\}$.}
+\end{Theorem}
+
+% block: principal-logarithm-notation page:215 type:ordinary-paragraph
+{The unique matrix in Theorem~\ref{thm:principal-matrix-logarithm} is referred to as the principal matrix logarithm of $A$, denoted by $\log(A)$. Below are some properties of $\log(A)$.}
+
+% block: matrix-logarithm-properties-theorem page:216 type:theorem
+\Needspace{14\baselineskip}
+\begin{Theorem}{{Some properties of $\log(A)$}}\label{thm:matrix-logarithm-properties}
+{Let $A$ be a complex square matrix whose eigenvalues $(\lambda_k\ne0)$ do not lie in the negative real axis of the complex plane. Then, for $-1\le\alpha\le1$ we have $\log(A^\alpha)=\alpha\log(A)$. In particular, $\log(A^{-1})=-\log(A)$, $\log(A^{1/2})=(1/2)\log(A)$.}
+\end{Theorem}
+
+% block: matrix-logarithm-properties-proof-locator page:216 type:ordinary-paragraph
+{For the proof of Theorem~\ref{thm:matrix-logarithm-properties}, see the proof of [\hyperref[bib:source-97]{\ref*{bib:source-97}}, Theorem 11.2].}
+
+% block: matrix-logarithm-neumann-series page:216 type:ordinary-paragraph
+{In what follows, some numerical algorithms for computing $\log(A)$ are described. When matrix $A$ satisfies $\rho(A-I)<1$, $\log(A)$ can be expanded as follows:}\footnote{{$\rho(X)=|\lambda_{\max}|$ is the spectral radius of $X$, see Section~\ref{subsec:stationary-convergence}.}}
+\begin{equation}\label{eq:matrix-log-neumann-series}\begin{aligned}\log(A)&=\log(I+(A-I))\\&=(A-I)-\frac{1}{2}(A-I)^2+\frac{1}{3}(A-I)^3-\frac{1}{4}(A-I)^4+\cdots,\end{aligned}\end{equation}
+{which is the Neumann series, see also Section~\ref{subsec:polynomial-preconditioners}. If $A$ does not satisfy $\rho(A-I)<1$, we cannot use \eqref{eq:matrix-log-neumann-series} for approximately computing $\log(A)$. Even in this case, the expansion can be useful after the following modifications: it follows from Theorem~\ref{thm:matrix-logarithm-properties} that for a natural number $k$ we have}
+\[\log(A)=k\log(A^{1/k}),\]
+{and $A^{1/k}$ gets closer to the identity matrix $I$ as $k$ gets larger. Thus all we have to do is to find $k$ from \eqref{eq:matrix-log-neumann-series} such that the following series is convergent:}
+\begin{equation}\label{eq:matrix-log-root-series}\begin{aligned}\log(A^{1/k})&=\log(I+(A^{1/k}-I))\\&=(A^{1/k}-I)-\frac{1}{2}(A^{1/k}-I)^2+\frac{1}{3}(A^{1/k}-I)^3+\cdots.\end{aligned}\end{equation}
+
+% block: matrix-logarithm-pade-approximants page:216 type:ordinary-paragraph
+{In practice, set $k=2^m$, and for the right-hand side of \eqref{eq:matrix-log-root-series} we use the Padé approximant to $\log(1+x)$. Below are some examples of the diagonal Padé approximant to $\log(I+X)$:}
+\[\begin{aligned}R_{1,1}(X)&=(2I+X)^{-1}(2X),\\R_{2,2}(X)&=(6I+6X+X^2)^{-1}(6X+3X^2),\\R_{3,3}(X)&=(60I+90X+36X^2+3X^3)^{-1}(60X+60X^2+11X^3).\end{aligned}\]
+{The algorithm is listed in Algorithm~\ref{alg:matrix-log-pade}. For the matrix $2^m$th root, see Section~\ref{subsec:matrix-pth-root}. For an improvement of Algorithm~\ref{alg:matrix-log-pade}, see \BookCite{9}.}
+
+% block: matrix-logarithm-pade-algorithm page:216 type:ordinary-paragraph
+\begin{algorithm}[H]\caption{{Computation of $\log(A)$}}\label{alg:matrix-log-pade}\begin{algorithmic}[1]
+\State {Set a natural number $m$ such that $\rho(A^{1/2^m}-I)<1$.}
+\State $X=A^{1/2^m}-I$
+\State $Y=R_{q,q}(X)$ ({the diagonal Padé aproximant})
+\State $\log(A)\approx2^mY$
+\end{algorithmic}\end{algorithm}
+
+% block: matrix-logarithm-newton-iterations-introduction page:217 type:ordinary-paragraph
+{Numerical algorithms based on Newton's method are listed in Algorithms~\ref{alg:matrix-log-newton-quadratic} and~\ref{alg:matrix-log-newton-cubic}. Under a certain condition, Algorithm~\ref{alg:matrix-log-newton-quadratic} shows a locally quadratic convergence to $\log(A)$, and Algorithm~\ref{alg:matrix-log-newton-cubic} shows a locally cubic convergence to $\log(A)$.}
+
+% block: matrix-logarithm-quadratic-algorithm page:217 type:ordinary-paragraph
+\begin{algorithm}[H]\caption{{Iterative method 1 for $X=\log(A)$}}\label{alg:matrix-log-newton-quadratic}\begin{algorithmic}[1]
+\State {Choose $X_0$ such that $AX_0=X_0A$, e.g., $X_0=A$.}
+\For{{$k=0,1,\ldots$, until convergence}}
+\State $X_{k+1}=X_k-I+e^{-X_k}A$
+\EndFor
+\end{algorithmic}\end{algorithm}
+
+% block: matrix-logarithm-cubic-algorithm page:217 type:ordinary-paragraph
+\begin{algorithm}[H]\caption{{Iterative method 2 for $X=\log(A)$}}\label{alg:matrix-log-newton-cubic}\begin{algorithmic}[1]
+\State {Choose $X_0$ such that $AX_0=X_0A$, e.g., $X_0=A$.}
+\For{{$k=0,1,\ldots$, until convergence}}
+\State $X_{k+1}=X_k+\frac{1}{2}(e^{-X_k}A-A^{-1}e^{X_k})$
+\EndFor
+\end{algorithmic}\end{algorithm}
+
+% block: matrix-logarithm-iteration-cost-comparison page:217 type:ordinary-paragraph
+{Let $Y=e^{-X_k}A$ in Algorithm~\ref{alg:matrix-log-newton-cubic}. Then from \ref{part:matrix-exp-inverse} of Theorem~\ref{thm:matrix-exponential-properties} we have $Y^{-1}=A^{-1}e^{X_k}$, and thus we obtain $X_{k+1}=X_k+(Y-Y^{-1})/2$. This implies that the computational cost of Algorithm~\ref{alg:matrix-log-newton-cubic} is about the sum of computational costs of Algorithm~\ref{alg:matrix-log-newton-quadratic} and $Y^{-1}$. Since the cost of $Y^{-1}$ is relatively much smaller than that of the matrix exponential function, the cost of Algorithm~\ref{alg:matrix-log-newton-quadratic} is nearly equal to that of Algorithm~\ref{alg:matrix-log-newton-cubic}. From this, Algorithm~\ref{alg:matrix-log-newton-cubic} will be faster than Algorithm~\ref{alg:matrix-log-newton-quadratic} since Algorithm~\ref{alg:matrix-log-newton-cubic} shows a cubic convergence.}
+
+% block: matrix-logarithm-hermitian-diagonalization page:217 type:ordinary-paragraph
+{When matrix $A$ is Hermitian positive definite, the Schur decomposition of $A$ corresponds to the eigen-decomposition $A=QDQ^{\mathrm H}$, where $Q$ is a unitary matrix and $D$ is a diagonal matrix whose diagonal elements are eigenvalues $\lambda_i$ of $A$, and thus $e^X=A\Leftrightarrow e^X=QDQ^{\mathrm H}\Leftrightarrow Q^{\mathrm H}e^XQ=D\Leftrightarrow e^{Q^{\mathrm H}XQ}=D$. Let $M=Q^{\mathrm H}XQ$. Then $M$ satisfying $e^M=D$ can be written as $M=\operatorname{diag}(\log(\lambda_1),\ldots,\log(\lambda_n))$. From the definition of $M$, we have $X(=\log(A))=QMQ^{\mathrm H}$, leading to the following computation of $\log(A)$:}
+\[\log(A)=Q\begin{bmatrix}\log(\lambda_1)&&\\&\ddots&\\&&\log(\lambda_n)\end{bmatrix}Q^{\mathrm H}.\]
+
+% block: matrix-logarithm-general-diagonalization pages:217,218 type:ordinary-paragraph
+{In general, if matrix $A$ satisfies the assumption in Theorem~\ref{thm:principal-matrix-logarithm} and diagonalizable (i.e., $A=VDV^{-1}$), then it may be possible to compute $\log(A)$ by}
+\[\log(A)=V\begin{bmatrix}\log(\lambda_1)&&\\&\ddots&\\&&\log(\lambda_n)\end{bmatrix}V^{-1}.\]
+{However, if $V$ is ill-conditioned, then this approach is not recommended due to numerical instability of the computation of $V^{-1}$.}
+
+% block: matrix-logarithm-integral-representation page:218 type:ordinary-paragraph
+{If matrix $A$ is large and sparse, and if we need specific elements of $\log(A)$, computing the following integration (e.g., [\hyperref[bib:source-97]{\ref*{bib:source-97}}, Theorem 11.1]) may be a method of choice:}
+\begin{equation}\label{eq:matrix-log-integral}\log(A)=(A-I)\int_0^1[t(A-I)+I]^{-1}\,\mathrm{d}t.\end{equation}
+
+% block: matrix-logarithm-column-integral page:218 type:ordinary-paragraph
+{Applying the $j$th unit vector $\boldsymbol{e}_j$ to \eqref{eq:matrix-log-integral} from the right yields}
+\begin{equation}\label{eq:matrix-log-column-integral}\log(A)\boldsymbol{e}_j=(A-I)\int_0^1[t(A-I)+I]^{-1}\boldsymbol{e}_j\,\mathrm{d}t.\end{equation}
+{This means that computing the right-hand side of \eqref{eq:matrix-log-column-integral} yields the $i$th column vector of $\log(A)$. Now, let $\boldsymbol{x}^{(t)}=[t(A-I)+I]^{-1}\boldsymbol{e}_j$. Then we have}
+\[[t(A-I)+I]\boldsymbol{x}^{(t)}=\boldsymbol{e}_j,\]
+{which are (continuous) shifted linear systems for $t$. For the numerical quadrature, if $t$ is discretized as $t_1,t_2,\ldots,t_m$, then we need to solve}
+\begin{equation}\label{eq:matrix-log-quadrature-systems}[t_i(A-I)+I]\boldsymbol{x}^{(i)}=\boldsymbol{e}_j\quad\text{for }i=1,2,\ldots,m.\end{equation}
+
+% block: matrix-logarithm-shifted-systems page:218 type:ordinary-paragraph
+{For $t_i\ne0$, the equations can be rewritten as}
+\begin{equation}\label{eq:matrix-log-shifted-systems}[A+(t_i^{-1}-1)I]\widetilde{\boldsymbol{x}}^{(i)}=\boldsymbol{e}_j\quad\text{for }i=1,2,\ldots,m,\end{equation}
+{where $\widetilde{\boldsymbol{x}}^{(i)}=t_i\boldsymbol{x}^{(i)}$. Therefore, computing specific elements of the matrix logarithm via a quadrature formula is an important application for shifted Krylov subspace methods in Chapter~\ref{chap:shifted-linear-systems}.}
+
+% block: matrix-logarithm-de-formula-introduction page:218 type:ordinary-paragraph
+{Among many numerical quadratures, the double exponential (DE) formula \BookCite{183} is regarded as one of the most successful methods, especially if the integrand has endpoint (near) singularities. For the developments of the DE formula, see, e.g., \BookCite{192}.}
+
+% block: matrix-logarithm-de-variable-change page:218 type:ordinary-paragraph
+{Using the DE formula for computing matrix functions was first considered in \BookCite{188}. In what follows, the DE formula for the matrix logarithm is described. Applying variable transformation $u=2t-1$ to \eqref{eq:matrix-log-integral} yields}
+\begin{equation}\label{eq:matrix-log-symmetric-integral}\log(A)=(A-I)\int_{-1}^1[(1+u)(A-I)+2I]^{-1}\,\mathrm{d}u.\end{equation}
+
+% block: matrix-logarithm-de-integrand page:219 type:ordinary-paragraph
+{Then, using the DE transformation $u=\tanh(\sinh(x))$ gives}
+\begin{equation}\label{eq:matrix-log-de-integral}\log(A)=(A-I)\int_{-\infty}^{\infty}F_{\mathrm{DE}}(x)\,\mathrm{d}x,\end{equation}
+{where}
+\begin{equation}\label{eq:matrix-log-de-integrand}F_{\mathrm{DE}}(x):=\cosh(x)\operatorname{sech}^2(\sinh(x))[(1+\tanh(\sinh(x)))(A-I)+2I]^{-1}.\end{equation}
+{Note that the matrix $(1+\tanh(\sinh(x)))(A-I)+2I$ in $F_{\mathrm{DE}}$ is nonsingular for any $x\in(-\infty,\infty)$.}
+
+% block: matrix-logarithm-de-algorithm-transition page:219 type:ordinary-paragraph
+{An algorithm for computing $\log(A)$ the DE formula is given in Algorithm~\ref{alg:matrix-log-de}. For the theoretical details of Algorithm~\ref{alg:matrix-log-de}, see \BookCite{188}.}
+
+% block: matrix-logarithm-de-column-solve-transition page:219 type:ordinary-paragraph
+{From line 16 of Algorithm~\ref{alg:matrix-log-de}, vector $(A-I)T\boldsymbol{e}_j$ is the $j$th column of $\log(A)$, and from lines 3 and 15 we need to solve the following equations:}
+
+% block: matrix-logarithm-de-algorithm page:219 type:ordinary-paragraph
+\begin{algorithm}[H]\caption{{Computation of $\log(A)$ based on the DE formula}}\label{alg:matrix-log-de}\begin{algorithmic}[1]
+\State \textbf{Input:} $A\in\mathbb{R}^{n\times n}$, $m\in\mathbb{N}$, {$\epsilon>0$ a tolerance for the interval truncation error}
+\State \textbf{Output:} $X\approx\log(A)$
+\State {Set} $F_{\mathrm{DE}}(x)=\cosh(x)\operatorname{sech}^2(\sinh(x))[(1+\tanh(\sinh(x)))(A-I)+2I]^{-1}$.
+\State {Compute $\|A-I\|$, $\|A^{-1}\|$, and $\rho(A)$.}
+\State $\theta=|\log(\rho(A))|$
+\State $\epsilon_{\max}=\frac{3}{\theta}\frac{\|A-I\|\|A^{-1}\|}{1+\|A^{-1}\|}$
+\If{$\epsilon\ge\epsilon_{\max}$}
+\State $\epsilon\leftarrow\epsilon_{\max}/2$
+\EndIf
+\State $a=\min\left\{\frac{\theta\epsilon}{3\|A-I\|},\frac{1}{2\|A-I\|}\right\}$
+\State $b=\max\left\{1-\frac{\theta\epsilon}{3\|A-I\|\|A^{-1}\|},\frac{2\|A^{-1}\|}{2\|A^{-1}\|+1}\right\}$
+\State $l=\operatorname{arsinh}(\operatorname{artanh}(2a-1))$
+\State $r=\operatorname{arsinh}(\operatorname{artanh}(2b-1))$
+\State $h=(r-l)/(m-1)$
+\State $T=\frac{h}{2}(F_{\mathrm{DE}}(l)+F_{\mathrm{DE}}(r))+h\sum_{i=1}^{m-2}F_{\mathrm{DE}}(l+ih)$
+\State $X=(A-I)T$
+\end{algorithmic}\end{algorithm}
+
+% block: matrix-logarithm-de-shifted-systems page:219 type:ordinary-paragraph
+\[[(1+\tanh(\sinh(l+ih)))(A-I)+2I]\boldsymbol{x}=\boldsymbol{e}_j\quad\text{for }i=0,1,\ldots,m-1,\]
+{which can also be rewritten as shifted linear systems. For the rewrite, see \eqref{eq:matrix-log-quadrature-systems} and \eqref{eq:matrix-log-shifted-systems}. Thus, if matrix $A$ is large and sparse, (shifted) Krylov subspace methods are attractive to use.}

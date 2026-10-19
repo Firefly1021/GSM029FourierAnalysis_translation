@@ -1,0 +1,136 @@
+% block: matrix-logarithm-heading page:215 type:section
+\subsection{{矩阵对数}}\label{sec:matrix-logarithm}
+
+% block: matrix-logarithm-introduction page:215 type:ordinary-paragraph
+{对 $A\in\mathbb{C}^{n\times n}$, 满足 $e^X=A$ 的矩阵 $X$ 称为矩阵对数. 回顾 Theorem~\ref{thm:principal-matrix-square-root} 中介绍的矩阵主平方根概念. 类似地, 矩阵主对数的概念见 Theorem~\ref{thm:principal-matrix-logarithm}.}
+
+% block: principal-matrix-logarithm-theorem page:215 type:theorem
+\Needspace{14\baselineskip}
+\begin{Theorem}{{矩阵主对数}}\label{thm:principal-matrix-logarithm}
+{设 $A$ 是复方阵, 其特征值 $(\lambda_k\ne0)$ 不位于复平面的负实轴上. 则 $A$ 存在唯一一个矩阵对数, 使得该平方根的所有特征值都位于带状区域 $\{z\in\mathbb{C}:-\pi<\operatorname{Im}(z)<\pi\}$.}
+\end{Theorem}
+
+% block: principal-logarithm-notation page:215 type:ordinary-paragraph
+{Theorem~\ref{thm:principal-matrix-logarithm} 中的唯一矩阵称为 $A$ 的矩阵主对数, 记为 $\log(A)$. 下面给出 $\log(A)$ 的一些性质.}
+
+% block: matrix-logarithm-properties-theorem page:216 type:theorem
+\Needspace{14\baselineskip}
+\begin{Theorem}{{$\log(A)$ 的一些性质}}\label{thm:matrix-logarithm-properties}
+{设 $A$ 是复方阵, 其特征值 $(\lambda_k\ne0)$ 不位于复平面的负实轴上. 则对 $-1\le\alpha\le1$, 有 $\log(A^\alpha)=\alpha\log(A)$. 特别地, $\log(A^{-1})=-\log(A)$, $\log(A^{1/2})=(1/2)\log(A)$.}
+\end{Theorem}
+
+% block: matrix-logarithm-properties-proof-locator page:216 type:ordinary-paragraph
+{Theorem~\ref{thm:matrix-logarithm-properties} 的证明见 [\hyperref[bib:source-97]{\ref*{bib:source-97}}, Theorem 11.2] 的证明.}
+
+% block: matrix-logarithm-neumann-series page:216 type:ordinary-paragraph
+{以下介绍计算 $\log(A)$ 的一些数值算法. 当矩阵 $A$ 满足 $\rho(A-I)<1$ 时, $\log(A)$ 可以如下展开:}\footnote{{$\rho(X)=|\lambda_{\max}|$ 是 $X$ 的谱半径, 见 Section~\ref{subsec:stationary-convergence}.}}
+\begin{equation}\label{eq:matrix-log-neumann-series}\begin{aligned}\log(A)&=\log(I+(A-I))\\&=(A-I)-\frac{1}{2}(A-I)^2+\frac{1}{3}(A-I)^3-\frac{1}{4}(A-I)^4+\cdots,\end{aligned}\end{equation}
+{这就是 Neumann 级数, 另见 Section~\ref{subsec:polynomial-preconditioners}. 如果 $A$ 不满足 $\rho(A-I)<1$, 则不能利用 \eqref{eq:matrix-log-neumann-series} 近似计算 $\log(A)$. 即使在这种情况下, 作下列修改后该展开仍可使用: 由 Theorem~\ref{thm:matrix-logarithm-properties} 可知, 对自然数 $k$, 有}
+\[\log(A)=k\log(A^{1/k}),\]
+{而且随着 $k$ 增大, $A^{1/k}$ 更接近单位矩阵 $I$. 因此, 只需根据 \eqref{eq:matrix-log-neumann-series} 找到 $k$, 使下列级数收敛:}
+\begin{equation}\label{eq:matrix-log-root-series}\begin{aligned}\log(A^{1/k})&=\log(I+(A^{1/k}-I))\\&=(A^{1/k}-I)-\frac{1}{2}(A^{1/k}-I)^2+\frac{1}{3}(A^{1/k}-I)^3+\cdots.\end{aligned}\end{equation}
+
+% block: matrix-logarithm-pade-approximants page:216 type:ordinary-paragraph
+{实际计算中, 设置 $k=2^m$, 并在 \eqref{eq:matrix-log-root-series} 的右端采用 $\log(1+x)$ 的 Padé 逼近. 下面是 $\log(I+X)$ 的对角 Padé 逼近的一些例子:}
+\[\begin{aligned}R_{1,1}(X)&=(2I+X)^{-1}(2X),\\R_{2,2}(X)&=(6I+6X+X^2)^{-1}(6X+3X^2),\\R_{3,3}(X)&=(60I+90X+36X^2+3X^3)^{-1}(60X+60X^2+11X^3).\end{aligned}\]
+{算法列于 Algorithm~\ref{alg:matrix-log-pade}. 矩阵 $2^m$ 次根见 Section~\ref{subsec:matrix-pth-root}. Algorithm~\ref{alg:matrix-log-pade} 的改进见 \BookCite{9}.}
+
+% block: matrix-logarithm-pade-algorithm page:216 type:ordinary-paragraph
+\begin{algorithm}[H]\caption{{计算 $\log(A)$}}\label{alg:matrix-log-pade}\begin{algorithmic}[1]
+\State {设置自然数 $m$, 使得 $\rho(A^{1/2^m}-I)<1$.}
+\State $X=A^{1/2^m}-I$
+\State $Y=R_{q,q}(X)$ ({对角 Padé 逼近})
+\State $\log(A)\approx2^mY$
+\end{algorithmic}\end{algorithm}
+
+% block: matrix-logarithm-newton-iterations-introduction page:217 type:ordinary-paragraph
+{基于 Newton 方法的数值算法列于 Algorithms~\ref{alg:matrix-log-newton-quadratic} 和~\ref{alg:matrix-log-newton-cubic}. 在一定条件下, Algorithm~\ref{alg:matrix-log-newton-quadratic} 局部二次收敛到 $\log(A)$, 而 Algorithm~\ref{alg:matrix-log-newton-cubic} 局部三次收敛到 $\log(A)$.}
+
+% block: matrix-logarithm-quadratic-algorithm page:217 type:ordinary-paragraph
+\begin{algorithm}[H]\caption{{求 $X=\log(A)$ 的迭代方法 1}}\label{alg:matrix-log-newton-quadratic}\begin{algorithmic}[1]
+\State {选择 $X_0$ 使得 $AX_0=X_0A$, 例如 $X_0=A$.}
+\For{{$k=0,1,\ldots$, 直到收敛}}
+\State $X_{k+1}=X_k-I+e^{-X_k}A$
+\EndFor
+\end{algorithmic}\end{algorithm}
+
+% block: matrix-logarithm-cubic-algorithm page:217 type:ordinary-paragraph
+\begin{algorithm}[H]\caption{{求 $X=\log(A)$ 的迭代方法 2}}\label{alg:matrix-log-newton-cubic}\begin{algorithmic}[1]
+\State {选择 $X_0$ 使得 $AX_0=X_0A$, 例如 $X_0=A$.}
+\For{{$k=0,1,\ldots$, 直到收敛}}
+\State $X_{k+1}=X_k+\frac{1}{2}(e^{-X_k}A-A^{-1}e^{X_k})$
+\EndFor
+\end{algorithmic}\end{algorithm}
+
+% block: matrix-logarithm-iteration-cost-comparison page:217 type:ordinary-paragraph
+{在 Algorithm~\ref{alg:matrix-log-newton-cubic} 中, 设 $Y=e^{-X_k}A$. 由 Theorem~\ref{thm:matrix-exponential-properties} 的第 \ref{part:matrix-exp-inverse} 项, 有 $Y^{-1}=A^{-1}e^{X_k}$, 从而得到 $X_{k+1}=X_k+(Y-Y^{-1})/2$. 这意味着 Algorithm~\ref{alg:matrix-log-newton-cubic} 的计算成本约等于 Algorithm~\ref{alg:matrix-log-newton-quadratic} 的计算成本与 $Y^{-1}$ 的计算成本之和. 由于 $Y^{-1}$ 的计算成本相对远小于矩阵指数函数的计算成本, Algorithm~\ref{alg:matrix-log-newton-quadratic} 的成本与 Algorithm~\ref{alg:matrix-log-newton-cubic} 的成本近乎相等. 因此, 由于 Algorithm~\ref{alg:matrix-log-newton-cubic} 具有三次收敛性, 它会比 Algorithm~\ref{alg:matrix-log-newton-quadratic} 更快.}
+
+% block: matrix-logarithm-hermitian-diagonalization page:217 type:ordinary-paragraph
+{当矩阵 $A$ 是 Hermitian 正定矩阵时, $A$ 的 Schur 分解对应于特征分解 $A=QDQ^{\mathrm H}$, 其中 $Q$ 是酉矩阵, $D$ 是以 $A$ 的特征值 $\lambda_i$ 为对角元素的对角矩阵, 因而\newline{}$e^X=A\Leftrightarrow e^X=QDQ^{\mathrm H}\Leftrightarrow Q^{\mathrm H}e^XQ=D\Leftrightarrow e^{Q^{\mathrm H}XQ}=D$.\newline{}设 $M=Q^{\mathrm H}XQ$. 则满足 $e^M=D$ 的 $M$ 可写为\newline{}$M=\operatorname{diag}(\log(\lambda_1),\ldots,\log(\lambda_n))$.\newline{}由 $M$ 的定义, 有 $X(=\log(A))=QMQ^{\mathrm H}$, 从而得到如下计算 $\log(A)$ 的方式:}
+\[\log(A)=Q\begin{bmatrix}\log(\lambda_1)&&\\&\ddots&\\&&\log(\lambda_n)\end{bmatrix}Q^{\mathrm H}.\]
+
+% block: matrix-logarithm-general-diagonalization pages:217,218 type:ordinary-paragraph
+{一般地, 如果矩阵 $A$ 满足 Theorem~\ref{thm:principal-matrix-logarithm} 的假设且可对角化 (即 $A=VDV^{-1}$), 则可以尝试由下式计算 $\log(A)$:}
+\[\log(A)=V\begin{bmatrix}\log(\lambda_1)&&\\&\ddots&\\&&\log(\lambda_n)\end{bmatrix}V^{-1}.\]
+{然而, 如果 $V$ 是病态的, 则由于计算 $V^{-1}$ 的数值不稳定性, 不推荐使用这种方法.}
+
+% block: matrix-logarithm-integral-representation page:218 type:ordinary-paragraph
+{如果矩阵 $A$ 是大型稀疏矩阵, 且需要 $\log(A)$ 的特定元素, 则计算下列积分 (例如 [\hyperref[bib:source-97]{\ref*{bib:source-97}}, Theorem 11.1]) 可以是一种选择:}
+\begin{equation}\label{eq:matrix-log-integral}\log(A)=(A-I)\int_0^1[t(A-I)+I]^{-1}\,\mathrm{d}t.\end{equation}
+
+% block: matrix-logarithm-column-integral page:218 type:ordinary-paragraph
+{将第 $j$ 个单位向量 $\boldsymbol{e}_j$ 从右侧作用于 \eqref{eq:matrix-log-integral}, 得到}
+\begin{equation}\label{eq:matrix-log-column-integral}\log(A)\boldsymbol{e}_j=(A-I)\int_0^1[t(A-I)+I]^{-1}\boldsymbol{e}_j\,\mathrm{d}t.\end{equation}
+{这意味着计算 \eqref{eq:matrix-log-column-integral} 的右端就得到 $\log(A)$ 的第 $i$ 列向量. 现在设 $\boldsymbol{x}^{(t)}=[t(A-I)+I]^{-1}\boldsymbol{e}_j$. 则有}
+\[[t(A-I)+I]\boldsymbol{x}^{(t)}=\boldsymbol{e}_j,\]
+{这是关于 $t$ 的 (连续) 移位线性方程组. 对于数值求积, 如果将 $t$ 离散为 $t_1,t_2,\ldots,t_m$, 则需要求解}
+\begin{equation}\label{eq:matrix-log-quadrature-systems}[t_i(A-I)+I]\boldsymbol{x}^{(i)}=\boldsymbol{e}_j\quad\text{for }i=1,2,\ldots,m.\end{equation}
+
+% block: matrix-logarithm-shifted-systems page:218 type:ordinary-paragraph
+{对 $t_i\ne0$, 上述方程可改写为}
+\begin{equation}\label{eq:matrix-log-shifted-systems}[A+(t_i^{-1}-1)I]\widetilde{\boldsymbol{x}}^{(i)}=\boldsymbol{e}_j\quad\text{for }i=1,2,\ldots,m,\end{equation}
+{其中 $\widetilde{\boldsymbol{x}}^{(i)}=t_i\boldsymbol{x}^{(i)}$. 因此, 通过求积公式计算矩阵对数的特定元素是 Chapter~\ref{chap:shifted-linear-systems} 中移位 Krylov 子空间方法的一项重要应用.}
+
+% block: matrix-logarithm-de-formula-introduction page:218 type:ordinary-paragraph
+{在众多数值求积方法中, 双指数 (DE) 公式 \BookCite{183} 被认为是最成功的方法之一, 尤其是在被积函数具有端点 (近) 奇异性时. DE 公式的发展可参见例如 \BookCite{192}.}
+
+% block: matrix-logarithm-de-variable-change page:218 type:ordinary-paragraph
+{文献 \BookCite{188} 首次考虑利用 DE 公式计算矩阵函数. 以下介绍用于矩阵对数的 DE 公式. 对 \eqref{eq:matrix-log-integral} 作变量变换 $u=2t-1$, 得到}
+\begin{equation}\label{eq:matrix-log-symmetric-integral}\log(A)=(A-I)\int_{-1}^1[(1+u)(A-I)+2I]^{-1}\,\mathrm{d}u.\end{equation}
+
+% block: matrix-logarithm-de-integrand page:219 type:ordinary-paragraph
+{然后, 利用 DE 变换 $u=\tanh(\sinh(x))$, 得到}
+\begin{equation}\label{eq:matrix-log-de-integral}\log(A)=(A-I)\int_{-\infty}^{\infty}F_{\mathrm{DE}}(x)\,\mathrm{d}x,\end{equation}
+{其中}
+\begin{equation}\label{eq:matrix-log-de-integrand}F_{\mathrm{DE}}(x):=\cosh(x)\operatorname{sech}^2(\sinh(x))[(1+\tanh(\sinh(x)))(A-I)+2I]^{-1}.\end{equation}
+{注意, 对任意 $x\in(-\infty,\infty)$, $F_{\mathrm{DE}}$ 中的矩阵 $(1+\tanh(\sinh(x)))(A-I)+2I$ 均非奇异.}
+
+% block: matrix-logarithm-de-algorithm-transition page:219 type:ordinary-paragraph
+{利用 DE 公式计算 $\log(A)$ 的算法见 Algorithm~\ref{alg:matrix-log-de}. Algorithm~\ref{alg:matrix-log-de} 的理论细节见 \BookCite{188}.}
+
+% block: matrix-logarithm-de-column-solve-transition page:219 type:ordinary-paragraph
+{由 Algorithm~\ref{alg:matrix-log-de} 的第 16 行, 向量 $(A-I)T\boldsymbol{e}_j$ 是 $\log(A)$ 的第 $j$ 列, 并且由第 3 和 15 行可知, 需要求解下列方程:}
+
+% block: matrix-logarithm-de-algorithm page:219 type:ordinary-paragraph
+\begin{algorithm}[H]\caption{{基于 DE 公式计算 $\log(A)$}}\label{alg:matrix-log-de}\begin{algorithmic}[1]
+\State \textbf{Input:} $A\in\mathbb{R}^{n\times n}$, $m\in\mathbb{N}$, {$\epsilon>0$ 为积分区间截断误差容差}
+\State \textbf{Output:} $X\approx\log(A)$
+\State {设置} $F_{\mathrm{DE}}(x)=\cosh(x)\operatorname{sech}^2(\sinh(x))[(1+\tanh(\sinh(x)))(A-I)+2I]^{-1}$.
+\State {计算 $\|A-I\|$, $\|A^{-1}\|$ 及 $\rho(A)$.}
+\State $\theta=|\log(\rho(A))|$
+\State $\epsilon_{\max}=\frac{3}{\theta}\frac{\|A-I\|\|A^{-1}\|}{1+\|A^{-1}\|}$
+\If{$\epsilon\ge\epsilon_{\max}$}
+\State $\epsilon\leftarrow\epsilon_{\max}/2$
+\EndIf
+\State $a=\min\left\{\frac{\theta\epsilon}{3\|A-I\|},\frac{1}{2\|A-I\|}\right\}$
+\State $b=\max\left\{1-\frac{\theta\epsilon}{3\|A-I\|\|A^{-1}\|},\frac{2\|A^{-1}\|}{2\|A^{-1}\|+1}\right\}$
+\State $l=\operatorname{arsinh}(\operatorname{artanh}(2a-1))$
+\State $r=\operatorname{arsinh}(\operatorname{artanh}(2b-1))$
+\State $h=(r-l)/(m-1)$
+\State $T=\frac{h}{2}(F_{\mathrm{DE}}(l)+F_{\mathrm{DE}}(r))+h\sum_{i=1}^{m-2}F_{\mathrm{DE}}(l+ih)$
+\State $X=(A-I)T$
+\end{algorithmic}\end{algorithm}
+
+% block: matrix-logarithm-de-shifted-systems page:219 type:ordinary-paragraph
+\[[(1+\tanh(\sinh(l+ih)))(A-I)+2I]\boldsymbol{x}=\boldsymbol{e}_j\quad\text{for }i=0,1,\ldots,m-1,\]
+{这也可以改写为移位线性方程组. 改写方式见 \eqref{eq:matrix-log-quadrature-systems} 和 \eqref{eq:matrix-log-shifted-systems}. 因此, 如果矩阵 $A$ 是大型稀疏矩阵, 则 (移位) Krylov 子空间方法很有吸引力.}
