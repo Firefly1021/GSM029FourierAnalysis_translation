@@ -1,0 +1,246 @@
+% block: preconditioning-heading pages:163,164 type:section
+\subsection{{Preconditioning Techniques}}\label{sec:preconditioning-techniques}
+{The convergence rate of iterative methods depends strongly on the spectral property, the distribution of the eigenvalues, of the coefficient matrix. It is therefore natural to try to transform the original linear system into one having the same solution and a more favorable spectral property. If $K$ is a nonsingular matrix, the transformed linear system}
+\begin{equation}\label{eq:left-preconditioned-system}K^{-1}A\bm x=K^{-1}\bm b\end{equation}
+{has the same solution as that of the original one. Hence, we can obtain the solution of the original linear system by applying Krylov subspace methods to the transformed linear system. The matrix $K$ is called a preconditioner and a favorable preconditioner satisfies the following properties:}
+\begin{itemize}\item $K^{-1}A\approx I$.
+\item {$K^{-1}\bm z$ is readily obtained for any vector $\bm z$.}\end{itemize}
+% block: split-preconditioning page:164 type:ordinary-paragraph
+{If $A$ is Hermitian positive definite (h.p.d.), the transformed system \eqref{eq:left-preconditioned-system} is not useful in practice because the coefficient matrix $K^{-1}A$ is not h.p.d. any longer. To preserve the h.p.d. structure of the coefficient matrix, we split the preconditioner into $K=K_1K_1^{\mathrm H}$ and then transform the linear system into}
+\[K_1^{-1}AK_1^{-\mathrm H}(K_1^{\mathrm H}\bm x)=K_1^{-1}\bm b.\]
+{The above coefficient matrix $K_1^{-1}AK_1^{-\mathrm H}$ is h.p.d. Hence, Krylov subspace methods for h.p.d. linear systems, e.g., the CG method, can be applied to it. If the coefficient matrix $A$ is non-Hermitian, then the corresponding preconditioning is}
+\begin{equation}\label{eq:split-preconditioned-system}K_1^{-1}AK_2^{-1}(K_2\bm x)=K_1^{-1}\bm b,\end{equation}
+{where $K=K_1K_2$. The above form is called left and right preconditioning. When $K_1=I$, we have}
+\begin{equation}\label{eq:right-preconditioned-system}AK^{-1}(K\bm x)=\bm b.\end{equation}
+{This preconditioning is referred to as right preconditioning, and when $K_2=I$ we have \eqref{eq:left-preconditioned-system}, which is referred to as left preconditioning.}
+% block: preconditioning-residual-choice page:164 type:ordinary-paragraph
+{The right preconditioning is often used for the GMRES method and the GCR method. In this case, these methods find approximate solutions such that the 2-norm of the residuals for the original linear system $A\bm x=\bm b$ is minimized. On the other hand, if the left preconditioning is used, then these methods find approximate solutions such that the 2-norm of the residuals for the transformed linear system $K^{-1}A\bm x=K^{-1}\bm b$ is minimized.}
+{For the overviews of preconditioning techniques, see, e.g., \BookCite{20}, \BookCite{146}. See also preconditioned algorithms of bi-Lanczos-type Krylov subspace methods \BookCite{109}. Preconditioned algorithms of Arnoldi-type Krylov subspace methods, the GMRES method for singular linear systems, have been studied in \BookCite{49}, \BookCite{94}, \BookCite{136}, \BookCite{206}.}
+% block: incomplete-decomposition-heading page:164 type:subsection
+\subsubsection{{Incomplete Matrix Decomposition Preconditioners}}\label{subsec:incomplete-decomposition-preconditioners}
+{Many preconditioners have been proposed in the last few decades of the 20th century. Of various preconditioners, the best-known ones fall in a category of incomplete factorizations of the coefficient matrix, which can be given in the form of $A\approx K=LU$ (with nonsingular triangular matrices $L$ and $U$).}
+% block: dilu-definition page:165 type:ordinary-paragraph
+{One of the simplest incomplete factorizations is the D-ILU preconditioner that was proposed by Pommerell (see, e.g., \BookCite{147}, pp.77--78). The idea of this method is given as follows: first, split the coefficient matrix into its diagonal, strictly lower triangular, and strictly upper triangular parts as $A=D_A+L_A+U_A$; second, use $K=(D+L_A)D^{-1}(D+U_A)$ as a preconditioner, where $D$ is determined by $\operatorname{diag}(K)=D_A$, i.e., $(K)_{ii}=(D_A)_{ii}$ for all $i$. Hence, only the computation of $D$ is required.}
+{The algorithm of the D-ILU preconditioner is described in Algorithm\ \ref{alg:dilu}, where $N_0(A)$ is the index set of nonzero elements of matrix $A$, i.e.,}
+\[N_0(A):=\{(i,j):a_{i,j}\ne0\}.\]
+{After running Algorithm\ \ref{alg:dilu}, we obtain $d_1,d_2,\ldots,d_N$. Then setting}
+\[D=\begin{bmatrix}d_1^{-1}&&\\&\ddots&\\&&d_N^{-1}\end{bmatrix}\]
+{yields the D-ILU preconditioner of the form $K=(D+L_A)D^{-1}(D+U_A)$.}
+% block: dilu-algorithm page:165 type:ordinary-paragraph
+\begin{algorithm}[H]\caption{{The D-ILU decomposition}}\label{alg:dilu}\begin{algorithmic}[1]
+\Statex\textbf{Input:} $A\in\mathbb C^{N\times N},\ N_0(A)$ {(index set of nonzeros of $A$)}
+\Statex\textbf{Output:} $D^{-1}=\operatorname{diag}(d_1,d_2,\ldots,d_N)$
+\For{$i=1,2,\ldots,N$}
+\State $d_i=a_{i,i}$
+\EndFor
+\For{$i=1,2,\ldots,N$}
+\State $d_i=1/d_i$
+\For{$j=i+1,i+2,\ldots,N$}
+\State {if $(i,j)\in N_0(A)$ and $(j,i)\in N_0(A)$, then $d_j=d_j-a_{j,i}d_i a_{i,j}$}
+\EndFor\EndFor\end{algorithmic}\end{algorithm}
+% block: dilu-implementation page:165 type:ordinary-paragraph
+{The implementation of the preconditioned Krylov subspace methods is explained next. D-ILU preconditioned Krylov subspace methods need to compute the multiplication of $K^{-1}$ and a vector $\bm v$, i.e., $\bm w=K^{-1}\bm v=(D+U_A)^{-1}D(D+L_A)^{-1}\bm v$, and the vector $\bm w$ is computed as follows:}
+\begin{enumerate}
+\item {solve $(D+L_A)\bm y=\bm v$ by forward substitution;}
+\item {compute $\bm z=D\bm y$;}
+\item {solve $(D+U_A)\bm w=\bm z$ by back substitution.}
+\end{enumerate}
+{Note that since the D-ILU preconditioner explicitly contains the off-diagonal parts of the original matrix, Eisenstat's trick \BookCite{53} (see also Section\ \ref{subsec:stationary-preconditioners}) can be used to give a more efficient implementation of the D-ILU preconditioned Krylov subspace methods.}
+% block: ilu-zero-introduction page:166 type:ordinary-paragraph
+{One of the most well-known and powerful incomplete LU decompositions is given by Meijerink and van der Vorst \BookCite{127}. This factorization is referred to as ILU(0), and the explanation is given next. The ILU(0) preconditioner is based on the LU decomposition of $A$ as described in Algorithm\ \ref{alg:lu-decomposition}. Algorithm\ \ref{alg:lu-row-oriented} is a slightly modified version of Algorithm\ \ref{alg:lu-decomposition} for ease of presentation of the ILU(0) preconditioner.}
+% block: lu-in-place-storage page:166 type:ordinary-paragraph
+{The input in Algorithm\ \ref{alg:lu-row-oriented} is $A$ as described below.}
+\[A=\begin{bmatrix}a_{1,1}&a_{1,2}&\cdots&A_{1,N}\\a_{2,1}&a_{2,2}&\cdots&A_{2,N}\\\vdots&\vdots&\ddots&\vdots\\a_{N,1}&a_{N,2}&\cdots&a_{N,N}\end{bmatrix},\]
+{and the output is $a_{i,j}$, where}
+\[A=LU,\]
+{with}
+\[L=\begin{bmatrix}1&&&\\a_{2,1}&\ddots&&\\\vdots&\ddots&\ddots&\\a_{N,1}&\cdots&a_{N,N-1}&1\end{bmatrix},\quad U=\begin{bmatrix}a_{1,1}&a_{1,2}&\cdots&a_{1,N}\\&\ddots&\ddots&\vdots\\&&\ddots&a_{N-1,N}\\&&&a_{N,N}\end{bmatrix}.\]
+{Notice that the input $a_{i,j}$ is the original matrix and the output $a_{i,j}$ is overwritten for the matrices $L$ and $U$.}
+% block: row-oriented-lu-algorithm page:166 type:ordinary-paragraph
+\begin{algorithm}[H]\caption{{The LU decomposition (a slightly modified version of Algorithm\ \ref{alg:lu-decomposition})}}\label{alg:lu-row-oriented}\begin{algorithmic}[1]
+\For{$i=2,3,\ldots,N$}
+\For{$k=1,2,\ldots,i-1$}
+\State $a_{i,k}=a_{i,k}/a_{k,k}$
+\For{$j=k+1,k+2,\ldots,N$}
+\State $a_{i,j}=a_{i,j}-a_{i,k}\times a_{k,j}$
+\EndFor\EndFor\EndFor\end{algorithmic}\end{algorithm}
+% block: ilu-zero-definition pages:166,167 type:ordinary-paragraph
+{The ILU(0) preconditioner is the LU decomposition in Algorithm\ \ref{alg:lu-row-oriented} without computing $(i,j)$ element if $(i,j)\notin N_0(A)$. The algorithm of the ILU(0) preconditioner is described in Algorithm\ \ref{alg:ilu-zero}. From Algorithm\ \ref{alg:ilu-zero}, the number of nonzeros in the factorized matrix is usually the same as that in the original matrix. Hence, the upper and lower matrices of the ILU(0) preconditioner are sparse matrices when $A$ is a sparse matrix. This fact is important in terms of both memory and computational costs.}
+% block: ilu-zero-algorithm page:167 type:ordinary-paragraph
+\begin{algorithm}[H]\caption{{The ILU(0) preconditioner}}\label{alg:ilu-zero}\begin{algorithmic}[1]
+\For{$i=2,3,\ldots,N$}
+\For{$k=1,2,\ldots,i-1$}
+\State if $(i,k)\in N_0(A)$, then $a_{i,k}=a_{i,k}/a_{k,k}$
+\For{$j=k+1,k+2,\ldots,N$}
+\State if $(i,j)\in N_0(A)$, then $a_{i,j}=a_{i,j}-a_{i,k}\times a_{k,j}$
+\EndFor\EndFor\EndFor\end{algorithmic}\end{algorithm}
+% block: fill-level-definition page:167 type:ordinary-paragraph
+{As an extension of the ILU(0) preconditioner, the ILU($p$) preconditioner is also proposed in the same paper \BookCite{127}, where $p$ denotes the level of fill-in. The definition of the level of fill-in is given as follows: let the initial level of fill-in in position $(i,j)$ for $a_{i,j}\ne0$ be zero, and let the initial level of fill-in in position $(i,j)$ for $a_{i,j}=0$ be $\infty$. Then the level of fill-in in position $(i,j)$ is defined by}
+\begin{equation}\label{eq:ilu-fill-level}\operatorname{Level}_{ij}:=\min_{1\le k\le\min\{i,j\}}\{\operatorname{Level}_{ik}+\operatorname{Level}_{kj}+1\}.\end{equation}
+% block: fill-level-example-original page:167 type:ordinary-paragraph
+{For example, consider}
+\begin{equation}\label{eq:ilu-fill-example-matrix}A=\begin{bmatrix}
+*&*&0&0&0&*&0&0&0\\
+*&*&*&0&0&0&*&0&0\\
+0&*&*&*&0&0&0&*&0\\
+0&0&*&*&*&0&0&0&*\\
+0&0&0&*&*&*&0&0&0\\
+*&0&0&0&*&*&*&0&0\\
+0&*&0&0&0&*&*&*&0\\
+0&0&*&0&0&0&*&*&*\\
+0&0&0&*&0&0&0&*&*
+\end{bmatrix},\end{equation}
+{where the symbol ``*'' is nonzero. Since the nonzero elements of $A$ have level zero and the zeros in $A$ have level $\infty$, we have the following matrix whose elements are levels of fill-in:}
+% block: fill-level-example-initial page:168 type:equation
+\begin{equation}\label{eq:ilu-fill-initial-levels}\begin{bmatrix}
+0&0&\infty&\infty&\infty&0&\infty&\infty&\infty\\
+0&0&0&\infty&\infty&\infty&0&\infty&\infty\\
+\infty&0&0&0&\infty&\infty&\infty&0&\infty\\
+\infty&\infty&0&0&0&\infty&\infty&\infty&0\\
+\infty&\infty&\infty&0&0&0&\infty&\infty&\infty\\
+0&\infty&\infty&\infty&0&0&0&\infty&\infty\\
+\infty&0&\infty&\infty&\infty&0&0&0&\infty\\
+\infty&\infty&0&\infty&\infty&\infty&0&0&0\\
+\infty&\infty&\infty&0&\infty&\infty&\infty&0&0
+\end{bmatrix},\end{equation}
+% block: fill-level-example-one page:168 type:ordinary-paragraph
+{Applying \eqref{eq:ilu-fill-level} to \eqref{eq:ilu-fill-initial-levels}, we have the following matrix whose level of the $(i,j)$ position is 1:}
+\[\begin{bmatrix}
+0&0&\infty&\infty&\infty&0&\infty&\infty&\infty\\
+0&0&0&\infty&\infty&1&0&\infty&\infty\\
+\infty&0&0&0&\infty&\infty&1&0&\infty\\
+\infty&\infty&0&0&0&\infty&\infty&1&0\\
+\infty&\infty&\infty&0&0&0&\infty&\infty&1\\
+0&1&\infty&\infty&0&0&0&\infty&\infty\\
+\infty&0&1&\infty&\infty&0&0&0&\infty\\
+\infty&\infty&0&1&\infty&\infty&0&0&0\\
+\infty&\infty&\infty&0&1&\infty&\infty&0&0
+\end{bmatrix},\]
+% block: fill-level-example-two page:168 type:ordinary-paragraph
+{Applying \eqref{eq:ilu-fill-level} to the above matrix, we can determine the $(i,j)$ element with $\operatorname{Level}_{ij}=2$.}
+\[\begin{bmatrix}
+0&0&\infty&\infty&\infty&0&\infty&\infty&\infty\\
+0&0&0&\infty&\infty&1&0&\infty&\infty\\
+\infty&0&0&0&\infty&2&1&0&\infty\\
+\infty&\infty&0&0&0&\infty&2&1&0\\
+\infty&\infty&\infty&0&0&0&\infty&2&1\\
+0&1&2&\infty&0&0&0&\infty&2\\
+\infty&0&1&2&\infty&0&0&0&\infty\\
+\infty&\infty&0&1&2&\infty&0&0&0\\
+\infty&\infty&\infty&0&1&2&\infty&0&0
+\end{bmatrix},\]
+% block: fill-level-example-final pages:168,169 type:ordinary-paragraph
+{Applying \eqref{eq:ilu-fill-level} to the above matrix, all the levels of fill-in are determined and the matrix is given by}
+\begin{equation}\label{eq:ilu-fill-final-levels}\begin{bmatrix}
+0&0&\infty&\infty&\infty&0&\infty&\infty&\infty\\
+0&0&0&\infty&\infty&1&0&\infty&\infty\\
+\infty&0&0&0&\infty&2&1&0&\infty\\
+\infty&\infty&0&0&0&3&2&1&0\\
+\infty&\infty&\infty&0&0&0&3&2&1\\
+0&1&2&3&0&0&0&3&2\\
+\infty&0&1&2&3&0&0&0&3\\
+\infty&\infty&0&1&2&3&0&0&0\\
+\infty&\infty&\infty&0&1&2&3&0&0
+\end{bmatrix},\end{equation}
+% block: ilu-level-index-sets page:169 type:ordinary-paragraph
+{Let $N_p(A)$ be the index set that corresponds to $\operatorname{Level}_{ij}\le p$, i.e.,}
+\[N_p(A):=\{(i,j):\operatorname{Level}_{ij}\le p\}.\]
+{For example, from \eqref{eq:ilu-fill-final-levels}, $N_p(A)$ of \eqref{eq:ilu-fill-example-matrix} with $p=1,2,3$ is given as follows:}
+\[\begin{aligned}
+N_1(A)&=N_0(A)\cup\{(2,6),(3,7),(4,8),(5,9),(6,2),(7,3),(8,4),(9,5)\},\\
+N_2(A)&=N_1(A)\cup\{(3,6),(4,7),(5,8),(6,9),(6,3),(7,4),(8,5),(9,6)\},\\
+N_3(A)&=N_2(A)\cup\{(4,6),(5,7),(6,8),(7,9),(6,4),(7,5),(8,6),(9,7)\}.
+\end{aligned}\]
+{The ILU($p$) preconditioner is the LU decomposition in Algorithm\ \ref{alg:lu-row-oriented} without computing the $(i,j)$ element if $(i,j)\notin N_p(A)$. Now, the algorithm of the ILU($p$) preconditioner is given in Algorithm\ \ref{alg:ilu-level}.}
+% block: ilu-level-algorithm page:169 type:ordinary-paragraph
+\begin{algorithm}[H]\caption{{The ILU($p$) preconditioner}}\label{alg:ilu-level}\begin{algorithmic}[1]
+\For{$i=2,3,\ldots,N$}
+\For{$k=1,2,\ldots,i-1$}
+\State if $(i,k)\in N_p(A)$, then $a_{i,k}=a_{i,k}/a_{k,k}$
+\For{$j=k+1,k+2,\ldots,N$}
+\State if $(i,j)\in N_p(A)$, then $a_{i,j}=a_{i,j}-a_{i,k}\times a_{k,j}$
+\EndFor\EndFor\EndFor\end{algorithmic}\end{algorithm}
+% block: ilut-threshold page:169 type:ordinary-paragraph
+{Another successful variant of ILU is an ILU with a threshold approach proposed by Saad \BookCite{150}. This factorization is referred to as ILUT($p,\tau$), where $p$ is used for saving memory and $\tau$ is a criterion for dropping elements, i.e., forcing the small elements to be zero in magnitude.}
+% block: approximate-inverse-heading page:170 type:subsection
+\subsubsection{{Approximate Inverse Preconditioners}}\label{subsec:approximate-inverse-preconditioners}
+{In the previous preconditioners, their performance depends on how close to $A$ the product of the factorized matrices $\widetilde L\widetilde U$ is. Here, we describe another criterion for a good preconditioner. That is how close to $A^{-1}$ the preconditioning matrix is. Based on the criterion, Grote and Huckle \BookCite{82} attempt to minimize the following Frobenius norm:}
+\[\min_K\|I-AK\|_{\mathrm F},\]
+{where $\|A\|_{\mathrm F}=\sqrt{\sum_{i,j}a_{i,j}^2}$. Since the above minimization can be written as}
+\[\min_K\left\|[\bm e_1-A\bm k_1,\bm e_2-A\bm k_2,\ldots,\bm e_N-A\bm k_N]\right\|_{\mathrm F},\]
+{we have $N$ independent least-squares problems}
+\[\min_{\bm k_i}\|\bm e_i-A\bm k_i\|,\quad i=1,\ldots,N.\]
+{Hence, the construction of this preconditioner is very suitable for parallel computing.}
+% block: ainv-biorthogonal-factorization page:170 type:ordinary-paragraph
+{Another outstanding idea for approximate inverses was given by Benzi and Tůma \BookCite{24}. This idea is finding nonsingular matrices $V$ and $W$ such that}
+\begin{equation}\label{eq:ainv-biorthogonal-factorization}W^{\mathrm H}AV=D.\end{equation}
+{Then, it follows from $(W^{\mathrm H}AV)^{-1}=V^{-1}A^{-1}W^{-\mathrm H}=D^{-1}$ that the inverse of the matrix $A$ is given as}
+\[A^{-1}=VD^{-1}W^{\mathrm H}.\]
+{Since the equation \eqref{eq:ainv-biorthogonal-factorization} implies $(\bm w_i,A\bm v_j)=0$ for $i\ne j$, $V$ and $W$ are computed by an $A$-biorthogonalization process. The algorithm, referred to as the Sparse Approximate Inverse (AINV) preconditioner, is given in Algorithm\ \ref{alg:ainv}. In the algorithm, $\bm a_i$ and $\bm c_i$ denote the $i$th column of $A$ and $A^{\mathrm H}$ respectively. From Algorithm\ \ref{alg:ainv}, we see that the algorithm uses a MGS-style $A$-biorthogonalization process and is used for non-Hermitian matrices. For Hermitian and normal matrices, the corresponding approximate inverse preconditioners have been developed, see \BookCite{21}, \BookCite{22}.}
+% block: polynomial-preconditioner-heading page:171 type:subsection
+\subsubsection{{Matrix Polynomial Preconditioners}}\label{subsec:polynomial-preconditioners}
+{We have described two types of preconditioners. One of them is approximating the coefficient matrix $A\approx M$, and $M^{-1}\bm v$ can easily be computed. The other one is approximating the inverse of the coefficient matrix $A^{-1}\approx M$. Here, we describe another approach that is closely related to sparse approximate inverses. Since this approach is based on matrix polynomials, it is referred to as a polynomial preconditioner.}
+% block: ainv-algorithm page:171 type:ordinary-paragraph
+\begin{algorithm}[H]\caption{{The AINV preconditioner}}\label{alg:ainv}\begin{algorithmic}[1]
+\Statex\textbf{Input:} $\bm w_i^{(0)}=\bm v_i^{(0)}=\bm e_i,\ 1\le i\le N$
+\For{$i=1,\ldots,N$}
+\For{$j=i,\ldots,N$}
+\State $p_j^{(i-1)}=\bm a_i^{\mathrm H}\bm v_j^{(i-1)},\quad q_j^{(i-1)}=\bm c_i^{\mathrm H}\bm w_j^{(i-1)}$
+\EndFor
+\State if $i=N$, then {exit}.
+\For{$j=i+1,\ldots,N$}
+\State $\bm v_j^{(i)}=\bm v_j^{(i-1)}-\left(\dfrac{p_j^{(i-1)}}{p_i^{(i-1)}}\right)\bm v_i^{(i-1)},\quad\bm w_j^{(i)}=\bm w_j^{(i-1)}-\left(\dfrac{q_j^{(i-1)}}{q_i^{(i-1)}}\right)\bm w_i^{(i-1)}$
+\State $v_{k,j}^{(i)}=0$ if $|v_{k,j}^{(i)}|<\mathrm{Tol},\ 1\le k\le N$,\quad $w_{k,j}^{(i)}=0$ if $|w_{k,j}^{(i)}|<\mathrm{Tol},\ 1\le k\le N$
+\EndFor\EndFor
+\State $\bm z_i=\bm z_i^{(i-1)},\ \bm w_i=\bm w_i^{(i-1)},\ p_i=p_i^{(i-1)},\ 1\le i\le N$
+\State $V=[\bm v_1,\bm v_2,\ldots,\bm v_N],\ V=[\bm w_1,\bm w_2,\ldots,\bm w_N],\ D=\operatorname{diag}(p_1,p_2,\ldots,p_N)$
+\end{algorithmic}\end{algorithm}
+% block: neumann-euler-preconditioners page:171 type:ordinary-paragraph
+{Among the most well-known polynomial preconditioners are the Neumann expansion and Euler expansion. Let $A$ be of the form $I-B$ with $\rho(B)<1$. Then, we can write the inverse matrix of $A$ as}
+\begin{center}\begin{tabular}{r@{}ll}
+$A^{-1}$&$=\displaystyle\sum_{i=0}^{\infty}B^i$&{(Neumann expansion)}\\[8pt]
+&$=\displaystyle\prod_{i=0}^{\infty}(I+B^{2^i}).$&{(Euler expansion)}
+\end{tabular}\end{center}
+{Hence, from the above expansions, we can readily obtain and moreover control an approximate inverse of $A$ by using the low order terms of the Neumann (or Euler) expansion. This approach was studied in \BookCite{50}, and see also \BookCite{116}, \BookCite{198}.}
+% block: stationary-preconditioner-heading page:172 type:subsection
+\subsubsection{{Preconditioners Based on Stationary Iterative Methods}}\label{subsec:stationary-preconditioners}
+{The idea of stationary iterative methods in Sect.\ \ref{sec:stationary-iterations} can also be used for constructing efficient preconditioners for Krylov subspace methods. In this section, Jacobi, Gauss--Seidel, and SOR-type preconditioners are described.}
+% block: jacobi-preconditioner page:172 type:ordinary-paragraph
+{The Jacobi preconditioner (or the diagonal preconditioner) is the simplest preconditioner and is usually more effective than solving the original linear systems $A\bm x=\bm b$ by unpreconditioned Krylov subspace methods. The Jacobi preconditioner is constructed by using the diagonal entries of the coefficient matrix as follows:}
+\[K_J:=\operatorname{diag}(a_{1,1},a_{2,2},\ldots,a_{n,n}).\]
+{If the matrix $A$ is a diagonal matrix, then $K_J^{-1}A=I$. This means Jacobi preconditioned Krylov subspace methods obtain the solution within only one iteration step. In general, there is an approach to choosing diagonal matrix $D$ as a preconditioner so that the condition number of $D^{-1}A$ is as small as possible. The analysis of the condition numbers of $D^{-1}A$ is found in \BookCite{59}, \BookCite{194}.}
+% block: sgs-preconditioner page:172 type:ordinary-paragraph
+{The symmetric Gauss--Seidel (SGS) preconditioner uses more information of $A$ than the Jacobi preconditioner. The SGS preconditioner is named after the Gauss--Seidel method, which is one of the stationary iterative methods in Sect.\ \ref{sec:stationary-iterations}. The preconditioner is defined as}
+\[K_{SGS}:=(D-L)D^{-1}(D-U),\]
+{where $A:=D-L-U$. If all the diagonal elements of $A$ are scaled to one, then we have a simpler preconditioner:}
+\[K_{SGS}=(I-L)(I-U).\]
+{In this case, it is known that there is an efficient implementation as follows: when using the preconditioner $K_{SGS}$, we have the transformed linear systems of the form}
+\[(I-L)^{-1}A(I-U)^{-1}\widetilde{\bm x}=\widetilde{\bm b},\quad\widetilde{\bm x}=(I-U)\bm x,\quad\widetilde{\bm b}=(I-L)^{-1}\bm b.\]
+{Hence, applying Krylov subspace methods to the transformed linear systems, we need to compute the following matrix--vector multiplication:}
+\[(I-L)^{-1}A(I-U)^{-1}\bm z.\]
+% block: eisenstat-sgs-derivation pages:172,173 type:ordinary-paragraph
+{When the cost of the matrix--vector product $A\bm z$ is dominant at each iteration step, this usually leads to about double computational cost per iteration. However, recalling $A=I-L-U$, it follows that}
+\[\begin{aligned}(I-L)^{-1}A(I-U)^{-1}&=(I-L)^{-1}(I-L-U)(I-U)^{-1}\\
+&=(I-L)^{-1}[(I-L)+(I-U-I)](I-U)^{-1}\\
+&=(I-L)^{-1}[(I-L)(I-U)^{-1}+I-(I-U)^{-1}]\\
+&=(I-U)^{-1}+(I-L)^{-1}[I-(I-U)^{-1}].\end{aligned}\]
+{Thus, we obtain}
+\[\begin{aligned}(I-L)^{-1}A(I-U)^{-1}\bm z&=(I-U)^{-1}\bm z+(I-L)^{-1}[I-(I-U)^{-1}]\bm z\\&=\bm t+(I-L)^{-1}(\bm z-\bm t),\end{aligned}\]
+{where $\bm t:=(I-U)^{-1}\bm z$. Hence, we see that the cost of the above operation is only about one matrix--vector multiplication. This implementation is one of Eisenstat's tricks \BookCite{53}.}
+% block: ssor-preconditioner page:173 type:ordinary-paragraph
+{The Symmetric Successive OverRelaxation (SSOR) preconditioner is regarded as an extension of the SGS preconditioner. The preconditioner is defined as}
+\[K_{SSOR}:=(\widetilde D-L)\widetilde D^{-1}(\widetilde D-U),\quad\widetilde D=D/\omega.\]
+{Note that the choice $\omega=1$ leads to $K_{SGS}$. Eisenstat's trick is then given as follows: from $A=D-L-U$ and $\widetilde A=(\widetilde D-L)^{-1}A(\widetilde D-U)^{-1}$, we have}
+\[\begin{aligned}\widetilde A\bm z&=(\widetilde D-L)^{-1}A(\widetilde D-U)^{-1}\bm z\\
+&=(\widetilde D-L)^{-1}[(\widetilde D-L)+(D-2\widetilde D)+(\widetilde D-U)](\widetilde D-U)^{-1}\bm z\\
+&=(\widetilde D-U)^{-1}\bm z+(\widetilde D-L)^{-1}(D-2\widetilde D)(\widetilde D-U)^{-1}\bm z+(\widetilde D-L)^{-1}\bm z\\
+&=\bm t+(\widetilde D-L)^{-1}[(D-2\widetilde D)\bm t+\bm z],\end{aligned}\]
+{where $\bm t=(\widetilde D-U)^{-1}\bm z$.}
+% block: preconditioner-reordering-heading pages:173,174 type:subsection
+\subsubsection{{Reorderings for Preconditioners}}\label{subsec:preconditioner-reorderings}
+{In the previous subsections, we have considered some preconditioning techniques for solving original systems effectively. On the other hand, it is natural to find effective reorderings to improve the performance of preconditioners, e.g., apply Krylov subspace methods to the following systems with a reordering matrix $P$:}
+\[K^{-1}PAP^{\top}\widetilde{\bm x}=\widetilde{\bm b},\]
+{where $\widetilde{\bm x}=P\bm x$, $\widetilde{\bm b}=K^{-1}P\bm b$. From this idea, we can use many reordering techniques such as Cuthill--Mckee (CM) \BookCite{42}, Reverse Cuthill--Mckee (RCM) \BookCite{75}, Nested Dissection (ND) \BookCite{76}, and Minimum Degree (MD) \BookCite{77}. For these algorithms, see also \BookCite{51}, \BookCite{123}, \BookCite{151}. CM and RCM decrease the bandwidth of a matrix, MD reduces the number of fill-ins of a matrix, and ND generates an approximate block diagonal matrix and is suitable for parallel computing.}
+% block: reordering-evidence page:174 type:ordinary-paragraph
+{For symmetric definite matrices, Duff and Meurant gave important results on the effects of reorderings that reordering techniques for direct solvers did not enhance the quality of preconditioners \BookCite{52}.}
+{For nonsymmetric matrices, Saad experimentally showed that MD and ND reorderings before ILUT preconditioning gave no advantage over the original systems and only RCM was the most likely to yield an improvement \BookCite{151}, p.334. On the other hand, Benzi et al.\ \BookCite{23} studied the effects of reorderings on ILU-type preconditioners and obtained the result that RCM dramatically enhanced the preconditioner in a case where the coefficient matrix is highly nonsymmetric. Similar results of the effects on approximate inverse preconditioners are also discussed in \BookCite{25}.}
