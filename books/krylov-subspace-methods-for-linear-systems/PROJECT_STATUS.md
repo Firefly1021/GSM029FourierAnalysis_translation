@@ -11,7 +11,7 @@ Approved terminology: grade -> 阶
 Completed content: Preface, Acknowledgements, Chapters 1-5 in full; Software and References
 Last integrated batch: backmatter-references
 Progress output: output/translation-progress.pdf
-Next incomplete unit: references
+Next incomplete unit: index
 Blocking issues: None
 Unresolved terminology: 0
 Full-book translation complete: No
