@@ -32,3 +32,12 @@ The original startup steps below remain a record of the controller workflow.
 1. Run `python -m mathbook start-book krylov-subspace-methods-for-linear-systems` in its dedicated worktree.
 2. Review the representative sample.
 3. Approve the sample before full translation.
+
+## Full-book completion record
+
+- All 39 natural units passed; no next translation unit remains.
+- The accepted sample and all earlier accepted chapter text remain unchanged.
+- The final 201-page PDF, generated contents and concept-block index passed final integrity, numbering, destination, name, punctuation, compilation and visual gates.
+- Detailed evidence: qa/final/full-book-report.md and qa/final-report.json.
+- Source anomalies are retained in QA, not silently repaired.
+- Approved grade -> 阶 and the shared glossary are unchanged. No automatic terminology promotion or remote push is performed.

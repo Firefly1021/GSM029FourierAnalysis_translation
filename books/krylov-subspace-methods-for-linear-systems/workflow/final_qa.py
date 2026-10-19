@@ -27,8 +27,14 @@ def protections():
     assert m["sha256_file"](Path(r"D:\BaiduNetdiskDownload\Krylov Subspace Methods for Linear Systems.pdf"))==B.load_config()["source"]["sha256"]
     # No branch/worktree data outside this book may be changed by this task.
     changed=subprocess.run(["git","diff","--name-only","68077b8"],cwd=P.root,capture_output=True,text=True,check=True).stdout.splitlines()
-    assert all(p.startswith("books/"+m["ID"]+"/") for p in changed),changed
-    m["dump"]("qa/final/protected-inputs.json",{"passed":True,"accepted_files":protected,"source_and_external_source_unchanged":True,"template_unchanged":True,"sample_unchanged":True,"changed_tracked_files_only_this_book":True})
+    assert all(p.startswith("books/"+m["ID"]+"/") or p=="PROJECTS.md" for p in changed),changed
+    registry_only_this_book=True
+    if "PROJECTS.md" in changed:
+        old=subprocess.run(["git","show","68077b8:PROJECTS.md"],cwd=P.root,capture_output=True,text=True,encoding="utf8",check=True).stdout
+        new=P.projects_file.read_text(encoding="utf8")
+        without_book=lambda s:[line for line in s.splitlines() if not line.startswith("| "+m["ID"]+" |")]
+        assert without_book(old)==without_book(new),"Another project registry row changed"
+    m["dump"]("qa/final/protected-inputs.json",{"passed":True,"accepted_files":protected,"source_and_external_source_unchanged":True,"template_unchanged":True,"sample_unchanged":True,"changed_tracked_files_only_this_book_or_its_completion_registry_row":registry_only_this_book})
 
 def index_audit():
     m["guard"]();q=m["load"]("qa/latest-compilation.json");assert q["success"]
