@@ -14,6 +14,7 @@ from mathbook.project import ProjectPaths,sha256_file,directory_manifest_hash
 from mathbook.workflow import verify_book_context
 from mathbook.template import verify_manifest
 from mathbook.build import latex_qa
+from mathbook.qa import find_chinese_prose_punctuation
 
 ID="krylov-subspace-methods-for-linear-systems"
 P=ProjectPaths()
@@ -143,6 +144,42 @@ def metadata(unit):
         "review_status":"content-reviewed-awaiting-batch-compile"})
     print(unit,len(blocks),"blocks",len(formulae),"math expressions")
 
+def actual_input_qa():
+    """Check the actual book-local input graph when index copies are used.
+
+    Canonical accepted files remain in chapters/ unchanged, while the compiled
+    navigation copies live in generated/. Scanning both would double-count
+    their labels; scanning only chapters/ would miss the navigation anchors.
+    """
+    if not (B.root/"structured/source/index-registry.json").is_file():return latex_qa(B)
+    files=[];seen=set()
+    def walk(path):
+        path=path.resolve();assert path.is_relative_to(B.root.resolve()) or path.is_relative_to(P.template.resolve()),path
+        if path in seen:return
+        seen.add(path);files.append(path)
+        text=path.read_text(encoding="utf8")
+        for name in re.findall(r"\\input\{([^}]+)\}",text):
+            child=B.root/"tex"/name
+            if not child.suffix:child=child.with_suffix(".tex")
+            if not child.is_file():
+                alternatives=[folder/name for folder in (P.template/"style",P.template/"adapter",P.template/"assets")]
+                child=next((p for p in alternatives if p.is_file()),child)
+            assert child.is_file(),child
+            walk(child)
+    walk(B.main_tex)
+    labels=[];refs=[];punctuation=[];environment=[]
+    for file in files:
+        if not file.is_relative_to(B.root.resolve()):continue  # Shared macro definitions are not translated prose.
+        text=file.read_text(encoding="utf8")
+        labels.extend(k for k in re.findall(r"\\label\{([^}]+)\}",text) if "#" not in k)
+        refs.extend((c,k) for c,k in re.findall(r"\\(eqref|ref|pageref)\*?\{([^}]+)\}",text) if "#" not in k)
+        punctuation.extend({"file":file.relative_to(B.root).as_posix(),"line":x.line,"character":x.character} for x in find_chinese_prose_punctuation(text))
+        environment.extend(re.findall(r"(?:定理|定义|引理|命题|推论|证明|例|注|习题)\s*~?\s*\\(?:ref|cref)\{",text))
+    duplicates=sorted(k for k,v in Counter(labels).items() if v>1)
+    undefined=sorted({k for c,k in refs}-set(labels))
+    wrong=sorted({k for c,k in refs if c!="pageref" and k.startswith("eq:")!=(c=="eqref")})
+    return {"scope":"actual-input-graph","files":len(files),"labels":len(labels),"references":len(refs),"duplicate_labels":duplicates,"undefined_references":undefined,"wrong_reference_commands":wrong,"translated_environment_references":environment,"punctuation_violations":punctuation,"passed":not any((duplicates,undefined,wrong,environment,punctuation))}
+
 def compile_preview():
     guard()
     out=Path(tempfile.mkdtemp(prefix="full-batch-build-",dir=B.root/"workspace/temporary"))
@@ -157,7 +194,7 @@ def compile_preview():
     r=subprocess.run([shutil.which("xelatex"),"-interaction=nonstopmode","-halt-on-error","-file-line-error",f"-output-directory={out}",str(B.main_tex)],cwd=B.root/"tex",env=env,capture_output=True)
     assert r.returncode==0,(r.stdout+r.stderr).decode("utf-8",errors="replace")[-5000:]
     log=(out/"main.log").read_text(encoding="utf-8",errors="replace");write("logs/latest-compilation.log",log)
-    q=latex_qa(B)
+    q=actual_input_qa()
     warnings={k:len(re.findall(p,log,re.I)) for k,p in {"undefined":r"undefined references?|Reference .* undefined","duplicate":r"multiply[- ]defined","missing_glyph":r"Missing character:","overfull":r"Overfull \\[hv]box"}.items()}
     dump("qa/latest-compilation.json",{"success":r.returncode==0 and q["passed"] and not any(warnings.values()),"latex_qa":q,"warnings":warnings,"build_directory":str(out),"minimum_latex_rounds":2})
     assert q["passed"] and not any(warnings.values()),(q,warnings)
@@ -177,9 +214,15 @@ def render_progress():
     q.update({"render_directory":str(imgs),"pdf_sha256":sha256_file(final),"pdf_pages":len(files)})
     dump("qa/latest-compilation.json",q)
 
-def assemble():
+def assemble(final=False):
     guard()
-    contents=[]
+    contents=[];linked={}
+    if (B.root/"structured/source/index-registry.json").is_file():
+        nav=__import__("runpy").run_path(str(B.root/"workflow/index_workflow.py"))
+        linked=nav["linked_copies"]()
+    def input_name(file):
+        rel=file.relative_to(B.root).as_posix()
+        return linked.get(rel,rel).removeprefix("tex/")
     start=r"""\documentclass[a4paper,UTF8,12pt]{ctexart}
 \usepackage{Mystyle}
 \usepackage{translation-adapter}
@@ -200,6 +243,9 @@ def assemble():
     if (B.root/"tex/frontmatter.tex").is_file():
         start+=r"\input{frontmatter.tex}"+"\n"
         contents.append((B.root/"tex/frontmatter.tex").read_text(encoding="utf-8"))
+    if final:
+        # Reuse the accepted headings and the user's own contents formatting.
+        start+=r"\clearpage\setcounter{tocdepth}{3}\tableofcontents\clearpage"+"\n"
     units=sorted((B.root/"tex/chapters").glob("chapter-*.tex"))
     units += [B.root/f"tex/chapters/{name}.tex" for name in ("software","references","index")
               if (B.root/f"tex/chapters/{name}.tex").is_file()]
@@ -207,13 +253,13 @@ def assemble():
     for file in units:
         # Insert the accepted Section 1.8 in its natural position, byte-for-byte.
         if file.stem>"chapter-01-section-08" and not included_sample:
-            start+=r"\setcounter{subsection}{7}\setcounter{equation}{19}\input{chapters/sample.tex}"+"\n"
+            start+=r"\setcounter{subsection}{7}\setcounter{equation}{19}\input{"+input_name(B.root/"tex/chapters/sample.tex")+"}\n"
             contents.append((B.root/"tex/chapters/sample.tex").read_text(encoding="utf-8"))
             included_sample=True
-        start+=r"\input{chapters/"+file.name+"}\n"
+        start+=r"\input{"+input_name(file)+"}\n"
         contents.append(file.read_text(encoding="utf-8"))
     if not included_sample:
-        start+=r"\setcounter{subsection}{7}\setcounter{equation}{19}\input{chapters/sample.tex}"+"\n"
+        start+=r"\setcounter{subsection}{7}\setcounter{equation}{19}\input{"+input_name(B.root/"tex/chapters/sample.tex")+"}\n"
         contents.append((B.root/"tex/chapters/sample.tex").read_text(encoding="utf-8"))
     labels=set(re.findall(r"\\label\{([^}]+)\}","\n".join(contents)))
     references=set(re.findall(r"\\(?:ref|eqref)\{([^}]+)\}","\n".join(contents)))
@@ -257,10 +303,17 @@ def assemble():
         record=bibliography[number]
         locators.append("\\makeatletter\\phantomsection\\def\\@currentlabel{"+number+"}\\label{bib:source-"+number+"}\\makeatother\n")
         locators.append("Reference ["+number+"], PDF "+str(record["pdf_page"])+", printed "+record["printed_page"]+".\\par\n")
+    missing_bib=[n for n in cited if "bib:source-"+n not in labels]
+    if not unresolved and not missing_bib:locators=[]
+    if final:
+        assert not unresolved and not missing_bib
+        assert all((B.root/f"tex/chapters/{n}.tex").is_file() for n in ("software","references","index"))
+        start=start.replace("全书翻译进度稿","中文译稿")
+        start=start.replace("\\noindent 本文件只收录已完成的译文单元. 尚未翻译的引用目标列于文末源文定位表, 不表示相应内容已完成.\\par\n","")
     write("tex/chapters/pending-targets.tex","".join(locators))
     write("tex/main.tex",start+"\\input{chapters/pending-targets.tex}\n\\end{document}\n")
     dump("qa/pending-reference-targets.json",{"verified_source_locators":{k:known[k] for k in unresolved},
-                                          "bibliography_locators":{n:bibliography[n] for n in cited},
+                                          "bibliography_locators":{n:bibliography[n] for n in missing_bib},
                                           "note":"These are future translated targets, not undefined references or translated content."})
     print("Assembled",len(units),"new units plus accepted sample;",len(unresolved),"pending source locators")
 
