@@ -1,0 +1,43 @@
+% Complete Section 8.3, original PDF 109-110 / printed 99-100.
+% block: lower-order-terms-heading page:109 type:section
+\subsection{{Lower order terms}}\label{sec:lower-order-terms}
+
+% block: magnetostatic-lower-order-models pages:109,110 type:ordinary-paragraph
+{A basic model problem arising in magnetostatics seeks a (vector proxy) 2-form $B$ for which}
+\[
+\operatorname{curl}\operatorname{curl}B=f,\qquad\operatorname{div}B=0\quad\text{in }\Omega
+\]
+{for $f$ given in the range of the curl, together with boundary conditions imposed on $B$. The solution can be found by solving the Hodge Laplace equation}
+\[
+\operatorname{curl}\operatorname{curl}B-\operatorname{grad}\operatorname{div}B=f.
+\]
+{For time-harmonic problems, an additional zeroth order term occurs in this equation, giving a perturbed Hodge Laplace equation}
+\[
+\operatorname{curl}\operatorname{curl}B-\operatorname{grad}\operatorname{div}B-m^2B=f,
+\]
+{where $m$ is the wave number. In magnetohydrodynamics, there is an additional first order advection term induced by the velocity vector field $v$, so in the static case we have}
+\[
+\operatorname{curl}\operatorname{curl}B-\operatorname{grad}\operatorname{div}B-\operatorname{curl}(v\times B)=f.
+\]
+
+% block: general-lower-order-perturbations page:110 type:ordinary-paragraph
+{When such lower order terms occur, the differential operator acting on $B$ cannot be realized as the abstract Hodge Laplacian of any Hilbert complex. However, it is not difficult to extend the mixed finite element methods we have studied to obtain viable numerical methods for the Hodge Laplacian to such problems with lower order terms. What is less clear is the convergence analysis for these discretizations, since the analysis presented above does not directly apply to them. In \BookCite{14} we studied the convergence of the mixed methods of FEEC for differential operators of the form}
+\[
+Lu=[(d+l_1)(\delta+l_2)+(\delta+l_3)(d+l_4)+l_5],
+\]
+{which includes the most natural lower order perturbations of the Hodge Laplace operator $d\delta+\delta d$. Here the $l_i$ are operators which act as multipliers by smooth coefficient fields. For example, the zeroth order term occuring in the time-harmonic problem is accounted for in $l_5$, while the first order perturbation arising in the magnetohydrodynamic problem is given by $l_2B=-v\times B$ (the contraction of a 2-form with a vector field).}
+
+% block: perturbed-problem-stability-and-rates page:110 type:ordinary-paragraph
+{The analysis of \BookCite{14} is quite involved, and we will only briefly summarize the main results. It is possible, of course, that the operator $L$ (including its boundary conditions) admits a kernel, just as the ordinary Helmholtz operator $-\Delta+l$ may have a kernel when $l$ is negative. Suppose that this is not the case, i.e., $0$ is not an eigenvalue of $L$, and so the continuous problem is well-posed. Then the finite element discretizations we have derived for the Hodge Laplacian, all four possibilities given in \eqref{eq:four-galerkin-form-pairs}, are stable for the perturbed operator $L$ as well, at least for sufficiently fine triangulations. The basic error estimates, as stated in Theorem~\ref{thm:mixed-basic-error}, therefore hold. The surprise comes when trying to establish the improved error estimates of Theorem~\ref{thm:mixed-improved-errors}, which establish optimal $L^2$ rates of convergence for each of the quantities $\sigma$, $d\sigma$, $u$, and $du$. It turns out that for some choices of the finite element spaces and some lower order terms $(l_1,\ldots,l_5)$ there can be a loss of one convergence order for either $\sigma$ or $d\sigma$ or both. The results are summarized in Table~\ref{tab:perturbed-hodge-error-rates}, which should be compared to Table~\ref{tab:galerkin-form-approximation-rates} (the case when all the $l_i$ vanish). These rates were all established theoretically and verified as sharp computationally in \BookCite{14}, to which we refer for details.}
+
+% block: perturbed-hodge-error-rates-table page:110 type:table
+\begin{table}[htbp]\centering\small\setlength{\tabcolsep}{3pt}
+\caption{{$L^2$ error rates for FEEC solution of the Hodge Laplacian.}}\label{tab:perturbed-hodge-error-rates}
+\begin{tabular}{cc|cccc}\hline
+$V_h^{k-1}$&$V_h^k$&$\sigma$&$d\sigma$&$u$&$du$\\\hline
+$\mathcal P_r\Lambda^{k-1}$&$\mathcal P_r^-\Lambda^k$&$\begin{cases}r+1&\text{if }l_2=l_5=0,\\r&\text{otherwise}.\end{cases}$&$r$&$r$&$r$\\\noalign{\vskip4pt}
+$\mathcal P_r^-\Lambda^{k-1}$&$\mathcal P_r^-\Lambda^k$&$r$&$r$&$r$&$r$\\\noalign{\vskip4pt}
+$\mathcal P_r\Lambda^{k-1}$&$\mathcal P_{r-1}\Lambda^k$&$\begin{cases}r+1&\text{if }l_2=l_3=l_5=0,\\r&\text{otherwise}.\end{cases}$&$\begin{cases}r&\text{if }l_3=0,\\r-1&\text{otherwise}.\end{cases}$&$r$&$r-1$\\\noalign{\vskip4pt}
+$\mathcal P_r^-\Lambda^{k-1}$&$\mathcal P_{r-1}\Lambda^k$&$r$&$\begin{cases}r&\text{if }l_3=0,\\r-1&\text{otherwise}.\end{cases}$&$r$&$r-1$\\\hline
+\end{tabular}
+\end{table}

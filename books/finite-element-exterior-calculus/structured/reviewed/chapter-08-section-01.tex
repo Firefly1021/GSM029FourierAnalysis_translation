@@ -1,0 +1,31 @@
+% Complete Section 8.1, original PDF 107-108 / printed 97-98.
+% block: eigenvalue-problems-heading page:107 type:section
+\subsection{{Eigenvalue problems}}\label{sec:eigenvalue-problems}
+
+% block: hodge-eigenvalue-problem page:107 type:ordinary-paragraph
+{Besides the Hodge Laplacian source problem, we are often interested in solving the associated eigenvalue problem}
+\[
+(\delta d+d\delta)u=\lambda u,
+\]
+{together with boundary conditions, for $\lambda\in\mathbb R$, $u\neq0$. (Note that $\lambda=0$ is an eigenvalue if and only if there exist nonzero harmonic forms, and the harmonic forms form the eigenspace associated to the zero eigenvalue.)}
+
+% block: hodge-eigenvalue-mixed-formulation page:107 type:ordinary-paragraph
+{Setting $\sigma=d^*u$, we obtain the mixed weak formulation of the eigenvalue problem: find $\lambda\in\mathbb R$, $\sigma\in H\Lambda^{k-1}$, $0\neq u\in H\Lambda^k$ such that}
+\[
+\begin{aligned}
+\langle\sigma,\tau\rangle-\langle u,d\tau\rangle&=0,&\tau&\in H\Lambda^{k-1},\\
+\langle d\sigma,v\rangle+\langle du,dv\rangle&=\lambda\langle u,v\rangle,&v&\in H\Lambda^k.
+\end{aligned}
+\]
+
+% block: hodge-eigenvalue-finite-element-discretization pages:107,108 type:ordinary-paragraph
+{The finite element discretization is then clear. We replace the spaces $H\Lambda^{k-1}$ and $H\Lambda^k$ with a stable pair of spaces of finite element differential forms, $V_h^{k-1}$ and $V_h^k$, which we have derived for the source problem. This leads to a symmetric sparse generalized matrix eigenvalue problem, which can be solved by a variety of iterative eigensolvers, such as the Krylov–Schur method.}
+
+% block: eigenvalue-convergence-requirements page:108 type:ordinary-paragraph
+{The convergence theory for eigenvalue problems is quite subtle. A good convergence result must of course show that any of the (infinitely many) eigenvalues of the continuous problem is approximated arbitrarily closely by an eigenvalue of the discrete problem, if the mesh is sufficiently fine. It must also take into account multiplicity, so that an eigenvalue of the continuous problem of multiplicity $m$ is approximated by $m$ eigenvalues of the discrete problem (counting their multiplicity, which will usually be different from $m$). It must also rule out spurious eigenvalues, that is, show that the discrete eigenvalues do not accumulate, as the mesh is refined, at any number which is not an eigenvalue of the continuous problem. The approximation of eigenvectors has to be stated particularly carefully in the case of multiple eigenvalues.}
+
+% block: eigenvalue-convergence-analysis page:108 type:ordinary-paragraph
+{Fortunately, the theory of convergence of Galerkin approximations to eigenvalue problems has been carefully developed and it applies to the case of the Hodge Laplacian. The basic theory is due Babuška and Osborn \BookCite{16}. An excellent exposition is in \BookCite{18}. A brief discussion of its application to the Hodge Laplacian eigenvalue problem is given in [\BookNumber{11}, Section 8] and [\BookNumber{13}, Section 3.6] and so will not be repeated here. The main message is that the hypotheses of the Babuška–Osborn theory can be deduced from the improved error estimates of Theorem~\ref{thm:mixed-improved-errors}, and consequently whenever the hypotheses of that theorem---the compactness property of the Hilbert complex and $W$-bounded cochain projectors for the subcomplex of Galerkin spaces---are met, we obtain convergence of the eigenvalues and eigenvectors. The convergence rates for the eigenvectors are optimal (determined by the approximation properties of the spaces), and the convergence rates for the eigenvalues are double those of the eigenvectors.}
+
+% block: hodge-and-maxwell-spectral-examples page:108 type:ordinary-paragraph
+{We have already seen an example of eigenvalue convergence for the Hodge Laplacian \eqref{eq:vector-laplacian-eigenproblem} in Table~\ref{tab:feec-vector-eigenvalues} of the introduction. By contrast, Table~\ref{tab:vector-lagrange-wrong-eigenvalues} showed that a naive method, not based on the mixed formulation, does not converge. In the introduction, we also considered the Maxwell eigenvalue problem $\operatorname{curl}\operatorname{curl}u=\lambda u$. A naive method based on Lagrange elements led to erroneous results, with the true spectrum either not recognizable from the computation or polluted by persistent spurious eigenvalues, as shown in Table~\ref{tab:maxwell-spectral-comparison}. Computations made with the weak formulation, but using the lowest order Whitney 1-forms, shown in the rows labeled FEEC in the table, converge nicely. This can be proven by relating the Maxwell eigenvalue problem to the Hodge Laplacian eigenvalue problem. The former arises as the $\mathcal B_1^*$ problem after a Hodge decomposition, and so the convergence analysis for the Hodge Laplacian eigenvalue problem carries over to the Maxwell problem. See [\BookNumber{13}, Section 3.6.1] for details.}

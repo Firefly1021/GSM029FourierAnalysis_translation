@@ -1,0 +1,43 @@
+% Complete Section 8.3, original PDF 109-110 / printed 99-100.
+% block: lower-order-terms-heading page:109 type:section
+\subsection{\BT{Lower order terms}{低阶项}}\label{sec:lower-order-terms}
+
+% block: magnetostatic-lower-order-models pages:109,110 type:ordinary-paragraph
+\BT{A basic model problem arising in magnetostatics seeks a (vector proxy) 2-form $B$ for which}{静磁学中的一个基本模型问题, 是求 (向量代理) 2-形式 $B$, 使得}
+\[
+\operatorname{curl}\operatorname{curl}B=f,\qquad\operatorname{div}B=0\quad\text{in }\Omega
+\]
+\BT{for $f$ given in the range of the curl, together with boundary conditions imposed on $B$. The solution can be found by solving the Hodge Laplace equation}{其中给定的 $f$ 属于旋度的像, 并对 $B$ 施加边界条件. 可以通过求解 Hodge Laplace 方程得到解}
+\[
+\operatorname{curl}\operatorname{curl}B-\operatorname{grad}\operatorname{div}B=f.
+\]
+\BT{For time-harmonic problems, an additional zeroth order term occurs in this equation, giving a perturbed Hodge Laplace equation}{对时谐问题, 此方程中出现额外的零阶项, 得到扰动的 Hodge Laplace 方程}
+\[
+\operatorname{curl}\operatorname{curl}B-\operatorname{grad}\operatorname{div}B-m^2B=f,
+\]
+\BT{where $m$ is the wave number. In magnetohydrodynamics, there is an additional first order advection term induced by the velocity vector field $v$, so in the static case we have}{其中 $m$ 是波数. 在磁流体力学中, 还有速度向量场 $v$ 引起的额外一阶对流项, 因而静态情形下有}
+\[
+\operatorname{curl}\operatorname{curl}B-\operatorname{grad}\operatorname{div}B-\operatorname{curl}(v\times B)=f.
+\]
+
+% block: general-lower-order-perturbations page:110 type:ordinary-paragraph
+\BT{When such lower order terms occur, the differential operator acting on $B$ cannot be realized as the abstract Hodge Laplacian of any Hilbert complex. However, it is not difficult to extend the mixed finite element methods we have studied to obtain viable numerical methods for the Hodge Laplacian to such problems with lower order terms. What is less clear is the convergence analysis for these discretizations, since the analysis presented above does not directly apply to them. In \BookCite{14} we studied the convergence of the mixed methods of FEEC for differential operators of the form}{出现这样的低阶项时, 作用于 $B$ 的微分算子无法实现为任何 Hilbert 复形的抽象 Hodge Laplacian. 然而, 将所研究的用于得到 Hodge Laplacian 可行数值方法的混合有限元方法, 推广到这类带低阶项的问题, 并不困难. 不太清楚的是这些离散化的收敛分析, 因为前面的分析不能直接应用于它们. 在 \BookCite{14} 中, 我们研究了 FEEC 混合方法对如下形式微分算子的收敛性}
+\[
+Lu=[(d+l_1)(\delta+l_2)+(\delta+l_3)(d+l_4)+l_5],
+\]
+\BT{which includes the most natural lower order perturbations of the Hodge Laplace operator $d\delta+\delta d$. Here the $l_i$ are operators which act as multipliers by smooth coefficient fields. For example, the zeroth order term occuring in the time-harmonic problem is accounted for in $l_5$, while the first order perturbation arising in the magnetohydrodynamic problem is given by $l_2B=-v\times B$ (the contraction of a 2-form with a vector field).}{其中包含 Hodge Laplace 算子 $d\delta+\delta d$ 最自然的低阶扰动. 这里 $l_i$ 是以光滑系数场作乘子的算子. 例如, 时谐问题中的零阶项包含在 $l_5$ 中, 而磁流体力学问题中的一阶扰动由 $l_2B=-v\times B$ 给出 (2-形式与向量场的缩并).}
+
+% block: perturbed-problem-stability-and-rates page:110 type:ordinary-paragraph
+\BT{The analysis of \BookCite{14} is quite involved, and we will only briefly summarize the main results. It is possible, of course, that the operator $L$ (including its boundary conditions) admits a kernel, just as the ordinary Helmholtz operator $-\Delta+l$ may have a kernel when $l$ is negative. Suppose that this is not the case, i.e., $0$ is not an eigenvalue of $L$, and so the continuous problem is well-posed. Then the finite element discretizations we have derived for the Hodge Laplacian, all four possibilities given in \eqref{eq:four-galerkin-form-pairs}, are stable for the perturbed operator $L$ as well, at least for sufficiently fine triangulations. The basic error estimates, as stated in Theorem~\ref{thm:mixed-basic-error}, therefore hold. The surprise comes when trying to establish the improved error estimates of Theorem~\ref{thm:mixed-improved-errors}, which establish optimal $L^2$ rates of convergence for each of the quantities $\sigma$, $d\sigma$, $u$, and $du$. It turns out that for some choices of the finite element spaces and some lower order terms $(l_1,\ldots,l_5)$ there can be a loss of one convergence order for either $\sigma$ or $d\sigma$ or both. The results are summarized in Table~\ref{tab:perturbed-hodge-error-rates}, which should be compared to Table~\ref{tab:galerkin-form-approximation-rates} (the case when all the $l_i$ vanish). These rates were all established theoretically and verified as sharp computationally in \BookCite{14}, to which we refer for details.}{\BookCite{14} 的分析相当复杂, 这里只简要概述主要结果. 算子 $L$ (包括其边界条件) 当然可能有核, 就像通常的 Helmholtz 算子 $-\Delta+l$ 在 $l$ 为负时可能有核一样. 假定并非如此, 即 $0$ 不是 $L$ 的特征值, 因而连续问题适定. 则为 Hodge Laplacian 导出的有限元离散化, 即 \eqref{eq:four-galerkin-form-pairs} 中的全部四种选择, 对扰动算子 $L$ 也稳定, 至少对充分细的剖分如此. 因此, Theorem~\ref{thm:mixed-basic-error} 陈述的基本误差估计成立. 意外出现在试图建立 Theorem~\ref{thm:mixed-improved-errors} 的改进误差估计时, 这些估计为 $\sigma$, $d\sigma$, $u$ 和 $du$ 各量建立最优 $L^2$ 收敛阶. 结果表明, 对有限元空间的某些选择以及某些低阶项 $(l_1,\ldots,l_5)$, $\sigma$ 或 $d\sigma$ 或两者可能损失一阶收敛阶. 结果总结于 Table~\ref{tab:perturbed-hodge-error-rates}, 应将其与 Table~\ref{tab:galerkin-form-approximation-rates} (所有 $l_i$ 均为零的情形) 比较. \BookCite{14} 在理论上建立了所有这些阶数, 并通过计算验证了其尖锐性, 细节请参见该文.}
+
+% block: perturbed-hodge-error-rates-table page:110 type:table
+\begin{table}[htbp]\centering\small\setlength{\tabcolsep}{3pt}
+\caption{\BT{$L^2$ error rates for FEEC solution of the Hodge Laplacian.}{Hodge Laplacian 的 FEEC 解的 $L^2$ 误差阶.}}\label{tab:perturbed-hodge-error-rates}
+\begin{tabular}{cc|cccc}\hline
+$V_h^{k-1}$&$V_h^k$&$\sigma$&$d\sigma$&$u$&$du$\\\hline
+$\mathcal P_r\Lambda^{k-1}$&$\mathcal P_r^-\Lambda^k$&$\begin{cases}r+1&\text{if }l_2=l_5=0,\\r&\text{otherwise}.\end{cases}$&$r$&$r$&$r$\\\noalign{\vskip4pt}
+$\mathcal P_r^-\Lambda^{k-1}$&$\mathcal P_r^-\Lambda^k$&$r$&$r$&$r$&$r$\\\noalign{\vskip4pt}
+$\mathcal P_r\Lambda^{k-1}$&$\mathcal P_{r-1}\Lambda^k$&$\begin{cases}r+1&\text{if }l_2=l_3=l_5=0,\\r&\text{otherwise}.\end{cases}$&$\begin{cases}r&\text{if }l_3=0,\\r-1&\text{otherwise}.\end{cases}$&$r$&$r-1$\\\noalign{\vskip4pt}
+$\mathcal P_r^-\Lambda^{k-1}$&$\mathcal P_{r-1}\Lambda^k$&$r$&$\begin{cases}r&\text{if }l_3=0,\\r-1&\text{otherwise}.\end{cases}$&$r$&$r-1$\\\hline
+\end{tabular}
+\end{table}
