@@ -1,0 +1,74 @@
+% Complete Section 8.7, original PDF 114-117 / printed 104-107.
+% block: stokes-equations-heading page:114 type:section
+\subsection{{The Stokes equations}}\label{sec:stokes-equations}
+
+% block: neumann-mixed-formulation pages:114,115 type:ordinary-paragraph
+{Recall the mixed weak formulation of the Neumann problem for the Poisson equation on a domain $\Omega$ in $\mathbb R^n$. Given $f\in\hat L^2$, we seek $u\in\mathring H(\operatorname{div},\Omega)$, $p\in\hat L^2(\Omega)$ such that}
+\begin{equation}\label{eq:neumann-poisson-mixed-formulation}
+\begin{aligned}\langle u,v\rangle-\langle p,\operatorname{div}v\rangle&=0,&v&\in\mathring H(\operatorname{div}),\\\langle\operatorname{div}u,q\rangle&=\langle f,q\rangle,&q&\in\hat L^2.\end{aligned}
+\end{equation}
+{(The hat in $\hat L^2$ denotes the subspace orthogonal to constants, reflecting the fact that $f$ must have integral zero and that $p$ is determined only up to an additive constant. We could have also worked with $L^2$ and added terms for the space of harmonic forms, namely, the constants.) The problem \eqref{eq:neumann-poisson-mixed-formulation} is the mixed weak formulation of the Hodge Laplacian associated to the segment}
+\begin{equation}\label{eq:neumann-divergence-complex}
+\mathring H(\operatorname{div})\xrightarrow{\operatorname{div}}\hat L^2(\Omega)\to0,
+\end{equation}
+{taken from the end of the $L^2$ de Rham complex with boundary conditions. This formulation can be easily discretized using the finite element differential forms developed in Chapter~\ref{chap:finite-element-differential-forms}. We now compare this problem to the problem of Stokes flow.}
+
+% block: stokes-strong-problem-boundaries page:115 type:ordinary-paragraph
+{The equations of Stokes flow, written in strong form, seek a vector field $u$, the velocity, and a scalar field $p$, the pressure, satisfying}
+\[
+-\mu\Delta u+\operatorname{grad}p=f,\qquad\operatorname{div}u=0\quad\text{in }\Omega.
+\]
+{Here $\mu$ is the dynamic viscosity, and the vector field $f$ gives the imposed body force density. A simple choice of boundary conditions is no-slip, meaning that $u=0$ on $\partial\Omega$. More realistically we might take the no-slip condition on a portion of the boundary and, on the remainder, the stress boundary condition $2\mu\epsilon(u)n-pn=0$, stated in terms of the symmetric gradient $\epsilon(u)$ of $u$ (the strain rate) and the outward unit normal $n$.}
+
+% block: stokes-weak-formulation page:115 type:ordinary-paragraph
+{Sticking with pure no-slip boundary conditions for simplicity, the weak formulation seeks $u\in\mathring H^1(\Omega;\mathbb R^n)$, $p\in\hat L^2(\Omega)$ such that}
+\begin{equation}\label{eq:stokes-weak-formulation}
+\begin{aligned}b(u,v)-\langle p,\operatorname{div}v\rangle&=\langle f,v\rangle,&v&\in\mathring H^1(\Omega;\mathbb R^n),\\\langle\operatorname{div}u,q\rangle&=0,&q&\in\hat L^2(\Omega).\end{aligned}
+\end{equation}
+{The bilinear form $b:\mathring H^1(\Omega;\mathbb R^n)\times\mathring H^1(\Omega;\mathbb R^n)\to\mathbb R$ in \eqref{eq:stokes-weak-formulation} is given by}
+\begin{equation}\label{eq:stokes-strain-bilinear-form}
+b(u,v)=2\mu\langle\epsilon(u),\epsilon(v)\rangle.
+\end{equation}
+{Using the no-slip boundary conditions and the divergence-free condition $\operatorname{div}u=0$, we can simplify this to $b(u,v)=\mu\langle\operatorname{grad}u,\operatorname{grad}v\rangle$, but we prefer not to, because when stress (or other) boundary conditions are imposed on part of the boundary, this is no longer possible.}
+
+% block: stokes-smoothed-complex pages:115,116 type:ordinary-paragraph
+{The formulation \eqref{eq:stokes-weak-formulation} shares the terms $\langle p,\operatorname{div}v\rangle$ and $\langle\operatorname{div}u,q\rangle$ with the mixed weak formulation \eqref{eq:neumann-poisson-mixed-formulation} of the Neumann problem. However, in \eqref{eq:stokes-weak-formulation}, $u,v$ are sought in $\mathring H^1(\Omega;\mathbb R^n)$, while in \eqref{eq:neumann-poisson-mixed-formulation}, they are sought in $\mathring H(\operatorname{div})$. This suggests a slightly different complex:}
+\begin{equation}\label{eq:stokes-divergence-complex}
+\mathring H^1(\Omega;\mathbb R^n)\xrightarrow{\operatorname{div}}\hat L^2(\Omega)\to0.
+\end{equation}
+{The complex \eqref{eq:stokes-divergence-complex} differs from \eqref{eq:neumann-divergence-complex} in that more smoothness is required in the first space of the complex. To fully define the complex we must specify the base spaces on which $\operatorname{div}$ operates as well as the domain spaces shown in \eqref{eq:stokes-divergence-complex}. In fact, we consider \eqref{eq:stokes-divergence-complex} as a \emph{bounded} Hilbert complex, so that the base spaces and domain spaces coincide. As the inner product on the first space $\mathring H^1(\Omega;\mathbb R^n)$ we use the bilinear form $b$, which is equivalent to the $H^1$ inner product there. With these choices we see that the weak formulation \eqref{eq:stokes-weak-formulation} is simply the mixed weak formulation of the abstract Hodge Laplacian for the complex \eqref{eq:stokes-divergence-complex}. The well-posedness of this problem therefore follows from the general theory of Chapter~\ref{chap:hilbert-complexes}, as long as the Hilbert complex is closed and has no harmonic forms. In the present case, this means that we require that the divergence operator map $\mathring H^1(\Omega;\mathbb R^n)$ onto $\hat L^2(\Omega)$. This is a stronger statement than that $\operatorname{div}$ maps $\mathring H(\operatorname{div},\Omega)$ onto $\hat L^2(\Omega)$ which we established easily in Section~\ref{sec:vector-operators-adjoints}. The stronger result is widely used in the analysis of the Stokes equations, with a variety of proofs available, applying to domains with different degrees of generality. For an excellent discussion of the different approaches and results, see [\BookNumber{35}, Section 2.2].}
+
+% block: stokes-discrete-subcomplex-projections page:116 type:ordinary-paragraph
+{Applying the theory of Chapter~\ref{chap:approximation-hilbert-complexes}, we obtain conditions for accurate Galerkin discretization of \eqref{eq:stokes-divergence-complex}. It is sufficient that the Galerkin subspaces $V_h\subset\mathring H^1(\Omega;\mathbb R^n)$ and $S_h\subset L^2(\Omega)$ satisfy the subcomplex property}
+\begin{equation}\label{eq:stokes-discrete-subcomplex}
+\operatorname{div}V_h\subset S_h
+\end{equation}
+{and that there exist bounded cochain projections:}
+\[
+\pi_V:\mathring H^1(\Omega;\mathbb R^n)\to V_h,\quad\pi_S:L^2(\Omega)\to S_h,\quad\operatorname{div}\pi_Vv=\pi_S\operatorname{div}v.
+\]
+{It then follows from the FEEC theory, or by more elementary arguments, that the Galerkin discretization is stable and satisfies the error estimate}
+\begin{equation}\label{eq:stokes-galerkin-error}
+\|u-u_h\|_1+\|p-p_h\|_0\leq c\left(\inf_{v\in V_h}\|u-v\|_1+\inf_{p\in S_h}\|p-q\|_0\right).
+\end{equation}
+
+% block: stokes-exact-mass-conservation page:116 type:ordinary-paragraph
+{Stokes element pairs that satisfy the subcomplex property $\operatorname{div}V_h\subset S_h$ have an important additional property. The discrete velocity $u_h$ conserves mass, i.e., it exactly solves the continuity equation $\operatorname{div}u_h=0$. This follows immediately from the Galerkin equation}
+\[
+\langle\operatorname{div}u_h,q\rangle=0
+\]
+{with $q=\operatorname{div}u_h\in S_h$. Mass conservation is a very desirable property for many applications, particularly when treating nonlinear and/or time-dependent Navier–Stokes equations. See the recent review \BookCite{55} for an in-depth discussion of this point. Classical Stokes element pairs (the MINI element, $\mathcal P_2$--$\mathcal P_0$, Taylor–Hood, etc.), such as are discussed in \BookCite{45} or [\BookNumber{19}, Chapter 8], do \emph{not} satisfy the subcomplex property. While they do satisfy the estimate \eqref{eq:stokes-galerkin-error}, they are not mass conservative.}
+
+% block: two-dimensional-stokes-complex pages:116,117 type:ordinary-paragraph
+{The development of mass conservative elements has been an active research area for the last decade or so. The primary approach is the development of finite element subcomplexes of the segment \eqref{eq:stokes-divergence-complex} and of a longer complex of which this forms a portion. In two dimensions, the full complex in question is}
+\[
+0\to H^2(\Omega)\xrightarrow{\operatorname{curl}}H^1(\Omega;\mathbb R^n)\xrightarrow{\operatorname{div}}L^2(\Omega)\to0,
+\]
+{where I have simplified by not imposing boundary conditions or suppressing the harmonic forms. This \emph{Stokes complex} is a smoothed version of the $L^2$ de Rham complex. Although the discretization of the Stokes equations requires only subspaces of the last two nonzero spaces in the complex, in the construction and analysis of such subspaces it is often helpful to refer to the entire complex and subcomplexes of it. This draws a connection between mass conservative finite elements for the Stokes equations and finite element subspaces of $H^2(\Omega)$, a challenging issue which has been long studied in finite elements. The first finite element discretization of the two-dimensional Stokes complex was given by Mardal, Tai, and Winther in 2002 \BookCite{57}. However, this was a nonconforming discretization so not a true subcomplex. In 2013, the first conforming finite element discretization on general meshes was constructed by Guzmán and Neilan \BookCite{49}. They used low degree piecewise polynomials enriched by certain rational functions. The same year Falk and Neilan \BookCite{42} constructed a family of conforming piecewise polynomial subcomplexes of the Stokes complex. Numerous other possible element choices are possible as well. See [\BookNumber{55}, Figure 4.1] for more information.}
+
+% block: three-dimensional-stokes-complex page:117 type:ordinary-paragraph
+{The development of mass conservative Stokes elements in three dimensions can similarly be based on the \emph{three-dimensional Stokes complex}}
+\[
+0\to H^2\xrightarrow{\operatorname{grad}}H^1(\operatorname{curl})\xrightarrow{\operatorname{curl}}H^1(\Omega;\mathbb R^3)\xrightarrow{\operatorname{div}}L^2\to0,
+\]
+{where $H^1(\operatorname{curl})$ consists of all $H^1$ vector fields whose curls are again $H^1$. Neilan constructs a finite element subcomplex in \BookCite{60}. Another approach, for special mesh geometries, was recently developed by Guzmán, Fu, and Neilan \BookCite{48}.}

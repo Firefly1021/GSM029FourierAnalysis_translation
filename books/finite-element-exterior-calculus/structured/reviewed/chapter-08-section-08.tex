@@ -1,0 +1,164 @@
+% Complete Section 8.8, original PDF 117-122 / printed 107-112.
+% block: elasticity-heading page:117 type:section
+\subsection{{Elasticity}}\label{sec:elasticity}
+
+% block: elasticity-feec-introduction page:117 type:ordinary-paragraph
+{Among the notable successes of the FEEC viewpoint has been the development of stable mixed finite element methods for the equations of elasticity. In this case, the relevant Hilbert complex is not the de Rham complex but rather some version of the \emph{elasticity complex}.}
+
+% block: elasticity-equilibrium-constitutive-laws page:117 type:ordinary-paragraph
+{Let $\Omega$ be a domain in $\mathbb R^n$ occupied by an elastic body. The primary unknowns in elasticity are the displacement field $u:\Omega\to\mathbb R^n$ and the stress field $\sigma:\Omega\to\mathbb S:=\mathbb R_{\mathrm{symm}}^{n\times n}$. In steady state, the stress field must satisfy the equilibrium condition}
+\[
+\operatorname{div}\sigma=f,
+\]
+{where $f:\Omega\to\mathbb R^n$ is the load vector field giving the imposed body force per unit volume. Furthermore, the displacement and stress are related by the constitutive equation}
+\[
+A\sigma=\epsilon u,
+\]
+{where $\epsilon$ denotes the infinitesimal strain operator, i.e., the symmetric part of the gradient, and the compliance tensor $A$ is a symmetric positive definite map $\mathbb S\to\mathbb S$, possibly variable. The elastic boundary value problem is completed with suitable boundary conditions, such as the displacement condition $u=0$ on $\partial\Omega$.}
+
+% block: elasticity-divergence-hilbert-complex pages:117,118 type:ordinary-paragraph
+{The divergence operator, $\operatorname{div}$, acting rowwise, defines a closed operator from $L^2$ symmetric tensor fields (i.e., symmetric $n\times n$ matrix-valued functions) to $L^2$ vector fields. Its domain is the space $H(\operatorname{div},\Omega;\mathbb S)$ of $L^2$ symmetric tensor fields with divergence in $L^2$. On the space of $L^2$ symmetric tensor fields, we weight the $L^2$ inner product by the compliance tensor $A$, and so we obtain a segment of a Hilbert complex}
+\begin{equation}\label{eq:elasticity-divergence-complex}
+L_A^2(\Omega;\mathbb S)\xrightarrow{(\operatorname{div},H(\operatorname{div};\mathbb S))}L^2(\Omega;\mathbb R^n)\to0.
+\end{equation}
+{This is altogether analogous to the complex \eqref{eq:weighted-divergence-complex}, the difference being that here the divergence operator maps symmetric tensor to vectors, rather than vectors to scalars. The constraint of symmetry makes the elasticity system much more difficult to discretize.}
+
+% block: elasticity-mixed-weak-formulation page:118 type:ordinary-paragraph
+{As we did for \eqref{eq:weighted-divergence-complex}, we immediately obtain the weak form of the abstract Hodge Laplace problem for this complex. It seeks $\sigma\in H(\operatorname{div};\mathbb S)$, $u\in L^2(\Omega;\mathbb R^n)$ such that}
+\[
+\begin{aligned}\langle A\sigma,\tau\rangle-\langle u,\operatorname{div}\tau\rangle&=0,&\tau&\in H(\operatorname{div},\Omega;\mathbb S),\\\langle\operatorname{div}\sigma,v\rangle&=\langle f,v\rangle,&v&\in L^2(\Omega;\mathbb R^n).\end{aligned}
+\]
+{Clearly, the first equation is a weak form of the constitutive equation and the displacement boundary condition, while the second equation directly translates the equilibrium condition. The next theorem asserts that the divergence operator acting on symmetric tensors is in fact surjective. This implies that the Hilbert complex \eqref{eq:elasticity-divergence-complex} is closed and that there are no harmonic forms. It then follows from the general theory of Chapter~\ref{chap:hilbert-complexes} that the mixed elasticity system is well-posed.}
+
+% block: symmetric-tensor-divergence-surjectivity page:118 type:theorem
+\Needspace{6\baselineskip}
+\begin{Theorem}\label{thm:symmetric-tensor-divergence-surjectivity}
+{The divergence operator (acting rowwise) maps $H(\operatorname{div},\Omega;\mathbb S)$ onto $L^2(\Omega;\mathbb R^n)$.}
+\end{Theorem}
+
+% block: skew-tensor-space page:118 type:ordinary-paragraph
+{In fact, we shall prove a stronger result. Analogous to the space $\mathbb S$ of symmetric $n\times n$ tensor fields, let $\mathbb K$ denote the space of skew-symmetric $n\times n$ tensor fields. The dimensions are $\dim\mathbb S=\binom{n+1}2$, $\dim\mathbb K=\binom n2$, respectively. As usual, for any matrix $\tau\in\mathbb R^{n\times n}$, $\operatorname{skw}\tau\in\mathbb K$ denotes its skew-symmetric part.}
+
+% block: divergence-skew-surjectivity page:118 type:theorem
+\Needspace{6\baselineskip}
+\begin{Theorem}\label{thm:divergence-skew-surjectivity}
+{Given $f\in L^2(\Omega;\mathbb R^n)$ and $g\in L^2(\Omega;\mathbb K)$, there exists $\tau\in H(\operatorname{div},\Omega;\mathbb R^{n\times n})$ such that}
+\[
+\operatorname{div}\tau=f,\qquad\operatorname{skw}\tau=g.
+\]
+\end{Theorem}
+
+% block: symmetric-divergence-corollary page:118 type:ordinary-paragraph
+{Theorem~\ref{thm:symmetric-tensor-divergence-surjectivity} follows from Theorem~\ref{thm:divergence-skew-surjectivity} by taking $g=0$.}
+
+% block: divergence-skew-proof-first-ingredient page:118 type:proof
+\begin{Proof}
+{We shall only prove the result in $n=2$ or $3$ dimensions, with some remarks on the general case given at the end of the proof.}
+
+{The construction is based on two ingredients. First is the surjectivity of the divergence acting on $H^1(\Omega;\mathbb R^n)$: given $q\in L^2(\Omega)$ we can find $v\in H^1(\Omega;\mathbb R^n)$ such that $\operatorname{div}v=q$. In the preceding section, on the Stokes equations, we discussed the more difficult result of surjectivity of the divergence acting on $\mathring H^1(\Omega;\mathbb R^n)$. Without boundary conditions, the result is much easier. We can, e.g., extend $q$ by zero to a ball containing $\Omega$, then solve the Dirichlet problem with forcing term $q$ on the ball to get an $H^2$ function, and finally take $v$ to be the restriction to $\Omega$ of the gradient of the solution.}
+
+% block: divergence-skew-proof-two-dimensional-identity pages:118,119 type:ordinary-paragraph
+{The second ingredient is an elementary calculus identity. Primarily for reasons of notation, we present it separately in $n=2$ dimensions and then in three dimensions. For $n=2$, the space $\mathbb K$ is one-dimensional. Thus we may state the theorem in terms of a scalar function $g$ belonging to $L^2(\Omega)$, and we must show that there exists $\tau$ such that $\operatorname{div}\tau=f$ and $\operatorname{asym}\tau=g$, where $\operatorname{asym}\tau:=\tau_{12}-\tau_{21}$. In the two-dimensional case, the elementary identity we require is that the asymmetric part of the matrix curl of a two-dimensional vector field is the negative of its divergence. That is,}
+\begin{equation}\label{eq:asym-curl-divergence-identity}
+\operatorname{asym}\operatorname{curl}\psi=-\operatorname{div}\psi,\qquad\psi\in H^1(\Omega;\mathbb R^2).
+\end{equation}
+{(Here the curl operator is the two-dimensional vector curl applied to each scalar component of $\psi$ to give the rows of a $2\times2$ matrix.) The identity is expressed as well by the commutativity of the following diagram:}
+\[
+\begin{tikzcd}[column sep=large,row sep=large]
+H^1(\Omega;\mathbb R^2)\arrow[r,"\operatorname{curl}"]\arrow[d,"id"']&L^2(\Omega;\mathbb R^{2\times2})\arrow[d,"-\operatorname{asym}"]\\
+H^1(\Omega;\mathbb R^2)\arrow[r,"\operatorname{div}"']&L^2(\Omega)
+\end{tikzcd}
+\]
+
+% block: divergence-skew-two-dimensional-construction page:119 type:ordinary-paragraph
+{With these two ingredients in hand, we proceed to the construction. For arbitrary $f\in L^2(\Omega;\mathbb R^2)$, we can find $\rho\in H^1(\Omega;\mathbb R^{2\times2})$ such that}
+\begin{equation}\label{eq:elasticity-divergence-lifting}
+\operatorname{div}\rho=f.
+\end{equation}
+{Indeed, since no constraint on the symmetry of $f$ is imposed, we can simply define the two rows of $\rho$ independently using the surjectivity of the divergence on $H^1(\Omega;\mathbb R^2)$. Next we form the scalar function $-g+\operatorname{asym}\rho$ and again apply the surjectivity of the divergence to get a vector field $\psi\in H^1(\Omega;\mathbb R^2)$ satisfying}
+\begin{equation}\label{eq:elasticity-skew-correction-lifting}
+\operatorname{div}\psi=-g+\operatorname{asym}\rho.
+\end{equation}
+{Note that the matrix curl of $\psi$ belongs to $L^2$ and is divergence-free and so belongs to $H(\operatorname{div},\Omega;\mathbb R^{2\times2})$. Thus}
+\[
+\tau:=\rho+\operatorname{curl}\psi\in H(\operatorname{div},\Omega;\mathbb R^{2\times2}).
+\]
+{Finally, from \eqref{eq:elasticity-divergence-lifting}, \eqref{eq:asym-curl-divergence-identity}, and \eqref{eq:elasticity-skew-correction-lifting}, we get}
+\[
+\begin{aligned}
+\operatorname{div}\tau&=\operatorname{div}\rho=f,\\
+\operatorname{asym}\tau&=\operatorname{asym}\rho+\operatorname{asym}\operatorname{curl}\psi=\operatorname{asym}\rho-\operatorname{div}\psi=g,
+\end{aligned}
+\]
+{as desired. This proves Theorem~\ref{thm:divergence-skew-surjectivity} in the two-dimensional case.}
+
+% block: divergence-skew-three-dimensional-identity page:119 type:ordinary-paragraph
+{In three dimensions, the space $\mathbb K$ is itself three-dimensional, i.e., $\mathbb K\cong\mathbb R^3$. Thus we take $g$ to be a 3-vector field and impose the constraint $\operatorname{asym}\tau=g$, where now}
+\[
+\operatorname{asym}\tau=(\tau_{23}-\tau_{32},\tau_{31}-\tau_{13},\tau_{12}-\tau_{12}).
+\]
+{We also need the operator $S:\mathbb R^{3\times3}\to\mathbb R^{3\times3}$ given by}
+\[
+S\rho=\rho^T-(\operatorname{Tr}\rho)I,
+\]
+{where $\operatorname{Tr}$ denotes the matrix trace and $I$ the $3\times3$ identity matrix. This operator is invertible with}
+\[
+S^{-1}\mu=\mu^T-\frac12(\operatorname{Tr}\mu)I.
+\]
+{The relevant identity in three dimensions can now be expressed as commutativity of the diagram}
+\[
+\begin{tikzcd}[column sep=large,row sep=large]
+H^1(\Omega;\mathbb R^{3\times3})\arrow[r,"\operatorname{curl}"]\arrow[d,"S"']&L^2(\Omega;\mathbb R^{3\times3})\arrow[d,"-\operatorname{asym}"]\\
+H^1(\Omega;\mathbb R^{3\times3})\arrow[r,"\operatorname{div}"']&L^2(\Omega;\mathbb R^3)
+\end{tikzcd}
+\]
+
+% block: divergence-skew-three-dimensional-construction page:120 type:ordinary-paragraph
+{The argument then proceeds as in two dimensions. We define first $\rho\in H^1(\Omega;\mathbb R^{3\times3})$ then $\psi\in H^1(\Omega;\mathbb R^{3\times3})$ such that}
+\[
+\operatorname{div}\rho=f,\qquad\operatorname{div}\psi=-g+\operatorname{asym}\rho,
+\]
+{and then set}
+\[
+\tau=\rho+\operatorname{curl}S^{-1}\psi.
+\]
+\end{Proof}
+
+% block: elasticity-surjectivity-general-dimension page:120 type:remark
+\Needspace{8\baselineskip}
+\begin{Remark}\label{rem:elasticity-general-dimension}
+{To prove the above theorem in general dimension $n$, it is preferable to view the spaces that enter the statement of the theorem and the proof, namely, spaces of scalar-, vector-, and matrix-valued functions, as spaces of differential forms. The differential forms which so arise are not scalar-valued but take values in $\operatorname{Alt}^m\mathbb R^n$ for $m=n-1$ or $n-2$. Thus, for example, the space $L^2(\Omega;\mathbb R^n)$, in which $f$ is given, should actually be thought of as $L^2\Lambda^n(\Omega)\otimes\operatorname{Alt}^{n-1}\mathbb R^n$, the space of $L^2$ differential $n$-forms on $\Omega$ taking values in $\operatorname{Alt}^{n-1}\mathbb R^n$. Recall that $\operatorname{Alt}^{n-1}\mathbb R^n$ is canonically isomorphic to $\mathbb R^n$ (vector proxy) and that differential $n$-forms can be viewed as simply scalar-valued functions (scalar proxy), so we can indeed canonically identify an element of $L^2\Lambda^n(\Omega)\otimes\operatorname{Alt}^{n-1}\mathbb R^n$ with an $\mathbb R^n$-valued $L^2$ function on $\Omega$. In a similar way we can make identifications of the spaces in which $g$ is given and in which $\rho$, $\psi$, and $\tau$ are defined. In this context, it is possible to define analogues of the operators $\operatorname{asym}$ and $S$ for general $n$ and establish the commuting diagram needed for the proof.}
+\end{Remark}
+
+% block: two-dimensional-elasticity-complex page:120 type:ordinary-paragraph
+{We now turn to discretization of the elasticity system, which, as we have seen, is just the abstract Hodge Laplace problem for the complex \eqref{eq:elasticity-divergence-complex}. Thus, we need to develop a finite element subcomplex of the spaces arising in \eqref{eq:elasticity-divergence-complex}, to be used to discretize the stress and displacement, respectively. As mentioned above, the symmetry constraint makes this quite difficult. It turns out to be useful to extend the sequence \eqref{eq:elasticity-divergence-complex} to a longer complex, just as \eqref{eq:weighted-divergence-complex} extends to become the de Rham complex. In two dimensions this longer \emph{elasticity complex} can be written}
+\begin{equation}\label{eq:two-dimensional-elasticity-complex}
+0\to L^2(\Omega)\xrightarrow{(\operatorname{curl}\operatorname{curl},H^2)}L^2(\Omega;\mathbb S)\xrightarrow{(\operatorname{div},H(\operatorname{div};\mathbb S))}L^2(\Omega;\mathbb R^2)\to0,
+\end{equation}
+{where, for simplicity, we drop the weighting coefficient $A$. Here the operator $\operatorname{curl}\operatorname{curl}$ is the composition of the vector-valued curl of a scalar function, followed by the matrix-valued curl of a vector function. The resulting tensor field,}
+\[
+\operatorname{curl}\operatorname{curl}\phi=
+\begin{pmatrix}\partial^2\phi/\partial x_2^2&-\partial^2\phi/\partial x_2^2\\-\partial^2\phi/\partial x_2^2&\partial^2\phi/\partial x_1^2\end{pmatrix},
+\]
+{is known in elasticity theory as the Airy stress function associated to a scalar potential function $\phi$.}
+
+% block: three-dimensional-elasticity-complex pages:120,121 type:ordinary-paragraph
+{In three dimensions, the elasticity complex is}
+\[
+\begin{aligned}
+0\to L^2(\Omega;\mathbb R^3)&\xrightarrow{(\epsilon,H^1(\Omega;\mathbb R^3))}L^2(\Omega;\mathbb S)\\
+&\xrightarrow{\operatorname{curl}T\operatorname{curl}}L^2(\Omega;\mathbb S)\xrightarrow{(\operatorname{div},H(\operatorname{div};\mathbb S))}L^2(\Omega;\mathbb R^3)\to0.
+\end{aligned}
+\]
+{In this case the operator $\operatorname{curl}T\operatorname{curl}$, called the St. Venant operator or the incompatibility operator, is obtained by applying the curl to the rows of a symmetric $3\times3$ matrix field, transposing, and again applying the curl (or, equivalently, by applying the curl first to the rows and then to the columns). Its domain consists of those $L^2$ symmetric matrix fields with $\operatorname{curl}T\operatorname{curl}$ also in $L^2$. Note that the matrix fields in its range are symmetric. An extensive analysis of this incompatibility operator is given in \BookCite{2}.}
+
+% block: symmetric-elasticity-finite-elements page:121 type:ordinary-paragraph
+{If we interchange the diagonal elements and reverse the signs of the off-diagonal elements of the Airy stress function \eqref{eq:maxwell-faraday}, we obtain the Hessian of $\phi$. This indicates that discretization of the two-dimensional elasticity complex is strongly related to $H^2$ scalar finite elements. This observation helped guide the way to the discovery of the first stable mixed finite elements for elasticity using polynomial trial functions in two dimensions. These were proposed in \BookCite{15} in 2002. Together with the classical Hermite quintic, or Argyris, finite element subspace of $H^2$, the stress and displacement elements form a finite element subcomplex of \eqref{eq:two-dimensional-elasticity-complex}. Since that work many alternatives and improvements have been proposed. The elements of \BookCite{15} were generalized to three dimensions, first in the lowest degree case \BookCite{1} and then for general degree \BookCite{8}. More efficient elements, applicable in any dimension, were developed in \BookCite{53} and \BookCite{54}. See the latter reference for a more extensive survey of the relevant literature.}
+
+% block: weak-symmetry-elasticity-complex page:121 type:ordinary-paragraph
+{We mention briefly another approach to developing efficient mixed finite elements for elasticity, namely, by imposing symmetry weakly (an idea that goes back to the early days of finite elements \BookCite{37}). In this approach we obtain a different mixed weak formulation, in which the stress field is sought in a space on which symmetry is not imposed, but instead the symmetry is weakly imposed by orthogonality of the skew-symmetric part of the stress to a Lagrange multiplier. The resulting system may again be viewed as the abstract Hodge Laplacian of a complex, but the relevant complex is now, instead of \eqref{eq:weighted-divergence-complex},}
+\[
+L_A^2(\Omega;\mathbb R^{n\times n})\xrightarrow{((\operatorname{div},\operatorname{skw}),H(\operatorname{div};\mathbb R^{2\times2}))}L^2(\Omega;\mathbb R^n)\times L^2(\Omega;\mathbb K)\to0.
+\]
+{Note that the differential is now composed of a pair of operators: it associates to a matrix field both its divergence and its skew-symmetric part. We proved above in Theorem~\ref{thm:divergence-skew-surjectivity} that this differential is surjective, and so again we obtain a well-posed mixed formulation. This segment can again be extended to a longer complex (the \emph{elasticity complex with weak symmetry}). The discretization of this complex can be accomplished with simpler elements than those needed for the standard elasticity complex. Such elements were developed in three dimensions in \BookCite{12} and a variety of alternative elements have been proposed as well. See, for example, \BookCite{32}, \BookCite{46}, and the work referenced in \BookCite{47}.}
+% Original PDF 122 is a blank production leaf, retained unchanged in the source PDF.

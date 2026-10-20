@@ -8,9 +8,13 @@ def accept(a):
     w["guard"]();q=w["load"]("qa/latest-compilation.json");assert q["success"] and q["pdf_sha256"]==a.sha
     assert w["s"]["m"]["sha256_file"](B.root/"output/translation-progress.pdf")==a.sha
     old=B.root/"workspace/pages/progress-output"/a.previous_sha[:16];current=Path(q["render_directory"])
+    def page_image(directory,n):
+        matches=[p for p in directory.glob("page-*.png") if int(p.stem.split("-")[-1])==n]
+        assert len(matches)==1,(directory,n)
+        return matches[0]
     identical=[]
     for n in range(1,a.unchanged_through+1):
-        name=f"page-{n:02}.png";h=hashlib.sha256((old/name).read_bytes()).hexdigest();assert h==hashlib.sha256((current/name).read_bytes()).hexdigest(),n;identical.append({"page":n,"png_sha256":h})
+        h=hashlib.sha256(page_image(old,n).read_bytes()).hexdigest();assert h==hashlib.sha256(page_image(current,n).read_bytes()).hexdigest(),n;identical.append({"page":n,"png_sha256":h})
     reviewed=list(range(a.unchanged_through+1,q["pdf_pages"]+1));assert reviewed==a.output_reviewed_pages,"Explicitly enumerate actually viewed new pages"
     source=set(a.source_reviewed_pages);blocks=math=0
     for unit in a.units:

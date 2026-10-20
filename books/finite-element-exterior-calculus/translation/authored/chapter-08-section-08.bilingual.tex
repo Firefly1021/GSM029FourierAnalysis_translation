@@ -1,0 +1,164 @@
+% Complete Section 8.8, original PDF 117-122 / printed 107-112.
+% block: elasticity-heading page:117 type:section
+\subsection{\BT{Elasticity}{弹性力学}}\label{sec:elasticity}
+
+% block: elasticity-feec-introduction page:117 type:ordinary-paragraph
+\BT{Among the notable successes of the FEEC viewpoint has been the development of stable mixed finite element methods for the equations of elasticity. In this case, the relevant Hilbert complex is not the de Rham complex but rather some version of the \emph{elasticity complex}.}{FEEC 观点的显著成功之一, 是发展了弹性方程的稳定混合有限元方法. 此时相关的 Hilbert 复形不是 de Rham 复形, 而是某种版本的\emph{弹性复形}.}
+
+% block: elasticity-equilibrium-constitutive-laws page:117 type:ordinary-paragraph
+\BT{Let $\Omega$ be a domain in $\mathbb R^n$ occupied by an elastic body. The primary unknowns in elasticity are the displacement field $u:\Omega\to\mathbb R^n$ and the stress field $\sigma:\Omega\to\mathbb S:=\mathbb R_{\mathrm{symm}}^{n\times n}$. In steady state, the stress field must satisfy the equilibrium condition}{设 $\Omega$ 是 $\mathbb R^n$ 中由弹性体占据的区域. 弹性力学中的主要未知量是位移场 $u:\Omega\to\mathbb R^n$ 和应力场 $\sigma:\Omega\to\mathbb S:=\mathbb R_{\mathrm{symm}}^{n\times n}$. 在稳态下, 应力场必须满足平衡条件}
+\[
+\operatorname{div}\sigma=f,
+\]
+\BT{where $f:\Omega\to\mathbb R^n$ is the load vector field giving the imposed body force per unit volume. Furthermore, the displacement and stress are related by the constitutive equation}{其中 $f:\Omega\to\mathbb R^n$ 是载荷向量场, 给出所施加的单位体积体力. 此外, 位移与应力通过本构方程联系}
+\[
+A\sigma=\epsilon u,
+\]
+\BT{where $\epsilon$ denotes the infinitesimal strain operator, i.e., the symmetric part of the gradient, and the compliance tensor $A$ is a symmetric positive definite map $\mathbb S\to\mathbb S$, possibly variable. The elastic boundary value problem is completed with suitable boundary conditions, such as the displacement condition $u=0$ on $\partial\Omega$.}{其中 $\epsilon$ 表示无穷小应变算子, 即梯度的对称部分, 柔度张量 $A$ 是可能变化的对称正定映射 $\mathbb S\to\mathbb S$. 加上适当边界条件, 例如 $\partial\Omega$ 上的位移条件 $u=0$, 就得到完整的弹性边值问题.}
+
+% block: elasticity-divergence-hilbert-complex pages:117,118 type:ordinary-paragraph
+\BT{The divergence operator, $\operatorname{div}$, acting rowwise, defines a closed operator from $L^2$ symmetric tensor fields (i.e., symmetric $n\times n$ matrix-valued functions) to $L^2$ vector fields. Its domain is the space $H(\operatorname{div},\Omega;\mathbb S)$ of $L^2$ symmetric tensor fields with divergence in $L^2$. On the space of $L^2$ symmetric tensor fields, we weight the $L^2$ inner product by the compliance tensor $A$, and so we obtain a segment of a Hilbert complex}{逐行作用的散度算子 $\operatorname{div}$, 定义了从 $L^2$ 对称张量场 (即对称 $n\times n$ 矩阵值函数) 到 $L^2$ 向量场的闭算子. 其定义域是由散度属于 $L^2$ 的 $L^2$ 对称张量场组成的空间 $H(\operatorname{div},\Omega;\mathbb S)$. 在 $L^2$ 对称张量场空间上, 用柔度张量 $A$ 给 $L^2$ 内积加权, 因而得到 Hilbert 复形的一个片段}
+\begin{equation}\label{eq:elasticity-divergence-complex}
+L_A^2(\Omega;\mathbb S)\xrightarrow{(\operatorname{div},H(\operatorname{div};\mathbb S))}L^2(\Omega;\mathbb R^n)\to0.
+\end{equation}
+\BT{This is altogether analogous to the complex \eqref{eq:weighted-divergence-complex}, the difference being that here the divergence operator maps symmetric tensor to vectors, rather than vectors to scalars. The constraint of symmetry makes the elasticity system much more difficult to discretize.}{它完全类似于复形 \eqref{eq:weighted-divergence-complex}, 区别在于这里的散度算子将对称张量映为向量, 而非将向量映为标量. 对称性约束使弹性系统的离散化困难得多.}
+
+% block: elasticity-mixed-weak-formulation page:118 type:ordinary-paragraph
+\BT{As we did for \eqref{eq:weighted-divergence-complex}, we immediately obtain the weak form of the abstract Hodge Laplace problem for this complex. It seeks $\sigma\in H(\operatorname{div};\mathbb S)$, $u\in L^2(\Omega;\mathbb R^n)$ such that}{与处理 \eqref{eq:weighted-divergence-complex} 时一样, 立即得到此复形的抽象 Hodge Laplace 问题的弱形式. 求 $\sigma\in H(\operatorname{div};\mathbb S)$, $u\in L^2(\Omega;\mathbb R^n)$, 使得}
+\[
+\begin{aligned}\langle A\sigma,\tau\rangle-\langle u,\operatorname{div}\tau\rangle&=0,&\tau&\in H(\operatorname{div},\Omega;\mathbb S),\\\langle\operatorname{div}\sigma,v\rangle&=\langle f,v\rangle,&v&\in L^2(\Omega;\mathbb R^n).\end{aligned}
+\]
+\BT{Clearly, the first equation is a weak form of the constitutive equation and the displacement boundary condition, while the second equation directly translates the equilibrium condition. The next theorem asserts that the divergence operator acting on symmetric tensors is in fact surjective. This implies that the Hilbert complex \eqref{eq:elasticity-divergence-complex} is closed and that there are no harmonic forms. It then follows from the general theory of Chapter~\ref{chap:hilbert-complexes} that the mixed elasticity system is well-posed.}{显然, 第一个方程是本构方程及位移边界条件的弱形式, 第二个方程则直接表达平衡条件. 下一个定理断言, 作用于对称张量的散度算子实际上是满射. 这意味着 Hilbert 复形 \eqref{eq:elasticity-divergence-complex} 是闭的, 且没有调和形式. 于是由 Chapter~\ref{chap:hilbert-complexes} 的一般理论可得, 混合弹性系统适定.}
+
+% block: symmetric-tensor-divergence-surjectivity page:118 type:theorem
+\Needspace{6\baselineskip}
+\begin{Theorem}\label{thm:symmetric-tensor-divergence-surjectivity}
+\BT{The divergence operator (acting rowwise) maps $H(\operatorname{div},\Omega;\mathbb S)$ onto $L^2(\Omega;\mathbb R^n)$.}{散度算子 (逐行作用) 将 $H(\operatorname{div},\Omega;\mathbb S)$ 满射到 $L^2(\Omega;\mathbb R^n)$.}
+\end{Theorem}
+
+% block: skew-tensor-space page:118 type:ordinary-paragraph
+\BT{In fact, we shall prove a stronger result. Analogous to the space $\mathbb S$ of symmetric $n\times n$ tensor fields, let $\mathbb K$ denote the space of skew-symmetric $n\times n$ tensor fields. The dimensions are $\dim\mathbb S=\binom{n+1}2$, $\dim\mathbb K=\binom n2$, respectively. As usual, for any matrix $\tau\in\mathbb R^{n\times n}$, $\operatorname{skw}\tau\in\mathbb K$ denotes its skew-symmetric part.}{事实上, 将证明一个更强的结果. 类似于对称 $n\times n$ 张量场空间 $\mathbb S$, 以 $\mathbb K$ 表示反对称 $n\times n$ 张量场空间. 它们的维数分别为 $\dim\mathbb S=\binom{n+1}2$, $\dim\mathbb K=\binom n2$. 如常, 对任意矩阵 $\tau\in\mathbb R^{n\times n}$, $\operatorname{skw}\tau\in\mathbb K$ 表示其反对称部分.}
+
+% block: divergence-skew-surjectivity page:118 type:theorem
+\Needspace{6\baselineskip}
+\begin{Theorem}\label{thm:divergence-skew-surjectivity}
+\BT{Given $f\in L^2(\Omega;\mathbb R^n)$ and $g\in L^2(\Omega;\mathbb K)$, there exists $\tau\in H(\operatorname{div},\Omega;\mathbb R^{n\times n})$ such that}{给定 $f\in L^2(\Omega;\mathbb R^n)$ 和 $g\in L^2(\Omega;\mathbb K)$, 存在 $\tau\in H(\operatorname{div},\Omega;\mathbb R^{n\times n})$, 使得}
+\[
+\operatorname{div}\tau=f,\qquad\operatorname{skw}\tau=g.
+\]
+\end{Theorem}
+
+% block: symmetric-divergence-corollary page:118 type:ordinary-paragraph
+\BT{Theorem~\ref{thm:symmetric-tensor-divergence-surjectivity} follows from Theorem~\ref{thm:divergence-skew-surjectivity} by taking $g=0$.}{在 Theorem~\ref{thm:divergence-skew-surjectivity} 中取 $g=0$, 即得 Theorem~\ref{thm:symmetric-tensor-divergence-surjectivity}.}
+
+% block: divergence-skew-proof-first-ingredient page:118 type:proof
+\begin{Proof}
+\BT{We shall only prove the result in $n=2$ or $3$ dimensions, with some remarks on the general case given at the end of the proof.}{只在 $n=2$ 或 $3$ 维中证明此结果, 在证明末尾对一般情形作些说明.}
+
+\BT{The construction is based on two ingredients. First is the surjectivity of the divergence acting on $H^1(\Omega;\mathbb R^n)$: given $q\in L^2(\Omega)$ we can find $v\in H^1(\Omega;\mathbb R^n)$ such that $\operatorname{div}v=q$. In the preceding section, on the Stokes equations, we discussed the more difficult result of surjectivity of the divergence acting on $\mathring H^1(\Omega;\mathbb R^n)$. Without boundary conditions, the result is much easier. We can, e.g., extend $q$ by zero to a ball containing $\Omega$, then solve the Dirichlet problem with forcing term $q$ on the ball to get an $H^2$ function, and finally take $v$ to be the restriction to $\Omega$ of the gradient of the solution.}{构造基于两个要素. 首先是作用于 $H^1(\Omega;\mathbb R^n)$ 的散度的满射性: 给定 $q\in L^2(\Omega)$, 可以找到 $v\in H^1(\Omega;\mathbb R^n)$, 使 $\operatorname{div}v=q$. 前一节关于 Stokes 方程的讨论中, 研究了作用于 $\mathring H^1(\Omega;\mathbb R^n)$ 的散度满射性这一更困难的结果. 没有边界条件时, 结果容易得多. 例如, 可以将 $q$ 零延拓至一个包含 $\Omega$ 的球, 然后在球上求解强迫项为 $q$ 的 Dirichlet 问题, 得到一个 $H^2$ 函数, 最后取 $v$ 为该解的梯度在 $\Omega$ 上的限制.}
+
+% block: divergence-skew-proof-two-dimensional-identity pages:118,119 type:ordinary-paragraph
+\BT{The second ingredient is an elementary calculus identity. Primarily for reasons of notation, we present it separately in $n=2$ dimensions and then in three dimensions. For $n=2$, the space $\mathbb K$ is one-dimensional. Thus we may state the theorem in terms of a scalar function $g$ belonging to $L^2(\Omega)$, and we must show that there exists $\tau$ such that $\operatorname{div}\tau=f$ and $\operatorname{asym}\tau=g$, where $\operatorname{asym}\tau:=\tau_{12}-\tau_{21}$. In the two-dimensional case, the elementary identity we require is that the asymmetric part of the matrix curl of a two-dimensional vector field is the negative of its divergence. That is,}{第二个要素是一个初等微积分恒等式. 主要出于记号上的原因, 先在 $n=2$ 维中单独介绍, 再介绍三维情形. 当 $n=2$ 时, 空间 $\mathbb K$ 是一维的. 因而可用属于 $L^2(\Omega)$ 的标量函数 $g$ 来陈述定理, 且必须证明存在 $\tau$, 使 $\operatorname{div}\tau=f$ 且 $\operatorname{asym}\tau=g$, 其中 $\operatorname{asym}\tau:=\tau_{12}-\tau_{21}$. 在二维情形中, 所需的初等恒等式是: 二维向量场的矩阵旋度的不对称部分, 等于其散度的负值. 即}
+\begin{equation}\label{eq:asym-curl-divergence-identity}
+\operatorname{asym}\operatorname{curl}\psi=-\operatorname{div}\psi,\qquad\psi\in H^1(\Omega;\mathbb R^2).
+\end{equation}
+\BT{(Here the curl operator is the two-dimensional vector curl applied to each scalar component of $\psi$ to give the rows of a $2\times2$ matrix.) The identity is expressed as well by the commutativity of the following diagram:}{(这里旋度算子是作用于 $\psi$ 各标量分量的二维向量旋度, 得到 $2\times2$ 矩阵的各行.) 此恒等式也由下图的交换性表达:}
+\[
+\begin{tikzcd}[column sep=large,row sep=large]
+H^1(\Omega;\mathbb R^2)\arrow[r,"\operatorname{curl}"]\arrow[d,"id"']&L^2(\Omega;\mathbb R^{2\times2})\arrow[d,"-\operatorname{asym}"]\\
+H^1(\Omega;\mathbb R^2)\arrow[r,"\operatorname{div}"']&L^2(\Omega)
+\end{tikzcd}
+\]
+
+% block: divergence-skew-two-dimensional-construction page:119 type:ordinary-paragraph
+\BT{With these two ingredients in hand, we proceed to the construction. For arbitrary $f\in L^2(\Omega;\mathbb R^2)$, we can find $\rho\in H^1(\Omega;\mathbb R^{2\times2})$ such that}{有了这两个要素, 就可进行构造. 对任意 $f\in L^2(\Omega;\mathbb R^2)$, 可找到 $\rho\in H^1(\Omega;\mathbb R^{2\times2})$, 使得}
+\begin{equation}\label{eq:elasticity-divergence-lifting}
+\operatorname{div}\rho=f.
+\end{equation}
+\BT{Indeed, since no constraint on the symmetry of $f$ is imposed, we can simply define the two rows of $\rho$ independently using the surjectivity of the divergence on $H^1(\Omega;\mathbb R^2)$. Next we form the scalar function $-g+\operatorname{asym}\rho$ and again apply the surjectivity of the divergence to get a vector field $\psi\in H^1(\Omega;\mathbb R^2)$ satisfying}{事实上, 由于没有对 $f$ 施加对称性约束, 可以直接利用散度在 $H^1(\Omega;\mathbb R^2)$ 上的满射性, 独立地定义 $\rho$ 的两行. 接着构造标量函数 $-g+\operatorname{asym}\rho$, 再次应用散度的满射性, 得到向量场 $\psi\in H^1(\Omega;\mathbb R^2)$ 满足}
+\begin{equation}\label{eq:elasticity-skew-correction-lifting}
+\operatorname{div}\psi=-g+\operatorname{asym}\rho.
+\end{equation}
+\BT{Note that the matrix curl of $\psi$ belongs to $L^2$ and is divergence-free and so belongs to $H(\operatorname{div},\Omega;\mathbb R^{2\times2})$. Thus}{注意, $\psi$ 的矩阵旋度属于 $L^2$ 且无散, 因而属于 $H(\operatorname{div},\Omega;\mathbb R^{2\times2})$. 因此}
+\[
+\tau:=\rho+\operatorname{curl}\psi\in H(\operatorname{div},\Omega;\mathbb R^{2\times2}).
+\]
+\BT{Finally, from \eqref{eq:elasticity-divergence-lifting}, \eqref{eq:asym-curl-divergence-identity}, and \eqref{eq:elasticity-skew-correction-lifting}, we get}{最后, 由 \eqref{eq:elasticity-divergence-lifting}, \eqref{eq:asym-curl-divergence-identity} 和 \eqref{eq:elasticity-skew-correction-lifting}, 得到}
+\[
+\begin{aligned}
+\operatorname{div}\tau&=\operatorname{div}\rho=f,\\
+\operatorname{asym}\tau&=\operatorname{asym}\rho+\operatorname{asym}\operatorname{curl}\psi=\operatorname{asym}\rho-\operatorname{div}\psi=g,
+\end{aligned}
+\]
+\BT{as desired. This proves Theorem~\ref{thm:divergence-skew-surjectivity} in the two-dimensional case.}{如所要求. 这就证明了二维情形的 Theorem~\ref{thm:divergence-skew-surjectivity}.}
+
+% block: divergence-skew-three-dimensional-identity page:119 type:ordinary-paragraph
+\BT{In three dimensions, the space $\mathbb K$ is itself three-dimensional, i.e., $\mathbb K\cong\mathbb R^3$. Thus we take $g$ to be a 3-vector field and impose the constraint $\operatorname{asym}\tau=g$, where now}{在三维中, 空间 $\mathbb K$ 本身为三维, 即 $\mathbb K\cong\mathbb R^3$. 因而取 $g$ 为三维向量场, 并施加约束 $\operatorname{asym}\tau=g$, 其中现在}
+\[
+\operatorname{asym}\tau=(\tau_{23}-\tau_{32},\tau_{31}-\tau_{13},\tau_{12}-\tau_{12}).
+\]
+\BT{We also need the operator $S:\mathbb R^{3\times3}\to\mathbb R^{3\times3}$ given by}{还需要算子 $S:\mathbb R^{3\times3}\to\mathbb R^{3\times3}$, 定义为}
+\[
+S\rho=\rho^T-(\operatorname{Tr}\rho)I,
+\]
+\BT{where $\operatorname{Tr}$ denotes the matrix trace and $I$ the $3\times3$ identity matrix. This operator is invertible with}{其中 $\operatorname{Tr}$ 表示矩阵的迹, $I$ 表示 $3\times3$ 单位矩阵. 此算子可逆, 且}
+\[
+S^{-1}\mu=\mu^T-\frac12(\operatorname{Tr}\mu)I.
+\]
+\BT{The relevant identity in three dimensions can now be expressed as commutativity of the diagram}{现在, 三维中的相应恒等式可表达为下图的交换性}
+\[
+\begin{tikzcd}[column sep=large,row sep=large]
+H^1(\Omega;\mathbb R^{3\times3})\arrow[r,"\operatorname{curl}"]\arrow[d,"S"']&L^2(\Omega;\mathbb R^{3\times3})\arrow[d,"-\operatorname{asym}"]\\
+H^1(\Omega;\mathbb R^{3\times3})\arrow[r,"\operatorname{div}"']&L^2(\Omega;\mathbb R^3)
+\end{tikzcd}
+\]
+
+% block: divergence-skew-three-dimensional-construction page:120 type:ordinary-paragraph
+\BT{The argument then proceeds as in two dimensions. We define first $\rho\in H^1(\Omega;\mathbb R^{3\times3})$ then $\psi\in H^1(\Omega;\mathbb R^{3\times3})$ such that}{接着论证与二维情形一样进行. 先定义 $\rho\in H^1(\Omega;\mathbb R^{3\times3})$, 再定义 $\psi\in H^1(\Omega;\mathbb R^{3\times3})$, 使得}
+\[
+\operatorname{div}\rho=f,\qquad\operatorname{div}\psi=-g+\operatorname{asym}\rho,
+\]
+\BT{and then set}{然后令}
+\[
+\tau=\rho+\operatorname{curl}S^{-1}\psi.
+\]
+\end{Proof}
+
+% block: elasticity-surjectivity-general-dimension page:120 type:remark
+\Needspace{8\baselineskip}
+\begin{Remark}\label{rem:elasticity-general-dimension}
+\BT{To prove the above theorem in general dimension $n$, it is preferable to view the spaces that enter the statement of the theorem and the proof, namely, spaces of scalar-, vector-, and matrix-valued functions, as spaces of differential forms. The differential forms which so arise are not scalar-valued but take values in $\operatorname{Alt}^m\mathbb R^n$ for $m=n-1$ or $n-2$. Thus, for example, the space $L^2(\Omega;\mathbb R^n)$, in which $f$ is given, should actually be thought of as $L^2\Lambda^n(\Omega)\otimes\operatorname{Alt}^{n-1}\mathbb R^n$, the space of $L^2$ differential $n$-forms on $\Omega$ taking values in $\operatorname{Alt}^{n-1}\mathbb R^n$. Recall that $\operatorname{Alt}^{n-1}\mathbb R^n$ is canonically isomorphic to $\mathbb R^n$ (vector proxy) and that differential $n$-forms can be viewed as simply scalar-valued functions (scalar proxy), so we can indeed canonically identify an element of $L^2\Lambda^n(\Omega)\otimes\operatorname{Alt}^{n-1}\mathbb R^n$ with an $\mathbb R^n$-valued $L^2$ function on $\Omega$. In a similar way we can make identifications of the spaces in which $g$ is given and in which $\rho$, $\psi$, and $\tau$ are defined. In this context, it is possible to define analogues of the operators $\operatorname{asym}$ and $S$ for general $n$ and establish the commuting diagram needed for the proof.}{为在一般维数 $n$ 中证明上述定理, 最好将定理陈述及证明中涉及的空间, 即标量值, 向量值和矩阵值函数空间, 视为微分形式空间. 这样得到的微分形式不是标量值的, 而是取值于 $\operatorname{Alt}^m\mathbb R^n$, 其中 $m=n-1$ 或 $n-2$. 因而, 例如给定 $f$ 所在的空间 $L^2(\Omega;\mathbb R^n)$, 实际上应视为 $L^2\Lambda^n(\Omega)\otimes\operatorname{Alt}^{n-1}\mathbb R^n$, 即 $\Omega$ 上取值于 $\operatorname{Alt}^{n-1}\mathbb R^n$ 的 $L^2$ 微分 $n$-形式空间. 回顾 $\operatorname{Alt}^{n-1}\mathbb R^n$ 与 $\mathbb R^n$ 典范同构 (向量代理), 且微分 $n$-形式可视为普通标量值函数 (标量代理), 因而确实可将 $L^2\Lambda^n(\Omega)\otimes\operatorname{Alt}^{n-1}\mathbb R^n$ 的元素与 $\Omega$ 上的 $\mathbb R^n$ 值 $L^2$ 函数典范等同. 类似地, 可等同给定 $g$ 所在的空间以及定义 $\rho$, $\psi$ 和 $\tau$ 所在的空间. 在此背景下, 可以对一般的 $n$ 定义算子 $\operatorname{asym}$ 和 $S$ 的对应物, 并建立证明所需的交换图.}
+\end{Remark}
+
+% block: two-dimensional-elasticity-complex page:120 type:ordinary-paragraph
+\BT{We now turn to discretization of the elasticity system, which, as we have seen, is just the abstract Hodge Laplace problem for the complex \eqref{eq:elasticity-divergence-complex}. Thus, we need to develop a finite element subcomplex of the spaces arising in \eqref{eq:elasticity-divergence-complex}, to be used to discretize the stress and displacement, respectively. As mentioned above, the symmetry constraint makes this quite difficult. It turns out to be useful to extend the sequence \eqref{eq:elasticity-divergence-complex} to a longer complex, just as \eqref{eq:weighted-divergence-complex} extends to become the de Rham complex. In two dimensions this longer \emph{elasticity complex} can be written}{现在转向弹性系统的离散化, 如前所见, 它就是复形 \eqref{eq:elasticity-divergence-complex} 的抽象 Hodge Laplace 问题. 因而需要发展 \eqref{eq:elasticity-divergence-complex} 中各空间的有限元子复形, 分别用于离散化应力和位移. 如上所述, 对称性约束使此事相当困难. 将序列 \eqref{eq:elasticity-divergence-complex} 延长为更长的复形是有用的, 就像 \eqref{eq:weighted-divergence-complex} 延长为 de Rham 复形一样. 在二维中, 这个更长的\emph{弹性复形}可写成}
+\begin{equation}\label{eq:two-dimensional-elasticity-complex}
+0\to L^2(\Omega)\xrightarrow{(\operatorname{curl}\operatorname{curl},H^2)}L^2(\Omega;\mathbb S)\xrightarrow{(\operatorname{div},H(\operatorname{div};\mathbb S))}L^2(\Omega;\mathbb R^2)\to0,
+\end{equation}
+\BT{where, for simplicity, we drop the weighting coefficient $A$. Here the operator $\operatorname{curl}\operatorname{curl}$ is the composition of the vector-valued curl of a scalar function, followed by the matrix-valued curl of a vector function. The resulting tensor field,}{其中为简单起见, 略去加权系数 $A$. 这里算子 $\operatorname{curl}\operatorname{curl}$ 是先对标量函数取向量值旋度, 再对向量函数取矩阵值旋度所得到的复合. 所得张量场,}
+\[
+\operatorname{curl}\operatorname{curl}\phi=
+\begin{pmatrix}\partial^2\phi/\partial x_2^2&-\partial^2\phi/\partial x_2^2\\-\partial^2\phi/\partial x_2^2&\partial^2\phi/\partial x_1^2\end{pmatrix},
+\]
+\BT{is known in elasticity theory as the Airy stress function associated to a scalar potential function $\phi$.}{在弹性理论中称为与标量势函数 $\phi$ 关联的 Airy 应力函数.}
+
+% block: three-dimensional-elasticity-complex pages:120,121 type:ordinary-paragraph
+\BT{In three dimensions, the elasticity complex is}{在三维中, 弹性复形为}
+\[
+\begin{aligned}
+0\to L^2(\Omega;\mathbb R^3)&\xrightarrow{(\epsilon,H^1(\Omega;\mathbb R^3))}L^2(\Omega;\mathbb S)\\
+&\xrightarrow{\operatorname{curl}T\operatorname{curl}}L^2(\Omega;\mathbb S)\xrightarrow{(\operatorname{div},H(\operatorname{div};\mathbb S))}L^2(\Omega;\mathbb R^3)\to0.
+\end{aligned}
+\]
+\BT{In this case the operator $\operatorname{curl}T\operatorname{curl}$, called the St. Venant operator or the incompatibility operator, is obtained by applying the curl to the rows of a symmetric $3\times3$ matrix field, transposing, and again applying the curl (or, equivalently, by applying the curl first to the rows and then to the columns). Its domain consists of those $L^2$ symmetric matrix fields with $\operatorname{curl}T\operatorname{curl}$ also in $L^2$. Note that the matrix fields in its range are symmetric. An extensive analysis of this incompatibility operator is given in \BookCite{2}.}{此时算子 $\operatorname{curl}T\operatorname{curl}$ 称为 St. Venant 算子或不相容算子, 它通过对对称 $3\times3$ 矩阵场逐行取旋度, 再转置, 再取旋度而得到 (或等价地, 先逐行再逐列取旋度). 其定义域由 $\operatorname{curl}T\operatorname{curl}$ 仍属于 $L^2$ 的 $L^2$ 对称矩阵场组成. 注意, 它的像中的矩阵场是对称的. \BookCite{2} 对这一不相容算子作了广泛分析.}
+
+% block: symmetric-elasticity-finite-elements page:121 type:ordinary-paragraph
+\BT{If we interchange the diagonal elements and reverse the signs of the off-diagonal elements of the Airy stress function \eqref{eq:maxwell-faraday}, we obtain the Hessian of $\phi$. This indicates that discretization of the two-dimensional elasticity complex is strongly related to $H^2$ scalar finite elements. This observation helped guide the way to the discovery of the first stable mixed finite elements for elasticity using polynomial trial functions in two dimensions. These were proposed in \BookCite{15} in 2002. Together with the classical Hermite quintic, or Argyris, finite element subspace of $H^2$, the stress and displacement elements form a finite element subcomplex of \eqref{eq:two-dimensional-elasticity-complex}. Since that work many alternatives and improvements have been proposed. The elements of \BookCite{15} were generalized to three dimensions, first in the lowest degree case \BookCite{1} and then for general degree \BookCite{8}. More efficient elements, applicable in any dimension, were developed in \BookCite{53} and \BookCite{54}. See the latter reference for a more extensive survey of the relevant literature.}{若交换 Airy 应力函数 \eqref{eq:maxwell-faraday} 的对角元素, 并将非对角元素变号, 就得到 $\phi$ 的 Hessian. 这表明二维弹性复形的离散化与 $H^2$ 标量有限元密切相关. 这一观察帮助引导了二维中首批使用多项式试函数的稳定弹性混合有限元的发现. 它们于 2002 年在 \BookCite{15} 中提出. 应力单元和位移单元与 $H^2$ 的经典 Hermite 五次, 或 Argyris, 有限元子空间一起, 构成 \eqref{eq:two-dimensional-elasticity-complex} 的有限元子复形. 此后提出了许多替代方案和改进. \BookCite{15} 的单元先在最低次情形 \BookCite{1}, 后在一般次数情形 \BookCite{8}, 被推广至三维. \BookCite{53} 和 \BookCite{54} 发展了适用于任意维数的更高效单元. 后一文献提供了相关文献的更广泛综述.}
+
+% block: weak-symmetry-elasticity-complex page:121 type:ordinary-paragraph
+\BT{We mention briefly another approach to developing efficient mixed finite elements for elasticity, namely, by imposing symmetry weakly (an idea that goes back to the early days of finite elements \BookCite{37}). In this approach we obtain a different mixed weak formulation, in which the stress field is sought in a space on which symmetry is not imposed, but instead the symmetry is weakly imposed by orthogonality of the skew-symmetric part of the stress to a Lagrange multiplier. The resulting system may again be viewed as the abstract Hodge Laplacian of a complex, but the relevant complex is now, instead of \eqref{eq:weighted-divergence-complex},}{简要提及发展高效弹性混合有限元的另一种方法, 即弱施加对称性 (这一思想可追溯到有限元早期 \BookCite{37}). 该方法得到不同的混合弱形式, 在不施加对称性的空间中求应力场, 改以应力的反对称部分与 Lagrange 乘子正交来弱施加对称性. 所得系统仍可视为某个复形的抽象 Hodge Laplacian, 但相关复形此时不再是 \eqref{eq:weighted-divergence-complex}, 而是}
+\[
+L_A^2(\Omega;\mathbb R^{n\times n})\xrightarrow{((\operatorname{div},\operatorname{skw}),H(\operatorname{div};\mathbb R^{2\times2}))}L^2(\Omega;\mathbb R^n)\times L^2(\Omega;\mathbb K)\to0.
+\]
+\BT{Note that the differential is now composed of a pair of operators: it associates to a matrix field both its divergence and its skew-symmetric part. We proved above in Theorem~\ref{thm:divergence-skew-surjectivity} that this differential is surjective, and so again we obtain a well-posed mixed formulation. This segment can again be extended to a longer complex (the \emph{elasticity complex with weak symmetry}). The discretization of this complex can be accomplished with simpler elements than those needed for the standard elasticity complex. Such elements were developed in three dimensions in \BookCite{12} and a variety of alternative elements have been proposed as well. See, for example, \BookCite{32}, \BookCite{46}, and the work referenced in \BookCite{47}.}{注意, 此时的微分由一对算子组成: 它将矩阵场同时映为其散度和反对称部分. 上面已在 Theorem~\ref{thm:divergence-skew-surjectivity} 中证明此微分是满射, 因而再次得到适定的混合形式. 此片段也可延长成更长的复形 (\emph{弱对称弹性复形}). 离散化此复形可采用比标准弹性复形所需单元更简单的单元. \BookCite{12} 在三维中发展了这样的单元, 此外也提出了各种替代单元. 例如, 见 \BookCite{32}, \BookCite{46} 以及 \BookCite{47} 引用的工作.}
+% Original PDF 122 is a blank production leaf, retained unchanged in the source PDF.
