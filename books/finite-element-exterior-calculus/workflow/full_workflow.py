@@ -103,7 +103,9 @@ def assemble():
     known.update({"sec:whitney-forms-de-rham":("7.6",100,"The Whitney forms and de Rham's theorem"),"bib:cartan-differential-expressions":("27",124,"Reference [27]")})
     known.update({"sec:complete-polynomial-forms":("7.1",92,"The complete polynomial spaces of differential forms"),"sec:primal-galerkin":("5.1",61,"Galerkin discretization of the primal formulation"),"sec:mixed-methods":("5.2",64,"Mixed methods of discretization"),"sec:eigenvalue-problems":("8.1",107,"Eigenvalue problems"),"fig:primal-lagrange-failure":("5.1",63,"Figure 5.1")})
     known["sec:l2-de-rham-complex"]=("4.3",47,"The L2 de Rham complex")
+    known["sec:maxwell-equations"]=("8.6",113,"Maxwell's equations")
     known["box:hilbert-complexes-summary"]=("4.1",60,"Box 4.1: Summary of Hilbert complexes")
+    known["box:approximation-hilbert-summary"]=("5.1",72,"Box 5.1: Summary of approximation of Hilbert complexes")
     r=PdfReader(B.require_source_pdf())
     for p in range(123,129):
         for h in re.finditer(r"(?m)^\[(\d+)\]",r.pages[p-1].extract_text() or ""):known["bib:source-"+h[1]]=(h[1],p,"Reference ["+h[1]+"]")
