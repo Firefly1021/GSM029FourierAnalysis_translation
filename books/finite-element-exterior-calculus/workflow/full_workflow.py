@@ -101,6 +101,7 @@ def assemble():
     known.update({"sec:whitney-forms-de-rham":("7.6",100,"The Whitney forms and de Rham's theorem"),"bib:cartan-differential-expressions":("27",124,"Reference [27]")})
     known.update({"sec:complete-polynomial-forms":("7.1",92,"The complete polynomial spaces of differential forms"),"sec:primal-galerkin":("5.1",61,"Galerkin discretization of the primal formulation"),"sec:mixed-methods":("5.2",64,"Mixed methods of discretization"),"sec:eigenvalue-problems":("8.1",107,"Eigenvalue problems"),"fig:primal-lagrange-failure":("5.1",63,"Figure 5.1")})
     known["sec:l2-de-rham-complex"]=("4.3",47,"The L2 de Rham complex")
+    known["box:hilbert-complexes-summary"]=("4.1",60,"Box 4.1: Summary of Hilbert complexes")
     r=PdfReader(B.require_source_pdf())
     for p in range(123,129):
         for h in re.finditer(r"(?m)^\[(\d+)\]",r.pages[p-1].extract_text() or ""):known["bib:source-"+h[1]]=(h[1],p,"Reference ["+h[1]+"]")
@@ -115,7 +116,8 @@ def compile_batch():
     if (B.root/"config/math-alphabet-policy.json").exists():
         from mathbook.build import canonical_tex_files
         for file in canonical_tex_files(B):assert not re.search(r"\\(?:mathfrak|frak)\b",file.read_text(encoding="utf8")),f"User prohibits Fraktur: {file}"
-    out=Path(tempfile.mkdtemp(prefix="full-build-",dir=B.assert_write_path(B.root/"workspace/temporary")));env=os.environ.copy();env["TEXINPUTS"]=os.pathsep.join(str(p) for p in [P.template/"style",P.template/"adapter",P.template/"assets",B.root/"tex"])+os.pathsep+os.pathsep
+    out=Path(tempfile.mkdtemp(prefix="full-build-",dir=B.assert_write_path(B.root/"workspace/temporary")));env=os.environ.copy();env["PYTHONUTF8"]="1";env["PYTHONIOENCODING"]="utf-8";env["TEXINPUTS"]=os.pathsep.join(str(p) for p in [P.template/"style",P.template/"adapter",P.template/"assets",B.root/"tex"])+os.pathsep+os.pathsep
+    dump("qa/latest-compilation.json",{"success":False,"status":"building","build_directory":str(out),"published_progress_pdf_updated":False})
     driver=r"C:\Users\A\.codex\plugins\cache\openai-bundled\latex\0.2.8\scripts\compile_latex.py";r=subprocess.run([sys.executable,driver,str(B.main_tex),"--compiler","texlive","--engine","xelatex","--output-directory",str(out),"--json"],env=env,capture_output=True);write("logs/latest-build-driver.log",(r.stdout+r.stderr).decode("utf8",errors="replace"));assert r.returncode==0,(r.stdout+r.stderr).decode("utf8",errors="replace")[-4000:]
     r=subprocess.run([shutil.which("xelatex"),"-interaction=nonstopmode","-halt-on-error","-file-line-error",f"-output-directory={out}",str(B.main_tex)],cwd=B.root/"tex",env=env,capture_output=True);log=(out/"main.log").read_text(encoding="utf8",errors="replace");write("logs/latest-compilation.log",log);assert r.returncode==0,r.stdout.decode("utf8",errors="replace")[-3000:]
     qa=s["latex_qa"](B);warnings={k:len(re.findall(pattern,log,re.I)) for k,pattern in {"undefined":r"undefined references?|Reference .* undefined","duplicate":r"multiply[- ]defined","missing_glyph":r"Missing character:","overfull":r"Overfull \\[hv]box"}.items()}
