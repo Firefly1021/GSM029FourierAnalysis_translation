@@ -68,6 +68,8 @@ def assemble():
 \setcounter{secnumdepth}{3}
 \counterwithin{figure}{section}
 \counterwithin{table}{section}
+\newcounter{booksummary}[section]
+\renewcommand{\thebooksummary}{\thesection.\arabic{booksummary}}
 \newcommand{\BookCite}[1]{\hyperref[bib:source-#1]{[\ref*{bib:source-#1}]}}
 \begin{document}
 \begin{center}{\Large Finite Element Exterior Calculus}\\中文翻译进度稿\end{center}
@@ -75,12 +77,22 @@ def assemble():
 """
     contents=[]
     if (B.root/"tex/frontmatter.tex").exists():text+=r"\input{frontmatter.tex}"+"\n";contents.append((B.root/"tex/frontmatter.tex").read_text(encoding="utf8"))
-    for file in sorted((B.root/"tex/chapters").glob("chapter-*.tex")):
+    chapter_files=sorted((B.root/"tex/chapters").glob("chapter-*.tex"))
+    sample_inserted=False
+    def insert_sample():
+        nonlocal text,sample_inserted
+        if not (B.root/"tex/chapters/chapter-02-introduction.tex").exists():
+            text+=r"\clearpage\setcounter{section}{1}\section{同调代数的基本概念}\label{chap:homological-algebra}"+"\n"
+        text+=r"\setcounter{subsection}{3}\setcounter{equation}{0}\setcounter{statement}{0}\input{chapters/sample.tex}"+"\n"
+        contents.append((B.root/"tex/chapters/sample.tex").read_text(encoding="utf8"));sample_inserted=True
+    for file in chapter_files:
+        # Preserve the sample bytes and place Sections 2.4-2.6 after 2.3, before
+        # Box 2.1 or Chapter 3, rather than appending them after later chapters.
+        if not sample_inserted and (file.name=="chapter-02-summary.tex" or file.name[:10]>"chapter-02"):
+            insert_sample()
         text+=r"\input{chapters/"+file.name+"}\n";contents.append(file.read_text(encoding="utf8"))
-    # The accepted sample is input byte-for-byte, never regenerated. Until the
-    # preceding Chapter 2 text is integrated, explicitly restore its source context.
-    text+=r"\clearpage\setcounter{section}{1}\section{同调代数的基本概念}\label{chap:homological-algebra}\setcounter{subsection}{3}\setcounter{equation}{0}\setcounter{statement}{0}\input{chapters/sample.tex}"+"\n"
-    contents.append((B.root/"tex/chapters/sample.tex").read_text(encoding="utf8"));labels=set(re.findall(r"\\label\{([^}]+)\}","\n".join(contents)))|{"chap:homological-algebra"}
+    if not sample_inserted:insert_sample()
+    labels=set(re.findall(r"\\label\{([^}]+)\}","\n".join(contents)))|{"chap:homological-algebra"}
     refs=set(re.findall(r"\\(?:eqref|ref)\{([^}]+)\}","\n".join(contents)))
     cited=set(re.findall(r"\\BookCite\{(\d+)\}","\n".join(contents)));refs|={"bib:source-"+x for x in cited}
     known={"chap:"+key:(str(n),page,"Chapter "+str(n)) for n,(key,page) in CHAPTERS.items()}
@@ -96,7 +108,11 @@ def assemble():
         num,page,title=known[key];text+=r"\subsection*{"+title+"}\n"+r"\makeatletter\phantomsection\def\@currentlabel{"+num+r"}\label{"+key+r"}\makeatother"+"\n"+f"Source PDF {page}, printed {r.page_labels[page-1]}.\\par\n";records.append({"label":key,"source_number":num,"pdf_page":page,"printed_page":r.page_labels[page-1],"verified_source_locator_not_translation":True})
     text+=r"\end{document}"+"\n";write("tex/main.tex",text);dump("qa/pending-reference-targets.json",records)
 def compile_batch():
-    guard();out=Path(tempfile.mkdtemp(prefix="full-build-",dir=B.assert_write_path(B.root/"workspace/temporary")));env=os.environ.copy();env["TEXINPUTS"]=os.pathsep.join(str(p) for p in [P.template/"style",P.template/"adapter",P.template/"assets",B.root/"tex"])+os.pathsep+os.pathsep
+    guard()
+    if (B.root/"config/math-alphabet-policy.json").exists():
+        from mathbook.build import canonical_tex_files
+        for file in canonical_tex_files(B):assert not re.search(r"\\(?:mathfrak|frak)\b",file.read_text(encoding="utf8")),f"User prohibits Fraktur: {file}"
+    out=Path(tempfile.mkdtemp(prefix="full-build-",dir=B.assert_write_path(B.root/"workspace/temporary")));env=os.environ.copy();env["TEXINPUTS"]=os.pathsep.join(str(p) for p in [P.template/"style",P.template/"adapter",P.template/"assets",B.root/"tex"])+os.pathsep+os.pathsep
     driver=r"C:\Users\A\.codex\plugins\cache\openai-bundled\latex\0.2.8\scripts\compile_latex.py";r=subprocess.run([sys.executable,driver,str(B.main_tex),"--compiler","texlive","--engine","xelatex","--output-directory",str(out),"--json"],env=env,capture_output=True);write("logs/latest-build-driver.log",(r.stdout+r.stderr).decode("utf8",errors="replace"));assert r.returncode==0,(r.stdout+r.stderr).decode("utf8",errors="replace")[-4000:]
     r=subprocess.run([shutil.which("xelatex"),"-interaction=nonstopmode","-halt-on-error","-file-line-error",f"-output-directory={out}",str(B.main_tex)],cwd=B.root/"tex",env=env,capture_output=True);log=(out/"main.log").read_text(encoding="utf8",errors="replace");write("logs/latest-compilation.log",log);assert r.returncode==0,r.stdout.decode("utf8",errors="replace")[-3000:]
     qa=s["latex_qa"](B);warnings={k:len(re.findall(pattern,log,re.I)) for k,pattern in {"undefined":r"undefined references?|Reference .* undefined","duplicate":r"multiply[- ]defined","missing_glyph":r"Missing character:","overfull":r"Overfull \\[hv]box"}.items()}

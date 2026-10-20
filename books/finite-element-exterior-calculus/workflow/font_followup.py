@@ -5,7 +5,12 @@ import pdfplumber
 from mathbook.workflow import resume_book,project_record,update_project_record
 m=runpy.run_path(str(Path(__file__).with_name("full_workflow.py")));P,B,ID=m["P"],m["B"],m["ID"]
 def record():
-    m["guard"]();evidence=[]
+    m["guard"]()
+    policy=B.root/"config/math-alphabet-policy.json"
+    if policy.exists() and m["load"]("config/math-alphabet-policy.json").get("status")=="user-approved":
+        print("Historical font finding already resolved by explicit user non-Fraktur policy; accepted files unchanged.")
+        return
+    evidence=[]
     with pdfplumber.open(B.require_source_pdf()) as doc:
         for n in (25,26):
             for c in doc.pages[n-1].chars:

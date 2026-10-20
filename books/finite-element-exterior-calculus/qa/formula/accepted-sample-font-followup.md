@@ -19,3 +19,7 @@ The proposed correction would update only the affected symbols consistently acro
 The new complete Preface and Chapter 1 have passed their own source-image, math, name, reference, punctuation, compilation and visual checks and remain committed. The sample TeX/PDF and its accepted source records have not been overwritten. Progress rows are not reset. Other books, shared code, shared glossary, original PDF and user template files are unchanged. No remote push was performed.
 
 The global blocking gate now prevents automatic continuation into Chapter 2. Resume only after explicit approval of this narrowly scoped correction and successful source-font verification, updated mathematical records, clean multi-round compilation and visual regression.
+
+## User decision superseding the historical blocker
+
+The user instructed: 不要,只要不是Fraktur 字体就行. Current status: resolved as a user-approved presentation exception, not corrected to source Fraktur. Keep the accepted mathcal Z/B, source reconstruction and PDF unchanged. Original EUFM10 evidence above remains true and permanently recorded. Do not claim original glyph-family identity. Preserve semantic distinctions if additional alphabets occur. See config/math-alphabet-policy.json.

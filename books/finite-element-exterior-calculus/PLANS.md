@@ -32,3 +32,7 @@
 - Do not overwrite the accepted sample or its formula records without explicit correction authorization. Progress is preserved, not reset. The blocker supersedes the prior sample formula PASS only for these affected expressions.
 - Proposed correction is narrowly limited to mathcal Z_k, mathcal Z^k and mathcal B^k -> their mathfrak forms, consistently across source/translation/notation/registry/output. Do not change mathcal H or other material.
 - After authorization, verify source font families, recompile at least twice, inspect output and clear the issue before resuming the first incomplete unit, chapter-02-introduction. No push.
+
+## Approved non-Fraktur presentation policy
+
+The user rejected the proposed Fraktur change: 不要,只要不是Fraktur 字体就行. This decision supersedes the historical blocker above. Preserve accepted mathcal Z/B and all accepted sample bytes; retain original font-family evidence and register the explicit presentation exception. Do not introduce Fraktur in translated mathematics. Preserve distinctions between different source objects with documented non-Fraktur mappings. Resume chapter-02-introduction without resetting progress. No push.
