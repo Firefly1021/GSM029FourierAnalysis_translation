@@ -40,7 +40,7 @@ def audit(unit):
             entries=[(k,v) for k,v in labels.items() if k.startswith(prefix) and re.fullmatch(str(chapter)+r"\.\d+",v[0])]
             assert sorted(int(v[0].split(".")[1]) for k,v in entries)==list(range(1,notes[field]+1)),(prefix,entries)
             numbering[field]=len(entries)
-        et=re.findall(r"\\begin\{table\}.*?\\end\{table\}",en,re.S);zt=re.findall(r"\\begin\{table\}.*?\\end\{table\}",zh,re.S);assert len(et)==len(zt)==notes["expected_tables"]
+        et=re.findall(r"\\begin\{table\}.*?\\end\{table\}",en,re.S);zt=re.findall(r"\\begin\{table\}.*?\\end\{table\}",zh,re.S);assert len(et)==len(zt)==notes.get("unit_tables",notes["expected_tables"])
         checks_tables=[]
         for i,(a,b) in enumerate(zip(et,zt),1):
             numbers=lambda value:collections.Counter(re.findall(r"(?<![A-Za-z])\d+(?:,\d{3})*(?:\.\d+)?",value))
