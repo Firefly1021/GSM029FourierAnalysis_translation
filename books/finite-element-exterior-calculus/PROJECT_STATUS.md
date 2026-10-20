@@ -3,13 +3,14 @@ Title: Finite Element Exterior Calculus
 Branch: book/finite-element-exterior-calculus
 Worktree: D:\CelianFile\BOOKTRANSLATION-worktrees\finite-element-exterior-calculus
 Phase: translation
-Status: translating
-Source SHA-256: 649b672d2d54b7ebc5e51154587dbf70fefd6d6dcb5a81a9903e7bb0ee2c39d4
-Sample approved: Yes
-Passed units: 5/47
-Completed units: frontmatter, chapter-01, chapter-02-section-04, chapter-02-section-05, chapter-02-section-06
+Status: blocked
+Sample user approved: Yes, before the newly discovered defect
+Completed new units: Complete Preface and Chapter 1 (PDF 9-20)
+Accepted sample text: Unchanged
 Next incomplete unit: chapter-02-introduction
-Blocking issues: None
-Progress output: output/translation-progress.pdf
+Blocking issues: accepted-sample-cycle-boundary-font-family
+Required user decision: Authorize the narrowly scoped correction of three Z/B font-family expressions in the accepted sample
+Progress inventory: Preserved, not reset
 Full-book translation complete: No
+Source and user templates: Hashes unchanged
 Remote push: No

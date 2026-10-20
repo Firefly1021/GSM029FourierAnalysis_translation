@@ -24,3 +24,11 @@
 - Every batch requires original-page comparison, complete translation without summarization, unchanged mathematical tokens, exact names, contextual terminology lookup, English headings, ASCII punctuation, semantic references, clean compilation and rendered-output review.
 - Keep proposed terms book-local; the accepted sample wording is the baseline, not authorization to replace the shared glossary.
 - Final completion requires all natural units and whole-book gates to pass. No remote push is authorized.
+
+## Current verified blocker
+
+- Complete Preface and Chapter 1 are accepted locally. Do not regenerate them.
+- A follow-up check of the original PDF's embedded EUFM10 glyphs found three incorrectly transcribed Z/B mathematical alphabets in the already accepted sample. See qa/formula/accepted-sample-font-followup.md.
+- Do not overwrite the accepted sample or its formula records without explicit correction authorization. Progress is preserved, not reset. The blocker supersedes the prior sample formula PASS only for these affected expressions.
+- Proposed correction is narrowly limited to mathcal Z_k, mathcal Z^k and mathcal B^k -> their mathfrak forms, consistently across source/translation/notation/registry/output. Do not change mathcal H or other material.
+- After authorization, verify source font families, recompile at least twice, inspect output and clear the issue before resuming the first incomplete unit, chapter-02-introduction. No push.
