@@ -1,0 +1,386 @@
+% Complete Section 5.2 and Box 5.1, original PDF 64-72 / printed 54-62.
+% Source inconsistencies are retained and recorded separately, never repaired here.
+% block: mixed-methods-heading page:64 type:section
+\subsection{{Mixed methods of discretization}}\label{sec:mixed-methods}
+
+% block: mixed-galerkin-heading page:64 type:subsection
+\subsubsection{{The mixed Galerkin method}}\label{subsec:mixed-galerkin}
+
+% block: mixed-galerkin-introduction page:64 type:ordinary-paragraph
+{In view of the deficiencies of Galerkin methods based on the primal weak formulation, we now turn to mixed methods, i.e., Galerkin methods based on the \emph{mixed} weak formulation. Here the situation is much better. Indeed, if the Galerkin subspaces are carefully chosen, then a mixed method returns an accurate, stable, convergent approximation, avoiding both of the problems just discussed for the primal formulation. To achieve this, we will impose three conditions on the choice of Galerkin subspaces, and from these we will obtain a variety of results, including stability and convergence.}
+
+% block: mixed-discrete-spaces page:64 type:ordinary-paragraph
+{Let $V_h^j$ be a finite dimensional subspace of $V^j$. This gives rise to spaces of discrete cocycles and discrete coboundaries:}
+\[
+\mathcal Z_h^j=\{\,v\in V_h^j\mid dv=0\,\}\subset\mathcal Z^j,\qquad\mathcal B_h^{j+1}=\{\,dv\mid v\in V_h^j\,\}\subset\mathcal B^{j+1}.
+\]
+{Given $V_h^{k-1}\subset V^{k-1}$ and $V_h^k\subset V^k$, the associated space of \emph{discrete harmonic forms} is defined in analogy with \eqref{eq:harmonic-cocycle-orthogonality} as}
+\[
+\mathsf H_h^k=\{\,v\in\mathcal Z_h^k\mid v\perp\mathcal B_h^k\,\}.
+\]
+
+% block: mixed-discrete-formulation page:64 type:ordinary-paragraph
+{Using the spaces $V_h^{k-1}$, $V_h^k$, and $\mathsf H_h^k$, we define the mixed discretization of the Hodge Laplace problem, based on the mixed weak formulation \eqref{eq:hodge-mixed-formulation} in the obvious way. Namely, given $f\in W^k$, we seek $\sigma_h\in V_h^{k-1}$, $u_h\in V_h^k$, and $p_h\in\mathsf H_h^k$ such that}
+\begin{equation}\label{eq:mixed-discrete-formulation}
+\begin{aligned}
+\langle\sigma_h,\tau\rangle-\langle u_h,d\tau\rangle&=0,&\tau&\in V_h^{k-1},\\
+\langle d\sigma_h,v\rangle+\langle du_h,dv\rangle+\langle p_h,v\rangle&=\langle f,v\rangle,&v&\in V_h^k,\\
+\langle u_h,q\rangle&=0,&q&\in\mathsf H_h^k.
+\end{aligned}
+\end{equation}
+
+% block: mixed-nonconformity pages:64,65 type:ordinary-paragraph
+{Note that we generally do \emph{not} expect that $\mathsf H_h^j$ is contained in $\mathsf H^j$. (In finite element applications to the Hodge Laplacian, the former will consist of piecewise polynomials and the latter of smooth nonpolynomial functions.) When $\mathsf H_h^j\not\subset\mathsf H^j$, the mixed discretization \eqref{eq:mixed-discrete-formulation} is not a standard Galerkin discretization of \eqref{eq:hodge-mixed-formulation} but rather a generalized Galerkin method. Specifically, the exact solution $u$ of \eqref{eq:hodge-mixed-formulation} need not satisfy the final equation of \eqref{eq:mixed-discrete-formulation}. This is a consistency error, which we will need to account for in our error analysis. In the language of finite elements, \eqref{eq:mixed-discrete-formulation} is, in this case, a \emph{nonconforming} method. Often, however, we have $\mathsf H_h^k=\mathsf H^k=0$. In such cases, the mixed discretization is a conforming Galerkin method.}
+
+% block: mixed-discrete-uniqueness page:65 type:ordinary-paragraph
+{The mixed method is well-defined in the sense that \eqref{eq:mixed-discrete-formulation} has a unique solution, no matter how the subspaces $V_h^{k-1}$ and $V_h^k$ are chosen. To prove this, it suffices to show that the only solution for $f=0$ is $\sigma_h=0$, $u_h=0$, $p_h=0$. Choosing $\tau=\sigma_h$, $v=u_h$, and $q=p_h$, and combining the equations, we get that $\sigma_h=0$ and $du_h=0$. Thus $u_h\in\mathcal Z_h$. Moreover, since $\sigma_h=0$, the first equation implies that $u_h\perp\mathcal B_h$. Thus $u_h\in\mathsf H_h$, and so the last equation implies that $u_h$ vanishes. Finally, we take $v=p_h$ in the second equation and conclude that $p_h$ vanishes as well.}
+
+% block: mixed-third-space page:65 type:ordinary-paragraph
+{Next we turn to the analysis of this mixed method. Although it is not used in the method itself, for the analysis we require the specification of a third space, $V_h^{k+1}\subset V^{k+1}$.}
+
+% block: mixed-three-properties-heading page:65 type:subsection
+\subsubsection{{Three fundamental properties of the subspaces}}\label{subsec:mixed-three-properties}
+
+% block: mixed-three-properties-intro page:65 type:ordinary-paragraph
+{An important realization arising from FEEC is that there are three properties which the subspaces $V_h^j$ should satisfy in order to guarantee that the mixed Galerkin method provides accurate approximation of the true solution. We now specify these properties.}
+
+% block: mixed-approximation-property page:65 type:ordinary-paragraph
+\medskip\noindent\textbf{{Approximation property}}\par
+{The first property we need for these spaces is the obviously necessary condition that the subspaces used to approximate $u$ and $\sigma$ provide good approximation. This can be quantified in various ways. For example, we might assume that for $j=k-1$ and $k$, we have a family of spaces $V_h^j$, indexed by $h$ decreasing to $0$, and require that}
+\begin{equation}\label{eq:galerkin-approximation-property}
+\lim_{h\to0}\inf_{v\in V_h^j}\|w-v\|_V=0,\qquad w\in V^j.
+\end{equation}
+{Or we might require that the best approximation error be $O(h^r)$ for some power $r$ for $w$ belonging to some dense subspace of $V^j$. Rather than pin down a specific requirement, we will make an appropriate approximation assumption when needed.}
+
+% block: mixed-complex-properties page:65 type:ordinary-paragraph
+{Two other properties relate to the complex \eqref{eq:approximation-short-complex}, and not just to the individual spaces.}
+
+% block: mixed-subcomplex-property pages:65,66 type:ordinary-paragraph
+\medskip\noindent\textbf{{Subcomplex property}}\par
+{We require that $dV_h^{k-1}\subset V_h^k$ and $dV_h^k\subset V_h^{k+1}$ or, in other terminology, that}
+\begin{equation}\label{eq:galerkin-subcomplex}
+V_h^{k-1}\xrightarrow{d}V_h^k\xrightarrow{d}V_h^{k+1}
+\end{equation}
+{is a subcomplex of \eqref{eq:approximation-short-complex}. The discrete complex \eqref{eq:galerkin-subcomplex} then is itself a Hilbert complex. As the base spaces we choose $W_h^j=V_h^j$, but with the $W$ inner product, rather than the $V$ inner product. (Of course all inner products are equivalent on $V_h^j$ since it is finite dimensionsal.) Being finite dimensional, \eqref{eq:galerkin-subcomplex} is a closed Hilbert complex.}
+
+% block: discrete-differential-and-cycles page:66 type:ordinary-paragraph
+{As a Hilbert complex in its own right, the discrete complex exhibits all the structures discussed in the previous chapter. The discrete differential}
+\[
+d_h^j:V_h^j\to V_h^{j+1}
+\]
+{is just the restriction of $d^j$ (for $j=k-1$ or $k$). The kernel of $d_h^j$ is denoted by $\mathcal Z_h^j$ and the range of $d_h^{j-1}$ by $\mathcal B_h^j$. As for any complex,}
+\[
+\mathcal B_h^j\subset\mathcal Z_h^j.
+\]
+{The orthogonal complement of the former space inside the latter is the space of discrete harmonic forms $\mathsf H_h^k$. Since the discrete differential $d_h^j$ is just a restriction of $d^j$, we have}
+\[
+\mathcal Z_h^j\subset\mathcal Z^j,\qquad\mathcal B_h^j\subset\mathcal B^j.
+\]
+{However, it is generally \emph{not true} that $\mathsf H_h^j\subset\mathsf H^j$ since elements of the latter space must be orthogonal to all of $\mathcal B^j$, not just to $\mathcal B_h^j$.}
+
+% block: discrete-adjoint page:66 type:ordinary-paragraph
+{The discrete differential $d_h^{j-1}$ has an adjoint operator $d_{jh}^*$. Since $d_h^{j-1}$ is bounded, its adjoint is everywhere defined, so the spaces $V_{jh}^*$ coincide with $W_h^j=V_h^j$ and}
+\[
+d_{jh}^*:V_h^j\to V_h^{j-1}.
+\]
+{Unlike for the discrete exterior derivative itself, the discrete adjoint operator is generally \emph{not} the restriction of the continuous adjoint operator $d_j^*$, and the null spaces $\mathcal Z_{jh}^*$ and ranges $\mathcal B_{jh}^*$ cannot be expected to be contained in their continuous counterparts.}
+
+% block: discrete-hodge-decomposition page:66 type:ordinary-paragraph
+{The Hodge decomposition for the discrete complex, which is guaranteed to exist by Theorem~\ref{thm:hodge-decomposition}, is called the \emph{discrete Hodge decomposition}:}
+\begin{equation}\label{eq:discrete-hodge-decomposition}
+V_h^k=\mathcal B_h^k\BookOrthSum\mathsf H_h^k\BookOrthSum\mathcal B_{kh}^*.
+\end{equation}
+
+% block: bounded-cochain-projection-definition page:66 type:ordinary-paragraph
+\medskip\noindent\textbf{{Bounded cochain projections}}\par
+{Finally, we come to the third and most important assumption, which relates the original complex \eqref{eq:approximation-short-complex} to the subcomplex \eqref{eq:galerkin-subcomplex}. We assume that there exists a \emph{bounded cochain projection} $\pi_h$ from the former to the latter. That it is a \emph{projection} means that for each $j$, $\pi_h^j$ is a linear map from $V^j$ onto $V_h^j$ which restricts to the identity on $V_h^j$. That it is a \emph{cochain} projection means that the following diagram commutes:}
+\[
+\begin{tikzcd}[column sep=large,row sep=large]
+V^{k-1}\arrow[r,"d"]\arrow[d,"\pi_h^{k-1}"']&V^k\arrow[r,"d"]\arrow[d,"\pi_h^k"']&V^{k+1}\arrow[d,"\pi_h^{k+1}"]\\
+V_h^{k-1}\arrow[r,"d"]&V_h^k\arrow[r,"d"]&V_h^{k+1}
+\end{tikzcd}
+\]
+
+% block: cochain-boundedness pages:66,67 type:ordinary-paragraph
+{Finally, that $\pi_h$ is \emph{bounded} could mean one of two things. It might refer to boundedness in $V$ norm: $\|\pi_hv\|_V\leq c\|v\|_V$ for all $v\in V^j$. Alternatively, we might require $W$-boundedness: $\|\pi_hv\|\leq c\|v\|$. Since $\pi_h$ is a cochain map, $W$-boundedness implies $V$-boundedness:}
+\[
+\begin{aligned}
+\|\pi_hv\|_V^2&=\|\pi_hv\|^2+\|d\pi_hv\|^2=\|\pi_hv\|^2+\|\pi_hdv\|^2\\
+&\leq c\|v\|^2+\|dv\|^2=c\|v\|_V^2,
+\end{aligned}
+\]
+{where we used $W$-boundedness to obtain the inequality. For now we require only the weaker assumption of $V$-boundedness, although this will change when we consider improved estimates. In either case, if we are considering a family of subcomplexes indexed by $h$, we will want the bounds to be uniform in $h$ in the sense that a single constant $c$ works for all $h$.}
+
+% block: projection-quasioptimality page:67 type:ordinary-paragraph
+{A simple, but important, property of a bounded projection is that it provides quasi-optimal approximation, in the sense that, up to a constant multiple, the approximation of an element by its projection is bounded by the best approximation in the space. That is,}
+\begin{equation}\label{eq:projection-quasioptimality}
+\begin{aligned}
+\|v-\pi_hv\|_V&=\inf_{w\in V_h^j}\|(v-w)-\pi_h(v-w)\|_V\\
+&\leq c\inf_{w\in V_h^j}\|v-w\|_V,\qquad v\in V^j,
+\end{aligned}
+\end{equation}
+{with $c=\|I-\pi_h\|_{\mathcal L(V,V)}=\|\pi_h\|_{\mathcal L(V,V)}$. (This last identity goes back to \BookCite{38}. See also \BookCite{69}.) In the rest of this chapter, we derive a series of important further conclusions from these three hypotheses.}
+
+% block: mixed-consistency-stability-heading page:67 type:subsection
+\subsubsection{{Consistency, stability, and convergence of the mixed method}}\label{subsec:mixed-consistency-stability}
+
+% block: harmonic-gap-heading page:67 type:ordinary-paragraph
+\medskip\noindent\textbf{{The gap between $\mathsf H$ and $\mathsf H_h$}}\par
+{First we show that the cohomology space $\mathcal H_h^k$ for the subcomplex \eqref{eq:galerkin-subcomplex} is isomorphic to that of the original complex \eqref{eq:approximation-short-complex}.}
+
+% block: discrete-cohomology-isomorphism page:67 type:theorem
+\Needspace{8\baselineskip}
+\begin{Theorem}{{isomorphism of cohomology}}\label{thm:discrete-cohomology-isomorphism}
+{Assume that the complex \eqref{eq:galerkin-subcomplex} is a finite dimensional subcomplex of the \eqref{eq:approximation-short-complex} which admits a $V$-bounded cochain projection $\pi_h$. In addition, assume the approximation property}
+\begin{equation}\label{eq:harmonic-projection-strict-error}
+\|q-\pi_hq\|<\|q\|,\qquad0\ne q\in\mathsf H^k.
+\end{equation}
+{Then $\pi_h$ induces an isomorphism from $\mathcal H^k$ onto $\mathcal H_h^k$.}
+\end{Theorem}
+
+% block: discrete-cohomology-isomorphism-proof page:67 type:proof
+\begin{Proof}
+{As discussed in Section~\ref{sec:chain-maps}, the cochain map $\pi_h$ induces a map $\mathcal H^k\to\mathcal H_h^k$. Since $\pi_h$ is a projection, the induced map on cohomology is a surjection by Proposition~\ref{prop:chain-projection-homology-surjection}. Hence, we need only show that it is an injection. Since $\mathcal H^k$ consists of equivalence classes of elements of $\mathcal Z^k$ modulo $\mathcal B^k$, and $\mathcal H_h^k$ consists of equivalence classes of elements of $\mathcal Z_h^k$ modulo $\mathcal B_h^k$, we need to prove that if $z\in\mathcal Z^k$ and $\pi_hz\in\mathcal B_h^k$, then $z\in\mathcal B^k$. For $z\in\mathcal Z^k$ the Hodge decomposition takes the form $z=q+b$ with $q\in\mathsf H^k$ and $b\in\mathcal B^k$, so our goal is to show that $q$ vanishes. Since $\pi_h$ is a cochain map, $\pi_hb\in\mathcal B_h^k$, and we assumed that $\pi_hz\in\mathcal B_h^k$ as well, so $\pi_hq\in\mathcal B_h^k\subset\mathcal B^k$. But $q$, being harmonic, is orthogonal to $\mathcal B^k$, so $q\perp\pi_hq$, and, by the Pythagorean theorem,}
+\begin{equation}\label{eq:harmonic-projection-pythagoras}
+\|q-\pi_hq\|^2=\|q\|^2+\|\pi_hq\|^2\geq\|q\|^2.
+\end{equation}
+{If $q\ne0$, then \eqref{eq:harmonic-projection-strict-error} and \eqref{eq:harmonic-projection-pythagoras} lead to $\|q\|>\|q\|$, a contradiction, and we conclude that $q=0$ as desired.}
+\end{Proof}
+
+% block: harmonic-gap-introduction pages:67,68 type:ordinary-paragraph
+{Since the homology spaces are isomorphic to the spaces of harmonic forms on both the continuous and the discrete levels, this result tells us that the continuous and discrete harmonic form spaces, $\mathsf H^k$ and $\mathsf H_h^k$, are isomorphic. The next result shows not only that they are isomorphic but also that they are close in the sense that any element of one of the spaces can be well-approximated by an element of the other. This will enable us to control the consistency error coming from the nonconformity of the mixed method when the two spaces are not equal.}
+
+% block: harmonic-gap-theorem page:68 type:theorem
+\Needspace{8\baselineskip}
+\begin{Theorem}{{gap between harmonic forms}}\label{thm:harmonic-gap}
+{Assume that the complex \eqref{eq:galerkin-subcomplex} is a finite dimensional subcomplex of \eqref{eq:approximation-short-complex} which admits a $V$-bounded cochain projection $\pi_h$. Then}
+\begin{equation}\label{eq:harmonic-continuous-to-discrete-gap}
+\|(I-P_{\mathsf H_h})q\|_V\leq\|(I-\pi_h^k)q\|_V,\qquad q\in\mathsf H^k,
+\end{equation}
+\begin{equation}\label{eq:harmonic-discrete-to-continuous-gap}
+\|(I-P_{\mathsf H})q\|_V\leq\|(I-\pi_h^k)P_{\mathsf H}q\|_V,\qquad q\in\mathsf H_h^k.
+\end{equation}
+\end{Theorem}
+
+% block: harmonic-gap-proof page:68 type:proof
+\begin{Proof}
+{For $q\in\mathsf H$, $P_{\mathsf H_h}q=P_{\mathcal Z_h}q$, since $\mathcal Z_h=\mathsf H_h\BookOrthSum\mathcal B_h$ and $q\perp\mathcal B\supset\mathcal B_h$. This means that $P_{\mathsf H_h}q$ is the element of $\mathcal Z_h$ closest to $q$ as measured in the $V$ norm. But $\pi_hq$ also belongs to $\mathcal Z_h$, since $\pi_h$ is a cochain map. Therefore, \eqref{eq:harmonic-continuous-to-discrete-gap} holds.}
+
+{If $q\in\mathsf H_h\subset\mathcal Z_h\subset\mathcal Z$, the Hodge decomposition gives us $q-P_{\mathsf H}q\in\mathcal B$, so $\pi_h(q-P_{\mathsf H}q)\in\mathcal B_h$, and so is orthogonal to both the discrete harmonic form $q$ and the harmonic form $P_{\mathsf H}q$. Therefore}
+\[
+\begin{aligned}
+\|q-P_{\mathsf H}q\|_V&\leq\|q-P_{\mathsf H}q-\pi_h(q-P_{\mathsf H}q)\|_V\\
+&=\|(I-\pi_h)P_{\mathsf H}q\|_V.
+\end{aligned}
+\]
+\end{Proof}
+
+% block: subspace-gap-definition page:68 type:ordinary-paragraph
+{The \emph{gap} between two closed subspaces $E$ and $F$ of a Hilbert space $V$ is defined [\BookNumber{56}, Chapter IV, Section 2.1]}
+\begin{equation}\label{eq:subspace-gap-definition}
+\operatorname{gap}(E,F)=\max\left(\sup_{\substack{u\in E\\\|u\|=1}}\inf_{v\in F}\|u-v\|_V,\ \sup_{\substack{v\in F\\\|v\|=1}}\inf_{u\in E}\|u-v\|_V\right).
+\end{equation}
+{An equivalent expression is $\operatorname{gap}(E,F)=\|P_E-P_F\|$, where $P_E,P_F:V\to V$ are the orthogonal projections onto $E$ and $F$ [\BookNumber{56}, footnote 1, p. 198]. From Theorem~\ref{thm:harmonic-gap}, we immediately get an estimate of the gap between the spaces of harmonic and discrete harmonic forms:}
+\[
+\operatorname{gap}(\mathsf H,\mathsf H_h)\leq\sup_{\substack{q\in\mathsf H\\\|q\|=1}}\|(I-\pi_h)q\|_V.
+\]
+
+% block: discrete-stability-introduction page:68 type:ordinary-paragraph
+\medskip\noindent\textbf{{The discrete Poincaré inequality and stability}}\par
+{The \emph{stability} of the mixed method \eqref{eq:mixed-discrete-formulation} is measured by the norm of the discrete solution operator $f\mapsto(\sigma_h,u_h,p_h)$. Since \eqref{eq:mixed-discrete-formulation} is just the mixed weak formulation of the abstract Hodge Laplacian problem associated to the discrete complex \eqref{eq:galerkin-subcomplex}, Theorems~\ref{thm:hodge-formulation-equivalence} and~\ref{thm:hodge-well-posedness}, which apply to any closed Hilbert complex, give the estimate}
+\begin{equation}\label{eq:discrete-mixed-stability}
+\|\sigma_h\|_V+\|u_h\|_V+\|p_h\|\leq c_h\|f\|,
+\end{equation}
+{with the stability constant $c_h$ depending only on the constant in the Poincaré inequality for the discrete complex. Thus the key to stability is a bound on the discrete Poincaré constant. This is the content of the next result, which gives such a bound in terms of the Poincaré constant for the original complex and the bound on the cochain projection.}
+
+% block: discrete-poincare-theorem page:69 type:theorem
+\Needspace{8\baselineskip}
+\begin{Theorem}{{discrete Poincaré inequality}}\label{thm:discrete-poincare}
+{Assume that the complex \eqref{eq:galerkin-subcomplex} is a finite dimensional subcomplex of \eqref{eq:approximation-short-complex} which admits a $V$-bounded cochain projection $\pi_h$. Then}
+\[
+\|v\|_V\leq c_P\|\pi_h^k\|\|dv\|_V,\qquad v\in\mathcal Z_h^{k\perp}\cap V_h^k,
+\]
+{where $c_P$ is the constant appearing in the Poincaré inequality \eqref{eq:hilbert-poincare-inequality} and $\|\pi_h^k\|$ denotes the $V^k$ operator norm of $\pi_h^k$.}
+\end{Theorem}
+
+% block: discrete-poincare-proof page:69 type:proof
+\begin{Proof}
+{Given $v\in\mathcal Z_h^{k\perp}\cap V_h^k$, define $z\in\mathcal Z^{k\perp}\cap V^k$ by $dz=dv$. By Theorem~\ref{thm:hilbert-complex-poincare}, $\|z\|_V\leq c_P\|dv\|$. Now, $v-\pi_hz\in V_h^k$ and $d\pi_hz=\pi_hdz=\pi_hdv=dv$ with the three equalities coming from, first, the fact that $\pi_h$ is a cochain map, second, the definition of $z$, and, third, the subcomplex property $dV_h^k\subset V_h^{k+1}$ and the fact that $\pi_h^{k+1}$ is a projection. Thus $v-\pi_hz\in\mathcal Z_h^k$ and so is orthogonal to $v$. Therefore}
+\[
+\begin{aligned}
+\|v\|_V^2&=\langle v,\pi_h^kz\rangle_V+\langle v,v-\pi_h^kz\rangle_V\\
+&=\langle v,\pi_h^kz\rangle_V\leq\|v\|_V\|\pi_h^k\|\|z\|_V,
+\end{aligned}
+\]
+{so}
+\[
+\|v\|_V\leq\|\pi_h^k\|\|z\|_V\leq\|\pi_h^k\|c_P\|dv\|_V.
+\]
+\end{Proof}
+
+% block: discrete-inf-sup-introduction page:69 type:ordinary-paragraph
+{As an immediate consequence of this result and Theorem~\ref{thm:hodge-mixed-inf-sup}, we obtain the discrete inf-sup condition and the stability estimate.}
+
+% block: discrete-inf-sup-theorem page:69 type:theorem
+\Needspace{8\baselineskip}
+\begin{Theorem}\label{thm:discrete-mixed-inf-sup}
+{Assume that the complex \eqref{eq:galerkin-subcomplex} is a finite dimensional subcomplex of the \eqref{eq:approximation-short-complex} which admits a $V$-bounded cochain projection $\pi_h$. Then the inf-sup condition for the mixed bilinear form $B$, given in \eqref{eq:hodge-mixed-bilinear-form}, over the subspace $V_h^{k-1}\times V_h^k\times\mathsf H_h^k$ holds, and the inf-sup constant $\gamma_h$ can be bounded below by a positive constant depending only on $c_P$ and $\|\pi_h^k\|$. Consequently the stability estimate \eqref{eq:discrete-mixed-stability} holds with a constant $c_h$ depending only on the same quantities.}
+\end{Theorem}
+
+% block: mixed-basic-error-introduction page:69 type:ordinary-paragraph
+\medskip\noindent\textbf{{Error estimates for the mixed method}}\par
+{In the numerical analysis of differential equations, error estimates are obtained from the stability and consistency of the discretization scheme. In the present case, stability comes from Theorem~\ref{thm:discrete-mixed-inf-sup} and consistency comes from the assumed approximation properties of the space $V_h^j$ and from Theorem~\ref{thm:harmonic-gap} on the gap between the spaces of continuous and discrete harmonic forms (the latter required in the case $\mathsf H_h^k$ is not contained in $\mathsf H^k$, so the mixed method is nonconforming). The following theorem gives the resulting error estimates. It was proven in the concrete case of the de Rham complex in [\BookNumber{11}, Theorem 7.4] and then in the case of general Hilbert complexes (essentially with the same proof) in [\BookNumber{13}, Theorem 3.9]. We repeat this proof here.}
+
+% block: mixed-basic-error-theorem pages:69,70 type:theorem
+\Needspace{8\baselineskip}
+\begin{Theorem}{{basic error estimate for the mixed method}}\label{thm:mixed-basic-error}
+{Assume that the complex \eqref{eq:galerkin-subcomplex} is a finite dimensional subcomplex of \eqref{eq:approximation-short-complex} which admits a $V$-bounded cochain projection $\pi_h$. Let $(\sigma,u,p)\in V^{k-1}\times V^k\times\mathsf H^k$ solve the Hodge Laplace problem \eqref{eq:hodge-mixed-formulation} and let $(\sigma_h,u_h,p_h)\in V_h^{k-1}\times V_h^k\times\mathsf H_h^k$ solve the discrete problem \eqref{eq:mixed-discrete-formulation}. Then}
+\[
+\begin{aligned}
+&\|\sigma-\sigma_h\|_V+\|u-u_h\|_V+\|p-p_h\|\\
+&\quad\leq C\Big(\inf_{\tau\in V_h^{k-1}}\|\sigma-\tau\|_V+\inf_{v\in V_h^k}\|u-v\|_V\\
+&\hspace{45mm}+\inf_{q\in V_h^k}\|p-q\|_V+\mu\inf_{v\in V_h^k}\|P_{\mathcal B}u-v\|_V\Big),
+\end{aligned}
+\]
+{where}
+\[
+\mu=\mu_h^k=\sup_{\substack{r\in\mathsf H^k\\\|r\|=1}}\|(I-\pi_h^k)r\|
+\]
+{and the constant $C$ depends only on $c_P$ and $\|\pi_h^k\|$.}
+\end{Theorem}
+
+% block: mixed-basic-error-proof page:70 type:proof
+\begin{Proof}
+{With $B$ defined as in \eqref{eq:hodge-mixed-bilinear-form}, we first observe that $(\sigma,u,p)$ satisfies}
+\[
+\begin{gathered}
+B(\sigma,u,p;\tau_h,v_h,q_h)=\langle f,v_h\rangle-\langle u,q_h\rangle,\\
+(\tau_h,v_h,q_h)\in V_h^{k-1}\times V_h^k\times\mathsf H_h^k.
+\end{gathered}
+\]
+{Let $\tau$, $v$, and $q$ be the $V$-orthogonal projections of $\sigma$, $u$, and $p$ into $V_h^{k-1}$, $V_h^k$, and $\mathsf H_h^k$, respectively. Then, for any $(\tau_h,v_h,q_h)\in V_h^{k-1}\times V_h^k\times\mathsf H_h^k$, we have}
+\[
+\begin{aligned}
+&B(\sigma_h-\tau,u_h-v,p_h-q;\tau_h,v_h,q_h)\\
+&\quad=B(\sigma-\tau,u-v,p-q;\tau_h,v_h,q_h)+\langle u,q_h\rangle\\
+&\quad=B(\sigma-\tau,u-v,p-q;\tau_h,v_h,q_h)+\langle P_{\mathsf H_h}u,q_h\rangle\\
+&\quad\leq C(\|\sigma-\tau\|_V+\|u-v\|_V+\|p-q\|+\|P_{\mathsf H_h}u\|)\\
+&\hspace{55mm}(\|\tau_h\|_V+\|v_h\|_V+\|q_h\|).
+\end{aligned}
+\]
+{Theorem~\ref{thm:discrete-mixed-inf-sup} then gives}
+\begin{equation}\label{eq:mixed-error-discrete-stability}
+\begin{aligned}
+&\|\sigma_h-\tau\|_V+\|u_h-v\|_V+\|p_h-q\|\\
+&\qquad\leq C(\|\sigma-\tau\|_V+\|u-v\|_V+\|p-q\|+\|P_{\mathsf H_h}u\|).
+\end{aligned}
+\end{equation}
+{Using \eqref{eq:harmonic-continuous-to-discrete-gap} and the boundedness of the projection $\pi_h$ we have}
+\begin{equation}\label{eq:mixed-error-harmonic-best-approximation}
+\|p-q\|\leq\|(I-\pi_h)p\|\leq C\inf_{q\in V_h^k}\|p-q\|_V.
+\end{equation}
+{Next we show that}
+\[
+\|P_{\mathsf H_h}u\|\leq\mu\|(I-\pi_h)u_{\mathcal B}\|_V.
+\]
+{Now $u\perp\mathsf H^k$, so $u=u_{\mathcal B}+u_\perp$, with $u_{\mathcal B}\in\mathcal B^k$ and $u_\perp\in\mathcal Z^{k\perp}$. Since $\mathsf H_h^k\subset\mathcal Z^k$, $P_{\mathsf H_h}u_\perp=0$, and since $\pi_hu_{\mathcal B}\in\mathcal B_h^k$, $P_{\mathsf H_h}\pi_hu_{\mathcal B}=0$. Let $q=P_{\mathsf H_h}u/\|P_{\mathsf H_h}u\|\in\mathsf H_h^k$. By Theorem~\ref{thm:harmonic-gap}, there exists $r\in\mathsf H^k$ (and so $r\perp\mathcal B^k$) with $\|r\|\leq1$ and}
+\[
+\|q-r\|\leq\|(I-\pi_h)r\|\leq\sup_{\substack{r\in\mathsf H^k\\\|r\|=1}}\|(I-\pi_h)r\|.
+\]
+{Therefore}
+\begin{equation}\label{eq:mixed-error-consistency-bound}
+\begin{aligned}
+\|P_{\mathsf H_h}u\|&=\langle u_{\mathcal B}-\pi_hu_{\mathcal B},q-r\rangle\\
+&\leq\|(I-\pi_h)u_{\mathcal B}\|\sup_{\substack{r\in\mathsf H^k\\\|r\|=1}}\|(I-\pi_h)r\|\\
+&\leq c\mu\inf_{v\in V_h^k}\|P_{\mathcal B}u-v\|_V),
+\end{aligned}
+\end{equation}
+{since $\pi_h$ is a bounded projection. The theorem follows from \eqref{eq:mixed-error-discrete-stability}--\eqref{eq:mixed-error-consistency-bound} and the triangle inequality.}
+\end{Proof}
+
+% block: mixed-basic-error-interpretation page:71 type:ordinary-paragraph
+{Theorem~\ref{thm:mixed-basic-error} is typically applied when we have a family of Galerkin subspaces $V_h^j$ indexed by $h$ (usually a mesh size parameter), with uniformly bounded cochain projections. Then the rate of the convergence depends only on approximation properties of the spaces $V_h^{k-1}$ and $V_h^k$. It is important to note that the third term on the right-hand side of the error estimate is the approximation for $p$ by the full space $V_h^k$, not just by $\mathsf H_h^k$. The final term on the right-hand side is typically much smaller than the other terms. If there are no harmonic forms, it is not present at all. Otherwise, it is the product of two terms, both of which are determined by the approximation properties of $V_h^k$.}
+
+% block: mixed-sharper-error-analogy page:71 type:ordinary-paragraph
+{The left-hand side of the error estimate couples together the $W$ norm of various solution quantities: $\sigma$, $d\sigma$, $u$, $du$, and $p$. It is possible to get sharper estimates by considering them individually. An analogous situation (actually a special case) is the error estimate for the standard piecewise linear finite element method for Poisson's equation, which takes the form}
+\[
+\|u-u_h\|_{H^1}\leq C\inf_{v\in V_h}\|u-v\|_{H^1}\leq Ch\|u\|_{H^2}.
+\]
+{The left-hand side combines the $L^2$ error of $u$ with that of $\operatorname{grad}u$ and so gives a suboptimal rate for the $L^2$ error in $u$. If we apply the Aubin–Nitsche duality argument, however, we can prove the sharper estimate $\|u-u_h\|\leq Ch^2\|u\|_{H^2}$.}
+
+% block: improved-dsigma-example page:71 type:ordinary-paragraph
+{As a simple example of such an improved error estimates for the mixed Hodge Laplacian, consider the error in $d\sigma$ measured in the norm of $W^k$. From the relation between the mixed formulation and the Hodge decomposition, we have}
+\[
+d\sigma_h=P_{\mathcal B_h}f=P_{\mathcal B_h}P_{\mathcal B}f=P_{\mathcal B_h}d\sigma.
+\]
+{Since $P_{\mathcal B_h}d\sigma$ is the best approximation of $d\sigma$ from $\mathcal B_h$ and $\pi_hd\sigma$ is another element of $\mathcal B_h$, we have}
+\[
+\|d\sigma-d\sigma_h\|=\|d\sigma-P_{\mathcal B_h}d\sigma\|\leq\|d\sigma-\pi_hd\sigma\|.
+\]
+{Assuming that the $\pi_h^k$ is $W$-bounded, we obtain}
+\[
+\|d\sigma-d\sigma_h\|\leq\|\pi_h^k\|_{\mathcal L(W,W)}\inf_{v\in V_h^k}\|d\sigma-v\|,
+\]
+{just as in \eqref{eq:projection-quasioptimality}. Thus, approximation of $d\sigma$ by $d\sigma_h$ is, up to a constant factor, as good as the best approximation afforded by the subspace $V_h^k$ where $d\sigma_h$ lives.}
+
+% block: improved-error-introduction page:71 type:ordinary-paragraph
+{Theorem~\ref{thm:mixed-improved-errors} below, which is taken from \BookCite{13}, gives the full set of such improved error estimates for the mixed method for the Hodge Laplacian. The theorem requires not just that the Hilbert complex on the continuous level be closed but rather that it satisfy the compactness property (see Definition~\ref{def:hilbert-complex-compactness-property}), which is a stronger assumption. Moreover, it requires that the discrete subcomplex admit not just $V$-bounded cochain projections but $W$-bounded. The theorem is stated in terms of the best approximation error in the $W^j$ norm by elements of $V_h^j$ for various quantities $w\in W^j$, for which we introduce the notation}
+\[
+E(w)=E_h^j(w)=\inf_{v\in V_h^j}\|w-v\|,\qquad w\in W^j.
+\]
+
+% block: improved-error-parameters pages:71,72 type:ordinary-paragraph
+{Finally, the statement of the theorem uses the notation}
+\[
+\begin{aligned}
+\mu=\mu_h^k&=\|(I-\pi_h)P_{\mathsf H}\|_{\mathcal L(W,W)},\\
+\delta=\delta_h^k&=\|(I-\pi_h)K\|_{\mathcal L(W,W)},\\
+\eta=\eta_h^k&=\max_{j=k-1,k}\big[\|(I-\pi_h^j)d^*K\|_{\mathcal L(W,W)},\ \|(I-\pi_h^{j+1})dK\|_{\mathcal L(W,W)}\big],
+\end{aligned}
+\]
+{of which the first already appeared in Theorem~\ref{thm:mixed-basic-error}. The operator $K$ here is the solution operator for the Hodge Laplacian defined just after Remark~\ref{rem:hodge-general-mixed-load}. Due to the compactness property, $K$, $dK$, and $d^*K$ are compact operators on $W$. Together with an approximation property, which ensures that $\pi_h$ converges pointwise to the identity on $W$ as $h\to0$, this implies that $\eta,\delta,\mu\to0$ with $h$.}
+
+% block: mixed-improved-error-theorem page:72 type:theorem
+\Needspace{8\baselineskip}
+\begin{Theorem}{{improved error estimates for the mixed method}}\label{thm:mixed-improved-errors}
+{Assume that the Hilbert complex \eqref{eq:approximation-short-complex} satisfies the compactness property and that \eqref{eq:galerkin-subcomplex} is a finite dimensional subcomplex which admits a $W$-bounded cochain projection $\pi_h$. Let $(\sigma,u,p)\in V^{k-1}\times V^k\times\mathsf H^k$ solve the Hodge Laplace problem \eqref{eq:hodge-mixed-formulation} and let $(\sigma_h,u_h,p_h)\in V_h^{k-1}\times V_h^k\times\mathsf H_h^k$ solve the discrete problem \eqref{eq:mixed-discrete-formulation}. Then}
+\begin{equation}\label{eq:mixed-improved-dsigma}
+\|d(\sigma-\sigma_h)\|\leq CE(d\sigma),
+\end{equation}
+\begin{equation}\label{eq:mixed-improved-sigma}
+\|\sigma-\sigma_h\|\leq C[E(\sigma)+\eta E(d\sigma)],
+\end{equation}
+\begin{equation}\label{eq:mixed-improved-p}
+\|p-p_h\|\leq C[E(p)+\mu E(d\sigma)],
+\end{equation}
+\begin{equation}\label{eq:mixed-improved-du}
+\|d(u-u_h)\|\leq C(E(du)+\eta[E(d\sigma)+E(p)]),
+\end{equation}
+\begin{equation}\label{eq:mixed-improved-u}
+\begin{aligned}
+\|u-u_h\|&\leq C\big(E(u)+\eta[E(du)+E(\sigma)]\\
+&\qquad+(\eta^2+\delta)[E(d\sigma)+E(p)]+\mu E(P_{\mathcal B}u)]\big),
+\end{aligned}
+\end{equation}
+{where the constant $C$ depends on the $W$-bounds on $\pi_h^{k-1}$, $\pi_h^k$, and $\pi_h^{k+1}$ but otherwise is independent of the choice of subcomplex.}
+\end{Theorem}
+
+% block: mixed-improved-error-proof-location page:72 type:ordinary-paragraph
+{The proof of this theorem is given in \BookCite{13}. It requires several pages and will not be repeated here.}
+
+% block: approximation-hilbert-summary-heading page:72 type:ordinary-paragraph
+\Needspace{18\baselineskip}
+\begin{tcolorbox}[enhanced,breakable,colback=KuangNei,frame hidden,boxrule=0pt,sharpish corners,before skip=10pt,after skip=10pt]
+\refstepcounter{booksummary}\label{box:approximation-hilbert-summary}
+\noindent\textbf{Box~\thebooksummary:} {Summary of Chapter~\ref{chap:approximation-hilbert-complexes} on approximation of Hilbert complexes.}\par
+
+% block: approximation-hilbert-summary-discretization page:72 type:ordinary-paragraph
+{If $V^{k-1}\xrightarrow{d}V^k\xrightarrow{d}V^{k+1}$ is a segment of the domain complex of a closed Hilbert complex, we approximate the associated Hodge Laplacian problem by discretizing the mixed weak formulation via Galerkin's method with finite dimensional subspaces $V_h^j\subset V^j$.}
+
+% block: approximation-hilbert-summary-requirements page:72 type:ordinary-paragraph
+{The key requirements on the Galerkin subspaces are (1) they afford good approximation, (2) they form a subcomplex ($dV_h^j\subset V_h^{j+1}$), and (3) they admit a \emph{bounded cochain projection}, i.e., bounded linear projections $V^j\to V_h^j$ which commute with the $d^j$.}
+
+% block: approximation-hilbert-summary-consequences page:72 type:ordinary-paragraph
+{If these requirements are satisfied, then the discrete complex is itself a Hilbert complex with the same cohomology, the space of discrete harmonic forms is close to that of the true harmonic forms, and the Poincaré constant for the discrete complex is bounded by the true Poincaré constant. It follows that the Galerkin method is consistent and stable and converges with the rate of the best approximation. Assuming also a compactness condition and boundedness of the cochain projections in $W$ norm, we further obtain optimal order error estimates for each variable separately with sharp regularity requirements.}
+\end{tcolorbox}
+
