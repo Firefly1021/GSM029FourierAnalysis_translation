@@ -6,6 +6,7 @@ m=runpy.run_path(str(Path(__file__).with_name("full_workflow.py")));P,B,ID=m["P"
 s=m["s"];load,dump,write,guard=m["load"],m["dump"],m["write"],m["guard"]
 def audit(unit):
     guard();notes=load(f"translation/authored/{unit}-notes.json");q=load("qa/latest-compilation.json");assert q["success"]
+    for item in q.get("input_files",[]):assert s["m"]["sha256_file"](B.root/item["path"])==item["sha256"],"TeX changed after compilation"
     en=(B.root/f"structured/reviewed/{unit}.tex").read_text(encoding="utf8");zh=(B.root/f"translation/reviewed/{unit}.tex").read_text(encoding="utf8")
     assert collections.Counter(s["maths"](en))==collections.Counter(s["maths"](zh));assert not s["find_chinese_prose_punctuation"](zh)
     names=list(csv.DictReader(B.proper_names.open(encoding="utf8"),delimiter="\t"));fields=list(names[0]);seen={x["Source Form"] for x in names}
@@ -33,12 +34,31 @@ def audit(unit):
     for key,v in labels.items():
         if len(v)<4 or not v[3] or not v[1].isdigit():continue
         assert v[3] in dest,key;page=reader.get_destination_page_number(dest[v[3]])+1;assert page==int(v[1]),(key,v,page);objects.append({"label":key,"number":v[0],"output_page":page})
+    if "expected_numbered_equations" in notes:
+        chapter=int(unit.split("-")[1]);numbering={}
+        for prefix,field in [("eq:","expected_numbered_equations"),("fig:","expected_figures"),("tab:","expected_tables")]:
+            entries=[(k,v) for k,v in labels.items() if k.startswith(prefix) and re.fullmatch(str(chapter)+r"\.\d+",v[0])]
+            assert sorted(int(v[0].split(".")[1]) for k,v in entries)==list(range(1,notes[field]+1)),(prefix,entries)
+            numbering[field]=len(entries)
+        et=re.findall(r"\\begin\{table\}.*?\\end\{table\}",en,re.S);zt=re.findall(r"\\begin\{table\}.*?\\end\{table\}",zh,re.S);assert len(et)==len(zt)==notes["expected_tables"]
+        checks_tables=[]
+        for i,(a,b) in enumerate(zip(et,zt),1):
+            numbers=lambda value:collections.Counter(re.findall(r"(?<![A-Za-z])\d+(?:,\d{3})*(?:\.\d+)?",value))
+            assert numbers(a)==numbers(b),(i,numbers(a),numbers(b));checks_tables.append({"source_table":f"{chapter}.{i}","source_target_numeric_tokens_equal":True,"numeric_token_occurrences":sum(numbers(a).values())})
+        dump(f"qa/translation/{unit}-numbering-tables.json",{"passed":True,"numbering":numbering,"tables":checks_tables,"source_image_review":notes.get("table_data_review"),"figures":notes.get("figure_source_crops")})
     refs=[]
     for command,key in re.findall(r"\\(eqref|ref)\{([^}]+)\}",zh)+[("BookCite","bib:source-"+x) for x in re.findall(r"\\BookCite\{(\d+)\}",zh)]:
         assert key in labels,key;refs.append({"command":command,"label":key,"target_number":labels[key][0],"target_page":labels[key][1]})
     dump(f"qa/translation/{unit}-reference-report.json",{"passed":True,"objects":objects,"references":refs})
     for row in load("qa/full-input-protection.json")["accepted_files"]:assert s["m"]["sha256_file"](B.root/row["file"])==row["sha256"],row
     content=load(f"qa/batches/{unit}-content.json");dump(f"qa/batches/{unit}-automated-qa.json",{"passed":True,"unit":unit,"content":content,"names":checks,"source_pages":notes["source_pages"],"references":len(refs),"destinations":len(objects),"compile":q,"visual_review":"pending","blocking_issues":[]});guard();print(json.dumps({"unit":unit,"blocks":content["blocks"],"math":content["math_expressions"],"names":len(checks),"destinations":len(objects)},ensure_ascii=False))
+    if notes["source_observations"]:
+        issues=[json.loads(x) for x in B.issues.read_text(encoding="utf8").splitlines() if x.strip()]
+        for i,observation in enumerate(notes["source_observations"],1):
+            key=f"{unit}-source-{i}"
+            if not any(x["id"]==key for x in issues):issues.append({"id":key,"category":"source","severity":"info","message":observation["message"],"source_location":{"page":observation["pdf_page"]},"confidence":0.99,"review_status":"reviewed","details":{"blocking":False,"action":"Retain source without silent correction","report":f"qa/source/{unit}-source-observations.md"}})
+        write("qa/issues.jsonl","".join(json.dumps(x,ensure_ascii=False)+"\n" for x in issues))
+        write(f"qa/source/{unit}-source-observations.md","# Source observations retained\n\n"+"\n\n".join(f"PDF {x['pdf_page']}: {x['message']}" for x in notes["source_observations"])+"\n\nAll are reviewed, nonblocking source records, not mathematical corrections.\n")
 def accept(unit):
     from mathbook.workflow import translate_book,next_incomplete_unit
     guard();q=load(f"qa/batches/{unit}-automated-qa.json");v=load(f"qa/batches/{unit}-visual-review.json");assert q["passed"] and v["passed"] and v["pdf_sha256"]==q["compile"]["pdf_sha256"]==s["m"]["sha256_file"](B.root/"output/translation-progress.pdf")
@@ -46,7 +66,18 @@ def accept(unit):
     def processor(book,current):
         if current!=unit:raise NextUnit(current)
         rows=list(csv.DictReader(B.chapter_progress.open(encoding="utf8"),delimiter="\t"));row=next(x for x in rows if x["Unit ID"]==unit);assert row["QA Status"]!="passed";row.update({"QA Status":"passed","Notes":"Full source-aligned unit; source/math/name/terminology/reference/punctuation/compile/visual QA passed"});s["tsv"]("qa/chapter-progress.tsv",["Unit ID","Title","QA Status","Notes"],rows)
-        q["visual_review"]="passed";dump(f"qa/batches/{unit}-automated-qa.json",q);m["status"]()
+        q["visual_review"]="passed";dump(f"qa/batches/{unit}-automated-qa.json",q)
+        protection=load("qa/full-input-protection.json");seen={x["file"] for x in protection["accepted_files"]}
+        for accepted in [x["Unit ID"] for x in rows if x["QA Status"]=="passed" and x["Unit ID"] not in ("chapter-02-section-04","chapter-02-section-05","chapter-02-section-06")]:
+            paths=[f"translation/authored/{accepted}.bilingual.tex",f"translation/reviewed/{accepted}.tex",f"structured/reviewed/{accepted}.tex",f"formulae/{accepted}.jsonl",("tex/frontmatter.tex" if accepted=="frontmatter" else f"tex/chapters/{accepted}.tex")]
+            for rel in paths:
+                if rel not in seen:
+                    path=B.root/rel
+                    if accepted!=unit:
+                        blob=subprocess.run(["git","show","HEAD:"+path.relative_to(P.root).as_posix()],cwd=P.root,capture_output=True,check=True).stdout
+                        assert blob.replace(b"\r\n",b"\n")==path.read_bytes().replace(b"\r\n",b"\n"),rel
+                    protection["accepted_files"].append({"file":rel,"sha256":s["m"]["sha256_file"](path)});seen.add(rel)
+        dump("qa/full-input-protection.json",protection);m["status"]()
     try:result=translate_book(P,ID,processor=processor)
     except NextUnit:
         state=load("qa/workflow-state.json");state.update({"status":"translating","next_unit":next_incomplete_unit(B)});dump("qa/workflow-state.json",state);m["status"]();result={"status":"translating","next_unit":next_incomplete_unit(B)}

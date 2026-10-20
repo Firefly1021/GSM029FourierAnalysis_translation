@@ -13,6 +13,8 @@ def guard():
     s["guard"]()
     assert s["m"]["sha256_file"](B.root/"tex/chapters/sample.tex")==SAMPLE_TEX
     assert s["m"]["sha256_file"](B.root/"output/sample-zh.pdf")==SAMPLE_PDF
+    if (B.root/"qa/full-input-protection.json").exists():
+        for item in load("qa/full-input-protection.json")["accepted_files"]:assert s["m"]["sha256_file"](B.root/item["file"])==item["sha256"],item["file"]
 def begin():
     guard();cfg=B.load_config();cfg.update({"phase":"translation","status":"translating","sample_approved":True});dump("config/book.yaml",cfg)
     qa=load("qa/sample-qa.json");qa.update({"sample_user_approved":True,"approval_evidence":"User: 可以, 接下来进入全书翻译"});dump("qa/sample-qa.json",qa)
@@ -83,6 +85,7 @@ def assemble():
     cited=set(re.findall(r"\\BookCite\{(\d+)\}","\n".join(contents)));refs|={"bib:source-"+x for x in cited}
     known={"chap:"+key:(str(n),page,"Chapter "+str(n)) for n,(key,page) in CHAPTERS.items()}
     known.update({"sec:whitney-forms-de-rham":("7.6",100,"The Whitney forms and de Rham's theorem"),"bib:cartan-differential-expressions":("27",124,"Reference [27]")})
+    known.update({"sec:complete-polynomial-forms":("7.1",92,"The complete polynomial spaces of differential forms"),"sec:primal-galerkin":("5.1",61,"Galerkin discretization of the primal formulation"),"sec:mixed-methods":("5.2",64,"Mixed methods of discretization"),"sec:eigenvalue-problems":("8.1",107,"Eigenvalue problems"),"fig:primal-lagrange-failure":("5.1",63,"Figure 5.1")})
     r=PdfReader(B.require_source_pdf())
     for p in range(123,129):
         for h in re.finditer(r"(?m)^\[(\d+)\]",r.pages[p-1].extract_text() or ""):known["bib:source-"+h[1]]=(h[1],p,"Reference ["+h[1]+"]")
@@ -96,9 +99,13 @@ def compile_batch():
     guard();out=Path(tempfile.mkdtemp(prefix="full-build-",dir=B.assert_write_path(B.root/"workspace/temporary")));env=os.environ.copy();env["TEXINPUTS"]=os.pathsep.join(str(p) for p in [P.template/"style",P.template/"adapter",P.template/"assets",B.root/"tex"])+os.pathsep+os.pathsep
     driver=r"C:\Users\A\.codex\plugins\cache\openai-bundled\latex\0.2.8\scripts\compile_latex.py";r=subprocess.run([sys.executable,driver,str(B.main_tex),"--compiler","texlive","--engine","xelatex","--output-directory",str(out),"--json"],env=env,capture_output=True);write("logs/latest-build-driver.log",(r.stdout+r.stderr).decode("utf8",errors="replace"));assert r.returncode==0,(r.stdout+r.stderr).decode("utf8",errors="replace")[-4000:]
     r=subprocess.run([shutil.which("xelatex"),"-interaction=nonstopmode","-halt-on-error","-file-line-error",f"-output-directory={out}",str(B.main_tex)],cwd=B.root/"tex",env=env,capture_output=True);log=(out/"main.log").read_text(encoding="utf8",errors="replace");write("logs/latest-compilation.log",log);assert r.returncode==0,r.stdout.decode("utf8",errors="replace")[-3000:]
-    qa=s["latex_qa"](B);warnings={k:len(re.findall(pattern,log,re.I)) for k,pattern in {"undefined":r"undefined references?|Reference .* undefined","duplicate":r"multiply[- ]defined","missing_glyph":r"Missing character:","overfull":r"Overfull \\[hv]box"}.items()};assert qa["passed"] and not any(warnings.values()),(qa,warnings)
+    qa=s["latex_qa"](B);warnings={k:len(re.findall(pattern,log,re.I)) for k,pattern in {"undefined":r"undefined references?|Reference .* undefined","duplicate":r"multiply[- ]defined","missing_glyph":r"Missing character:","overfull":r"Overfull \\[hv]box"}.items()}
+    from mathbook.build import canonical_tex_files
+    input_files=[{"path":f.relative_to(B.root).as_posix(),"sha256":s["m"]["sha256_file"](f)} for f in canonical_tex_files(B)]
+    dump("qa/latest-compilation.json",{"success":qa["passed"] and not any(warnings.values()),"build_directory":str(out),"minimum_latex_rounds":2,"warnings":warnings,"latex_qa":qa,"input_files":input_files,"candidate_pdf":str(out/"main.pdf"),"published_progress_pdf_updated":False})
+    assert qa["passed"] and not any(warnings.values()),(qa,warnings)
     pdf=B.assert_write_path(B.root/"output/translation-progress.pdf");shutil.copyfile(out/"main.pdf",pdf);sha=s["m"]["sha256_file"](pdf);renders=B.assert_write_path(B.root/"workspace/pages/progress-output"/sha[:16]);renders.mkdir(parents=True,exist_ok=True);subprocess.run([shutil.which("pdftoppm"),"-r","100","-png",str(pdf),str(renders/"page")],check=True)
-    dump("qa/latest-compilation.json",{"success":True,"pdf_sha256":sha,"pdf_pages":len(PdfReader(pdf).pages),"minimum_latex_rounds":2,"build_directory":str(out),"render_directory":str(renders),"warnings":warnings,"latex_qa":qa});guard();print(sha,"pages",len(PdfReader(pdf).pages))
+    dump("qa/latest-compilation.json",{"success":True,"pdf_sha256":sha,"pdf_pages":len(PdfReader(pdf).pages),"minimum_latex_rounds":2,"build_directory":str(out),"render_directory":str(renders),"warnings":warnings,"latex_qa":qa,"input_files":input_files,"published_progress_pdf_updated":True});guard();print(sha,"pages",len(PdfReader(pdf).pages))
 if __name__=="__main__":
     p=argparse.ArgumentParser();p.add_argument("book_id",choices=[ID]);p.add_argument("action",choices=["begin","extract","metadata","assemble","compile"]);p.add_argument("args",nargs="*");a=p.parse_args()
     if a.action=="extract":extract(*map(int,a.args))
