@@ -96,6 +96,9 @@ def assemble():
             insert_sample()
         text+=r"\input{chapters/"+file.name+"}\n";contents.append(file.read_text(encoding="utf8"))
     if not sample_inserted:insert_sample()
+    for name in ("bibliography","index"):
+        file=B.root/f"tex/chapters/{name}.tex"
+        if file.exists():text+=r"\input{chapters/"+file.name+"}\n";contents.append(file.read_text(encoding="utf8"))
     labels=set(re.findall(r"\\label\{([^}]+)\}","\n".join(contents)))|{"chap:homological-algebra"}
     refs=set(re.findall(r"\\(?:eqref|ref)\{([^}]+)\}","\n".join(contents)))
     cited=set(re.findall(r"\\Book(?:Cite|Number)\{(\d+)\}","\n".join(contents)));refs|={"bib:source-"+x for x in cited}
