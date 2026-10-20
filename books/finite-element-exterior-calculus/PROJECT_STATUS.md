@@ -2,17 +2,14 @@ Book ID: finite-element-exterior-calculus
 Title: Finite Element Exterior Calculus
 Branch: book/finite-element-exterior-calculus
 Worktree: D:\CelianFile\BOOKTRANSLATION-worktrees\finite-element-exterior-calculus
-Phase: sample
-Status: awaiting-sample-approval
+Phase: translation
+Status: translating
 Source SHA-256: 649b672d2d54b7ebc5e51154587dbf70fefd6d6dcb5a81a9903e7bb0ee2c39d4
-Template version: 2.0.1-english-environment-headings-20260822
-PDF type: native with illustrations; not scanned
-Source pages: 130
-Sample: Sections 2.4-2.6 main text / PDF 25-28 / printed 15-18
-Sample output: output/sample-zh.pdf
-Sample QA: passed
-Sample user approved: No
+Sample approved: Yes
+Passed units: 4/47
+Completed units: frontmatter, chapter-02-section-04, chapter-02-section-05, chapter-02-section-06
+Next incomplete unit: chapter-01
 Blocking issues: None
-Unresolved terminology: 0
-Full-book translation started: No
+Progress output: output/translation-progress.pdf
+Full-book translation complete: No
 Remote push: No
