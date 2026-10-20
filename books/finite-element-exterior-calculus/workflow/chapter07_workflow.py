@@ -9,6 +9,11 @@ NOTES={
 "chapter-07-section-01":{"names":["de Rham","Koszul"],"terms":[["degree of freedom","自由度","finite elements","basis functional of the element-local dual shape space"],["finite element assembly","有限元组装","finite elements","matching shared face degrees of freedom between elements"]],"source_pages":[92,93],"source_observations":[]},
 "chapter-07-section-02":{"names":["Koszul","Leibniz","Euler","Cartan","de Rham"],"terms":[["Koszul differential","Koszul 微分","polynomial differential forms","contraction with the identity vector field"],["homotopy formula","同伦公式","polynomial differential forms","relation between the exterior and Koszul differentials"],["homogeneous polynomial","齐次多项式","polynomial differential forms","polynomial with terms of one total degree"]],"source_pages":[93,94,95],"source_observations":[{"pdf_page":93,"message":"The identity-vector-field sentence prints 'is display'. Reconstructed English retains the source spelling; Chinese translates its meaning."}],"figure_source_crops":[{"label":"fig:identity-vector-field","pdf_page":94,"bbox_top_origin_pt":[150,62,368,281],"original_image_bbox":[151.097,63.543,367.097,279.543],"original_arrows_not_redrawn":True}]}}
 
+NOTES.update({
+"chapter-07-section-03":{"names":["Koszul","de Rham"],"terms":[["trimmed polynomial space","修剪多项式空间","finite element differential forms","intermediate polynomial differential-form space defined using the Koszul differential"]],"source_pages":[95,96],"source_observations":[{"pdf_page":96,"message":"The inclusion chain ends with P_r^- Lambda^k after P_{r-1} Lambda^{k+1}. Preserve the printed final degree k, rather than silently changing it to k+1."}]},
+"chapter-07-section-04":{"names":["Koszul","Vandermonde","Stokes"],"terms":[["unisolvence","唯一可解性","finite elements","degrees of freedom uniquely determining an element of the shape space"],["barycentric coordinate","重心坐标","finite element geometry","affine coordinates relative to simplex vertices"]],"source_pages":[96,97,98],"source_observations":[]}
+})
+
 def prepare(units):
     m["guard"]();rows=list(csv.DictReader(B.chapter_progress.open(encoding="utf8"),delimiter="\t"))
     for unit in units:

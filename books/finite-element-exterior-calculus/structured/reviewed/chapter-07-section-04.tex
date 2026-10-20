@@ -1,0 +1,65 @@
+% Complete Section 7.4, original PDF 96-98 / printed 86-88.
+% block: finite-element-differential-forms-heading page:96 type:section
+\subsection{{Finite element differential forms}}\label{sec:finite-element-differential-forms}
+
+% block: complete-form-degrees-of-freedom page:96 type:ordinary-paragraph
+{We are now ready to define our finite element spaces. As shape functions we use one of the complete polynomial spaces $\mathcal P_r\Lambda^k(T)$ or one of the trimmed polynomial spaces $\mathcal P_r^-\Lambda^k(T)$. An important observation is that the two spaces are related and are best understood if treated together. Indeed, the DOFs for the complete space involves the trimmed spaces on the faces and vice versa. Specifically, the DOFs for $\omega\in\mathcal P_r\Lambda^k(T)$ are}
+\begin{equation}\label{eq:complete-form-degrees-of-freedom}
+\omega\mapsto\int_f(\operatorname{tr}_f\omega)\wedge\mu,\qquad\mu\in\mathcal P_{r+k-d}^-\Lambda^{d-k}(f),\quad f\in\Delta_d(T),\ d\geq k,
+\end{equation}
+
+% block: trimmed-form-degrees-of-freedom page:97 type:ordinary-paragraph
+{while those for $\omega\in\mathcal P_r^-\Lambda^k(T)$ are}
+\begin{equation}\label{eq:trimmed-form-degrees-of-freedom}
+\omega\mapsto\int_f(\operatorname{tr}_f\omega)\wedge\mu,\qquad\mu\in\mathcal P_{r+k-d-1}\Lambda^{d-k}(f),\quad f\in\Delta_d(T),\ d\geq k.
+\end{equation}
+{Note that each DOF is associated to a specific face $f$, of some dimension between $0$ and $n$, of the simplex $T$ ($\Delta_d(T)$ denotes the set of all faces of $T$ of dimension $d$). The assembled finite element space is then determined by the requirement that the DOFs are single-valued.}
+
+% block: form-unisolvence-goal page:97 type:ordinary-paragraph
+{In order that the DOF specifications \eqref{eq:complete-form-degrees-of-freedom} and \eqref{eq:trimmed-form-degrees-of-freedom} well define finite element spaces, we must verify \emph{unisolvence} for each of them. This requires showing, first, that the total number of DOFs we have associated to the shape function space is no more than its dimension and, second, that if all the DOFs vanish for some $\omega$ in the shape function space, then $\omega$ itself vanishes. This can be accomplished for both choices of shape function spaces. Here we verify unisolvence for the trimmed space $\mathcal P_r^-\Lambda^k(T)$, for any polynomial degree $r\geq1$, any dimension $n\geq1$, and any form degree $0\leq k\leq n$. The proof, which is based on the properties of the Koszul differential, is taken directly from \BookCite{6}. A very similar proof applies in the case of the complete polynomial spaces.}
+
+% block: form-degree-of-freedom-count page:97 type:ordinary-paragraph
+{The number of DOFs defined in \eqref{eq:trimmed-form-degrees-of-freedom} is}
+\[
+\begin{aligned}
+&\sum_{d\geq k}\#\Delta_d(T)\dim[\mathcal P_{r+k-d-1}\Lambda^{d-k}(\mathbb R^d)]\\
+&\qquad=\sum_{d\geq k}\binom{n+1}{d+1}\binom{r+k-1}d\binom d{d-k}\\
+&\qquad=\sum_{j\geq0}\binom{n+1}{j+k+1}\binom{r+k-1}{j+k}\binom{j+k}j.
+\end{aligned}
+\]
+{Simplifying with the binomial identity}
+\[
+\binom ab\binom bc=\binom ac\binom{a-c}{a-b}
+\]
+{(which is immediate from the definition of the binomial coefficients), and Vandermonde's identity}
+\[
+\sum_{j\geq0}\binom a{b+j}\binom cj=\binom{a+c}{a-b},
+\]
+{the right-hand side becomes}
+\[
+\binom{r+n}{r+k}\binom{r+k-1}k=\dim\mathcal P_r^-\Lambda^k(T),
+\]
+{as required.}
+
+% block: form-unisolvence-induction pages:97,98 type:ordinary-paragraph
+{It remains to show that if all the DOFs vanish for some $\omega\in\mathcal P_r^-\Lambda^k(T)$, then $\omega$ vanishes. The proof proceeds by induction on the dimension $n$ (the case $n=1$ being easy). For any facet (face of codimension $1$) $f$ of $T$, $\operatorname{tr}_f\omega$ belongs to $\mathcal P_r^-\Lambda^k(f)$, and the DOFs for $\operatorname{tr}_f\omega$ vanish, since they are among the DOFs for $\omega$. Therefore we can invoke the inductive hypothesis to conclude that $\operatorname{tr}_f\omega$ vanishes for all facets $f$, i.e., that $\omega\in\mathring{\mathcal P}_r^-\Lambda^k(T)$, the subspace of elements of $\mathcal P_r^-\Lambda^k(T)$ whose traces vanish on the entire boundary. Since the trace operator commutes with the exterior derivative (as does any pullback), we have that $\nu:=d\omega\in\mathring{\mathcal P}_{r-1}\Lambda^{k+1}(T)$. Moreover,}
+\[
+\int_T\nu\wedge p=\pm\int_T\omega\wedge dp=0,\qquad p\in\mathcal P_{r+k-n}\Lambda^{n-k-1}(T),
+\]
+{where the first equality comes from integration by parts and the second from the vanishing DOFs of $\omega$. From this one can show, by a concrete construction based on barycentric coordinates [\BookNumber{6}, Lemma 3.4], that $\nu=0$. Since $\omega\in\mathcal P_r^-\Lambda^k$ and $d\omega=0$, it follows that $\omega\in\mathcal P_{r-1}\Lambda^k$, which, together with the vanishing of its traces, means $\omega\in\mathring{\mathcal P}_{r-1}\Lambda^k$. A second application of the construction of [\BookNumber{6}, Lemma 3.4] shows that $\omega$ vanishes and completes the unisolvence proof.}
+
+% block: assembled-form-families page:98 type:ordinary-paragraph
+{Thus we have defined a family of spaces of polynomial differential $k$-forms on each element $T$ for use as shape functions, namely, the spaces $\mathcal P_r\Lambda^k(T)$ and $\mathcal P_r^-\Lambda^k(T)$, defined for each $r\geq1$. Moreover, for each of these spaces we have specified a unisolvent set of DOFs. Together with the triangulation $\mathcal T_h$, each such choice then determines a corresponding finite element space $\mathcal P_r\Lambda^k(\mathcal T_h)$ or $\mathcal P_r^-\Lambda^k(\mathcal T_h)$ of piecewise polynomial differential forms.}
+
+% block: assembled-form-continuity-projections page:98 type:ordinary-paragraph
+{The DOFs defined in \eqref{eq:complete-form-degrees-of-freedom} and \eqref{eq:trimmed-form-degrees-of-freedom} have many nice properties, which are reflected in properties of the assembled finite element spaces. In particular,}
+\begin{itemize}
+\item{the DOFs enforce exactly the continuity needed for the assembled finite element function to belong to $H\Lambda^k$,}
+\[
+\mathcal P_r\Lambda^k(\mathcal T_h)=\{\,\omega\in H\Lambda^k(\Omega)\mid\omega|_T\in\mathcal P_r\Lambda^k(T)\,\};
+\]
+\item{the canonical projection operators $\Pi_{r,h}^k:C\Lambda^k(\bar\Omega)\to\mathcal P_r\Lambda^k(\mathcal T_h)$ determined by the DOFs form a cochain map and similarly for the $\mathcal P^-$ spaces with their canonical projections $\Pi_{r,h}^{-,k}$.}
+\end{itemize}
+
+% block: canonical-projection-commutativity page:98 type:ordinary-paragraph
+{The commutativity of the canonical projections with the exterior derivative can be verified using the Stokes theorem. It is a crucial property: the main step toward the construction of bounded cochain projections.}
