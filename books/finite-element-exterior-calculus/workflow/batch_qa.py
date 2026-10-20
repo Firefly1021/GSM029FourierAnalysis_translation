@@ -4,7 +4,9 @@ from pathlib import Path
 from pypdf import PdfReader
 m=runpy.run_path(str(Path(__file__).with_name("full_workflow.py")));P,B,ID=m["P"],m["B"],m["ID"]
 s=m["s"];load,dump,write,guard=m["load"],m["dump"],m["write"],m["guard"]
-def audit(unit):
+def audit(unit,final=False,final_numbering=None):
+    def emit_json(rel,data):dump("qa/final-unit-gates/"+rel if final else rel,data)
+    def emit_text(rel,data):write("qa/final-unit-gates/"+rel if final else rel,data)
     guard();notes=load(f"translation/authored/{unit}-notes.json");q=load("qa/latest-compilation.json");assert q["success"]
     for item in q.get("input_files",[]):assert s["m"]["sha256_file"](B.root/item["path"])==item["sha256"],"TeX changed after compilation"
     en=(B.root/f"structured/reviewed/{unit}.tex").read_text(encoding="utf8");zh=(B.root/f"translation/reviewed/{unit}.tex").read_text(encoding="utf8")
@@ -24,7 +26,7 @@ def audit(unit):
         lookup.append({"English":english,"Chinese":chinese,"Domain":domain,"Context":context,"global_matches":matches})
         if not any(x["English"]==english and x["Domain"]==domain and x["Context"]==context for x in candidates):
             row=dict.fromkeys(cf,"");row.update({"English":english,"Preferred Chinese":chinese,"Domain":domain,"Context":context,"Status":"proposed","First Source":"Finite Element Exterior Calculus","First Location":unit,"Last Verified Source":"original page images","Last Verified Location":unit,"Notes":"Book-local candidate; no global promotion"});candidates.append(row)
-    s["tsv"]("glossary/candidates.tsv",cf,candidates);dump(f"qa/terminology/{unit}-lookup.json",lookup)
+    s["tsv"]("glossary/candidates.tsv",cf,candidates);emit_json(f"qa/terminology/{unit}-lookup.json",lookup)
     aux=(Path(q["build_directory"])/"main.aux").read_text(encoding="utf8");labels={}
     for hit in re.finditer(r"\\newlabel\{([^}]+)\}\{",aux):
         body,_=s["brace"](aux,hit.end()-1);values=[];pos=0
@@ -38,21 +40,22 @@ def audit(unit):
         chapter=int(unit.split("-")[1]);numbering={}
         for prefix,field in [("eq:","expected_numbered_equations"),("fig:","expected_figures"),("tab:","expected_tables")]:
             entries=[(k,v) for k,v in labels.items() if k.startswith(prefix) and re.fullmatch(str(chapter)+r"\.\d+",v[0])]
-            assert sorted(int(v[0].split(".")[1]) for k,v in entries)==list(range(1,notes[field]+1)),(prefix,entries)
+            expected=(final_numbering or notes)[field]
+            assert sorted(int(v[0].split(".")[1]) for k,v in entries)==list(range(1,expected+1)),(prefix,entries)
             numbering[field]=len(entries)
         et=re.findall(r"\\begin\{table\}.*?\\end\{table\}",en,re.S);zt=re.findall(r"\\begin\{table\}.*?\\end\{table\}",zh,re.S);assert len(et)==len(zt)==notes.get("unit_tables",notes["expected_tables"])
         checks_tables=[]
         for i,(a,b) in enumerate(zip(et,zt),1):
             numbers=lambda value:collections.Counter(re.findall(r"(?<![A-Za-z])\d+(?:,\d{3})*(?:\.\d+)?",value))
             assert numbers(a)==numbers(b),(i,numbers(a),numbers(b));checks_tables.append({"source_table":f"{chapter}.{i}","source_target_numeric_tokens_equal":True,"numeric_token_occurrences":sum(numbers(a).values())})
-        dump(f"qa/translation/{unit}-numbering-tables.json",{"passed":True,"numbering":numbering,"tables":checks_tables,"source_image_review":notes.get("table_data_review"),"figures":notes.get("figure_source_crops")})
+        emit_json(f"qa/translation/{unit}-numbering-tables.json",{"passed":True,"numbering":numbering,"tables":checks_tables,"source_image_review":notes.get("table_data_review"),"figures":notes.get("figure_source_crops")})
     refs=[]
     for command,key in re.findall(r"\\(eqref|ref)\{([^}]+)\}",zh)+[("BookCite/BookNumber","bib:source-"+x) for x in re.findall(r"\\Book(?:Cite|Number)\{(\d+)\}",zh)]:
         assert key in labels,key;refs.append({"command":command,"label":key,"target_number":labels[key][0],"target_page":labels[key][1]})
-    dump(f"qa/translation/{unit}-reference-report.json",{"passed":True,"objects":objects,"references":refs})
+    emit_json(f"qa/translation/{unit}-reference-report.json",{"passed":True,"objects":objects,"references":refs})
     for row in load("qa/full-input-protection.json")["accepted_files"]:assert s["m"]["sha256_file"](B.root/row["file"])==row["sha256"],row
-    content=load(f"qa/batches/{unit}-content.json");dump(f"qa/batches/{unit}-automated-qa.json",{"passed":True,"unit":unit,"content":content,"names":checks,"source_pages":notes["source_pages"],"references":len(refs),"destinations":len(objects),"compile":q,"visual_review":"pending","blocking_issues":[]});guard();print(json.dumps({"unit":unit,"blocks":content["blocks"],"math":content["math_expressions"],"names":len(checks),"destinations":len(objects)},ensure_ascii=False))
-    if notes["source_observations"]:
+    content=load(f"qa/batches/{unit}-content.json");emit_json(f"qa/batches/{unit}-automated-qa.json",{"passed":True,"unit":unit,"content":content,"names":checks,"source_pages":notes["source_pages"],"references":len(refs),"destinations":len(objects),"compile":q,"visual_review":"pending","blocking_issues":[]});guard();print(json.dumps({"unit":unit,"blocks":content["blocks"],"math":content["math_expressions"],"names":len(checks),"destinations":len(objects)},ensure_ascii=False))
+    if notes["source_observations"] and not final:
         issues=[json.loads(x) for x in B.issues.read_text(encoding="utf8").splitlines() if x.strip()]
         for i,observation in enumerate(notes["source_observations"],1):
             key=f"{unit}-source-{i}"

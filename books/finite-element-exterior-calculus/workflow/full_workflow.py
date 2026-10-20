@@ -42,7 +42,10 @@ def extract(first,last):
         if not img.exists():subprocess.run([shutil.which("pdftoppm"),"-f",str(n),"-l",str(n),"-r","150","-singlefile","-png",str(B.require_source_pdf()),str(img.with_suffix(""))],check=True)
     guard();print("Source pages rendered and raw text saved as unreviewed input",first,last)
 def metadata(unit):
-    guard();rows=list(csv.DictReader(B.chapter_progress.open(encoding="utf8"),delimiter="\t"));assert next(x for x in rows if x["Unit ID"]==unit)["QA Status"]!="passed","Never regenerate passed content"
+    guard();rows=list(csv.DictReader(B.chapter_progress.open(encoding="utf8"),delimiter="\t"))
+    if unit=="publication":
+        assert not any(x["file"]=="translation/authored/publication.bilingual.tex" for x in load("qa/full-input-protection.json")["accepted_files"]),"Never regenerate accepted publication supplement"
+    else:assert next(x for x in rows if x["Unit ID"]==unit)["QA Status"]!="passed","Never regenerate passed content"
     text=(B.root/f"translation/authored/{unit}.bilingual.tex").read_text(encoding="utf8");en,zh=s["language"](text,0),s["language"](text,1);em,zm=list(s["MARK"].finditer(en)),list(s["MARK"].finditer(zh))
     source=[];target=[];formulae=[];provenance=[]
     for j,(a,b) in enumerate(zip(em,zm)):
@@ -59,7 +62,7 @@ def metadata(unit):
     for record in formulae:s["jsonschema"].validate(record,json.loads((P.root/"schemas/formula.schema.json").read_text(encoding="utf8")))
     dump(f"structured/source/{unit}-provenance.json",provenance);dump(f"qa/batches/{unit}-content.json",{"unit":unit,"blocks":len(source),"math_expressions":len(formulae),"passed":True,"visual_review":"pending"});print(unit,len(source),"blocks",len(formulae),"math")
 CHAPTERS={1:("introduction",11),2:("homological-algebra",21),3:("unbounded-operators",31),4:("hilbert-complexes",43),5:("approximation-hilbert-complexes",61),6:("exterior-calculus",73),7:("finite-element-differential-forms",91),8:("further-directions",107)}
-def assemble():
+def assemble(final=False):
     guard();text=r"""\documentclass[a4paper,UTF8,12pt]{ctexart}
 \usepackage{Mystyle}
 \usepackage{translation-adapter}
@@ -79,7 +82,17 @@ def assemble():
 \begin{center}{\Large Finite Element Exterior Calculus}\\中文翻译进度稿\end{center}
 \noindent 本稿只收录已通过内容核验并纳入当前编译批次的译文. 文末源文定位表不表示相应内容已经译完.\par
 """
+    if final:
+        text=text.split(r"\begin{document}")[0]+r"""\usepackage{refcount}
+\setcounter{tocdepth}{2}
+\newcommand{\BookContentsEntry}[2]{\addtocontents{toc}{\protect\contentsline{section}{#1}{\protect\pageref*{#2}}{\getrefbykeydefault{#2}{anchor}{}}}}
+\begin{document}
+\input{chapters/publication.tex}
+\tableofcontents\clearpage
+\BookContentsEntry{前言}{sec:preface}
+"""
     contents=[]
+    if final:contents.append((B.root/"tex/chapters/publication.tex").read_text(encoding="utf8"))
     if (B.root/"tex/frontmatter.tex").exists():text+=r"\input{frontmatter.tex}"+"\n";contents.append((B.root/"tex/frontmatter.tex").read_text(encoding="utf8"))
     chapter_files=sorted((B.root/"tex/chapters").glob("chapter-*.tex"))
     sample_inserted=False
@@ -98,7 +111,9 @@ def assemble():
     if not sample_inserted:insert_sample()
     for name in ("bibliography","index"):
         file=B.root/f"tex/chapters/{name}.tex"
-        if file.exists():text+=r"\input{chapters/"+file.name+"}\n";contents.append(file.read_text(encoding="utf8"))
+        if file.exists():
+            if final:text+=r"\BookContentsEntry{"+{"bibliography":"参考文献","index":"索引"}[name]+"}{back:"+name+"}\n"
+            text+=r"\input{chapters/"+file.name+"}\n";contents.append(file.read_text(encoding="utf8"))
     labels=set(re.findall(r"\\label\{([^}]+)\}","\n".join(contents)))|{"chap:homological-algebra"}
     refs=set(re.findall(r"\\(?:eqref|ref)\{([^}]+)\}","\n".join(contents)))
     cited=set(re.findall(r"\\Book(?:Cite|Number)\{(\d+)\}","\n".join(contents)));refs|={"bib:source-"+x for x in cited}
@@ -114,7 +129,8 @@ def assemble():
     for p in range(123,129):
         for h in re.finditer(r"(?m)^\[(\d+)\]",r.pages[p-1].extract_text() or ""):known["bib:source-"+h[1]]=(h[1],p,"Reference ["+h[1]+"]")
     missing=sorted(refs-labels);assert set(missing)<=set(known),set(missing)-set(known)
-    text+=r"\clearpage\section*{尚未翻译部分的源文定位}"+"\n"+r"以下仅登记已核实的原文引用目标, 并非这些部分的译文."+"\n"
+    if final:assert not missing,missing
+    else:text+=r"\clearpage\section*{尚未翻译部分的源文定位}"+"\n"+r"以下仅登记已核实的原文引用目标, 并非这些部分的译文."+"\n"
     records=[]
     for key in missing:
         num,page,title=known[key];text+=r"\subsection*{"+title+"}\n"+r"\makeatletter\phantomsection\def\@currentlabel{"+num+r"}\label{"+key+r"}\makeatother"+"\n"+f"Source PDF {page}, printed {r.page_labels[page-1]}.\\par\n";records.append({"label":key,"source_number":num,"pdf_page":page,"printed_page":r.page_labels[page-1],"verified_source_locator_not_translation":True})

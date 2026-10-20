@@ -36,3 +36,7 @@
 ## Approved non-Fraktur presentation policy
 
 The user rejected the proposed Fraktur change: 不要,只要不是Fraktur 字体就行. This decision supersedes the historical blocker above. Preserve accepted mathcal Z/B and all accepted sample bytes; retain original font-family evidence and register the explicit presentation exception. Do not introduce Fraktur in translated mathematics. Preserve distinctions between different source objects with documented non-Fraktur mappings. Resume chapter-02-introduction without resetting progress. No push.
+
+## Final completion
+
+All 47 natural units, the supplementary publication front matter, generated contents, eight chapters, bibliography and index are complete. Final whole-book source coverage, mathematical alignment, names, configured punctuation, real cross-references, clean compilation, rendered regression and 34 repository tests pass. See qa/final-report.md. Prior phase stops and font blockers above are historical, not current. No further translation unit remains. Keep terminology proposals book-local and the approved non-Fraktur mapping; do not auto-promote or push.

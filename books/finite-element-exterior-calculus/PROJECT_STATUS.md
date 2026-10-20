@@ -2,14 +2,19 @@ Book ID: finite-element-exterior-calculus
 Title: Finite Element Exterior Calculus
 Branch: book/finite-element-exterior-calculus
 Worktree: D:\CelianFile\BOOKTRANSLATION-worktrees\finite-element-exterior-calculus
-Phase: translation
-Status: translating
+Phase: completed
+Status: completed
 Source SHA-256: 649b672d2d54b7ebc5e51154587dbf70fefd6d6dcb5a81a9903e7bb0ee2c39d4
-Sample approved: Yes
 Passed units: 47/47
-Completed units: frontmatter, chapter-01, chapter-02-introduction, chapter-02-section-01, chapter-02-section-02, chapter-02-section-03, chapter-02-section-04, chapter-02-section-05, chapter-02-section-06, chapter-02-summary, chapter-03-introduction, chapter-03-section-01, chapter-03-section-02, chapter-03-section-03, chapter-03-section-04, chapter-04-introduction, chapter-04-section-01, chapter-04-section-02, chapter-04-section-03, chapter-04-section-04, chapter-04-section-05, chapter-05-introduction, chapter-05-section-01, chapter-05-section-02, chapter-06-introduction, chapter-06-section-01, chapter-06-section-02, chapter-07-introduction, chapter-07-section-01, chapter-07-section-02, chapter-07-section-03, chapter-07-section-04, chapter-07-section-05, chapter-07-section-06, chapter-07-section-07, chapter-07-section-08, chapter-08-introduction, chapter-08-section-01, chapter-08-section-02, chapter-08-section-03, chapter-08-section-04, chapter-08-section-05, chapter-08-section-06, chapter-08-section-07, chapter-08-section-08, bibliography, index
+Chapters completed: 1-8
+Bibliography entries: 71
+Index entries: 178
 Next incomplete unit: None
 Blocking issues: None
-Progress output: output/translation-progress.pdf
-Full-book translation complete: No
+Unresolved terminology: 0
+Full-book translation complete: Yes
+Final output: output/book-zh.pdf
+Final PDF pages: 113
+Final PDF SHA-256: 957802db5a638180f65af0c4937b193d88e0ce3d8b0e226031e21ab72fafca0a
+Final QA: qa/final-report.json
 Remote push: No
