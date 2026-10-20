@@ -21,7 +21,10 @@ def record():
     issues=[json.loads(x) for x in B.issues.read_text(encoding="utf8").splitlines() if x.strip()]
     if not any(x["id"]==issue["id"] for x in issues):issues.append(issue)
     m["write"]("qa/issues.jsonl","".join(json.dumps(x,ensure_ascii=False)+"\n" for x in issues))
-    result=resume_book(P,ID);assert result["status"]=="blocked" and result["processed"]==[],result
+    result=resume_book(P,ID);assert result["status"]=="blocked" and result.get("processed",[])==[],result
+    # The shared controller returns blocked but leaves its in-memory status as
+    # translating on this early-return path. Persist truthful book-local state.
+    state=m["load"]("qa/workflow-state.json");state["status"]="blocked";state["blocking_issues"]=[issue["id"]];m["dump"]("qa/workflow-state.json",state)
     qa=m["load"]("qa/sample-qa.json");qa.update({"status":"needs-review","formula":"needs-review","blocking_issues":[issue["id"]],"historical_technical_qa":"Previously passed; superseded for these three source symbols by the font-family follow-up","sample_user_approved":True});m["dump"]("qa/sample-qa.json",qa)
     cfg=B.load_config();cfg["status"]="blocked";m["dump"]("config/book.yaml",cfg)
     rec=project_record(P,ID);rec.phase="translation";rec.status="blocked";rec.blocking_issues=issue["id"];update_project_record(P,rec)
