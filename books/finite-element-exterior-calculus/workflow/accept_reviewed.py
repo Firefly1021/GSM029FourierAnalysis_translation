@@ -20,6 +20,15 @@ def accept(a):
     w["dump"](f"qa/batches/{a.report}-visual-regression.json",{"passed":True,"pdf_sha256":a.sha,"prior_build_sha256":a.previous_sha,"byte_identical_previously_reviewed_pages":identical,"new_pages_individually_reviewed":reviewed,"source_pages_individually_reviewed":a.source_reviewed_pages})
     w["write"](f"qa/batches/{a.report}-report.md",f"# {a.report} source-aligned batch acceptance\n\nStatus: passed. Units: {', '.join(a.units)}. All selected source content is retained, with {blocks} aligned blocks and {math} mathematical-expression occurrences. Original PDF pages individually compared: {', '.join(map(str,a.source_reviewed_pages))}.\n\nNew rendered output pages individually viewed: {', '.join(map(str,reviewed))}. Earlier pages 1-{a.unchanged_through} are byte-identical PNG renders to the previously reviewed build {a.previous_sha}. Current integrated PDF SHA-256: {a.sha}; {q['pdf_pages']} pages. This remains a progress PDF, not a completed book.\n\nSchemas, source-target math alignment, exact names, contextual terminology, ASCII punctuation, semantic references and actual PDF destination pages pass. Clean compilation uses at least two XeLaTeX rounds. Undefined references, duplicate labels, missing glyphs and overfull boxes: zero. User-approved non-Fraktur display mapping is documented; original font evidence is not discarded. Shared terminology is not overwritten or promoted.\n\nSource PDF, template manifest and earlier accepted translation hashes remain unchanged. No blocking issue. No remote push.\n")
     cfg=B.load_config();cfg["last_batch_report"]=f"qa/batches/{a.report}-report.md";w["dump"]("config/book.yaml",cfg)
+    protection=w["load"]("qa/full-input-protection.json");seen={x["file"] for x in protection["accepted_files"]}
+    for unit in a.units:
+        note=w["load"](f"translation/authored/{unit}-notes.json");dependencies=[]
+        if "figure_font_derivative" in note:dependencies.append(note["figure_font_derivative"]["derivative"])
+        if "orthogonal_sum_symbol" in note:dependencies.append("tex/generated/orthogonal-sum-macro.tex")
+        for rel in dependencies:
+            path=B.assert_write_path(B.root/rel)
+            if rel not in seen:protection["accepted_files"].append({"file":rel,"sha256":w["s"]["m"]["sha256_file"](path)});seen.add(rel)
+    w["dump"]("qa/full-input-protection.json",protection)
     for unit in a.units:w["accept"](unit)
     w["guard"]()
 

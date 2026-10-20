@@ -65,6 +65,8 @@ def assemble():
 \usepackage{translation-adapter}
 \usepackage{tikz-cd}
 \usepackage{needspace}
+\usetikzlibrary{matrix,decorations.pathreplacing,calc}
+\input{generated/orthogonal-sum-macro.tex}
 \input{translation-macros.tex}
 \setcounter{secnumdepth}{3}
 \counterwithin{figure}{section}
