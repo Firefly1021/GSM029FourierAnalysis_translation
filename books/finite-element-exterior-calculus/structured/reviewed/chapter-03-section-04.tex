@@ -1,0 +1,281 @@
+% Complete Section 3.4 and Box 3.1, original PDF 37-42 / printed 27-32.
+% The floating summary is placed after the final main-text paragraph.
+% block: vector-operators-heading page:37 type:section
+\subsection{{Example: grad, curl, and div and their adjoints}}\label{sec:vector-operators-adjoints}
+
+% block: vector-operators-intro page:37 type:ordinary-paragraph
+{In this section we consider the three vector calculus operators which enter the de Rham complex, showing how to view them as closed unbounded operators on Hilbert space, and deriving their basic properties in that framework.}
+
+% block: distributional-gradient-domain page:37 type:ordinary-paragraph
+{Let $\Omega$ denote a bounded domain in $\mathbb R^n$. We start by considering the unbounded operator from $L^2(\Omega;\mathbb R^n)$ to $L^2(\Omega)$ with domain $C_0^\infty(\Omega;\mathbb R^n)$ given by $\phi\mapsto-\operatorname{div}\phi$ for $\phi\in C_0^\infty(\Omega;\mathbb R^n)$. We shall write this operator as $(-\operatorname{div},C_0^\infty)$ to make clear its domain. Although it is not a closed operator, it is clearly densely defined, so its adjoint $(-\operatorname{div},C_0^\infty)^*$ is a closed operator $L^2(\Omega)\to L^2(\Omega;\mathbb R^n)$. By definition, a real-valued function $u$ on $\Omega$ belongs to the domain of this adjoint if it belongs to $L^2(\Omega)$ and there exists a vector field $v$ in $L^2(\Omega;\mathbb R^n)$ for which}
+\[
+-\int_\Omega u\operatorname{div}\phi\,dx=\int_\Omega v\cdot\phi\,dx,\qquad\phi\in C_0^\infty(\Omega;\mathbb R^n).
+\]
+
+% block: gradient-hilbert-space page:37 type:ordinary-paragraph
+{But this equation is exactly the statement that the distributional gradient of $u$, $\operatorname{grad}u$, belongs to $L^2$ (namely, $\operatorname{grad}u=v=(-\operatorname{div},C_0^\infty)^*u$). Thus the domain of $(-\operatorname{div},C_0^\infty)^*$ is the set of all $L^2$ functions with distributional gradient in $L^2$, which is precisely the definition of the Sobolev space $H^1(\Omega)$. We have shown that}
+\[
+(-\operatorname{div},C_0^\infty)^*=(\operatorname{grad},H^1).
+\]
+{The operator $(\operatorname{grad},H^1)$ not only is closed, but it is evidently also densely defined (its domain contains $C_0^\infty$, for example, which is already dense in $L^2$). The fact that it is closed establishes the completeness of $H^1$.}
+
+% block: divergence-hilbert-space page:37 type:ordinary-paragraph
+{We now reverse the roles of div and grad and consider the unbounded operator $(-\operatorname{grad},C_0^\infty)$ from $L^2(\Omega)$ to $L^2(\Omega;\mathbb R^n)$. Reasoning just as above,}
+\[
+(-\operatorname{grad},C_0^\infty)^*=(\operatorname{div},H(\operatorname{div})),
+\]
+{where the operator on the right-hand side is closed and densely defined. Its domain is the Hilbert space $H(\operatorname{div};\Omega)$, consisting of $L^2$ vector fields with distributional divergence in $L^2$.}
+
+% block: grad-div-integration-by-parts-intro page:38 type:ordinary-paragraph
+{Our next goal is to compute the adjoints of each of the two operators $(\operatorname{grad},H^1)$ and $(\operatorname{div},H(\operatorname{div}))$ just derived. The key to this is the integration-by-parts formula}
+\begin{equation}\label{eq:grad-div-classical-green}
+\int u\operatorname{div}w\,dx+\int\operatorname{grad}u\cdot w\,dx=\int_{\partial\Omega}u|_{\partial\Omega}w|_{\partial\Omega}\cdot n\,ds.
+\end{equation}
+{This certainly holds for $u\in C^1(\overline\Omega)$, $w\in C^1(\overline\Omega;\mathbb R^n)$ and a smooth boundary, but it is not clear that quantities like the trace of $w$ on $\partial\Omega$ make sense for $w$ only belonging to $H(\operatorname{div})$. So first we investigate that issue. The key result is given in Theorem~\ref{thm:normal-trace-extension}.}
+
+% block: sobolev-trace-facts page:38 type:ordinary-paragraph
+{For this, and the remainder of the section, we suppose that $\Omega$ has a Lipschitz boundary. We begin by recalling a few elementary facts about the Sobolev space $H^1$. First, the space $C^\infty(\overline\Omega)$ is dense in $H^1(\Omega)$ [\BookNumber{41}, Section 5.3, Theorem 2]. Second, the restriction operator $C^1(\overline\Omega)\to L^2(\partial\Omega)$ extends to a bounded trace operator $\operatorname{tr}:H^1(\Omega)\to L^2(\partial\Omega)$ [\BookNumber{41}, Section 5.5, Theorem 1]. The range of the trace operator is $H^{1/2}(\partial\Omega)$ and, in fact, this is one possible way to define that space. In this approach, the norm in $H^{1/2}(\partial\Omega)$ is given by}
+\begin{equation}\label{eq:trace-quotient-norm}
+\|g\|_{1/2,\partial\Omega}=\inf_{\operatorname{tr}u=g}\|u\|_{1,\Omega}.
+\end{equation}
+
+% block: trace-annihilator-intro page:38 type:ordinary-paragraph
+{Third, the kernel of the trace operator is the space $\mathring H^1(\Omega)$, defined as the closure of $C_0^\infty(\Omega)$ in $H^1(\Omega)$. See [\BookNumber{41}, Section 5.5, Theorem 2]. Knowing both the range and the kernel of the trace operator acting on $H^1(\Omega)$, we can use duality to characterize the functionals on $H^1(\Omega)$ which vanish on the kernel $\mathring H^1(\Omega)$. The following result is elementary.}
+
+% block: dual-surjection-annihilator page:38 type:lemma
+\Needspace{6\baselineskip}
+\begin{Lemma}\label{lem:dual-surjection-annihilator}
+{If $\gamma:X\to Y$ is a bounded linear surjection between normed linear spaces with kernel $Z$, the dual map $\gamma':Y'\to X'$ is a bounded injection with range equal to the annihilator of $Z$ (defined as $\{\,L\in X'\mid L|_Z\equiv0\,\}$). Thus, for $L$ in the annihilator there exists a unique $g\in Y'$ such that}
+\[
+Lu=\langle g,\gamma u\rangle,\qquad u\in X.
+\]
+\end{Lemma}
+
+% block: negative-trace-space-intro page:38 type:ordinary-paragraph
+{Applying this lemma with $\gamma$ equal to the trace operator $\operatorname{tr}:H^1(\Omega)\to H^{1/2}(\partial\Omega)$ and defining $H^{-1/2}(\partial\Omega)$ as the dual space of $H^{1/2}(\partial\Omega)$, we obtain the following characterization.}
+
+% block: trace-functional-representation page:38 type:proposition
+\Needspace{6\baselineskip}
+\begin{Proposition}\label{prop:trace-functional-representation}
+{If $L:H^1(\Omega)\to\mathbb R$ is a bounded linear functional which annihilates $\mathring H^1(\Omega)$, then there exists a unique $g\in H^{-1/2}(\partial\Omega)$ for which}
+\begin{equation}\label{eq:trace-functional-representation}
+Lu=\langle g,\operatorname{tr}u\rangle,\qquad u\in H^1(\Omega).
+\end{equation}
+{Moreover, $\|g\|_{H^{-1/2}(\partial\Omega)}=\|L\|_{H^1(\Omega)'}$.}
+\end{Proposition}
+
+% block: trace-functional-proof page:38 type:proof
+\begin{Proof}
+{The existence of a unique $g$ satisfying \eqref{eq:trace-functional-representation} comes directly from the lemma. From \eqref{eq:trace-functional-representation} and \eqref{eq:trace-quotient-norm}, we have}
+\[
+|Lu|\leq\|g\|_{H^{-1/2}(\partial\Omega)}\|\operatorname{tr}u\|_{H^{1/2}(\partial\Omega)}\leq\|g\|_{H^{-1/2}(\partial\Omega)}\|u\|_{H^1(\Omega)},
+\]
+{so $\|L\|\leq\|g\|_{H^{-1/2}(\partial\Omega)}$. For the reverse inequality, let $f\in H^{1/2}(\partial\Omega)$ be arbitrary and choose $u\in H^1(\Omega)$ such that $\operatorname{tr}u=f$ and $\|u\|_1\leq\|f\|_{H^{1/2}(\partial\Omega)}$. Then}
+\[
+\langle g,f\rangle=Lu\leq\|L\|\|u\|_1\leq\|L\|\|f\|_{H^{1/2}(\partial\Omega)}.
+\]
+\end{Proof}
+
+% block: normal-trace-functional page:39 type:ordinary-paragraph
+{Next we apply this result to define the trace of $w\in H(\operatorname{div};\Omega)$. The functional}
+\[
+L_w(u)=\int u\operatorname{div}w\,dx+\int\operatorname{grad}u\cdot w\,dx,\qquad u\in H^1(\Omega),
+\]
+{is a bounded linear functional on $H^1$ and, by the definition of the distributional derivative, $L_w(u)$ vanishes for $u\in C_0^\infty(\Omega)$ and hence, by density, for $u\in\mathring H^1(\Omega)$. We may thus apply the proposition to obtain a unique $\gamma_n w\in H^{-1/2}(\partial\Omega)$ for which}
+\begin{equation}\label{eq:normal-trace-green}
+\int u\operatorname{div}w\,dx+\int\operatorname{grad}u\cdot w\,dx=\langle\gamma_n w,\operatorname{tr}u\rangle,\quad u\in H^1(\Omega),\ w\in H(\operatorname{div}).
+\end{equation}
+
+% block: normal-trace-norm-bound page:39 type:ordinary-paragraph
+{Moreover,}
+\[
+\|\gamma_n w\|_{-1/2,\partial\Omega}=\sup_u\frac{\int u\operatorname{div}w\,dx+\int\operatorname{grad}u\cdot w\,dx}{\|u\|_{1,\Omega}}\leq\|w\|_{H(\operatorname{div})}.
+\]
+
+% block: normal-trace-classical-identification page:39 type:ordinary-paragraph
+{To understand the meaning of $\gamma_n w$, we compare \eqref{eq:normal-trace-green} with the integration-by-parts formula \eqref{eq:grad-div-classical-green}. Fixing $w\in C^1(\overline\Omega;\mathbb R^3)$, note that, as a function of $u\in C^1(\overline\Omega)$, each of the three integrals in \eqref{eq:grad-div-classical-green} is bounded with respect to the $H^1$ norm. The density of smooth functions in $H^1$ then implies \eqref{eq:grad-div-classical-green} for all $u\in H^1(\Omega)$. However, $\gamma_n w$ is uniquely determined by \eqref{eq:normal-trace-green}, so we have}
+\[
+\gamma_n w=w|_{\partial\Omega}\cdot n
+\]
+{for $w\in C^1(\overline\Omega;\mathbb R^3)$. We have established the following theorem.}
+
+% block: normal-trace-extension page:39 type:theorem
+\Needspace{6\baselineskip}
+\begin{Theorem}\label{thm:normal-trace-extension}
+{The operator $w\mapsto w|_{\partial\Omega}\cdot n$ on $C^1(\overline\Omega;\mathbb R^3)$ extends to a bounded linear operator $\gamma_n:H(\operatorname{div})\to H^{-1/2}(\partial\Omega)$. The extension satisfies formula \eqref{eq:normal-trace-green} for integration by parts and the bound $\|\gamma_n w\|_{-1/2,\partial\Omega}\leq\|w\|_{H(\operatorname{div})}$.}
+\end{Theorem}
+
+% block: zero-normal-trace-domain page:39 type:ordinary-paragraph
+{We are now able to compute the adjoint of the gradient operator with domain $H^1$. For this, define}
+\[
+\mathring H(\operatorname{div})=\{\,w\in H(\operatorname{div})\mid\gamma_n w=0\,\}.
+\]
+
+% block: gradient-adjoint page:39 type:theorem
+\Needspace{6\baselineskip}
+\begin{Theorem}\label{thm:gradient-adjoint-zero-normal}
+{The adjoint of the unbounded operator $(\operatorname{grad},H^1)$ is the operator $(-\operatorname{div},\mathring H(\operatorname{div}))$.}
+\end{Theorem}
+
+% block: gradient-adjoint-proof page:39 type:proof
+\begin{Proof}
+{A vector field $w\in L^2(\Omega;\mathbb R^n)$ is in the domain of the adjoint if and only if there exists $v\in L^2(\Omega)$ such that}
+\[
+\int w\cdot\operatorname{grad}u\,dx=\int vu\,dx,\qquad u\in H^1(\Omega).
+\]
+{In that case, clearly we must have $w\in H(\operatorname{div})$ and $v=-\operatorname{div}w$ (by considering $u\in C_0^\infty$). Thus $w$ belongs to the domain of the adjoint if and only if $w\in H(\operatorname{div})$ and}
+\[
+\int w\cdot\operatorname{grad}u\,dx=-\int(\operatorname{div}w)u\,dx,\qquad u\in H^1(\Omega).
+\]
+{Comparing with the definition \eqref{eq:normal-trace-green} of $\gamma_n w$, we see that $w$ belongs to the domain of the adjoint if and only if $\gamma_n w=0$.}
+\end{Proof}
+
+% block: normal-trace-surjection-intro page:40 type:ordinary-paragraph
+{We next show that the normal trace operator maps $H(\operatorname{div})$ not only into $H^{-1/2}(\partial\Omega)$ but onto.}
+
+% block: normal-trace-surjective page:40 type:theorem
+\Needspace{6\baselineskip}
+\begin{Theorem}\label{thm:normal-trace-surjective}
+{The operator $\gamma_n:H(\operatorname{div})\to H^{-1/2}(\partial\Omega)$ is surjective.}
+\end{Theorem}
+
+% block: normal-trace-surjective-proof page:40 type:proof
+\begin{Proof}
+{Given $g\in H^{-1/2}(\partial\Omega)$, define $u\in H^1$ by the Neumann problem}
+\[
+\int\operatorname{grad}u\cdot\operatorname{grad}v\,dx+\int uv\,dx=\langle g,\operatorname{tr}v\rangle,\qquad v\in H^1.
+\]
+{Then $-\Delta u+u=0$. Take $w=\operatorname{grad}u$. Then $\operatorname{div}w=\Delta u=u$, and so $w\in H(\operatorname{div})$. We have}
+\[
+\int w\cdot\operatorname{grad}v\,dx+\int(\operatorname{div}w)v\,dx=\langle g,\operatorname{tr}v\rangle,\qquad v\in H^1,
+\]
+{which shows that $\gamma_n w=g$.}
+\end{Proof}
+
+% block: divergence-adjoint-intro page:40 type:ordinary-paragraph
+{Using this, we can argue exactly as in the proof of Theorem~\ref{thm:gradient-adjoint-zero-normal}, to prove the following result, which establishes the adjoint of the divergence operator.}
+
+% block: divergence-adjoint page:40 type:theorem
+\Needspace{6\baselineskip}
+\begin{Theorem}\label{thm:divergence-adjoint-zero-trace}
+{The adjoint of the unbounded operator $(\operatorname{div},H(\operatorname{div}))$ is the operator $(-\operatorname{grad},\mathring H^1)$.}
+\end{Theorem}
+
+% block: reverse-grad-div-adjoints-intro page:40 type:ordinary-paragraph
+{Since $T^{**}=T$ for a closed densely defined operator, from Theorems~\ref{thm:gradient-adjoint-zero-normal} and \ref{thm:divergence-adjoint-zero-trace} we can read off two more adjoints.}
+
+% block: reverse-grad-div-adjoints page:40 type:theorem
+\Needspace{6\baselineskip}
+\begin{Theorem}\label{thm:reverse-gradient-divergence-adjoints}
+\[
+\begin{gathered}
+(\operatorname{div},\mathring H(\operatorname{div}))^*=(-\operatorname{grad},H^1),\\
+(\operatorname{grad},\mathring H^1)^*=(-\operatorname{div},H(\operatorname{div})).
+\end{gathered}
+\]
+\end{Theorem}
+
+% block: grad-div-closed-ranges page:40 type:ordinary-paragraph
+{Next we verify that all of these operators have closed range. For $(\operatorname{div},H(\operatorname{div}))$ this is clear, since in fact $\operatorname{div}H(\operatorname{div})=L^2$, as can be seen by writing $f\in L^2$ as $\Delta u=\operatorname{div}\operatorname{grad}u$ for some $u\in H^1$. If $\int f\,dx=0$, then we can choose $u$ satisfying the Neumann condition $\operatorname{grad}u\cdot n=0$, and so $f\in\operatorname{div}\mathring H(\operatorname{div})$. Thus the range $\operatorname{div}\mathring H(\operatorname{div})$ has codimension $1$ in $L^2$, and so this is closed as well, by Theorem~\ref{thm:finite-codimension-closed-range}. The closed range theorem then implies that the adjoints of these two maps, namely, $(\operatorname{grad},\mathring H^1)$ and $(\operatorname{grad},H^1)$, both have closed range as well.}
+
+% block: curl-integration-by-parts-intro page:40 type:ordinary-paragraph
+{Finally, we turn to the curl operator, assuming the domain $\Omega\subset\mathbb R^3$. Most of the arguments we applied above to grad and div apply to curl as well, but not all, because neither the kernel nor the range of curl is finite codimensional. For the curl, the relevant integration-by-parts formula is}
+\begin{equation}\label{eq:curl-classical-green}
+\begin{aligned}
+\int v\cdot\operatorname{curl}u\,dx-\int\operatorname{curl}v\cdot u\,dx&=\int_{\partial\Omega}v|_{\partial\Omega}\times n\cdot u|_{\partial\Omega}\,ds,\\
+&\hspace{-7em}u,v\in C^1(\overline\Omega;\mathbb R^3),
+\end{aligned}
+\end{equation}
+
+% block: curl-distributional-definition pages:40,41 type:ordinary-paragraph
+{where $n$ is the unit outward normal (which is defined almost everywhere since the boundary is Lipschitz). The space $H(\operatorname{curl})$ is defined to be the space of vector fields in $L^2(\Omega;\mathbb R^3)$ whose curl taken in the sense of distributions also belongs to $L^2(\Omega;\mathbb R^3)$. Thus, a vector field $u\in L^2(\Omega;\mathbb R^3)$ belongs to $H(\operatorname{curl})$ if and only if there exists a vector field $v\in L^2(\Omega;\mathbb R^3)$ such that}
+\begin{equation}\label{eq:distributional-curl}
+\int_\Omega u\cdot\operatorname{curl}w\,dx=\int_\Omega v\cdot w\,dx,\qquad w\in C_0^\infty(\Omega;\mathbb R^3),
+\end{equation}
+{and, in this case, $v=\operatorname{curl}u$. Thus, just as above,}
+\[
+(\operatorname{curl},C_0^\infty)^*=(\operatorname{curl},H(\operatorname{curl})).
+\]
+{Being an adjoint, this last is a closed operator, which means that $H(\operatorname{curl})$ is a Hilbert space when endowed with the graph norm}
+\[
+\|u\|_{H(\operatorname{curl})}^2=\|u\|_{L^2}^2+\|\operatorname{curl}u\|_{L^2}^2.
+\]
+
+% block: tangential-trace-functional page:41 type:ordinary-paragraph
+{Now we develop a trace for $v\in H(\operatorname{curl})$. The map}
+\[
+u\mapsto\int v\cdot\operatorname{curl}u\,dx-\int\operatorname{curl}v\cdot u\,dx,\qquad u\in H^1(\Omega;\mathbb R^3),
+\]
+{is a bounded linear functional on $H^1(\Omega;\mathbb R^3)$ which vanishes on $C_0^\infty(\Omega;\mathbb R^3)$ and so, by density, on $\mathring H^1(\Omega;\mathbb R^3)$. Therefore we can apply Proposition~\ref{prop:trace-functional-representation} to infer the existence of a unique $\gamma_\tau v\in H^{-1/2}(\partial\Omega;\mathbb R^3)$ for which}
+\begin{equation}\label{eq:tangential-trace-green}
+\begin{aligned}
+\int v\cdot\operatorname{curl}u\,dx-\int\operatorname{curl}v\cdot u\,dx&=\langle\gamma_\tau v,\operatorname{tr}u\rangle,\\
+u\in H^1(\Omega;\mathbb R^3),\quad v&\in H(\operatorname{curl}),
+\end{aligned}
+\end{equation}
+{and to obtain the norm bound}
+\begin{equation}\label{eq:tangential-trace-bound}
+\|\gamma_\tau v\|_{-1/2,\partial\Omega}\leq\|v\|_{H(\operatorname{curl})}.
+\end{equation}
+
+% block: tangential-trace-identification page:41 type:ordinary-paragraph
+{Comparing with \eqref{eq:curl-classical-green} we see that we have extended the \emph{tangential trace operator} $\gamma_\tau v:=v|_{\partial\Omega}\times n$ to a bounded linear map on $H(\operatorname{curl})$ with range belonging to the Sobolev space of $H^{-1/2}(\partial\Omega;\mathbb R^3)$ of vector fields on $\partial\Omega$, and so we have established the analogue of Theorem~\ref{thm:normal-trace-extension} for $H(\operatorname{curl})$.}
+
+% block: tangential-trace-extension page:41 type:theorem
+\Needspace{6\baselineskip}
+\begin{Theorem}\label{thm:tangential-trace-extension}
+{The operator $v\mapsto v|_{\partial\Omega}\times n$ on $C^1(\overline\Omega;\mathbb R^3)$ extends to a bounded linear operator $\gamma_\tau:H(\operatorname{curl})\to H^{-1/2}(\partial\Omega;\mathbb R^3)$. The extension satisfies the integration-by-parts formula \eqref{eq:tangential-trace-green} and the bound \eqref{eq:tangential-trace-bound}.}
+\end{Theorem}
+
+% block: tangential-trace-not-surjective page:41 type:ordinary-paragraph
+{Note, however, that the trace operator $\gamma_\tau$ is not onto $H^{-1/2}(\partial\Omega;\mathbb R^3)$, i.e., the analogue of Theorem~\ref{thm:normal-trace-surjective} does not hold. For one thing, $\gamma_\tau w$ is always a tangential vector field. This is clear at least if $v$ and $\partial\Omega$ are smooth, while the precise way to define this in the case of a merely Lipschitz boundary is subtle. There are further restrictions on the range of $\gamma_\tau$ as well. See [\BookNumber{25}, \BookNumber{26}] for details.}
+
+% block: curl-adjoint-calculation pages:41,42 type:ordinary-paragraph
+{Finally, we compute the adjoint of $(\operatorname{curl},H(\operatorname{curl}))$. If $w$ belongs to the domain of the adjoint, then there exists $v=(\operatorname{curl},H(\operatorname{curl}))^*w\in L^2(\Omega;\mathbb R^3)$ with}
+\[
+\int w\cdot\operatorname{curl}u\,dx=\int v\cdot u\,dx,\qquad u\in H(\operatorname{curl}).
+\]
+{Such a $w$ must belong to $H(\operatorname{curl})$ and have $\operatorname{curl}w=v$. Thus $w$ belongs to the domain of $(\operatorname{curl},H(\operatorname{curl}))^*$ if and only if $w\in H(\operatorname{curl})$ and}
+\[
+\int w\cdot\operatorname{curl}u\,dx=\int\operatorname{curl}w\cdot u\,dx,\qquad u\in H(\operatorname{curl}).
+\]
+{It can be shown (by a mollification argument similar to that for $H^1$) that smooth functions are dense in $H(\operatorname{curl})$. Thus we need only require that the last equation hold for all $u\in H^1(\Omega;\mathbb R^3)$. But then \eqref{eq:tangential-trace-green} implies that this holds if and only if $\gamma_\tau w=0$, and so we have established that the adjoint of $(\operatorname{curl},H(\operatorname{curl}))$ is $(\operatorname{curl},\mathring H(\operatorname{curl}))$. Finally, we can take adjoints and get the reverse relation. These results are summarized in the following theorem.}
+
+% block: curl-adjoints page:42 type:theorem
+\Needspace{6\baselineskip}
+\begin{Theorem}\label{thm:curl-adjoints}
+\[
+\begin{gathered}
+(\operatorname{curl},H(\operatorname{curl}))^*=(\operatorname{curl},\mathring H(\operatorname{curl})),\\
+(\operatorname{curl},\mathring H(\operatorname{curl}))^*=(\operatorname{curl},H(\operatorname{curl})),
+\end{gathered}
+\]
+{where}
+\[
+\mathring H(\operatorname{curl}):=\{\,w\in H(\operatorname{curl})\mid\gamma_\tau w=0\,\}.
+\]
+\end{Theorem}
+
+% block: curl-closed-range-forward-reference page:42 type:ordinary-paragraph
+{In Section~\ref{sec:l2-de-rham-complex} we show that the range $\operatorname{curl}H(\operatorname{curl})$ is closed.}
+
+% block: unbounded-operators-summary-heading page:42 type:ordinary-paragraph
+\begin{tcolorbox}[enhanced,breakable,colback=KuangNei,frame hidden,boxrule=0pt,sharpish corners,before skip=10pt,after skip=10pt]
+\refstepcounter{booksummary}\label{box:unbounded-operators-summary}
+\noindent\textbf{Box~\thebooksummary:} {Summary of Chapter~\ref{chap:unbounded-operators} on operators on Hilbert spaces.}\par
+
+% block: summary-unbounded-domain page:42 type:ordinary-paragraph
+{An \emph{(unbounded) operator} from one Hilbert space $X$ to another $Y$ is a linear operator mapping its domain $D(T)$, a subspace of $X$, into $Y$. The domain need not be closed in $X$ and the operator need not be bounded, but usually we require that the operator be \emph{densely defined}, i.e., that $D(T)$ is dense in $X$.}
+
+% block: summary-closed-operator page:42 type:ordinary-paragraph
+{An operator is \emph{closed} if its graph is closed in $X\times Y$ or, equivalently, if $D(T)$ is complete when furnished with the \emph{graph norm}. An everywhere defined operator is closed if and only if it is bounded.}
+
+% block: summary-adjoint-operator page:42 type:ordinary-paragraph
+{A densely defined operator $T$ from $X$ to $Y$ gives rise to an adjoint operator $T^*$ from $Y$ to $X$. The adjoint $T^*$ is always closed. If $T$ is closed, then $T^*$ is also densely defined, and, in this case, $T^{**}=T$.}
+
+% block: summary-closed-range page:42 type:ordinary-paragraph
+{The range of a closed, densely defined linear operator $X\to Y$ need not be a closed subspace, but the range of $T$ is closed in $Y$ if and only if the range of $T^*$ is closed in $X$. If $\dim Y/\mathcal R(T)<\infty$, then $T$ has closed range. If the inclusion $D(T)\subset X$ is compact, then $T$ has closed range.}
+
+% block: summary-vector-operators page:42 type:ordinary-paragraph
+{On a bounded domain in $\mathbb R^3$ with Lipschitz boundary, the operators grad, curl, and div may be viewed as unbounded operators on $L^2$ (scalars or vectors), with domains $H^1$, $H(\operatorname{curl})$, $H(\operatorname{div})$, respectively. They are densely defined, closed, and have closed ranges. Their adjoints are $-\operatorname{div}$, $\operatorname{curl}$, and $-\operatorname{grad}$ with domains $\mathring H(\operatorname{div})$, $\mathring H(\operatorname{curl})$, and $\mathring H^1$, respectively.}
+\end{tcolorbox}

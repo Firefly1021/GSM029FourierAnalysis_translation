@@ -1,0 +1,11 @@
+# Complete Chapter 3 acceptance
+
+Status: passed. All original PDF 31-42 / printed 21-32 is covered, including Sections 3.1-3.4, every proof, the graph-norm footnote and Box 3.1. The five natural units contain 97 aligned blocks and 604 math occurrences. There are twelve numbered equations 3.1-3.12, eighteen statement objects 3.1-3.18 and twelve Proof environments. No source content is summarized or omitted.
+
+Original page images were individually inspected. Mathematical tokens match reconstructed English and Chinese; graph closure bars, adjoint stars, norm powers, domains, traces, negative exponents, normals, signs and integrals were compared to the source. English environment headings, exact names, contextual terminology lookup, ASCII prose punctuation and schemas pass. Terms remain proposed locally. Source T(D), the R^3/n dimensional wording and Lemma 3.10's normed-space assumptions remain as printed, with explicit source QA records.
+
+An actual cross-page anchor mismatch was detected before acceptance. Local Needspace guards in only these new translation files now keep refstepcounter anchors on the visible statement pages; no original or shared template was edited. All 99 label destination pages now agree. Twelve equation numbers and eighteen theorem-like numbers exactly match the original sequence.
+
+A clean build completes at least two XeLaTeX rounds, with zero undefined references, duplicate labels, missing glyphs and overfull boxes. Latest integrated PDF: 32 pages; SHA-256 cb3919aec2636f7018b43a7df1d6b5210691217330147acef24be8a445949806. New output pages 19-32 were individually viewed. Earlier output pages 1-18 are byte-identical PNG renders to the previously individually reviewed accepted build. The first 29 output pages contain translation; the final three are explicitly marked verified source locators for unfinished targets. Box 3.1's original float is placed after the section text and breaks across output pages 28-29 without lost text.
+
+Source PDF, raw template manifest and every earlier accepted file hash remain unchanged. No Fraktur was introduced. No blocking issue. Next unit: chapter-04-introduction. Full-book translation continues; not complete. No remote push.

@@ -64,6 +64,7 @@ def assemble():
 \usepackage{Mystyle}
 \usepackage{translation-adapter}
 \usepackage{tikz-cd}
+\usepackage{needspace}
 \input{translation-macros.tex}
 \setcounter{secnumdepth}{3}
 \counterwithin{figure}{section}
@@ -71,6 +72,7 @@ def assemble():
 \newcounter{booksummary}[section]
 \renewcommand{\thebooksummary}{\thesection.\arabic{booksummary}}
 \newcommand{\BookCite}[1]{\hyperref[bib:source-#1]{[\ref*{bib:source-#1}]}}
+\newcommand{\BookNumber}[1]{\hyperref[bib:source-#1]{\ref*{bib:source-#1}}}
 \begin{document}
 \begin{center}{\Large Finite Element Exterior Calculus}\\中文翻译进度稿\end{center}
 \noindent 本稿只收录已通过内容核验并纳入当前编译批次的译文. 文末源文定位表不表示相应内容已经译完.\par
@@ -94,10 +96,11 @@ def assemble():
     if not sample_inserted:insert_sample()
     labels=set(re.findall(r"\\label\{([^}]+)\}","\n".join(contents)))|{"chap:homological-algebra"}
     refs=set(re.findall(r"\\(?:eqref|ref)\{([^}]+)\}","\n".join(contents)))
-    cited=set(re.findall(r"\\BookCite\{(\d+)\}","\n".join(contents)));refs|={"bib:source-"+x for x in cited}
+    cited=set(re.findall(r"\\Book(?:Cite|Number)\{(\d+)\}","\n".join(contents)));refs|={"bib:source-"+x for x in cited}
     known={"chap:"+key:(str(n),page,"Chapter "+str(n)) for n,(key,page) in CHAPTERS.items()}
     known.update({"sec:whitney-forms-de-rham":("7.6",100,"The Whitney forms and de Rham's theorem"),"bib:cartan-differential-expressions":("27",124,"Reference [27]")})
     known.update({"sec:complete-polynomial-forms":("7.1",92,"The complete polynomial spaces of differential forms"),"sec:primal-galerkin":("5.1",61,"Galerkin discretization of the primal formulation"),"sec:mixed-methods":("5.2",64,"Mixed methods of discretization"),"sec:eigenvalue-problems":("8.1",107,"Eigenvalue problems"),"fig:primal-lagrange-failure":("5.1",63,"Figure 5.1")})
+    known["sec:l2-de-rham-complex"]=("4.3",47,"The L2 de Rham complex")
     r=PdfReader(B.require_source_pdf())
     for p in range(123,129):
         for h in re.finditer(r"(?m)^\[(\d+)\]",r.pages[p-1].extract_text() or ""):known["bib:source-"+h[1]]=(h[1],p,"Reference ["+h[1]+"]")

@@ -47,7 +47,7 @@ def audit(unit):
             assert numbers(a)==numbers(b),(i,numbers(a),numbers(b));checks_tables.append({"source_table":f"{chapter}.{i}","source_target_numeric_tokens_equal":True,"numeric_token_occurrences":sum(numbers(a).values())})
         dump(f"qa/translation/{unit}-numbering-tables.json",{"passed":True,"numbering":numbering,"tables":checks_tables,"source_image_review":notes.get("table_data_review"),"figures":notes.get("figure_source_crops")})
     refs=[]
-    for command,key in re.findall(r"\\(eqref|ref)\{([^}]+)\}",zh)+[("BookCite","bib:source-"+x) for x in re.findall(r"\\BookCite\{(\d+)\}",zh)]:
+    for command,key in re.findall(r"\\(eqref|ref)\{([^}]+)\}",zh)+[("BookCite/BookNumber","bib:source-"+x) for x in re.findall(r"\\Book(?:Cite|Number)\{(\d+)\}",zh)]:
         assert key in labels,key;refs.append({"command":command,"label":key,"target_number":labels[key][0],"target_page":labels[key][1]})
     dump(f"qa/translation/{unit}-reference-report.json",{"passed":True,"objects":objects,"references":refs})
     for row in load("qa/full-input-protection.json")["accepted_files"]:assert s["m"]["sha256_file"](B.root/row["file"])==row["sha256"],row
