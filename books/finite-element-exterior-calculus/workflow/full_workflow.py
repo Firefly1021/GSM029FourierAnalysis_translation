@@ -106,6 +106,7 @@ def assemble():
     known["sec:maxwell-equations"]=("8.6",113,"Maxwell's equations")
     known["box:hilbert-complexes-summary"]=("4.1",60,"Box 4.1: Summary of Hilbert complexes")
     known["box:approximation-hilbert-summary"]=("5.1",72,"Box 5.1: Summary of approximation of Hilbert complexes")
+    known.update({"sec:finite-element-differential-forms":("7.4",96,"Finite element differential forms"),"sec:koszul-complex":("7.2",93,"The Koszul complex"),"sec:trimmed-polynomial-forms":("7.3",95,"The trimmed polynomial spaces of differential forms"),"sec:finite-element-space-properties":("7.5",98,"Properties of the finite element spaces"),"sec:cubical-elements":("7.7",101,"Cubical elements"),"sec:historical-antecedents":("7.8",103,"Historical antecedents")})
     r=PdfReader(B.require_source_pdf())
     for p in range(123,129):
         for h in re.finditer(r"(?m)^\[(\d+)\]",r.pages[p-1].extract_text() or ""):known["bib:source-"+h[1]]=(h[1],p,"Reference ["+h[1]+"]")
