@@ -42,6 +42,13 @@ class TemplateTests(unittest.TestCase):
             self.assertIn(setting, adapter)
         self.assertNotIn("KuangNei", adapter)
 
+    def test_aljabr_backmatter_uses_native_template_layout(self) -> None:
+        adapter = (TEMPLATE_ROOT / "adapter/aljabr-1/feec-aljabr.sty").read_text(encoding="utf-8")
+        self.assertIn(r"\RequirePackage[xindy,splitindex]{imakeidx}", adapter)
+        self.assertIn(r"\makeindex[columns=2,program=truexindy", adapter)
+        for primitive in (r"\bibsetup\bibfont", r"\biblabelsep", r"\bibitemsep", r"\bibparsep"):
+            self.assertIn(primitive, adapter)
+
     def test_aljabr_uses_unmodified_upstream_font_setup_without_fallback(self) -> None:
         text = (TEMPLATE_ROOT / "adapter/aljabr-1/feec-fonts.tex").read_text(encoding="utf-8")
         self.assertIn(r"\input{font-setup-open.tex}", text)

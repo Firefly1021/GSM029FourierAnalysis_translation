@@ -4,6 +4,10 @@
 \RequirePackage{xparse}
 \RequirePackage{tikz-cd,needspace,refcount,bm,mathrsfs,stmaryrd}
 \RequirePackage{enumitem,tabularx,array,multirow,float}
+\RequirePackage[xindy,splitindex]{imakeidx}
+% Template-AJbook.tex uses a two-column index. Only the book-specific title
+% differs; the already recorded semantic contents entry avoids duplication.
+\makeindex[columns=2,program=truexindy,title={索引}]
 \usetikzlibrary{matrix,decorations.pathreplacing,calc,arrows.meta,positioning}
 % Verbatim visual setting from Template-AJbook.tex, not a new style choice.
 \renewcommand*\arraystretch{1.5}
@@ -39,6 +43,23 @@
     bottom = 3mm,
     title={}
 }
+% Use the bibliography font/setup and exact numeric.bbx list parameters
+% already selected by AJbook. Feed immutable source entries without sorting,
+% parsing names or replacing the book's own citation numbers.
+\newenvironment{MBSourceBibliography}[1]{%
+  \bibsetup\bibfont
+  \settowidth{\labelnumberwidth}{\printtext[labelnumberwidth]{#1}}%
+  \list{\printtext[labelnumberwidth]{\arabic{bookreference}}}{%
+    \usecounter{bookreference}%
+    \setlength{\labelwidth}{\labelnumberwidth}%
+    \setlength{\leftmargin}{\labelwidth}%
+    \setlength{\labelsep}{\biblabelsep}%
+    \addtolength{\leftmargin}{\labelsep}%
+    \setlength{\itemsep}{\bibitemsep}%
+    \setlength{\parsep}{\bibparsep}%
+    \renewcommand*{\makelabel}[1]{\hss##1}%
+  }%
+}{\endlist}
 % English names and the original chapter-shared statement numbers are semantic
 % requirements; theorem fonts and spacing otherwise come from AJbook.
 \AtBeginDocument{%
