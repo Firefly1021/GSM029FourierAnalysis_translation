@@ -4,6 +4,18 @@ This repository is a local-first, multi-book mathematical translation system. Sh
 
 The completed first book is registered as `fourier-analysis` in [PROJECTS.md](PROJECTS.md). Its accepted translation, QA evidence, source, and final PDF were migrated without retranslation.
 
+## Separate template collections
+
+The original user template remains in `template/style/`, `template/reference/`,
+`template/assets/` and the top-level `template/adapter/` files. It is still the
+default. The complete, pinned AlJabr-1/AJbook snapshot is separately archived in
+`template/collections/aljabr-1/upstream/`, with attribution and its original
+license. Its compatibility files live only in `template/adapter/aljabr-1/`.
+See `config/template-profiles.json`. Only `finite-element-exterior-calculus`
+selects this optional profile; no other book is switched. Never combine
+`Mystyle` and `AJbook` in one document. The accepted legacy FEEC build is retained;
+its AJbook edition uses a separate entry file and output, with book-local QA.
+
 ## Daily commands
 
 Create a new book from `main`:

@@ -296,6 +296,11 @@ def compile_reference() -> dict[str, Any]:
     output.mkdir()
     seen: set[str] = set()
     for path in iter_files(TEMPLATE_ROOT):
+        relative_parts = path.relative_to(TEMPLATE_ROOT).parts
+        # The default reference uses only the original profile, never archived
+        # third-party examples or another profile's adapter/font definitions.
+        if relative_parts[0] == "collections" or (relative_parts[0] == "adapter" and len(relative_parts) > 2):
+            continue
         if path.name == ".gitkeep":
             continue
         if path.name in seen:

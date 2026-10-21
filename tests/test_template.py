@@ -1,6 +1,7 @@
 """Read-only template analysis, dependency, hash, and compilation tests."""
 
 import unittest
+from pathlib import Path
 from unittest import mock
 
 from mathbook.project import ROOT, iter_files, manifest_file_fingerprint, sha256_file
@@ -53,6 +54,9 @@ class TemplateTests(unittest.TestCase):
         self.assertTrue(report["success"])
         self.assertTrue(report["template_integrity_verified"])
         self.assertEqual(before, after)
+        # An optional class collection must never leak into the default build.
+        self.assertFalse((Path(report["build_directory"]) / "AJbook.cls").exists())
+        self.assertFalse((Path(report["build_directory"]) / "feec-aljabr.sty").exists())
 
 
 if __name__ == "__main__":

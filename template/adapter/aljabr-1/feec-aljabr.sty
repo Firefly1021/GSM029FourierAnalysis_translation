@@ -1,0 +1,54 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{feec-aljabr}[2026/10/21 FEEC-only AJbook integration]
+% Upstream AJbook stays unmodified. Do not load Mystyle in this profile.
+\RequirePackage{xparse}
+\RequirePackage{tikz-cd,needspace,refcount,bm,mathrsfs,stmaryrd,esint}
+\RequirePackage{enumitem,tabularx,array,multirow,caption,float}
+\usetikzlibrary{matrix,decorations.pathreplacing,calc,arrows.meta,positioning}
+\definecolor{KuangNei}{gray}{.95}
+\numberwithin{equation}{chapter}
+\newcounter{statement}[chapter]
+\renewcommand{\thestatement}{\thechapter.\arabic{statement}}
+\newcounter{booksummary}[chapter]
+\renewcommand{\thebooksummary}{\thechapter.\arabic{booksummary}}
+\newcommand{\BookCite}[1]{\hyperref[bib:source-#1]{[\ref*{bib:source-#1}]}}
+\newcommand{\BookNumber}[1]{\hyperref[bib:source-#1]{\ref*{bib:source-#1}}}
+\newcommand{\BookContentsEntry}[2]{\addtocontents{toc}{\protect\contentsline{chapter}{#1}{\protect\pageref*{#2}}{\getrefbykeydefault{#2}{anchor}{}}}}
+\providecommand{\MathBookSourcePage}[1]{}
+\providecommand{\MathBookFormulaID}[1]{}
+\providecommand{\MathBookReviewStatus}[1]{}
+\providecommand{\MBUnresolvedReference}[2]{#2}
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{1}
+% B5 reflow of unchanged prose/long inline mathematics: permit a final-pass
+% interword stretch without altering words, mathematical tokens or paper size.
+\emergencystretch=3em
+% English names and the original chapter-shared statement numbers are semantic
+% requirements; theorem fonts and spacing otherwise come from AJbook.
+\AtBeginDocument{%
+  \theoremstyle{plain}\theoremsymbol{}%
+  \theoremheaderfont{\sffamily\bfseries\thmheiti}%
+  \theoremseparator{: }\theorembodyfont{\fangsong}%
+  \newtheorem{AJTheorem}[statement]{Theorem}%
+  \newtheorem{AJDefinition}[statement]{Definition}%
+  \newtheorem{AJLemma}[statement]{Lemma}%
+  \newtheorem{AJProposition}[statement]{Proposition}%
+  \newtheorem{AJCorollary}[statement]{Corollary}%
+  \theorembodyfont{\songti}%
+  \newtheorem{AJExample}[statement]{Example}%
+  \newtheorem{AJRemark}[statement]{Remark}%
+  \newtheorem{AJExercise}[statement]{Exercise}%
+  \theoremstyle{nonumberplain}\theorembodyfont{}%
+  \theoremheaderfont{\sffamily\bfseries\CJKfamily{pffont}}%
+  \theoremsymbol{\openbox}\newtheorem{AJProof}{Proof}%
+}
+\NewDocumentEnvironment{Theorem}{g}{\IfValueTF{#1}{\begin{AJTheorem}[#1]}{\begin{AJTheorem}}}{\end{AJTheorem}}
+\NewDocumentEnvironment{Definition}{g}{\IfValueTF{#1}{\begin{AJDefinition}[#1]}{\begin{AJDefinition}}}{\end{AJDefinition}}
+\NewDocumentEnvironment{Lemma}{g}{\IfValueTF{#1}{\begin{AJLemma}[#1]}{\begin{AJLemma}}}{\end{AJLemma}}
+\NewDocumentEnvironment{Proposition}{g}{\IfValueTF{#1}{\begin{AJProposition}[#1]}{\begin{AJProposition}}}{\end{AJProposition}}
+\NewDocumentEnvironment{Corollary}{g}{\IfValueTF{#1}{\begin{AJCorollary}[#1]}{\begin{AJCorollary}}}{\end{AJCorollary}}
+\NewDocumentEnvironment{Example}{g}{\IfValueTF{#1}{\begin{AJExample}[#1]}{\begin{AJExample}}}{\end{AJExample}}
+\NewDocumentEnvironment{Remark}{g}{\IfValueTF{#1}{\begin{AJRemark}[#1]}{\begin{AJRemark}}}{\end{AJRemark}}
+\NewDocumentEnvironment{Exercise}{g}{\IfValueTF{#1}{\begin{AJExercise}[#1]}{\begin{AJExercise}}}{\end{AJExercise}}
+\NewDocumentEnvironment{Proof}{}{\begin{AJProof}}{\end{AJProof}}
+\endinput
