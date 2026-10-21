@@ -7,6 +7,6 @@
 - 本项目适配层位于 `template/adapter/aljabr-1/`. 原始 `.cls`、`.sty` 和 `.tex` 不作修改.
 - 只为 `finite-element-exterior-calculus` 显式选择此模板. 其他书籍和默认 `Mystyle` 配置不变.
 - 原模板仍位于 `template/style/`, `template/reference/`, `template/assets/` 和原顶层适配文件. 不移动、不覆盖、不混合加载.
-- 本机缺少 Noto Sans CJK SC 时, 字体适配只为这几个 Noto 字族回退到上游同样使用的 FandolHei. 不安装或替换系统字体.
-- 接入改动: 原已验收的 section/ subsection 层级在生成副本中对应到 AJbook 的 chapter/section; 保持原标签、数学标记、译文和对象编号. 环境标题仍使用英文, 数学显示遵循本书获批的非 Fraktur 策略.
+- `fonts/noto-sans-cjk-sc/` 保存 Noto 官方 Sans2.004 的 Regular、Bold、Medium、Black 四个原始 OTF 字重及 SIL OFL 1.1 许可证, 以固定提交和 Git blob/SHA-256 校验. 直接加载上游原始 `font-setup-open.tex`, 禁止字体回退. 本书构建通过独立 Fontconfig 配置解析这些原字体, 不改变其他书籍的字体配置.
+- 接入改动: 原已验收的 section/ subsection 层级在生成副本中对应到 AJbook 的 chapter/section; 保持原标签、数学标记、译文和对象编号. 环境标题仍使用英文, 数学显示遵循本书获批的非 Fraktur 策略. 字体配置恢复为上游原样, 不再使用前版的 FandolHei 替代 Noto.
 - 这不改变原书及译文的权利归属. 本项目接入文件的改动说明不表示上游作者认可本译本.

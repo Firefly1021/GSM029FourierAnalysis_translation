@@ -1,6 +1,8 @@
 """Read-only template analysis, dependency, hash, and compilation tests."""
 
 import unittest
+import hashlib
+import json
 from pathlib import Path
 from unittest import mock
 
@@ -17,6 +19,22 @@ from mathbook.template import (
 
 
 class TemplateTests(unittest.TestCase):
+    def test_aljabr_uses_unmodified_upstream_font_setup_without_fallback(self) -> None:
+        text = (TEMPLATE_ROOT / "adapter/aljabr-1/feec-fonts.tex").read_text(encoding="utf-8")
+        self.assertIn(r"\input{font-setup-open.tex}", text)
+        self.assertNotIn(r"\setCJKfamilyfont", text)
+        self.assertNotIn("FandolHei", text)
+
+    def test_aljabr_official_noto_font_files_match_pinned_manifest(self) -> None:
+        root = TEMPLATE_ROOT / "collections/aljabr-1/fonts/noto-sans-cjk-sc"
+        data = json.loads((root / "manifest.json").read_text(encoding="utf-8"))
+        self.assertEqual({row["weight"] for row in data["files"]}, {"Regular", "Bold", "Medium", "Black"})
+        for row in data["files"]:
+            raw = (root / row["file"]).read_bytes()
+            self.assertEqual(hashlib.sha256(raw).hexdigest(), row["sha256"])
+            self.assertEqual(hashlib.sha1(f"blob {len(raw)}\0".encode() + raw).hexdigest(), row["git_blob"])
+        self.assertEqual(sha256_file(root / "LICENSE"), data["license_sha256"])
+
     def test_inputs_are_complete(self) -> None:
         self.assertEqual(validate_template_inputs(), [])
 
