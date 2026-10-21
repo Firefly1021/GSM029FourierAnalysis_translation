@@ -11,7 +11,7 @@ from mathbook.template import verify_manifest
 ID="finite-element-exterior-calculus"
 P=ProjectPaths();B,R=verify_book_context(P,ID,writable=True)
 SOURCE_SHA="649b672d2d54b7ebc5e51154587dbf70fefd6d6dcb5a81a9903e7bb0ee2c39d4"
-TEMPLATE_SHA="23044d64cd1a88aa97bf6abb7434d8499f7b3494b389991eb24ba5e07c82af29"
+TEMPLATE_SHA="56abde6998977761e759807ce5533a49dabbd929d98018739e5b621299284944"
 def write(rel,text):
     path=B.assert_write_path(B.root/rel);path.parent.mkdir(parents=True,exist_ok=True);path.write_text(text,encoding="utf8");return path
 def dump(rel,data):return write(rel,json.dumps(data,ensure_ascii=False,indent=2)+"\n")

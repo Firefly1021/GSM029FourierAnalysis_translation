@@ -35,16 +35,58 @@ def prepare():
     guard();old=B.main_tex.read_text(encoding="utf8");source_files=[B.root/"tex"/x for x in re.findall(r"\\input\{((?:chapters/|frontmatter)[^}]*\.tex)\}",old)]
     assert len(source_files)==46 # Three accepted sample sections share one TeX input.
     records=[]
+    # Explicit prose-only break opportunities for B5's unchanged native
+    # tolerance. Never add commands inside mathematical spans or names.
+    breaks={
+        'publication.tex':[(' | ISBN 9781611975543',r' \newline | ISBN 9781611975543')],
+        'chapter-03-section-04.tex':[('则存在 $v=(\\operatorname{curl}',r'\newline 则存在 $v=(\operatorname{curl}')],
+        'chapter-07-section-05.tex':[('但不包含 $\\mathcal P_r',r'\newline 但不包含 $\mathcal P_r')],
+        'chapter-08-section-08.tex':[('再定义 $\\psi',r'\newline 再定义 $\psi')],
+        'bibliography.tex':[
+            ('and Hongtao Chen, Finite',r'and Hongtao Chen, \newline Finite'),
+            ('(College Park, MD, 1981/1982), Progress',r'(College Park, MD, 1981/1982), \newline Progress'),
+            ('and Owren Brynjulf, Topics',r'and Owren Brynjulf, \newline Topics'),
+            ('and Monique Dauge, On the',r'and Monique Dauge, \newline On the'),
+            ('Lars Hörmander, The Analysis',r'Lars Hörmander, \newline The Analysis'),
+            ('Perturbation Theory for Linear Operators, Classics',r'Perturbation Theory for Linear Operators, \newline Classics')
+        ]
+    }
     for path in source_files:
         text=path.read_text(encoding="utf8");new=text
         if path.name!="publication.tex":
             new=re.sub(r"\\(section|subsection|subsubsection)\b",lambda h:"\\"+{"section":"chapter","subsection":"section","subsubsection":"subsection"}[h[1]],new)
             new=new.replace(r"\setcounter{section}",r"\setcounter{chapter}").replace(r"\setcounter{subsection}",r"\setcounter{section}")
+            # Explicit user instruction: all visual settings follow AJbook.
+            # Keep canonical source/translation immutable; remove legacy manual
+            # page reservation and map the old summary-box shell to the native
+            # template's visual keys in this disposable generated layer only.
+            new=re.sub(r"\\Needspace\{[^{}]*\}","",new)
+            new=re.sub(r"\\begin\{tcolorbox\}\[[^\]]*\]",lambda _:r"\begin{MBSourceBox}",new)
+            new=new.replace(r"\end{tcolorbox}",r"\end{MBSourceBox}")
+        before_breaks=new
+        for old_break,new_break in breaks.get(path.name,[]):
+            assert new.count(old_break)==1,(path.name,old_break)
+            new=new.replace(old_break,new_break)
+        assert new.replace(r'\newline ', '')==before_breaks
+        if path.name=='bibliography.tex':
+            old_list=r'\begin{list}{[\arabic{bookreference}]}{\usecounter{bookreference}\setlength{\leftmargin}{2.7em}\setlength{\labelwidth}{2.2em}}\small'
+            assert new.count(old_list)==1
+            new=new.replace(old_list,r'\begin{MBSourceBibliography}{71}').replace(r'\end{list}',r'\end{MBSourceBibliography}')
+        if path.name=='index.tex':
+            heading=r'\clearpage\chapter*{{索引}}\phantomsection\label{back:index}'
+            intro=new.splitlines()[1];assert intro.startswith('{保留原书条目的次序和层级.')
+            new=new.replace(heading,r'\renewcommand{\indexname}{索引}'+'\n'+r'\indexprologue{'+intro+'}\n'+r'\begin{theindex}\phantomsection\label{back:index}')
+            # Prologue is moved to the native full-width index prologue slot.
+            new=new.replace('\n'+intro+'\n','\n',1)
+            new=new.replace(r'\begingroup\small\setlength{\parindent}{0pt}','')
+            for level,command in [('0','item'),('1','subitem'),('2','subsubitem')]:
+                new=new.replace(r'\par\noindent\hspace*{'+level+'em}', '\\'+command+' ')
+            new=new.replace(r'\par\endgroup',r'\end{theindex}')
         assert collections.Counter(s["maths"](text))==collections.Counter(s["maths"](new)),path
         assert re.findall(r"\\label\{([^}]+)\}",text)==re.findall(r"\\label\{([^}]+)\}",new)
         assert re.findall(r"\\(?:ref|eqref|BookCite|BookNumber)\{[^}]+\}",text)==re.findall(r"\\(?:ref|eqref|BookCite|BookNumber)\{[^}]+\}",new)
         rel="tex/generated/aljabr-layout/"+path.name;write(rel,new)
-        records.append({"accepted_input":path.relative_to(B.root).as_posix(),"input_sha256":sha256_file(path),"generated":rel,"generated_sha256":sha256_file(B.root/rel),"only_transform":"Heading commands promoted one level and structural counters mapped; publication unchanged","math_reference_and_label_tokens_unchanged":True})
+        records.append({"accepted_input":path.relative_to(B.root).as_posix(),"input_sha256":sha256_file(path),"generated":rel,"generated_sha256":sha256_file(B.root/rel),"only_transform":"Heading/counter mapping; legacy Needspace removed; boxes, bibliography and index shells mapped to native upstream styles; necessary prose-only newlines, no character edits","prose_only_breaks":[{'before':a,'after':b} for a,b in breaks.get(path.name,[])],"math_reference_and_label_tokens_unchanged":True})
     tail=old.split(r"\input{chapters/chapter-01.tex}",1)[1].split(r"\end{document}")[0]
     tail=r"\input{chapters/chapter-01.tex}"+tail
     tail=tail.replace(r"\setcounter{subsection}{3}",r"\setcounter{section}{3}")
@@ -77,6 +119,7 @@ def prepare():
 \url{https://creativecommons.org/licenses/by/4.0/}\par
 本译本仅在独立适配层调整环境英文标题和原书编号兼容.
 字体配置直接采用上游原文件, 所需 Noto 字体已配齐, 不使用替代字体.
+版心, 字号, 行距, 标题与数学排版参数均沿用模板, 不采用另行放大或加宽的试排设置.
 原始模板文件保持不变. 模板许可不改变原书及译文的权利归属.}
 """
     write("tex/aljabr-main.tex",pre+tail+credit+r"\end{document}"+"\n");dump("qa/template/aljabr-layout-provenance.json",records);guard()
