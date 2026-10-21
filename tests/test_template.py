@@ -32,6 +32,7 @@ class TemplateTests(unittest.TestCase):
             self.assertIn(setting, adapter)
         for override in (r"\emergencystretch", r"\geometry{", r"\fontsize", r"\setstretch", r"\setcounter{secnumdepth}", r"\setcounter{tocdepth}"):
             self.assertNotIn(override, adapter)
+        self.assertNotIn("esint", adapter)
 
     def test_aljabr_summary_box_reuses_upstream_visual_keys(self) -> None:
         cls = (TEMPLATE_ROOT / "collections/aljabr-1/upstream/AJbook.cls").read_text(encoding="utf-8")
