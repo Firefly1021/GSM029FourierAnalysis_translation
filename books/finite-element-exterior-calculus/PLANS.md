@@ -40,3 +40,9 @@ The user rejected the proposed Fraktur change: 不要,只要不是Fraktur 字体
 ## Final completion
 
 All 47 natural units, the supplementary publication front matter, generated contents, eight chapters, bibliography and index are complete. Final whole-book source coverage, mathematical alignment, names, configured punctuation, real cross-references, clean compilation, rendered regression and 34 repository tests pass. See qa/final-report.md. Prior phase stops and font blockers above are historical, not current. No further translation unit remains. Keep terminology proposals book-local and the approved non-Fraktur mapping; do not auto-promote or push.
+
+## User-requested AJbook layout edition, 2026-10-21
+
+The user selected AlJabr-1 for FEEC only. The original input template and all accepted translation/source/formula files remain immutable. The full pinned upstream collection is archived separately under template/collections/aljabr-1; its adapter is namespaced under template/adapter/aljabr-1. Shared changes were tested on the dedicated maintenance branch and merged to main before synchronization here. The expanded collection manifest is recorded separately from the historical legacy baseline; original file hashes are unchanged.
+
+The new entry is tex/aljabr-main.tex and the selected output is output/book-aljabr-zh.pdf. The original tex/main.tex and output/book-zh.pdf remain unchanged and usable as the legacy edition. All 47 accepted natural units are reused, not regenerated. The 138-page B5 edition preserves all 537 labels and their numbers, passes clean compilation and all 34 regression tests, and has completed rendered-page inspection. See TYPESETTING.md and qa/template/aljabr-acceptance.json. No other book switches template; no remote push.

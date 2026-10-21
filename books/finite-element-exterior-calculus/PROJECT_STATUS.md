@@ -13,8 +13,14 @@ Next incomplete unit: None
 Blocking issues: None
 Unresolved terminology: 0
 Full-book translation complete: Yes
-Final output: output/book-zh.pdf
-Final PDF pages: 113
-Final PDF SHA-256: 957802db5a638180f65af0c4937b193d88e0ce3d8b0e226031e21ab72fafca0a
-Final QA: qa/final-report.json
+Final output: output/book-aljabr-zh.pdf
+Final PDF pages: 138
+Final PDF SHA-256: 2b1bd263e11d32a2dec0c82d17bfd17f3a6749c0d58a12c0472b8ead03ada289
+Final QA: qa/template/aljabr-acceptance.json
 Remote push: No
+
+Active template: aljabr-1@1e2d0bf4e5b7
+Active entry: tex/aljabr-main.tex
+Legacy entry retained: tex/main.tex
+Legacy final PDF retained: output/book-zh.pdf
+Layout-only update: accepted translation and 47/47 progress unchanged
