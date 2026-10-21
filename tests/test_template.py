@@ -19,6 +19,28 @@ from mathbook.template import (
 
 
 class TemplateTests(unittest.TestCase):
+    def test_aljabr_visual_parameters_follow_original_template(self) -> None:
+        upstream = TEMPLATE_ROOT / "collections/aljabr-1/upstream"
+        adapter = (TEMPLATE_ROOT / "adapter/aljabr-1/feec-aljabr.sty").read_text(encoding="utf-8")
+        reference = (upstream / "Template-AJbook.tex").read_text(encoding="utf-8")
+        cls = (upstream / "AJbook.cls").read_text(encoding="utf-8")
+        setting = r"\renewcommand*\arraystretch{1.5}"
+        self.assertIn(setting, reference)
+        self.assertIn(setting, adapter)
+        for setting in (r"\theoremseparator{\ }", r"\theoremseparator{\enspace}"):
+            self.assertIn(setting, cls)
+            self.assertIn(setting, adapter)
+        for override in (r"\emergencystretch", r"\geometry{", r"\fontsize", r"\setstretch", r"\setcounter{secnumdepth}", r"\setcounter{tocdepth}"):
+            self.assertNotIn(override, adapter)
+
+    def test_aljabr_summary_box_reuses_upstream_visual_keys(self) -> None:
+        cls = (TEMPLATE_ROOT / "collections/aljabr-1/upstream/AJbook.cls").read_text(encoding="utf-8")
+        adapter = (TEMPLATE_ROOT / "adapter/aljabr-1/feec-aljabr.sty").read_text(encoding="utf-8")
+        for setting in ("colback = white, colbacktitle = white", "colframe = gray!50, boxrule=0.2mm", "before skip = 0.5cm", "top = 3mm", "bottom = 3mm"):
+            self.assertIn(setting, cls)
+            self.assertIn(setting, adapter)
+        self.assertNotIn("KuangNei", adapter)
+
     def test_aljabr_uses_unmodified_upstream_font_setup_without_fallback(self) -> None:
         text = (TEMPLATE_ROOT / "adapter/aljabr-1/feec-fonts.tex").read_text(encoding="utf-8")
         self.assertIn(r"\input{font-setup-open.tex}", text)
