@@ -1,6 +1,7 @@
 """FEEC-only AJbook typesetting; immutable accepted prose is input, never edited."""
 import argparse,collections,csv,hashlib,json,os,re,runpy,shutil,subprocess,sys,tempfile
 from pathlib import Path
+from xml.sax.saxutils import escape
 from pypdf import PdfReader
 from mathbook.project import ProjectPaths,sha256_file,directory_manifest_hash
 from mathbook.workflow import verify_book_context
@@ -74,7 +75,8 @@ def prepare():
 排版模板: AJbook, 李文威 (Wen-Wei Li), CC BY 4.0.\par
 \url{https://github.com/wenweili/AlJabr-1}\par
 \url{https://creativecommons.org/licenses/by/4.0/}\par
-本译本仅在独立适配层调整环境英文标题、原书编号兼容和缺失字体回退.
+本译本仅在独立适配层调整环境英文标题和原书编号兼容.
+字体配置直接采用上游原文件, 所需 Noto 字体已配齐, 不使用替代字体.
 原始模板文件保持不变. 模板许可不改变原书及译文的权利归属.}
 """
     write("tex/aljabr-main.tex",pre+tail+credit+r"\end{document}"+"\n");dump("qa/template/aljabr-layout-provenance.json",records);guard()
@@ -85,12 +87,28 @@ def labels(path):
         while pos<len(content):v,pos=s["brace"](content,pos);row.append(v)
         values[h[1]]=row
     return values
+def noto_environment(template,stage,environment):
+    """Expose official project-pinned fonts without altering global TeX font config."""
+    fonts=template/"collections/aljabr-1/fonts/noto-sans-cjk-sc";manifest=json.loads((fonts/"manifest.json").read_text(encoding="utf8"))
+    for row in manifest["files"]:assert sha256_file(fonts/row["file"])==row["sha256"],row
+    texvar=subprocess.check_output([shutil.which("kpsewhich"),"--var-value=TEXMFSYSVAR"],text=True).strip();system=Path(texvar)/"fonts/conf/fonts.conf";assert system.is_file()
+    cache=B.assert_write_path(stage/"fontconfig-cache");cache.mkdir()
+    config=B.assert_write_path(stage/"fonts.conf")
+    write(config.relative_to(B.root).as_posix(),f'<?xml version="1.0"?>\n<!DOCTYPE fontconfig SYSTEM "fonts.dtd">\n<fontconfig>\n<include ignore_missing="no">{escape(system.as_posix())}</include>\n<dir>{escape(fonts.as_posix())}</dir>\n<cachedir>{escape(cache.as_posix())}</cachedir>\n</fontconfig>\n')
+    environment["FONTCONFIG_FILE"]=str(config);resolved=[]
+    for row in manifest["files"]:
+        value=subprocess.check_output([shutil.which("fc-match"),"-f","%{file}\n%{postscriptname}\n",f'Noto Sans CJK SC:style={row["weight"]}'],env=environment,text=True,encoding="utf8").strip().splitlines()
+        assert sha256_file(Path(value[0]))==row["sha256"] and value[1]==row["postscript_name"],value
+        resolved.append({"weight":row["weight"],"font":value[0],"postscript_name":value[1],"sha256":row["sha256"]})
+    return resolved
 def build(template_root=None):
     guard();prepare();template=Path(template_root).resolve() if template_root else P.template
     upstream=template/"collections/aljabr-1/upstream";adapter=template/"adapter/aljabr-1";assert (upstream/"AJbook.cls").is_file()
-    input_hashes={str(p):sha256_file(p) for p in [*(upstream.rglob("*")),*(adapter.rglob("*"))] if p.is_file()}
+    fontroot=template/"collections/aljabr-1/fonts/noto-sans-cjk-sc"
+    input_hashes={str(p):sha256_file(p) for p in [*(upstream.rglob("*")),*(adapter.rglob("*")),*(fontroot.rglob("*"))] if p.is_file()}
     stage=Path(tempfile.mkdtemp(prefix="aljabr-build-",dir=B.assert_write_path(B.root/"workspace/temporary")))
     env=os.environ.copy();env.update({"PYTHONIOENCODING":"utf-8","PYTHONUTF8":"1","TEXINPUTS":os.pathsep.join(str(x) for x in [adapter,upstream,P.template/"adapter",B.root/"tex"])+os.pathsep+os.pathsep})
+    resolved_fonts=noto_environment(template,stage,env)
     driver=r"C:\Users\A\.codex\plugins\cache\openai-bundled\latex\0.2.8\scripts\compile_latex.py"
     command=[sys.executable,driver,str(B.root/"tex/aljabr-main.tex"),"--compiler","texlive","--engine","xelatex","--output-directory",str(stage),"--json"]
     r=subprocess.run(command,env=env,capture_output=True);write("logs/aljabr-build-driver.log",(r.stdout+r.stderr).decode("utf8",errors="replace"))
@@ -116,7 +134,7 @@ def build(template_root=None):
     assert all(sha256_file(Path(p))==h for p,h in input_hashes.items())
     sha=sha256_file(stage/"aljabr-main.pdf");renders=B.assert_write_path(B.root/"workspace/pages/aljabr-output"/sha[:16]);renders.mkdir(parents=True,exist_ok=True)
     subprocess.run([shutil.which("pdftoppm"),"-r","85","-png",str(stage/"aljabr-main.pdf"),str(renders/"page")],check=True)
-    dump("qa/template/aljabr-compilation.json",{"success":not changes and not any(warnings.values()),"pdf_sha256":sha,"pdf_pages":len(reader.pages),"minimum_latex_rounds":2,"warnings":warnings,"label_number_changes":changes,"labels":len(links),"template_input_hashes":input_hashes,"build_directory":str(stage),"render_directory":str(renders),"visual_review":"pending"})
+    dump("qa/template/aljabr-compilation.json",{"success":not changes and not any(warnings.values()),"pdf_sha256":sha,"pdf_pages":len(reader.pages),"minimum_latex_rounds":2,"warnings":warnings,"label_number_changes":changes,"labels":len(links),"template_input_hashes":input_hashes,"font_resolution":resolved_fonts,"original_font_setup_sha256":sha256_file(upstream/"font-setup-open.tex"),"main_tex_sha256":sha256_file(B.root/"tex/aljabr-main.tex"),"build_directory":str(stage),"render_directory":str(renders),"visual_review":"pending"})
     dump("qa/template/aljabr-cross-references.json",{"number_changes":changes,"objects":links})
     guard();print(json.dumps({"pdf_sha256":sha,"pages":len(reader.pages),"warnings":warnings,"label_number_changes":changes,"renders":str(renders)},ensure_ascii=False))
 

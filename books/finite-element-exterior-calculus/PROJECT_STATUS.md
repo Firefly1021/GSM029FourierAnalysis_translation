@@ -15,8 +15,8 @@ Unresolved terminology: 0
 Full-book translation complete: Yes
 Final output: output/book-aljabr-zh.pdf
 Final PDF pages: 138
-Final PDF SHA-256: 2b1bd263e11d32a2dec0c82d17bfd17f3a6749c0d58a12c0472b8ead03ada289
-Final QA: qa/template/aljabr-acceptance.json
+Final PDF SHA-256: b938856105d0e70b1a2e4bb44723ec7e4f88cc816fd7c9db221245b3f3b095e7
+Final QA: qa/template/aljabr-noto-acceptance.json
 Remote push: No
 
 Active template: aljabr-1@1e2d0bf4e5b7
@@ -24,3 +24,7 @@ Active entry: tex/aljabr-main.tex
 Legacy entry retained: tex/main.tex
 Legacy final PDF retained: output/book-zh.pdf
 Layout-only update: accepted translation and 47/47 progress unchanged
+
+Font correction: Original AJbook Noto setup, no fallback; Sans2.004 installed and pinned
+Font QA: qa/template/aljabr-noto-acceptance.json
+Previous fallback edition archived: output/archive/book-aljabr-fandol-20261021.pdf
