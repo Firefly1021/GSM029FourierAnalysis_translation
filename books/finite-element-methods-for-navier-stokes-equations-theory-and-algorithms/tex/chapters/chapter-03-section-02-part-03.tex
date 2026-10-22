@@ -1,0 +1,782 @@
+% Reviewed translation: PDF pages 227--236 / printed pages 213--222.
+% The original scan is authoritative; mathematical tokens were checked against it.
+\MathBookSourcePage{227}
+\subsection{依赖于网格的范数技术}
+\label{subsec:incompressible-sfvp-mesh-dependent}
+
+本小节采用 Babuška, Osborn \& Pitkäranta~\cite{ref:babuska-osborn-pitkaranta-5}
+引入的依赖于网格的范数, 在一定程度上改进估计
+\eqref{eq:incompressible-sfvp-standard-velocity-error}.
+这种范数在这里比 $\|\cdot\|_{\widetilde X}$ 更为合适.
+引入它们所依据的思想是在 $\mathcal T_h$ 的每个单元 $\kappa$
+上作分部积分. 具体地, 令 $\phi\in H^2(\kappa)$
+且 $\theta\in H^1(\kappa)$. Green 公式给出
+\[
+\int_\kappa\operatorname{curl}\phi\cdot
+\operatorname{curl}\theta\,dx
+=-\int_\kappa\Delta\phi\,\theta\,dx
++\int_{\partial\kappa}\frac{\partial\phi}{\partial n}\theta\,ds,
+\]
+其中 $n$ 表示 $\kappa$ 的外单位法向量.
+
+\MathBookSourcePage{228}
+为了对 $\mathcal T_h$ 的所有单元求和, 定义集合
+\[
+\Gamma_h
+=\bigcup\{\kappa';\ \kappa'\text{ 是 }\kappa\text{ 的边},
+\ \kappa\in\mathcal T_h\},
+\]
+并定义 $\partial\phi/\partial n$ 跨过 $\kappa$ 的边
+$\kappa'$ 的跳跃 $S(\partial\phi/\partial n)$.
+更具体地, 若 $\kappa'$ 是 $\kappa_1$ 和 $\kappa_2$ 的公共边,
+$n_i$ 表示 $\kappa_i$ 的外法向量, 则置
+\[
+S(\partial\phi/\partial n)|_{\kappa'}
+=\partial\phi/\partial n_1+\partial\phi/\partial n_2;
+\]
+若 $\kappa'\subset\Gamma$, 则置
+\[
+S(\partial\phi/\partial n)|_{\kappa'}
+=\partial\phi/\partial n.
+\]
+用这些记号, 有
+\begin{equation}\label{eq:incompressible-sfvp-elementwise-green}
+\begin{split}
+(\operatorname{curl}\phi,\operatorname{curl}\theta)
+={}&-\sum_{\kappa\in\mathcal T_h}
+\int_\kappa\Delta\phi\,\theta\,dx
++\int_{\Gamma_h}S(\partial\phi/\partial n)\theta\,ds,\\
+&\forall\phi\in H^1(\Omega),
+\quad \phi|_\kappa\in H^2(\kappa)
+\quad\forall\kappa\in\mathcal T_h,
+\quad\forall\theta\in H^1(\Omega).
+\end{split}
+\end{equation}
+
+从现在起, 使用 $L^2$ 和 $H^m$ 空间.
+恒等式 \eqref{eq:incompressible-sfvp-elementwise-green}
+是另一个与问题 \eqref{eq:incompressible-stream-vorticity-pair}
+等价的问题 $(Q)$ 的基础.
+事实上, 若 Stokes 问题 \eqref{eq:incompressible-sfvp-stokes}
+的解 $\mathbf u$ 和右端项 $\mathbf f$ 满足
+\[
+\mathbf f\in L^2(\Omega)^2,
+\qquad
+\omega=\operatorname{curl}\mathbf u\in H^1(\Omega),
+\]
+则容易证明, 满足
+\eqref{eq:incompressible-stream-vorticity-pair} 的 $(\psi,\omega)$
+也是下列问题 $(Q)$ 的唯一解:
+\[
+\left\{
+\begin{aligned}
+-\nu\sum_{\kappa\in\mathcal T_h}
+\int_\kappa\Delta\phi\,\omega\,dx
++\nu\int_{\Gamma_h}S(\partial\phi/\partial n)\omega\,ds
+&=(\mathbf f,\operatorname{curl}\phi),\\
+(\omega,\mu)
++\sum_{\kappa\in\mathcal T_h}\int_\kappa\Delta\psi\,\mu\,dx
+-\int_{\Gamma_h}S(\partial\psi/\partial n)\mu\,ds
+&=0,
+\end{aligned}
+\right.
+\]
+对所有 $\mu\in H^1(\Omega)$ 和所有 $\phi\in\widetilde\Psi$ 成立, 其中
+\[
+\widetilde\Psi
+=\{\phi\in\Phi;\ \phi|_\kappa\in H^2(\kappa)
+\ \forall\kappa\in\mathcal T_h\}.
+\]
+
+就逼近而言, 注意 $\Phi_h$ 的函数
+(参见 \eqref{eq:incompressible-sfvp-standard-fe-spaces})
+整体属于 $\Phi$, 并且在每个 $\kappa$ 上特别属于 $H^2(\kappa)$.
+因此恒等式 \eqref{eq:incompressible-sfvp-elementwise-green}
+对 $\phi_h\in\Phi_h$ 和 $\theta_h\in\Theta_h$ 成立,
+从而问题 \eqref{eq:incompressible-sfvp-practical-problem}
+等价于下列问题 $(Q_h)$:
+
+求 $\psi_h\in\Phi_h$ 和 $\omega_h\in\Theta_h$, 使
+\begin{equation}\label{eq:incompressible-sfvp-mesh-discrete-problem}
+\left\{
+\begin{aligned}
+-\nu\sum_{\kappa\in\mathcal T_h}
+\int_\kappa\Delta\phi_h\,\omega_h\,dx
++\nu\int_{\Gamma_h}S(\partial\phi_h/\partial n)\omega_h\,ds
+&=(\mathbf f,\operatorname{curl}\phi_h)
+&&\forall\phi_h\in\Phi_h,\\
+(\omega_h,\mu_h)
++\sum_{\kappa\in\mathcal T_h}
+\int_\kappa\Delta\psi_h\,\mu_h\,dx
+-\int_{\Gamma_h}S(\partial\psi_h/\partial n)\mu_h\,ds
+&=0
+&&\forall\mu_h\in\Theta_h.
+\end{aligned}
+\right.
+\end{equation}
+
+\MathBookSourcePage{229}
+观察 \eqref{eq:incompressible-sfvp-elementwise-green}
+和 \eqref{eq:incompressible-sfvp-mesh-discrete-problem},
+可引入下列双线性形式:
+\begin{equation}\label{eq:incompressible-sfvp-mesh-form-a}
+a_h(\omega,\mu)=(\omega,\mu)
+\qquad\forall\omega,\mu\in L^2(\Omega),
+\end{equation}
+以及
+\begin{equation}\label{eq:incompressible-sfvp-mesh-form-b}
+\begin{split}
+b_h(\theta,\phi)
+={}&\sum_{\kappa\in\mathcal T_h}
+\int_\kappa\Delta\phi\,\theta\,dx
+-\int_{\Gamma_h}S(\partial\phi/\partial n)\theta\,ds,\\
+&\forall\theta\in H^1(\Omega),
+\quad\forall\phi\in H^1(\Omega),
+\quad\phi|_\kappa\in H^2(\kappa)
+\ \forall\kappa\in\mathcal T_h.
+\end{split}
+\end{equation}
+下标 $h$ 用来强调所涉及的某些空间依赖于剖分.
+用这些双线性形式, 问题
+\eqref{eq:incompressible-sfvp-mesh-discrete-problem}
+确实表现为问题 $(Q_h)$:
+
+求 $(\omega_h,\psi_h)\in\Theta_h\times\Phi_h$, 使
+\begin{equation}\label{eq:incompressible-sfvp-mesh-abstract-problem}
+\left\{
+\begin{aligned}
+a_h(\omega_h,\theta_h)+b_h(\theta_h,\psi_h)&=0
+&&\forall\theta_h\in\Theta_h,\\
+b_h(\omega_h,\phi_h)&=-\frac1\nu
+(\mathbf f,\operatorname{curl}\phi_h)
+&&\forall\phi_h\in\Phi_h.
+\end{aligned}
+\right.
+\end{equation}
+显然,
+\begin{equation}\label{eq:incompressible-sfvp-mesh-form-b-curl}
+b_h(\theta,\phi)
+=-(\operatorname{curl}\phi,\operatorname{curl}\theta)
+\end{equation}
+对所有满足 $\phi|_\kappa\in H^2(\kappa)$ 的
+$\phi\in H^1(\Omega)$ 和所有 $\theta\in H^1(\Omega)$ 成立, 并且
+\begin{equation}\label{eq:incompressible-sfvp-mesh-form-b-laplacian}
+b_h(\theta,\phi)=\int_\Omega\Delta\phi\,\theta\,dx
+\end{equation}
+对所有满足 $(\partial\phi/\partial n)|_\Gamma=0$ 的
+$\phi\in H^2(\Omega)$ 和所有 $\theta\in H^1(\Omega)$ 成立.
+
+还要注意, 若 $\theta$ 仅属于 $L^2(\Omega)$,
+且 $\theta|_{\Gamma_h}\in L^2(\Gamma_h)$,
+则 $b_h(\cdot,\cdot)$ 仍有定义.
+这些考虑促使我们为上述双线性形式配以下依赖于网格的半范数:
+\begin{equation}\label{eq:incompressible-sfvp-mesh-norm-zero}
+\|\theta\|_{0,h}
+=\left(\|\theta\|_{0,\Omega}^2
++h\|\theta\|_{0,\Gamma_h}^2\right)^{1/2}
+\qquad\forall\theta\in H^1(\Omega),
+\end{equation}
+以及
+\begin{equation}\label{eq:incompressible-sfvp-mesh-norm-two}
+\|\phi\|_{2,h}
+=\left(
+\sum_{\kappa\in\mathcal T_h}|\phi|_{2,\kappa}^2
++\frac1h\|S(\partial\phi/\partial n)\|_{0,\Gamma_h}^2
+\right)^{1/2}
+\end{equation}
+对所有满足 $\phi|_\kappa\in H^2(\kappa)$ 的
+$\phi\in H^1(\Omega)$ 成立.
+显然,
+\[
+|a_h(\omega,\theta)|
+\leq\|\omega\|_{0,\Omega}\|\theta\|_{0,\Omega},
+\qquad
+\forall\omega,\theta\in L^2(\Omega),
+\]
+以及
+\[
+|b_h(\theta,\phi)|
+\leq\sqrt2\|\theta\|_{0,h}\|\phi\|_{2,h}.
+\]
+
+本小节余下几乎全部内容都用于研究这些双线性形式和半范数.
+特别地, 将看到这些半范数分别是 $\Theta_h$ 和 $\Phi_h$ 上的范数,
+而且 $b_h(\cdot,\cdot)$ 关于它们满足一致 inf--sup 条件.
+下一个 Lemma 说明 $\|\cdot\|_{0,h}$ 与 $\|\cdot\|_{0,\Omega}$
+是 $\Theta_h$ 上一致等价的两个范数.
+
+\begin{Lemma}\label{lem:incompressible-sfvp-mesh-zero-norm-equivalence}
+若 $\mathcal T_h$ 是一族一致正则剖分, 则存在与 $h$ 无关的常数
+$C>0$, 使
+\begin{equation}\label{eq:incompressible-sfvp-mesh-zero-norm-equivalence}
+\|\theta_h\|_{0,h}
+\leq C\|\theta_h\|_{0,\Omega}
+\qquad\forall\theta_h\in\Theta_h.
+\end{equation}
+\end{Lemma}
+
+\MathBookSourcePage{230}
+证明留给读者作为练习. 提示: 证明
+\[
+\|\theta_h\|_{0,\Gamma_h}^2
+\leq\frac Ch\|\theta_h\|_{0,\Omega}^2
+\qquad\forall\theta_h\in\Theta_h.
+\]
+
+下一个 Lemma 给出 Corollary~\ref{cor:appendix-global-inverse-gradient}
+的一个类似结果.
+
+\begin{Lemma}\label{lem:incompressible-sfvp-mesh-two-norm-inverse}
+若 $\mathcal T_h$ 是一族一致正则剖分, 则存在与 $h$ 无关的常数
+$C>0$, 使
+\begin{equation}\label{eq:incompressible-sfvp-mesh-two-norm-inverse}
+\|\theta_h\|_{2,h}
+\leq\frac Ch|\theta_h|_{1,\Omega}
+\qquad\forall\theta_h\in\Theta_h.
+\end{equation}
+\end{Lemma}
+
+\begin{Proof}
+在每个 $\kappa$ 上对 $\operatorname{grad}\theta_h$
+应用 $r=p=2$ 的 \eqref{eq:appendix-local-inverse-inequality}, 得
+\[
+|\theta_h|_{2,\kappa}
+\leq\frac{C_1}{h}|\theta_h|_{1,\kappa}
+\qquad\forall\kappa\in\mathcal T_h.
+\]
+因此只需证明
+\begin{equation}\label{eq:incompressible-sfvp-jump-inverse}
+\|S(\partial\theta_h/\partial n)\|_{0,\Gamma_h}^2
+\leq\frac{C_2}{h}|\theta_h|_{1,\Omega}^2
+\qquad\forall\theta_h\in\Theta_h.
+\end{equation}
+令 $\kappa$ 是 $\mathcal T_h$ 的任一单元.
+由 \eqref{eq:appendix-change-forward}
+和 \eqref{eq:appendix-gradient-transform}, 得
+\[
+\int_{\partial\kappa}|\partial\theta_h/\partial n|^2\,ds
+\leq\int_{\partial\kappa}\|\operatorname{grad}\theta_h\|^2\,ds
+\leq C_3\frac{h_\kappa}{\rho_\kappa^2}
+\|\operatorname{grad}\widehat\theta_h\|_{0,\partial\widehat\kappa}^2.
+\]
+但 $\operatorname{grad}\widehat\theta_h$ 属于有限维空间
+$P_{l-1}^2$, 因而
+\[
+\int_{\partial\widehat\kappa}
+|\partial\widehat\theta_h/\partial n|^2\,ds
+\leq C_4\frac{\sigma_\kappa}{\rho_\kappa}
+|\widehat\theta_h|_{1,\widehat\kappa}^2.
+\]
+于是附录中的尺度关系给出
+\eqref{eq:incompressible-sfvp-jump-inverse}.
+\end{Proof}
+
+当然, 不可能把
+\eqref{eq:incompressible-sfvp-mesh-zero-norm-equivalence}
+推广到 $H^1(\Omega)$, 但容易证明下面的关系.
+
+\begin{Lemma}\label{lem:incompressible-sfvp-mesh-trace-bound}
+若 $\mathcal T_h$ 一致正则, 则存在与 $h$ 无关的常数 $C>0$, 使
+\begin{equation}\label{eq:incompressible-sfvp-mesh-trace-bound}
+\|\theta\|_{0,h}
+\leq C\left(\|\theta\|_{0,\Omega}^2
++h^2|\theta|_{1,\Omega}^2\right)^{1/2}
+\qquad\forall\theta\in H^1(\Omega).
+\end{equation}
+\end{Lemma}
+
+\begin{Proof}
+由 trace Theorem~\ref{thm:trace-operator},
+存在与 $\kappa$ 的几何无关的常数 $C_1$, 使
+\[
+\|\theta\|_{0,\kappa'}^2
+\leq C_1h_\kappa\|\widehat\theta\|_{1,\widehat\kappa}^2
+\qquad\forall\theta\in H^1(\kappa).
+\]
+于是附录中的尺度关系和剖分一致正则性给出
+\[
+\|\theta\|_{0,\kappa'}^2
+\leq C_2\sigma^2
+\left[\frac1{th}\|\theta\|_{0,\kappa}^2
++h|\theta|_{1,\kappa}^2\right],
+\]
+从而证明 \eqref{eq:incompressible-sfvp-mesh-trace-bound}.
+\end{Proof}
+
+该 Lemma 有下列有用推论.
+
+\MathBookSourcePage{231}
+\begin{Corollary}\label{cor:incompressible-sfvp-mesh-two-norm-coercive}
+若 $\mathcal T_h$ 一致正则, 则存在与 $h$ 无关的常数 $C>0$, 使
+\begin{equation}\label{eq:incompressible-sfvp-mesh-two-norm-coercive}
+\|\phi\|_{2,h}
+\geq C\left(
+|\phi|_{1,\Omega}^2
++\sum_{\kappa\in\mathcal T_h}|\phi|_{2,\kappa}^2
+\right)^{1/2}
+\qquad\forall\phi\in\widetilde\Psi.
+\end{equation}
+\end{Corollary}
+
+\begin{Proof}
+由 Lemma~\ref{lem:sec3-boundary-poincare}, 只需证明
+\[
+\|\phi\|_{2,h}\geq C_1|\phi|_{1,\Omega}.
+\]
+但由 \eqref{eq:incompressible-sfvp-elementwise-green}
+和 \eqref{eq:incompressible-sfvp-mesh-form-b},
+\[
+|\phi|_{1,\Omega}^2
+=-b_h(\phi,\phi)
+\leq\sqrt2\|\phi\|_{2,h}\|\phi\|_{0,h},
+\]
+而 \eqref{eq:incompressible-sfvp-mesh-trace-bound}
+结合 Lemma~\ref{lem:sec3-boundary-poincare}
+即给出 \eqref{eq:incompressible-sfvp-mesh-two-norm-coercive}.
+\end{Proof}
+
+Corollary~\ref{cor:incompressible-sfvp-mesh-two-norm-coercive}
+意味着空间 $\widetilde\Psi$ 关于范数 $\|\cdot\|_{2,h}$ 是 Hilbert 空间.
+下面两个 Lemma 给出空间 $\Theta_h$ 的逼近性质.
+
+\begin{Lemma}\label{lem:incompressible-sfvp-mesh-zero-approximation}
+令 $\mathcal T_h$ 是 $\overline\Omega$ 的正则剖分.
+对每个实数 $k\in[1,l+1]$, 存在与 $h$ 无关的常数 $C>0$, 使
+\begin{equation}\label{eq:incompressible-sfvp-mesh-zero-approximation}
+\inf_{\theta_h\in\Theta_h}
+\|v-\theta_h\|_{0,h}
+\leq Ch^k|v|_{k,\Omega}
+\qquad\forall v\in H^k(\Omega).
+\end{equation}
+\end{Lemma}
+
+\begin{Proof}
+若 $k\geq2$, 取
+$\theta_h=I_hv$, 其中插值由
+\eqref{eq:appendix-lagrange-interpolant-definition} 定义;
+否则取 $\theta_h=R_hv$, 其中局部正则化由附录定义.
+于是相应的附录误差估计给出
+\[
+\|v-\theta_h\|_{0,\Omega}
+\leq C_1h^k|v|_{k,\Omega}
+\qquad\forall v\in H^k(\Omega).
+\]
+因此只需估计 $\|v-\theta_h\|_{0,\Gamma_h}$.
+与 Lemma~\ref{lem:incompressible-sfvp-mesh-trace-bound} 中一样,
+\[
+\|v-\theta_h\|_{0,\kappa'}^2
+\leq C_1h_\kappa
+\|\widehat v-\widehat\theta_h\|_{1,\widehat\kappa}^2.
+\]
+当 $\theta_h=I_hv$ 时,
+\[
+\|v-I_hv\|_{0,\kappa'}^2
+\leq C_2h_\kappa|\widehat v|_{k,\widehat\kappa}^2,
+\]
+由尺度关系得到
+\[
+\|v-I_hv\|_{0,\kappa'}^2
+\leq C_3\sigma^2h^{2k-1}|v|_{k,\kappa}^2,
+\]
+这证明 \eqref{eq:incompressible-sfvp-mesh-zero-approximation}.
+当 $\theta_h=R_hv$ 时, 使用
+Lemma~\ref{lem:incompressible-sfvp-mesh-trace-bound}
+证明中得到的不等式以及 $R_h$ 的局部误差估计
+\begin{equation}\label{eq:incompressible-sfvp-local-regularization}
+\|v-R_hv\|_{0,\kappa}
++h_\kappa|v-R_hv|_{1,\kappa}
+\leq C_5h_\kappa^k|v|_{k,\Delta_\kappa}
+\qquad\forall v\in H^k(\Delta_\kappa),
+\end{equation}
+可得
+\[
+\|v-R_hv\|_{0,\kappa'}^2
+\leq C_6\sigma^2h^{2k-1}|v|_{k,\Delta_\kappa}^2.
+\]
+
+\MathBookSourcePage{232}
+回顾 $\Delta_\kappa$ 表示 $\mathcal T_h$ 中所有与 $\kappa$
+共用顶点或边的单元之并. 此外, 由 $\mathcal T_h$ 的正则性,
+任一给定单元在各集合 $\Delta_\kappa$ 中出现的最大次数
+由一个与 $h$ 和 $\kappa$ 无关的固定常数 $M$ 控制.
+因此对 $\Gamma_h$ 的所有线段 $\kappa'$ 求和,
+再次得到 \eqref{eq:incompressible-sfvp-mesh-zero-approximation}.
+\end{Proof}
+
+\begin{Lemma}\label{lem:incompressible-sfvp-mesh-two-approximation}
+令 $\mathcal T_h$ 是 $\overline\Omega$ 的正则剖分.
+对每个实数 $k\in[2,l+1]$, 存在与 $h$ 无关的常数 $C>0$, 使
+\begin{equation}\label{eq:incompressible-sfvp-mesh-two-approximation}
+\inf_{\theta_h\in\Theta_h}
+\|v-\theta_h\|_{2,h}
+\leq Ch^{k-2}|v|_{k,\Omega}
+\qquad\forall v\in H^k(\Omega).
+\end{equation}
+\end{Lemma}
+
+\begin{Proof}
+由于 $k\geq2$, 可取 $\theta_h=I_hv$.
+根据附录中的插值估计, 只需证明
+\[
+\|S(\partial(v-I_hv)/\partial n)\|_{0,\Gamma_h}^2
+\leq C_1h^{2k-3}|v|_{k,\Omega}^2
+\qquad\forall v\in H^k(\Omega).
+\]
+与 Lemma~\ref{lem:incompressible-sfvp-mesh-two-norm-inverse}
+中一样, 得
+\[
+\begin{split}
+\|\partial(v-\theta_h)/\partial n\|_{0,\partial\kappa}^2
+&\leq C_2\frac{\sigma_\kappa}{\rho_\kappa}
+\|\operatorname{grad}(\widehat v-\widehat\theta_h)\|_{0,\partial\widehat\kappa}^2\\
+&\leq C_3\frac{\sigma_\kappa}{\rho_\kappa}
+\left(|\widehat v-\widehat\theta_h|_{1,\widehat\kappa}^2
++|\widehat v-\widehat\theta_h|_{2,\widehat\kappa}^2\right)\\
+&\leq C_4\frac{\sigma_\kappa}{\rho_\kappa}
+|\widehat v|_{k,\widehat\kappa}^2.
+\end{split}
+\]
+因此
+\[
+\|\partial(v-\theta_h)/\partial n\|_{0,\partial\kappa}^2
+\leq C_5\sigma^4h^{2k-3}|v|_{k,\kappa}^2,
+\]
+从而得到 \eqref{eq:incompressible-sfvp-mesh-two-approximation}.
+\end{Proof}
+
+应用 Lemma~\ref{lem:incompressible-sfvp-mesh-zero-approximation}
+和 Lemma~\ref{lem:incompressible-sfvp-mesh-two-approximation},
+最佳估计为
+\[
+\left.
+\begin{aligned}
+\inf_{\theta_h\in\Theta_h}\|v-\theta_h\|_{0,h}
+&\leq Ch^{l+1}|v|_{l+1,\Omega},\\
+\inf_{\theta_h\in\Theta_h}\|v-\theta_h\|_{2,h}
+&\leq Ch^{l-1}|v|_{l+1,\Omega},
+\end{aligned}
+\right\}
+\qquad\forall v\in H^{l+1}(\Omega).
+\]
+
+下面考察使我们能够应用 Subsection~\ref{subsec:abstract-general-result}
+中标准逼近理论的椭圆性和 inf--sup 条件.
+由 \eqref{eq:incompressible-sfvp-mesh-zero-norm-equivalence},
+双线性形式 $a_h$ 在赋予范数 $\|\cdot\|_{0,h}$ 的 $\Theta_h$
+上一致椭圆:
+\begin{equation}\label{eq:incompressible-sfvp-mesh-ellipticity}
+a_h(\theta_h,\theta_h)
+\geq\alpha^*\|\theta_h\|_{0,h}^2
+\qquad\forall\theta_h\in\Theta_h,
+\quad \alpha^*>0\text{ 与 }h\text{ 无关}.
+\end{equation}
+更重要的是, 下一个 Lemma 证明 $b_h$
+在分别赋予范数 $\|\cdot\|_{0,h}$ 和 $\|\cdot\|_{2,h}$
+的 $\Theta_h$ 与 $\Phi_h$ 上满足一致 inf--sup 条件.
+
+\MathBookSourcePage{233}
+\begin{Lemma}\label{lem:incompressible-sfvp-mesh-inf-sup}
+假设 $\Omega$ 是有界凸多边形, 且剖分 $\mathcal T_h$ 一致正则.
+则存在与 $h$ 无关的常数 $\beta^*>0$, 使
+\begin{equation}\label{eq:incompressible-sfvp-mesh-inf-sup}
+\sup_{\theta_h\in\Theta_h}
+\frac{b_h(\theta_h,\phi_h)}{\|\theta_h\|_{0,h}}
+\geq\beta^*\|\phi_h\|_{2,h}
+\qquad\forall\phi_h\in\Phi_h.
+\end{equation}
+\end{Lemma}
+
+\begin{Proof}
+首先回顾
+\[
+b_h(\theta_h,\phi_h)
+=-(\operatorname{curl}\phi_h,\operatorname{curl}\theta_h)
+\qquad\forall\phi_h\in\Phi_h,
+\ \forall\theta_h\in\Theta_h.
+\]
+其次, 对给定 $\phi_h\in\Phi_h$, 由下式定义
+$\theta_h\in\Theta_h$:
+\begin{equation}\label{eq:incompressible-sfvp-mesh-discrete-neumann-relation}
+(\theta_h,\mu_h)
+=(\operatorname{curl}\phi_h,\operatorname{curl}\mu_h)
+\qquad\forall\mu_h\in\Theta_h.
+\end{equation}
+注意它与 \eqref{eq:incompressible-sfvp-discrete-four-field}
+第二个方程的类比.
+由 \eqref{eq:incompressible-sfvp-mesh-ellipticity},
+已经找到 $\theta_h\in\Theta_h$, 使
+\[
+-b_h(\theta_h,\phi_h)
+\geq\alpha^*\|\theta_h\|_{0,h}^2.
+\]
+因此, 为导出 \eqref{eq:incompressible-sfvp-mesh-inf-sup},
+将证明
+\begin{equation}\label{eq:incompressible-sfvp-mesh-phi-theta-bound}
+\|\phi_h\|_{2,h}
+\leq C\|\theta_h\|_{0,\Omega}.
+\end{equation}
+
+\eqref{eq:incompressible-sfvp-mesh-phi-theta-bound}
+的证明与 \eqref{eq:incompressible-sfvp-h1-bound} 的证明非常相似,
+因为这里 $\phi_h$ 与 $\theta_h$ 具有相同关系.
+不过, 把 \eqref{eq:incompressible-sfvp-mesh-discrete-neumann-relation}
+解释为 $\Theta_h$ 中齐次 Neumann 问题的离散化更为方便.
+这引导我们引入问题
+\[
+-\Delta\phi(h)=\theta_h\quad\text{in }\Omega,
+\qquad
+\partial\phi(h)/\partial n=0\quad\text{on }\Gamma
+\]
+的解 $\phi(h)$, 它在相差一个加法常数的意义下唯一.
+在 \eqref{eq:incompressible-sfvp-mesh-discrete-neumann-relation}
+中取 $\mu_h=1\in\Theta_h$, 得
+\[
+\int_\Omega\theta_h\,dx=0,
+\]
+这恰是该 Neumann 问题的相容性条件.
+此外, $\Omega$ 的凸性蕴含
+$\phi(h)\in H^2(\Omega)/\mathbb R$, 且
+\[
+|\phi(h)|_{2,\Omega}
+\leq C_1\|\theta_h\|_{0,\Omega}.
+\]
+与 Remark~\ref{rem:incompressible-sfvp-elementary-h1-proof} 一样, 可得
+\[
+|\phi_h-\chi_h|_{1,\Omega}
+\leq|\phi(h)-\chi_h|_{1,\Omega}
+\qquad\forall\chi_h\in\Theta_h.
+\]
+由 \eqref{eq:incompressible-sfvp-mesh-two-norm-inverse},
+\[
+\|\phi_h-\chi_h\|_{2,h}
+\leq C_2\frac1h|\phi(h)-\chi_h|_{1,\Omega}.
+\]
+因此
+\[
+\|\phi_h\|_{2,h}
+\leq\inf_{\chi_h\in\Theta_h}
+\left\{
+C_2\frac1h|\phi(h)-\chi_h|_{1,\Omega}
++\|\chi_h-\phi(h)\|_{2,h}
++\|\phi(h)\|_{2,h}
+\right\}.
+\]
+取 $\chi_h=I_h\phi(h)$.
+
+\MathBookSourcePage{234}
+由 Lemma~\ref{lem:incompressible-sfvp-mesh-two-approximation},
+\[
+\|\chi_h-\phi(h)\|_{2,h}
+\leq C_3|\phi(h)|_{2,\Omega},
+\]
+而附录插值估计给出
+\[
+|\chi_h-\phi(h)|_{1,\Omega}
+\leq C_4h|\phi(h)|_{2,\Omega}.
+\]
+此外, 因为 $\phi(h)\in H^2(\Omega)$ 且
+$\partial\phi(h)/\partial n=0$ 于 $\Gamma$ 上,
+有 $S(\partial\phi(h)/\partial n)=0$, 因而
+\[
+\|\phi(h)\|_{2,h}=|\phi(h)|_{2,\Omega}.
+\]
+汇总这些不等式, 得
+\eqref{eq:incompressible-sfvp-mesh-phi-theta-bound}.
+\end{Proof}
+
+\begin{Remark}\label{rem:incompressible-sfvp-mesh-w1s-inf-sup}
+在上述证明中, 由于 $\theta_h$ 与 $\phi_h$
+由 \eqref{eq:incompressible-sfvp-mesh-discrete-neumann-relation} 联系,
+Lemma~\ref{lem:incompressible-sfvp-hypothesis-h1} 给出
+\[
+|\phi_h|_{1,s,\Omega}
+\leq C_s\|\theta_h\|_{0,\Omega}
+\qquad\forall\text{ real }s\geq2.
+\]
+因此, 在 Lemma~\ref{lem:incompressible-sfvp-mesh-inf-sup}
+的假设下, 除 \eqref{eq:incompressible-sfvp-mesh-inf-sup} 外还有
+\[
+\sup_{\theta_h\in\Theta_h}
+\frac{b_h(\theta_h,\phi_h)}{\|\theta_h\|_{0,h}}
+\geq\gamma(s)|\phi_h|_{1,s,\Omega}
+\qquad\forall\text{ real }s\geq2,
+\]
+其中常数 $\gamma(s)>0$ 与 $h$ 无关.
+\end{Remark}
+
+现在可把问题 \eqref{eq:incompressible-sfvp-mesh-discrete-problem}
+置于 Subsection~\ref{subsec:incompressible-abstract-mixed-discretization}
+的抽象框架中, 但直接作误差分析实际上更快.
+引入与表述 \eqref{eq:incompressible-sfvp-mesh-abstract-problem}
+自然相联系的空间
+\[
+V_h
+=\{(\theta_h,\phi_h)\in\Theta_h\times\Phi_h;
+\ a_h(\theta_h,\mu_h)+b_h(\mu_h,\phi_h)=0
+\ \forall\mu_h\in\Theta_h\}.
+\]
+应用 Subsection~\ref{subsec:abstract-general-result} 的论证,
+容易导出下列逼近结果:
+\begin{equation}\label{eq:incompressible-sfvp-mesh-abstract-errors}
+\begin{aligned}
+\|\omega-\omega_h\|_{0,h}
+&\leq(1+\sqrt2C/\alpha^*)
+\inf_{(\theta_h,\phi_h)\in V_h}
+\|\omega-\theta_h\|_{0,h},\\
+\|\omega-\omega_h\|_{0,h}
+&\leq(1+\sqrt2C/\alpha^*)
+\left\{(1+1/\alpha^*)
+\inf_{\theta_h\in\Theta_h}\|\omega-\theta_h\|_{0,h}
++(\sqrt2/\alpha^*)
+\inf_{\phi_h\in\Phi_h}\|\psi-\phi_h\|_{2,h}\right\},\\
+\|\psi-\psi_h\|_{2,h}
+&\leq(1+\sqrt2/\beta^*)
+\inf_{\phi_h\in\Phi_h}\|\psi-\phi_h\|_{2,h}
++\frac1{\beta^*}\|\omega-\omega_h\|_{0,\Omega},
+\end{aligned}
+\end{equation}
+其中 $\alpha^*$, $\beta^*$ 和 $C$ 分别是
+\eqref{eq:incompressible-sfvp-mesh-ellipticity},
+\eqref{eq:incompressible-sfvp-mesh-inf-sup}
+和 \eqref{eq:incompressible-sfvp-mesh-phi-theta-bound} 中的常数.
+结合 Lemma~\ref{lem:incompressible-sfvp-mesh-zero-approximation}
+和 Lemma~\ref{lem:incompressible-sfvp-mesh-two-approximation},
+立即得到下一个 Theorem.
+
+\begin{Theorem}\label{thm:incompressible-sfvp-mesh-error}
+令 $\Omega$ 是有界凸多边形,
+$\mathcal T_h$ 是 $\overline\Omega$ 的一族一致正则剖分.
+若 Stokes 问题 \eqref{eq:incompressible-sfvp-stokes}
+的解 $\mathbf u=\operatorname{curl}\psi$ 和右端项 $\mathbf f$ 满足
+\[
+\mathbf f\in L^2(\Omega)^2,
+\qquad
+\psi\in H^{k+1}(\Omega),
+\qquad
+\Delta\psi\in H^k(\Omega),
+\]
+其中某个实数 $k\in[1,l]$, 则问题
+\eqref{eq:incompressible-sfvp-mesh-discrete-problem}
+的解 $(\omega_h,\psi_h)$ 满足
+\begin{equation}\label{eq:incompressible-sfvp-mesh-error}
+\|\omega-\omega_h\|_{0,h}
++\|\psi-\psi_h\|_{2,h}
+\leq C\left(h^k|\Delta\psi|_{k,\Omega}
++h^{k-1}|\psi|_{k+1,\Omega}\right).
+\end{equation}
+最佳估计在 $\psi\in H^{l+1}(\Omega)$ 时得到:
+\begin{equation}\label{eq:incompressible-sfvp-mesh-best-error}
+\|\omega-\omega_h\|_{0,h}
++\|\psi-\psi_h\|_{2,h}
+\leq Ch^{l-1}|\psi|_{l+1,\Omega}.
+\end{equation}
+\end{Theorem}
+
+\MathBookSourcePage{235}
+最后, 一个简单的对偶论证可在 $H^1$ 范数中改进 $\psi$ 的误差界.
+
+\begin{Theorem}\label{thm:incompressible-sfvp-mesh-h1-error}
+在 Theorem~\ref{thm:incompressible-sfvp-mesh-error} 的假设下,
+若流函数 $\psi\in H^{k+1}(\Omega)$,
+其中实数 $k\in[2,l]$, 则
+\begin{equation}\label{eq:incompressible-sfvp-mesh-h1-error}
+|\psi-\psi_h|_{1,\Omega}
+\leq Ch^k|\psi|_{k+1,\Omega}.
+\end{equation}
+当 $\psi\in H^{l+1}(\Omega)$ 时, 最佳误差界为
+\begin{equation}\label{eq:incompressible-sfvp-mesh-best-h1-error}
+|\psi-\psi_h|_{1,\Omega}
+\leq Ch^l|\psi|_{l+1,\Omega},
+\qquad l\geq2.
+\end{equation}
+\end{Theorem}
+
+\begin{Proof}
+对 $\mathbf g\in L^2(\Omega)^2$, 考虑辅助 Stokes 问题
+\[
+\left\{
+\begin{aligned}
+a_h(\lambda_g,\mu)+b_h(\mu,\phi_g)&=0
+&&\forall\mu\in H^1(\Omega),\\
+b_h(\lambda_g,\chi)&=-(\mathbf g,\operatorname{curl}\chi)
+&&\forall\chi\in\widetilde\Psi.
+\end{aligned}
+\right.
+\]
+由于 $\Omega$ 是凸的, 该问题的唯一解
+$(\lambda_g,\phi_g)$ 属于 $H^1(\Omega)\times H^3(\Omega)$,
+且由 Remark~\ref{rem:stokes-polyhedral-regularity},
+\[
+\|\phi_g\|_{3,\Omega}+\|\lambda_g\|_{1,\Omega}
+\leq C_1\|\mathbf g\|_{0,\Omega}.
+\]
+由此和问题 \eqref{eq:incompressible-sfvp-mesh-discrete-problem},
+容易得到
+\[
+\begin{split}
+(\mathbf g,\operatorname{curl}(\psi-\psi_h))
+={}&-b_h(\lambda_g-\lambda_h,\psi-\psi_h)
++a_h(\omega-\omega_h,\lambda_h)\\
+={}&b_h(\lambda_h-\lambda_g,\psi-\psi_h)
++a_h(\omega-\omega_h,\lambda_h-\lambda_g)\\
+&-b_h(\omega-\omega_h,\phi_g-\phi_h)
+\end{split}
+\]
+对所有 $\lambda_h\in\Theta_h$ 和 $\phi_h\in\Phi_h$ 成立.
+于是 \eqref{eq:incompressible-sfvp-mesh-h1-error}
+由 Theorem~\ref{thm:incompressible-sfvp-mesh-error},
+Lemma~\ref{lem:incompressible-sfvp-mesh-zero-approximation}
+和 Lemma~\ref{lem:incompressible-sfvp-mesh-two-approximation} 得到.
+\end{Proof}
+
+作为一个有用的推论, 有 $\psi$ 在 $W^{1,s}$ 范数中的下列估计.
+
+\begin{Corollary}\label{cor:incompressible-sfvp-mesh-w1s-error}
+假设 Theorem~\ref{thm:incompressible-sfvp-mesh-error} 的条件成立.
+若流函数 $\psi\in H^{k+1}(\Omega)$,
+其中实数 $k\in[2,l]$, 则对每个实数 $s\geq2$,
+存在与 $h$ 无关的常数 $C_s$, 使
+\begin{equation}\label{eq:incompressible-sfvp-mesh-w1s-error}
+|\psi-\psi_h|_{1,s,\Omega}
+\leq C_sh^{k-1+2/s}|\psi|_{k+1,\Omega}.
+\end{equation}
+\end{Corollary}
+
+\MathBookSourcePage{236}
+该估计是 \eqref{eq:incompressible-sfvp-mesh-h1-error},
+Lemma~\ref{lem:appendix-global-inverse-same-order}
+和附录插值估计的直接推论.
+
+最后三个结果需要作若干评论.
+第一个显然的评论是, 本小节的方法给出了比上一小节更尖锐的估计.
+事实上, 只要 $l\geq2$ 且流函数 $\psi\in H^{l+1}(\Omega)$,
+\eqref{eq:incompressible-sfvp-mesh-best-h1-error}
+就给出 $|\psi-\psi_h|_{1,\Omega}$ 的最优误差界.
+遗憾的是, 本小节没有改进涡量 $\omega$ 的误差估计.
+而且, 当使用分片线性元, 即 $l=1$ 时,
+它同样不能证明收敛.
+在这种情形下, 精度损失来自范数 $\|\cdot\|_{2,h}$ 中的逼近误差;
+显然, 该范数不适合分片线性元.
+
+最后值得指出, 在本小节中几乎不可能去掉 $\Omega$ 的凸性假设,
+因为 Lemma~\ref{lem:incompressible-sfvp-mesh-inf-sup}
+必然要求 $\phi(h)\in H^2(\Omega)$.
+
+\begin{Remark}\label{rem:incompressible-sfvp-mesh-trace-errors}
+由于 $\|\cdot\|_{0,h}$ 和 $\|\cdot\|_{2,h}$ 中含有 trace 项,
+\eqref{eq:incompressible-sfvp-mesh-error} 还给出附加估计
+\[
+\|\omega-\omega_h\|_{0,\Gamma_h}
+\leq Ch^{k-3/2}|\psi|_{k+1,\Omega},
+\]
+以及
+\[
+\|S(\partial\psi_h/\partial n)\|_{0,\Gamma_h}
+\leq Ch^{k-1/2}|\psi|_{k+1,\Omega},
+\]
+其中 $1\leq k\leq l$, 当然还假设
+$\psi\in H^{k+1}(\Omega)$.
+最后一个不等式表明, $\partial\psi_h/\partial n$
+跨单元边界的跳跃, 以及它在 $\Gamma$ 上的值,
+以 $h^{k-1/2}$ 的阶趋于零.
+\end{Remark}

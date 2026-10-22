@@ -1,0 +1,118 @@
+\subsection{等参有限元}
+\label{sec:ch10-isoparametric}
+\setcounter{thmcount}{0}
+\setcounter{equation}{0}
+
+使用等参有限元(第~\MBUnresolvedReference{sec:ch04-isoparametric-elements}{4.7} 节)同样会造成变分罪行: 可以把它理解为违反式~\eqref{eq:ch10-conforming-inclusion}, 也可以理解为使用了修正的双线性形式. 不过, 这种方法比上一节的方法更容易估计. 用多项式插值边界条件时, $v\in V_h$ 在 $\partial\Omega$ 上可能显著偏离零. Lobatto 插值点保证误差以能相互抵消不利影响的方式振荡, 从而减小这种影响. 另一方面, 等参有限元通过从某个区域 $\Omega_h$ 出发的分片多项式映射变换而来, 因而不再是 $\Omega$ 的坐标多项式. 所以它们能在逐点意义下更精确地匹配 Dirichlet 边界条件.
+
+先给出模型问题~\eqref{eq:ch10-dirichlet-model} 的表述. 回顾我们有 $\Omega$ 的多面体逼近 $\Omega_h$ 和映射 $F^h$, 使得 $F^h(\Omega_h)$ 紧密逼近 $\Omega$. 假设等参映射满足第~\MBUnresolvedReference{sec:ch04-isoparametric-elements}{4.7} 节的性质 1--3. 特别地, 假设存在辅助映射 $F:\Omega_h\to\Omega$, 且映射的每个分量都满足 $F_i^h=I^hF_i$. 还假设 $F$ 也满足第~\MBUnresolvedReference{sec:ch04-isoparametric-elements}{4.7} 节的条件 1 和 3. 构造这样的 $F$ 并非易事, 但 Lenoir (1986) 给出了构造. 定义
+\[
+\MathBookFormulaID{formula-ch10-isoparametric-bilinear-form}
+a_h(v,w)=\int_{F^h(\Omega_h)}\nabla v(x)\cdot\nabla w(x)\,dx.
+\]
+
+\MathBookSourcePage{297}
+为便于分析, 需要映射 $\Phi^h:\Omega\to F^h(\Omega_h)$, 定义为 $\Phi^h(x)=F^h(F^{-1}(x))$. 可写成
+\[
+\MathBookFormulaID{formula-ch10-isoparametric-pulled-form}
+a_h(v,w)=\int_\Omega J_{\Phi^h}(x)^{-t}\nabla\widehat v(x)\cdot
+J_{\Phi^h}(x)^{-t}\nabla\widehat w(x)\det J_{\Phi^h}(x)\,dx,
+\]
+其中, 对定义在 $F^h(\Omega_h)$ 上的任意函数 $v$, 令
+\MBSourceItem{1}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-isoparametric-pullback}
+\label{eq:ch10-isoparametric-pullback}
+\widehat v(x):=v(\Phi^h(x)),
+\end{equation}
+且 $J_{\Phi^h}$ 表示 $\Phi^h$ 的 Jacobian. 关键在于
+\MBSourceItem{2}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-isoparametric-jacobian-error}
+\label{eq:ch10-isoparametric-jacobian-error}
+J_{\Phi^h}-I=O(h^{k-1}).
+\end{equation}
+
+令 $V_h$ 如式~\MBUnresolvedReference{eq:ch04-source-4-7-2}{4.7.2} 所定义, 其中 $\widetilde\Omega=\Omega_h$, $\widetilde F=F^h$, 并在 $V_h$ 中定义 $u_h$, 使得
+\MBSourceItem{3}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-isoparametric-discrete-problem}
+\label{eq:ch10-isoparametric-discrete-problem}
+a_h(u_h,v)=\int_{F^h(\Omega_h)}f(x)v(x)\,dx.
+\end{equation}
+先推导与式~\eqref{eq:ch10-second-strang-estimate} 类似的估计. 定义 $\widehat V_h=\{\widehat v:v\in V_h\}$, 并令 $\widehat v_h$ 表示 $u$ 到 $\widehat V_h$ 上的投影:
+\MBSourceItem{4}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-isoparametric-projection}
+\label{eq:ch10-isoparametric-projection}
+a(\widehat v_h,\widehat w)=a(u,\widehat w)
+\qquad\forall\widehat w\in\widehat V_h.
+\end{equation}
+注意 $\widehat V_h\subset V$, 即 $\widehat w\in\widehat V_h$ 严格满足 Dirichlet 边界条件. 对任意 $w\in V_h$,
+\MBSourceItem{5}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-isoparametric-consistency-identity}
+\label{eq:ch10-isoparametric-consistency-identity}
+\begin{split}
+a(\widehat v_h-\widehat u_h,\widehat w)
+&=a(u-\widehat u_h,\widehat w)\\
+&=(f,\widehat w)-a(\widehat u_h,\widehat w)\\
+&=(f,\widehat w)-\int_{F^h(\Omega_h)}fw\,dx
++a_h(u_h,w)-a(\widehat u_h,\widehat w).
+\end{split}
+\end{equation}
+所以
+\MBSourceItem{6}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-isoparametric-abstract-estimate}
+\label{eq:ch10-isoparametric-abstract-estimate}
+\begin{split}
+\|u-\widehat u_h\|_a
+&\leq\inf_{v\in V_h}\|u-\widehat v\|_a
++\sup_{w\in V_h\setminus\{0\}}
+\frac{|a_h(u_h,w)-a(\widehat u_h,\widehat w)|}{\|\widehat w\|_a}\\
+&\quad+\sup_{w\in V_h\setminus\{0\}}
+\frac{\left|(f,\widehat w)-\int_{F^h(\Omega_h)}fw\,dx\right|}{\|\widehat w\|_a}.
+\end{split}
+\end{equation}
+
+\MathBookSourcePage{298}
+上式第二项中的分子可展开为
+\begin{align*}
+\MathBookFormulaID{formula-ch10-isoparametric-form-expansion}
+a_h(u_h,w)-a(\widehat u_h,\widehat w)
+&=\int_\Omega(J_{\Phi^h}^{-t}-I)\nabla\widehat u_h\cdot
+J_{\Phi^h}^{-t}\nabla\widehat w\det J_{\Phi^h}\,dx\\
+&\quad+\int_\Omega\nabla\widehat u_h\cdot
+\bigl((\det J_{\Phi^h})J_{\Phi^h}^{-t}-I\bigr)\nabla\widehat w\,dx.
+\end{align*}
+由式~\eqref{eq:ch10-isoparametric-jacobian-error},
+\MBSourceItem{7}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-isoparametric-form-error}
+\label{eq:ch10-isoparametric-form-error}
+\sup_{w\in V_h\setminus\{0\}}
+\frac{|a_h(u_h,w)-a(\widehat u_h,\widehat w)|}{\|\widehat w\|_a}
+\leq Ch^{k-1}\|\widehat u_h\|_a.
+\end{equation}
+含 $f$ 的项可类似估计:
+\begin{align*}
+\MathBookFormulaID{formula-ch10-isoparametric-load-error}
+\left|(f,\widehat w)-\int_{F^h(\Omega_h)}fw\,dx\right|
+&=\left|\int_\Omega\bigl(f(x)-f(\Phi^h(x))\det J_{\Phi^h}(x)\bigr)\widehat w(x)\,dx\right|\\
+&\leq C\bigl(h^k\|f\|_{W_\infty^1(\Omega)}+h^{k-1}\|f\|_{L^2(\Omega)}\bigr)
+\|\widehat w\|_{L^2(\Omega)}.
+\end{align*}
+结合式~\eqref{eq:ch10-isoparametric-abstract-estimate} 和~\eqref{eq:ch10-isoparametric-form-error}, 得到下述定理.
+
+\MBSourceItem{8}
+\begin{Theorem}
+\label{thm:ch10-isoparametric-error}
+设 $u$ 由问题~\eqref{eq:ch10-dirichlet-model} 定义, $u_h$ 由式~\eqref{eq:ch10-isoparametric-discrete-problem} 定义, 其中 $V_h$ 由式~\MBUnresolvedReference{eq:ch04-source-4-7-2}{4.7.2} 定义($\widetilde\Omega=\Omega_h$, $\widetilde F=F^h$). 当 $h$ 充分小时,
+\[
+\MathBookFormulaID{formula-ch10-isoparametric-error}
+\|u-\widehat u_h\|_{H^1(\Omega)}
+\leq Ch^{k-1}\bigl(\|u\|_{H^k(\Omega)}+\|f\|_{W_\infty^1(\Omega)}\bigr),
+\]
+其中 $\widehat u_h$ 的定义见式~\eqref{eq:ch10-isoparametric-pullback}.
+\end{Theorem}

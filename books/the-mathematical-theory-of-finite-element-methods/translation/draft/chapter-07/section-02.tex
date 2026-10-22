@@ -1,0 +1,283 @@
+\subsection{分层基预条件子}
+\label{sec:ch07-hierarchical-basis-preconditioner}
+\setcounter{thmcount}{0}
+\setcounter{equation}{0}
+
+设 $\mathcal T_1$ 是 $\Omega$ 的一个三角剖分, 三角剖分 $\mathcal T_2,\ldots,\mathcal T_J$ 由 $\mathcal T_1$ 经正则细分得到. 因而 $h_j=\max_{T\in\mathcal T_j}\operatorname{diam}T$ 与 $h_J=\max_{T\in\mathcal T_J}\operatorname{diam}T$ 满足
+\MBSourceItem{1}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-mesh-level-relation}
+\label{eq:ch07-mesh-level-relation}
+h_j=2^{J-j}h_J
+\qquad 1\leq j\leq J.
+\end{equation}
+令 $V_j\subseteq\mathring H^1(\Omega)$ 为与 $\mathcal T_j$ 相应的 $\mathcal P_1$ 有限元空间. 式~\eqref{eq:ch07-model-poisson-variational-problem} 的离散问题是求 $u_J\in V_J$, 使得
+\MBSourceItem{2}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-hierarchical-discrete-problem}
+\label{eq:ch07-hierarchical-discrete-problem}
+\int_\Omega\nabla u_J\cdot\nabla v\,dx=F(v)
+\qquad\forall v\in V_J.
+\end{equation}
+定义线性算子 $A_J:V_J\longrightarrow V_J'$:
+\MBSourceItem{3}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-hierarchical-discrete-operator}
+\label{eq:ch07-hierarchical-discrete-operator}
+\langle A_Jw,v\rangle=\int_\Omega\nabla w\cdot\nabla v\,dx
+\qquad\forall v,w\in V_J,
+\end{equation}
+并以 $\langle f_J,v\rangle=F(v)$ $(v\in V_J)$ 定义 $f_J\in V_J'$. 则式~\eqref{eq:ch07-hierarchical-discrete-problem} 可写为 $A_Ju_J=f_J$.
+
+\MathBookSourcePage{191}
+本节的目标是研究 $A_J$ 的分层基预条件子(参见 Yserentant 1986).
+
+定义 $V_j$ 的子空间 $W_j$ $(2\leq j\leq J)$ 为
+\[
+\MathBookFormulaID{formula-ch07-hierarchical-detail-space}
+W_j=\{v\in V_j:v(p)=0\text{ 对 }\mathcal T_{j-1}\text{ 的所有顶点 }p\}.
+\]
+容易看出(参见习题~\ref{exr:ch07-09})
+\MBSourceItem{4}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-one-level-hierarchical-decomposition}
+\label{eq:ch07-one-level-hierarchical-decomposition}
+V_j=V_{j-1}\oplus W_j,
+\end{equation}
+从而, 若取 $W_1=V_1$, 则
+\MBSourceItem{5}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-full-hierarchical-decomposition}
+\label{eq:ch07-full-hierarchical-decomposition}
+V_J=W_1\oplus\cdots\oplus W_J.
+\end{equation}
+事实上, 对 $v\in V_J$, 式~\eqref{eq:ch07-full-hierarchical-decomposition} 中的分解可显式写成
+\MBSourceItem{6}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-hierarchical-interpolation-decomposition}
+\label{eq:ch07-hierarchical-interpolation-decomposition}
+v=\Pi_1v+(\Pi_2v-\Pi_1v)+(\Pi_3v-\Pi_2v)+\cdots
++(\Pi_{J-1}v-\Pi_{J-2}v)+(v-\Pi_{J-1}v),
+\end{equation}
+其中 $\Pi_j:C^0(\overline\Omega)\longrightarrow V_j$ 是节点插值算子.
+
+辅助空间 $W_1,W_2,\ldots,W_J$ 通过自然嵌入 $I_j:W_j\longrightarrow V_J$ 与 $V_J$ 相连, 并可定义 SPD 算子 $B_j:W_j\longrightarrow W_j'$:
+\MBSourceItem{7}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-hierarchical-local-spd-operator}
+\label{eq:ch07-hierarchical-local-spd-operator}
+\langle B_jw_1,w_2\rangle
+=\sum_{p\in\mathcal V_j\setminus\mathcal V_{j-1}}w_1(p)w_2(p)
+\qquad\forall w_1,w_2\in W_j,
+\end{equation}
+其中 $\mathcal V_j$ 是 $\mathcal T_j$ 的内部顶点集合($\mathcal V_0=\varnothing$). $A_J$ 的分层基预条件子为
+\MBSourceItem{8}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-hierarchical-basis-preconditioner}
+\label{eq:ch07-hierarchical-basis-preconditioner}
+B_{HB}=\sum_{j=1}^{J}I_jB_j^{-1}I_j^t.
+\end{equation}
+由于式~\eqref{eq:ch07-full-hierarchical-decomposition} 蕴含式~\eqref{eq:ch07-auxiliary-space-decomposition}, 可用定理~\ref{thm:ch07-preconditioned-eigenvalue-characterization} 分析 $B_{HB}$.
+
+设 $v=\sum_{j=1}^{J}w_j$, 其中 $w_j=\Pi_jv-\Pi_{j-1}v$, 是 $v\in V_J$ 的唯一分解(参见式~\eqref{eq:ch07-hierarchical-interpolation-decomposition}), 这里取 $\Pi_0v=0$. 注意, 直接计算可得(参见习题~\ref{exr:ch07-10})
+\MBSourceItem{9}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-interpolation-difference-estimate}
+\label{eq:ch07-interpolation-difference-estimate}
+\|w-\Pi_{j-1}w\|_{L^2(\Omega)}
+\lesssim h_j|w|_{H^1(\Omega)}
+\qquad\forall w\in V_j,\ 1\leq j\leq J.
+\end{equation}
+由式~\eqref{eq:ch07-interpolation-difference-estimate} 和逆估计(参见定理~\ref{thm:ch04-global-inverse-estimate})可得
+\MBSourceItem{10}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-detail-space-norm-equivalence}
+\label{eq:ch07-detail-space-norm-equivalence}
+h_j^{-1}\|w_j\|_{L^2(\Omega)}
+=h_j^{-1}\|w_j-\Pi_{j-1}w_j\|_{L^2(\Omega)}
+\lesssim|w_j|_{H^1(\Omega)}
+\lesssim h_j^{-1}\|w_j\|_{L^2(\Omega)}.
+\end{equation}
+
+\MathBookSourcePage{192}
+由式~\eqref{eq:ch07-hierarchical-local-spd-operator}、引理~\ref{lem:ch06-l2-mesh-norm-equivalence} 以及式~\eqref{eq:ch07-detail-space-norm-equivalence}, 对式~\eqref{eq:ch07-preconditioned-maximum-eigenvalue} 和式~\eqref{eq:ch07-preconditioned-minimum-eigenvalue} 分母中的量可得
+\MBSourceItem{11}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-hierarchical-denominator-equivalence}
+\label{eq:ch07-hierarchical-denominator-equivalence}
+\sum_{j=1}^{J}\langle B_jw_j,w_j\rangle
+=\sum_{j=1}^{J}h_j^{-2}
+\left(h_j^2\sum_{p\in\mathcal V_j\setminus\mathcal V_{j-1}}[w_j(p)]^2\right)
+\approx\sum_{j=1}^{J}h_j^{-2}\|w_j\|_{L^2(\Omega)}^2
+\approx\sum_{j=1}^{J}|w_j|_{H^1(\Omega)}^2.
+\end{equation}
+
+下一个引理可用于给出 $\lambda_{\min}(B_{HB}A_J)$ 的下界.
+
+\MBSourceItem{12}
+\begin{Lemma}
+\label{lem:ch07-hierarchical-interpolation-level-estimate}
+对 $1\leq j\leq J$, 有
+\MBSourceItem{13}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-hierarchical-interpolation-level-estimate}
+\label{eq:ch07-hierarchical-interpolation-level-estimate}
+\|\Pi_jv-\Pi_{j-1}v\|_{L^2(\Omega)}
+\lesssim h_j(1+\sqrt{J-j})|v|_{H^1(\Omega)}
+\qquad\forall v\in V_J.
+\end{equation}
+\end{Lemma}
+
+\begin{Proof}
+令 $v_T=|T|^{-1}\int_Tv\,dx$ 为 $v$ 在三角形 $T\in\mathcal T_j$ 上的平均值. 则
+\begin{align*}
+\MathBookFormulaID{formula-ch07-hierarchical-interpolation-level-proof}
+\|\Pi_jv-\Pi_{j-1}v\|_{L^2(\Omega)}^2
+&=\|\Pi_jv-\Pi_{j-1}\Pi_jv\|_{L^2(\Omega)}^2\\
+&\lesssim h_j^2\sum_{T\in\mathcal T_j}|\Pi_jv-v_T|_{H^1(T)}^2
+&&\text{(由式~\eqref{eq:ch07-interpolation-difference-estimate})}\\
+&\lesssim h_j^2\sum_{T\in\mathcal T_j}\|\Pi_jv-v_T\|_{L^\infty(T)}^2
+&&\text{(由引理~\ref{lem:ch04-local-inverse-estimate})}\\
+&\lesssim h_j^2\sum_{T\in\mathcal T_j}\|v-v_T\|_{L^\infty(T)}^2\\
+&\lesssim h_j^2\sum_{T\in\mathcal T_j}
+(1+|\ln(h_j/h_J)|)|v|_{H^1(T)}^2
+&&\text{(由习题~\ref{exr:ch07-11})}.
+\end{align*}
+引理由式~\eqref{eq:ch07-mesh-level-relation} 得证.
+\end{Proof}
+
+结合式~\eqref{eq:ch07-hierarchical-denominator-equivalence} 和式~\eqref{eq:ch07-hierarchical-interpolation-level-estimate}, 可得
+\[
+\MathBookFormulaID{formula-ch07-hierarchical-minimum-sum-bound}
+\sum_{j=1}^{J}\langle B_jw_j,w_j\rangle
+\lesssim\left(\sum_{j=1}^{J}j\right)|v|_{H^1(\Omega)}^2
+\lesssim J^2|v|_{H^1(\Omega)}^2.
+\]
+由式~\eqref{eq:ch07-mesh-level-relation} 和式~\eqref{eq:ch07-hierarchical-discrete-operator}, 有
+\[
+\MathBookFormulaID{formula-ch07-hierarchical-logarithmic-denominator-bound}
+\sum_{j=1}^{J}\langle B_jw_j,w_j\rangle
+\lesssim(1+|\ln h_J|^2)\langle A_Jv,v\rangle,
+\]
+故式~\eqref{eq:ch07-preconditioned-minimum-eigenvalue} 蕴含
+\MBSourceItem{14}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-hierarchical-minimum-eigenvalue-bound}
+\label{eq:ch07-hierarchical-minimum-eigenvalue-bound}
+\lambda_{\min}(B_{HB}A_J)
+\gtrsim(1+|\ln h_J|^2)^{-1}.
+\end{equation}
+
+\MathBookSourcePage{193}
+为估计 $\lambda_{\max}(B_{HB}A_J)$, 还需要下面两个引理. 第一个引理是卷积 Young 不等式的离散版本, 留作习题(参见习题~\ref{exr:ch07-12}).
+
+\MBSourceItem{15}
+\begin{Lemma}[离散 Young 不等式]
+\label{lem:ch07-discrete-young-convolution}
+设 $a_j,b_j$ 在 $-\infty<j<\infty$ 上非负. 则
+\[
+\MathBookFormulaID{formula-ch07-discrete-young-convolution}
+\sum_{j=-\infty}^{\infty}
+\left(\sum_{k=-\infty}^{\infty}a_{j-k}b_k\right)^2
+\leq
+\left(\sum_{k=-\infty}^{\infty}b_k^2\right)
+\left(\sum_{j=-\infty}^{\infty}a_j\right)^2.
+\]
+\end{Lemma}
+
+\MBSourceItem{16}
+\begin{Lemma}
+\label{lem:ch07-cross-level-gradient-estimate}
+若 $v_j\in V_j$, $v_k\in V_k$ 且 $1\leq j\leq k\leq J$, 则
+\MBSourceItem{17}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-cross-level-gradient-estimate}
+\label{eq:ch07-cross-level-gradient-estimate}
+\int_\Omega\nabla v_j\cdot\nabla v_k\,dx
+\lesssim2^{(j-k)/2}|v_j|_{H^1(\Omega)}
+h_k^{-1}\|v_k\|_{L^2(\Omega)}.
+\end{equation}
+\end{Lemma}
+
+\begin{Proof}
+在每个三角形 $T\in\mathcal T_j$ 上,
+\begin{align*}
+\MathBookFormulaID{formula-ch07-cross-level-gradient-local-proof}
+\int_T\nabla v_j\cdot\nabla v_k\,dx
+&=\int_{\partial T}\frac{\partial v_j}{\partial n}v_k\,ds\\
+&\lesssim h_j^{-1}|v_j|_{H^1(T)}\int_{\partial T}|v_k|\,ds
+&& (v_j\in V_j)\\
+&\lesssim h_j^{-1}|v_j|_{H^1(T)}
+h_k\sum_{p\in\mathcal V_k\cap\partial T}|v_k(p)|
+&& (v_k\in V_k)\\
+&\lesssim h_j^{-1}|v_j|_{H^1(T)}
+(h_kh_j)^{1/2}
+\left(\sum_{p\in\mathcal V_k\cap\partial T}|v_k(p)|^2\right)^{1/2}\\
+&\lesssim\left(\frac{h_k}{h_j}\right)^{1/2}|v_j|_{H^1(T)}
+\bigl(h_k^{-1}\|v_k\|_{L^2(T)}\bigr)
+&&\text{(由引理~\ref{lem:ch06-l2-mesh-norm-equivalence})}.
+\end{align*}
+对所有 $T\in\mathcal T_j$ 求和, 再应用 Cauchy--Schwarz 不等式和式~\eqref{eq:ch07-mesh-level-relation}, 即得式~\eqref{eq:ch07-cross-level-gradient-estimate}.
+\end{Proof}
+
+\MBSourceItem{18}
+\begin{Lemma}[加强的 Cauchy--Schwarz 不等式]
+\label{lem:ch07-strengthened-cauchy-schwarz}
+若 $w_j\in W_j$, $w_k\in W_k$ 且 $1\leq j\leq k\leq J$, 则
+\MBSourceItem{19}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-strengthened-cauchy-schwarz}
+\label{eq:ch07-strengthened-cauchy-schwarz}
+\int_\Omega\nabla w_j\cdot\nabla w_k\,dx
+\lesssim2^{(j-k)/2}|w_j|_{H^1(\Omega)}|w_k|_{H^1(\Omega)}.
+\end{equation}
+\end{Lemma}
+
+\begin{Proof}
+因为 $w_k=w_k-\Pi_{k-1}w_k$, 式~\eqref{eq:ch07-strengthened-cauchy-schwarz} 由式~\eqref{eq:ch07-interpolation-difference-estimate} 和式~\eqref{eq:ch07-cross-level-gradient-estimate} 得到.
+\end{Proof}
+
+\MathBookSourcePage{194}
+任取 $v\in V_J$, 有
+\begin{align*}
+\MathBookFormulaID{formula-ch07-hierarchical-maximum-eigenvalue-chain}
+\langle A_Jv,v\rangle
+&=\int_\Omega\nabla\left(\sum_{j=1}^{J}w_j\right)
+\cdot\nabla\left(\sum_{k=1}^{J}w_k\right)\,dx
+&&\text{(由式~\eqref{eq:ch07-hierarchical-discrete-operator})}\\
+&\lesssim\sum_{j,k=1}^{J}2^{-|j-k|/2}
+|w_j|_{H^1(\Omega)}|w_k|_{H^1(\Omega)}
+&&\text{(由式~\eqref{eq:ch07-strengthened-cauchy-schwarz})}\\
+&\lesssim\sum_{j=1}^{J}
+\left(\sum_{k=1}^{J}2^{-|j-k|/2}|w_k|_{H^1(\Omega)}\right)
+|w_j|_{H^1(\Omega)}\\
+&\lesssim
+\left[\sum_{j=1}^{J}
+\left(\sum_{k=1}^{J}2^{-|j-k|/2}|w_k|_{H^1(\Omega)}\right)^2\right]^{1/2}
+\left[\sum_{j=1}^{J}|w_j|_{H^1(\Omega)}^2\right]^{1/2}\\
+&\lesssim\sum_{j=1}^{J}|w_j|_{H^1(\Omega)}^2
+&&\text{(由引理~\ref{lem:ch07-discrete-young-convolution})}\\
+&\approx\sum_{j=1}^{J}\langle B_jw_j,w_j\rangle
+&&\text{(由式~\eqref{eq:ch07-hierarchical-denominator-equivalence})}.
+\end{align*}
+结合式~\eqref{eq:ch07-preconditioned-maximum-eigenvalue}, 这蕴含
+\MBSourceItem{20}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-hierarchical-maximum-eigenvalue-bound}
+\label{eq:ch07-hierarchical-maximum-eigenvalue-bound}
+\lambda_{\max}(B_{HB}A_J)\lesssim1.
+\end{equation}
+
+结合式~\eqref{eq:ch07-hierarchical-minimum-eigenvalue-bound} 和式~\eqref{eq:ch07-hierarchical-maximum-eigenvalue-bound}, 得到关于分层基预条件子的如下定理.
+
+\MBSourceItem{21}
+\begin{Theorem}
+\label{thm:ch07-hierarchical-basis-condition-number}
+存在与 $J$ 和 $h_J$ 无关的正常数 $C$, 使得
+\[
+\MathBookFormulaID{formula-ch07-hierarchical-basis-condition-number}
+\kappa(B_{HB}A_J)
+=\frac{\lambda_{\max}(B_{HB}A_J)}{\lambda_{\min}(B_{HB}A_J)}
+\leq C(1+|\ln h_J|^2).
+\]
+\end{Theorem}

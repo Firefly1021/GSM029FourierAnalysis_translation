@@ -1,0 +1,352 @@
+% Reviewed translation: PDF pages 276--282 / printed pages 262--268.
+% The original scan is authoritative; mathematical tokens were checked against it.
+\MathBookSourcePage{276}
+\subsection{$H(\operatorname{curl};\Omega)$ 中的一族协调有限元}
+\label{subsec:incompressible-nedelec-elements}
+
+本小节介绍 Nédélec~[59, 60] 提出的有限元空间.
+其构造要求单元交界面上切向分量恰好连续,
+因而必须使用次数为 $l$ 的不完全多项式空间, $l\geq1$.
+记 $\widetilde P_l$ 为 $\mathbb R^3$ 中 $l$ 次齐次多项式空间, 并令
+\begin{equation}\label{eq:incompressible-nedelec-reference-space}
+S_l=\{\mathbf p\in\widetilde P_l^3;
+\ \mathbf p(\mathbf x)\cdot\mathbf x=0,
+\ \mathbf x=(x_1,x_2,x_3)\},
+\qquad
+R_l=P_{l-1}^3\oplus S_l.
+\end{equation}
+例如, $S_1$ 的元素必为
+$\mathbf p(\mathbf x)=\boldsymbol\alpha\times\mathbf x$, 基可取
+\[
+\mathbf p_1=(0,-x_3,x_2),
+\quad\mathbf p_2=(x_3,0,-x_1),
+\quad\mathbf p_3=(-x_2,x_1,0).
+\]
+
+\MathBookSourcePage{277}
+$S_2$ 中每个多项式可写成
+\[
+\mathbf p(\mathbf x)=\sum_{i,j=1}^3
+\alpha_{ij}x_j\mathbf p_i(\mathbf x).
+\]
+九个多项式 $x_j\mathbf p_i$ 由关系
+$\sum_{i=1}^3x_i\mathbf p_i=\mathbf x\times\mathbf x=0$ 联系,
+删除其中一个后其余八个线性无关. 例如可取
+\[
+x_1\mathbf p_1,x_2\mathbf p_1,x_3\mathbf p_1,
+x_1\mathbf p_2,x_2\mathbf p_2,x_3\mathbf p_2,
+x_1\mathbf p_3,x_2\mathbf p_3
+\]
+为 $S_2$ 的基.
+
+\begin{Lemma}\label{lem:incompressible-nedelec-gradient-kernel}
+若 $\mathbf u\in R_l$ 且
+$\operatorname{curl}\mathbf u=0$, 则
+$\mathbf u=\operatorname{grad}p$, 其中 $p\in P_l$.
+\end{Lemma}
+
+\begin{Proof}
+每个 $f\in\widetilde P_l$ 满足
+$lf=\operatorname{grad}f\cdot\mathbf x$.
+又知 $\mathbf u=\operatorname{grad}p$, $p\in P_{l+1}$.
+由 \eqref{eq:incompressible-nedelec-reference-space},
+$\operatorname{grad}p$ 中属于 $S_l$ 的项消失,
+故 $p$ 没有 $l+1$ 次项.
+\end{Proof}
+
+\begin{Remark}\label{rem:incompressible-nedelec-arbitrary-dimension}
+$R_l$ 的定义及 Lemma~\ref{lem:incompressible-nedelec-gradient-kernel}
+可直接推广到任意维数 $N$.
+\end{Remark}
+
+\begin{Definition}\label{def:incompressible-nedelec-moments}
+令 $\kappa\subset\mathbb R^3$ 为四面体, 其边记为 $e$, 面记为 $f$.
+对某个 $s>2$ 和
+$\mathbf u\in W^{1,s}(\kappa)^3$, 定义三组矩:
+\[
+\begin{aligned}
+M_e(\mathbf u)&=
+\left\{\int_e(\mathbf u\cdot\boldsymbol\tau)q\,de;
+\ q\in P_{l-1}(e),\ e\subset\kappa\right\},\\
+M_f(\mathbf u)&=
+\left\{\int_f(\mathbf u\times\mathbf n)\cdot\mathbf q\,ds;
+\ \mathbf q\in P_{l-2}^2(f),\ f\subset\kappa\right\},\\
+M_\kappa(\mathbf u)&=
+\left\{\int_\kappa\mathbf u\cdot\mathbf q\,dx;
+\ \mathbf q\in P_{l-3}^3(\kappa)\right\},
+\end{aligned}
+\]
+其中 $\boldsymbol\tau$ 是边 $e$ 的单位切向量.
+\end{Definition}
+
+\MathBookSourcePage{278}
+\begin{Remark}\label{rem:incompressible-nedelec-moment-regularity}
+Definition~\ref{def:incompressible-nedelec-moments}
+必须假设 $\mathbf u$ 比 $H^1(\kappa)^3$ 略光滑,
+因为当 $\mathbf u$ 仅属于 $H^1(\kappa)^3$ 时 $M_e(\mathbf u)$ 无意义.
+\end{Remark}
+
+为了构造 $H(\operatorname{curl};\Omega)$ 中的协调有限元,
+需证明这些矩在 $R_l$ 上单值, 且 $M_e,M_f$
+完全确定多项式在面上的切向分量.
+
+\begin{Lemma}\label{lem:incompressible-nedelec-moment-count}
+Definition~\ref{def:incompressible-nedelec-moments} 中矩的总数
+等于 $R_l$ 的维数
+\[
+N_l=\frac12l(l+2)(l+3).
+\]
+\end{Lemma}
+
+\begin{Proof}
+由定义,
+\[
+\operatorname{card}M_e=6l,
+\quad
+\operatorname{card}M_f=4l(l-1),
+\quad
+\operatorname{card}M_\kappa=\frac12l(l-1)(l-2).
+\]
+三者之和为 $\frac12l(l+2)(l+3)$.
+另一方面, 任意 $\widetilde P_l^3$ 多项式与
+$\mathbf x$ 的点积遍历 $\widetilde P_{l+1}$,
+所以条件 $\mathbf p(\mathbf x)\cdot\mathbf x=0$
+给出 $\dim\widetilde P_{l+1}$ 个独立条件. 因而
+\[
+\dim R_l=3\dim P_l-\dim\widetilde P_{l+1}
+=\frac12(l+3)(l+2)(l+1)-\frac12(l+3)(l+2)
+=\frac12l(l+2)(l+3).
+\]
+\end{Proof}
+
+单值性在任意四面体上不易直接证明.
+先证明零矩在仿射变换下保持, 再在参考四面体上工作.
+令 $F_\kappa:\widehat\kappa\to\kappa$ 为
+$\mathbf x=F_\kappa(\widehat{\mathbf x})
+=B_\kappa\widehat{\mathbf x}+\mathbf b_\kappa$.
+标量与向量分别按
+\begin{align}
+\widehat\phi&=\phi\circ F_\kappa,
+\label{eq:incompressible-nedelec-scalar-transform}\\
+\widehat{\mathbf u}&=B_\kappa^T(\mathbf u\circ F_\kappa)
+\label{eq:incompressible-nedelec-covariant-transform}
+\end{align}
+变换.
+
+\MathBookSourcePage{279}
+法向量和切向量满足
+\begin{align}
+\mathbf n\circ F_\kappa
+&=\frac{(B_\kappa^{-1})^T\widehat{\mathbf n}}
+{\|(B_\kappa^{-1})^T\widehat{\mathbf n}\|},
+\label{eq:incompressible-nedelec-normal-transform}\\
+\boldsymbol\tau\circ F_\kappa
+&=\frac{B_\kappa\widehat{\boldsymbol\tau}}
+{\|B_\kappa\widehat{\boldsymbol\tau}\|}.
+\label{eq:incompressible-nedelec-tangent-transform}
+\end{align}
+采用 \eqref{eq:incompressible-nedelec-covariant-transform}
+的主要原因是它在一定意义下保持旋度.
+令
+\begin{equation}\label{eq:incompressible-nedelec-skew-matrices}
+C=(c_{ij})=(\partial u_j/\partial x_i-
+\partial u_i/\partial x_j),
+\qquad
+\widehat C=(\widehat c_{ij})
+=(\partial\widehat u_j/\partial\widehat x_i-
+\partial\widehat u_i/\partial\widehat x_j).
+\end{equation}
+则
+\begin{equation}\label{eq:incompressible-nedelec-curl-transform}
+C\circ F_\kappa=(B_\kappa^{-1})^T
+\widehat C B_\kappa^{-1}.
+\end{equation}
+所以 $\operatorname{curl}\mathbf u$ 与
+$\operatorname{curl}\widehat{\mathbf u}$ 同时为零.
+
+\begin{Lemma}\label{lem:incompressible-nedelec-space-invariance}
+$R_l$ 在变换
+\eqref{eq:incompressible-nedelec-covariant-transform} 下不变.
+\end{Lemma}
+
+\begin{Proof}
+该变换保持每个 $P_k^3$, 故只需考虑 $\mathbf u\in S_l$.
+此时
+\[
+\widehat{\mathbf u}(\widehat{\mathbf x})
+=B_\kappa^T\mathbf u(B_\kappa\widehat{\mathbf x}+\mathbf b_\kappa)
+=B_\kappa^T\mathbf u(B_\kappa\widehat{\mathbf x})
++\mathbf p(\widehat{\mathbf x}),
+\]
+其中 $\deg\mathbf p<l$, 且
+\[
+B_\kappa^T\mathbf u(B_\kappa\widehat{\mathbf x})
+\cdot\widehat{\mathbf x}
+=\mathbf u(B_\kappa\widehat{\mathbf x})
+\cdot B_\kappa\widehat{\mathbf x}=0.
+\]
+故 $\widehat{\mathbf u}\in R_l$. 逆变换同理.
+\end{Proof}
+
+\begin{Lemma}\label{lem:incompressible-nedelec-moment-invariance}
+Definition~\ref{def:incompressible-nedelec-moments}
+中的三组矩在 $\kappa$ 上全为零, 当且仅当
+$\widehat{\mathbf u}$ 的相应矩在 $\widehat\kappa$ 上全为零.
+\end{Lemma}
+
+\begin{Proof}
+由 \eqref{eq:incompressible-nedelec-covariant-transform},
+\[
+\int_\kappa\mathbf u\cdot\mathbf q\,dx
+=|\det B_\kappa|
+\int_{\widehat\kappa}\widehat{\mathbf u}\cdot
+B_\kappa^{-1}(\mathbf q\circ F_\kappa)\,d\widehat x,
+\]
+故体矩的零性等价. 又
+$\mathbf u\times\mathbf n\cdot\mathbf q
+=-\mathbf q\times\mathbf n\cdot\mathbf u$,
+且面上的任意切向向量可写成 $\mathbf p\times\mathbf n$.
+结合法向变换可知面矩的零性等价;
+结合切向变换可知边矩的零性等价.
+\end{Proof}
+
+\MathBookSourcePage{280}
+现在证明单值性所需的边界结论.
+\begin{Lemma}\label{lem:incompressible-nedelec-face-unisolvence}
+$R_l$ 中向量 $\mathbf u$ 在给定面 $f$ 上的全部矩为零,
+当且仅当其在 $f$ 上的切向分量为零.
+\end{Lemma}
+
+\begin{Proof}
+所有条件在仿射变换下保持, 可设 $f$ 位于平面 $x_3=0$.
+切向分量为
+$\mathbf u_T(x_1,x_2)=(u_1(x_1,x_2,0),u_2(x_1,x_2,0))$.
+条件 $M_f=0$ 和 $M_e=0$ 分别等价于
+\begin{align}
+\int_f\mathbf u_T\cdot\mathbf q\,dx_1dx_2&=0
+&&\forall\mathbf q\in P_{l-2}^2(f),
+\label{eq:incompressible-nedelec-face-moment-zero}\\
+\int_e\mathbf u_T\cdot\boldsymbol\tau q\,de&=0
+&&\forall q\in P_{l-1}(e).
+\label{eq:incompressible-nedelec-edge-moment-zero}
+\end{align}
+二维 Green 公式给出
+$\int_f\operatorname{curl}\mathbf u_Tq=0$
+对所有 $q\in P_{l-1}(f)$ 成立, 故
+$\operatorname{curl}\mathbf u_T=0$ 于 $f$.
+由 Lemma~\ref{lem:incompressible-nedelec-gradient-kernel},
+$\mathbf u_T=\operatorname{grad}p$, $p\in P_l(f)$.
+\eqref{eq:incompressible-nedelec-edge-moment-zero}
+表明 $p$ 在 $\partial f$ 上为常数, 可取 $p=0$ 于 $\partial f$.
+所以 $p=\lambda_1\lambda_2\lambda_3r$,
+$r\in P_{l-3}(f)$.
+
+\MathBookSourcePage{281}
+这里 $\lambda_1,\lambda_2,\lambda_3$ 是 $f$ 的重心坐标.
+把 $\mathbf q=\operatorname{grad}r$ 的相应多项式代入
+\eqref{eq:incompressible-nedelec-face-moment-zero}, 得 $r=0$.
+\end{Proof}
+
+\begin{Lemma}\label{lem:incompressible-nedelec-tetrahedron-unisolvence}
+若 $\mathbf u\in R_l$ 在 $\kappa$ 上的全部矩为零,
+则 $\mathbf u\equiv0$.
+\end{Lemma}
+
+\begin{Proof}
+Lemma~\ref{lem:incompressible-nedelec-face-unisolvence} 给出
+\begin{equation}\label{eq:incompressible-nedelec-zero-tangential-trace}
+\mathbf u\times\mathbf n=0\quad\text{于 }\partial\kappa,
+\end{equation}
+而体矩给出
+\begin{equation}\label{eq:incompressible-nedelec-zero-volume-moments}
+\int_\kappa\mathbf u\cdot\mathbf q\,dx=0
+\qquad\forall\mathbf q\in P_{l-3}^3(\kappa).
+\end{equation}
+转到参考单元, Green 公式与
+\eqref{eq:incompressible-nedelec-zero-tangential-trace} 给出
+\[
+\int_{\widehat\kappa}
+\operatorname{curl}\widehat{\mathbf u}\cdot\widehat{\mathbf q},d\widehat x=0,
+\quad
+\operatorname{curl}\widehat{\mathbf u}\cdot\widehat{\mathbf n}=0
+\text{ 于 }\partial\widehat\kappa.
+\]
+结合参考四面体的几何和
+$\operatorname{curl}\widehat{\mathbf u}\in P_{l-1}^3$,
+得到 $\operatorname{curl}\widehat{\mathbf u}=0$,
+再由 \eqref{eq:incompressible-nedelec-curl-transform}
+得 $\operatorname{curl}\mathbf u=0$.
+Lemma~\ref{lem:incompressible-nedelec-gradient-kernel}
+于是给出 $\mathbf u=\operatorname{grad}p$, $p\in P_l$.
+由边界条件,
+$p=\lambda_1\lambda_2\lambda_3\lambda_4r$,
+$r\in P_{l-4}(\kappa)$; 再由
+\eqref{eq:incompressible-nedelec-zero-volume-moments} 得 $r=0$.
+\end{Proof}
+
+\begin{Remark}\label{rem:incompressible-nedelec-full-polynomial-curl-zero}
+同样的论证还表明, $P_l^3$ 中任意具有零矩的向量都满足
+$\operatorname{curl}\mathbf u=0$.
+先由面论证得到 $\operatorname{curl}\mathbf u\cdot\mathbf n=0$
+于每个面, 再用上一个证明的体论证即可.
+\end{Remark}
+
+\MathBookSourcePage{282}
+结合前两条 Lemma 得到本小节开头宣称的结论.
+\begin{Theorem}\label{thm:incompressible-nedelec-unisolvence}
+$R_l$ 中的向量场由四面体 $\kappa$ 上三组矩
+$M_e,M_f,M_\kappa$ 唯一确定.
+而且, 它在给定面 $f$ 上的切向分量只依赖于该面上定义的
+$M_e$ 和 $M_f$.
+\end{Theorem}
+
+\begin{Definition}\label{def:incompressible-nedelec-interpolant}
+令 $\kappa$ 为任意四面体,
+$\mathbf u\in W^{1,s}(\kappa)^3$, $s>2$.
+其插值 $r_\kappa\mathbf u$ 是 $R_l$ 中与 $\mathbf u$
+具有相同三组矩的唯一多项式.
+\end{Definition}
+换言之,
+\[
+M_\kappa(r_\kappa\mathbf u-\mathbf u)=0,
+\quad M_f(r_\kappa\mathbf u-\mathbf u)=0,
+\quad M_e(r_\kappa\mathbf u-\mathbf u)=0.
+\]
+由空间与矩的不变性,
+\begin{equation}\label{eq:incompressible-nedelec-interpolation-commuting}
+B_\kappa^T[(r_\kappa\mathbf u)\circ F_\kappa]
+=r_{\widehat\kappa}[B_\kappa^T(\mathbf u\circ F_\kappa)].
+\end{equation}
+
+\begin{Remark}\label{rem:incompressible-nedelec-interpolation-curl-zero}
+若 $\mathbf u\in W^{1,s}(\kappa)^3$ 且
+$\operatorname{curl}\mathbf u=0$, 则
+$\operatorname{curl}(r_\kappa\mathbf u)=0$.
+若 $\mathbf u\in P_l^3$, 则
+$\operatorname{curl}(\mathbf u-r_\kappa\mathbf u)=0$.
+\end{Remark}
+
+现在设 $\Omega$ 为有界多面体,
+$\mathcal T_h$ 是其四面体剖分. 对 $l\geq1$, 定义
+\begin{align}
+M_h&=\{\boldsymbol\mu_h\in H(\operatorname{curl};\Omega);
+\ \boldsymbol\mu_h|_\kappa\in R_l
+\ \forall\kappa\in\mathcal T_h\},
+\label{eq:incompressible-nedelec-global-space}\\
+\Phi_h&=M_h\cap H_0(\operatorname{curl};\Omega),
+\label{eq:incompressible-nedelec-zero-trace-space}
+\end{align}
+并令
+\begin{equation}\label{eq:incompressible-nedelec-global-interpolant}
+(r_h\mathbf u)|_\kappa=r_\kappa\mathbf u
+\qquad\forall\kappa\in\mathcal T_h.
+\end{equation}
+
+\begin{Lemma}\label{lem:incompressible-nedelec-conformity}
+若 $\mathbf u\in W^{1,s}(\Omega)^3$, $s>2$, 则
+$r_h\mathbf u\in M_h$.
+若此外 $\mathbf u\times\mathbf n|_\Gamma=0$, 则
+$r_h\mathbf u\in\Phi_h$.
+\end{Lemma}
+其证明直接来自
+Lemma~\ref{lem:incompressible-nedelec-face-unisolvence}.

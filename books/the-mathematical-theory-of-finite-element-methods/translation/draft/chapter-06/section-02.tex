@@ -1,0 +1,138 @@
+\MathBookSourcePage{169}
+\subsection{网格依赖范数}
+\label{sec:ch06-mesh-dependent-norms}
+\setcounter{thmcount}{0}
+\setcounter{equation}{0}
+
+\MBSourceItem{1}
+\begin{Definition}[网格依赖内积]
+\label{def:ch06-mesh-dependent-inner-product}
+$V_k$ 上的网格依赖内积 $(\cdot,\cdot)_k$ 定义为
+\MBSourceItem{2}
+\begin{equation}
+\MathBookFormulaID{formula-ch06-mesh-dependent-inner-product}
+\label{eq:ch06-mesh-dependent-inner-product}
+(v,w)_k:=h_k^2\sum_{i=1}^{n_k}v(p_i)w(p_i),
+\end{equation}
+其中 $\{p_i\}_{i=1}^{n_k}$ 是 $\mathcal T_k$ 的内部顶点集合.
+\end{Definition}
+
+算子 $A_k:V_k\longrightarrow V_k$ 定义为
+\MBSourceItem{3}
+\begin{equation}
+\MathBookFormulaID{formula-ch06-discrete-operator-definition}
+\label{eq:ch06-discrete-operator-definition}
+(A_kv,w)_k=a(v,w)\qquad\forall v,w\in V_k.
+\end{equation}
+以算子 $A_k$ 表示时, 离散方程~\eqref{eq:ch06-discrete-problem} 可写为
+\MBSourceItem{4}
+\begin{equation}
+\MathBookFormulaID{formula-ch06-discrete-operator-equation}
+\label{eq:ch06-discrete-operator-equation}
+A_ku_k=f_k,
+\end{equation}
+其中 $f_k\in V_k$ 满足
+\MBSourceItem{5}
+\begin{equation}
+\MathBookFormulaID{formula-ch06-discrete-load-vector}
+\label{eq:ch06-discrete-load-vector}
+(f_k,v)_k=(f,v)\qquad\forall v\in V_k.
+\end{equation}
+由于 $A_k$ 关于 $(\cdot,\cdot)_k$ 对称正定, 可按通常方式定义一族网格依赖范数 $\|\cdot\|_{s,k}$:
+\MBSourceItem{6}
+\begin{equation}
+\MathBookFormulaID{formula-ch06-mesh-dependent-norm-scale}
+\label{eq:ch06-mesh-dependent-norm-scale}
+\|v\|_{s,k}:=\sqrt{(A_k^sv,v)_k},
+\end{equation}
+其中 $A_k^s$ 表示对称正定算子 $A_k$ 的 $s$ 次幂(Halmos).
+
+网格依赖范数 $\|\cdot\|_{s,k}$ 将在收敛分析中发挥重要作用. 注意能量范数 $\|\cdot\|_E=\sqrt{a(\cdot,\cdot)}$ 与 $V_k$ 上的 $\|\cdot\|_{1,k}$ 范数一致. 类似地, $\|\cdot\|_{0,k}$ 是与网格依赖内积~\eqref{eq:ch06-mesh-dependent-inner-product} 相伴的范数. 下一个引理说明 $\|\cdot\|_{0,k}$ 与 $L^2$ 范数等价.
+
+\MBSourceItem{7}
+\begin{Lemma}
+\label{lem:ch06-l2-mesh-norm-equivalence}
+存在正常数 $C_1,C_2$, 使得
+\[
+\MathBookFormulaID{formula-ch06-l2-mesh-norm-equivalence}
+C_1\|v\|_{L^2(\Omega)}\leq\|v\|_{0,k}\leq C_2\|v\|_{L^2(\Omega)}
+\qquad\forall v\in V_k.
+\]
+\end{Lemma}
+\begin{Proof}
+利用三角形上二次多项式的求积公式,
+\[
+\MathBookFormulaID{formula-ch06-edge-midpoint-quadrature}
+\begin{aligned}
+\|v\|_{L^2(\Omega)}^2
+&=\sum_{T\in\mathcal T_k}\int_Tv^2\,dx\\
+&=\sum_{T\in\mathcal T_k}\frac{|T|}{3}
+\left(\sum_{i=1}^3v^2(m_i)\right)
+\qquad(\text{参见习题~\ref{exr:ch06-12}}),
+\end{aligned}
+\]
+\MathBookSourcePage{170}
+其中 $|T|$ 表示 $T$ 的面积. 由定义,
+\[
+\MathBookFormulaID{formula-ch06-mesh-norm-vertex-sum}
+\|v\|_{0,k}^2=(v,v)_k=h_k^2\sum_{i=1}^{n_k}v^2(p_i).
+\]
+$\{\mathcal T_k\}$ 的拟一致性蕴含 $|T|$ 与 $h_k^2$ 等价. 因为 $v$ 是线性的,
+\[
+\MathBookFormulaID{formula-ch06-midpoint-vertex-transform}
+\begin{pmatrix}v(m_1)\\v(m_2)\\v(m_3)\end{pmatrix}
+=
+\begin{pmatrix}
+0&\frac12&\frac12\\
+\frac12&0&\frac12\\
+\frac12&\frac12&0
+\end{pmatrix}
+\begin{pmatrix}v(p_1)\\v(p_2)\\v(p_3)\end{pmatrix},
+\]
+其中 $p_1,p_2,p_3$ 是 $T$ 的顶点, $m_i$ 是 $p_i$ 对边的中点, $i=1,2,3$. 引理得证.
+\end{Proof}
+
+下面估计 $A_k$ 的谱半径 $\Lambda(A_k)$.
+
+\MBSourceItem{8}
+\begin{Lemma}
+\label{lem:ch06-spectral-radius-bound}
+$\Lambda(A_k)\leq C h_k^{-2}$.
+\end{Lemma}
+\begin{Proof}
+设 $\lambda$ 是 $A_k$ 的特征值, $\phi$ 是相应特征向量. 则
+\[
+\MathBookFormulaID{formula-ch06-spectral-eigenvalue-identities}
+\begin{aligned}
+a(\phi,\phi)&=(A_k\phi,\phi)_k\\
+&=\lambda(\phi,\phi)_k\\
+&=\lambda\|\phi\|_{0,k}^2.
+\end{aligned}
+\]
+因此
+\[
+\MathBookFormulaID{formula-ch06-eigenvalue-rayleigh-quotient}
+\lambda=\frac{a(\phi,\phi)}{\|\phi\|_{0,k}^2}.
+\]
+由于 $\|\phi\|_{0,k}^2$ 与 $\|\phi\|_{L^2(\Omega)}^2$ 等价, 由引理~\ref{lem:ch04-local-inverse-estimate} 可得此引理:
+\MBSourceItem{9}
+\begin{equation}
+\MathBookFormulaID{formula-ch06-finite-element-inverse-estimate}
+\label{eq:ch06-finite-element-inverse-estimate}
+\|v\|_E\leq C h_k^{-1}\|v\|_{L^2(\Omega)}
+\qquad\forall v\in V_k.
+\end{equation}
+\end{Proof}
+
+最后给出一个有用的引理, 其证明留作习题(参见习题~\ref{exr:ch06-01}).
+
+\MBSourceItem{10}
+\begin{Lemma}[广义 Cauchy--Schwarz 不等式]
+\label{lem:ch06-generalized-cauchy-schwarz}
+对任意 $t\in\mathbb R$,
+\[
+\MathBookFormulaID{formula-ch06-generalized-cauchy-schwarz}
+|a(v,w)|\leq\|v\|_{1+t,k}\|w\|_{1-t,k}
+\qquad\forall v,w\in V_k.
+\]
+\end{Lemma}

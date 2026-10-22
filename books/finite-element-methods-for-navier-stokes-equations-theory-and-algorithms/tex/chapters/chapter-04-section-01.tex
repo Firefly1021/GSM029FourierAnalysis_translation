@@ -1,0 +1,437 @@
+% Reviewed translation: PDF pages 292--297 / printed pages 278--283.
+% Reconstructed and formula-checked against the original scan.
+\makeatletter
+\gdef\@chapapp{\chaptername}
+\gdef\thechapter{\arabic{chapter}}
+\gdef\theHchapter{\arabic{chapter}}
+\gdef\Hy@chapapp{chapter}
+\makeatother
+\ctexset{
+  chapter/name = {第,章},
+  chapter/number = \arabic{chapter},
+  chapter/numbering = true
+}
+\setcounter{chapter}{3}
+\chapter{Navier--Stokes 问题的理论与逼近}
+\label{chap:navier-stokes-theory-approx}
+\counterwithin{equation}{section}
+\renewcommand{\thesection}{\arabic{section}}
+\renewcommand{\thesubsection}{\thesection.\arabic{subsection}}
+\renewcommand{\theequation}{\thesection.\arabic{equation}}
+\renewcommand{\thestatement}{\thesection.\arabic{statement}}
+
+\MathBookSourcePage{292}
+\section{一类非线性问题}
+\label{sec:navier-stokes-nonlinear-problems}
+\setcounter{equation}{0}
+\setcounter{statement}{0}
+
+本节研究 Chapter~\ref{chap:stokes-foundations} 的
+Section~\ref{sec:abstract-variational-problem} 中所分析抽象变分问题的一种非线性推广.
+这族非线性问题特别包含 Navier--Stokes 问题.
+
+我们沿用 Section~\ref{sec:abstract-variational-problem} 的记号.
+具体地, 考虑两个(实)Hilbert 空间 $X$ 和 $M$,
+其范数分别为 $\|\cdot\|_X$ 和 $\|\cdot\|_M$, 以及连续双线性形式
+\[
+b(\cdot,\cdot):(v,\mu)\in X\times M
+\longmapsto b(v,\mu)\in\mathbb R.
+\]
+非线性通过如下形式引入:
+\[
+a(\cdot;\cdot,\cdot):(w,u,v)\in X\times X\times X
+\longmapsto a(w;u,v)\in\mathbb R,
+\]
+其中对 $w\in X$, 映射 $(u,v)\mapsto a(w;u,v)$ 是 $X\times X$ 上的连续双线性形式.
+
+于是考虑以下问题, 也称为问题 $(Q)$:
+
+给定 $l\in X'$, 求一对 $(u,\lambda)\in X\times M$, 使
+\begin{align}
+a(u;u,v)+b(v,\lambda)&=\langle l,v\rangle
+&&\forall v\in X,\label{eq:navier-abstract-q-first}\\
+b(u,\mu)&=0
+&&\forall\mu\in M.\label{eq:navier-abstract-q-second}
+\end{align}
+引入线性算子 $A(w)\in\mathcal L(X;X')$ ($w\in X$) 和
+$B\in\mathcal L(X;M')$, 定义为
+\[
+\langle A(w)u,v\rangle=a(w;u,v)
+\quad\forall u,v\in X,
+\]
+\[
+\langle Bv,\mu\rangle=b(v,\mu)
+\quad\forall v\in X,\quad\forall\mu\in M.
+\]
+在这些记号下, 问题 $(Q)$ 化为: 求 $(u,\lambda)\in X\times M$, 使
+\begin{align}
+A(u)u+B'\lambda&=l&&\text{于 }X',\label{eq:navier-abstract-q-operator-first}\\
+Bu&=0&&\text{于 }M'.\label{eq:navier-abstract-q-operator-second}
+\end{align}
+
+\MathBookSourcePage{293}
+与线性情形相同, 置 $V=\Ker(B)$, 并将下列称为与问题 $(Q)$ 相联系的问题 $(P)$:
+
+求 $u\in V$, 使
+\begin{equation}\label{eq:navier-abstract-p}
+a(u;u,v)=\langle l,v\rangle
+\qquad\forall v\in V,
+\end{equation}
+或等价地使
+\begin{equation}\label{eq:navier-abstract-p-operator}
+\pi A(u)u=\pi l\quad\text{于 }V',
+\end{equation}
+其中线性算子 $\pi\in\mathcal L(X';V')$ 仍定义为
+\[
+\langle\pi l,v\rangle=\langle l,v\rangle
+\qquad\forall v\in V.
+\]
+
+当然, 若 $(u,\lambda)$ 是问题 $(Q)$ 的一个解, 则 $u$ 是问题 $(P)$ 的一个解.
+反之, 只要 inf-sup 条件成立, 便可像在线性情形中一样容易地建立逆命题.
+因此, 此处真正的困难在于求解非线性问题 $(P)$.
+首先需要从下面这个由 Brouwer 给出的经典不动点 Theorem 推出一个简单结论;
+我们不给出该 Theorem 的证明.
+
+\begin{Theorem}\label{thm:navier-brouwer-fixed-point}
+设 $C$ 是有限维空间的一个非空, 凸且紧的子集,
+$F$ 是从 $C$ 到 $C$ 的连续映射. 则 $F$ 至少有一个不动点.
+\end{Theorem}
+
+\setcounter{statement}{0}
+\begin{Corollary}\label{cor:navier-finite-dimensional-zero}
+设 $H$ 是有限维 Hilbert 空间, 其内积记为 $(\cdot,\cdot)$,
+相应的范数记为 $|\cdot|$. 设 $\Phi$ 是从 $H$ 到 $H$ 的连续映射,
+并具有如下性质: 存在 $\mu>0$, 使
+\begin{equation}\label{eq:navier-finite-dimensional-outward-condition}
+(\Phi(f),f)\geq0
+\qquad\text{对所有满足 }|f|=\mu\text{ 的 }f\in H.
+\end{equation}
+则存在 $f\in H$, 使
+\begin{equation}\label{eq:navier-finite-dimensional-zero}
+\Phi(f)=0,\qquad |f|\leq\mu.
+\end{equation}
+\end{Corollary}
+
+\begin{Proof}
+采用反证法. 假设在闭球
+$S=\{f\in H;\ |f|\leq\mu\}$ 中 $\Phi(f)\ne0$.
+则映射
+\[
+f\longmapsto-\mu\frac{\Phi(f)}{|\Phi(f)|}
+\]
+是从 $S$ 到 $S$ 的连续映射. 因为 $H$ 是有限维的,
+而 $S$ 显然非空, 凸且紧, 可应用
+Theorem~\ref{thm:navier-brouwer-fixed-point}:
+存在 $f\in S$, 使
+\[
+f=-\mu\frac{\Phi(f)}{|\Phi(f)|}.
+\]
+于是得到一个 $f\in H$, 满足 $|f|=\mu$ 且
+\[
+(\Phi(f),f)=-\mu|\Phi(f)|<0.
+\]
+这与 \eqref{eq:navier-finite-dimensional-outward-condition} 矛盾.
+\end{Proof}
+
+\MathBookSourcePage{294}
+现在可以建立问题 $(P)$ 的如下存在性结果.
+
+\setcounter{statement}{1}
+\begin{Theorem}\label{thm:navier-abstract-existence}
+假设下列条件成立:
+
+\textup{(i)} 存在常数 $\alpha>0$, 使
+\begin{equation}\label{eq:navier-abstract-coercivity}
+a(v;v,v)\geq\alpha\|v\|_X^2
+\qquad\forall v\in V;
+\end{equation}
+
+\textup{(ii)} 空间 $V$ 可分, 且对所有 $v\in V$, 映射
+\[
+u\longmapsto a(u;u,v)
+\]
+在 $V$ 上序列弱连续, 即
+\begin{equation}\label{eq:navier-abstract-weak-continuity}
+\mathop{\mathrm{weak\,lim}}_{m\to\infty}u_m=u\text{ 于 }V
+\quad\Longrightarrow\quad
+\lim_{m\to\infty}a(u_m;u_m,v)=a(u;u,v)
+\quad\forall v\in V.
+\end{equation}
+则问题 $(P)$ 至少有一个解 $u\in V$.
+\end{Theorem}
+
+\begin{Proof}
+1) 首先用 Galerkin 方法构造一列近似解.
+由于空间 $V$ 可分, 存在 $V$ 中的一列 $(w_m)_{m\geq1}$, 使:
+
+\textup{(i)} 对所有 $m\geq1$, 元素 $w_1,\ldots,w_m$ 线性无关;
+
+\textup{(ii)} $w_i$ 的有限线性组合 $\sum_i v_iw_i$ 在 $V$ 中稠密.
+
+这样的序列 $(w_m)_{m\geq1}$ 称为可分空间 $V$ 的一个``基''.
+以 $V_m$ 表示由 $w_1,\ldots,w_m$ 张成的 $V$ 的子空间.
+然后用下列问题(称为问题 $(P_m)$)逼近问题 $(P)$:
+
+求 $u_m\in V_m$, 使
+\begin{equation}\label{eq:navier-galerkin-problem}
+a(u_m;u_m,v)=\langle l,v\rangle
+\qquad\forall v\in V_m.
+\end{equation}
+若置
+\[
+u_m=\sum_{i=1}^m v_iw_i,
+\]
+则问题 $(P_m)$ 等价于求解关于 $m$ 个未知量 $v_i$ 的 $m$ 个非线性方程.
+
+现在证明对每个 $m$, 问题 $(P_m)$ 至少有一个解.
+引入映射 $\Phi_m:V_m\to V_m$, 定义为
+\[
+(\Phi_m(v),w_i)=a(v;v,w_i)-\langle l,w_i\rangle,
+\qquad1\leq i\leq m,
+\]
+其中 $(\cdot,\cdot)$ 是 $X$ 中的内积.
+因此, $u_m\in V_m$ 是问题 $(P_m)$ 的解, 当且仅当 $\Phi_m(u_m)=0$.
+由于
+\[
+(\Phi_m(v),v)=a(v;v,v)-\langle l,v\rangle
+\qquad\forall v\in V_m,
+\]
+由假设 \eqref{eq:navier-abstract-coercivity} 得
+\[
+(\Phi_m(v),v)\geq
+(\alpha\|v\|_X-\|\pi l\|_{V'})\|v\|_X.
+\]
+
+\MathBookSourcePage{295}
+因而取 $\mu=\alpha^{-1}\|\pi l\|_{V'}$, 对所有满足
+$\|v\|_X=\mu$ 的 $v\in V_m$ 有
+\[
+(\Phi_m(v),v)\geq0.
+\]
+此外, 由假设 \eqref{eq:navier-abstract-weak-continuity},
+$\Phi_m$ 在 $V_m$ 上连续. 因 $V_m$ 有限维,
+可以应用 Corollary~\ref{cor:navier-finite-dimensional-zero}:
+问题 $(P_m)$ 至少有一个解 $u_m\in V_m$.
+而且, 对所有解 $u_m$,
+\[
+0=(\Phi_m(u_m),u_m)
+\geq(\alpha\|u_m\|_X-\|\pi l\|_{V'})\|u_m\|_X,
+\]
+所以
+\begin{equation}\label{eq:navier-galerkin-uniform-bound}
+\|u_m\|_X\leq\frac1\alpha\|\pi l\|_{V'}.
+\end{equation}
+
+2) 接着, 对每个 $m$ 任取问题 $(P_m)$ 的一个解,
+由此在 $V$ 中构造序列 $(u_m)$. 我们要证明可以抽取一个收敛到问题 $(P)$ 某个解的子列.
+由 \eqref{eq:navier-galerkin-uniform-bound}, 序列 $(u_m)$ 在 $V$ 中有界.
+因此可抽取一个子列 $(u_{m_p})$, 使
+\[
+u_{m_p}\rightharpoonup u^*\quad\text{于 }V,
+\qquad p\to+\infty.
+\]
+于是由假设 \eqref{eq:navier-abstract-weak-continuity},
+\[
+\lim_{p\to\infty}a(u_{m_p};u_{m_p},v)
+=a(u^*;u^*,v)
+\qquad\forall v\in V.
+\]
+在 \eqref{eq:navier-galerkin-problem} 中取 $v=w_i$ 和 $m=m_p\geq i$, 得
+\[
+a(u^*;u^*,w_i)=\langle l,w_i\rangle,
+\qquad i\geq1.
+\]
+因为 $w_i$ 的有限线性组合在 $V$ 中稠密, 得
+\[
+a(u^*;u^*,v)=\langle l,v\rangle
+\qquad\forall v\in V,
+\]
+故 $u^*$ 是问题 $(P)$ 的一个解.
+\end{Proof}
+
+\setcounter{statement}{0}
+\begin{Remark}\label{rem:navier-general-existence-context}
+显然, Theorem~\ref{thm:navier-abstract-existence} 在更一般的背景下仍成立:
+$V$ 是可分 Hilbert 空间; $(u,v)\mapsto a(u,v)$ 是从 $V\times V$ 到 $\mathbb R$ 的映射, 且
+
+\textup{(i)} $a(v,v)\geq\alpha\|v\|_V^2$ ($\forall v\in V$, $\alpha>0$);
+
+\textup{(ii)} 对每个 $u\in V$, $v\mapsto a(u,v)$ 是 $V$ 上的连续线性形式;
+
+\textup{(iii)} 对每个 $v\in V$, $u\mapsto a(u,v)$ 在 $V$ 上序列弱连续.
+
+则给定 $l\in V'$, 至少存在一个 $u\in V$, 使
+\[
+a(u,v)=\langle l,v\rangle
+\qquad\forall v\in V.
+\]
+\end{Remark}
+
+现在转向问题 $(P)$ 解的唯一性. 这需要比
+\eqref{eq:navier-abstract-coercivity} 和
+\eqref{eq:navier-abstract-weak-continuity} 更强的假设. 具体假设如下:
+
+\textup{(i)} 双线性形式 $a(w;\cdot,\cdot)$ 关于 $w$ 一致 $V$-椭圆,
+即存在常数 $\alpha>0$, 使
+\begin{equation}\label{eq:navier-abstract-uniform-ellipticity}
+a(w;v,v)\geq\alpha\|v\|_X^2
+\qquad\forall v,w\in V;
+\end{equation}
+
+\MathBookSourcePage{296}
+\textup{(ii)} 映射 $w\mapsto\pi A(w)$ 在 $V$ 中局部 Lipschitz 连续,
+即存在连续单调递增函数 $L:\mathbb R_+\to\mathbb R_+$,
+使对所有 $\mu>0$,
+\begin{equation}\label{eq:navier-abstract-local-lipschitz}
+\left|a(w_1;u,v)-a(w_2;u,v)\right|
+\leq L(\mu)\|u\|_X\|v\|_X\|w_1-w_2\|_X
+\end{equation}
+对所有 $u,v\in V$ 及
+$w_1,w_2\in S_\mu=\{w\in V;\ \|w\|_X\leq\mu\}$ 成立.
+
+\setcounter{statement}{2}
+\begin{Theorem}\label{thm:navier-abstract-uniqueness}
+假设 \eqref{eq:navier-abstract-uniform-ellipticity} 和
+\eqref{eq:navier-abstract-local-lipschitz} 成立. 则在条件
+\begin{equation}\label{eq:navier-abstract-small-data-condition}
+\frac{\|\pi l\|_{V'}}{\alpha^2}
+L\!\left(\frac{\|\pi l\|_{V'}}{\alpha}\right)<1
+\end{equation}
+下, 问题 $(P)$ 有唯一解 $u\in V$.
+\end{Theorem}
+
+\begin{Proof}
+由假设 \eqref{eq:navier-abstract-uniform-ellipticity} 和
+Lax--Milgram Theorem~\ref{thm:lax-milgram},
+算子 $\pi A(w)\in\mathcal L(V;V')$ 对每个 $w\in V$ 均可逆.
+而且 $T(w)=(\pi A(w))^{-1}$ 属于 $\mathcal L(V';V)$ 并满足
+\begin{equation}\label{eq:navier-abstract-inverse-bound}
+\|T(w)\|_{\mathcal L(V';V)}\leq\frac1\alpha.
+\end{equation}
+在这些记号下, 问题 $(P)$ 化为
+\[
+u=T(u)\pi l\quad\text{于 }V.
+\]
+证明 $v\mapsto T(v)\pi l$ 把 $V$ 映入 $S_\mu$,
+并且是 $S_\mu$ 中的严格压缩映射, 其中
+$\mu=\alpha^{-1}\|\pi l\|_{V'}$.
+对所有 $v\in V$,
+\[
+\|T(v)\pi l\|_X
+\leq\|T(v)\|_{\mathcal L(V';V)}\|\pi l\|_{V'}
+\leq\frac1\alpha\|\pi l\|_{V'}=\mu,
+\]
+故 $T(v)\pi l\in S_\mu$.
+接着估计 $u,v\in S_\mu$ 时的 $T(u)-T(v)$.
+由恒等式
+\[
+T(u)-T(v)=T(u)[\pi A(v)-\pi A(u)]T(v)
+\]
+和 \eqref{eq:navier-abstract-inverse-bound}, 得
+\[
+\|T(u)-T(v)\|_{\mathcal L(V';V)}
+\leq\frac1{\alpha^2}
+\|\pi A(v)-\pi A(u)\|_{\mathcal L(V;V')}.
+\]
+因此 \eqref{eq:navier-abstract-local-lipschitz} 给出
+\[
+\|(T(u)-T(v))\pi l\|_X
+\leq\frac1{\alpha^2}\|\pi l\|_{V'}L(\mu)\|u-v\|_X.
+\]
+所以, 由 \eqref{eq:navier-abstract-small-data-condition},
+映射 $v\mapsto T(v)\pi l$ 是 $S_\mu$ 中的严格压缩映射,
+并有唯一不动点 $u\in V$, 即问题 $(P)$ 的唯一解.
+\end{Proof}
+
+\setcounter{statement}{1}
+\begin{Remark}\label{rem:navier-successive-approximations}
+由于 $v\mapsto T(v)\pi l$ 是 $S_\mu$ 中的严格压缩映射,
+其不动点 $u$ 可用逐次逼近法计算. 更准确地说,
+从任意 $u_0\in S_\mu$ 出发, 构造序列 $(u_m)$:
+\[
+u_{m+1}=T(u_m)\pi l,
+\]
+或等价地
+\begin{equation}\label{eq:navier-successive-approximation}
+a(u_m;u_{m+1},v)=\langle l,v\rangle
+\qquad\forall v\in V.
+\end{equation}
+
+\MathBookSourcePage{297}
+于是
+\[
+\lim_{m\to\infty}\|u_m-u\|_X=0.
+\]
+注意不必要求 $u_0\in S_\mu$, 因为对任意 $u_0\in V$,
+$u_1=T(u_0)\pi l$ 必然属于 $S_\mu$.
+\end{Remark}
+
+最后求解问题 $(Q)$. 如本节开头所述, 其分析与线性情形平行.
+
+\setcounter{statement}{3}
+\begin{Theorem}\label{thm:navier-abstract-lagrange-multiplier}
+假设双线性形式 $b(\cdot,\cdot)$ 满足 inf-sup 条件
+\begin{equation}\label{eq:navier-abstract-inf-sup}
+\inf_{\mu\in M}\sup_{v\in X}
+\frac{b(v,\mu)}{\|v\|_X\|\mu\|_M}\geq\beta>0.
+\end{equation}
+则对问题 $(P)$ 的每个解 $u$, 存在唯一 $\lambda\in M$,
+使 $(u,\lambda)$ 是问题 $(Q)$ 的一个解.
+\end{Theorem}
+
+\begin{Proof}
+设 $u\in V$ 是问题 $(P)$ 的一个解. 必须求满足
+\eqref{eq:navier-abstract-q-operator-first} 的 $\lambda\in M$.
+但 $l-A(u)u$ 属于 $V$ 的极集 $V^0$.
+此外, inf-sup 条件 \eqref{eq:navier-abstract-inf-sup} 与
+Lemma~\ref{lem:ch4-abstract-div} 蕴含 $B'$ 是从 $M$ 到 $V^0$ 的同构.
+因此存在唯一 $\lambda\in M$, 使 $(u,\lambda)$ 是问题 $(Q)$ 的一个解.
+\end{Proof}
+
+\setcounter{statement}{2}
+\begin{Remark}\label{rem:navier-abstract-mixed-iteration}
+现在可扩展 Remark~\ref{rem:navier-successive-approximations} 的迭代格式以求解问题 $(Q)$.
+从任意 $u_0\in V$ 出发, 通过求解
+\begin{equation}\label{eq:navier-abstract-mixed-iteration}
+\left\{
+\begin{aligned}
+a(u_m;u_{m+1},v)+b(v,\lambda_{m+1})&=\langle l,v\rangle
+&&\forall v\in X,\\
+b(u_{m+1},\mu)&=0
+&&\forall\mu\in M
+\end{aligned}
+\right.
+\end{equation}
+构造 $X\times M$ 中的序列 $(u_m,\lambda_m)$.
+验证在假设
+\eqref{eq:navier-abstract-uniform-ellipticity},
+\eqref{eq:navier-abstract-local-lipschitz},
+\eqref{eq:navier-abstract-small-data-condition} 和
+\eqref{eq:navier-abstract-inf-sup} 下, 对任意 $u_0\in V$ 有
+\begin{equation}\label{eq:navier-abstract-mixed-iteration-convergence}
+\lim_{m\to\infty}
+\left\{\|u_m-u\|_X+\|\lambda_m-\lambda\|_M\right\}=0.
+\end{equation}
+事实上, $u_m\in V$ 并满足
+\eqref{eq:navier-successive-approximation}.
+所以由 Remark~\ref{rem:navier-successive-approximations},
+\[
+\lim_{m\to\infty}\|u_m-u\|_X=0.
+\]
+另一方面, 利用 \eqref{eq:navier-abstract-q-first} 和
+\eqref{eq:navier-abstract-mixed-iteration}, 得
+\[
+b(v,\lambda_m-\lambda)
+=a(u;u,v)-a(u_{m-1};u_m,v)
+\qquad\forall v\in X,
+\]
+并由 \eqref{eq:navier-abstract-inf-sup} 得
+\[
+\|\lambda_m-\lambda\|_M
+\leq\frac1\beta\sup_{v\in X}
+\frac{a(u;u,v)-a(u_{m-1};u_m,v)}{\|v\|_X}.
+\]
+所需结果由 $u_m$ 在 $X$ 中收敛于 $u$ 以及
+$a(\cdot;\cdot,\cdot)$ 的连续性性质得到.
+\end{Remark}

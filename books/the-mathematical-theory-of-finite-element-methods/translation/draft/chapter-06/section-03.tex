@@ -1,0 +1,138 @@
+% Representative translation sample: source PDF pages 171--173, complete Section 6.3.
+\MathBookSourcePage{171}
+\subsection{多重网格算法}
+\label{sec:ch06-multigrid-algorithm}
+\setcounter{thmcount}{0}
+\setcounter{equation}{1}
+\setcounter{figure}{0}
+
+多重网格算法是一种迭代求解器. 对于每个 $k$, 都有一个用于在 $V_k$ 上求解方程 $A_k z=g$ 的迭代方案. 此方案有两个主要特征: 在 $V_k$ 上进行光滑化, 以及利用在 $V_{k-1}$ 上构造的迭代方案在 $V_{k-1}$ 上进行误差校正. 光滑步骤具有衰减误差振荡部分的作用, 如图~\ref{fig:ch06-smoothing-effect} 所示. 图中给出了一个随机选取的初始误差, 以及对该初始误差施加一次, 两次和三次光滑处理后的结果. 经过若干这样的步骤后, 误差的光滑部分占主导地位, 并且能够在较粗网格上被精确捕捉. 这一点将在定理~\ref{thm:ch06-w-cycle-smoothing-property} 的证明中得到解析说明. 由于误差校正在较粗网格上完成, 所需计算工作量较少.
+
+\begin{figure}[H]
+    \centering
+    \subfigure{\includegraphics[width=0.43\linewidth]{source-pdf-171-smoothing-000.png}}
+    \hfill
+    \subfigure{\includegraphics[width=0.43\linewidth]{source-pdf-171-smoothing-001.png}}
+    \par\medskip
+    \subfigure{\includegraphics[width=0.43\linewidth]{source-pdf-171-smoothing-002.png}}
+    \hfill
+    \subfigure{\includegraphics[width=0.43\linewidth]{source-pdf-171-smoothing-003.png}}
+    \caption{光滑步骤的作用: (a) 初始误差, (b-d) 分别为一次, 两次和三次光滑步骤后的误差. 此图对应模型问题~\eqref{eq:ch06-model-dirichlet-problem}, 其中双线性型~\eqref{eq:ch06-model-bilinear-form} 中的 $\alpha\equiv 1$ 且 $\beta\equiv 0$.}
+    \label{fig:ch06-smoothing-effect}
+\end{figure}
+
+为了描述多重网格算法, 我们需要引入网格间传递算子.
+
+\begin{Definition}[网格间传递算子]
+\label{def:ch06-intergrid-transfer-operators}
+粗到细算子
+\[
+\MathBookFormulaID{formula-ed664af02477b0d1}
+I_{k-1}^{k}:V_{k-1}\longrightarrow V_k
+\]
+取为自然嵌入. 换言之,
+\[
+I_{k-1}^{k}v=v\qquad\forall v\in V_{k-1}.
+\]
+
+\MathBookSourcePage{172}
+细到粗网格间传递算子
+\[
+I_k^{k-1}:V_k\longrightarrow V_{k-1}
+\]
+定义为 $I_{k-1}^{k}$ 关于内积 $(\cdot,\cdot)_{k-1}$ 和 $(\cdot,\cdot)_k$ 的转置. 换言之,
+\[
+\MathBookFormulaID{formula-4c9aa729ef2deb19}
+\begin{aligned}
+(I_k^{k-1}w,v)_{k-1}
+  &=(w,I_{k-1}^{k}v)_k\\
+  &=(w,v)_k,
+  \qquad \forall v\in V_{k-1},\ w\in V_k.
+\end{aligned}
+\]
+\end{Definition}
+
+\paragraph*{第 $k$ 层迭代.}
+$MG(k,z_0,g)$ 是以 $z_0$ 为初始猜测, 由第 $k$ 层迭代得到的方程
+\[
+\MathBookFormulaID{formula-8edfad7225e6fb83}
+A_k z=g
+\]
+的近似解.
+
+当 $k=1$ 时, $MG(1,z_0,g)$ 是由直接方法得到的解. 换言之,
+\[
+\MathBookFormulaID{formula-1d488b55a0779b9b}
+MG(1,z_0,g)=A_1^{-1}g.
+\]
+
+当 $k>1$ 时, $MG(k,z_0,g)$ 通过以下三个步骤递归得到.
+
+\paragraph*{预光滑步骤.}
+对于 $1\leq l\leq m_1$, 令
+\[
+\MathBookFormulaID{formula-b4dca61430038333}
+z_l=z_{l-1}+\frac{1}{\Lambda_k}\bigl(g-A_k z_{l-1}\bigr),
+\]
+其中从现在起, 我们假定 $\Lambda_k$ 表示 $A_k$ 谱半径的某个上界, 该上界由引理~\ref{lem:ch06-spectral-radius-bound} 给出, 并满足
+\begin{equation}
+\MathBookFormulaID{formula-603c1ae7ced208c2}
+\Lambda_k\leq C h_k^{-2}.
+\label{eq:ch06-multigrid-spectral-radius-bound}
+\end{equation}
+
+\paragraph*{误差校正步骤.}
+令
+\[
+\MathBookFormulaID{formula-d48841924381740c}
+\bar g:=I_k^{k-1}(g-A_k z_{m_1})
+\qquad\text{且}\qquad q_0=0.
+\]
+对于 $1\leq i\leq p$, 令
+\[
+\MathBookFormulaID{formula-6913f25620952d55}
+q_i=MG(k-1,q_{i-1},\bar g).
+\]
+然后令
+\[
+\MathBookFormulaID{formula-6e24245d5059ceb6}
+z_{m_1+1}:=z_{m_1}+I_{k-1}^{k}q_p.
+\]
+
+\paragraph*{后光滑步骤.}
+对于 $m_1+2\leq l\leq m_1+m_2+1$, 令
+\[
+\MathBookFormulaID{formula-74faf95006d2fb83}
+z_l=z_{l-1}+\frac{1}{\Lambda_k}(g-A_k z_{l-1}).
+\]
+
+于是, 第 $k$ 层迭代的输出为
+\[
+\MathBookFormulaID{formula-7512a26cb07797cc}
+MG(k,z_0,g):=z_{m_1+m_2+1}.
+\]
+这里 $m_1$ 和 $m_2$ 是正整数, 且 $p=1$ 或 $2$. 当 $p=1$ 时, 该方法称为 V-循环方法; 当 $p=2$ 时, 该方法称为 W-循环方法.
+
+\MathBookSourcePage{173}
+将第 $k$ 层迭代应用于离散方程~\eqref{eq:ch06-discrete-operator-equation} 时, 我们采用以下策略. 取初始猜测为 $I_{k-1}^{k}\widehat u_{k-1}$, 其中 $\widehat u_{k-1}$ 是已经为方程 $A_{k-1}u_{k-1}=f_{k-1}$ 得到的近似解. 然后将第 $k$ 层迭代应用 $r$ 次. 因此, 完全多重网格算法由嵌套迭代组成.
+
+\paragraph*{完全多重网格算法.}
+当 $k=1$ 时,
+\[
+\MathBookFormulaID{formula-04a723b52154e607}
+\widehat u_1=A_1^{-1}f_1.
+\]
+当 $k\geq 2$ 时, 近似解 $\widehat u_k$ 由下列递推过程得到:
+\[
+\MathBookFormulaID{formula-c6abfcef3e01c964}
+u_0^k=I_{k-1}^{k}\widehat u_{k-1},
+\]
+\[
+\MathBookFormulaID{formula-b0c83f8d03c73372}
+u_l^k=MG(k,u_{l-1}^k,f_k),
+\qquad 1\leq l\leq r,
+\]
+\[
+\MathBookFormulaID{formula-1cf2aeb58751a7c5}
+\widehat u_k=u_r^k.
+\]

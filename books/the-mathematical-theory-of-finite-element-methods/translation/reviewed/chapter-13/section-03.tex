@@ -1,0 +1,135 @@
+\MathBookSourcePage{369}
+\subsection{增广 Lagrange 方法}
+\label{sec:ch13-augmented-Lagrangian-method}
+\setcounter{thmcount}{0}
+\setcounter{equation}{0}
+
+在一般的 $V_h$ 与 $\Pi_h\neq DV_h$ 情形, 方程~\eqref{eq:ch13-discrete-mixed-system} 的矩阵表示为
+\[
+\MathBookFormulaID{formula-ch13-mixed-matrix-system}
+\begin{aligned}
+\mathbf A\mathbf U+\mathbf B^t\mathbf P&=\mathbf F,\\
+\mathbf B\mathbf U&=\mathbf G,
+\end{aligned}
+\]
+其中 $\mathbf U$(相应地 $\mathbf P$)表示 $u_h$(相应地 $p_h$)关于 $V_h$(相应地 $\Pi_h$)的一组基展开的系数. 迭代增广 Lagrange 方法(Fortin 与 Glowinski 1983, Glowinski 1984)求解
+\MBSourceItem{1}
+\begin{equation}
+\MathBookFormulaID{formula-ch13-augmented-Lagrangian-matrix-algorithm}
+\label{eq:ch13-augmented-Lagrangian-matrix-algorithm}
+\begin{aligned}
+\mathbf A\mathbf U^n+r\mathbf B^t(\mathbf B\mathbf U^n-\mathbf G)
+&=\mathbf F-\mathbf B^t\mathbf P^n,\\
+\mathbf P^{n+1}&=\mathbf P^n+\rho(\mathbf B\mathbf U^n-\mathbf G),
+\end{aligned}
+\end{equation}
+其中 $r$ 和 $\rho$ 为非负参数. 当 $\Pi_h=DV_h$ 时, ~\eqref{eq:ch13-augmented-Lagrangian-matrix-algorithm} 化为迭代罚方法~\eqref{eq:ch13-iterated-penalty-algorithm}.
+
+与迭代罚方法不同, 增广 Lagrange 方法需要 $\Pi_h$ 的一组显式基以构造 $\mathbf B$. 但它可用于更一般的情形, 即 $\Pi_h\neq DV_h$. 与迭代罚方法类似, 增广 Lagrange 方法通过消去与 $\Pi_h$ 相关的自由度来缩减待解线性代数系统, 从而可能显著节省时间与存储. 此外, 若 $a(\cdot,\cdot)$ 对称, 则 $\mathbf A+r\mathbf B^t\mathbf B$ 对称; 若 $a(\cdot,\cdot)$ 强制且 $r>0$, 则该矩阵正定.
+
+为分析~\eqref{eq:ch13-augmented-Lagrangian-matrix-algorithm} 的收敛性, 将其重新写成变分形式.
+
+令 $P_{\Pi_h}$ 表示到 $\Pi_h$ 的 $\Pi$-投影. 则~\eqref{eq:ch13-augmented-Lagrangian-matrix-algorithm} 等价于(习题~\ref{exr:ch13-augmented-variational-equivalence})
+\MBSourceItem{2}
+\begin{equation}
+\MathBookFormulaID{formula-ch13-augmented-Lagrangian-variational-algorithm}
+\label{eq:ch13-augmented-Lagrangian-variational-algorithm}
+\begin{aligned}
+a(u^n,v)+r,b(u^n-g,P_{\Pi_h}Dv)
+&=F(v)-b(v,p^n)&&\forall v\in V_h,\\
+p^{n+1}&=p^n-\rho P_{\Pi_h}(Du^n-g),
+\end{aligned}
+\end{equation}
+其中 $g$ 由 $\Pi_h$ 的基下系数 $\mathbf G$ 表示, 类似地, ~\eqref{eq:ch13-augmented-Lagrangian-variational-algorithm} 中线性形式 $F$ 的系数为~\eqref{eq:ch13-augmented-Lagrangian-matrix-algorithm} 中的 $\mathbf F$. 注意
+\[
+\MathBookFormulaID{formula-ch13-projected-D-symmetric-form}
+b(w,P_{\Pi_h}Dv)
+=(Dw,P_{\Pi_h}Dv)_\Pi
+=(P_{\Pi_h}Dw,P_{\Pi_h}Dv)_\Pi
+\]
+是 $V_h$ 上的对称双线性形式. 下面说明在~\eqref{eq:ch13-coercivity-and-inf-sup} 成立时, 它在~\eqref{eq:ch13-a-orthogonal-complement} 的 $\widetilde Z_h^\perp$ 上强制.
+
+回顾~\eqref{eq:ch12-operator-L-definition} 给出的算子 $L:\Pi_h\to Z_h^\perp$. 可把该式改写为 $P_{\Pi_h}(DLq)=q$(习题~\ref{exr:ch13-projected-right-inverse}). 如上一节定义满足~\eqref{eq:ch13-La-bound} 的 $L_a$. 因为 $z\in Z_h$ 等价于 $P_{\Pi_h}(Dz)=0$(习题~\ref{exr:ch13-discrete-kernel-projection}), 有 $P_{\Pi_h}(DL_aq)=q$. 类似地, 对任意 $w\in\widetilde Z_h^\perp$, 有 $w=L_a(P_{\Pi_h}Dw)$. 因此
+\MathBookSourcePage{370}
+\MBSourceItem{3}
+\begin{equation}
+\MathBookFormulaID{formula-ch13-augmented-complement-coercivity}
+\label{eq:ch13-augmented-complement-coercivity}
+\|w\|_V=\|L_aP_{\Pi_h}Dw\|_V
+\leq\left(\frac1\beta+\frac{C_a}{\alpha\beta}\right)
+\|P_{\Pi_h}Dw\|_\Pi
+\qquad\forall w\in\widetilde Z_h^\perp.
+\end{equation}
+与~\eqref{eq:ch13-successive-error-relation} 类似,
+\MBSourceItem{4}
+\begin{equation}
+\MathBookFormulaID{formula-ch13-augmented-successive-error-relation}
+\label{eq:ch13-augmented-successive-error-relation}
+\begin{aligned}
+a(e^{n+1},v)
++r(P_{\Pi_h}De^{n+1},P_{\Pi_h}Dv)_\Pi
+=a(e^n,v)
++(r-\rho)(P_{\Pi_h}De^n,P_{\Pi_h}Dv)_\Pi.
+\end{aligned}
+\end{equation}
+使用上一节相同的技术得到:
+
+\MBSourceItem{5}
+\begin{Theorem}
+\label{thm:ch13-augmented-Lagrangian-convergence}
+假设形式~\eqref{eq:ch13-linearized-navier-form} 满足~\eqref{eq:ch13-coercivity-and-inf-sup} 和~\eqref{eq:ch13-continuity-conditions}. 假设 $V_h$ 与 $\Pi_h$ 满足~\eqref{eq:ch13-coercivity-and-inf-sup}. 则当 $r$ 充分大时, 算法~\eqref{eq:ch13-augmented-Lagrangian-matrix-algorithm} 对任意 $0<\rho<2r$ 收敛. 当 $\rho=r$ 时, ~\eqref{eq:ch13-augmented-Lagrangian-matrix-algorithm} 几何收敛, 其收敛率为
+\[
+\MathBookFormulaID{formula-ch13-augmented-Lagrangian-convergence-rate}
+C_a\left(\frac1\beta+\frac{C_a}{\alpha\beta}\right)^2\bigg/r.
+\]
+\end{Theorem}
+
+\MBSourceItem{6}
+\begin{Remark}
+\label{rem:ch13-augmented-matrix-nullspace}
+矩阵 $\mathbf B^t\mathbf B$ 有很大的零空间, 即整个 $Z_h$; 但~\eqref{eq:ch13-augmented-complement-coercivity} 表明, 它限制在 $\widetilde Z_h^\perp$ 上时正定. 然而, 该子空间上最小特征值的下界恰好依赖于补空间 $\widetilde Z_h^\perp$, 并非只依赖 $\mathbf B$ 的不变量.
+\end{Remark}
+
+也可像上一节一样建立停止准则, 其依据是下述结果.
+
+\MBSourceItem{7}
+\begin{Theorem}
+\label{thm:ch13-augmented-Lagrangian-stopping-errors}
+假设形式~\eqref{eq:ch13-linearized-navier-form} 满足~\eqref{eq:ch13-coercivity-and-inf-sup} 和~\eqref{eq:ch13-continuity-conditions}. 假设 $V_h$ 与 $\Pi_h$ 满足~\eqref{eq:ch13-coercivity-and-inf-sup}. 则算法~\eqref{eq:ch13-iterated-penalty-algorithm} 中的误差可估计为
+\MBSourceItem{8}
+\begin{equation}
+\MathBookFormulaID{formula-ch13-augmented-velocity-stopping-error}
+\label{eq:ch13-augmented-velocity-stopping-error}
+\begin{aligned}
+\|u^n-u_h\|_V
+&\leq\left(\frac1\beta+\frac{C_a}{\alpha\beta}\right)
+\|P_{\Pi_h}(Du^n-g)\|_\Pi\\
+&\leq\left(\frac1\beta+\frac{C_a}{\alpha\beta}\right)
+\|Du^n-g\|_\Pi,
+\end{aligned}
+\end{equation}
+以及
+\MBSourceItem{9}
+\begin{equation}
+\MathBookFormulaID{formula-ch13-augmented-pressure-stopping-error}
+\label{eq:ch13-augmented-pressure-stopping-error}
+\begin{aligned}
+\|p^n-p_h\|_\Pi
+&\leq\left[C\left(\frac1\beta+\frac{C_a}{\alpha\beta}\right)+rC_b\right]
+\|P_{\Pi_h}(Du^n-g)\|_\Pi\\
+&\leq\left[C\left(\frac1\beta+\frac{C_a}{\alpha\beta}\right)+rC_b\right]
+\|Du^n-g\|_\Pi.
+\end{aligned}
+\end{equation}
+\end{Theorem}
+
+\MathBookSourcePage{371}
+习题~\ref{exr:ch13-augmented-variational-equivalence} 蕴含
+\[
+\MathBookFormulaID{formula-ch13-augmented-residual-coefficients}
+\|P_{\Pi_h}(Du^n-g)\|_\Pi^2
+=(\mathbf B\mathbf U^n-\mathbf G)^t(\mathbf B\mathbf U^n-\mathbf G),
+\]
+其中 $\mathbf U^n$(相应地 $\mathbf G$)表示 $u^n$(相应地 $P_{\Pi_h}g$)关于给定基的系数, 因而定理~\ref{thm:ch13-augmented-Lagrangian-stopping-errors} 中的量容易计算.
+
+本节结果可直接用于原书第~\MBUnresolvedReference{chap:ch10-source-Taylor-Hood}{10} 章中 Stokes 问题的 Taylor--Hood 方法. 令 $V_h$ 如~\eqref{eq:ch12-stokes-velocity-space}, $\Pi_h$ 如~\eqref{eq:ch12-Taylor-Hood-pressure-space}, 则对所有 $k\geq2$, 算法~\eqref{eq:ch13-augmented-Lagrangian-variational-algorithm}(或等价地~\eqref{eq:ch13-augmented-Lagrangian-matrix-algorithm})对 Stokes 问题~\eqref{eq:ch12-stokes-abstract-problem} 收敛(参见习题~\ref{exr:ch13-Taylor-Hood-augmented-convergence}).

@@ -1,0 +1,382 @@
+% Reviewed translation: PDF pages 271--276 / printed pages 257--262.
+% The original scan is authoritative; mathematical tokens were checked against it.
+\MathBookSourcePage{271}
+\section{三维向量势--涡量格式}
+\label{sec:incompressible-vector-potential-vorticity}
+
+把前面各节的格式推广到三维 Stokes 问题并不容易.
+显然的原因是, 确定向量势的条件比确定二维流函数的条件复杂得多.
+因此这里只把 Section~\ref{sec:incompressible-sfvp}
+的 stream function--vorticity 格式推广到
+$\mathbb R^3$ 中一个很简单区域上的齐次 Stokes 问题.
+
+本节始终假设 $\Omega$ 是 $\mathbb R^3$ 中有界单连通开集,
+其边界 $\Gamma$ 是连通、有界的多面体.
+压力逼近留到最后一小节处理. 首先降低与双调和问题有关的函数空间正则性;
+使用 $H(\operatorname{curl};\Omega)$ 中的函数已经足够.
+这将导出 $H(\operatorname{curl};\Omega)$ 中协调有限元的有限维子空间,
+它们不是 $H^1(\Omega)^3$ 的子空间.
+最后, 因为使用间断元, 压力也采用与
+Subsection~\ref{subsec:incompressible-hhj-discontinuous-pressure}
+非常相似的间断逼近.
+
+\subsection{三维 Stokes 问题的混合表述}
+\label{subsec:incompressible-vector-potential-mixed-formulation}
+
+给定 $\mathbf f\in L^2(\Omega)^3$, 考虑齐次 Stokes 问题:
+求 $(\mathbf u,p)\in H_0^1(\Omega)^3\times L_0^2(\Omega)$, 使
+\begin{equation}\label{eq:incompressible-vector-potential-stokes}
+\left\{
+\begin{aligned}
+-\nu\Delta\mathbf u+\operatorname{grad}p&=\mathbf f,\\
+\operatorname{div}\mathbf u&=0
+\end{aligned}
+\right\}\quad\text{于 }\Omega,
+\qquad
+\mathbf u=0\quad\text{于 }\Gamma.
+\end{equation}
+该问题可解释为速度向量势 $\boldsymbol\psi$ 的双调和问题,
+$\mathbf u=\operatorname{curl}\boldsymbol\psi$, 且
+\begin{equation}\label{eq:incompressible-vector-potential-space}
+\Psi=\{\boldsymbol\phi\in L^2(\Omega)^3;
+\ \operatorname{div}\boldsymbol\phi\in H_0^1(\Omega),
+\ \operatorname{curl}\boldsymbol\phi\in H_0^1(\Omega)^3,
+\ \boldsymbol\phi\times\mathbf n|_\Gamma=0\}.
+\end{equation}
+
+为导出混合表述, 用 $\operatorname{curl}\boldsymbol\phi$
+检验 \eqref{eq:incompressible-vector-potential-stokes}.
+
+\MathBookSourcePage{272}
+因为 $\operatorname{div}\mathbf u=0$, 首先得到
+\[
+\nu\langle\operatorname{curl}\operatorname{curl}\mathbf u,
+\operatorname{curl}\boldsymbol\phi\rangle
+=(\mathbf f,\operatorname{curl}\boldsymbol\phi)
+\qquad\forall\boldsymbol\phi\in H_0(\operatorname{curl};\Omega),
+\]
+其中括号表示 $H_0(\operatorname{curl};\Omega)$ 与其对偶之间的对偶配对.
+令
+\begin{equation}\label{eq:incompressible-vector-potential-vorticity}
+\boldsymbol\omega=\operatorname{curl}\mathbf u.
+\end{equation}
+若 $\boldsymbol\omega\in H(\operatorname{curl};\Omega)$, 则
+\[
+\nu(\operatorname{curl}\boldsymbol\omega,
+\operatorname{curl}\boldsymbol\phi)
+=(\mathbf f,\operatorname{curl}\boldsymbol\phi)
+\quad\forall\boldsymbol\phi\in H_0(\operatorname{curl};\Omega).
+\]
+又因 $\mathbf u=\operatorname{curl}\boldsymbol\psi$,
+$\operatorname{div}\boldsymbol\psi=0$, $\boldsymbol\psi\in\Psi$,
+\eqref{eq:incompressible-vector-potential-vorticity} 等价于
+\[
+(\operatorname{curl}\operatorname{curl}\boldsymbol\psi,\boldsymbol\mu)
+=(\boldsymbol\omega,\boldsymbol\mu)
+\qquad\forall\boldsymbol\mu\in L^2(\Omega)^3.
+\]
+把 $\boldsymbol\mu$ 限制到 $H(\operatorname{curl};\Omega)$, 得
+\[
+(\operatorname{curl}\boldsymbol\psi,
+\operatorname{curl}\boldsymbol\mu)
+=(\boldsymbol\omega,\boldsymbol\mu)
+\qquad\forall\boldsymbol\mu\in H(\operatorname{curl};\Omega).
+\]
+因此问题 $(\widetilde Q)$ 为: 求
+$(\boldsymbol\psi,\boldsymbol\omega)
+\in H_0(\operatorname{curl};\Omega)\times
+H(\operatorname{curl};\Omega)$, 使
+\begin{align}
+\nu(\operatorname{curl}\boldsymbol\omega,
+\operatorname{curl}\boldsymbol\phi)
+&=(\mathbf f,\operatorname{curl}\boldsymbol\phi)
+&&\forall\boldsymbol\phi\in H_0(\operatorname{curl};\Omega),
+\label{eq:incompressible-vector-potential-mixed-first}\\
+(\operatorname{curl}\boldsymbol\psi,
+\operatorname{curl}\boldsymbol\mu)
+&=(\boldsymbol\omega,\boldsymbol\mu)
+&&\forall\boldsymbol\mu\in H(\operatorname{curl};\Omega),
+\label{eq:incompressible-vector-potential-mixed-second}\\
+\operatorname{div}\boldsymbol\psi&=0.
+\label{eq:incompressible-vector-potential-divergence-free}
+\end{align}
+它至少有解 $(\boldsymbol\psi,\boldsymbol\omega=-\Delta\boldsymbol\psi)$.
+反之, 若齐次第一式成立, 在第二式中依次取
+$\boldsymbol\phi=\boldsymbol\psi$ 和
+$\boldsymbol\mu=\boldsymbol\omega$, 得
+$\boldsymbol\omega=0$ 和
+$\operatorname{curl}\boldsymbol\psi=0$.
+再由 $\operatorname{div}\boldsymbol\psi=0$ 及 $\Gamma$ 连通,
+可知 $\boldsymbol\psi=0$.
+
+\begin{Theorem}\label{thm:incompressible-vector-potential-continuous-uniqueness}
+若问题 \eqref{eq:incompressible-vector-potential-stokes} 的解满足
+$\operatorname{curl}\mathbf u\in H(\operatorname{curl};\Omega)$,
+则 \eqref{eq:incompressible-vector-potential-mixed-first}--
+\eqref{eq:incompressible-vector-potential-divergence-free}
+有唯一解
+$(\boldsymbol\psi,-\Delta\boldsymbol\psi)$,
+其中 $\operatorname{curl}\boldsymbol\psi=\mathbf u$.
+\end{Theorem}
+
+令
+\[
+\Phi_0=\{\boldsymbol\phi\in H_0(\operatorname{curl};\Omega);
+\ \operatorname{div}\boldsymbol\phi=0\}.
+\]
+问题 $(\widetilde Q)$ 等价于求
+$(\boldsymbol\psi,\boldsymbol\omega)
+\in\Phi_0\times H(\operatorname{curl};\Omega)$, 使
+\begin{equation}\label{eq:incompressible-vector-potential-reduced-problem}
+\left\{
+\begin{aligned}
+\nu(\operatorname{curl}\boldsymbol\omega,
+\operatorname{curl}\boldsymbol\phi)
+&=(\mathbf f,\operatorname{curl}\boldsymbol\phi)
+&&\forall\boldsymbol\phi\in\Phi_0,\\
+(\operatorname{curl}\boldsymbol\psi,
+\operatorname{curl}\boldsymbol\mu)
+&=(\boldsymbol\omega,\boldsymbol\mu)
+&&\forall\boldsymbol\mu\in H(\operatorname{curl};\Omega).
+\end{aligned}
+\right.
+\end{equation}
+
+\MathBookSourcePage{273}
+引入
+\[
+\widetilde X=\{\operatorname{curl}\boldsymbol\phi;
+\ \boldsymbol\phi\in\Phi_0\}\times L^2(\Omega)^3,
+\qquad \widetilde M=H(\operatorname{curl};\Omega),
+\]
+以及, 对
+$u=(\operatorname{curl}\boldsymbol\psi,\boldsymbol\omega)$,
+$v=(\operatorname{curl}\boldsymbol\phi,\boldsymbol\theta)$,
+\[
+\widetilde a(u,v)=\nu(\boldsymbol\omega,\boldsymbol\theta),
+\quad
+\widetilde b(v,\boldsymbol\mu)
+=(\operatorname{curl}\boldsymbol\phi,
+\operatorname{curl}\boldsymbol\mu)
+-(\boldsymbol\theta,\boldsymbol\mu),
+\quad
+\langle l,v\rangle=(\mathbf f,\operatorname{curl}\boldsymbol\phi).
+\]
+则问题写成
+\begin{equation}\label{eq:incompressible-vector-potential-abstract-problem}
+\left\{
+\begin{aligned}
+\widetilde a(u,v)+\widetilde b(v,\lambda)&=\langle l,v\rangle
+&&\forall v\in\widetilde X,\\
+\widetilde b(u,\boldsymbol\mu)&=0
+&&\forall\boldsymbol\mu\in\widetilde M.
+\end{aligned}
+\right.
+\end{equation}
+相应核空间为
+\[
+\widetilde V=\{v=(\operatorname{curl}\boldsymbol\phi,\boldsymbol\theta)
+\in\widetilde X;
+(\operatorname{curl}\boldsymbol\phi,
+\operatorname{curl}\boldsymbol\mu)
+=(\boldsymbol\theta,\boldsymbol\mu)
+\ \forall\boldsymbol\mu\in H(\operatorname{curl};\Omega)\}.
+\]
+由
+\begin{equation}\label{eq:incompressible-vector-potential-poincare}
+\|\boldsymbol\phi\|_{0,\Omega}
+\leq C\|\operatorname{curl}\boldsymbol\phi\|_{0,\Omega}
+\qquad\forall\boldsymbol\phi\in\Phi_0,
+\end{equation}
+可在 $\widetilde X$ 上取范数
+\[
+\|v\|_{\widetilde X}
+=\bigl(\|\operatorname{curl}\boldsymbol\phi\|_{0,\Omega}^2
++\|\boldsymbol\theta\|_{0,\Omega}^2\bigr)^{1/2}.
+\]
+在 $\widetilde V$ 上还有
+\begin{equation}\label{eq:incompressible-vector-potential-kernel-control}
+\|\operatorname{curl}\boldsymbol\phi\|_{0,\Omega}
+\leq C\|\boldsymbol\theta\|_{0,\Omega}.
+\end{equation}
+所以 $|v|=\|\boldsymbol\theta\|_{0,\Omega}$
+是 $\widetilde V$ 上与 $\widetilde X$ 范数等价的范数, 且
+\[
+\widetilde a(v,v)=\nu|v|^2
+\geq\frac{\nu}{C^2+1}\|v\|_{\widetilde X}^2.
+\]
+
+\MathBookSourcePage{274}
+同样容易验证弱 inf--sup 条件
+\[
+\sup_{v\in\widetilde X}
+\frac{\widetilde b(v,\boldsymbol\mu)}{\|v\|_{\widetilde X}}
+\geq\|\boldsymbol\mu\|_{0,\Omega}
+\qquad\forall\boldsymbol\mu\in\widetilde M.
+\]
+这里 Lagrange 乘子满足 $\lambda=\nu\boldsymbol\omega$.
+
+\begin{Remark}\label{rem:incompressible-vector-potential-two-dimensional-analogy}
+问题 \eqref{eq:incompressible-vector-potential-reduced-problem}
+与二维 stream function--vorticity 问题相似.
+\end{Remark}
+
+\begin{Remark}\label{rem:incompressible-vector-potential-larger-test-space}
+\eqref{eq:incompressible-vector-potential-abstract-problem} 的第一式
+实际上在比 $\widetilde X$ 更大的空间上成立, 即
+$v=(\operatorname{curl}\boldsymbol\phi,\boldsymbol\theta)$,
+$(\boldsymbol\phi,\boldsymbol\theta)
+\in H_0(\operatorname{curl};\Omega)\times L^2(\Omega)^3$.
+\end{Remark}
+
+\subsection{$H(\operatorname{curl};\Omega)$ 中的混合逼近}
+\label{subsec:incompressible-vector-potential-mixed-approximation}
+
+引入有限维空间
+\begin{equation}\label{eq:incompressible-vector-potential-discrete-spaces}
+\Phi_h\subset H_0(\operatorname{curl};\Omega),
+\qquad M_h\subset H(\operatorname{curl};\Omega),
+\qquad\Theta_h\subset H_0^1(\Omega),
+\end{equation}
+并假设 $\Phi_h\subset M_h$.
+由于 $\Phi_h$ 未必包含于 $H(\operatorname{div};\Omega)$,
+无散条件写成
+\begin{equation}\label{eq:incompressible-vector-potential-discrete-divergence-free}
+(\boldsymbol\phi_h,\operatorname{grad}q_h)=0
+\qquad\forall q_h\in\Theta_h.
+\end{equation}
+即用
+\begin{equation}\label{eq:incompressible-vector-potential-discrete-kernel}
+\Phi_{h0}=\{\boldsymbol\phi_h\in\Phi_h;
+\ \boldsymbol\phi_h\text{ 满足 }
+\eqref{eq:incompressible-vector-potential-discrete-divergence-free}\}
+\end{equation}
+逼近 $\Phi_0$. 要求存在 $C^*>0$, 使
+\begin{equation}\label{eq:incompressible-vector-potential-discrete-poincare}
+\|\boldsymbol\phi_h\|_{0,\Omega}
+\leq C^*\|\operatorname{curl}\boldsymbol\phi_h\|_{0,\Omega}
+\qquad\forall\boldsymbol\phi_h\in\Phi_{h0}.
+\end{equation}
+离散问题 $(Q_h)$ 为求
+$(\boldsymbol\psi_h,\boldsymbol\omega_h)
+\in\Phi_{h0}\times M_h$, 使
+\begin{equation}\label{eq:incompressible-vector-potential-constrained-discrete-problem}
+\left\{
+\begin{aligned}
+\nu(\operatorname{curl}\boldsymbol\omega_h,
+\operatorname{curl}\boldsymbol\phi_h)
+&=(\mathbf f,\operatorname{curl}\boldsymbol\phi_h)
+&&\forall\boldsymbol\phi_h\in\Phi_{h0},\\
+(\operatorname{curl}\boldsymbol\psi_h,
+\operatorname{curl}\boldsymbol\mu_h)
+&=(\boldsymbol\omega_h,\boldsymbol\mu_h)
+&&\forall\boldsymbol\mu_h\in M_h.
+\end{aligned}
+\right.
+\end{equation}
+
+\MathBookSourcePage{275}
+由于对检验函数有约束, 实际计算改用整个 $\Phi_h$:
+\begin{equation}\label{eq:incompressible-vector-potential-unconstrained-discrete-problem}
+\left\{
+\begin{aligned}
+\nu(\operatorname{curl}\boldsymbol\omega_h,
+\operatorname{curl}\boldsymbol\phi_h)
+&=(\mathbf f,\operatorname{curl}\boldsymbol\phi_h)
+&&\forall\boldsymbol\phi_h\in\Phi_h,\\
+(\operatorname{curl}\boldsymbol\psi_h,
+\operatorname{curl}\boldsymbol\mu_h)
+&=(\boldsymbol\omega_h,\boldsymbol\mu_h)
+&&\forall\boldsymbol\mu_h\in M_h.
+\end{aligned}
+\right.
+\end{equation}
+两问题等价需要附加假设: 对每个 $\boldsymbol\phi_h\in\Phi_h$,
+存在 $\boldsymbol\phi_{h0}\in\Phi_{h0}$ 使
+\begin{equation}\label{eq:incompressible-vector-potential-curl-lifting}
+\operatorname{curl}\boldsymbol\phi_h
+=\operatorname{curl}\boldsymbol\phi_{h0}.
+\end{equation}
+
+\begin{Lemma}\label{lem:incompressible-vector-potential-discrete-solvability}
+令 \eqref{eq:incompressible-vector-potential-discrete-spaces} 成立,
+$\Phi_h\subset M_h$, 并以
+\eqref{eq:incompressible-vector-potential-discrete-kernel}
+定义 $\Phi_{h0}$. 在
+\eqref{eq:incompressible-vector-potential-discrete-poincare} 下,
+问题 $(Q_h)$ 在 $\Phi_{h0}\times M_h$ 中有唯一解.
+若此外 \eqref{eq:incompressible-vector-potential-curl-lifting} 成立,
+则 \eqref{eq:incompressible-vector-potential-unconstrained-discrete-problem}
+与 $(Q_h)$ 等价.
+\end{Lemma}
+
+为应用抽象误差定理, 取
+\begin{align}
+X_h&=\{\operatorname{curl}\boldsymbol\phi_h;
+\ \boldsymbol\phi_h\in\Phi_{h0}\}\times M_h,
+\label{eq:incompressible-vector-potential-discrete-product-space}\\
+V_h&=\{(\operatorname{curl}\boldsymbol\phi_h,\boldsymbol\theta_h)
+\in X_h;
+(\operatorname{curl}\boldsymbol\phi_h,
+\operatorname{curl}\boldsymbol\mu_h)
+=(\boldsymbol\theta_h,\boldsymbol\mu_h)
+\ \forall\boldsymbol\mu_h\in M_h\}.
+\label{eq:incompressible-vector-potential-discrete-nullspace}
+\end{align}
+虽然 $V_h$ 一般不包含于 $\widetilde V$, 但由
+\eqref{eq:incompressible-vector-potential-discrete-poincare},
+\begin{equation}\label{eq:incompressible-vector-potential-discrete-kernel-control}
+\|\operatorname{curl}\boldsymbol\phi_h\|_{0,\Omega}
+\leq C^*\|\boldsymbol\theta_h\|_{0,\Omega}
+\quad\forall(\operatorname{curl}\boldsymbol\phi_h,
+\boldsymbol\theta_h)\in V_h.
+\end{equation}
+故 $|v_h|=\|\boldsymbol\theta_h\|_{0,\Omega}$
+是 $V_h$ 上的等价范数, 可直接应用抽象定理.
+
+\MathBookSourcePage{276}
+\begin{Theorem}\label{thm:incompressible-vector-potential-abstract-error}
+保留 Lemma~\ref{lem:incompressible-vector-potential-discrete-solvability}
+除 \eqref{eq:incompressible-vector-potential-curl-lifting} 外的全部假设.
+则 $(Q_h)$ 的解满足
+\begin{equation}\label{eq:incompressible-vector-potential-vorticity-abstract-error}
+\begin{split}
+\|\boldsymbol\omega-\boldsymbol\omega_h\|_{0,\Omega}
+\leq{}&2\inf_{v_h\in V_h}|u-v_h|\\
+&+(1+C^{*2})^{1/2}
+\inf_{\boldsymbol\mu_h\in M_h}
+\|\boldsymbol\omega-\boldsymbol\mu_h\|_{H(\operatorname{curl};\Omega)},
+\end{split}
+\end{equation}
+以及
+\begin{equation}\label{eq:incompressible-vector-potential-velocity-abstract-error}
+\begin{split}
+\|\operatorname{curl}(\boldsymbol\psi-\boldsymbol\psi_h)\|_{0,\Omega}
+\leq{}&(1+C^{*2})^{1/2}
+\left\{\inf_{v_h\in V_h}\|u-v_h\|_{\widetilde X}\right.\\
+&\left.\qquad+C^*\inf_{\boldsymbol\mu_h\in M_h}
+\|\boldsymbol\omega-\boldsymbol\mu_h\|_{H(\operatorname{curl};\Omega)}\right\},
+\end{split}
+\end{equation}
+其中 $C^*$ 是
+\eqref{eq:incompressible-vector-potential-discrete-poincare} 的常数.
+\end{Theorem}
+
+现在需要估计 $V_h$ 的逼近误差. 二维情形的抽象论证仍然成立.
+\begin{Lemma}\label{lem:incompressible-vector-potential-kernel-approximation}
+在 Lemma~\ref{lem:incompressible-vector-potential-discrete-solvability}
+的记号下, 对每个
+$v=(\operatorname{curl}\boldsymbol\phi,\boldsymbol\theta)\in\widetilde V$,
+\begin{equation}\label{eq:incompressible-vector-potential-kernel-approximation}
+\inf_{w_h\in V_h}|v-w_h|
+\leq\inf_{v_h=(\operatorname{curl}\boldsymbol\phi_h,
+\boldsymbol\theta_h)\in X_h}
+\left\{2|v-v_h|+
+\sup_{\boldsymbol\mu_h\in M_h}
+\frac{(\operatorname{curl}(\boldsymbol\phi-\boldsymbol\phi_h),
+\operatorname{curl}\boldsymbol\mu_h)}
+{\|\boldsymbol\mu_h\|_{0,\Omega}}\right\}.
+\end{equation}
+把右端的半范数换成 $\widetilde X$ 范数,
+同样可得到 $\|v-w_h\|_{\widetilde X}$ 的上界.
+\end{Lemma}

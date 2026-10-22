@@ -1,0 +1,67 @@
+% Complete Section 7.7, original PDF 101-103 / printed 91-93.
+\begingroup\emergencystretch=2em
+% block: cubical-elements-heading page:101 type:section
+\section{{立方体单元}}\label{sec:cubical-elements}
+
+% block: cubical-elements-introduction pages:101,102 type:ordinary-paragraph
+{虽然迄今只讨论了单纯形剖分, 基于 $n$ 维长方体 (区间之积) 网格的有限元空间也很常用. 原来, 长方体上有两族有限元空间, 它们在许多方面与单纯形上的 $\mathcal P_r\Lambda^k$ 和 $\mathcal P_r^-\Lambda^k$ 空间相对应, 本节将对此作简要介绍.}
+
+% block: tensor-product-form-family page:102 type:ordinary-paragraph
+{两族中较简单的一族记为 $\mathcal Q_r^-\Lambda^k$. 它对 $\mathbb R^n$ 中的任意长方体网格 $\mathcal T_h$, 以及每个 $r>0$ 和 $0\leq k\leq n$ 定义. 为定义该空间, 需要给出任意长方体 $T\subset\mathbb R^n$ 上的形函数和自由度. 利用链复形张量积的适当概念就能做到这一点. 这里简要回顾取自 \BookCite{9} 的结果, 细节请参见该文.}
+
+% block: tensor-product-shape-functions page:102 type:ordinary-paragraph
+{不失一般性, 取 $T=I^n$, 其中 $I=[0,1]$. 则形函数空间为}
+\[
+\mathcal Q_r^-\Lambda^k(I^n)=\bigoplus_{1\leq\sigma_1<\cdots<\sigma_k\leq n}\left[\bigotimes_{i=1}^n\mathcal P_{r-\delta_{i,\sigma}}(I)\right]dx^{\sigma_1}\wedge\cdots\wedge dx^{\sigma_k},
+\]
+{其中}
+\[
+\delta_{i,\sigma}=\begin{cases}1,&i\in\{\sigma_1,\ldots,\sigma_k\},\\0&\text{otherwise}.\end{cases}
+\]
+{当 $k=0$ 时, 将此空间理解为}
+\[
+\mathcal Q_r^-\Lambda^0(I^n)=\bigotimes_{i=1}^n\mathcal P_r(I),
+\]
+{即通常所说的空间 $\mathcal Q_r(I^n)$. 当 $r=0$ 时该定义仍有意义, 因而 $\mathcal Q_0^-\Lambda^0(I^n)=\mathcal Q_0(I^n)=\mathbb R$ 是常函数空间. 对 $k>0$, 有 $\mathcal Q_0^-\Lambda^k(I^n)=0$. 定义中还允许 $n=0$, 即 $I^n$ 退化为单点的情形. 此时将 $\mathcal Q_r^-\Lambda^0(I^0)$ 理解为常数空间 $\mathbb R$. 容易算出这些空间的维数:}
+\[
+\dim\mathcal Q_r^-\Lambda^k(I^n)=\binom nk(r+1)^{n-k}r^k,\qquad0\leq k\leq n,\ r\geq0.
+\]
+
+% block: tensor-product-degrees-of-freedom page:102 type:ordinary-paragraph
+{最后为 $\mathcal Q_r^-\Lambda^k(I^n)$ ($r\geq1$, $0\leq k\leq n$) 指定一组自由度,}
+\begin{equation}\label{eq:tensor-product-form-dofs}
+v\mapsto\int_f\operatorname{tr}_fv(x)\wedge q(x),\qquad q\in\mathcal Q_{r-1}^-\Lambda^{d-k}(f),
+\end{equation}
+{其中 $f$ 取遍 $I^n$ 的各个次数为 $d\geq k$ 的面. 如 \BookCite{9} 所示, 它们的唯一可解性由张量积的考察得到. 对每个 $r\geq1$, 得到的有限元空间组合成有限元 de Rham 子复形:}
+\[
+0\to\mathcal Q_r^-\Lambda^0(\mathcal T_h)\xrightarrow{d}\mathcal Q_r^-\Lambda^1(\mathcal T_h)\xrightarrow{d}\cdots\xrightarrow{d}\mathcal Q_r^-\Lambda^n(\mathcal T_h)\to0.
+\]
+{注意, 与 $\mathcal P_r\Lambda^k$ 序列一样, 多项式次数在整个复形中保持不变. 此外, 与这些自由度关联的典范投影构成上链映射.}
+
+% block: serendipity-shape-space pages:102,103 type:ordinary-paragraph
+{第二族立方体有限元在 \BookCite{7} 中利用 FEEC 工具导出. 我们称其为有限元微分形式的\emph{Serendipity 族}, 将有限元空间记为 $\mathcal S_r\Lambda^k$. 它的形函数定义略为复杂. 首先, 将多项式微分形式空间 $\mathcal H_{r,s}\Lambda^k$ 定义为满足下述条件的单项式 $(x^1)^{\alpha_1}\cdots(x^n)^{\alpha_n}\,dx^{\sigma_1}\wedge\cdots\wedge dx^{\sigma_k}$ 的张成空间:}
+\begin{enumerate}
+\item{多项式次数为 $r$ (即 $\alpha_1+\cdots+\alpha_n=r$),}
+\item{至少对 $s$ 个变量为线性的, 其中不计变量 $x^{\sigma_i}$, 即}
+\[
+\#(\{\alpha_i=1\}\setminus\{\sigma_1,\ldots,\sigma_k\})\geq s.
+\]
+\end{enumerate}
+{然后以如下多项式微分形式空间为形函数空间}
+\[
+\mathcal S_r\Lambda^k:=\mathcal P_r\Lambda^k\oplus\bigoplus_{s\geq1}[\kappa\mathcal H_{r+s-1,s}\Lambda^{k+1}\oplus d\kappa\mathcal H_{r+s,s}\Lambda^k].
+\]
+
+% block: serendipity-degrees-of-freedom page:103 type:ordinary-paragraph
+{与形函数的这一定义之复杂形成对比, $\mathcal S_r\Lambda^k$ 族的自由度倒很简单. 对一个维数为 $d$ 的面 $f$, 关联的自由度为}
+\[
+u\mapsto\int_f(\operatorname{tr}_f\omega)\wedge\mu,\qquad q\in\mathcal P_{r-2d}\Lambda^{d-k}(f),
+\]
+{其中权函数取自通常的完全多项式空间, 但面的维数每增加一, 它们的次数就降低二. 在 \BookCite{7} 中, 我们证明了这些自由度具有唯一可解性, 并确定了这族空间的主要性质. 特别地, 证明了组装后的有限元空间组合成具有交换典范投影的 de Rham 子复形:}
+\[
+0\to\mathcal S_r\Lambda^0(\mathcal T_h)\xrightarrow{d}\mathcal S_{r-1}\Lambda^1(\mathcal T_h)\xrightarrow{d}\cdots\xrightarrow{d}\mathcal S_{r-n}\Lambda^n(\mathcal T_h)\to0.
+\]
+{注意, 与 $\mathcal P_r\Lambda^k$ 族一样, 多项式次数逐次降低.}
+
+% block: further-cubical-families-geometric-distortion page:103 type:ordinary-paragraph
+{还要指出, 至少在二维或三维中, 已有人提出其他一些立方体有限元微分形式族, 它们具有许多相同的性质. 特别值得一提的是 Cockburn 和 Qiu 的 TNT 单元 \BookCite{33}, 以及 Gillette 和 Kloefkorn 的修剪 Serendipity 族 \BookCite{44}. 另一个要点是, 对所有这些立方体单元, 包括上面讨论的单元, 若将立方体映射到的不是长方体或平行六面体, 而是更一般的形状 (例如二维中的凸四边形, 或三维中的某种六面体), 则会出现严重的精度损失. 单元的形式次数越高, 这一效应越明显; \BookCite{9} 研究了这种效应. 近来 Arbogast 及其合作者构造了一些避免该问题的单元 \BookCite{3}, \BookCite{4}.}

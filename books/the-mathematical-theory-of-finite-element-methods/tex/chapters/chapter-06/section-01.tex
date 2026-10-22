@@ -1,0 +1,79 @@
+\subsection{一个模型问题}
+\label{sec:ch06-model-problem}
+\setcounter{thmcount}{0}
+\setcounter{equation}{0}
+
+设 $\Omega\subseteq\mathbb R^2$ 为凸多边形, 并令
+\MBSourceItem{1}
+\begin{equation}
+\MathBookFormulaID{formula-ch06-model-bilinear-form}
+\label{eq:ch06-model-bilinear-form}
+a(u,v)=\int_\Omega(\alpha\nabla u\cdot\nabla v+\beta uv)\,dx,
+\end{equation}
+其中 $\alpha$ 和 $\beta$ 是光滑函数, 且对某些 $\alpha_0,\alpha_1,\beta_1\in\mathbb R^+$ 有
+\[
+\MathBookFormulaID{formula-ch06-coefficient-bounds}
+\alpha_0\leq\alpha(x)\leq\alpha_1,
+\qquad 0\leq\beta(x)\leq\beta_1
+\quad\forall x\in\Omega.
+\]
+考虑 Dirichlet 问题: 求 $u\in V:=\mathring H^1(\Omega)$, 使得
+\MBSourceItem{2}
+\begin{equation}
+\MathBookFormulaID{formula-ch06-model-dirichlet-problem}
+\label{eq:ch06-model-dirichlet-problem}
+a(u,v)=(f,v)\qquad\forall v\in V,
+\end{equation}
+其中 $f\in L^2(\Omega)$.
+
+\MathBookSourcePage{168}
+椭圆正则性(参见 Grisvard)蕴含 $u\in H^2(\Omega)\cap\mathring H^1(\Omega)$. 为逼近 $u$, 考虑如下三角剖分序列 $\mathcal T_k$. 设已给定 $\mathcal T_1$, 对 $k\geq2$, 通过正则细分由 $\mathcal T_{k-1}$ 得到 $\mathcal T_k$: 用新边连接 $\mathcal T_{k-1}$ 中各边的中点, 从而形成 $\mathcal T_k$ 的四个子三角形. 令 $V_k$ 表示相对于 $\mathcal T_k$ 的连续分片线性函数中在 $\partial\Omega$ 上为零者. 注意
+\MBSourceItem{3}
+\begin{equation}
+\MathBookFormulaID{formula-ch06-nested-finite-element-spaces}
+\label{eq:ch06-nested-finite-element-spaces}
+\mathcal T_k\supset\mathcal T_{k-1}\Longrightarrow V_{k-1}\subset V_k
+\end{equation}
+对所有 $k\geq1$ 成立.
+
+离散问题为: 求 $u_k\in V_k$, 使得
+\MBSourceItem{4}
+\begin{equation}
+\MathBookFormulaID{formula-ch06-discrete-problem}
+\label{eq:ch06-discrete-problem}
+a(u_k,v)=(f,v)\qquad\forall v\in V_k.
+\end{equation}
+
+令 $h_k$ 为 $\mathcal T_k$ 的网格尺寸, 即 $h_k:=\max_{T\in\mathcal T_k}\operatorname{diam}T$. 对任意 $T\in\mathcal T_{k-1}$, $\mathcal T_k$ 中 $T$ 的四个子三角形均与 $T$ 相似, 且其尺寸为 $T$ 的一半. 因而
+\MBSourceItem{5}
+\begin{equation}
+\MathBookFormulaID{formula-ch06-mesh-size-halving}
+\label{eq:ch06-mesh-size-halving}
+h_k=\frac12h_{k-1}.
+\end{equation}
+同样, $\{\mathcal T_k\}$ 是拟一致的, 因为每个 $T\in\mathcal T_k$ 都是 $\mathcal T_1$ 中某个三角形的精确缩小复制, 缩放因子恰为 $h_k/h_1$. 因此由定理~\ref{thm:ch05-schatz-error-estimate} 和定理~\ref{thm:ch04-global-interpolation-error},
+\MBSourceItem{6}
+\begin{equation}
+\MathBookFormulaID{formula-ch06-standard-finite-element-error}
+\label{eq:ch06-standard-finite-element-error}
+\|u-u_k\|_{H^s(\Omega)}\leq C h_k^{2-s}\|u\|_{H^2(\Omega)},
+\qquad s=0,1,\quad k=1,2,\ldots.
+\end{equation}
+本章始终以 $C$(带或不带下标)表示与 $k$ 无关的通用常数.
+
+令 $n_k=\dim V_k$. 多重网格方法的目标是以 $O(n_k)$ 次运算计算 $\widehat u_k\in V_k$, 使得
+\MBSourceItem{7}
+\begin{equation}
+\MathBookFormulaID{formula-ch06-optimal-multigrid-target}
+\label{eq:ch06-optimal-multigrid-target}
+\|u_k-\widehat u_k\|_{H^s(\Omega)}
+\leq C h_k^{2-s}\|u\|_{H^2(\Omega)},
+\qquad s=0,1,\quad k=1,2,\ldots.
+\end{equation}
+$O(n_k)$ 的运算次数意味着该多重网格方法是渐近最优的.
+
+\MBSourceItem{8}
+\begin{Remark}
+\label{rem:ch06-full-regularity-not-essential}
+完全椭圆正则性并非收敛分析所必需. 为简化起见, 这里假设完全正则性.
+\end{Remark}

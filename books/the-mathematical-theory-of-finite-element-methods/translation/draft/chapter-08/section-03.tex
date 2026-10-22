@@ -1,0 +1,250 @@
+\MathBookSourcePage{231}
+\subsection{引理~\ref{lem:ch08-weighted-green-error} 的证明}
+\label{sec:ch08-proof-weighted-green-error}
+\setcounter{thmcount}{0}
+\setcounter{equation}{0}
+
+先证明有限元误差的一般加权范数估计. 它与第~\ref{chap:ch00-basic-concepts} 章中的估计相似, 但由于权函数 $\sigma_z$ 的特殊性质, 这里的结论稍强.
+
+\MBSourceItem{1}
+\begin{Proposition}
+\label{prop:ch08-weighted-fem-error}
+设 $d=2$ 或 $3$, 且式~\eqref{eq:ch08-primal-regularity} 对某个 $\mu>d$ 成立. 设有限元空间满足式~\eqref{eq:ch08-weighted-interpolation-estimates}、式~\eqref{eq:ch08-interpolation-orthogonality} 和式~\eqref{eq:ch08-weighted-inverse-estimate}. 令 $w$ 解式~\eqref{eq:ch08-primal-problem}, $w_h$ 解式~\eqref{eq:ch08-galerkin-problem}. 对任意 $\lambda>0$ 和 $\kappa>1$, 存在与 $z\in\overline\Omega$ 及 $h$ 无关的 $C<\infty$, 使得
+\[
+\MathBookFormulaID{formula-ch08-weighted-fem-error}
+\begin{aligned}
+\int_\Omega\sigma_z^{d+\lambda}|\nabla(w-w_h)|^2\,dx
+&\leq C\int_\Omega\sigma_z^{d+\lambda-2}(w-w_h)^2\,dx\\
+&\quad+C\int_\Omega\left(\sigma_z^{d+\lambda-2}(w-I^hw)^2
++\sigma_z^{d+\lambda}|\nabla(w-I^hw)|^2\right)\,dx.
+\end{aligned}
+\]
+对所有 $z\in\Omega$ 和所有 $h$ 成立.
+\end{Proposition}
+
+\begin{Proof}
+令 $e=w-w_h$, $\widetilde e=I^hw-w_h$, 并置 $\psi=\sigma_z^{d+\lambda}\widetilde e$. 注意对所有 $v\in V_h$ 有 $a(e,v)=0$. 由式~\eqref{eq:ch08-pointwise-ellipticity},
+\MBSourceItem{2}
+\begin{align}
+\MathBookFormulaID{formula-ch08-weighted-error-coercivity-expansion}
+C_a\int_\Omega\sigma_z^{d+\lambda}|\nabla e|^2\,dx
+&\leq\int_\Omega\sigma_z^{d+\lambda}\sum_{ij}a_{ij}e_{,i}e_{,j}\,dx\notag\\
+&=a(e,\sigma_z^{d+\lambda}e)-\int_\Omega\sum_{ij}a_{ij}e_{,i}e(\sigma_z^{d+\lambda})_{,j}\,dx\notag\\
+&\quad-\int_\Omega\left(\sum_i b_ie_{,i}\sigma_z^{d+\lambda}e+b_0\sigma_z^{d+\lambda}e^2\right)\,dx\notag\\
+&=a(e,\sigma_z^{d+\lambda}(w-I^hw)+\psi)-\int_\Omega\sum_{ij}a_{ij}e_{,i}e(\sigma_z^{d+\lambda})_{,j}\,dx\notag\\
+&\quad-\int_\Omega\left(\sum_i b_ie_{,i}\sigma_z^{d+\lambda}e+b_0\sigma_z^{d+\lambda}e^2\right)\,dx\notag\\
+&=a(e,\sigma_z^{d+\lambda}(w-I^hw))+a(e,\psi-I^h\psi)\notag\\
+&\quad-\int_\Omega\left(\sum_{ij}a_{ij}e_{,i}e(\sigma_z^{d+\lambda})_{,j}
++\sum_i b_ie_{,i}\sigma_z^{d+\lambda}e+b_0\sigma_z^{d+\lambda}e^2\right)\,dx.
+\label{eq:ch08-weighted-error-coercivity-expansion}
+\end{align}
+这里 $v_{,j}$ 表示关于第 $j$ 个坐标的偏导数. 式~\eqref{eq:ch08-weighted-error-coercivity-expansion} 中的最后两项可估计为
+\begin{align*}
+\MathBookFormulaID{formula-ch08-weighted-error-lower-order-estimate}
+&\left|\int_\Omega\left(\sum_{ij}a_{ij}e_{,i}e(\sigma_z^{d+\lambda})_{,j}
++\sum_i b_ie_{,i}\sigma_z^{d+\lambda}e+b_0\sigma_z^{d+\lambda}e^2\right)\,dx\right|\\
+&\quad\leq C\int_\Omega\bigl(|\nabla e||e|\sigma_z^{d+\lambda-1}
++\sigma_z^{d+\lambda}e^2\bigr)\,dx
+\qquad\text{(由式~\eqref{eq:ch08-weight-infinity-bound} 和式~\eqref{eq:ch08-weight-derivative-bound})}\\
+&\quad\leq C\left(\int_\Omega\sigma_z^{d+\lambda}|\nabla e|^2\,dx\right)^{1/2}
+\left(\int_\Omega\sigma_z^{d+\lambda-2}e^2\,dx\right)^{1/2}
++C\int_\Omega\sigma_z^{d+\lambda}e^2\,dx\\
+&\quad\leq\frac{C_a}{4}\int_\Omega\sigma_z^{d+\lambda}|\nabla e|^2\,dx
++C\int_\Omega\sigma_z^{d+\lambda-2}e^2\,dx.
+\end{align*}
+这里依次使用了 Schwarz 不等式、式~\eqref{eq:ch08-weight-infinity-bound} 和 Young 不等式~\eqref{eq:ch00-young-inequality-delta}. 同样, 第一项满足
+\begin{align*}
+\MathBookFormulaID{formula-ch08-weighted-error-approximation-estimate}
+|a(e,\sigma_z^{d+\lambda}(w-I^hw))|
+&\leq C\int_\Omega|\nabla e|
+\bigl(\sigma_z^{d+\lambda}|\nabla(w-I^hw)|
++\sigma_z^{d+\lambda-1}|w-I^hw|\bigr)\,dx\\
+&\quad+C\int_\Omega|e|\sigma_z^{d+\lambda}|w-I^hw|\,dx\\
+&\leq C\left(\int_\Omega\sigma_z^{d+\lambda}(|\nabla e|^2+e^2)\,dx\right)^{1/2}\\
+&\quad\times\left(\int_\Omega\sigma_z^{d+\lambda-2}(w-I^hw)^2
++\sigma_z^{d+\lambda}|\nabla(w-I^hw)|^2\,dx\right)^{1/2}\\
+&\leq\frac{C_a}{4}\int_\Omega\sigma_z^{d+\lambda}(|\nabla e|^2+e^2)\,dx\\
+&\quad+C\int_\Omega\sigma_z^{d+\lambda-2}(w-I^hw)^2
++\sigma_z^{d+\lambda}|\nabla(w-I^hw)|^2\,dx.
+\end{align*}
+第二项也可类似估计:
+\begin{align*}
+\MathBookFormulaID{formula-ch08-weighted-error-superapproximation-estimate}
+|a(e,\psi-I^h\psi)|
+&\leq C\int_\Omega\bigl(|\nabla e|(|\nabla(\psi-I^h\psi)|+|\psi-I^h\psi|)
++|e||\psi-I^h\psi|\bigr)\,dx\\
+&\leq C\left(\int_\Omega\sigma_z^{d+\lambda}(|\nabla e|^2+e^2)\,dx\right)^{1/2}\\
+&\quad\times\left(\int_\Omega\sigma_z^{-d-\lambda}
+\bigl(|\nabla(\psi-I^h\psi)|^2+(\psi-I^h\psi)^2\bigr)\,dx\right)^{1/2}\\
+&\leq\frac{C_a}{4}\int_\Omega\sigma_z^{d+\lambda}(|\nabla e|^2+e^2)\,dx\\
+&\quad+C\int_\Omega\sigma_z^{-d-\lambda}
+\bigl(|\nabla(\psi-I^h\psi)|^2+(\psi-I^h\psi)^2\bigr)\,dx.
+\end{align*}
+将这些估计代入式~\eqref{eq:ch08-weighted-error-coercivity-expansion}, 并使用式~\eqref{eq:ch08-weight-infinity-bound}, 得到
+\MBSourceItem{3}
+\begin{equation}
+\MathBookFormulaID{formula-ch08-weighted-error-absorbed-bound}
+\label{eq:ch08-weighted-error-absorbed-bound}
+\begin{aligned}
+\frac{C_a}{4}\int_\Omega\sigma_z^{d+\lambda}|\nabla e|^2\,dx
+&\leq C\int_\Omega\sigma_z^{d+\lambda-2}e^2\,dx\\
+&\quad+\int_\Omega\sigma_z^{-d-\lambda}
+\bigl(|\nabla(\psi-I^h\psi)|^2+(\psi-I^h\psi)^2\bigr)\,dx
+\\
+&\quad+\int_\Omega\left(\sigma_z^{d+\lambda-2}(w-I^hw)^2
++\sigma_z^{d+\lambda}|\nabla(w-I^hw)|^2\right)\,dx.
+\end{aligned}
+\end{equation}
+再由式~\eqref{eq:ch08-weighted-interpolation-estimates}、式~\eqref{eq:ch08-interpolation-orthogonality}、式~\eqref{eq:ch08-weight-derivative-bound} 和式~\eqref{eq:ch08-weighted-inverse-estimate},
+\begin{align*}
+\MathBookFormulaID{formula-ch08-superapproximation-full-chain}
+&\int_\Omega\sigma_z^{-d-\lambda}
+\bigl(|\nabla(\psi-I^h\psi)|^2+(\psi-I^h\psi)^2\bigr)\,dx\\
+&\quad\leq\sum_{r=k}^{k_{\max}}h^{2r-2}
+\int_\Omega\sigma_z^{-d-\lambda}|\nabla_{\mathcal E,r}\psi|^2\,dx\\
+&\quad\leq C\sum_{r=k}^{k_{\max}}h^{2r-2}
+\sum_{j=0}^{r-1}\int_\Omega\sigma_z^{d+\lambda-2(r-j)}|\nabla_j\widetilde e|^2\,dx\\
+&\quad\leq C\sum_{r=k}^{k_{\max}}\sum_{j=0}^{r-1}h^{2r-2j-2}
+\int_\Omega\sigma_z^{d+\lambda-2(r-j)}\widetilde e^2\,dx\\
+&\quad\leq C\int_\Omega\sigma_z^{d+\lambda-2}\widetilde e^2\,dx.
+\end{align*}
+代回式~\eqref{eq:ch08-weighted-error-absorbed-bound} 即得命题结论. 还可将前一估计写成
+\MBSourceItem{4}
+\begin{equation}
+\MathBookFormulaID{formula-ch08-superapproximation-estimate}
+\label{eq:ch08-superapproximation-estimate}
+\int_\Omega\sigma_z^{-d-\lambda}|\nabla(\psi-I^h\psi)|^2\,dx
+\leq C\int_\Omega\sigma_z^{-d-\lambda-2}\psi^2\,dx.
+\end{equation}
+这种估计通常称为超逼近估计(Nitsche and Schatz 1974), 因为右端含较弱的范数, 且没有 $h$ 的负幂.
+\end{Proof}
+
+为估计命题~\ref{prop:ch08-weighted-fem-error} 右端含 $(w-w_h)^2$ 的项, 使用如下结论.
+
+\MBSourceItem{5}
+\begin{Proposition}
+\label{prop:ch08-weighted-l2-error-absorption}
+设 $d=2$ 或 $3$, 式~\eqref{eq:ch08-primal-regularity} 对某个 $\mu>d$ 成立, 且 $0<\lambda<2(1-d/\mu)$. 设有限元空间满足式~\eqref{eq:ch08-weighted-interpolation-estimates}、式~\eqref{eq:ch08-interpolation-orthogonality} 和式~\eqref{eq:ch08-weighted-inverse-estimate}. 令 $w$ 解式~\eqref{eq:ch08-primal-problem}, $w_h$ 解式~\eqref{eq:ch08-galerkin-problem}. 则存在 $\kappa_1<\infty$, 使得对所有 $\kappa\geq\kappa_1$ 和所有 $h$,
+\[
+\MathBookFormulaID{formula-ch08-weighted-l2-error-absorption}
+\int_\Omega\sigma_z^{d+\lambda-2}(w-w_h)^2\,dx
+\leq\varepsilon\int_\Omega\sigma_z^{d+\lambda}|\nabla(w-w_h)|^2\,dx.
+\]
+\end{Proposition}
+
+\begin{Proof}
+使用对偶论证. 令 $v\in V$ 解
+\MBSourceItem{6}
+\begin{equation}
+\MathBookFormulaID{formula-ch08-dual-weighted-error-problem}
+\label{eq:ch08-dual-weighted-error-problem}
+a(\phi,v)=(\sigma_z^{d+\lambda-2}e,\phi)
+\qquad\forall\phi\in V.
+\end{equation}
+于是, 利用 Schwarz 不等式、Young 不等式~\eqref{eq:ch00-young-inequality-delta} 和式~\eqref{eq:ch08-weighted-interpolation-estimates},
+\begin{align*}
+\MathBookFormulaID{formula-ch08-dual-weighted-error-chain}
+\int_\Omega\sigma_z^{d+\lambda-2}e^2\,dx
+&=a(e,v)=a(e,v-I^hv)\\
+&\leq C\left(\int_\Omega\sigma_z^{d+\lambda}(|\nabla e|^2+e^2)\,dx\right)^{1/2}\\
+&\quad\times\left(\int_\Omega\sigma_z^{-d-\lambda}
+\bigl(|\nabla(v-I^hv)|^2+(v-I^hv)^2\bigr)\,dx\right)^{1/2}\\
+&\leq\varepsilon\int_\Omega\sigma_z^{d+\lambda}(|\nabla e|^2+e^2)\,dx\\
+&\quad+\frac{C}{\varepsilon}\int_\Omega\sigma_z^{-d-\lambda}
+\bigl(|\nabla(v-I^hv)|^2+(v-I^hv)^2\bigr)\,dx\\
+&\leq\varepsilon\int_\Omega\sigma_z^{d+\lambda}(|\nabla e|^2+e^2)\,dx
++\frac{Ch^2}{\varepsilon}\int_\Omega\sigma_z^{-d-\lambda}|\nabla_2v|^2\,dx.
+\end{align*}
+下一节将证明如下引理.
+
+\MBSourceItem{7}
+\begin{Lemma}
+\label{lem:ch08-weighted-adjoint-regularity}
+设 $d=2$ 或 $3$, 式~\eqref{eq:ch08-primal-regularity} 对某个 $\mu>d$ 成立, 且 $\lambda<2(1-d/\mu)$. 则方程
+\[
+\MathBookFormulaID{formula-ch08-adjoint-right-hand-side}
+a(\phi,v)=(f,\phi)
+\qquad\forall\phi\in V
+\]
+的解满足
+\[
+\MathBookFormulaID{formula-ch08-weighted-adjoint-regularity}
+\int_\Omega\sigma^{-d-\lambda}|\nabla_2v|^2\,dx
+\leq C\lambda^{-1}\zeta^{-2}
+\int_\Omega\sigma^{4-d-\lambda}|\nabla f|^2\,dx,
+\]
+其中 $\sigma(x)=(|x-x^0|^2+\zeta^2)^{1/2}$, $x^0\in\overline\Omega$ 任意.
+\end{Lemma}
+
+将引理~\ref{lem:ch08-weighted-adjoint-regularity} 用于 $f=\sigma_z^{d+\lambda-2}e$, 得
+\begin{align*}
+\MathBookFormulaID{formula-ch08-dual-regularity-applied}
+\int_\Omega\sigma_z^{-d-\lambda}|\nabla_2v|^2\,dx
+&\leq C\lambda^{-1}(\kappa h)^{-2}
+\int_\Omega\sigma_z^{4-d-\lambda}
+\left|\nabla\bigl(\sigma_z^{d+\lambda-2}e\bigr)\right|^2\,dx\\
+&\leq C\lambda^{-1}(\kappa h)^{-2}
+\left(\int_\Omega\sigma_z^{d+\lambda}|\nabla e|^2\,dx
++\int_\Omega\sigma_z^{d+\lambda-2}e^2\,dx\right).
+\end{align*}
+因此
+\[
+\MathBookFormulaID{formula-ch08-weighted-l2-preabsorption}
+\int_\Omega\sigma_z^{d+\lambda-2}e^2\,dx
+\leq\varepsilon\int_\Omega\sigma_z^{d+\lambda}(|\nabla e|^2+e^2)\,dx
++\frac{C}{\lambda\kappa^2\varepsilon}
+\left(\int_\Omega\sigma_z^{d+\lambda}|\nabla e|^2\,dx
++\int_\Omega\sigma_z^{d+\lambda-2}e^2\,dx\right).
+\]
+固定 $\varepsilon$ 和 $\lambda$, 取 $\kappa_1$ 足够大, 使得
+\MBSourceItem{8}
+\begin{equation}
+\MathBookFormulaID{formula-ch08-weighted-l2-absorption-choice}
+\label{eq:ch08-weighted-l2-absorption-choice}
+\int_\Omega\sigma_z^{d+\lambda-2}e^2\,dx
+\leq2\varepsilon\int_\Omega\sigma_z^{d+\lambda}|\nabla e|^2\,dx
+\end{equation}
+对所有 $\kappa\geq\kappa_1$ 成立. 重新命名 $\varepsilon$ 即得式中结论.
+\end{Proof}
+
+合并上述两个命题可见, 到有限元空间的 Galerkin 投影在某些加权空间中是拟最优的.
+
+\MBSourceItem{9}
+\begin{Theorem}
+\label{thm:ch08-weighted-galerkin-quasioptimality}
+设 $d=2$ 或 $3$, 式~\eqref{eq:ch08-primal-regularity} 对某个 $\mu>d$ 成立, 且 $0<\lambda<2(1-d/\mu)$. 设有限元空间满足式~\eqref{eq:ch08-weighted-interpolation-estimates}、式~\eqref{eq:ch08-interpolation-orthogonality} 和式~\eqref{eq:ch08-weighted-inverse-estimate}. 令 $w$ 解式~\eqref{eq:ch08-primal-problem}, $w_h$ 解式~\eqref{eq:ch08-galerkin-problem}. 则对所有 $z\in\overline\Omega$,
+\[
+\MathBookFormulaID{formula-ch08-weighted-galerkin-quasioptimality}
+\int_\Omega\sigma_z^{d+\lambda}|\nabla(w-w_h)|^2+\sigma_z^{d+\lambda-2}(w-w_h)^2\,dx
+\leq C\int_\Omega\sigma_z^{d+\lambda-2}(w-I^hw)^2
++\sigma_z^{d+\lambda}|\nabla(w-I^hw)|^2\,dx.
+\]
+\end{Theorem}
+
+为完成引理~\ref{lem:ch08-weighted-green-error} 的证明, 将定理~\ref{thm:ch08-weighted-galerkin-quasioptimality} 应用于 $w=g^z$. 需证明
+\MBSourceItem{10}
+\begin{equation}
+\MathBookFormulaID{formula-ch08-weighted-green-second-derivative}
+\label{eq:ch08-weighted-green-second-derivative}
+\int_\Omega\sigma_z^{d+\lambda}|\nabla_2g^z|^2\,dx\leq Ch^{\lambda-2}.
+\end{equation}
+这是下面先验估计的推论.
+
+\MBSourceItem{11}
+\begin{Lemma}
+\label{lem:ch08-weighted-primal-regularity}
+设 $d\leq3$, $0<\lambda<1$, 且当 $d=2$ 时 $a_{ij}\in W_p^1(\Omega)$ 对某个 $p>2$, 当 $d=3$ 时对某个 $p\geq12/5$; $i,j=1,\ldots,d$. 再假设式~\eqref{eq:ch08-primal-regularity} 对某个 $\mu>2d/(4-\lambda)$ 成立. 则
+\[
+\MathBookFormulaID{formula-ch08-weighted-primal-regularity}
+a(\phi,v)=(\nu\cdot\nabla f,\phi)
+\qquad\forall\phi\in V
+\]
+的解满足
+\[
+\MathBookFormulaID{formula-ch08-weighted-primal-regularity-bound}
+\int_\Omega\sigma^{d+\lambda}|\nabla_2v|^2\,dx
+\leq C\int_\Omega\sigma^{d+\lambda}|\nabla f|^2\,dx
++C\zeta^{-2}\int_\Omega\sigma^{d+\lambda}f^2\,dx,
+\]
+其中 $\sigma$ 为引理~\ref{lem:ch08-weighted-adjoint-regularity} 中定义的权函数.
+\end{Lemma}

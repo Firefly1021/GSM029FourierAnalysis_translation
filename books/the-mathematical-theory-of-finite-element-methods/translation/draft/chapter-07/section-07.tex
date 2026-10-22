@@ -1,0 +1,259 @@
+\subsection{Neumann--Neumann 预条件子}
+\label{sec:ch07-neumann-neumann-preconditioner}
+\setcounter{thmcount}{0}
+\setcounter{equation}{0}
+
+本节讨论 Schur 补算子 $S_h$ 的 Neumann--Neumann 预条件子(参见 Dryja \& Widlund 1995), 并沿用第~\ref{sec:ch07-nonoverlapping-domain-decomposition} 节的记号. Neumann--Neumann 预条件子的辅助空间与子区域或粗三角剖分相联系.
+
+粗网格空间 $V_H$、SPD 算子 $A_H:V_H\longrightarrow V_H'$ 以及连接算子 $I_H$ 按第~\ref{sec:ch07-bps-preconditioner} 节定义.
+
+为定义与子区域 $\Omega_j$ 相联系的辅助空间, 先引入空间 $V_h(\Omega_j\cup\Gamma_j)$: 它是 $\Omega_j$ 上与 $\mathcal T_h$ 诱导的三角剖分相应的 $\mathcal P_1$ 有限元空间, 其函数在 $\partial\Omega_j\cap\partial\Omega$ 上为零. 定义内积
+\MBSourceItem{1}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-neumann-local-inner-product}
+\label{eq:ch07-neumann-local-inner-product}
+\widehat a_j(v_1,v_2)
+=\int_{\Omega_j}\nabla v_1\cdot\nabla v_2\,dx
++H^{-2}\int_{\Omega_j}v_1v_2\,dx
+\end{equation}
+对所有 $v_1,v_2\in V_h(\Omega_j\cup\Gamma_j)$.
+
+取辅助空间 $V_h(\Gamma_j)\subseteq V_h(\Omega_j\cup\Gamma_j)$ 为空间
+\[
+\MathBookFormulaID{formula-ch07-neumann-local-interior-space}
+V_h(\Omega_j)=\{v\in V_h(\Omega_j\cup\Gamma_j):v|_{\partial\Omega_j}=0\}
+\]
+关于 $\widehat a_j(\cdot,\cdot)$ 的正交补. 容易验证(参见习题~\ref{exr:ch07-32}), $v\in V_h(\Gamma_j)$ 完全由其在 $\Gamma_{j,h}$ 上的节点值确定. 定义连接算子 $I_j:V_h(\Gamma_j)\longrightarrow V_h(\Gamma)$:
+\MathBookSourcePage{213}
+\MBSourceItem{2}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-neumann-connection-operator}
+\label{eq:ch07-neumann-connection-operator}
+(I_jv_j)(p)=
+\begin{cases}
+0,&p\in\Gamma_h\setminus\Gamma_{j,h},\\
+v_j(p)/n(p),&p\in\Gamma_{j,h},
+\end{cases}
+\end{equation}
+其中 $n(p)$ 是共享节点 $p$ 的子区域个数. 定义 SPD 线性算子 $\widehat S_j:V_h(\Gamma_j)\longrightarrow V_h(\Gamma_j)'$:
+\MBSourceItem{3}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-neumann-local-schur-operator}
+\label{eq:ch07-neumann-local-schur-operator}
+\langle\widehat S_jv_1,v_2\rangle
+=\widehat a_j(v_1,v_2)
+\qquad\forall v_1,v_2\in V_h(\Gamma_j).
+\end{equation}
+Neumann--Neumann 预条件子 $B_{NN}:V_h(\Gamma)'\longrightarrow V_h(\Gamma)$ 定义为
+\MBSourceItem{4}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-neumann-neumann-preconditioner}
+\label{eq:ch07-neumann-neumann-preconditioner}
+B_{NN}=I_HA_H^{-1}I_H^t+\sum_{j=1}^{J}I_j\widehat S_j^{-1}I_j^t.
+\end{equation}
+
+\MBSourceItem{5}
+\begin{Remark}
+\label{rem:ch07-neumann-scaling-inner-product}
+式~\eqref{eq:ch07-neumann-local-inner-product} 右端第二项使用加权积分, 使双线性型在尺度变换下不变. 对至少有一条边位于 $\partial\Omega$ 上的子区域, 也可使用内积 $a_j(v_1,v_2)=\int_{\Omega_j}\nabla v_1\cdot\nabla v_2\,dx$. 但对内部子区域, $a_j(\cdot,\cdot)$ 只是半正定的, 因为 $1\in V_h(\Omega_j\cup\Gamma_j)$ 且 $a_j(1,1)=0$.
+\end{Remark}
+
+为证明条件~\eqref{eq:ch07-auxiliary-space-decomposition}, 引入限制映射 $R_j:V_h(\Gamma)\longrightarrow V_h(\Gamma_j)$:
+\MBSourceItem{6}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-neumann-restriction-map}
+\label{eq:ch07-neumann-restriction-map}
+(R_jv)(p)=v(p)
+\qquad\forall p\in\Gamma_{j,h}.
+\end{equation}
+算子 $R_j,I_j$ 共同给出 $V_h(\Gamma)$ 的单位分解:
+\MBSourceItem{7}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-neumann-partition-of-unity}
+\label{eq:ch07-neumann-partition-of-unity}
+\sum_{j=1}^{J}I_jR_jv=v
+\qquad\forall v\in V_h(\Gamma).
+\end{equation}
+事实上, 由引理~\ref{lem:ch07-interface-nodal-uniqueness}, 只需检查式~\eqref{eq:ch07-neumann-partition-of-unity} 两端在 $\Gamma_h$ 上相同. 设 $p\in\Gamma_h$, $\sigma_p=\{j:p\in\Gamma_j\}$, 则由式~\eqref{eq:ch07-neumann-connection-operator} 和式~\eqref{eq:ch07-neumann-restriction-map},
+\[
+\MathBookFormulaID{formula-ch07-neumann-partition-node-check}
+\left(\sum_{j=1}^{J}I_jR_jv\right)(p)
+=\sum_{j\in\sigma_p}\frac1{|\sigma_p|}(R_jv)(p)
+=\sum_{j\in\sigma_p}\frac1{|\sigma_p|}v(p)=v(p).
+\]
+条件~\eqref{eq:ch07-auxiliary-space-decomposition} 立即由式~\eqref{eq:ch07-neumann-partition-of-unity} 得到.
+
+\MathBookSourcePage{214}
+\MBSourceItem{8}
+\begin{Lemma}
+\label{lem:ch07-neumann-minimum-eigenvalue}
+有 $\lambda_{\min}(B_{NN}S_h)\gtrsim1$.
+\end{Lemma}
+
+\begin{Proof}
+令 $\widetilde I^H:\mathring H^1(\Omega)\longrightarrow V_H$ 为第~\ref{sec:ch04-nonsmooth-function-interpolation} 节定义的插值算子. 对任意 $v\in V_h(\Gamma)$, 定义 $v_H=\widetilde I^Hv$, 并对 $1\leq j\leq J$ 定义 $v_j=R_j(v-I_Hv_H)$. 由式~\eqref{eq:ch07-neumann-partition-of-unity},
+\MBSourceItem{9}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-neumann-stable-decomposition}
+\label{eq:ch07-neumann-stable-decomposition}
+I_Hv_H+\sum_{j=1}^{J}I_jv_j
+=I_Hv_H+(v-I_Hv_H)=v.
+\end{equation}
+由式~\eqref{eq:ch07-bps-coarse-operator} 和推论~\ref{cor:ch04-generalized-interpolant-stability},
+\[
+\MathBookFormulaID{formula-ch07-neumann-coarse-energy-bound}
+\langle A_Hv_H,v_H\rangle
+=|v_H|_{H^1(\Omega)}^2\lesssim|v|_{H^1(\Omega)}^2.
+\]
+由于 $v_j=v-v_H$ 在 $\Gamma_j$ 上, 有
+\begin{align*}
+\MathBookFormulaID{formula-ch07-neumann-local-energy-bound}
+\langle\widehat S_jv_j,v_j\rangle
+&=\widehat a_j(v_j,v_j)
+&&\text{(由式~\eqref{eq:ch07-neumann-local-schur-operator})}\\
+&\leq\widehat a_j(v-v_H,v-v_H)
+&&\text{(由习题~\ref{exr:ch07-33})}\\
+&=|v-v_H|_{H^1(\Omega_j)}^2+H^{-2}\|v-v_H\|_{L^2(\Omega_j)}^2\\
+&\lesssim|v|_{H^1(\Omega_j)}^2
+&&\text{(由推论~\ref{cor:ch04-generalized-interpolant-stability})}.
+\end{align*}
+因而由式~\eqref{eq:ch07-schur-complement-operator},
+\MBSourceItem{10}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-neumann-stable-energy-sum}
+\label{eq:ch07-neumann-stable-energy-sum}
+\langle A_Hv_H,v_H\rangle
++\sum_{j=1}^{J}\langle\widehat S_jv_j,v_j\rangle
+\lesssim\langle S_hv,v\rangle.
+\end{equation}
+结论由式~\eqref{eq:ch07-preconditioned-minimum-eigenvalue}、式~\eqref{eq:ch07-neumann-stable-decomposition} 和式~\eqref{eq:ch07-neumann-stable-energy-sum} 得到.
+\end{Proof}
+
+\MBSourceItem{11}
+\begin{Lemma}
+\label{lem:ch07-neumann-maximum-eigenvalue}
+有 $\lambda_{\max}(B_{NN}S_h)\lesssim[1+\ln(H/h)]^2$.
+\end{Lemma}
+
+\begin{Proof}
+任取 $v\in V_h(\Gamma)$. 对任意分解
+\MBSourceItem{12}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-neumann-arbitrary-decomposition}
+\label{eq:ch07-neumann-arbitrary-decomposition}
+v=I_Hv_H+\sum_{j=1}^{J}I_jv_j,
+\end{equation}
+其中 $v_H\in V_H$, $v_j\in V_h(\Gamma_j)$, 由式~\eqref{eq:ch07-preconditioned-maximum-eigenvalue}、式~\eqref{eq:ch07-schur-complement-operator}、式~\eqref{eq:ch07-bps-coarse-operator}、式~\eqref{eq:ch07-neumann-local-inner-product} 和式~\eqref{eq:ch07-neumann-local-schur-operator}, 需证明
+\MBSourceItem{13}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-neumann-upper-energy-target}
+\label{eq:ch07-neumann-upper-energy-target}
+|v|_{H^1(\Omega)}^2
+\lesssim[1+\ln(H/h)]^2
+\left[|v_H|_{H^1(\Omega)}^2
++\sum_{j=1}^{J}\left(|v_j|_{H^1(\Omega_j)}^2
++H^{-2}\|v_j\|_{L^2(\Omega_j)}^2\right)\right].
+\end{equation}
+由式~\eqref{eq:ch07-neumann-arbitrary-decomposition}、Cauchy--Schwarz 不等式以及与推导式~\eqref{eq:ch07-bps-edge-sum-energy} 相似的论证,
+\MathBookSourcePage{215}
+\MBSourceItem{14}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-neumann-decomposition-energy}
+\label{eq:ch07-neumann-decomposition-energy}
+|v|_{H^1(\Omega)}^2
+\lesssim|v_H|_{H^1(\Omega)}^2
++\sum_{j=1}^{J}|I_jv_j|_{H^1(\Omega)}^2.
+\end{equation}
+因此只需估计 $|I_jv_j|_{H^1(\Omega)}^2$.
+
+注意, 对满足 $\partial\Omega_k\cap\partial\Omega_j=\varnothing$ 的子区域 $\Omega_k$, $I_jv_j$ 恒为零. 当 $\partial\Omega_k\cap\partial\Omega_j\neq\varnothing$ 时有三种情形(参见式~\eqref{eq:ch07-subdomain-boundary-intersection}): (1) $\Omega_k=\Omega_j$; (2) 两边界交于一个顶点; (3) 两边界交于一条开边 $E$ 及其端点 $p_1,p_2$. 只讨论第三种情形, 其余两种类似.
+
+令 $w_{p_1}$(相应地 $w_{p_2}$)为 $V_h(\Gamma_k)$ 中在 $p_1$(相应地 $p_2$)处等于 $I_jv_j$, 在 $\Gamma_k$ 其余节点为零的函数; 令 $w_E\in V_h(\Gamma_k)$ 在 $E$ 的节点上等于 $I_jv_j$, 在 $\Gamma_k$ 其余节点为零. 则
+\[
+\MathBookFormulaID{formula-ch07-neumann-edge-vertex-decomposition}
+(I_jv_j)|_{\Omega_k}=w_{p_1}+w_{p_2}+w_E.
+\]
+由引理~\ref{lem:ch07-discrete-harmonic-trace-equivalence}、引理~\ref{lem:ch07-boundary-hat-fractional-norm}、式~\eqref{eq:ch07-neumann-connection-operator} 及离散 Sobolev 不等式, 对 $l=1,2$ 有
+\[
+\MathBookFormulaID{formula-ch07-neumann-vertex-component-bound}
+|w_{p_l}|_{H^1(\Omega_k)}^2
+\lesssim[1+\ln(H/h)]
+\left(|v_j|_{H^1(\Omega_j)}^2
++H^{-2}\|v_j\|_{L^2(\Omega_j)}^2\right).
+\]
+对 $w_E$, 由引理~\ref{lem:ch07-discrete-harmonic-trace-equivalence}、习题~\ref{exr:ch07-34}、引理~\ref{lem:ch07-edge-truncation-fractional-bound}、引理~\ref{lem:ch07-trace-seminorm-bound} 和离散 Sobolev 不等式,
+\[
+\MathBookFormulaID{formula-ch07-neumann-edge-component-bound}
+|w_E|_{H^1(\Omega_k)}^2
+\lesssim[1+\ln(H/h)]^2
+\left(|v_j|_{H^1(\Omega_j)}^2
++H^{-2}\|v_j\|_{L^2(\Omega_j)}^2\right).
+\]
+因此在情形 (3) 中
+\[
+\MathBookFormulaID{formula-ch07-neumann-local-injection-bound}
+|I_jv_j|_{H^1(\Omega_k)}^2
+\lesssim[1+\ln(H/h)]^2
+\left(|v_j|_{H^1(\Omega_j)}^2
++H^{-2}\|v_j\|_{L^2(\Omega_j)}^2\right).
+\]
+情形 (1)、(2) 由类似论证得到相同估计, 故
+\MathBookSourcePage{216}
+\MBSourceItem{15}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-neumann-global-injection-bound}
+\label{eq:ch07-neumann-global-injection-bound}
+|I_jv_j|_{H^1(\Omega)}^2
+\lesssim[1+\ln(H/h)]^2
+\left(|v_j|_{H^1(\Omega_j)}^2
++H^{-2}\|v_j\|_{L^2(\Omega_j)}^2\right).
+\end{equation}
+式~\eqref{eq:ch07-neumann-upper-energy-target} 由式~\eqref{eq:ch07-neumann-decomposition-energy} 和式~\eqref{eq:ch07-neumann-global-injection-bound} 得到.
+\end{Proof}
+
+结合引理~\ref{lem:ch07-neumann-minimum-eigenvalue} 和引理~\ref{lem:ch07-neumann-maximum-eigenvalue}, 得到如下定理.
+
+\MBSourceItem{16}
+\begin{Theorem}
+\label{thm:ch07-neumann-neumann-condition-number}
+存在与 $h,H,J$ 无关的正常数 $C$, 使得
+\[
+\MathBookFormulaID{formula-ch07-neumann-neumann-condition-number}
+\kappa(B_{NN}S_h)
+=\frac{\lambda_{\max}(B_{NN}S_h)}{\lambda_{\min}(B_{NN}S_h)}
+\leq C\left(1+\ln\frac{H}{h}\right)^2.
+\]
+\end{Theorem}
+
+\MBSourceItem{17}
+\begin{Remark}
+\label{rem:ch07-neumann-bound-sharpness}
+定理~\ref{thm:ch07-neumann-neumann-condition-number} 中的界是尖锐的(参见 Brenner and Sung 2000b).
+\end{Remark}
+
+\MBSourceItem{18}
+\begin{Remark}
+\label{rem:ch07-neumann-weighted-coefficients}
+Neumann--Neumann 预条件子也可用于备注~\ref{rem:ch07-bps-weighted-coefficients} 中的边值问题. 此时 $I_j$ 的定义改为
+\[
+\MathBookFormulaID{formula-ch07-neumann-weighted-connection}
+(I_jv_j)(p)=
+\begin{cases}
+0,&p\in\Gamma_h\setminus\Gamma_{j,h},\\
+v_j(p)\big/\displaystyle\sum_{k\in\sigma_p}\rho_k^t,&p\in\Gamma_{j,h},
+\end{cases}
+\]
+其中 $\sigma_p=\{k:p\in\Gamma_k\}$, $t$ 为任意不小于 $1/2$ 的数. 定理~\ref{thm:ch07-neumann-neumann-condition-number} 中的界仍成立, 且常数 $C$ 与 $h,H,J,\rho_j$ 无关.
+\end{Remark}
+
+\MBSourceItem{19}
+\begin{Remark}
+\label{rem:ch07-neumann-three-dimensional}
+Neumann--Neumann 预条件子可推广到三维(参见 Dryja \& Widlund 1995).
+\end{Remark}
+
+\MBSourceItem{20}
+\begin{Remark}
+\label{rem:ch07-balancing-domain-decomposition}
+Mandel 的 balancing domain decomposition 预条件子(参见 Mandel 1993; Mandel \& Brezina 1996; LeTallec, Mandel \& Vidrascu 1998)与 Neumann--Neumann 预条件子密切相关, 也可作为 additive Schwarz 预条件子分析(参见 Xu \& Zou 1998; Brenner \& Sung 1999; Widlund 1999).
+\end{Remark}

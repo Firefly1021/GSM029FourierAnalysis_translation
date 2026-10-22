@@ -1,0 +1,155 @@
+\MathBookSourcePage{148}
+\subsection{Poisson 方程的变分逼近}
+\label{sec:ch05-poisson-variational-approximation}
+\setcounter{thmcount}{0}
+\setcounter{equation}{0}
+
+令 $\mathcal T^h$ 表示 $\Omega$ 的一个剖分, $I^h$ 表示以 $\mathcal T^h$ 的各单元为基础的一族有限元的全局插值算子. 假设 $I^h u$ 连续, 即所用元族为 $C^0$ 的. 再假设相应形函数具有 $m$ 阶逼近阶:
+\MBSourceItem{1}
+\begin{equation}
+\MathBookFormulaID{formula-ch05-h1-interpolation-order}
+\label{eq:ch05-h1-interpolation-order}
+\|u-I^h u\|_{H^1(\Omega)}\leq Ch^{m-1}|u|_{H^m(\Omega)}.
+\end{equation}
+为以变分空间~\eqref{eq:ch05-mixed-variational-space} 逼近变分问题~\eqref{eq:ch05-poisson-variational-problem}, 必须保证相应空间 $V_h$ 具有两个性质. 为应用 Céa 定理~\ref{thm:ch02-cea}, 必须有
+\MBSourceItem{2}
+\begin{equation}
+\MathBookFormulaID{formula-ch05-conforming-subspace-condition}
+\label{eq:ch05-conforming-subspace-condition}
+V_h\subset V.
+\end{equation}
+为使用第~\ref{chap:ch04-polynomial-approximation} 章建立的逼近理论, 必须有
+\MBSourceItem{3}
+\begin{equation}
+\MathBookFormulaID{formula-ch05-interpolated-space-condition}
+\label{eq:ch05-interpolated-space-condition}
+I^h\bigl(V\cap C^k(\overline\Omega)\bigr)\subset V_h,
+\end{equation}
+其中 $k$ 是 $I^h$ 定义中最高的微分阶数. 若这两个条件都成立, 下述结论立即由 Céa 定理得到.
+
+\MBSourceItem{4}
+\begin{Theorem}
+\label{thm:ch05-poisson-h1-error}
+假设条件~\eqref{eq:ch05-h1-interpolation-order}、\eqref{eq:ch05-conforming-subspace-condition} 和~\eqref{eq:ch05-interpolated-space-condition} 成立. 则变分问题
+\[
+\MathBookFormulaID{formula-ch05-discrete-poisson-variational-problem}
+a(u_h,v)=(f,v)\quad\forall v\in V_h
+\]
+的唯一解 $u_h\in V_h$ 满足
+\[
+\MathBookFormulaID{formula-ch05-poisson-h1-error}
+\|u-u_h\|_{H^1(\Omega)}\leq Ch^{m-1}|u|_{H^m(\Omega)}.
+\]
+\end{Theorem}
+
+当 $\Gamma$ 既非空集也非整个边界时, 条件~\eqref{eq:ch05-conforming-subspace-condition} 和~\eqref{eq:ch05-interpolated-space-condition} 对剖分施加约束. 必须选择网格, 使其与边界条件由 Dirichlet 型转为 Neumann 型的位置适当对齐. 例如在二维中, 若使用 Lagrange 元, 并保证边界条件改变的点是三角剖分的顶点, 则定义
+\[
+\MathBookFormulaID{formula-ch05-boundary-conforming-space-definition}
+V_h:=I^h\bigl(V\cap C^0(\overline\Omega)\bigr)
+\]
+等价于把 $V_h$ 定义为在 $\Gamma$ 所含边上为零的分片多项式空间. 由于网格的选取使 $\Gamma$ 所含边构成 $\Gamma$ 的一个剖分, 条件~\eqref{eq:ch05-conforming-subspace-condition} 成立. 另一方面, 若 $V_h$ 中函数为零的边集过小, 条件~\eqref{eq:ch05-conforming-subspace-condition} 失败; 若过大, 条件~\eqref{eq:ch05-interpolated-space-condition} 失败. 对纯 Dirichlet 数据, 即 $\Gamma=\partial\Omega$, $V_h$ 就是在整个边界上为零的分片多项式集合. 对纯 Neumann 数据, 即 $\Gamma=\varnothing$, $V_h$ 是边界上没有约束的全部分片多项式集合.
+
+\MathBookSourcePage{149}
+现在考虑 $u-u_h$ 的 $L^2$ 范数误差估计. 为估计 $\|u-u_h\|_{L^2(\Omega)}$, 使用与第~\ref{sec:ch00-relation-to-difference-methods} 节之后的一维论证相同的``对偶性''方法. 令 $w$ 为下列问题的解:
+\MBSourceItem{5}
+\begin{equation}
+\MathBookFormulaID{formula-ch05-dual-poisson-problem}
+\label{eq:ch05-dual-poisson-problem}
+-\Delta w=e\quad\text{于 }\Omega,
+\qquad
+w=0\quad\text{于 }\Gamma\subset\partial\Omega,
+\qquad
+\frac{\partial w}{\partial\nu}=0\quad\text{于 }\partial\Omega\setminus\Gamma,
+\end{equation}
+其中 $e:=u-u_h$. 其变分表述是: 求 $w\in V$, 使
+\MBSourceItem{6}
+\begin{equation}
+\MathBookFormulaID{formula-ch05-dual-poisson-variational-problem}
+\label{eq:ch05-dual-poisson-variational-problem}
+a(w,v)=(e,v)\quad\forall v\in V.
+\end{equation}
+因为 $u-u_h\in V$, 解唯一存在. 因而
+\[
+\MathBookFormulaID{formula-ch05-duality-l2-error-chain}
+\begin{aligned}
+\|u-u_h\|_{L^2(\Omega)}^2
+&=(u-u_h,u-u_h)=a(w,u-u_h)\\
+&=a(u-u_h,w-I^h w)\\
+&\leq C\|u-u_h\|_{H^1(\Omega)}\|w-I^h w\|_{H^1(\Omega)}\\
+&\leq Ch\|u-u_h\|_{H^1(\Omega)}|w|_{H^2(\Omega)}.
+\end{aligned}
+\]
+现在假设等价问题~\eqref{eq:ch05-dual-poisson-problem} 和~\eqref{eq:ch05-dual-poisson-variational-problem} 具有性质
+\MBSourceItem{7}
+\begin{equation}
+\MathBookFormulaID{formula-ch05-elliptic-regularity-h2}
+\label{eq:ch05-elliptic-regularity-h2}
+|w|_{H^2(\Omega)}\leq C\|e\|_{L^2(\Omega)}.
+\end{equation}
+下一节将讨论这一条件. 在此条件下已证明如下结论.
+
+\MBSourceItem{8}
+\begin{Theorem}
+\label{thm:ch05-poisson-l2-error}
+假设条件~\eqref{eq:ch05-h1-interpolation-order}、\eqref{eq:ch05-conforming-subspace-condition}、\eqref{eq:ch05-interpolated-space-condition} 和~\eqref{eq:ch05-elliptic-regularity-h2} 成立. 则
+\[
+\MathBookFormulaID{formula-ch05-poisson-l2-error}
+\|u-u_h\|_{L^2(\Omega)}
+\leq Ch\|u-u_h\|_{H^1(\Omega)}
+\leq Ch^m|u|_{H^m(\Omega)}.
+\]
+\end{Theorem}
+
+非齐次边界条件也容易处理. 例如, 设要求解式~\eqref{eq:ch05-poisson-equation}, 其边界条件为
+\MBSourceItem{9}
+\begin{equation}
+\MathBookFormulaID{formula-ch05-inhomogeneous-boundary-data}
+\label{eq:ch05-inhomogeneous-boundary-data}
+u=g_D\quad\text{于 }\Gamma\subset\partial\Omega,
+\qquad
+\frac{\partial u}{\partial\nu}=g_N\quad\text{于 }\partial\Omega\setminus\Gamma,
+\end{equation}
+其中 $g_D,g_N$ 已知. 为简单起见, 假设 $g_D$ 定义在整个 $\Omega$ 上, $g_D\in H^1(\Omega)$, 且 $g_N\in L^2(\partial\Omega\setminus\Gamma)$. 令 $V$ 为式~\eqref{eq:ch05-mixed-variational-space} 中的空间. 则式~\eqref{eq:ch05-poisson-equation}、\eqref{eq:ch05-inhomogeneous-boundary-data} 的变分表述为: 求 $u$, 使 $u-g_D\in V$, 且
+\MathBookSourcePage{150}
+\MBSourceItem{10}
+\begin{equation}
+\MathBookFormulaID{formula-ch05-inhomogeneous-poisson-variational-problem}
+\label{eq:ch05-inhomogeneous-poisson-variational-problem}
+a(u,v)=(f,v)+\int_{\partial\Omega\setminus\Gamma}g_Nv\,ds
+\quad\forall v\in V.
+\end{equation}
+该问题适定, 因为线性形式
+\[
+\MathBookFormulaID{formula-ch05-inhomogeneous-load-functional}
+F(v):=(f,v)+\int_{\partial\Omega\setminus\Gamma}g_Nv\,ds
+\]
+对所有 $v\in V$ 均有定义且连续.
+
+这些表述的等价性由命题~\ref{prop:ch05-green-identity} 得到:
+\[
+\MathBookFormulaID{formula-ch05-inhomogeneous-green-equivalence}
+\begin{aligned}
+\int_\Omega(-\Delta u)v\,dx
+&=\int_\Omega\nabla u\cdot\nabla v\,dx
+-\int_{\partial\Omega}v\frac{\partial u}{\partial\nu}\,ds\\
+&=a(u,v)-\int_{\partial\Omega\setminus\Gamma}v\frac{\partial u}{\partial\nu}\,ds
+\end{aligned}
+\]
+对任意 $v\in V$ 成立. 因而若 $u$ 满足式~\eqref{eq:ch05-poisson-equation}、\eqref{eq:ch05-inhomogeneous-boundary-data}, 则式~\eqref{eq:ch05-inhomogeneous-poisson-variational-problem} 随即成立. 反之, 若 $u$ 满足式~\eqref{eq:ch05-inhomogeneous-poisson-variational-problem}, 取在 $\partial\Omega$ 附近为零的 $v$, 可知式~\eqref{eq:ch05-poisson-equation} 成立, 从而
+\[
+\MathBookFormulaID{formula-ch05-inhomogeneous-neumann-recovery}
+\int_{\partial\Omega\setminus\Gamma}g_Nv\,ds
+-\int_{\partial\Omega\setminus\Gamma}v\frac{\partial u}{\partial\nu}\,ds=0
+\quad\forall v\in V.
+\]
+像命题~\ref{prop:ch05-variational-implies-classical} 的证明那样选择 $v$, 即得式~\eqref{eq:ch05-inhomogeneous-boundary-data}.
+
+式~\eqref{eq:ch05-inhomogeneous-poisson-variational-problem} 的有限元逼近通常使用 Dirichlet 数据的插值函数 $I^h g_D$. 与前面相同选取 $V_h\subset V$, 求 $u_h$, 使 $u_h-I^h g_D\in V_h$, 且
+\MBSourceItem{11}
+\begin{equation}
+\MathBookFormulaID{formula-ch05-discrete-inhomogeneous-poisson}
+\label{eq:ch05-discrete-inhomogeneous-poisson}
+a(u_h,v)=(f,v)+\int_{\partial\Omega\setminus\Gamma}g_Nv\,ds
+\quad\forall v\in V_h.
+\end{equation}
+练习~\ref{exr:ch05-10} 要求证明解~\eqref{eq:ch05-discrete-inhomogeneous-poisson} 的定理~\ref{thm:ch05-poisson-h1-error} 和定理~\ref{thm:ch05-poisson-l2-error} 类似结论. 为高效且准确地计算式~\eqref{eq:ch05-discrete-inhomogeneous-poisson} 的右端, 还可能需要进一步逼近; 可用 $f$ 和 $g_N$ 的插值函数实现(参见练习~\ref{exr:ch05-11}).

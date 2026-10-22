@@ -1,0 +1,1123 @@
+% Chapter 2. Source PDF pages 63--81 / printed pages 49--67.
+\clearpage
+\MathBookSourcePage{63}
+\section{椭圆边值问题的变分表述}
+\label{chap:ch02-variational-formulation}
+
+本章讨论建立微分方程变分形式所需的泛函分析工具. 首先介绍 Hilbert 空间, 只包括后续发展所必需的材料. 本章的目标是提供一个框架, 以便建立变分问题解的存在性与唯一性.
+
+\subsection{内积空间}
+\label{sec:ch02-inner-product-spaces}
+\setcounter{thmcount}{0}
+\setcounter{equation}{0}
+
+\begin{Definition}
+\label{def:ch02-bilinear-form-inner-product}
+线性空间 $V$ 上的双线性形式 $b(\cdot,\cdot)$ 是映射 $b:V\times V\longrightarrow\mathbb R$, 使得映射 $v\mapsto b(v,w)$ 和 $w\mapsto b(v,w)$ 分别都是 $V$ 上的线性形式. 若对所有 $v,w\in V$ 都有 $b(v,w)=b(w,v)$, 则称它是对称的. (实)内积记作 $(\cdot,\cdot)$, 它是线性空间 $V$ 上满足下列条件的对称双线性形式:
+\[
+\MathBookFormulaID{formula-ch02-inner-product-axioms}
+\begin{aligned}
+&\text{(a)}\quad (v,v)\geq0 &&\forall v\in V,\\
+&\text{(b)}\quad (v,v)=0\Longleftrightarrow v=0.
+\end{aligned}
+\]
+\end{Definition}
+
+\begin{Definition}
+\label{def:ch02-inner-product-space}
+配备了内积的线性空间 $V$ 称为内积空间, 记作 $(V,(\cdot,\cdot))$.
+\end{Definition}
+
+\begin{Example}
+\label{ex:ch02-inner-product-spaces}
+以下是内积空间的例子:
+\[
+\MathBookFormulaID{formula-ch02-inner-product-examples}
+\begin{aligned}
+\text{(i)}\quad&V=\mathbb R^n, &&(x,y):=\sum_{i=1}^n x_i y_i,\\
+\text{(ii)}\quad&V=L^2(\Omega),\ \Omega\subseteq\mathbb R^n,
+&&(u,v)_{L^2(\Omega)}:=\int_\Omega u(x)v(x)\,dx,\\
+\text{(iii)}\quad&V=W_2^k(\Omega),\ \Omega\subseteq\mathbb R^n,
+&&(u,v)_k:=\sum_{|\alpha|\leq k}(D^\alpha u,D^\alpha v)_{L^2(\Omega)}.
+\end{aligned}
+\]
+\textbf{记号:} 内积空间 (iii) 常记作 $H^k(\Omega)$. 因此, $H^k(\Omega)=W_2^k(\Omega)$.
+\end{Example}
+
+\MathBookSourcePage{64}
+\begin{Theorem}[Schwarz 不等式]
+\label{thm:ch02-schwarz-inequality}
+若 $(V,(\cdot,\cdot))$ 是内积空间, 则
+\setcounter{equation}{4}
+\begin{equation}
+\MathBookFormulaID{formula-ch02-schwarz-inequality}
+|(u,v)|\leq (u,u)^{1/2}(v,v)^{1/2}.
+\label{eq:ch02-schwarz-inequality}
+\end{equation}
+等号成立当且仅当 $u$ 与 $v$ 线性相关.
+\end{Theorem}
+
+\begin{Proof}
+对 $t\in\mathbb R$,
+\begin{equation}
+\MathBookFormulaID{formula-ch02-schwarz-quadratic}
+0\leq(u-tv,u-tv)=(u,u)-2t(u,v)+t^2(v,v).
+\label{eq:ch02-schwarz-quadratic}
+\end{equation}
+若 $(v,v)=0$, 则对所有 $t\in\mathbb R$ 都有 $(u,u)-2t(u,v)\geq0$, 这迫使 $(u,v)=0$, 因而不等式平凡成立. 于是设 $(v,v)\neq0$. 在该不等式中代入 $t=(u,v)/(v,v)$, 得
+\begin{equation}
+\MathBookFormulaID{formula-ch02-schwarz-minimum}
+0\leq(u,u)-\frac{|(u,v)|^2}{(v,v)},
+\label{eq:ch02-schwarz-minimum}
+\end{equation}
+这等价于 \eqref{eq:ch02-schwarz-inequality}. 注意, 证明 \eqref{eq:ch02-schwarz-inequality} 时没有使用定义~\ref{def:ch02-bilinear-form-inner-product} 的条件 (b).
+
+若 $u$ 与 $v$ 线性相关, 容易看出 \eqref{eq:ch02-schwarz-inequality} 中等号成立.
+
+反之, 设等号成立. 若 $v=0$, 则 $u$ 与 $v$ 线性相关. 若 $v\neq0$, 取 $\lambda=(u,v)/(v,v)$. 于是 $(u-\lambda v,u-\lambda v)=0$, 由定义~\ref{def:ch02-bilinear-form-inner-product} 的条件 (b) 得 $u-\lambda v=0$, 即 $u$ 与 $v$ 线性相关.
+\end{Proof}
+
+\setcounter{thmcount}{7}
+\begin{Remark}
+\label{rem:ch02-schwarz-seminorm}
+Schwarz 不等式 \eqref{eq:ch02-schwarz-inequality} 的证明没有使用内积的条件 (b). 这可能有用的一个例子是 $H^1(\Omega)$ 上的
+\[
+\MathBookFormulaID{formula-ch02-gradient-bilinear-form}
+a(u,v)=\int_\Omega\nabla u\cdot\nabla v\,dx.
+\]
+因此, 我们已经证明, 对所有 $u,v\in H^1(\Omega)$,
+\[
+\MathBookFormulaID{formula-ch02-gradient-schwarz}
+a(u,v)^2\leq a(u,u)a(v,v),
+\]
+尽管 $a(\cdot,\cdot)$ 不是 $H^1(\Omega)$ 上的内积.
+\end{Remark}
+
+\setcounter{thmcount}{8}
+\begin{Proposition}
+\label{prop:ch02-inner-product-norm}
+$\|v\|:=\sqrt{(v,v)}$ 定义了内积空间 $(V,(\cdot,\cdot))$ 上的范数.
+\end{Proposition}
+
+\begin{Proof}
+容易证明 $\|\alpha v\|=|\alpha|\|v\|$, $\|v\|\geq0$, 且 $\|v\|=0\Longleftrightarrow v=0$. 只需证明三角不等式:
+\[
+\MathBookFormulaID{formula-ch02-inner-product-triangle-proof}
+\begin{aligned}
+\|u+v\|^2
+&=(u+v,u+v)\\
+&=(u,u)+2(u,v)+(v,v)\\
+&=\|u\|^2+2(u,v)+\|v\|^2\\
+&\leq\|u\|^2+2\|u\|\|v\|+\|v\|^2
+\qquad\text{(由 Schwarz 不等式 \eqref{eq:ch02-schwarz-inequality})}\\
+&=(\|u\|+\|v\|)^2.
+\end{aligned}
+\]
+因此, $\|u+v\|\leq\|u\|+\|v\|$.
+\end{Proof}
+
+\MathBookSourcePage{65}
+\subsection{Hilbert 空间}
+\label{sec:ch02-hilbert-spaces}
+\setcounter{thmcount}{0}
+\setcounter{equation}{0}
+
+命题~\ref{prop:ch02-inner-product-norm} 表明, 给定内积空间 $(V,(\cdot,\cdot))$, 在 $V$ 上存在相应的范数 $\|v\|=\sqrt{(v,v)}$. 因而内积空间可以成为赋范线性空间.
+
+\begin{Definition}
+\label{def:ch02-hilbert-space}
+设 $(V,(\cdot,\cdot))$ 是内积空间. 若相应的赋范线性空间 $(V,\|\cdot\|)$ 完备, 则称 $(V,(\cdot,\cdot))$ 为 Hilbert 空间.
+\end{Definition}
+
+\begin{Example}
+\label{ex:ch02-hilbert-space-examples}
+例~\ref{ex:ch02-inner-product-spaces} 的 (i)--(iii) 都是 Hilbert 空间. 特别地, $W_2^k(\Omega)$ 上与内积 $(\cdot,\cdot)_k$ 相应的范数, 与第~\ref{chap:ch01-sobolev-spaces} 章中定义的范数 $\|\cdot\|_{W_2^k(\Omega)}$ 相同, 在那里已经证明了 $W_2^k(\Omega)$ 的完备性.
+\end{Example}
+
+\begin{Definition}
+\label{def:ch02-hilbert-subspace}
+设 $H$ 是 Hilbert 空间, $S\subset H$ 是 $H$ 中闭的线性子集. (回顾, $S$ 是线性的, 是指 $u,v\in S$, $\alpha\in\mathbb R\Longrightarrow u+\alpha v\in S$.) 则称 $S$ 为 $H$ 的子空间.
+\end{Definition}
+
+\begin{Proposition}
+\label{prop:ch02-closed-subspace-hilbert}
+若 $S$ 是 $H$ 的子空间, 则 $(S,(\cdot,\cdot))$ 也是 Hilbert 空间.
+\end{Proposition}
+
+\begin{Proof}
+因为 $S$ 在范数 $\|\cdot\|$ 下是 $H$ 中的闭集, 所以 $(S,\|\cdot\|)$ 完备.
+\end{Proof}
+
+\begin{Example}
+\label{ex:ch02-hilbert-subspaces}
+Hilbert 空间子空间的例子如下:
+\begin{enumerate}
+\item[(i)] $H$ 和 $\{0\}$ 是显然的两个极端情形. 下面是更有意义的例子.
+\item[(ii)] 设 $T:H\longrightarrow K$ 是从 $H$ 到另一个线性空间的连续线性映射. 则 $\ker T$ 是子空间(见习题~\ref{ex:ch02-exercise-01}).
+\item[(iii)] 设 $x\in H$, 定义 $x^\perp:=\{v\in H:(v,x)=0\}$. 则 $x^\perp$ 是 $H$ 的子空间. 为说明这一点, 注意 $x^\perp=\ker L_x$, 其中 $L_x$ 是线性泛函
+\setcounter{equation}{5}
+\begin{equation}
+\MathBookFormulaID{formula-ch02-lx-functional}
+L_x:v\longmapsto(v,x).
+\label{eq:ch02-lx-functional}
+\end{equation}
+由 Schwarz 不等式 \eqref{eq:ch02-schwarz-inequality},
+\[
+\MathBookFormulaID{formula-ch02-lx-bound}
+|L_x(v)|\leq\|x\|\|v\|,
+\]
+这表明 $L_x$ 有界, 因而连续. 结合前一个例子可知 $x^\perp$ 是 $H$ 的子空间.
+
+\textbf{注:} 下一节的总体目标是证明, 当 $H$ 是 Hilbert 空间时, 所有 $L\in H'$ 都具有 $L_x$ 的形式, 其中 $x\in H$.
+\item[(iv)] 设 $M\subset H$ 是一个子集, 定义
+\[
+\MathBookFormulaID{formula-ch02-orthogonal-complement}
+M^\perp:=\{v\in H:(x,v)=0\ \forall x\in M\}.
+\]
+\MathBookSourcePage{66}
+注意
+\[
+\MathBookFormulaID{formula-ch02-orthogonal-intersection}
+M^\perp=\bigcap_{x\in M}x^\perp,
+\]
+并且每个 $x^\perp$ 都是 $H$ 的(闭)子空间. 因此, $M^\perp$ 是 $H$ 的子空间.
+\end{enumerate}
+\end{Example}
+
+\setcounter{thmcount}{6}
+\begin{Proposition}
+\label{prop:ch02-orthogonal-complement-properties}
+设 $H$ 是 Hilbert 空间.
+\begin{enumerate}
+\item[(1)] 对任意子集 $M,N\subset H$, $M\subset N\Longrightarrow N^\perp\subset M^\perp$.
+\item[(2)] 对任意包含零元的 $H$ 的子集 $M$, $M\cap M^\perp=\{0\}$.
+\item[(3)] $\{0\}^\perp=H$.
+\item[(4)] $H^\perp=\{0\}$.
+\end{enumerate}
+\end{Proposition}
+
+\begin{Proof}
+证明 (2): 设 $x\in M\cap M^\perp$. 则
+\[
+\MathBookFormulaID{formula-ch02-orthogonal-property-two-proof}
+x\in M\Longrightarrow M^\perp\subset x^\perp,
+\qquad
+x\in M^\perp\Longrightarrow x\in x^\perp
+\Longleftrightarrow(x,x)=0\Longleftrightarrow x=0.
+\]
+证明 (4): 因为 $H^\perp\subset H$, 由 (2) 得
+\[
+\MathBookFormulaID{formula-ch02-h-orthogonal-zero}
+H^\perp=H\cap H^\perp=\{0\}.
+\]
+(1) 和 (3) 留给读者在习题~\ref{ex:ch02-exercise-03} 中证明.
+\end{Proof}
+
+\setcounter{thmcount}{7}
+\begin{Theorem}[平行四边形法则]
+\label{thm:ch02-parallelogram-law}
+设 $\|\cdot\|$ 是与 $H$ 上的内积 $(\cdot,\cdot)$ 相应的范数. 则
+\setcounter{equation}{8}
+\begin{equation}
+\MathBookFormulaID{formula-ch02-parallelogram-law}
+\|v+w\|^2+\|v-w\|^2=2\bigl(\|v\|^2+\|w\|^2\bigr).
+\label{eq:ch02-parallelogram-law}
+\end{equation}
+\end{Theorem}
+
+\begin{Proof}
+直接计算即可, 见习题~\ref{ex:ch02-exercise-04}.
+\end{Proof}
+
+\subsection{到子空间上的投影}
+\label{sec:ch02-projections-subspaces}
+\setcounter{thmcount}{0}
+\setcounter{equation}{0}
+
+下面的结果建立了 Hilbert 空间的一个基本几何事实.
+
+\begin{Proposition}
+\label{prop:ch02-closest-point-projection}
+设 $M$ 是 Hilbert 空间 $H$ 的子空间. 设 $v\in H\setminus M$, 并定义 $\delta:=\inf\{\|v-w\|:w\in M\}$. (注意, 因为 $M$ 在 $H$ 中闭, 所以 $\delta>0$.) 则存在 $w_0\in M$ 使得:
+\begin{enumerate}
+\item[(i)] $\|v-w_0\|=\delta$, 即 $M$ 中存在离 $v$ 最近的点 $w_0$;
+\item[(ii)] $v-w_0\in M^\perp$.
+\end{enumerate}
+\end{Proposition}
+
+\begin{Proof}
+(i) 设 $\{w_n\}$ 是极小化序列:
+\[
+\MathBookFormulaID{formula-ch02-minimizing-sequence}
+\lim_{n\to\infty}\|v-w_n\|=\delta.
+\]
+\MathBookSourcePage{67}
+现在证明 $\{w_n\}$ 是 Cauchy 序列. 由平行四边形法则,
+\[
+\MathBookFormulaID{formula-ch02-projection-parallelogram-step}
+\|(w_n-v)+(w_m-v)\|^2+\|(w_n-v)-(w_m-v)\|^2
+=2\bigl(\|w_n-v\|^2+\|w_m-v\|^2\bigr),
+\]
+即
+\[
+\MathBookFormulaID{formula-ch02-projection-cauchy-bound}
+0\leq\|w_n-w_m\|^2
+=2\bigl(\|w_n-v\|^2+\|w_m-v\|^2\bigr)
+-4\left\|\tfrac12(w_n+w_m)-v\right\|^2.
+\]
+因为 $\tfrac12(w_n+w_m)\in M$, 由 $\delta$ 的定义,
+\[
+\MathBookFormulaID{formula-ch02-midpoint-distance-bound}
+\left\|\tfrac12(w_n+w_m)-v\right\|\geq\delta.
+\]
+因此,
+\[
+\MathBookFormulaID{formula-ch02-projection-cauchy-delta}
+0\leq\|w_n-w_m\|^2
+\leq2\bigl(\|w_n-v\|^2+\|w_m-v\|^2\bigr)-4\delta^2.
+\]
+令 $m,n$ 趋于无穷, 得
+\[
+\MathBookFormulaID{formula-ch02-projection-limit-zero}
+2\bigl(\|w_n-v\|^2+\|w_m-v\|^2\bigr)-4\delta^2
+\longrightarrow2\delta^2+2\delta^2-4\delta^2=0.
+\]
+所以 $\|w_n-w_m\|^2\to0$, 从而 $\{w_n\}$ 是 Cauchy 序列. 因此存在 $w_0\in\overline M=M$ 使 $w_n\to w_0$. 范数的连续性给出 $\|v-w_0\|=\delta$.
+
+(ii) 令 $z=v-w_0$, 则 $\|z\|=\delta$. 证明 $z\perp M$. 设 $w\in M$, $t\in\mathbb R$. 因为 $w_0+tw\in M$, 函数 $\|z-tw\|^2=\|v-(w_0+tw)\|^2$ 在 $t=0$ 处取得绝对最小值. 因而
+\[
+\MathBookFormulaID{formula-ch02-projection-orthogonality-derivative}
+0=\left.\frac{d}{dt}\|z-tw\|^2\right|_{t=0}=-2(z,w).
+\]
+于是对所有 $w\in M$,
+\[
+\MathBookFormulaID{formula-ch02-projection-orthogonality}
+(v-w_0,w)=(z,w)=0.
+\]
+由于 $w\in M$ 任意, 可知 $v-w_0\in M^\perp$.
+\end{Proof}
+
+命题~\ref{prop:ch02-closest-point-projection} 表明, 给定 $H$ 的子空间 $M$ 和 $v\in H$, 可写成 $v=w_0+w_1$, 其中 $w_0\in M$, $w_1(=v-w_0)\in M^\perp$. 下面说明 $v\in H$ 的这种分解唯一. 事实上, 由
+\[
+\MathBookFormulaID{formula-ch02-decomposition-uniqueness-start}
+w_0+w_1=v=z_0+z_1,
+\qquad w_0,z_0\in M,\quad w_1,z_1\in M^\perp,
+\]
+可得
+\[
+\MathBookFormulaID{formula-ch02-decomposition-uniqueness-difference}
+M\ni w_0-z_0=-(w_1-z_1)\in M^\perp.
+\]
+因为 $M\cap M^\perp=\{0\}$, 所以 $w_0=z_0$, $w_1=z_1$. 这说明分解唯一. 因而可定义算子
+\setcounter{equation}{1}
+\begin{equation}
+\MathBookFormulaID{formula-ch02-projection-operators}
+P_M:H\longrightarrow M,
+\qquad P_M^\perp:H\longrightarrow M^\perp,
+\label{eq:ch02-projection-operators}
+\end{equation}
+其定义分别如下.
+
+\MathBookSourcePage{68}
+\setcounter{equation}{2}
+\begin{equation}
+\MathBookFormulaID{formula-ch02-pm-definition}
+P_Mv=\begin{cases}
+v,&v\in M,\\
+w_0,&v\in H\setminus M,
+\end{cases}
+\label{eq:ch02-pm-definition}
+\end{equation}
+\setcounter{equation}{3}
+\begin{equation}
+\MathBookFormulaID{formula-ch02-pm-perp-definition}
+P_M^\perp v=\begin{cases}
+0,&v\in M,\\
+v-w_0,&v\in H\setminus M.
+\end{cases}
+\label{eq:ch02-pm-perp-definition}
+\end{equation}
+分解的唯一性说明 $P_M^\perp=P_{M^\perp}$(见习题~\ref{ex:ch02-exercise-05}), 所以不必再仔细区分把``$\perp$''放在何处. 对上述观察总结如下.
+
+\setcounter{thmcount}{4}
+\begin{Proposition}
+\label{prop:ch02-orthogonal-decomposition}
+给定 $H$ 的子空间 $M$ 和 $v\in H$, 存在唯一分解
+\setcounter{equation}{5}
+\begin{equation}
+\MathBookFormulaID{formula-ch02-orthogonal-decomposition}
+v=P_Mv+P_{M^\perp}v,
+\label{eq:ch02-orthogonal-decomposition}
+\end{equation}
+其中 $P_M:H\longrightarrow M$, $P_{M^\perp}:H\longrightarrow M^\perp$. 换言之,
+\begin{equation}
+\MathBookFormulaID{formula-ch02-hilbert-direct-sum}
+H=M\oplus M^\perp.
+\label{eq:ch02-hilbert-direct-sum}
+\end{equation}
+\end{Proposition}
+
+\setcounter{thmcount}{7}
+\begin{Remark}
+\label{rem:ch02-projections-linear}
+上述定义的算子 $P_M$ 和 $P_{M^\perp}$ 是线性算子. 由命题~\ref{prop:ch02-orthogonal-decomposition},
+\[
+\MathBookFormulaID{formula-ch02-linear-projection-decomposition}
+\alpha v_1+\beta v_2
+=P_M(\alpha v_1+\beta v_2)+P_{M^\perp}(\alpha v_1+\beta v_2),
+\]
+其中
+\[
+\MathBookFormulaID{formula-ch02-v-one-v-two-decompositions}
+v_1=P_Mv_1+P_{M^\perp}v_1,
+\qquad
+v_2=P_Mv_2+P_{M^\perp}v_2.
+\]
+也就是说,
+\[
+\MathBookFormulaID{formula-ch02-linearity-comparison}
+\begin{aligned}
+&P_M(\alpha v_1+\beta v_2)+P_{M^\perp}(\alpha v_1+\beta v_2)\\
+&\qquad=\alpha v_1+\beta v_2\\
+&\qquad=(\alpha P_Mv_1+\beta P_Mv_2)
++(\alpha P_{M^\perp}v_1+\beta P_{M^\perp}v_2).
+\end{aligned}
+\]
+由 $\alpha v_1+\beta v_2$ 的分解唯一性以及 $P_M$ 和 $P_{M^\perp}$ 的定义,
+\[
+\MathBookFormulaID{formula-ch02-pm-linearity}
+P_M(\alpha v_1+\beta v_2)=\alpha P_Mv_1+\beta P_Mv_2,
+\]
+且
+\[
+\MathBookFormulaID{formula-ch02-pm-perp-linearity}
+P_{M^\perp}(\alpha v_1+\beta v_2)
+=\alpha P_{M^\perp}v_1+\beta P_{M^\perp}v_2.
+\]
+即 $P_M$ 和 $P_{M^\perp}$ 是线性的.
+\end{Remark}
+
+\begin{Definition}
+\label{def:ch02-projection-operator}
+线性空间 $V$ 上的算子 $P$ 若满足 $P^2=P$, 即对 $P$ 的像中的所有 $z$ 都有 $Pz=z$, 则称 $P$ 为投影.
+\end{Definition}
+
+\begin{Remark}
+\label{rem:ch02-pm-is-projection}
+由定义可知 $P_M$ 是投影. 由 $P_M^\perp=P_{M^\perp}$ 也可知 $P_M^\perp$ 是投影.
+\end{Remark}
+
+\MathBookSourcePage{69}
+\subsection{Riesz 表示定理}
+\label{sec:ch02-riesz-representation}
+\setcounter{thmcount}{0}
+\setcounter{equation}{0}
+
+给定 $u\in H$, 回顾可在 $H$ 上定义连续线性泛函 $L_u$:
+\begin{equation}
+\MathBookFormulaID{formula-ch02-lu-functional}
+L_u(v)=(u,v).
+\label{eq:ch02-lu-functional}
+\end{equation}
+下面的定理证明其逆命题也成立.
+
+\setcounter{thmcount}{1}
+\begin{Theorem}[Riesz 表示定理]
+\label{thm:ch02-riesz-representation}
+Hilbert 空间 $H$ 上的任意连续线性泛函 $L$ 都可唯一表示为
+\setcounter{equation}{2}
+\begin{equation}
+\MathBookFormulaID{formula-ch02-riesz-representation}
+L(v)=(u,v)
+\label{eq:ch02-riesz-representation}
+\end{equation}
+的形式, 其中 $u\in H$. 此外,
+\begin{equation}
+\MathBookFormulaID{formula-ch02-riesz-norm-identity}
+\|L\|_{H'}=\|u\|_H.
+\label{eq:ch02-riesz-norm-identity}
+\end{equation}
+\end{Theorem}
+
+\begin{Proof}
+唯一性来自内积的非退化性. 若 $u_1,u_2$ 都是这样的解, 则
+\[
+\MathBookFormulaID{formula-ch02-riesz-uniqueness}
+\begin{aligned}
+0&=L(u_1-u_2)-L(u_1-u_2)\\
+&=(u_1,u_1-u_2)-(u_2,u_1-u_2)\\
+&=(u_1-u_2,u_1-u_2),
+\end{aligned}
+\]
+故 $u_1=u_2$. 下面证明存在性.
+
+定义 $M:=\{v\in H:L(v)=0\}$. 由例~\ref{ex:ch02-hilbert-subspaces} 的 (ii), $M$ 是 $H$ 的子空间. 因而由命题~\ref{prop:ch02-orthogonal-decomposition}, $H=M\oplus M^\perp$.
+
+情形 (1): $M^\perp=\{0\}$. 此时 $M=H$, 从而 $L\equiv0$. 取 $u=0$.
+
+情形 (2): $M^\perp\neq\{0\}$. 取 $z\in M^\perp$, $z\neq0$. 则 $L(z)\neq0$(否则 $z\in M$, 于是 $z\in M^\perp\cap M=\{0\}$). 对 $v\in H$, 令 $\beta=L(v)/L(z)$, 则
+\[
+\MathBookFormulaID{formula-ch02-riesz-kernel-step}
+L(v-\beta z)=L(v)-\beta L(z)=0,
+\qquad\text{即}\qquad v-\beta z\in M.
+\]
+因此, $v-\beta z=P_Mv$, $\beta z=P_{M^\perp}v$. 特别地, 若 $v\in M^\perp$, 则 $v=\beta z$(即 $v-\beta z=0$), 这证明 $M^\perp$ 是一维的. 现在取
+\begin{equation}
+\MathBookFormulaID{formula-ch02-riesz-representer-choice}
+u:=\frac{L(z)}{\|z\|_H^2}z.
+\label{eq:ch02-riesz-representer-choice}
+\end{equation}
+注意 $u\in M^\perp$. 有
+\MathBookSourcePage{70}
+\[
+\MathBookFormulaID{formula-ch02-riesz-existence-calculation}
+\begin{aligned}
+(u,v)&=(u,(v-\beta z)+\beta z)\\
+&=(u,v-\beta z)+(u,\beta z)\\
+&=(u,\beta z) &&(u\in M^\perp,\ v-\beta z\in M)\\
+&=\beta\frac{L(z)}{\|z\|_H^2}(z,z) &&\text{(由 $u$ 的定义)}\\
+&=\beta L(z)\\
+&=L(v) &&\text{(由 $\beta$ 的定义)}.
+\end{aligned}
+\]
+因此, $u:=L(z)z/\|z\|_H^2$ 是所需的 $H$ 中元素.
+
+还需证明 $\|L\|_{H'}=\|u\|_H$. 先由 \eqref{eq:ch02-riesz-representer-choice} 注意到
+\[
+\MathBookFormulaID{formula-ch02-riesz-u-norm}
+\|u\|_H=\frac{|L(z)|}{\|z\|_H}.
+\]
+根据对偶范数的定义 \eqref{eq:ch01-dual-norm},
+\[
+\MathBookFormulaID{formula-ch02-riesz-norm-proof}
+\begin{aligned}
+\|L\|_{H'}
+&=\sup_{0\neq v\in H}\frac{|L(v)|}{\|v\|_H}
+&&\text{(由 \eqref{eq:ch01-dual-norm})}\\
+&=\sup_{0\neq v\in H}\frac{|(u,v)|}{\|v\|_H}
+&&\text{(由 \eqref{eq:ch02-riesz-representation})}\\
+&\leq\|u\|_H
+&&\text{(由 Schwarz 不等式 \eqref{eq:ch02-schwarz-inequality})}\\
+&=\frac{|L(z)|}{\|z\|_H}
+&&\text{(由 \eqref{eq:ch02-riesz-representer-choice})}\\
+&\leq\|L\|_{H'}
+&&\text{(由 \eqref{eq:ch01-dual-norm})}.
+\end{aligned}
+\]
+因此, $\|u\|_H=\|L\|_{H'}$.
+\end{Proof}
+
+\setcounter{thmcount}{5}
+\begin{Remark}
+\label{rem:ch02-riesz-isometry}
+由 Riesz 表示定理, $H$ 与 $H'$ 之间存在自然等距同构($u\in H\longleftrightarrow L_u\in H'$). 因此, $H$ 与 $H'$ 常被等同. 例如, 可以写作 $W_2^m(\Omega)\cong W_2^{-m}(\Omega)$(尽管它们是完全不同的 Hilbert 空间). 我们用 $\tau$ 表示从 $H'$ 到 $H$ 的等距同构.
+\end{Remark}
+
+\subsection{对称变分问题的表述}
+\label{sec:ch02-symmetric-variational-problems}
+\setcounter{thmcount}{0}
+\setcounter{equation}{0}
+
+本章其余部分旨在应用前几节建立的抽象 Hilbert 空间理论, 得到边值问题变分形式的存在性与唯一性结果.
+
+\begin{Example}
+\label{ex:ch02-symmetric-variational-example}
+回顾例~\ref{ex:ch02-inner-product-spaces} 的 (iii) 和例~\ref{ex:ch02-hilbert-space-examples}, $H^1(0,1)=W_2^1(0,1)$ 在内积
+\MathBookSourcePage{71}
+\[
+\MathBookFormulaID{formula-ch02-h-one-inner-product}
+(u,v)_{H^1}=\int_0^1uv\,dx+\int_0^1u'v'\,dx
+\]
+下是 Hilbert 空间. 在第~\ref{chap:ch00-basic-concepts} 章中, 我们定义了 $V=\{v\in H^1(0,1):v(0)=0\}$. 为说明 $V$ 是 $H^1(0,1)$ 的子空间, 定义 $\delta_0:H^1(0,1)\longrightarrow\mathbb R$, $\delta_0(v)=v(0)$. 由 Sobolev 不等式(定理~\ref{thm:ch01-sobolev-inequality}), $\delta_0$ 是 $H^1$ 上有界的线性泛函, 所以它连续. 因而 $V=\delta_0^{-1}\{0\}$ 在 $H^1$ 中闭. 我们还定义了 $a(v,w)=\int_0^1v'w'\,dx$. 注意, $a(\cdot,\cdot)$ 是 $H^1(0,1)$ 上的对称双线性形式, 但不是 $H^1$ 上的内积, 因为 $a(1,1)=0$. 不过, 它在 $V$ 上确实满足强制性 \eqref{eq:ch01-coercivity-inequality}. 根据下面的结果, 第~\ref{chap:ch00-basic-concepts} 章中的变分问题自然地表示在 Hilbert 空间框架中.
+\end{Example}
+
+\begin{Definition}
+\label{def:ch02-bounded-coercive-form}
+赋范线性空间 $H$ 上的双线性形式 $a(\cdot,\cdot)$ 若存在 $C<\infty$ 使
+\[
+\MathBookFormulaID{formula-ch02-bounded-bilinear-form}
+|a(v,w)|\leq C\|v\|_H\|w\|_H
+\qquad\forall v,w\in H,
+\]
+则称它是有界的(或连续的). 若存在 $\alpha>0$ 使
+\[
+\MathBookFormulaID{formula-ch02-coercive-bilinear-form}
+a(v,v)\geq\alpha\|v\|_H^2
+\qquad\forall v\in V,
+\]
+则称它在 $V\subset H$ 上是强制的.
+\end{Definition}
+
+\begin{Proposition}
+\label{prop:ch02-energy-hilbert-space}
+设 $H$ 是 Hilbert 空间, $a(\cdot,\cdot)$ 是在 $H$ 上连续并在 $H$ 的子空间 $V$ 上强制的对称双线性形式. 则 $(V,a(\cdot,\cdot))$ 是 Hilbert 空间.
+\end{Proposition}
+
+\begin{Proof}
+由 $a(\cdot,\cdot)$ 的强制性立即可知, 若 $v\in V$ 且 $a(v,v)=0$, 则 $v\equiv0$. 因而 $a(\cdot,\cdot)$ 是 $V$ 上的内积.
+
+令 $\|v\|_E=\sqrt{a(v,v)}$, 并设 $\{v_n\}$ 是 $(V,\|\cdot\|_E)$ 中的 Cauchy 序列. 由强制性, $\{v_n\}$ 也是 $(H,\|\cdot\|_H)$ 中的 Cauchy 序列. 因为 $H$ 完备, 存在 $v\in H$ 使 $v_n\to v$ 于 $\|\cdot\|_H$ 范数. 由于 $V$ 在 $H$ 中闭, $v\in V$. 又因 $a(\cdot,\cdot)$ 有界, $\|v-v_n\|_E\leq\sqrt{c_1}\|v-v_n\|_H$. 因而 $v_n\to v$ 于 $\|\cdot\|_E$ 范数, 所以 $(V,\|\cdot\|_E)$ 完备.
+\end{Proof}
+
+一般地, 对称变分问题如下提出. 假设下列三个条件成立:
+\setcounter{equation}{3}
+\begin{equation}
+\MathBookFormulaID{formula-ch02-symmetric-conditions}
+\left\{
+\begin{aligned}
+&\text{(1)}\quad (H,(\cdot,\cdot))\text{ 是 Hilbert 空间};\\
+&\text{(2)}\quad V\text{ 是 }H\text{ 的(闭)子空间};\\
+&\text{(3)}\quad a(\cdot,\cdot)\text{ 是有界的对称双线性形式, 且在 }V\text{ 上强制}.
+\end{aligned}
+\right.
+\label{eq:ch02-symmetric-conditions}
+\end{equation}
+于是对称变分问题如下.
+
+\MathBookSourcePage{72}
+给定 $F\in V'$, 求 $u\in V$ 使
+\begin{equation}
+\MathBookFormulaID{formula-ch02-symmetric-variational-problem}
+a(u,v)=F(v)\qquad\forall v\in V.
+\label{eq:ch02-symmetric-variational-problem}
+\end{equation}
+
+\setcounter{thmcount}{5}
+\begin{Theorem}
+\label{thm:ch02-symmetric-existence-uniqueness}
+假设 \eqref{eq:ch02-symmetric-conditions} 的条件 (1)--(3) 成立. 则存在唯一的 $u\in V$ 解 \eqref{eq:ch02-symmetric-variational-problem}.
+\end{Theorem}
+
+\begin{Proof}
+命题~\ref{prop:ch02-energy-hilbert-space} 表明 $a(\cdot,\cdot)$ 是 $V$ 上的内积, 且 $(V,a(\cdot,\cdot))$ 是 Hilbert 空间. 应用 Riesz 表示定理~\ref{thm:ch02-riesz-representation}.
+\end{Proof}
+
+(Ritz--Galerkin)逼近问题如下:
+
+给定有限维子空间 $V_h\subset V$ 和 $F\in V'$, 求 $u_h\in V_h$ 使
+\setcounter{equation}{6}
+\begin{equation}
+\MathBookFormulaID{formula-ch02-ritz-galerkin-problem}
+a(u_h,v)=F(v)\qquad\forall v\in V_h.
+\label{eq:ch02-ritz-galerkin-problem}
+\end{equation}
+
+\setcounter{thmcount}{7}
+\begin{Theorem}
+\label{thm:ch02-ritz-galerkin-existence}
+在条件 \eqref{eq:ch02-symmetric-conditions} 下, 存在唯一的 $u_h$ 解 \eqref{eq:ch02-ritz-galerkin-problem}.
+\end{Theorem}
+
+\begin{Proof}
+$(V_h,a(\cdot,\cdot))$ 本身是 Hilbert 空间, 且 $F|_{V_h}\in V_h'$. 应用 Riesz 表示定理~\ref{thm:ch02-riesz-representation}.
+\end{Proof}
+
+$u-u_h$ 的误差估计来自下述关系.
+
+\begin{Proposition}[Galerkin 基本正交性]
+\label{prop:ch02-galerkin-orthogonality-symmetric}
+设 $u$ 和 $u_h$ 分别为 \eqref{eq:ch02-symmetric-variational-problem} 和 \eqref{eq:ch02-ritz-galerkin-problem} 的解. 则
+\[
+\MathBookFormulaID{formula-ch02-galerkin-orthogonality-symmetric}
+a(u-u_h,v)=0\qquad\forall v\in V_h.
+\]
+\end{Proposition}
+
+\begin{Proof}
+将两个方程
+\[
+\MathBookFormulaID{formula-ch02-galerkin-equations-subtraction}
+a(u,v)=F(v)\quad\forall v\in V,
+\qquad
+a(u_h,v)=F(v)\quad\forall v\in V_h
+\]
+相减即可.
+\end{Proof}
+
+\begin{Corollary}
+\label{cor:ch02-best-energy-approximation}
+\[
+\MathBookFormulaID{formula-ch02-best-energy-approximation}
+\|u-u_h\|_E=\min_{v\in V_h}\|u-v\|_E.
+\]
+\end{Corollary}
+
+\begin{Proof}
+与定理~\ref{thm:ch00-energy-best-approximation} 的证明相同.
+\end{Proof}
+
+\begin{Remark}[Ritz 方法]
+\label{rem:ch02-ritz-method}
+在对称情形, $u_h$ 在所有 $v\in V_h$ 上极小化二次泛函
+\[
+\MathBookFormulaID{formula-ch02-ritz-functional}
+Q(v)=a(v,v)-2F(v)
+\]
+(见习题~\ref{ex:ch02-exercise-06}). 注意, 推论~\ref{cor:ch02-best-energy-approximation} 和本注只在对称情形成立.
+\end{Remark}
+
+\MathBookSourcePage{73}
+\subsection{非对称变分问题的表述}
+\label{sec:ch02-nonsymmetric-variational-problems}
+\setcounter{thmcount}{0}
+\setcounter{equation}{0}
+
+非对称变分问题如下提出. 假设下列五个条件成立:
+\begin{equation}
+\MathBookFormulaID{formula-ch02-nonsymmetric-conditions}
+\left\{
+\begin{aligned}
+&\text{(1)}\quad (H,(\cdot,\cdot))\text{ 是 Hilbert 空间};\\
+&\text{(2)}\quad V\text{ 是 }H\text{ 的(闭)子空间};\\
+&\text{(3)}\quad a(\cdot,\cdot)\text{ 是 }V\text{ 上的双线性形式, 不一定对称};\\
+&\text{(4)}\quad a(\cdot,\cdot)\text{ 在 }V\text{ 上连续(有界)};\\
+&\text{(5)}\quad a(\cdot,\cdot)\text{ 在 }V\text{ 上强制}.
+\end{aligned}
+\right.
+\label{eq:ch02-nonsymmetric-conditions}
+\end{equation}
+于是非对称变分问题如下:
+\begin{equation}
+\MathBookFormulaID{formula-ch02-nonsymmetric-variational-problem}
+\text{给定 }F\in V',\text{ 求 }u\in V\text{ 使 }
+a(u,v)=F(v)\quad\forall v\in V.
+\label{eq:ch02-nonsymmetric-variational-problem}
+\end{equation}
+(Galerkin)逼近问题如下:
+
+给定有限维子空间 $V_h\subset V$ 和 $F\in V'$, 求 $u_h\in V_h$ 使
+\begin{equation}
+\MathBookFormulaID{formula-ch02-galerkin-approximation-problem}
+a(u_h,v)=F(v)\qquad\forall v\in V_h.
+\label{eq:ch02-galerkin-approximation-problem}
+\end{equation}
+随之产生以下问题:
+\begin{enumerate}
+\item 是否存在唯一解 $u,u_h$?
+\item $u-u_h$ 的误差估计是什么?
+\item 是否有有意义的例子?
+\end{enumerate}
+
+\textbf{一个有意义的例子.} 考虑边值问题
+\begin{equation}
+\MathBookFormulaID{formula-ch02-nonsymmetric-boundary-value-problem}
+-u''+u'+u=f\quad\text{于 }[0,1],
+\qquad u'(0)=u'(1)=0.
+\label{eq:ch02-nonsymmetric-boundary-value-problem}
+\end{equation}
+它的一种变分表述为: 取
+\[
+\MathBookFormulaID{formula-ch02-nonsymmetric-space}
+V=H^1(0,1),
+\]
+\begin{equation}
+\MathBookFormulaID{formula-ch02-nonsymmetric-example-form}
+\begin{aligned}
+a(u,v)&=\int_0^1(u'v'+u'v+uv)\,dx,\\
+F(v)&=(f,v),
+\end{aligned}
+\label{eq:ch02-nonsymmetric-example-form}
+\end{equation}
+并求解变分方程 \eqref{eq:ch02-nonsymmetric-variational-problem}. 注意, 由于 $u'v$ 项的存在, $a(\cdot,\cdot)$ 不对称.
+
+为证明 $a(\cdot,\cdot)$ 连续, 注意
+\[
+\MathBookFormulaID{formula-ch02-nonsymmetric-continuity-proof}
+\begin{aligned}
+|a(u,v)|
+&\leq |(u,v)_{H^1}|+\left|\int_0^1u'v\,dx\right|\\
+&\leq\|u\|_{H^1}\|v\|_{H^1}+\|u'\|_{L^2}\|v\|_{L^2}
+\qquad\text{(由 Schwarz 不等式 \eqref{eq:ch02-schwarz-inequality})}\\
+&\leq2\|u\|_{H^1}\|v\|_{H^1}.
+\end{aligned}
+\]
+\MathBookSourcePage{74}
+因此, $a(\cdot,\cdot)$ 连续(在定义中取 $c_1=2$).
+
+为证明 $a(\cdot,\cdot)$ 强制, 注意
+\[
+\MathBookFormulaID{formula-ch02-nonsymmetric-coercivity-proof}
+\begin{aligned}
+a(v,v)
+&=\int_0^1\bigl((v')^2+v'v+v^2\bigr)\,dx\\
+&=\frac12\int_0^1(v'+v)^2\,dx
++\frac12\int_0^1\bigl((v')^2+v^2\bigr)\,dx\\
+&\geq\frac12\|v\|_{H^1}^2.
+\end{aligned}
+\]
+因此, $a(\cdot,\cdot)$ 强制(在定义中取 $c_2=1/2$).
+
+若把上述微分方程改为
+\begin{equation}
+\MathBookFormulaID{formula-ch02-large-k-differential-equation}
+-u''+ku'+u=f,
+\label{eq:ch02-large-k-differential-equation}
+\end{equation}
+则相应的 $a(\cdot,\cdot)$ 对较大的 $k$ 未必强制.
+
+\setcounter{thmcount}{6}
+\begin{Remark}
+\label{rem:ch02-inner-product-not-complete}
+若 $(H,(\cdot,\cdot))$ 是 Hilbert 空间, $V$ 是 $H$ 的子空间, 且 $a(\cdot,\cdot)$ 是 $V$ 上的内积, 则当 $a(\cdot,\cdot)$ 不强制时, $(V,a(\cdot,\cdot))$ 未必完备. 例如, 令 $H=H^1(0,1)$, $V=H$, $a(v,w)=\int_0^1vw\,dx=(v,w)_{L^2(0,1)}$. 则 $a(\cdot,\cdot)$ 是 $V$ 上的内积, 但 $L^2$ 范数中的收敛不蕴含 $H^1$ 范数中的收敛, 因为 $H^1(0,1)$ 在 $L^2(0,1)$ 中稠密.
+\end{Remark}
+
+\subsection{Lax--Milgram 定理}
+\label{sec:ch02-lax-milgram}
+\setcounter{thmcount}{0}
+\setcounter{equation}{0}
+
+我们要证明(非对称)变分问题解的存在性与唯一性: 求 $u\in V$ 使
+\begin{equation}
+\MathBookFormulaID{formula-ch02-lax-milgram-problem}
+a(u,v)=F(v)\qquad\forall v\in V,
+\label{eq:ch02-lax-milgram-problem}
+\end{equation}
+其中 $V$ 是 Hilbert 空间, $F\in V'$, $a(\cdot,\cdot)$ 是不一定对称的连续强制双线性形式. Lax--Milgram 定理保证 \eqref{eq:ch02-lax-milgram-problem} 的解存在且唯一. 首先证明以下引理.
+
+\setcounter{thmcount}{1}
+\begin{Lemma}[压缩映射原理]
+\label{lem:ch02-contraction-mapping}
+给定 Banach 空间 $V$ 和映射 $T:V\longrightarrow V$, 若对所有 $v_1,v_2\in V$ 及某个固定的 $M$, $0\leq M<1$, 有
+\setcounter{equation}{2}
+\begin{equation}
+\MathBookFormulaID{formula-ch02-contraction-bound}
+\|Tv_1-Tv_2\|\leq M\|v_1-v_2\|,
+\label{eq:ch02-contraction-bound}
+\end{equation}
+则存在唯一的 $u\in V$ 使
+\begin{equation}
+\MathBookFormulaID{formula-ch02-fixed-point-equation}
+u=Tu,
+\label{eq:ch02-fixed-point-equation}
+\end{equation}
+即压缩映射 $T$ 有唯一不动点 $u$.
+\end{Lemma}
+
+\MathBookSourcePage{75}
+\setcounter{thmcount}{4}
+\begin{Remark}
+\label{rem:ch02-complete-metric-suffices}
+在引理~\ref{lem:ch02-contraction-mapping} 中, 实际只需 $V$ 是完备度量空间.
+\end{Remark}
+
+\begin{Proof}
+先证明唯一性. 设 $Tv_1=v_1$, $Tv_2=v_2$. 因为 $T$ 是压缩映射, 对某个 $0\leq M<1$,
+\[
+\MathBookFormulaID{formula-ch02-fixed-point-uniqueness-contraction}
+\|Tv_1-Tv_2\|\leq M\|v_1-v_2\|.
+\]
+但 $\|Tv_1-Tv_2\|=\|v_1-v_2\|$. 因而
+\[
+\MathBookFormulaID{formula-ch02-fixed-point-uniqueness-bound}
+\|v_1-v_2\|\leq M\|v_1-v_2\|.
+\]
+这说明 $\|v_1-v_2\|=0$(否则将有 $1\leq M$). 所以 $v_1=v_2$, 即不动点唯一.
+
+下面证明存在性. 取 $v_0\in V$ 并定义
+\[
+\MathBookFormulaID{formula-ch02-fixed-point-iteration}
+v_1=Tv_0,\quad v_2=Tv_1,\quad\ldots,\quad v_{k+1}=Tv_k,\quad\ldots.
+\]
+注意 $\|v_{k+1}-v_k\|=\|Tv_k-Tv_{k-1}\|\leq M\|v_k-v_{k-1}\|$. 归纳可得
+\[
+\MathBookFormulaID{formula-ch02-fixed-point-successive-bound}
+\|v_k-v_{k-1}\|\leq M^{k-1}\|v_1-v_0\|.
+\]
+因此, 对任意 $N>n$,
+\setcounter{equation}{5}
+\begin{equation}
+\MathBookFormulaID{formula-ch02-fixed-point-cauchy-estimate}
+\begin{aligned}
+\|v_N-v_n\|
+&=\left\|\sum_{k=n+1}^N(v_k-v_{k-1})\right\|\\
+&\leq\|v_1-v_0\|\sum_{k=n+1}^NM^{k-1}\\
+&\leq\frac{M^n}{1-M}\|v_1-v_0\|\\
+&=\frac{M^n}{1-M}\|Tv_0-v_0\|,
+\end{aligned}
+\label{eq:ch02-fixed-point-cauchy-estimate}
+\end{equation}
+这说明 $\{v_n\}$ 是 Cauchy 序列. 因为 $V$ 完备, $\{v_n\}$ 收敛. 若 $\lim_{n\to\infty}v_n=:v$, 则
+\[
+\MathBookFormulaID{formula-ch02-fixed-point-limit}
+v=\lim_{n\to\infty}v_{n+1}
+=\lim_{n\to\infty}Tv_n
+=T\left(\lim_{n\to\infty}v_n\right)
+=Tv,
+\]
+其中使用了 $T$ 的连续性. 换言之, 不动点存在.
+\end{Proof}
+
+\MathBookSourcePage{76}
+\setcounter{thmcount}{6}
+\begin{Theorem}[Lax--Milgram]
+\label{thm:ch02-lax-milgram}
+给定 Hilbert 空间 $(V,(\cdot,\cdot))$, 连续强制双线性形式 $a(\cdot,\cdot)$ 和连续线性泛函 $F\in V'$, 存在唯一的 $u\in V$ 使
+\setcounter{equation}{7}
+\begin{equation}
+\MathBookFormulaID{formula-ch02-lax-milgram-solution}
+a(u,v)=F(v)\qquad\forall v\in V.
+\label{eq:ch02-lax-milgram-solution}
+\end{equation}
+\end{Theorem}
+
+\begin{Proof}
+对任意 $u\in V$, 定义泛函 $Au$: 对所有 $v\in V$, $Au(v)=a(u,v)$. $Au$ 是线性的, 因为
+\[
+\MathBookFormulaID{formula-ch02-au-linearity}
+\begin{aligned}
+Au(\alpha v_1+\beta v_2)
+&=a(u,\alpha v_1+\beta v_2)\\
+&=\alpha a(u,v_1)+\beta a(u,v_2)\\
+&=\alpha Au(v_1)+\beta Au(v_2)
+\qquad\forall v_1,v_2\in V,\ \alpha,\beta\in\mathbb R.
+\end{aligned}
+\]
+$Au$ 也是连续的, 因为对所有 $v\in V$,
+\[
+\MathBookFormulaID{formula-ch02-au-continuity}
+|Au(v)|=|a(u,v)|\leq C\|u\|\|v\|,
+\]
+其中 $C$ 是 $a(\cdot,\cdot)$ 连续性定义中的常数. 因此,
+\[
+\MathBookFormulaID{formula-ch02-au-dual-norm-bound}
+\|Au\|_{V'}=\sup_{v\neq0}\frac{|Au(v)|}{\|v\|}
+\leq C\|u\|<\infty.
+\]
+所以 $Au\in V'$. 类似地(见习题~\ref{ex:ch02-exercise-08}), 可以证明映射 $u\mapsto Au$ 是从 $V$ 到 $V'$ 的线性映射. 这里还证明了线性映射 $A:V\longrightarrow V'$ 连续, 且 $\|A\|_{\mathcal L(V,V')}\leq C$.
+
+由 Riesz 表示定理~\ref{thm:ch02-riesz-representation}, 对任意 $\phi\in V'$, 存在唯一的 $\tau\phi\in V$, 使得对任意 $v\in V$ 都有 $\phi(v)=(\tau\phi,v)$(见注~\ref{rem:ch02-riesz-isometry}). 我们必须求唯一的 $u$ 使
+\[
+\MathBookFormulaID{formula-ch02-au-equals-f-functionals}
+Au(v)=F(v)\qquad\forall v\in V.
+\]
+换言之, 要求唯一的 $u$ 使
+\[
+\MathBookFormulaID{formula-ch02-au-equals-f-dual}
+Au=F\quad\text{于 }V',
+\]
+或
+\[
+\MathBookFormulaID{formula-ch02-tau-au-equals-tau-f}
+\tau Au=\tau F\quad\text{于 }V,
+\]
+因为 $\tau:V'\longrightarrow V$ 是一一映射. 我们利用引理~\ref{lem:ch02-contraction-mapping} 求解最后一个方程. 要找 $\rho\neq0$ 使映射 $T:V\longrightarrow V$ 是压缩映射, 其中
+\begin{equation}
+\MathBookFormulaID{formula-ch02-lax-milgram-contraction-map}
+Tv:=v-\rho(\tau Av-\tau F)
+\qquad\forall v\in V.
+\label{eq:ch02-lax-milgram-contraction-map}
+\end{equation}
+若 $T$ 是压缩映射, 则由引理~\ref{lem:ch02-contraction-mapping}, 存在唯一的 $u\in V$ 使
+\begin{equation}
+\MathBookFormulaID{formula-ch02-lax-milgram-fixed-point}
+Tu=u-\rho(\tau Au-\tau F)=u,
+\label{eq:ch02-lax-milgram-fixed-point}
+\end{equation}
+即 $\rho(\tau Au-\tau F)=0$, 或 $\tau Au=\tau F$.
+
+\MathBookSourcePage{77}
+还需证明这样的 $\rho\neq0$ 存在. 对任意 $v_1,v_2\in V$, 令 $v=v_1-v_2$. 则
+\[
+\MathBookFormulaID{formula-ch02-lax-milgram-contraction-estimate}
+\begin{aligned}
+\|Tv_1-Tv_2\|^2
+&=\|(v_1-v_2)-\rho(\tau Av_1-\tau Av_2)\|^2\\
+&=\|v-\rho(\tau Av)\|^2 &&(\tau,A\text{ 线性})\\
+&=\|v\|^2-2\rho(\tau Av,v)+\rho^2\|\tau Av\|^2\\
+&=\|v\|^2-2\rho Av(v)+\rho^2Av(\tau Av) &&\text{(由 $\tau$ 的定义)}\\
+&=\|v\|^2-2\rho a(v,v)+\rho^2a(v,\tau Av) &&\text{(由 $A$ 的定义)}\\
+&\leq\|v\|^2-2\rho\alpha\|v\|^2+\rho^2C\|v\|\|\tau Av\|
+&&\text{($a$ 的强制性与连续性)}\\
+&\leq(1-2\rho\alpha+\rho^2C^2)\|v\|^2
+&&\text{($A$ 有界且 $\tau$ 等距)}\\
+&=(1-2\rho\alpha+\rho^2C^2)\|v_1-v_2\|^2\\
+&=M^2\|v_1-v_2\|^2.
+\end{aligned}
+\]
+这里 $\alpha$ 是 $a(\cdot,\cdot)$ 强制性定义中的常数. 最后一个不等式还使用了 $\|\tau Av\|=\|Av\|\leq C\|v\|$. 因而需要某个 $\rho$ 满足
+\[
+\MathBookFormulaID{formula-ch02-rho-condition}
+1-2\rho\alpha+\rho^2C^2<1,
+\qquad\text{即}\qquad \rho(\rho C^2-2\alpha)<0.
+\]
+若取 $\rho\in(0,2\alpha/C^2)$, 则 $M<1$, 证明完成.
+\end{Proof}
+
+\setcounter{thmcount}{10}
+\begin{Remark}
+\label{rem:ch02-lax-milgram-stability}
+注意 $\|u\|_V\leq\alpha^{-1}\|F\|_{V'}$, 其中 $\alpha$ 是强制性常数(见习题~\ref{ex:ch02-exercise-09}).
+\end{Remark}
+
+\begin{Corollary}
+\label{cor:ch02-nonsymmetric-unique-solution}
+在条件 \eqref{eq:ch02-nonsymmetric-conditions} 下, 变分问题 \eqref{eq:ch02-nonsymmetric-variational-problem} 有唯一解.
+\end{Corollary}
+
+\begin{Proof}
+\eqref{eq:ch02-nonsymmetric-conditions} 的条件 (1) 和 (2) 表明 $(V,(\cdot,\cdot))$ 是 Hilbert 空间. 应用 Lax--Milgram 定理~\ref{thm:ch02-lax-milgram}.
+\end{Proof}
+
+\begin{Corollary}
+\label{cor:ch02-galerkin-unique-solution}
+在条件 \eqref{eq:ch02-nonsymmetric-conditions} 下, 逼近问题 \eqref{eq:ch02-galerkin-approximation-problem} 有唯一解.
+\end{Corollary}
+
+\begin{Proof}
+因为 $V_h$ 是 $V$ 的(闭)子空间, 所以把 $V$ 换成 $V_h$ 后 \eqref{eq:ch02-nonsymmetric-conditions} 仍成立. 应用推论~\ref{cor:ch02-nonsymmetric-unique-solution}.
+\end{Proof}
+
+\begin{Remark}
+\label{rem:ch02-vh-not-finite-dimensional}
+要使 \eqref{eq:ch02-galerkin-approximation-problem} 适定, $V_h$ 不必是有限维的.
+\end{Remark}
+
+\MathBookSourcePage{78}
+\subsection{一般有限元逼近的估计}
+\label{sec:ch02-general-finite-element-estimates}
+\setcounter{thmcount}{0}
+\setcounter{equation}{0}
+
+设 $u$ 是变分问题 \eqref{eq:ch02-nonsymmetric-variational-problem} 的解, $u_h$ 是逼近问题 \eqref{eq:ch02-galerkin-approximation-problem} 的解. 现在估计误差 $\|u-u_h\|_V$. 这由下面的定理完成.
+
+\begin{Theorem}[Céa]
+\label{thm:ch02-cea}
+设条件 \eqref{eq:ch02-nonsymmetric-conditions} 成立, 且 $u$ 解 \eqref{eq:ch02-nonsymmetric-variational-problem}. 对有限元变分问题 \eqref{eq:ch02-galerkin-approximation-problem}, 有
+\setcounter{equation}{1}
+\begin{equation}
+\MathBookFormulaID{formula-ch02-cea-estimate}
+\|u-u_h\|_V\leq\frac{C}{\alpha}
+\min_{v\in V_h}\|u-v\|_V,
+\label{eq:ch02-cea-estimate}
+\end{equation}
+其中 $C$ 是连续性常数, $\alpha$ 是 $a(\cdot,\cdot)$ 在 $V$ 上的强制性常数.
+\end{Theorem}
+
+\begin{Proof}
+因为对所有 $v\in V$ 有 $a(u,v)=F(v)$, 对所有 $v\in V_h$ 有 $a(u_h,v)=F(v)$, 相减得
+\begin{equation}
+\MathBookFormulaID{formula-ch02-general-galerkin-orthogonality}
+a(u-u_h,v)=0\qquad\forall v\in V_h.
+\label{eq:ch02-general-galerkin-orthogonality}
+\end{equation}
+对任意 $v\in V_h$,
+\[
+\MathBookFormulaID{formula-ch02-cea-proof}
+\begin{aligned}
+\alpha\|u-u_h\|_V^2
+&\leq a(u-u_h,u-u_h) &&\text{(由强制性)}\\
+&=a(u-u_h,u-v)+a(u-u_h,v-u_h)\\
+&=a(u-u_h,u-v) &&\text{(因为 $v-u_h\in V_h$)}\\
+&\leq C\|u-u_h\|_V\|u-v\|_V &&\text{(由连续性)}.
+\end{aligned}
+\]
+因此,
+\begin{equation}
+\MathBookFormulaID{formula-ch02-cea-pointwise-bound}
+\|u-u_h\|_V\leq\frac{C}{\alpha}\|u-v\|_V
+\qquad\forall v\in V_h.
+\label{eq:ch02-cea-pointwise-bound}
+\end{equation}
+从而
+\[
+\MathBookFormulaID{formula-ch02-cea-infimum}
+\begin{aligned}
+\|u-u_h\|_V
+&\leq\frac{C}{\alpha}\inf_{v\in V_h}\|u-v\|_V\\
+&=\frac{C}{\alpha}\min_{v\in V_h}\|u-v\|_V
+\qquad\text{(因为 $V_h$ 闭)}.
+\end{aligned}
+\]
+\end{Proof}
+
+\setcounter{thmcount}{4}
+\begin{Remark}
+\label{rem:ch02-cea-quasi-optimality}
+\begin{enumerate}
+\item Céa 定理表明 $u_h$ 是拟最优的, 即误差 $\|u-u_h\|_V$ 与使用子空间 $V_h$ 所能达到的最佳误差成比例.
+\item 在对称情形, 我们已证明
+\[
+\MathBookFormulaID{formula-ch02-symmetric-best-energy-error}
+\|u-u_h\|_E=\min_{v\in V_h}\|u-v\|_E.
+\]
+\MathBookSourcePage{79}
+因此,
+\[
+\MathBookFormulaID{formula-ch02-symmetric-implies-cea}
+\begin{aligned}
+\|u-u_h\|_V
+&\leq\frac{1}{\sqrt\alpha}\|u-u_h\|_E\\
+&=\frac{1}{\sqrt\alpha}\min_{v\in V_h}\|u-v\|_E\\
+&\leq\sqrt{\frac{C}{\alpha}}\min_{v\in V_h}\|u-v\|_V\\
+&\leq\frac{C}{\alpha}\min_{v\in V_h}\|u-v\|_V,
+\end{aligned}
+\]
+即 Céa 定理的结果. 这实际上说明了两种表述之间的关系: 一种可以由另一种推出.
+\end{enumerate}
+\end{Remark}
+
+\subsection{高维例子}
+\label{sec:ch02-higher-dimensional-examples}
+\setcounter{thmcount}{0}
+\setcounter{equation}{0}
+
+下面说明前几节建立的理论如何应用于若干多维问题. 考虑变分形式
+\[
+\MathBookFormulaID{formula-ch02-higher-dimensional-form}
+a(u,v)=\int_\Omega\bigl(A(x)\nabla u(x)\cdot\nabla v(x)
++(B(x)\cdot\nabla u(x))v(x)+C(x)u(x)v(x)\bigr)\,dx,
+\]
+其中 $A$, $B$, $C$ 是 $\Omega\subset\mathbb R^n$ 上有界可测的函数. 当然, $B$ 是向量值函数. 形式上, 该变分形式对应微分算子
+\[
+\MathBookFormulaID{formula-ch02-higher-dimensional-operator}
+-\nabla\cdot(A(x)\nabla u(x))+B(x)\cdot\nabla u(x)+C(x)u(x),
+\]
+但即使该微分算子在传统意义下没有意义, 变分形式仍有良好定义. Hölder 不等式表明 $a(\cdot,\cdot)$ 在 $H^1(\Omega)$ 上连续, 定义~\ref{def:ch02-bounded-coercive-form} 中的常数 $c_1$ 仅依赖于系数的 $L^\infty(\Omega)$ 范数. 然而, 验证强制性较为复杂.
+
+先考虑对称情形 $B\equiv0$. 再假设存在常数 $\gamma>0$ 使
+\begin{equation}
+\MathBookFormulaID{formula-ch02-positive-coefficients}
+A(x)\geq\gamma
+\quad\&\quad
+C(x)\geq\gamma
+\qquad\text{对几乎处处的 }x\in\Omega.
+\label{eq:ch02-positive-coefficients}
+\end{equation}
+则 $a(\cdot,\cdot)$ 在整个 $H^1(\Omega)$ 上强制, 定义~\ref{def:ch02-bounded-coercive-form} 中的常数 $c_2$ 等于 $\gamma$. 因而有下述结果.
+
+\MathBookSourcePage{80}
+\setcounter{thmcount}{1}
+\begin{Theorem}
+\label{thm:ch02-symmetric-higher-dimensional}
+若 $B\equiv0$ 且 \eqref{eq:ch02-positive-coefficients} 成立, 则取上述 $a(\cdot,\cdot)$ 和 $V=H^1(\Omega)$ 时, \eqref{eq:ch02-symmetric-variational-problem} 有唯一解 $u$. 此外, 对任意 $V_h\subset H^1(\Omega)$, \eqref{eq:ch02-ritz-galerkin-problem} 有唯一解 $u_h$, 且推论~\ref{cor:ch02-best-energy-approximation} 的估计对 $u-u_h$ 成立.
+\end{Theorem}
+
+注意, 我们甚至没有假设系数 $A$ 和 $C$ 连续. 事实上, 不连续系数出现在许多重要的物理模型中. 在某种程度上, 条件 \eqref{eq:ch02-positive-coefficients} 中 $C$ 的正性是必要的, 因为若 $C\equiv0$, 则对任意常值函数 $v$ 都有 $a(v,v)=0$.
+
+现在考虑 $B$ 非零的一般情形. 由 Hölder 不等式和算术--几何平均不等式 \eqref{eq:ch00-young-inequality-delta},
+\[
+\MathBookFormulaID{formula-ch02-convection-term-bound}
+\begin{aligned}
+\left|\int_\Omega(B(x)\cdot\nabla u(x))u(x)\,dx\right|
+&\leq\||B|\|_{L^\infty(\Omega)}|u|_{H^1(\Omega)}\|u\|_{L^2(\Omega)}\\
+&\leq\frac12\||B|\|_{L^\infty(\Omega)}\|u\|_{H^1(\Omega)}^2.
+\end{aligned}
+\]
+若 \eqref{eq:ch02-positive-coefficients} 成立, 并且还有
+\setcounter{equation}{2}
+\begin{equation}
+\MathBookFormulaID{formula-ch02-convection-smallness}
+\||B|\|_{L^\infty(\Omega)}<2\gamma,
+\label{eq:ch02-convection-smallness}
+\end{equation}
+则 $a(\cdot,\cdot)$ 在 $H^1(\Omega)$ 上强制, 并有下述结论.
+
+\setcounter{thmcount}{3}
+\begin{Theorem}
+\label{thm:ch02-nonsymmetric-higher-dimensional}
+若 \eqref{eq:ch02-positive-coefficients} 和 \eqref{eq:ch02-convection-smallness} 成立, 则取上述 $a(\cdot,\cdot)$ 和 $V=H^1(\Omega)$ 时, \eqref{eq:ch02-nonsymmetric-variational-problem} 有唯一解 $u$. 此外, 对任意 $V_h\subset H^1(\Omega)$, \eqref{eq:ch02-galerkin-approximation-problem} 有唯一解 $u_h$, 且估计 \eqref{eq:ch02-cea-estimate} 对 $u-u_h$ 成立.
+\end{Theorem}
+
+这里给出的强制性条件略显严格, 但在 Neumann 边界条件的情形是合适的. \MBUnresolvedReference{chap:ch05-n-dimensional-variational-problems}{第 5 章} 将讨论更复杂的变分问题. 特别地, 将证明在 Dirichlet 边界条件下, 为保证强制性只需要更弱的条件.
+
+\input{chapters/chapter-02-exercises.tex}

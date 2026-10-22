@@ -1,0 +1,168 @@
+\MathBookSourcePage{384}
+\subsection{有限元收敛估计}
+\label{sec:ch14-finite-element-convergence-estimates}
+\setcounter{thmcount}{0}
+\setcounter{equation}{0}
+
+考虑一种情形: 某个变分问题的解 $u\in H^m(\Omega)$ 及其逼近 $u_h\in V_h$ 满足(参见 Cea 定理~\ref{thm:ch02-cea})
+\MBSourceItem{1}
+\begin{equation}
+\MathBookFormulaID{formula-ch14-quasi-optimal-error-assumption}
+\label{eq:ch14-quasi-optimal-error-assumption}
+\|u-u_h\|_{H^m(\Omega)}
+\leq c_0\inf_{v\in V_h}\|u-v\|_{H^m(\Omega)}.
+\end{equation}
+若存在插值函数 $I^hu\in V_h$(如定理~\MBUnresolvedReference{thm:ch04-source-4-4-20}{4.4.20} 中那样), 使
+\[
+\MathBookFormulaID{formula-ch14-interpolant-approximation-assumption}
+\|u-I^hu\|_{H^m(\Omega)}\leq Ch^{k-m}\|u\|_{H^k(\Omega)},
+\]
+且 $u$ 充分光滑, 则
+\MBSourceItem{2}
+\begin{equation}
+\MathBookFormulaID{formula-ch14-smooth-solution-error-estimate}
+\label{eq:ch14-smooth-solution-error-estimate}
+\|u-u_h\|_{H^m(\Omega)}\leq c_1h^{k-m}\|u\|_{H^k(\Omega)}.
+\end{equation}
+然而, 若 $u$ 的光滑性较低, 例如 $I^hu$ 没有定义, 则可能无法推出任何结论. 例如, 在二维中标准 Hermite 三次插值算子对 $H^2(\Omega)$ 中的函数没有定义, 但上述结果对 $m=1$ 和 $k=4$ 成立. Argyris 元给出一个 $m=2$ 且 $k\geq6$ 的例子, 但其标准节点插值算子在 $H^3(\Omega)$ 上没有定义. 由于问题的数据未必保证光滑解, 这些限制可能是严重问题. 不过, 可以利用 Banach 空间插值把~\eqref{eq:ch14-smooth-solution-error-estimate} 推广到与某一给定插值算子无关的 $k$ 值. 也可以使用第~\ref{sec:ch04-nonsmooth-function-interpolation} 节的技术.
+
+\MBSourceItem{3}
+\begin{Theorem}
+\label{thm:ch14-intermediate-regularity-error}
+假设~\eqref{eq:ch14-quasi-optimal-error-assumption} 对任意 $u\in H^m(\Omega)$ 成立, 且~\eqref{eq:ch14-smooth-solution-error-estimate} 对任意 $u\in H^k(\Omega)$ 成立. 设 $m<s<k$. 则对任意 $u\in H^s(\Omega)$,
+\MBSourceItem{4}
+\begin{equation}
+\MathBookFormulaID{formula-ch14-intermediate-regularity-error-estimate}
+\label{eq:ch14-intermediate-regularity-error-estimate}
+\|u-u_h\|_{H^m(\Omega)}\leq Ch^{s-m}\|u\|_{H^s(\Omega)}.
+\end{equation}
+\end{Theorem}
+
+\begin{Proof}
+定义算子 $T$, 它把 $u$ 映到误差 $u-u_h$, 即
+\[
+\MathBookFormulaID{formula-ch14-error-operator-definition}
+Tu:=u-u_h.
+\]
+估计~\eqref{eq:ch14-smooth-solution-error-estimate} 表明 $T$ 把 $H^k(\Omega)$ 映到 $H^m(\Omega)$, 且
+\[
+\MathBookFormulaID{formula-ch14-error-operator-high-regularity-bound}
+\|T\|_{H^k(\Omega)\to H^m(\Omega)}\leq c_1h^{k-m}.
+\]
+另一方面, 在~\eqref{eq:ch14-quasi-optimal-error-assumption} 中取 $v=0$ 得
+\[
+\MathBookFormulaID{formula-ch14-error-operator-low-regularity-bound}
+\|T\|_{H^m(\Omega)\to H^m(\Omega)}\leq c_0.
+\]
+于是处于 Banach 空间插值的设定中: $A_0=H^m(\Omega)$, $A_1=H^k(\Omega)$, 且 $B_0=B_1=H^m(\Omega)$. 因而
+\[
+\MathBookFormulaID{formula-ch14-interpolated-error-operator-bound}
+\|T\|_{H^s(\Omega)\to H^m(\Omega)}\leq Ch^{s-m}
+\]
+对任意 $m<s<k$ 成立. 这等价于~\eqref{eq:ch14-intermediate-regularity-error-estimate}.
+\end{Proof}
+
+\MathBookSourcePage{385}
+注意, 该结果假设~\eqref{eq:ch14-quasi-optimal-error-assumption} 对任意 $u\in H^m(\Omega)$ 成立, 且~\eqref{eq:ch14-smooth-solution-error-estimate} 对任意 $u\in H^k(\Omega)$ 成立. 例如, 对某个在整个 $H^1(\Omega)$ 上强制的双线性形式求解 Neumann 问题时, 这些条件成立, 因为此时变分空间 $V=H^1(\Omega)$. 对 Dirichlet 问题, 类似于定理~\ref{thm:ch14-intermediate-regularity-error} 的结果更为复杂, 因为需要在满足边界条件的空间之间插值(Lions 与 Magenes 1972, Grisvard 1985).
+
+必须知道~\eqref{eq:ch14-intermediate-regularity-error-estimate} 中的常数 $C$ 完全不依赖于 $h$ 或 $V_h$. 关键是~\eqref{eq:ch14-operator-interpolation-bound} 中的常数等于 $1$. 不过, 所涉及的常数还有一个技术问题. 命题~\ref{prop:ch14-operator-interpolation} 蕴含
+\[
+\MathBookFormulaID{formula-ch14-interpolation-equivalent-norm-constant}
+\|T\|_{[H^m(\Omega),H^k(\Omega)]_{\theta,2}\to H^m(\Omega)}
+\leq c_0^{1-\theta}c_1^\theta h^{s-m},
+\qquad s=m+\theta(k-m).
+\]
+当然, 有
+\[
+\MathBookFormulaID{formula-ch14-equivalent-hilbert-interpolation-spaces}
+[H^m(\Omega),H^k(\Omega)]_{\theta,2}=H^s(\Omega)=W_2^s(\Omega).
+\]
+但若后者的范数由~\eqref{eq:ch14-intrinsic-fractional-sobolev-norm} 给出, 则 $[H^m(\Omega),H^k(\Omega)]_{\theta,2}$ 的范数只与它等价, 并不相同. 因而~\eqref{eq:ch14-intermediate-regularity-error-estimate} 中的常数 $C$ 依赖于定理~\ref{thm:ch14-fractional-sobolev-real-interpolation} 中范数等价的常数. 该常数如何依赖于 $k,s,p$ 和 $\Omega$ 超出本书范围. 不过容易看出, 可把~\eqref{eq:ch14-intermediate-regularity-error-estimate} 中的 $C$ 取为开区间 $m<s<k$ 上 $s$ 的连续函数.
+
+形如~\eqref{eq:ch14-smooth-solution-error-estimate} 的估计与分片多项式空间的逼近阶有关, 并且是尖锐的: 一般而言, $\|u-I^hu\|_{H^m(\Omega)}$ 不会比 $O(h^{k-m})$ 更快趋于零, 这一点可通过把插值算子用于更高阶多项式看出. 但是, 当被逼近函数 $u$ 的光滑性较低时, 光滑程度不再如此精确地决定逼近阶(Scott 1977b).
+
+\MBSourceItem{5}
+\begin{Theorem}
+\label{thm:ch14-little-o-intermediate-error}
+假设~\eqref{eq:ch14-quasi-optimal-error-assumption} 对任意 $u\in H^m(\Omega)$ 成立, 且~\eqref{eq:ch14-smooth-solution-error-estimate} 对任意 $u\in H^k(\Omega)$ 成立. 设 $m<s<k$. 则对任意 $u\in H^s(\Omega)$,
+\MBSourceItem{6}
+\begin{equation}
+\MathBookFormulaID{formula-ch14-little-o-intermediate-error-estimate}
+\label{eq:ch14-little-o-intermediate-error-estimate}
+\|u-u_h\|_{H^m(\Omega)}=o(h^{s-m}).
+\end{equation}
+\end{Theorem}
+
+\begin{Proof}
+回顾定理~\ref{thm:ch14-intermediate-regularity-error} 证明中 $T$ 的定义. 对任意 $v\in H^k(\Omega)$,
+\[
+\MathBookFormulaID{formula-ch14-little-o-proof-error-bound}
+\begin{aligned}
+\|u-u_h\|_{H^m(\Omega)}
+&=\|Tu\|_{H^m(\Omega)}\\
+&\leq\|Tu-Tv\|_{H^m(\Omega)}+\|Tv\|_{H^m(\Omega)}\\
+&\leq c_0\|u-v\|_{H^m(\Omega)}+c_1h^{k-m}\|v\|_{H^k(\Omega)}.
+\end{aligned}
+\]
+对所有 $v\in H^k(\Omega)$ 取下确界, 得
+\[
+\MathBookFormulaID{formula-ch14-little-o-proof-k-functional}
+\|u-u_h\|_{H^m(\Omega)}
+\leq c_0K((c_1/c_0)h^{k-m},u).
+\]
+应用~\eqref{eq:ch14-k-functional-little-o}, 即得~\eqref{eq:ch14-little-o-intermediate-error-estimate}.
+\end{Proof}
+
+\MathBookSourcePage{386}
+这种技术不限于 Hilbert 空间. 第~\ref{chap:ch08-max-norm-estimates} 章证明了 $p\neq2$ 时形如
+\MBSourceItem{7}
+\begin{equation}
+\MathBookFormulaID{formula-ch14-wp1-stability-estimate}
+\label{eq:ch14-wp1-stability-estimate}
+\|u_h\|_{W_p^1(\Omega)}\leq C\|u\|_{W_p^1(\Omega)}
+\end{equation}
+的估计. 再次使用插值算子, 由此可得
+\MBSourceItem{8}
+\begin{equation}
+\MathBookFormulaID{formula-ch14-wp1-smooth-error-estimate}
+\label{eq:ch14-wp1-smooth-error-estimate}
+\|u-u_h\|_{W_p^1(\Omega)}\leq Ch^{k-1}\|u\|_{W_p^k(\Omega)},
+\end{equation}
+只要 $u$ 充分光滑. 通过与上述相同的 Banach 空间插值, 可将该结果推广为
+\MBSourceItem{9}
+\begin{equation}
+\MathBookFormulaID{formula-ch14-wp1-intermediate-error-estimate}
+\label{eq:ch14-wp1-intermediate-error-estimate}
+\|u-u_h\|_{W_p^1(\Omega)}\leq Ch^{s-1}\|u\|_{W_p^s(\Omega)},
+\qquad 1<s<k.
+\end{equation}
+此外, 对 $u\in W_p^s(\Omega)$ 还可得
+\MBSourceItem{10}
+\begin{equation}
+\MathBookFormulaID{formula-ch14-wp1-little-o-error}
+\label{eq:ch14-wp1-little-o-error}
+\|u-u_h\|_{W_p^1(\Omega)}=o(h^{s-1}).
+\end{equation}
+
+到目前为止, 我们考虑的是 $u$ 位于中间插值空间时 $u-u_h$ 的估计. Banach 空间插值也可用于在中间空间中估计 $u-u_h$. 回顾第~\ref{sec:ch05-plate-bending-biharmonic-problem} 节双调和问题的估计推导: 没有得到 $H^1(\Omega)$ 中的估计, 只得到 $H^2(\Omega)$ 和 $H^{-s}(\Omega)$($s\geq0$)中的估计. 此外, 例如定理~\ref{thm:ch05-plate-negative-norm-error} 的证明技术需要一种上述类型的逼近结果, 用于光滑性低于最大值的函数. 因而我们可能只知道
+\MBSourceItem{11}
+\begin{equation}
+\MathBookFormulaID{formula-ch14-negative-norm-error-assumption}
+\label{eq:ch14-negative-norm-error-assumption}
+\|u-u_h\|_{H^{-r}(\Omega)}\leq Ch^{r+k}\|u\|_{H^k(\Omega)}.
+\end{equation}
+下述结果概括了这种情形.
+
+\MBSourceItem{12}
+\begin{Theorem}
+\label{thm:ch14-intermediate-norm-error}
+假设~\eqref{eq:ch14-smooth-solution-error-estimate} 和~\eqref{eq:ch14-negative-norm-error-assumption} 对所有 $u\in H^k(\Omega)$ 成立. 设 $-r<s<m$. 则
+\[
+\MathBookFormulaID{formula-ch14-intermediate-norm-error-estimate}
+\|u-u_h\|_{H^s(\Omega)}\leq Ch^{k-s}\|u\|_{H^k(\Omega)}.
+\]
+\end{Theorem}
+
+\begin{Proof}
+把~\eqref{eq:ch14-operator-interpolation-bound} 应用于定理~\ref{thm:ch14-intermediate-regularity-error} 证明中定义的误差算子 $T$, 但现在取 $A_0=A_1=H^k(\Omega)$, $B_0=H^m(\Omega)$ 且 $B_1=H^{-r}(\Omega)$.
+\end{Proof}

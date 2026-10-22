@@ -1,0 +1,169 @@
+\MathBookSourcePage{174}
+\subsection{第 $k$ 层迭代的 W-循环收敛性}
+\label{sec:ch06-w-cycle-convergence}
+\setcounter{thmcount}{0}
+\setcounter{equation}{0}
+
+本节将证明: 若光滑步骤数充分大, W-循环方法的第 $k$ 层迭代方案是一个收缩映射, 且其收缩因子有一个与 $k$ 无关并小于 $1$ 的界. 下一节将证明 V-循环方法在仅有一个光滑步骤时也有同样结论, 从而蕴含 W-循环方法的光滑步骤数也可取为 $1$(参见习题~\ref{exr:ch06-09} 和~\ref{exr:ch06-10}). 不过, 本节结果的证明较为简洁, 而且其中的扰动论证也具有独立意义.
+
+\MathBookSourcePage{175}
+为简化起见, 考虑单边 W-循环方法, 即第~\ref{sec:ch06-multigrid-algorithm} 节算法中 $p=2$, $m_1=m$, $m_2=0$. 对 $0\leq i\leq m+1$, 令 $e_i=z-z_i$ 为第 $k$ 层迭代中的误差. 由光滑步骤, 对 $1\leq l\leq m$ 有
+\MBSourceItem{1}
+\begin{equation}
+\MathBookFormulaID{formula-ch06-w-cycle-smoothing-error-recurrence}
+\label{eq:ch06-w-cycle-smoothing-error-recurrence}
+\begin{aligned}
+e_l
+&=z-z_l\\
+&=z-z_{l-1}-\frac1{\Lambda_k}A_k(z-z_{l-1})\\
+&=e_{l-1}-\frac1{\Lambda_k}A_ke_{l-1}\\
+&=\left(I-\frac1{\Lambda_k}A_k\right)e_{l-1}.
+\end{aligned}
+\end{equation}
+
+\MBSourceItem{2}
+\begin{Definition}
+\label{def:ch06-relaxation-operator}
+$R_k:=I-\Lambda_k^{-1}A_k:V_k\longrightarrow V_k$ 称为松弛算子.
+\end{Definition}
+
+注意(参见习题~\ref{exr:ch06-03})
+\MBSourceItem{3}
+\begin{equation}
+\MathBookFormulaID{formula-ch06-relaxation-operator-properties}
+\label{eq:ch06-relaxation-operator-properties}
+\|R_kv\|_{s,k}\leq\|v\|_{s,k}
+\quad\forall v\in V_k,\ s\in\mathbb R,
+\qquad
+(R_kv,v)_k\leq(v,v)_k
+\quad\forall v\in V_k.
+\end{equation}
+于是, 光滑步骤的作用可立即写为
+\MBSourceItem{4}
+\begin{equation}
+\MathBookFormulaID{formula-ch06-smoothing-error-power}
+\label{eq:ch06-smoothing-error-power}
+e_m=R_k^me_0.
+\end{equation}
+
+先证明二重网格方法的收敛性. 令 $q\in V_{k-1}$ 满足 $A_{k-1}q=\bar g$, 并将二重网格方法的输出定义为
+\MBSourceItem{5}
+\begin{equation}
+\MathBookFormulaID{formula-ch06-two-grid-output}
+\label{eq:ch06-two-grid-output}
+\widehat z_{m+1}=z_m+q.
+\end{equation}
+注意, 第~\ref{sec:ch06-multigrid-algorithm} 节多重网格算法中的 $q_2$ 只是通过两次使用第 $k-1$ 层迭代对 $q$ 作出的逼近. 二重网格算法的最终误差与初始误差的关系为
+\MBSourceItem{6}
+\begin{equation}
+\MathBookFormulaID{formula-ch06-two-grid-final-error}
+\label{eq:ch06-two-grid-final-error}
+\begin{aligned}
+\widehat e_{m+1}
+&=z-\widehat z_{m+1} &&\text{由~\eqref{eq:ch06-two-grid-output}}\\
+&=z-z_m-q\\
+&=e_m-q\\
+&=e_m-P_{k-1}e_m &&\text{由引理~\ref{lem:ch06-coarse-residual-ritz-projection}}\\
+&=(I-P_{k-1})R_k^me_0 &&\text{由~\eqref{eq:ch06-smoothing-error-power}}.
+\end{aligned}
+\end{equation}
+我们已经有算子 $I-P_{k-1}$ 的估计, 即逼近性质. 还需度量 $R_k^m$ 的作用.
+
+\MathBookSourcePage{176}
+\MBSourceItem{7}
+\begin{Theorem}[W-循环算法的光滑性质]
+\label{thm:ch06-w-cycle-smoothing-property}
+有
+\[
+\MathBookFormulaID{formula-ch06-w-cycle-smoothing-property}
+\|R_k^mv\|_{2,k}\leq Ch_k^{-1}m^{-1/2}\|v\|_{1,k}
+\qquad\forall v\in V_k.
+\]
+\end{Theorem}
+\begin{Proof}
+设 $0<\lambda_1\leq\lambda_2\leq\cdots\leq\lambda_{n_k}$ 为算子 $A_k$ 的特征值, $\psi_i$, $1\leq i\leq n_k$, 为相应的特征向量, 并满足正交归一关系 $(\psi_i,\psi_j)_k=\delta_{ij}$. 可写成 $v=\sum_{i=1}^{n_k}\nu_i\psi_i$. 因此
+\[
+\MathBookFormulaID{formula-ch06-relaxation-spectral-expansion}
+R_k^mv=\left(I-\frac1{\Lambda_k}A_k\right)^mv
+=\sum_{i=1}^{n_k}\left(1-\frac{\lambda_i}{\Lambda_k}\right)^m\nu_i\psi_i.
+\]
+从而
+\[
+\MathBookFormulaID{formula-ch06-smoothing-property-spectral-bound}
+\begin{aligned}
+\|R_k^mv\|_{2,k}^2
+&=\sum_{i=1}^{n_k}\left(1-\frac{\lambda_i}{\Lambda_k}\right)^{2m}\nu_i^2\lambda_i^2\\
+&=\Lambda_k\sum_{i=1}^{n_k}
+\left(1-\frac{\lambda_i}{\Lambda_k}\right)^{2m}
+\left(\frac{\lambda_i}{\Lambda_k}\right)\lambda_i\nu_i^2\\
+&\leq\Lambda_k\sup_{0\leq x\leq1}(1-x)^{2m}x
+\sum_{i=1}^{n_k}\lambda_i\nu_i^2
+\qquad(|\lambda_i|\leq\Lambda_k)\\
+&\leq Ch_k^{-2}m^{-1}\|v\|_{1,k}^2
+\qquad\text{由~\eqref{eq:ch06-multigrid-spectral-radius-bound}}.
+\end{aligned}
+\]
+结论随即成立.
+\end{Proof}
+
+\MBSourceItem{8}
+\begin{Theorem}[二重网格算法的收敛性]
+\label{thm:ch06-two-grid-convergence}
+存在与 $k$ 无关的正常数 $C$, 使得
+\[
+\MathBookFormulaID{formula-ch06-two-grid-convergence}
+\|\widehat e_{m+1}\|_E\leq Cm^{-1/2}\|e_0\|_E.
+\]
+因此, 若 $m$ 充分大, 二重网格方法是收缩因子与 $k$ 无关的收缩映射.
+\end{Theorem}
+\begin{Proof}
+\[
+\MathBookFormulaID{formula-ch06-two-grid-convergence-proof}
+\begin{aligned}
+\|\widehat e_{m+1}\|_E
+&=\|(I-P_{k-1})R_k^me_0\|_E
+&&\text{由~\eqref{eq:ch06-two-grid-final-error}}\\
+&\leq Ch_k\|R_k^me_0\|_{2,k}
+&&\text{由推论~\ref{cor:ch06-approximation-property}}\\
+&\leq Ch_kCh_k^{-1}m^{-1/2}\|e_0\|_{1,k}
+&&\text{由定理~\ref{thm:ch06-w-cycle-smoothing-property}}\\
+&\leq Cm^{-1/2}\|e_0\|_E.
+\end{aligned}
+\]
+\end{Proof}
+
+\MathBookSourcePage{177}
+现在用扰动论证证明第 $k$ 层迭代的收敛性.
+
+\MBSourceItem{9}
+\begin{Theorem}[第 $k$ 层迭代的收敛性]
+\label{thm:ch06-w-cycle-level-convergence}
+对任意 $0<\gamma<1$, 可将 $m$ 取得充分大, 使得
+\MBSourceItem{10}
+\begin{equation}
+\MathBookFormulaID{formula-ch06-w-cycle-level-contraction}
+\label{eq:ch06-w-cycle-level-contraction}
+\|z-MG(k,z_0,g)\|_E\leq\gamma\|z-z_0\|_E,
+\qquad k=1,2,\ldots.
+\end{equation}
+\end{Theorem}
+\begin{Proof}
+设 $C^*$ 为定理~\ref{thm:ch06-two-grid-convergence} 中的常数, 并取整数 $m>(C^*/(\gamma-\gamma^2))^2$. 对此 $m$, 式~\eqref{eq:ch06-w-cycle-level-contraction} 成立. 用归纳法证明. 当 $k=1$ 时, 左端为 $0$, 结论显然成立. 当 $k>1$ 时,
+\[
+\MathBookFormulaID{formula-ch06-w-cycle-level-error-decomposition}
+z-MG(k,z_0,g)=z-z_{m+1}=z-z_m-q_2=\widehat e_{m+1}+q-q_2.
+\]
+因此
+\[
+\MathBookFormulaID{formula-ch06-w-cycle-level-contraction-proof}
+\begin{aligned}
+\|z-MG(k,z_0,g)\|_E
+&\leq\|\widehat e_{m+1}\|_E+\|q-q_2\|_E\\
+&\leq C^*m^{-1/2}\|e_0\|_E+\gamma^2\|q\|_E
+&&\text{由归纳假设和定理~\ref{thm:ch06-two-grid-convergence}}\\
+&\leq(C^*m^{-1/2}+\gamma^2)\|e_0\|_E
+&&\text{由引理~\ref{lem:ch06-coarse-residual-ritz-projection} 和~\eqref{eq:ch06-relaxation-operator-properties}}\\
+&\leq\gamma\|e_0\|_E.
+\end{aligned}
+\]
+\end{Proof}

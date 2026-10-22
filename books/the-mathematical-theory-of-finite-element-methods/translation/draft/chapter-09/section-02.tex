@@ -1,0 +1,154 @@
+\MathBookSourcePage{255}
+\subsection{误差估计量}
+\label{sec:ch09-error-estimators}
+\setcounter{thmcount}{0}
+\setcounter{equation}{0}
+
+一种成功的误差估计量以残量为基础. 这里在一个很简单的情形中考察这种估计量. 为简单起见, 假设变分问题具有式~\eqref{eq:ch09-diffusion-form} 的形式, $\alpha$ 分片光滑但不必连续. 考虑 $n$ 维多面体区域 $\Omega$ 上的 Dirichlet 问题, 因而 $V=\mathring H^1(\Omega)$. 此外, 假设变分问题的右端 $f$ 也是分片光滑函数.
+
+设 $V_h$ 是网格 $\mathcal T^h$ 上次数不超过 $k$ 的分片多项式函数空间, 并假设 $\alpha$ 和 $f$ 的不连续性均位于 $\mathcal T^h$ 的网格面(二维时为边)上. 因此, $\alpha$ 和 $f$ 在每个 $T\in\mathcal T^h$ 上都光滑. 除此之外只假设 $\mathcal T^h$ 非退化, 因为我们希望允许显著的局部网格细化.
+
+\MBSourceItem{1}
+\begin{Lemma}
+\label{lem:ch09-residual-equation}
+设 $u_h\in V_h$ 是标准 Galerkin 逼近, 并令 $e_h:=u-u_h$. 则 $e_h$ 满足残量方程
+\MBSourceItem{2}
+\begin{equation}
+\MathBookFormulaID{formula-ch09-residual-equation}
+\label{eq:ch09-residual-equation}
+a(e_h,v)=R(v)
+\qquad\forall v\in V,
+\end{equation}
+其中 $R\in V'$ 是可按下式计算的残量:
+\MBSourceItem{3}
+\begin{equation}
+\MathBookFormulaID{formula-ch09-residual-representation}
+\label{eq:ch09-residual-representation}
+R(v):=\sum_T\int_T(f+\nabla\cdot(\alpha\nabla u_h))v\,dx
++\sum_e\int_e[\alpha n_e\cdot\nabla u_h]_{n_e}v\,ds
+\qquad\forall v\in V,
+\end{equation}
+其中 $n_e$ 表示 $e$ 的一个单位法向量.
+\end{Lemma}
+
+可以把该引理理解为: $R$ 可由式~\eqref{eq:ch09-residual-equation} 或式~\eqref{eq:ch09-residual-representation} 中任一个等价定义, 另一个式子则由定义推出. 虽然式~\eqref{eq:ch09-residual-representation} 只是式~\eqref{eq:ch09-residual-equation} 的改写, 但它把误差表示为右端 $R\in V'$.
+
+关键在于 $R$ 有两部分. 一部分是绝对连续部分 $R_A$, 它是 $L^1(\Omega)$ 函数, 在每个单元 $T$ 上定义为
+\MBSourceItem{4}
+\begin{equation}
+\MathBookFormulaID{formula-ch09-element-residual}
+\label{eq:ch09-element-residual}
+\left.R_A\right|_T:=\left.(f+\nabla\cdot(\alpha\nabla u_h))\right|_T.
+\end{equation}
+另一部分是跳跃项
+\MBSourceItem{5}
+\begin{equation}
+\MathBookFormulaID{formula-ch09-jump-residual}
+\label{eq:ch09-jump-residual}
+R_J(v):=\sum_e\int_e[\alpha n_e\cdot\nabla u_h]_{n_e}v\,ds
+\qquad\forall v\in V,
+\end{equation}
+其中 $[\phi]_n$ 表示 $\phi$ 跨过相应面的跳跃. 更准确地,
+\[
+\MathBookFormulaID{formula-ch09-normal-jump-definition}
+[\phi]_n(x):=\lim_{\varepsilon\to0}\bigl(\phi(x+\varepsilon n)-\phi(x-\varepsilon n)\bigr),
+\]
+所以式~\eqref{eq:ch09-jump-residual} 与每个面上法向量的选择无关.
+
+\begin{Proof}
+在每个 $T$ 上分部积分, 并把所得边界项收集到 $R_J$ 中, 便得到式~\eqref{eq:ch09-residual-equation}--\eqref{eq:ch09-residual-representation}. 若 $A$ 是形式上与式~\eqref{eq:ch09-diffusion-form} 对应的微分算子, 即 $Av:=-\nabla\cdot(\alpha\nabla v)$, 则在每个 $T$ 上 $R_A=A(u-u_h)=Ae_h$. 这里使用了 $\nabla u_h$ 在每个 $T$ 上是多项式这一事实, 以及关于 $\alpha$ 和 $f$ 的假设.
+\end{Proof}
+
+在式~\eqref{eq:ch09-residual-equation} 中取 $v=e_h$, 得
+\MBSourceItem{6}
+\begin{equation}
+\MathBookFormulaID{formula-ch09-residual-energy-bound}
+\label{eq:ch09-residual-energy-bound}
+\alpha_0|e_h|_{H^1(\Omega)}^2
+\leq|R(e_h)|
+\leq\|R\|_{H^{-1}(\Omega)}|e_h|_{H^1(\Omega)}.
+\end{equation}
+因此
+\MBSourceItem{7}
+\begin{equation}
+\MathBookFormulaID{formula-ch09-error-by-negative-residual}
+\label{eq:ch09-error-by-negative-residual}
+|e_h|_{H^1(\Omega)}\leq C\|R\|_{H^{-1}(\Omega)}.
+\end{equation}
+所以只需计算残量的 $H^{-1}(\Omega)$ 范数即可估计误差, 而残量只涉及问题数据 $f,\alpha$ 和 $u_h$. 不过有两个困难: 负范数难以显式计算, 因而只能估计; 同时 $R$ 的两部分性质截然不同, 一部分是可积函数, 另一部分由界面 Delta 函数组成, 二者的组合不易估计.
+
+残量具有特殊性质. 特别地, 基本正交性给出
+\MBSourceItem{8}
+\begin{equation}
+\MathBookFormulaID{formula-ch09-residual-orthogonality}
+\label{eq:ch09-residual-orthogonality}
+R(v):=a(e_h,v)=0
+\qquad\forall v\in V_h.
+\end{equation}
+设有第~\ref{sec:ch04-nonsmooth-function-interpolation} 节定义的插值算子 $I^h$, 满足
+\MBSourceItem{9}
+\begin{equation}
+\MathBookFormulaID{formula-ch09-element-quasi-interpolation}
+\label{eq:ch09-element-quasi-interpolation}
+\|v-I^hv\|_{L^2(T)}\leq\gamma_0h_T|v|_{H^1(T')}
+\end{equation}
+对所有 $T\in\mathcal T^h$ 成立, 并且
+\MBSourceItem{10}
+\begin{equation}
+\MathBookFormulaID{formula-ch09-face-quasi-interpolation}
+\label{eq:ch09-face-quasi-interpolation}
+\|v-I^hv\|_{L^2(e)}\leq\gamma_0h_e^{1/2}|v|_{H^1(T_e')}
+\end{equation}
+对 $\mathcal T^h$ 中所有面 $e$ 成立. 这里 $T'$ 和 $T_e'$ 分别表示与 $T$ 和 $T_e$ 接触的单元邻域, $T_e$ 是共享内部面 $e$ 的两个单元之并. 以下提到 $e$ 的法向量时省略下标 $e$.
+
+利用式~\eqref{eq:ch09-residual-orthogonality}--\eqref{eq:ch09-face-quasi-interpolation} 和 Cauchy--Schwarz 不等式,
+\begin{align*}
+\MathBookFormulaID{formula-ch09-residual-estimator-derivation}
+|R(v)|
+&=|R(v-I^hv)|\\
+&\leq\sum_T\|R_A\|_{L^2(T)}\|v-I^hv\|_{L^2(T)}
++\sum_e\|[\alpha n\cdot\nabla u_h]_n\|_{L^2(e)}\|v-I^hv\|_{L^2(e)}\\
+&\leq\gamma\left(\sum_eE_e(u_h)^2\right)^{1/2}|v|_{H^1(\Omega)},
+\end{align*}
+其中定义局部误差指标
+\MBSourceItem{11}
+\begin{equation}
+\MathBookFormulaID{formula-ch09-face-error-indicator}
+\label{eq:ch09-face-error-indicator}
+E_e(u_h)^2:=\sum_{T\subset T_e}h_T^2\|f+\nabla\cdot(\alpha\nabla u_h)\|_{L^2(T)}^2
++h_e\|[\alpha n\cdot\nabla u_h]_n\|_{L^2(e)}^2.
+\end{equation}
+这里 $h_K$ 的一个自然选择是 $K$ 的测度的 $1/\dim(K)$ 次幂, 其中 $K=T$ 或 $e$. 上述不等式可概括为
+\MBSourceItem{12}
+\begin{equation}
+\MathBookFormulaID{formula-ch09-residual-estimator-bound}
+\label{eq:ch09-residual-estimator-bound}
+|R(v)|\leq\gamma\left(\sum_eE_e(u_h)^2\right)^{1/2}|v|_{H^1(\Omega)},
+\end{equation}
+结合式~\eqref{eq:ch09-residual-energy-bound} 得
+\MBSourceItem{13}
+\begin{equation}
+\MathBookFormulaID{formula-ch09-global-estimator-upper-bound}
+\label{eq:ch09-global-estimator-upper-bound}
+|e_h|_{H^1(\Omega)}\leq\frac{\gamma}{\alpha_0}
+\left(\sum_eE_e(u_h)^2\right)^{1/2}.
+\end{equation}
+这里 $\gamma$ 只与插值误差有关.
+
+我们采用了以边(或面)为中心的局部误差估计量, 因为这种形式更便于描述下界估计(见第~\ref{sec:ch09-local-error-estimates} 节). 也可以采用以单元为中心的形式
+\MBSourceItem{14}
+\begin{equation}
+\MathBookFormulaID{formula-ch09-element-error-indicator}
+\label{eq:ch09-element-error-indicator}
+E_T(u_h)^2:=h_T^2\|R_A\|_{L^2(T)}^2
++\sum_{e\subset\partial T}h_e\|[\alpha n\cdot\nabla u_h]_n\|_{L^2(e)}^2,
+\end{equation}
+并得到类似结果.
+
+回到式~\eqref{eq:ch09-global-estimator-upper-bound}, 可取 $\gamma=c_0\gamma_0$, 其中 $c_0$ 只依赖于式~\eqref{eq:ch09-element-mesh-size-comparability} 中的常数和网格单元邻居数的上界, 因而只依赖于网格 $\mathcal T^h$ 的非退化性.
+
+\MBSourceItem{15}
+\begin{Theorem}
+\label{thm:ch09-residual-estimator-upper-bound}
+设式~\eqref{eq:ch09-diffusion-form} 中的系数 $\alpha$ 和右端 $f$ 在非退化网格族 $\mathcal T^h$ 上分片光滑. 在假设~\eqref{eq:ch09-element-quasi-interpolation} 和~\eqref{eq:ch09-face-quasi-interpolation} 下, 上界~\eqref{eq:ch09-global-estimator-upper-bound} 成立, 其中 $\gamma$ 只依赖于网格 $\mathcal T^h$ 的非退化性, $\alpha_0$ 是 $\alpha$ 在 $\Omega$ 上的下界.
+\end{Theorem}

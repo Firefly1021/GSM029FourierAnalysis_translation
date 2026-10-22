@@ -1,0 +1,126 @@
+\MathBookSourcePage{229}
+\subsection{化为加权估计}
+\label{sec:ch08-reduction-to-weighted-estimates}
+\setcounter{thmcount}{0}
+\setcounter{equation}{0}
+
+对 $z\in\overline K^z$, 令 $\delta^z\in C_0^\infty(K^z)$ 满足
+\MBSourceItem{1}
+\begin{equation}
+\MathBookFormulaID{formula-ch08-smoothed-delta-properties}
+\label{eq:ch08-smoothed-delta-properties}
+\begin{gathered}
+\int_\Omega\delta^z(x)P(x)\,dx=P(z)
+\qquad\forall P\in\mathcal P_{k_{\max}},\\
+\|\nabla_k\delta^z\|_{L^\infty(\Omega)}\leq C_kh^{-d-k},
+\qquad k=0,1,\ldots,
+\end{gathered}
+\end{equation}
+其中常数 $C_k$ 只依赖于剖分, $\nabla_k$ 表示所有 $k$ 阶导数组成的向量(参见习题~\ref{exr:ch08-07}). 根据构造,
+\MBSourceItem{2}
+\begin{equation}
+\MathBookFormulaID{formula-ch08-smoothed-delta-gradient-reproduction}
+\label{eq:ch08-smoothed-delta-gradient-reproduction}
+\nu\cdot\nabla v(z)=(\nu\cdot\nabla v,\delta^z)
+\qquad\forall v\in V_h
+\end{equation}
+对任意方向向量 $\nu$ 成立.
+
+定义 $g^z\in V$ 为伴随变分问题
+\[
+\MathBookFormulaID{formula-ch08-weighted-adjoint-green-problem}
+a(v,g^z)=(-\nu\cdot\nabla\delta^z,v)
+\qquad\forall v\in V
+\]
+的解. 注意 $\delta^z$ 和 $g^z$ 都依赖于 $h$, 但为简化记号省略这一点. 令 $g_h^z$ 表示 $g^z$ 的有限元逼近:
+\[
+\MathBookFormulaID{formula-ch08-weighted-adjoint-green-galerkin}
+a(v,g_h^z)=(-\nu\cdot\nabla\delta^z,v)
+\qquad\forall v\in V_h.
+\]
+由 $u,u_h,g^z,g_h^z$ 的定义和分部积分,
+\MBSourceItem{3}
+\begin{align}
+\MathBookFormulaID{formula-ch08-localization-identity}
+\nu\cdot\nabla u_h(z)
+&=(\nu\cdot\nabla u_h,\delta^z)=(u_h,-\nu\cdot\nabla\delta^z)
+=a(u_h,g_h^z)=a(u_h,g_h^z-g^z)+a(u_h,g^z)\notag\\
+&=a(u,g^z)-a(u,g^z-g_h^z)
+=(-\nu\cdot\nabla\delta^z,u)-a(u,g^z-g_h^z)\notag\\
+&=(\delta^z,\nu\cdot\nabla u)-a(u,g^z-g_h^z).
+\label{eq:ch08-localization-identity}
+\end{align}
+由 Hölder 不等式,
+\[
+\MathBookFormulaID{formula-ch08-adjoint-error-duality-bound}
+|a(g^z-g_h^z,u)|\leq C\|g^z-g_h^z\|_{W_1^1(\Omega)}\|u\|_{W_\infty^1(\Omega)}
+\]
+\[
+\MathBookFormulaID{formula-ch08-adjoint-error-weighted-bound}
+\leq C\left(\int_\Omega\sigma_z^{d+\lambda}|\nabla(g^z-g_h^z)|^2\,dx\right)^{1/2}
+\left(\int_\Omega\sigma_z^{-d-\lambda}\,dx\right)^{1/2}\|u\|_{W_\infty^1(\Omega)}.
+\]
+令
+\MBSourceItem{4}
+\begin{equation}
+\MathBookFormulaID{formula-ch08-weighted-green-error-supremum}
+\label{eq:ch08-weighted-green-error-supremum}
+M_h:=\sup_{z\in\overline\Omega}
+\left(\int_\Omega\sigma_z^{d+\lambda}
+\bigl(|\nabla(g^z-g_h^z)|^2+(g^z-g_h^z)^2\bigr)\,dx\right)^{1/2},
+\end{equation}
+则
+\MBSourceItem{5}
+\begin{equation}
+\MathBookFormulaID{formula-ch08-green-error-action-bound}
+\label{eq:ch08-green-error-action-bound}
+|a(g^z-g_h^z,u)|\leq CM_h
+\left(\int_\Omega\sigma_z^{-d-\lambda}\,dx\right)^{1/2}\|u\|_{W_\infty^1(\Omega)}
+\leq CM_h\lambda^{-1/2}(\kappa h)^{-\lambda/2}\|u\|_{W_\infty^1(\Omega)}.
+\end{equation}
+因此, 只需证明下述结论.
+
+\MBSourceItem{6}
+\begin{Lemma}
+\label{lem:ch08-weighted-green-error}
+适当选取 $\lambda>0$, 并令 $\kappa$ 足够大, 则存在 $h_0>0$, 使得对所有 $0<h<h_0$,
+\[
+\MathBookFormulaID{formula-ch08-weighted-green-error-lemma}
+\sup_{z\in\overline\Omega}\int_\Omega\sigma_z^{d+\lambda}
+\bigl(|\nabla(g^z-g_h^z)|^2+(g^z-g_h^z)^2\bigr)\,dx\leq Ch^\lambda.
+\]
+\end{Lemma}
+
+下一节将通过一系列命题给出证明. 作为推论, 立即得到下述结果.
+
+\MBSourceItem{7}
+\begin{Corollary}
+\label{cor:ch08-weighted-green-stability}
+存在 $C<\infty$ 和 $h_0>0$, 使得对所有 $0<h<h_0$,
+\[
+\MathBookFormulaID{formula-ch08-weighted-green-stability}
+\|g^z-g_h^z\|_{W_1^1(\Omega)}\leq C.
+\]
+\end{Corollary}
+
+由式~\eqref{eq:ch08-localization-identity}, 还有
+\[
+\MathBookFormulaID{formula-ch08-localization-functional}
+(\delta^z,\nu\cdot\nabla u)-\nu\cdot\nabla u_h(z)=a(u-v,g^z-g_h^z)
+\qquad\forall v\in V_h.
+\]
+应用引理~\ref{lem:ch08-weighted-green-error}, 可证明如下局部化结果.
+
+\MBSourceItem{8}
+\begin{Corollary}
+\label{cor:ch08-localized-gradient-average}
+对引理~\ref{lem:ch08-weighted-green-error} 中的 $\lambda>0$, 存在 $C<\infty$ 和 $h_0>0$, 使得对所有 $0<h<h_0$ 以及所有 $v\in V_h$,
+\[
+\MathBookFormulaID{formula-ch08-localized-gradient-average}
+|(\delta^z,\nu\cdot\nabla u)-\nu\cdot\nabla u_h(z)|
+\leq C\inf_{v\in V_h}
+\left(\int_\Omega h^\lambda\sigma_z^{-d-\lambda}|\nabla(u-v)|^2\,dx\right)^{1/2}.
+\]
+\end{Corollary}
+
+这个结果表明, $\nu\cdot\nabla u_h(z)$ 非常接近 $z$ 附近 $\nu\cdot\nabla u$ 的某种平均值, 而其差由逼近误差(即最佳逼近误差)控制. 这里的误差是局部化的, 因为权函数 $h^\lambda\sigma_z^{-d-\lambda}(x)$ 是一种光滑化的 Dirac $\delta$ 函数, 当 $x$ 远离 $z$ 时衰减到零, 至少与 $|x-z|^{-d}$ 一样快.

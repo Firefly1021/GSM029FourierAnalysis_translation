@@ -1,0 +1,362 @@
+\MathBookSourcePage{264}
+\subsection{一种收敛的自适应算法}
+\label{sec:ch09-convergent-adaptive-algorithm}
+\setcounter{thmcount}{0}
+\setcounter{equation}{0}
+
+可以用第~\ref{sec:ch09-error-estimators} 节的误差估计量为变分问题~\eqref{eq:ch09-model-variational-problem} 定义一种自适应算法(Mekchay and Nochetto 2005), 其中 $a(\cdot,\cdot)$ 由式~\eqref{eq:ch09-diffusion-form} 定义, 并假设 $\alpha(x)$ 在 $\Omega$ 上 Lipschitz 连续. 算法生成 $\Omega$ 的一列嵌套非退化剖分 $\{\mathcal T^j\}_{j\geq1}$, 以及来自有限元空间 $V_j$ 的相应 Galerkin 逼近 $u_j$, 其中 $V_j$ 由次数不超过 $k$ 的分片多项式函数组成. 证明算法收敛的关键, 是相邻两个网格细化层上的有限元解之间的若干关系.
+
+设 $\mathcal T^j$ 和 $\mathcal T^{j+1}$ 是该序列中的相邻剖分, 且 $\mathcal T^{j+1}$ 是 $\mathcal T^j$ 的细化. 假设存在正常数 $0<\gamma_1<1$, 使得
+\MBSourceItem{1}
+\begin{equation}
+\MathBookFormulaID{formula-ch09-refinement-size-lower-ratio}
+\label{eq:ch09-refinement-size-lower-ratio}
+\gamma_1h_T\leq h_{T'}
+\quad\text{若 }T\in\mathcal T^j, T'\in\mathcal T^{j+1}, T'\subset T.
+\end{equation}
+这里不用要求 $\alpha,f$ 分片多项式的定理~\ref{thm:ch09-global-estimator-lower-bound}, 而采用包含单元残量 $R_{A,j}$ 振荡的局部误差估计. 下标 $j$ 表示与 $u_j$ 对应的误差估计量. 令 $Q_j$ 是关于剖分 $\mathcal T^j$ 到次数 $k-1$ 的不连续分片多项式空间的 $L^2$ 正交投影. 定义
+\MBSourceItem{2}
+\begin{equation}
+\MathBookFormulaID{formula-ch09-data-oscillation}
+\label{eq:ch09-data-oscillation}
+\operatorname{osc}_j(T)
+=h_T\|R_{A,j}-Q_jR_{A,j}\|_{L^2(T)}
+\qquad\forall T\in\mathcal T^j,
+\end{equation}
+其中 $h_T=\operatorname{diam}T$, 并令
+\[
+\MathBookFormulaID{formula-ch09-global-data-oscillation}
+\operatorname{osc}_j(\Omega)
+=\left(\sum_{T\in\mathcal T^j}\operatorname{osc}_j(T)^2\right)^{1/2}.
+\]
+单元 $T$ 上的能量半范数定义为
+\[
+\MathBookFormulaID{formula-ch09-element-energy-seminorm}
+|||v|||_T:=\left(\int_T\alpha|\nabla v|^2\,dx\right)^{1/2},
+\]
+因而 $\|v\|_E^2=\sum_{T\in\mathcal T^j}|||v|||_T^2$.
+
+\MBSourceItem{3}
+\begin{Lemma}
+\label{lem:ch09-element-residual-reduction}
+设单元 $T\in\mathcal T^j$ 的内部含有 $\mathcal T^{j+1}$ 的一个节点. 则
+\MBSourceItem{4}
+\begin{equation}
+\MathBookFormulaID{formula-ch09-element-residual-reduction}
+\label{eq:ch09-element-residual-reduction}
+h_T^2\|R_{A,j}\|_{L^2(T)}^2
+\leq C\left(|||u_{j+1}-u_j|||_T^2+\operatorname{osc}_j(T)^2\right),
+\end{equation}
+其中 $C>0$ 只依赖于 $\{\mathcal T^j\}_{j\geq1}$ 的形状正则性、$\alpha(x)$ 的上界 $\alpha_1$, 以及式~\eqref{eq:ch09-refinement-size-lower-ratio} 中的 $\gamma_1$.
+\end{Lemma}
+
+\begin{Proof}
+设 $p$ 是 $T$ 内部的一个 $\mathcal T^{j+1}$ 节点, $\zeta$ 是关于 $\mathcal T^{j+1}$ 的分片线性函数, 在 $p$ 处等于 $1$, 在所有其他节点处等于 $0$. 则 $v=\zeta Q_jR_{A,j}\in V_{j+1}$, 且在 $T$ 外恒为零, 因而在 $\mathcal T^j$ 的所有面上为零. 由式~\eqref{eq:ch09-residual-equation}--\eqref{eq:ch09-element-residual} 和习题~\ref{exr:ch09-18},
+\MBSourceItem{5}
+\begin{align}
+\MathBookFormulaID{formula-ch09-projected-residual-bubble-bound}
+\label{eq:ch09-projected-residual-bubble-bound}
+\|Q_jR_{A,j}\|_{L^2(T)}^2
+&\leq C\int_\Omega\zeta(Q_jR_{A,j})^2\,dx\notag\\
+&=C\left(\int_\Omega(Q_jR_{A,j}-R_{A,j})\zeta Q_jR_{A,j}\,dx
++\int_\Omega R_{A,j}v\,dx\right)\notag\\
+&\leq C\left(\|R_{A,j}-Q_jR_{A,j}\|_{L^2(T)}
+\|Q_jR_{A,j}\|_{L^2(T)}+a(u-u_j,v)\right).
+\end{align}
+由 Galerkin 正交性、式~\eqref{eq:ch09-refinement-size-lower-ratio} 和逆估计,
+\MBSourceItem{6}
+\begin{align}
+\MathBookFormulaID{formula-ch09-level-difference-test-bound}
+\label{eq:ch09-level-difference-test-bound}
+a(u-u_j,v)
+&=a(u_{j+1}-u_j,v)\notag\\
+&\leq|||u_{j+1}-u_j|||_T|||v|||_T\notag\\
+&\leq Ch_T^{-1}|||u_{j+1}-u_j|||_T\|Q_jR_{A,j}\|_{L^2(T)}.
+\end{align}
+合并式~\eqref{eq:ch09-projected-residual-bubble-bound} 和~\eqref{eq:ch09-level-difference-test-bound}, 得
+\[
+\MathBookFormulaID{formula-ch09-projected-residual-final-bound}
+\|Q_jR_{A,j}\|_{L^2(T)}
+\leq C\left(h_T^{-1}|||u_{j+1}-u_j|||_T
++\|R_{A,j}-Q_jR_{A,j}\|_{L^2(T)}\right),
+\]
+再由式~\eqref{eq:ch09-data-oscillation} 即得结论.
+\end{Proof}
+
+\MBSourceItem{7}
+\begin{Lemma}
+\label{lem:ch09-face-jump-reduction}
+设 $e$ 是 $\mathcal T^j$ 的一个内部面, $T_e$ 是 $\mathcal T^j$ 中共享 $e$ 的两个单元之集. 假设 $e$ 及 $T_e$ 中的单元内部都含有 $\mathcal T^{j+1}$ 的节点. 则
+\MBSourceItem{8}
+\begin{equation}
+\MathBookFormulaID{formula-ch09-face-jump-reduction}
+\label{eq:ch09-face-jump-reduction}
+h_e\|J_j\|_{L^2(e)}^2
+\leq C\sum_{T\in T_e}
+\left(|||u_{j+1}-u_j|||_T^2+\operatorname{osc}_j(T)^2\right),
+\end{equation}
+其中 $J_j|_e=[\alpha n_e\cdot\nabla u_j]_{n_e}$, 且 $C>0$ 只依赖于 $\{\mathcal T^j\}_{j\geq1}$ 的形状正则性、$\alpha(x)$ 的上下界 $\alpha_1,\alpha_0$, 以及式~\eqref{eq:ch09-refinement-size-lower-ratio} 中的 $\gamma_1$.
+\end{Lemma}
+
+\begin{Proof}
+设 $p$ 是 $e$ 内部的一个 $\mathcal T^{j+1}$ 节点, $\zeta$ 是关于 $\mathcal T^{j+1}$ 的分片线性节点函数. 令 $w$ 为次数不超过 $k-1$ 的多项式, 它在 $e$ 上等于 $[n\cdot\nabla u_j]_n$, 并沿 $e$ 的法向为常数. 则 $v=\zeta w\in V_{j+1}$, 且在 $T_e$ 的两个单元之外恒为零. 特别地, $v$ 在 $\mathcal T^j$ 除 $e$ 外的所有面上为零. 此外,
+\MBSourceItem{9}
+\begin{equation}
+\MathBookFormulaID{formula-ch09-face-bubble-scaling}
+\label{eq:ch09-face-bubble-scaling}
+\|v\|_{L^2(T)}^2
+\leq Ch_e\|v\|_{L^2(e)}^2
+\leq Ch_e\|J_j\|_{L^2(e)}^2
+\qquad\forall T\in T_e.
+\end{equation}
+由式~\eqref{eq:ch09-residual-equation}--\eqref{eq:ch09-element-residual} 和习题~\ref{exr:ch09-18},
+\MBSourceItem{10}
+\begin{align}
+\MathBookFormulaID{formula-ch09-jump-bubble-identity}
+\label{eq:ch09-jump-bubble-identity}
+\|J_j\|_{L^2(e)}^2
+&\leq\alpha_1\|w\|_{L^2(e)}^2
+\leq C\int_e\zeta|w|^2\,ds\notag\\
+&\leq C\alpha_0^{-1}\int_e[\alpha n\cdot\nabla u_j]_nv\,ds\notag\\
+&=C\left(a(u-u_j,v)-\sum_{T\in T_e}\int_TR_{A,j}v\,dx\right).
+\end{align}
+由 Galerkin 正交性、逆估计和式~\eqref{eq:ch09-face-bubble-scaling},
+\[
+\MathBookFormulaID{formula-ch09-jump-energy-term-bound}
+a(u-u_j,v)
+\leq Ch_e^{-1/2}\sum_{T\in T_e}|||u_{j+1}-u_j|||_T\|J_j\|_{L^2(e)}.
+\]
+而利用引理~\ref{lem:ch09-element-residual-reduction} 和式~\eqref{eq:ch09-face-bubble-scaling},
+\[
+\MathBookFormulaID{formula-ch09-jump-volume-term-bound}
+\sum_{T\in T_e}\int_TR_{A,j}v\,dx
+\leq Ch_e^{-1/2}\|J_j\|_{L^2(e)}
+\sum_{T\in T_e}\left(|||u_{j+1}-u_j|||_T+\operatorname{osc}_j(T)\right).
+\]
+将这两个估计代入式~\eqref{eq:ch09-jump-bubble-identity} 即得式~\eqref{eq:ch09-face-jump-reduction}.
+\end{Proof}
+
+合并引理~\ref{lem:ch09-element-residual-reduction} 和~\ref{lem:ch09-face-jump-reduction}, 可得式~\eqref{eq:ch09-face-error-indicator} 中误差估计量的如下推论.
+
+\MBSourceItem{11}
+\begin{Corollary}
+\label{cor:ch09-estimator-level-reduction}
+在引理~\ref{lem:ch09-face-jump-reduction} 的假设下,
+\[
+\MathBookFormulaID{formula-ch09-estimator-level-reduction}
+E_e(u_j)^2
+\leq C\sum_{T\in T_e}
+\left(|||u_{j+1}-u_j|||_T^2+\operatorname{osc}_j(T)^2\right),
+\]
+其中 $C>0$ 只依赖于 $\{\mathcal T^j\}_{j\geq1}$ 的形状正则性、$\alpha(x)$ 的上下界 $\alpha_1,\alpha_0$, 以及式~\eqref{eq:ch09-refinement-size-lower-ratio} 中的 $\gamma_1$.
+\end{Corollary}
+
+Galerkin 正交性还给出
+\MBSourceItem{12}
+\begin{equation}
+\MathBookFormulaID{formula-ch09-pythagoras-energy-errors}
+\label{eq:ch09-pythagoras-energy-errors}
+\|u_{j+1}-u_j\|_E^2
+=\|u-u_j\|_E^2-\|u-u_{j+1}\|_E^2.
+\end{equation}
+因此 $\|u_{j+1}-u_j\|_E$ 度量全局能量误差的减小. 对足够光滑的数据, $\operatorname{osc}_j(T)$ 很小, 故推论~\ref{cor:ch09-estimator-level-reduction} 表明: 细化 $\mathcal T^j$ 中的单元时, $E_e(u_j)$ 能局部估计能量误差的减小. 下面 Morin, Nochetto and Siebert (2000) 的例子说明, 引理~\ref{lem:ch09-element-residual-reduction} 和~\ref{lem:ch09-face-jump-reduction} 中要求出现新内部节点的条件, 对通过网格细化减小能量误差是必要的.
+
+\MathBookSourcePage{268}
+\MBSourceItem{13}
+\begin{Example}
+\label{ex:ch09-refinement-without-energy-reduction}
+考虑单位正方形 $\Omega=(0,1)\times(0,1)$ 上的变分问题~\eqref{eq:ch09-model-variational-problem}, 其中 $\alpha=1=f$. 令 $\mathcal T^1$ 是由正方形两条对角线所得的剖分(见图~\ref{fig:ch09-refinement-without-new-nodes}), $\mathcal T^2$ 是从 $\mathcal T^1$ 出发, 以 $(1/2,1/2)$ 作为 $\mathcal T^1$ 的最新顶点, 经过两次最新顶点二分所得的剖分(见同一图). 则与 $\mathcal T^1$ 对应的相容分片线性有限元解 $u_1$, 和与 $\mathcal T^2$ 对应的相容分片线性有限元解 $u_2$ 完全相同. 证明只需简单计算, 留作习题~\ref{exr:ch09-19}. 注意本例中 $\operatorname{osc}_1(\Omega)=0=\|u_2-u_1\|_E$, 这说明若网格未被适当细化, 引理~\ref{lem:ch09-element-residual-reduction} 和~\ref{lem:ch09-face-jump-reduction} 并不成立.
+\end{Example}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=.42\textwidth]{chapter-09-refinement-without-new-nodes.png}
+\caption{粗网格单元内部不增加新节点的细化.}
+\label{fig:ch09-refinement-without-new-nodes}
+\end{figure}
+
+下面考察 $\operatorname{osc}_j$ 与 $\operatorname{osc}_{j+1}$ 的关系.
+
+\MBSourceItem{14}
+\begin{Lemma}
+\label{lem:ch09-oscillation-reduction}
+设 $T\in\mathcal T^j$ 被细分成 $\mathcal T^{j+1}$ 中的单元, 并满足
+\MBSourceItem{15}
+\begin{equation}
+\MathBookFormulaID{formula-ch09-refinement-size-upper-ratio}
+\label{eq:ch09-refinement-size-upper-ratio}
+h_{T'}\leq\gamma_2h_T
+\quad\text{若 }T'\in\mathcal T^{j+1}, T'\subset T,
+\end{equation}
+其中 $0<\gamma_2\leq1$. 则对任意 $0<\delta<1$,
+\[
+\MathBookFormulaID{formula-ch09-oscillation-reduction}
+\sum_{T'\in\mathcal T_{T,j+1}}\operatorname{osc}_{j+1}(T')^2
+\leq(1+\delta)\gamma_2^2\operatorname{osc}_j(T)^2
++C\delta^{-1}|||u_{j+1}-u_j|||_T^2,
+\]
+其中 $\mathcal T_{T,j+1}:=\{T'\in\mathcal T^{j+1}:T'\subset T\}$, 且 $C>0$ 只依赖于 $\alpha_0,\alpha_1,\|\nabla\alpha\|_{L^\infty(\Omega)}$ 和 $\{\mathcal T^j\}_{j\geq1}$ 的形状正则性.
+\end{Lemma}
+
+\begin{Proof}
+对 $T'\in\mathcal T_{T,j+1}$,
+\[
+\MathBookFormulaID{formula-ch09-consecutive-element-residuals}
+R_{A,j+1}=R_{A,j}+\nabla\cdot\bigl(\alpha\nabla(u_{j+1}-u_j)\bigr).
+\]
+由式~\eqref{eq:ch09-data-oscillation}、$L^2$ 投影的最优性、式~\eqref{eq:ch09-refinement-size-upper-ratio} 和逆估计,
+\begin{align*}
+\MathBookFormulaID{formula-ch09-oscillation-reduction-proof}
+\sum_{T'\in\mathcal T_{T,j+1}}\operatorname{osc}_{j+1}(T')^2
+&\leq(1+\delta)\gamma_2^2h_T^2\|R_{A,j}-Q_jR_{A,j}\|_{L^2(T)}^2\\
+&\quad+C\delta^{-1}h_T^2\left(
+\|\nabla\alpha\|_{L^\infty(\Omega)}^2|u_{j+1}-u_j|_{H^1(T)}^2
++\alpha_1^2\|\Delta(u_{j+1}-u_j)\|_{L^2(T)}^2\right)\\
+&\leq(1+\delta)\gamma_2^2\operatorname{osc}_j(T)^2
++C\alpha_0^{-1}\delta^{-1}|||u_{j+1}-u_j|||_T^2.
+\end{align*}
+\end{Proof}
+
+令 $\mathcal T^1$ 是 $\Omega$ 的给定初始剖分, 且 $0<\theta_1,\theta_2<1$. 自适应算法由
+\[
+\MathBookFormulaID{formula-ch09-adaptive-loop}
+\mathrm{SOLVE}\longrightarrow\mathrm{ESTIMATE}\longrightarrow
+\mathrm{MARK}\longrightarrow\mathrm{REFINE}
+\]
+形式的循环组成. 对 $j=1,2,\ldots$, 直至收敛, 执行:
+
+\begin{itemize}
+\item 计算 $u_j\in V_j$, 使
+\[
+\MathBookFormulaID{formula-ch09-adaptive-solve-step}
+a(u_j,v)=\int_\Omega fv\,dx
+\qquad\forall v\in V_j.
+\]
+\item 对 $\mathcal T^j$ 的所有内部面 $e$ 计算 $E_e(u_j)$, 对所有 $T\in\mathcal T^j$ 计算 $\operatorname{osc}_j(T)$.
+\item 令 $\mathcal F_j$ 为 $\mathcal T^j$ 的内部面集. 选择 $\mathcal F_j'\subset\mathcal F_j$, 使
+\MBSourceItem{16}
+\begin{equation}
+\MathBookFormulaID{formula-ch09-estimator-marking}
+\label{eq:ch09-estimator-marking}
+\theta_1^2\sum_{e\in\mathcal F_j}E_e(u_j)^2
+\leq\sum_{e\in\mathcal F_j'}E_e(u_j)^2,
+\end{equation}
+并选择 $\mathcal T_j'\subset\mathcal T^j$, 使
+\MBSourceItem{17}
+\begin{equation}
+\MathBookFormulaID{formula-ch09-oscillation-marking}
+\label{eq:ch09-oscillation-marking}
+\theta_2^2\operatorname{osc}_j(\Omega)^2
+\leq\sum_{T\in\mathcal T_j'}\operatorname{osc}_j(T)^2.
+\end{equation}
+\item 细化 $\mathcal T^j$ 得到 $\mathcal T^{j+1}$, 并满足: (i) 剖分保持非退化; (ii) $\mathcal F_j'$ 中每个面内部都含有 $\mathcal T^{j+1}$ 的一个节点; (iii) 若 $e\in\mathcal F_j'$ 是 $T\in\mathcal T^j$ 的一个面, 则 $T$ 内部含有 $\mathcal T^{j+1}$ 的一个节点, 且 $T$ 的细化满足~\eqref{eq:ch09-refinement-size-lower-ratio}; (iv) 所有 $T\in\mathcal T_j'$ 的细化均以某个 $\gamma_2<1$ 满足~\eqref{eq:ch09-refinement-size-upper-ratio}.
+\end{itemize}
+
+下面的定理(Mekchay and Nochetto 2005)说明 $u_j$ 在能量范数中收敛到 $u$.
+
+\MBSourceItem{18}
+\begin{Theorem}
+\label{thm:ch09-adaptive-contraction}
+设 $\{u_j\}_{j\geq1}$ 是自适应算法生成的有限元解序列. 则存在正常数 $\theta$ 和 $\eta$, 使 $0<\theta<1$, 且
+\MBSourceItem{19}
+\begin{equation}
+\MathBookFormulaID{formula-ch09-adaptive-contraction}
+\label{eq:ch09-adaptive-contraction}
+\|u-u_{j+1}\|_E^2+\eta\operatorname{osc}_{j+1}(\Omega)^2
+\leq\theta\left(\|u-u_j\|_E^2+\eta\operatorname{osc}_j(\Omega)^2\right).
+\end{equation}
+$\theta$ 和 $\eta$ 只依赖于 $\alpha(x)$、$\{\mathcal T^j\}_{j\geq1}$ 的形状正则性、式~\eqref{eq:ch09-refinement-size-lower-ratio} 和~\eqref{eq:ch09-refinement-size-upper-ratio} 中的 $\gamma_1,\gamma_2$, 以及式~\eqref{eq:ch09-estimator-marking} 和~\eqref{eq:ch09-oscillation-marking} 中的 $\theta_1,\theta_2$.
+\end{Theorem}
+
+\begin{Proof}
+以下用 $C_\ell$, $1\leq\ell\leq4$, 表示大于 $1$ 的正常数, 它们只依赖于 $\alpha(x),\gamma_1,\gamma_2$ 和 $\{\mathcal T^j\}_{j\geq1}$ 的形状正则性. 由式~\eqref{eq:ch09-global-estimator-upper-bound}、\eqref{eq:ch09-estimator-marking} 和推论~\ref{cor:ch09-estimator-level-reduction},
+\MBSourceItem{20}
+\begin{align}
+\MathBookFormulaID{formula-ch09-marked-estimator-reduction}
+\label{eq:ch09-marked-estimator-reduction}
+\theta_1^2\|u-u_j\|_E^2
+&\leq C_1\theta_1^2\sum_{e\in\mathcal F_j}E_e(u_j)^2\notag\\
+&\leq C_1\sum_{e\in\mathcal F_j'}E_e(u_j)^2\notag\\
+&\leq C_1C_2\left(\|u_{j+1}-u_j\|_E^2
++\operatorname{osc}_j(\Omega)^2\right).
+\end{align}
+结合式~\eqref{eq:ch09-pythagoras-energy-errors} 得
+\MBSourceItem{21}
+\begin{equation}
+\MathBookFormulaID{formula-ch09-energy-error-reduction}
+\label{eq:ch09-energy-error-reduction}
+\|u-u_{j+1}\|_E^2
+\leq\left(1-\frac{\theta_1^2}{C_1C_2}\right)\|u-u_j\|_E^2
++\operatorname{osc}_j(\Omega)^2.
+\end{equation}
+
+由引理~\ref{lem:ch09-oscillation-reduction},
+\MBSourceItem{22}
+\begin{align}
+\MathBookFormulaID{formula-ch09-global-oscillation-reduction-prebound}
+\label{eq:ch09-global-oscillation-reduction-prebound}
+\operatorname{osc}_{j+1}(\Omega)^2
+&\leq(1+\delta)\left(
+\gamma_2^2\sum_{T\in\mathcal T_j'}\operatorname{osc}_j(T)^2
++\sum_{T\in\mathcal T^j\setminus\mathcal T_j'}\operatorname{osc}_j(T)^2\right)\notag\\
+&\quad+C_3\delta^{-1}\|u_{j+1}-u_j\|_E^2.
+\end{align}
+由标记条件~\eqref{eq:ch09-oscillation-marking},
+\[
+\MathBookFormulaID{formula-ch09-marked-oscillation-fraction}
+\gamma_2^2\sum_{T\in\mathcal T_j'}\operatorname{osc}_j(T)^2
++\sum_{T\in\mathcal T^j\setminus\mathcal T_j'}\operatorname{osc}_j(T)^2
+\leq\left(1-(1-\gamma_2^2)\theta_2^2\right)\operatorname{osc}_j(\Omega)^2.
+\]
+因此由式~\eqref{eq:ch09-pythagoras-energy-errors} 和~\eqref{eq:ch09-global-oscillation-reduction-prebound},
+\MBSourceItem{23}
+\begin{equation}
+\MathBookFormulaID{formula-ch09-global-oscillation-reduction}
+\label{eq:ch09-global-oscillation-reduction}
+\operatorname{osc}_{j+1}(\Omega)^2
+\leq\rho\operatorname{osc}_j(\Omega)^2
++C_4\left(\|u-u_j\|_E^2-\|u-u_{j+1}\|_E^2\right),
+\end{equation}
+其中选择 $\delta>0$ 使
+\[
+\MathBookFormulaID{formula-ch09-oscillation-contraction-factor}
+\rho=(1+\delta)\left(1-(1-\gamma_2^2)\theta_2^2\right)<1,
+\qquad C_4=C_3\delta^{-1}.
+\]
+再选择 $\tau$ 使 $\chi=\rho+1/\tau<1$. 由式~\eqref{eq:ch09-energy-error-reduction} 和~\eqref{eq:ch09-global-oscillation-reduction},
+\begin{align*}
+\MathBookFormulaID{formula-ch09-combined-contraction-prebound}
+\|u-u_{j+1}\|_E^2+\tau\operatorname{osc}_{j+1}(\Omega)^2
+&\leq\left(1+\tau C_4-\frac{\theta_1^2}{C_1C_2}\right)\|u-u_j\|_E^2\\
+&\quad-\tau C_4\|u-u_{j+1}\|_E^2
++(\tau\rho+1)\operatorname{osc}_j(\Omega)^2.
+\end{align*}
+故
+\[
+\MathBookFormulaID{formula-ch09-combined-contraction}
+(1+\tau C_4)\|u-u_{j+1}\|_E^2
++\tau\operatorname{osc}_{j+1}(\Omega)^2
+\leq\left(1+\tau C_4-\frac{\theta_1^2}{C_1C_2}\right)\|u-u_j\|_E^2
++\chi\tau\operatorname{osc}_j(\Omega)^2.
+\]
+取
+\[
+\MathBookFormulaID{formula-ch09-contraction-parameters}
+\eta=\frac{\tau}{1+\tau C_4},
+\qquad
+\theta=\max\left\{1-\frac{\theta_1^2}{C_1C_2(1+\tau C_4)},\chi\right\},
+\]
+即得式~\eqref{eq:ch09-adaptive-contraction}.
+\end{Proof}
+
+\MBSourceItem{24}
+\begin{Remark}
+\label{rem:ch09-refinement-algorithms}
+满足本节自适应算法要求的细化算法见 Brenner and Carstensen (2003) 以及 Schmidt and Siebert (2005). 本节结果可推广到一般二阶椭圆问题(初始剖分必须足够细)以及分片 Lipschitz 系数(此时振荡的定义还涉及跨面的跳跃). 细节见 Mekchay and Nochetto (2005). 自适应有限元方法的其他收敛性分析见 Dörfler (1996), Morin, Nochetto and Siebert (2000 \& 2002), 以及 Carstensen and Hoppe (2006a \& 2006b).
+\end{Remark}
+
+\MBSourceItem{25}
+\begin{Remark}
+\label{rem:ch09-adaptive-optimality}
+实践中, 自适应算法生成的网格似乎是最优的, 参见 Mekchay and Nochetto (2005) 的数值例子. 自适应算法最优性的理论结果见 Binev, Dahmen and DeVore (2004) 以及 Stevenson (2007).
+\end{Remark}

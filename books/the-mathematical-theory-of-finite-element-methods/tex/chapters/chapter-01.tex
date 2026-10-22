@@ -1,0 +1,894 @@
+% Chapter 1. Source PDF pages 38--62 / printed pages 23--47.
+\clearpage
+\MathBookSourcePage{38}
+\section{Sobolev 空间}
+\label{chap:ch01-sobolev-spaces}
+
+本章致力于建立微分方程变分形式所使用的函数空间. 我们首先回顾 Lebesgue 积分理论, ``变分''导数或``弱''导数的概念正是建立在这一理论之上. 具有这种``广义''导数的函数构成通常所说的 Sobolev 空间. 我们只发展这些空间的已知理论中的一小部分, 其范围恰好足以为有限元方法奠定基础.
+
+\subsection{Lebesgue 积分理论回顾}
+\label{sec:ch01-lebesgue-review}
+
+现在回顾 Lebesgue 积分理论的基本概念, 参见 (Halmos 1991), (Royden 1988) 或 (Rudin 1987). 所谓``区域'', 是指 $\mathbb R^n$ 中内部非空的 Lebesgue 可测子集(通常为开集或闭集). 为简单起见, 我们只考虑给定区域 $\Omega$ 上的实值 Lebesgue 可测函数 $f$. 记
+\[
+\MathBookFormulaID{formula-ch01-lebesgue-integral}
+\int_\Omega f(x)\,dx
+\]
+为 $f$ 的 Lebesgue 积分, 其中 $dx$ 表示 Lebesgue 测度. 对 $1\leq p<\infty$, 令
+\[
+\MathBookFormulaID{formula-ch01-lp-norm}
+\|f\|_{L^p(\Omega)}:=\left(\int_\Omega|f(x)|^p\,dx\right)^{1/p},
+\]
+而当 $p=\infty$ 时令
+\[
+\MathBookFormulaID{formula-ch01-linfty-norm}
+\|f\|_{L^\infty(\Omega)}:=\mathop{\mathrm{ess\,sup}}\{|f(x)|:x\in\Omega\}.
+\]
+在两种情形下, 都定义 Lebesgue 空间
+\setcounter{equation}{0}
+\begin{equation}
+\MathBookFormulaID{formula-ch01-lebesgue-space}
+L^p(\Omega):=\{f:\|f\|_{L^p(\Omega)}<\infty\}.
+\label{eq:ch01-lebesgue-space}
+\end{equation}
+为避免函数之间无关紧要的差异, 我们把满足 $\|f-g\|_{L^p(\Omega)}=0$ 的两个函数 $f$ 和 $g$ 等同起来. 例如, 取 $n=1$, $\Omega=[-1,1]$ 以及
+\MathBookSourcePage{39}
+\begin{equation}
+\MathBookFormulaID{formula-ch01-ae-equivalent-step-functions}
+f(x):=\begin{cases}1,&x\geq0,\\0,&x<0,\end{cases}
+\qquad
+g(x):=\begin{cases}1,&x>0,\\0,&x\leq0.
+\end{cases}
+\label{eq:ch01-ae-equivalent-step-functions}
+\end{equation}
+$f$ 和 $g$ 只在一个零测集上不同(此处该集合只有一个点), 因而我们把它们看成同一个函数的代表. 于是, 尽管记号略有含混, 我们仍把 $L^p(\Omega)$ 看成关于这种等同关系的函数等价类的集合. 上面定义的泛函满足一些著名且有用的不等式.
+
+\setcounter{thmcount}{2}
+\begin{MBNamedStatement}{Minkowski 不等式}
+\label{thm:ch01-minkowski-inequality}
+若 $1\leq p\leq\infty$ 且 $f,g\in L^p(\Omega)$, 则
+\[
+\MathBookFormulaID{formula-ch01-minkowski-inequality}
+\|f+g\|_{L^p(\Omega)}\leq\|f\|_{L^p(\Omega)}+\|g\|_{L^p(\Omega)}.
+\]
+\end{MBNamedStatement}
+
+\begin{MBNamedStatement}{Hölder 不等式}
+\label{thm:ch01-holder-inequality}
+设 $1\leq p,q\leq\infty$ 且 $1=1/p+1/q$. 若 $f\in L^p(\Omega)$ 且 $g\in L^q(\Omega)$, 则 $fg\in L^1(\Omega)$, 并且
+\[
+\MathBookFormulaID{formula-ch01-holder-inequality}
+\|fg\|_{L^1(\Omega)}\leq\|f\|_{L^p(\Omega)}\|g\|_{L^q(\Omega)}.
+\]
+\end{MBNamedStatement}
+
+\begin{MBNamedStatement}{Schwarz 不等式}
+\label{thm:ch01-schwarz-inequality}
+这就是 $p=q=2$ 时的 Hölder 不等式. 也就是说, 若 $f,g\in L^2(\Omega)$, 则 $fg\in L^1(\Omega)$, 且
+\[
+\MathBookFormulaID{formula-ch01-schwarz-integral-inequality}
+\int_\Omega|f(x)g(x)|\,dx\leq\|f\|_{L^2(\Omega)}\|g\|_{L^2(\Omega)}.
+\]
+\end{MBNamedStatement}
+
+由 Minkowski 不等式和 $\|\cdot\|_{L^p(\Omega)}$ 的定义可知, $L^p(\Omega)$ 对线性组合封闭, 即它是一个线性空间(或向量空间). 此外, 泛函 $\|\cdot\|_{L^p(\Omega)}$ 具有使其成为范数的性质.
+
+\begin{Definition}
+\label{def:ch01-norm}
+给定线性(向量)空间 $V$, 范数 $\|\cdot\|$ 是从 $V$ 到非负实数的函数, 满足:
+\[
+\MathBookFormulaID{formula-ch01-norm-axioms}
+\begin{aligned}
+\mathrm{i)}\quad&\|v\|\geq0 &&\forall v\in V,\\
+&\|v\|=0\Longleftrightarrow v=0,\\
+\mathrm{ii)}\quad&\|c\cdot v\|=|c|\cdot\|v\| &&\forall c\in\mathbb R,\ v\in V,\\
+\mathrm{iii)}\quad&\|v+w\|\leq\|v\|+\|w\| &&\forall v,w\in V.
+\end{aligned}
+\]
+最后一个条件称为三角不等式.
+\end{Definition}
+
+
+
+范数 $\|\cdot\|$ 可以用来定义 $V$ 中点 $v,w$ 之间的距离或度量 $d(v,w)=\|v-w\|$. 赋予该度量所诱导拓扑的向量空间称为赋范线性空间. 回顾度量空间 $V$ 的完备性定义: $V$ 的每个元素 Cauchy 序列 $\{v_j\}$ 都在 $V$ 中有极限 $v$. 对赋范线性空间, Cauchy 序列满足 $\|v_j-v_k\|\to0$, $j,k\to\infty$, 而完备性意味着存在 $v\in V$ 使 $\|v_j-v\|\to0$, $j\to\infty$. 以下定义概括了理论发展所需的无限维线性空间的若干关键特征.
+
+\MathBookSourcePage{40}
+\begin{Definition}
+\label{def:ch01-banach-space}
+若赋范线性空间 $(V,\|\cdot\|)$ 关于由范数 $\|\cdot\|$ 诱导的度量完备, 则称它为 Banach 空间.
+\end{Definition}
+
+\begin{Theorem}
+\label{thm:ch01-lp-banach}
+对 $1\leq p\leq\infty$, $L^p(\Omega)$ 是 Banach 空间.
+\end{Theorem}
+
+这个定理的证明可在本节开头列出的文献中找到, 它是 Lebesgue 积分理论的基石. 注意, 它同时包含 Minkowski 不等式和 Lebesgue 积分的一个极限定理. 也就是说, 若 $f_j\to f$ 于 $L^p(\Omega)$, 则(参见习题~\ref{ex:ch01-exercise-03})
+\setcounter{equation}{8}
+\begin{equation}
+\MathBookFormulaID{formula-ch01-lp-integral-limit}
+\int_\Omega|f_j(x)|^p\,dx\longrightarrow\int_\Omega|f(x)|^p\,dx
+\qquad\text{as }j\to\infty.
+\label{eq:ch01-lp-integral-limit}
+\end{equation}
+不过, Hölder 不等式和更精细的极限定理并未反映在 Lebesgue 空间的这一刻画中.
+
+Lebesgue 积分优于 Riemann 积分的一个关键原因, 是它享有这种``完备性'': 可积函数的适当极限仍然可积, 而 Riemann 积分没有这一性质. 例如, 通过计算广义积分很容易确定函数 $\log x$ 在任一形如 $[0,a]$ 的有限区间上具有有限积分. 相应地, 若 $\{r_n:n=1,2,\ldots\}$ 在 $[0,1]$ 中稠密, 则函数
+\begin{equation}
+\MathBookFormulaID{formula-ch01-fj-log-series}
+f_j(x):=\sum_{n=1}^j2^{-n}\log|x-r_n|
+\label{eq:ch01-fj-log-series}
+\end{equation}
+都有广义积分, 并且容易看出
+\begin{equation}
+\MathBookFormulaID{formula-ch01-fj-integral-bound}
+\left|\int_0^1f_j(x)\,dx\right|\leq2\int_0^1|\log x|\,dx.
+\label{eq:ch01-fj-integral-bound}
+\end{equation}
+因此, ``极限''函数
+\begin{equation}
+\MathBookFormulaID{formula-ch01-f-log-series}
+f(x):=\sum_{n=1}^\infty2^{-n}\log|x-r_n|
+\label{eq:ch01-f-log-series}
+\end{equation}
+应当在 $[0,1]$ 上有有限的``积分'', 并同样满足
+\begin{equation}
+\MathBookFormulaID{formula-ch01-f-integral-bound}
+\left|\int_0^1f(x)\,dx\right|\leq2\int_0^1|\log x|\,dx.
+\label{eq:ch01-f-integral-bound}
+\end{equation}
+然而, $f$ 在 $[0,1]$ 的每个开子区间中都在某点取无穷大, 所以它在 $[0,1]$ 的任何子区间上都不是 Riemann 可积的. 因而即使使用``广义''Riemann 积分, 也无法判定 $f$ 是否具有有限积分. 另一方面, 可以证明(见习题~\ref{ex:ch01-exercise-06})它是 Lebesgue 可积的, 且 \eqref{eq:ch01-f-integral-bound} 成立.
+
+\MathBookSourcePage{41}
+\subsection{广义(弱)导数}
+\label{sec:ch01-weak-derivatives}
+
+在不同情形下, 有若干有用的导数定义. ``微积分''定义
+\[
+\MathBookFormulaID{formula-ch01-calculus-derivative}
+u'(x)=\lim_{h\to0}\frac{u(x+h)-u(x)}{h}
+\]
+是一种``局部''定义, 只涉及点 $x$ 附近的函数信息. 第~\ref{chap:ch00-basic-concepts} 章建立的变分形式采取了更为整体的观点, 因为不需要导数的逐点值, 只出现能够解释为 Lebesgue 空间 $L^2(\Omega)$ 中函数的导数. 在上一节中已经看到, Lebesgue 空间中函数的逐点值并不重要(参见 \eqref{eq:ch01-ae-equivalent-step-functions}); 这些空间中的函数仅由其整体行为决定. 因此, 很自然要建立一种更适合 Lebesgue 空间的整体导数概念. 我们使用一种``对偶''技巧来完成这件事: 通过把一类不太光滑的函数(见定义~\ref{def:ch01-locally-integrable})与非常非常光滑的函数(见定义~\ref{def:ch01-test-functions})比较来定义导数.
+
+首先引入微积分偏导数的一种简写, 即多重指标记号. 多重指标 $\alpha$ 是由非负整数组成的 $n$ 元组 $\alpha_i$. $\alpha$ 的长度为
+\[
+\MathBookFormulaID{formula-ch01-multi-index-length}
+|\alpha|:=\sum_{i=1}^n\alpha_i.
+\]
+对 $\phi\in C^\infty$, 用
+\[
+\MathBookFormulaID{formula-ch01-partial-derivative-notations}
+D^\alpha\phi,\quad D_x^\alpha\phi,\quad
+\left(\frac{\partial}{\partial x}\right)^\alpha\phi,\quad
+\phi^{(\alpha)},\quad\text{以及}\quad\partial_x^\alpha\phi
+\]
+表示通常的逐点偏导数
+\[
+\MathBookFormulaID{formula-ch01-multi-index-partial-derivative}
+\left(\frac{\partial}{\partial x_1}\right)^{\alpha_1}\cdots
+\left(\frac{\partial}{\partial x_n}\right)^{\alpha_n}\phi.
+\]
+给定向量 $(x_1,\ldots,x_n)$, 定义 $x^\alpha:=x_1^{\alpha_1}x_2^{\alpha_2}\cdots x_n^{\alpha_n}$. 若形式地用符号 $\partial/\partial x:=(\partial/\partial x_1,\ldots,\partial/\partial x_n)$ 替换 $x$, 则 $x^\alpha$ 的定义与上述 $(\partial/\partial x)^\alpha$ 的定义一致. 注意, 该导数的阶数为 $|\alpha|$.
+
+接着引入 $\mathbb R^n$ 中某区域上函数的支集概念. 对连续函数 $u$, 支集是开集 $\{x:u(x)\neq0\}$ 的闭包. 若该闭包为紧集(即有界)并包含在集合 $\Omega$ 的内部, 则称 $u$ 关于 $\Omega$ 具有``紧支集''. 在函数支集之外, 自然地把它定义为零, 从而将其延拓到整个 $\mathbb R^n$. 当 $\Omega$ 有界时, 这等价于说 $u$ 在 $\partial\Omega$ 的某个邻域中为零.
+
+\MathBookSourcePage{42}
+\setcounter{thmcount}{0}
+\begin{Definition}
+\label{def:ch01-test-functions}
+设 $\Omega$ 是 $\mathbb R^n$ 中的区域. 用 $\mathcal D(\Omega)$ 或 $C_0^\infty(\Omega)$ 表示 $\Omega$ 上具有紧支集的 $C^\infty(\Omega)$ 函数的集合.
+\end{Definition}
+
+在继续之前, 应当先确认刚才引入的定义并非空洞定义, 下面就来验证这一点.
+
+\begin{Example}
+\label{ex:ch01-bump-function}
+定义
+\[
+\MathBookFormulaID{formula-ch01-bump-function}
+\phi(x):=\begin{cases}
+e^{1/(|x|^2-1)},&|x|<1,\\
+0,&|x|\geq1.
+\end{cases}
+\]
+我们断言, 对任意多重指标 $\alpha$, 都存在某个多项式 $P_\alpha$ 使
+\[
+\MathBookFormulaID{formula-ch01-bump-derivative-form}
+\phi^{(\alpha)}(x)=\frac{P_\alpha(x)\phi(x)}{(1-|x|^2)^{|\alpha|}}.
+\]
+下面说明这一点. 当 $|x|<1$ 时, 对 $\alpha$ 归纳求导可得 $\phi^{(\alpha)}(x)=P_\alpha(x)e^{-t}t^{|\alpha|}$, 其中 $P_\alpha$ 为某个多项式且 $t=1/(1-|x|^2)$. 此外, 当 $|x|>1$ 时 $\phi^{(\alpha)}(x)=0$. 因而, 对 $|x|\neq1$, 上述 $\phi^{(\alpha)}$ 公式得到验证. 由于指数函数的增长快于任意有限次幂, 对任意整数 $k$ 都有
+\[
+\MathBookFormulaID{formula-ch01-bump-boundary-decay}
+\frac{\phi^{(\alpha)}(x)}{(1-|x|^2)^k}
+=\frac{P_\alpha(x)t^{|\alpha|+k}}{e^t}\longrightarrow0
+\quad\text{as }|x|\to1\ (t\to\infty).
+\]
+取 $k=0$ 并归纳应用这些事实, 可知 $\phi^{(\alpha)}$ 在 $|x|=1$ 处连续; 取 $k=1$ 又可知它在那里可微, 且导数为零. 因此, 所断言的公式对所有 $x$ 都成立. 这个论证还表明, 对所有 $\alpha$, $\phi^{(\alpha)}$ 都有界且连续. 所以, 对任意包含闭单位球的开集 $\Omega$, 都有 $\phi\in\mathcal D(\Omega)$. 适当地缩放变量可知, 对任意内部非空的 $\Omega$, $\mathcal D(\Omega)\neq\varnothing$.
+\end{Example}
+
+现在使用空间 $\mathcal D$ 把逐点导数的概念推广到比 $C^\infty$ 更大的函数类. 为简单起见, 我们把导数概念限制在以下函数空间中(更一般的定义见 (Schwartz 1957)).
+
+\begin{Definition}
+\label{def:ch01-locally-integrable}
+给定区域 $\Omega$, 局部可积函数的集合记为
+\[
+\MathBookFormulaID{formula-ch01-locally-integrable-space}
+L_{\mathrm{loc}}^1(\Omega):=
+\{f:f\in L^1(K)\ \forall\text{ compact }K\subset\operatorname{interior}\Omega\}.
+\]
+\end{Definition}
+
+$L_{\mathrm{loc}}^1(\Omega)$ 中的函数在边界附近可以表现得任意恶劣. 例如, $e^{e^{1/\operatorname{dist}(x,\partial\Omega)}}\in L_{\mathrm{loc}}^1(\Omega)$, 尽管这一点与我们使用该空间的方式关系不大. 记号上的一个便利之处是, $L_{\mathrm{loc}}^1(\Omega)$ 包含 $C^0(\Omega)$ 中的所有函数, 而无须施加增长限制. 最后给出新的导数定义.
+
+\MathBookSourcePage{43}
+\begin{Definition}
+\label{def:ch01-weak-derivative}
+给定 $f\in L_{\mathrm{loc}}^1(\Omega)$. 若存在 $g\in L_{\mathrm{loc}}^1(\Omega)$, 使得
+\[
+\MathBookFormulaID{formula-ch01-weak-derivative-definition}
+\int_\Omega g(x)\phi(x)\,dx
+=(-1)^{|\alpha|}\int_\Omega f(x)\phi^{(\alpha)}(x)\,dx
+\qquad\forall\phi\in\mathcal D(\Omega),
+\]
+则称 $f$ 有弱导数 $D_w^\alpha f$. 若这样的 $g$ 存在, 定义 $D_w^\alpha f=g$.
+\end{Definition}
+
+\begin{Example}
+\label{ex:ch01-absolute-value-weak-derivative}
+取 $n=1$, $\Omega=[-1,1]$, $f(x)=1-|x|$. 我们断言 $D_w^1f$ 存在, 且
+\[
+\MathBookFormulaID{formula-ch01-absolute-value-weak-derivative}
+g(x):=\begin{cases}1,&x<0,\\-1,&x>0.
+\end{cases}
+\]
+为说明这一点, 把区间 $[-1,1]$ 分成 $f$ 光滑的两部分并分部积分. 对 $\phi\in\mathcal D(\Omega)$,
+\[
+\MathBookFormulaID{formula-ch01-piecewise-integration-by-parts}
+\begin{aligned}
+\int_{-1}^1f(x)\phi'(x)\,dx
+&=\int_{-1}^0f(x)\phi'(x)\,dx+\int_0^1f(x)\phi'(x)\,dx\\
+&=-\int_{-1}^0(+1)\phi(x)\,dx+[f\phi]_{-1}^0
+  -\int_0^1(-1)\phi(x)\,dx+[f\phi]_0^1\\
+&=-\int_{-1}^1g(x)\phi(x)\,dx+(f\phi)(0^-)-(f\phi)(0^+)\\
+&=-\int_{-1}^1g(x)\phi(x)\,dx,
+\end{aligned}
+\]
+最后一步使用了 $f$ 在 $0$ 处的连续性. 可以验证(参见习题~\ref{ex:ch01-exercise-10}), 当 $j>1$ 时 $D_w^jf$ 不存在.
+\end{Example}
+
+粗略地说, 只要被求导的函数足够正则, 新导数定义就与旧定义相同. 特别地, 在上例中, $f$ 的连续性足以保证一阶弱导数存在, 但不足以保证二阶弱导数存在. 这一现象还依赖于维数 $n$, 因而微积分导数与弱导数之间的关系无法作简单刻画, 如下例所示.
+
+\begin{Example}
+\label{ex:ch01-radial-weak-derivative}
+设 $\rho$ 是定义在 $0<r\leq1$ 上的光滑函数, 满足
+\[
+\MathBookFormulaID{formula-ch01-radial-derivative-integrability}
+\int_0^1|\rho'(r)|r^{n-1}\,dr<\infty.
+\]
+在 $\Omega=\{x\in\mathbb R^n:|x|<1\}$ 上定义 $f(x)=\rho(|x|)$. 则对所有 $|\alpha|=1$, $D_w^\alpha f$ 都存在, 且
+\[
+\MathBookFormulaID{formula-ch01-radial-weak-derivative}
+g(x)=\rho'(|x|)x^\alpha/|x|.
+\]
+其验证留给习题~\ref{ex:ch01-exercise-12}.
+\end{Example}
+
+\MathBookSourcePage{44}
+这个例子表明, 微积分导数与弱导数之间的关系依赖于维数. 也就是说, $|x|^r$ 这样的函数是否具有弱导数, 不仅依赖于 $r$, 还依赖于 $n$(参见习题~\ref{ex:ch01-exercise-13}). 不过, 以下事实的证明留作习题, 它表明后者确实推广了前者.
+
+\begin{Proposition}
+\label{prop:ch01-classical-equals-weak}
+设 $\alpha$ 任意且 $\psi\in C^{|\alpha|}(\Omega)$. 则弱导数 $D_w^\alpha\psi$ 存在, 且等于 $D^\alpha\psi$.
+\end{Proposition}
+
+由此以后, 我们忽略 $D$ 与 $D_w$ 在定义上的差别. 也就是说, 一般地, 微分符号均指弱导数; 同时在适当场合仍使用光滑函数导数的经典性质.
+
+\subsection{Sobolev 范数及相关空间}
+\label{sec:ch01-sobolev-norms}
+
+利用弱导数概念, 可以把 Lebesgue 范数和空间推广为包含导数的范数和空间.
+
+\setcounter{thmcount}{0}
+\begin{Definition}
+\label{def:ch01-sobolev-norm-space}
+设 $k$ 为非负整数, $f\in L_{\mathrm{loc}}^1(\Omega)$, 并假设对所有 $|\alpha|\leq k$, 弱导数 $D_w^\alpha f$ 都存在. 当 $1\leq p<\infty$ 时, 定义 Sobolev 范数
+\[
+\MathBookFormulaID{formula-ch01-sobolev-norm-finite-p}
+\|f\|_{W_p^k(\Omega)}:=
+\left(\sum_{|\alpha|\leq k}\|D_w^\alpha f\|_{L^p(\Omega)}^p\right)^{1/p},
+\]
+当 $p=\infty$ 时定义
+\[
+\MathBookFormulaID{formula-ch01-sobolev-norm-infinity}
+\|f\|_{W_\infty^k(\Omega)}:=
+\max_{|\alpha|\leq k}\|D_w^\alpha f\|_{L^\infty(\Omega)}.
+\]
+在两种情形下, Sobolev 空间都定义为
+\[
+\MathBookFormulaID{formula-ch01-sobolev-space}
+W_p^k(\Omega):=\{f\in L_{\mathrm{loc}}^1(\Omega):
+\|f\|_{W_p^k(\Omega)}<\infty\}.
+\]
+\end{Definition}
+
+在特殊情形下, Sobolev 空间可以与其他空间联系起来. 例如, 回顾 Lipschitz 范数
+\[
+\MathBookFormulaID{formula-ch01-lipschitz-norm}
+\|f\|_{\operatorname{Lip}(\Omega)}=
+\|f\|_{L^\infty(\Omega)}+
+\sup\left\{\frac{|f(x)-f(y)|}{|x-y|}:x,y\in\Omega,\ x\neq y\right\},
+\]
+以及相应的 Lipschitz 函数空间
+\MathBookSourcePage{45}
+\[
+\MathBookFormulaID{formula-ch01-lipschitz-space}
+\operatorname{Lip}(\Omega)=
+\{f\in L^\infty(\Omega):\|f\|_{\operatorname{Lip}(\Omega)}<\infty\}.
+\]
+在一定的区域条件下, 对所有维数 $n$ 都有 $\operatorname{Lip}(\Omega)=W_\infty^1(\Omega)$, 且两者范数等价(参见习题~\ref{ex:ch01-exercise-15} 和习题~\ref{ex:ch01-exercise-14}). 所谓线性空间 $V$ 上的两个范数 $\|\cdot\|_1$ 和 $\|\cdot\|_2$ 等价, 是指存在正常数 $C<\infty$, 使
+\[
+\MathBookFormulaID{formula-ch01-equivalent-norms}
+\|v\|_1/C\leq\|v\|_2\leq C\|v\|_1
+\qquad\forall v\in V.
+\]
+此外, 当 $k>1$ 时,
+\[
+\MathBookFormulaID{formula-ch01-winfinity-characterization}
+W_\infty^k(\Omega)=
+\{f\in C^{k-1}(\Omega):f^{(\alpha)}\in\operatorname{Lip}(\Omega)
+\ \forall|\alpha|\leq k-1\}.
+\]
+在一维情形 $(n=1)$ 中, 空间 $W_1^1(\Omega)$ 可以刻画为区间 $\Omega$ 上绝对连续函数的集合(参见 (Hartman \& Mikusinski 1961) 以及习题~\ref{ex:ch01-exercise-17} 和习题~\ref{ex:ch01-exercise-22}).
+
+容易看出, $\|\cdot\|_{W_p^k(\Omega)}$ 是范数. 因而根据定义, $W_p^k(\Omega)$ 是赋范线性空间. 以下定理说明它是完备的.
+
+\begin{Theorem}
+\label{thm:ch01-sobolev-banach}
+Sobolev 空间 $W_p^k(\Omega)$ 是 Banach 空间.
+\end{Theorem}
+
+\begin{Proof}
+设 $\{v_j\}$ 关于范数 $\|\cdot\|_{W_p^k(\Omega)}$ 为 Cauchy 序列. 由于该范数只是各弱导数的 $\|\cdot\|_{L^p(\Omega)}$ 范数的组合, 对每个 $|\alpha|\leq k$, $\{D_w^\alpha v_j\}$ 都关于 $\|\cdot\|_{L^p(\Omega)}$ 为 Cauchy 序列. 因此, 定理~\ref{thm:ch01-lp-banach} 蕴含存在 $v^\alpha\in L^p(\Omega)$, 使
+\[
+\MathBookFormulaID{formula-ch01-weak-derivative-sequence-limit}
+\|D_w^\alpha v_j-v^\alpha\|_{L^p(\Omega)}\longrightarrow0
+\quad\text{as }j\to\infty.
+\]
+特别地, $v_j\to v^{(0,\ldots,0)}=:v$ 于 $L^p(\Omega)$. 剩下要验证的是 $D_w^\alpha v$ 存在且等于 $v^\alpha$.
+
+首先注意, 若 $w_j\to w$ 于 $L^p(\Omega)$, 则对所有 $\phi\in\mathcal D(\Omega)$,
+\setcounter{equation}{2}
+\begin{equation}
+\MathBookFormulaID{formula-ch01-test-function-limit}
+\int_\Omega w_j(x)\phi(x)\,dx\longrightarrow
+\int_\Omega w(x)\phi(x)\,dx.
+\label{eq:ch01-test-function-limit}
+\end{equation}
+这由 \eqref{eq:ch01-lp-integral-limit} 和 Hölder 不等式得到:
+\[
+\MathBookFormulaID{formula-ch01-test-function-holder-bound}
+\|w_j\phi-w\phi\|_{L^p(\Omega)}
+\leq\|w_j-w\|_{L^p(\Omega)}\|\phi\|_{L^\infty(\Omega)}\longrightarrow0.
+\]
+为了证明 $D_w^\alpha v=v^\alpha$, 必须证明
+\[
+\MathBookFormulaID{formula-ch01-limit-weak-derivative-goal}
+\int_\Omega v^\alpha\phi\,dx
+=(-1)^{|\alpha|}\int_\Omega v\phi^{(\alpha)}\,dx
+\qquad\forall\phi\in\mathcal D(\Omega).
+\]
+这由 $D_w^\alpha v_j$ 的定义和两次应用 \eqref{eq:ch01-test-function-limit} 得出:
+\[
+\MathBookFormulaID{formula-ch01-limit-weak-derivative-proof}
+\begin{aligned}
+\int_\Omega v^\alpha\phi\,dx
+&=\lim_{j\to\infty}\int_\Omega(D_w^\alpha v_j)\phi\,dx\\
+&=\lim_{j\to\infty}(-1)^{|\alpha|}\int_\Omega v_j\phi^{(\alpha)}\,dx
+=(-1)^{|\alpha|}\int_\Omega v\phi^{(\alpha)}\,dx.
+\end{aligned}
+\]
+\end{Proof}
+
+\MathBookSourcePage{46}
+还可以给出另一个可能的 Sobolev 空间定义. 令 $H_p^k(\Omega)$ 表示 $C^k(\Omega)$ 关于 Sobolev 范数 $\|\cdot\|_{W_p^k(\Omega)}$ 的闭包. 当 $p=\infty$ 时, $H_\infty^k=C^k$, 它并不等于 $W_\infty^k(\Omega)$. 事实上, 已经指出后者与某些 Lipschitz 空间有关. 不过, 当 $1\leq p<\infty$ 时, 有 $H_p^k(\Omega)=W_p^k(\Omega)$. 以下结果由 (Meyers \& Serrin 1964) 的一篇论文证明, 该论文既以结果的重要性著称, 也以标题的简短著称.
+
+\setcounter{thmcount}{3}
+\begin{Theorem}
+\label{thm:ch01-meyers-serrin-density}
+设 $\Omega$ 为任意开集. 当 $p<\infty$ 时, $C^\infty(\Omega)\cap W_p^k(\Omega)$ 在 $W_p^k(\Omega)$ 中稠密.
+\end{Theorem}
+
+\begin{Remark}
+\label{rem:ch01-boundary-smooth-density}
+这一结果应与另一类稠密性结果相区别, 即 $C^\infty(\overline\Omega)$ 在 Sobolev 空间中的稠密性. 只要区域的一部分位于其一部分边界的两侧, 后一种稠密性就不可能成立. 裂缝扩展问题中常用的狭缝区域就是这种情形(参见习题~\ref{ex:ch01-exercise-26}). 要使这种更强的稠密性成立, 还必须满足某种正则性条件. 例如, 已知当 $\Omega$ 满足线段条件时它成立(参见 (Adams 1975)). 线段条件是指: 对所有 $x\in\partial\Omega$, 存在包含 $x$ 的开球 $B_x$ 和非零向量 $n_x$, 使对所有 $z\in\Omega\cap B_x$ 都有
+\[
+\MathBookFormulaID{formula-ch01-segment-condition}
+\{z+tn_x:0<t<1\}\subset\Omega.
+\]
+向量 $n_x$ 起到 $\partial\Omega$ 在 $x$ 处指向内部的法向量的作用. 本书考虑的许多区域都满足这一条件(参见习题~\ref{ex:ch01-exercise-25}).
+\end{Remark}
+
+\begin{Remark}
+\label{rem:ch01-mollification-density}
+当 $\Omega=\mathbb R^n$ 时, 可以如下看出定理~\ref{thm:ch01-meyers-serrin-density} 的有效性. 更一般的情形见习题~\ref{ex:ch01-exercise-19}. 由例~\ref{ex:ch01-bump-function} 可知, 存在非负的 $\phi\in\mathcal D(\Omega)$. 适当归一化后, 可进一步假设
+\[
+\MathBookFormulaID{formula-ch01-mollifier-normalization}
+\int_\Omega\phi(x)\,dx=1.
+\]
+对任意 $f\in L_{\mathrm{loc}}^1(\Omega)$ 和 $\epsilon>0$, 定义
+\[
+\MathBookFormulaID{formula-ch01-mollification}
+f_\epsilon(x)=\epsilon^{-n}\int_\Omega f(y)
+\phi\bigl((x-y)/\epsilon\bigr)\,dy.
+\]
+也就是说, $f_\epsilon=f*\phi_\epsilon$, 其中 $\phi_\epsilon(y):=\epsilon^{-n}\phi(y/\epsilon)$ 对所有 $y\in\Omega$ 成立, ``$*$''表示卷积. 由控制收敛定理容易看出, $f_\epsilon\in C^\infty$, 且 $f\in L^p(\Omega)$ 蕴含 $f_\epsilon\to f$ 于 $L^p(\Omega)$. 此外, 若 $f\in W_p^k(\Omega)$, 则通过在积分号下求导并使用弱导数定义, 对 $f$ 与 $f_\epsilon$ 的各阶导数也可作同样论断, 从而证明该结果. 函数 $f_\epsilon$ 称为 $f$ 的``光滑化''.
+\end{Remark}
+
+出于技术原因, 引入以下 Sobolev 半范数记号很有用.
+
+\MathBookSourcePage{47}
+\begin{Definition}
+\label{def:ch01-sobolev-seminorm}
+设 $k$ 为非负整数且 $f\in W_p^k(\Omega)$. 当 $1\leq p<\infty$ 时, 令
+\[
+\MathBookFormulaID{formula-ch01-sobolev-seminorm-finite-p}
+|f|_{W_p^k(\Omega)}=
+\left(\sum_{|\alpha|=k}\|D_w^\alpha f\|_{L^p(\Omega)}^p\right)^{1/p},
+\]
+当 $p=\infty$ 时, 令
+\[
+\MathBookFormulaID{formula-ch01-sobolev-seminorm-infinity}
+|f|_{W_\infty^k(\Omega)}=
+\max_{|\alpha|=k}\|D_w^\alpha f\|_{L^\infty(\Omega)}.
+\]
+\end{Definition}
+
+\subsection{包含关系与 Sobolev 不等式}
+\label{sec:ch01-inclusions-sobolev-inequality}
+
+定义 Sobolev 空间时使用了多个指标, 因而自然希望这些空间之间存在包含关系, 从而可以给出某种次序. 利用定义~\ref{def:ch01-sobolev-norm-space} 和习题~\ref{ex:ch01-exercise-01}, 很容易导出以下命题.
+
+\setcounter{thmcount}{0}
+\begin{Proposition}
+\label{prop:ch01-sobolev-order-inclusion}
+设 $\Omega$ 为任意区域, $k,m$ 为满足 $k\leq m$ 的非负整数, $p$ 为满足 $1\leq p\leq\infty$ 的实数. 则
+\[
+\MathBookFormulaID{formula-ch01-sobolev-order-inclusion}
+W_p^m(\Omega)\subset W_p^k(\Omega).
+\]
+\end{Proposition}
+
+\begin{Proposition}
+\label{prop:ch01-sobolev-integrability-inclusion}
+设 $\Omega$ 为有界区域, $k$ 为非负整数, $p,q$ 为满足 $1\leq p\leq q\leq\infty$ 的实数. 则
+\[
+\MathBookFormulaID{formula-ch01-sobolev-integrability-inclusion}
+W_q^k(\Omega)\subset W_p^k(\Omega).
+\]
+\end{Proposition}
+
+不过, Sobolev 空间之间还有更精细的关系. 例如, 在某些情形下, 即使 $k<m$ 且 $p>q$, 仍有 $W_q^m(\Omega)\subset W_p^k(\Omega)$. Sobolev 导数的存在性会蕴含函数具有更强的可积性条件. 为寻找这种结果中 $k,m,p,q$ 之间可能的关系, 先考察一个例子.
+
+\begin{Example}
+\label{ex:ch01-unbounded-sobolev-function}
+设 $n\geq2$, $\Omega=\{x\in\mathbb R^n:|x|<1/2\}$, 并考虑函数
+\[
+\MathBookFormulaID{formula-ch01-log-log-function}
+f(x)=\log\bigl|\log|x|\bigr|.
+\]
+由例~\ref{ex:ch01-radial-weak-derivative}(以及习题~\ref{ex:ch01-exercise-12})可知, $f$ 有一阶弱导数
+\[
+\MathBookFormulaID{formula-ch01-log-log-weak-derivative}
+D^\alpha f(x)=\frac{x^\alpha}{|x|^2\log|x|}
+\qquad(|\alpha|=1).
+\]
+由习题~\ref{ex:ch01-exercise-05} 可知, 当 $p\leq n$ 时 $D^\alpha f\in L^p(\Omega)$. 例如,
+\[
+\MathBookFormulaID{formula-ch01-log-log-derivative-bound}
+|D^\alpha f(x)|^n\leq\rho(|x|):=
+\frac{1}{|x|^n|\log|x||^n},
+\]
+\MathBookSourcePage{48}
+而 $\rho$ 满足习题~\ref{ex:ch01-exercise-05} 的条件, 因为 $\rho(r)r^{n-1}=1/(r|\log r|^n)$ 对所有 $n\geq2$ 在 $[0,1/2]$ 上可积. 实际上, 作变量代换 $r=e^{-t}$ 得
+\[
+\MathBookFormulaID{formula-ch01-log-log-integral}
+\int_0^{1/2}\frac{dr}{r|\log r|^n}
+=\int_{\log2}^\infty\frac{dt}{t^n}<\infty
+\qquad(n\geq2).
+\]
+同样容易看出, 对 $p<\infty$, $f\in L^p(\Omega)$. 因此, 当 $p\leq n$ 时, $f\in W_p^1(\Omega)$. 但要注意, 对任何 $p$, 都有 $f\notin L^\infty(\Omega)$.
+\end{Example}
+
+这个例子表明, 存在这样的函数: 它在一些点本质上为无穷大(这些点也可以像 \eqref{eq:ch01-f-log-series} 中那样选得处处稠密), 但它仍具有 $p$ 次幂可积的弱导数. 而且, 随维数 $n$ 增大, 可积性幂次 $p$ 也随之增大. 另一方面, 下面将在 \MBUnresolvedReference{chap:ch04-polynomial-approximation}{第 4 章} 证明的结果表明, 当 $n$ 固定时, 若函数的弱导数以充分大的幂次 $p$ 可积, 则该函数必有界(实际上可视为连续函数). 在陈述该结果之前, 必须先对区域边界引入一个正则性条件.
+
+\setcounter{thmcount}{3}
+\begin{Definition}
+\label{def:ch01-lipschitz-boundary}
+若存在开集族 $O_i$, 正参数 $\epsilon$, 整数 $N$ 和有限常数 $M$, 使得对每个 $x\in\partial\Omega$, 以 $x$ 为中心、半径为 $\epsilon$ 的球都包含在某个 $O_i$ 中, 任意点至多属于 $N$ 个 $O_i$, 且每个区域 $O_i\cap\Omega=O_i\cap\Omega_i$, 其中 $\Omega_i$ 的边界是 Lipschitz 函数 $\phi_i$ 的图像, 即
+\[
+\MathBookFormulaID{formula-ch01-lipschitz-graph-domain}
+\Omega_i=\{(x,y)\in\mathbb R^n:x\in\mathbb R^{n-1},\ y<\phi_i(x)\},
+\qquad\|\phi_i\|_{\operatorname{Lip}(\mathbb R^{n-1})}\leq M,
+\]
+则称 $\Omega$ 具有 Lipschitz 边界 $\partial\Omega$.
+\end{Definition}
+
+该定义的一个推论是, 现在可以把给定区域上的 Sobolev 空间与整个 $\mathbb R^n$ 上的 Sobolev 空间联系起来.
+
+\begin{Theorem}
+\label{thm:ch01-extension-mapping}
+设 $\Omega$ 具有 Lipschitz 边界. 则对所有非负整数 $k$ 和 $1\leq p\leq\infty$, 存在延拓映射
+\[
+\MathBookFormulaID{formula-ch01-extension-map}
+E:W_p^k(\Omega)\longrightarrow W_p^k(\mathbb R^n),
+\]
+使得对所有 $v\in W_p^k(\Omega)$ 都有 $(Ev)|_\Omega=v$, 且
+\[
+\MathBookFormulaID{formula-ch01-extension-bound}
+\|Ev\|_{W_p^k(\mathbb R^n)}\leq C\|v\|_{W_p^k(\Omega)},
+\]
+其中 $C$ 与 $v$ 无关.
+\end{Theorem}
+
+该结果的证明以及本节其他材料的更多细节见 (Stein 1970). 当然, 对任意区域, 相反方向的结果都成立: 自然限制映射使我们可以把 $W_p^k(\mathbb R^n)$ 中的函数视为 $W_p^k(\Omega)$ 中定义良好的函数. 现在回到不同指标 Sobolev 空间之间的关系问题.
+
+\MathBookSourcePage{49}
+\setcounter{thmcount}{5}
+\begin{Theorem}[Sobolev 不等式]
+\label{thm:ch01-sobolev-inequality}
+设 $\Omega$ 为具有 Lipschitz 边界的 $n$ 维区域, $k$ 为正整数, $p$ 为满足 $1\leq p<\infty$ 的实数, 且
+\[
+\MathBookFormulaID{formula-ch01-sobolev-inequality-conditions}
+\begin{cases}
+k\geq n,&p=1,\\
+k>n/p,&p>1.
+\end{cases}
+\]
+则存在常数 $C$, 使对所有 $u\in W_p^k(\Omega)$ 都有
+\[
+\MathBookFormulaID{formula-ch01-sobolev-inequality}
+\|u\|_{L^\infty(\Omega)}\leq C\|u\|_{W_p^k(\Omega)}.
+\]
+此外, $u$ 的 $L^\infty(\Omega)$ 等价类中存在一个连续函数.
+\end{Theorem}
+
+这个结果说明, 任何具有适当正则弱导数的函数都可以视为连续有界函数. 注意, 例~\ref{ex:ch01-unbounded-sobolev-function} 表明该结果是尖锐的. 也就是说, 至少当 $n\geq2$ 时, 条件 $k>n/p$ 不能放宽(除非 $p=1$). 当 $n=1$ 时, Sobolev 不等式说明一阶导数以任意幂次 $p\geq1$ 可积就足以保证连续性. 该结果将在 \MBUnresolvedReference{chap:ch04-polynomial-approximation}{第 4 章} 作为多项式逼近理论的一个推论得到证明. 把它应用于 Sobolev 空间中函数的导数, 得到如下结果.
+
+\begin{Corollary}
+\label{cor:ch01-sobolev-derivative-embedding}
+设 $\Omega$ 为具有 Lipschitz 边界的 $n$ 维区域, $k,m$ 为满足 $m<k$ 的正整数, $p$ 为满足 $1\leq p<\infty$ 的实数, 且
+\[
+\MathBookFormulaID{formula-ch01-sobolev-corollary-conditions}
+\begin{cases}
+k-m\geq n,&p=1,\\
+k-m>n/p,&p>1.
+\end{cases}
+\]
+则存在常数 $C$, 使对所有 $u\in W_p^k(\Omega)$ 都有
+\[
+\MathBookFormulaID{formula-ch01-sobolev-corollary-bound}
+\|u\|_{W_\infty^m(\Omega)}\leq C\|u\|_{W_p^k(\Omega)}.
+\]
+此外, $u$ 的 $L^p(\Omega)$ 等价类中存在一个 $C^m$ 函数.
+\end{Corollary}
+
+\begin{Remark}
+\label{rem:ch01-cusp-counterexample}
+若 $\partial\Omega$ 不 Lipschitz 连续, 则定理~\ref{thm:ch01-extension-mapping} 和定理~\ref{thm:ch01-sobolev-inequality} 都可能不成立. 例如, 令
+\[
+\MathBookFormulaID{formula-ch01-cusp-domain}
+\Omega=\{(x,y)\in\mathbb R^2:0<x<1,\ |y|<x^r\},
+\]
+其中 $r>1$, 并令 $u(x,y)=x^{-\epsilon/p}$, 其中 $0<\epsilon<r$. 则
+\[
+\MathBookFormulaID{formula-ch01-cusp-derivative-integral}
+\sum_{|\alpha|=1}\int_\Omega|D^\alpha u|^p\,dx\,dy
+=c_{\epsilon,p}\int_0^1x^{-\epsilon-p+r}\,dx<\infty,
+\]
+只要 $p<1+r-\epsilon$. 此时 $u\in W_p^1(\Omega)$, 但当 $\epsilon>0$ 时, $u$ 在 $\Omega$ 上不是本质有界的. 选取 $\epsilon$ 使 $p>2$ 仍有可能, 就会发现 Sobolev 不等式成立必须要求 Lipschitz 边界. 由于 Sobolev 不等式在 $\mathbb R^n$ 上成立, 不可能把 $u$ 延拓为 $W_2^1(\mathbb R^2)$ 的元素. 因此, 若 $\partial\Omega$ 不 Lipschitz 连续, Sobolev 函数的延拓定理可能不成立.
+\end{Remark}
+
+\MathBookSourcePage{50}
+\subsection{第~\ref{chap:ch00-basic-concepts} 章回顾}
+\label{sec:ch01-review-chapter-zero}
+
+现在可以处理上一章遗留的许多问题. 那里引入的空间 $V$ 现在可以严格定义为
+\[
+\MathBookFormulaID{formula-ch01-space-v-rigorous}
+V=\{v\in W_2^1(\Omega):v(0)=0\},
+\]
+其中 $\Omega=[0,1]$. 这个定义有意义, 因为 Sobolev 不等式保证 $W_2^1(\Omega)$ 中函数的逐点值定义良好. 实际上, 可以把 $W_2^1(\Omega)$ 看作 $C_b(\Omega)$ 的子空间, 后者是有界连续函数的 Banach 空间.
+
+现在可以严格地推导 \eqref{eq:ch00-boundary-value-problem} 的解所满足的变分形式 \eqref{eq:ch00-weak-problem}(参见习题~\ref{ex:ch01-exercise-24}). 我们已在第~\ref{sec:ch01-sobolev-norms} 节说明(见相关习题), $W_1^1(\Omega)$ 中的函数, 从而更强地说 $W_2^1(\Omega)$ 中的函数, 都绝对连续, 所以 Cantor 函数不在其中. 另一方面, 在例~\ref{ex:ch01-absolute-value-weak-derivative} 中已经看到, 分片线性函数的弱导数是分片常数. 因而, 第~\ref{sec:ch00-piecewise-polynomial-spaces} 节构造的空间 $S$ 满足 $S\subset W_\infty^1(\Omega)$, 从而 $S\subset V$.
+
+由于 Sobolev 不等式蕴含 $V\subset C_b(\Omega)$, 习题~\ref{ex:ch00-classical-existence} 说明, 导出定理~\ref{thm:ch00-duality-error-estimate} 的对偶论证中的 $w$ 定义良好(另见习题~\ref{ex:ch01-exercise-23}).
+
+在 $u-u_S$ 的误差估计中, 我们使用了函数二阶导数的 $L^2(\Omega)$ 范数 $\|\cdot\|_2$. 现在可以在 $W_2^2(\Omega)$ 中严格解释这些表达式. 特别地, 可以把逼近假设 \eqref{eq:ch00-approximation-assumption} 改述为
+\begin{equation}
+\MathBookFormulaID{formula-ch01-approximation-assumption-bis}
+\exists\epsilon<\infty\quad\text{such that}\quad
+\inf_{v\in S}\|w-v\|_E\leq\epsilon\|w''\|_2
+\qquad\forall w\in W_2^2(\Omega).
+\tag{\ref*{eq:ch00-approximation-assumption}bis}
+\label{eq:ch01-approximation-assumption-bis}
+\end{equation}
+而定理~\ref{thm:ch00-interpolation-energy-estimate} 成立所需的唯一条件是 $f\in L^2(\Omega)$(参见习题~\ref{ex:ch01-exercise-23}).
+
+最后, 在第~\ref{chap:ch00-basic-concepts} 章的证明中, 我们论证了 $a(v,v)=0$ 蕴含 $v\equiv0$. 它当然蕴含 $v$ 的弱导数作为 $L^2(\Omega)$ 中的函数为零, 但要断定 $v$ 必为常数, 还需要一种强制性概念, 后面将详细发展这一概念. 目前先考虑以下简单情形. 由习题~\ref{ex:ch01-exercise-16} 可知, 对所有 $v\in V$,
+\MathBookSourcePage{51}
+\[
+\MathBookFormulaID{formula-ch01-v-integral-representation}
+v(x)=\int_0^xD_w^1v(s)\,ds.
+\]
+利用 Schwarz 不等式(参见定理~\ref{thm:ch00-interpolation-energy-estimate} 的证明)估计得
+\[
+\MathBookFormulaID{formula-ch01-v-pointwise-energy-bound}
+|v(x)|^2\leq x\int_0^xD_w^1v(s)^2\,ds.
+\]
+再对 $x$ 积分, 得
+\[
+\MathBookFormulaID{formula-ch01-v-l2-energy-bound}
+\|v\|_{L^2(\Omega)}^2\leq\frac12a(v,v).
+\]
+特别地, 这说明若 $v\in V$ 满足 $a(v,v)=0$, 则 $v$ 作为 $L^2(\Omega)$ 的元素为零. 再回顾 $W_2^1(\Omega)$ 范数的定义, 可见
+\setcounter{equation}{0}
+\begin{equation}
+\MathBookFormulaID{formula-ch01-coercivity-inequality}
+\|v\|_{W_2^1(\Omega)}^2\leq\frac32a(v,v)
+\qquad\forall v\in V.
+\label{eq:ch01-coercivity-inequality}
+\end{equation}
+因而可以断定, 对 $v\in V$, $a(v,v)$ 为零蕴含 $v$ 是 $V$(或 $W_2^1(\Omega)$)中的零元素. 不等式 \eqref{eq:ch01-coercivity-inequality} 是双线性型 $a(\cdot,\cdot)$ 在空间 $V$ 上的强制性不等式. 注意, 该不等式只在 $W_2^1(\Omega)$ 的子空间 $V$ 上有效, 而非在整个 $W_2^1(\Omega)$ 上有效, 因为若取 $v$ 为非零常数函数, 无论用什么常数替换 $3/2$, 它都不成立.
+
+\subsection{迹定理}
+\label{sec:ch01-trace-theorems}
+
+上一节中, 借助 Sobolev 不等式, 可以解释空间 $V$ 定义中的``边界条件'' $v(0)=0$. 对以后关心的高维情形而言, 这一点多少有些误导, 因为第~\ref{sec:ch01-inclusions-sobolev-inequality} 节给出的 Sobolev 不等式不足以解释高维问题的边界条件. 例如, 已在例~\ref{ex:ch01-unbounded-sobolev-function} 中看到, 当 $n\geq2$ 时, 空间 $V$ 的对应物 $W_2^1(\Omega)$ 包含无界函数. 因此, 不能逐点解释边界条件; 当 $n\geq2$ 时, 必须实质性地加强 Sobolev 不等式. 另一方面, 例~\ref{ex:ch01-unbounded-sobolev-function} 中的函数可以解释为 $\mathbb R^2$ 中任意直线上的 $L^p$ 函数, 因为函数 $\log|\log|\cdot||$ 在一维中 $p$ 次幂可积.
+
+正确的解释如下. $n$ 维区域 $\Omega$ 的边界 $\partial\Omega$ 可以解释为 $n-1$ 维对象, 即流形. 当 $n=1$ 时, 它由互异的点组成, 这是零维流形的情形. Sobolev 不等式给出 Sobolev 空间中函数逐点值定义良好的条件, 从而也给出一维情形边界值定义良好的条件. 对高维问题, 必须寻求把 Sobolev 类函数限制到 $n-1$ 维流形上的解释. 特别地, 对 $W_2^1(\Omega)$ 中的函数, 这种限制应当有良好意义, 例如属于某个 Lebesgue 类.
+
+\MathBookSourcePage{52}
+先用一个简单例子说明这一思想. 设 $\Omega$ 为 $\mathbb R^2$ 中的单位圆盘:
+\[
+\MathBookFormulaID{formula-ch01-unit-disk}
+\Omega=\{(x,y):x^2+y^2<1\}
+=\{(r,\theta):0\leq r<1,\ 0\leq\theta<2\pi\}.
+\]
+设 $u\in C^1(\overline\Omega)$, 如下考察它在 $\partial\Omega$ 上的限制:
+\[
+\MathBookFormulaID{formula-ch01-unit-disk-trace-derivation}
+\begin{aligned}
+u(1,\theta)^2
+&=\int_0^1\frac{\partial}{\partial r}\bigl(r^2u(r,\theta)^2\bigr)\,dr\\
+&=\int_0^1(2r^2uu_r+2ru^2)(r,\theta)\,dr\\
+&=\int_0^1\left(2r^2u\nabla u\cdot\frac{(x,y)}r+2ru^2\right)(r,\theta)\,dr\\
+&\leq\int_0^1(2r^2|u||\nabla u|+2ru^2)(r,\theta)\,dr\\
+&\leq\int_0^1 2(|u||\nabla u|+u^2)(r,\theta)r\,dr.
+\end{aligned}
+\]
+最后一步使用了 $r\leq1$. 对 $\theta$ 积分并使用极坐标(参见习题~\ref{ex:ch01-exercise-04}), 得
+\[
+\MathBookFormulaID{formula-ch01-boundary-integral-estimate}
+\int_{\partial\Omega}u^2\,d\theta
+\leq2\int_\Omega(|u||\nabla u|+u^2)\,dx\,dy,
+\]
+其中按显然的方式定义边界积分及相应范数:
+\setcounter{equation}{0}
+\begin{equation}
+\MathBookFormulaID{formula-ch01-boundary-l2-norm}
+\int_{\partial\Omega}u^2\,d\theta
+:=\int_0^{2\pi}u(1,\theta)^2\,d\theta
+=:\|u\|_{L^2(\partial\Omega)}^2.
+\label{eq:ch01-boundary-l2-norm}
+\end{equation}
+利用 Schwarz 不等式,
+\[
+\MathBookFormulaID{formula-ch01-boundary-schwarz-estimate}
+\|u\|_{L^2(\partial\Omega)}^2
+\leq2\|u\|_{L^2(\Omega)}
+\left(\int_\Omega|\nabla u|^2\,dx\,dy\right)^{1/2}
++2\int_\Omega u^2\,dx\,dy.
+\]
+算术--几何平均不等式(参见习题~\ref{ex:ch01-exercise-32})蕴含
+\[
+\MathBookFormulaID{formula-ch01-trace-agm-estimate}
+\left(\int_\Omega|\nabla u|^2\,dx\,dy\right)^{1/2}
++\left(\int_\Omega u^2\,dx\,dy\right)^{1/2}
+\leq2\left(\int_\Omega(|\nabla u|^2+u^2)\,dx\,dy\right)^{1/2}.
+\]
+因此,
+\begin{equation}
+\MathBookFormulaID{formula-ch01-trace-inequality-unit-disk}
+\|u\|_{L^2(\partial\Omega)}
+\leq\sqrt[4]{8}\,\|u\|_{L^2(\Omega)}^{1/2}
+\|u\|_{W_2^1(\Omega)}^{1/2}.
+\label{eq:ch01-trace-inequality-unit-disk}
+\end{equation}
+这是一个类似于 Sobolev 不等式(定理~\ref{thm:ch01-sobolev-inequality})的不等式, 只是左端的 $L^\infty(\Omega)$ 范数被 $\|u\|_{L^2(\partial\Omega)}$ 取代. 虽然目前只对光滑 $u$ 证明了该不等式, 但将看到它对所有 $u\in W_2^1(\Omega)$ 都有意义, 而且对这种 $u$, 限制 $u|_{\partial\Omega}$ 作为 $L^2(\partial\Omega)$ 中的函数也有意义. 首先应说明后一个空间的含义. 利用定义 \eqref{eq:ch01-boundary-l2-norm}, 可以通过坐标映射 $\theta\mapsto(\cos\theta,\sin\theta)$ 简单地把它与 $L^2([0,2\pi])$ 等同起来. 更一般的边界稍后讨论. 现在可以用 \eqref{eq:ch01-trace-inequality-unit-disk} 证明以下结果.
+
+\MathBookSourcePage{53}
+\setcounter{thmcount}{2}
+\begin{Proposition}
+\label{prop:ch01-unit-disk-trace}
+设 $\Omega$ 为 $\mathbb R^2$ 中的单位圆盘. 对所有 $u\in W_2^1(\Omega)$, 限制 $u|_{\partial\Omega}$ 都可以解释为 $L^2(\partial\Omega)$ 中的函数, 并满足 \eqref{eq:ch01-trace-inequality-unit-disk}.
+\end{Proposition}
+
+\begin{Proof}
+证明中将三次使用 \eqref{eq:ch01-trace-inequality-unit-disk}, 而目前只对光滑函数导出了该不等式. 不过, 由注~\ref{rem:ch01-boundary-smooth-density}, 这类函数在 $W_2^1(\Omega)$ 中稠密. 因而可以选取序列 $u_j\in C^1(\overline\Omega)$, 使对所有 $j$ 都有 $\|u_j-u\|_{W_2^1(\Omega)}\leq1/j$. 由 \eqref{eq:ch01-trace-inequality-unit-disk} 和三角不等式,
+\[
+\MathBookFormulaID{formula-ch01-trace-cauchy-bound}
+\begin{aligned}
+\|u_k-u_j\|_{L^2(\partial\Omega)}
+&\leq\sqrt[4]{8}\,
+\|u_k-u_j\|_{L^2(\Omega)}^{1/2}
+\|u_k-u_j\|_{W_2^1(\Omega)}^{1/2}\\
+&\leq\sqrt[4]{8}\,\|u_k-u_j\|_{W_2^1(\Omega)}
+\leq\sqrt[4]{8}\left(\frac1j+\frac1k\right).
+\end{aligned}
+\]
+所以 $\{u_j\}$ 是 $L^2(\partial\Omega)$ 中的 Cauchy 序列. 该空间完备, 故存在极限 $v\in L^2(\partial\Omega)$, 使 $\|v-u_j\|_{L^2(\partial\Omega)}\to0$. 定义
+\[
+\MathBookFormulaID{formula-ch01-trace-definition-by-density}
+u|_{\partial\Omega}:=v.
+\]
+首先必须验证该定义不依赖于所选序列. 假设 $v_j$ 是另一个满足 $\|u-v_j\|_{W_2^1(\Omega)}\to0$ 的 $C^1(\overline\Omega)$ 函数序列. 多次使用三角不等式并再次使用 \eqref{eq:ch01-trace-inequality-unit-disk}, 得
+\[
+\MathBookFormulaID{formula-ch01-trace-sequence-independence}
+\begin{aligned}
+\|v-v_j\|_{L^2(\partial\Omega)}
+&\leq\|v-u_j\|_{L^2(\partial\Omega)}
++\|u_j-v_j\|_{L^2(\partial\Omega)}\\
+&\leq\|v-u_j\|_{L^2(\partial\Omega)}
++\sqrt[4]{8}\,\|u_j-v_j\|_{W_2^1(\Omega)}\\
+&\leq\|v-u_j\|_{L^2(\partial\Omega)}
++\sqrt[4]{8}\bigl(\|u_j-u\|_{W_2^1(\Omega)}
++\|u-v_j\|_{W_2^1(\Omega)}\bigr)\longrightarrow0.
+\end{aligned}
+\]
+因而 $u|_{\partial\Omega}$ 在 $L^2(\partial\Omega)$ 中定义良好. 最后还须验证 \eqref{eq:ch01-trace-inequality-unit-disk} 对 $u$ 成立. 再次利用该不等式对光滑函数的有效性,
+\[
+\MathBookFormulaID{formula-ch01-trace-limit-bound}
+\begin{aligned}
+\|u\|_{L^2(\partial\Omega)}
+&=\|v\|_{L^2(\partial\Omega)}
+=\lim_{j\to\infty}\|u_j\|_{L^2(\partial\Omega)}\\
+&\leq\lim_{j\to\infty}\sqrt[4]{8}\,
+\|u_j\|_{L^2(\Omega)}^{1/2}\|u_j\|_{W_2^1(\Omega)}^{1/2}\\
+&=\sqrt[4]{8}\,\|u\|_{L^2(\Omega)}^{1/2}
+\|u\|_{W_2^1(\Omega)}^{1/2}.
+\end{aligned}
+\]
+\end{Proof}
+
+\MathBookSourcePage{54}
+这就完成了命题的证明. 注意, 为把 \eqref{eq:ch01-trace-inequality-unit-disk} 从稠密子空间推广到整个 $W_2^1(\Omega)$, 证明中反复使用了该不等式. 这是稠密性论证的典型例子.
+
+\begin{Remark}
+\label{rem:ch01-trace-not-pointwise}
+命题~\ref{prop:ch01-unit-disk-trace} 并未断言 $u$ 在 $\partial\Omega$ 上的逐点值有意义, 它只断言 $u|_{\partial\Omega}$ 在 $\partial\Omega$ 上平方可积. 因此仍有可能(参见习题~\ref{ex:ch01-exercise-28}), $u$ 在 $\partial\Omega$ 上的一个稠密点集处为无穷大. 对光滑函数, 这里定义的迹与通常的逐点边界限制相同.
+\end{Remark}
+
+\begin{Remark}
+\label{rem:ch01-trace-sharpness-dimensions}
+初看起来, 命题~\ref{prop:ch01-unit-disk-trace} 说明 $W_2^1(\Omega)$ 中的函数具有 $L^2(\partial\Omega)$ 中的边界值, 这当然正确. 但仅此本身并非尖锐结果, 因为并非 $L^2(\partial\Omega)$ 的每个元素都是 $W_2^1(\Omega)$ 某个元素的迹. 仔细考察可知, 该命题给出了一个尖锐结论: 函数的 $L^2(\partial\Omega)$ 范数可以只由 $W_2^1(\Omega)$ 范数的一部分(其平方根)和 $L^2(\Omega)$ 范数控制. 从量纲上看, 这一结果并不奇怪. 假设函数的单位为 $U$, 长度单位为 $L$. 则 $W_2^1(\Omega)$ 范数的单位(忽略低阶项)为 $U$, $L^2(\Omega)$ 范数的单位为 $U\cdot L$. 它们都不等于 \eqref{eq:ch01-trace-inequality-unit-disk} 左端的单位 $U\sqrt L$, 但二者乘积的平方根正好等于它. 这种量纲论证不能证明 \eqref{eq:ch01-trace-inequality-unit-disk} 这样的不等式, 但可以用来否定某个不等式, 或简化其证明(参见习题~\ref{ex:ch01-exercise-31}).
+\end{Remark}
+
+下面把命题~\ref{prop:ch01-unit-disk-trace} 推广到更复杂的区域. 一种自然方法是在 Lipschitz 区域类中讨论. 若 $\partial\Omega$ 是函数 $\phi$ 的图像(参见定义~\ref{def:ch01-lipschitz-boundary}), 可以定义
+\[
+\MathBookFormulaID{formula-ch01-lipschitz-boundary-integral}
+\int_{\partial\Omega}f\,dS
+:=\int_{\mathbb R^{n-1}}f(x,\phi(x))\sqrt{1+|\nabla\phi(x)|^2}\,dx.
+\]
+若 $\phi$ 为 Lipschitz 函数, 则权函数 $\sqrt{1+|\nabla\phi(x)|^2}$ 是 $L^\infty$ 函数(参见习题~\ref{ex:ch01-exercise-14}). 这样就能在任意 Lipschitz 边界上定义积分以及相应的 Lebesgue 空间(参见 (Grisvard 1985)). 此外, 以下结果成立.
+
+\setcounter{thmcount}{5}
+\begin{Theorem}
+\label{thm:ch01-general-trace}
+设 $\Omega$ 具有 Lipschitz 边界, $p$ 为满足 $1\leq p\leq\infty$ 的实数. 则存在常数 $C$, 使
+\[
+\MathBookFormulaID{formula-ch01-general-trace-inequality}
+\|v\|_{L^p(\partial\Omega)}
+\leq C\|v\|_{L^p(\Omega)}^{1-1/p}
+\|v\|_{W_p^1(\Omega)}^{1/p}
+\qquad\forall v\in W_p^1(\Omega).
+\]
+\end{Theorem}
+
+用记号 $\mathring W_p^1(\Omega)$ 表示 $W_p^1(\Omega)$ 中在 $\partial\Omega$ 上迹为零的函数所组成的子集, 即
+\MathBookSourcePage{55}
+\setcounter{equation}{6}
+\begin{equation}
+\MathBookFormulaID{formula-ch01-zero-trace-w1}
+\mathring W_p^1(\Omega)=
+\{v\in W_p^1(\Omega):v|_{\partial\Omega}=0\text{ in }L^2(\partial\Omega)\}.
+\label{eq:ch01-zero-trace-w1}
+\end{equation}
+类似地, 用 $\mathring W_p^k(\Omega)$ 表示 $W_p^k(\Omega)$ 中所有 $k-1$ 阶导数都属于 $\mathring W_p^1(\Omega)$ 的函数所组成的子集, 即
+\begin{equation}
+\MathBookFormulaID{formula-ch01-zero-trace-wk}
+\mathring W_p^k(\Omega)=
+\{v\in W_p^k(\Omega):v^{(\alpha)}|_{\partial\Omega}=0
+\text{ in }L^2(\partial\Omega)\ \forall|\alpha|<k\}.
+\label{eq:ch01-zero-trace-wk}
+\end{equation}
+
+\subsection{负范数与对偶性}
+\label{sec:ch01-negative-norms-duality}
+
+本节介绍若干思想, 它们导出负整数 $k$ 时 Sobolev 空间 $W_p^k$ 的定义. 该定义以 Banach 空间中的对偶性概念为基础. Banach 空间 $B$ 的对偶空间 $B'$ 是 $B$ 上的一组线性泛函. 线性空间 $B$ 上的线性泛函, 就是从 $B$ 到实数域 $\mathbb R$ 的线性函数, 即满足
+\[
+\MathBookFormulaID{formula-ch01-linear-functional}
+L(u+av)=L(u)+aL(v)
+\qquad\forall u,v\in B,\ a\in\mathbb R
+\]
+的函数 $L:B\to\mathbb R$. 更准确地说, 要区分 $B$ 上所有线性泛函组成的线性空间 $B^*$(参见习题~\ref{ex:ch01-exercise-33})和连续线性泛函组成的子空间 $B'\subset B^*$. 以下观察简化了这类泛函的刻画.
+
+\setcounter{thmcount}{0}
+\begin{Proposition}
+\label{prop:ch01-continuous-iff-bounded}
+Banach 空间 $B$ 上的线性泛函 $L$ 连续, 当且仅当它有界. 也就是说, 存在有限常数 $C$, 使
+\[
+\MathBookFormulaID{formula-ch01-bounded-linear-functional}
+|L(v)|\leq C\|v\|_B
+\qquad\forall v\in B.
+\]
+\end{Proposition}
+
+\begin{Proof}
+有界线性函数实际上 Lipschitz 连续, 因为
+\[
+\MathBookFormulaID{formula-ch01-linear-functional-lipschitz}
+|L(u)-L(v)|=|L(u-v)|\leq C\|u-v\|_B
+\qquad\forall u,v\in B.
+\]
+反之, 设 $L$ 连续. 若它无界, 则必存在 $B$ 中的序列 $\{v_n\}$, 使 $|L(v_n)|/\|v_n\|_B\geq n$. 令 $w_n=v_n/(n\|v_n\|_B)$ 作归一化, 则 $|L(w_n)|\geq1$, 但 $\|w_n\|_B\leq1/n$, 因而 $w_n\to0$. 可是由 $L$ 的连续性应有 $L(w_n)\to0$, 这给出所需的矛盾.
+\end{Proof}
+
+对 Banach 空间 $B$ 上的连续线性泛函 $L$, 命题~\ref{prop:ch01-continuous-iff-bounded} 说明下式总为有限值:
+\setcounter{equation}{1}
+\begin{equation}
+\MathBookFormulaID{formula-ch01-dual-norm}
+\|L\|_{B'}:=\sup_{0\neq v\in B}\frac{L(v)}{\|v\|_B}.
+\label{eq:ch01-dual-norm}
+\end{equation}
+习题~\ref{ex:ch01-exercise-34} 说明它在 $B'$ 上构成范数, 称为对偶范数. 可以证明(参见 (Trèves 1967)), $B'$ 关于该范数完备, 即 $B'$ 也是 Banach 空间.
+
+\MathBookSourcePage{56}
+\setcounter{thmcount}{2}
+\begin{Example}
+\label{ex:ch01-dual-lp}
+Banach 空间的对偶空间不一定是神秘对象. Lebesgue 积分理论的关键结果之一是, 当 $1\leq p<\infty$ 时, $L^p$ 的对偶空间可以容易地识别. 由 Hölder 不等式, 任意函数 $f\in L^q(\Omega)$, 其中 $1/q+1/p=1$ 定义了 $p$ 的对偶指标 $q$, 都可以通过
+\[
+\MathBookFormulaID{formula-ch01-lp-dual-functional}
+L^p(\Omega)\ni v\longmapsto\int_\Omega v(x)f(x)\,dx
+\]
+视为连续线性泛函. Riesz 表示定理的一个版本断言, $L^p(\Omega)$ 上所有连续线性泛函都以这种方式产生. 也就是说, $(L^p(\Omega))'$ 与 $L^q(\Omega)$ 同构.
+\end{Example}
+
+\begin{Example}
+\label{ex:ch01-dirac-dual}
+Banach 空间的对偶空间也可以包含全新的对象. 例如, Sobolev 不等式说明, 只要 $k,p$ 满足
+定理~\ref{thm:ch01-sobolev-inequality} 中的适当关系, Dirac $\delta$ 函数就是 $W_p^k$ 上的连续线性泛函. 具体地说, Dirac $\delta$ 函数是线性泛函
+\[
+\MathBookFormulaID{formula-ch01-dirac-functional}
+W_p^k(\Omega)\ni v\longmapsto v(y)=:\delta_y(v),
+\]
+其中 $y$ 是区域 $\Omega$ 中的给定点. 可以看出, 它不能通过任何局部可积函数的积分过程产生(参见习题~\ref{ex:ch01-exercise-36}), 即不能视为前面引入的任何空间的成员.
+\end{Example}
+
+\begin{Definition}
+\label{def:ch01-negative-sobolev-space}
+设 $1\leq p\leq\infty$, $k$ 为负整数. 设 $q$ 为 $p$ 的对偶指标, 即 $1/q+1/p=1$. Sobolev 空间 $W_p^k(\Omega)$ 定义为对偶空间
+\[
+\MathBookFormulaID{formula-ch01-negative-sobolev-space}
+W_p^k(\Omega):=\bigl(W_q^{-k}(\Omega)\bigr)',
+\]
+其范数为对偶范数(参见 \eqref{eq:ch01-dual-norm}).
+\end{Definition}
+
+\begin{Remark}
+\label{rem:ch01-negative-sobolev-space}
+注意, 我们对负指标 Sobolev 空间的定义具有如下性质: 若对 $k=0$ 也使用同样定义, 则由例~\ref{ex:ch01-dual-lp}, 当 $1<p<\infty$ 时, 该定义与定义~\ref{def:ch01-sobolev-norm-space} 一致. 还要注意, 可以用不同的对偶空间定义负指标 Sobolev 空间. 特别地, 常常需要使用 $W_q^{-k}(\Omega)$ 的某个子空间的对偶; 由习题~\ref{ex:ch01-exercise-35}, 这会得到一个略大的空间. 无论采用哪种情形, 负 Sobolev 空间都足够大, 可以包含 Dirac $\delta$ 函数这样的有趣新对象. 例~\ref{ex:ch01-dirac-dual} 表明, 当 $k<-n+n/p$(或 $p=\infty$ 时 $k\leq-n$)时, $\delta\in W_p^k(\Omega)$.
+\end{Remark}
+
+\input{chapters/chapter-01-exercises.tex}

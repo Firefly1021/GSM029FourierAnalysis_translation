@@ -1,0 +1,481 @@
+% Reviewed translation: PDF pages 330(part)--335 / printed pages 316(part)--321.
+\MathBookSourcePage{330}
+\section{中心有限元格式的数值分析}
+\label{sec:navier-centered-finite-elements}
+
+本节把 Chapters~\ref{chap:stokes-primitive-variables} 和
+\ref{chap:incompressible-mixed-stokes} 中为求解 Stokes 问题而发展的多数有限元方法应用于
+齐次 Navier--Stokes 方程. 读者会看到, 几乎在每种情形下, 误差分析都能成功推广到
+Navier--Stokes 方程. 少数例外之一是 Section~\ref{sec:incompressible-vector-potential-vorticity}
+中发展的三维混合方法. 可以尝试用该方法求解 Navier--Stokes 系统, 但在现阶段,
+它的数值分析仍是一个未解决的问题.
+
+\subsection{原始变量表述: 使用不连续压力的方法}
+\label{subsec:navier-centered-discontinuous-pressure}
+
+这里采用 Subsection~\ref{subsec:primitive-homogeneous-stokes} 的情形.
+对每个参数值 $h>0$, 给定两个有限维空间
+\[
+W_h\subset H^1(\Omega)^N,
+\qquad Q_h\subset L^2(\Omega),
+\]
+并假设 $Q_h$ 包含常数函数. 定义
+\[
+W_{0h}=W_h\cap H_0^1(\Omega)^N,
+\qquad M_h=Q_h\cap L_0^2(\Omega).
+\]
+
+\MathBookSourcePage{331}
+像往常一样, $\Omega$ 是 $\mathbb R^N$ 中有界、连通的开子集, 其边界
+$\Gamma$ 是 Lipschitz 连续的.
+
+用上述空间, 齐次 Navier--Stokes 问题写成: 给定
+$\boldsymbol f\in H^{-1}(\Omega)^N$, 求
+$(\boldsymbol u,p)\in H_0^1(\Omega)^N\times L_0^2(\Omega)$, 满足
+\begin{equation}\label{eq:navier-centered-continuous-mixed}
+\left\{
+\begin{aligned}
+a(\boldsymbol u;\boldsymbol u,\boldsymbol v)
+-(p,\operatorname{div}\boldsymbol v)
+&=\langle\boldsymbol f,\boldsymbol v\rangle
+&&\forall\boldsymbol v\in H_0^1(\Omega)^N,\\
+\operatorname{div}\boldsymbol u&=0
+&&\text{in }\Omega.
+\end{aligned}
+\right.
+\end{equation}
+它由如下 Problem~$(Q_h)$ 离散化: 求
+$(\boldsymbol u_h,p_h)\in W_{0h}\times M_h$, 满足
+\begin{equation}\label{eq:navier-centered-discrete-mixed}
+\left\{
+\begin{aligned}
+a(\boldsymbol u_h;\boldsymbol u_h,\boldsymbol v_h)
+-(p_h,\operatorname{div}\boldsymbol v_h)
+&=\langle\boldsymbol f,\boldsymbol v_h\rangle
+&&\forall\boldsymbol v_h\in W_{0h},\\
+(q_h,\operatorname{div}\boldsymbol u_h)&=0
+&&\forall q_h\in M_h.
+\end{aligned}
+\right.
+\end{equation}
+
+回顾 Subsection~\ref{subsec:primitive-homogeneous-stokes} 中为逼近 Stokes 系统而引入的
+三个假设.
+
+\textbf{Hypothesis H1 (Approximation property of $W_{0h}$).}
+存在算子
+$r_h\in\mathcal L([H^2(\Omega)\cap H_0^1(\Omega)]^N;W_{0h})$ 和整数 $l$, 使
+\begin{equation}\label{eq:navier-centered-h1-approximation}
+\|\boldsymbol v-r_h\boldsymbol v\|_{1,\Omega}
+\leq Ch^m\|\boldsymbol v\|_{m+1,\Omega}
+\quad\forall\boldsymbol v\in H^{m+1}(\Omega)^N,
+\quad1\leq m\leq l.
+\end{equation}
+
+\textbf{Hypothesis H2 (Approximation property of $Q_h$).}
+存在算子 $s_h\in\mathcal L(L^2(\Omega);Q_h)$, 使
+\begin{equation}\label{eq:navier-centered-h2-approximation}
+\|q-s_hq\|_{0,\Omega}
+\leq Ch^m\|q\|_{m,\Omega}
+\quad\forall q\in H^m(\Omega),
+\quad0\leq m\leq l.
+\end{equation}
+
+\textbf{Hypothesis H3 (Uniform inf-sup condition).}
+对每个 $q_h\in M_h$, 存在 $\boldsymbol v_h\in W_{0h}$, 使
+\begin{equation}\label{eq:navier-centered-h3-infsup}
+(q_h,\operatorname{div}\boldsymbol v_h)=\|q_h\|_{0,\Omega}^2,
+\qquad
+\|\boldsymbol v_h\|_{1,\Omega}\leq C\|q_h\|_{0,\Omega},
+\end{equation}
+其中常数 $C>0$ 与 $h,q_h,\boldsymbol v_h$ 无关.
+
+在这些假设下, 应用 Subsection~\ref{subsec:navier-branch-nonlinear-application}
+的结果.
+
+\setcounter{statement}{0}
+\begin{Theorem}\label{thm:navier-centered-discontinuous-branch}
+设 $N\leq3$, 并假设 H1, H2, H3 成立. 设
+\[
+\{(\lambda,(\boldsymbol u(\lambda),\lambda p(\lambda)));
+\lambda=1/\nu\in\Lambda\}
+\]
+是 Navier--Stokes Problem~\eqref{eq:navier-centered-continuous-mixed}
+的一个非奇异解分支. 则存在
+$H_0^1(\Omega)^N\times L_0^2(\Omega)$ 中原点的一个邻域 $\mathcal O$,
+并且对充分小的 $h\leq h_0$, 存在唯一的 $C^\infty$ 非奇异解分支
+\[
+\{(\lambda,(\boldsymbol u_h(\lambda),\lambda p_h(\lambda)));
+\lambda\in\Lambda\}
+\]
+是 Problem~\eqref{eq:navier-centered-discrete-mixed} 的解分支, 使
+\[
+(\boldsymbol u_h(\lambda),\lambda p_h(\lambda))
+\in(\boldsymbol u(\lambda),\lambda p(\lambda))+\mathcal O
+\qquad\forall\lambda\in\Lambda.
+\]
+此外有收敛性质
+\begin{equation}\label{eq:navier-centered-discontinuous-convergence}
+\lim_{h\to0}\sup_{\lambda\in\Lambda}
+\left\{
+\|\boldsymbol u_h(\lambda)-\boldsymbol u(\lambda)\|_{1,\Omega}
++\|p_h(\lambda)-p(\lambda)\|_{0,\Omega}
+\right\}=0.
+\end{equation}
+若对某个满足 $1\leq m\leq l$ 的整数 $m$, 映射
+$\lambda\mapsto(\boldsymbol u(\lambda),p(\lambda))$ 从 $\Lambda$ 到
+$H^{m+1}(\Omega)^N\times H^m(\Omega)$ 连续, 则对所有
+$\lambda\in\Lambda$,
+\begin{equation}\label{eq:navier-centered-discontinuous-hm-error}
+\|\boldsymbol u_h(\lambda)-\boldsymbol u(\lambda)\|_{1,\Omega}
++\|p_h(\lambda)-p(\lambda)\|_{0,\Omega}
+\leq Kh^m.
+\end{equation}
+\end{Theorem}
+
+\MathBookSourcePage{332}
+\begin{Proof}
+以如下选择应用 Theorem~\ref{thm:navier-branch-operator-approximation}:
+\[
+X=H_0^1(\Omega)^N\times L_0^2(\Omega),
+\qquad Y=H^{-1}(\Omega)^N.
+\]
+算子 $T\in\mathcal L(Y;X)$ 是 Stokes 算子: 对给定的
+$\boldsymbol f\in Y$, $T\boldsymbol f=(\boldsymbol v,q)\in X$ 是 Stokes 问题
+\begin{equation}\label{eq:navier-centered-stokes-operator}
+\left\{
+\begin{aligned}
+-\Delta\boldsymbol v+\operatorname{grad}q&=\boldsymbol f
+&&\text{in }\Omega,\\
+\operatorname{div}\boldsymbol v&=0
+&&\text{in }\Omega,\\
+\boldsymbol v&=0
+&&\text{on }\Gamma
+\end{aligned}
+\right.
+\end{equation}
+的解. 对固定的 $\boldsymbol f$, 像 \eqref{eq:navier-branch-ns-nonlinear-map}
+那样定义 $C^\infty$ 映射 $G:\mathbb R_+\times X\to Y$:
+\[
+G(\lambda,v)=
+\lambda\left(\sum_{j=1}^{N}v_j
+\frac{\partial\boldsymbol v}{\partial x_j}-\boldsymbol f\right),
+\qquad v=(\boldsymbol v,q)\in X,
+\]
+以及
+\[
+D_uG(\lambda,v)\cdot w
+=\lambda\sum_{j=1}^{N}\left(
+v_j\frac{\partial\boldsymbol w}{\partial x_j}
++w_j\frac{\partial\boldsymbol v}{\partial x_j}\right),
+\qquad w=(\boldsymbol w,r)\in X.
+\]
+
+现在确定空间 $Z$. 由 Theorem~\ref{thm:sobolev-embedding},
+\[
+H_0^1(\Omega)\hookrightarrow L^6(\Omega)
+\qquad\text{for }N\leq3,
+\]
+且对 $p<6$, $H_0^1(\Omega)$ 到 $L^p(\Omega)$ 的嵌入是紧的.
+再由 Corollary~\ref{cor:sobolev-product}, 对
+$\boldsymbol v,\boldsymbol w\in H_0^1(\Omega)^N$,
+\[
+\sum_{j=1}^{N}\left(
+v_j\frac{\partial\boldsymbol w}{\partial x_j}
++w_j\frac{\partial\boldsymbol v}{\partial x_j}\right)
+\in L^{3/2}(\Omega)^N.
+\]
+再次应用 Theorem~\ref{thm:sobolev-embedding} 可知, 当 $q>6/5$ 时,
+$L^q(\Omega)$ 紧嵌入 $H^{-1}(\Omega)$. 于是可取
+\[
+Z=L^{3/2}(\Omega)^N\hookrightarrow Y,
+\]
+且这一嵌入是紧的, 并且 \eqref{eq:navier-branch-derivative-into-z} 成立.
+
+现令 $X_h=W_{0h}\times M_h$, 并令
+$T_h\in\mathcal L(Y;X_h)$ 为如下定义的逼近 Stokes 算子:
+$T_h\boldsymbol f=(\boldsymbol v_h,q_h)\in X_h$ 是
+\[
+\left\{
+\begin{aligned}
+(\operatorname{grad}\boldsymbol v_h,\operatorname{grad}\boldsymbol w_h)
+-(q_h,\operatorname{div}\boldsymbol w_h)
+&=\langle\boldsymbol f,\boldsymbol w_h\rangle
+&&\forall\boldsymbol w_h\in W_{0h},\\
+(r_h,\operatorname{div}\boldsymbol v_h)&=0
+&&\forall r_h\in M_h
+\end{aligned}
+\right.
+\]
+的解. 由 Theorem~\ref{thm:primitive-homogeneous-stokes-convergence}, 在 H1, H2,
+H3 下, $Y$ 中每个 $\boldsymbol f$ 确定 $X_h$ 中唯一的 $T_h\boldsymbol f$, 且
+\begin{equation}\label{eq:navier-centered-stokes-operator-convergence}
+\lim_{h\to0}
+\left\{
+\|\boldsymbol v_h-\boldsymbol v\|_{1,\Omega}
++\|q_h-q\|_{0,\Omega}
+\right\}=0,
+\end{equation}
+即
+\[
+\lim_{h\to0}\|(T_h-T)\boldsymbol f\|_X=0
+\qquad\forall\boldsymbol f\in Y.
+\]
+
+\MathBookSourcePage{333}
+此外, 当对某个 $m\in[1,l]$,
+$(\boldsymbol v,q)\in H^{m+1}(\Omega)^N\times H^m(\Omega)$ 时,
+同一 Theorem 断言
+\begin{equation}\label{eq:navier-centered-stokes-hm-error}
+\|\boldsymbol v_h-\boldsymbol v\|_{1,\Omega}
++\|q_h-q\|_{0,\Omega}
+\leq Ch^m\left(
+\|\boldsymbol v\|_{m+1,\Omega}+\|q\|_{m,\Omega}
+\right),
+\end{equation}
+即
+\[
+\|(T_h-T)\boldsymbol f\|_X
+\leq Ch^m\|T\boldsymbol f\|_{H^{m+1}(\Omega)^N\times H^m(\Omega)}.
+\]
+如 Remark~\ref{rem:navier-branch-compact-operator-approximation} 末尾所述,
+$Z$ 到 $Y$ 的嵌入的紧性与
+\eqref{eq:navier-centered-stokes-operator-convergence} 蕴含
+\[
+\lim_{h\to0}\|T_h-T\|_{\mathcal L(Z;X)}=0.
+\]
+所以 \eqref{eq:navier-branch-strong-operator-convergence} 和
+\eqref{eq:navier-branch-z-operator-convergence} 成立.
+
+最后, 因为
+\[
+a(\boldsymbol u_h;\boldsymbol u_h,\boldsymbol v_h)
+=\nu(\operatorname{grad}\boldsymbol u_h,\operatorname{grad}\boldsymbol v_h)
++\left(\sum_{j=1}^{N}u_{hj}
+\frac{\partial\boldsymbol u_h}{\partial x_j},\boldsymbol v_h\right),
+\]
+Problem~\eqref{eq:navier-centered-discrete-mixed} 可写成
+\[
+\left\{
+\begin{aligned}
+(\operatorname{grad}\boldsymbol u_h,\operatorname{grad}\boldsymbol v_h)
+-\frac1\nu(p_h,\operatorname{div}\boldsymbol v_h)
+&=\frac1\nu\left\langle
+\boldsymbol f-\sum_{j=1}^{N}u_{hj}
+\frac{\partial\boldsymbol u_h}{\partial x_j},\boldsymbol v_h
+\right\rangle
+&&\forall\boldsymbol v_h\in W_{0h},\\
+(q_h,\operatorname{div}\boldsymbol u_h)&=0
+&&\forall q_h\in M_h.
+\end{aligned}
+\right.
+\]
+换言之, $u_h=(\boldsymbol u_h,(1/\nu)p_h)$ 满足
+\[
+u_h=-T_hG(1/\nu,u_h),
+\]
+即
+\[
+F_h(\lambda,u_h)=u_h+T_hG(\lambda,u_h)=0,
+\qquad\lambda=1/\nu.
+\]
+因此可应用 Theorem~\ref{thm:navier-branch-operator-approximation} 的结论:
+对充分小的 $h\leq h_0$, 存在
+Problem~\eqref{eq:navier-centered-discrete-mixed} 的唯一非奇异解分支
+\[
+\{(\lambda,u_h(\lambda)
+=(\boldsymbol u_h(\lambda),\lambda p_h(\lambda)));
+\lambda\in\Lambda\},
+\]
+即
+\[
+u_h(\lambda)+T_hG(\lambda,u_h(\lambda))=0
+\qquad\forall\lambda\in\Lambda,
+\]
+并存在与 $h$ 无关的实数 $a>0$, 使
+\[
+\|u_h(\lambda)-u(\lambda)\|_X\leq a
+\qquad\forall\lambda\in\Lambda.
+\]
+此外, 由 Remark~\ref{rem:navier-branch-higher-regularity}, 映射
+$\lambda\mapsto u_h(\lambda)$ 是 $C^\infty$ 的, 因为映射 $G$ 也是
+$C^\infty$ 的, 且它的任意阶导数在 $\Lambda\times X$ 的每个有界子集上有界.
+
+\MathBookSourcePage{334}
+关于收敛性和误差界, \eqref{eq:navier-branch-operator-error} 蕴含
+\[
+\|\boldsymbol u_h(\lambda)-\boldsymbol u(\lambda)\|_{1,\Omega}
++|\lambda|\|p_h(\lambda)-p(\lambda)\|_{0,\Omega}
+\leq K\|(T_h-T)G(\lambda,u(\lambda))\|_X.
+\]
+所以 \eqref{eq:navier-centered-discontinuous-convergence} 由
+\eqref{eq:navier-centered-stokes-operator-convergence} 得到. 又因为
+\[
+u(\lambda)=(\boldsymbol u(\lambda),\lambda p(\lambda))
+\in H^{m+1}(\Omega)^N\times H^m(\Omega)
+\]
+是 Stokes 系统
+\[
+u(\lambda)=-TG(\lambda,u(\lambda))
+\]
+的解, 误差估计 \eqref{eq:primitive-stokes-h1-pressure-error} 给出
+\[
+\|(T_h-T)G(\lambda,u(\lambda))\|_X
+\leq Ch^m\left(
+\|\boldsymbol u(\lambda)\|_{m+1,\Omega}
++\|p(\lambda)\|_{m,\Omega}\right).
+\]
+于是 \eqref{eq:navier-centered-discontinuous-hm-error} 由映射
+$\lambda\mapsto u(\lambda)$ 从 $\Lambda$ 到
+$H^{m+1}(\Omega)^N\times H^m(\Omega)$ 的连续性得到.
+\end{Proof}
+
+还可以导出速度的 $L^2$ 估计. 与线性情形一样, 必须假设相伴 Stokes 问题是正则的
+(参见 Definition~\ref{def:primitive-stokes-regularity}):
+\begin{equation}\label{eq:navier-centered-stokes-regularity}
+(\boldsymbol\phi,\mu)\mapsto
+-\nu\Delta\boldsymbol\phi+\operatorname{grad}\mu
+\text{ is an isomorphism from }
+[H^2(\Omega)^N\cap V]\times[H^1(\Omega)\cap L_0^2(\Omega)]
+\text{ onto }L^2(\Omega)^N.
+\end{equation}
+
+\setcounter{statement}{1}
+\begin{Theorem}\label{thm:navier-centered-discontinuous-l2-error}
+保留 Theorem~\ref{thm:navier-centered-discontinuous-branch} 的假设, 并假设
+\eqref{eq:navier-centered-stokes-regularity} 成立. 若对某个整数 $m\in[1,l]$,
+映射 $\lambda\mapsto(\boldsymbol u(\lambda),p(\lambda))$ 从 $\Lambda$ 到
+$H^{m+1}(\Omega)^N\times H^m(\Omega)$ 连续, 则对所有
+$\lambda\in\Lambda$ 有速度的 $L^2$ 估计
+\begin{equation}\label{eq:navier-centered-discontinuous-l2-error}
+\|\boldsymbol u_h(\lambda)-\boldsymbol u(\lambda)\|_{0,\Omega}
+\leq Kh^{m+1}.
+\end{equation}
+\end{Theorem}
+\begin{Proof}
+应用 Theorem~\ref{thm:navier-branch-sharper-norm-error}. 因为这里只关心速度
+$\boldsymbol u$, 完全略去压力 $p$. 因此取
+\[
+X=H_0^1(\Omega)^N,
+\qquad Y=H^{-1}(\Omega)^N,
+\]
+并对 $\boldsymbol f\in Y$ 定义 $\boldsymbol v=T\boldsymbol f$ 为
+\[
+\boldsymbol v\in V,
+\qquad
+(\operatorname{grad}\boldsymbol v,\operatorname{grad}\boldsymbol w)
+=\langle\boldsymbol f,\boldsymbol w\rangle
+\quad\forall\boldsymbol w\in V.
+\]
+因为映射 $G(\lambda,v)$ 只依赖速度 $\boldsymbol v$(而不依赖 $q$),
+可以保持其定义不变. 因而 $\boldsymbol u$ 是 Navier--Stokes 系统
+\eqref{eq:navier-centered-continuous-mixed} 的解, 当且仅当
+\[
+F(\lambda,\boldsymbol u)
+\equiv\boldsymbol u+TG(\lambda,\boldsymbol u)=0.
+\]
+接着取
+\[
+H=L^2(\Omega)^N,
+\qquad W=[H_0^1(\Omega)\cap H^2(\Omega)]^N.
+\]
+由 Theorem~\ref{thm:sobolev-embedding}, $X$(相应地 $W$) 紧嵌入 $H$(相应地 $X$).
+现取 $\boldsymbol u\in W$, 验证
+$D_uG(\lambda,\boldsymbol u)\in\mathcal L(H;Y)
+=\mathcal L(L^2(\Omega)^N;H^{-1}(\Omega)^N)$. 对
+$\boldsymbol v\in L^2(\Omega)^N$ 和 $\boldsymbol\phi\in\mathcal D(\Omega)^N$,
+有
+\[
+\langle D_uG(\lambda,\boldsymbol u)\cdot\boldsymbol v,
+\boldsymbol\phi\rangle
+=\lambda\sum_{j=1}^{N}\left\{
+\left\langle u_j\frac{\partial\boldsymbol v}{\partial x_j},
+\boldsymbol\phi\right\rangle
++\left\langle v_j\frac{\partial\boldsymbol u}{\partial x_j},
+\boldsymbol\phi\right\rangle\right\}.
+\]
+
+\MathBookSourcePage{335}
+而
+\[
+\left\langle u_j\frac{\partial\boldsymbol v}{\partial x_j},
+\boldsymbol\phi\right\rangle
+=-\left\langle\boldsymbol v,
+\frac{\partial(u_j\boldsymbol\phi)}{\partial x_j}\right\rangle,
+\]
+所以
+\[
+\left|\left\langle u_j\frac{\partial\boldsymbol v}{\partial x_j},
+\boldsymbol\phi\right\rangle\right|
+\leq C_1\|\boldsymbol v\|_{0,\Omega}
+\|u_j\|_{2,\Omega}\|\boldsymbol\phi\|_{1,\Omega},
+\]
+而 $\langle v_j\partial\boldsymbol u/\partial x_j,\boldsymbol\phi\rangle$
+有类似的界. 因此, 只要 $\boldsymbol u\in H^2(\Omega)^N$,
+$D_uG(\lambda,\boldsymbol u)$ 就可以延拓为从 $L^2(\Omega)^N$ 到
+$H^{-1}(\Omega)^N$ 的连续线性算子. 这验证了
+\eqref{eq:navier-branch-extended-derivative}.
+
+对于 \eqref{eq:navier-branch-h-operator-convergence}, 使用
+Remark~\ref{rem:navier-branch-compact-embedding-h} 以及 $X$ 到 $H$ 的紧嵌入.
+
+还需验证 \eqref{eq:navier-branch-derivative-isomorphism-h}:
+$D_uF(\lambda,\boldsymbol u(\lambda))$ 是 $H$ 上的同构. 由假设已经知道
+\[
+D_uF(\lambda,\boldsymbol u(\lambda))
+=I+TD_uG(\lambda,\boldsymbol u(\lambda))
+\]
+是 $X$ 上的同构. 此外刚刚已经看到, 当
+$\boldsymbol u(\lambda)\in H^2(\Omega)^N$ 时,
+$TD_uG(\lambda,\boldsymbol u(\lambda))
+\in\mathcal L(L^2(\Omega)^N;V)$. 因为 $H_0^1(\Omega)$ 到 $L^2(\Omega)$
+的嵌入是紧的, $TD_uG(\lambda,\boldsymbol u(\lambda))$ 是
+$L^2(\Omega)^N$ 到自身的紧算子. 因而可以对
+$D_uF(\lambda,\boldsymbol u(\lambda))$ 应用 Fredholm alternative:
+它是 $H$ 上的同构, 当且仅当方程
+\begin{equation}\label{eq:navier-centered-fredholm-kernel}
+D_uF(\lambda,\boldsymbol u(\lambda))\cdot\boldsymbol v=0,
+\qquad\boldsymbol v\in H,
+\end{equation}
+只有零解. 但是若 $\boldsymbol v\in H$ 满足
+\eqref{eq:navier-centered-fredholm-kernel}, 则由
+$\boldsymbol v=-TD_uG(\lambda,\boldsymbol u(\lambda))\cdot\boldsymbol v$
+可知 $\boldsymbol v\in V$. 因 $D_uF(\lambda,\boldsymbol u(\lambda))$
+是 $X$ 上的同构, 所以 $\boldsymbol v=0$. 这就证明了
+\eqref{eq:navier-branch-derivative-isomorphism-h}.
+
+因此可应用 Theorem~\ref{thm:navier-branch-sharper-norm-error} 的结论:
+若映射 $\lambda\mapsto\boldsymbol u(\lambda)$ 从 $\Lambda$ 到
+$[H_0^1(\Omega)\cap H^2(\Omega)]^N$ 连续, 则对所有充分小的 $h$,
+\[
+\|\boldsymbol u_h(\lambda)-\boldsymbol u(\lambda)\|_{0,\Omega}
+\leq C_2\left\{
+\|(T-T_h)G(\lambda,\boldsymbol u(\lambda))\|_{0,\Omega}
++\|\boldsymbol u_h(\lambda)-\boldsymbol u(\lambda)\|_{1,\Omega}^2
+\right\}.
+\]
+当 $(\boldsymbol u(\lambda),p(\lambda))
+\in H^{m+1}(\Omega)^N\times H^m(\Omega)$ 时,
+误差界 \eqref{eq:primitive-stokes-l2-error} 给出
+\[
+\|(T-T_h)G(\lambda,\boldsymbol u(\lambda))\|_{0,\Omega}
+\leq C_3h^{m+1}\left\{
+\|\boldsymbol u(\lambda)\|_{m+1,\Omega}
++\|p(\lambda)\|_{m,\Omega}\right\},
+\]
+于是 \eqref{eq:navier-centered-discontinuous-l2-error} 由这一估计和
+\eqref{eq:navier-centered-discontinuous-hm-error} 得到.
+\end{Proof}
+
+粗略地说, Theorems~\ref{thm:navier-centered-discontinuous-branch} 和
+\ref{thm:navier-centered-discontinuous-l2-error} 可以概括为:
+Sections~\ref{sec:primitive-simplicial-discontinuous-pressure} 和
+\ref{sec:primitive-quadrilateral-discontinuous-pressure} 中为求解 Stokes 方程而引入的所有函数空间,
+也可以用类似的精度逼近 Navier--Stokes 问题的非奇异解分支. 例如, 假设二维
+Navier--Stokes 方程 \eqref{eq:navier-centered-continuous-mixed} 有满足正则性
+\begin{equation}\label{eq:navier-centered-two-dimensional-regularity}
+\lambda\mapsto(\boldsymbol u(\lambda),p(\lambda))
+\text{ is continuous from }\Lambda\text{ into }H^2(\Omega)^2\times H^1(\Omega)
+\end{equation}
+的非奇异解分支. 假设 $\Omega$ 是由 $\mathcal T_h$ 剖分的有界多边形,
+并对每个 $\kappa\in\mathcal T_h$ 取

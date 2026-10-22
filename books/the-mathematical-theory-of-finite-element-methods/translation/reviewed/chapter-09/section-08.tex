@@ -1,0 +1,47 @@
+\MathBookSourcePage{277}
+\subsection{共轭梯度法的应用}
+\label{sec:ch09-conjugate-gradient-applications}
+\setcounter{thmcount}{0}
+\setcounter{equation}{0}
+
+求解 $\mathbf A\mathbf U=\mathbf F$ 的共轭梯度法是一种迭代方法, 其收敛性质可用 $\mathbf A$ 的条件数估计(Luenberger 1973). 具体地, 定义
+\[
+\MathBookFormulaID{formula-ch09-matrix-energy-norm}
+\|\mathbf U\|_{\mathbf A}:=(\mathbf U^t\mathbf A\mathbf U)^{1/2},
+\]
+并设 $\mathbf U^{(k)}$ 是从 $\mathbf U^{(0)}=0$ 开始由共轭梯度法生成的向量序列. 则
+\[
+\MathBookFormulaID{formula-ch09-conjugate-gradient-vector-error}
+\|\mathbf U-\mathbf U^{(k)}\|_{\mathbf A}
+\leq C\exp\left(-2k/\sqrt{\kappa_2(\mathbf A)}\right)\|\mathbf U\|_{\mathbf A},
+\]
+其中 $\mathbf U$ 是 $\mathbf A\mathbf U=\mathbf F$ 的解.
+
+该估计可用 $V_N$ 上的范数直接解释. 定义 $V_N$ 上的能量范数
+\MBSourceItem{1}
+\begin{equation}
+\MathBookFormulaID{formula-ch09-discrete-energy-norm}
+\label{eq:ch09-discrete-energy-norm}
+\|u\|_a:=\sqrt{a(u,u)}.
+\end{equation}
+由式~\eqref{eq:ch09-energy-matrix-identity}, 若 $v=\sum_iy_i\psi_i$, 则 $\|v\|_a=\|\mathbf Y\|_{\mathbf A}$, 其中 $\mathbf Y=(y_i)$. 写 $u_N=\sum_iu_i\psi_i$ 和 $u_N^{(k)}=\sum_iu_i^{(k)}\psi_i$, 其中 $(u_i)=\mathbf U$, $(u_i^{(k)})=\mathbf U^{(k)}$, 则上面的估计可写成
+\[
+\MathBookFormulaID{formula-ch09-conjugate-gradient-function-error}
+\|u_N-u_N^{(k)}\|_a
+\leq C\exp\left(-2k/\sqrt{\kappa_2(\mathbf A)}\right)\|u_N\|_a.
+\]
+这说明要把相对误差 $\|u_N-u_N^{(k)}\|_a/\|u_N\|_a$ 降到 $O(\varepsilon)$, 至多需要
+\[
+\MathBookFormulaID{formula-ch09-conjugate-gradient-iteration-count}
+k=O\left(\sqrt{\kappa_2(\mathbf A)}|\log\varepsilon|\right)
+\]
+次迭代.
+
+假设只要求 $\varepsilon=O(N^{-q})$, 其中 $q<\infty$. 当 $n\geq3$ 时, 上述估计说明只需 $O(N^{1/n}\log N)$ 次迭代即可达到该精度阶. 二维时稍复杂. 在典型应用中, 即使细化非常剧烈, 也有 $h_{\min}=O(h_{\max}^p)=O(N^{-p/2})$, 其中某个 $p<\infty$, 以下作此假设. 这时只需 $O(N^{1/2}(\log N)^2)$ 次迭代即可达到 $O(\varepsilon)$ 精度.
+
+每次共轭梯度迭代需要 $O(N)$ 次运算. 因而, 对上述细化网格, 共轭梯度法的总工作量估计为
+\[
+\MathBookFormulaID{formula-ch09-conjugate-gradient-work-estimate}
+O\left(N^{1+1/n}\log N\right)
+\]
+次运算, 其中 $n\geq3$. 多重网格法的工作量是 $O(N)$. 因此, 多重网格相对于共轭梯度迭代的优势似乎会随 $n$ 增大而减小. 不过, 通常 $N$ 也可能随 $n$ 增大. 与直接法的比较见 Bank and Scott (1989).

@@ -1,0 +1,251 @@
+% Reviewed translation: PDF pages 207--209 / printed pages 193--195.
+% Reconstructed against the original scan; environment headings remain English.
+\makeatletter
+\gdef\@chapapp{\chaptername}
+\gdef\thechapter{\arabic{chapter}}
+\gdef\theHchapter{\arabic{chapter}}
+\gdef\Hy@chapapp{chapter}
+\makeatother
+\ctexset{
+  chapter/name = {第,章},
+  chapter/number = \arabic{chapter},
+  chapter/numbering = true
+}
+\setcounter{chapter}{2}
+\chapter{求解 Stokes 问题的不可压混合有限元方法}
+\label{chap:incompressible-mixed-stokes}
+\counterwithin{equation}{section}
+\renewcommand{\thesection}{\arabic{section}}
+\renewcommand{\thesubsection}{\thesection.\arabic{subsection}}
+\renewcommand{\theequation}{\thesection.\arabic{equation}}
+\renewcommand{\thestatement}{\thesection.\arabic{statement}}
+
+\MathBookSourcePage{207}
+\section{一个抽象问题的混合逼近}
+\label{sec:incompressible-abstract-mixed-approximation}
+
+本节重新研究 Chapter~\ref{chap:stokes-foundations} 的
+Section~\ref{sec:abstract-variational-problem} 中讨论的抽象问题,
+但把它置于一个较弱的框架中, 从而导出一个(通常)不同的混合表述.
+由这一表述得到的混合逼近将产生一类重要的严格不可压方法,
+用于求解 Stokes 和 Navier--Stokes 方程.
+
+\subsection{一个混合变分问题}
+\label{subsec:incompressible-mixed-variational-problem}
+\setcounter{equation}{0}
+
+我们处于 Subsection~\ref{subsec:abstract-general-result} 的情形中.
+回顾 $X$ 和 $M$ 是两个 Hilbert 空间,
+$a(\cdot,\cdot)$ 和 $b(\cdot,\cdot)$ 分别是
+$X\times X$ 与 $X\times M$ 上的两个连续双线性形式.
+问题 $(Q)$ 为:
+
+给定 $(l,\chi)\in X'\times M'$, 求 $(u,\lambda)\in X\times M$, 使
+\begin{align}
+a(u,v)+b(v,\lambda)&=\langle l,v\rangle
+&&\forall v\in X,\label{eq:incompressible-abstract-q-first}\\
+b(u,\mu)&=\langle\chi,\mu\rangle
+&&\forall\mu\in M.\label{eq:incompressible-abstract-q-second}
+\end{align}
+与往常一样, 置
+\[
+V(\chi)=\{v\in X;\ b(v,\mu)=\langle\chi,\mu\rangle
+\quad\forall\mu\in M\},
+\qquad
+V=V(0).
+\]
+仍假设 $a(\cdot,\cdot)$ 和 $b(\cdot,\cdot)$ 满足以下两个条件:
+存在常数 $\alpha>0$, 使
+\begin{equation}\label{eq:incompressible-abstract-v-ellipticity}
+a(v,v)\geq\alpha\|v\|_X^2
+\qquad\forall v\in V;
+\end{equation}
+存在常数 $\beta>0$, 使
+\begin{equation}\label{eq:incompressible-abstract-inf-sup}
+\sup_{v\in X}\frac{b(v,\mu)}{\|v\|_X}
+\geq\beta\|\mu\|_M
+\qquad\forall\mu\in M.
+\end{equation}
+这两个假设保证问题 $(Q)$ 及其相应的问题 $(P)$:
+
+求 $u\in V(\chi)$, 使
+\begin{equation}\label{eq:incompressible-abstract-p}
+a(u,v)=\langle l,v\rangle
+\qquad\forall v\in V,
+\end{equation}
+都是适定的.
+
+\MathBookSourcePage{208}
+现在构造问题 $(Q)$ 的一个较弱表述, 它更适于我们所考虑的逼近.
+引入两个自反 Banach 空间 $\widetilde X$ 和 $\widetilde M$,
+其范数分别记为 $\|\cdot\|_{\widetilde X}$ 和
+$\|\cdot\|_{\widetilde M}$, 并满足
+\[
+X\mathrel{\mathop{\subset}\limits_d}\widetilde X,
+\qquad
+M\mathrel{\mathop{\subset}\limits_d}\widetilde M,
+\]
+其中符号 $\mathrel{\mathop{\subset}\limits_d}$ 表示嵌入稠密且连续.
+
+接着考虑两个连续双线性形式
+\[
+\widetilde a(\cdot,\cdot):
+\widetilde X\times\widetilde X\longrightarrow\mathbb R,
+\qquad
+\widetilde b(\cdot,\cdot):
+\widetilde X\times\widetilde M\longrightarrow\mathbb R,
+\]
+其范数为
+\[
+\|\widetilde a\|
+=\sup_{u,v\in\widetilde X}
+\frac{\widetilde a(u,v)}
+{\|u\|_{\widetilde X}\|v\|_{\widetilde X}},
+\qquad
+\|\widetilde b\|
+=\sup_{\substack{v\in\widetilde X\\ \mu\in\widetilde M}}
+\frac{\widetilde b(v,\mu)}
+{\|v\|_{\widetilde X}\|\mu\|_{\widetilde M}}.
+\]
+这两个双线性形式在下述意义下分别是 $a$ 和 $b$ 的延拓:
+\begin{align}
+\widetilde a(u,v)&=a(u,v)
+&&\forall u,v\in X,\label{eq:incompressible-extended-a}\\
+\widetilde b(v,\mu)&=b(v,\mu)
+&&\forall v\in X,\quad\forall\mu\in M.
+\label{eq:incompressible-extended-b}
+\end{align}
+此外, 假设 \eqref{eq:incompressible-abstract-q-first} 的右端项
+$l$ 属于 $\widetilde X$ 的对偶空间 $\widetilde X'$,
+并用 $\langle\cdot,\cdot\rangle$ 表示
+$\widetilde X$ 与 $\widetilde X'$ 之间的对偶配对.
+于是引入问题 $(\widetilde Q)$:
+
+求 $(\widetilde u,\widetilde\lambda)
+\in\widetilde X\times\widetilde M$, 使
+\begin{align}
+\widetilde a(\widetilde u,v)
++\widetilde b(v,\widetilde\lambda)
+&=\langle l,v\rangle
+&&\forall v\in\widetilde X,
+\label{eq:incompressible-weak-q-first}\\
+\widetilde b(\widetilde u,\mu)
+&=\langle\chi,\mu\rangle
+&&\forall\mu\in\widetilde M.
+\label{eq:incompressible-weak-q-second}
+\end{align}
+对每个 $\chi\in M'$, 定义仿射集
+\begin{equation}\label{eq:incompressible-weak-affine-set}
+\widetilde V(\chi)
+=\{v\in\widetilde X;\
+\widetilde b(v,\mu)=\langle\chi,\mu\rangle
+\quad\forall\mu\in\widetilde M\},
+\end{equation}
+以及 $\widetilde X$ 的闭子空间
+\begin{equation}\label{eq:incompressible-weak-kernel}
+\widetilde V=\widetilde V(0)
+=\{v\in\widetilde X;\
+\widetilde b(v,\mu)=0\quad\forall\mu\in\widetilde M\}.
+\end{equation}
+等式 \eqref{eq:incompressible-extended-b} 蕴含
+\begin{equation}\label{eq:incompressible-kernel-inclusions}
+V\subset\widetilde V,
+\qquad
+V(\chi)\subset\widetilde V(\chi).
+\end{equation}
+与问题 $(\widetilde Q)$ 相联系, 定义问题 $(\widetilde P)$:
+
+求 $\widetilde u\in\widetilde V(\chi)$, 使
+\begin{equation}\label{eq:incompressible-weak-p}
+\widetilde a(\widetilde u,v)=\langle l,v\rangle
+\qquad\forall v\in\widetilde V.
+\end{equation}
+
+\MathBookSourcePage{209}
+为了便于分析问题 $(\widetilde P)$ 和 $(\widetilde Q)$,
+对 $\widetilde a(\cdot,\cdot)$ 作如下假设:
+
+形式 $\widetilde a(\cdot,\cdot)$ 是 $\widetilde V$-椭圆的,
+即存在常数 $\widetilde\alpha>0$, 使
+\begin{equation}\label{eq:incompressible-weak-v-ellipticity}
+\widetilde a(v,v)
+\geq\widetilde\alpha\|v\|_{\widetilde X}^2
+\qquad\forall v\in\widetilde V.
+\end{equation}
+一方面, \eqref{eq:incompressible-weak-v-ellipticity}
+并非 \eqref{eq:incompressible-abstract-v-ellipticity} 的推论,
+因为 $\widetilde V$ 通常比 $V$ 大.
+另一方面, 除了由 \eqref{eq:incompressible-abstract-inf-sup}
+和 \eqref{eq:incompressible-extended-b} 推出的条件外,
+并未对 $\widetilde b(\cdot,\cdot)$ 假设任何 inf-sup 条件:
+\begin{equation}\label{eq:incompressible-restricted-weak-inf-sup}
+\sup_{v\in\widetilde X}
+\frac{\widetilde b(v,\mu)}{\|v\|_{\widetilde X}}
+\geq\frac1C\sup_{v\in X}
+\frac{\widetilde b(v,\mu)}{\|v\|_X}
+\geq\frac\beta C\|\mu\|_M
+\qquad\forall\mu\in M,
+\end{equation}
+其中 $C$ 是嵌入 $X\subset\widetilde X$ 的连续性常数.
+严格地说, 这不足以保证问题 $(\widetilde Q)$ 适定.
+下一个 Theorem 处理这一困难.
+
+\begin{Theorem}\label{thm:incompressible-weak-mixed-equivalence}
+设 $(u,\lambda)$ 是问题 $(Q)$ 的解, 且
+$\widetilde a$ 满足
+\eqref{eq:incompressible-weak-v-ellipticity}.
+
+\textup{1)} 问题 $(\widetilde P)$ 在 $\widetilde V(\chi)$ 中恰有一个解
+$\widetilde u$. 此外, 若 $\widetilde u$ 也属于 $V(\chi)$,
+或 $V$ 在 $\widetilde V$ 中稠密, 则 $\widetilde u=u$.
+
+\textup{2)} 若进一步有 $\lambda\in\widetilde M$,
+则 $(u,\lambda)$ 是问题 $(\widetilde Q)$ 的唯一解.
+\end{Theorem}
+
+\begin{Proof}
+首先回顾, Section~\ref{sec:abstract-variational-problem} 的理论也适用于
+自反 Banach 空间(参见
+Remark~\ref{rem:abstract-reflexive-banach-extension}).
+
+\textup{1)} $b(\cdot,\cdot)$ 的 inf-sup 条件
+\eqref{eq:incompressible-abstract-inf-sup}
+蕴含 $V(\chi)$ 非空, 因而 $\widetilde V(\chi)$ 非空.
+于是 $\widetilde a$ 的椭圆性蕴含问题 $(\widetilde P)$
+在 $\widetilde V(\chi)$ 中有且仅有一个解 $\widetilde u$.
+若 $\widetilde u\in V(\chi)$, 则由
+\eqref{eq:incompressible-extended-a} 可知,
+$\widetilde u$ 是问题 $(P)$ 的解; 由于 $(P)$ 恰有一个解,
+故 $\widetilde u=u$.
+否则, 假设 $V$ 在 $\widetilde V$ 中稠密.
+于是 \eqref{eq:incompressible-abstract-p}
+和 \eqref{eq:incompressible-extended-a} 蕴含
+$u$ 是问题 $(\widetilde P)$ 的解, 从而 $u=\widetilde u$.
+
+\textup{2)} 再假设 $\lambda\in\widetilde M$.
+由 \eqref{eq:incompressible-extended-a}
+和 \eqref{eq:incompressible-extended-b},
+\eqref{eq:incompressible-abstract-q-first} 变为
+\[
+\widetilde a(u,v)+\widetilde b(v,\lambda)
+=\langle l,v\rangle
+\qquad\forall v\in X.
+\]
+由于 $X$ 在 $\widetilde X$ 中稠密,
+这表明 $(u,\lambda)$ 是问题 $(\widetilde Q)$ 的解.
+最后证明它是 $(\widetilde Q)$ 的唯一解.
+第一分量 $u$ 显然唯一. 再设
+\[
+\widetilde b(v,\lambda)=0
+\qquad\forall v\in\widetilde X.
+\]
+由 \eqref{eq:incompressible-restricted-weak-inf-sup}
+可得 $\lambda=0$.
+\end{Proof}
+
+\begin{Remark}\label{rem:incompressible-lambda-regularity}
+假设 $\lambda\in\widetilde M$ 实际上是一个正则性条件.
+\end{Remark}
+
+在后续各节中, 我们将研究问题 $(\widetilde Q)$ 的逼近比问题 $(Q)$
+的逼近更简单的应用.

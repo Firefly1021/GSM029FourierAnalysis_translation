@@ -1,0 +1,242 @@
+\MathBookSourcePage{291}
+\subsection{非协调有限元}
+\label{sec:ch10-nonconforming}
+\setcounter{thmcount}{0}
+\setcounter{equation}{0}
+
+本节考察引理~\ref{lem:ch10-second-strang} 所述的变分罪行. 回顾问题~\eqref{eq:ch10-dirichlet-model} 的变分形式: 在 $V=\mathring H^1(\Omega)$ 中求 $u$, 使得
+\MBSourceItem{1}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-nonconforming-continuous-problem}
+\label{eq:ch10-nonconforming-continuous-problem}
+a(u,v)=F(v)\qquad\forall v\in V=\mathring H^1(\Omega),
+\end{equation}
+其中 $a(u,v)=\int_\Omega\nabla u\cdot\nabla v\,dx$, $F(v)=\int_\Omega fv\,dx$. 假设 $\Omega$ 是凸多边形区域且 $f\in L^2(\Omega)$. 由椭圆正则性, $u\in H^2(\Omega)$.
+
+令 $\mathcal T^h$ 是 $\Omega$ 的非退化三角剖分族. 非协调 $\mathcal P_1$ 有限元空间(见图~\MBUnresolvedReference{fig:ch03-nonconforming-p1}{3.2})定义为
+\MBSourceItem{2}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-nonconforming-p1-space}
+\label{eq:ch10-nonconforming-p1-space}
+\begin{split}
+V_h=\{v:;&v|_T\text{ 对所有 }T\in\mathcal T^h\text{ 都是线性的},\\
+&v\text{ 在 }\mathcal T^h\text{ 各边的中点连续},
+\text{ 且在 }\partial\Omega\text{ 上各边的中点为零}\}.
+\end{split}
+\end{equation}
+由于 $V_h$ 中的函数不再连续, 它们也不再属于 $\mathring H^1(\Omega)$. 因而离散问题必须使用修正的变分形式 $a_h(\cdot,\cdot)$. 在 $V_h+V$ 上定义
+\MBSourceItem{3}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-broken-bilinear-form}
+\label{eq:ch10-broken-bilinear-form}
+a_h(v,w)=\sum_{T\in\mathcal T^h}\int_T\nabla v\cdot\nabla w\,dx,
+\end{equation}
+及其相应范数
+\MBSourceItem{4}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-broken-energy-norm}
+\label{eq:ch10-broken-energy-norm}
+\|v\|_h:=\sqrt{a_h(v,v)}.
+\end{equation}
+$a_h(\cdot,\cdot)$ 在 $V=\mathring H^1(\Omega)$ 上强制, 因为它在 $V$ 上等于 $a(\cdot,\cdot)$. 它在 $V_h$ 上正定: $a_h(v,v)=0$ 蕴含 $v$ 分片常数, 而零边界条件和中点连续性一起蕴含 $v\equiv0$.
+
+离散问题是在 $V_h$ 中求 $u_h$, 使得
+\MBSourceItem{5}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-nonconforming-discrete-problem}
+\label{eq:ch10-nonconforming-discrete-problem}
+a_h(u_h,v)=F(v)\qquad\forall v\in V_h.
+\end{equation}
+我们用抽象误差估计~\eqref{eq:ch10-second-strang-estimate} 来估计 $\|u-u_h\|_h$. 令 $I^hu\in V_h$ 为 $u$ 的节点插值函数, 即 $I^hu$ 与 $u$ 在 $\mathcal T^h$ 各边的中点一致. 因为 $u\in H^2(\Omega)\cap\mathring H^1(\Omega)$, 定理~\MBUnresolvedReference{thm:ch04-source-4-4-20}{4.4.20} 给出
+\MBSourceItem{6}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-nonconforming-best-approximation}
+\label{eq:ch10-nonconforming-best-approximation}
+\inf_{v\in V_h}\|u-v\|_h\leq\|u-I^hu\|_h\leq Ch|u|_{H^2(\Omega)},
+\end{equation}
+其中 $C$ 仅依赖于式~\MBUnresolvedReference{eq:ch04-source-4-4-16}{4.4.16} 中的参数 $\rho$. 对式~\eqref{eq:ch10-second-strang-estimate} 右端第二项, 有
+\MathBookSourcePage{292}
+\MBSourceItem{7}
+\begin{align}
+\MathBookFormulaID{formula-ch10-nonconforming-consistency-identity}
+a_h(u-u_h,w)
+&=\sum_{T\in\mathcal T^h}\int_T\nabla u\cdot\nabla w\,dx-\int_\Omega fw\,dx\notag\\
+&=\sum_{T\in\mathcal T^h}\int_{\partial T}\nabla u\cdot wn\,ds
+-\sum_{T\in\mathcal T^h}\int_T\Delta u\,w\,dx-\int_\Omega fw\,dx\notag\\
+&=\sum_{T\in\mathcal T^h}\int_{\partial T}\nabla u\cdot wn\,ds\notag\\
+&=\sum_{e\in\mathcal E^h}\int_e\nabla u\cdot[\![w]\!]\,ds.
+\label{eq:ch10-nonconforming-consistency-identity}
+\end{align}
+这里 $\mathcal E^h$ 是 $\mathcal T^h$ 的边集, $n$ 是沿 $\partial T$ 的单位外法向量, $[\![w]\!]$ 是跨边 $e$ 的向量跳跃, 定义如下. 若内部边 $e$ 由 $T_1,T_2\in\mathcal T^h$ 共享, 且 $w_j=w|_{T_j}$, 则在 $e$ 上定义
+\[
+\MathBookFormulaID{formula-ch10-vector-jump-interior}
+[\![w]\!]=w_1n_1+w_2n_2,
+\]
+其中 $n_j$ 是 $e$ 上指向 $T_j$ 外部的单位法向量. 若 $e\subset\partial\Omega$, 则定义
+\[
+\MathBookFormulaID{formula-ch10-vector-jump-boundary}
+[\![w]\!]=wn,
+\]
+其中 $n$ 是指向 $\Omega$ 外部的单位法向量.
+
+下一步估计 $\sum_{e\in\mathcal E^h}\int_e\nabla u\cdot[\![w]\!]\,ds$, 需要以下迹估计. 设 $e$ 是三角形 $T$ 的一条边. 由带尺度变换的迹定理(参见习题~\ref{exr:ch10-07}),
+\MBSourceItem{8}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-scaled-trace-edge}
+\label{eq:ch10-scaled-trace-edge}
+|e|^{-1}\|\zeta\|_{L^2(e)}^2
+\leq C\bigl(h_T^{-2}\|\zeta\|_{L^2(T)}^2+|\zeta|_{H^1(T)}^2\bigr)
+\qquad\forall\zeta\in H^1(T),
+\end{equation}
+其中 $|e|$ 表示 $e$ 的长度, $h_T=\operatorname{diam}T$, 正常数 $C$ 只依赖于 $T$ 的粗壮度参数. 又因为 $[\![w]\!]$ 在每条边的中点为零, 简单计算(习题~\ref{exr:ch10-08})给出
+\MBSourceItem{9}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-jump-midpoint-estimate}
+\label{eq:ch10-jump-midpoint-estimate}
+|e|\|[\![w]\!]\|_{L^2(e)}^2
+\leq C\sum_{T\in\mathcal T_e}h_T^2|w|_{H^1(T)}^2,
+\end{equation}
+其中 $\mathcal T_e$ 是 $\mathcal T^h$ 中以 $e$ 为边的三角形集合, $C$ 仍只依赖于 $T$ 的粗壮度参数.
+
+利用中点公式以及 $[\![w]\!]$ 在所有边中点为零这一事实, 对任意常数 $c_e$ 和 $e$ 的一个单位法向量 $n_e$, 可写成
+\[
+\MathBookFormulaID{formula-ch10-midpoint-cancellation}
+\sum_{e\in\mathcal E^h}\int_e\nabla u\cdot[\![w]\!]\,ds
+=\sum_{e\in\mathcal E^h}\int_e(\nabla u\cdot n_e-c_e)n_e\cdot[\![w]\!]\,ds.
+\]
+\MathBookSourcePage{293}
+因此, 由 Cauchy--Schwarz 不等式、式~\eqref{eq:ch10-scaled-trace-edge} 和~\eqref{eq:ch10-jump-midpoint-estimate},
+\begin{align*}
+\MathBookFormulaID{formula-ch10-consistency-edge-estimate}
+\sum_{e\in\mathcal E^h}\int_e\nabla u\cdot[\![w]\!]\,ds
+&\leq C\left[\sum_{e\in\mathcal E^h}\min_{T\in\mathcal T_e}
+\left(h_T^{-2}\inf_{c_e\in\mathbb R}
+\|\nabla u\cdot n_e-c_e\|_{L^2(T)}^2+|u|_{H^2(T)}^2\right)\right]^{1/2}\\
+&\quad\times\left[\sum_{e\in\mathcal E^h}\sum_{T\in\mathcal T_e}
+h_T^2|w|_{H^1(T)}^2\right]^{1/2}\\
+&\leq Ch|u|_{H^2(\Omega)}\|w\|_h,
+\end{align*}
+最后一步使用了式~\MBUnresolvedReference{eq:ch04-source-4-3-8}{4.3.8}. 因而由式~\eqref{eq:ch10-nonconforming-consistency-identity},
+\MBSourceItem{10}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-nonconforming-consistency-estimate}
+\label{eq:ch10-nonconforming-consistency-estimate}
+|a_h(u-u_h,w)|\leq Ch|u|_{H^2(\Omega)}\|w\|_h.
+\end{equation}
+结合式~\eqref{eq:ch10-second-strang-estimate}、\eqref{eq:ch10-nonconforming-best-approximation} 和~\eqref{eq:ch10-nonconforming-consistency-estimate}, 得到下述定理.
+
+\MBSourceItem{11}
+\begin{Theorem}
+\label{thm:ch10-nonconforming-energy-error}
+设 $\Omega$ 是凸多边形区域, $f\in L^2(\Omega)$, 且 $u_h$ 是非协调 $\mathcal P_1$ 离散问题~\eqref{eq:ch10-nonconforming-discrete-problem} 的解. 则
+\[
+\MathBookFormulaID{formula-ch10-nonconforming-energy-error}
+\|u-u_h\|_h\leq Ch|u|_{H^2(\Omega)},
+\]
+其中正常数 $C$ 只依赖于式~\MBUnresolvedReference{eq:ch04-source-4-4-16}{4.4.16} 中的参数 $\rho$.
+\end{Theorem}
+
+还可以通过修改第~\MBUnresolvedReference{sec:ch05-duality}{5.4} 节的对偶论证得到 $L^2$ 误差估计. 令 $z\in H^2(\Omega)\cap\mathring H^1(\Omega)$ 满足
+\MathBookSourcePage{294}
+\MBSourceItem{12}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-nonconforming-dual-continuous}
+\label{eq:ch10-nonconforming-dual-continuous}
+a(v,z)=\int_\Omega v(u-u_h)\,dx
+\qquad\forall v\in\mathring H^1(\Omega),
+\end{equation}
+并令 $z_h\in V_h$ 满足
+\MBSourceItem{13}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-nonconforming-dual-discrete}
+\label{eq:ch10-nonconforming-dual-discrete}
+a_h(v,z_h)=\int_\Omega v(u-u_h)\,dx
+\qquad\forall v\in V_h.
+\end{equation}
+由式~\eqref{eq:ch10-nonconforming-dual-continuous} 和~\eqref{eq:ch10-nonconforming-dual-discrete},
+\MBSourceItem{14}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-nonconforming-duality-decomposition}
+\label{eq:ch10-nonconforming-duality-decomposition}
+\|u-u_h\|_{L^2(\Omega)}^2
+=a_h(u-u_h,z-z_h)+a_h(u-u_h,z_h)+a(u_h,z-z_h).
+\end{equation}
+由定理~\ref{thm:ch10-nonconforming-energy-error}(分别用于 $u$ 和 $z$)以及椭圆正则性, 右端第一项满足
+\MBSourceItem{15}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-duality-first-term}
+\label{eq:ch10-duality-first-term}
+a_h(u-u_h,z-z_h)\leq\|u-u_h\|_h\|z-z_h\|_h
+\leq Ch^2|u|_{H^2(\Omega)}|z|_{H^2(\Omega)}.
+\end{equation}
+把式~\eqref{eq:ch10-nonconforming-duality-decomposition} 右端第二项改写为
+\MBSourceItem{16}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-duality-second-term-split}
+\label{eq:ch10-duality-second-term-split}
+a_h(u-u_h,z_h)=a_h(u-u_h,z_h-I^hz)+a_h(u-u_h,I^hz).
+\end{equation}
+由式~\eqref{eq:ch10-nonconforming-consistency-estimate} 和插值估计,
+\MBSourceItem{17}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-duality-second-first-piece}
+\label{eq:ch10-duality-second-first-piece}
+a_h(u-u_h,z_h-I^hz)leq\|u-u_h\|_h\|z_h-I^hz\|_h
+\leq Ch^2|u|_{H^2(\Omega)}|z|_{H^2(\Omega)}.
+\end{equation}
+式~\eqref{eq:ch10-nonconforming-consistency-identity} 还给出
+\[
+\MathBookFormulaID{formula-ch10-duality-interpolant-edge-identity}
+a_h(u-u_h,I^hz)=\sum_{e\in\mathcal E^h}\int_e\nabla u\cdot[\![I^hz-z]\!]\,ds.
+\]
+重复导出式~\eqref{eq:ch10-nonconforming-consistency-estimate} 的估计, 并用式~\eqref{eq:ch10-scaled-trace-edge} 和插值估计, 得
+\MathBookSourcePage{295}
+\MBSourceItem{18}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-duality-interpolant-edge-estimate}
+\label{eq:ch10-duality-interpolant-edge-estimate}
+a_h(u-u_h,I^hz)\leq C|u|_{H^2(\Omega)}h^2|z|_{H^2(\Omega)}.
+\end{equation}
+结合式~\eqref{eq:ch10-duality-second-term-split}--\eqref{eq:ch10-duality-interpolant-edge-estimate}, 有
+\MBSourceItem{19}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-duality-second-term-estimate}
+\label{eq:ch10-duality-second-term-estimate}
+a_h(u-u_h,z_h)\leq Ch^2|u|_{H^2(\Omega)}|z|_{H^2(\Omega)},
+\end{equation}
+同理,
+\MBSourceItem{20}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-duality-third-term-estimate}
+\label{eq:ch10-duality-third-term-estimate}
+a_h(u_h,z-z_h)\leq Ch^2|u|_{H^2(\Omega)}|z|_{H^2(\Omega)}.
+\end{equation}
+将式~\eqref{eq:ch10-nonconforming-duality-decomposition}、\eqref{eq:ch10-duality-first-term}、\eqref{eq:ch10-duality-second-term-estimate} 和~\eqref{eq:ch10-duality-third-term-estimate} 合并, 得
+\[
+\MathBookFormulaID{formula-ch10-l2-error-pre-regularity}
+\|u-u_h\|_{L^2(\Omega)}^2\leq Ch^2|u|_{H^2(\Omega)}|z|_{H^2(\Omega)}.
+\]
+再由椭圆正则性估计 $\|z\|_{H^2(\Omega)}\leq C_\Omega\|u-u_h\|_{L^2(\Omega)}$, 得到下述结果.
+
+\MBSourceItem{21}
+\begin{Theorem}
+\label{thm:ch10-nonconforming-l2-error}
+设 $\Omega$ 是凸多边形区域, $f\in L^2(\Omega)$, 且 $u_h$ 是非协调 $\mathcal P_1$ 离散问题~\eqref{eq:ch10-nonconforming-discrete-problem} 的解. 则
+\[
+\MathBookFormulaID{formula-ch10-nonconforming-l2-error}
+\|u-u_h\|_{L^2(\Omega)}\leq Ch^2|u|_{H^2(\Omega)},
+\]
+其中正常数 $C$ 只依赖于式~\MBUnresolvedReference{eq:ch04-source-4-4-16}{4.4.16} 中的参数 $\rho$.
+\end{Theorem}
+
+自然会问, 为什么要使用非协调有限元. 在一些情形下, 非协调方法显然值得采用. 一个例子是不可压缩流体流动问题. 如果使用向量值协调分片线性 Lagrange 有限元, 那么在一般网格上, $V_h$ 中满足无散条件的函数只有零函数. 因而为了用协调方法得到良好逼近解, 必须采用高阶多项式. 另一方面, 向量值非协调分片线性有限元空间可以求解这类问题(参见 \MBUnresolvedReference{eq:ch12-source-12-4-12}{式 12.4.12}).
+
+\MathBookSourcePage{296}
+另一个例子是双调和方程(参见第~\MBUnresolvedReference{sec:ch05-biharmonic}{5.9} 节). 这是四阶问题, 因而协调有限元必须是 $C^1$ 元, 例如含五次多项式的 Argyris 有限元. 另一方面, 可用图~\ref{fig:ch10-morley-element} 所示的非协调二次 Morley 有限元求解. 该有限元的性质及其对双调和方程的应用见习题~\ref{exr:ch10-09}--\ref{exr:ch10-14}(另见 Shi 1990). 还要注意, Morley 元可为采用 Argyris 元离散双调和方程所得的方程组构造预条件子(参见 Brenner 1996b).
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=.30\linewidth]{chapter-10-fig-10-3.png}
+\caption{Morley 有限元}
+\label{fig:ch10-morley-element}
+\end{figure}

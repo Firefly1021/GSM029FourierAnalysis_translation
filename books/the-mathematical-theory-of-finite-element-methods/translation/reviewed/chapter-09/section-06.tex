@@ -1,0 +1,102 @@
+\MathBookSourcePage{272}
+\subsection{有限元方程的条件性}
+\label{sec:ch09-conditioning-finite-element-equations}
+\setcounter{thmcount}{0}
+\setcounter{equation}{0}
+
+到目前为止, 只讨论了高度细化网格上逼近质量的问题. 但是, 如果网格尺寸的大幅变化使相应线性方程组病态(参见第~\ref{sec:ch00-ritz-galerkin-approximation} 节), 求解这些方程组是否还合理? 本章余下部分说明, 只要对局部细化的网格施加某些限制并对基函数作自然缩放, 就不必出现这种情况. 许多材料取自 Bank and Scott (1989).
+
+共轭梯度法等迭代方法求解线性方程组的收敛性可以用线性方程组的条件数估计(Luenberger 1973). 反过来, 解对右端扰动的敏感性可由条件数估计, 而不完全的直接方法(如 Gaussian 消去)在病态系统上也会性能下降(Isaacson and Keller 1966). 因此, 仅仅改用标准直接法并不能根治病态系统. 幸运的是, 只要细化网格时有限元基函数得到自然缩放, 有限元方法线性方程组的条件数就不会以不可接受的方式恶化.
+
+一种特别关心的情形是细化网格, 也许是自适应地细化, 以处理区域边界角点或微分方程系数不连续点处产生的奇性. 直观上, 线性系统可能出现很大的特征值比, 从而条件数很大, 因为最大与最小网格尺寸之比很大. 但下面将证明, 若基函数采用自然缩放且网格按照定义~\ref{def:ch04-mesh-family-regularity} 非退化, 就并非如此.
+
+在尺寸为 $h$ 的规则网格上, 二阶椭圆边值问题的有限元方程具有标准的条件数估计. 由逆估计可知, 该条件数为 $O(h^{-2})$. 自由度数 $N$ 在这种情形下为 $O(h^{-n})$, 因而条件数也可写成 $O(N^{2/n})$. 本节将证明, 在 $n\geq3$ 时条件数由 $CN^{2/n}$ 控制; 二维时, 最小网格尺寸的一个对数因子使条件数只略有增加.
+
+考虑变分形式为式~\eqref{eq:ch09-diffusion-form} 的问题. 现在写成 $\mathcal T^h=\mathcal T_N$, 以强调自由度数 $N$ 是关键参数而非网格尺寸. 令 $V_N$ 为相应有限元空间, 取它的一组基 $\{\psi_i:i=1,\ldots,N\}$. 对给定的 $V_N$ 基, 定义矩阵 $\mathbf A$ 和向量 $\mathbf F$:
+\[
+\MathBookFormulaID{formula-ch09-stiffness-matrix-load-vector}
+A_{ij}:=a(\psi_i,\psi_j),
+\qquad
+F_i:=f(\psi_i),
+\qquad i,j=1,\ldots,N.
+\]
+设 $u^N$ 是标准变分问题~\eqref{eq:ch02-ritz-galerkin-problem} 在 $V_N$ 上、变分形式取~\eqref{eq:ch09-diffusion-form} 时的解. 该问题等价于求解
+\[
+\MathBookFormulaID{formula-ch09-finite-element-linear-system}
+\mathbf A\mathbf U=\mathbf F,
+\]
+其中 $u^N=\sum_{i=1}^Nu_i\psi_i$, $\mathbf U=(u_i)$. 下面给出保证 $\mathbf A$ 条件数表现良好的 $V_N$ 和基的条件.
+
+对第~\ref{chap:ch04-polynomial-approximation} 章研究的所有 $V_N$, 下列性质都成立: 存在常数 $c_5$, 使 $\{\psi_i:i=1,\ldots,N\}$ 作为局部基满足
+\MBSourceItem{1}
+\begin{equation}
+\MathBookFormulaID{formula-ch09-basis-local-cardinality}
+\label{eq:ch09-basis-local-cardinality}
+\max_{1\leq i\leq N}\operatorname{cardinality}
+\{T\in\mathcal T_N:\operatorname{supp}(\psi_i)\cap T\neq\varnothing\}
+\leq c_5
+\end{equation}
+于任意非退化网格上成立. 关于基缩放的主要假设是: 对所有 $T\in\mathcal T_N$,
+\MBSourceItem{2}
+\begin{equation}
+\MathBookFormulaID{formula-ch09-basis-scaling-assumption}
+\label{eq:ch09-basis-scaling-assumption}
+C^{-1}h_T^{n-2}\|v\|_{L^\infty(T)}^2
+\leq\sum_{\operatorname{supp}(\psi_i)\cap T\neq\varnothing}v_i^2
+\leq Ch_T^{n-2}\|v\|_{L^\infty(T)}^2,
+\end{equation}
+其中 $C<\infty$, $v=\sum_{i=1}^Nv_i\psi_i$, 且 $(v_i)$ 任意.
+
+假设 $\Omega$ 是 Lipschitz 区域, 从而排除 ``slit'' 区域. 当 $n\geq3$ 时, Sobolev 不等式(见习题~\ref{exr:ch08-11})给出
+\MBSourceItem{3}
+\begin{equation}
+\MathBookFormulaID{formula-ch09-sobolev-n-ge-three}
+\label{eq:ch09-sobolev-n-ge-three}
+\|v\|_{L^{2n/(n-2)}(\Omega)}\leq C_S\|v\|_{H^1(\Omega)}
+\qquad\forall v\in\mathring H^1(\Omega).
+\end{equation}
+二维时, 因 $\Omega$ 有界, 对所有 $p<\infty$, 嵌入 $H^1(\Omega)\subset L^p(\Omega)$ 成立. 而且, 在 $\Omega$ 满足锥条件时, 嵌入范数 $\sigma(p)$ 至多是 Sobolev 嵌入范数的常数倍, 后者对充分大的 $p$ 满足 $\sigma(p)\leq C_S\sqrt p$(见 Gilbarg and Trudinger 1983, 特别是定理 7.15 的证明). 因而二维时有
+\MBSourceItem{4}
+\begin{equation}
+\MathBookFormulaID{formula-ch09-sobolev-two-dimensional}
+\label{eq:ch09-sobolev-two-dimensional}
+\|v\|_{L^p(\Omega)}\leq C_S\sqrt p\|v\|_{H^1(\Omega)}
+\qquad\forall v\in\mathring H^1(\Omega), p<\infty.
+\end{equation}
+
+实际中只有有限个有限剖分, 且任意有限元族都是非退化的. 不过, 以下所有常数均以定义~\ref{def:ch04-mesh-family-regularity} 中的参数 $\rho$ 表示其界.
+
+\MBSourceItem{5}
+\begin{Example}
+\label{ex:ch09-scaled-lagrange-basis}
+设 $V_N$ 是第~\ref{chap:ch03-finite-element-space-construction} 章中 $C^0$ 分片多项式的 Lagrange 空间, 且 $n$ 是空间维数. 令 $\{\phi_i:i=1,\ldots,N\}$ 是 $V_N$ 的标准 Lagrange 节点基, 它由在剖分中精确地等于一个节点值的函数组成. 定义新的缩放基 $\{\psi_i:i=1,\ldots,N\}$:
+\[
+\MathBookFormulaID{formula-ch09-scaled-lagrange-basis}
+\psi_i:=h(x_i)^{(2-n)/2}\phi_i,
+\]
+其中 $h$ 由式~\eqref{eq:ch09-local-mesh-size-definition} 定义, $\{x_i:i=1,\ldots,N\}$ 是节点集. 由式~\eqref{eq:ch09-local-mesh-size-definition} 和~\eqref{eq:ch09-element-mesh-size-comparability}, 该基满足~\eqref{eq:ch09-basis-scaling-assumption}, 其中 $C$ 只依赖于 $\rho,k,n$. 当 $n=2$ 时, 该基与原基无异.
+\end{Example}
+
+\MBSourceItem{6}
+\begin{Example}
+\label{ex:ch09-scaled-hermite-basis}
+在二维中, 为使 Hermite 单元满足~\eqref{eq:ch09-basis-scaling-assumption}, 可把与一阶导数节点值对应的基函数缩放成 $(h(x_i)^{-1},h(y_i)^{-1})$, 其他基函数按 Lagrange 情形缩放. 该有限元的其他假设与 Lagrange 情形相同.
+\end{Example}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=.72\textwidth]{chapter-09-highly-graded-meshes.png}
+\caption{由相似三角形组成的两个高度分级网格.}
+\label{fig:ch09-highly-graded-meshes}
+\end{figure}
+
+\MBSourceItem{7}
+\begin{Example}
+\label{ex:ch09-radical-mesh-refinement}
+前面式~\eqref{eq:ch09-local-mesh-size-definition} 和~\eqref{eq:ch09-element-mesh-size-comparability} 已表明, 非退化性假设并不排除剧烈的网格细化. 下面说明它甚至不推出局部拟一致性. 令 $\Omega_0$ 为以原点为中心、边长为 $1$ 的正方形,
+\[
+\MathBookFormulaID{formula-ch09-centered-unit-square}
+\Omega_0=\{(x,y)\in\mathbb R^2:|x|<\tfrac12, |y|<\tfrac12\}.
+\]
+令 $\mathcal T_{N_0}$ 是由正方形的两条对角线和两条坐标轴生成的剖分, 共含八个全等直角等腰三角形, 每个边长为 $1/2$. 沿第一个正方形的边中点连接另一个边长 $1/2$ 的正方形, 并添加与对角线平行的边, 得到 $\mathcal T_{N_1}$. 这样在内部得到 $24$ 个相似三角形. 再对内部小正方形重复这一过程, 得到由相似三角形组成的剖分序列 $\mathcal T_{N_i}$. 图~\ref{fig:ch09-highly-graded-meshes} 给出 $i=3,4$ 的情形. 最大边长与最小边长之比是 $2^i$, 但只使用 $16i+8$ 个三角形. 这种几何细化远比通常用来处理边界或界面奇性的细化剧烈, 却说明定义~\ref{def:ch04-mesh-family-regularity} 中的非退化假设并不限制网格细化.
+\end{Example}

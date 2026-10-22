@@ -1,0 +1,39 @@
+% block: sparse-direct-matrix page:25 type:section
+\subsection{{大型稀疏线性方程组的直接方法}}\label{sec:sparse-direct-methods}
+{考虑下列矩阵:}
+\begin{equation}\label{eq:sparse-fill-example}
+A=\begin{pmatrix}2&-1&-1&-1\\1&1&0&0\\1&0&1&0\\1&0&0&1\end{pmatrix}.
+\end{equation}
+{如果矩阵中的零元素相对较多, 则称该矩阵稀疏. 反之, 如果矩阵中的零元素相对较少, 则称其稠密.}
+% block: fill-in-example page:25 type:ordinary-paragraph
+{对 \eqref{eq:sparse-fill-example} 应用 LU 分解 (Algorithm~\ref{alg:lu-decomposition}), 得到}
+\[
+A=LU=
+\begin{pmatrix}1&&&\\1/2&1&&\\1/2&1/3&1&\\1/2&1/3&1/4&1\end{pmatrix}
+\begin{pmatrix}2&-1&-1&-1\\&3/2&1/2&1/2\\&&4/3&1/3\\&&&5/4\end{pmatrix}.
+\]
+{对于 $A$ 的下三角部分, 可见 $a_{32}=a_{42}=a_{43}=0$, 但在 $L$ 的相应下三角部分却有 $l_{32}=l_{42}=l_{43}\ne0$. 类似地, 在 $A$ 的上三角部分有 $a_{23}=a_{24}=a_{34}=0$, 而在 $U$ 的上三角部分却有 $u_{23}=u_{24}=u_{34}\ne0$. 如果原矩阵 $A$ 中的元素为零, 而 $L$ 和 $U$ 中相应的元素不为零, 则称 $L$ 和 $U$ 中的这些非零元素为填充元.}
+% block: sparse-storage page:25 type:ordinary-paragraph
+{\leavevmode\phantomsection\label{idx:chapter-01-section-05:sparse-storage}当矩阵 $A$ 大型且稀疏时, 填充元可能成为计算 LU 分解的瓶颈. 对于大型稀疏矩阵, 通常只使用非零元素, 不在内存中存储零元素. 然而, LU 分解后, $L$ 和 $U$ 可能变得稠密, 即最坏情况下需要在内存中存储 $n^2$ 个元素. 这说明, 若矩阵规模 $n$ 为 $n=1,000,000$, 并使用实数双精度运算, 则需要 $n^2\times8\approx8$ TB 内存. 若 $n=10,000,000$, 则需要一台具有 800 TB 内存的计算机.}
+% block: sparse-permutation page:25 type:ordinary-paragraph
+{正如 Chapter~\ref{chap:computational-applications} 将展示的, 科学计算中产生的矩阵通常大型且稀疏. 因此, 用 LU 分解求解大型稀疏线性方程组时, 减少填充元至关重要. 下面介绍减少填充元的核心思想.}
+{核心思想是对稀疏矩阵 $A$ 的某些行和列作置换, 以减少填充元, 然后对置换后的矩阵作 LU 分解. 具体地, 对 $PAQ$ 作 LU 分解, 其中 $P$ 和 $Q$ 是预先指定的置换矩阵. 随后求解}
+\[PAQ\bm y=P\bm b\]
+{从而得到解 $\bm x=Q\bm y$. 这里选择 $P$ 和 $Q$, 使 $L$ 和 $U$ 中的填充元尽可能少.}
+% block: sparse-reordering-example page:26 type:ordinary-paragraph
+{下面给出减少 \eqref{eq:sparse-fill-example} 中 $A$ 的填充元的例子. 考虑}
+\[
+P=Q=\begin{pmatrix}0&0&0&1\\0&0&1&0\\0&1&0&0\\1&0&0&0\end{pmatrix}.
+\]
+{则由 \eqref{eq:sparse-fill-example} 得到}
+\[
+PAQ=\begin{pmatrix}1&0&0&1\\0&1&0&1\\0&0&1&1\\-1&-1&-1&2\end{pmatrix}.
+\]
+{对 $PAQ$ 作 LU 分解, 得到}
+\[
+PAQ=LU=\begin{pmatrix}1&0&0&0\\0&1&0&0\\0&0&1&0\\-1&-1&-1&1\end{pmatrix}
+\begin{pmatrix}1&0&0&1\\0&1&0&1\\0&0&1&1\\0&0&0&5\end{pmatrix}.
+\]
+{幸运的是, 这种情形下没有产生填充元. 因而只需在内存中存储非零元素, 可有效利用内存.}
+% block: sparse-reordering-methods page:26 type:ordinary-paragraph
+{虽然很难选择使填充元个数最少的最优置换矩阵 $P$ 和 $Q$, 但已有近似优化方法. 著名的方法包括最小度方法和逆 Cuthill--McKee 方法. 关于这些方法的参考文献, 见 Section~\ref{subsec:preconditioner-reorderings}. 关于稀疏直接方法的详细内容, 例如可参见 \BookCite{44}.}

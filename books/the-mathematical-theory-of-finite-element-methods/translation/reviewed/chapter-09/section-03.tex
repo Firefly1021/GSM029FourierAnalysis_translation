@@ -1,0 +1,105 @@
+\MathBookSourcePage{258}
+\subsection{局部误差估计}
+\label{sec:ch09-local-error-estimates}
+\setcounter{thmcount}{0}
+\setcounter{equation}{0}
+
+上一节用局部定义的误差估计量~\eqref{eq:ch09-face-error-indicator} 建立了全局误差 $|e_h|_{H^1(\Omega)}$ 的估计. 自然会问, 局部估计量~\eqref{eq:ch09-face-error-indicator} 与局部误差之间有何联系. 在相当一般的条件下可以建立一个方向的不等式. 首先, 对任意 $T\in\mathcal T^h$, 式~\eqref{eq:ch09-residual-equation} 给出
+\MBSourceItem{1}
+\begin{equation}
+\MathBookFormulaID{formula-ch09-local-residual-equation}
+\label{eq:ch09-local-residual-equation}
+a(e_h,v)=(R_A,v)
+\qquad\forall v\in\mathring H^1(T).
+\end{equation}
+因此
+\[
+\MathBookFormulaID{formula-ch09-local-residual-duality}
+\left|\int_TR_Av\,dx\right|
+\leq\alpha_1|e_h|_{H^1(T)}|v|_{H^1(T)},
+\]
+从而
+\[
+\MathBookFormulaID{formula-ch09-local-error-dual-lower}
+\alpha_1|e_h|_{H^1(T)}
+\geq\sup_{0\neq v\in\mathring H^1(T)}
+\frac{\left|\int_TvR_A\,dx\right|}{|v|_{H^1(T)}}.
+\]
+
+为了得到严格估计, 必须以某种方式控制 $\alpha$ 和 $f$ 所含信息. 因此假设 $\alpha$ 和 $f$ 分别是次数至多 $r-k+2$ 和 $r$ 的分片多项式, 不要求连续. 于是 $R_A$ 是次数至多 $r$ 的分片多项式. 齐次性论证表明(证明见习题~\ref{exr:ch09-05}), 对任意次数为 $r$ 的多项式 $P$,
+\MBSourceItem{2}
+\begin{equation}
+\MathBookFormulaID{formula-ch09-polynomial-volume-inf-sup}
+\label{eq:ch09-polynomial-volume-inf-sup}
+\sup_{v\in\mathring H^1(T)}
+\frac{\int_TvP\,dx}{|v|_{H^1(T)}}
+\geq c_rh_T\|P\|_{L^2(T)},
+\end{equation}
+其中 $c_r$ 只依赖于次数 $r$ 和网格的粗壮度. 取 $P=R_A$ 得
+\MBSourceItem{3}
+\begin{equation}
+\MathBookFormulaID{formula-ch09-volume-residual-local-lower}
+\label{eq:ch09-volume-residual-local-lower}
+\alpha_1|e_h|_{H^1(T)}
+\geq c_1h_T\left(\int_TR_A^2\,dx\right)^{1/2}.
+\end{equation}
+
+跳跃项也有类似界. 仍采用使 $R_A$ 在每个单元上为次数至多 $r$ 的多项式的假设. 对 $\mathcal T^h$ 的任意面 $e$, 式~\eqref{eq:ch09-residual-equation} 给出
+\[
+\MathBookFormulaID{formula-ch09-face-residual-local-equation}
+a(e_h,v)=\int_e[\alpha n\cdot\nabla u_h]_nv\,ds
+\qquad\forall v\in V_e,
+\]
+其中 $T_e=T_e^+\cup T_e^-$ 是共享 $e$ 的两个单元之并, 且
+\[
+\MathBookFormulaID{formula-ch09-face-test-space}
+V_e:=\left\{v\in\mathring H^1(T_e):
+\int_{T_e^+}vP\,dx=\int_{T_e^-}vP\,dx=0
+\quad\forall P\in\mathcal P_r\right\}.
+\]
+于是
+\[
+\MathBookFormulaID{formula-ch09-face-error-dual-lower}
+\alpha_1|e_h|_{H^1(T_e)}
+\geq\sup_{0\neq v\in V_e}
+\frac{\left|\int_e[\alpha n\cdot\nabla u_h]_nv\,ds\right|}{|v|_{H^1(T_e)}}.
+\]
+由于 $[\alpha n\cdot\nabla u_h]_n$ 在 $e$ 上是次数至多 $r+1$ 的多项式, 可证明(见习题~\ref{exr:ch09-07})
+\MBSourceItem{4}
+\begin{equation}
+\MathBookFormulaID{formula-ch09-polynomial-face-inf-sup}
+\label{eq:ch09-polynomial-face-inf-sup}
+\sup_{0\neq v\in\mathring H^1(T_e)}
+\frac{\left|\int_e[\alpha n\cdot\nabla u_h]_nv\,ds\right|}{|v|_{H^1(T_e)}}
+\geq c_r'h_e^{1/2}\|[\alpha n\cdot\nabla u_h]_n\|_{L^2(e)},
+\end{equation}
+其中 $c_r'>0$ 只依赖于 $r$ 和 $\mathcal T^h$ 的非退化常数. 合并上述估计得
+\MBSourceItem{5}
+\begin{equation}
+\MathBookFormulaID{formula-ch09-local-estimator-lower-bound}
+\label{eq:ch09-local-estimator-lower-bound}
+\alpha_1|e_h|_{H^1(T_e)}\geq cE_e(u_h),
+\end{equation}
+其中 $c>0$ 只依赖于 $\mathcal T^h$ 的非退化常数.
+
+\MBSourceItem{6}
+\begin{Theorem}
+\label{thm:ch09-local-estimator-lower-bound}
+设 $\alpha$ 和 $f$ 在非退化网格 $\mathcal T^h$ 上分别是次数至多 $r-k+2$ 和 $r$ 的分片多项式, 不要求连续. 则对 $\mathcal T^h$ 的所有面 $e$, 下界~\eqref{eq:ch09-local-estimator-lower-bound} 成立, 其中 $c$ 只依赖于 $r$ 和网格 $\mathcal T^h$ 的非退化性, $\alpha_1$ 是 $\alpha$ 在 $\Omega$ 上的上界.
+\end{Theorem}
+
+该定理的一个推论是式~\eqref{eq:ch09-global-estimator-upper-bound} 的反向不等式, 即全局下界. 将~\eqref{eq:ch09-local-estimator-lower-bound} 平方并对所有单元求和, 得到下面的结论.
+
+\MBSourceItem{7}
+\begin{Theorem}
+\label{thm:ch09-global-estimator-lower-bound}
+设 $\alpha$ 和 $f$ 满足定理~\ref{thm:ch09-local-estimator-lower-bound} 的条件. 则
+\[
+\MathBookFormulaID{formula-ch09-global-estimator-lower-bound}
+\alpha_1|e_h|_{H^1(\Omega)}
+\geq c\left(\sum_{e\in\mathcal T^h}E_e(u_h)^2\right)^{1/2},
+\]
+其中 $c>0$ 和 $\alpha_1$ 与定理~\ref{thm:ch09-local-estimator-lower-bound} 中相同.
+\end{Theorem}
+
+一般而言, 式~\eqref{eq:ch09-local-estimator-lower-bound} 的反向不等式, 即局部上界并不成立. 局部下界~\eqref{eq:ch09-local-estimator-lower-bound} 传达的信息是: 凡局部误差指标 $E_e(u_h)$ 较大之处都应细化网格. 遗憾的是, 当指标较小时, 不能保证误差也小. 远处效应可能污染误差, 即使邻近的 $E_e(u_h)$ 很小, 误差仍可能很大.

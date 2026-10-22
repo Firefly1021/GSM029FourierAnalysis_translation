@@ -1,0 +1,79 @@
+\MathBookSourcePage{374}
+\subsection{计算实例}
+\label{sec:ch13-computational-examples}
+\setcounter{thmcount}{0}
+\setcounter{equation}{0}
+
+这里给出若干计算实验结果, 以说明迭代罚方法的性能. 根据第~\ref{sec:ch12-inf-sup-verification} 节末尾的结果, 考虑定理~\ref{thm:ch12-Taylor-Hood-velocity-error} 中定义的 $V_h$, 取 $k=4$ 和 $6$. 选择一个解非平凡但可用独立方法计算的问题, 即收缩管道中的 Jeffrey--Hamel 流(Bagheri, Scott 与 Zhang 1994). 该相似解具有形式
+\MBSourceItem{1}
+\begin{equation}
+\MathBookFormulaID{formula-ch13-jeffrey-hamel-velocity}
+\label{eq:ch13-jeffrey-hamel-velocity}
+\chvec u(x,y):=
+\frac{u(\operatorname{atan}(y/x))}{x^2+y^2}\,\chvec x,
+\qquad
+\chvec x=(x,y)\in\Omega,
+\end{equation}
+其中经过缩放的径向速度 $u$ 满足
+\MBSourceItem{2}
+\begin{equation}
+\MathBookFormulaID{formula-ch13-jeffrey-hamel-ode}
+\label{eq:ch13-jeffrey-hamel-ode}
+u''+4u+u^2=C_{\mathrm{JH}},
+\qquad
+u(0)=u(\theta)=0,
+\end{equation}
+这里微分变量为极角 $\phi$, $\theta$ 是管道的收缩角. 取 $\Omega$ 为图~\ref{fig:ch13-jeffrey-hamel-flow} 所示楔形的一段, 即顶点为
+$\{(1,0),(2,0),(1,1),(2,2)\}$ 的四边形, 并用~\eqref{eq:ch13-jeffrey-hamel-velocity} 在整个 $\partial\Omega$ 上给出 Dirichlet 边界条件.
+
+\MathBookSourcePage{375}
+图~\ref{fig:ch13-jeffrey-hamel-flow} 给出 $C_{\mathrm{JH}}=10^4$ 时 $\Omega$ 中 Jeffrey--Hamel 流的速度场; 用最大速度归一化得到的 Reynolds 数约为 $600$. 图中给出用两种不同网格计算的速度场: 较细网格取 $k=4$, 较粗网格取 $k=6$. 对 $k=4$(相应地 $k=6$), 所得 $L^2(\Omega)$ 范数误差小于 $0.028$(相应地 $0.038$)倍的 $\|\chvec u\|_{L^2(\Omega)}$.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.83\linewidth]{chapter13-jeffrey-hamel-flow.png}
+\caption{用四次和六次分片多项式计算的 Jeffrey--Hamel 流.}
+\label{fig:ch13-jeffrey-hamel-flow}
+\end{figure}
+
+方程~\eqref{eq:ch13-navier-stokes-equations} 用时间步进格式~\eqref{eq:ch13-explicit-nonlinear-time-step} 逼近(Bagheri, Scott 与 Zhang 1994). 这要求每一时间步求解一个~\eqref{eq:ch13-discrete-mixed-system} 型问题, 其中 $\widetilde a(\cdot,\cdot)$ 如~\eqref{eq:ch13-mass-augmented-form}, 且 $\tau=10^5$. 注意这些计算中 $\|\chvec u\|_{L^\infty(\Omega)^2}$ 约为 $600$, 可将其视为 Reynolds 数的良好度量. 若缩放方程使最大速度为 $1$, 则相应时间步长将增大约 $600$ 倍, $\tau$ 将降至 $200$ 以下. 但强制性常数 $\alpha$ 也将相应减小, 且比值 $\tau/\alpha$ 不变.
+
+我们特别关心在不同罚参数 $r=\rho$ 下, 将 $\|\operatorname{div}\chvec u_a^n\|/\|\chvec u_a^n\|$ 降至例如 $10^{-10}$ 以下所需的罚迭代次数. 为简单起见令二者相等. 除初始时间步外, 每个时间步所需的罚迭代次数通常相同. 表~\ref{tab:ch13-velocity-penalty-iterations} 给出每种情形下这一``典型''迭代次数.
+
+\MathBookSourcePage{376}
+\begin{table}[htbp]
+\centering
+\caption{求解~\eqref{eq:ch13-discrete-mixed-system} 时的典型罚迭代次数, 其中 $r=\rho$, 且要求 $\|\operatorname{div}\chvec u_a^n\|/\|\chvec u_a^n\|<10^{-10}$.}
+\label{tab:ch13-velocity-penalty-iterations}
+\begin{tabular}{c|rrrr}
+& $r=10^4$ & $r=10^5$ & $r=10^6$ & $r=10^7$\\
+\hline
+$k=4$ & 46 & 6 & 5 & 4\\
+$k=6$ & 51 & 11 & 6 & 4
+\end{tabular}
+\end{table}
+
+根据定理~\ref{thm:ch13-iterated-penalty-stopping-errors} 的压力误差估计, 还关心在不同 $r$ 下把 $\|\operatorname{div}\chvec u_a^n\|/\|\chvec u_a^n\|$ 降到小于某个固定参数乘以 $r$ 所需的罚迭代次数. 同样, 除初始时间步外, 每个时间步的罚迭代次数相同. 表~\ref{tab:ch13-pressure-penalty-iterations} 给出每种情形下的典型迭代次数.
+
+\begin{table}[htbp]
+\centering
+\caption{求解~\eqref{eq:ch13-discrete-mixed-system} 时的典型罚迭代次数, 其中 $r=\rho$, 且要求 $\|\operatorname{div}\chvec u_a^n\|/\|\chvec u_a^n\|<10^{-5}/r$.}
+\label{tab:ch13-pressure-penalty-iterations}
+\begin{tabular}{c|rrrrr}
+& $r=10^4$ & $r=10^5$ & $r=10^6$ & $r=10^7$ & $r=10^8$\\
+\hline
+$k=4$ & 38 & 6 & 6 & 5 & 4\\
+$k=6$ & 43 & 11 & 6 & 5 & 4
+\end{tabular}
+\end{table}
+
+在两个实验中, 高次逼近都可能需要更多迭代. 这与 $\beta$ 随 $k$ 增大而减小(Jensen 与 Vogelius 1990)这一事实一致, 因为定理~\ref{thm:ch13-iterated-penalty-convergence} 预言收敛率与 $\beta^2/r$ 成正比. 根据定理~\ref{thm:ch13-iterated-penalty-stopping-errors}, 对较大的 $k$, 为保证相同精度, 可能应要求 $\|\operatorname{div}\chvec u_a^n\|/\|\chvec u_a^n\|$ 更小, 从而迭代次数可能稍多.
+
+从实验得到的主要结论是: 当 $r=\rho$ 充分大时, 迭代罚方法极其稳健且高效.
+
+\MathBookSourcePage{377}
+\MBSourceItem{3}
+\begin{Remark}
+\label{rem:ch13-jeffrey-hamel-scalar-elliptic-analogy}
+当 $\tau$ 很大时, ~\eqref{eq:ch13-mass-augmented-form} 定义的形式 $\widetilde a(\cdot,\cdot)$ 与 $\tau a(\cdot,\cdot)$ 十分相似, 其中后一 $a(\cdot,\cdot)$ 是~\eqref{eq:ch12-porous-medium-a-form} 中取 $(a_{ij})$(从而 $\chten A$)为单位矩阵时的形式. 因此可预期, 对问题~\eqref{eq:ch12-porous-medium-a-form}--\eqref{eq:ch12-porous-medium-mixed-problem} 使用迭代罚方法时, 其收敛性质与这里的实验类似.
+\end{Remark}

@@ -1,0 +1,193 @@
+% Complete Section 1.8, PDF pp.32-36, printed pp.19-23.
+% block: heading page:32 type:section
+\subsection{Krylov 子空间方法}\label{sec:krylov-subspace-methods}
+
+% block: history page:32 type:ordinary-paragraph
+Krylov 子空间方法有着悠久的历史, 可追溯至 20 世纪中叶, 其中最著名的是 Hestenes 和 Stiefel 提出的共轭梯度 (CG) 方法.\footnote{在 CG 方法提出之后, Stiefel 于 1955 年提出了共轭残差 (CR) 方法. 他还因 Stiefel 流形而闻名, 该流形是单位圆的推广.}
+
+% block: introduction page:32 type:ordinary-paragraph
+Krylov 子空间方法是利用如下定义的 Krylov 子空间来求解线性方程组 \eqref{eq:linear-system} 的迭代方法.
+
+% block: subspace-definition page:32 type:definition
+\begin{Definition}{Krylov 子空间}\label{def:krylov-subspace}
+设向量 $\bm v,A\bm v,\ldots,A^{n-1}\bm v\in\mathbb C^N$ 线性无关, 则
+\begin{equation}\label{eq:krylov-subspace-span}
+\begin{aligned}
+\mathcal K_n(A,\bm v)&=\{c_0\bm v+c_1A\bm v+\cdots+c_{n-1}A^{n-1}\bm v:c_0,c_1,\ldots,c_{n-1}\in\mathbb C\}\\
+&\quad(=\operatorname{span}\{\bm v,A\bm v,\ldots,A^{n-1}\bm v\})
+\end{aligned}
+\end{equation}
+称为一个 ($n$ 维) Krylov 子空间.
+\end{Definition}
+
+% block: grade-introduction page:32 type:ordinary-paragraph
+$\mathcal K_n(A,\bm v)$ 的维数依赖于 $\bm v$, 对于给定的 $\bm v$, 其最大维数称为 Krylov 子空间的阶, 定义如下.
+
+% block: grade-definition page:32 type:definition
+\begin{Definition}{Krylov 子空间的阶}\label{def:krylov-grade}
+使得
+\begin{equation}\label{eq:krylov-grade-stabilization}
+\dim(\mathcal K_n(A,\bm v))=\dim(\mathcal K_{n+1}(A,\bm v))
+\end{equation}
+成立的最小数 $n$, 称为 $A$ 关于 $\bm v$ 的阶.
+\end{Definition}
+
+% block: finite-termination pages:32,33 type:ordinary-paragraph
+考虑 $A\bm x=\bm b$, 设 $m$ 为 $A$ 关于 $\bm r_0:=\bm b-A\bm x_0$ 的阶, 其中 $\bm x_0$ 是 $A\bm x=\bm b$ 的解的一个初始猜测. 则
+\[
+\dim(\mathcal K_m(A,\bm r_0))=\dim(\mathcal K_{m+1}(A,\bm r_0)).
+\]
+这意味着存在 $c_0,c_1,\ldots,c_{m-1}$, 使得
+\[
+A^m\bm r_0=c_0\bm r_0+c_1A\bm r_0+\cdots+c_{m-1}A^{m-1}\bm r_0.
+\]
+将等式乘以 $A^{-1}$, 得到
+\[
+A^{m-1}\bm r_0=c_0A^{-1}\bm r_0+c_1\bm r_0+c_2A\bm r_0+\cdots+c_{m-1}A^{m-2}\bm r_0.
+\]
+由于 $A^{-1}\bm r_0=A^{-1}(\bm b-A\bm x_0)=\bm x-\bm x_0$, 当 $c_0\ne0$ 时, 解可以写为
+\[
+\bm x=\bm x_0+\frac{1}{c_0}(-c_1\bm r_0-c_2A\bm r_0-\cdots-c_{m-1}A^{m-2}\bm r_0+A^{m-1}\bm r_0)
+\]
+令 $\bm z_m:=(-c_1\bm r_0-\cdots-c_{m-1}A^{m-2}\bm r_0+A^{m-1}\bm r_0)/c_0$. 则 $\bm z_m\in\mathcal K_m(A,\bm r_0)$, 这意味着解 $\bm x$ 满足
+\[
+\bm x=\bm x_0+\bm z_m,\quad\bm z_m\in\mathcal K_m(A,\bm r_0).
+\]
+
+% block: affine-space page:33 type:ordinary-paragraph
+由此可见, 解 $\bm x$ 属于仿射空间 $\bm x_0+\mathcal K_m(A,\bm r_0)$. 这一事实自然引出在仿射空间 $\bm x_n\in\bm x_0+\mathcal K_n(A,\bm r_0)$ 中计算近似解 $\bm x_n$ 的想法, 或等价地, 对于 $n=1,2,\ldots$,
+\[
+\bm x_n=\bm x_0+\bm z_n,\quad\bm z_n\in\mathcal K_n(A,\bm r_0)
+\]
+若恰当地确定 $\bm z_n$, 则这一方法经过 $m$ 步迭代就能得到精确解, 这正是 Krylov 子空间方法的基础.
+
+% block: framework page:33 type:ordinary-paragraph
+下面描述 Krylov 子空间方法的框架. 设 $\bm x_0\in\mathbb C^N$ 为初始猜测, $\bm r_0:=\bm b-A\bm x_0$ 为相应的残差向量. 则 Krylov 子空间方法在下列仿射空间中生成第 $n$ 个近似解:
+
+% block: krylov-condition page:33 type:equation
+\noindent\textbf{Krylov 子空间条件}
+\begin{equation}\label{eq:krylov-iterate-condition}
+\bm x_n=\bm x_0+\bm z_n,\quad\bm z_n\in\mathcal K_n(A,\bm r_0).
+\end{equation}
+
+% block: residual page:33 type:equation
+相应的残差向量 $\bm r_n$ 由下式给出:
+\begin{equation}\label{eq:krylov-residual}
+\bm r_n:=\bm b-A\bm x_n=\bm r_0-A\bm z_n,\quad\bm r_n\in\mathcal K_{n+1}(A,\bm r_0).
+\end{equation}
+
+% block: uniqueness page:33 type:ordinary-paragraph
+由于仅利用上述条件 \eqref{eq:krylov-iterate-condition} 无法唯一确定 $\bm x_n$, 为得到唯一的近似解, 还需要施加下列条件之一:
+
+% block: ritz-galerkin page:33 type:equation
+\noindent\textbf{Ritz--Galerkin 途径}
+\begin{equation}\label{eq:ritz-galerkin-orthogonality}
+\bm r_n\perp\mathcal K_n(A,\bm r_0).
+\end{equation}
+
+% block: petrov-galerkin page:33 type:equation
+\noindent\textbf{Petrov--Galerkin 途径}
+\begin{equation}\label{eq:petrov-galerkin-orthogonality}
+\bm r_n\perp W_n\subset\mathbb C^N,\quad\dim(W_n)=n.
+\end{equation}
+
+% block: minimal-residual page:33 type:equation
+\noindent\textbf{最小残差途径}
+\begin{equation}\label{eq:minimal-residual-problem}
+\min_{\bm x_n\in\bm x_0+\mathcal K_n(A,\bm r_0)}\|\bm b-A\bm x_n\|.
+\end{equation}
+
+% block: inclusions page:33 type:ordinary-paragraph
+\leavevmode\phantomsection\label{idx:sample:inclusions}Petrov--Galerkin 途径包含 Ritz--Galerkin 途径和最小残差途径, 如下所述.
+
+% block: equivalence-proposition page:34 type:proposition
+\begin{Proposition}\label{prop:projection-equivalences}
+下列陈述成立:
+\begin{itemize}
+\item Ritz--Galerkin 途径 \eqref{eq:ritz-galerkin-orthogonality} 就是在 Petrov--Galerkin 途径 \eqref{eq:petrov-galerkin-orthogonality} 中选择
+\[
+W_n=\mathcal K_n(A,\bm r_0).
+\]
+\item 最小残差途径 \eqref{eq:minimal-residual-problem} 就是在 Petrov--Galerkin 途径 \eqref{eq:petrov-galerkin-orthogonality} 中选择
+\begin{equation}\label{eq:minimal-residual-test-space}
+W_n=A\mathcal K_n(A,\bm r_0),
+\end{equation}
+其中 $A\mathcal K_n(A,\bm r_0):=\{\sum_{k=1}^n c_kA\bm v_k:c_1,c_2,\ldots,c_n\in\mathbb C\}$, 而 $\bm v_1,\bm v_2,\ldots,\bm v_n$ 是 $\mathcal K_n(A,\bm r_0)$ 的基向量.
+\end{itemize}
+\end{Proposition}
+
+% block: equivalence-proof pages:34,35 type:proof
+\begin{Proof}
+对于 Ritz--Galerkin 途径, 结论是显然的, 因此只证明 \eqref{eq:minimal-residual-problem} 与 \eqref{eq:minimal-residual-test-space} 的等价性. 设 $V_n=[\bm v_1,\bm v_2,\ldots,\bm v_n]$ 是一个 $N$ 行 $n$ 列的矩阵, 其列向量 $\bm v_1,\bm v_2,\ldots,\bm v_n$ 是 $\mathcal K_n(A,\bm r_0)$ 的基向量. 则 \eqref{eq:krylov-iterate-condition} 中的 $\bm z_n\in\mathcal K_n(A,\bm r_0)$ 可写为 $\mathcal K_n(A,\bm r_0)\ni\bm z_n=\sum_{k=1}^n c_k\bm v_k=V_n\bm c_n$, 其中 $\bm c_n=[c_1,c_2,\ldots,c_n]^\top\in\mathbb C^n$. 将 $\bm z_n=V_n\bm c_n$ 代入 \eqref{eq:krylov-residual}, 得到
+\begin{equation}\label{eq:basis-residual}
+\bm r_n=\bm r_0-AV_n\bm c_n.
+\end{equation}
+注意, 若 $\bm r_n\perp A\bm v_k\ (k=1,2,\ldots,n)$, 则有 $\bm r_n\perp A\mathcal K_n(A,\bm r_0)$, 因为容易看出, 对所有 $c_i\in\mathbb C$, 都有 $\bm r_n\perp\sum_{k=1}^n c_kA\bm v_k$. 条件 $\bm r_n\perp A\bm v_k\ (k=1,2,\ldots,n)$ 等价于 $(AV_n)^{\mathrm H}\bm r_n=\bm 0\ (:= [0,\ldots,0]^\top)$, 因此由 \eqref{eq:basis-residual} 可得 $\bm 0=(AV_n)^{\mathrm H}\bm r_n=(AV_n)^{\mathrm H}\bm r_0-(AV_n)^{\mathrm H}AV_n\bm c_n$. 从而向量 $\bm c$ 由下式确定:
+\begin{equation}\label{eq:normal-equation-coefficients}
+\bm c_n=[(AV_n)^{\mathrm H}AV_n]^{-1}(AV_n)^{\mathrm H}\bm r_0.
+\end{equation}
+现在证明 $\bm c_n$ 是极小化问题 \eqref{eq:minimal-residual-problem} 的解. 由于使 $\|\bm b-A\bm x_n\|^2$ 取最小值的解与 \eqref{eq:minimal-residual-problem} 的解相同, 我们考虑
+\begin{equation}\label{eq:residual-quadratic-problem}
+\begin{aligned}
+\min_{\bm x_n\in\bm x_0+\mathcal K_n(A,\bm r_0)}\|\bm b-A\bm x_n\|^2
+&=\min_{\bm c_n\in\mathbb C^n}\|\bm r_0-AV_n\bm c_n\|^2\\
+&=\min_{\bm c_n\in\mathbb C^n}(\bm r_0-AV_n\bm c_n)^{\mathrm H}(\bm r_0-AV_n\bm c_n).
+\end{aligned}
+\end{equation}
+下面的分解有助于求得 \eqref{eq:residual-quadratic-problem} 的解:
+\begin{equation}\label{eq:least-squares-decomposition}
+\|\bm d-M\bm x\|^2=(\bm d-M\bm x)^{\mathrm H}(\bm d-M\bm x)=f(\bm x)+c,
+\end{equation}
+其中
+\[
+\begin{aligned}
+f(\bm x)&=(M^{\mathrm H}M\bm x-M^{\mathrm H}\bm d)^{\mathrm H}(M^{\mathrm H}M)^{-1}(M^{\mathrm H}M\bm x-M^{\mathrm H}\bm d),\\
+c&=-\bm d^{\mathrm H}M(M^{\mathrm H}M)^{-1}M^{\mathrm H}\bm d+\bm d^{\mathrm H}\bm d.
+\end{aligned}
+\]
+若 $M$ 列满秩, 则 $M^{\mathrm H}M$ 是 Hermitian 正定的,\footnote{若矩阵 $G\in\mathbb C^{N\times N}$ 是 Hermitian 的, 且对所有 $\bm v(\ne\bm 0)\in\mathbb C^N$ 均有 $\bm v^{\mathrm H}G\bm v>0$, 则称 $G$ 为 Hermitian 正定矩阵. 等价地, Hermitian 矩阵 $G$ 的所有特征值均为正. 由此可知, 若 $G$ 是 Hermitian 正定的, 则 $G^{-1}$ 也是 Hermitian 正定的. 关于正定性, 另见 Section~\ref{sec:symmetric-direct-methods}.} 从而 $f(\bm x)\ge0$. 这意味着 \eqref{eq:least-squares-decomposition} 的极小化可通过极小化 $f(\bm x)$ 实现. 容易看出,
+\begin{equation}\label{eq:least-squares-minimizer}
+\bm x=(M^{\mathrm H}M)^{-1}M^{\mathrm H}\bm d
+\end{equation}
+使得 $f(\bm x)=0$, 因而它是 \eqref{eq:least-squares-decomposition} 所对应的极小化问题的解.
+令 $\bm x=(M^{\mathrm H}M)^{-1}M^{\mathrm H}\bm d$, 并取 $M=AV_n$ 和 $\bm d=\bm r_0$, 就得到与 \eqref{eq:normal-equation-coefficients} 相同的结果.
+\end{Proof}
+
+% block: scalar-minimization page:35 type:remark
+\begin{Remark}\label{rem:scalar-residual-minimization}
+等式 \eqref{eq:least-squares-decomposition} 也可用于求解下列极小化问题:
+\begin{equation}\label{eq:scalar-residual-problem}
+\min_{\omega\in\mathbb C}\|\bm a-\omega\bm b\|
+\end{equation}
+因为在 \eqref{eq:least-squares-minimizer} 中取 $\bm d=\bm a$, $M=\bm b$, $\bm x=\omega$, 就得到 \eqref{eq:scalar-residual-problem} 的解如下:
+\begin{equation}\label{eq:scalar-residual-minimizer}
+\omega=\frac{\bm b^{\mathrm H}\bm a}{\bm b^{\mathrm H}\bm b}.
+\end{equation}
+这一结果将在 Chapter~\ref{chap:krylov-classification} 的 Krylov 子空间方法中使用.
+\end{Remark}
+
+% block: comparison-introduction page:35 type:ordinary-paragraph
+现在, 代表性的 Krylov 子空间方法与三种途径 \eqref{eq:ritz-galerkin-orthogonality}--\eqref{eq:minimal-residual-problem} 之间的关系见 Table~\ref{tab:hermitian-krylov-methods} 和 Table~\ref{tab:nonhermitian-krylov-methods}.
+
+% block: hermitian-table page:35 type:table
+\begin{table}[H]
+\centering
+\caption{Hermitian 线性方程组的 Krylov 子空间方法}\label{tab:hermitian-krylov-methods}
+\begin{tabular}{ll}\hline
+Ritz--Galerkin 途径 & 最小残差途径\\\hline
+CG & MINRES, CR\\\hline
+\end{tabular}
+\end{table}
+
+% block: nonhermitian-table page:35 type:table
+\begin{table}[H]
+\centering
+\caption{非 Hermitian 线性方程组的一些 Krylov 子空间方法}\label{tab:nonhermitian-krylov-methods}
+\begin{tabular}{lll}\hline
+Ritz--Galerkin 途径 & Petrov--Galerkin 途径 & 最小残差途径\\\hline
+FOM & BiCG, BiCR & GMRES, GCR\\\hline
+\end{tabular}
+\end{table}
+
+% block: method-relations page:36 type:ordinary-paragraph
+针对 Hermitian 和非 Hermitian 线性方程组的 Krylov 子空间方法之间的关系如下: BiCG 方法和 FOM 是 CG 方法的推广; GMRES 方法是 MINRES 方法的推广; BiCR 方法和 GCR 方法是 CR 方法的推广. 这些 Krylov 子空间方法的详细内容见 Chapter~\ref{chap:krylov-classification}.

@@ -1,0 +1,137 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{translation-adapter}[2026/08/22 Translation pipeline adapter]
+
+% This adapter is loaded after the read-only user style. Environment overrides
+% below are explicitly authorized for translated output; the source .sty file
+% remains unchanged.
+\RequirePackage{xparse}
+
+\providecommand{\MathBookTemplateTestNotice}{%
+  \begin{center}\textbf{模板测试: 此页仅用于验证模板接入, 并非译文.}\end{center}%
+}
+\providecommand{\MathBookSourcePage}[1]{}
+\providecommand{\MathBookFormulaID}[1]{}
+\providecommand{\MathBookReviewStatus}[1]{}
+\providecommand{\MBUnresolvedReference}[2]{#2}
+
+% Compatibility for the unchanged reference TeX, which still requests the
+% former body-color name after the user renamed it in Mystyle.sty.
+\providecolor{ZhengWen}{RGB}{32,100,100}
+
+% The source book numbers displayed equations by chapter rather than subsection.
+\counterwithout{equation}{subsection}
+\numberwithin{equation}{section}
+
+% Mystyle.sty now defines a single section-scoped statement counter shared by
+% every theorem-like environment. Reusing it preserves the user's numbering and
+% makes every translated object referenceable through \label and \ref.
+\RenewDocumentEnvironment{Theorem}{g}
+{
+    \vspace{0.1cm}
+    \refstepcounter{statement}
+    \begin{tcolorbox}[
+        enhanced,
+        breakable,
+        colback=KuangNei,
+        colframe=KuangNei,
+        boxrule=0pt,
+        arc=3mm,
+        outer arc=3mm,
+        boxsep=0pt,
+        left=4mm,
+        right=4mm,
+        top=2.5mm,
+        bottom=2.5mm,
+        before skip=10pt,
+        after skip=10pt
+    ]
+    {\sffamily\bfseries\color{PageColor}
+     Theorem~\thestatement
+     \IfValueT{#1}{{\mdseries\ (#1)}}\textbf{:}}
+    \par
+    \kaishu
+}
+{
+    \end{tcolorbox}
+    \vspace{0.1cm}
+}
+
+\RenewDocumentEnvironment{Definition}{g}
+{
+    \refstepcounter{statement}
+    {\sffamily\bfseries\color{PageColor}\fontsize{10.95}{13.2}\selectfont
+     Definition~\thestatement
+     \IfValueT{#1}{{\mdseries\ (#1)}}\textbf{:}}\quad
+    \kaishu
+}
+{\par}
+
+\RenewDocumentEnvironment{Lemma}{g}
+{
+    \refstepcounter{statement}
+    {\sffamily\bfseries\color{PageColor}\fontsize{10.95}{13.2}\selectfont
+     Lemma~\thestatement
+     \IfValueT{#1}{{\mdseries\ (#1)}}\textbf{:}}\quad
+    \kaishu
+}
+{\par}
+
+\RenewDocumentEnvironment{Proposition}{g}
+{
+    \refstepcounter{statement}
+    {\sffamily\bfseries\color{PageColor}\fontsize{10.95}{13.2}\selectfont
+     Proposition~\thestatement
+     \IfValueT{#1}{{\mdseries\ (#1)}}\textbf{:}}\quad
+    \kaishu
+}
+{\par}
+
+\RenewDocumentEnvironment{Corollary}{g}
+{
+    \refstepcounter{statement}
+    {\sffamily\bfseries\color{PageColor}\fontsize{10.95}{13.2}\selectfont
+     Corollary~\thestatement
+     \IfValueT{#1}{{\mdseries\ (#1)}}\textbf{:}}\quad
+    \kaishu
+}
+{\par}
+
+\RenewDocumentEnvironment{Example}{g}
+{
+    \refstepcounter{statement}
+    {\rmfamily\bfseries\color{SectionColor}\fontsize{10.95}{13.2}\selectfont
+     \WritingHand\;Example~\thestatement
+     \IfValueT{#1}{{\mdseries\ (#1)}}\textbf{:}}
+    \par
+    \kaishu
+}
+{\par}
+
+\NewDocumentEnvironment{Remark}{g}
+{
+    \refstepcounter{statement}
+    {\sffamily\bfseries\color{PageColor}\fontsize{10.95}{13.2}\selectfont
+     Remark~\thestatement
+     \IfValueT{#1}{{\mdseries\ (#1)}}\textbf{:}}\quad
+}
+{\par}
+
+\RenewDocumentEnvironment{Exercise}{g}
+{
+    \refstepcounter{statement}
+    {\rmfamily\bfseries\color{black}\fontsize{10.95}{13.2}\selectfont
+     \WritingHand\;Exercise~\thestatement
+     \IfValueT{#1}{{\mdseries\ (#1)}}\textbf{:}}\quad
+    \kaishu
+}
+{\par}
+
+\RenewDocumentEnvironment{Proof}{}
+{
+    \par\vspace{0.1cm}\noindent\textbf{Proof:}\quad
+}
+{
+    \par\hfill$\blacksquare$\par\vspace{0.1cm}
+}
+
+\endinput

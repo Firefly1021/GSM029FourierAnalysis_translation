@@ -1,0 +1,123 @@
+\MathBookSourcePage{253}
+\subsection{先验估计}
+\label{sec:ch09-apriori-estimates}
+\setcounter{thmcount}{0}
+\setcounter{equation}{0}
+
+我们把注意力限制在单纯形网格的一个非退化族 $\mathcal T^h$ 上(见定义~\ref{def:ch04-mesh-family-regularity}). 设 $h(x)$ 是度量点 $x$ 附近局部网格尺寸的函数. 特别地, 假设 $h$ 是分片线性函数, 并在每个顶点 $x$ 处满足
+\MBSourceItem{1}
+\begin{equation}
+\MathBookFormulaID{formula-ch09-local-mesh-size-definition}
+\label{eq:ch09-local-mesh-size-definition}
+h(x)=\max_{K\in\operatorname{star}(x)}\operatorname{diam}(K),
+\end{equation}
+其中 $\operatorname{star}(x)$ 表示所有与 $x$ 相交的单纯形 $K\in\mathcal T^h$ 的并. 对任意 $K\in\mathcal T^h$, 都有
+\MBSourceItem{2}
+\begin{equation}
+\MathBookFormulaID{formula-ch09-mesh-size-lower-bound}
+\label{eq:ch09-mesh-size-lower-bound}
+h(x)\geq\operatorname{diam}(K)
+\qquad\forall x\in K,
+\end{equation}
+因为该不等式在 $K$ 的每个顶点成立, 而 $h$ 在顶点之间是线性的. 此外,
+\MBSourceItem{3}
+\begin{equation}
+\MathBookFormulaID{formula-ch09-element-mesh-size-comparability}
+\label{eq:ch09-element-mesh-size-comparability}
+\left.h\right|_K\leq C\operatorname{diam}(K),
+\end{equation}
+因为在二维或更高维中, 非退化网格是局部拟一致的(习题~\ref{exr:ch09-01}). 相应地, 假设 $\alpha$ 在每个单元上取可比的值, 即
+\MBSourceItem{4}
+\begin{equation}
+\MathBookFormulaID{formula-ch09-coefficient-element-comparability}
+\label{eq:ch09-coefficient-element-comparability}
+\max\{\alpha(x):x\in K\}\leq C\min\{\alpha(x):x\in K\}
+\qquad\forall K\in\mathcal T^h.
+\end{equation}
+式~\eqref{eq:ch09-coefficient-element-comparability} 并不排除 $\alpha$ 的大幅跳跃, 它只表示网格已被选成与这种跳跃相匹配. 例如, $\alpha$ 可以是分片常数, 且式~\eqref{eq:ch09-coefficient-element-comparability} 中的常数可取 $C=1$, 与 $\alpha$ 的各个常值大小无关.
+
+先推导一个类似于定理~\ref{thm:ch05-schatz-error-estimate} 的基本估计. 设 $V_h$ 是次数小于 $k$ 的分片多项式函数空间, $I^h$ 是相应的插值算子. 由第~\ref{sec:ch04-interpolation-error-bounds} 节的局部逼近结果和式~\eqref{eq:ch09-local-mesh-size-definition},
+\[
+\MathBookFormulaID{formula-ch09-local-interpolation-estimate}
+\|u-I^hu\|_{H^1(K)}^2
+\leq C\int_K h(x)^{2k-2}\sum_{|\beta|=k}|D^\beta u|^2\,dx
+\qquad\forall K\in\mathcal T^h.
+\]
+定义自然的能量半范数
+\MBSourceItem{5}
+\begin{equation}
+\MathBookFormulaID{formula-ch09-energy-seminorm}
+\label{eq:ch09-energy-seminorm}
+\|v\|_E:=\left(\int_\Omega\alpha(x)|\nabla v(x)|^2\,dx\right)^{1/2}.
+\end{equation}
+由 Galerkin 最优逼近和式~\eqref{eq:ch09-coefficient-element-comparability},
+\MBSourceItem{6}
+\begin{equation}
+\MathBookFormulaID{formula-ch09-adaptive-energy-error}
+\label{eq:ch09-adaptive-energy-error}
+\|u-u_h\|_E
+\leq C\left(\int_\Omega\alpha(x)h(x)^{2k-2}
+\sum_{|\beta|=k}|D^\beta u|^2\,dx\right)^{1/2}.
+\end{equation}
+这一结果说明, 使网格适应于解总能减小能量误差.
+
+\MBSourceItem{7}
+\begin{Theorem}
+\label{thm:ch09-adaptive-energy-apriori}
+对任意非退化网格,
+\[
+\MathBookFormulaID{formula-ch09-adaptive-energy-apriori}
+\|u-u_h\|_E\leq C\|\sqrt\alpha h^{k-1}|\nabla_k u|\|_{L^2(\Omega)},
+\]
+其中
+\[
+\MathBookFormulaID{formula-ch09-kth-derivative-magnitude}
+|\nabla_k u|(x):=\left(\sum_{|\beta|=k}|D^\beta u(x)|^2\right)^{1/2},
+\]
+且 $C$ 与 $\alpha$ 和 $h$ 无关.
+\end{Theorem}
+
+下面推导 $L^2$ 估计. 选择定理~\ref{thm:ch05-poisson-l2-error} 证明中所用的 $w$, 可作标准对偶论证. 新的关键做法是乘除以 $h$, 例如
+\begin{align*}
+\MathBookFormulaID{formula-ch09-duality-weight-splitting}
+a(e,w-I^hw)
+&=\int_\Omega\alpha h\nabla(u-u_h)\cdot\nabla(w-I^hw)/h\,dx\\
+&\leq\left(\int_\Omega\alpha^{2-\lambda}(h\nabla(u-u_h))^2\,dx\right)^{1/2}
+\left(\int_\Omega\alpha^\lambda|\nabla(w-I^hw)|^2h^{-2}\,dx\right)^{1/2},
+\end{align*}
+其中 $0\leq\lambda\leq2$ 是任意参数. 由第~\ref{chap:ch04-polynomial-approximation} 章的结果,
+\[
+\MathBookFormulaID{formula-ch09-weighted-dual-interpolation}
+\int_\Omega\alpha^\lambda|\nabla(w-I^hw)(x)|^2h^{-2}\,dx
+\leq C\int_\Omega\alpha^\lambda|\nabla^2w|^2\,dx.
+\]
+若正则性估计~\eqref{eq:ch05-elliptic-regularity-h2} 成立, 就能用 $u-u_h$ 控制 $w$ 的二阶导数. 参数 $\lambda$ 的选择是自由的, 但能否充分利用它取决于式~\eqref{eq:ch05-elliptic-regularity-h2} 一类的可用估计.
+
+\MBSourceItem{8}
+\begin{Theorem}
+\label{thm:ch09-weighted-l2-error}
+设边值问题的变分形式为式~\eqref{eq:ch09-diffusion-form}, 且正则性估计~\eqref{eq:ch05-elliptic-regularity-h2} 成立. 对任意非退化网格,
+\MBSourceItem{9}
+\begin{equation}
+\MathBookFormulaID{formula-ch09-weighted-l2-error}
+\label{eq:ch09-weighted-l2-error}
+\|u-u_h\|_{L^2(\Omega)}
+\leq C\left(\int_\Omega\alpha(x)^2h(x)^2|\nabla(u-u_h)(x)|^2\,dx\right)^{1/2},
+\end{equation}
+其中 $C$ 依赖于 $\alpha$.
+\end{Theorem}
+
+这说明可由导数误差平方的加权积分估计 $L^2$ 误差, 权函数由网格函数~\eqref{eq:ch09-local-mesh-size-definition} 给出. 也可以估计式~\eqref{eq:ch09-weighted-l2-error} 右端这类加权能量范数. 由于相关估计与第~\ref{sec:ch00-weighted-norm-estimates} 节和第~\ref{chap:ch08-max-norm-estimates} 章相似, 这里只概述一个典型结果.
+
+\MBSourceItem{10}
+\begin{Theorem}
+\label{thm:ch09-mesh-gradient-l2-error}
+存在常数 $\kappa>0$, 使得若网格尺寸变化满足 $\|\nabla h\|_{L^\infty(\Omega)}<\kappa$, 则
+\[
+\MathBookFormulaID{formula-ch09-mesh-gradient-l2-error}
+\|u-u_h\|_{L^2(\Omega)}\leq C\|\sqrt\alpha h^2|\nabla_2u|\|_{L^2(\Omega)},
+\]
+其中 $C$ 与网格无关.
+\end{Theorem}
+
+$\nabla h$ 很小的条件并不排除强网格分级, 例如图~\ref{fig:ch09-highly-graded-meshes} 所示的几何分级网格. 不过, 自动网格生成器可能违反这一条件.

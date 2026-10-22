@@ -1,0 +1,255 @@
+\subsection{抽象 additive Schwarz 框架}
+\label{sec:ch07-abstract-additive-schwarz-framework}
+\setcounter{thmcount}{0}
+\setcounter{equation}{0}
+
+设 $V$ 为有限维向量空间, $V'$ 为 $V$ 的对偶空间, 即 $V$ 上线性泛函组成的向量空间. 令 $\langle\cdot,\cdot\rangle$ 为 $V'\times V$ 上的典范双线性型, 定义为
+\MBSourceItem{1}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-canonical-duality-pairing}
+\label{eq:ch07-canonical-duality-pairing}
+\langle\alpha,v\rangle=\alpha(v)
+\qquad\forall\alpha\in V',\ v\in V.
+\end{equation}
+
+\MBSourceItem{2}
+\begin{Definition}[对称正定算子]
+\label{def:ch07-spd-operator-v-to-dual}
+线性算子(变换) $A:V\longrightarrow V'$ 称为对称正定(SPD), 如果
+\MBSourceItem{3}
+\begin{align}
+\MathBookFormulaID{formula-ch07-spd-a-symmetry}
+\langle Av_1,v_2\rangle&=\langle Av_2,v_1\rangle
+&&\forall v_1,v_2\in V,
+\label{eq:ch07-spd-a-symmetry}\\
+\MathBookFormulaID{formula-ch07-spd-a-positivity}
+\langle Av,v\rangle&>0
+&&\forall v\in V,\ v\neq0.
+\label{eq:ch07-spd-a-positivity}
+\end{align}
+\end{Definition}
+
+\MathBookSourcePage{187}
+类似地, 若线性算子 $B:V'\longrightarrow V$ 满足
+\MBSourceItem{5}
+\begin{align}
+\MathBookFormulaID{formula-ch07-spd-b-symmetry}
+\langle\alpha_1,B\alpha_2\rangle&=\langle\alpha_2,B\alpha_1\rangle
+&&\forall\alpha_1,\alpha_2\in V',
+\label{eq:ch07-spd-b-symmetry}\\
+\MathBookFormulaID{formula-ch07-spd-b-positivity}
+\langle\alpha,B\alpha\rangle&>0
+&&\forall\alpha\in V',\ \alpha\neq0,
+\label{eq:ch07-spd-b-positivity}
+\end{align}
+则称 $B$ 为 SPD.
+
+注意, 若 $A:V\longrightarrow V'$ 为 SPD, 则 $A$ 可逆, 且 $A^{-1}$ 是从 $V'$ 到 $V$ 的 SPD 算子. 反之亦然.
+
+设 $A:V\longrightarrow V'$ 为 SPD. 借助某些辅助向量空间 $V_j$ $(0\leq j\leq J)$、SPD 算子 $B_j:V_j'\longrightarrow V_j$ 以及线性算子 $I_j:V_j\longrightarrow V$, 我们可为 $A$ 构造抽象 additive Schwarz 预条件子 $B:V'\longrightarrow V$:
+\MBSourceItem{7}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-abstract-additive-schwarz-preconditioner}
+\label{eq:ch07-abstract-additive-schwarz-preconditioner}
+B=\sum_{j=0}^{J}I_jB_j^{-1}I_j^t,
+\end{equation}
+其中转置算子 $I_j^t:V'\longrightarrow V_j'$ 由下式定义:
+\MBSourceItem{8}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-transpose-injection-definition}
+\label{eq:ch07-transpose-injection-definition}
+\langle I_j^t\alpha,v\rangle=\langle\alpha,I_jv\rangle
+\qquad\forall\alpha\in V',\ v\in V_j.
+\end{equation}
+我们假设
+\MBSourceItem{9}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-auxiliary-space-decomposition}
+\label{eq:ch07-auxiliary-space-decomposition}
+V=\sum_{j=0}^{J}I_jV_j.
+\end{equation}
+
+\MBSourceItem{10}
+\begin{Remark}
+\label{rem:ch07-matrix-form-additive-schwarz}
+相对于 $V$ 和 $V_j$ 的选定基以及 $V'$ 和 $V_j'$ 的相应对偶基, 可用矩阵表示算子 $B$、$B_j$、$I_j$ 和 $I_j^t$. 注意, $B_j^{-1}$ 的矩阵是 $B_j$ 的矩阵之逆, $I_j^t$ 的矩阵是 $I_j$ 的矩阵之转置. 因此, additive Schwarz 预条件子的矩阵形式与式~\eqref{eq:ch07-abstract-additive-schwarz-preconditioner} 完全相同, 即 $B=\sum_{j=0}^{J}I_jB_j^{-1}I_j^t$.
+\end{Remark}
+
+\MBSourceItem{11}
+\begin{Lemma}
+\label{lem:ch07-additive-schwarz-spd}
+$B:V'\longrightarrow V$ 为 SPD.
+\end{Lemma}
+
+\begin{Proof}
+由式~\eqref{eq:ch07-abstract-additive-schwarz-preconditioner}、式~\eqref{eq:ch07-transpose-injection-definition} 以及 $B_j^{-1}$ 的对称正定性(参见习题~\ref{exr:ch07-04}), 容易得到 $B$ 的对称性. 此外,
+\MBSourceItem{12}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-additive-schwarz-positive-sum}
+\label{eq:ch07-additive-schwarz-positive-sum}
+\langle\alpha,B\alpha\rangle
+=\sum_{j=0}^{J}\langle I_j^t\alpha,B_j^{-1}I_j^t\alpha\rangle
+\geq0
+\qquad\forall\alpha\in V'.
+\end{equation}
+设 $\alpha\in V'$ 满足 $\langle\alpha,B\alpha\rangle=0$. 由式~\eqref{eq:ch07-additive-schwarz-positive-sum} 及 $B_j^{-1}$ 的正定性可知
+\MBSourceItem{13}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-vanishing-transpose-components}
+\label{eq:ch07-vanishing-transpose-components}
+I_j^t\alpha=0
+\qquad 0\leq j\leq J.
+\end{equation}
+任取 $v\in V$. 由式~\eqref{eq:ch07-auxiliary-space-decomposition}, 可写成 $v=\sum_{j=0}^{J}I_jv_j$, 其中 $v_j\in V_j$ $(0\leq j\leq J)$. 因而式~\eqref{eq:ch07-vanishing-transpose-components} 蕴含
+\[
+\MathBookFormulaID{formula-ch07-alpha-vanishes-on-decomposition}
+\langle\alpha,v\rangle
+=\left\langle\alpha,\sum_{j=0}^{J}I_jv_j\right\rangle
+=\sum_{j=0}^{J}\langle I_j^t\alpha,v_j\rangle=0.
+\]
+故 $\alpha=0$, 从而 $B$ 为正定算子.
+\end{Proof}
+
+\MathBookSourcePage{188}
+于是 $B^{-1}:V\longrightarrow V'$ 为 SPD. 下一个引理给出内积 $\langle B^{-1}\cdot,\cdot\rangle$ 的一个刻画.
+
+\MBSourceItem{14}
+\begin{Lemma}
+\label{lem:ch07-additive-schwarz-minimum-characterization}
+对 $v\in V$, 有
+\MBSourceItem{15}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-additive-schwarz-minimum-characterization}
+\label{eq:ch07-additive-schwarz-minimum-characterization}
+\langle B^{-1}v,v\rangle
+=\min_{\substack{v=\sum_{j=0}^{J}I_jv_j\\v_j\in V_j}}
+\sum_{j=0}^{J}\langle B_jv_j,v_j\rangle.
+\end{equation}
+\end{Lemma}
+
+\begin{Proof}
+由于 $B_j^{-1}:V_j'\longrightarrow V_j$ 为 SPD, 双线性型 $\langle\cdot,B_j^{-1}\cdot\rangle$ 是 $V_j'$ 上的内积, 下列 Cauchy--Schwarz 不等式成立:
+\MBSourceItem{16}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-dual-cauchy-schwarz}
+\label{eq:ch07-dual-cauchy-schwarz}
+\langle\alpha_1,B_j^{-1}\alpha_2\rangle
+\leq
+\langle\alpha_1,B_j^{-1}\alpha_1\rangle^{1/2}
+\langle\alpha_2,B_j^{-1}\alpha_2\rangle^{1/2}.
+\end{equation}
+设 $v=\sum_{j=0}^{J}I_jv_j$, 其中 $v_j\in V_j$ $(0\leq j\leq J)$. 则
+\begin{align*}
+\MathBookFormulaID{formula-ch07-minimum-characterization-upper-chain}
+\langle B^{-1}v,v\rangle
+&=\left\langle B^{-1}v,\sum_{j=0}^{J}I_jv_j\right\rangle\\
+&=\sum_{j=0}^{J}\langle I_j^tB^{-1}v,B_j^{-1}B_jv_j\rangle
+&&\text{(由式~\eqref{eq:ch07-transpose-injection-definition})}\\
+&\leq\sum_{j=0}^{J}
+\langle I_j^tB^{-1}v,B_j^{-1}I_j^tB^{-1}v\rangle^{1/2}
+\langle B_jv_j,v_j\rangle^{1/2}
+&&\text{(由式~\eqref{eq:ch07-dual-cauchy-schwarz})}\\
+&\leq
+\left(\sum_{j=0}^{J}\langle I_j^tB^{-1}v,B_j^{-1}I_j^tB^{-1}v\rangle\right)^{1/2}
+\left(\sum_{j=0}^{J}\langle B_jv_j,v_j\rangle\right)^{1/2}\\
+&=\left\langle B^{-1}v,
+\left(\sum_{j=0}^{J}I_jB_j^{-1}I_j^t\right)B^{-1}v\right\rangle^{1/2}
+\left(\sum_{j=0}^{J}\langle B_jv_j,v_j\rangle\right)^{1/2}
+&&\text{(由式~\eqref{eq:ch07-transpose-injection-definition})}\\
+&=\langle B^{-1}v,v\rangle^{1/2}
+\left(\sum_{j=0}^{J}\langle B_jv_j,v_j\rangle\right)^{1/2}
+&&\text{(由式~\eqref{eq:ch07-abstract-additive-schwarz-preconditioner})}.
+\end{align*}
+这蕴含
+\MBSourceItem{17}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-minimum-characterization-lower-bound}
+\label{eq:ch07-minimum-characterization-lower-bound}
+\langle B^{-1}v,v\rangle
+\leq\sum_{j=0}^{J}\langle B_jv_j,v_j\rangle.
+\end{equation}
+
+\MathBookSourcePage{189}
+另一方面, 特别取
+\MBSourceItem{18}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-minimizing-decomposition-components}
+\label{eq:ch07-minimizing-decomposition-components}
+v_j=B_j^{-1}I_j^tB^{-1}v,
+\end{equation}
+则 $v_j\in V_j$ 且 $v=\sum_{j=0}^{J}I_jv_j$(参见习题~\ref{exr:ch07-05}), 并有
+\MBSourceItem{19}
+\begin{align}
+\MathBookFormulaID{formula-ch07-minimum-characterization-attainment}
+\sum_{j=0}^{J}\langle B_jv_j,v_j\rangle
+&=\sum_{j=0}^{J}\langle B_jB_j^{-1}I_j^tB^{-1}v,B_j^{-1}I_j^tB^{-1}v\rangle\notag\\
+&=\left\langle B^{-1}v,
+\left(\sum_{j=0}^{J}I_jB_j^{-1}I_j^t\right)B^{-1}v\right\rangle
+&&\text{(由式~\eqref{eq:ch07-transpose-injection-definition})}\notag\\
+&=\langle B^{-1}v,v\rangle
+&&\text{(由式~\eqref{eq:ch07-abstract-additive-schwarz-preconditioner})}.
+\label{eq:ch07-minimum-characterization-attainment}
+\end{align}
+式~\eqref{eq:ch07-additive-schwarz-minimum-characterization} 由式~\eqref{eq:ch07-minimum-characterization-lower-bound} 和式~\eqref{eq:ch07-minimum-characterization-attainment} 得证.
+\end{Proof}
+
+\MBSourceItem{20}
+\begin{Theorem}
+\label{thm:ch07-preconditioned-eigenvalue-characterization}
+$BA$ 的特征值均为正, 且最大特征值和最小特征值有如下刻画:
+\MBSourceItem{21}
+\begin{align}
+\MathBookFormulaID{formula-ch07-preconditioned-maximum-eigenvalue}
+\lambda_{\max}(BA)
+&=\max_{\substack{v\in V\\v\neq0}}
+\frac{\langle Av,v\rangle}
+{\displaystyle\min_{\substack{v=\sum_{j=0}^{J}I_jv_j\\v_j\in V_j}}
+\sum_{j=0}^{J}\langle B_jv_j,v_j\rangle},
+\label{eq:ch07-preconditioned-maximum-eigenvalue}\\
+\MathBookFormulaID{formula-ch07-preconditioned-minimum-eigenvalue}
+\lambda_{\min}(BA)
+&=\min_{\substack{v\in V\\v\neq0}}
+\frac{\langle Av,v\rangle}
+{\displaystyle\min_{\substack{v=\sum_{j=0}^{J}I_jv_j\\v_j\in V_j}}
+\sum_{j=0}^{J}\langle B_jv_j,v_j\rangle}.
+\label{eq:ch07-preconditioned-minimum-eigenvalue}
+\end{align}
+\end{Theorem}
+
+\begin{Proof}
+首先注意, $BA:V\longrightarrow V$ 关于内积 $\langle\!\langle\cdot,\cdot\rangle\!\rangle:=\langle B^{-1}\cdot,\cdot\rangle$ 为 SPD(参见习题~\ref{exr:ch07-06}). 因此 $BA$ 的特征值为正, Rayleigh 商公式蕴含
+\[
+\MathBookFormulaID{formula-ch07-maximum-rayleigh-chain}
+\lambda_{\max}(BA)
+=\max_{\substack{v\in V\\v\neq0}}
+\frac{\langle\!\langle BAv,v\rangle\!\rangle}{\langle\!\langle v,v\rangle\!\rangle}
+=\max_{\substack{v\in V\\v\neq0}}
+\frac{\langle Av,v\rangle}{\langle B^{-1}v,v\rangle}
+=\max_{\substack{v\in V\\v\neq0}}
+\frac{\langle Av,v\rangle}
+{\displaystyle\min_{\substack{v=\sum_{j=0}^{J}I_jv_j\\v_j\in V_j}}
+\sum_{j=0}^{J}\langle B_jv_j,v_j\rangle}.
+\]
+最后一个等号使用了式~\eqref{eq:ch07-additive-schwarz-minimum-characterization}. 式~\eqref{eq:ch07-preconditioned-minimum-eigenvalue} 的证明类似.
+\end{Proof}
+
+\MathBookSourcePage{190}
+\MBSourceItem{23}
+\begin{Remark}
+\label{rem:ch07-additive-schwarz-equivalent-formulations}
+Additive Schwarz 预条件子的抽象理论有若干等价表述. 这些表述源于许多作者的工作, 例如 Dryja \& Widlund 1987, 1989, 1990, 1992, 1995; Nepomnyaschikh 1989; Bjørstad \& Mandel 1991; Zhang 1991; Xu 1992; Dryja, Smith \& Widlund 1994; Griebel \& Oswald 1995.
+\end{Remark}
+
+设 $\Omega$ 是 $\mathbb R^2$ 中的有界多边形区域. 在后续各节中, 我们考虑如下模型问题: 求 $u\in\mathring H^1(\Omega)$, 使得
+\MBSourceItem{24}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-model-poisson-variational-problem}
+\label{eq:ch07-model-poisson-variational-problem}
+\int_\Omega\nabla u\cdot\nabla v\,dx=F(v)
+\qquad\forall v\in\mathring H^1(\Omega),
+\end{equation}
+其中 $F\in[\mathring H^1(\Omega)]'$. 我们将把 additive Schwarz 预条件子的抽象理论应用于式~\eqref{eq:ch07-model-poisson-variational-problem} 的各种有限元离散所得方程组的预处理.
+
+第~\ref{sec:ch07-hierarchical-basis-preconditioner}、\ref{sec:ch07-bpx-preconditioner} 节讨论两种多层预条件子, 第~\ref{sec:ch07-two-level-additive-schwarz-preconditioner}--\ref{sec:ch07-bddc-preconditioner} 节讨论若干区域分解预条件子. 关于区域分解预条件子的其他应用, 可参见 LeTallec 1994; Chan \& Matthew 1994; Dryja, Smith \& Widlund 1994; Smith, Bjørstad \& Gropp 1996; Xu \& Zou 1998; Quarteroni \& Valli 1999; Toselli \& Widlund 2004.
+
+为避免常数过多, 我们使用记号 $A\lesssim B$ $(B\gtrsim A)$ 表示 $A\leq\text{constant}\times B$, 其中该常数总与网格尺寸和辅助空间个数无关. $A\approx B$ 等价于 $A\lesssim B$ 且 $B\lesssim A$.

@@ -1,0 +1,292 @@
+% Reviewed translation: Section 3, PDF pages 311--314 / printed pages 297--300.
+% The closing Remark 2.3 on PDF 311 belongs to the preceding file.
+\MathBookSourcePage{311}
+\section{非奇异解分支的逼近}
+\label{sec:navier-nonsingular-branches}
+\setcounter{equation}{0}
+
+上一节已经证明, 一般而言 Navier--Stokes 方程有不止一个解, 除非数据
+(即黏度和外力)满足非常严格的要求. 然而还可以证明, 在许多实际例子中,
+这些解大多是孤立的, 即每个解都在某个邻域中唯一. 此外, 可以证明解连续依赖于黏度.
+所以, 当黏度沿一个区间变化时, Navier--Stokes 方程的每个解描绘出一个孤立分支.
+这尤其意味着分岔现象并不常见. 实践中经常遇到的这一情形, 在数学上由非奇异解分支的概念表达.
+
+本节提出并分析一大类非线性问题(包括 Navier--Stokes 问题)的非奇异解分支的若干逼近.
+这一分析以隐函数 Theorem 的一般形式为基础, 是 Brezzi, Rappaz 与
+Raviart~\cite{BrezziRappazRaviart1980} 所发展更广理论的一种变体.
+这里给出的版本由 Crouzeix~\cite{CrouzeixForthcoming} 建立.
+
+\subsection{一个抽象框架}
+\label{subsec:navier-nonsingular-abstract}
+
+设 $X$ 和 $\mathscr X$ 是两个 Banach 空间, $\Lambda$ 是实直线
+$\mathbb R$ 的一个紧区间. 给定一个 $C^p$ 映射($p\geq1$)
+\[
+F:(\lambda,u)\in\Lambda\times X
+\longmapsto F(\lambda,u)\in\mathscr X,
+\]
+并希望求解方程
+\begin{equation}\label{eq:navier-branch-abstract-problem}
+F(\lambda,u)=0,
+\end{equation}
+即寻找满足 \eqref{eq:navier-branch-abstract-problem} 的
+$(\lambda,u)\in\Lambda\times X$.
+
+设 $\{(\lambda,u(\lambda));\lambda\in\Lambda\}$ 是方程
+\eqref{eq:navier-branch-abstract-problem} 的一个解分支. 这意味着
+\begin{equation}\label{eq:navier-branch-continuity}
+\lambda\longmapsto u(\lambda)
+\text{ is a continuous function from }\Lambda\text{ into }X,
+\end{equation}
+以及
+\begin{equation}\label{eq:navier-branch-solution-identity}
+F(\lambda,u(\lambda))=0.
+\end{equation}
+还假设这些解在如下意义下非奇异:
+\begin{equation}\label{eq:navier-branch-nonsingularity}
+D_uF(\lambda,u(\lambda))
+\text{ is an isomorphism from }X\text{ onto }\mathscr X
+\quad\forall\lambda\in\Lambda.
+\end{equation}
+由隐函数 Theorem, \eqref{eq:navier-branch-nonsingularity} 立即蕴含
+$\lambda\mapsto u(\lambda)$ 是从 $\Lambda$ 到 $X$ 的一个 $C^p$ 函数.
+
+\MathBookSourcePage{312}
+作为基本例子, 说明速度--压力表述中的 Navier--Stokes 方程 Dirichlet 问题
+\eqref{eq:navier-steady-nonhomogeneous-variational} 如何纳入上述框架. 首先置
+\begin{equation}\label{eq:navier-branch-ns-spaces}
+X=\mathscr X=H^1(\Omega)^N\times L_0^2(\Omega),
+\end{equation}
+并引入中间空间
+\begin{equation}\label{eq:navier-branch-ns-data-space}
+Y=H^{-1}(\Omega)^N\times
+\left\{\mathbf g\in H^{1/2}(\Gamma)^N;
+\ \int_{\Gamma_i}\mathbf g\cdot\mathbf n\,ds=0,
+\ 0\leq i\leq p\right\}.
+\end{equation}
+定义线性算子 $T$ 如下: 给定 $(\mathbf f_*,\mathbf g_*)\in Y$, 以
+\[
+(\mathbf u_*,p_*)=T(\mathbf f_*,\mathbf g_*)\in X
+\]
+表示下列 Stokes 方程 Dirichlet 问题的解:
+\begin{equation}\label{eq:navier-branch-stokes-solution-operator}
+\left\{
+\begin{aligned}
+-\Delta\mathbf u_*+\operatorname{grad}p_*&=\mathbf f_*&&\text{in }\Omega,\\
+\operatorname{div}\mathbf u_*&=0&&\text{in }\Omega,\\
+\mathbf u_*|_\Gamma&=\mathbf g_*.
+\end{aligned}
+\right.
+\end{equation}
+最后, 对数据 $(\mathbf f,\mathbf g)\in Y$, 定义从
+$\mathbb R_+\times X$ 到 $Y$ 的 $C^\infty$ 映射
+\begin{equation}\label{eq:navier-branch-ns-nonlinear-map}
+G:(\lambda,\mathbf v=(\mathbf v,q))
+\longmapsto
+G(\lambda,\mathbf v)
+=\left(
+\lambda\left(\sum_{j=1}^{N}v_j
+\frac{\partial\mathbf v}{\partial x_j}-\mathbf f\right),
+-\mathbf g
+\right),
+\end{equation}
+并置
+\begin{equation}\label{eq:navier-branch-ns-compound-map}
+F(\lambda,\mathbf v)=\mathbf v+TG(\lambda,\mathbf v).
+\end{equation}
+
+\setcounter{statement}{0}
+\begin{Lemma}\label{lem:navier-branch-ns-equivalence}
+一对 $(\mathbf u,p)\in H^1(\Omega)^N\times L_0^2(\Omega)$ 是问题
+\eqref{eq:navier-steady-system},
+\eqref{eq:navier-steady-nonhomogeneous-dirichlet} 的解, 当且仅当
+$\boldsymbol u=(\mathbf u,p/\nu)$ 是
+\eqref{eq:navier-branch-abstract-problem} 的一个解, 其中
+$\lambda=1/\nu$, 空间 $X$ 和 $\mathscr X$ 由
+\eqref{eq:navier-branch-ns-spaces} 定义, 复合映射 $F$ 由
+\eqref{eq:navier-branch-ns-compound-map} 定义.
+\end{Lemma}
+\begin{Proof}
+方程 \eqref{eq:navier-steady-system} 可等价地写成
+\[
+\begin{aligned}
+-\Delta\mathbf u+\operatorname{grad}(p/\nu)
+&=\frac1\nu\left(\mathbf f-
+\sum_{j=1}^{N}u_j\frac{\partial\mathbf u}{\partial x_j}\right)
+&&\text{in }\Omega,\\
+\operatorname{div}\mathbf u&=0&&\text{in }\Omega,\\
+\mathbf u&=\mathbf g&&\text{on }\Gamma.
+\end{aligned}
+\]
+或由 \eqref{eq:navier-branch-stokes-solution-operator} 写成
+\[
+(\mathbf u,p/\nu)
+=T\left[
+\frac1\nu\left(\mathbf f-
+\sum_{j=1}^{N}u_j\frac{\partial\mathbf u}{\partial x_j}\right),
+\mathbf g\right].
+\]
+结论于是由 \eqref{eq:navier-branch-ns-nonlinear-map} 和
+\eqref{eq:navier-branch-ns-compound-map} 得到.
+\end{Proof}
+
+\MathBookSourcePage{313}
+接着注意, 对所有 $\boldsymbol v=(\mathbf v,q)\in X$,
+\[
+D_{\boldsymbol u}G(\lambda,\boldsymbol u)\cdot\boldsymbol v
+=\left(
+\lambda\sum_{j=1}^{N}\left(
+u_j\frac{\partial\mathbf v}{\partial x_j}
++v_j\frac{\partial\mathbf u}{\partial x_j}\right),0
+\right).
+\]
+因此在本例中, $\boldsymbol u=(\mathbf u,p/\nu)$ 是
+\eqref{eq:navier-branch-abstract-problem} 的一个非奇异解, 或等价地
+$D_{\boldsymbol u}F(1/\nu,\boldsymbol u)$ 是 $X$ 的一个同构, 当且仅当对每个
+$\boldsymbol w=(\mathbf w,\sigma)\in X$, 存在唯一的
+$\boldsymbol v=(\mathbf v,q)\in X$ 满足
+\[
+\begin{aligned}
+-\Delta\mathbf v+\operatorname{grad}q
++\frac1\nu\sum_{j=1}^{N}\left(
+u_j\frac{\partial\mathbf v}{\partial x_j}
++v_j\frac{\partial\mathbf u}{\partial x_j}\right)
+&=-\Delta\mathbf w+\operatorname{grad}\sigma&&\text{in }\Omega,\\
+\operatorname{div}\mathbf v&=\operatorname{div}\mathbf w&&\text{in }\Omega,\\
+\mathbf v&=\mathbf w&&\text{on }\Gamma.
+\end{aligned}
+\]
+这一问题可以化简. 一方面, Cattabriga~\cite{Cattabriga1961} 证明的
+Theorem~I.5.4 的直接推广保证: 对每个
+$\mathbf f\in H^{-1}(\Omega)^N$, $\mu\in L^2(\Omega)$ 和
+$\mathbf g\in H^{1/2}(\Gamma)^N$ 满足相容条件
+\[
+\int_\Omega\mu\,dx=\int_\Gamma\mathbf g\cdot\mathbf n\,ds,
+\]
+存在唯一的 $\boldsymbol w=(\mathbf w,\sigma)\in X$ 满足
+\[
+\begin{aligned}
+-\Delta\mathbf w+\operatorname{grad}\sigma&=\mathbf f&&\text{in }\Omega,\\
+\operatorname{div}\mathbf w&=\mu&&\text{in }\Omega,\\
+\mathbf w&=\mathbf g&&\text{on }\Gamma.
+\end{aligned}
+\]
+另一方面, 当 $\mu$ 和 $\mathbf g$ 满足上述条件时,
+Lemma~\ref{lem:sec2-div-free-lifting} 的一个推广表明存在
+$\mathbf v_0\in H^1(\Omega)^N$, 使
+\[
+\operatorname{div}\mathbf v_0=\mu,
+\qquad
+\mathbf v_0|_\Gamma=\mathbf g.
+\]
+因此利用这两个结果可以证明, $\boldsymbol u=(\mathbf u,p/\nu)$ 是
+\eqref{eq:navier-branch-abstract-problem} 的一个非奇异解, 当且仅当齐次线性化问题
+\begin{equation}\label{eq:navier-branch-linearized-problem}
+\left\{
+\begin{aligned}
+-\nu\Delta\mathbf v
++\sum_{j=1}^{N}\left(
+u_j\frac{\partial\mathbf v}{\partial x_j}
++v_j\frac{\partial\mathbf u}{\partial x_j}\right)
++\operatorname{grad}q&=\mathbf f_*&&\text{in }\Omega,\\
+\operatorname{div}\mathbf v&=0&&\text{in }\Omega,\\
+\mathbf v&=0&&\text{on }\Gamma
+\end{aligned}
+\right.
+\end{equation}
+对每个 $\mathbf f_*\in H^{-1}(\Omega)^N$ 有唯一解
+$\boldsymbol v=(\mathbf v,q)\in X$, 且映射
+$\mathbf f_*\mapsto\boldsymbol v$ 从 $H^{-1}(\Omega)^N$ 到 $X$ 连续.
+
+尽管这里不准备给出精确陈述, 仍可证明 Navier--Stokes 方程 Dirichlet 问题的解
+``一般而言''是非奇异的. 这里只推出下面的简单结果.
+
+\MathBookSourcePage{314}
+\setcounter{statement}{1}
+\begin{Lemma}\label{lem:navier-branch-small-data-nonsingular}
+假设 Theorem~\ref{thm:navier-steady-nonhomogeneous-uniqueness} 的条件成立.
+若 $(\mathbf u,p)$ 是问题
+\eqref{eq:navier-steady-nonhomogeneous-variational} 的唯一解, 则
+$\boldsymbol u=(\mathbf u,p/\nu)$ 是
+\eqref{eq:navier-branch-abstract-problem} 的一个非奇异解.
+\end{Lemma}
+\begin{Proof}
+先利用 Subsection~\ref{subsec:navier-steady-velocity-pressure} 的记号.
+问题 \eqref{eq:navier-branch-linearized-problem} 的一个变分形式是求
+$(\mathbf v,q)\in H^1(\Omega)^N\times L_0^2(\Omega)$, 使
+\begin{equation}\label{eq:navier-branch-linearized-variational}
+\left\{
+\begin{aligned}
+a(\mathbf u;\mathbf v,\mathbf z)
++a_1(\mathbf v;\mathbf u,\mathbf z)
+-(q,\operatorname{div}\mathbf z)
+&=\langle\mathbf f_*,\mathbf z\rangle
+&&\forall\mathbf z\in H_0^1(\Omega)^N,\\
+\operatorname{div}\mathbf v&=0&&\text{in }\Omega,\\
+\mathbf v&=\mathbf g_*&&\text{on }\Gamma.
+\end{aligned}
+\right.
+\end{equation}
+要验证 \eqref{eq:navier-branch-linearized-variational} 有唯一解, 只需证明双线性形式
+\[
+(\mathbf v,\mathbf z)\longmapsto
+c(\mathbf v,\mathbf z)
+=a(\mathbf u;\mathbf v,\mathbf z)
++a_1(\mathbf v;\mathbf u,\mathbf z)
+\]
+是 $V$-椭圆的. 由 \eqref{eq:navier-steady-convection-cancellation},
+\[
+c(\mathbf v,\mathbf v)
+=\nu|\mathbf v|_{1,\Omega}^2
++a_1(\mathbf v;\mathbf u,\mathbf v)
+\qquad\forall\mathbf v\in V.
+\]
+设 $\nu>\nu_0$, 其中 $\nu_0$ 由
+\eqref{eq:navier-steady-critical-viscosity} 定义. 则存在
+$\mathbf u_0\in H^1(\Omega)^N$, 使
+\[
+\operatorname{div}\mathbf u_0=0,
+\qquad \mathbf u_0|_\Gamma=\mathbf g,
+\qquad
+\nu>\rho(\mathbf u_0)
++\bigl(\mathcal N\|l(\mathbf f;\mathbf u_0)\|_{V'}\bigr)^{1/2}.
+\]
+置 $\mathbf u=\mathbf u_0+\mathbf w$. 由
+\eqref{eq:navier-steady-convection-constant} 和
+\eqref{eq:navier-steady-lifting-rho},
+\[
+|a_1(\mathbf v;\mathbf u,\mathbf v)|
+\leq|a_1(\mathbf v;\mathbf u_0,\mathbf v)|
++|a_1(\mathbf v;\mathbf w,\mathbf v)|
+\leq\{\rho(\mathbf u_0)+\mathcal N|\mathbf w|_{1,\Omega}\}
+|\mathbf v|_{1,\Omega}^2.
+\]
+由 Remark~\ref{rem:navier-steady-lifted-bound},
+\[
+|\mathbf w|_{1,\Omega}
+\leq\frac{\|l(\mathbf f;\mathbf u_0)\|_{V'}}
+{\nu-\rho(\mathbf u_0)}.
+\]
+所以
+\[
+\begin{aligned}
+c(\mathbf v,\mathbf v)
+&\geq\left(\nu-\rho(\mathbf u_0)
+-\frac{\mathcal N\|l(\mathbf f;\mathbf u_0)\|_{V'}}
+{\nu-\rho(\mathbf u_0)}\right)|\mathbf v|_{1,\Omega}^2\\
+&=(\nu-\rho(\mathbf u_0))
+\left(1-
+\frac{\mathcal N\|l(\mathbf f;\mathbf u_0)\|_{V'}}
+{(\nu-\rho(\mathbf u_0))^2}\right)|\mathbf v|_{1,\Omega}^2.
+\end{aligned}
+\]
+因此椭圆性成立.
+\end{Proof}
+
+后续各小节将主要研究 Navier--Stokes 方程 Dirichlet 问题的非奇异解分支
+\[
+\{(\lambda,\boldsymbol u(\lambda)
+=(\mathbf u(\lambda),\lambda p(\lambda)));
+\ \lambda\in\Lambda\}
+\]
+的逼近, 其中参数 $\lambda=1/\nu$ 起 Reynolds 数的作用.

@@ -1,0 +1,382 @@
+\subsection{带插值边界条件的有限元}
+\label{sec:ch10-interpolated-boundary}
+\setcounter{thmcount}{0}
+\setcounter{equation}{0}
+
+设 $\Omega\subseteq\mathbb R^2$ 是具有光滑边界的有界区域, $\mathcal T^h$ 是 $\Omega$ 的一个三角剖分, 其中每个边界三角形至多有一条曲边(见图~\ref{fig:ch10-curved-triangulation}).
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=.54\linewidth]{chapter-10-fig-10-1.png}
+\caption{用曲边三角形剖分的光滑区域}
+\label{fig:ch10-curved-triangulation}
+\end{figure}
+
+\MathBookSourcePage{285}
+假设存在 $\rho>0$, 使得对每个三角形 $T\in\mathcal T^h$, 都能找到两个同心圆盘 $D_1,D_2$, 满足
+\MBSourceItem{1}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-curved-element-disks}
+\label{eq:ch10-curved-element-disks}
+D_1\subseteq T\subseteq D_2,
+\qquad
+\frac{\operatorname{diam}D_2}{\operatorname{diam}D_1}\leq\rho.
+\end{equation}
+由齐次性论证(见引理~\MBUnresolvedReference{lem:ch04-source-4-5-3}{4.5.3} 的证明), 对任意次数不超过 $k-1$ 的多项式 $\phi$, 有
+\MBSourceItem{2}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-polynomial-infinity-h1}
+\label{eq:ch10-polynomial-infinity-h1}
+\|\phi\|_{W_\infty^{k-1}(D_2)}
+\leq C_{k,\rho}(\operatorname{diam}D_2)^{1-k}\|\phi\|_{H^1(D_1)}.
+\end{equation}
+
+为了描述有限元空间 $V_h$, 需要使用 Lobatto 求积公式的节点. 先简要回顾有关 Lobatto 求积的基本事实. 定义次数为 $k$ 的多项式 $L_k(\xi)$ 为
+\MBSourceItem{3}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-lobatto-polynomial}
+\label{eq:ch10-lobatto-polynomial}
+L_k(x)=\left(\frac d{dx}\right)^{k-2}\bigl(x(1-x)\bigr)^{k-1}.
+\end{equation}
+$L_k(\xi)$ 有 $k$ 个互异零点 $0=\xi_0<\xi_1<\cdots<\xi_{k-1}=1$(参见习题~\ref{exr:ch10-01}). 对每个 $j$, $0\leq j\leq k-1$, 令 $P_j$ 为次数 $k-1$ 的 Lagrange 插值多项式(见备注~\MBUnresolvedReference{rem:ch03-source-3-1-7}{3.1.7}), 满足 $P_j(\xi_i)=\delta_{ij}$(Kronecker delta), 并令
+\MBSourceItem{4}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-lobatto-weights}
+\label{eq:ch10-lobatto-weights}
+\omega_j=\int_0^1P_j(x)\,dx.
+\end{equation}
+
+\MBSourceItem{5}
+\begin{Lemma}
+\label{lem:ch10-lobatto-exactness}
+对任意次数小于 $2k-2$ 的多项式 $P$, 有
+\MBSourceItem{6}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-lobatto-exactness}
+\label{eq:ch10-lobatto-exactness}
+\int_0^1P(x)\,dx=\sum_{j=0}^{k-1}\omega_jP(\xi_j).
+\end{equation}
+\end{Lemma}
+
+\begin{Proof}
+对任意次数小于 $k$ 的多项式 $f$, 由 $\omega_j$ 的定义,
+\MBSourceItem{7}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-interpolation-quadrature-identity}
+\label{eq:ch10-interpolation-quadrature-identity}
+\int_0^1f(x)\,dx
+=\int_0^1\sum_{j=0}^{k-1}f(\xi_j)P_j(x)\,dx
+=\sum_{j=0}^{k-1}\omega_jf(\xi_j).
+\end{equation}
+令 $P_1$ 为 $P$ 的次数不超过 $k-1$ 的 Lagrange 插值多项式, 即 $P_1(\xi_j)=P(\xi_j)$. 式~\eqref{eq:ch10-interpolation-quadrature-identity} 给出
+\[
+\MathBookFormulaID{formula-ch10-lobatto-remainder}
+\int_0^1P(x)\,dx-\sum_{j=0}^{k-1}\omega_jP(\xi_j)
+=\int_0^1(P-P_1)(x)\,dx.
+\]
+由于 $P-P_1$ 在各 $\xi_j$ 处为零, 可写为 $(P-P_1)(x)=L_k(x)q(x)$, 其中 $\deg q<k-2$. 分部积分 $k-2$ 次得到
+\MBSourceItem{8}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-lobatto-remainder-vanishes}
+\label{eq:ch10-lobatto-remainder-vanishes}
+\int_0^1L_k(x)q(x)\,dx
+=(-1)^{k-2}\int_0^1(x(1-x))^{k-1}
+\left(\frac d{dx}\right)^{k-2}q(x)\,dx=0,
+\end{equation}
+因为所有边界项均为零且 $\deg q<k-2$.
+\end{Proof}
+
+\MathBookSourcePage{286}
+\MBSourceItem{9}
+\begin{Corollary}
+\label{cor:ch10-lobatto-error}
+给定 $k$, 存在正常数 $C_k$, 使得对所有 $h>0$ 以及 $[0,h]$ 上任意 $C^{2k-2}$ 函数 $f$,
+\[
+\MathBookFormulaID{formula-ch10-lobatto-error}
+\left|\int_0^h f(x)\,dx-h\sum_{j=0}^{k-1}\omega_jf(h\xi_j)\right|
+\leq C_kh^{2k-1}\|f^{(2k-2)}\|_{L^\infty(0,h)}.
+\]
+\end{Corollary}
+
+\begin{Proof}
+见习题~\ref{exr:ch10-02}.
+\end{Proof}
+
+现在定义 $V_h$. 对每条边界边
+\[
+\MathBookFormulaID{formula-ch10-boundary-edge-parameterization}
+e=\{x(s):s\in[s_e,s_e+h_e]\},\qquad s=\text{弧长},
+\]
+取边界节点 $x(s_e+h_e\xi_j)$, $j=0,\ldots,k-1$. 图~\ref{fig:ch10-curved-nodal-variables} 画出 $k=3$ 的情形. 当 $h=\max_{T\in\mathcal T^h}(\operatorname{diam}T)$ 充分小时, 边界节点可用作确定 $\mathcal P_{k-1}$ 多项式的节点变量(见习题~\ref{exr:ch10-03} 和 Scott 1975). 下文假设这一条件成立.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=.46\linewidth]{chapter-10-fig-10-2.png}
+\caption{曲边三角形 Lagrange 二次元的节点变量}
+\label{fig:ch10-curved-nodal-variables}
+\end{figure}
+
+\MathBookSourcePage{287}
+有限元空间 $V_h$ 定义为
+\MBSourceItem{10}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-interpolated-boundary-space}
+\label{eq:ch10-interpolated-boundary-space}
+V_h=\{v\in C^0(\overline\Omega):v|_T\in\mathcal P_{k-1},
+\text{ 且 }v\text{ 在边界节点处为零}\}.
+\end{equation}
+令 $a(v,w)=\int_\Omega\nabla v\cdot\nabla w\,dx$. 问题~\eqref{eq:ch10-dirichlet-model} 的变分形式是在 $V=\mathring H^1(\Omega)$ 中求 $u$, 使得
+\MBSourceItem{11}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-smooth-domain-variational}
+\label{eq:ch10-smooth-domain-variational}
+a(u,v)=F(v)\qquad\forall v\in V=\mathring H^1(\Omega),
+\end{equation}
+其中 $F(v)=\int_\Omega fv\,dx$(见第~\MBUnresolvedReference{chap:ch05}{5} 章). 离散问题的解 $u_h\in V_h$ 满足
+\MBSourceItem{12}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-interpolated-boundary-discrete}
+\label{eq:ch10-interpolated-boundary-discrete}
+a(u_h,v)=F(v)\qquad\forall v\in V_h.
+\end{equation}
+为了使用抽象估计~\eqref{eq:ch10-first-strang-estimate}, 必须估计
+\[
+\MathBookFormulaID{formula-ch10-boundary-consistency-supremum}
+\sup_{v\in V_h\setminus\{0\}}
+\frac{|a(u-u_h,v)|}{\|v\|_{H^1(\Omega)}},
+\]
+并验证 $a(\cdot,\cdot)$ 在 $V_h$ 上强制. 由 Green 定理,
+\MBSourceItem{13}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-boundary-consistency-identity}
+\label{eq:ch10-boundary-consistency-identity}
+a(u-u_h,w)=a(u,w)-(f,w)=\int_{\partial\Omega}\frac{\partial u}{\partial\nu}w\,ds.
+\end{equation}
+
+先局部估计这一项.
+
+\MBSourceItem{14}
+\begin{Lemma}
+\label{lem:ch10-local-curved-edge}
+设三角形 $T$ 满足式~\eqref{eq:ch10-curved-element-disks}, 且有一条曲边 $e$. 假设 $u\in W_\infty^{2k-1}(T)$, $w\in\mathcal P_{k-1}$ 在 $e$ 上的 Lobatto 节点处为零. 则存在常数 $C_{k,\rho}$, 使得
+\MBSourceItem{15}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-local-curved-edge-estimate}
+\label{eq:ch10-local-curved-edge-estimate}
+\left|\int_e\frac{\partial u}{\partial\nu}w\,ds\right|
+\leq C_{k,\rho}h_e^{2k-1}(\operatorname{diam}D_2)^{1-k}
+\|u\|_{W_\infty^{2k-1}(T)}\|w\|_{H^1(T)},
+\end{equation}
+其中 $h_e$ 是 $e$ 的长度.
+\end{Lemma}
+
+\MathBookSourcePage{288}
+\begin{Proof}
+令 $s$ 表示弧长. 按参数化 $x(s)$, $0\leq s\leq h_e$,
+\MBSourceItem{16}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-curved-edge-parameter-integral}
+\label{eq:ch10-curved-edge-parameter-integral}
+\int_e\frac{\partial u}{\partial\nu}w\,ds
+=\int_0^{h_e}\frac{\partial u}{\partial\nu}(x(s))w(x(s))\,ds.
+\end{equation}
+于是, 由推论~\ref{cor:ch10-lobatto-error} 和式~\eqref{eq:ch10-polynomial-infinity-h1},
+\begin{align*}
+\MathBookFormulaID{formula-ch10-local-curved-edge-proof}
+\left|\int_0^{h_e}\frac{\partial u}{\partial\nu}(x(s))w(x(s))\,ds\right|
+&\leq C_kh_e^{2k-1}
+\left\|\frac{\partial u}{\partial\nu}\right\|_{W_\infty^{2k-2}(T)}
+\|w\|_{W_\infty^{k-1}(T)}\\
+&\leq C_{k,\rho}h_e^{2k-1}(\operatorname{diam}D_2)^{1-k}
+\|u\|_{W_\infty^{2k-1}(T)}\|w\|_{H^1(T)}.
+\end{align*}
+式~\eqref{eq:ch10-curved-edge-parameter-integral} 完成证明.
+\end{Proof}
+
+由局部估计~\eqref{eq:ch10-local-curved-edge-estimate} 得到如下全局估计.
+
+\MBSourceItem{17}
+\begin{Lemma}
+\label{lem:ch10-global-boundary-consistency}
+假设 $u\in W_\infty^{2k-1}(\Omega)$. 对充分小的 $h$ 和固定的 $k$, 存在 $C_\rho>0$, 使得
+\[
+\MathBookFormulaID{formula-ch10-global-boundary-consistency}
+\sup_{w\in V_h\setminus\{0\}}
+\frac{|a(u-u_h,w)|}{\|w\|_{H^1(\Omega)}}
+\leq C_\rho h^{k-\frac12}\|u\|_{W_\infty^{2k-1}(\Omega)}.
+\]
+\end{Lemma}
+
+\begin{Proof}
+由于 $\partial\Omega$ 光滑, 当 $h$ 充分小时, 引理~\ref{lem:ch10-local-curved-edge} 中有
+\MBSourceItem{18}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-edge-diameter-comparison}
+\label{eq:ch10-edge-diameter-comparison}
+h_e<2\operatorname{diam}T<2\operatorname{diam}D_2.
+\end{equation}
+因此
+\MBSourceItem{19}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-local-boundary-simplified}
+\label{eq:ch10-local-boundary-simplified}
+\left|\int_e\frac{\partial u}{\partial\nu}w\,ds\right|
+\leq C_\rho h_e^{k-\frac12}\|u\|_{W_\infty^{2k-1}(\Omega)}\|w\|_{H^1(T)}.
+\end{equation}
+对所有边界边求和, 由式~\eqref{eq:ch10-boundary-consistency-identity} 和~\eqref{eq:ch10-local-boundary-simplified},
+\[
+\MathBookFormulaID{formula-ch10-global-boundary-sum}
+\left|\int_{\partial\Omega}\frac{\partial u}{\partial\nu}w\,ds\right|
+\leq C_\rho h^{k-\frac12}\|u\|_{W_\infty^{2k-1}(\Omega)}
+\left(\sum_eh_e\right)^{1/2}\|w\|_{H^1(\Omega)}.
+\]
+因为 $\sum_eh_e$ 是 $\partial\Omega$ 的长度, 结论成立.
+\end{Proof}
+
+\MathBookSourcePage{289}
+下面讨论 $a(\cdot,\cdot)$ 在 $V_h$ 上的强制性. 以下引理中假设 $\Omega$ 连通.
+
+\MBSourceItem{20}
+\begin{Lemma}
+\label{lem:ch10-boundary-poincare}
+存在正常数 $\beta$, 使得对所有 $v\in H^1(\Omega)$,
+\MBSourceItem{21}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-boundary-poincare}
+\label{eq:ch10-boundary-poincare}
+\beta\|v\|_{H^1(\Omega)}\leq|v|_{H^1(\Omega)}
++\left|\int_{\partial\Omega}v\,ds\right|.
+\end{equation}
+\end{Lemma}
+
+\begin{Proof}
+反设引理不成立. 则存在序列 $v_j\in H^1(\Omega)$, 满足
+\MBSourceItem{22}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-boundary-poincare-sequence-norm}
+\label{eq:ch10-boundary-poincare-sequence-norm}
+\|v_j\|_{H^1(\Omega)}=1
+\end{equation}
+以及
+\MBSourceItem{23}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-boundary-poincare-sequence-small}
+\label{eq:ch10-boundary-poincare-sequence-small}
+|v_j|_{H^1(\Omega)}+\left|\int_{\partial\Omega}v_j\,ds\right|<\frac1j.
+\end{equation}
+由 Friedrichs 不等式~\MBUnresolvedReference{eq:ch04-source-4-3-15}{4.3.15} 和式~\eqref{eq:ch10-boundary-poincare-sequence-small},
+\MBSourceItem{24}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-mean-subtracted-l2}
+\label{eq:ch10-mean-subtracted-l2}
+\|v_j-\overline v_j\|_{L^2(\Omega)}\leq C|v_j|_{H^1(\Omega)}\leq\frac Cj,
+\end{equation}
+其中 $\overline v_j=|\Omega|^{-1}\int_\Omega v_j\,dx$. 于是
+\MBSourceItem{25}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-mean-subtracted-h1-limit}
+\label{eq:ch10-mean-subtracted-h1-limit}
+\lim_{j\to\infty}\|v_j-\overline v_j\|_{H^1(\Omega)}^2
+=\lim_{j\to\infty}\bigl(|v_j|_{H^1(\Omega)}^2
++\|v_j-\overline v_j\|_{L^2(\Omega)}^2\bigr)=0.
+\end{equation}
+由式~\eqref{eq:ch10-mean-subtracted-h1-limit} 和迹定理~\MBUnresolvedReference{thm:ch01-source-1-6-6}{1.6.6},
+\MBSourceItem{26}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-boundary-trace-limit}
+\label{eq:ch10-boundary-trace-limit}
+\lim_{j\to\infty}\int_{\partial\Omega}(v_j-\overline v_j)\,ds=0.
+\end{equation}
+因此, 由式~\eqref{eq:ch10-boundary-poincare-sequence-small} 和~\eqref{eq:ch10-boundary-trace-limit},
+\MBSourceItem{27}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-mean-boundary-limit}
+\label{eq:ch10-mean-boundary-limit}
+\lim_{j\to\infty}\overline v_j\int_{\partial\Omega}ds
+=\lim_{j\to\infty}\left(\int_{\partial\Omega}(\overline v_j-v_j)\,ds
++\int_{\partial\Omega}v_j\,ds\right)=0.
+\end{equation}
+故 $\overline v_j\to0$, 再由式~\eqref{eq:ch10-mean-subtracted-h1-limit} 得
+\MBSourceItem{28}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-vj-h1-zero-limit}
+\label{eq:ch10-vj-h1-zero-limit}
+\lim_{j\to\infty}\|v_j\|_{H^1(\Omega)}=0,
+\end{equation}
+这与式~\eqref{eq:ch10-boundary-poincare-sequence-norm} 矛盾.
+\end{Proof}
+
+\MathBookSourcePage{290}
+现在可以证明 $a(\cdot,\cdot)$ 在 $V_h$ 上的强制性.
+
+\MBSourceItem{29}
+\begin{Lemma}
+\label{lem:ch10-interpolated-boundary-coercivity}
+存在正常数 $\gamma$, 使得当 $h$ 充分小时,
+\MBSourceItem{30}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-interpolated-boundary-coercivity}
+\label{eq:ch10-interpolated-boundary-coercivity}
+a(v,v)\geq\gamma\|v\|_{H^1(\Omega)}^2
+\qquad\forall v\in V_h.
+\end{equation}
+\end{Lemma}
+
+\begin{Proof}
+不失一般性可设 $\Omega$ 连通. 由引理~\ref{lem:ch10-global-boundary-consistency}, 对任意 $u\in W_\infty^{2k-1}(\Omega)$,
+\MBSourceItem{31}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-boundary-functional-bound}
+\label{eq:ch10-boundary-functional-bound}
+\left|\int_{\partial\Omega}\frac{\partial u}{\partial\nu}v\,ds\right|
+\leq C_\rho h^{k-\frac12}\|u\|_{W_\infty^{2k-1}(\Omega)}\|v\|_{H^1(\Omega)}.
+\end{equation}
+取 $u_*\in C^\infty(\overline\Omega)$ 满足
+\MBSourceItem{32}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-normal-derivative-one}
+\label{eq:ch10-normal-derivative-one}
+\frac{\partial u_*}{\partial\nu}=1\quad\text{on }\partial\Omega,
+\end{equation}
+则式~\eqref{eq:ch10-boundary-functional-bound} 变为
+\MBSourceItem{33}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-boundary-integral-v-bound}
+\label{eq:ch10-boundary-integral-v-bound}
+\left|\int_{\partial\Omega}v\,ds\right|
+\leq C_\rho h^{k-\frac12}\|v\|_{H^1(\Omega)}.
+\end{equation}
+结合式~\eqref{eq:ch10-boundary-poincare} 和~\eqref{eq:ch10-boundary-integral-v-bound}, 得
+\MBSourceItem{34}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-coercivity-preliminary}
+\label{eq:ch10-coercivity-preliminary}
+\beta\|v\|_{H^1(\Omega)}\leq|v|_{H^1(\Omega)}
++C_\rho h^{k-\frac12}\|v\|_{H^1(\Omega)},
+\end{equation}
+因而
+\MBSourceItem{35}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-coercivity-final-step}
+\label{eq:ch10-coercivity-final-step}
+(\beta-C_\rho h^{k-\frac12})\|v\|_{H^1(\Omega)}
+\leq|v|_{H^1(\Omega)}=\sqrt{a(v,v)}.
+\end{equation}
+只要 $C_\rho h^{k-\frac12}<\beta/2$, 式~\eqref{eq:ch10-interpolated-boundary-coercivity} 就以 $\gamma=\beta^2/4$ 成立.
+\end{Proof}
+
+由引理~\ref{lem:ch10-first-strang}、\ref{lem:ch10-global-boundary-consistency} 和~\ref{lem:ch10-interpolated-boundary-coercivity}, 再结合标准插值误差估计(参见定理~\MBUnresolvedReference{thm:ch04-source-4-4-20}{4.4.20}), 得到下述定理.
+
+\MBSourceItem{36}
+\begin{Theorem}
+\label{thm:ch10-interpolated-boundary-error}
+假设 $u\in W_\infty^{2k-1}(\Omega)$, 且式~\eqref{eq:ch10-curved-element-disks} 对某个与 $h$ 无关的 $\rho>0$ 成立. 当 $h$ 充分小时, 若用在 Lobatto 边界节点处为零的连续分片多项式 Lagrange 有限元空间离散问题~\eqref{eq:ch10-dirichlet-model}, 且多项式次数不超过 $k-1$, 则有
+\MBSourceItem{37}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-interpolated-boundary-error}
+\label{eq:ch10-interpolated-boundary-error}
+\|u-u_h\|_{H^1(\Omega)}\leq C_\rho h^{k-1}\|u\|_{W_\infty^{2k-1}(\Omega)}.
+\end{equation}
+\end{Theorem}
+
+为了得到 $\|u-u_h\|_{H^1(\Omega)}\leq C_\rho h^{k-1}|u|_{H^k(\Omega)}$, 并不需要假设 $u\in W_\infty^{2k-1}(\Omega)$. 事实上, 可证明(习题~\ref{exr:ch10-04} 和 Scott 1975)该结论对 $u\in H^k(\Omega)$ 成立, 而且这是最佳阶.

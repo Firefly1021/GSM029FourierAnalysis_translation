@@ -1,0 +1,826 @@
+% Reviewed translation: PDF pages 236--244 / printed pages 222--230.
+% The original scan is authoritative; mathematical tokens were checked against it.
+\MathBookSourcePage{236}
+\section{关于 "流函数--涡量--压力" 格式的进一步论题}
+\label{sec:incompressible-further-sfvp}
+
+本节进一步发展二维 Stokes 问题的 "流函数--涡量--压力" 方法.
+特别地, 它在一般情形下为 $\psi_h$, $\omega_h$ 和 $p_h$
+导出更好的误差估计. 使用特殊网格还可进一步改进这些估计.
+
+\subsection{误差分析的改进}
+\label{subsec:incompressible-further-error-refinement}
+
+我们处于 Subsection~\ref{subsec:incompressible-sfvp-mixed-approximation}
+的情形中. 除非另有说明, 使用相同的记号和
+\eqref{eq:incompressible-sfvp-standard-fe-spaces}
+所定义的具体空间 $\Theta_h=M_h$, $\Phi_h$ 和 $Q_h$.
+如该小节末尾所述, Theorem~\ref{thm:incompressible-sfvp-standard-fe-error}
+给出的误差界相当差, 因为对 $\widetilde V_h$ 中逼近误差的估计过于粗糙.
+现在集中研究这一估计. 下一个 Lemma 在抽象情形下建立
+\eqref{eq:primitive-discrete-affine-best-approximation} 的类似结果.
+
+\MathBookSourcePage{237}
+\begin{Lemma}\label{lem:incompressible-further-kernel-bound}
+若 $M_h\subset\Theta_h$, 则对所有
+$\mathbf v=(\operatorname{curl}\phi,\theta)\in\widetilde V$, 有
+\begin{equation}\label{eq:incompressible-further-kernel-bound}
+\begin{split}
+\inf_{\mathbf w_h\in\widetilde V_h}|\mathbf v-\mathbf w_h|
+\leq
+\inf_{\mathbf v_h=(\operatorname{curl}\phi_h,\theta_h)
+\in\widetilde X_h}
+\biggl[2|\mathbf v-\mathbf v_h|
++\sup_{\mu_h\in M_h}
+\frac{|(\operatorname{curl}(\phi-\phi_h),
+\operatorname{curl}\mu_h)|}{\|\mu_h\|_{0,\Omega}}
+\biggr].
+\end{split}
+\end{equation}
+将 \eqref{eq:incompressible-further-kernel-bound} 右端的范数
+$|\cdot|$ 换成 $\|\cdot\|_{\widetilde X}$ 后,
+同一界也适用于
+$\inf_{\mathbf w_h\in\widetilde V_h}
+\|\mathbf v-\mathbf w_h\|_{\widetilde X}$.
+\end{Lemma}
+
+\begin{Proof}
+令 $\mathbf v_h=(\operatorname{curl}\phi_h,\theta_h)$
+是 $\widetilde X_h$ 的任意元素, 并由
+\[
+(\tau_h,\mu_h)
+=(\theta-\theta_h,\mu_h)
+-(\operatorname{curl}(\phi-\phi_h),\operatorname{curl}\mu_h)
+\qquad\forall\mu_h\in M_h
+\]
+定义 $\tau_h\in M_h$. 则
+\begin{equation}\label{eq:incompressible-further-tau-bound}
+\|\tau_h\|_{0,\Omega}
+\leq\|\theta-\theta_h\|_{0,\Omega}
++\sup_{\mu_h\in M_h}
+\frac{|(\operatorname{curl}(\phi-\phi_h),
+\operatorname{curl}\mu_h)|}{\|\mu_h\|_{0,\Omega}}.
+\end{equation}
+此外, 由于 $M_h\subset\Theta_h$,
+$\mathbf z_h=(0,\tau_h)$ 属于 $\widetilde X_h$.
+置 $\mathbf w_h=\mathbf v_h+\mathbf z_h$.
+由于 $\mathbf v\in\widetilde V$, 有 $\mathbf w_h\in\widetilde V_h$.
+于是
+\[
+|\mathbf v-\mathbf w_h|
+\leq|\mathbf v-\mathbf v_h|+\|\tau_h\|_{0,\Omega},
+\]
+以及
+\[
+\|\mathbf v-\mathbf w_h\|_{\widetilde X}
+\leq\|\mathbf v-\mathbf v_h\|_{\widetilde X}
++\|\tau_h\|_{0,\Omega}.
+\]
+\eqref{eq:incompressible-further-kernel-bound}
+由 \eqref{eq:incompressible-further-tau-bound}
+以及 $\mathbf v_h$ 的任意性得到.
+\end{Proof}
+
+考察 \eqref{eq:incompressible-further-kernel-bound} 可见,
+困难在于恰当地估计
+\[
+\sup_{\mu_h\in M_h}
+\frac{|(\operatorname{curl}(\phi-\phi_h),
+\operatorname{curl}\mu_h)|}{\|\mu_h\|_{0,\Omega}},
+\]
+因为分子含有 $\mu_h$ 的一阶导数, 而分母没有.
+这里不能使用 Section~\ref{sec:incompressible-sfvp} 中
+\[
+|\mu_h|_{1,\Omega}
+\leq\frac Ch\|\mu_h\|_{0,\Omega}
+\qquad\forall\mu_h\in M_h
+\]
+这一简单技巧, 因为它太粗糙.
+我们改用 Scholz~\cite{ref:scholz-72} 提出的巧妙论证.
+大致说来, 他注意到若取
+\[
+\phi_h=\mathring P_h\phi,
+\]
+其中 $\mathring P_h$ 是 $\phi$ 到 $\Phi_h$ 上的投影,
+则 $(\operatorname{curl}(\phi-\phi_h),\operatorname{curl}\mu_h)$
+化为只在边界单元上取的积分之和.
+由于这些单元与 $\Omega$ 中单元总数相比很少,
+可为该表达式导出尖锐得多的界. 细节由下一个 Lemma 给出.
+
+\MathBookSourcePage{238}
+\begin{Lemma}\label{lem:incompressible-further-boundary-element-bound}
+假设 $\Omega$ 是有界凸多边形,
+$\mathcal T_h$ 是 $\overline\Omega$ 的一族一致正则剖分.
+令整数 $k$ 和实数 $p$ 满足 $1\leq k\leq l$ 和 $2\leq p\leq\infty$.
+则存在与 $h$ 无关的常数 $C>0$, 使对所有
+$\phi\in W^{k+1,p}(\Omega)\cap H_0^1(\Omega)$, 有
+\begin{equation}\label{eq:incompressible-further-boundary-element-bound}
+\sup_{\mu_h\in\Theta_h}
+\frac{|(\operatorname{curl}(\phi-\mathring P_h\phi),
+\operatorname{curl}\mu_h)|}{\|\mu_h\|_{0,\Omega}}
+\leq Ch^{k-1/2-1/p}\|\phi\|_{k+1,p,\Omega}.
+\end{equation}
+\end{Lemma}
+
+\begin{Proof}
+首先注意, 因为 $\Omega$ 是凸的, $\Phi_h\subset H_0^1(\Omega)$.
+其次, 任取 $\mu_h\in\Theta_h$,
+令 $\lambda_h$ 是 $\Phi_h$ 中在所有内部有限元节点上与 $\mu_h$
+重合的函数. 特别地, 若 $\Sigma_h$ 表示 $\mathcal T_h$
+的边界单元之并, 则
+$\operatorname{supp}(\mu_h-\lambda_h)\subset\Sigma_h$.
+又因为
+\[
+(\operatorname{curl}(\phi-\mathring P_h\phi),
+\operatorname{curl}\phi_h)=0
+\qquad\forall\phi_h\in\Phi_h,
+\]
+所以
+\[
+(\operatorname{curl}(\phi-\mathring P_h\phi),
+\operatorname{curl}\mu_h)
+=\sum_{\kappa\subset\Sigma_h}
+\int_\kappa
+\operatorname{curl}(\phi-\mathring P_h\phi)
+\cdot\operatorname{curl}(\mu_h-\lambda_h)\,dx.
+\]
+由 Hölder 不等式,
+\begin{equation}\label{eq:incompressible-further-holder-boundary}
+|(\operatorname{curl}(\phi-\mathring P_h\phi),
+\operatorname{curl}\mu_h)|
+\leq|\phi-\mathring P_h\phi|_{1,p,\Sigma_h}
+|\mu_h-\lambda_h|_{1,q,\Sigma_h},
+\end{equation}
+其中 $1/p+1/q=1$, $p\geq2$.
+附录的逆不等式和
+Corollary~\ref{cor:appendix-global-inverse-gradient} 的论证给出
+\[
+|\mu_h-\lambda_h|_{1,q,\Sigma_h}
+\leq C_1h^{-1}(\operatorname{meas}\Sigma_h)^{1/q-1/2}
+\|\mu_h-\lambda_h\|_{0,\Sigma_h}.
+\]
+一方面,
+\[
+\|\mu_h-\lambda_h\|_{0,\Sigma_h}
+\leq C_2\|\mu_h\|_{0,\Sigma_h},
+\]
+因为 $\mu_h-\lambda_h$ 在所有内部节点上为零,
+而在所有边界节点上等于 $\mu_h$.
+另一方面,
+\[
+\operatorname{meas}(\Sigma_h)
+\leq C_3h\operatorname{meas}(\Gamma).
+\]
+因此
+\[
+|\mu_h-\lambda_h|_{1,q,\Sigma_h}
+\leq C_4h^{-1/2-1/p}\|\mu_h\|_{0,\Omega}.
+\]
+代入 \eqref{eq:incompressible-further-holder-boundary}, 得
+\[
+|(\operatorname{curl}(\phi-\mathring P_h\phi),
+\operatorname{curl}\mu_h)|
+\leq C_4h^{-1/2-1/p}
+|\phi-\mathring P_h\phi|_{1,p,\Omega}
+\|\mu_h\|_{0,\Omega}.
+\]
+再应用投影估计
+\eqref{eq:appendix-ritz-projection-lp-error},
+即得到所需结论; 因 $p\geq2$, 它与 $k$ 的值无关.
+\end{Proof}
+
+\begin{Remark}\label{rem:incompressible-further-real-order-interpolation}
+记
+\[
+c(\phi,\mu_h)
+=(\operatorname{curl}(\phi-\mathring P_h\phi),
+\operatorname{curl}\mu_h),
+\quad
+\forall\phi\in W^{1,p}(\Omega),
+\quad\forall\mu_h\in\Theta_h,
+\]
+并以 $\langle\cdot,\cdot\rangle$ 表示关于 $L^2$ 范数的
+$\Theta_h$ 与其对偶 $\Theta_h'$ 之间的对偶配对. 则
+\[
+c(\phi,\mu_h)=\langle C_h(\phi),\mu_h\rangle,
+\]
+其中对所有整数 $k\in[1,l]$,
+\[
+C_h\in\mathcal L(W^{k+1,p}(\Omega)\cap H_0^1(\Omega);\Theta_h'),
+\qquad
+\|C_h\|\leq Ch^{k-1/2-1/p}.
+\]
+
+\MathBookSourcePage{239}
+因此在相邻的两个整数 $k$ 值之间插值,
+由 Theorem~\ref{thm:lions-peetre-interpolation} 可知,
+对所有实数 $k\in[1,l]$, 仍有
+$C_h\in\mathcal L(W^{k+1,p}(\Omega)\cap H_0^1(\Omega);\Theta_h')$.
+插值公式把
+\eqref{eq:incompressible-further-boundary-element-bound}
+推广到非整数 $k$:
+\begin{equation}\label{eq:incompressible-further-boundary-element-real-order}
+\sup_{\mu_h\in\Theta_h}
+\frac{|(\operatorname{curl}(\phi-\mathring P_h\phi),
+\operatorname{curl}\mu_h)|}{\|\mu_h\|_{0,\Omega}}
+\leq Ch^{k-1/2-1/p}\|\phi\|_{k+1,p,\Omega}
+\quad\forall\text{ real }k\in[1,l].
+\end{equation}
+\end{Remark}
+
+利用这两个 Lemma, 可改进 $\widetilde V_h$ 中的逼近结果.
+
+\begin{Lemma}\label{lem:incompressible-further-improved-kernel-approximation}
+假设 $\Omega$ 和 $\mathcal T_h$ 如
+Lemma~\ref{lem:incompressible-further-boundary-element-bound} 中所述.
+对每个实数 $k\in[1,l]$ 和实数 $p\in[2,\infty]$,
+存在与 $h$ 无关的常数 $C>0$, 使所有
+$\mathbf v=(\operatorname{curl}\phi,\theta=-\Delta\phi)
+\in\widetilde V$, 其中
+$\phi\in W^{k+1,p}(\Omega)\cap H_0^1(\Omega)$, 满足
+\begin{equation}\label{eq:incompressible-further-improved-kernel-approximation}
+\left\{
+\begin{aligned}
+\inf_{\mathbf w_h\in\widetilde V_h}|\mathbf v-\mathbf w_h|
+&\leq2\inf_{\theta_h\in\Theta_h}
+\|\theta-\theta_h\|_{0,\Omega}
++Ch^{k-1/2-1/p}\|\phi\|_{k+1,p,\Omega},\\
+\inf_{\mathbf w_h\in\widetilde V_h}
+\|\mathbf v-\mathbf w_h\|_{\widetilde X}
+&\leq2\left\{
+|\phi-\mathring P_h\phi|_{1,s,\Omega}
++\inf_{\theta_h\in\Theta_h}\|\theta-\theta_h\|_{0,\Omega}
+\right\}\\
+&\quad+Ch^{k-1/2-1/p}\|\phi\|_{k+1,p,\Omega}.
+\end{aligned}
+\right.
+\end{equation}
+当
+$\phi\in H^{l+3/2}(\Omega)\cap W^{l+1,\infty}(\Omega)$
+(当然 $\phi|_\Gamma=0$) 时, 最佳估计为
+\begin{equation}\label{eq:incompressible-further-best-kernel-approximation}
+\left\{
+\begin{aligned}
+\inf_{\mathbf w_h\in\widetilde V_h}|\mathbf v-\mathbf w_h|,\\
+\inf_{\mathbf w_h\in\widetilde V_h}
+\|\mathbf v-\mathbf w_h\|_{\widetilde X}
+\end{aligned}
+\right\}
+\leq Ch^{l-1/2}
+\left(\|\phi\|_{l+3/2,\Omega}
++\|\phi\|_{l+1,\infty,\Omega}\right).
+\end{equation}
+\end{Lemma}
+
+\begin{Proof}
+回顾
+\[
+\|(\operatorname{curl}\phi,\theta)\|_{\widetilde X}
+=|\phi|_{1,s,\Omega}+\|\theta\|_{0,\Omega}.
+\]
+不等式
+\eqref{eq:incompressible-further-improved-kernel-approximation}
+由 Lemma~\ref{lem:incompressible-further-kernel-bound},
+Lemma~\ref{lem:incompressible-further-boundary-element-bound}
+和 Remark~\ref{rem:incompressible-further-real-order-interpolation}
+直接得到.
+
+其次, 令
+$\phi\in H^{l+3/2}(\Omega)\cap W^{l+1,\infty}(\Omega)$.
+在 Lemma~\ref{lem:incompressible-further-boundary-element-bound}
+中取 $k=l$, $p=\infty$, 得
+\[
+\sup_{\mu_h\in\Theta_h}
+\frac{|(\operatorname{curl}(\phi-\mathring P_h\phi),
+\operatorname{curl}\mu_h)|}{\|\mu_h\|_{0,\Omega}}
+\leq C_1h^{l-1/2}\|\phi\|_{l+1,\infty,\Omega}.
+\]
+此外, 因
+$H^{l+3/2}(\Omega)\subset W^{l+1/2,s}(\Omega)$
+对所有 $s<\infty$ 成立, 应用
+\eqref{eq:appendix-ritz-projection-lp-error}, 得
+\[
+|\phi-\mathring P_h\phi|_{1,s,\Omega}
+\leq C_2h^{l-1/2}\|\phi\|_{l+1/2,s,\Omega}
+\leq C_3h^{l-1/2}\|\phi\|_{l+3/2,\Omega}.
+\]
+
+\MathBookSourcePage{240}
+最后, $\theta=-\Delta\phi\in H^{l-1/2}(\Omega)$,
+由附录投影估计 (当 $l\geq3$ 时也可用插值估计),
+\[
+\inf_{\theta_h\in\Theta_h}\|\theta-\theta_h\|_{0,\Omega}
+\leq C_4h^{l-1/2}\|\theta\|_{l-1/2,\Omega}
+\leq C_4h^{l-1/2}\|\phi\|_{l+3/2,\Omega}.
+\]
+因此 \eqref{eq:incompressible-further-best-kernel-approximation}
+由 \eqref{eq:incompressible-further-improved-kernel-approximation}
+和这三个不等式得到.
+\end{Proof}
+
+利用简单而经典的稠密性论证, 立即得到下列推论.
+
+\begin{Corollary}\label{cor:incompressible-further-kernel-density}
+在 Lemma~\ref{lem:incompressible-further-boundary-element-bound}
+的假设下, 对所有 $\mathbf v\in\widetilde V$, 有
+\[
+\lim_{h\to0}\inf_{\mathbf w_h\in\widetilde V_h}
+\|\mathbf v-\mathbf w_h\|_{\widetilde X}=0.
+\]
+\end{Corollary}
+
+此外, Lemma~\ref{lem:incompressible-further-improved-kernel-approximation}
+还蕴含 "流函数--涡量" 方法的若干误差估计.
+先考虑 Stokes 问题的解具有足够正则性的最简单情形.
+
+\begin{Theorem}\label{thm:incompressible-further-smooth-error}
+令 $\Omega$ 是有界凸多边形,
+$\mathcal T_h$ 是 $\overline\Omega$ 的一族一致正则剖分.
+假设 Stokes 问题 \eqref{eq:incompressible-sfvp-stokes}
+的解 $(\mathbf u=\operatorname{curl}\psi,p)$ 满足
+\[
+\psi\in H^{k+3/2}(\Omega)\cap W^{k+1,\infty}(\Omega),
+\qquad
+p\in H^{k-1/2}(\Omega)\cap L_0^2(\Omega),
+\]
+其中某个实数 $k\in[3/2,l]$.
+则问题 \eqref{eq:incompressible-sfvp-practical-problem}
+和 \eqref{eq:incompressible-sfvp-discrete-pressure}
+的解
+$(\mathbf u_h=(\operatorname{curl}\psi_h,\omega_h),p_h)$ 满足
+\begin{equation}\label{eq:incompressible-further-smooth-velocity-error}
+\|\mathbf u-\mathbf u_h\|_{\widetilde X}
+\leq C_1h^{k-1/2}
+\left(\|\psi\|_{k+3/2,\Omega}
++\|\psi\|_{k+1,\infty,\Omega}\right),
+\end{equation}
+以及
+\begin{equation}\label{eq:incompressible-further-smooth-pressure-error}
+\|p-p_h\|_{0,\Omega}
+\leq C_2h^{k-1/2}
+\left(|p|_{k-1/2,\Omega}
++\|\psi\|_{k+3/2,\Omega}
++\|\psi\|_{k+1,\infty,\Omega}\right).
+\end{equation}
+当 $1\leq k\leq\min(3/2,l)$ 且
+$\psi\in W^{k+1,\infty}(\Omega)$,
+$\Delta\psi,p\in H^1(\Omega)$ 时, 有
+\begin{equation}\label{eq:incompressible-further-low-regularity-velocity-error}
+\|\mathbf u-\mathbf u_h\|_{\widetilde X}
+\leq C_3\left(
+h|\Delta\psi|_{1,\Omega}
++h^{k-1/2}\|\psi\|_{k+1,\infty,\Omega}\right),
+\end{equation}
+以及
+\begin{equation}\label{eq:incompressible-further-low-regularity-pressure-error}
+\|p-p_h\|_{0,\Omega}
+\leq C_4\left(
+h|p|_{1,\Omega}+h|\Delta\psi|_{1,\Omega}
++h^{k-1/2}\|\psi\|_{k+1,\infty,\Omega}\right).
+\end{equation}
+\end{Theorem}
+
+\begin{Proof}
+由 \eqref{eq:incompressible-further-improved-kernel-approximation},
+Remark~\ref{rem:incompressible-sfvp-sharper-seminorm-error},
+Theorem~\ref{thm:incompressible-sfvp-velocity-vorticity-error}
+和 Theorem~\ref{thm:incompressible-sfvp-pressure-error}, 得
+\[
+|\mathbf u-\mathbf u_h|
+\leq C_1\left\{
+\|\omega-P_h\omega\|_{0,\Omega}
++h^{k-1/2}\|\psi\|_{k+1,\infty,\Omega}\right\},
+\]
+\[
+\|\mathbf u-\mathbf u_h\|_{\widetilde X}
+\leq C_2\left\{
+\|\omega-P_h\omega\|_{0,\Omega}
++|\psi-\mathring P_h\psi|_{1,s,\Omega}
++h^{k-1/2}\|\psi\|_{k+1,\infty,\Omega}\right\},
+\]
+以及
+\[
+\begin{split}
+\|p-p_h\|_{0,\Omega}
+\leq C_3\biggl\{&h\inf_{q_h\in Q_h}|p-q_h|_{1,\Omega}
++|\mathbf u-\mathbf u_h|\\
+&+\inf_{\theta_h\in\Theta_h}
+\left(\|\omega-\theta_h\|_{0,\Omega}
++h|\omega-\theta_h|_{1,\Omega}\right)\biggr\}.
+\end{split}
+\]
+应用附录投影估计, 按 $k$ 的取值分别得到
+\eqref{eq:incompressible-further-smooth-velocity-error},
+\eqref{eq:incompressible-further-smooth-pressure-error}
+或 \eqref{eq:incompressible-further-low-regularity-velocity-error},
+\eqref{eq:incompressible-further-low-regularity-pressure-error}.
+\end{Proof}
+
+\MathBookSourcePage{241}
+当 $l\geq2$ 且
+$\psi\in H^{l+3/2}(\Omega)\cap W^{l+1,\infty}(\Omega)$,
+$p\in H^{l-1/2}(\Omega)$ 时, 最佳估计为
+\[
+\|\mathbf u-\mathbf u_h\|_{\widetilde X}
+\leq Ch^{l-1/2}
+\left(\|\psi\|_{l+3/2,\Omega}
++\|\psi\|_{l+1,\infty,\Omega}\right),
+\]
+\[
+\|p-p_h\|_{0,\Omega}
+\leq Ch^{l-1/2}
+\left(|p|_{l-1/2,\Omega}
++\|\psi\|_{l+3/2,\Omega}
++\|\psi\|_{l+1,\infty,\Omega}\right).
+\]
+当 $l=1$, $\psi\in W^{2,\infty}(\Omega)$,
+$\Delta\psi,p\in H^1(\Omega)$ 时, 最佳估计为
+\[
+\|\mathbf u-\mathbf u_h\|_{\widetilde X}
+\leq Ch\left(|\Delta\psi|_{1,\Omega}
++h^{-1/2}\|\psi\|_{2,\infty,\Omega}\right),
+\]
+\[
+\|p-p_h\|_{0,\Omega}
+\leq Ch\left(|p|_{1,\Omega}+|\Delta\psi|_{1,\Omega}
++h^{-1/2}\|\psi\|_{2,\infty,\Omega}\right).
+\]
+
+\begin{Remark}\label{rem:incompressible-further-near-smooth-error}
+当 $\psi\in H^{k+2}(\Omega)$ 而不属于
+$W^{k+1,\infty}(\Omega)$ 时,
+Theorem~\ref{thm:incompressible-further-smooth-error} 的估计几乎仍成立.
+更精确地, 对这个 $k$ 和任意 $p\geq2$ 应用
+Lemma~\ref{lem:incompressible-further-boundary-element-bound},
+并使用 Sobolev Theorem~\ref{thm:sobolev-embedding},
+可把 \eqref{eq:incompressible-further-improved-kernel-approximation} 换成
+\[
+\inf_{\mathbf w_h\in\widetilde V_h}
+\|\mathbf v-\mathbf w_h\|_{\widetilde X}
+\leq C_ph^{k-1/2-1/p}\|\phi\|_{k+2,\Omega}
+\qquad\forall p\geq2.
+\]
+令 $p$ 趨于无穷, 可见对每个 $\varepsilon>0$,
+存在 $C(\varepsilon)>0$, 使
+\[
+\inf_{\mathbf w_h\in\widetilde V_h}
+\|\mathbf v-\mathbf w_h\|_{\widetilde X}
+\leq C(\varepsilon)h^{k-1/2-\varepsilon}
+\|\phi\|_{k+2,\Omega}.
+\]
+进而
+\[
+\|\mathbf u-\mathbf u_h\|_{\widetilde X}
+\leq C(\varepsilon)h^{k-1/2-\varepsilon}
+\|\psi\|_{k+2,\Omega},
+\]
+这里对 $k$ 或 $\Delta\psi$ 没有附加限制,
+因为此时 $\Delta\psi\in H^k(\Omega)$ 且 $k\geq1$.
+\end{Remark}
+
+同样, 标准稠密性论证证明 "流函数--涡量" 方法收敛.
+
+\begin{Corollary}\label{cor:incompressible-further-general-convergence}
+令 $\Omega$ 和 $\mathcal T_h$ 如
+Theorem~\ref{thm:incompressible-further-smooth-error} 中所述,
+且 Stokes 问题 \eqref{eq:incompressible-sfvp-stokes}
+的解 $(\mathbf u=\operatorname{curl}\psi,p)$
+属于 $H_0^1(\Omega)^2\times L_0^2(\Omega)$.
+则问题 \eqref{eq:incompressible-sfvp-practical-problem}
+和 \eqref{eq:incompressible-sfvp-discrete-pressure} 的解
+$(\mathbf u_h,p_h)$ 满足
+\[
+\lim_{h\to0}
+\left(\|\mathbf u-\mathbf u_h\|_{\widetilde X}
++\|p-p_h\|_{0,\Omega}\right)=0.
+\]
+\end{Corollary}
+
+在 Chapter~\ref{chap:navier-stokes-theory-approx} 研究 Navier--Stokes 方程时,
+会遇到正则性不超过 $L^r$ 的右端项 $\mathbf f$, $1<r\leq2$.
+由于假设 $\Omega$ 为凸域, 当右端项属于 $L^r(\Omega)^2$ 时,
+Stokes 问题的解 $(\psi,\omega,p)$ 属于
+$W^{3,r}(\Omega)\times W^{1,r}(\Omega)\times W^{1,r}(\Omega)$.
+此时不能直接用附录投影估计来计算
+$\|\omega-P_h\omega\|_{0,\Omega}$.
+下面证明相应的逼近结果.
+
+\begin{Lemma}\label{lem:incompressible-further-low-r-projection}
+保留 Theorem~\ref{thm:incompressible-further-smooth-error}
+关于 $\Omega$ 和 $\mathcal T_h$ 的假设.
+令 $1<q\leq2$ 且 $1/p+1/q=1$.
+则存在与 $h$ 无关的常数 $C>0$, 使
+\begin{equation}\label{eq:incompressible-further-low-r-projection}
+\|v-P_hv\|_{0,\Omega}
+\leq Ch^{2/p}|\ln h|^\beta|v|_{1,q,\Omega}
+\qquad\forall v\in W^{1,q}(\Omega),
+\end{equation}
+其中当 $l\geq2$ 时 $\beta=0$,
+当 $l=1$ 时 $\beta=1-2/p$.
+\end{Lemma}
+
+\MathBookSourcePage{242}
+\begin{Proof}
+令 $R_h\in\mathcal L(H^1(\Omega);\Theta_h)$
+为附录定义的局部正则化算子, 并写成
+\[
+\|v-P_hv\|_{0,\Omega}
+\leq\|v-R_hv\|_{0,\Omega}
++\|R_hv-P_hv\|_{0,\Omega}.
+\]
+由于 $R_hv-P_hv\in\Theta_h$,
+Lemma~\ref{lem:appendix-global-inverse-same-order} 蕴含
+\[
+\|R_hv-P_hv\|_{0,\Omega}
+\leq Ch^{1-2/q}\|R_hv-P_hv\|_{0,q,\Omega}.
+\]
+因此
+\[
+\begin{split}
+\|v-P_hv\|_{0,\Omega}
+\leq{}&\|v-R_hv\|_{0,\Omega}\\
+&+Ch^{1-2/q}
+\left(\|v-R_hv\|_{0,q,\Omega}
++\|v-P_hv\|_{0,q,\Omega}\right).
+\end{split}
+\]
+故 \eqref{eq:incompressible-further-low-r-projection}
+是附录局部正则化误差、Jensen 不等式
+\eqref{eq:appendix-discrete-jensen}
+和投影估计的直接推论; 当 $q<2$ 时带有一个对数因子.
+\end{Proof}
+
+该 Lemma 使我们能够推广
+Theorem~\ref{thm:incompressible-further-smooth-error}.
+
+\begin{Theorem}\label{thm:incompressible-further-w3alpha-error}
+令 $\Omega$ 和 $\mathcal T_h$ 如
+Theorem~\ref{thm:incompressible-further-smooth-error} 中所述,
+并假设流函数 $\psi\in W^{3,\alpha}(\Omega)$,
+压力 $p\in W^{1,\alpha}(\Omega)$, 其中 $\alpha\in[r,2)$.
+令 $\beta$ 满足 $1/\alpha+1/\beta=1$.
+则
+\begin{equation}\label{eq:incompressible-further-w3alpha-velocity-error}
+\|\mathbf u-\mathbf u_h\|_{\widetilde X}
+\leq C_1
+\begin{cases}
+h^{2/\beta}\|\psi\|_{3,\alpha,\Omega},&l\geq2,\\
+h^{1/\beta}\|\psi\|_{3,\alpha,\Omega},&l=1,
+\end{cases}
+\end{equation}
+并且
+\begin{equation}\label{eq:incompressible-further-w3alpha-pressure-error}
+\|p-p_h\|_{0,\Omega}
+\leq C_2(\|\psi\|_{3,\alpha,\Omega}+|p|_{1,\alpha,\Omega})
+\begin{cases}
+h^{2/\beta},&l\geq2,\\
+h^{1/\beta},&l=1,
+\end{cases}
+\end{equation}
+其中 $C_1,C_2$ 与 $h$, $\psi$, $p$ 无关.
+\end{Theorem}
+
+\begin{Proof}
+当 $l\geq2$ 时, 可应用 Subsection~\ref{subsec:incompressible-sfvp-mesh-dependent}
+的结果. Lemma~\ref{lem:incompressible-sfvp-mesh-zero-approximation}
+和 Lemma~\ref{lem:incompressible-sfvp-mesh-two-approximation}
+的论证可直接推广为
+\[
+\inf_{\theta_h\in\Theta_h}\|\omega-\theta_h\|_{0,h}
+\leq C_1h^{2/\beta}|\omega|_{1,\alpha,\Omega},
+\qquad l\geq1,
+\]
+以及
+\[
+\inf_{\phi_h\in\Phi_h}\|\psi-\phi_h\|_{2,h}
+\leq C_2h^{2/\beta}|\psi|_{3,\alpha,\Omega},
+\qquad l\geq2.
+\]
+注意 $W^{3,\alpha}(\Omega)\subset H^2(\Omega)$.
+代入 \eqref{eq:incompressible-sfvp-mesh-abstract-errors},
+得到比 \eqref{eq:incompressible-further-w3alpha-velocity-error}
+略尖锐的估计
+\begin{equation}\label{eq:incompressible-further-mesh-w3alpha-error}
+\|\omega-\omega_h\|_{0,h}
++\|\psi-\psi_h\|_{2,h}
+\leq C_3h^{2/\beta}|\psi|_{3,\alpha,\Omega},
+\qquad l\geq2.
+\end{equation}
+而 \eqref{eq:incompressible-sfvp-pressure-error}
+和 \eqref{eq:incompressible-further-w3alpha-velocity-error}
+立即给出 \eqref{eq:incompressible-further-w3alpha-pressure-error}.
+
+当 $l=1$ 时, 必须使用
+\eqref{eq:incompressible-sfvp-quasioptimal-error}
+和 \eqref{eq:incompressible-further-improved-kernel-approximation}:
+\begin{equation}\label{eq:incompressible-further-linear-element-bound}
+\begin{split}
+\|\mathbf u-\mathbf u_h\|_{\widetilde X}
+\leq C_4\bigl\{&\|\omega-P_h\omega\|_{0,\Omega}
++|\psi-\mathring P_h\psi|_{1,s,\Omega}\\
+&+h^{k-1/2-1/p}\|\psi\|_{k+1,p,\Omega}\bigr\}.
+\end{split}
+\end{equation}
+
+\MathBookSourcePage{243}
+一方面, Sobolev Theorem~\ref{thm:sobolev-embedding}
+蕴含 $W^{3,\alpha}(\Omega)\subset W^{2,p}(\Omega)$,
+其中 $1/p=1/\alpha-1/2>0$.
+因此在 \eqref{eq:incompressible-further-linear-element-bound}
+最后一项中取此 $p$ 和 $k=1$, 有
+\[
+h^{1/2-1/p}\|\psi\|_{2,p,\Omega}
+\leq C_5h^{1/\beta}\|\psi\|_{3,\alpha,\Omega}.
+\]
+另一方面, 再次应用该 Theorem 可得
+$W^{3,\alpha}(\Omega)\subset W^{1+2/\beta,p}(\Omega)$
+对所有 $p>0$ 成立. 因此投影估计特别给出
+\[
+|\psi-\mathring P_h\psi|_{1,s,\Omega}
+\leq C_6h^{2/\beta}\|\psi\|_{3,\alpha,\Omega}.
+\]
+最后, Lemma~\ref{lem:incompressible-further-low-r-projection} 给出
+\[
+\|\omega-P_h\omega\|_{0,\Omega}
+\leq C_7h^{2/\beta}|\ln h|^{1-2/\beta}
+|\omega|_{1,\alpha,\Omega}.
+\]
+所以 \eqref{eq:incompressible-further-linear-element-bound}
+中的主导幂为 $h^{1/\beta}$,
+这证明 \eqref{eq:incompressible-further-w3alpha-velocity-error}.
+再由 \eqref{eq:incompressible-sfvp-pressure-error}
+得到 \eqref{eq:incompressible-further-w3alpha-pressure-error}.
+\end{Proof}
+
+\begin{Remark}\label{rem:incompressible-further-alpha-two}
+当 $\alpha=2$ 时,
+Theorem~\ref{thm:incompressible-further-w3alpha-error}
+的结论对 $l=2$ 仍成立, 但因
+\eqref{eq:incompressible-further-linear-element-bound}
+的最后一项, 对 $l=1$ 不成立.
+与 Remark~\ref{rem:incompressible-further-near-smooth-error} 类似,
+此时得到
+\[
+\left.
+\begin{aligned}
+\|\mathbf u-\mathbf u_h\|_{\widetilde X},\\
+\|p-p_h\|_{0,\Omega}
+\end{aligned}
+\right\}
+\leq C(\varepsilon)h^{1/2-\varepsilon}
+\begin{cases}
+\|\psi\|_{3,\Omega},\\
+|p|_{1,\Omega}+\|\psi\|_{3,\Omega},
+\end{cases}
+\qquad\forall\varepsilon>0.
+\]
+\end{Remark}
+
+最后, 利用熟悉的对偶论证, 下一个 Theorem
+补充 Theorem~\ref{thm:incompressible-sfvp-mesh-h1-error},
+并在 $l=1$ 时为 $|\psi-\psi_h|_{1,\Omega}$
+建立几乎最优的上界.
+
+\begin{Theorem}\label{thm:incompressible-further-h1-error}
+令 $\Omega$ 和 $\mathcal T_h$ 如
+Theorem~\ref{thm:incompressible-further-smooth-error} 中所述.
+假设 Stokes 问题 \eqref{eq:incompressible-sfvp-stokes}
+的解 $\mathbf u=\operatorname{curl}\psi$ 满足
+\[
+\psi\in H^{k+1}(\Omega),\quad 2\leq k\leq l,
+\qquad\text{或}\qquad
+\psi\in H^3(\Omega),\quad l=1.
+\]
+则问题 \eqref{eq:incompressible-sfvp-practical-problem}
+的解 $\mathbf u_h=(\operatorname{curl}\psi_h,\omega_h)$ 满足
+\begin{equation}\label{eq:incompressible-further-h1-error}
+|\psi-\psi_h|_{1,\Omega}
+\leq
+\begin{cases}
+Ch^k|\psi|_{k+1,\Omega},&2\leq k\leq l,\\
+C(\varepsilon)h^{1-\varepsilon}\|\psi\|_{3,\Omega},&l=1,
+\end{cases}
+\end{equation}
+其中 $\varepsilon>0$ 任意.
+\end{Theorem}
+
+\begin{Proof}
+当 $l\geq2$ 时,
+\eqref{eq:incompressible-further-h1-error}
+已由 Theorem~\ref{thm:incompressible-sfvp-mesh-h1-error} 证明.
+当 $l=1$ 时, 使用非常相似的对偶论证.
+对每个 $\mathbf g\in L^2(\Omega)^2$, 辅助 Stokes 问题
+\[
+(\operatorname{curl}\lambda_g,\operatorname{curl}\chi)
+=(\mathbf g,\operatorname{curl}\chi)
+\qquad\forall\chi\in H_0^1(\Omega),
+\]
+\[
+(\operatorname{curl}\phi_g,\operatorname{curl}\mu)
+=(\lambda_g,\mu)
+\qquad\forall\mu\in H^1(\Omega)
+\]
+有唯一解 $\lambda_g\in H^1(\Omega)$,
+$\phi_g\in H^3(\Omega)\cap H_0^1(\Omega)$, 且
+\begin{equation}\label{eq:incompressible-further-dual-regularity}
+\|\phi_g\|_{3,\Omega}+\|\lambda_g\|_{1,\Omega}
+\leq C_1\|\mathbf g\|_{0,\Omega}.
+\end{equation}
+
+\MathBookSourcePage{244}
+此外, 有恒等式
+\[
+\begin{split}
+(\mathbf g,\operatorname{curl}(\psi-\psi_h))
+={}&(\operatorname{curl}(\lambda_g-\lambda_h),
+\operatorname{curl}(\psi-\psi_h))\\
+&+(\omega-\omega_h,\lambda_h-\lambda_g)\\
+&+(\operatorname{curl}(\phi_g-\phi_h),
+\operatorname{curl}(\omega-\omega_h))
+\end{split}
+\]
+对所有 $\lambda_h\in\Theta_h$, $\phi_h\in\Phi_h$ 成立.
+在前两项中可取 $\lambda_h=P_h\lambda_g$, 得
+\[
+(\operatorname{curl}(\lambda_g-P_h\lambda_g),
+\operatorname{curl}(\psi-\chi_h))
++(\omega-\omega_h,P_h\lambda_g-\lambda_g)
+\qquad\forall\chi_h\in\Phi_h.
+\]
+另一方面, 第三项可分成
+\[
+\begin{split}
+(\operatorname{curl}(\phi_g-\phi_h),
+\operatorname{curl}(\omega-\omega_h))
+={}&(\operatorname{curl}(\phi_g-\phi_h),
+\operatorname{curl}(\omega-P_h\omega))\\
+&+(\operatorname{curl}(\phi_g-\phi_h),
+\operatorname{curl}(P_h\omega-\omega_h)).
+\end{split}
+\]
+但
+\[
+(\operatorname{curl}\phi_g,
+\operatorname{curl}(P_h\omega-\omega_h))
+=(\lambda_g,P_h\omega-\omega_h),
+\]
+且由 \eqref{eq:incompressible-sfvp-vorticity-orthogonality}
+和 \eqref{eq:incompressible-sfvp-projected-orthogonality}, 有
+\[
+(P_h\omega-\omega_h,\theta_h)=0
+\quad\forall(\operatorname{curl}\sigma_h,\theta_h)
+\in\widetilde V_h,
+\]
+\[
+(\operatorname{curl}(P_h\omega-\omega_h),
+\operatorname{curl}\phi_h)=0
+\qquad\forall\phi_h\in\Phi_h.
+\]
+汇总这些等式, 得
+\begin{equation}\label{eq:incompressible-further-duality-identity}
+\begin{split}
+(\mathbf g,\operatorname{curl}(\psi-\psi_h))
+={}&(\operatorname{curl}(\lambda_g-P_h\lambda_g),
+\operatorname{curl}(\psi-\chi_h))\\
+&+(\omega-\omega_h,P_h\lambda_g-\lambda_g)\\
+&+(\operatorname{curl}(\phi_g-\phi_h),
+\operatorname{curl}(\omega-P_h\omega))\\
+&+(\lambda_g-\theta_h,P_h\omega-\omega_h)
+\end{split}
+\end{equation}
+对所有 $\chi_h,\phi_h\in\Phi_h$
+和所有 $(\operatorname{curl}\sigma_h,\theta_h)\in\widetilde V_h$ 成立.
+由于 $\phi_g$ 和 $\psi$ 至少属于 $H^2(\Omega)$, 取
+$\chi_h=I_h\psi$, $\phi_h=I_h\phi_g$.
+则
+\[
+|(\operatorname{curl}(\lambda_g-P_h\lambda_g),
+\operatorname{curl}(\psi-I_h\psi))|
+\leq C_2h|\lambda_g|_{1,\Omega}|\psi|_{2,\Omega},
+\]
+\[
+|(\omega-\omega_h,P_h\lambda_g-\lambda_g)|
+\leq C_3h|\omega|_{1,\Omega}|\lambda_g|_{1,\Omega},
+\]
+\[
+|(\operatorname{curl}(\phi_g-I_h\phi_g),
+\operatorname{curl}(\omega-P_h\omega))|
+\leq C_4h|\phi_g|_{2,\Omega}|\omega|_{1,\Omega}.
+\]
+又由 Remark~\ref{rem:incompressible-further-near-smooth-error},
+\[
+\inf_{(\operatorname{curl}\sigma_h,\theta_h)\in\widetilde V_h}
+\|\lambda_g-\theta_h\|_{0,\Omega}
+\leq C_5(\varepsilon)h^{1/2-\varepsilon}|\phi_g|_{3,\Omega},
+\]
+而类似地由 Remark~\ref{rem:incompressible-further-alpha-two},
+\[
+\|P_h\omega-\omega_h\|_{0,\Omega}
+\leq C_6(\varepsilon)h^{1/2-\varepsilon}|\omega|_{1,\Omega}
+\qquad\forall\varepsilon>0.
+\]
+把这些估计代入
+\eqref{eq:incompressible-further-duality-identity},
+再应用 \eqref{eq:incompressible-further-dual-regularity},
+即得到 \eqref{eq:incompressible-further-h1-error}.
+\end{Proof}

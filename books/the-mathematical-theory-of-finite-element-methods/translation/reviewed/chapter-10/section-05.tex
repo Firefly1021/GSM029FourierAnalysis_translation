@@ -1,0 +1,356 @@
+\MathBookSourcePage{299}
+\subsection{间断有限元}
+\label{sec:ch10-discontinuous}
+\setcounter{thmcount}{0}
+\setcounter{equation}{0}
+
+在有界多边形区域 $\Omega\subset\mathbb R^2$ 和 $f\in L^2(\Omega)$ 的条件下考虑问题~\eqref{eq:ch10-dirichlet-model}. 使用间断有限元构成最彻底的变分罪行. 这种有限元可以定义在允许悬挂节点的区域分割族 $\mathcal P^h$ 上(见图~\ref{fig:ch10-hanging-node-partition}). 更准确地说, 对每个 $h$, 分割 $\mathcal P^h$ 由开三角形组成, 满足
+\[
+\MathBookFormulaID{formula-ch10-partition-definition}
+\overline\Omega=\bigcup_{T\in\mathcal P^h}\overline T,
+\qquad T_i\cap T_j=\varnothing
+\quad\text{若 }T_i,T_j\in\mathcal P^h,\ T_i\ne T_j.
+\]
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=.34\linewidth]{chapter-10-fig-10-4.png}
+\caption{带悬挂节点的分割}
+\label{fig:ch10-hanging-node-partition}
+\end{figure}
+
+$\mathcal P^h$ 中三角形的顶点集记为 $\mathcal V^h$, $\mathcal E^h$ 表示 $\mathcal P^h$ 中三角形边界上端点属于 $\mathcal V^h$ 的开线段集合. 我们把 $\mathcal E^h$ 中的线段称为 $\mathcal P^h$ 的边. 例如, 图~\ref{fig:ch10-hanging-node-partition} 中的正方形分割有 17 条边. 对 $e\in\mathcal E^h$, 记 $\mathcal P_e$ 为 $\mathcal P^h$ 中边界含有 $e$ 的三角形集合. 若 $e\subset\Omega$, 则 $\mathcal P_e$ 有两个元素; 若 $e\subset\partial\Omega$, 则只有一个元素.
+
+\MBSourceItem{1}
+\begin{Definition}
+\label{def:ch10-regular-partitions}
+若存在与 $h$ 无关的正常数 $\theta_*$ 和 $\varrho$, 使得:
+
+(i) 若 $T\in\mathcal P^h$, 则 $T$ 的各个角都大于等于 $\theta_*$;
+
+(ii) 若 $e\in\mathcal E^h$ 且 $T\in\mathcal P_e$, 则 $|\partial T|/|e|\leq\varrho$,
+
+则称分割族非退化(或正则). 这里 $|\partial T|$(相应地 $|e|$)表示 $\partial T$(相应地 $e$)的长度.
+\end{Definition}
+
+粗略地说, $\mathcal P^h$ 非退化当且仅当其中三角形的粗壮度参数(参见定义~\MBUnresolvedReference{def:ch04-source-4-2-16}{4.2.16})一致有界, 且悬挂节点在三角形边界上以拟一致方式分布. 习题~\ref{exr:ch10-29} 给出等价条件. 本节始终假设 $\mathcal P^h$ 非退化, 并频繁使用常数 $\theta_*$ 和 $\varrho$.
+
+间断 $\mathcal P_1$ 有限元空间定义为
+\MBSourceItem{2}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-discontinuous-p1-space}
+\label{eq:ch10-discontinuous-p1-space}
+V_h=\{v\in L^2(\Omega):v_T:=v|_T\in\mathcal P_1(T)
+\quad\forall T\in\mathcal P^h\}.
+\end{equation}
+
+\MathBookSourcePage{300}
+考虑两个基于 $V_h$ 的问题~\eqref{eq:ch10-dirichlet-model} 的内部罚方法. 设 $u$ 是问题~\eqref{eq:ch10-dirichlet-model} 的解, $v\in V_h$, $T\in\mathcal P^h$. 为简单起见, 假设 $\Omega$ 凸, 因而 $u\in H^2(\Omega)$, 且 Green 公式
+\MBSourceItem{3}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-element-green-formula}
+\label{eq:ch10-element-green-formula}
+\int_T\nabla u\cdot\nabla v\,dx
+=\int_Tfv\,dx+\int_{\partial T}\nabla u\cdot(vn)\,ds
+\end{equation}
+显然成立, 其中 $n$ 是 $\partial T$ 上的单位外法向量. 实际上, 不需要凸性假设也能证明式~\eqref{eq:ch10-element-green-formula}(见习题~\ref{exr:ch10-30}). 对所有三角形求和, 得
+\MBSourceItem{4}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-partition-green-sum}
+\label{eq:ch10-partition-green-sum}
+\sum_{T\in\mathcal P^h}\int_T\nabla u\cdot\nabla v\,dx
+=\int_\Omega fv\,dx+\sum_{e\in\mathcal E^h}\int_e\nabla u\cdot[\![v]\!]\,ds,
+\end{equation}
+其中跳跃 $[\![v]\!]$ 如第~\ref{sec:ch10-nonconforming} 节所定义. 因为 $[\![u]\!]=0$, 且 $\nabla u$ 在 $\mathcal P^h$ 的边上有良定义的迹, 可将式~\eqref{eq:ch10-partition-green-sum} 改写为
+\MBSourceItem{5}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-interior-penalty-consistency}
+\label{eq:ch10-interior-penalty-consistency}
+\sum_{T\in\mathcal P^h}\int_T\nabla u\cdot\nabla v\,dx
+-\sum_{e\in\mathcal E^h}\int_e\{\!\{\nabla u\}\!\}\cdot[\![v]\!]\,ds
+\mathbin{\pm}\sum_{e\in\mathcal E^h}\int_e\{\!\{\nabla v\}\!\}\cdot[\![u]\!]\,ds
+=\int_\Omega fv\,dx.
+\end{equation}
+在内部边 $e=T_1\cap T_2$ 上,
+\[
+\MathBookFormulaID{formula-ch10-gradient-average-interior}
+\{\!\{\nabla u\}\!\}=\tfrac12\bigl(\nabla(u|_{T_1})+\nabla(u|_{T_2})\bigr),
+\]
+在边界边上则令 $\{\!\{\nabla u\}\!\}=\nabla u$. 对任意正常数(罚参数)$\eta$, 还可在式~\eqref{eq:ch10-interior-penalty-consistency} 中加入为零的项 $\sum_{e\in\mathcal E^h}\eta|e|^{-1}\int_e[\![u]\!]\cdot[\![v]\!]\,ds$, 得到
+\MBSourceItem{6}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-interior-penalty-continuous-identity}
+\label{eq:ch10-interior-penalty-continuous-identity}
+a_h^\pm(u,v)=\int_\Omega fv\,dx\qquad\forall v\in V_h,
+\end{equation}
+其中网格依赖双线性形式定义为
+\MathBookSourcePage{301}
+\MBSourceItem{7}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-interior-penalty-bilinear-forms}
+\label{eq:ch10-interior-penalty-bilinear-forms}
+\begin{split}
+a_h^\pm(w,v)
+&=\sum_{T\in\mathcal P^h}\int_T\nabla w\cdot\nabla v\,dx
+-\sum_{e\in\mathcal E^h}\int_e\{\!\{\nabla w\}\!\}\cdot[\![v]\!]\,ds\\
+&\quad\mathbin{\pm}\sum_{e\in\mathcal E^h}\int_e
+\{\!\{\nabla v\}\!\}\cdot[\![w]\!]\,ds
++\sum_{e\in\mathcal E^h}\frac\eta{|e|}\int_e[\![w]\!]\cdot[\![v]\!]\,ds.
+\end{split}
+\end{equation}
+
+现在定义内部罚方法: 在 $V_h$ 中求 $u_h^\pm$, 使得
+\MBSourceItem{8}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-interior-penalty-discrete-problems}
+\label{eq:ch10-interior-penalty-discrete-problems}
+a_h^\pm(u_h^\pm,v)=\int_\Omega fv\,dx
+\qquad\forall v\in V_h.
+\end{equation}
+
+\MBSourceItem{9}
+\begin{Remark}
+\label{rem:ch10-interior-penalty-history}
+对称内部罚方法(对应负号)最早由 Wheeler (1978) 和 Arnold (1982) 研究. 非对称内部罚方法(对应正号)由 Rivière, Wheeler and Girault (2001) 引入. $\eta=0$ 的非对称方法更早由 Baumann and Oden 引入, 并由 Oden, Babuška and Baumann (1998) 分析.
+\end{Remark}
+
+由式~\eqref{eq:ch10-interior-penalty-continuous-identity}, 式~\eqref{eq:ch10-interior-penalty-discrete-problems} 定义的内部罚方法是一致的. 因而这些方法的收敛性取决于稳定性, 即 $a_h^\pm(\cdot,\cdot)$ 的有界性和强制性. 定义网格依赖能量范数
+\MBSourceItem{10}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-ip-energy-norm}
+\label{eq:ch10-ip-energy-norm}
+\|v\|_h^2
+=\sum_{T\in\mathcal P^h}\|\nabla v\|_{L^2(T)}^2
++\eta^{-1}\sum_{e\in\mathcal E^h}|e|\|\{\!\{\nabla v\}\!\}\|_{L^2(e)}^2
++2\eta\sum_{e\in\mathcal E^h}|e|^{-1}\|[\![v]\!]\|_{L^2(e)}^2.
+\end{equation}
+为使记号简单, 省略其对 $\eta$ 的依赖. 由 Cauchy--Schwarz 不等式(参见习题~\ref{exr:ch10-32}),
+\MBSourceItem{11}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-ip-boundedness}
+\label{eq:ch10-ip-boundedness}
+|a_h^\pm(w,v)|\leq\|w\|_h\|v\|_h
+\qquad\forall v,w\in\mathring H^1(\Omega)+V_h.
+\end{equation}
+为了证明 $a_h^\pm$ 在 $V_h$ 上强制, 再定义网格依赖能量范数
+\MBSourceItem{12}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-ip-triple-norm}
+\label{eq:ch10-ip-triple-norm}
+|||v|||_h^2
+=\sum_{T\in\mathcal P^h}\|\nabla v\|_{L^2(T)}^2
++\eta\sum_{e\in\mathcal E^h}|e|^{-1}\|[\![v]\!]\|_{L^2(e)}^2.
+\end{equation}
+直接由式~\eqref{eq:ch10-interior-penalty-bilinear-forms},
+\MBSourceItem{13}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-nonsymmetric-coercivity-identity}
+\label{eq:ch10-nonsymmetric-coercivity-identity}
+a_h^+(v,v)=|||v|||_h^2\qquad\forall v\in V_h.
+\end{equation}
+
+\MathBookSourcePage{302}
+因此 $a_h^+$ 关于 $|||\cdot|||_h$ 强制, 特别地, 离散问题有唯一解. 由式~\eqref{eq:ch10-ip-boundedness} 和~\eqref{eq:ch10-nonsymmetric-coercivity-identity}, 可通过联系 $\|\cdot\|_h$ 和 $|||\cdot|||_h$ 建立非对称内部罚方法的稳定性. 显然,
+\MBSourceItem{14}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-ip-norm-one-direction}
+\label{eq:ch10-ip-norm-one-direction}
+|||v|||_h\leq\|v\|_h
+\qquad\forall v\in\mathring H^1(\Omega)+V_h.
+\end{equation}
+
+\MBSourceItem{15}
+\begin{Lemma}
+\label{lem:ch10-ip-norm-equivalence}
+存在只依赖于定义~\ref{def:ch10-regular-partitions} 中 $\theta_*$ 和 $\varrho$ 的正常数 $C$, 使得
+\MBSourceItem{16}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-ip-norm-equivalence}
+\label{eq:ch10-ip-norm-equivalence}
+\|v\|_h\leq C(1+\eta^{-1})|||v|||_h
+\qquad\forall v\in V_h.
+\end{equation}
+\end{Lemma}
+
+\begin{Proof}
+任取 $v\in V_h$. 因为 $\nabla v$ 是分片常向量, 由平均算子的定义,
+\MBSourceItem{17}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-gradient-average-bound}
+\label{eq:ch10-gradient-average-bound}
+\sum_{e\in\mathcal E^h}|e|\|\{\!\{\nabla v\}\!\}\|_{L^2(e)}^2
+\leq C\sum_{T\in\mathcal P^h}\|\nabla v\|_{L^2(T)}^2,
+\end{equation}
+其中 $C$ 是只依赖 $\theta_*$ 和 $\varrho$ 的一般正常数. 这里还用了定义~\ref{def:ch10-regular-partitions} 的条件 (ii), 它保证 $\mathcal P^h$ 中落在任一三角形边界上的边数一致有界. 由式~\eqref{eq:ch10-ip-energy-norm}、\eqref{eq:ch10-ip-triple-norm} 和~\eqref{eq:ch10-gradient-average-bound} 即得结论.
+\end{Proof}
+
+现在可证明非对称内部罚方法的抽象误差估计.
+
+\MBSourceItem{18}
+\begin{Lemma}
+\label{lem:ch10-nonsymmetric-ip-quasioptimal}
+设 $u$ 是问题~\eqref{eq:ch10-dirichlet-model} 的解, $u_h^+\in V_h$ 满足式~\eqref{eq:ch10-interior-penalty-discrete-problems}. 则存在只依赖于定义~\ref{def:ch10-regular-partitions} 中 $\theta_*$ 和 $\varrho$ 的正常数 $C$, 使得
+\[
+\MathBookFormulaID{formula-ch10-nonsymmetric-ip-quasioptimal}
+\|u-u_h^+\|_h\leq C(1+\eta^{-1})^2\inf_{v\in V_h}\|u-v\|_h.
+\]
+\end{Lemma}
+
+\begin{Proof}
+任取 $v\in V_h$. 由三角不等式、式~\eqref{eq:ch10-ip-norm-equivalence}、\eqref{eq:ch10-nonsymmetric-coercivity-identity}、\eqref{eq:ch10-interior-penalty-continuous-identity}、\eqref{eq:ch10-interior-penalty-discrete-problems}、\eqref{eq:ch10-ip-boundedness} 和再次使用式~\eqref{eq:ch10-ip-norm-equivalence},
+\begin{align*}
+\MathBookFormulaID{formula-ch10-nonsymmetric-ip-quasioptimal-proof}
+\|u-u_h^+\|_h
+&\leq\|u-v\|_h+C(1+\eta^{-1})|||u_h^+-v|||_h\\
+&\leq\|u-v\|_h+C(1+\eta^{-1})
+\sup_{w\in V_h\setminus\{0\}}\frac{|a_h^+(u-v,w)|}{|||w|||_h}\\
+&\leq C(1+\eta^{-1})^2\|u-v\|_h.
+\end{align*}
+对 $v$ 取下确界即得结论.
+\end{Proof}
+
+\MathBookSourcePage{303}
+下述引理说明, 只要罚参数 $\eta$ 充分大, 对称内部罚方法也关于 $|||\cdot|||_h$ 强制.
+
+\MBSourceItem{19}
+\begin{Lemma}
+\label{lem:ch10-symmetric-ip-coercivity}
+存在只依赖于定义~\ref{def:ch10-regular-partitions} 中 $\theta_*$ 和 $\varrho$ 的正常数 $\eta_*$, 使得
+\MBSourceItem{20}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-symmetric-ip-coercivity}
+\label{eq:ch10-symmetric-ip-coercivity}
+a_h^-(v,v)\geq\frac12|||v|||_h^2
+\qquad\forall v\in V_h,\quad\eta\geq\eta_*.
+\end{equation}
+\end{Lemma}
+
+\begin{Proof}
+任取 $v\in V_h$. 由式~\eqref{eq:ch10-gradient-average-bound} 和 Cauchy--Schwarz 不等式, 对任意 $\epsilon>0$,
+\begin{align*}
+\MathBookFormulaID{formula-ch10-symmetric-ip-cross-term}
+\sum_{e\in\mathcal E^h}\int_e\{\!\{\nabla v\}\!\}\cdot[\![v]\!]\,ds
+&\leq C_*\left(\sum_T\|\nabla v\|_{L^2(T)}^2\right)^{1/2}
+\left(\sum_e|e|^{-1}\|[\![v]\!]\|_{L^2(e)}^2\right)^{1/2}\\
+&\leq\frac{\epsilon C_*}{2}\sum_T\|\nabla v\|_{L^2(T)}^2
++\frac1{2\epsilon}\sum_e|e|^{-1}\|[\![v]\!]\|_{L^2(e)}^2,
+\end{align*}
+其中 $C_*$ 只依赖 $\theta_*$ 和 $\varrho$. 由式~\eqref{eq:ch10-interior-penalty-bilinear-forms},
+\[
+\MathBookFormulaID{formula-ch10-symmetric-ip-coercivity-proof}
+a_h^-(v,v)\geq(1-\epsilon C_*)\sum_T\|\nabla v\|_{L^2(T)}^2
++(\eta-\epsilon^{-1})\sum_e|e|^{-1}\|[\![v]\!]\|_{L^2(e)}^2.
+\]
+取 $\epsilon=1/(2C_*)$, $\eta_*=2^{-1}+\epsilon^{-1}$, 即得式~\eqref{eq:ch10-symmetric-ip-coercivity}.
+\end{Proof}
+
+特别地, 当 $\eta\geq\eta_*$ 时, 对称内部罚方法的离散问题有唯一解. 利用式~\eqref{eq:ch10-ip-boundedness}、\eqref{eq:ch10-symmetric-ip-coercivity} 和引理~\ref{lem:ch10-nonsymmetric-ip-quasioptimal} 证明中的类似论证, 得到:
+
+\MathBookSourcePage{304}
+\MBSourceItem{21}
+\begin{Lemma}
+\label{lem:ch10-symmetric-ip-quasioptimal}
+设 $u$ 是问题~\eqref{eq:ch10-dirichlet-model} 的解, $\eta\geq\eta_*$, 且 $u_h^-\in V_h$ 满足式~\eqref{eq:ch10-interior-penalty-discrete-problems}. 则存在只依赖于定义~\ref{def:ch10-regular-partitions} 中 $\theta_*$ 和 $\varrho$ 的正常数 $C$, 使得
+\[
+\MathBookFormulaID{formula-ch10-symmetric-ip-quasioptimal}
+\|u-u_h^-\|_h\leq C(1+\eta^{-1})^2\inf_{v\in V_h}\|u-v\|_h.
+\]
+\end{Lemma}
+
+设 $e\in\mathcal E^h$. 由带尺度变换的迹定理、定义~\ref{def:ch10-regular-partitions} 的条件 (i) 和 (ii), 以及平均和跳跃算子的定义,
+\[
+\MathBookFormulaID{formula-ch10-ip-local-average-bound}
+|e|\|\{\!\{\nabla(u-v)\}\!\}\|_{L^2(e)}^2
+\leq C\sum_{T\in\mathcal P_e}\bigl(|u-v|_{H^1(T)}^2+h_T^2|u|_{H^2(T)}^2\bigr),
+\]
+\[
+\MathBookFormulaID{formula-ch10-ip-local-jump-bound}
+|e|^{-1}\|[\![u-v]\!]\|_{L^2(e)}^2
+\leq C\sum_{T\in\mathcal P_e}\bigl(h_T^{-2}\|u-v\|_{L^2(T)}^2+|u-v|_{H^1(T)}^2\bigr),
+\]
+其中 $h_T=\operatorname{diam}T$, 一般正常数 $C$ 只依赖 $\theta_*$ 和 $\varrho$. 对所有边求和得到
+\MBSourceItem{22}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-ip-global-average-bound}
+\label{eq:ch10-ip-global-average-bound}
+\sum_{e\in\mathcal E^h}|e|\|\{\!\{\nabla(u-v)\}\!\}\|_{L^2(e)}^2
+\leq C\sum_{T\in\mathcal P^h}\bigl(|u-v|_{H^1(T)}^2+h_T^2|u|_{H^2(T)}^2\bigr),
+\end{equation}
+\MBSourceItem{23}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-ip-global-jump-bound}
+\label{eq:ch10-ip-global-jump-bound}
+\sum_{e\in\mathcal E^h}|e|^{-1}\|[\![u-v]\!]\|_{L^2(e)}^2
+\leq C\sum_{T\in\mathcal P^h}\bigl(h_T^{-2}\|u-v\|_{L^2(T)}^2+|u-v|_{H^1(T)}^2\bigr).
+\end{equation}
+结合式~\eqref{eq:ch10-ip-energy-norm}、\eqref{eq:ch10-ip-global-average-bound} 和~\eqref{eq:ch10-ip-global-jump-bound}, 得到逐单元估计.
+
+\MBSourceItem{24}
+\begin{Lemma}
+\label{lem:ch10-ip-elementwise-bound}
+存在只依赖于定义~\ref{def:ch10-regular-partitions} 中 $\theta_*$ 和 $\varrho$ 的正常数 $C$, 使得对任意 $v\in V_h$,
+\[
+\MathBookFormulaID{formula-ch10-ip-elementwise-bound}
+\begin{split}
+\|u-v\|_h^2
+&\leq\sum_T|u-v|_{H^1(T)}^2
++C\eta^{-1}\sum_T\bigl(|u-v|_{H^1(T)}^2+h_T^2|u|_{H^2(T)}^2\bigr)\\
+&\quad+C\eta\sum_T\bigl(h_T^{-2}\|u-v\|_{L^2(T)}^2+|u-v|_{H^1(T)}^2\bigr).
+\end{split}
+\]
+\end{Lemma}
+
+\MathBookSourcePage{305}
+下述定理给出内部罚方法的具体误差估计.
+
+\MBSourceItem{26}
+\begin{Theorem}
+\label{thm:ch10-interior-penalty-error}
+设 $u$ 是问题~\eqref{eq:ch10-dirichlet-model} 的解, $u_h^\pm\in V_h$ 满足式~\eqref{eq:ch10-interior-penalty-discrete-problems}. 对称内部罚方法中假设 $\eta\geq\eta_*$, 其中 $\eta_*$ 是引理~\ref{lem:ch10-symmetric-ip-coercivity} 中的常数. 则存在只依赖 $\theta_*$ 和 $\varrho$ 的正常数 $C$, 使得
+\MBSourceItem{27}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-interior-penalty-error}
+\label{eq:ch10-interior-penalty-error}
+\|u-u_h^\pm\|_h\leq C(\eta+\eta^{-5})^{1/2}h|u|_{H^2(\Omega)},
+\end{equation}
+其中 $h=\max_{T\in\mathcal P^h}h_T$.
+\end{Theorem}
+
+\begin{Proof}
+令 $I^hu\in V_h$ 为 $u$ 的分片线性插值函数, 即对任意 $T\in\mathcal P^h$, $(I^hu)|_T$ 在 $T$ 的三个顶点与 $u$ 一致. 由引理~\ref{lem:ch10-nonsymmetric-ip-quasioptimal}、\ref{lem:ch10-symmetric-ip-quasioptimal} 和~\ref{lem:ch10-ip-elementwise-bound},
+\[
+\MathBookFormulaID{formula-ch10-interior-penalty-error-proof}
+\begin{split}
+\|u-u_h^\pm\|_h^2
+&\leq C(1+\eta^{-1})^4\|u-I^hu\|_h^2\\
+&\leq C(\eta+\eta^{-5})\left[
+\sum_T h_T^{-2}\|u-I^hu\|_{L^2(T)}^2
++\sum_T|u-I^hu|_{H^1(T)}^2
++\sum_Th_T^2|u|_{H^2(T)}^2\right].
+\end{split}
+\]
+再用定理~\MBUnresolvedReference{thm:ch04-source-4-4-20}{4.4.20} 即得式~\eqref{eq:ch10-interior-penalty-error}.
+\end{Proof}
+
+若 $\mathcal P^h$ 实际上是三角剖分族, 则可利用 $I^hu$ 的连续性把式~\eqref{eq:ch10-interior-penalty-error} 改进为
+\[
+\MathBookFormulaID{formula-ch10-ip-triangulation-improved-error}
+\|u-u_h^\pm\|_h\leq C(1+\eta^{-5})^{1/2}h|u|_{H^2(\Omega)}.
+\]
+也就是说, 只要 $\eta$ 与零有正距离, 收敛阶与罚参数 $\eta$ 无关.
+
+对称内部罚方法满足由式~\eqref{eq:ch10-interior-penalty-continuous-identity} 和~\eqref{eq:ch10-interior-penalty-discrete-problems} 得到的 Galerkin 正交关系 $a_h^-(u-u_h^-,v)=0$, $\forall v\in V_h$. 因而可用标准对偶论证得到
+\MBSourceItem{28}
+\begin{equation}
+\MathBookFormulaID{formula-ch10-symmetric-ip-l2-error}
+\label{eq:ch10-symmetric-ip-l2-error}
+\|u-u_h^-\|_{L^2(\Omega)}\leq C(\eta+\eta^{-5})h^2|u|_{H^2(\Omega)}.
+\end{equation}
+非对称内部罚方法不具有伴随一致性, 所以不能得到这样的估计.
+
+\MathBookSourcePage{306}
+\MBSourceItem{29}
+\begin{Remark}
+\label{rem:ch10-discontinuous-galerkin}
+内部罚方法属于间断 Galerkin 方法. Arnold, Brezzi, Marini and Cockburn (2001) 给出了椭圆问题的间断 Galerkin 方法的一般分析. 间断 Galerkin 方法在其他问题中的应用可见 Cockburn, Karniadakis and Shu (2000).
+\end{Remark}

@@ -1,0 +1,279 @@
+\MathBookSourcePage{177}
+\subsection{第 $k$ 层迭代的 V-循环收敛性}
+\label{sec:ch06-v-cycle-convergence}
+\setcounter{thmcount}{0}
+\setcounter{equation}{0}
+
+本节考虑对称 V-循环算法. 换言之, 考虑第~\ref{sec:ch06-multigrid-algorithm} 节中 $p=1$ 且 $m_1=m_2=m$ 的算法.
+
+我们的目标是证明此算法对任意 $m$ 都收敛, 因此不能再只作二重网格分析后接扰动论证. 必须直接分析初始误差 $z-z_0$ 与最终误差 $z-MG(k,z_0,g)$ 之间的关系.
+
+\MBSourceItem{1}
+\begin{Definition}
+\label{def:ch06-v-cycle-error-operator}
+误差算子 $E_k:V_k\longrightarrow V_k$ 递归定义为
+\[
+\MathBookFormulaID{formula-ch06-v-cycle-error-operator}
+E_1=0,
+\qquad
+E_k=R_k^m[I-(I-E_{k-1})P_{k-1}]R_k^m,
+\quad k>1.
+\]
+\end{Definition}
+
+\MathBookSourcePage{178}
+下一个引理说明 $E_k$ 把第 $k$ 层迭代的最终误差与初始误差联系起来.
+
+\MBSourceItem{2}
+\begin{Lemma}
+\label{lem:ch06-error-operator-represents-final-error}
+若 $z,g\in V_k$ 满足 $A_kz=g$, 则
+\MBSourceItem{3}
+\begin{equation}
+\MathBookFormulaID{formula-ch06-error-operator-final-error}
+\label{eq:ch06-error-operator-final-error}
+E_k(z-z_0)=z-MG(k,z_0,g),
+\qquad k\geq1.
+\end{equation}
+\end{Lemma}
+\begin{Proof}
+用归纳法证明. 当 $k=1$ 时, 由于 $MG(1,z_0,g)=A_1^{-1}g=z$, 结论显然. 假设式~\eqref{eq:ch06-error-operator-final-error} 对 $k-1$ 成立. 令 $q\in V_{k-1}$ 为粗网格上残差方程的精确解, 即 $A_{k-1}q=\bar g$. 因为 $q_1=MG(k-1,0,\bar g)$, 归纳假设给出 $q-q_1=E_{k-1}(q-0)$. 因而由引理~\ref{lem:ch06-coarse-residual-ritz-projection},
+\MBSourceItem{4}
+\begin{equation}
+\MathBookFormulaID{formula-ch06-first-coarse-correction}
+\label{eq:ch06-first-coarse-correction}
+\begin{aligned}
+q_1&=(I-E_{k-1})q\\
+&=(I-E_{k-1})P_{k-1}(z-z_m).
+\end{aligned}
+\end{equation}
+因此
+\[
+\MathBookFormulaID{formula-ch06-error-operator-induction-chain}
+\begin{aligned}
+z-MG(k,z_0,g)
+&=z-z_{2m+1}\\
+&=R_k^m(z-z_{m+1})\\
+&=R_k^m(z-(z_m+q_1))\\
+&=R_k^m(z-z_m-(I-E_{k-1})P_{k-1}(z-z_m))\\
+&=R_k^m(I-(I-E_{k-1})P_{k-1})(z-z_m)\\
+&=R_k^m(I-(I-E_{k-1})P_{k-1})R_k^m(z-z_0)\\
+&=E_k(z-z_0).
+\end{aligned}
+\]
+\end{Proof}
+
+算子 $E_k$ 显然是线性的. 它关于 $a(\cdot,\cdot)$ 半正定则不那么明显. 为证明这一事实并简化收敛性证明, 先给出一个引理, 其证明留作习题(参见习题~\ref{exr:ch06-06}).
+
+\MBSourceItem{5}
+\begin{Lemma}
+\label{lem:ch06-relaxation-energy-symmetry}
+对所有 $v,w\in V_k$,
+\[
+\MathBookFormulaID{formula-ch06-relaxation-energy-symmetry}
+a(R_kv,w)=a(v,R_kw).
+\]
+\end{Lemma}
+
+\MBSourceItem{6}
+\begin{Proposition}
+\label{prop:ch06-error-operator-positive-semidefinite}
+当 $k\geq1$ 时, $E_k$ 关于 $a(\cdot,\cdot)$ 对称半正定.
+\end{Proposition}
+\begin{Proof}
+用归纳法证明. 当 $k=1$ 时显然成立. 假设命题对 $k-1$ 成立. 先证明 $E_k$ 关于 $a(\cdot,\cdot)$ 对称:
+
+\MathBookSourcePage{179}
+\[
+\MathBookFormulaID{formula-ch06-error-operator-symmetry-chain}
+\begin{aligned}
+a(E_kv,w)
+&=a(R_k^m(I-P_{k-1}+E_{k-1}P_{k-1})R_k^mv,w)
+&&\text{由定义~\ref{def:ch06-v-cycle-error-operator}}\\
+&=a((I-P_{k-1}+E_{k-1}P_{k-1})R_k^mv,R_k^mw)
+&&\text{反复使用引理~\ref{lem:ch06-relaxation-energy-symmetry}}\\
+&=a((I-P_{k-1})R_k^mv,R_k^mw)
+ +a(E_{k-1}P_{k-1}R_k^mv,R_k^mw)\\
+&=a(R_k^mv,(I-P_{k-1})R_k^mw)
+ +a(E_{k-1}P_{k-1}R_k^mv,R_k^mw)\\
+&=a(R_k^mv,(I-P_{k-1})R_k^mw)
+ +a(E_{k-1}P_{k-1}R_k^mv,P_{k-1}R_k^mw)
+&&\text{由定义~\ref{def:ch06-ritz-projection}}\\
+&=a(R_k^mv,(I-P_{k-1})R_k^mw)
+ +a(P_{k-1}R_k^mv,E_{k-1}P_{k-1}R_k^mw)
+&&\text{由归纳假设}\\
+&=a(R_k^mv,(I-P_{k-1})R_k^mw)
+ +a(R_k^mv,E_{k-1}P_{k-1}R_k^mw)
+&&\text{由定义~\ref{def:ch06-ritz-projection}}\\
+&=a(R_k^mv,(I-P_{k-1}+E_{k-1}P_{k-1})R_k^mw)\\
+&=a(v,R_k^m(I-P_{k-1}+E_{k-1}P_{k-1})R_k^mw)
+&&\text{再次使用引理~\ref{lem:ch06-relaxation-energy-symmetry}}\\
+&=a(v,E_kw).
+\end{aligned}
+\]
+再证明 $E_k$ 关于 $a(\cdot,\cdot)$ 半正定:
+\[
+\MathBookFormulaID{formula-ch06-error-operator-positivity-chain}
+\begin{aligned}
+a(E_kv,v)
+&=a(R_k^m(I-(I-E_{k-1})P_{k-1})R_k^mv,v)\\
+&=a((I-(I-E_{k-1})P_{k-1})R_k^mv,R_k^mv)\\
+&=a(R_k^mv,R_k^mv)
+ -a((I-E_{k-1})P_{k-1}R_k^mv,R_k^mv)\\
+&=a(R_k^mv,R_k^mv)
+ -a((I-E_{k-1})P_{k-1}R_k^mv,P_{k-1}R_k^mv)\\
+&=a(R_k^mv,R_k^mv)-a(P_{k-1}R_k^mv,P_{k-1}R_k^mv)\\
+&\qquad+a(E_{k-1}P_{k-1}R_k^mv,P_{k-1}R_k^mv)\\
+&=a((I-P_{k-1})R_k^mv,(I-P_{k-1})R_k^mv)\\
+&\qquad+a(E_{k-1}P_{k-1}R_k^mv,P_{k-1}R_k^mv)\\
+&\geq0,
+\end{aligned}
+\]
+最后一步使用了归纳假设.
+\end{Proof}
+
+\MBSourceItem{7}
+\begin{Lemma}[V-循环的光滑性质]
+\label{lem:ch06-v-cycle-smoothing-property}
+有
+\[
+\MathBookFormulaID{formula-ch06-v-cycle-smoothing-property}
+a((I-R_k)R_k^{2m}v,v)
+\leq\frac1{2m}a((I-R_k^{2m})v,v).
+\]
+\end{Lemma}
+\begin{Proof}
+\MathBookSourcePage{180}
+先注意, 对 $0\leq j\leq l$,
+\MBSourceItem{8}
+\begin{equation}
+\MathBookFormulaID{formula-ch06-relaxation-monotonicity}
+\label{eq:ch06-relaxation-monotonicity}
+\begin{aligned}
+a((I-R_k)R_k^lv,v)
+&=(A_k(I-R_k)R_k^lv,v)_k\\
+&=(A_k\Lambda_k^{-1}A_kR_k^lv,v)_k\\
+&=\frac1{\Lambda_k}(R_k^lA_kv,A_kv)_k\\
+&\leq\frac1{\Lambda_k}(R_k^jA_kv,A_kv)_k
+&&\text{由~\eqref{eq:ch06-relaxation-operator-properties}}\\
+&=a((I-R_k)R_k^jv,v).
+\end{aligned}
+\end{equation}
+因此
+\[
+\MathBookFormulaID{formula-ch06-v-cycle-smoothing-telescope}
+\begin{aligned}
+(2m)a((I-R_k)R_k^{2m}v,v)
+&=a((I-R_k)R_k^{2m}v,v)+\cdots+a((I-R_k)R_k^{2m}v,v)\\
+&\leq a((I-R_k)v,v)+a((I-R_k)R_kv,v)+\cdots\\
+&\qquad+a((I-R_k)R_k^{2m-1}v,v)
+&&\text{由~\eqref{eq:ch06-relaxation-monotonicity}}\\
+&=a((I-R_k^{2m})v,v),
+\end{aligned}
+\]
+其中最后一步为望远镜消去.
+\end{Proof}
+
+\MBSourceItem{9}
+\begin{Proposition}
+\label{prop:ch06-v-cycle-error-operator-bound}
+令 $m$ 为光滑步骤数. 则
+\MBSourceItem{10}
+\begin{equation}
+\MathBookFormulaID{formula-ch06-v-cycle-error-operator-bound}
+\label{eq:ch06-v-cycle-error-operator-bound}
+a(E_kv,v)\leq\frac{C^*}{m+C^*}a(v,v)
+\qquad\forall v\in V_k,
+\end{equation}
+其中 $C^*$ 是与 $k$ 无关的正常数.
+\end{Proposition}
+\begin{Proof}
+先估计 $a((I-P_{k-1})R_k^mv,(I-P_{k-1})R_k^mv)$:
+\MBSourceItem{11}
+\begin{equation}
+\MathBookFormulaID{formula-ch06-projected-relaxed-error-bound}
+\label{eq:ch06-projected-relaxed-error-bound}
+\begin{aligned}
+&a((I-P_{k-1})R_k^mv,(I-P_{k-1})R_k^mv)\\
+&\quad=\|(I-P_{k-1})R_k^mv\|_E^2\\
+&\quad\leq Ch_k^2\|R_k^mv\|_{2,k}^2
+&&\text{由推论~\ref{cor:ch06-approximation-property}}\\
+&\quad=Ch_k^2(A_k^2R_k^mv,R_k^mv)_k
+&&\text{由~\eqref{eq:ch06-mesh-dependent-norm-scale}}\\
+&\quad=Ch_k^2a(A_kR_k^mv,R_k^mv)
+&&\text{由~\eqref{eq:ch06-discrete-operator-definition}}\\
+&\quad=Ch_k^2\Lambda_ka((I-R_k)R_k^mv,R_k^mv)
+&&\text{由定义~\ref{def:ch06-relaxation-operator}}\\
+&\quad\leq Ca((I-R_k)R_k^mv,R_k^mv)
+&&\text{由引理~\ref{lem:ch06-spectral-radius-bound}}\\
+&\quad=Ca((I-R_k)R_k^{2m}v,v)
+&&\text{由引理~\ref{lem:ch06-relaxation-energy-symmetry}}\\
+&\quad\leq\frac Cm a((I-R_k^{2m})v,v)
+&&\text{由引理~\ref{lem:ch06-v-cycle-smoothing-property}}.
+\end{aligned}
+\end{equation}
+令 $C^*$ 为最后一个不等式中的常数 $C$. 下面对 $k\geq1$ 归纳证明式~\eqref{eq:ch06-v-cycle-error-operator-bound}. 当 $k=1$ 时, 因 $E_1=0$, 结论显然. 假设式~\eqref{eq:ch06-v-cycle-error-operator-bound} 对 $k-1$ 成立. 令 $\gamma=C^*/(m+C^*)$, 因而 $\gamma=(1-\gamma)C^*/m$. 则
+
+\MathBookSourcePage{181}
+\[
+\MathBookFormulaID{formula-ch06-v-cycle-error-bound-induction}
+\begin{aligned}
+a(E_kv,v)
+&=a(R_k^mv,R_k^mv)-a(P_{k-1}R_k^mv,P_{k-1}R_k^mv)\\
+&\qquad+a(E_{k-1}P_{k-1}R_k^mv,P_{k-1}R_k^mv)\\
+&=a((I-P_{k-1})R_k^mv,(I-P_{k-1})R_k^mv)\\
+&\qquad+a(E_{k-1}P_{k-1}R_k^mv,P_{k-1}R_k^mv)\\
+&\leq a((I-P_{k-1})R_k^mv,(I-P_{k-1})R_k^mv)\\
+&\qquad+\gamma a(P_{k-1}R_k^mv,P_{k-1}R_k^mv)\\
+&=(1-\gamma)a((I-P_{k-1})R_k^mv,(I-P_{k-1})R_k^mv)\\
+&\qquad+\gamma a((I-P_{k-1})R_k^mv,(I-P_{k-1})R_k^mv)\\
+&\qquad+\gamma a(P_{k-1}R_k^mv,P_{k-1}R_k^mv)\\
+&=(1-\gamma)a((I-P_{k-1})R_k^mv,(I-P_{k-1})R_k^mv)\\
+&\qquad+\gamma a(R_k^mv,R_k^mv)\\
+&\leq(1-\gamma)C^*m^{-1}a((I-R_k^{2m})v,v)
+ +\gamma a(R_k^mv,R_k^mv)\\
+&=\gamma a((I-R_k^{2m})v,v)+\gamma a(R_k^mv,R_k^mv)\\
+&=\gamma a(v,v).
+\end{aligned}
+\]
+\end{Proof}
+
+命题~\ref{prop:ch06-v-cycle-error-operator-bound} 立即蕴含 Braess \& Hackbusch 的如下经典结果.
+
+\MBSourceItem{12}
+\begin{Theorem}[V-循环第 $k$ 层迭代的收敛性]
+\label{thm:ch06-v-cycle-level-convergence}
+令 $m$ 为光滑步骤数. 则
+\[
+\MathBookFormulaID{formula-ch06-v-cycle-level-convergence}
+\|z-MG(k,z_0,g)\|_E
+\leq\frac{C^*}{m+C^*}\|z-z_0\|_E.
+\]
+因此, 对任意 $m$, 第 $k$ 层迭代都是收缩映射, 且收缩因子与 $k$ 无关.
+\end{Theorem}
+\begin{Proof}
+由引理~\ref{lem:ch06-error-operator-represents-final-error}, 只需证明
+\[
+\MathBookFormulaID{formula-ch06-error-operator-energy-contraction}
+\|E_kv\|_E\leq\frac{C^*}{m+C^*}\|v\|_E
+\qquad\forall v\in V_k.
+\]
+由命题~\ref{prop:ch06-error-operator-positive-semidefinite}, 可对 $E_k$ 应用谱定理. 设 $0\leq\alpha_1\leq\cdots\leq\alpha_{n_k}$ 为 $E_k$ 的特征值, $\eta_1,\eta_2,\ldots,\eta_{n_k}$ 为相应特征向量, 且 $a(\eta_i,\eta_j)=\delta_{ij}$. 写成 $v=\sum\nu_i\eta_i$. 则 $a(E_kv,v)=\sum\alpha_i\nu_i^2$. 因而式~\eqref{eq:ch06-v-cycle-error-operator-bound} 蕴含
+\[
+\MathBookFormulaID{formula-ch06-error-operator-spectrum-bound}
+0\leq\alpha_1\leq\cdots\leq\alpha_{n_k}
+\leq\frac{C^*}{m+C^*}.
+\]
+所以
+\MathBookSourcePage{182}
+\[
+\MathBookFormulaID{formula-ch06-error-operator-energy-proof}
+\begin{aligned}
+\|E_kv\|_E^2
+&=a(E_kv,E_kv)\\
+&=\sum_{i=1}^{n_k}\alpha_i^2\nu_i^2\\
+&\leq\left(\frac{C^*}{m+C^*}\right)^2\sum_i\nu_i^2\\
+&=\left(\frac{C^*}{m+C^*}\right)^2\|v\|_E^2.
+\end{aligned}
+\]
+\end{Proof}

@@ -1,0 +1,341 @@
+\subsection{两层 additive Schwarz 预条件子}
+\label{sec:ch07-two-level-additive-schwarz-preconditioner}
+\setcounter{thmcount}{0}
+\setcounter{equation}{0}
+
+设 $\mathcal T_h$ 是 $\Omega$ 上网格尺寸为 $h$ 的拟一致三角剖分, $V_h\subset\mathring H^1(\Omega)$ 是由第~\ref{sec:ch03-triangular-finite-elements} 节的 $\mathcal P_1$ 有限元构成、与 $\mathcal T_h$ 相应的有限元空间. 定义 SPD 算子 $A_h:V_h\longrightarrow V_h'$:
+\MBSourceItem{1}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-two-level-fine-operator}
+\label{eq:ch07-two-level-fine-operator}
+\langle A_hv_1,v_2\rangle
+=\int_\Omega\nabla v_1\cdot\nabla v_2\,dx
+\qquad\forall v_1,v_2\in V_h,
+\end{equation}
+并以 $\langle f_h,v\rangle=F(v)$ $(v\in V_h)$ 定义 $f_h\in V_h'$. 则式~\eqref{eq:ch07-model-poisson-variational-problem} 的离散问题可写成 $A_hu_h=f_h$.
+
+本节研究 $A_h$ 的一种重叠区域分解预条件子.
+
+设 $\mathcal T_H$ 是 $\Omega$ 上网格尺寸为 $H$ 的三角剖分, $\mathcal T_h$ 是 $\mathcal T_H$ 的细分, $V_H\subset V_h$ 是与 $\mathcal T_H$ 相应的 $\mathcal P_1$ 有限元空间, 并定义 $A_H:V_H\longrightarrow V_H'$:
+\MBSourceItem{2}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-two-level-coarse-operator}
+\label{eq:ch07-two-level-coarse-operator}
+\langle A_Hv_1,v_2\rangle
+=\int_\Omega\nabla v_1\cdot\nabla v_2\,dx
+\qquad\forall v_1,v_2\in V_H.
+\end{equation}
+空间 $V_H$ 和算子 $A_H$ 是两层 additive Schwarz 预条件子构造的一部分.
+
+其余辅助空间与 $\Omega$ 的一族开子集 $\Omega_1,\Omega_2,\ldots,\Omega_J$ 相联系, 这些子集的边界与 $\mathcal T_h$ 对齐. 假设在 $\mathbb R^2$ 上存在非负 $C^\infty$ 函数 $\theta_1,\theta_2,\ldots,\theta_J$(单位分解), 满足
+\begin{align}
+\MBSourceItem{3}
+\MathBookFormulaID{formula-ch07-partition-support}
+\theta_j&=0&&\text{在 }\Omega\setminus\Omega_j,
+\label{eq:ch07-partition-support}\\
+\MBSourceItem{4}
+\MathBookFormulaID{formula-ch07-partition-unity}
+\sum_{j=1}^{J}\theta_j&=1&&\text{在 }\Omega.
+\label{eq:ch07-partition-unity}
+\end{align}
+并假设存在正常数 $\delta\leq H$, 使得
+\MBSourceItem{5}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-partition-gradient-bound}
+\label{eq:ch07-partition-gradient-bound}
+\|\nabla\theta_j\|_{L^\infty(\mathbb R^2)}\leq C/\delta,
+\end{equation}
+其中 $C$ 与 $\delta,h,H,J$ 无关. 进一步假设
+\MBSourceItem{6}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-overlap-multiplicity}
+\label{eq:ch07-overlap-multiplicity}
+\text{$\Omega$ 中每一点至多属于 $N_C$ 个子区域.}
+\end{equation}
+
+\MBSourceItem{7}
+\begin{Remark}
+\label{rem:ch07-overlap-interpretation}
+条件~\eqref{eq:ch07-partition-support} 和~\eqref{eq:ch07-partition-unity} 蕴含 $\Omega_1,\ldots,\Omega_J$ 构成 $\Omega$ 的重叠分解. 式~\eqref{eq:ch07-partition-gradient-bound} 中的常数 $\delta$ 度量相邻子区域之间的重叠量.
+\end{Remark}
+
+对每个 $\Omega_j$, 定义子空间
+\MBSourceItem{8}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-overlapping-local-space}
+\label{eq:ch07-overlapping-local-space}
+V_j=\{v\in V_h:v=0\text{ 在 }\Omega\setminus\Omega_j\},
+\end{equation}
+并定义 SPD 算子 $A_j:V_j\longrightarrow V_j'$:
+\MBSourceItem{9}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-overlapping-local-operator}
+\label{eq:ch07-overlapping-local-operator}
+\langle A_jv_1,v_2\rangle
+=\int_{\Omega_j}\nabla v_1\cdot\nabla v_2\,dx
+\qquad\forall v_1,v_2\in V_j.
+\end{equation}
+两层 additive Schwarz 预条件子(参见 Dryja \& Widlund 1987, 1989; Nepomnyaschikh 1989)为
+\MathBookSourcePage{198}
+\MBSourceItem{10}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-two-level-additive-schwarz-preconditioner}
+\label{eq:ch07-two-level-additive-schwarz-preconditioner}
+B_{TL}=I_HA_H^{-1}I_H^t+\sum_{j=1}^{J}I_jA_j^{-1}I_j^t,
+\end{equation}
+其中 $I_H:V_H\longrightarrow V_h$ 和 $I_j:V_j\longrightarrow V_h$ 是自然嵌入.
+
+\MBSourceItem{11}
+\begin{Remark}
+\label{rem:ch07-overlap-construction}
+$\mathcal T_H,\mathcal T_h$ 和 $\Omega_j$ 可按如下方式构造(参见图~\ref{fig:ch07-overlapping-domain-decomposition}), 使假设~\eqref{eq:ch07-partition-support}--\eqref{eq:ch07-overlap-multiplicity} 成立:
+\begin{enumerate}
+\item[(i)] 构造粗三角剖分 $\mathcal T_H$.
+\item[(ii)] 将 $\Omega$ 分成与 $\mathcal T_H$ 对齐的非重叠子区域 $\widetilde\Omega_j$, $1\leq j\leq J$.
+\item[(iii)] 细分 $\mathcal T_H$ 得到 $\mathcal T_h$.
+\item[(iv)] 将 $\widetilde\Omega_j$ 扩大一个宽度为 $\delta$ 的带, 得到开集 $\widetilde\Omega_{j,\delta}$, 使 $\partial\widetilde\Omega_{j,\delta}\cap\Omega$ 与 $\mathcal T_h$ 对齐.
+\item[(v)] 定义 $\Omega_j=\widetilde\Omega_{j,\delta}\cap\Omega$.
+\end{enumerate}
+由于 $\widetilde\Omega_{j,\delta}$ 构成 $\overline\Omega$ 的开覆盖, 具有性质~\eqref{eq:ch07-partition-support}--\eqref{eq:ch07-partition-gradient-bound} 的单位分解之存在性是标准结果(参见 Rudin 1991). 此时 $N_C$ 由可共享 $\mathcal T_H$ 某个顶点的 $\widetilde\Omega_j$ 个数决定, 而后者又由 $\mathcal T_H$ 的最小角决定.
+\end{Remark}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.62\textwidth]{chapter-07-overlapping-domain-decomposition.png}
+\caption{重叠区域分解的构造}
+\label{fig:ch07-overlapping-domain-decomposition}
+\end{figure}
+
+\MBSourceItem{12}
+\begin{Lemma}
+\label{lem:ch07-overlapping-space-decomposition}
+有 $V_h=\sum_{j=1}^{J}V_j$.
+\end{Lemma}
+
+\begin{Proof}
+给定 $v\in V_h$, 对 $1\leq j\leq J$ 令 $v_j=\Pi_h(\theta_jv)$, 其中 $\Pi_h:C(\overline\Omega)\longrightarrow V_h$ 是节点插值算子. 由式~\eqref{eq:ch07-partition-support}, $\theta_jv=0$ 在 $\Omega\setminus\Omega_j$ 上, 且 $\partial\Omega_j$ 与 $\mathcal T_h$ 对齐, 故 $v_j=\Pi_h(\theta_jv)=0$ 在 $\Omega\setminus\Omega_j$ 上, 从而由式~\eqref{eq:ch07-overlapping-local-space} 有 $v_j\in V_j$. 又由式~\eqref{eq:ch07-partition-unity},
+\[
+\MathBookFormulaID{formula-ch07-overlapping-partition-decomposition}
+\sum_{j=1}^{J}v_j
+=\sum_{j=1}^{J}\Pi_h(\theta_jv)
+=\Pi_h\left(v\sum_{j=1}^{J}\theta_j\right)
+=\Pi_hv=v.
+\]
+\end{Proof}
+
+由引理~\ref{lem:ch07-overlapping-space-decomposition}, 条件~\eqref{eq:ch07-auxiliary-space-decomposition} 成立.
+
+\MathBookSourcePage{199}
+下面的引理可用于给出 $\lambda_{\max}(B_{TL}A_h)$ 的上界.
+
+\MBSourceItem{13}
+\begin{Lemma}
+\label{lem:ch07-two-level-upper-decomposition}
+设 $v_H\in V_H$, $v_j\in V_j$ $(1\leq j\leq J)$, 且 $v=v_H+\sum_{j=1}^{J}v_j$. 则
+\[
+\MathBookFormulaID{formula-ch07-two-level-upper-decomposition}
+\langle A_hv,v\rangle
+\lesssim\langle A_Hv_H,v_H\rangle
++\sum_{j=1}^{J}\langle A_jv_j,v_j\rangle.
+\]
+\end{Lemma}
+
+\begin{Proof}
+由式~\eqref{eq:ch07-two-level-fine-operator} 和式~\eqref{eq:ch07-two-level-coarse-operator},
+\MBSourceItem{14}
+\begin{align}
+\MathBookFormulaID{formula-ch07-two-level-upper-proof-start}
+\langle A_hv,v\rangle
+&=\int_\Omega\nabla\left(v_H+\sum_{j=1}^{J}v_j\right)
+\cdot\nabla\left(v_H+\sum_{k=1}^{J}v_k\right)\,dx\notag\\
+&\leq2\left[\int_\Omega\nabla v_H\cdot\nabla v_H\,dx
++\int_\Omega\nabla\left(\sum_{j=1}^{J}v_j\right)
+\cdot\nabla\left(\sum_{k=1}^{J}v_k\right)\,dx\right]\notag\\
+&\lesssim\langle A_Hv_H,v_H\rangle
++\sum_{j,k=1}^{J}\int_\Omega\nabla v_j\cdot\nabla v_k\,dx.
+\label{eq:ch07-two-level-upper-proof-start}
+\end{align}
+对每个 $T\in\mathcal T_h$, 定义
+\[
+\MathBookFormulaID{formula-ch07-overlap-indicator}
+c_{jk}(T)=
+\begin{cases}
+1,&T\subseteq\Omega_j\cap\Omega_k,\\
+0,&T\nsubseteq\Omega_j\cap\Omega_k.
+\end{cases}
+\]
+注意
+\MBSourceItem{15}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-overlap-indicator-symmetry}
+\label{eq:ch07-overlap-indicator-symmetry}
+c_{jk}(T)=c_{kj}(T).
+\end{equation}
+于是式~\eqref{eq:ch07-two-level-upper-proof-start} 右端第二项满足
+\begin{align*}
+\MathBookFormulaID{formula-ch07-overlap-cross-sum-bound}
+\sum_{j,k=1}^{J}\int_\Omega\nabla v_j\cdot\nabla v_k\,dx
+&=\sum_{j,k=1}^{J}\sum_{T\in\mathcal T_h}c_{jk}(T)
+\int_T\nabla v_j\cdot\nabla v_k\,dx\\
+&\leq\sum_{j,k=1}^{J}\sum_{T\in\mathcal T_h}
+\bigl(c_{jk}(T)|v_j|_{H^1(T)}^2\bigr)^{1/2}
+\bigl(c_{jk}(T)|v_k|_{H^1(T)}^2\bigr)^{1/2}\\
+&\leq\sum_{T\in\mathcal T_h}\sum_{j,k=1}^{J}c_{jk}(T)|v_j|_{H^1(T)}^2\\
+&\leq N_C\sum_{j=1}^{J}\langle A_jv_j,v_j\rangle.
+\end{align*}
+这里最后两个不等式分别使用了 Cauchy--Schwarz 不等式与式~\eqref{eq:ch07-overlap-indicator-symmetry}, 以及式~\eqref{eq:ch07-overlap-multiplicity} 与式~\eqref{eq:ch07-overlapping-local-operator}.
+引理由此估计和式~\eqref{eq:ch07-two-level-upper-proof-start} 得证.
+\end{Proof}
+
+结合引理~\ref{lem:ch07-two-level-upper-decomposition} 与式~\eqref{eq:ch07-preconditioned-maximum-eigenvalue}, 立即得到
+\MathBookSourcePage{200}
+\MBSourceItem{16}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-two-level-maximum-eigenvalue}
+\label{eq:ch07-two-level-maximum-eigenvalue}
+\lambda_{\max}(B_{TL}A_h)\lesssim1.
+\end{equation}
+
+下一个引理与式~\eqref{eq:ch07-preconditioned-minimum-eigenvalue} 结合, 将给出 $\lambda_{\min}(B_{TL}A_h)$ 的下界.
+
+\MBSourceItem{17}
+\begin{Lemma}
+\label{lem:ch07-two-level-stable-decomposition}
+对任意 $v\in V_h$, 存在分解
+\[
+\MathBookFormulaID{formula-ch07-two-level-stable-decomposition}
+v=v_H+\sum_{j=1}^{J}v_j,
+\]
+其中 $v_H\in V_H$, $v_j\in V_j$, 且
+\[
+\MathBookFormulaID{formula-ch07-two-level-stable-energy-bound}
+\langle A_Hv_H,v_H\rangle
++\sum_{j=1}^{J}\langle A_jv_j,v_j\rangle
+\lesssim\left(1+\frac{H}{\delta}\right)^2\langle A_hv,v\rangle.
+\]
+\end{Lemma}
+
+\begin{Proof}
+令 $\widetilde I^H:\mathring H^1(\Omega)\longrightarrow V_H$ 为第~\ref{sec:ch04-nonsmooth-function-interpolation} 节定义的插值算子. 对 $v\in V_h$, 令 $v_H=\widetilde I^Hv$. 由推论~\ref{cor:ch04-generalized-interpolant-stability},
+\MBSourceItem{18}
+\begin{align}
+\MathBookFormulaID{formula-ch07-coarse-interpolation-h1-stability}
+|v_H|_{H^1(\Omega)}&\lesssim|v|_{H^1(\Omega)},
+\label{eq:ch07-coarse-interpolation-h1-stability}\\
+\MathBookFormulaID{formula-ch07-coarse-interpolation-l2-error}
+\|v-v_H\|_{L^2(\Omega)}&\lesssim H|v|_{H^1(\Omega)}.
+\label{eq:ch07-coarse-interpolation-l2-error}
+\end{align}
+令 $w=v-v_H$, 并定义
+\MBSourceItem{20}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-two-level-local-components}
+\label{eq:ch07-two-level-local-components}
+v_j=\Pi_h(\theta_jw).
+\end{equation}
+容易验证 $v=v_H+\sum_{j=1}^{J}v_j$(参见习题~\ref{exr:ch07-18}). 由式~\eqref{eq:ch07-two-level-coarse-operator}、式~\eqref{eq:ch07-coarse-interpolation-h1-stability} 和式~\eqref{eq:ch07-two-level-fine-operator},
+\MBSourceItem{21}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-coarse-component-energy}
+\label{eq:ch07-coarse-component-energy}
+\langle A_Hv_H,v_H\rangle
+=|v_H|_{H^1(\Omega)}^2
+\lesssim|v|_{H^1(\Omega)}^2
+=\langle A_hv,v\rangle.
+\end{equation}
+又由式~\eqref{eq:ch07-overlapping-local-operator},
+\MBSourceItem{22}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-local-component-energy-sum}
+\label{eq:ch07-local-component-energy-sum}
+\langle A_jv_j,v_j\rangle
+=\sum_{\substack{T\in\mathcal T_h\\T\subseteq\Omega_j}}|v_j|_{H^1(T)}^2.
+\end{equation}
+设 $T\in\mathcal T_h$, $T\subseteq\Omega_j$, 且 $a,b,c$ 是 $T$ 的顶点. 直接计算(参见习题~\ref{exr:ch07-19})可得
+\MBSourceItem{23}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-linear-element-energy-equivalence}
+\label{eq:ch07-linear-element-energy-equivalence}
+|v_j|_{H^1(T)}^2
+\approx|v_j(b)-v_j(a)|^2+|v_j(c)-v_j(a)|^2.
+\end{equation}
+由式~\eqref{eq:ch07-two-level-local-components},
+\[
+\MathBookFormulaID{formula-ch07-partition-difference-identity}
+v_j(b)-v_j(a)
+=[\theta_j(b)-\theta_j(a)]w(b)+\theta_j(a)[w(b)-w(a)].
+\]
+因此由式~\eqref{eq:ch07-partition-unity} 和式~\eqref{eq:ch07-partition-gradient-bound},
+\MathBookSourcePage{201}
+\begin{align}
+\MathBookFormulaID{formula-ch07-partition-b-difference-bound}
+|v_j(b)-v_j(a)|^2
+&\lesssim[\theta_j(b)-\theta_j(a)]^2[w(b)]^2
++[\theta_j(a)]^2[w(b)-w(a)]^2\notag\\
+&\lesssim\frac{h^2}{\delta^2}[w(b)]^2+[w(b)-w(a)]^2,
+\label{eq:ch07-partition-b-difference-bound}\\
+\MathBookFormulaID{formula-ch07-partition-c-difference-bound}
+|v_j(c)-v_j(a)|^2
+&\lesssim\frac{h^2}{\delta^2}[w(c)]^2+[w(c)-w(a)]^2.
+\label{eq:ch07-partition-c-difference-bound}
+\end{align}
+由式~\eqref{eq:ch07-partition-b-difference-bound}、式~\eqref{eq:ch07-partition-c-difference-bound}、引理~\ref{lem:ch06-l2-mesh-norm-equivalence} 和式~\eqref{eq:ch07-linear-element-energy-equivalence},
+\[
+\MathBookFormulaID{formula-ch07-local-component-element-bound}
+|v_j|_{H^1(T)}^2
+\lesssim\delta^{-2}\|w\|_{L^2(T)}^2+|w|_{H^1(T)}^2.
+\]
+结合式~\eqref{eq:ch07-local-component-energy-sum} 并求和, 得
+\begin{align}
+\MathBookFormulaID{formula-ch07-local-component-summed-bound}
+\sum_{j=1}^{J}\langle A_jv_j,v_j\rangle
+&\lesssim\delta^{-2}\|w\|_{L^2(\Omega)}^2+|w|_{H^1(\Omega)}^2\notag\\
+&\lesssim\delta^{-2}\|v-v_H\|_{L^2(\Omega)}^2+|v-v_H|_{H^1(\Omega)}^2\notag\\
+&\lesssim\left(1+\frac{H^2}{\delta^2}\right)|v|_{H^1(\Omega)}^2
+&&\text{(由式~\eqref{eq:ch07-coarse-interpolation-h1-stability} 和式~\eqref{eq:ch07-coarse-interpolation-l2-error})}\notag\\
+&=\left(1+\frac{H^2}{\delta^2}\right)\langle A_hv,v\rangle.
+\label{eq:ch07-local-component-summed-bound}
+\end{align}
+引理由式~\eqref{eq:ch07-coarse-component-energy} 和式~\eqref{eq:ch07-local-component-summed-bound} 得证.
+\end{Proof}
+
+由引理~\ref{lem:ch07-two-level-stable-decomposition} 和式~\eqref{eq:ch07-preconditioned-minimum-eigenvalue}, 立即得到
+\MBSourceItem{27}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-two-level-minimum-eigenvalue}
+\label{eq:ch07-two-level-minimum-eigenvalue}
+\lambda_{\min}(B_{TL}A_h)
+\gtrsim\left(1+\frac{H}{\delta}\right)^{-2}.
+\end{equation}
+
+最后, 结合式~\eqref{eq:ch07-two-level-maximum-eigenvalue} 和式~\eqref{eq:ch07-two-level-minimum-eigenvalue}, 得到关于两层 additive Schwarz 预条件子的如下定理.
+
+\MathBookSourcePage{202}
+\MBSourceItem{28}
+\begin{Theorem}
+\label{thm:ch07-two-level-condition-number}
+存在与 $H,h,\delta,J$ 无关的正常数 $C$, 使得
+\[
+\MathBookFormulaID{formula-ch07-two-level-condition-number}
+\kappa(B_{TL}A_h)
+=\frac{\lambda_{\max}(B_{TL}A_h)}{\lambda_{\min}(B_{TL}A_h)}
+\leq C\left(1+\frac{H}{\delta}\right)^2.
+\]
+\end{Theorem}
+
+\MBSourceItem{29}
+\begin{Remark}
+\label{rem:ch07-two-level-optimality}
+若 $H/\delta$ 有统一上界, 则两层 additive 预条件子是最优的. 当 $\delta$ 相对于 $H$ 很小时, 因子 $1+(H/\delta)^2$ 变得显著. 注意, 估计~\eqref{eq:ch07-partition-b-difference-bound} 和~\eqref{eq:ch07-partition-c-difference-bound} 非常保守, 因为在 $\Omega_j$ 中不属于其他子区域的所有节点上 $\theta_j=1$. 在对子区域 $\Omega_j$ 的某些形状正则性假设下, $\kappa(B_{TL}A_h)$ 的界可改进为(参见 Dryja \& Widlund 1994 和习题~\ref{exr:ch07-21})
+\[
+\MathBookFormulaID{formula-ch07-two-level-improved-condition-number}
+\kappa(B_{TL}A_h)\leq C\left(1+\frac{H}{\delta}\right).
+\]
+而且这个界是尖锐的(参见 Brenner 2000).
+\end{Remark}
+
+\MBSourceItem{30}
+\begin{Remark}
+\label{rem:ch07-two-level-inexact-solves}
+若式~\eqref{eq:ch07-two-level-additive-schwarz-preconditioner} 中的精确求解算子 $A_H^{-1}$ 和 $A_j^{-1}$ 被谱等价的非精确求解替代, 且只假设三角剖分 $\mathcal T_h$ 和 $\mathcal T_H$ 正则, 则本节结果仍然成立(此时需适当解释 $H$ 和 $\delta$, 参见 Widlund 1999).
+\end{Remark}

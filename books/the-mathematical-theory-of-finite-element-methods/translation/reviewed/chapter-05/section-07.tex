@@ -1,0 +1,151 @@
+\MathBookSourcePage{156}
+\subsection{一般椭圆问题的变分逼近}
+\label{sec:ch05-general-elliptic-variational-approximation}
+\setcounter{thmcount}{0}
+\setcounter{equation}{0}
+
+上一节看到, 某些适定的椭圆问题所对应的变分问题不具有强制性, 但加上适当大的常数总能使它具有强制性. 在这种情形下, 遵循 Schatz 的思想(Schatz 1974), 仍可给出变分问题有限元逼近的估计, 只是论证稍复杂. 首先假设变分形式 $a(\cdot,\cdot)$ 满足下列性质. 假设 $a(\cdot,\cdot)$ 在 $H^1(\Omega)$ 上连续:
+\MBSourceItem{1}
+\begin{equation}
+\MathBookFormulaID{formula-ch05-general-form-continuity}
+\label{eq:ch05-general-form-continuity}
+|a(u,v)|\leq C_1\|u\|_{H^1(\Omega)}\|v\|_{H^1(\Omega)}
+\quad\forall u,v\in H^1(\Omega),
+\end{equation}
+并假设某个附加常数 $K\in\mathbb R$ 使它具有强制性:
+\MBSourceItem{2}
+\begin{equation}
+\MathBookFormulaID{formula-ch05-shifted-coercivity}
+\label{eq:ch05-shifted-coercivity}
+a(v,v)+K(v,v)\geq\alpha\|v\|_{H^1(\Omega)}^2
+\quad\forall v\in H^1(\Omega).
+\end{equation}
+假设存在某个 $V\subset H^1(\Omega)$, 使变分问题
+\[
+\MathBookFormulaID{formula-ch05-general-continuous-primal-problem}
+a(u,v)=(f,v)\quad\forall v\in V
+\]
+以及伴随变分问题
+\[
+\MathBookFormulaID{formula-ch05-general-continuous-adjoint-problem}
+a(v,u)=(f,v)\quad\forall v\in V
+\]
+均有唯一解 $u$, 且两种情形都对所有 $f\in L^2(\Omega)$ 满足正则性估计
+\MBSourceItem{3}
+\begin{equation}
+\MathBookFormulaID{formula-ch05-general-h2-regularity}
+\label{eq:ch05-general-h2-regularity}
+|u|_{H^2(\Omega)}\leq C_R\|f\|_{L^2(\Omega)}.
+\end{equation}
+
+令 $V_h$ 是第~\ref{sec:ch05-poisson-variational-approximation} 节所述的 $V$ 的有限元子空间, 并由
+\MBSourceItem{4}
+\begin{equation}
+\MathBookFormulaID{formula-ch05-general-discrete-problem}
+\label{eq:ch05-general-discrete-problem}
+a(u_h,v)=(f,v)\quad\forall v\in V_h
+\end{equation}
+定义 $u_h\in V_h$. 表面看来, 式~\eqref{eq:ch05-general-discrete-problem} 未必有唯一解, 因为 $a(\cdot,\cdot)$ 可能不具有强制性. 实际上无法保证它对所有子空间 $V_h$ 都有唯一解. 但假设
+\MBSourceItem{5}
+\begin{equation}
+\MathBookFormulaID{formula-ch05-general-approximation-property}
+\label{eq:ch05-general-approximation-property}
+\inf_{v\in V_h}\|u-v\|_{H^1(\Omega)}
+\leq C_Ah|u|_{H^2(\Omega)}
+\quad\forall u\in H^2(\Omega).
+\end{equation}
+下面的结果应与 Céa 定理~\ref{thm:ch02-cea} 比较.
+
+\MBSourceItem{6}
+\begin{Theorem}
+\label{thm:ch05-schatz-error-estimate}
+在条件~\eqref{eq:ch05-general-form-continuity}、\eqref{eq:ch05-shifted-coercivity}、\eqref{eq:ch05-general-h2-regularity} 和~\eqref{eq:ch05-general-approximation-property} 下, 存在常数 $h_0,C$, 使对所有 $h\leq h_0$, 式~\eqref{eq:ch05-general-discrete-problem} 有唯一解, 且
+\[
+\MathBookFormulaID{formula-ch05-schatz-quasi-optimality}
+\|u-u_h\|_{H^1(\Omega)}
+\leq C\inf_{v\in V_h}\|u-v\|_{H^1(\Omega)},
+\]
+其中可取 $C=2C_1/\alpha$, 并且
+\[
+\MathBookFormulaID{formula-ch05-schatz-l2-error}
+\|u-u_h\|_{L^2(\Omega)}
+\leq C_1C_AC_Rh\|u-u_h\|_{H^1(\Omega)}.
+\]
+特别地, 可取
+\[
+\MathBookFormulaID{formula-ch05-schatz-mesh-threshold}
+h_0=(\alpha/2K)^{1/2}/(C_1C_AC_R).
+\]
+\end{Theorem}
+\begin{Proof}
+先对任意可能存在的式~\eqref{eq:ch05-general-discrete-problem} 的解导出估计. 无论如何总有
+\MathBookSourcePage{157}
+\MBSourceItem{7}
+\begin{equation}
+\MathBookFormulaID{formula-ch05-galerkin-orthogonality}
+\label{eq:ch05-galerkin-orthogonality}
+a(u-u_h,v)=0\quad\forall v\in V_h.
+\end{equation}
+由式~\eqref{eq:ch05-shifted-coercivity}、\eqref{eq:ch05-galerkin-orthogonality} 和~\eqref{eq:ch05-general-form-continuity}, 对任意 $v\in V_h$,
+\[
+\MathBookFormulaID{formula-ch05-schatz-energy-bound}
+\begin{aligned}
+\alpha\|u-u_h\|_{H^1(\Omega)}^2
+&\leq a(u-u_h,u-u_h)+K(u-u_h,u-u_h)\\
+&=a(u-u_h,u-v)+K\|u-u_h\|_{L^2(\Omega)}^2\\
+&\leq C_1\|u-u_h\|_{H^1(\Omega)}\|u-v\|_{H^1(\Omega)}
++K\|u-u_h\|_{L^2(\Omega)}^2.
+\end{aligned}
+\]
+使用标准对偶性方法估计 $\|u-u_h\|_{L^2(\Omega)}$. 令 $w$ 为条件~\eqref{eq:ch05-general-h2-regularity} 所保证的伴随问题的解:
+\[
+\MathBookFormulaID{formula-ch05-schatz-adjoint-error-problem}
+a(v,w)=(u-u_h,v)\quad\forall v\in V.
+\]
+则对任意 $w_h\in V_h$,
+\[
+\MathBookFormulaID{formula-ch05-schatz-duality-chain}
+\begin{aligned}
+(u-u_h,u-u_h)
+&=a(u-u_h,w)\\
+&=a(u-u_h,w-w_h)\qquad\text{(由式~\eqref{eq:ch05-galerkin-orthogonality})}\\
+&\leq C_1\|u-u_h\|_{H^1(\Omega)}\|w-w_h\|_{H^1(\Omega)}.
+\end{aligned}
+\]
+适当选择 $w_h$, 得
+\[
+\MathBookFormulaID{formula-ch05-schatz-duality-regularity}
+\begin{aligned}
+(u-u_h,u-u_h)
+&\leq C_1C_Ah\|u-u_h\|_{H^1(\Omega)}|w|_{H^2(\Omega)}\\
+&\leq C_1C_AC_Rh\|u-u_h\|_{H^1(\Omega)}\|u-u_h\|_{L^2(\Omega)}.
+\end{aligned}
+\]
+所以
+\MBSourceItem{8}
+\begin{equation}
+\MathBookFormulaID{formula-ch05-schatz-dual-error-bound}
+\label{eq:ch05-schatz-dual-error-bound}
+\|u-u_h\|_{L^2(\Omega)}\leq Ch\|u-u_h\|_{H^1(\Omega)},
+\end{equation}
+其中 $C=C_1C_AC_R$. 代回上式, 得
+\[
+\MathBookFormulaID{formula-ch05-schatz-absorption-bound}
+\alpha\|u-u_h\|_{H^1(\Omega)}^2
+\leq C_1\|u-u_h\|_{H^1(\Omega)}\|u-v\|_{H^1(\Omega)}
++KC^2h^2\|u-u_h\|_{H^1(\Omega)}^2.
+\]
+
+\MathBookSourcePage{158}
+因此当 $h\leq h_0$, 其中 $h_0=(\alpha/2K)^{1/2}/(C_1C_AC_R)$, 有
+\MBSourceItem{9}
+\begin{equation}
+\MathBookFormulaID{formula-ch05-schatz-final-energy-estimate}
+\label{eq:ch05-schatz-final-energy-estimate}
+\alpha\|u-u_h\|_{H^1(\Omega)}
+\leq2C_1\|u-v\|_{H^1(\Omega)}
+\quad\forall v\in V_h.
+\end{equation}
+
+以上一直在假设解 $u_h$ 存在. 现在考虑其存在性与唯一性. 因为式~\eqref{eq:ch05-general-discrete-problem} 是未知量个数与方程个数相同的有限维系统, 存在性与唯一性等价. 不唯一将蕴含当 $f\equiv0$ 时存在非平凡解 $u_h$. 此时由式~\eqref{eq:ch05-general-h2-regularity} 有 $u\equiv0$, 但当 $h$ 足够小时, 式~\eqref{eq:ch05-schatz-final-energy-estimate} 又蕴含 $u_h\equiv0$. 因而 $h$ 足够小时, 式~\eqref{eq:ch05-general-discrete-problem} 有唯一解. 最后, 当 $h\leq h_0$ 时, 该唯一解满足式~\eqref{eq:ch05-schatz-final-energy-estimate} 和~\eqref{eq:ch05-schatz-dual-error-bound}, 证明完成.
+\end{Proof}

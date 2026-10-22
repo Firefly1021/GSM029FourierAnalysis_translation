@@ -1,0 +1,131 @@
+\subsection{BPX 预条件子}
+\label{sec:ch07-bpx-preconditioner}
+\setcounter{thmcount}{0}
+\setcounter{equation}{0}
+
+本节讨论 Bramble, Pasciak \& Xu 引入的预条件子(参见 Bramble, Pasciak \& Xu 1990). 我们沿用第~\ref{sec:ch07-hierarchical-basis-preconditioner} 节的设置. 仍要预处理 $A_J:V_J\longrightarrow V_J'$, 但这次取辅助空间为 $V_1,V_2,\ldots,V_J$, 它们通过自然嵌入 $I_j:V_j\longrightarrow V_J$ 与 $V_J$ 相连. 条件~\eqref{eq:ch07-auxiliary-space-decomposition} 显然满足.
+
+定义对称正定算子 $B_j:V_j\longrightarrow V_j'$:
+\MBSourceItem{1}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-bpx-local-spd-operator}
+\label{eq:ch07-bpx-local-spd-operator}
+\langle B_jv_1,v_2\rangle
+=\sum_{p\in\mathcal V_j}v_1(p)v_2(p).
+\end{equation}
+则 BPX 预条件子为
+\MBSourceItem{2}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-bpx-preconditioner}
+\label{eq:ch07-bpx-preconditioner}
+B_{BPX}=\sum_{j=1}^{J}I_jB_j^{-1}I_j^t.
+\end{equation}
+
+设 $v\in V_J$, 且 $v=\sum_{j=1}^{J}v_j$, 其中 $v_j\in V_j$, 是 $v$ 的任一分解. 由式~\eqref{eq:ch07-cross-level-gradient-estimate} 和逆估计(参见定理~\ref{thm:ch04-global-inverse-estimate}), 对 $1\leq j,k\leq J$ 有
+\MBSourceItem{3}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-bpx-cross-level-estimate}
+\label{eq:ch07-bpx-cross-level-estimate}
+\int_\Omega\nabla v_j\cdot\nabla v_k\,dx
+\lesssim2^{-|j-k|/2}
+\bigl(h_j^{-1}\|v_j\|_{L^2(\Omega)}\bigr)
+\bigl(h_k^{-1}\|v_k\|_{L^2(\Omega)}\bigr).
+\end{equation}
+于是, 与引理~\ref{lem:ch07-strengthened-cauchy-schwarz} 的证明相同,
+\begin{align*}
+\MathBookFormulaID{formula-ch07-bpx-maximum-eigenvalue-chain}
+\langle A_Jv,v\rangle
+&=\int_\Omega\nabla\left(\sum_{j=1}^{J}v_j\right)
+\cdot\nabla\left(\sum_{k=1}^{J}v_k\right)\,dx
+&&\text{(由式~\eqref{eq:ch07-hierarchical-discrete-operator})}\\
+&\lesssim\sum_{j,k=1}^{J}2^{-|j-k|/2}
+\bigl(h_j^{-1}\|v_j\|_{L^2(\Omega)}\bigr)
+\bigl(h_k^{-1}\|v_k\|_{L^2(\Omega)}\bigr)
+&&\text{(由式~\eqref{eq:ch07-bpx-cross-level-estimate})}\\
+&\lesssim\sum_{j=1}^{J}h_j^{-2}\|v_j\|_{L^2(\Omega)}^2
+&&\text{(由引理~\ref{lem:ch07-discrete-young-convolution})}\\
+&\approx\sum_{j=1}^{J}\langle B_jv_j,v_j\rangle
+&&\text{(由式~\eqref{eq:ch07-bpx-local-spd-operator} 和引理~\ref{lem:ch06-l2-mesh-norm-equivalence})}.
+\end{align*}
+结合式~\eqref{eq:ch07-preconditioned-maximum-eigenvalue}, 可得
+\MBSourceItem{4}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-bpx-maximum-eigenvalue-bound}
+\label{eq:ch07-bpx-maximum-eigenvalue-bound}
+\lambda_{\max}(B_{BPX}A_J)\lesssim1.
+\end{equation}
+
+现在估计 $\lambda_{\min}(B_{BPX}A_J)$. 为简化起见, 假设 $\Omega$ 为凸区域, 从而可利用式~\eqref{eq:ch07-model-poisson-variational-problem} 的解所具有的完全椭圆正则性.
+
+令 $P_k:\mathring H^1(\Omega)\longrightarrow V_k$ 为 Ritz 投影算子, 即
+\MBSourceItem{5}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-bpx-ritz-projection}
+\label{eq:ch07-bpx-ritz-projection}
+\int_\Omega\nabla(P_k\phi)\cdot\nabla v\,dx
+=\int_\Omega\nabla\phi\cdot\nabla v\,dx
+\qquad\forall v\in V_k.
+\end{equation}
+对任意 $v\in V_J$, 定义
+\MathBookSourcePage{196}
+\MBSourceItem{6}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-bpx-ritz-decomposition}
+\label{eq:ch07-bpx-ritz-decomposition}
+v_j=P_jv-P_{j-1}v
+\qquad 1\leq j\leq J,
+\end{equation}
+其中取 $P_0v=0$. 显然 $v=\sum_{j=1}^{J}v_j$, 且由式~\eqref{eq:ch07-bpx-ritz-decomposition} 容易看出(参见习题~\ref{exr:ch07-14})
+\MBSourceItem{7}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-bpx-ritz-orthogonality}
+\label{eq:ch07-bpx-ritz-orthogonality}
+\int_\Omega\nabla v_j\cdot\nabla v_k\,dx=0
+\qquad j\neq k.
+\end{equation}
+此外, 由对偶论证,
+\begin{align*}
+\MathBookFormulaID{formula-ch07-bpx-duality-detail-estimate}
+h_j^{-2}\|v_j\|_{L^2(\Omega)}^2
+&=h_j^{-2}\|P_jv-P_{j-1}v\|_{L^2(\Omega)}^2
+&&\text{(由式~\eqref{eq:ch07-bpx-ritz-decomposition})}\\
+&=h_j^{-2}\|P_jv-P_{j-1}P_jv\|_{L^2(\Omega)}^2
+&&\text{(由习题~\ref{exr:ch07-15})}\\
+&\lesssim|v_j|_{H^1(\Omega)}^2
+&&\text{(由定理~\ref{thm:ch05-poisson-l2-error} 和式~\eqref{eq:ch07-bpx-ritz-decomposition})}
+\end{align*}
+对 $2\leq j\leq J$ 成立. 对 $j=1$ 此估计也显然成立(参见习题~\ref{exr:ch07-16}). 因此由式~\eqref{eq:ch07-bpx-ritz-orthogonality},
+\[
+\MathBookFormulaID{formula-ch07-bpx-minimum-eigenvalue-sum}
+\sum_{j=1}^{J}\langle B_jv_j,v_j\rangle
+\approx\sum_{j=1}^{J}h_j^{-2}\|v_j\|_{L^2(\Omega)}^2
+\lesssim\sum_{j=1}^{J}|v_j|_{H^1(\Omega)}^2
+=|v|_{H^1(\Omega)}^2,
+\]
+故式~\eqref{eq:ch07-preconditioned-minimum-eigenvalue} 蕴含
+\MBSourceItem{8}
+\begin{equation}
+\MathBookFormulaID{formula-ch07-bpx-minimum-eigenvalue-bound}
+\label{eq:ch07-bpx-minimum-eigenvalue-bound}
+\lambda_{\min}(B_{BPX}A_J)\gtrsim1.
+\end{equation}
+
+\MBSourceItem{9}
+\begin{Remark}
+\label{rem:ch07-bpx-nonconvex-extension}
+估计~\eqref{eq:ch07-bpx-minimum-eigenvalue-bound} 对非凸多边形区域也成立(参见习题~\ref{exr:ch07-17}).
+\end{Remark}
+
+结合式~\eqref{eq:ch07-bpx-maximum-eigenvalue-bound} 和式~\eqref{eq:ch07-bpx-minimum-eigenvalue-bound}, 得到关于 BPX 预条件子的如下定理.
+
+\MBSourceItem{10}
+\begin{Theorem}
+\label{thm:ch07-bpx-condition-number}
+存在与 $J$ 和 $h_J$ 无关的正常数 $C$, 使得
+\[
+\MathBookFormulaID{formula-ch07-bpx-condition-number}
+\kappa(B_{BPX}A_J)
+=\frac{\lambda_{\max}(B_{BPX}A_J)}{\lambda_{\min}(B_{BPX}A_J)}
+\leq C.
+\]
+\end{Theorem}

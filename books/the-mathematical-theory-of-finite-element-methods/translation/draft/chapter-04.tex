@@ -1,0 +1,1989 @@
+% Chapter 4. Source PDF pages 106--140 / printed pages 93--127.
+\clearpage
+\MathBookSourcePage{106}
+\section{Sobolev 空间中的多项式逼近理论}
+\label{chap:ch04-polynomial-approximation}
+
+现在发展适用于第~\ref{chap:ch03-finite-element-space-construction} 章所构造有限元的逼近理论. 我们采用构造性方法, 定义微积分中熟知的 Taylor 多项式的平均版本. 关键估计来自 Riesz 位势理论中的若干简单引理, 本章将给出这些引理. 作为推论, 还将以接近 Sobolev 原始方法的方式证明 Sobolev 不等式.
+
+首先导出适用于单个单元区域的估计. 随后说明如何组合这些估计, 为定义在构成较大区域剖分的一组单元区域上的全局插值算子提供误差估计. 讨论主要集中于多面体区域, 但最后还将推广到``等参''单元. 这类单元在逼近曲边区域上的问题时非常方便有效.
+
+\subsection{平均 Taylor 多项式}
+\label{sec:ch04-averaged-taylor-polynomials}
+\setcounter{thmcount}{0}
+\setcounter{equation}{0}
+
+我们考察 Sobolev 空间中函数的 $m$ 阶多项式逼近. 令 $B=\{x\in\mathbb R^n:|x-x_0|<\rho\}$. 若 $\phi\in C_0^\infty(\mathbb R^n)$ 满足 (i) $\operatorname{supp}\phi=\overline B$ 以及 (ii) $\int_{\mathbb R^n}\phi(x)\,dx=1$, 则称其为截断函数. 例如, 令
+\[
+\MathBookFormulaID{formula-ch04-cutoff-function-example}
+\psi(x)=
+\begin{cases}
+e^{-\left(1-(|x-x_0|/\rho)^2\right)^{-1}},&|x-x_0|<\rho,\\
+0,&|x-x_0|\geq\rho.
+\end{cases}
+\]
+再令 $c=\int_{\mathbb R^n}\psi(x)\,dx>0$, 则 $\phi(x)=c^{-1}\psi(x)$ 满足 (i) 与 (ii), 并且 $\max|\phi|\leq C\rho^{-n}$.
+
+先假设 $u\in C^{m-1}(\mathbb R^n)$.
+
+\MBSourceItem{1}
+\begin{Definition}
+\label{def:ch04-taylor-polynomial}
+在 $y$ 处求值的 $m$ 阶 Taylor 多项式定义为
+\MBSourceItem{2}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-taylor-polynomial}
+\label{eq:ch04-taylor-polynomial}
+T_y^m u(x)=\sum_{|\alpha|<m}\frac1{\alpha!}D^\alpha u(y)(x-y)^\alpha,
+\end{equation}
+其中 $\alpha=(\alpha_1,\ldots,\alpha_n)$ 是非负整数 $n$ 元组, $x\in\mathbb R^n$,
+\[
+\MathBookFormulaID{formula-ch04-multiindex-conventions}
+x^\alpha=\prod_{i=1}^nx_i^{\alpha_i},\qquad
+\alpha!=\prod_{i=1}^n\alpha_i!,\qquad
+|\alpha|=\sum_{i=1}^n\alpha_i.
+\]
+\end{Definition}
+
+\MathBookSourcePage{107}
+一般地, 若 $u$ 属于 Sobolev 空间, $D^\alpha u$ 未必有通常的逐点意义. 下述定义通过对 $y$ 平均 $T_y^m u(x)$ 解决这一问题.
+
+\setcounter{thmcount}{2}
+\MBSourceItem{3}
+\begin{Definition}
+\label{def:ch04-averaged-taylor-polynomial}
+设 $u$ 在区域 $\Omega$ 中具有所有阶数严格小于 $m$ 的弱导数, 且 $B\Subset\Omega$. $u$ 在 $B$ 上平均的相应 $m$ 阶 Taylor 多项式定义为
+\MBSourceItem{4}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-averaged-taylor-polynomial}
+\label{eq:ch04-averaged-taylor-polynomial}
+Q^m u(x)=\int_BT_y^m u(x)\phi(y)\,dy,
+\end{equation}
+其中 $T_y^m u(x)$ 由式~\eqref{eq:ch04-taylor-polynomial} 定义, $B$ 是以 $x_0$ 为中心、半径为 $\rho$ 的球, $\phi$ 是支于 $B$ 的截断函数.
+\end{Definition}
+
+式~\eqref{eq:ch04-averaged-taylor-polynomial} 对 $u\in W_p^{m-1}(\Omega)$ 确有意义, 因为典型项为
+\MBSourceItem{5}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-averaged-taylor-typical-term}
+\label{eq:ch04-averaged-taylor-typical-term}
+\int_B\frac1{\alpha!}D^\alpha u(y)(x-y)^\alpha\phi(y)\,dy,
+\end{equation}
+而 $D^\alpha u\in L^1_{\mathrm{loc}}(\Omega)$. 写成
+\MBSourceItem{6}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-multiindex-binomial-expansion}
+\label{eq:ch04-multiindex-binomial-expansion}
+(x-y)^\alpha=\prod_{i=1}^n(x_i-y_i)^{\alpha_i}
+=\sum_{\gamma+\beta=\alpha}a_{(\gamma,\beta)}x^\gamma y^\beta,
+\end{equation}
+其中 $\gamma=(\gamma_1,\ldots,\gamma_n)$ 与 $\beta=(\beta_1,\ldots,\beta_n)$ 为非负整数 $n$ 元组, $a_{(\gamma,\beta)}$ 为常数, 则式~\eqref{eq:ch04-averaged-taylor-typical-term} 可写成
+\MBSourceItem{7}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-averaged-taylor-typical-term-expanded}
+\label{eq:ch04-averaged-taylor-typical-term-expanded}
+\sum_{\gamma+\beta=\alpha}\frac1{\alpha!}a_{(\gamma,\beta)}x^\gamma
+\int_BD^\alpha u(y)y^\beta\phi(y)\,dy.
+\end{equation}
+因此
+\MBSourceItem{8}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-averaged-taylor-expanded}
+\label{eq:ch04-averaged-taylor-expanded}
+Q^m u(x)=\sum_{|\alpha|<m}\sum_{\gamma+\beta=\alpha}
+\frac1{\alpha!}a_{(\gamma,\beta)}x^\gamma
+\int_BD^\alpha u(y)y^\beta\phi(y)\,dy.
+\end{equation}
+
+\setcounter{thmcount}{8}
+\MBSourceItem{9}
+\begin{Proposition}
+\label{prop:ch04-averaged-taylor-degree}
+$Q^m u$ 是关于 $x$ 的次数小于 $m$ 的多项式.
+\end{Proposition}
+
+事实上, $Q^m u$ 也可对 $L^1(B)$ 中的函数定义. 只需在式~\eqref{eq:ch04-averaged-taylor-expanded} 中分部积分, 得
+\MBSourceItem{10}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-averaged-taylor-integrated-by-parts}
+\label{eq:ch04-averaged-taylor-integrated-by-parts}
+Q^m u(x)=\sum_{|\alpha|<m}\sum_{\gamma+\beta=\alpha}
+\frac{(-1)^{|\alpha|}}{\alpha!}a_{(\gamma,\beta)}x^\gamma
+\int_Bu(y)D^\alpha\bigl(y^\beta\phi(y)\bigr)\,dy.
+\end{equation}
+
+\MathBookSourcePage{108}
+\setcounter{thmcount}{10}
+\MBSourceItem{11}
+\begin{Remark}
+\label{rem:ch04-weak-derivative-equivalence}
+若 $u$ 在 $\Omega$ 中具有所有阶数小于 $m$ 的弱导数, 则由弱导数的定义, 式~\eqref{eq:ch04-averaged-taylor-expanded} 与式~\eqref{eq:ch04-averaged-taylor-integrated-by-parts} 等价.
+\end{Remark}
+
+\MBSourceItem{12}
+\begin{Proposition}
+\label{prop:ch04-averaged-taylor-l1-definition}
+$Q^m u$ 对所有 $u\in L^1(B)$ 均有定义, 且
+\MBSourceItem{13}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-averaged-taylor-l1-representation}
+\label{eq:ch04-averaged-taylor-l1-representation}
+Q^m u(x)=\sum_{|\lambda|<m}x^\lambda\int_B\psi_\lambda(y)u(y)\,dy,
+\end{equation}
+其中 $\psi_\lambda\in C_0^\infty(\mathbb R^n)$ 且 $\operatorname{supp}\psi_\lambda\subset\overline B$.
+\end{Proposition}
+\begin{Proof}
+由式~\eqref{eq:ch04-averaged-taylor-integrated-by-parts}, 定义
+\MBSourceItem{14}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-psi-lambda-definition}
+\label{eq:ch04-psi-lambda-definition}
+\psi_\lambda(y)=\sum_{\lambda\leq\alpha,\,|\alpha|<m}
+\frac{(-1)^{|\alpha|}}{\alpha!}a_{(\lambda,\alpha-\lambda)}
+D^\alpha\bigl(y^{\alpha-\lambda}\phi(y)\bigr).
+\end{equation}
+\end{Proof}
+
+\setcounter{thmcount}{14}
+\MBSourceItem{15}
+\begin{Corollary}
+\label{cor:ch04-averaged-taylor-linfty-bound}
+若 $\Omega$ 是 $\mathbb R^n$ 中的有界区域, 则对任意 $k$,
+\MBSourceItem{16}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-averaged-taylor-linfty-bound}
+\label{eq:ch04-averaged-taylor-linfty-bound}
+\|Q^m u\|_{W_\infty^k(\Omega)}
+\leq C_{m,n,\rho,\Omega}\|u\|_{L^1(B)}.
+\end{equation}
+\end{Corollary}
+\begin{Proof}
+这直接来自式~\eqref{eq:ch04-averaged-taylor-l1-representation}, 因为 $\sup_{y\in B}|\psi_\lambda(y)|$ 和 $\sup_{x\in\Omega}|D^\alpha x^\lambda|$ 都有界.
+\end{Proof}
+
+由推论~\ref{cor:ch04-averaged-taylor-linfty-bound}, $Q^m$ 是从 $L^1$ 到 $W_\infty^k$ 的有界映射.
+
+\MBSourceItem{17}
+\begin{Proposition}
+\label{prop:ch04-averaged-taylor-commutes-with-derivatives}
+对任意满足 $|\alpha|\leq m-1$ 的 $\alpha$,
+\MBSourceItem{18}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-averaged-taylor-commutes-with-derivatives}
+\label{eq:ch04-averaged-taylor-commutes-with-derivatives}
+D^\alpha Q^m u=Q^{m-|\alpha|}D^\alpha u
+\qquad\forall u\in W_1^{|\alpha|}(B).
+\end{equation}
+\end{Proposition}
+\begin{Proof}
+若 $u\in C^\infty(\Omega)$, 则
+\[
+\MathBookFormulaID{formula-ch04-averaged-taylor-derivative-proof}
+\begin{aligned}
+D_x^\alpha Q^m u(x)
+&=\int_BD_x^\alpha T_y^m u(x)\phi(y)\,dy\\
+&=\int_BT_y^{m-|\alpha|}D^\alpha u(x)\phi(y)\,dy
+=Q^{m-|\alpha|}D^\alpha u(x),
+\end{aligned}
+\]
+其中第二个等号见练习~\ref{exr:ch04-01}. 一般情形由稠密性论证得到.
+\end{Proof}
+
+\MathBookSourcePage{109}
+\setcounter{thmcount}{18}
+\MBSourceItem{19}
+\begin{Remark}
+\label{rem:ch04-sobolev-polynomial}
+多项式 $Q^m$ 可以称为 Sobolev 多项式, 因为 Sobolev 在研究以其姓名命名的空间时构造并使用过类似多项式(Sobolev 1963 \& 1991). 由于截断函数 $\phi$ 的选择并不唯一, 该多项式也不唯一. 此外, Sobolev 1963 \& 1991 中的实际构造显然不满足式~\eqref{eq:ch04-averaged-taylor-commutes-with-derivatives}, 而这一恒等式将在后文带来若干简化.
+\end{Remark}
+
+\subsection{误差表示}
+\label{sec:ch04-error-representation}
+\setcounter{thmcount}{0}
+\setcounter{equation}{0}
+
+我们需要 Taylor 定理的如下形式(参见练习~\ref{exr:ch04-02}). 对 $f\in C^m([0,1])$, 有
+\MBSourceItem{1}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-taylor-theorem-integral-form}
+\label{eq:ch04-taylor-theorem-integral-form}
+f(1)=\sum_{k=0}^{m-1}\frac1{k!}f^{(k)}(0)
++m\int_0^1\frac1{m!}s^{m-1}f^{(m)}(1-s)\,ds.
+\end{equation}
+
+\setcounter{thmcount}{1}
+\MBSourceItem{2}
+\begin{Definition}
+\label{def:ch04-star-shaped-with-respect-to-ball}
+若对所有 $x\in\Omega$, 集合 $\{x\}\cup B$ 的闭凸包都是 $\Omega$ 的子集, 则称 $\Omega$ 关于 $B$ 是星形的.
+\end{Definition}
+
+\MBSourceItem{3}
+\begin{Example}
+\label{ex:ch04-star-shaped-domains}
+图~\ref{fig:ch04-star-shaped-domain} 所示区域关于球 $B$ 是星形的, 但关于球 $B'$ 不是星形的. 图~\ref{fig:ch04-non-star-shaped-domain} 给出了一个不关于任何球为星形的区域.
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=.34\textwidth]{chapter-04/figure-4-01.png}
+\caption{关于 $B$ 为星形但关于 $B'$ 不为星形的区域}
+\label{fig:ch04-star-shaped-domain}
+\end{figure}
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=.34\textwidth]{chapter-04/figure-4-02.png}
+\caption{不关于任何球为星形的区域}
+\label{fig:ch04-non-star-shaped-domain}
+\end{figure}
+\end{Example}
+
+从现在起, 假设 $\Omega$ 关于 $B$ 是星形的. 令 $u$ 是 $\Omega$ 上的 $C^m$ 函数. 对 $x\in\Omega$ 和 $y\in B$, 定义 $f(s)=u(y+s(x-y))$. 由链式法则,
+\MBSourceItem{4}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-chain-rule-directional-derivative}
+\label{eq:ch04-chain-rule-directional-derivative}
+\frac1{k!}f^{(k)}(s)=\sum_{|\alpha|=k}\frac1{\alpha!}
+D^\alpha u\bigl(y+s(x-y)\bigr)(x-y)^\alpha.
+\end{equation}
+
+\MathBookSourcePage{110}
+结合式~\eqref{eq:ch04-taylor-theorem-integral-form} 与式~\eqref{eq:ch04-chain-rule-directional-derivative}, 得
+\MBSourceItem{5}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-pointwise-taylor-remainder}
+\label{eq:ch04-pointwise-taylor-remainder}
+\begin{aligned}
+u(x)
+&=\sum_{|\alpha|<m}\frac1{\alpha!}D^\alpha u(y)(x-y)^\alpha
++\sum_{|\alpha|=m}(x-y)^\alpha\int_0^1\frac{m}{\alpha!}s^{m-1}
+D^\alpha u\bigl(x+s(y-x)\bigr)\,ds\\
+&=T_y^m u(x)+m\sum_{|\alpha|=m}(x-y)^\alpha
+\int_0^1\frac1{\alpha!}s^{m-1}D^\alpha u\bigl(x+s(y-x)\bigr)\,ds.
+\end{aligned}
+\end{equation}
+
+\setcounter{thmcount}{5}
+\MBSourceItem{6}
+\begin{Definition}
+\label{def:ch04-mth-order-remainder}
+$m$ 阶余项定义为
+\[
+\MathBookFormulaID{formula-ch04-mth-order-remainder-definition}
+R^m u(x)=u(x)-Q^m u(x).
+\]
+\end{Definition}
+
+利用定义~\ref{def:ch04-mth-order-remainder}、截断函数定义的 (ii)、式~\eqref{eq:ch04-chain-rule-directional-derivative} 和式~\eqref{eq:ch04-pointwise-taylor-remainder}, 得
+\MBSourceItem{7}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-averaged-remainder-integral}
+\label{eq:ch04-averaged-remainder-integral}
+\begin{aligned}
+R^m u(x)
+&=\int_Bu(x)\phi(y)\,dy-\int_BT_y^m u(x)\phi(y)\,dy\\
+&=\int_B\bigl(u(x)-T_y^m u(x)\bigr)\phi(y)\,dy\\
+&=\int_B\phi(y)m\sum_{|\alpha|=m}(x-y)^\alpha
+\left[\int_0^1\frac{s^{m-1}}{\alpha!}D^\alpha u\bigl(x+s(y-x)\bigr)\,ds\right]dy.
+\end{aligned}
+\end{equation}
+
+令 $C_x$ 表示 $\{x\}\cup B$ 的凸包.
+
+\setcounter{thmcount}{7}
+\MBSourceItem{8}
+\begin{Proposition}
+\label{prop:ch04-remainder-kernel-representation}
+余项 $R^m u:=u-Q^m u$ 满足
+\MBSourceItem{9}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-remainder-kernel-representation}
+\label{eq:ch04-remainder-kernel-representation}
+R^m u(x)=m\sum_{|\alpha|=m}\int_{C_x}k_\alpha(x,z)D^\alpha u(z)\,dz,
+\end{equation}
+其中 $z=x+s(y-x)$, $k_\alpha(x,z)=\frac1{\alpha!}(x-z)^\alpha k(x,z)$, 且
+\MBSourceItem{10}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-remainder-kernel-bound}
+\label{eq:ch04-remainder-kernel-bound}
+|k(x,z)|\leq C\left(1+\frac1\rho|x-x_0|\right)^n|z-x|^{-n}.
+\end{equation}
+\end{Proposition}
+\begin{Proof}
+首先将 $(y,s)$ 空间中的变量换为 $(z,s)$, 其中
+\MBSourceItem{11}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-remainder-change-variable}
+\label{eq:ch04-remainder-change-variable}
+z=x+s(y-x).
+\end{equation}
+
+\MathBookSourcePage{111}
+由变量替换公式,
+\MBSourceItem{12}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-remainder-jacobian}
+\label{eq:ch04-remainder-jacobian}
+ds\,dy=s^{-n}\,ds\,dz.
+\end{equation}
+$(y,s)$ 空间中的积分域为 $B\times(0,1]$, 它在 $(z,s)$ 空间中的对应区域为
+\[
+\MathBookFormulaID{formula-ch04-remainder-domain-a}
+A=\left\{(z,s):s\in(0,1],\ \left|\frac1s(z-x)+x-x_0\right|<\rho\right\}.
+\]
+注意
+\MBSourceItem{13}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-remainder-domain-ratio}
+\label{eq:ch04-remainder-domain-ratio}
+(z,s)\in A\quad\Longrightarrow\quad
+\frac{|z-x|}{|x-x_0|+\rho}<s.
+\end{equation}
+此外, 当 $|\alpha|=m$ 时,
+\MBSourceItem{14}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-remainder-power-scaling}
+\label{eq:ch04-remainder-power-scaling}
+(x-y)^\alpha=s^{-m}(x-z)^\alpha.
+\end{equation}
+令 $\chi_A$ 为 $A$ 的特征函数. 由式~\eqref{eq:ch04-averaged-remainder-integral} 和式~\eqref{eq:ch04-remainder-power-scaling},
+\MBSourceItem{15}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-remainder-after-change-variable}
+\label{eq:ch04-remainder-after-change-variable}
+R^m u(x)=\sum_{|\alpha|=m}\iint
+\chi_A(z,s)\phi\left(x+\frac{z-x}{s}\right)
+\frac{m}{\alpha!}s^{-n-1}(x-z)^\alpha D^\alpha u(z)\,ds\,dz.
+\end{equation}
+$A$ 在 $z$ 空间上的投影为 $C_x$. 因此, 由 Fubini 定理,
+\[
+\MathBookFormulaID{formula-ch04-remainder-fubini-representation}
+\begin{aligned}
+R^m u(x)
+&=m\sum_{|\alpha|=m}\int_{C_x}\frac1{\alpha!}D^\alpha u(z)(x-z)^\alpha\\
+&\qquad\times\left[\int_0^1\phi\left(x+\frac{z-x}{s}\right)
+\chi_A(z,s)s^{-n-1}\,ds\right]dz\\
+&=m\sum_{|\alpha|=m}\int_{C_x}k_\alpha(x,z)D^\alpha u(z)\,dz,
+\end{aligned}
+\]
+其中
+\[
+\MathBookFormulaID{formula-ch04-remainder-kernel-definition}
+k(x,z)=\int_0^1\phi\left(x+\frac{z-x}{s}\right)\chi_A(z,s)s^{-n-1}\,ds,
+\qquad
+k_\alpha(x,z)=\frac1{\alpha!}(x-z)^\alpha k(x,z).
+\]
+只需证明 $k(x,z)$ 的估计~\eqref{eq:ch04-remainder-kernel-bound}.
+
+令 $t=|z-x|/(|x-x_0|+\rho)$. 则
+\[
+\MathBookFormulaID{formula-ch04-remainder-kernel-bound-proof}
+\begin{aligned}
+|k(x,z)|
+&=\left|\int_0^1\chi_A(z,s)\phi\left(x+\frac{z-x}{s}\right)s^{-n-1}\,ds\right|\\
+&\leq\int_t^1\left|\phi\left(x+\frac{z-x}{s}\right)\right|s^{-n-1}\,ds
+&&\text{(由式~\eqref{eq:ch04-remainder-domain-ratio})}\\
+&\leq\|\phi\|_{L^\infty(B)}\frac{s^{-n}}n\bigg|_1^t
+\leq\frac1n\|\phi\|_{L^\infty(B)}t^{-n}\\
+&=\frac1n\|\phi\|_{L^\infty(B)}(\rho+|x-x_0|)^n|z-x|^{-n}\\
+&\leq C\rho^{-n}(\rho+|x-x_0|)^n|z-x|^{-n}
+=C\left(1+\frac1\rho|x-x_0|\right)^n|z-x|^{-n}.
+\end{aligned}
+\]
+
+\MathBookSourcePage{112}
+上面使用 Fubini 定理可由下式保证:
+\[
+\MathBookFormulaID{formula-ch04-remainder-fubini-integrability}
+\begin{aligned}
+&\int_{C_x}\int_0^1
+\left|\phi\left(x+\frac{z-x}{s}\right)\right|\chi_A(z,s)s^{-n-1}
+|x-z|^m\frac{m}{\alpha!}|D^\alpha u(z)|\,ds\,dz\\
+&\qquad\leq\int_{C_x}|D^\alpha u(z)|\frac1{\alpha!}|x-z|^{m-n}
+C\left(1+\frac1\rho|x-x_0|\right)^n\,dz<\infty.
+\end{aligned}
+\]
+\end{Proof}
+
+\setcounter{thmcount}{15}
+\MBSourceItem{16}
+\begin{Definition}
+\label{def:ch04-chunkiness-parameter}
+设 $\Omega$ 的直径为 $d$, 且它关于某个球 $B$ 是星形的. 令
+\[
+\MathBookFormulaID{formula-ch04-maximum-star-shaped-ball-radius}
+\rho_{\max}=\sup\{\rho:\Omega\text{ 关于某个半径为 }\rho\text{ 的球是星形的}\}.
+\]
+$\Omega$ 的粗壮度参数定义为
+\MBSourceItem{17}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-chunkiness-parameter}
+\label{eq:ch04-chunkiness-parameter}
+\gamma=\frac d{\rho_{\max}}.
+\end{equation}
+\end{Definition}
+
+\setcounter{thmcount}{17}
+\MBSourceItem{18}
+\begin{Corollary}
+\label{cor:ch04-chunkiness-kernel-bound}
+球 $B$ 可选得使命题~\ref{prop:ch04-remainder-kernel-representation} 中的函数 $k(x,z)$ 满足
+\MBSourceItem{19}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-chunkiness-kernel-bound}
+\label{eq:ch04-chunkiness-kernel-bound}
+|k(x,z)|\leq C(\gamma+1)^n|z-x|^{-n},\qquad\forall x\in\Omega,
+\end{equation}
+其中 $\gamma$ 是 $\Omega$ 的粗壮度参数.
+\end{Corollary}
+\begin{Proof}
+选择一个球 $B$, 使得 $\Omega$ 关于 $B$ 是星形的, 且其半径 $\rho>\frac12\rho_{\max}$. 则
+\[
+\MathBookFormulaID{formula-ch04-chunkiness-kernel-bound-proof}
+\begin{aligned}
+|k(x,z)|
+&\leq C\left(1+\frac1\rho|x-x_0|\right)^n|z-x|^{-n}
+&&\text{(由式~\eqref{eq:ch04-remainder-kernel-bound})}\\
+&\leq C\left(1+\frac{2d}{\rho_{\max}}\right)^n|z-x|^{-n}\\
+&\leq C2^n\left(1+\frac d{\rho_{\max}}\right)^n|z-x|^{-n}
+=C(1+\gamma)^n|z-x|^{-n}.
+\end{aligned}
+\]
+\end{Proof}
+
+\MathBookSourcePage{113}
+\subsection{Riesz 位势的界}
+\label{sec:ch04-riesz-potential-bounds}
+\setcounter{thmcount}{0}
+\setcounter{equation}{0}
+
+我们已经用一种``Riesz 位势''给出了余项 $R^m$ 的界. 本节将导出这类位势的若干估计.
+
+\MBSourceItem{1}
+\begin{Lemma}
+\label{lem:ch04-riesz-potential-pointwise-bound}
+若 $f\in L^p(\Omega)$, $1<p<\infty$, 且 $m>n/p$, 则
+\[
+\MathBookFormulaID{formula-ch04-riesz-potential-pointwise-bound}
+\int_\Omega|x-z|^{-n+m}|f(z)|\,dz
+\leq C_p d^{m-n/p}\|f\|_{L^p(\Omega)}
+\qquad\forall x\in\Omega.
+\]
+当 $p=1$ 且 $m\geq n$ 时, 此不等式也成立.
+\end{Lemma}
+\begin{Proof}
+先设 $1<p<\infty$ 且 $m>n/p$. 令 $1/p+1/q=1$. 则
+\[
+\MathBookFormulaID{formula-ch04-riesz-pointwise-holder-proof}
+\begin{aligned}
+\int_\Omega|x-z|^{-n+m}|f(z)|\,dz
+&\leq\left(\int_\Omega|x-z|^{(-n+m)q}\,dz\right)^{1/q}
+\|f\|_{L^p(\Omega)} &&\text{(Hölder 不等式)}\\
+&\leq C\left(\int_0^d r^{(-n+m)q+n-1}\,dr\right)^{1/q}
+\|f\|_{L^p(\Omega)} &&\text{(使用极坐标)}\\
+&=C\left(d^{(-n+m)q+n}\right)^{1/q}\|f\|_{L^p(\Omega)}\\
+&=Cd^{m-(n/p)}\|f\|_{L^p(\Omega)}.
+\end{aligned}
+\]
+最后一步使用了 $1/q-1=-1/p$. 再设 $p=1$ 且 $m\geq n$. 此时
+\[
+\MathBookFormulaID{formula-ch04-riesz-pointwise-l1-proof}
+\int_\Omega|x-z|^{-n+m}|f(z)|\,dz
+\leq\bigl\||x-z|^{-n+m}\bigr\|_{L^\infty(\Omega)}\|f\|_{L^1(\Omega)}
+\leq d^{-n+m}\|f\|_{L^1(\Omega)}.
+\]
+\end{Proof}
+
+\setcounter{thmcount}{1}
+\MBSourceItem{2}
+\begin{Proposition}
+\label{prop:ch04-remainder-linfty-bound}
+对 $u\in W_p^m(\Omega)$,
+\MBSourceItem{3}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-remainder-linfty-bound}
+\label{eq:ch04-remainder-linfty-bound}
+\|R^m u\|_{L^\infty(\Omega)}
+\leq C_{m,n,\gamma,p}d^{m-n/p}|u|_{W_p^m(\Omega)},
+\end{equation}
+其中假设 $1<p<\infty$ 且 $m>n/p$, 或 $p=1$ 且 $m\geq n$.
+\end{Proposition}
+\begin{Proof}
+先设 $u\in C^m(\Omega)\cap W_p^m(\Omega)$, 从而可以使用命题~\ref{prop:ch04-remainder-kernel-representation} 中 $R^m u(x)$ 的逐点表示:
+\[
+\MathBookFormulaID{formula-ch04-remainder-linfty-bound-proof}
+\begin{aligned}
+|R^m u(x)|
+&=m\left|\sum_{|\alpha|=m}\int_{C_x}k_\alpha(x,z)D^\alpha u(z)\,dz\right|
+&&\text{(由式~\eqref{eq:ch04-remainder-kernel-representation})}\\
+&\leq C_{m,n,\gamma}\sum_{|\alpha|=m}\int_\Omega
+|x-z|^{m-n}|D^\alpha u(z)|\,dz
+&&\text{(由式~\eqref{eq:ch04-chunkiness-kernel-bound})}\\
+&\leq C_{m,n,\gamma,p}d^{m-n/p}|u|_{W_p^m(\Omega)}
+&&\text{(由引理~\ref{lem:ch04-riesz-potential-pointwise-bound})}.
+\end{aligned}
+\]
+最后用稠密性论证完成证明(练习~\ref{exr:ch04-18}).
+\end{Proof}
+
+\MathBookSourcePage{114}
+作为命题~\ref{prop:ch04-remainder-linfty-bound} 的推论, 得到 Sobolev 引理的如下特殊情形.
+
+\setcounter{thmcount}{3}
+\MBSourceItem{4}
+\begin{Lemma}[Sobolev 不等式]
+\label{lem:ch04-sobolev-inequality}
+设 $\Omega$ 的直径为 $d$, 且关于球 $B$ 是星形的. 若 $u\in W_p^m(\Omega)$, 并且 (i) $1<p<\infty$ 且 $m>n/p$, 或 (ii) $p=1$ 且 $m\geq n$, 则 $u$ 在 $\overline\Omega$ 上连续, 且
+\[
+\MathBookFormulaID{formula-ch04-sobolev-inequality}
+\|u\|_{L^\infty(\Omega)}\leq C_{m,n,\gamma,d}\|u\|_{W_p^m(\Omega)}.
+\]
+\end{Lemma}
+\begin{Proof}
+先证明不等式:
+\[
+\MathBookFormulaID{formula-ch04-sobolev-inequality-proof}
+\begin{aligned}
+\|u\|_{L^\infty(\Omega)}
+&\leq\|u-Q^m u\|_{L^\infty(\Omega)}+\|Q^m u\|_{L^\infty(\Omega)}\\
+&\leq C_{m,n,\gamma}|u|_{W_p^m(\Omega)}+C_{m,n,\rho}\|u\|_{L^1(\Omega)}\\
+&\leq C_{m,n,\gamma,d}\|u\|_{W_p^m(\Omega)}.
+\end{aligned}
+\]
+其中第二行使用了式~\eqref{eq:ch04-remainder-linfty-bound} 和式~\eqref{eq:ch04-averaged-taylor-linfty-bound}. 还需证明 $u$ 在 $\overline\Omega$ 上连续. 取 $u_j\in C^\infty(\overline\Omega)\cap W_p^m(\Omega)$, 使得当 $j\to\infty$ 时 $\|u_j-u\|_{W_p^m(\Omega)}\to0$. 上述不等式于是给出 $\|u-u_j\|_{L^\infty(\Omega)}\to0$. 换言之, $u_j\to u$ 一致收敛, 故 $u$ 在 $\overline\Omega$ 上连续.
+\end{Proof}
+
+令式~\eqref{eq:ch04-remainder-linfty-bound} 中的 $p\to\infty$, 则
+\MBSourceItem{5}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-remainder-linfty-p-infinity}
+\label{eq:ch04-remainder-linfty-p-infinity}
+\|R^m u\|_{L^\infty(\Omega)}
+\leq C_{m,n,\gamma}d^m|u|_{W_\infty^m(\Omega)}.
+\end{equation}
+
+事实上, 同一个不等式对一般 $L^p$ 空间也成立. 这就是 Bramble--Hilbert 引理, 下面将给出证明. 不过首先还需要一个关于 Riesz 位势的结果.
+
+\MathBookSourcePage{115}
+\setcounter{thmcount}{5}
+\MBSourceItem{6}
+\begin{Lemma}
+\label{lem:ch04-riesz-potential-lp-bound}
+设 $f\in L^p(\Omega)$, $p\geq1$, $m\geq1$, 并令
+\[
+\MathBookFormulaID{formula-ch04-riesz-potential-g-definition}
+g(x)=\int_\Omega|x-z|^{m-n}|f(z)|\,dz.
+\]
+则
+\MBSourceItem{7}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-riesz-potential-lp-bound}
+\label{eq:ch04-riesz-potential-lp-bound}
+\|g\|_{L^p(\Omega)}\leq C_{m,n}d^m\|f\|_{L^p(\Omega)}.
+\end{equation}
+\end{Lemma}
+\begin{Proof}
+先设 $1<p<\infty$. 则
+\[
+\MathBookFormulaID{formula-ch04-riesz-potential-lp-holder-proof}
+\begin{aligned}
+\|g\|_{L^p(\Omega)}^p
+&=\int_\Omega|g(x)|^p\,dx
+=\int_\Omega\left(\int_\Omega|x-z|^{m-n}|f(z)|\,dz\right)^pdx\\
+&\leq\int_\Omega\left(\int_\Omega|f(z)|^p|x-z|^{m-n}\,dz\right)
+\left(\int_\Omega|x-z|^{m-n}\,dz\right)^{p/q}dx\\
+&\leq C_{m,n}d^{mp/q}\int_\Omega\int_\Omega
+|f(z)|^p|x-z|^{m-n}\,dz\,dx\\
+&\leq C_{m,n}d^{mp/q}\int_\Omega
+\left(\int_\Omega|x-z|^{m-n}\,dx\right)|f(z)|^p\,dz\\
+&\leq C_{m,n}d^{(1+p/q)m}\|f\|_{L^p(\Omega)}^p
+=C_{m,n}d^{mp}\|f\|_{L^p(\Omega)}^p.
+\end{aligned}
+\]
+这里先使用 $1/p+1/q=1$ 的 Hölder 不等式, 再使用 Fubini 定理. 因而
+\[
+\MathBookFormulaID{formula-ch04-riesz-potential-lp-conclusion}
+\|g\|_{L^p(\Omega)}\leq C_{m,n}d^m\|f\|_{L^p(\Omega)}.
+\]
+
+当 $p=1$ 时,
+\[
+\MathBookFormulaID{formula-ch04-riesz-potential-l1-proof}
+\begin{aligned}
+\|g\|_{L^1(\Omega)}
+&=\int_\Omega|g(x)|\,dx
+=\int_\Omega\int_\Omega|x-z|^{m-n}|f(z)|\,dz\,dx\\
+&=\int_\Omega\left(\int_\Omega|x-z|^{m-n}\,dx\right)|f(z)|\,dz
+\leq C_{m,n}d^m\|f\|_{L^1(\Omega)}.
+\end{aligned}
+\]
+当 $p=\infty$ 时,
+\[
+\MathBookFormulaID{formula-ch04-riesz-potential-linfty-proof}
+|g(x)|\leq\|f\|_{L^\infty(\Omega)}\int_\Omega|x-z|^{m-n}\,dz
+\leq C_{m,n}d^m\|f\|_{L^\infty(\Omega)}.
+\]
+因此 $\|g\|_{L^\infty(\Omega)}\leq C_{m,n}d^m\|f\|_{L^\infty(\Omega)}$.
+\end{Proof}
+
+\setcounter{thmcount}{7}
+\MBSourceItem{8}
+\begin{Lemma}[Bramble--Hilbert]
+\label{lem:ch04-bramble-hilbert}
+设 $B$ 是 $\Omega$ 中的一个球, $\Omega$ 关于 $B$ 是星形的, 且 $B$ 的半径 $\rho>\frac12\rho_{\max}$. 令 $Q^m u$ 为 $u$ 在 $B$ 上平均所得的 $m$ 阶 Taylor 多项式, 其中 $u\in W_p^m(\Omega)$ 且 $p\geq1$. 则
+\MBSourceItem{9}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-bramble-hilbert-estimate}
+\label{eq:ch04-bramble-hilbert-estimate}
+|u-Q^m u|_{W_p^k(\Omega)}
+\leq C_{m,n,\gamma}d^{m-k}|u|_{W_p^m(\Omega)},
+\qquad k=0,1,\ldots,m,
+\end{equation}
+其中 $d=\operatorname{diam}(\Omega)$.
+\end{Lemma}
+\begin{Proof}
+只需假设 $\operatorname{diam}(\Omega)=1$, 并对 $u\in C^m(\Omega)\cap W_p^m(\Omega)$ 证明
+\MBSourceItem{10}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-bramble-hilbert-normalized}
+\label{eq:ch04-bramble-hilbert-normalized}
+|u-Q^m u|_{W_p^k(\Omega)}
+\leq C_{m,n,\gamma}|u|_{W_p^m(\Omega)}
+\qquad\forall k=0,1,\ldots,m.
+\end{equation}
+一般情形由标准齐次性论证得到.
+
+当 $k=m$ 时,
+\[
+\MathBookFormulaID{formula-ch04-bramble-hilbert-k-equals-m}
+|u-Q^m u|_{W_p^m(\Omega)}=|u|_{W_p^m(\Omega)}.
+\]
+当 $k=0$ 时,
+\[
+\MathBookFormulaID{formula-ch04-bramble-hilbert-k-zero}
+\begin{aligned}
+\|u-Q^m u\|_{L^p(\Omega)}
+&=\|R^m u\|_{L^p(\Omega)}\\
+&\leq m\sum_{|\alpha|=m}\left\|\int_\Omega k_\alpha(x,z)D^\alpha u(z)\,dz\right\|_{L^p(\Omega)}\\
+&\leq C_{m,n}(1+1/\rho)^n\sum_{|\alpha|=m}
+\left\|\int_\Omega|x-z|^{m-n}|D^\alpha u(z)|\,dz\right\|_{L^p(\Omega)}\\
+&\leq C_{m,n,\gamma}|u|_{W_p^m(\Omega)}.
+\end{aligned}
+\]
+这里使用了式~\eqref{eq:ch04-remainder-kernel-bound}、引理~\ref{lem:ch04-riesz-potential-lp-bound} 以及 $1/\rho<2\gamma$.
+
+\MathBookSourcePage{116}
+当 $0<k<m$ 时,
+\[
+\MathBookFormulaID{formula-ch04-bramble-hilbert-intermediate-k}
+\begin{aligned}
+|u-Q^m u|_{W_p^k(\Omega)}
+&=|R^m u|_{W_p^k(\Omega)}
+=\left(\sum_{|\alpha|=k}\|R^{m-k}D^\alpha u\|_{L^p(\Omega)}^p\right)^{1/p}\\
+&\leq C_{m,n,\gamma}
+\left(\sum_{|\alpha|=k}|D^\alpha u|_{W_p^{m-k}(\Omega)}^p\right)^{1/p}
+\leq C_{m,n,\gamma}|u|_{W_p^m(\Omega)}.
+\end{aligned}
+\]
+第一行使用了式~\eqref{eq:ch04-averaged-taylor-commutes-with-derivatives}, 第二行使用了上面的 $k=0$ 情形.
+
+对一般区域 $\Omega$, 定义
+\MBSourceItem{11}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-scaled-domain}
+\label{eq:ch04-scaled-domain}
+\widehat\Omega=\{d^{-1}x:x\in\Omega\}.
+\end{equation}
+若 $u\in W_p^m(\Omega)$, 令 $\widehat u(y):=u(dy)$. 显然 $\widehat u\in W_p^m(\widehat\Omega)$. 变量替换给出
+\MBSourceItem{12}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-scaled-sobolev-seminorm}
+\label{eq:ch04-scaled-sobolev-seminorm}
+|\widehat u|_{W_p^k(\widehat\Omega)}
+=d^{k-n/p}|u|_{W_p^k(\Omega)},\qquad0\leq k\leq m.
+\end{equation}
+$Q^m u(x)$ 的定义(参见式~\eqref{eq:ch04-averaged-taylor-polynomial})给出
+\MBSourceItem{13}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-scaled-averaged-taylor-polynomial}
+\label{eq:ch04-scaled-averaged-taylor-polynomial}
+\widehat Q^m\widehat u=\widehat{Q^m u}
+\end{equation}
+(参见练习~\ref{exr:ch04-03}). 因此
+\[
+\MathBookFormulaID{formula-ch04-bramble-hilbert-scaling-proof}
+\begin{aligned}
+|\widehat u-\widehat Q^m\widehat u|_{W_p^k(\widehat\Omega)}
+&\leq C_{m,n,\gamma}|\widehat u|_{W_p^m(\widehat\Omega)}\\
+&=C_{m,n,\gamma}d^{m-n/p}|u|_{W_p^m(\Omega)}.
+\end{aligned}
+\]
+另一方面,
+\[
+\MathBookFormulaID{formula-ch04-bramble-hilbert-scaling-left}
+\begin{aligned}
+|\widehat u-\widehat Q^m\widehat u|_{W_p^k(\widehat\Omega)}
+&=|\widehat u-\widehat{Q^m u}|_{W_p^k(\widehat\Omega)}\\
+&=d^{k-n/p}|u-Q^m u|_{W_p^k(\Omega)}.
+\end{aligned}
+\]
+合并两式便证明, 对 $0\leq k\leq m$,
+\[
+\MathBookFormulaID{formula-ch04-bramble-hilbert-final}
+|u-Q^m u|_{W_p^k(\Omega)}
+\leq C_{m,n,\gamma}d^{m-k}|u|_{W_p^m(\Omega)}.
+\]
+\end{Proof}
+
+\MathBookSourcePage{117}
+作为 Bramble--Hilbert 引理的一个应用, 下面证明 Friedrichs 不等式.
+
+\setcounter{thmcount}{13}
+\MBSourceItem{14}
+\begin{Lemma}[Friedrichs 不等式]
+\label{lem:ch04-friedrichs-inequality}
+设 $\Omega$ 关于球 $B$ 是星形的. 则对所有 $u\in W_p^1(\Omega)$,
+\MBSourceItem{15}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-friedrichs-inequality}
+\label{eq:ch04-friedrichs-inequality}
+\|u-\overline u\|_{W_p^1(\Omega)}
+\leq C_{n,\gamma}|u|_{W_p^1(\Omega)},
+\end{equation}
+其中 $\overline u=|\Omega|^{-1}\int_\Omega u(x)\,dx$.
+\end{Lemma}
+\begin{Proof}
+由 Hölder 不等式,
+\[
+\MathBookFormulaID{formula-ch04-average-lp-bound}
+\|\overline\phi\|_{L^p(\Omega)}\leq\|\phi\|_{L^p(\Omega)}
+\qquad\forall\phi\in L^p(\Omega).
+\]
+因此, 对任意常数 $c$,
+\[
+\MathBookFormulaID{formula-ch04-friedrichs-constant-bound}
+\|u-\overline u\|_{L^p(\Omega)}
+=\|(u-c)-\overline{(u-c)}\|_{L^p(\Omega)}
+\leq2\|u-c\|_{L^p(\Omega)}.
+\]
+于是由式~\eqref{eq:ch04-bramble-hilbert-estimate},
+\[
+\MathBookFormulaID{formula-ch04-friedrichs-bramble-hilbert-proof}
+\|u-\overline u\|_{L^p(\Omega)}
+\leq2\inf_{c\in\mathbb R}\|u-c\|_{L^p(\Omega)}
+\leq C^*|u|_{W_p^1(\Omega)},
+\]
+其中常数 $C^*$ 仅依赖于维数 $n$ 和区域的粗壮度常数 $\gamma$. 因而式~\eqref{eq:ch04-friedrichs-inequality} 成立, 其中 $C_{n,\gamma}=1+C^*$.
+\end{Proof}
+
+\setcounter{thmcount}{15}
+\MBSourceItem{16}
+\begin{Remark}
+\label{rem:ch04-friedrichs-neumann-application}
+第~\MBUnresolvedReference{chap:ch05}{5} 章将使用 Friedrichs 不等式证明 Laplace 算子的 Neumann 问题的强制性.
+\end{Remark}
+
+Dupont and Scott (1980) 说明了如何将上述结果推广到有限个星形区域之并. 例如, 图~\ref{fig:ch04-non-star-shaped-domain} 中的区域满足此条件. Dechevski \& Quak (1990) 和 Verfürth (1999) 建立了更一般的结果.
+
+\MathBookSourcePage{118}
+\subsection{插值误差的界}
+\label{sec:ch04-interpolation-error-bounds}
+\setcounter{thmcount}{0}
+\setcounter{equation}{0}
+
+至此我们估计了 $R^m u=u-Q^m u$, 这是一个局部估计. 现在估计插值误差. 首先估计插值算子的范数.
+
+\MBSourceItem{1}
+\begin{Lemma}
+\label{lem:ch04-interpolation-operator-bounded}
+设 $(K,P,N)$ 是有限元, 满足 $\operatorname{diam}K=1$, $P\subset W_\infty^m(K)$ 且 $N\subset(C^l(K))'$ (即 $N$ 中的节点变量涉及至多 $l$ 阶导数). 则对 $1\leq p\leq\infty$, 插值算子从 $C^l(K)$ 到 $W_p^m(K)$ 有界.
+\end{Lemma}
+\begin{Proof}
+令 $N=\{N_1,\ldots,N_k\}$, 并令 $\{\phi_1,\ldots,\phi_k\}\subset P$ 为对偶基. 插值函数定义为 $Iu=\sum_{i=1}^kN_i(u)\phi_i$, 且由假设每个 $\phi_i\in W_\infty^m(K)\subset W_p^m(K)$. 因此
+\[
+\MathBookFormulaID{formula-ch04-interpolation-operator-bounded-proof}
+\begin{aligned}
+\|Iu\|_{W_p^m(K)}
+&\leq\sum_{i=1}^k|N_i(u)|\|\phi_i\|_{W_p^m(K)}\\
+&\leq\left(\sum_{1\leq i\leq k}\|N_i\|_{(C^l(K))'}\|\phi_i\|_{W_p^m(K)}\right)
+\|u\|_{C^l(K)}
+=C\|u\|_{C^l(K)}.
+\end{aligned}
+\]
+\end{Proof}
+
+\MBSourceItem{2}
+\begin{Definition}
+\label{def:ch04-interpolation-operator-norm}
+若 $(K,P,N)$ 满足引理~\ref{lem:ch04-interpolation-operator-bounded} 的条件, 则定义 $\sigma(K)$ 为 $I:C^l(K)\to W_p^m(K)$ 的算子范数.
+\end{Definition}
+
+\MBSourceItem{3}
+\begin{Definition}
+\label{def:ch04-normalized-region}
+对任意有界区域 $K$, 定义
+\[
+\MathBookFormulaID{formula-ch04-normalized-region}
+\widehat K:=\{(\operatorname{diam}K)^{-1}x:x\in K\}.
+\]
+\end{Definition}
+
+令 $P_k$ 表示 $n$ 个变量的次数不超过 $k$ 的多项式集合.
+
+\MBSourceItem{4}
+\begin{Theorem}
+\label{thm:ch04-local-interpolation-error}
+设有限元 $(K,P,N)$ 满足:
+\begin{enumerate}
+\item[(i)] $K$ 关于某个球是星形的;
+\item[(ii)] $P_{m-1}\subset P\subset W_\infty^m(K)$;
+\item[(iii)] $N\subset(C^l(K))'$.
+\end{enumerate}
+设 $1\leq p\leq\infty$, 且当 $p>1$ 时 $m-l-n/p>0$, 或当 $p=1$ 时 $m-l-n\geq0$. 则对 $0\leq i\leq m$ 和 $v\in W_p^m(K)$,
+\MBSourceItem{5}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-local-interpolation-error}
+\label{eq:ch04-local-interpolation-error}
+|v-Iv|_{W_p^i(K)}
+\leq C_{m,n,\gamma,\sigma(\widehat K)}(\operatorname{diam}K)^{m-i}|v|_{W_p^m(K)},
+\end{equation}
+其中 $\widehat K=\{(\operatorname{diam}K)^{-1}x:x\in K\}$, $\gamma$ 是 $K$ 的粗壮度参数.
+\end{Theorem}
+\MathBookSourcePage{119}
+\begin{Proof}
+只需取 $\operatorname{diam}K=1$, 此时 $K=\widehat K$. 一般情形由齐次性论证得到(参见练习~\ref{exr:ch04-05}). 此外, 由 Sobolev 引理~\ref{lem:ch04-sobolev-inequality}, 插值算子在 $W_p^m(K)$ 上有定义.
+
+取球 $B\subset K$, 使 $K$ 关于 $B$ 是星形的, 且其半径 $\rho>\frac12\rho_{\max}$. 令 $Q^m v$ 为 $v$ 在 $B$ 上平均所得的 $m$ 阶 Taylor 多项式. 因为 $If=f$ 对 $f\in P$ 成立,
+\MBSourceItem{6}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-interpolant-fixes-averaged-taylor}
+\label{eq:ch04-interpolant-fixes-averaged-taylor}
+IQ^m v=Q^m v,\qquad\text{因为 }Q^m v\in P_{m-1}\subset P.
+\end{equation}
+于是
+\[
+\MathBookFormulaID{formula-ch04-local-interpolation-error-proof}
+\begin{aligned}
+\|v-Iv\|_{W_p^m(K)}
+&\leq\|v-Q^m v\|_{W_p^m(K)}+\|Q^m v-Iv\|_{W_p^m(K)}\\
+&=\|v-Q^m v\|_{W_p^m(K)}+\|I(Q^m v-v)\|_{W_p^m(K)}\\
+&\leq\|v-Q^m v\|_{W_p^m(K)}+\sigma(K)\|Q^m v-v\|_{C^l(K)}\\
+&\leq(1+\sigma(K))C_{m,n,\gamma}\|v-Q^m v\|_{W_p^m(K)}\\
+&\leq(1+\sigma(K))C_{m,n,\gamma}|v|_{W_p^m(K)}
+=C_{m,n,\gamma,\sigma(K)}|v|_{W_p^m(K)}.
+\end{aligned}
+\]
+这里依次使用式~\eqref{eq:ch04-interpolant-fixes-averaged-taylor}、Sobolev 引理~\ref{lem:ch04-sobolev-inequality} 和 Bramble--Hilbert 引理~\ref{lem:ch04-bramble-hilbert}.
+\end{Proof}
+
+\setcounter{thmcount}{6}
+\MBSourceItem{7}
+\begin{Corollary}
+\label{cor:ch04-local-interpolation-linfty-error}
+在与定理~\ref{thm:ch04-local-interpolation-error} 相同的假设下, 若 $i\leq l$, 则
+\MBSourceItem{8}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-local-interpolation-linfty-error}
+\label{eq:ch04-local-interpolation-linfty-error}
+|v-Iv|_{W_\infty^i(K)}
+\leq C_{m,n,\gamma,\sigma(\widehat K)}
+(\operatorname{diam}K)^{m-i-n/p}|v|_{W_p^m(K)}.
+\end{equation}
+\end{Corollary}
+\begin{Proof}
+取 $\operatorname{diam}K=1$. 则
+\[
+\MathBookFormulaID{formula-ch04-local-interpolation-linfty-proof}
+|v-Iv|_{W_\infty^l(K)}
+\leq C_{m,n,\gamma}\|v-Iv\|_{W_p^m(K)}
+\leq C_{m,n,\gamma,\sigma(K)}|v|_{W_p^m(K)}.
+\]
+这里使用 Sobolev 引理~\ref{lem:ch04-sobolev-inequality} 和定理~\ref{thm:ch04-local-interpolation-error}. 一般情形由齐次性论证得到.
+\end{Proof}
+
+\MathBookSourcePage{120}
+我们的目标是当 $K$ 遍历一族单元时, 找到 $C_{m,n,\gamma,\sigma(\widehat K)}$ 的一致界. 因此必须研究 $\sigma(\widehat K)$ 对仿射变换的依赖性.
+
+设参考元 $(K,P,N)$ 通过变换 $Ax=ax+b$, $a=(a_{ij})$, 与 $(\widetilde K,\widetilde P,\widetilde N)$ 仿射等价(参见定义~\ref{def:ch03-affine-equivalence}), 并以 $(a^{-1})_{ij}$ 表示 $a^{-1}$ 的系数. 仿射等价的定义给出
+\MBSourceItem{9}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-affine-interpolant-representation}
+\label{eq:ch04-affine-interpolant-representation}
+\widetilde I\widetilde v(\widetilde x)
+=\sum_{N\in\mathcal N}(A_*N)\widetilde v\cdot(A^{-1})^*\phi_N(\widetilde x).
+\end{equation}
+回忆 $(A_*N)\widetilde v=N(A^*\widetilde v)$, 其中 $(A^*\widetilde v)(x)=\widetilde v(Ax)$. 因此
+\[
+\MathBookFormulaID{formula-ch04-affine-node-functional-bound}
+|(A_*N)\widetilde v|
+\leq C_N\|A^*\widetilde v\|_{C^l(K)}
+\leq C_{N,n,l}\left(1+\max_{1\leq i,j\leq n}|a_{ij}|\right)^l
+\|\widetilde v\|_{C^l(\widetilde K)}.
+\]
+此外,
+\[
+\MathBookFormulaID{formula-ch04-affine-basis-function-bound}
+\|(A^{-1})^*\phi_N\|_{W_p^m(\widetilde K)}
+\leq C_{N,n,m}\left(1+\max_{1\leq i,j\leq n}|(a^{-1})_{ij}|\right)^m
+\|\phi_N\|_{W_p^m(K)}|\det a|^{1/p}.
+\]
+由于 $\|\phi_N\|_{W_p^m(K)}$ 在参考元上有界,
+\[
+\MathBookFormulaID{formula-ch04-affine-interpolant-norm-bound}
+\begin{aligned}
+\|\widetilde I\widetilde v\|_{W_p^m(\widetilde K)}
+&\leq C_{\mathrm{ref}}
+\left(1+\max_{1\leq i,j\leq n}|a_{ij}|\right)^l
+\left(1+\max_{1\leq i,j\leq n}|(a^{-1})_{ij}|\right)^m\\
+&\qquad\times|\det a|^{1/p}\|\widetilde v\|_{C^l(\widetilde K)},
+\end{aligned}
+\]
+其中
+\[
+\MathBookFormulaID{formula-ch04-reference-interpolation-constant}
+C_{\mathrm{ref}}=|N|\max_{N\in N}\{C_{N,n,l}\}
+\max_{N\in N}\{C_{N,n,m}\}\max_{N\in N}\{\|\phi_N\|_{W_p^m(K)}\},
+\]
+$|N|$ 表示节点变量个数, 即 $\dim P$. 因而
+\MBSourceItem{10}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-affine-sigma-bound}
+\label{eq:ch04-affine-sigma-bound}
+\sigma(\widetilde K)\leq C_{\mathrm{ref}}
+\left(1+\max_{1\leq i,j\leq n}|a_{ij}|\right)^l
+\left(1+\max_{1\leq i,j\leq n}|(a^{-1})_{ij}|\right)^m|\det a|^{1/p}.
+\end{equation}
+
+\setcounter{thmcount}{10}
+\MBSourceItem{11}
+\begin{Proposition}
+\label{prop:ch04-affine-sigma-continuous-bound}
+给定参考元 $(K,P,N)$ 以及通过仿射映射 $Ax=ax+b$ 与之仿射等价的单元 $(\widetilde K,\widetilde P,\widetilde N)$, 有
+\MBSourceItem{12}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-affine-sigma-continuous-bound}
+\label{eq:ch04-affine-sigma-continuous-bound}
+\sigma(\widetilde K)\leq C_{\mathrm{ref}}\chi(a),
+\end{equation}
+其中 $\chi$ 是 $GL(\mathbb R^n)$ 上的连续函数. 例如可取
+\[
+\MathBookFormulaID{formula-ch04-affine-chi-example}
+\chi(a):=\left(1+\max_{1\leq i,j\leq n}|a_{ij}|\right)^l
+\left(1+\max_{1\leq i,j\leq n}|(a^{-1})_{ij}|\right)^m|\det a|^{1/p}.
+\]
+\end{Proposition}
+
+\setcounter{thmcount}{12}
+\MBSourceItem{13}
+\begin{Definition}
+\label{def:ch04-mesh-family-regularity}
+设 $\Omega$ 是给定区域, $\{\mathcal T^h\}$, $0<h\leq1$, 是一族剖分, 满足
+\MBSourceItem{14}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-mesh-maximum-diameter}
+\label{eq:ch04-mesh-maximum-diameter}
+\max\{\operatorname{diam}T:T\in\mathcal T^h\}
+\leq h\operatorname{diam}\Omega.
+\end{equation}
+若存在 $\rho>0$, 使对所有 $h\in(0,1]$,
+\MBSourceItem{15}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-quasi-uniform-mesh-family}
+\label{eq:ch04-quasi-uniform-mesh-family}
+\min\{\operatorname{diam}B_T:T\in\mathcal T^h\}
+\geq\rho h\operatorname{diam}\Omega,
+\end{equation}
+则称该族是拟一致的, 其中 $B_T$ 是包含于 $T$ 且使 $T$ 关于 $B_T$ 为星形的最大球. 若存在 $\rho>0$, 使对所有 $T\in\mathcal T^h$ 和所有 $h\in(0,1]$,
+\MathBookSourcePage{121}
+\MBSourceItem{16}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-regular-mesh-family}
+\label{eq:ch04-regular-mesh-family}
+\operatorname{diam}B_T\geq\rho\operatorname{diam}T,
+\end{equation}
+则称该族非退化或正则.
+\end{Definition}
+
+\setcounter{thmcount}{16}
+\MBSourceItem{17}
+\begin{Remark}
+\label{rem:ch04-mesh-family-regularity-properties}
+\begin{enumerate}
+\item[(i)] $\{\mathcal T^h\}$ 非退化, 当且仅当所有 $T\in\mathcal T^h$ 和所有 $h\in(0,1]$ 的粗壮度参数一致有界.
+\item[(ii)] 拟一致族必非退化, 反之不然(参见练习~\ref{exr:ch04-06}).
+\item[(iii)] 从二维中的任意三角剖分出发, 连接各边中点作细分, 可得到拟一致三角剖分族. 三维中也有类似但更复杂的构造(Zhang 1995).
+\end{enumerate}
+\end{Remark}
+
+回忆定义~\ref{def:ch03-continuity-order}, 若 $r$ 是使得
+\MBSourceItem{18}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-global-finite-element-space-regularity}
+\label{eq:ch04-global-finite-element-space-regularity}
+V^h=I^h(C^l(\overline\Omega))\subset C^r(\Omega)\cap W_\infty^{r+1}(\Omega)
+\end{equation}
+成立的最大非负整数, 则称参考元 $(K,P,N)$ 为 $C^r$ 元. 这里 $I^h:C^l(\overline\Omega)\to L^1(\Omega)$ 是全局插值算子, 定义为
+\MBSourceItem{19}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-global-interpolation-operator}
+\label{eq:ch04-global-interpolation-operator}
+I^h u|_T:=I_{T^h}u,\qquad T\in\mathcal T^h,\quad h\in(0,1],
+\end{equation}
+其中 $I_{T^h}$ 是仿射等价元 $(T,P_T,N_T)$ 的插值算子.
+
+\setcounter{thmcount}{19}
+\MBSourceItem{20}
+\begin{Theorem}
+\label{thm:ch04-global-interpolation-error}
+设 $\{\mathcal T^h\}$, $0<h\leq1$, 是 $\mathbb R^n$ 中多面体区域 $\Omega$ 的非退化剖分族. 设参考元 $(K,P,N)$ 对某些 $l,m,p$ 满足定理~\ref{thm:ch04-local-interpolation-error} 的条件. 对所有 $T\in\mathcal T^h$, $0<h\leq1$, 令 $(T,P_T,N_T)$ 为相应的仿射等价元. 则存在正常数 $C$, 只依赖于参考元、$n,m,p$ 以及式~\eqref{eq:ch04-regular-mesh-family} 中的 $\rho$, 使对 $0\leq s\leq m$,
+\MBSourceItem{21}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-global-interpolation-lp-error}
+\label{eq:ch04-global-interpolation-lp-error}
+\left(\sum_{T\in\mathcal T^h}\|v-I^h v\|_{W_p^s(T)}^p\right)^{1/p}
+\leq Ch^{m-s}|v|_{W_p^m(\Omega)}
+\end{equation}
+对所有 $v\in W_p^m(\Omega)$ 成立. 当 $p=\infty$ 时, 左端应解释为 $\max_{T\in\mathcal T^h}\|v-I^h v\|_{W_\infty^s(T)}$. 对 $0\leq s\leq l$,
+\MBSourceItem{22}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-global-interpolation-linfty-error}
+\label{eq:ch04-global-interpolation-linfty-error}
+\max_{T\in\mathcal T^h}\|v-I^h v\|_{W_\infty^s(T)}
+\leq Ch^{m-s-n/p}|v|_{W_p^m(\Omega)}
+\qquad\forall v\in W_p^m(\Omega).
+\end{equation}
+\end{Theorem}
+\MathBookSourcePage{122}
+\begin{Proof}
+先证
+\MBSourceItem{23}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-uniform-normalized-sigma-bound}
+\label{eq:ch04-uniform-normalized-sigma-bound}
+\sup\{\sigma(\widehat T):T\in\mathcal T^h,\ 0<h\leq1\}
+=C(\rho,m,n,p,K)<\infty.
+\end{equation}
+由于 $(\widehat T,\widehat P_T,\widehat N_T)$ 也通过某个仿射映射 $Ax=ax+b$ 与 $(K,P,N)$ 仿射等价, 由命题~\ref{prop:ch04-affine-sigma-continuous-bound}, $\sigma(\widehat T)\leq C_{\mathrm{ref}}\chi(a)$, 其中 $\chi$ 在 $GL(\mathbb R^n)$ 上连续. 只需说明非退化性蕴含 $a$ 属于 $GL(\mathbb R^n)$ 的某个紧子集.
+
+由非退化性, 存在 $B\subset\widehat T$, 使 $\operatorname{diam}B\geq\rho>0$. 因而
+\[
+\MathBookFormulaID{formula-ch04-affine-determinant-lower-bound}
+\operatorname{meas}B\leq\operatorname{meas}\widehat T
+=\int_{\widehat T}d\widehat x
+=|\det a|\int_Kdx
+\leq|\det a|\operatorname{meas}K.
+\]
+另一方面, $\operatorname{meas}B\geq C_n\rho^n$, 故 $|\det a|\geq\varepsilon>0$, 其中 $\varepsilon$ 只依赖于 $\rho,K,n$. 不失一般性, 可设 $\{(x_1,\ldots,x_n):\sum_{i=1}^nx_i\leq t_0,\ x_i>0\}\subset K$, 其中 $t_0$ 只依赖于 $K$. 令 $e_i$ 为第 $i$ 个单位向量. 当 $0\leq t\leq t_0$ 时, $A(te_i)=tae_i+b\in\overline{\widehat T}$. 因而 $|ae_i|\leq\operatorname{diam}\widehat T/t_0=1/t_0$, 从而 $|a_{ij}|\leq1/t_0$. 所以 $a$ 属于紧集 $\{b:|\det b|\geq\varepsilon>0,\ |b_{ij}|\leq1/t_0\}$. 式~\eqref{eq:ch04-uniform-normalized-sigma-bound} 得证.
+
+为证明式~\eqref{eq:ch04-global-interpolation-lp-error}, 注意
+\[
+\MathBookFormulaID{formula-ch04-global-interpolation-lp-proof}
+\begin{aligned}
+\sum_{T\in\mathcal T^h}\|v-I_{T^h}v\|_{W_p^s(T)}^p
+&\leq\sum_{T\in\mathcal T^h}C_{m,n,\gamma,\sigma(\widehat T)}^p
+\sum_{i=0}^s(\operatorname{diam}T)^{p(m-i)}|v|_{W_p^m(T)}^p\\
+&\leq\sum_{T\in\mathcal T^h}C_{m,n,\gamma,\sigma(\widehat T)}^p
+\sum_{i=0}^s(h\operatorname{diam}\Omega)^{p(m-i)}|v|_{W_p^m(T)}^p\\
+&\leq Ch^{p(m-s)}\sum_{T\in\mathcal T^h}|v|_{W_p^m(T)}^p
+=Ch^{p(m-s)}|v|_{W_p^m(\Omega)}^p.
+\end{aligned}
+\]
+其中依次使用式~\eqref{eq:ch04-local-interpolation-error}、式~\eqref{eq:ch04-mesh-maximum-diameter}、式~\eqref{eq:ch04-uniform-normalized-sigma-bound} 以及 $h\leq1$. 式~\eqref{eq:ch04-global-interpolation-linfty-error} 可类似地由式~\eqref{eq:ch04-local-interpolation-linfty-error} 证明(参见练习~\ref{exr:ch04-07}).
+\end{Proof}
+
+\MathBookSourcePage{123}
+\setcounter{thmcount}{23}
+\MBSourceItem{24}
+\begin{Corollary}
+\label{cor:ch04-global-affine-interpolation-equivalent-error}
+设 $\{\mathcal T^h\}$, $0<h\leq1$, 是多面体区域 $\Omega$ 的非退化剖分族. 设参考元 $(K,P,N)$ 对某些 $l,m,p$ 满足定理~\ref{thm:ch04-local-interpolation-error} 的条件. 假设对所有 $T\in\mathcal T^h$, $0<h\leq1$, 元 $(T,P_T,N_T)$ 均与 $(K,P,N)$ 仿射插值等价. 则存在正常数 $C$, 只依赖于参考元、$l,m,n,p$ 和式~\eqref{eq:ch04-regular-mesh-family} 中的 $\rho$, 使对 $0\leq s\leq m$,
+\MBSourceItem{25}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-affine-interpolation-equivalent-lp-error}
+\label{eq:ch04-affine-interpolation-equivalent-lp-error}
+\left(\sum_{T\in\mathcal T^h}\|v-I^h v\|_{W_p^s(T)}^p\right)^{1/p}
+\leq Ch^{m-s}|v|_{W_p^m(\Omega)}
+\end{equation}
+对所有 $v\in W_p^m(\Omega)$ 成立. 当 $p=\infty$ 时, 左端解释同定理~\ref{thm:ch04-global-interpolation-error}. 对 $0\leq s\leq l$,
+\MBSourceItem{26}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-affine-interpolation-equivalent-linfty-error}
+\label{eq:ch04-affine-interpolation-equivalent-linfty-error}
+\max_{T\in\mathcal T^h}\|v-I^h v\|_{W_\infty^s(T)}
+\leq Ch^{m-s-n/p}|v|_{W_p^m(\Omega)}
+\qquad\forall v\in W_p^m(\Omega).
+\end{equation}
+\end{Corollary}
+
+\setcounter{thmcount}{26}
+\MBSourceItem{27}
+\begin{Remark}
+\label{rem:ch04-global-conforming-error}
+若上述结果中的单元对某个 $r\geq0$ 构成 $C^r$ 元, 则对 $0\leq s\leq r+1$,
+\[
+\MathBookFormulaID{formula-ch04-global-conforming-norm-identities}
+\sum_{T\in\mathcal T^h}\|v-I_{T^h}v\|_{W_p^s(T)}^p
+=\|v-I^h v\|_{W_p^s(\Omega)}^p,
+\qquad
+\max_{T\in\mathcal T^h}\|v-I_{T^h}v\|_{W_\infty^s(T)}
+=\|v-I^h v\|_{W_\infty^s(\Omega)}.
+\]
+将这些表达式代入左端, 得到
+\MBSourceItem{28}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-global-conforming-lp-error}
+\label{eq:ch04-global-conforming-lp-error}
+\|v-I^h v\|_{W_p^s(\Omega)}
+\leq Ch^{m-s}|v|_{W_p^m(\Omega)}
+\end{equation}
+对所有 $v\in W_p^m(\Omega)$ 和 $0\leq s\leq\min\{m,r+1\}$ 成立, 且
+\MBSourceItem{29}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-global-conforming-linfty-error}
+\label{eq:ch04-global-conforming-linfty-error}
+\|v-I^h v\|_{W_\infty^s(\Omega)}
+\leq Ch^{m-s-n/p}|v|_{W_p^m(\Omega)}
+\end{equation}
+对所有 $v\in W_p^m(\Omega)$ 和 $0\leq s\leq\min\{l,r+1\}$ 成立.
+\end{Remark}
+
+\MathBookSourcePage{124}
+\subsection{逆估计}
+\label{sec:ch04-inverse-estimates}
+\setcounter{thmcount}{0}
+\setcounter{equation}{0}
+
+本节讨论有限元空间上各种范数之间的关系.
+
+设 $K$ 是 $\mathbb R^n$ 中的有界区域. 若 $v$ 是定义在 $K$ 上的函数, 则在 $\widehat K=\{(\operatorname{diam}K)^{-1}x:x\in K\}$ 上定义 $\widehat v$ 为
+\MBSourceItem{1}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-inverse-scaled-function}
+\label{eq:ch04-inverse-scaled-function}
+\widehat v(\widehat x)=v((\operatorname{diam}K)\widehat x)
+\qquad\forall\widehat x\in\widehat K.
+\end{equation}
+显然 $v\in W_r^k(K)$ 当且仅当 $\widehat v\in W_r^k(\widehat K)$, 且
+\MBSourceItem{2}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-inverse-scaled-seminorm}
+\label{eq:ch04-inverse-scaled-seminorm}
+|\widehat v|_{W_r^k(\widehat K)}
+=(\operatorname{diam}K)^{k-n/r}|v|_{W_r^k(K)}.
+\end{equation}
+若 $P$ 是定义在 $K$ 上的函数构成的向量空间, 令 $\widehat P:=\{\widehat v:v\in P\}$.
+
+\setcounter{thmcount}{2}
+\MBSourceItem{3}
+\begin{Lemma}
+\label{lem:ch04-local-inverse-estimate}
+设 $\rho h\leq\operatorname{diam}K\leq h$, 其中 $0<h\leq1$, 且 $P$ 是 $W_p^l(K)\cap W_q^m(K)$ 的有限维子空间, 其中 $1\leq p,q\leq\infty$ 且 $0\leq m\leq l$. 则存在 $C=C(\widehat P,\widehat K,l,p,q,\rho)$, 使对所有 $v\in P$,
+\MBSourceItem{4}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-local-inverse-estimate}
+\label{eq:ch04-local-inverse-estimate}
+\|v\|_{W_p^l(K)}
+\leq Ch^{m-l+n/p-n/q}\|v\|_{W_q^m(K)}.
+\end{equation}
+\end{Lemma}
+\begin{Proof}
+以下以 $C$ 表示仅依赖于 $\widehat P,\widehat K,l,p,q,\rho$ 的一般常数. 先证 $m=0$ 的情形. 由有限维空间上的范数等价性,
+\MBSourceItem{5}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-normalized-norm-equivalence}
+\label{eq:ch04-normalized-norm-equivalence}
+\|\widehat v\|_{W_p^l(\widehat K)}
+\leq C\|\widehat v\|_{L^q(\widehat K)}
+\qquad\forall v\in P.
+\end{equation}
+因而式~\eqref{eq:ch04-inverse-scaled-seminorm} 蕴含
+\MBSourceItem{6}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-inverse-scaled-component-estimate}
+\label{eq:ch04-inverse-scaled-component-estimate}
+|v|_{W_p^j(K)}(\operatorname{diam}K)^{j-n/p}
+\leq C\|v\|_{L^q(K)}(\operatorname{diam}K)^{-n/q},
+\end{equation}
+其中 $0\leq j\leq l$. 由此得到
+\MBSourceItem{7}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-inverse-component-estimate}
+\label{eq:ch04-inverse-component-estimate}
+|v|_{W_p^j(K)}
+\leq Ch^{-j+n/p-n/q}\|v\|_{L^q(K)},
+\qquad0\leq j\leq l.
+\end{equation}
+因为 $h\leq1$,
+\MBSourceItem{8}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-inverse-full-norm-estimate}
+\label{eq:ch04-inverse-full-norm-estimate}
+\|v\|_{W_p^j(K)}
+\leq Ch^{-j+n/p-n/q}\|v\|_{L^q(K)},
+\qquad0\leq j\leq l,
+\end{equation}
+取 $j=l$ 即得 $m=0$ 时的式~\eqref{eq:ch04-local-inverse-estimate}.
+
+对一般的 $m\leq l$, 当 $l-m\leq k\leq l$ 且 $|\alpha|=k$ 时, 可写 $D^\alpha v=D^\beta D^\gamma v$, 其中 $|\beta|=l-m$, $|\gamma|=k+m-l$. 因而
+\[
+\MathBookFormulaID{formula-ch04-inverse-derivative-decomposition}
+\begin{aligned}
+\|D^\alpha v\|_{L^p(K)}
+&\leq\|D^\gamma v\|_{W_p^{l-m}(K)}\\
+&\leq Ch^{-(l-m)+n/p-n/q}\|D^\gamma v\|_{L^q(K)}\\
+&\leq Ch^{-(l-m)+n/p-n/q}|v|_{W_q^{k+m-l}(K)}.
+\end{aligned}
+\]
+因此
+\MBSourceItem{9}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-inverse-seminorm-estimate}
+\label{eq:ch04-inverse-seminorm-estimate}
+|v|_{W_p^k(K)}
+\leq Ch^{-(l-m)+n/p-n/q}|v|_{W_q^{k+m-l}(K)},
+\end{equation}
+其中 $l-m\leq k\leq l$. 特别地,
+\MBSourceItem{10}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-inverse-seminorm-by-full-norm}
+\label{eq:ch04-inverse-seminorm-by-full-norm}
+|v|_{W_p^k(K)}
+\leq Ch^{-(l-m)+n/p-n/q}\|v\|_{W_q^m(K)}.
+\end{equation}
+结合 $j=l-m$ 时的式~\eqref{eq:ch04-inverse-full-norm-estimate} 与式~\eqref{eq:ch04-inverse-seminorm-by-full-norm}, 即得式~\eqref{eq:ch04-local-inverse-estimate}.
+\end{Proof}
+
+\MathBookSourcePage{125}
+下面给出引理~\ref{lem:ch04-local-inverse-estimate} 的全局版本.
+
+\setcounter{thmcount}{10}
+\MBSourceItem{11}
+\begin{Theorem}
+\label{thm:ch04-global-inverse-estimate}
+设 $\{\mathcal T^h\}$, $0<h\leq1$, 是多面体区域 $\Omega\subset\mathbb R^n$ 的拟一致剖分族. 设参考有限元 $(K,P,N)$ 满足 $P\subset W_p^l(K)\cap W_q^m(K)$, 其中 $1\leq p,q\leq\infty$ 且 $0\leq m\leq l$. 对 $T\in\mathcal T^h$, 令 $(T,P_T,N_T)$ 为仿射等价元, 并令
+\[
+\MathBookFormulaID{formula-ch04-broken-finite-element-space}
+V^h=\{v:v\text{ 可测且 }v|_T\in P_T\ \forall T\in\mathcal T^h\}.
+\]
+则存在 $C=C(l,p,q,\rho)$, 使
+\MBSourceItem{12}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-global-inverse-estimate}
+\label{eq:ch04-global-inverse-estimate}
+\left[\sum_{T\in\mathcal T^h}\|v\|_{W_p^l(T)}^p\right]^{1/p}
+\leq Ch^{m-l+\min(0,n/p-n/q)}
+\left[\sum_{T\in\mathcal T^h}\|v\|_{W_q^m(T)}^q\right]^{1/q}
+\end{equation}
+对所有 $v\in V^h$ 成立. 当 $p=\infty$ 或 $q=\infty$ 时, 相应的和式分别解释为 $\max_{T\in\mathcal T^h}\|v\|_{W_\infty^l(T)}$ 或 $\max_{T\in\mathcal T^h}\|v\|_{W_\infty^m(T)}$.
+\end{Theorem}
+\begin{Proof}
+首先, 引理~\ref{lem:ch04-local-inverse-estimate} 与 $\{\mathcal T^h\}$ 的拟一致性蕴含
+\MBSourceItem{13}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-elementwise-inverse-shape-constant}
+\label{eq:ch04-elementwise-inverse-shape-constant}
+\|v\|_{W_p^l(T)}
+\leq C(\widehat P_T,\widehat T,l,p,q,\rho)
+h^{m-l+n/p-n/q}\|v\|_{W_q^m(T)}
+\end{equation}
+对所有 $T\in\mathcal T^h$ 和 $v\in P_T$ 成立. 与命题~\ref{prop:ch04-affine-sigma-continuous-bound} 的证明相似的论证表明
+\MBSourceItem{14}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-inverse-shape-constant-affine-bound}
+\label{eq:ch04-inverse-shape-constant-affine-bound}
+C(\widehat P_T,\widehat T,l,p,q,\rho)
+\leq\zeta(a_T)C(l,p,q,\rho),
+\end{equation}
+其中 $Ax=a_Tx+b_T$ 是从 $\widehat K$ 到 $\widehat T$ 的仿射变换, $\zeta$ 是连续依赖于 $a_T\in GL(\mathbb R^n)$ 的正函数. 由于 $\{\mathcal T^h\}$ 非退化, 定理~\ref{thm:ch04-global-interpolation-error} 证明中的论证表明 $\{a_T:T\in\mathcal T^h,0<h\leq1\}$ 是 $GL(\mathbb R^n)$ 的紧子集. 因而
+\MBSourceItem{15}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-uniform-elementwise-inverse-estimate}
+\label{eq:ch04-uniform-elementwise-inverse-estimate}
+\|v\|_{W_p^l(T)}
+\leq C(l,p,q,\rho)h^{m-l+n/p-n/q}\|v\|_{W_q^m(T)}
+\end{equation}
+对所有 $T\in\mathcal T^h$ 和 $v\in P_T$ 成立(另见练习~\ref{exr:ch04-15}). 以下以 $C$ 表示仅依赖于 $l,p,q,\rho$ 的一般常数.
+
+当 $p=\infty$ 时, 式~\eqref{eq:ch04-global-inverse-estimate} 直接由式~\eqref{eq:ch04-uniform-elementwise-inverse-estimate} 得到. 设 $p<\infty$. 则
+\MBSourceItem{16}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-global-inverse-summed-elementwise}
+\label{eq:ch04-global-inverse-summed-elementwise}
+\left(\sum_{T\in\mathcal T^h}\|v\|_{W_p^l(T)}^p\right)^{1/p}
+\leq Ch^{m-l+n/p-n/q}
+\left(\sum_{T\in\mathcal T^h}\|v\|_{W_q^m(T)}^p\right)^{1/p}.
+\end{equation}
+若 $p\geq q$, 则(参见练习~\ref{exr:ch04-08})
+\MBSourceItem{17}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-discrete-lp-lq-p-geq-q}
+\label{eq:ch04-discrete-lp-lq-p-geq-q}
+\left(\sum_{T\in\mathcal T^h}\|v\|_{W_q^m(T)}^p\right)^{1/p}
+\leq\left(\sum_{T\in\mathcal T^h}\|v\|_{W_q^m(T)}^q\right)^{1/q},
+\end{equation}
+此时结论直接由式~\eqref{eq:ch04-global-inverse-summed-elementwise} 和式~\eqref{eq:ch04-discrete-lp-lq-p-geq-q} 得到.
+
+若 $p<q$, 则 Hölder 不等式给出(参见练习~\ref{exr:ch04-09})
+\MBSourceItem{18}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-discrete-lp-lq-p-less-q}
+\label{eq:ch04-discrete-lp-lq-p-less-q}
+\left(\sum_{T\in\mathcal T^h}\|v\|_{W_q^m(T)}^p\right)^{1/p}
+\leq\left(\sum_{T\in\mathcal T^h}1\right)^{1/p-1/q}
+\left(\sum_{T\in\mathcal T^h}\|v\|_{W_q^m(T)}^q\right)^{1/q}.
+\end{equation}
+由 $\{\mathcal T^h\}$ 的拟一致性,
+\MBSourceItem{19}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-number-of-elements-bound}
+\label{eq:ch04-number-of-elements-bound}
+\sum_{T\in\mathcal T^h}1\leq Ch^{-n}.
+\end{equation}
+此时式~\eqref{eq:ch04-global-inverse-estimate} 由式~\eqref{eq:ch04-global-inverse-summed-elementwise}、式~\eqref{eq:ch04-discrete-lp-lq-p-less-q} 和式~\eqref{eq:ch04-number-of-elements-bound} 得到.
+\end{Proof}
+
+\setcounter{thmcount}{19}
+\MBSourceItem{20}
+\begin{Remark}
+\label{rem:ch04-inverse-estimate-conforming-nonconforming}
+定理~\ref{thm:ch04-global-inverse-estimate} 对协调和非协调有限元都适用. 对协调有限元, 可将式~\eqref{eq:ch04-global-inverse-estimate} 中的和式替换为全局定义的范数.
+\end{Remark}
+
+\MathBookSourcePage{126}
+\subsection{张量积多项式逼近}
+\label{sec:ch04-tensor-product-polynomial-approximation}
+\setcounter{thmcount}{0}
+\setcounter{equation}{0}
+
+前面已经说明, 只要使用 $m-1$ 次多项式, 就能达到 $h^m$ 阶逼近. 这些结果同时适用于标准张量积多项式空间和 Serendipity 单元. 然而, 张量积多项式空间中次数不低于 $m$ 的额外项既然不改变逼近阶 $h^m$, 它们究竟提供了什么? 其影响很显著, 但只有在误差项所用范数中才能看出.
+
+定义 $A=\{me_i:i=1,\ldots,n\}$, 其中多重指标 $e_i$ 是标准基向量, $(e_i)_j$ 为 Kronecker delta. 令 $A_0$ 表示与各变量次数均小于 $m$ 的张量积多项式相应的多重指标集合. 它可刻画为
+\MBSourceItem{1}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-tensor-product-index-set}
+\label{eq:ch04-tensor-product-index-set}
+A_0=\{\beta:D^\alpha x^\beta=0\quad\forall\alpha\in A\}.
+\end{equation}
+定义
+\MBSourceItem{2}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-tensor-product-averaged-polynomial}
+\label{eq:ch04-tensor-product-averaged-polynomial}
+Q_Au(x)=\int_B\sum_{\alpha\in A_0}\frac1{\alpha!}
+D^\alpha u(y)(x-y)^\alpha\phi(y)\,dy.
+\end{equation}
+与前面一样,
+\MBSourceItem{3}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-tensor-product-averaged-polynomial-bound}
+\label{eq:ch04-tensor-product-averaged-polynomial-bound}
+\|Q_Au\|_{W_\infty^k(\Omega)}
+\leq C_{m,n,\rho}\|u\|_{L^1(B)}.
+\end{equation}
+
+\MathBookSourcePage{127}
+\setcounter{thmcount}{3}
+\MBSourceItem{4}
+\begin{Proposition}
+\label{prop:ch04-tensor-product-remainder-representation}
+余项 $R_Au:=u-Q_Au$ 满足
+\MBSourceItem{5}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-tensor-product-remainder-representation}
+\label{eq:ch04-tensor-product-remainder-representation}
+R_Au(x)=\sum_{\alpha\in A}\int_{C_x}\widetilde k_\alpha(x,z)D^\alpha u(z)\,dz,
+\end{equation}
+其中
+\MBSourceItem{6}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-tensor-product-kernel-derivative-bound}
+\label{eq:ch04-tensor-product-kernel-derivative-bound}
+\left|\frac{\partial^\beta}{\partial x^\beta}
+\frac{\partial^\gamma}{\partial y^\gamma}\widetilde k_\alpha(x,y)\right|
+\leq C|x-y|^{|\alpha|-n-|\beta|-|\gamma|}.
+\end{equation}
+\end{Proposition}
+\begin{Proof}
+可写成
+\MBSourceItem{7}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-tensor-product-remainder-high-order}
+\label{eq:ch04-tensor-product-remainder-high-order}
+\begin{aligned}
+u(x)
+&=Q^{n\times m}u(x)+R^{n\times m}u(x)\\
+&=Q_Au(x)+\int_B\sum_{\substack{\alpha\notin A_0\\|\alpha|<n\times m}}
+\frac1{\alpha!}D^\alpha u(y)(x-y)^\alpha\phi(y)\,dy\\
+&\qquad+n\times m\sum_{|\alpha|=n\times m}
+\int_{C_x}k_\alpha(x,z)D^\alpha u(z)\,dz.
+\end{aligned}
+\end{equation}
+注意 $|\alpha|=n\times m$ 蕴含 $\alpha\notin A_0$. 对任意 $\alpha\notin A_0$, 可写 $\alpha=\beta+\gamma$, 其中 $\beta\in A$, $\gamma$ 是多重指标. 分部积分得到
+\MBSourceItem{8}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-tensor-product-remainder-after-integration-by-parts}
+\label{eq:ch04-tensor-product-remainder-after-integration-by-parts}
+u(x)=Q_Au(x)+\sum_{\alpha\in A}\int_{C_x}
+\widetilde k_\alpha(x,z)D^\alpha u(z)\,dz.
+\end{equation}
+估计~\eqref{eq:ch04-tensor-product-kernel-derivative-bound} 来自
+\[
+\MathBookFormulaID{formula-ch04-tensor-product-kernel-proof-bound}
+\left|\frac{\partial^\beta}{\partial x^\beta}
+\frac{\partial^\gamma}{\partial y^\gamma}k_\alpha(x,y)\right|
+\leq C|x-y|^{|\alpha|-n-|\beta|-|\gamma|},
+\]
+它可按命题~\ref{prop:ch04-remainder-kernel-representation} 的证明导出.
+\end{Proof}
+
+\MathBookSourcePage{128}
+由引理~\ref{lem:ch04-riesz-potential-pointwise-bound}, 若 $p>1$ 时 $m-k-n/p>0$, 或 $p=1$ 时 $m-k-n\geq0$, 则
+\MBSourceItem{9}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-tensor-product-remainder-linfty}
+\label{eq:ch04-tensor-product-remainder-linfty}
+|u-Q_Au|_{W_\infty^k(\Omega)}
+\leq C_{m,n,\gamma}d^{m-k-n/p}
+\left(\sum_{i=1}^n\left\|\frac{\partial^m u}{\partial x_i^m}\right\|_{L^p(\Omega)}^p\right)^{1/p},
+\end{equation}
+其中 $d$ 是 $\Omega$ 的直径. 由引理~\ref{lem:ch04-riesz-potential-lp-bound}, 对 $0\leq k<m$,
+\MBSourceItem{10}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-tensor-product-remainder-lp}
+\label{eq:ch04-tensor-product-remainder-lp}
+|u-Q_Au|_{W_p^k(\Omega)}
+\leq C_{m,n,\gamma}d^{m-k}
+\left(\sum_{i=1}^n\left\|\frac{\partial^m u}{\partial x_i^m}\right\|_{L^p(\Omega)}^p\right)^{1/p}.
+\end{equation}
+因此, 定理~\ref{thm:ch04-local-interpolation-error} 的证明给出如下结论.
+
+\setcounter{thmcount}{10}
+\MBSourceItem{11}
+\begin{Theorem}
+\label{thm:ch04-local-tensor-product-interpolation}
+设 $(K,P,N)$ 是 $m-1$ 阶张量积有限元, $h=\operatorname{diam}K$, $I$ 为相应插值算子. 对 $u\in W_p^m(K)$, 若 $p>1$ 时 $m-k-n/p>0$, 或 $p=1$ 时 $m-k-n\geq0$, 则
+\MBSourceItem{12}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-local-tensor-product-linfty-error}
+\label{eq:ch04-local-tensor-product-linfty-error}
+|u-Iu|_{W_\infty^k(K)}
+\leq C_{m,n}h^{m-k-n/p}
+\left(\sum_{i=1}^n\left\|\frac{\partial^m u}{\partial x_i^m}\right\|_{L^p(K)}^p\right)^{1/p},
+\end{equation}
+且对 $0\leq k<m$,
+\MBSourceItem{13}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-local-tensor-product-lp-error}
+\label{eq:ch04-local-tensor-product-lp-error}
+|u-Iu|_{W_p^k(K)}
+\leq C_{m,n}h^{m-k}
+\left(\sum_{i=1}^n\left\|\frac{\partial^m u}{\partial x_i^m}\right\|_{L^p(K)}^p\right)^{1/p}.
+\end{equation}
+\end{Theorem}
+
+\MathBookSourcePage{129}
+张量积有限元生成 $C^0$ 元, 因而有如下全局插值估计.
+
+\setcounter{thmcount}{13}
+\MBSourceItem{14}
+\begin{Theorem}
+\label{thm:ch04-global-tensor-product-interpolation}
+设 $I^h$ 是 $\Omega$ 的最大网格尺寸为 $h$ 的矩形剖分上 $m-1$ 阶张量积有限元的插值算子. 对 $u\in W_p^m(\Omega)$, 若 $p>1$ 时 $m-n/p>0$, 或 $p=1$ 时 $m-n\geq0$, 则
+\MBSourceItem{15}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-global-tensor-product-linfty-error}
+\label{eq:ch04-global-tensor-product-linfty-error}
+|u-I^h u|_{L^\infty(\Omega)}
+\leq C_{m,n}h^{m-n/p}
+\left(\sum_{i=1}^n\left\|\frac{\partial^m u}{\partial x_i^m}\right\|_{L^p(\Omega)}^p\right)^{1/p},
+\end{equation}
+且对 $0\leq k\leq1$,
+\MBSourceItem{16}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-global-tensor-product-lp-error}
+\label{eq:ch04-global-tensor-product-lp-error}
+|u-I^h u|_{W_p^k(\Omega)}
+\leq C_{m,n}h^{m-k}
+\left(\sum_{i=1}^n\left\|\frac{\partial^m u}{\partial x_i^m}\right\|_{L^p(\Omega)}^p\right)^{1/p}.
+\end{equation}
+\end{Theorem}
+
+上述估计对普通多项式逼近显然不成立. 例如取 $m=2$ 和 $u(x,y)=xy$. 以上估计右端均为零, 从而将有 $u=I^h u$. 但线性插值不可能做到这一点, 必须加入双线性逼近中的额外项.
+
+Serendipity 单元由于其定义具有自由度而更复杂. 考虑二维二次 Serendipity 单元. 合适的形函数空间 $P$ 可以是任意包含所有二次多项式、且可由边节点唯一确定的集合. 一种定义方式是令
+\MBSourceItem{17}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-quadratic-serendipity-index-set}
+\label{eq:ch04-quadratic-serendipity-index-set}
+A=\{(3,0),(0,3),(2,2)\},
+\end{equation}
+并令 $P$ 的基为
+\[
+\MathBookFormulaID{formula-ch04-quadratic-serendipity-basis}
+A_0=\{\beta:D^\alpha x^\beta=0\ \forall\alpha\in A\}
+=\{1,x,y,x^2,xy,y^2,x^2y,xy^2\},
+\]
+其中没有 $x^2y^2$ 项.
+
+先验证 $P$ 是二次 Serendipity 单元的有效形函数空间. 设单元区域 $K$ 是单位正方形, 并设 $P\in P$ 的所有 Serendipity 边节点值均为零. 则 $P=cx(1-x)y(1-y)=cx^2y^2+\cdots$, 故必有 $c=0$. 因此, 图~\ref{fig:ch03-quadratic-serendipity} 所示 Serendipity 节点变量 $N$ 确定 $P$, $(K,N,P)$ 是定义良好的有限元. 使用上述 $A_0$, 可按式~\eqref{eq:ch04-tensor-product-averaged-polynomial-bound} 定义 $Q_A$, 并得到与定理~\ref{thm:ch04-local-tensor-product-interpolation} 和定理~\ref{thm:ch04-global-tensor-product-interpolation} 相同形式的误差估计.
+
+\MathBookSourcePage{130}
+\setcounter{thmcount}{17}
+\MBSourceItem{18}
+\begin{Theorem}
+\label{thm:ch04-local-quadratic-serendipity}
+设 $(K,P,N)$ 是用式~\eqref{eq:ch04-quadratic-serendipity-index-set} 中的 $A$ 定义的二维二次 Serendipity 有限元, $I$ 为相应插值算子. 则对 $u\in W_p^4(K)$,
+\[
+\MathBookFormulaID{formula-ch04-local-quadratic-serendipity-linfty}
+|u-Iu|_{W_\infty^k(K)}
+\leq C\left(\sum_{\alpha\in A}(\operatorname{diam}K)^{p(|\alpha|-k)-2}
+\|D^\alpha u\|_{L^p(K)}^p\right)^{1/p},
+\]
+其中 $p>1$ 时要求 $3-k-2/p>0$, $p=1$ 时要求 $k\leq1$. 此外, 对 $0\leq k\leq2$,
+\[
+\MathBookFormulaID{formula-ch04-local-quadratic-serendipity-lp}
+|u-Iu|_{W_p^k(K)}
+\leq C\left(\sum_{\alpha\in A}(\operatorname{diam}K)^{p(|\alpha|-k)}
+\|D^\alpha u\|_{L^p(K)}^p\right)^{1/p}.
+\]
+\end{Theorem}
+
+\setcounter{thmcount}{18}
+\MBSourceItem{19}
+\begin{Theorem}
+\label{thm:ch04-global-quadratic-serendipity}
+设 $I^h$ 是 $\Omega$ 的最大网格尺寸为 $h$ 的矩形剖分上, 用式~\eqref{eq:ch04-quadratic-serendipity-index-set} 中 $A$ 定义的二次 Serendipity 有限元插值算子. 则对 $u\in W_p^4(\Omega)$,
+\[
+\MathBookFormulaID{formula-ch04-global-quadratic-serendipity-linfty}
+|u-I^h u|_{L^\infty(\Omega)}
+\leq C\left(\sum_{\alpha\in A}h^{p|\alpha|-2}\|D^\alpha u\|_{L^p(\Omega)}^p\right)^{1/p},
+\]
+且对 $0\leq k\leq1$,
+\[
+\MathBookFormulaID{formula-ch04-global-quadratic-serendipity-lp}
+|u-I^h u|_{W_p^k(\Omega)}
+\leq C\left(\sum_{\alpha\in A}h^{p(|\alpha|-k)}\|D^\alpha u\|_{L^p(\Omega)}^p\right)^{1/p}.
+\]
+\end{Theorem}
+
+对三次 Serendipity 单元可取
+\MBSourceItem{20}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-cubic-serendipity-index-set}
+\label{eq:ch04-cubic-serendipity-index-set}
+A=\{(4,0),(0,4),(3,3),(3,2),(2,3),(2,2)\},
+\end{equation}
+得到类似结果, 只是定理~\ref{thm:ch04-local-quadratic-serendipity} 的对应结论中 $k$ 的范围增加一, 并要求 $u$ 有更高的光滑性. 令 $P$ 的基为 $\{x^\beta:\beta\in A_0\}$, 其中 $A_0=\{\beta:D^\alpha x^\beta=0\ \forall\alpha\in A\}$. 为验证 $P$ 是三次 Serendipity 单元的有效形函数空间, 设 $P\in P$ 的所有 Serendipity 边节点值(图~\ref{fig:ch03-cubic-serendipity})均为零. 则 $P=x(1-x)y(1-y)B(x,y)$, 其中 $B$ 是双线性的. 因为对所有 $\alpha\in A$ 必有 $D^\alpha P=0$, 可从 $\alpha=(3,3)$ 开始按 $|\alpha|$ 递减, 得出 $B\equiv0$.
+
+\setcounter{thmcount}{20}
+\MBSourceItem{21}
+\begin{Theorem}
+\label{thm:ch04-cubic-serendipity}
+设 $(K,P,N)$ 是用式~\eqref{eq:ch04-cubic-serendipity-index-set} 中的 $A$ 定义的二维三次 Serendipity 有限元, $I$ 为相应插值算子. 则对 $u\in W_p^6(K)$,
+\[
+\MathBookFormulaID{formula-ch04-local-cubic-serendipity-linfty}
+|u-Iu|_{W_\infty^k(K)}
+\leq C\left(\sum_{\alpha\in A}(\operatorname{diam}K)^{p(|\alpha|-k)-2}
+\|D^\alpha u\|_{L^p(K)}^p\right)^{1/p},
+\]
+其中 $p>1$ 时要求 $4-k-2/p>0$, $p=1$ 时要求 $k\leq2$. 此外, 对 $0\leq k\leq3$,
+\[
+\MathBookFormulaID{formula-ch04-local-cubic-serendipity-lp}
+|u-Iu|_{W_p^k(K)}
+\leq C\left(\sum_{\alpha\in A}(\operatorname{diam}K)^{p(|\alpha|-k)}
+\|D^\alpha u\|_{L^p(K)}^p\right)^{1/p}.
+\]
+\MathBookSourcePage{131}
+若 $I^h$ 是 $\Omega$ 的最大网格尺寸为 $h$ 的矩形剖分上的相应插值算子, 则
+\begin{align*}
+\MathBookFormulaID{formula-ch04-global-cubic-serendipity-estimates}
+|u-I^h u|_{L^\infty(\Omega)}
+&\leq C\left(\sum_{\alpha\in A}h^{p|\alpha|-2}\|D^\alpha u\|_{L^p(\Omega)}^p\right)^{1/p},\\
+|u-I^h u|_{W_p^k(\Omega)}
+&\leq C\left(\sum_{\alpha\in A}h^{p(|\alpha|-k)}\|D^\alpha u\|_{L^p(\Omega)}^p\right)^{1/p}.
+\end{align*}
+对 $0\leq k\leq1$ 成立.
+\end{Theorem}
+
+\subsection{等参多项式逼近}
+\label{sec:ch04-isoparametric-polynomial-approximation}
+\setcounter{thmcount}{0}
+\setcounter{equation}{0}
+
+对曲边界问题使用高阶元时, 必须以某种方式准确逼近边界条件. 工程实践中最有效的方法之一是使用等参元. 在逼近空间的定义中, 等参元采用比前面更一般的分片多项式变量替换. 在这种方法中, 给定单元区域 $\widetilde K$ 上的单元基函数 $\widetilde\phi_N$, 通过从参考元区域 $K$ 到 $\widetilde K$ 的多项式映射 $\xi\mapsto F(\xi)$, 与参考基函数联系为
+\MBSourceItem{1}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-isoparametric-basis-transformation}
+\label{eq:ch04-isoparametric-basis-transformation}
+\widetilde\phi_N(x)=\phi_N(F^{-1}(x)).
+\end{equation}
+这与仿射等价元类似, 只是现在允许映射更一般. 若映射 $F$ 来自同一个有限元空间, 就称这种单元为``等参的''.
+
+更准确地说, 设基础多面体区域 $\widetilde\Omega\subset\mathbb R^n$, 基础有限元空间 $\widetilde V^h$ 定义在 $\widetilde\Omega$ 上. 构造一个一一连续映射 $\widetilde F:\widetilde\Omega\to\mathbb R^n$, 使每个分量 $\widetilde F_i\in\widetilde V^h$. 所得空间
+\MBSourceItem{2}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-isoparametric-equivalent-space}
+\label{eq:ch04-isoparametric-equivalent-space}
+V^h:=\{v(\widetilde F^{-1}(x)):x\in\widetilde F(\widetilde\Omega),\ v\in\widetilde V^h\}
+\end{equation}
+称为等参等价有限元空间.
+
+等参等价空间的逼近理论很简单, 只需使用链式法则. 因此, 本章至此导出的所有结果仍然成立, 唯一变化是常数现在依赖于映射 $\widetilde F$ 的 Jacobian $J_{\widetilde F}$. 为得到具有正则 Jacobian 的映射必须谨慎(Ciarlet \& Raviart 1972b), 而二维和三维中的具体构造见 Lenoir (1986).
+
+\MathBookSourcePage{132}
+例如, 设 $\Omega$ 是二维或三维光滑区域, $\Omega_h$ 是其多面体逼近, 比如可由边界的分片线性插值定义, 其面片尺寸至多为 $h$. 令 $\mathcal T^h$ 是相应的三角剖分, 由尺寸至多为 $h$ 的单纯形组成. 可以构造 $k-1$ 次分片多项式映射 $F^h$, 使其:
+\begin{enumerate}
+\item 在远离 $\Omega_h$ 边界处等于恒等映射;
+\item 满足 $\partial\Omega$ 上任一点到 $\partial F^h(\Omega_h)$ 最近点的距离至多为 $Ch^k$;
+\item $\|J_{F^h}\|_{W_\infty^k(\Omega_h)}\leq C$, 且 $\|J_{F^h}^{-1}\|_{W_\infty^k(\Omega_h)}\leq C$, 其中 $C$ 与 $h$ 无关.
+\end{enumerate}
+注意 $F^h(\Omega_h)$ 只是逼近 $\Omega$, 并不等于 $\Omega$. 不过利用定理~\ref{thm:ch01-extension-mapping} 的延拓结果, 可以把所有待逼近函数视为按需要定义在 $F^h(\Omega_h)$ 上. 使用第~\ref{sec:ch04-interpolation-error-bounds} 节的方法容易证明如下结论.
+
+\setcounter{thmcount}{2}
+\MBSourceItem{3}
+\begin{Theorem}
+\label{thm:ch04-isoparametric-interpolation-error}
+设 $\{\mathcal T^h\}$, $0<h\leq1$, 是 Lipschitz 区域 $\Omega$ 的一族多面体逼近 $\Omega_h$ 上的非退化剖分族. 假设存在满足上述性质 1--3 的 $m-1$ 次分片多项式映射 $F^h$. 设 $(K,P,N)$ 是 $C^0$ 参考元, 对某些 $m,p$ 满足定理~\ref{thm:ch04-local-interpolation-error} 的条件. 假设对所有 $T\in\mathcal T^h$, $0<h\leq1$, 元 $(T,P_T,N_T)$ 均与 $(K,P,N)$ 仿射插值等价. 则存在正常数 $C$, 只依赖于参考元、$n,m,p$ 以及式~\eqref{eq:ch04-regular-mesh-family} 中的 $\rho$, 使对 $0\leq s\leq1$,
+\MBSourceItem{4}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-isoparametric-lp-error}
+\label{eq:ch04-isoparametric-lp-error}
+\|v-I^h v\|_{W_p^s(F^h(\Omega_h))}
+\leq Ch^{m-s}|v|_{W_p^m(F^h(\Omega_h))},
+\end{equation}
+并且当 $m>s+n/p$($p=1$ 时为 $m\geq s+n$)时,
+\MBSourceItem{5}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-isoparametric-linfty-error}
+\label{eq:ch04-isoparametric-linfty-error}
+\|v-I^h v\|_{W_\infty^s(F^h(\Omega_h))}
+\leq Ch^{m-s-n/p}|v|_{W_p^m(F^h(\Omega_h))}.
+\end{equation}
+这里 $I^h v$ 表示等参插值函数, 定义为 $(I^h v)(F^h(x))=\widetilde I^h\widetilde v(x)$, $x\in\Omega_h$, 其中 $\widetilde v(x)=v(F^h(x))$, $x\in\Omega_h$, $\widetilde I^h$ 是基础有限元空间 $\widetilde V^h$ 的全局插值算子.
+\end{Theorem}
+
+需要指出, $r\geq1$ 的等参 $C^r$ 元实际价值不大. 问题不在于单元经过 $C^r$ 映射后不再保持 $C^r$ (它们仍会保持), 而在于将多面体区域映到光滑区域时, $C^1$ 映射并不合适. 因此上述结果限于 $r=0$ 的情形.
+
+\subsection{非光滑函数的插值}
+\label{sec:ch04-nonsmooth-function-interpolation}
+\setcounter{thmcount}{0}
+\setcounter{equation}{0}
+
+前几节的插值算子要有定义, 都要求被逼近函数具有一定光滑性. 第~\MBUnresolvedReference{chap:ch14}{14} 章将介绍一种利用 Banach 空间插值理论推广此类逼近结果的方法. 这里说明一种基于 Clement (1975) 以及 Scott \& Zhang (1990 \& 1992) 思想的构造性方法. 我们不讨论这种方法最一般的形式, 而只给出最简单版本; 更多结果见 Scott \& Zhang (1990 \& 1992) 以及 Girault \& Scott (2002).
+
+\MathBookSourcePage{133}
+首先如下重新解释全局插值算子 $I^h$. 对每个节点 $z$, 有相应节点变量 $N_z$. 它可以是点值、导数值、边上的积分等. 对光滑函数可写成
+\MBSourceItem{1}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-global-interpolant-nodal-sum}
+\label{eq:ch04-global-interpolant-nodal-sum}
+I^h u=\sum_zN_z(u)\Phi_z,
+\end{equation}
+其中 $\Phi_z$ 是全局基函数, 定义为
+\[
+\MathBookFormulaID{formula-ch04-global-basis-local-restriction}
+\Phi_z|_K=\phi_{N_z}^K,
+\]
+$\phi_{N_z}^K$ 是 $K$ 上的局部节点基函数; 若 $z$ 不是与 $K$ 关联的节点, 则令 $\Phi_z|_K:=0$.
+
+若 $N_z$ 是以单元区域 $K$ 为基础的单元节点变量之一, 就说``$K$ 包含 $z$''. 稍微滥用记号, 我们把 $z$ 既看作节点变量的位置, 也看作它的某种描述符. 例如, Hermite 节点在同一``位置''(如一个顶点)有多个节点 $z$.
+
+现在对每个节点 $z$ 选择一个包含 $z$ 的特定单元区域 $K_z$, 再选取子集 $\widetilde K_z\subset K_z$. $K_z$ 和 $\widetilde K_z$ 的选择都有很大自由度. 区域 $\widetilde K_z$ 将用于构造新插值算子; $N_z$ 的作用将表示为 $\widetilde K_z$ 上的积分.
+
+为简化论证, 假设所考虑单元具有层次性, 即以 $K_z$ 为基础的单元中的函数限制到 $\widetilde K_z$ 后, 本身是具有 $K_z$ 上节点子集的一个单元的适当函数. 更准确地, 设基本单元为 $(K_z,P_z,N_z)$, 并令 $\widetilde P_z$ 表示 $P_z$ 中单元函数在 $\widetilde K_z$ 上的限制:
+\[
+\MathBookFormulaID{formula-ch04-hierarchical-restricted-space}
+\widetilde P_z=\{f|_{\widetilde K_z}:f\in P_z\}.
+\]
+假设 $(\widetilde K_z,\widetilde P_z,\widetilde N_z)$ 对某个 $\widetilde N_z\subset N_z$ 是定义良好的有限元. 后一条件蕴含
+\MBSourceItem{2}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-hierarchical-basis-restrictions}
+\label{eq:ch04-hierarchical-basis-restrictions}
+\phi_N^{K_z}|_{\widetilde K_z}=\phi_N^{\widetilde K_z}
+\quad\forall N\in\widetilde N_z,
+\qquad
+\phi_N^{K_z}|_{\widetilde K_z}\equiv0
+\quad\forall N\in N_z\setminus\widetilde N_z.
+\end{equation}
+
+\MathBookSourcePage{134}
+以下对基本单元为单纯形的情形给出细节, 此时术语较简单. 对每个 $z$, 令 $K_z$ 是包含 $z$ 的单纯形, 并选 $\widetilde K_z$ 为 $K_z$ 的一个闭单纯子复形, 即 $K_z$ 的顶点、边、面等. 允许 $\widetilde K_z$ 具有任意维数:
+\[
+\MathBookFormulaID{formula-ch04-smoothing-simplex-dimension}
+0\leq\dim(\widetilde K_z)\leq d,
+\]
+其中 $d$ 是底层区域 $\Omega$ 的维数. 只要求 $z\in\widetilde K_z$. 因而
+\[
+\MathBookFormulaID{formula-ch04-smoothing-simplex-inclusions}
+z\in\widetilde K_z\subset K_z,
+\qquad0\leq\dim(\widetilde K_z)\leq\dim(K_z).
+\]
+
+有三个值得注意的例子. 第一个是式~\eqref{eq:ch04-global-interpolant-nodal-sum} 的标准 Lagrange、Hermite、Argyris 等插值算子, 此时对每个 $z$, $\dim(\widetilde K_z)=0$, 即 $\widetilde K_z=\{z\}$. 第二个例子对每个 $z$ 取 $\widetilde K_z=K_z$, 从而 $\dim(\widetilde K_z)=d$, 这允许最大程度的光滑化(Clement 1975). 这仍不能唯一确定 $\widetilde K_z$, 因为还需从包含 $z$ 的单元中选一个. 最后, 当 $z\in\partial\Omega$ 时, 取 $\widetilde K_z\subset\partial\Omega$ 往往很有用(Scott \& Zhang 1990).
+
+对每个节点 $z$, 考虑 $\widetilde P_z$ 的相应局部节点基 $\{\phi_N^{\widetilde K_z}:N\in\widetilde N_z\}$. 令
+\MBSourceItem{3}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-local-l2-dual-basis}
+\label{eq:ch04-local-l2-dual-basis}
+\{\psi_N^{\widetilde K_z}:N\in\widetilde N_z\}
+\end{equation}
+表示 $\widetilde P_z$ 的 $L^2(\widetilde K_z)$ 对偶基:
+\MBSourceItem{4}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-local-l2-duality}
+\label{eq:ch04-local-l2-duality}
+\int_{\widetilde K_z}\phi_N^{\widetilde K_z}(x)
+\psi_M^{\widetilde K_z}(x)\,dx=\delta_{MN}
+\qquad\forall M,N\in\widetilde N_z.
+\end{equation}
+等价地, $\{\psi_N:N\in\widetilde N_z\}$ 是由 Riesz 表示定理~\ref{thm:ch02-riesz-representation} 保证的 $\{N\in\widetilde N_z\}$ 在 $L^2(\widetilde K_z)$ 中的表示. 对 $N\in N_z\setminus\widetilde N_z$ 令 $\psi_N\equiv0$, 可将式~\eqref{eq:ch04-local-l2-dual-basis} 中的函数集扩充到 $\{\psi_N^{\widetilde K_z}:N\in N_z\}$. 由式~\eqref{eq:ch04-hierarchical-basis-restrictions},
+\MBSourceItem{5}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-extended-local-l2-duality}
+\label{eq:ch04-extended-local-l2-duality}
+\int_{\widetilde K_z}\phi_N^{K_z}(x)\psi_M^{\widetilde K_z}(x)\,dx
+=\delta_{MN}
+\qquad\forall M,N\in N_z.
+\end{equation}
+
+现在可对更一般的函数定义全局插值算子, 比如对所有节点 $z$ 都有 $u\in L^1(\widetilde K_z)$ 时, 令
+\MBSourceItem{6}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-generalized-global-interpolant}
+\label{eq:ch04-generalized-global-interpolant}
+\widetilde I^h u=\sum_z\left(\int_{\widetilde K_z}
+\psi_{N_z}^{\widetilde K_z}(x)u(x)\,dx\right)\Phi_z.
+\end{equation}
+
+\MathBookSourcePage{135}
+\setcounter{thmcount}{6}
+\MBSourceItem{7}
+\begin{Theorem}
+\label{thm:ch04-generalized-interpolant-projection}
+$\widetilde I^h$ 是投影, 且在由 $\{\Phi_z\}$ 张成的空间 $V^h$ 上等于 $I^h$:
+\[
+\MathBookFormulaID{formula-ch04-generalized-interpolant-projection}
+\widetilde I^h v=v\qquad\forall v\in V^h.
+\]
+\end{Theorem}
+\begin{Proof}
+这由式~\eqref{eq:ch04-extended-local-l2-duality} 得到, 因为它蕴含
+\[
+\MathBookFormulaID{formula-ch04-generalized-interpolant-nodal-recovery}
+\int_{\widetilde K_z}\psi_{N_z}^{\widetilde K_z}(x)v(x)\,dx
+=N_z(v)\qquad\forall v\in V^h.
+\]
+\end{Proof}
+
+$\widetilde I^h$ 的另一个关键性质是可构造得满足边界条件. 下面对 Lagrange 元和简单 Dirichlet 边界条件叙述结果. Hermite 元和涉及导数的 Dirichlet 边界条件见 Girault \& Scott (2002).
+
+\setcounter{thmcount}{7}
+\MBSourceItem{8}
+\begin{Theorem}
+\label{thm:ch04-generalized-interpolant-boundary-condition}
+假设对所有 $z\in\partial\Omega$ 都有 $\widetilde K_z\subset\partial\Omega$, 且所有单元均为 Lagrange 元. 只要 $v=0$ 于 $\partial\Omega$, 就有 $\widetilde I^h v=0$ 于 $\partial\Omega$.
+\end{Theorem}
+
+现在概述逼近误差 $v-\widetilde I^h v$ 的估计. 完整细节对 Lagrange 元见 Scott \& Zhang (1990), 对 Hermite 元见 Girault \& Scott (2002). 假设所有单元的形函数空间 $P_K$ 都包含 $P_{m-1}$. 与引理~\ref{lem:ch04-interpolation-operator-bounded} 相应, 对任意 $K\in\mathcal T^h$ 和 $1\leq p\leq\infty$,
+\[
+\MathBookFormulaID{formula-ch04-generalized-interpolant-local-bound}
+\|\widehat{\widetilde I^h v}\|_{W_p^m(\widehat K)}
+\leq C\|\widehat v\|_{L^1(\widehat S_K)},
+\]
+其中 $S_K$ 是由 $\mathcal T^h$ 中与 $K$ 相邻的单元组成的区域,
+\MBSourceItem{9}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-element-patch}
+\label{eq:ch04-element-patch}
+S_K=\operatorname{interior}\left(\bigcup\{K_i:K_i\cap K\ne\varnothing,\ K_i\in\mathcal T^h\}\right),
+\end{equation}
+上标尖号表示按 $K$ 的直径缩放后的相应区域和函数, 参见式~\eqref{eq:ch04-scaled-domain}. 对任意 $0\leq s\leq k\leq m$, 使用定理~\ref{thm:ch04-local-interpolation-error} 证明中的方法以及 Scott \& Zhang (1990), 有
+\MBSourceItem{10}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-generalized-interpolation-local-error}
+\label{eq:ch04-generalized-interpolation-local-error}
+\begin{aligned}
+\|v-\widetilde I^h v\|_{W_p^s(K)}
+&\leq\|v-Q^{k-1}v\|_{W_p^s(K)}
++\|\widetilde I^h(v-Q^{k-1}v)\|_{W_p^s(K)}\\
+&\leq Ch_K^{k-s}|v|_{W_p^k(S_K)},
+\end{aligned}
+\end{equation}
+其中 $h_K:=\operatorname{diam}K$; 当 $s=k=0$ 时, 令 $Q^{-1}\equiv0$, 该式仍成立. 若 $\mathcal T^h$ 非退化, 则
+\MBSourceItem{11}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-element-patch-overlap-bound}
+\label{eq:ch04-element-patch-overlap-bound}
+\sup\{\operatorname{cardinality}\{K\in\mathcal T^h:\operatorname{interior}K\subset S_{\widetilde K}\}:\widetilde K\in\mathcal T^h\}
+\leq C,
+\end{equation}
+其中 $C$ 只依赖于式~\eqref{eq:ch04-regular-mesh-family} 中的 $\rho$. 因而有以下结论.
+
+\MathBookSourcePage{136}
+\setcounter{thmcount}{11}
+\MBSourceItem{12}
+\begin{Theorem}
+\label{thm:ch04-generalized-interpolation-global-error}
+假设所有单元的形函数集合包含所有次数小于 $m$ 的多项式, 且 $\mathcal T^h$ 非退化. 设 $v\in W_p^k(\Omega)$, 其中 $0\leq k\leq m$, $1\leq p\leq\infty$. 则
+\MBSourceItem{14}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-generalized-interpolation-global-error}
+\label{eq:ch04-generalized-interpolation-global-error}
+\left(\sum_{K\in\mathcal T^h}h_K^{p(s-k)}
+\|v-\widetilde I^h v\|_{W_p^s(K)}^p\right)^{1/p}
+\leq C|v|_{W_p^k(\Omega)},
+\end{equation}
+其中 $0\leq s\leq k$, $\widetilde I^h$ 由式~\eqref{eq:ch04-generalized-global-interpolant} 定义.
+\end{Theorem}
+
+令 $s=k$ 并应用三角不等式, 得到如下推论.
+
+\setcounter{thmcount}{14}
+\MBSourceItem{15}
+\begin{Corollary}
+\label{cor:ch04-generalized-interpolant-stability}
+在定理~\ref{thm:ch04-generalized-interpolation-global-error} 的条件下,
+\MBSourceItem{16}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-generalized-interpolant-stability}
+\label{eq:ch04-generalized-interpolant-stability}
+\left(\sum_{K\in\mathcal T^h}
+\|\widetilde I^h v\|_{W_p^k(K)}^p\right)^{1/p}
+\leq C|v|_{W_p^k(\Omega)}.
+\end{equation}
+\end{Corollary}
+
+回忆 $h=\max_{K\in\mathcal T^h}\operatorname{diam}K$, 定理~\ref{thm:ch04-generalized-interpolation-global-error} 可简化为
+\MBSourceItem{17}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-generalized-interpolation-simplified-error}
+\label{eq:ch04-generalized-interpolation-simplified-error}
+\left(\sum_{K\in\mathcal T^h}
+\|v-\widetilde I^h v\|_{W_p^s(K)}^p\right)^{1/p}
+\leq Ch^{k-s}|v|_{W_p^k(\Omega)},
+\end{equation}
+其中 $0\leq s\leq k\leq m$.
+
+\subsection{离散 Sobolev 不等式}
+\label{sec:ch04-discrete-sobolev-inequality}
+\setcounter{thmcount}{0}
+\setcounter{equation}{0}
+
+设 $\Omega$ 是 $\mathbb R^2$ 中的多边形区域, $\mathcal T^h$ 是 $\Omega$ 的正则三角剖分, 满足
+\MBSourceItem{1}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-logarithmic-mesh-condition}
+\label{eq:ch04-logarithmic-mesh-condition}
+|\ln h_T|\approx|\ln h|
+\qquad\forall T\in\mathcal T^h,
+\end{equation}
+其中 $h_T=\operatorname{diam}T$, $h=\max_{T\in\mathcal T^h}h_T$. 许多分级网格都满足条件~\eqref{eq:ch04-logarithmic-mesh-condition}(参见 Apel (1999)). 以 $V_h\subset H^1(\Omega)$ 表示与 $\mathcal T^h$ 关联的 $P_m$ Lagrange 有限元空间. 一方面, 例~\ref{ex:ch01-unbounded-sobolev-function} 表明一般而言 $H^1(\Omega)\not\subset L^\infty(\Omega)$; 另一方面, $V_h$ 中的函数按构造在 $\overline\Omega$ 上连续. 离散 Sobolev 不等式调和了这一矛盾. 以下证明实质上与 Bramble, Pasciak \& Schatz (1986) 相同.
+
+\setcounter{thmcount}{1}
+\MBSourceItem{2}
+\begin{Lemma}[离散 Sobolev 不等式]
+\label{lem:ch04-discrete-sobolev-inequality}
+有估计
+\MathBookSourcePage{137}
+\MBSourceItem{3}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-discrete-sobolev-inequality}
+\label{eq:ch04-discrete-sobolev-inequality}
+\|v\|_{L^\infty(\Omega)}
+\leq C(1+|\ln h|)^{1/2}\|v\|_{H^1(\Omega)}
+\qquad\forall v\in V_h,
+\end{equation}
+其中正常数 $C$ 与 $h$ 无关.
+\end{Lemma}
+\begin{Proof}
+首先注意 $\Omega$ 具有锥性质, 即每个点 $x\in\Omega$ 都是某个锥 $K_x$ 的顶点, $K_x$ 与极坐标下定义的锥(或扇形)
+\[
+\MathBookFormulaID{formula-ch04-reference-cone}
+K=\{(r,\theta):0<r<d<\infty,\ 0<\theta<\omega<2\pi\}
+\]
+全等.
+
+设 $T$ 是 $\mathcal T^h$ 的一个三角形, $c$ 是 $T$ 的重心. 不失一般性, 可假设 $h_T=\operatorname{diam}T<d/2$(参见练习~\ref{exr:ch04-19}). 为简单起见, 可取 $c$ 为原点且 $K_c=K$. $\mathcal T^h$ 的正则性蕴含存在与 $T$ 无关的数 $\eta$, $0<\eta<1$, 使锥
+\[
+\MathBookFormulaID{formula-ch04-inner-element-cone}
+K_\eta=\{(r,\theta):0<r<\eta h_T,\ 0<\theta<\omega\}
+\]
+是 $T$ 的子集.
+
+任取 $v\in V_h$, 令 $\alpha=v(c)$. 由微积分基本定理,
+\[
+\MathBookFormulaID{formula-ch04-centroid-value-radial}
+\alpha=v(r,\theta)-\int_0^r\frac{\partial v}{\partial\rho}(\rho,\theta)\,d\rho
+\qquad\text{当 }d/2<r<d,
+\]
+从而
+\MBSourceItem{4}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-centroid-value-square-bound}
+\label{eq:ch04-centroid-value-square-bound}
+\alpha^2\leq2v^2(r,\theta)+2\left(\int_0^r
+\frac{\partial v}{\partial\rho}(\rho,\theta)\,d\rho\right)^2
+\qquad\text{当 }d/2<r<d.
+\end{equation}
+右端的积分可估计为
+\MBSourceItem{5}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-radial-derivative-log-bound}
+\label{eq:ch04-radial-derivative-log-bound}
+\begin{aligned}
+\int_0^r\frac{\partial v}{\partial\rho}(\rho,\theta)\,d\rho
+&=\int_0^{\eta h_T}\frac{\partial v}{\partial\rho}(\rho,\theta)\,d\rho
++\int_{\eta h_T}^r\frac{\partial v}{\partial\rho}(\rho,\theta)\,d\rho\\
+&\leq\eta h_T|v|_{W_\infty^1(T)}
++\left(\int_{\eta h_T}^r\left(\frac{\partial v}{\partial\rho}(\rho,\theta)\right)^2
+\rho\,d\rho\right)^{1/2}
+\bigl(\ln(d/(\eta h_T))\bigr)^{1/2}.
+\end{aligned}
+\end{equation}
+结合式~\eqref{eq:ch04-centroid-value-square-bound} 和式~\eqref{eq:ch04-radial-derivative-log-bound}, 得
+\[
+\MathBookFormulaID{formula-ch04-centroid-integrated-log-bound}
+\begin{aligned}
+\alpha^2\int_0^\omega\int_{d/2}^d r\,dr\,d\theta
+&\leq2\int_0^\omega\int_{d/2}^dv^2(r,\theta)r\,dr\,d\theta\\
+&\quad+4(\eta h_T)^2|v|_{W_\infty^1(T)}^2
+\int_0^\omega\int_{d/2}^d r\,dr\,d\theta\\
+&\quad+4\ln(d/(\eta h_T))\int_0^\omega\int_{d/2}^d
+\left[\int_{\eta h_T}^r\left(\frac{\partial v}{\partial\rho}(\rho,\theta)\right)^2
+\rho\,d\rho\right]r\,dr\,d\theta.
+\end{aligned}
+\]
+由逆估计~\eqref{eq:ch04-local-inverse-estimate}, 这蕴含
+\MBSourceItem{6}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-centroid-discrete-sobolev-bound}
+\label{eq:ch04-centroid-discrete-sobolev-bound}
+|v(c)|\leq C_1(1+|\ln h_T|)^{1/2}\|v\|_{H^1(\Omega)},
+\end{equation}
+其中 $C_1$ 与 $h,c$ 无关.
+
+任取 $x\in T$. 逆估计~\eqref{eq:ch04-local-inverse-estimate} 蕴含
+\MBSourceItem{7}
+\begin{equation}
+\MathBookFormulaID{formula-ch04-point-centroid-inverse-bound}
+\label{eq:ch04-point-centroid-inverse-bound}
+|v(x)-v(c)|\leq h_T|v|_{W_\infty^1(T)}
+\leq C_2|v|_{H^1(T)},
+\end{equation}
+其中正常数 $C_2$ 与 $h,x$ 无关. 由式~\eqref{eq:ch04-logarithmic-mesh-condition}、式~\eqref{eq:ch04-centroid-discrete-sobolev-bound}、式~\eqref{eq:ch04-point-centroid-inverse-bound} 以及 $T,x$ 的任意性, 得到式~\eqref{eq:ch04-discrete-sobolev-inequality}.
+\end{Proof}
+
+\setcounter{thmcount}{7}
+\MBSourceItem{8}
+\begin{Remark}
+\label{rem:ch04-finite-difference-discrete-sobolev}
+有限差分网格函数情形的离散 Sobolev 不等式证明见 Bramble (1966).
+\end{Remark}
+
+\MBSourceItem{9}
+\begin{Remark}
+\label{rem:ch04-discrete-sobolev-sharpness}
+引理~\ref{lem:ch04-discrete-sobolev-inequality} 中的估计是尖锐的(参见 Brenner \& Sung 2000a).
+\end{Remark}
+
+\input{chapters/chapter-04-exercises.tex}
