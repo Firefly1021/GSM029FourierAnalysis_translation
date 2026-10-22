@@ -1,0 +1,117 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{translation-adapter}[2026/08/05 Translation pipeline adapter]
+
+% This adapter is loaded after the read-only user style. Environment overrides
+% below are explicitly authorized for translated output; the source .sty file
+% remains unchanged.
+\RequirePackage{xparse}
+
+\providecommand{\MathBookTemplateTestNotice}{%
+  \begin{center}\textbf{模板测试: 此页仅用于验证模板接入, 并非译文.}\end{center}%
+}
+\providecommand{\MathBookSourcePage}[1]{}
+\providecommand{\MathBookFormulaID}[1]{}
+\providecommand{\MathBookReviewStatus}[1]{}
+\providecommand{\MBUnresolvedReference}[2]{#2}
+
+% The source book numbers displayed equations by chapter rather than subsection.
+\counterwithout{equation}{subsection}
+\numberwithin{equation}{section}
+
+% The source uses one sequence for theorem-like statements. Sharing thmcount
+% preserves that sequence while retaining the user's section-based reset rule.
+\RenewDocumentEnvironment{Theorem}{o}
+{
+    \refstepcounter{thmcount}
+    \begin{tcolorbox}[
+        enhanced,
+        breakable,
+        colback=KuangNei,
+        frame hidden,
+        boxrule=0pt,
+        sharpish corners,
+        before skip=10pt,
+        after skip=10pt
+    ]
+    \noindent
+    \textbf{定理~\thethmcount}%
+    \IfValueT{#1}{\textbf{~(#1)}}%
+    \textbf{:}\quad
+    \kaishu
+}
+{
+    \end{tcolorbox}
+}
+
+\RenewDocumentEnvironment{Definition}{o}
+{
+    \par\vspace{0.1cm}\refstepcounter{thmcount}\noindent
+    \textbf{定义~\thethmcount}%
+    \IfValueT{#1}{\textbf{~(#1)}}%
+    \textbf{:}\quad\kaishu
+}
+{\par\vspace{0.1cm}}
+
+\RenewDocumentEnvironment{Lemma}{o}
+{
+    \par\vspace{0.1cm}\refstepcounter{thmcount}\noindent
+    \textbf{引理~\thethmcount}%
+    \IfValueT{#1}{\textbf{~(#1)}}%
+    \textbf{:}\quad\kaishu
+}
+{\par\vspace{0.1cm}}
+
+\NewDocumentEnvironment{Proposition}{o}
+{
+    \par\vspace{0.1cm}\refstepcounter{thmcount}\noindent
+    \textbf{命题~\thethmcount}%
+    \IfValueT{#1}{\textbf{~(#1)}}%
+    \textbf{:}\quad\kaishu
+}
+{\par\vspace{0.1cm}}
+
+\NewDocumentEnvironment{Corollary}{o}
+{
+    \par\vspace{0.1cm}\refstepcounter{thmcount}\noindent
+    \textbf{推论~\thethmcount}%
+    \IfValueT{#1}{\textbf{~(#1)}}%
+    \textbf{:}\quad\kaishu
+}
+{\par\vspace{0.1cm}}
+
+\NewDocumentEnvironment{Example}{o}
+{
+    \par\vspace{0.1cm}\refstepcounter{thmcount}\noindent
+    \textbf{例~\thethmcount}%
+    \IfValueT{#1}{\textbf{~(#1)}}%
+    \textbf{:}\quad
+}
+{\par\vspace{0.1cm}}
+
+\NewDocumentEnvironment{Remark}{o}
+{
+    \par\vspace{0.1cm}\refstepcounter{thmcount}\noindent
+    \textbf{注~\thethmcount}%
+    \IfValueT{#1}{\textbf{~(#1)}}%
+    \textbf{:}\quad
+}
+{\par\vspace{0.1cm}}
+
+\NewDocumentEnvironment{Exercise}{o}
+{
+    \par\vspace{0.1cm}\refstepcounter{thmcount}\noindent
+    \textbf{习题~\thethmcount}%
+    \IfValueT{#1}{\textbf{~(#1)}}%
+    \textbf{:}\quad
+}
+{\par\vspace{0.1cm}}
+
+\RenewDocumentEnvironment{Proof}{}
+{
+    \par\vspace{0.1cm}\noindent\textbf{证明:}\quad
+}
+{
+    \par\hfill$\blacksquare$\par\vspace{0.1cm}
+}
+
+\endinput

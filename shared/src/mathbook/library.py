@@ -69,15 +69,20 @@ def build_book(project: ProjectPaths, book_id: str, *, driver: Path | None = Non
     if not entry.is_file():raise ProjectError('Registered TeX entry is missing: '+str(entry))
     source=book.require_source_pdf();before=sha256_file(source)
     template_hash=directory_manifest_hash(book.template)
+    build_template=book.assert_write_path(book.root/binding.get('build_template','template'))
+    build_template_hash=directory_manifest_hash(build_template)
+    if binding.get('build_template_hash',build_template_hash)!=build_template_hash:
+        raise ProjectError('Registered accepted build template hash mismatch.')
     env=os.environ.copy()
+    env['PYTHONUTF8']='1'
     # Entries with basename-only inputs need both chapter and generated paths.
-    inputs=[book.template/'style',book.template/'reference',book.template/'assets',book.template/'adapter',
-        book.template/'adapter/aljabr-1',book.template/'collections/aljabr-1/upstream',
-        book.root/'tex',book.root/'tex/chapters',book.root/'tex/generated',book.root/'tex/figures']
+    inputs=[build_template/'style',build_template/'reference',build_template/'assets',build_template/'adapter',
+        build_template/'adapter/aljabr-1',build_template/'collections/aljabr-1/upstream',
+        book.root/'tex',book.root/'tex/chapters',book.root/'tex/generated',book.root/'tex/figures',book.source]
     env['TEXINPUTS']=os.pathsep.join(str(p) for p in inputs)+os.pathsep+os.pathsep
     env['BIBINPUTS']=os.pathsep.join(str(p) for p in inputs)+os.pathsep+os.pathsep
     stage=book.assert_write_path(Path(tempfile.mkdtemp(prefix='unified-build-',dir=book.root/'workspace/temporary')))
-    fonts=book.template/'collections/aljabr-1/fonts/noto-sans-cjk-sc'
+    fonts=build_template/'collections/aljabr-1/fonts/noto-sans-cjk-sc'
     if fonts.is_dir():
         fontconfig=stage/'fonts.conf'
         from xml.sax.saxutils import escape
@@ -91,7 +96,7 @@ def build_book(project: ProjectPaths, book_id: str, *, driver: Path | None = Non
             found=subprocess.check_output(['fc-match','-f','%{file}',f'Noto Sans CJK SC:style={row["weight"]}'],env=env,text=True,encoding='utf8')
             if sha256_file(Path(found))!=row['sha256']:raise ProjectError('Pinned Noto font did not resolve exactly.')
     if driver:
-        command=[os.sys.executable,str(driver),str(entry),'--compiler','texlive','--engine','xelatex','--output-directory',str(stage),'--json']
+        command=[os.sys.executable,'-X','utf8',str(driver),str(entry),'--compiler','texlive','--engine','xelatex','--output-directory',str(stage),'--json']
     else:
         executable=shutil.which('latexmk')
         if not executable:raise ProjectError('latexmk is required for bibliography-aware clean builds.')
@@ -107,11 +112,13 @@ def build_book(project: ProjectPaths, book_id: str, *, driver: Path | None = Non
         'duplicate_labels':r'multiply[- ]defined|destination with the same identifier',
         'missing_glyphs':r'Missing character:[^\n]*',
         'overfull_boxes':r'Overfull \\[hv]box[^\n]*'}.items()}
-    if before!=sha256_file(source) or template_hash!=directory_manifest_hash(book.template):
+    if (before!=sha256_file(source) or template_hash!=directory_manifest_hash(book.template)
+            or build_template_hash!=directory_manifest_hash(build_template)):
         raise ProjectError('Read-only input integrity changed during build.')
     report={'book_id':book_id,'entry':binding['entry'],'success':result.returncode==0 and pdf.is_file(),
         'exit_code':result.returncode,'build_directory':str(stage),'candidate_pdf':str(pdf),
-        'source_sha256':before,'template_hash':template_hash,'published':False,
+        'source_sha256':before,'template_hash':template_hash,'build_template':str(build_template),
+        'build_template_hash':build_template_hash,'published':False,
         'log':str(log),'warnings':warnings,
         'scope':'Compilation and input integrity only; not translation/math/visual acceptance.'}
     _write_json(book.assert_write_path(book.root/'qa/unified-build.json'),report)
