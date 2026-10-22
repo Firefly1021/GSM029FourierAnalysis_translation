@@ -5,9 +5,9 @@
 - 正式 TeX 入口: [tex/main.tex](tex/main.tex).
 - 章节: [tex/chapters/](tex/chapters/). 图片: [tex/figures/](tex/figures/); 保留原有图片引用方式.
 - 原始 PDF: [input/source/](input/source/), 只读.
-- 本书实际模板快照: [template/](template/), 不自动跟随共享模板更新.
+- 本书编译使用原验收清单逐文件校验的 [template-accepted/](template-accepted/). 后来更新的用户模板原样保留在 [template/](template/), 两者明确隔离, 不自动切换或改写.
 - 当前正式输出: [output/book-zh.pdf](output/book-zh.pdf).
-- 恢复原稿、译文、公式、术语、QA、日志和扫描缓存各在原有同名目录, 没有删节或重新翻译.
+- 恢复英文原稿、完整译文、公式、术语和文字 QA 均保留. 全页/OCR/编译缓存、过期预览和书内翻译过程脚本已清理; 实际编译依赖未删除, 没有删节或重新翻译.
 
 编译: VS Code 运行“编译本书”任务, 或在总目录运行:
 

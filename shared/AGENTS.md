@@ -15,6 +15,8 @@
 - A book-specific command always requires an explicit `book-id`. Implicit current-book selection is forbidden.
 - Book-specific writes must pass through `ProjectPaths` and `BookPaths` and remain inside `books/<book-id>/`. Never write to another book's directory.
 - Completed translation text is immutable unless the user explicitly authorizes a correction. Resume from the first incomplete natural unit and never regenerate a unit that already passed QA.
+- The user explicitly requested completed-book cleanup on 2026-10-22. Retain the editable final TeX dependency closure, original PDFs/templates, accepted outputs, restored English, formula/terminology/provenance and issue/QA records. Remove reproducible page/OCR/build caches, obsolete previews and translation-only per-book scripts after a dry-run manifest and successful clean builds. Required generated macros/Bib/figures are final sources, not disposable cache.
+- Later user template updates never silently alter an accepted book. An exact historical acceptance-manifest snapshot may be separately pinned as `template-accepted/` and explicitly selected by the binding; preserve the newer user files untouched in `template/`.
 
 ## Git and worktree safety
 
