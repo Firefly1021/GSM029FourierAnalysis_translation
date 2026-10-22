@@ -17,6 +17,7 @@
 - Completed translation text is immutable unless the user explicitly authorizes a correction. Resume from the first incomplete natural unit and never regenerate a unit that already passed QA.
 - The user explicitly requested completed-book cleanup on 2026-10-22. Retain the editable final TeX dependency closure, original PDFs/templates, accepted outputs, restored English, formula/terminology/provenance and issue/QA records. Remove reproducible page/OCR/build caches, obsolete previews and translation-only per-book scripts after a dry-run manifest and successful clean builds. Required generated macros/Bib/figures are final sources, not disposable cache.
 - Later user template updates never silently alter an accepted book. An exact historical acceptance-manifest snapshot may be separately pinned as `template-accepted/` and explicitly selected by the binding; preserve the newer user files untouched in `template/`.
+- Completed books use a compact edition view: `input/`, `tex/`, `template/`, `output/`, `records/` and one `README.md` (plus the explicitly required `template-accepted/` in the two older editions). Process config, provenance, restored English, glossary, formulae, status and QA live under `records/`. The binding is `records/config/library-binding.json`; use BookPaths properties instead of hard-coded old metadata paths. Active unfinished books retain the working layout. Never recreate retired scaffold directories in a completed edition. Build caches are created on demand under ignored `.build/`.
 
 ## Git and worktree safety
 

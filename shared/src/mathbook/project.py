@@ -229,6 +229,46 @@ class BookPaths:
     )
 
     @property
+    def delivered(self) -> bool:
+        """Completed editions keep process metadata away from daily editing."""
+        return (self.root / 'records/config/library-binding.json').is_file()
+
+    @property
+    def records(self) -> Path:
+        return self.root / 'records' if self.delivered else self.root
+
+    @property
+    def binding_file(self) -> Path:
+        old = self.root / 'config/library-binding.json'
+        new = self.root / 'records/config/library-binding.json'
+        if old.exists() and new.exists():
+            raise ProjectError('Ambiguous active book bindings; refusing implicit selection.')
+        return new if new.is_file() else old
+
+    @property
+    def qa(self) -> Path:
+        return self.records / 'qa'
+
+    @property
+    def build_cache(self) -> Path:
+        return self.root / '.build' if self.delivered else self.root / 'workspace/temporary'
+
+    def resolve_recorded_path(self, relative: str) -> Path:
+        """Resolve old provenance without rewriting accepted source/QA records."""
+        path = Path(relative)
+        if path.is_absolute() or '..' in path.parts:
+            raise ProjectError('Recorded path must be book-relative and contained.')
+        text = path.as_posix()
+        if self.delivered:
+            mapping = self.root / 'records/path-map.json'
+            if mapping.is_file():
+                for old, new in sorted(load_json_yaml(mapping).get('moved', {}).items(), key=lambda item:len(item[0]), reverse=True):
+                    if text == old or text.startswith(old + '/'):
+                        text = new + text[len(old):]
+                        break
+        return self.assert_write_path(self.root / text)
+
+    @property
     def template(self) -> Path:
         """A pinned book-local template is preferred to the shared default."""
         snapshot = self.root / "template"
@@ -236,7 +276,7 @@ class BookPaths:
 
     @property
     def config_file(self) -> Path:
-        return self.root / "config" / "book.yaml"
+        return self.records / "config" / "book.yaml"
 
     @property
     def source(self) -> Path:
@@ -244,39 +284,39 @@ class BookPaths:
 
     @property
     def candidates(self) -> Path:
-        return self.root / "glossary" / "candidates.tsv"
+        return self.records / "glossary" / "candidates.tsv"
 
     @property
     def unresolved(self) -> Path:
-        return self.root / "glossary" / "unresolved.tsv"
+        return self.records / "glossary" / "unresolved.tsv"
 
     @property
     def proper_names(self) -> Path:
-        return self.root / "glossary" / "proper-names.tsv"
+        return self.records / "glossary" / "proper-names.tsv"
 
     @property
     def notation(self) -> Path:
-        return self.root / "glossary" / "notation.tsv"
+        return self.records / "glossary" / "notation.tsv"
 
     @property
     def status_file(self) -> Path:
-        return self.root / "PROJECT_STATUS.md"
+        return self.records / "PROJECT_STATUS.md"
 
     @property
     def plans_file(self) -> Path:
-        return self.root / "PLANS.md"
+        return self.records / "PLANS.md"
 
     @property
     def issues(self) -> Path:
-        return self.root / "qa" / "issues.jsonl"
+        return self.qa / "issues.jsonl"
 
     @property
     def workflow_state(self) -> Path:
-        return self.root / "qa" / "workflow-state.json"
+        return self.qa / "workflow-state.json"
 
     @property
     def chapter_progress(self) -> Path:
-        return self.root / "qa" / "chapter-progress.tsv"
+        return self.qa / "chapter-progress.tsv"
 
     @property
     def main_tex(self) -> Path:
@@ -285,6 +325,9 @@ class BookPaths:
     def ensure_structure(self) -> None:
         if not _is_within(self.root, self.project.books):
             raise ProjectError("Book root escaped the repository books directory.")
+        if self.delivered:
+            # Do not resurrect the retired extraction/translation workspace.
+            return
         for relative in self.REQUIRED_DIRECTORIES:
             (self.root / relative).mkdir(parents=True, exist_ok=True)
 
@@ -360,7 +403,12 @@ def validate_project_structure() -> list[str]:
             except ProjectError as exc:
                 missing.append(str(exc))
                 continue
-            for relative in (*BookPaths.REQUIRED_DIRECTORIES, "PROJECT_STATUS.md", "PLANS.md", "config/book.yaml"):
+            required = (
+                ('input/source','tex','template','output','records/config/book.yaml',
+                 'records/config/library-binding.json','records/PROJECT_STATUS.md','records/qa/issues.jsonl')
+                if book.delivered else (*BookPaths.REQUIRED_DIRECTORIES, "PROJECT_STATUS.md", "PLANS.md", "config/book.yaml")
+            )
+            for relative in required:
                 if not (book.root / relative).exists():
                     missing.append(f"books/{book.book_id}/{relative}")
     return missing

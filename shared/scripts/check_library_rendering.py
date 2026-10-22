@@ -1,8 +1,10 @@
 """Read-only raster spot comparisons of clean candidates and accepted PDFs."""
-import io,json,subprocess
+import io,json,subprocess,os,sys
 from pathlib import Path
 from PIL import Image,ImageChops
-ROOT=Path(__file__).resolve().parents[2];REPORT=ROOT/'shared/qa/integration-20261022'
+ROOT=Path(__file__).resolve().parents[2];REPORT=Path(os.environ.get('MATHBOOK_INTEGRATION_REPORT',str(ROOT/'shared/qa/integration-20261022')))
+sys.path.insert(0,str(ROOT/'shared/src'))
+from mathbook.project import ProjectPaths
 
 def raster(path,page):
     result=subprocess.run(['pdftoppm','-f',str(page),'-singlefile','-r','72','-png',str(path)],capture_output=True,check=True)
@@ -13,7 +15,7 @@ def main():
     assert builds['passed'] and len(builds['results'])==7
     results=[]
     for row in builds['results']:
-        book=ROOT/'books'/row['book_id'];binding=json.loads((book/'config/library-binding.json').read_text(encoding='utf8'))
+        selected=ProjectPaths(ROOT).book(row['book_id']);book=selected.root;binding=json.loads(selected.binding_file.read_text(encoding='utf8'))
         original=book/binding['final_output'];candidate=Path(row['candidate_pdf'])
         pages=sorted({1,max(1,row['candidate_pdf_pages']//2),row['candidate_pdf_pages']})
         samples=[]

@@ -7,7 +7,7 @@ import os
 from .project import BookPaths, ProjectError, ProjectPaths
 
 
-def selected_book_paths() -> BookPaths:
+def selected_book_paths(*, allow_completed: bool = False) -> BookPaths:
     book_id = os.environ.get("MATHBOOK_BOOK_ID", "").strip()
     if not book_id:
         raise ProjectError(
@@ -15,6 +15,8 @@ def selected_book_paths() -> BookPaths:
         )
     from .workflow import verify_book_context
     book, _ = verify_book_context(ProjectPaths(),book_id,writable=True)
+    if book.delivered and not allow_completed:
+        raise ProjectError('Completed editions do not accept translation-process scripts. Use build-book or edit formal TeX explicitly.')
     return book
 
 

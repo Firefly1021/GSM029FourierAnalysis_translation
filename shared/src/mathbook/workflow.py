@@ -188,7 +188,7 @@ def verify_book_context(project: ProjectPaths, book_id: str, *, writable: bool) 
         raise ProjectError(f"Book directory is missing: {book.root}")
     if writable:
         if project.consolidated:
-            binding_path = book.root / "config" / "library-binding.json"
+            binding_path = book.binding_file
             binding = load_json_yaml(binding_path)
             if binding.get("book_id") != book_id or binding.get("book_root") != f"books/{book_id}":
                 raise ProjectError("Consolidated book identity/path mismatch; refusing writes.")
@@ -429,7 +429,7 @@ def promote_terminology_safely(project: ProjectPaths, book: BookPaths) -> dict[s
     result = promote_candidates(main_project, book, commit=project.git_head())
     after_candidates = book.candidates.read_bytes() if book.candidates.exists() else b""
     if before_candidates != after_candidates:
-        run_git(project.root, ["add", "--", f"books/{book.book_id}/glossary/candidates.tsv"])
+        run_git(project.root, ["add", "--", project.relative(book.candidates)])
         staged = run_git(project.root, ["diff", "--cached", "--quiet"], check=False)
         if staged.returncode == 1:
             run_git(project.root, ["commit", "-m", f"Review terminology candidates for {book.book_id}"])
@@ -452,6 +452,8 @@ def start_book(
     processor: Callable[[BookPaths], None] | None = None,
 ) -> dict[str, object]:
     book, record = verify_book_context(project, book_id, writable=True)
+    if book.delivered:
+        raise ProjectError('This completed edition cannot restart extraction or translation. Edit its formal TeX explicitly instead.')
     source = book.require_source_pdf()
     source_hash = sha256_file(source)
     if source_hash != book.load_config()["source"]["sha256"]:
@@ -559,6 +561,8 @@ def translate_book(
     processor: Callable[[BookPaths, str], None] | None = None,
 ) -> dict[str, object]:
     book, record = verify_book_context(project, book_id, writable=True)
+    if book.delivered:
+        raise ProjectError('This completed edition cannot regenerate accepted translation.')
     state = _workflow_state(book)
     if state.get("status") not in {"ready-for-full-translation", "translating"}:
         raise ProjectError("Full translation requires an approved sample.")
@@ -603,6 +607,8 @@ def resume_book(
     processor: Callable[[BookPaths, str], None] | None = None,
 ) -> dict[str, object]:
     book, _ = verify_book_context(project, book_id, writable=True)
+    if book.delivered:
+        return {**book_status(project, book_id), 'resumed':False}
     state = _workflow_state(book)
     next_unit = next_incomplete_unit(book)
     if next_unit and next_unit in set(state.get("completed_units", [])):
@@ -619,6 +625,8 @@ def finish_book(
     processor: Callable[[BookPaths], None] | None = None,
 ) -> dict[str, object]:
     book, record = verify_book_context(project, book_id, writable=True)
+    if book.delivered:
+        return {**book_status(project, book_id), 'already_completed':True}
     if next_incomplete_unit(book) is not None:
         raise ProjectError("finish-book refused: at least one natural unit has not passed QA.")
     blockers = _blocking_issues(book)

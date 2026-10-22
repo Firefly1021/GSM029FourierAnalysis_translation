@@ -64,7 +64,7 @@ def build_book(project: ProjectPaths, book_id: str, *, driver: Path | None = Non
     """Compile a copy into a new book-local directory; never replace final PDFs."""
     from .workflow import verify_book_context, _write_json
     book, _ = verify_book_context(project,book_id,writable=True)
-    binding=json.loads((book.root/'config/library-binding.json').read_text(encoding='utf8'))
+    binding=json.loads(book.binding_file.read_text(encoding='utf8'))
     entry=book.assert_write_path(book.root/binding['entry'])
     if not entry.is_file():raise ProjectError('Registered TeX entry is missing: '+str(entry))
     source=book.require_source_pdf();before=sha256_file(source)
@@ -81,7 +81,8 @@ def build_book(project: ProjectPaths, book_id: str, *, driver: Path | None = Non
         book.root/'tex',book.root/'tex/chapters',book.root/'tex/generated',book.root/'tex/figures',book.source]
     env['TEXINPUTS']=os.pathsep.join(str(p) for p in inputs)+os.pathsep+os.pathsep
     env['BIBINPUTS']=os.pathsep.join(str(p) for p in inputs)+os.pathsep+os.pathsep
-    stage=book.assert_write_path(Path(tempfile.mkdtemp(prefix='unified-build-',dir=book.root/'workspace/temporary')))
+    book.build_cache.mkdir(parents=True,exist_ok=True)
+    stage=book.assert_write_path(Path(tempfile.mkdtemp(prefix='unified-build-',dir=book.build_cache)))
     fonts=build_template/'collections/aljabr-1/fonts/noto-sans-cjk-sc'
     if fonts.is_dir():
         fontconfig=stage/'fonts.conf'
@@ -121,6 +122,6 @@ def build_book(project: ProjectPaths, book_id: str, *, driver: Path | None = Non
         'build_template_hash':build_template_hash,'published':False,
         'log':str(log),'warnings':warnings,
         'scope':'Compilation and input integrity only; not translation/math/visual acceptance.'}
-    _write_json(book.assert_write_path(book.root/'qa/unified-build.json'),report)
+    _write_json(book.assert_write_path(book.qa/'unified-build.json'),report)
     if not report['success']:raise ProjectError('Book build failed; preserved log: '+str(log))
     return report

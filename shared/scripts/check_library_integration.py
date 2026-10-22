@@ -6,7 +6,8 @@ sys.path.insert(0,str(SYSTEM/'src'))
 from mathbook.project import ProjectPaths,sha256_file
 from mathbook.workflow import read_projects
 
-REPORT=SYSTEM/'qa/integration-20261022'
+REPORT=Path(os.environ.get('MATHBOOK_INTEGRATION_REPORT',str(SYSTEM/'qa/integration-20261022')))
+REPORT.mkdir(parents=True,exist_ok=True)
 def save(name,value):
     (REPORT/name).write_text(json.dumps(value,ensure_ascii=False,indent=2)+'\n',encoding='utf8')
 
@@ -28,7 +29,7 @@ def builds():
     assert driver.is_file()
     for row in read_projects(project):
         book=project.book(row.book_id)
-        binding=json.loads((book.root/'config/library-binding.json').read_text(encoding='utf8'))
+        binding=json.loads(book.binding_file.read_text(encoding='utf8'))
         original=book.root/binding['final_output'];oldhash=sha256_file(original)
         oldpages=len(PdfReader(original).pages)
         print('CLEAN BUILD',row.book_id,flush=True)

@@ -70,6 +70,12 @@ def latex_qa(book: BookPaths) -> dict[str, object]:
 
 def compile_book(book: BookPaths, *, output_directory: Path | None = None) -> dict[str, object]:
     """Compile a book from a fresh directory without modifying shared template files."""
+    if book.delivered:
+        if output_directory is not None:
+            raise ProjectError('Completed editions use their isolated registered build cache; use build-book.')
+        from .library import build_book
+        result = build_book(book.project, book.book_id)
+        return {**result, 'pdf':result['candidate_pdf']}
     config = book.load_config()
     expected_template = config.get("template_manifest_hash")
     actual_template = directory_manifest_hash(book.project.template)

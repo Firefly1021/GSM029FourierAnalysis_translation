@@ -2,6 +2,8 @@
 import json
 import tempfile
 import unittest
+import shutil
+from unittest.mock import patch
 from pathlib import Path
 from mathbook.project import ProjectPaths,ProjectError,run_git
 from mathbook.workflow import verify_book_context,ProjectRecord,write_projects
@@ -59,5 +61,77 @@ class UnifiedLibraryTests(unittest.TestCase):
         self.assertFalse((self.root.parent/'library-worktrees').exists())
         self.assertEqual(len(self.project.git_worktree_map()),1)
         verify_book_context(self.project,'new-book',writable=True)
+
+    def deliver_fixture(self):
+        book=self.project.book('a')
+        (book.root/'records').mkdir()
+        shutil.move(str(book.root/'config'),str(book.root/'records/config'))
+        (book.qa).mkdir(parents=True)
+        (book.root/'records/glossary').mkdir()
+        book.workflow_state.write_text(json.dumps({'status':'completed','completed_units':['one']}),encoding='utf8')
+        book.chapter_progress.write_text('Unit ID\tQA Status\none\tpassed\ntwo\tnot-started\n',encoding='utf8')
+        write_projects(self.project,[ProjectRecord('a','a','main',str(self.root),'completed','completed','','','','')])
+        return book
+
+    def test_completed_records_resolve_without_changing_active_book_layout(self):
+        book=self.deliver_fixture()
+        self.assertTrue(book.delivered)
+        self.assertEqual(book.config_file,book.root/'records/config/book.yaml')
+        self.assertEqual(book.issues,book.root/'records/qa/issues.jsonl')
+        self.assertEqual(book.candidates,book.root/'records/glossary/candidates.tsv')
+        self.assertEqual(book.build_cache,book.root/'.build')
+        self.assertFalse(self.project.book('b').delivered)
+        self.assertEqual(self.project.book('b').config_file,self.root/'books/b/config/book.yaml')
+        verify_book_context(self.project,'a',writable=True)
+
+    def test_completed_structure_does_not_resurrect_retired_folders(self):
+        book=self.deliver_fixture()
+        for name in ('workspace','logs','translation','structured','formulae','glossary'):
+            shutil.rmtree(book.root/name)
+        book.ensure_structure()
+        for name in ('workspace','logs','translation','structured','formulae','glossary','config'):
+            self.assertFalse((book.root/name).exists(),name)
+
+    def test_completed_resume_finish_and_status_do_not_regenerate_units(self):
+        from mathbook.workflow import resume_book,finish_book,book_status
+        book=self.deliver_fixture();before=book.workflow_state.read_bytes()
+        processor=lambda *args:self.fail('A completed book must not invoke a translation processor')
+        self.assertIsNone(book_status(self.project,'a')['progress']['next_unit'])
+        self.assertFalse(resume_book(self.project,'a',processor=processor)['resumed'])
+        self.assertTrue(finish_book(self.project,'a',processor=processor)['already_completed'])
+        self.assertEqual(before,book.workflow_state.read_bytes())
+
+    def test_completed_restart_translation_and_ambiguous_binding_are_refused(self):
+        from mathbook.workflow import start_book,translate_book
+        book=self.deliver_fixture()
+        with self.assertRaises(ProjectError):start_book(self.project,'a')
+        with self.assertRaises(ProjectError):translate_book(self.project,'a')
+        (book.root/'config').mkdir()
+        (book.root/'config/library-binding.json').write_text('{}',encoding='utf8')
+        with self.assertRaises(ProjectError):verify_book_context(self.project,'a',writable=True)
+
+    def test_completed_legacy_compile_uses_registered_builder(self):
+        from mathbook.build import compile_book
+        book=self.deliver_fixture()
+        with patch('mathbook.library.build_book',return_value={'candidate_pdf':'selected-master.pdf','success':True}) as builder:
+            result=compile_book(book)
+            self.assertEqual(result['pdf'],'selected-master.pdf')
+            builder.assert_called_once_with(self.project,'a')
+
+    def test_completed_provenance_paths_resolve_without_rewriting_records(self):
+        book=self.deliver_fixture()
+        (book.root/'records/path-map.json').write_text(json.dumps({'moved':{
+            'qa':'records/qa','workspace/crops':'records/crops',
+            'translation/draft/one.tex':'tex/chapters/one.tex'}}),encoding='utf8')
+        self.assertEqual(book.resolve_recorded_path('qa/issues.jsonl'),book.issues)
+        self.assertEqual(book.resolve_recorded_path('translation/draft/one.tex'),book.root/'tex/chapters/one.tex')
+        with self.assertRaises(ProjectError):book.resolve_recorded_path('../b/config/book.yaml')
+
+    def test_completed_low_level_processors_cannot_recreate_old_workspace(self):
+        from mathbook.script_context import selected_book_paths
+        self.deliver_fixture()
+        with patch.dict('os.environ',{'MATHBOOK_BOOK_ID':'a'}),patch('mathbook.script_context.ProjectPaths',return_value=self.project):
+            with self.assertRaises(ProjectError):selected_book_paths()
+            self.assertTrue(selected_book_paths(allow_completed=True).delivered)
 
 if __name__=='__main__':unittest.main()
