@@ -73,7 +73,7 @@ def build_book(project: ProjectPaths, book_id: str, *, driver: Path | None = Non
     # Entries with basename-only inputs need both chapter and generated paths.
     inputs=[book.template/'style',book.template/'reference',book.template/'assets',book.template/'adapter',
         book.template/'adapter/aljabr-1',book.template/'collections/aljabr-1/upstream',
-        book.root/'tex',book.root/'tex/chapters',book.root/'tex/generated']
+        book.root/'tex',book.root/'tex/chapters',book.root/'tex/generated',book.root/'tex/figures']
     env['TEXINPUTS']=os.pathsep.join(str(p) for p in inputs)+os.pathsep+os.pathsep
     env['BIBINPUTS']=os.pathsep.join(str(p) for p in inputs)+os.pathsep+os.pathsep
     stage=book.assert_write_path(Path(tempfile.mkdtemp(prefix='unified-build-',dir=book.root/'workspace/temporary')))
