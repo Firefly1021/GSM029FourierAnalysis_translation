@@ -21,6 +21,24 @@ TRANSLATED_ENVIRONMENT_REFERENCE = re.compile(r"(定理|定义|引理|命题|推
 
 
 def canonical_tex_files(book: BookPaths) -> list[Path]:
+    if book.delivered:
+        binding=json.loads(book.binding_file.read_text(encoding='utf8'))
+        master=book.assert_write_path(book.root/binding['entry'])
+        files=[];seen=set();queue=[master]
+        while queue:
+            path=queue.pop(0).resolve()
+            if path in seen:continue
+            seen.add(path)
+            if not path.is_file():raise ProjectError('Missing completed-edition TeX input: '+str(path))
+            files.append(path)
+            source=re.sub(r'(?<!\\)%[^\n]*','',path.read_text(encoding='utf8'))
+            for name in re.findall(r'\\(?:input|include)\s*\{([^}]+)\}',source):
+                if '\\' in name or '#' in name:continue
+                relative=Path(name if Path(name).suffix else name+'.tex')
+                for candidate in (master.parent/relative,path.parent/relative):
+                    if candidate.is_file() and candidate.resolve().is_relative_to((book.root/'tex').resolve()):
+                        queue.append(candidate);break
+        return files
     files = [book.main_tex]
     for name in ("frontmatter.tex", "backmatter.tex"):
         path = book.root / "tex" / name

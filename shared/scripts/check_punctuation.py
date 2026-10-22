@@ -6,21 +6,26 @@ import argparse
 from collections import Counter
 from pathlib import Path
 
-from mathbook.script_context import selected_book_root
+from mathbook.script_context import selected_book_paths
 
 from mathbook.qa import find_chinese_prose_punctuation, normalize_chinese_prose_punctuation
 
 
-ROOT = selected_book_root()
+BOOK = selected_book_paths(allow_completed=True)
+ROOT = BOOK.root
 
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("path", nargs="?", default="tex/chapters/sample.tex")
+    parser.add_argument("path", nargs="?")
     parser.add_argument("--fix", action="store_true")
     parser.add_argument("--report", default="qa/translation/punctuation-report.md")
     args = parser.parse_args()
-    path = ROOT / args.path
+    if args.path is None:
+        if BOOK.delivered:
+            parser.error('Completed edition: specify the actual TeX input listed in README; no implicit sample selection.')
+        args.path='tex/chapters/sample.tex'
+    path = BOOK.assert_write_path(ROOT / args.path)
     text = path.read_text(encoding="utf-8")
     before = find_chinese_prose_punctuation(text)
     if args.fix and before:
@@ -45,7 +50,7 @@ def main() -> int:
     else:
         report.append("- None.")
     report.extend(["", "## Result", "", "Pass." if not after else "Fail: forbidden punctuation remains.", ""])
-    report_path = ROOT / args.report
+    report_path = BOOK.resolve_recorded_path(args.report)
     report_path.parent.mkdir(parents=True, exist_ok=True)
     report_path.write_text("\n".join(report), encoding="utf-8")
     if after:

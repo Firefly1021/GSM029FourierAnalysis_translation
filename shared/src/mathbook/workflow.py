@@ -521,6 +521,8 @@ def _blocking_issues(book: BookPaths) -> list[dict[str, object]]:
 
 def approve_sample(project: ProjectPaths, book_id: str) -> dict[str, object]:
     book, record = verify_book_context(project, book_id, writable=True)
+    if book.delivered:
+        raise ProjectError('This edition is already completed; sample approval cannot restart its workflow.')
     state = _workflow_state(book)
     if state.get("status") != "awaiting-sample-approval":
         raise ProjectError("The book is not awaiting sample approval.")

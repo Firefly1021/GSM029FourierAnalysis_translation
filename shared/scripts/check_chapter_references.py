@@ -8,10 +8,12 @@ import re
 from collections import Counter
 from pathlib import Path
 
-from mathbook.script_context import selected_book_root
+from mathbook.script_context import selected_book_paths
+from mathbook.build import canonical_tex_files
 
 
-ROOT = selected_book_root()
+BOOK = selected_book_paths(allow_completed=True)
+ROOT = BOOK.root
 LABEL = re.compile(r"\\label\{([^}]+)\}")
 REFERENCE = re.compile(r"\\(?P<command>eqref|ref|cref|Cref|autoref|pageref)\{(?P<label>[^}]+)\}")
 UNRESOLVED = re.compile(r"\\MBUnresolvedReference\{(?P<kind>[^}]+)\}\{(?P<source>[^}]+)\}")
@@ -55,6 +57,8 @@ def main() -> int:
         help="Optional TeX file; repeat to audit a chapter assembled from multiple files",
     )
     args = parser.parse_args()
+    if BOOK.delivered and not args.tex:
+        parser.error('Completed edition: supply --tex for the actual edition input listed in README; legacy chapter selection is disabled.')
     driver = ROOT / "tex" / "chapters" / f"{args.chapter_id}.tex"
     files = [ROOT / path for path in args.tex] if args.tex else [driver, *sorted((ROOT / "tex" / "chapters" / args.chapter_id).glob("*.tex"))]
     if not all(path.is_file() for path in files) or (not args.tex and len(files) == 1):
@@ -82,7 +86,7 @@ def main() -> int:
             unresolved.append((match.group("kind"), match.group("source"), relative, line_number(text, match.start())))
 
     project_labels: list[tuple[str, str, int]] = []
-    for project_path in sorted((ROOT / "tex").rglob("*.tex")):
+    for project_path in (canonical_tex_files(BOOK) if BOOK.delivered else sorted((ROOT / "tex").rglob("*.tex"))):
         project_text = project_path.read_text(encoding="utf-8")
         relative = project_path.relative_to(ROOT).as_posix()
         for match in LABEL.finditer(project_text):
@@ -100,7 +104,7 @@ def main() -> int:
         }
     )
 
-    registry_path = ROOT / "qa" / "translation" / f"{args.chapter_id}-cross-reference-registry.tsv"
+    registry_path = BOOK.qa / "translation" / f"{args.chapter_id}-cross-reference-registry.tsv"
     registry_path.parent.mkdir(parents=True, exist_ok=True)
     target_locations = {label: f"{path}:{line}" for label, path, line in project_labels}
     with registry_path.open("w", encoding="utf-8", newline="") as handle:
@@ -113,7 +117,7 @@ def main() -> int:
         for kind, source, path, line in unresolved:
             writer.writerow(["unresolved", source, kind, "", "MBUnresolvedReference", f"{path}:{line}", "", "needs-review"])
 
-    report_path = ROOT / "qa" / "translation" / f"{args.chapter_id}-cross-reference-report.md"
+    report_path = BOOK.qa / "translation" / f"{args.chapter_id}-cross-reference-report.md"
     report = [
         f"# {args.chapter_id} cross-reference report",
         "",

@@ -102,10 +102,11 @@ class UnifiedLibraryTests(unittest.TestCase):
         self.assertEqual(before,book.workflow_state.read_bytes())
 
     def test_completed_restart_translation_and_ambiguous_binding_are_refused(self):
-        from mathbook.workflow import start_book,translate_book
+        from mathbook.workflow import start_book,translate_book,approve_sample
         book=self.deliver_fixture()
         with self.assertRaises(ProjectError):start_book(self.project,'a')
         with self.assertRaises(ProjectError):translate_book(self.project,'a')
+        with self.assertRaises(ProjectError):approve_sample(self.project,'a')
         (book.root/'config').mkdir()
         (book.root/'config/library-binding.json').write_text('{}',encoding='utf8')
         with self.assertRaises(ProjectError):verify_book_context(self.project,'a',writable=True)
@@ -133,5 +134,15 @@ class UnifiedLibraryTests(unittest.TestCase):
         with patch.dict('os.environ',{'MATHBOOK_BOOK_ID':'a'}),patch('mathbook.script_context.ProjectPaths',return_value=self.project):
             with self.assertRaises(ProjectError):selected_book_paths()
             self.assertTrue(selected_book_paths(allow_completed=True).delivered)
+
+    def test_completed_qa_reads_actual_master_inputs_not_old_template_edition(self):
+        from mathbook.build import canonical_tex_files
+        book=self.deliver_fixture()
+        (book.root/'tex/main.tex').write_text('old-template-edition',encoding='utf8')
+        (book.root/'tex/current.tex').write_text('\\input{chapters/current-body}',encoding='utf8')
+        (book.root/'tex/chapters/current-body.tex').write_text('accepted current body',encoding='utf8')
+        binding=json.loads(book.binding_file.read_text(encoding='utf8'));binding['entry']='tex/current.tex'
+        book.binding_file.write_text(json.dumps(binding),encoding='utf8')
+        self.assertEqual(canonical_tex_files(book),[book.root/'tex/current.tex',book.root/'tex/chapters/current-body.tex'])
 
 if __name__=='__main__':unittest.main()

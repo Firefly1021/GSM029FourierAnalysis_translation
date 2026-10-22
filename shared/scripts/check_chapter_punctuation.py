@@ -6,12 +6,13 @@ import argparse
 from collections import Counter
 from pathlib import Path
 
-from mathbook.script_context import selected_book_root
+from mathbook.script_context import selected_book_paths
 
 from mathbook.qa import find_chinese_prose_punctuation
 
 
-ROOT = selected_book_root()
+BOOK = selected_book_paths(allow_completed=True)
+ROOT = BOOK.root
 
 
 def main() -> int:
@@ -19,6 +20,8 @@ def main() -> int:
     parser.add_argument("chapter_id", help="For example: chapter-01")
     parser.add_argument("--tex", action="append", help="Optional TeX file; repeat for a multi-file batch")
     args = parser.parse_args()
+    if BOOK.delivered and not args.tex:
+        parser.error('Completed edition: supply --tex for the actual edition input listed in README; legacy chapter selection is disabled.')
     files = (
         [ROOT / path for path in args.tex]
         if args.tex
@@ -32,7 +35,7 @@ def main() -> int:
         if path.is_file():
             violations.extend((path, item) for item in find_chinese_prose_punctuation(path.read_text(encoding="utf-8")))
     counts = Counter(item.character for _, item in violations)
-    report_path = ROOT / "qa" / "translation" / f"{args.chapter_id}-punctuation-report.md"
+    report_path = BOOK.qa / "translation" / f"{args.chapter_id}-punctuation-report.md"
     report_path.parent.mkdir(parents=True, exist_ok=True)
     report = [
         f"# {args.chapter_id} Chinese-prose punctuation report",

@@ -7,10 +7,11 @@ import csv
 import re
 from pathlib import Path
 
-from mathbook.script_context import selected_book_root
+from mathbook.script_context import selected_book_paths
 
 
-ROOT = selected_book_root()
+BOOK = selected_book_paths(allow_completed=True)
+ROOT = BOOK.root
 PDF_PAGE = re.compile(r"PDF\s+(\d+)")
 
 
@@ -21,6 +22,8 @@ def main() -> int:
     parser.add_argument("end_page", type=int)
     parser.add_argument("--tex", action="append", help="Optional TeX file; repeat for a multi-file batch")
     args = parser.parse_args()
+    if BOOK.delivered and not args.tex:
+        parser.error('Completed edition: supply --tex for the actual edition input listed in README; legacy chapter selection is disabled.')
 
     files = [ROOT / path for path in args.tex] if args.tex else [
         ROOT / "tex" / "chapters" / f"{args.chapter_id}.tex",
@@ -28,7 +31,7 @@ def main() -> int:
     ]
     translated = "\n".join(path.read_text(encoding="utf-8") for path in files if path.is_file())
     expected: list[dict[str, str]] = []
-    with (ROOT / "glossary" / "proper-names.tsv").open(encoding="utf-8", newline="") as handle:
+    with BOOK.proper_names.open(encoding="utf-8", newline="") as handle:
         for row in csv.DictReader(handle, delimiter="\t"):
             match = PDF_PAGE.search(row["First Occurrence"])
             if match and args.start_page <= int(match.group(1)) <= args.end_page:
@@ -42,7 +45,7 @@ def main() -> int:
             duplicate_entries.append(source)
         seen.add(source)
 
-    report_path = ROOT / "qa" / "translation" / f"{args.chapter_id}-name-report.md"
+    report_path = BOOK.qa / "translation" / f"{args.chapter_id}-name-report.md"
     report_path.parent.mkdir(parents=True, exist_ok=True)
     report = [
         f"# {args.chapter_id} personal-name report",
