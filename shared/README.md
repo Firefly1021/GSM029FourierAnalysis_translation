@@ -19,7 +19,7 @@
 
 已完成书籍的根目录只保留 `input/`、`tex/`、`template/`、`output/`、`records/` 和一份 `README.md`. 两本旧书另有必需的 `template-accepted/`, 用途已明确说明. `config`、`qa`、`formulae`、`glossary`、`structured`、独有译文记录及原状态说明集中到 `records/`; 空 `workspace`、`logs`、`workflow`、多余编辑器任务与旧入口已删除. 这不是用隐藏属性伪装精简.
 
-FEEC 当前 AJbook 正式版的实际正文是 `tex/generated/aljabr-layout/`, 不是此前 Mystyle 版的 `tex/chapters/`. 单书 README 已给出准确修改位置. 这里虽然名为 generated, 实际已作为永久成品源文件固定保留.
+FEEC 已于 2026-10-23 进一步整理为 AJbook 唯一成品: 主入口为 `tex/main.tex`, 正文为 `tex/chapters/`, 前后置页分别在 `tex/frontmatter/` 与 `tex/backmatter/`. 该书不再保留 Mystyle 版、generated 正文或书内 records. 行内/行间数学未改写, 源码只清理过程标记和无作用的分组/空段. 其他书籍仍使用各自已登记的版本.
 
 ## 书籍总览
 
@@ -87,6 +87,8 @@ python shared/scripts/library_cli.py build-book <book-id>
 已跟踪的过程文件可从本地整合检查点 `538012e` 或原书分支找回. 未跟踪的图像/OCR/构建缓存没有逐份备份, 需要时须由原始 PDF 重新生成. 不删除或改写 Git 历史来压缩体积.
 
 历史配置和 QA 中的旧路径是原始证据, 未批量替换. 完成书当前绑定为 `records/config/library-binding.json`; `records/path-map.json` 给出搬迁与逐字节去重后的去向. `BookPaths` 负责解析这些路径. 先前整合清单在 [qa/integration-20261022/](qa/integration-20261022/), 成品目录精简的新核验在 [qa/completed-view-20261022/](qa/completed-view-20261022/). 详细组织说明见 [docs/目录与日常编辑.md](docs/目录与日常编辑.md).
+
+FEEC 的配置、来源与历史 QA 另存于 `shared/book-records/finite-element-exterior-calculus/`, 不再放进 books 下的成品. BookPaths 同时支持书内和书外记录, 两个位置不能同时存在. 本次 AJbook 唯一成品核验在 [qa/feec-production-20261023/](qa/feec-production-20261023/).
 
 ## 已完成书籍的保留与清理
 

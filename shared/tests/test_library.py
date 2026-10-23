@@ -145,4 +145,21 @@ class UnifiedLibraryTests(unittest.TestCase):
         book.binding_file.write_text(json.dumps(binding),encoding='utf8')
         self.assertEqual(canonical_tex_files(book),[book.root/'tex/current.tex',book.root/'tex/chapters/current-body.tex'])
 
+    def test_external_records_keep_production_folder_free_of_process_data(self):
+        book=self.deliver_fixture()
+        destination=self.project.system/'book-records/a'
+        destination.parent.mkdir()
+        shutil.move(str(book.records),str(destination))
+        self.assertTrue(book.delivered)
+        self.assertEqual(book.records,destination)
+        self.assertEqual(book.config_file,destination/'config/book.yaml')
+        self.assertEqual(book.issues,destination/'qa/issues.jsonl')
+        self.assertEqual(book.resolve_recorded_path('records/qa/issues.jsonl'),book.issues)
+        self.assertEqual(book.assert_record_path(book.issues),book.issues)
+        with self.assertRaises(ProjectError):book.assert_record_path(self.project.system/'book-records/b/qa/issues.jsonl')
+        with self.assertRaises(ProjectError):book.assert_write_path(book.issues)
+        book.ensure_structure()
+        self.assertFalse((book.root/'records').exists())
+        verify_book_context(self.project,'a',writable=True)
+
 if __name__=='__main__':unittest.main()

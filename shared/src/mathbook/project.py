@@ -231,19 +231,32 @@ class BookPaths:
     @property
     def delivered(self) -> bool:
         """Completed editions keep process metadata away from daily editing."""
-        return (self.root / 'records/config/library-binding.json').is_file()
+        return any(path.is_file() for path in (
+            self.root/'records/config/library-binding.json',
+            self.project.system/'book-records'/self.book_id/'config/library-binding.json'))
 
     @property
     def records(self) -> Path:
+        external=self.project.system/'book-records'/self.book_id
+        if (external/'config/library-binding.json').is_file():return external
         return self.root / 'records' if self.delivered else self.root
 
     @property
     def binding_file(self) -> Path:
         old = self.root / 'config/library-binding.json'
-        new = self.root / 'records/config/library-binding.json'
-        if old.exists() and new.exists():
+        candidates=[old,self.root/'records/config/library-binding.json',
+            self.project.system/'book-records'/self.book_id/'config/library-binding.json']
+        existing=[path for path in candidates if path.is_file()]
+        if len(existing)>1:
             raise ProjectError('Ambiguous active book bindings; refusing implicit selection.')
-        return new if new.is_file() else old
+        return existing[0] if existing else old
+
+    def assert_record_path(self, path: Path) -> Path:
+        """Administrative writes may target only this book's own record store."""
+        resolved=_resolved(path)
+        if not _is_within(resolved,self.records):
+            raise ProjectError('Cross-book record write refused: '+str(path))
+        return resolved
 
     @property
     def qa(self) -> Path:
@@ -260,12 +273,14 @@ class BookPaths:
             raise ProjectError('Recorded path must be book-relative and contained.')
         text = path.as_posix()
         if self.delivered:
-            mapping = self.root / 'records/path-map.json'
+            mapping = self.records / 'path-map.json'
             if mapping.is_file():
                 for old, new in sorted(load_json_yaml(mapping).get('moved', {}).items(), key=lambda item:len(item[0]), reverse=True):
                     if text == old or text.startswith(old + '/'):
                         text = new + text[len(old):]
                         break
+        if self.records!=self.root/'records' and text.startswith('records/'):
+            return self.assert_record_path(self.records/text[len('records/'):])
         return self.assert_write_path(self.root / text)
 
     @property
@@ -404,6 +419,7 @@ def validate_project_structure() -> list[str]:
                 missing.append(str(exc))
                 continue
             required = (
+                ('input/source','tex','template','output') if book.delivered and book.records!=book.root/'records' else
                 ('input/source','tex','template','output','records/config/book.yaml',
                  'records/config/library-binding.json','records/PROJECT_STATUS.md','records/qa/issues.jsonl')
                 if book.delivered else (*BookPaths.REQUIRED_DIRECTORIES, "PROJECT_STATUS.md", "PLANS.md", "config/book.yaml")
@@ -411,4 +427,7 @@ def validate_project_structure() -> list[str]:
             for relative in required:
                 if not (book.root / relative).exists():
                     missing.append(f"books/{book.book_id}/{relative}")
+            if book.delivered and book.records!=book.root/'records':
+                for path in (book.config_file,book.binding_file,book.status_file,book.issues):
+                    if not path.is_file():missing.append(str(path))
     return missing

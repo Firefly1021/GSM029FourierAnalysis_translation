@@ -76,14 +76,14 @@ def build_book(project: ProjectPaths, book_id: str, *, driver: Path | None = Non
     env=os.environ.copy()
     env['PYTHONUTF8']='1'
     # Entries with basename-only inputs need both chapter and generated paths.
-    inputs=[build_template/'style',build_template/'reference',build_template/'assets',build_template/'adapter',
+    inputs=[build_template,build_template/'style',build_template/'reference',build_template/'assets',build_template/'adapter',
         build_template/'adapter/aljabr-1',build_template/'collections/aljabr-1/upstream',
         book.root/'tex',book.root/'tex/chapters',book.root/'tex/generated',book.root/'tex/figures',book.source]
     env['TEXINPUTS']=os.pathsep.join(str(p) for p in inputs)+os.pathsep+os.pathsep
     env['BIBINPUTS']=os.pathsep.join(str(p) for p in inputs)+os.pathsep+os.pathsep
     book.build_cache.mkdir(parents=True,exist_ok=True)
     stage=book.assert_write_path(Path(tempfile.mkdtemp(prefix='unified-build-',dir=book.build_cache)))
-    fonts=build_template/'collections/aljabr-1/fonts/noto-sans-cjk-sc'
+    fonts=book.assert_write_path(book.root/binding['fonts']) if binding.get('fonts') else build_template/'collections/aljabr-1/fonts/noto-sans-cjk-sc'
     if fonts.is_dir():
         fontconfig=stage/'fonts.conf'
         from xml.sax.saxutils import escape
@@ -122,6 +122,6 @@ def build_book(project: ProjectPaths, book_id: str, *, driver: Path | None = Non
         'build_template_hash':build_template_hash,'published':False,
         'log':str(log),'warnings':warnings,
         'scope':'Compilation and input integrity only; not translation/math/visual acceptance.'}
-    _write_json(book.assert_write_path(book.qa/'unified-build.json'),report)
+    _write_json(book.assert_record_path(book.qa/'unified-build.json'),report)
     if not report['success']:raise ProjectError('Book build failed; preserved log: '+str(log))
     return report
