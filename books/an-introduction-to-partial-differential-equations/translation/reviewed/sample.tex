@@ -1,0 +1,139 @@
+\subsection{基本数学问题}\label{sec:basic-mathematical-questions}
+
+\subsubsection{存在性}\label{subsec:existence}
+
+存在性问题自然地贯穿于整个数学之中. 数学家每次写下一个方程时, 脑海中\emph{都应当浮现}这个方程是否有解的问题. 因而, 偏微分方程解的存在性问题在本书中占有很大的篇幅, 这是恰当的. 本节考察后面将要讨论的偏微分方程定理的一些先导结果.
+
+\paragraph*{常微分方程的初值问题}
+
+微分方程中存在性结果的典型范例是常微分方程初值问题的存在性结果.
+
+\begin{Theorem}{常微分方程的存在性, Picard-Lindelöf}
+\label{thm:ode-existence}
+设 $D\subseteq\mathbb{R}\times\mathbb{R}^n$ 为开集, 且 $\mathbf{F}:D\to\mathbb{R}^n$ 关于第一个变量连续, \textbf{关于第二个变量一致 Lipschitz 连续}; 即对于 $(t,\mathbf{y})\in D$, $\mathbf{F}(t,\mathbf{y})$ 作为 $t$ 的函数连续, 并且存在常数 $\gamma$, 使得对于 $D$ 中任意的 $(t,\mathbf{y}_1)$ 和 $(t,\mathbf{y}_2)$ 都有
+\begin{equation}\label{eq:uniform-lipschitz-bound}
+|\mathbf{F}(t,\mathbf{y}_1)-\mathbf{F}(t,\mathbf{y}_2)|\leq\gamma|\mathbf{y}_1-\mathbf{y}_2|.
+\end{equation}
+那么, 对于任意 $(t_0,\mathbf{y}_0)\in D$, 都存在包含 $t_0$ 的区间 $I:=(t^-,t^+)$, 使得初值问题
+\begin{equation}\label{eq:ode-initial-value-dynamics}
+\frac{d\mathbf{y}}{dt}(t)=\mathbf{F}(t,\mathbf{y}(t)),
+\end{equation}
+\begin{equation}\label{eq:ode-initial-value-data}
+\mathbf{y}(t_0)=\mathbf{y}_0.
+\end{equation}
+至少有一个解 $\mathbf{y}\in C^1(I)$.
+\end{Theorem}
+
+几乎任何一本常微分方程教材中都能找到这一结果的证明. 我们要指出其中一种证明, 它是偏微分方程中许多技巧的来源: 构造一个等价的积分方程. 在这一证明中, 先证明存在连续函数 $\mathbf{y}$ 满足
+\begin{equation}\label{eq:ode-integral-equation}
+\mathbf{y}(t)=\mathbf{y}_0+\int_{t_0}^t\mathbf{F}(s,\mathbf{y}(s))\,ds.
+\end{equation}
+
+于是微积分基本定理表明, $\mathbf{y}$ 可微并满足 \eqref{eq:ode-initial-value-dynamics}, \eqref{eq:ode-initial-value-data} (参见下文关于光滑性的结果). 方程 \eqref{eq:ode-integral-equation} 的解由迭代过程得到; 即从解的一个初始猜测 (通常取常值函数 $\mathbf{y}_0$) 出发, 依次计算
+\begin{equation}\label{eq:picard-iteration}
+\begin{aligned}
+\mathbf{y}_1(t)&=\mathbf{y}_0+\textstyle\int_{t_0}^t\mathbf{F}(s,\mathbf{y}_0)\,ds,\\
+\mathbf{y}_2(t)&=\mathbf{y}_0+\textstyle\int_{t_0}^t\mathbf{F}(s,\mathbf{y}_1(s))\,ds,\\
+&\ \vdots\\
+\mathbf{y}_{k+1}(t)&=\mathbf{y}_0+\textstyle\int_{t_0}^t\mathbf{F}(s,\mathbf{y}_k(s))\,ds,\\
+&\ \vdots
+\end{aligned}
+\end{equation}
+
+当然, 要完成证明, 还必须证明这个序列收敛到一个解.
+
+在后面的章节中, 我们将看到这一过程的推广被用于求解偏微分方程.
+
+\paragraph*{高等微积分中的存在性定理}
+
+下面这些高等微积分中的定理给出了代数方程解的有关信息. 第一个定理是反函数定理, 它考察由 $n$ 个方程和 $n$ 个未知量构成的问题.
+
+\begin{Theorem}{反函数定理}
+\label{thm:inverse-function}
+设函数
+\[
+\mathbf{F}:\mathbb{R}^n\ni\mathbf{x}:=(x_1,\ldots,x_n)\mapsto\mathbf{F}(\mathbf{x}):=(F_1(\mathbf{x}),\ldots,F_n(\mathbf{x}))\in\mathbb{R}^n
+\]
+在点 $\mathbf{x}_0$ 的某个邻域内为 $C^1$ 的. 进一步假设
+\[
+\mathbf{F}(\mathbf{x}_0)=\mathbf{p}_0
+\]
+且
+\[
+\frac{\partial\mathbf{F}}{\partial\mathbf{x}}(\mathbf{x}_0):=
+\begin{pmatrix}
+\frac{\partial F_1}{\partial x_1}(\mathbf{x}_0)&\cdots&\frac{\partial F_1}{\partial x_n}(\mathbf{x}_0)\\
+\vdots&\ddots&\vdots\\
+\frac{\partial F_n}{\partial x_1}(\mathbf{x}_0)&\cdots&\frac{\partial F_n}{\partial x_n}(\mathbf{x}_0)
+\end{pmatrix}
+\]
+非奇异. 那么, 存在 $\mathbf{x}_0$ 的邻域 $N_x$ 和 $\mathbf{p}_0$ 的邻域 $N_p$, 使得 $\mathbf{F}:N_x\to N_p$ 为一一映射且为满射; 即对于每个 $\mathbf{p}\in N_p$, 方程
+\[
+\mathbf{F}(\mathbf{x})=\mathbf{p}
+\]
+在 $N_x$ 中有唯一解.
+\end{Theorem}
+
+第二个结果是隐函数定理, 它涉及求解由 $p$ 个方程和 $q+p$ 个未知量构成的方程组.
+
+\begin{Theorem}{隐函数定理}
+\label{thm:implicit-function}
+设函数
+\[
+\mathbf{F}:\mathbb{R}^q\times\mathbb{R}^p\ni(\mathbf{x},\mathbf{y})\mapsto\mathbf{F}(\mathbf{x},\mathbf{y})\in\mathbb{R}^p
+\]
+在点 $(\mathbf{x}_0,\mathbf{y}_0)$ 的某个邻域内为 $C^1$ 的. 进一步假设
+\[
+\mathbf{F}(\mathbf{x}_0,\mathbf{y}_0)=0,
+\]
+且 $p\times p$ 矩阵
+\[
+\frac{\partial\mathbf{F}}{\partial\mathbf{y}}(\mathbf{x}_0,\mathbf{y}_0):=
+\begin{pmatrix}
+\frac{\partial F_1}{\partial y_1}(\mathbf{x}_0,\mathbf{y}_0)&\cdots&\frac{\partial F_1}{\partial y_p}(\mathbf{x}_0,\mathbf{y}_0)\\
+\vdots&\ddots&\vdots\\
+\frac{\partial F_p}{\partial y_1}(\mathbf{x}_0,\mathbf{y}_0)&\cdots&\frac{\partial F_p}{\partial y_p}(\mathbf{x}_0,\mathbf{y}_0)
+\end{pmatrix}
+\]
+非奇异. 那么, 存在 $\mathbf{x}_0$ 的邻域 $N_x\subset\mathbb{R}^q$ 及函数 $\hat{\mathbf{y}}:N_x\to\mathbb{R}^p$, 使得
+\[
+\hat{\mathbf{y}}(\mathbf{x}_0)=\mathbf{y}_0,
+\]
+且对于每个 $\mathbf{x}\in N_x$ 都有
+\[
+\mathbf{F}(\mathbf{x},\hat{\mathbf{y}}(\mathbf{x}))=0.
+\]
+\end{Theorem}
+
+这两个定理说明了这样一种思想: 只要线性项占优于非线性项, 非线性方程组的表现就基本上与其线性化相同. 这类结果在微分方程中具有相当重要的意义.
+
+\subsubsection{多解性}\label{subsec:multiplicity}
+
+一旦提出给定问题是否有解的问题, 自然就会进一步考察它有多少个解.
+
+\paragraph*{常微分方程初值问题的唯一性}
+
+唯一性结果的典型范例来自常微分方程的初值问题.
+
+\begin{Theorem}{常微分方程的唯一性}
+\label{thm:ode-uniqueness}
+设函数 $\mathbf{F}$ 满足 Theorem~\ref{thm:ode-existence} 的假设. 那么, 初值问题 \eqref{eq:ode-initial-value-dynamics}, \eqref{eq:ode-initial-value-data} 至多有一个解.
+\end{Theorem}
+
+下文将给出一个基于 Gronwall 不等式的证明.
+
+应当注意, 尽管这一结果适用于范围非常广泛的初值问题, 仍有一些标准的简单例子不具有唯一性. 例如, 问题
+\[
+\begin{aligned}
+\frac{dy}{dt}&=y^{1/3},\\
+y(0)&=0
+\end{aligned}
+\]
+
+有一整族以 $\gamma\in[0,1]$ 为参数的解:
+\[
+y_\gamma(t):=\begin{cases}
+0,&0<t\leq\gamma,\\
+\left[\frac{2}{3}(t-\gamma)\right]^{3/2},&\gamma<t\leq1.
+\end{cases}
+\]

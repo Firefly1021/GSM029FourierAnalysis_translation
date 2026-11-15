@@ -1,0 +1,138 @@
+\subsection{Basic Mathematical Questions}\label{sec:basic-mathematical-questions}
+
+\subsubsection{Existence}\label{subsec:existence}
+
+Questions of existence occur naturally throughout mathematics. The question of whether a solution exists \emph{should pop into} a mathematician's head any time he or she writes an equation down. Appropriately, the problem of existence of solutions of partial differential equations occupies a large portion of this text. In this section we consider precursors of the PDE theorems to come.
+
+\paragraph*{Initial-value problems in ODEs}
+
+The prototype existence result in differential equations is for initial-value problems in ODEs.
+
+\begin{Theorem}{ODE existence, Picard-Lindelöf}
+\label{thm:ode-existence}
+Let $D\subseteq\mathbb{R}\times\mathbb{R}^n$ be an open set, and let $\mathbf{F}:D\to\mathbb{R}^n$ be continuous in its first variable and \textbf{uniformly Lipschitz in its second}; i.e., for $(t,\mathbf{y})\in D$, $\mathbf{F}(t,\mathbf{y})$ is continuous as a function of $t$, and there exists a constant $\gamma$ such that for any $(t,\mathbf{y}_1)$ and $(t,\mathbf{y}_2)$ in $D$ we have
+\begin{equation}\label{eq:uniform-lipschitz-bound}
+|\mathbf{F}(t,\mathbf{y}_1)-\mathbf{F}(t,\mathbf{y}_2)|\leq\gamma|\mathbf{y}_1-\mathbf{y}_2|.
+\end{equation}
+Then, for any $(t_0,\mathbf{y}_0)\in D$, there exists an interval $I:=(t^-,t^+)$ containing $t_0$ and at least one solution $\mathbf{y}\in C^1(I)$ of the initial-value problem
+\begin{equation}\label{eq:ode-initial-value-dynamics}
+\frac{d\mathbf{y}}{dt}(t)=\mathbf{F}(t,\mathbf{y}(t)),
+\end{equation}
+\begin{equation}\label{eq:ode-initial-value-data}
+\mathbf{y}(t_0)=\mathbf{y}_0.
+\end{equation}
+\end{Theorem}
+
+The proof of this can be found in almost any text on ODEs. We make note of one version of the proof that is the source of many techniques in PDEs: the construction of an equivalent integral equation. In this proof, one shows that there is a continuous function $\mathbf{y}$ that satisfies
+\begin{equation}\label{eq:ode-integral-equation}
+\mathbf{y}(t)=\mathbf{y}_0+\int_{t_0}^t\mathbf{F}(s,\mathbf{y}(s))\,ds.
+\end{equation}
+
+Then the fundamental theorem of calculus implies that $\mathbf{y}$ is differentiable and satisfies \eqref{eq:ode-initial-value-dynamics}, \eqref{eq:ode-initial-value-data} (cf. the results on smoothness below). The solution of \eqref{eq:ode-integral-equation} is obtained from an iterative procedure; i.e., we begin with an initial guess for the solution (usually the constant function $\mathbf{y}_0$) and proceed to calculate
+\begin{equation}\label{eq:picard-iteration}
+\begin{aligned}
+\mathbf{y}_1(t)&=\mathbf{y}_0+\textstyle\int_{t_0}^t\mathbf{F}(s,\mathbf{y}_0)\,ds,\\
+\mathbf{y}_2(t)&=\mathbf{y}_0+\textstyle\int_{t_0}^t\mathbf{F}(s,\mathbf{y}_1(s))\,ds,\\
+&\ \vdots\\
+\mathbf{y}_{k+1}(t)&=\mathbf{y}_0+\textstyle\int_{t_0}^t\mathbf{F}(s,\mathbf{y}_k(s))\,ds,\\
+&\ \vdots
+\end{aligned}
+\end{equation}
+
+Of course, to complete the proof one must show that this sequence converges to a solution.
+
+We will see generalizations of this procedure used to solve PDEs in later chapters.
+
+\paragraph*{Existence theorems of advanced calculus}
+
+The following theorems from advanced calculus give information on the solution of algebraic equations. The first, the inverse function theorem, considers the problem of $n$ equations in $n$ unknowns.
+
+\begin{Theorem}{Inverse function theorem}
+\label{thm:inverse-function}
+Suppose the function
+\[
+\mathbf{F}:\mathbb{R}^n\ni\mathbf{x}:=(x_1,\ldots,x_n)\mapsto\mathbf{F}(\mathbf{x}):=(F_1(\mathbf{x}),\ldots,F_n(\mathbf{x}))\in\mathbb{R}^n
+\]
+is $C^1$ in a neighborhood of a point $\mathbf{x}_0$. Further assume that
+\[
+\mathbf{F}(\mathbf{x}_0)=\mathbf{p}_0
+\]
+and
+\[
+\frac{\partial\mathbf{F}}{\partial\mathbf{x}}(\mathbf{x}_0):=
+\begin{pmatrix}
+\frac{\partial F_1}{\partial x_1}(\mathbf{x}_0)&\cdots&\frac{\partial F_1}{\partial x_n}(\mathbf{x}_0)\\
+\vdots&\ddots&\vdots\\
+\frac{\partial F_n}{\partial x_1}(\mathbf{x}_0)&\cdots&\frac{\partial F_n}{\partial x_n}(\mathbf{x}_0)
+\end{pmatrix}
+\]
+is nonsingular. Then there is a neighborhood $N_x$ of $\mathbf{x}_0$ and a neighborhood $N_p$ of $\mathbf{p}_0$ such that $\mathbf{F}:N_x\to N_p$ is one-to-one and onto; i.e., for every $\mathbf{p}\in N_p$ the equation
+\[
+\mathbf{F}(\mathbf{x})=\mathbf{p}
+\]
+has a unique solution in $N_x$.
+\end{Theorem}
+
+Our second result, the implicit function theorem, concerns solving a system of $p$ equations in $q+p$ unknowns.
+
+\begin{Theorem}{Implicit function theorem}
+\label{thm:implicit-function}
+Suppose the function
+\[
+\mathbf{F}:\mathbb{R}^q\times\mathbb{R}^p\ni(\mathbf{x},\mathbf{y})\mapsto\mathbf{F}(\mathbf{x},\mathbf{y})\in\mathbb{R}^p
+\]
+is $C^1$ in a neighborhood of a point $(\mathbf{x}_0,\mathbf{y}_0)$. Further assume that
+\[
+\mathbf{F}(\mathbf{x}_0,\mathbf{y}_0)=0,
+\]
+and that the $p\times p$ matrix
+\[
+\frac{\partial\mathbf{F}}{\partial\mathbf{y}}(\mathbf{x}_0,\mathbf{y}_0):=
+\begin{pmatrix}
+\frac{\partial F_1}{\partial y_1}(\mathbf{x}_0,\mathbf{y}_0)&\cdots&\frac{\partial F_1}{\partial y_p}(\mathbf{x}_0,\mathbf{y}_0)\\
+\vdots&\ddots&\vdots\\
+\frac{\partial F_p}{\partial y_1}(\mathbf{x}_0,\mathbf{y}_0)&\cdots&\frac{\partial F_p}{\partial y_p}(\mathbf{x}_0,\mathbf{y}_0)
+\end{pmatrix}
+\]
+is nonsingular. Then there is a neighborhood $N_x\subset\mathbb{R}^q$ of $\mathbf{x}_0$ and a function $\hat{\mathbf{y}}:N_x\to\mathbb{R}^p$ such that
+\[
+\hat{\mathbf{y}}(\mathbf{x}_0)=\mathbf{y}_0,
+\]
+and for every $\mathbf{x}\in N_x$
+\[
+\mathbf{F}(\mathbf{x},\hat{\mathbf{y}}(\mathbf{x}))=0.
+\]
+\end{Theorem}
+
+The two theorems illustrate the idea that a nonlinear system of equations behaves essentially like its linearization as long as the linear terms dominate the nonlinear ones. Results of this nature are of considerable importance in differential equations.
+
+\subsubsection{Multiplicity}\label{subsec:multiplicity}
+
+Once we have asked the question of whether a solution to a given problem exists, it is natural to consider the question of how many solutions there are.
+
+\paragraph*{Uniqueness for initial-value problems in ODEs}
+
+The prototype for uniqueness results is for initial-value problems in ODEs.
+
+\begin{Theorem}{ODE uniqueness}
+\label{thm:ode-uniqueness}
+Let the function $\mathbf{F}$ satisfy the hypotheses of Theorem~\ref{thm:ode-existence}. Then the initial-value problem \eqref{eq:ode-initial-value-dynamics}, \eqref{eq:ode-initial-value-data} has at most one solution.
+\end{Theorem}
+
+A proof of this based on Gronwall's inequality is given below.
+
+It should be noted that although this result covers a very wide range of initial-value problems, there are some standard, simple examples for which uniqueness fails. For instance, the problem
+\[
+\begin{aligned}
+\frac{dy}{dt}&=y^{1/3},\\
+y(0)&=0
+\end{aligned}
+\]
+
+has an entire family of solutions parameterized by $\gamma\in[0,1]$:
+\[
+y_\gamma(t):=\begin{cases}
+0,&0<t\leq\gamma,\\
+\left[\frac{2}{3}(t-\gamma)\right]^{3/2},&\gamma<t\leq1.
+\end{cases}
+\]
