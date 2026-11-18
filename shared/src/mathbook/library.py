@@ -75,8 +75,19 @@ def build_book(project: ProjectPaths, book_id: str, *, driver: Path | None = Non
         raise ProjectError('Registered accepted build template hash mismatch.')
     env=os.environ.copy()
     env['PYTHONUTF8']='1'
+    # The registered manuscript must win over same-named reference files.
+    # An opted-in shared edition must also win over its historical snapshots.
+    edition_paths=[]
+    layout_hash=None
+    if binding.get('layout_profile')=='shared-ajbook':
+        adapter=project.template/'adapter/aljabr-1'
+        edition=adapter/'edition'
+        if not (edition/'AJbook.cls').is_file() or not (adapter/'ajbook-page-layout.sty').is_file():
+            raise ProjectError('The shared AJbook edition is missing.')
+        edition_paths=[edition,adapter]
+        layout_hash=directory_manifest_hash(adapter)
     # Entries with basename-only inputs need both chapter and generated paths.
-    inputs=[build_template,build_template/'style',build_template/'reference',build_template/'assets',build_template/'adapter',
+    inputs=[entry.parent,*edition_paths,build_template,build_template/'style',build_template/'reference',build_template/'assets',build_template/'adapter',
         build_template/'adapter/aljabr-1',build_template/'collections/aljabr-1/upstream',
         book.root/'tex',book.root/'tex/chapters',book.root/'tex/generated',book.root/'tex/figures',book.source]
     env['TEXINPUTS']=os.pathsep.join(str(p) for p in inputs)+os.pathsep+os.pathsep
@@ -101,7 +112,7 @@ def build_book(project: ProjectPaths, book_id: str, *, driver: Path | None = Non
     else:
         executable=shutil.which('latexmk')
         if not executable:raise ProjectError('latexmk is required for bibliography-aware clean builds.')
-        command=[executable,'-xelatex','-interaction=nonstopmode','-halt-on-error','-file-line-error','-outdir='+str(stage),entry.name]
+        command=[executable,'-xelatex','-interaction=nonstopmode','-halt-on-error','-file-line-error','-outdir='+str(stage),str(entry)]
     # Compile in the master directory so graphics paths retain original meaning.
     result=subprocess.run(command,cwd=entry.parent,env=env,capture_output=True)
     log=stage/'build-driver.log';log.write_bytes(result.stdout+result.stderr)
@@ -114,12 +125,13 @@ def build_book(project: ProjectPaths, book_id: str, *, driver: Path | None = Non
         'missing_glyphs':r'Missing character:[^\n]*',
         'overfull_boxes':r'Overfull \\[hv]box[^\n]*'}.items()}
     if (before!=sha256_file(source) or template_hash!=directory_manifest_hash(book.template)
-            or build_template_hash!=directory_manifest_hash(build_template)):
+            or build_template_hash!=directory_manifest_hash(build_template)
+            or (layout_hash is not None and layout_hash!=directory_manifest_hash(adapter))):
         raise ProjectError('Read-only input integrity changed during build.')
     report={'book_id':book_id,'entry':binding['entry'],'success':result.returncode==0 and pdf.is_file(),
         'exit_code':result.returncode,'build_directory':str(stage),'candidate_pdf':str(pdf),
         'source_sha256':before,'template_hash':template_hash,'build_template':str(build_template),
-        'build_template_hash':build_template_hash,'published':False,
+        'build_template_hash':build_template_hash,'layout_profile_hash':layout_hash,'published':False,
         'log':str(log),'warnings':warnings,
         'scope':'Compilation and input integrity only; not translation/math/visual acceptance.'}
     _write_json(book.assert_record_path(book.qa/'unified-build.json'),report)
