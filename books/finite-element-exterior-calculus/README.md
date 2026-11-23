@@ -25,8 +25,6 @@
 
 所有编译产物统一放在 `tex/build/`: PDF、日志、辅助文件、目录和 SyncTeX 文件均属于这里. 不再使用 `output/` 或 `.build/`. 编译生成的 PDF 为 `tex/build/main.pdf`, 再次编译会更新它; 原始 PDF 位于 `input/source/`, 不会被覆盖.
 
-本次旧目录删除被执行环境安全策略阻止, `output/` 和 `.build/` 暂时仍在磁盘上, 不再是有效编译或 PDF 入口. 当前 PDF 已校验复制到 `tex/build/main.pdf`, 清理这两个旧目录前请确认该文件存在.
-
 也可以选择共享构建入口. 在本目录的终端执行:
 
 ```powershell
@@ -46,3 +44,5 @@ AJbook 作者为 Wen-Wei Li (李文威), 采用 CC BY 4.0. 原始许可证见 [t
 封面根据该项目的 `coverpage.tex` 改编, 设计归属及 CC BY 4.0 许可保留. 中文书名使用随书附带的 Noto Serif CJK SC Bold, 作者区域沿用 Noto Sans CJK SC. 英文书名根据长度调整字号, 不沿用原书卷次、ISBN 或专属出版说明. 封面及其空白背页置于原书前置页之前, 不改变正文的页码和编号.
 
 项目总说明见 [../../shared/README.md](../../shared/README.md). Git 在项目总目录统一管理, 不自动推送.
+
+书籍登记、校对和来源证据集中在[共享书籍记录](../../shared/book-records/finite-element-exterior-calculus/), 不属于日常编辑目录.

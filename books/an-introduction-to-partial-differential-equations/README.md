@@ -6,7 +6,7 @@ Michael Renardy and Robert C. Rogers, Second Edition.
 
 全书翻译和最终技术 QA 已完成, 等待读者通读验收. 不是只完成样本或部分章节.
 
-- 中文全书: [output/book-zh.pdf](output/book-zh.pdf), AJbook 版, 387 页.
+- 中文全书: [tex/build/book.pdf](tex/build/book.pdf), AJbook 版, 随本地编译更新.
 - 完整可编辑入口: [tex/book.tex](tex/book.tex).
 - 正文: `tex/chapters/chapter-*.tex`, 保持已有通过 QA 的文本, 不要重新生成覆盖.
 - 卷首: `tex/chapters/front-matter.tex`.
@@ -20,7 +20,7 @@ Michael Renardy and Robert C. Rogers, Second Edition.
 自动目录, 附录 A 五组 62 条参考文献, 以及原书索引全部 300 个词条.
 索引沿用原书词条顺序, 335 个定位链接显示当前中文译本页码并跳转到相应的
 章节、定理、公式、习题或段落. 原书页码保留在
-[原索引页码登记](records/structured/reviewed/source-index-locators.json)中, 不再作为译本索引页码显示.
+[原索引页码登记](../../shared/book-records/an-introduction-to-partial-differential-equations/structured/reviewed/source-index-locators.json)中, 不再作为译本索引页码显示.
 正文引用仍使用实际的 LaTeX label/ref/eqref.
 
 ## 打开和编译
@@ -32,22 +32,21 @@ Michael Renardy and Robert C. Rogers, Second Edition.
 
 ```powershell
 $env:BIBINPUTS = "$(Resolve-Path 'tex');"
-latexmk -cd -xelatex -interaction=nonstopmode -halt-on-error -outdir=../.build tex/book.tex
+latexmk -cd -xelatex -interaction=nonstopmode -halt-on-error -outdir=build tex/book.tex
 ```
 
-`.build/` 只在本地重新编译时生成，结果为 `.build/book.pdf`。
-`output/book-zh.pdf` 是本次技术验收对应的固定交付文件; 本地编译不会自动覆盖它.
+直接编译 `tex/book.tex` 时, PDF 和辅助文件放入 `tex/build/`; 不另设 `output/`. 清理辅助文件后, 下次编译会重新生成它们.
 本书通过相对路径查找 `template/` 内的模板和随书 Noto 字体, 不依赖 `shared/` 中的其他模板.
 AJbook 模板与封面设计来自 Wen-Wei Li 的 AlJabr-1, 按模板中的许可文件使用.
 
 ## QA 与原书问题
 
-翻译验收依据为 [final-book-qa.json](records/qa/final-book-qa.json) 和
-[final-book-report.md](records/qa/final-book-report.md)，历史日志在 `records/logs/`。
-交付版整理及重新编译结果见 [delivery-cleanup.json](records/qa/delivery-cleanup.json)。
-AJbook 换版的编译和引用回归结果见 [ajbook-migration.json](records/qa/ajbook-migration.json).
-译本索引的页码、跳转核验及原书对照见 [translated-index-qa.json](records/qa/translated-index-qa.json)
-和 [translated-index-locators.json](records/qa/translated-index-locators.json).
+翻译验收依据为 [final-book-qa.json](../../shared/book-records/an-introduction-to-partial-differential-equations/qa/final-book-qa.json) 和
+[final-book-report.md](../../shared/book-records/an-introduction-to-partial-differential-equations/qa/final-book-report.md)，历史日志在 `shared/book-records/an-introduction-to-partial-differential-equations/logs/`。
+交付版整理及重新编译结果见 [delivery-cleanup.json](../../shared/book-records/an-introduction-to-partial-differential-equations/qa/delivery-cleanup.json)。
+AJbook 换版的编译和引用回归结果见 [ajbook-migration.json](../../shared/book-records/an-introduction-to-partial-differential-equations/qa/ajbook-migration.json).
+译本索引的页码、跳转核验及原书对照见 [translated-index-qa.json](../../shared/book-records/an-introduction-to-partial-differential-equations/qa/translated-index-qa.json)
+和 [translated-index-locators.json](../../shared/book-records/an-introduction-to-partial-differential-equations/qa/translated-index-locators.json).
 早期批次 pending 报告作为历史保留, 不代表当前仍待翻译.
 
 - 1,667 个编号公式位置, 包括原书本来为空的 9.192.
@@ -61,10 +60,10 @@ AJbook 换版的编译和引用回归结果见 [ajbook-migration.json](records/q
 均保留并登记, 没有猜补或静默修正. Problem 1.16 按用户要求照原扫描保留.
 原书两条不同文献重复使用 [La], 也按原书保留, 不改变正文 La 键的含义.
 
-恢复后的英文 TeX 片段及双语 JSON 保存在 `records/structured/reviewed/`，
-英文清单为 `book-restored-en-manifest.json`。页码映射在 `records/structured/source/`，
-公式、术语及核验图像在 `records/formulae/`、`records/glossary/` 和 `records/evidence/`。
-历史报告保留原路径，用 `records/path-map.json` 查找现位置。
+恢复后的英文 TeX 片段及双语 JSON 保存在 `shared/book-records/an-introduction-to-partial-differential-equations/structured/reviewed/`，
+英文清单为 `book-restored-en-manifest.json`。页码映射在 `shared/book-records/an-introduction-to-partial-differential-equations/structured/source/`，
+公式、术语及核验图像在 `shared/book-records/an-introduction-to-partial-differential-equations/formulae/`、`shared/book-records/an-introduction-to-partial-differential-equations/glossary/` 和 `shared/book-records/an-introduction-to-partial-differential-equations/evidence/`。
+历史报告保留原路径，用 `shared/book-records/an-introduction-to-partial-differential-equations/path-map.json` 查找现位置。
 
 ## 固定规则
 
@@ -74,5 +73,5 @@ AJbook 换版的编译和引用回归结果见 [ajbook-migration.json](records/q
 
 本次索引更新未改写译文正文或公式, 只为需要定位的段落添加不可见的索引标签.
 原始 PDF 未修改. 序言中的旧标题页已由 AJbook 封面取代.
-`output/` 只保留 AJbook 正式译本. 原 350 页版归档在 `records/editions/mystyle/`.
+原 350 页版归档在 `shared/book-records/an-introduction-to-partial-differential-equations/editions/mystyle/`.
 全书仍在统一库 main 工作区内隔离保存. 本次更新未创建 Git 提交, 也未推送.

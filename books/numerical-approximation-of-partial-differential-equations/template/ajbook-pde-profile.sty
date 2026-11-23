@@ -57,6 +57,20 @@
 % Keep the reference edition's inline style.
 \AtBeginDocument{\everymath{\displaystyle}}
 
+% Use the same fixed outer space for normal displays and short preceding lines.
+% Append after setspace and size selection; never multiply these skips by 1.3.
+\newlength{\AJDisplayMathSkip}
+\setlength{\AJDisplayMathSkip}{8pt}
+\newcommand{\AJApplyDisplayMathSpacing}{%
+  \setlength{\abovedisplayskip}{\AJDisplayMathSkip}%
+  \setlength{\belowdisplayskip}{\AJDisplayMathSkip}%
+  \setlength{\abovedisplayshortskip}{\AJDisplayMathSkip}%
+  \setlength{\belowdisplayshortskip}{\AJDisplayMathSkip}%
+}
+\AddToHook{begindocument/end}{%
+  \everydisplay\expandafter{\the\everydisplay\AJApplyDisplayMathSpacing}%
+}
+
 \newcommand{\AJStatementHeadingFont}{\sffamily\bfseries\thmheiti}
 \newcommand{\AJStatementFormalFont}{\fangsong}
 \newcommand{\AJStatementInformalFont}{\songti}

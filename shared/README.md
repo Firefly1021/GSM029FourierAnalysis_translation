@@ -4,8 +4,8 @@
 
 | 区域 | 用途 |
 | --- | --- |
-| `books/` | 每本书独立的原始 PDF、现用模板、章节 TeX、图片、英文恢复稿、译文、公式、QA 和正式输出 |
-| `shared/` | 全部书籍共用的说明、规则、模板收藏、权威术语库、程序、配置、测试和项目登记 |
+| `books/` | 每本书独立的原始 PDF、现用模板、可编辑译稿、图片和本地编译 |
+| `shared/` | 全部书籍共用的说明、规则、模板收藏、权威术语库、程序、配置、测试、项目登记，以及按书隔离的记录 |
 
 本文件位于 `shared/README.md`. 下文以整个项目总目录为命令起点. Git 的隐藏管理文件留在总目录, 不需要日常操作.
 
@@ -15,11 +15,11 @@
 - **一个窗口管理全部书籍**: 打开 [BOOKTRANSLATION.code-workspace](BOOKTRANSLATION.code-workspace).
 - **修改共享程序、模板或项目规则**: 打开本 `shared/` 目录. 原始模板仍然只读.
 
-每本书的正式 TeX 入口和正式 PDF 都已明确登记. 不要只凭 `main.tex` 这个名字判断它是样本还是全书入口. 不要进入 `.legacy-worktrees` 编辑.
+每本书的正式 TeX 入口和预期的本地编译 PDF 路径都已明确登记. 不要只凭 `main.tex` 这个名字判断它是样本还是全书入口. 不要进入 `.legacy-worktrees` 编辑.
 
-已完成书籍的常用目录为 `input/`、`tex/`、`template/`、`output/`、`records/` 和一份 `README.md`. `config`、`qa`、`formulae`、`glossary`、`structured`、独有译文记录及原状态说明集中到 `records/`; 空 `workspace`、`logs`、`workflow`、多余编辑器任务与旧入口已删除.
+已完成书籍的常用目录为 `input/`、`tex/`、`template/` 和一份 `README.md`. 编译产物统一放在 `tex/build/`, 由编译自动生成, 不另设 `output/`. `config`、`qa`、`formulae`、`glossary`、`structured`、独有译文记录及原状态说明集中到 [book-records/](book-records/) 下各自的书籍目录; 空 `workspace`、`logs`、`workflow`、多余编辑器任务与旧入口已删除.
 
-FEEC 已于 2026-10-23 进一步整理为 AJbook 唯一成品: 主入口为 `tex/main.tex`, 正文为 `tex/chapters/`, 前后置页分别在 `tex/frontmatter/` 与 `tex/backmatter/`. 编译产物统一位于 `tex/build/`, PDF 为 `tex/build/main.pdf`, 不再使用 `output/` 或 `.build/`. 该书不再保留 Mystyle 版、generated 正文或书内 records. 行内/行间数学未改写, 源码只清理过程标记和无作用的分组/空段. 其他书籍仍使用各自已登记的版本.
+FEEC 已于 2026-10-23 进一步整理为 AJbook 唯一成品: 主入口为 `tex/main.tex`, 正文为 `tex/chapters/`, 前后置页分别在 `tex/frontmatter/` 与 `tex/backmatter/`. 编译产物统一位于 `tex/build/`, PDF 为 `tex/build/main.pdf`, 不再使用 `output/` 或 `.build/`. 该书不再保留 Mystyle 版、generated 正文或书内 records. 行内/行间数学未改写, 源码只清理过程标记和无作用的分组/空段.
 
 ## 统一版式
 
@@ -28,7 +28,7 @@ FEEC 已于 2026-10-23 进一步整理为 AJbook 唯一成品: 主入口为 `tex
 各书的中英文书名和作者统一写在 `tex/frontmatter/cover.tex`; 左侧竖条与中文标题左边缘固定, 长书名在这里分行, 不自动缩小字号. 封面不加译稿标记或编译日期.
 各书以同一版式为起点: A4, 170 mm 正文宽度, 12 pt 正文.
 要调整一本书的纸张、页边距或段间距, 修改这本书的 `template/ajbook-page-layout.sty`, 无需改动译文或其他书.
-旧模板不参与当前编译. 旧版 PDF 与历史核验记录按书保留; 各书 README 列出实际编译入口、正式 PDF 和换版记录.
+旧模板不参与当前编译. 旧版 PDF 与历史核验记录按书保留; 各书 README 列出实际编译入口、正式 PDF 和换版记录. 若尚未编译, 预期的 PDF 路径可以暂时不存在.
 
 ## 书籍总览
 
@@ -88,7 +88,7 @@ python shared/scripts/library_cli.py build-book <book-id>
 ## 模板和术语
 
 - 全局唯一权威术语库: [glossary/terminology.tsv](glossary/terminology.tsv). 按 English + Domain + Context 匹配.
-- 已完成书的术语候选、姓名和记号在 `records/glossary/` 中; 未完成书仍使用自己的 `glossary/`. 不静默覆盖全局术语.
+- 已完成书的术语候选、姓名和记号在 `shared/book-records/<book-id>/glossary/` 中; 未完成书仍使用自己的 `glossary/`. 不静默覆盖全局术语.
 - 共享原始模板及收藏在 [template/](template/), Mystyle 与 AJbook 分开放置.
 - 各书自己的 `template/` 是现用 AJbook. 更改共享模板不会自动影响各书. 共享原始 `.sty`、参考 `.tex` 和模板资源仍只读.
 - 翻译规则见 [AGENTS.md](AGENTS.md) 和 [style/chinese-mathematical-style.md](style/chinese-mathematical-style.md).
@@ -97,13 +97,13 @@ python shared/scripts/library_cli.py build-book <book-id>
 
 总目录是唯一日常 Git 入口. 每次先检查修改路径, 按需要提交对应书籍或共享修改. 不切换到历史 `book/` 分支操作当前目录. 系统维护仍先使用独立维护分支. 自动化不执行推送、不改远端、不改写历史.
 
-原书籍分支和提交历史均保留. 历史工作区位于 `.legacy-worktrees/`, 已锁定并采用最小稀疏视图, 不再保留一套完整的书籍工作副本. 原扫描、预处理、OCR、版面和编译缓存、过期预览及已完成书籍的过程脚本已按清单清理; 不用隐藏目录继续重复存放这些大文件. 原主目录中发现的六份独有文件另存于 Fourier 书内 `records/archive/pre-integration-main/`, 没有覆盖当前译稿.
+原书籍分支和提交历史均保留. 历史工作区位于 `.legacy-worktrees/`, 已锁定并采用最小稀疏视图, 不再保留一套完整的书籍工作副本. 原扫描、预处理、OCR、版面和编译缓存、过期预览及已完成书籍的过程脚本已按清单清理; 不用隐藏目录继续重复存放这些大文件. 原主目录中发现的六份独有文件另存于 Fourier 的共享记录 `shared/book-records/fourier-analysis/archive/pre-integration-main/`, 没有覆盖当前译稿.
 
 已跟踪的过程文件可从本地整合检查点 `538012e` 或原书分支找回. 未跟踪的图像/OCR/构建缓存没有逐份备份, 需要时须由原始 PDF 重新生成. 不删除或改写 Git 历史来压缩体积.
 
-历史配置和 QA 中的旧路径是原始证据, 未批量替换. 完成书当前绑定为 `records/config/library-binding.json`; `records/path-map.json` 给出搬迁与逐字节去重后的去向. `BookPaths` 负责解析这些路径. 先前整合清单在 [qa/integration-20261022/](qa/integration-20261022/), 成品目录精简的新核验在 [qa/completed-view-20261022/](qa/completed-view-20261022/). 详细组织说明见 [docs/目录与日常编辑.md](docs/目录与日常编辑.md).
+历史配置和 QA 中的旧路径是原始证据, 未批量替换. 完成书当前绑定为 `shared/book-records/<book-id>/config/library-binding.json`; 同目录上级的 `path-map.json` 给出搬迁与逐字节去重后的去向. `BookPaths` 负责解析这些路径. 先前整合清单在 [qa/integration-20261022/](qa/integration-20261022/), 成品目录精简的新核验在 [qa/completed-view-20261022/](qa/completed-view-20261022/). 详细组织说明见 [docs/目录与日常编辑.md](docs/目录与日常编辑.md).
 
-FEEC 的配置、来源与历史 QA 另存于 `shared/book-records/finite-element-exterior-calculus/`, 不再放进 books 下的成品. BookPaths 同时支持书内和书外记录, 两个位置不能同时存在. 本次 AJbook 唯一成品核验在 [qa/feec-production-20261023/](qa/feec-production-20261023/).
+已完成书籍的记录位置沿用 FEEC 先例, 一书一个目录; 同一本书不得同时保留书内与共享位置的活动绑定. FEEC 的历史成品核验见 [qa/feec-production-20261023/](qa/feec-production-20261023/).
 
 ## 已完成书籍的保留与清理
 
