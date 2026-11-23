@@ -425,13 +425,18 @@ def validate_project_structure() -> list[str]:
                 missing.append(str(exc))
                 continue
             output_directory = 'output'
+            generated_output = False
             if book.delivered:
                 binding = load_json_yaml(book.binding_file)
                 output_directory = book.resolve_recorded_path(
                     binding.get('final_output', 'output/book.pdf')).parent.relative_to(book.root).as_posix()
+                # A local compiler creates this directory on demand; a source
+                # checkout with no PDF yet is still a valid completed edition.
+                generated_output = output_directory == binding.get('build_directory') == 'tex/build'
+            output_paths = () if generated_output else (output_directory,)
             required = (
-                ('input/source','tex','template',output_directory) if book.delivered and book.records!=book.root/'records' else
-                ('input/source','tex','template',output_directory,'records/config/book.yaml',
+                ('input/source','tex','template',*output_paths) if book.delivered and book.records!=book.root/'records' else
+                ('input/source','tex','template',*output_paths,'records/config/book.yaml',
                  'records/config/library-binding.json','records/PROJECT_STATUS.md','records/qa/issues.jsonl')
                 if book.delivered else (*BookPaths.REQUIRED_DIRECTORIES, "PROJECT_STATUS.md", "PLANS.md", "config/book.yaml")
             )

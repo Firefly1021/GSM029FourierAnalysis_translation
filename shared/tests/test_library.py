@@ -101,6 +101,20 @@ class UnifiedLibraryTests(unittest.TestCase):
         self.assertEqual(self.project.book('b').build_cache,
                          self.project.book('b').root/'workspace/temporary')
 
+    def test_generated_build_directory_is_not_required_before_first_compile(self):
+        from mathbook.project import validate_project_structure
+
+        book = self.deliver_fixture()
+        binding = json.loads(book.binding_file.read_text(encoding='utf8'))
+        binding.update(build_directory='tex/build', final_output='tex/build/main.pdf')
+        book.binding_file.write_text(json.dumps(binding), encoding='utf8')
+        self.assertFalse(book.build_cache.exists())
+        with patch('mathbook.project.ProjectPaths', return_value=self.project):
+            self.assertNotIn('books/a/tex/build', validate_project_structure())
+            binding['final_output'] = 'published/main.pdf'
+            book.binding_file.write_text(json.dumps(binding), encoding='utf8')
+            self.assertIn('books/a/published', validate_project_structure())
+
     def test_build_directory_rejects_escape_and_book_root(self):
         book = self.deliver_fixture()
         binding = json.loads(book.binding_file.read_text(encoding='utf8'))
