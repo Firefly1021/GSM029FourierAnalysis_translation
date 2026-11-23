@@ -1,0 +1,225 @@
+\section{特征}\label{chap:characteristics}
+
+\subsection{分类与特征}\label{sec:classification-characteristics}
+
+偏微分方程中的典型问题, 是求一个偏微分方程 (或一组偏微分方程) 在某些边界条件和/或初始条件下的解. 能够产生适定问题的边界条件和初始条件的性质, 从本质上依赖于所考察的具体偏微分方程. 例如, 从引言中的例子看到, 对 Laplace 方程
+\begin{equation}\label{eq:classification-laplace}
+u_{xx}+u_{yy}=f(x,y),\quad0<x<1,\quad0<y<1,
+\end{equation}
+一种自然的条件选择是在边界上指定 $u$,
+\begin{equation}\label{eq:classification-laplace-boundary}
+\begin{gathered}
+u(x,0)=\phi_0(x),\quad u(x,1)=\phi_1(x),\\
+u(0,y)=\psi_0(y),\quad u(1,y)=\psi_1(y).
+\end{gathered}
+\end{equation}
+
+
+对于同一区域上的波动方程
+\begin{equation}\label{eq:classification-wave}
+u_{xx}-u_{yy}=f(x,y),
+\end{equation}
+(其中 $y$ 扮演时间的角色), 一种自然的条件选择例如是
+\begin{equation}\label{eq:classification-wave-data}
+\begin{gathered}
+u(0,y)=\phi_0(y),\quad u(1,y)=\phi_1(y),\\
+u(x,0)=\psi_0(x),\quad u_y(x,0)=\psi_1(x).
+\end{gathered}
+\end{equation}
+如果试图对波动方程施加条件 \eqref{eq:classification-laplace-boundary}, 或对 Laplace 方程施加条件 \eqref{eq:classification-wave-data}, 就会得到不适定问题.
+
+Laplace 方程和波动方程在其他重要方面也有不同. 例如, 只要 $f$ 光滑, \eqref{eq:classification-laplace} 的解在区域内部总是光滑的. 另一方面, 即使 $f=0$, \eqref{eq:classification-wave} 的解也可能具有间断. 事实上, 如上一章所述, 任意形如 $u=F(x-y)+G(x+y)$ 的二次可微函数都是 \eqref{eq:classification-wave} 的解; 后面将引入"广义"解, 不再要求 $F$ 和 $G$ 必须二次可微.
+
+偏微分方程系统理论的一个重要组成部分, 是识别具有共同性质的方程类的分类方案. 方程的"类型"决定了可以施加什么性质的边界条件和初始条件, 解可能具有什么性质的奇性, 以及可以用什么性质的方法来近似求解. 本节给出偏微分方程分类所依据的基本定义.
+
+\subsubsection{微分表达式的符号}\label{subsec:differential-symbol}
+
+多重指标记号对于避免偏微分方程中过分繁琐的记号十分方便. 多重指标是分量为非负整数的向量
+\[
+\alpha=(\alpha_1,\alpha_2,\ldots,\alpha_n)
+\]
+记号 $\alpha\geq\beta$ 表示对每个 $i$ 都有 $\alpha_i\geq\beta_i$. 对任意多重指标 $\alpha$, 作如下定义:
+\begin{equation}\label{eq:multi-index-length-factorial}
+|\alpha|=\alpha_1+\alpha_2+\cdots+\alpha_n,\qquad \alpha!=\alpha_1!\alpha_2!\cdots\alpha_n!;
+\end{equation}
+
+
+此外, 对任意向量 $\bm{x}=(x_1,x_2,\ldots,x_n)\in\mathbb{R}^n$, 令
+\begin{equation}\label{eq:multi-index-monomial}
+\bm{x}^{\alpha}=x_1^{\alpha_1}x_2^{\alpha_2}\cdots x_n^{\alpha_n}.
+\end{equation}
+
+
+下列偏导数记号在书写偏微分方程时极为方便:
+\begin{equation}\label{eq:multi-index-derivative}
+D^{\alpha}=\dfrac{\partial^{|\alpha|}}{\partial x_1^{\alpha_1}\partial x_2^{\alpha_2}\cdots\partial x_n^{\alpha_n}}.
+\end{equation}
+例如, 若 $\alpha=(1,2)$, 则
+\begin{equation}\label{eq:multi-index-example}
+D^{\alpha}u=\dfrac{\partial^3u}{\partial x_1\partial x_2^2}.
+\end{equation}
+
+
+现在考虑形如
+\begin{equation}\label{eq:general-linear-differential-expression}
+L(\bm{x},D)u=\sum_{|\alpha|\leq m}a_{\alpha}(\bm{x})D^{\alpha}u,
+\end{equation}
+的线性微分表达式, 其中 $u:\mathbb{R}^n\to\mathbb{R}$. 对这个作用于函数的分析运算, 我们对应一个称为符号的代数运算.
+
+\begin{Definition}
+\label{def:differential-symbol}
+\eqref{eq:general-linear-differential-expression} 所给表达式 $L(\bm{x},D)$ 的\textbf{符号}是
+\begin{equation}\label{eq:differential-symbol}
+L(\bm{x},i\bm{\xi}):=\sum_{|\alpha|\leq m}a_{\alpha}(\bm{x})(i\bm{\xi})^{\alpha}.
+\end{equation}
+符号的\textbf{主部}是
+\begin{equation}\label{eq:principal-symbol}
+L^p(\bm{x},i\bm{\xi}):=\sum_{|\alpha|=m}a_{\alpha}(\bm{x})(i\bm{\xi})^{\alpha}.
+\end{equation}
+
+\end{Definition}
+
+\begin{Example}
+\label{ex:classical-differential-symbols}
+Laplace 算子 $\partial^2/\partial x_1^2+\partial^2/\partial x_2^2$ 的符号为 $-\xi_1^2-\xi_2^2$, 热算子 $\partial/\partial x_1-\partial^2/\partial x_2^2$ 的符号为 $i\xi_1+\xi_2^2$, 波动算子 $\partial^2/\partial x_1^2-\partial^2/\partial x_2^2$ 的符号为 $-\xi_1^2+\xi_2^2$. 对 Laplace 算子和波动算子, 符号等于其主部; 热算子符号的主部为 $\xi_2^2$.
+\end{Example}
+
+类似地, 可以为一组偏微分方程对应一个矩阵值符号. 此时主部的定义更为复杂; 后面的小节将讨论这个问题.
+
+\PDEIndexMark{idx:symbol-fourier-interpretation}如果偏微分方程的系数为常数, 且考察全空间上的解, 则容易用 Fourier 变换解释符号: 如果
+\begin{equation}\label{eq:classification-fourier-transform}
+\hat u(\bm{\xi}):=(2\pi)^{-n/2}\int_{\mathbb{R}^n}u(\bm{x})\exp(-i\bm{\xi}\cdot\bm{x})\,\mathrm{d}\bm{x}
+\end{equation}
+是 $u(\bm{x})$ 的 Fourier 变换, 那么 $L(i\bm{\xi})\hat u(\bm{\xi})$ 就是 $L(D)u(\bm{x})$ 的 Fourier 变换. (Chapter~\ref{chap:fourier-transform} 将详细研究 Fourier 变换.)
+
+\PDEIndexMark{idx:symbol-localized-functions}一般地, 符号告诉我们, 微分表达式如何作用于支集包含在给定点 $\bm{x}$ 的一个小邻域内的函数. 如果系数光滑, 那么在这样的小邻域中它们近似为常数. 此外, 如果 $u$ 变化得非常快, 最高阶导数就占据主导地位, 超过低阶导数, 因而主部包含最重要的项. 微分表达式如何作用于支集很小且快速变化的函数, 对偏微分方程的许多基本性质至关重要. 方程类型的分类依据符号的主部.
+
+\subsubsection{二阶标量方程}\label{subsec:second-order-scalar-equations}
+
+考虑二维空间中的二阶偏微分方程
+\begin{equation}\label{eq:second-order-scalar-expression}
+\begin{aligned}
+Lu&=a(x,y)u_{xx}+b(x,y)u_{xy}+c(x,y)u_{yy}\\
+&\quad+d(x,y)u_x+e(x,y)u_y+f(x,y)u\\
+&=g(x,y).
+\end{aligned}
+\end{equation}
+
+
+$L$ 的符号的主部为
+\begin{equation}\label{eq:second-order-quadratic-symbol}
+L^p(x,y;i\xi,i\eta)=-a(x,y)\xi^2-b(x,y)\xi\eta-c(x,y)\eta^2.
+\end{equation}
+
+
+将 $L^p$ 看作 $\xi$ 和 $\eta$ 的二次型, 按其性质对二阶偏微分方程分类. \eqref{eq:second-order-quadratic-symbol} 给出的二次型可表示为矩阵形式
+\begin{equation}\label{eq:second-order-symbol-matrix}
+L^p(x,y;i\xi,i\eta)=(\xi,\eta)\begin{pmatrix}-a(x,y)&-\dfrac12b(x,y)\\-\dfrac12b(x,y)&-c(x,y)\end{pmatrix}\begin{pmatrix}\xi\\\eta\end{pmatrix}.
+\end{equation}
+
+
+回顾, 若对应的对称矩阵是 (正或负) 定的, 则称二次型为定号的; 若矩阵具有正负两种符号的特征值, 则称为不定的; 若矩阵奇异, 则称为退化的.
+
+\begin{Definition}
+\label{def:second-order-scalar-type}
+微分方程 \eqref{eq:second-order-scalar-expression} 称为\textbf{椭圆型的}, 如果 \eqref{eq:second-order-quadratic-symbol} 给出的二次型严格定号; 若它不定, 则称为\textbf{双曲型的}; 若它退化, 则称为\textbf{抛物型的}.
+\end{Definition}
+
+椭圆型, 抛物型和双曲型这些术语来自与圆锥曲线分类的类比.
+
+\begin{Example}
+\label{ex:classical-pde-types}
+Laplace 方程是椭圆型的, 热方程是抛物型的, 波动方程是双曲型的. 在这三种情形中, 对应于符号主部的矩阵分别为
+\begin{equation}\label{eq:classical-principal-matrices}
+\begin{pmatrix}-1&0\\0&-1\end{pmatrix},\qquad\begin{pmatrix}0&0\\0&1\end{pmatrix},\qquad\begin{pmatrix}-1&0\\0&1\end{pmatrix},
+\end{equation}
+
+\end{Example}
+
+\begin{Example}
+\label{ex:tricomi-mixed-type}
+一般地, 方程在求解区域的不同部分可能具有不同类型. 典型例子是 Tricomi 方程
+\begin{equation}\label{eq:tricomi-equation}
+yu_{xx}+u_{yy}=0.
+\end{equation}
+其符号为 $-y\xi_1^2-\xi_2^2$, 因而该方程在 $y>0$ 时为椭圆型, 在 $y=0$ 时为抛物型, 在 $y<0$ 时为双曲型. 变类型方程出现在某些物理应用中, 例如稳态跨声速流的研究. 这类问题通常很难分析.
+\end{Example}
+
+现在考虑 $n$ 维空间中的二阶偏微分方程:
+\begin{equation}\label{eq:ndimensional-second-order-equation}
+Lu=a_{ij}(\bm{x})\dfrac{\partial^2u}{\partial x_i\partial x_j}+b_i(\bm{x})\dfrac{\partial u}{\partial x_i}+c(\bm{x})u=0.
+\end{equation}
+由于 $u$ 的二阶偏导数矩阵是对称的, 不失一般性, 可假定 $a_{ij}=a_{ji}$. 这个二阶偏微分方程的主符号仍是关于 $\bm{\xi}$ 的二次型; 可将它表示为 $\bm{\xi}^T\bm{A}(\bm{x})\bm{\xi}$, 其中 $\bm{A}$ 是以 $-a_{ij}$ 为分量的 $n\times n$ 矩阵.
+
+\begin{Definition}
+\label{def:ndimensional-second-order-type}
+方程 \eqref{eq:ndimensional-second-order-equation} 称为\textbf{椭圆型的}, 如果 $\bm{A}$ 的所有特征值同号; 若 $\bm{A}$ 奇异, 则称为\textbf{抛物型的}; 若 $\bm{A}$ 的特征值除一个外全部同号, 而另一个具有相反符号, 则称为\textbf{双曲型的}. 如果 $\bm{A}$ 非奇异, 且正负两种符号的特征值都不止一个, 则称方程为\textbf{超双曲型的}.
+\end{Definition}
+
+在这一定义中, 特征值按其重数计数.
+
+特征曲面的概念与类型的概念密切相关. 作如下定义:
+
+\begin{Definition}
+\label{def:second-order-characteristic-surface}
+由 $\phi(x_1,x_2,\ldots,x_n)=0$ 描述的曲面称为在点 $\hat{\bm{x}}$ 处是\textbf{特征的}, 如果 $\phi(\hat{\bm{x}})=0$, 并且还有
+\begin{equation}\label{eq:second-order-characteristic-surface}
+a_{ij}(\hat{\bm{x}})\dfrac{\partial\phi}{\partial x_i}(\hat{\bm{x}})\dfrac{\partial\phi}{\partial x_j}(\hat{\bm{x}})=0.
+\end{equation}
+若曲面在其每一点处都是特征的, 就称该曲面为特征曲面.
+\end{Definition}
+
+条件 \eqref{eq:second-order-characteristic-surface} 的矩阵形式为 $(\nabla\phi)^T\bm{A}(\nabla\phi)=0$. 矩阵 $\bm{A}$ 严格定号, 即 \eqref{eq:ndimensional-second-order-equation} 为椭圆型, 当且仅当不存在具有这一性质的非零实向量. 因而可将椭圆型方程刻画为没有 (实) 特征曲面的方程.
+
+另一方面, 对于双曲型方程, $\bm{A}$ 的特征值除一个以外全部同号, 例如一个特征值为负, 其余为正. 令 $\bm{n}$ 为对应于负特征值的单位特征向量. $\bm{n}$ 张成的空间及其正交补都是 $\bm{A}$ 的不变子空间, 利用分解
+\begin{equation}\label{eq:characteristic-gradient-decomposition}
+\nabla\phi=(\bm{n}\cdot\nabla\phi)\bm{n}+(\nabla\phi-(\bm{n}\cdot\nabla\phi)\bm{n}),
+\end{equation}
+得到
+\begin{equation}\label{eq:hyperbolic-characteristic-cone}
+\begin{aligned}
+(\nabla\phi)^T\bm{A}(\nabla\phi)
+&=-\lambda(\bm{n}\cdot\nabla\phi)^2\\
+&\quad+[\nabla\phi-(\bm{n}\cdot\nabla\phi)\bm{n}]^T
+\bm{B}[\nabla\phi-(\bm{n}\cdot\nabla\phi)\bm{n}]=0,
+\end{aligned}
+\end{equation}
+
+
+其中 $-\lambda$ 是 $\bm{A}$ 的负特征值, $\bm{B}$ 在垂直于 $\bm{n}$ 的 $(n-1)$ 维子空间上正定. 现在将 $\nabla\phi-(\bm{n}\cdot\nabla\phi)\bm{n}$, 即 $\nabla\phi$ 中垂直于 $\bm{n}$ 的部分, 视为给定. 那么可以从 \eqref{eq:hyperbolic-characteristic-cone} 确定 $\bm{n}\cdot\nabla\phi$. 对 $\nabla\phi$ 的垂直部分的任意非零选择, 都得到 $\bm{n}\cdot\nabla\phi$ 的两个互异实解.
+
+注意, 如果任取 $C^2$ 函数 $u:\mathbb{R}\to\mathbb{R}$ 并将它与 $\phi$ 复合, 所得函数满足
+\begin{equation}\label{eq:characteristic-composed-function}
+\begin{aligned}
+L^pu(\phi)&=a_{ij}(\bm{x})\dfrac{\partial^2u}{\partial x_i\partial x_j}\\
+&=u''(\phi)\left[a_{ij}(\bm{x})\dfrac{\partial\phi}{\partial x_i}\dfrac{\partial\phi}{\partial x_j}\right]
++u'(\phi)a_{ij}(\bm{x})\dfrac{\partial^2\phi}{\partial x_i\partial x_j},
+\end{aligned}
+\end{equation}
+如果曲面 $\phi=\mathrm{const.}$ 是特征曲面, 则右端 $u''(\phi)$ 的系数为零. 即函数 $u(\phi)$ 在"最高阶意义下"满足方程 $Lu=0$. 由于这一性质, 特征在研究偏微分方程解的奇性时十分重要. 如 Chapter~\ref{chap:local-existence} 将看到的, 偏微分方程的解自身 (或其导数) 可能在跨越某个特征曲面时不连续. 例如, 从 Problem~\ref{ex:discontinuous-weak-wave-solutions} 的结果可以推测, 即使 $F$ 和 $G$ 不连续, $F(x-t)+G(x+t)$ 仍满足波动方程 $u_{tt}=u_{xx}$ 的弱形式. 直线 $x\pm t=\mathrm{const.}$ 就是这个方程的特征.
+
+一个相关性质对于 Cauchy-Kovalevskaya 定理将很重要. 设在由 $\phi(\bm{x})=0$ 给出的曲面上指定了 $u$ 及其法向导数 $\nabla u\cdot\nabla\phi$. (注意, 这意味着各阶切向导数也都自动确定.) 能否利用 \eqref{eq:ndimensional-second-order-equation} 和给定数据, 求出 $u$ 沿 $\nabla\phi$ 方向的二阶导数? 为判断这一点, 令 $\bm{q}_1,\bm{q}_2,\bm{q}_3,\ldots,\bm{q}_n$ 为一组标准正交基, 其中 $\bm{q}_1$ 沿 $\nabla\phi$ 的方向. 为简化记号, 用 $\bm{q}$ 代替 $\bm{q}_1$. 有
+\begin{equation}\label{eq:normal-direction-matrix-decomposition}
+\bm{A}=(\bm{q}^T\bm{A}\bm{q})\bm{q}\bm{q}^T+\bm{B},
+\end{equation}
+
+
+其中
+\begin{equation}\label{eq:remainder-normal-component-zero}
+\bm{q}^T\bm{B}\bm{q}=0.
+\end{equation}
+矩阵 $\bm{B}$ 可表示为
+\begin{equation}\label{eq:remainder-matrix-representation-first}
+\bm{B}=\sum_{i=2}^n(\bm{q}^T\bm{A}\bm{q}_i)\bm{q}\bm{q}_i^T+(\bm{q}_i^T\bm{A}\bm{q})\bm{q}_i\bm{q}^T
+\end{equation}
+
+\begin{equation}\label{eq:remainder-matrix-representation-second}
+{}+\sum_{i,j=2}^n(\bm{q}_i^T\bm{A}\bm{q}_j)\bm{q}_i\bm{q}_j^T.
+\end{equation}
+
+
+令 $D^2u$ 表示二阶导数 $\partial^2u/\partial x_i\partial x_j$ 构成的矩阵. 由 \eqref{eq:normal-direction-matrix-decomposition} 得到
+\begin{equation}\label{eq:normal-second-derivative-determination}
+\bm{A}:D^2u:=-a_{ij}\dfrac{\partial^2u}{\partial x_i\partial x_j}=(\bm{q}^T\bm{A}\bm{q})\bm{q}^T(D^2u)\bm{q}+\cdots,
+\end{equation}
+其中省略号表示的 $u$ 的二阶导数至少包含一次沿垂直于 $\bm{q}$ 的方向的微分 (从 \eqref{eq:remainder-matrix-representation-second} 可以清楚看到这一点). 因此, 如果指定了 $u$ 及其法向导数, 就可将这些项视为已知. 所以能够确定二阶法向导数的条件是 $\bm{q}^T\bm{A}\bm{q}\ne0$, 即曲面 $\phi=0$ 是非特征的.

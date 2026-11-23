@@ -9,7 +9,8 @@
 - 图片: [tex/figures/](tex/figures/). 不要删除主文件仍引用的宏、图片或文献.
 - 正式 PDF: [output/book-zh.pdf](output/book-zh.pdf).
 - 原始 PDF: [input/source/](input/source/), 只读.
-- 模板: [template/](template/), 保留本书原样模板和依赖, 不自动切换为共享最新版.
+- AJbook 模板: 本书 [template/](template/) 集中存放类文件、标题格式、封面样式、字体和适配文件. 纸张和版心在本书的 [ajbook-page-layout.sty](template/ajbook-page-layout.sty) 修改, 不写在译文中.
+- 已验收的旧版 PDF 保留, 旧模板已停用并移出本书. 旧版 PDF 见 [records/editions/mystyle/](records/editions/mystyle/); 本次换版核验见 [records/qa/ajbook-migration.json](records/qa/ajbook-migration.json).
 
 ## 重新编译
 

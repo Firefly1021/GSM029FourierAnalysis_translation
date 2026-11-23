@@ -1,0 +1,52 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{import-compatibility}[2026/11/22 AJbook manuscript compatibility]
+\RequirePackage{booktabs,enumitem,float,multirow,needspace}% Preserve manuscript grammar and counters; use the AJbook statement typography.
+\xeCJKsetup{AutoFallBack=true}
+\setCJKfallbackfamilyfont{\CJKrmdefault}[Path=\AJNotoSansFolder]{\AJNotoSansRegular}
+\setCJKfallbackfamilyfont{song}[Path=\AJNotoSansFolder]{\AJNotoSansRegular}
+\setCJKfallbackfamilyfont{fangsong}[Path=\AJNotoSansFolder]{\AJNotoSansRegular}
+\newcommand{\ImportedHead}[3]{\AJStatementBegin{#1}{#2}{#3}}
+\newcommand{\ImportedStatement}[4]{%
+  \refstepcounter{#2}%
+  #4\ImportedHead{#1}{\ \csname the#2\endcsname}{#3}%
+}
+\AtBeginDocument{%
+\RenewDocumentEnvironment{proof}{}{\AJProofBegin}{\AJProofEnd}
+}
+\AtBeginDocument{%
+  \DeclareRobustCommand{\[}{\begin{equation*}}%
+  \DeclareRobustCommand{\]}{\end{equation*}}%
+}
+
+\RequirePackage{ajbook-legacy}
+\setlist[enumerate,1]{label=\arabic*.}
+\setlist[enumerate,2]{label=(\alph*).}
+\setlist[enumerate,3]{label=\Roman*.}
+\setlist[enumerate,4]{label=\Alph*.}
+% Keep legacy syntax and numbering. Rendering is supplied by AJbook.
+\newcommand{\ImportAlias}[2]{%
+  \RenewDocumentEnvironment{#1}{o}{\IfValueTF{##1}{#2[##1]}{#2}}%
+    {\csname end\expandafter\@gobble\string#2\endcsname}%
+}
+\AtBeginDocument{%
+\ImportAlias{theorem}{\Theorem}
+\ImportAlias{definition}{\Definition}
+\ImportAlias{lemma}{\Lemma}
+\ImportAlias{proposition}{\Proposition}
+\ImportAlias{corollary}{\Corollary}
+\ImportAlias{example}{\Example}
+\ImportAlias{exercise}{\Exercise}
+}
+\numberwithin{equation}{subsection}
+\newcounter{importaxiom}[chapter]
+\renewcommand{\theimportaxiom}{\thechapter.\arabic{importaxiom}}
+\NewDocumentEnvironment{axiom}{o}{\ImportedStatement{Axiom}{importaxiom}{#1}{\AJStatementFormalFont}}{\AJStatementEnd}
+\NewDocumentEnvironment{note}{}{\ImportedHead{Remark}{}{}}{\AJStatementEnd}
+\AtBeginDocument{%
+  \RenewDocumentEnvironment{remark}{}{\ImportedHead{Remark}{}{}}{\AJStatementEnd}%
+}
+\NewDocumentEnvironment{solution}{}{\ImportedHead{Solution}{}{}}{\AJStatementEnd}
+\NewDocumentEnvironment{conclusion}{}{\ImportedHead{Conclusion}{}{}}{\AJStatementEnd}
+\NewDocumentEnvironment{custom}{m}{\ImportedHead{#1}{}{}}{\AJStatementEnd}
+
+\endinput

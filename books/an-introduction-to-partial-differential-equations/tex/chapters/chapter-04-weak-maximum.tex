@@ -1,0 +1,91 @@
+\section{极值原理}\label{chap:maximum-principles}
+
+最大值原理断言, 某些二阶标量椭圆方程的解不能在其定义区域内部具有最大值 (或最小值). 基本思想很简单. 为简单起见, 考虑 Laplace 方程 $\Delta u=0$. 若 $u$ 在点 $\bm{x}$ 处有最大值, 且 $u$ 的二阶导数在 $\bm{x}$ 处不全为零, 则 $\Delta u$ 在 $\bm{x}$ 处为负, 与方程矛盾. 剩下唯一需要排除的情形是所有二阶导数均为零的退化最大值. 通过消除退化性的逼近论证, 即可完成这一步.
+
+最大值原理可用于证明某些方程的解必为非负. 对具有密度, 浓度, 概率等物理解释的量, 这一点很重要. 最大值原理也容易导出唯一性结果. 在后面的章节中将看到, 对某些问题, 唯一性也蕴含存在性. 最大值原理本身还可用于构造存在性证明. 下一节将给出 Perron 对 Dirichlet 问题的存在性证明. 最大值原理的一个很新的应用涉及 Hamilton-Jacobi 方程的"黏性解", 但过于复杂, 这里不作讨论. 本章第三节将讨论 Gidas, Ni 和 Nirenberg 的一个结果~\cite{GNN}, 它断言某些椭圆边值问题的正解必具有径向对称性. 本章最后一节讨论将最大值原理推广到抛物型方程.
+
+\subsection{椭圆问题的极值原理}\label{sec:elliptic-maximum-principles}
+
+\subsubsection{弱最大值原理}\label{subsec:weak-maximum-principle}
+
+本节始终考虑如下形式的二阶算子
+\begin{equation}\label{eq:elliptic-second-order-operator}
+Lu=a_{ij}(\bm{x})\dfrac{\partial^2u}{\partial x_i\partial x_j}+b_i(\bm{x})\dfrac{\partial u}{\partial x_i}+c(\bm{x})u.
+\end{equation}
+
+
+以下假设始终成立, 因而不在每个定理中重复陈述. $\Omega$ 是 $\mathbb{R}^n$ 中的区域. 系数 $a_{ij}$, $b_i$ 和 $c$ 在 $\overline\Omega$ 上连续, 且 $u$ 属于 $C^2(\Omega)\cap C(\overline\Omega)$. 矩阵 $a_{ij}$ 对称, 并在每个点 $\bm{x}\in\overline\Omega$ 处严格正定, 即 $L$ 为椭圆型算子.
+
+以下定理表述弱最大值原理.
+
+\begin{Theorem}
+\label{thm:weak-maximum-principle}
+假设在有界区域 $\Omega$ 内 $Lu\geq0$ (或相应地, $Lu\leq0$), 且在 $\Omega$ 内 $c(\bm{x})=0$. 那么 $u$ 的最大值 (或相应地, 最小值) 在 $\partial\Omega$ 上达到.
+\end{Theorem}
+
+\begin{Proof}
+若在 $\Omega$ 内 $Lu>0$, 则 $u$ 不能在 $\Omega$ 内任何一点达到最大值. 假设它确实达到, 比如在点 $\bm{x}_0$ 处. 那么 $u$ 的所有一阶导数在该点都为零, 因而
+\begin{equation}\label{eq:elliptic-operator-at-critical-point}
+Lu=a_{ij}\dfrac{\partial^2u}{\partial x_i\partial x_j}.
+\end{equation}
+但在最大值点, 二阶偏导数构成的矩阵半负定, 所以可得 (见 Problem~\ref{ex:trace-positive-semidefinite-product}) $Lu(\bm{x}_0)\leq0$, 矛盾.
+
+对一般情形, 考虑函数 $u_\epsilon=u+\epsilon\exp(\gamma x_1)$. 得到
+\begin{equation}\label{eq:weak-maximum-exponential-perturbation}
+Lu_\epsilon=Lu+\epsilon(\gamma^2a_{11}+\gamma b_1)\exp(\gamma x_1).
+\end{equation}
+现在将 $\gamma$ 取得足够大, 使整个 $\Omega$ 内都有 $\gamma^2a_{11}+\gamma b_1>0$ (这是可能的, 因为 $a_{11}$ 在 $\overline\Omega$ 上为正且连续). 那么对任意正的 $\epsilon$, 都有 $Lu_\epsilon>0$. 从而得到
+\begin{equation}\label{eq:weak-maximum-perturbed-boundary-equality}
+\max_{\overline\Omega}u_\epsilon=\max_{\partial\Omega}u_\epsilon.
+\end{equation}
+令 $\epsilon\to0$ 即得定理.
+\end{Proof}
+
+\begin{Remark}
+\label{rem:weak-maximum-semidefinite}
+为便于以后用于抛物型方程, 指出即使矩阵 $a_{ij}$ 仅半正定, 只要至少存在一个不依赖于 $\bm{x}\in\overline\Omega$ 的向量 $\bm{\xi}$, 使 $\xi_i a_{ij}\xi_j>0$, Theorem~\ref{thm:weak-maximum-principle} 的证明仍然成立.
+\end{Remark}
+
+由 Theorem~\ref{thm:weak-maximum-principle} 有以下推论.
+
+\begin{Corollary}
+\label{cor:weak-maximum-nonpositive-zero-order}
+设 $\Omega$ 有界, 并假设在 $\Omega$ 内 $c\leq0$. 设 $Lu\geq0$ (或相应地, $Lu\leq0$). 那么
+\begin{equation}\label{eq:weak-maximum-positive-negative-parts}
+\max_{\overline\Omega}u\leq\max_{\partial\Omega}u^+\quad\text{(or, resp., }\min_{\overline\Omega}u\geq\min_{\partial\Omega}u^-\text{)}.
+\end{equation}
+这里 $u^+=\max(u,0)$, $u^-=\min(u,0)$. 特别地, 若在 $\Omega$ 内 $Lu=0$, 则
+\begin{equation}\label{eq:weak-maximum-absolute-value-boundary}
+\max_{\overline\Omega}|u|=\max_{\partial\Omega}|u|.
+\end{equation}
+
+\end{Corollary}
+
+\begin{Proof}
+若整个 $\Omega$ 内都有 $u\leq0$, 则推论显然成立. 因而可假设 $\Omega^+=\Omega\cap\{u>0\}\ne\emptyset$. 在 $\Omega^+$ 上有 $-cu\geq0$, 因此
+\begin{equation}\label{eq:positive-set-zero-order-free-inequality}
+a_{ij}\dfrac{\partial^2u}{\partial x_i\partial x_j}+b_i\dfrac{\partial u}{\partial x_i}\geq0.
+\end{equation}
+所以, 由前一个定理可知, $u$ 在 $\Omega^+$ 的闭包上的最大值等于它在 $\partial\Omega^+$ 上的最大值. 由于在 $\partial\Omega^+\cap\Omega$ 上 $u=0$, 这一最大值必在 $\partial\Omega$ 上达到.
+\end{Proof}
+
+\PDEIndexMark{idx:elliptic-comparison-introduction}以下推论常用于应用中. 它既给出唯一性结果, 也给出比较原理.
+
+\begin{Corollary}
+\label{cor:elliptic-comparison}
+设 $\Omega$ 有界且 $c\leq0$. 若在 $\Omega$ 内 $Lu=Lv$, 且在 $\partial\Omega$ 上 $u=v$, 则在 $\Omega$ 内 $u=v$. 若在 $\Omega$ 内 $Lu\leq Lv$, 且在 $\partial\Omega$ 上 $u\geq v$, 则在 $\Omega$ 内 $u\geq v$.
+\end{Corollary}
+
+\begin{Remark}
+\label{rem:elliptic-comparison-sturm-liouville}
+提请读者注意特殊情形 $v=0$. 读者还应注意这一结果与常微分方程中 Sturm-Liouville 理论的振荡定理和比较定理之间的关系 (参见~\cite{In}).
+\end{Remark}
+
+以一个定义结束本小节.
+
+\begin{Definition}
+\label{def:elliptic-subsolution}
+假设 $c\leq0$. 若 $Lu\geq0$ (或相应地, $Lu\leq0$), 则称 $u$ 为方程 $Lu=0$ 的\textbf{下解} (\textbf{上解}). 方程 $\Delta u=0$ 的下解称为\textbf{次调和的}, 上解称为\textbf{超调和的}.
+\end{Definition}
+
+这一术语来自 Corollary~\ref{cor:elliptic-comparison}. 下解小于或等于具有相同边界值的解; 上解大于或等于解.

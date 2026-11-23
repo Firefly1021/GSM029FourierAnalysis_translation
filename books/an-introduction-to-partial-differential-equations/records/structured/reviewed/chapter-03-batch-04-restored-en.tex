@@ -1,0 +1,236 @@
+\subsection{Weak Solutions}\label{sec:conservation-weak-solutions}
+
+As we observed in the previous section, smooth solutions of hyperbolic conservation laws can blow up (develop discontinuities or singularities) in finite time. But this is not simply a mathematical oddity. It was observed in the nineteenth century that there were types of physical wave motion that were essentially discontinuous in nature, and which were not predicted by linear wave equations. In such a case one could not follow the practice of accepting the solution of a differential equation even when the equation itself failed to make sense (as we were able to do in the case of D'Alembert's solution of the wave equation) because closed form solutions of the nonlinear problems could not be computed. In order to understand (and compute) discontinuous solutions, one needed to extend the notion of solution itself.
+
+\begin{Definition}
+\label{def:conservation-weak-solution}
+A \textbf{weak solution} of \eqref{eq:conservation-law-system}, \eqref{eq:conservation-law-cauchy-data} is a function $\bm{u}:\mathbb{R}^{2+}\to\mathbb{R}^n$ such that
+\begin{equation}\label{eq:conservation-weak-solution}
+\begin{aligned}
+&\int_0^\infty\int_{-\infty}^\infty[\bm{u}(x,t)\cdot\bm{\phi}_t(x,t)+\bm{f}(\bm{u}(x,t))\cdot\bm{\phi}_x(x,t)]\,\mathrm{d}x\,\mathrm{d}t\\
+&\qquad+\int_{-\infty}^\infty\bm{u}_0(x)\bm{\phi}(x,0)\,\mathrm{d}x=0
+\end{aligned}
+\end{equation}
+for every $\bm{\phi}\in C_0^1(\mathbb{R}^{2+})$. Here
+\begin{equation}\label{eq:conservation-test-function-space}
+C_0^1(\mathbb{R}^{2+}):=\{\bm{\phi}\in C^1(\mathbb{R}^{2+})\mid\exists r>0\text{ s.t. }\operatorname{supp}\bm{\phi}\subset B_r((0,0))\cap\mathbb{R}^{2+}\}.
+\end{equation}
+
+\end{Definition}
+
+We begin our study of weak solutions by noting that the definition is indeed an extension of the classical notion of solution.
+
+\begin{Theorem}
+\label{thm:classical-conservation-solutions-weak}
+Suppose $\bm{u}\in C^1(\mathbb{R}^{2+})$ is a classical solution of \eqref{eq:conservation-law-system}, \eqref{eq:conservation-law-cauchy-data}. Then $\bm{u}$ is also a weak solution.
+\end{Theorem}
+
+\begin{Proof}
+The proof is a simple application of Green\textquotesingle s theorem in the plane. Take any $\bm{\phi}\in C_0^1(\mathbb{R}^{2+})$ and let $r$ be large enough so that $\operatorname{supp}\bm{\phi}\subseteq S$ where $S=B_r((0,0))\cap\mathbb{R}^{2+}$. Note that since $\bm{u}$ satisfies \eqref{eq:conservation-law-system} classically we have
+\begin{equation}\label{eq:conservation-classical-product-identity}
+(\bm{u}\cdot\bm{\phi})_t+(\bm{f}(\bm{u})\cdot\bm{\phi})_x=\bm{u}\cdot\bm{\phi}_t+\bm{f}(\bm{u})\cdot\bm{\phi}_x.
+\end{equation}
+Thus, using this with Green\textquotesingle s theorem and our information about the support of $\bm{\phi}$ we have
+\[
+\begin{aligned}
+&\int\!\!\int_{\mathbb{R}^{2+}}\bm{u}\cdot\bm{\phi}_t+\bm{f}(\bm{u})\cdot\bm{\phi}_x\,\mathrm{d}x\,\mathrm{d}t\\
+&=\int\!\!\int_S(\bm{u}\cdot\bm{\phi})_t+(\bm{f}(\bm{u})\cdot\bm{\phi})_x\,\mathrm{d}x\,\mathrm{d}t\\
+&=-\int_{\partial S}\bm{u}\cdot\bm{\phi}\,\mathrm{d}x-\bm{f}(\bm{u})\cdot\bm{\phi}\,\mathrm{d}t\\
+&=-\int_{-\infty}^\infty\bm{u}(x,0)\cdot\bm{\phi}(x,0)\,\mathrm{d}x\\
+&=-\int_{-\infty}^\infty\bm{u}_0(x)\cdot\bm{\phi}(x,0)\,\mathrm{d}x.
+\end{aligned}
+\]
+Here the next to the last equality was obtained from the fact that $\bm{\phi}=0$ on the half circle $t=(r^2-x^2)^{1/2}$. The final equation derived from the fact that $\bm{u}$ satisfies the initial condition \eqref{eq:conservation-law-cauchy-data}.
+\end{Proof}
+
+\subsubsection{The Rankine-Hugoniot Condition}\label{subsec:rankine-hugoniot-condition}
+
+Now that we have defined a weak solution, let us find necessary conditions for a discontinuous weak solution.
+
+The following necessary condition \eqref{eq:rankine-hugoniot-jump-condition} on piecewise smooth weak solutions is known as the Rankine-Hugoniot condition.
+
+\begin{Theorem}{Rankine-Hugoniot}
+\label{thm:rankine-hugoniot}
+Let $N$ be an open neighborhood in the open upper half-plane, and suppose a curve $C:(\alpha,\beta)\ni t\mapsto\hat x(t)$ divides $N$ into two pieces, $N^l$ and $N^r$, lying to the left and right of the curve, respectively. Let $\bm{u}$ be a weak solution of \eqref{eq:conservation-law-system} (the initial conditions do not matter here) such that
+\begin{enumerate}
+\item $\bm{u}$ is a classical solution of \eqref{eq:conservation-law-system} in both $N^l$ and $N^r$,
+\item $\bm{u}$ undergoes a jump discontinuity $[\bm{u}]$ at the curve $C$, and
+\item the jump $[\bm{u}]$ is continuous along $C$.
+\end{enumerate}
+For any $\bm{p}\in C$, let $s:=\hat x'(\bm{p})$ be the slope of $C$ at $\bm{p}$. Then the following relation holds between the curve and the jumps:
+\begin{equation}\label{eq:rankine-hugoniot-jump-condition}
+s[\bm{u}]=[\bm{f}(\bm{u})].
+\end{equation}
+Here, for any $\bm{p}=(x_0,t_0)\in C$, we define
+\begin{equation}\label{eq:conservation-jump-definition}
+\begin{aligned}
+[\bm{u}](\bm{p})&:=\bm{u}^r(\bm{p})-\bm{u}^l(\bm{p})\\
+&:=\lim_{(x^r,t^r)\xrightarrow{r}\bm{p}}\bm{u}(x^r,t^r)-\lim_{(x^l,t^l)\xrightarrow{l}\bm{p}}\bm{u}(x^l,t^l)
+\end{aligned}
+\end{equation}
+where the symbol $\xrightarrow{r}\bm{p}$ indicates the limit of points $(x^r,t^r)\in N^r$ converging to $\bm{p}$ and $\xrightarrow{l}\bm{p}$ indicates a limit of points $(x^l,t^l)\in N^l$ converging to $\bm{p}$.
+\end{Theorem}
+
+\begin{Proof}
+Let $\bm{\phi}\in C_0^1(\mathbb{R}^{2+})$ be any test function with support in $N$. Since $\bm{u}$ is a weak solution we can write
+\[
+\begin{aligned}
+0&=\int_N\bm{u}\cdot\bm{\phi}_t+\bm{f}(\bm{u})\cdot\bm{\phi}_x\,\mathrm{d}x\,\mathrm{d}t\\
+&=\int_{N^r}\bm{u}\cdot\bm{\phi}_t+\bm{f}(\bm{u})\cdot\bm{\phi}_x\,\mathrm{d}x\,\mathrm{d}t
++\int_{N^l}\bm{u}\cdot\bm{\phi}_t+\bm{f}(\bm{u})\cdot\bm{\phi}_x\,\mathrm{d}x\,\mathrm{d}t.
+\end{aligned}
+\]
+We now use Green\textquotesingle s theorem in the plane, the fact that $\bm{\phi}=0$ outside of a compact set contained in $N$ and the fact that $\bm{u}$ is a classical solution of \eqref{eq:conservation-law-system} in $N^r$ and $N^l$ to get the following:
+\[
+\begin{aligned}
+0&=\int_{N^r}\bm{u}\cdot\bm{\phi}_t+\bm{f}(\bm{u})\cdot\bm{\phi}_x\,\mathrm{d}x\,\mathrm{d}t
++\int_{N^l}\bm{u}\cdot\bm{\phi}_t+\bm{f}(\bm{u})\cdot\bm{\phi}_x\,\mathrm{d}x\,\mathrm{d}t\\
+&=-\int_{N^r}(\bm{u}_t+\bm{f}(\bm{u})_x)\cdot\bm{\phi}\,\mathrm{d}x\,\mathrm{d}t
+-\int_C\bm{\phi}\cdot(-\bm{u}^r\,\mathrm{d}x+\bm{f}(\bm{u}^r)\,\mathrm{d}t)\\
+&\quad-\int_{N^l}(\bm{u}_t+\bm{f}(\bm{u})_x)\cdot\bm{\phi}\,\mathrm{d}x\,\mathrm{d}t
++\int_C\bm{\phi}\cdot(-\bm{u}^l\,\mathrm{d}x+\bm{f}(\bm{u}^l)\,\mathrm{d}t)\\
+&=-\int_\alpha^\beta(-[\bm{u}]\hat x'+[\bm{f}(\bm{u})])\cdot\bm{\phi}\,\mathrm{d}t.
+\end{aligned}
+\]
+Since $\bm{\phi}$ was an arbitrary test function we can conclude that the Rankine-Hugoniot condition \eqref{eq:rankine-hugoniot-jump-condition} holds for every point $\bm{p}\in C$.
+\end{Proof}
+
+\begin{Example}
+\label{ex:burgers-decreasing-shock}
+Let us consider Burgers' equation with the initial data
+\begin{equation}\label{eq:burgers-decreasing-step-data}
+u_0(x):=\begin{cases}1,&x<0\\0,&x\geq0.\end{cases}
+\end{equation}
+This is the case examined in Figure~\ref{fig:characteristic-overlap} in which the characteristics intersect. If we seek a discontinuous solution that is identically one to the left of a "shock curve" of slope $s$ and identically zero to the right, the Rankine-Hugoniot condition \eqref{eq:rankine-hugoniot-jump-condition} gives us
+\begin{equation}\label{eq:burgers-decreasing-step-shock-speed}
+s(1-0)=\dfrac{1^2}{2}-\dfrac{0^2}{2},
+\end{equation}
+or $s=1/2$. Thus, the shock follows a straight line. Figure~\ref{fig:burgers-decreasing-shock} illustrates this solution. (Note that since $s=\mathrm{d}x/\mathrm{d}t$, the slope here is the reciprocal of the slope for the usual orientation of the $(x,t)$ axes.)
+\end{Example}
+
+\begin{Remark}
+\label{rem:weak-solution-variable-change}
+It is important to note that while smooth changes of the dependent variable may transform \emph{smooth} solutions of a conservation law to solutions of an \textquotedblleft equivalent equation,\textquotedblright\ the Rankine-Hugoniot conditions for the new equation may be very different from the old. Thus, the two \textquotedblleft equivalent\textquotedblright\ equations may have very different discontinuous solutions. For example, if we multiply Burgers' equation by $u$, we get the equation
+\begin{equation}\label{eq:burgers-multiplied-by-solution}
+uu_t+u^2u_x=0.
+\end{equation}
+Thus, if $u$ is any smooth positive solution of Burgers' equation and we define $v:=u^2$, then $v$ satisfies the equation
+\begin{equation}\label{eq:burgers-squared-variable-conservation-law}
+v_t+\left(\dfrac23v^{3/2}\right)_x=0.
+\end{equation}
+However, if we use the step function such as the one defined in \eqref{eq:burgers-decreasing-step-data} as initial data for this new equation, then the shock induced has slope $s=2/3$; where the slope of the shock for Burgers' equation was $s=1/2$.
+\end{Remark}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=.78\linewidth]{figures/burgers-decreasing-shock-source.png}
+\caption{Shock wave solution.}\label{fig:burgers-decreasing-shock}
+\end{figure}
+
+\subsubsection{Multiplicity}\label{subsec:weak-solution-multiplicity}
+
+Let us again consider Burgers' equations, but this time with the initial data
+\begin{equation}\label{eq:burgers-increasing-step-data}
+u_0(x):=\begin{cases}0,&x<0\\1,&x\geq0.\end{cases}
+\end{equation}
+This is the case examined in Figure~\ref{fig:characteristic-gap} in which the method of characteristics leaves a blank patch in which the solution is undefined. How should we fill in the blank spot? If we seek a discontinuous solution that is identically zero to the left of the shock and identically one to the right, the Rankine-Hugoniot condition \eqref{eq:rankine-hugoniot-jump-condition} gives us
+\begin{equation}\label{eq:burgers-increasing-step-shock-speed}
+s(0-1)=\dfrac{0^2}{2}-\dfrac{1^2}{2},
+\end{equation}
+or, as before, $s=1/2$. This solution is illustrated by the upper characteristic diagram in Figure~\ref{fig:burgers-two-weak-solutions}.
+
+However, there is another way of filling in the blank patch and coming up with a solution. The following continuous solution is called a \emph{rarefaction wave} and is given further motivation in Section~\ref{sec:riemann-problems} below.
+\begin{equation}\label{eq:burgers-rarefaction-wave}
+u(x,t):=\begin{cases}0,&x<0\\x/t,&0\leq x<t\\1,&t\leq x.\end{cases}
+\end{equation}
+The reader should verify that any continuous function that is a piecewise classical solution of \eqref{eq:conservation-law-system} is a weak solution (cf. the proof of Theorem~\ref{thm:rankine-hugoniot}).
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=.78\linewidth]{figures/burgers-two-weak-solutions-source.png}
+\caption{Two weak solutions for the same initial data: shock (top) and rarefaction or "fan" wave (bottom).}\label{fig:burgers-two-weak-solutions}
+\end{figure}
+
+This solution is illustrated by the lower characteristic diagram in Figure~\ref{fig:burgers-two-weak-solutions}.
+
+In fact, we can create a whole continuum of solutions by combining shocks and rarefaction waves. For
+\begin{equation}\label{eq:burgers-continuum-solution-data}
+u_0(x):=\begin{cases}0,&x<0\\1,&x\geq0,\end{cases}
+\end{equation}
+where we have the following family of solutions parameterized by $\gamma\in[0,1]$:
+\begin{equation}\label{eq:burgers-continuum-weak-solutions}
+u_\gamma(x,t):=\begin{cases}0,&-\infty<x\leq0\\x/t,&0<x\leq\gamma t\\\gamma,&\gamma t<x\leq\dfrac{\gamma+1}{2}t\\1,&\dfrac{\gamma+1}{2}t<x<\infty.\end{cases}
+\end{equation}
+We ask the reader to sketch a characteristic diagram for this solution in Problem~\ref{ex:sketch-mixed-rarefaction-shock} below.
+
+\subsubsection{The Lax Shock Condition}\label{subsec:lax-shock-condition}
+
+Such a huge multiplicity of solutions is unacceptable. The physics associated with conservation laws, particularly with the example of gas dynamics, leads one to expect a unique solution. Thus, we need a "selection criterion" that picks out the physically reasonable solution from among the many possible weak solutions.
+
+A number of such criteria have been proposed, but there is as yet no general agreement on which is the "right" one. Roughly speaking, all of the conditions agree for certain "easy" types of conservation laws, but there are pathological cases for which they disagree. Unfortunately (or fortunately if you plan to be doing research in this area) some of the pathological cases occur in important physical problems (such as oil recovery models), so the question of the best selection criterion is not simply mathematical sophistry.
+
+The criterion we present in this section is one of the most widely used, primarily because it is rather easy to implement in the Riemann problems discussed below. It was introduced by Peter Lax in the 1950s~\cite{La}. We will examine some of the Lax condition\textquotesingle s competitors in Section~\ref{sec:entropy-selection-criteria}.
+
+\begin{Definition}{Lax shock condition}
+\label{def:lax-shock-condition}
+Suppose $\bm{u}$ is a piecewise classical solution of a strictly hyperbolic system of conservation laws. Suppose that $\bm{u}$ has a jump discontinuity on a curve $C$, and that $\bm{u}^l$ and $\bm{u}^r$ are the respective left and right limiting values of $\bm{u}$ at a point $\bm{p}\in C$ (cf. \eqref{eq:conservation-jump-definition}). Suppose further that $C$ has slope $s$ at $\bm{p}$. Then the discontinuous solution is deemed admissible, and is called a \textbf{k-shock}, if at each $\bm{p}\in C$ it satisfies the Rankine-Hugoniot condition \eqref{eq:rankine-hugoniot-jump-condition}; and if there is an integer $k$ with $1\leq k\leq n$ such that
+\begin{equation}\label{eq:lax-shock-condition}
+\begin{gathered}
+\lambda_1(\bm{u}^l)<\lambda_{k-1}(\bm{u}^l)<s<\lambda_k(\bm{u}^l)<\lambda_n(\bm{u}^l),\\
+\lambda_1(\bm{u}^r)<\lambda_k(\bm{u}^r)<s<\lambda_{k+1}(\bm{u}^r)<\lambda_n(\bm{u}^r).
+\end{gathered}
+\end{equation}
+Thus, there are exactly $k-1$ characteristic speeds $\lambda_j(\bm{u}^l)$ on the left that are less than the slope $s$ and exactly $n-k$ speeds $\lambda_j(\bm{u}^r)$ on the right that are greater than the slope $s$.
+\end{Definition}
+
+\begin{Example}{Single conservation laws}
+\label{ex:scalar-lax-shock}
+For Burgers' equation the Lax shock condition \eqref{eq:lax-shock-condition} reduces to
+\begin{equation}\label{eq:burgers-lax-condition}
+u^l>s>u^r,
+\end{equation}
+so that we can only "jump down" across a shock. This rules out the discontinuous weak solution described in Figure~\ref{fig:burgers-two-weak-solutions} in which the characteristics leave the discontinuity. More generally, for a single conservation law
+\[
+u_t+f(u)_x=0,
+\]
+we have
+\begin{equation}\label{eq:scalar-lax-condition}
+f'(u^l)>s>f'(u^r).
+\end{equation}
+Thus, as was the case in Burgers\textquotesingle\ equation, Lax\textquotesingle s criterion requires characteristics to impinge on a shock for any single conservation law. This is often described as a "loss of information," and, as we shall see, the Lax condition is related to a version of the second law of thermodynamics.
+
+The reader should also note the relation between convexity and the Lax shock condition for single conservation laws (cf. Problem~\ref{ex:convexity-lax-scalar-shock}).
+\end{Example}
+
+\begin{Example}{The $p$ system}
+\label{ex:p-system-lax-shock}
+For a $2\times2$ system the Lax conditions require that a "1-shock" satisfy
+\begin{equation}\label{eq:two-system-first-shock-condition}
+s<\lambda_1(\bm{u}^l),\quad\lambda_1(\bm{u}^r)<s<\lambda_2(\bm{u}^r),
+\end{equation}
+and that a "2-shock" satisfy
+\begin{equation}\label{eq:two-system-second-shock-condition}
+\lambda_1(\bm{u}^l)<s<\lambda_2(\bm{u}^l),\quad\lambda_2(\bm{u}^r)<s.
+\end{equation}
+In the case of the $p$ system, where we have
+\begin{equation}\label{eq:p-system-eigenvalue-signs}
+\lambda_1=-\sqrt{-p'(w)}<0<\sqrt{-p'(w)}=\lambda_2;
+\end{equation}
+this implies that 1-shocks have negative speed (they are often called "back-shocks") and satisfy
+\begin{equation}\label{eq:p-system-back-shock-speeds}
+-\sqrt{-p'(w^r)}<s<-\sqrt{-p'(w^l)},
+\end{equation}
+whereas 2-shocks (also called "front-shocks") have positive speed and satisfy
+\begin{equation}\label{eq:p-system-front-shock-speeds}
+\sqrt{-p'(w^r)}<s<\sqrt{-p'(w^l)}.
+\end{equation}
+Note that if we assume $p''>0$ to ensure genuine nonlinearity $w\mapsto\sqrt{-p'(w)}$ is strictly decreasing. Thus, in this case condition \eqref{eq:p-system-back-shock-speeds} for a 1-shock implies
+\begin{equation}\label{eq:p-system-back-shock-volume-jump}
+w^r<w^l,
+\end{equation}
+whereas condition \eqref{eq:p-system-front-shock-speeds} for a 2-shock implies
+\begin{equation}\label{eq:p-system-front-shock-volume-jump}
+w^l<w^r.
+\end{equation}
+
+\end{Example}

@@ -1,0 +1,303 @@
+\section{Semigroup Methods}\label{chap:semigroup-methods}
+
+Roughly speaking, the semigroup approach is a point of view which regards time-dependent PDEs as ODEs on a function space. Consider for example, the following initial/boundary-value problem for the heat equation:
+\begin{equation}\label{eq:semigroup-motivation-heat-initial-boundary-problem}
+\begin{aligned}u_t&=u_{xx},&x\in(0,1),\ t>0,\\u(0,t)&=0,&t>0,\\u(1,t)&=0,&t>0,\\u(x,0)&=u_0(x),&x\in(0,1).\end{aligned}
+\end{equation}
+Let $X$ be the function space $L^2(0,1)$ and let $A=\mathrm{d}^2/\mathrm{d}x^2$ be the second-derivative operator with domain $\mathcal{D}(A)=\{u\in H^2(0,1)\mid u(0)=u(1)=0\}$. Then we can think of \eqref{eq:semigroup-motivation-heat-initial-boundary-problem} as an initial-value problem for an ODE in $X$:
+\begin{equation}\label{eq:semigroup-motivation-abstract-heat-ode}
+\dot u=Au,\ u(0)=u_0.
+\end{equation}
+
+
+Any self-respecting physicist ``knows\textquotesingle\textquotesingle\ that the solution to \eqref{eq:semigroup-motivation-abstract-heat-ode} is $\exp(At)u_0$. For mathematicians, life is not as simple: we have to face the annoying issue of giving a meaning to $\exp(At)$. The theory of semigroups of linear operators generalizes the notion of the exponential matrix (or, for nonautonomous problems, the fundamental matrix) to problems in infinite-dimensional spaces involving unbounded operators. As a preparation, we review various ways that the exponential matrix can be defined in finite dimensions and we tentatively assess their potential of being generalizable to infinite dimensions.
+
+\begin{enumerate}\item The power series method: The conventional way of defining the exponential of a matrix $A$ is by the power series
+\begin{equation}\label{eq:matrix-exponential-power-series}
+e^A=\sum_{n=0}^\infty\dfrac{A^n}{n!}.
+\end{equation}
+It should be obvious that such a definition is virtually useless for unbounded operators. For example, if $A$ is the second-derivative operator in the example above, then $u$ has to be of class $C^\infty$ and derivatives of all even orders have to vanish at the endpoints in order for $A^nu$ to be defined for all $n$. The requirement of convergence of the exponential series would restrict $u$ even further.
+
+\item The spectral method: The way textbooks tell us to compute an exponential matrix is to diagonalize $A$ first (or, more generally, transform it to Jordan canonical form). If $A=T^{-1}DT$ with $D$ diagonal, then it easily follows from \eqref{eq:matrix-exponential-power-series} that
+\begin{equation}\label{eq:matrix-exponential-diagonal-similarity}
+e^A=T^{-1}e^DT.
+\end{equation}
+The exponential of a diagonal matrix is of course trivial to compute. In infinite dimensions, even for bounded operators, there is in general no analogue of diagonalization or Jordan canonical forms. However, for restricted classes of operators, such as self-adjoint operators in Hilbert space, the spectral theorem can be viewed as a diagonalization, and \eqref{eq:matrix-exponential-diagonal-similarity} can indeed be used to define the exponential.
+
+\item Another way to define the exponential of $A$ is
+\begin{equation}\label{eq:matrix-exponential-positive-power-limit}
+e^A=\lim_{n\to\infty}\left(I+\dfrac{A}{n}\right)^n.
+\end{equation}
+This approach clearly suffers from the same defects as the power series when unbounded operators are concerned. However, we may modify it as follows:
+\begin{equation}\label{eq:matrix-exponential-resolvent-power-limit}
+e^A=\lim_{n\to\infty}\left(I-\dfrac{A}{n}\right)^{-n}.
+\end{equation}
+Now, instead of taking powers of $A$, we are taking powers of the resolvent. We shall see that formula \eqref{eq:matrix-exponential-resolvent-power-limit} can indeed be used.
+
+\item Representation by Cauchy\textquotesingle s formula: Let $C$ be a closed, simple, rectifiable, positively oriented curve enclosing all eigenvalues of $A$. Then we obtain
+\begin{equation}\label{eq:matrix-exponential-cauchy-integral}
+e^A=\dfrac{1}{2\pi i}\int_C e^\lambda(\lambda I-A)^{-1}\,\mathrm{d}\lambda.
+\end{equation}
+In PDE applications, the spectrum of $A$ is usually unbounded, and we cannot find a curve enclosing it. However, one may think of using appropriate unbounded curves for $C$. Indeed, we shall return to this idea in the context of analytic semigroups.
+
+\item Laplace transforms: We find
+\begin{equation}\label{eq:matrix-exponential-laplace-transform-resolvent}
+\int_0^\infty e^{At}e^{-\lambda t}\,\mathrm{d}t=(\lambda I-A)^{-1};
+\end{equation}
+i.e., the resolvent is the Laplace transform of the exponential matrix. Inverting the transform, we obtain
+\begin{equation}\label{eq:matrix-exponential-inverse-laplace-transform}
+e^{At}=\dfrac{1}{2\pi i}\int_{\gamma-i\infty}^{\gamma+i\infty}e^{\lambda t}(\lambda I-A)^{-1}\,\mathrm{d}\lambda.
+\end{equation}
+Here $\gamma$ must be taken larger than the real part of any eigenvalue of $A$. Modulo a contour deformation, \eqref{eq:matrix-exponential-inverse-laplace-transform} is actually the same as \eqref{eq:matrix-exponential-cauchy-integral}.\end{enumerate}
+
+In this chapter, we shall only consider linear autonomous evolution problems of the form $\dot u=Au+f(t)$; we emphasize, however, that the methods discussed here have been extended to nonautonomous and nonlinear equations. We refer to the literature for such results.
+
+\Needspace{5\baselineskip}\textbf{Problem}
+
+\begin{enumerate}[label=\thesection.\arabic*.,ref=\thesection.\arabic*,start=1,series=book-problems]
+
+\item\label{ex:matrix-exponential-definitions-equivalence} Verify that the various definitions of the matrix exponential discussed above are indeed equivalent.
+
+\end{enumerate}
+
+\subsection{Semigroups and Infinitesimal Generators}\label{sec:semigroups-infinitesimal-generators}
+
+\subsubsection{Strongly Continuous Semigroups}\label{subsec:strongly-continuous-semigroups}
+
+If $A$ is an $n\times n$ matrix, we have $\exp(A(t+s))=\exp(At)\exp(As)$, i.e., the matrices $\exp(At)$, $t\geq0$, form a \emph{semigroup}. We shall consider families of bounded linear operators with the same property.
+
+\begin{Definition}
+\label{def:strongly-continuous-semigroup}
+Let $X$ be a Banach space. A family $\{T(t)\}$, $t\geq0$, of bounded linear operators in $X$ is called a \textbf{strongly continuous semigroup} or \textbf{$C_0$-semigroup}, if it satisfies the following properties:\begin{enumerate}\item\label{hyp:semigroup-composition-law} $T(t+s)=T(t)T(s)$, $t,s\geq0$,\item\label{hyp:semigroup-zero-identity} $T(0)=I$,\item\label{hyp:semigroup-orbit-continuity} for every $x\in X$,\[[0,\infty)\ni t\mapsto T(t)x\in X\]is continuous.\end{enumerate}
+\end{Definition}
+
+\begin{Remark}
+\label{rem:semigroup-continuity-at-zero}
+It can be shown that instead of condition~\ref{hyp:semigroup-orbit-continuity}, it is sufficient to require continuity of $T(t)x$ at $t=0$. The uniform boundedness principle can then be used to show that $\|T(t)\|$ is bounded in a neighborhood of zero. Having this, the semigroup property yields that $\|T(t)\|$ is bounded on any finite interval. Now continuity of $T(t)x$ from the right follows immediately from the semigroup property, and continuity from the left can be shown by using the identity $T(t-h)-T(t)=T(t-h)(I-T(h))$. We leave the details of the argument to the reader; see Problem~\ref{ex:semigroup-continuity-at-zero-details}.
+\end{Remark}
+
+\Needspace{4\baselineskip}
+\begin{Example}
+\label{ex:bounded-generator-uniformly-continuous-semigroup}
+If $A$ is a bounded operator in $X$, then $\exp(At)$ can be defined using, for example, the power series. It is easy to see that the operators $\exp(At)$ form a strongly continuous semigroup. In fact, $\exp(At)$ is even continuous in the norm topology, not just strongly; i.e.,\[[0,\infty)\ni t\mapsto\exp(At)\in\mathcal{L}(X)\]is continuous. Such semigroups are referred to as uniformly continuous. It can be shown that every uniformly continuous semigroup is of the form $\exp(At)$, where $A$ is a bounded operator. Since this result has little interest for PDEs, we shall not prove it.
+\end{Example}
+
+\begin{Example}
+\label{ex:ltwo-translation-semigroup}
+Let $X=L^2(\mathbb{R})$, and define $(T(t)u)(x)=u(x+t)$. Then $\{T(t)\}$, $t\geq0$, is a strongly continuous semigroup. It is not uniformly continuous; indeed, we have $\|T(t)-T(s)\|=2$ whenever $t\neq s$.
+\end{Example}
+
+\begin{Example}
+\label{ex:bounded-continuous-translation-not-strongly-continuous}
+Let $X=C_b(\mathbb{R})$, and let $T(t)$ be as in the previous example. Then $T(t)$ is not strongly continuous; the convergence of $T(t)u$ to $u$ as $t\to0$ need not be uniform on $\mathbb{R}$. (The reader should construct a counterexample: a function $u(x)$ for which one does not have $\lim_{t\to0}T(t)u=0$. Try a function consisting of a sequence of increasingly narrow ``bumps\textquotesingle\textquotesingle\ of unit height.)
+\end{Example}
+
+We conclude this subsection with a result on the growth of $\|T(t)\|$ for strongly continuous semigroups. As a preparation we need a lemma.
+
+\begin{Lemma}
+\label{lem:subadditive-growth-limit}
+Let $\omega:[0,\infty)\to\mathbb{R}$ be bounded above on every finite interval and subadditive (i.e., $\omega(t_1+t_2)\leq\omega(t_1)+\omega(t_2)$). Then\[\inf_{t>0}\omega(t)/t=\lim_{t\to\infty}\omega(t)/t;\](it is understood that both sides in this equation may be $-\infty$).
+\end{Lemma}
+
+\begin{Proof}
+Let $\omega_0=\inf_{t>0}\omega(t)/t$ and let $\gamma>\omega_0$. Then there exists a $t_0>0$ with $\omega(t_0)/t_0<\gamma$. Any $t\geq0$ can be represented as a multiple of $t_0$ plus a remainder: $t=nt_0+r$, $n\in\mathbb{N}\cup\{0\}$, $r\in[0,t_0)$. Subadditivity yields
+\begin{equation}\label{eq:subadditive-growth-quotient-bound}
+\dfrac{\omega(t)}{t}\leq\dfrac{n\omega(t_0)+\omega(r)}{t}.
+\end{equation}
+As $t\to\infty$, $n/t$ tends to $1/t_0$, and $\omega(r)/t$ is less than or equal to $\sup_{s\in[0,t_0)}\omega(s)/t$. Hence \eqref{eq:subadditive-growth-quotient-bound} yields
+\begin{equation}\label{eq:subadditive-growth-limsup-bound}
+\limsup_{t\to\infty}\dfrac{\omega(t)}{t}\leq\dfrac{\omega(t_0)}{t_0}<\gamma.
+\end{equation}
+From this the lemma is immediate.
+\end{Proof}
+
+\begin{Theorem}
+\label{thm:semigroup-logarithmic-growth-type}
+Let $\{T(t)\}$, $t\geq0$, be a strongly continuous semigroup of bounded linear operators on a Banach space $X$. Then the limit
+\begin{equation}\label{eq:strongly-continuous-semigroup-logarithmic-growth-type}
+\omega_0=\lim_{t\to\infty}(\log\|T(t)\|)/t
+\end{equation}
+exists (with the understanding that its value may be $-\infty$). For every $\gamma>\omega_0$, there is a constant $M_\gamma$ such that $\|T(t)\|\leq M_\gamma\exp(\gamma t)$.
+\end{Theorem}
+
+\begin{Proof}
+It is an immediate consequence of the semigroup property that $\log\|T(t)\|$ is a subadditive function. Moreover, because of strong continuity, $\|T(t)x\|$ is bounded on any finite time interval, and by the uniform boundedness principle $\|T(t)\|$ is bounded on finite intervals. By the previous lemma, $\omega_0$ as given by \eqref{eq:strongly-continuous-semigroup-logarithmic-growth-type} exists. For any $\gamma>\omega_0$, there is a $t_0$ such that $\log\|T(t)\|/t<\gamma$ for $t\geq t_0$, i.e., $\|T(t)\|\leq\exp(\gamma t)$ for $t\geq t_0$. The theorem follows with
+\begin{equation}\label{eq:semigroup-exponential-growth-bound-constant}
+M_\gamma=\max\left(1,\sup_{t\in[0,t_0]}\|T(t)\|e^{-\gamma t}\right).
+\end{equation}
+This completes the proof.
+\end{Proof}
+
+\begin{Definition}
+\label{def:semigroup-type}
+The number $\omega_0$ as given by the last theorem is called the \emph{type} of the semigroup.
+\end{Definition}
+
+\begin{Example}
+\label{ex:absorbing-translation-minus-infinite-type}
+Let $X=L^2(0,1)$ and let
+\begin{equation}\label{eq:finite-interval-absorbing-translation-semigroup}
+(T(t)u)(x)=\begin{cases}u(x+t),&x+t<1,\\0,&\text{otherwise}.\end{cases}
+\end{equation}
+Then $T(t)=0$ for $t\geq1$. This example illustrates that the type of a semigroup may well be $-\infty$.
+\end{Example}
+
+\subsubsection{The Infinitesimal Generator}\label{subsec:semigroup-infinitesimal-generator}
+
+Our motivation for studying semigroups of operators was to generalize the matrix exponential. This naturally raises the question whether every strongly continuous semigroup is, in a sense to be made precise, given as $\exp(At)$ for some operator $A$. We shall answer this question affirmatively. We begin with the following definition.
+
+\begin{Definition}
+\label{def:semigroup-infinitesimal-generator}
+Let $\{T(t)\}$, $t\geq0$, be a strongly continuous semigroup of bounded linear operators on a Banach space $X$. The \textbf{infinitesimal generator} of the semigroup is the operator $A$ defined by
+\begin{equation}\label{eq:semigroup-infinitesimal-generator-definition}
+Ax=\lim_{h\to0+}\dfrac{T(h)x-x}{h},
+\end{equation}
+and the domain of $A$ is the set of all vectors $x\in X$ for which this limit exists.
+\end{Definition}
+
+Of course it is not clear from this definition that $\mathcal{D}(A)$ contains anything but 0. The notion of infinitesimal generator would be of little interest unless $\mathcal{D}(A)$ is suitably large. We shall see that $\mathcal{D}(A)$ is actually dense in $X$. As a preparation, we shall establish a number of facts which will also be useful for other purposes.
+
+\begin{Lemma}
+\label{lem:semigroup-generator-four-identities}
+Let $A$ be the infinitesimal generator of the strongly continuous semigroup $T(t)$. Then the following hold.\begin{enumerate}\item For $x\in X$,
+\begin{equation}\label{eq:semigroup-local-average-continuity-limit}
+\lim_{h\to0}\dfrac{1}{h}\int_t^{t+h}T(s)x\,\mathrm{d}s=T(t)x.
+\end{equation}
+\item For $x\in X$ and any $t>0$, $\int_0^t T(s)x\,\mathrm{d}s\in\mathcal{D}(A)$ and
+\begin{equation}\label{eq:semigroup-integrated-orbit-in-generator-domain}
+A\left(\int_0^t T(s)x\,\mathrm{d}s\right)=T(t)x-x.
+\end{equation}
+\item For $x\in\mathcal{D}(A)$, we have $T(t)x\in\mathcal{D}(A)$. Moreover, the function\[[0,\infty)\ni t\mapsto T(t)x\in X\]is differentiable. (This means that difference quotients have a limit in the sense of norm convergence in $X$.) In fact,
+\begin{equation}\label{eq:semigroup-orbit-generator-differentiation}
+\dfrac{\mathrm{d}}{\mathrm{d}t}T(t)x=AT(t)x=T(t)Ax.
+\end{equation}
+\item For $x\in\mathcal{D}(A)$,
+\begin{equation}\label{eq:semigroup-generator-orbit-integral-identity}
+T(t)x-T(s)x=\int_s^t T(\tau)Ax\,\mathrm{d}\tau=\int_s^t AT(\tau)x\,\mathrm{d}\tau.
+\end{equation}
+\end{enumerate}
+\end{Lemma}
+
+\begin{Proof}
+Part 1 is a straightforward consequence of strong continuity of the semigroup. For part 2, we choose $h>0$, and obtain\[\begin{aligned}
+\dfrac{T(h)-I}{h}\int_0^t T(s)x\,\mathrm{d}s&=\dfrac{1}{h}\int_0^t(T(s+h)-T(s))x\,\mathrm{d}s\\
+&=\dfrac{1}{h}\int_t^{t+h}T(s)x\,\mathrm{d}s-\dfrac{1}{h}\int_0^h T(s)x\,\mathrm{d}s.
+\end{aligned}\]According to part 1, the right-hand side tends to $T(t)x-x$. This proves part 2. To prove part 3, we consider the identities
+\begin{equation}\label{eq:semigroup-orbit-forward-difference-commutation}
+\dfrac{T(t+h)x-T(t)x}{h}=\dfrac{T(h)-I}{h}T(t)x=T(t)\dfrac{T(h)x-x}{h}
+\end{equation}
+and
+\begin{equation}\label{eq:semigroup-orbit-backward-difference-identity}
+\dfrac{T(t)x-T(t-h)x}{h}=T(t-h)\dfrac{T(h)x-x}{h},
+\end{equation}
+and take the limit $h\to0+$. Finally, part 4 follows from part 3 by the fundamental theorem of calculus.
+\end{Proof}
+
+\begin{Theorem}
+\label{thm:semigroup-generator-dense-closed}
+Let $A$ be the infinitesimal generator of a $C_0$-semigroup. Then $\mathcal{D}(A)$ is dense and $A$ is closed.
+\end{Theorem}
+
+\begin{Proof}
+We have
+\begin{equation}\label{eq:semigroup-generator-domain-dense-average-approximation}
+x=\lim_{h\to0+}\dfrac{1}{h}\int_0^h T(s)x\,\mathrm{d}s,
+\end{equation}
+and by the preceding lemma the right-hand side is in $\mathcal{D}(A)$. Hence $\mathcal{D}(A)$ is dense. Assume now that $x_n\in\mathcal{D}(A)$, $x_n\to x$ and $Ax_n\to y$. Then
+\begin{equation}\label{eq:semigroup-generator-closedness-sequence-identity}
+T(h)x_n-x_n=\int_0^h T(s)Ax_n\,\mathrm{d}s
+\end{equation}
+by part 4 of the preceding lemma. Letting $n\to\infty$, we find
+\begin{equation}\label{eq:semigroup-generator-closedness-limit-identity}
+T(h)x-x=\int_0^h T(s)y\,\mathrm{d}s.
+\end{equation}
+It remains to divide by $h$ and let $h\to0+$.
+\end{Proof}
+
+\begin{Example}
+\label{ex:ltwo-translation-generator}
+Let $X=L^2(\mathbb{R})$ and $(T(t)u)(x)=u(x+t)$. Then the infinitesimal generator is $A=\mathrm{d}/\mathrm{d}x$ and its domain is $H^1(\mathbb{R})$.
+\end{Example}
+
+\subsubsection{Abstract ODEs}\label{subsec:semigroup-abstract-odes}
+
+Throughout this section, $T(t)$ is a strongly continuous semigroup of operators in $X$ and $A$ is the infinitesimal generator. We are interested in solutions of the initial-value problem
+\begin{equation}\label{eq:semigroup-abstract-inhomogeneous-initial-value-problem}
+\dot u=Au+f(t),\ u(0)=u_0.
+\end{equation}
+Our notion of a solution is classical; we assume that $u_0\in\mathcal{D}(A)$ and $f\in C([0,T];X)$ and we seek a solution $u\in C^1([0,T];X)\cap C([0,T];\mathcal{D}(A))$. (Here we think of $\mathcal{D}(A)$ as a Banach space equipped with the graph norm.) The following is the abstract version of the well-known variation of constants formula for ODEs.
+
+\begin{Theorem}
+\label{thm:semigroup-variation-of-constants}
+Let $u$ be a classical solution of \eqref{eq:semigroup-abstract-inhomogeneous-initial-value-problem}. Then $u$ is represented by the formula
+\begin{equation}\label{eq:semigroup-variation-of-constants-formula}
+u(t)=T(t)u_0+\int_0^t T(t-s)f(s)\,\mathrm{d}s.
+\end{equation}
+
+\end{Theorem}
+
+\begin{Proof}
+Let $g(s)=T(t-s)u(s)$. Then
+\begin{equation}\label{eq:semigroup-variation-of-constants-proof-derivative}
+\begin{aligned}\dfrac{\mathrm{d}g}{\mathrm{d}s}&=-AT(t-s)u(s)+T(t-s)\dot u(s)\\&=-AT(t-s)u(s)+T(t-s)(Au(s)+f(s))=T(t-s)f(s).\end{aligned}
+\end{equation}
+Hence we find
+\begin{equation}\label{eq:semigroup-variation-of-constants-proof-integral}
+g(t)-g(0)=u(t)-T(t)u_0=\int_0^t T(t-s)f(s)\,\mathrm{d}s.
+\end{equation}
+This completes the proof.
+\end{Proof}
+
+Clearly \eqref{eq:semigroup-variation-of-constants-formula} makes sense under much weaker assumptions. For example, \eqref{eq:semigroup-variation-of-constants-formula} represents a continuous function of $t$ if we only assume that $u_0\in X$ and $f\in L^1([0,T];X)$. This motivates the following definition.
+
+\begin{Definition}
+\label{def:semigroup-mild-solution}
+Assume that $u_0\in X$ and $f\in L^1([0,T];X)$. Then $u(t)$ as given by \eqref{eq:semigroup-variation-of-constants-formula} is called a \textbf{mild solution} of \eqref{eq:semigroup-abstract-inhomogeneous-initial-value-problem}.
+\end{Definition}
+
+Naturally, we shall henceforth consider the mild solution a ``solution,\textquotesingle\textquotesingle\ regardless of whether or not it is indeed a classical solution. However, regularity of solutions is of some interest, and we shall now look into the question of when we can assert that the solution is classical. This question is answered by the following theorem.
+
+\begin{Theorem}
+\label{thm:semigroup-mild-solution-classical-regularity}
+Assume that $u_0\in\mathcal{D}(A)$, $f\in C([0,T];X)$ and that in addition either $f\in W^{1,1}([0,T];X)$ or $f\in L^1([0,T];\mathcal{D}(A))$. Then the mild solution of \eqref{eq:semigroup-abstract-inhomogeneous-initial-value-problem} is a classical solution.
+\end{Theorem}
+
+\begin{Proof}
+The term $T(t)u_0$ is easily dealt with using Lemma~\ref{lem:semigroup-generator-four-identities}. We can hence focus attention on the term
+\begin{equation}\label{eq:semigroup-inhomogeneous-orbit-convolution}
+v(t):=\int_0^t T(t-s)f(s)\,\mathrm{d}s.
+\end{equation}
+We need to show that $v\in C^1([0,T];X)\cap C([0,T];\mathcal{D}(A))$ and that $\dot v=Av+f$. For this, we first note the identity
+\begin{equation}\label{eq:semigroup-convolution-generator-difference-identity}
+\dfrac{T(h)-I}{h}v(t)=\dfrac{v(t+h)-v(t)}{h}-\dfrac{1}{h}\int_t^{t+h}T(t+h-s)f(s)\,\mathrm{d}s.
+\end{equation}
+Using the continuity of $f$ and the strong continuity of the semigroup, we find that the last term on the right tends to $-f(t)$ as $h\to0+$. If $v$ is differentiable with respect to $t$, then the right-hand side of \eqref{eq:semigroup-convolution-generator-difference-identity} has a limit as $h\to0+$, hence so does the left-hand side, i.e., $Av(t)$ exists. Conversely, if $Av(t)$ exists and is continuous, then the right derivative $D_{+h}v(t)$ exists and is continuous. By substituting $t-h$ for $t$ in \eqref{eq:semigroup-convolution-generator-difference-identity}, we also obtain the existence of the left derivative. Hence $v\in C^1([0,T];X)$ if and only if $v\in C([0,T];\mathcal{D}(A))$ and in either case we have $\dot v=Av+f$. If $f\in L^1([0,T];\mathcal{D}(A))$, then it is clear from \eqref{eq:semigroup-inhomogeneous-orbit-convolution} that $v\in C([0,T];\mathcal{D}(A))$. If, on the other hand, $f\in W^{1,1}([0,T];X)$, we rewrite $v$ as
+\begin{equation}\label{eq:semigroup-convolution-time-variable-reversal}
+v(t)=\int_0^t T(s)f(t-s)\,\mathrm{d}s,
+\end{equation}
+from which we find
+\begin{equation}\label{eq:semigroup-convolution-with-differentiable-data}
+\dot v(t)=T(t)f(0)+\int_0^t T(s)\dot f(t-s)\,\mathrm{d}s.
+\end{equation}
+Hence $v\in C^1([0,T];X)$.
+\end{Proof}
+
+\Needspace{5\baselineskip}\textbf{Problems}
+
+\begin{enumerate}[label=\thesection.\arabic*.,ref=\thesection.\arabic*,start=2,series=book-problems]
+
+\item\label{ex:semigroup-continuity-at-zero-details} Fill in the details for the argument in Remark~\ref{rem:semigroup-continuity-at-zero}.
+
+\item\label{ex:translation-semigroup-on-vanishing-continuous-functions} Let $C_0(\mathbb{R})$ be the space of all continuous functions on $\mathbb{R}$ which tend to zero at infinity and let $T(t)$ be as in Example~\ref{ex:bounded-continuous-translation-not-strongly-continuous}. Show that $T(t)$ is strongly continuous.
+
+\item\label{ex:semigroup-nonzero-eigenvalue-finite-type} Assume that there is some $t_0>0$ such that $T(t_0)$ has a nonzero eigenvalue. Show that the type of the semigroup cannot be $-\infty$.
+
+\item\label{ex:semigroup-generator-determines-semigroup} Suppose two $C_0$-semigroups $T(t)$ and $S(t)$ have the same infinitesimal generator $A$. Show that the semigroups are equal. Hint: Consider $\frac{\mathrm{d}}{\mathrm{d}s}T(t-s)S(s)x$ for $x\in\mathcal{D}(A)$.
+
+\item\label{ex:semigroup-smooth-integrated-orbits-dense-powers-domain} Let $T(t)$ be a $C_0$-semigroup with infinitesimal generator $A$. Let $\phi\in\mathcal{D}(0,\infty)$. Show that $\int_0^\infty\phi(s)T(s)x$ is in the domain of $A^n$ for every $n\in\mathbb{N}$. Use this to show that $\bigcap_{n\in\mathbb{N}}\mathcal{D}(A^n)$ is dense in $X$.
+
+\item\label{ex:absorbing-translation-generator-characterization} Characterize the infinitesimal generator for the semigroup in Example~\ref{ex:absorbing-translation-minus-infinite-type}.
+
+\item\label{ex:continuous-forcing-insufficient-classical-solution} Show by a counterexample that continuity of $f$ alone is not sufficient for the conclusions of Theorem~\ref{thm:semigroup-mild-solution-classical-regularity} to hold. Hint: Consider the equation $\dot u=Au+T(t)x$, $u(0)=0$ for some fixed $x$. The solution is $u(t)=tT(t)x$.
+
+\end{enumerate}

@@ -1,0 +1,84 @@
+\subsection{Fourier 变换}\label{sec:fourier-transform}
+
+\subsubsection{试验函数的 Fourier 变换}\label{subsec:fourier-test-functions}
+
+\begin{Definition}
+\label{def:fourier-transform}
+连续且绝对可积函数 $f:\mathbb{R}^m\to\mathbb{C}$ 的\textbf{Fourier 变换}定义为\footnote{文献中的定义在指数中是否包含负号以及是否包含因子 $(2\pi)^{-m/2}$ 这两点上有所不同.}
+\begin{equation}\label{eq:fourier-transform-definition}
+\widehat f(\bm{\xi})=\mathcal{F}[f](\bm{\xi}):=(2\pi)^{-m/2}\int_{\mathbb{R}^m}e^{-i\bm{\xi}\cdot\bm{x}}f(\bm{x})\,\mathrm{d}\bm{x}.
+\end{equation}
+
+\end{Definition}
+
+特别地, 这定义了每个 $f\in\mathcal{S}(\mathbb{R}^m)$ 的 Fourier 变换. 事实上, 有以下结果.
+
+\begin{Theorem}
+\label{thm:fourier-test-space-continuity}
+若 $f\in\mathcal{S}(\mathbb{R}^m)$, 则 $\widehat f\in\mathcal{S}(\mathbb{R}^m)$. 此外, 映射 $\mathcal{F}$ 从 $\mathcal{S}(\mathbb{R}^m)$ 到其自身连续.
+\end{Theorem}
+
+\begin{Proof}
+若 $f\in\mathcal{S}(\mathbb{R}^m)$, 则显然 $\widehat f$ 是连续有界函数; 此外, 若在 $\mathcal{S}(\mathbb{R}^m)$ 中 $f_n\to0$, 则 $\widehat f_n\to0$ 一致成立. 其余部分由恒等式得出
+\begin{equation}\label{eq:fourier-frequency-derivatives}
+D^\alpha\widehat f(\bm{\xi})=\mathcal{F}[(-i\bm{x})^\alpha f](\bm{\xi}),
+\end{equation}
+
+\begin{equation}\label{eq:fourier-spatial-derivatives}
+(i\bm{\xi})^\alpha\widehat f(\bm{\xi})=\mathcal{F}[D^\alpha f](\bm{\xi}).
+\end{equation}
+其中第一个恒等式通过在积分号下求导得到, 第二个通过分部积分得到.
+\end{Proof}
+
+方程 \eqref{eq:fourier-spatial-derivatives} 是 Fourier 变换重要的主要原因; 若 $L(D)$ 是常系数微分算子, 则
+\begin{equation}\label{eq:fourier-constant-coefficient-operator-symbol}
+\mathcal{F}[L(D)u]=L(i\bm{\xi})\mathcal{F}[u],
+\end{equation}
+其中 $L(i\bm{\xi})$ 为 Section~\ref{sec:classification-characteristics} 中定义的 $L$ 的符号. 因此, 常系数偏微分方程可通过 Fourier 变换化为代数方程. 当然, 除非知道如何对变换求逆, 否则知道解的 Fourier 变换也没有多大用处. 下一定理解决这一问题.
+
+\begin{Theorem}
+\label{thm:fourier-inversion}
+设 $g\in\mathcal{S}(\mathbb{R}^m)$. 那么存在唯一的 $f\in\mathcal{S}(\mathbb{R}^m)$, 使 $g=\mathcal{F}[f]$. 此外, $g$ 的\textbf{Fourier 逆变换}由公式给出
+\begin{equation}\label{eq:fourier-inversion-formula}
+f(\bm{x})=(2\pi)^{-m/2}\int_{\mathbb{R}^m}e^{i\bm{\xi}\cdot\bm{x}}g(\bm{\xi})\,\mathrm{d}\bm{\xi}.
+\end{equation}
+
+\end{Theorem}
+
+除指数中的负号外, Fourier 逆变换公式与 Fourier 变换本身的公式一致. 计算 Fourier 变换中出现的积分时, 复积分路径变形常常很有用; 例子见 Problem~\ref{ex:fourier-gaussian-rational-transforms}.
+
+\begin{Proof}
+令 $Q_M=[-M,M]^m$, 并设 $f$ 由 \eqref{eq:fourier-inversion-formula} 给出. 得到
+\begin{equation}\label{eq:fourier-inversion-cutoff-calculation}
+\begin{aligned}
+\widehat f(\bm{\xi})&=(2\pi)^{-m/2}\int_{\mathbb{R}^m}e^{-i\bm{\xi}\cdot\bm{x}}f(\bm{x})\,\mathrm{d}\bm{x}\\
+&=(2\pi)^{-m}\int_{\mathbb{R}^m}e^{-i\bm{\xi}\cdot\bm{x}}\int_{\mathbb{R}^m}e^{i\bm{\eta}\cdot\bm{x}}g(\bm{\eta})\,\mathrm{d}\bm{\eta}\,\mathrm{d}\bm{x}\\
+&=(2\pi)^{-m}\lim_{M\to\infty}\int_{Q_M}\int_{\mathbb{R}^m}e^{i(\bm{\eta}-\bm{\xi})\cdot\bm{x}}g(\bm{\eta})\,\mathrm{d}\bm{\eta}\,\mathrm{d}\bm{x}\\
+&=(2\pi)^{-m}\lim_{M\to\infty}\int_{\mathbb{R}^m}\int_{Q_M}e^{i(\bm{\eta}-\bm{\xi})\cdot\bm{x}}g(\bm{\eta})\,\mathrm{d}\bm{x}\,\mathrm{d}\bm{\eta}\\
+&=\pi^{-m}\lim_{M\to\infty}\int_{\mathbb{R}^m}\prod_{i=1}^m\dfrac{\sin M(\eta_i-\xi_i)}{\eta_i-\xi_i}g(\bm{\eta})\,\mathrm{d}\bm{\eta}.
+\end{aligned}
+\end{equation}
+如 Example~\ref{ex:delta-sequence-primitive} 中所见, 当 $M\to\infty$ 时, $\sin M(\eta_i-\xi_i)/(\eta_i-\xi_i)$ 在分布意义下的极限为 $\pi\delta(\eta_i-\xi_i)$, 在缓增分布意义下也如此. 利用这一事实及直积的连续性, 得到 $\widehat f(\bm{\xi})=g(\bm{\xi})$, 即 $f$ 的 Fourier 变换确实为 $g$.
+
+类似计算表明, 若对某个函数 $h\in\mathcal{S}(\mathbb{R}^m)$ 有 $g=\widehat h$, 则 $h=f$, 其中后者由 \eqref{eq:fourier-inversion-formula} 给出.
+\end{Proof}
+
+Fourier 变换的一个重要性质是保持内积.
+
+\begin{Theorem}
+\label{thm:fourier-inner-product-preservation}
+设 $f,\phi\in\mathcal{S}(\mathbb{R}^m)$. 那么 $(\widehat f,\widehat\phi)=(f,\phi)$.
+\end{Theorem}
+
+\begin{Proof}
+有
+\begin{equation}\label{eq:fourier-inner-product-preservation-proof}
+\begin{aligned}
+(f,\phi)&=\int_{\mathbb{R}^m}\overline{f(\bm{x})}\phi(\bm{x})\,\mathrm{d}\bm{x}\\
+&=(2\pi)^{-m/2}\int_{\mathbb{R}^m}\overline{f(\bm{x})}\int_{\mathbb{R}^m}\widehat\phi(\bm{\xi})e^{i\bm{\xi}\cdot\bm{x}}\,\mathrm{d}\bm{\xi}\,\mathrm{d}\bm{x}\\
+&=(2\pi)^{-m/2}\int_{\mathbb{R}^m}\widehat\phi(\bm{\xi})\int_{\mathbb{R}^m}\overline{f(\bm{x})e^{-i\bm{\xi}\cdot\bm{x}}}\,\mathrm{d}\bm{x}\,\mathrm{d}\bm{\xi}\\
+&=\int_{\mathbb{R}^m}\overline{\widehat f(\bm{\xi})}\widehat\phi(\bm{\xi})\,\mathrm{d}\bm{\xi}=(\widehat f,\widehat\phi).
+\end{aligned}
+\end{equation}
+证明完成.
+\end{Proof}

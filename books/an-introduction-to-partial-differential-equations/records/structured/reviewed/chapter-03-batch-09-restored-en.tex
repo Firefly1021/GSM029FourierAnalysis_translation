@@ -1,0 +1,62 @@
+\subsubsection{Viscosity Solutions}\label{subsec:viscosity-solutions}
+
+Another important selection criterion (whose physical significance is perhaps easier to understand) is the requirement that we accept only \emph{viscosity solutions}.
+
+\begin{Definition}
+\label{def:viscosity-solution}
+We say that $\bm{u}$ is a \textbf{viscosity solution} of \eqref{eq:conservation-law-system} if $\bm{u}$ can be obtained as the limit
+\begin{equation}\label{eq:vanishing-viscosity-solution-definition}
+\bm{u}=\lim_{\epsilon\to0^+}\bm{u}^\epsilon
+\end{equation}
+of solutions of the parabolic system of differential equations
+\begin{equation}\label{eq:viscous-conservation-law}
+\bm{u}_t^\epsilon+\bm{f}(\bm{u}^\epsilon)_x=\epsilon\bm{A}\bm{u}_{xx}^\epsilon.
+\end{equation}
+for some positive definite matrix $\bm{A}$.
+\end{Definition}
+
+\begin{Remark}
+\label{rem:viscosity-limit-sense}
+The reader should be wondering in what sense the limit in \eqref{eq:vanishing-viscosity-solution-definition} is achieved. Well, we\textquotesingle re not going to tell you yet. (All right, if you must know it\textquotesingle s a weak-star limit in $L^\infty$, but we\textquotesingle re not going to explain this terminology until later chapters.) Suffice it to say that if $\bm{u}$ is a piecewise $C^1$ solution containing a single shock, the convergence is uniform off any neighborhood containing the shock.
+\end{Remark}
+
+The rationale behind this choice of a selection criterion is that most conservation laws (again, gas dynamics being the system that we have foremost in mind) are simply approximate mathematical models of physical systems; and the "real" physical systems have some sort of dissipation effects like viscosity that are modeled by the $\bm{A}\bm{u}_{xx}$ term in \eqref{eq:viscous-conservation-law}. Of course, the question immediately comes up, "If \eqref{eq:viscous-conservation-law} is the better model, why are we spending so much time solving the approximate conservation law \eqref{eq:conservation-law-system}?" There are a few different answers to that question.
+
+\begin{enumerate}
+\item The viscosity effects embodied in the dissipation term are often very small and accordingly hard to measure. Thus, it is not easy to determine $\bm{A}$ or $\epsilon$ with any accuracy.
+\item In a numerical implementation of \eqref{eq:viscous-conservation-law} the small dissipation term is usually of no help in stabilizing the numerical algorithm.
+\item There are reasonably efficient and accurate numerical methods of computing the solutions of \eqref{eq:conservation-law-system}, and there are analytical methods for determining simple discontinuous solutions.
+\end{enumerate}
+
+Even if we accept the idea that we should continue to study hyperbolic conservation laws rather than parabolic systems, there are a few questions about viscosity solutions that remain unanswered.
+\begin{enumerate}
+\item Is there more than one viscosity solution? More precisely, how does the limit $\bm{u}$ depend on the choice of the matrix $\bm{A}$?
+\item What is the relationship between the viscosity solution and the limit of other small higher order effects as the magnitude of the effect goes to zero? (For example, the third-order effect \emph{capillarity} has been used in a manner similar to our use of viscosity.)
+\end{enumerate}
+In short, should we question the notion that there should be a unique solution of a system of conservation laws? It seems that the current consensus is that uniqueness is required by the physics in most situations.
+
+Our next theorem involves the relationship between viscosity solutions and solutions satisfying the entropy condition. Because of the vague nature of our definition of viscosity solutions, we will not be able to give a rigorous proof, but we do supply some formal justification.
+
+\begin{Theorem}
+\label{thm:viscosity-implies-entropy}
+For a system of conservation laws \eqref{eq:conservation-law-system} for which there exists an entropy/entropy-flux pair $(U,F)$ with convex entropy $U$, any viscosity solution also satisfies the entropy condition.
+\end{Theorem}
+
+\begin{Proof}
+We present here a plausibility argument rather than a proof. Although the arguments presented here cannot be justified without the tools of distribution theory and $L^p$ spaces, they should give the reader an idea of why the theorem is true. In fact, a reader very familiar with the more advanced topics mentioned above would probably accept the arguments as sufficiently rigorous. For clarity, we consider only the case $\bm{A}=\bm{I}$; the generalization to other positive definite $\bm{A}$ is straightforward.
+
+Multiplying \eqref{eq:viscous-conservation-law} by $\nabla U$ and using \eqref{eq:entropy-flux-pair-definition} we get
+\[
+\begin{aligned}
+U(\bm{u}^\epsilon)_t+F(\bm{u}^\epsilon)_x
+&=\nabla U\cdot\bm{u}_t^\epsilon+\nabla U^T\nabla\bm{f}\,\bm{u}_x^\epsilon\\
+&=\epsilon\nabla U\cdot\bm{u}_{xx}^\epsilon\\
+&=\epsilon(U_{xx}-(\bm{u}_x^\epsilon)^T\nabla^2U\bm{u}_x^\epsilon)
+\end{aligned}
+\]
+Using the convexity of $U$ (which implies the positive definiteness of the Hessian matrix $\nabla^2U$) we obtain
+\begin{equation}\label{eq:viscous-entropy-differential-inequality}
+U_t+F_x\leq\epsilon U_{xx}.
+\end{equation}
+The right-hand side goes to $0$ (in the sense of distributions) as $\epsilon\to0$, so we have \eqref{eq:entropy-distribution-inequality}.
+\end{Proof}

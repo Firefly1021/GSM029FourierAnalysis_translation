@@ -1,0 +1,87 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{ajbook-pde-profile}[2026/11/22 Book-local PDE typography]
+\RequirePackage{cases,empheq}
+\RequirePackage[math-style=TeX,mathrm=sym,mathit=sym,mathbf=sym,mathsf=sym,mathtt=sym]{unicode-math}
+% Use TeX Live's bundled New Computer Modern Math.
+\setmathfont{NewCMMath-Regular.otf}
+\setoperatorfont{\symup}
+
+% Unicode math symbols in headings need Hyperref's PDF-string mappings.
+\PassOptionsToPackage{psdextra}{hyperref}
+\AddToHook{package/hyperref/after}{%
+  \pdfstringdefDisableCommands{%
+    \let\bm\@firstofone
+    \let\boldsymbol\@firstofone
+    \let\mathbb\@firstofone
+    \let\mathcal\@firstofone
+    \let\mathbf\@firstofone
+    \let\mathit\@firstofone
+    \let\mathrm\@firstofone
+    \let\mathsf\@firstofone
+    \let\mathtt\@firstofone
+    \let\mathscr\@firstofone
+  }%
+}
+
+% Keep legacy unbraced scripts such as ^\mathrm{T} and _\mathbb R.
+% Yield an explicit group before the Unicode alphabet switch is expanded.
+\ExplSyntaxOn
+\cs_new_protected:Npn \ajbook_math_legacy_scripts:
+  {
+    \cs_set_eq:NN \ajbook_mathrm:n \mathrm
+    \cs_set_eq:NN \ajbook_mathsf:n \mathsf
+    \cs_set_eq:NN \ajbook_mathbb:n \mathbb
+    \cs_set_eq:NN \ajbook_mathcal:n \mathcal
+    \cs_set_protected:Npn \mathrm ##1 { { \ajbook_mathrm:n {##1} } }
+    \cs_set_protected:Npn \mathsf ##1 { { \ajbook_mathsf:n {##1} } }
+    \cs_set_protected:Npn \mathbb ##1 { { \ajbook_mathbb:n {##1} } }
+    \cs_set_protected:Npn \mathcal ##1 { { \ajbook_mathcal:n {##1} } }
+  }
+\AddToHook{begindocument/end}{\ajbook_math_legacy_scripts:}
+\ExplSyntaxOff
+
+% Keep the manuscript commands, but draw their glyphs from this font alone.
+\ExplSyntaxOn
+\DeclareRobustCommand{\bm}[1]{%
+  \regex_match:nnTF { \A [A-Za-z]+ \Z } {#1}
+    { \symbfit{#1} }
+    { \symbf{#1} }
+}
+\ExplSyntaxOff
+\DeclareRobustCommand{\boldsymbol}[1]{\bm{#1}}
+\providecommand{\square}{\mdlgwhtsquare}
+\providecommand{\blacksquare}{\mdlgblksquare}
+\providecommand{\llbracket}{\lBrack}
+\providecommand{\rrbracket}{\rBrack}
+
+% Keep the reference edition's inline style.
+\AtBeginDocument{\everymath{\displaystyle}}
+
+\newcommand{\AJStatementHeadingFont}{\sffamily\bfseries\thmheiti}
+\newcommand{\AJStatementFormalFont}{\fangsong}
+\newcommand{\AJStatementInformalFont}{\songti}
+\newcommand{\AJUsePDEPlainTheorems}{%
+  \theoremstyle{plain}\theoremsymbol{}%
+  \theoremheaderfont{\AJStatementHeadingFont}\theoremseparator{\ }%
+  \theorembodyfont{\AJStatementFormalFont}%
+}
+% The plain ntheorem list and heading from the reference, for manuscripts
+% whose own counter and label handling have to stay outside the renderer.
+\newcommand{\AJStatementBegin}[3]{%
+  \trivlist
+  \@topsep\theorempreskipamount
+  \@topsepadd\theorempostskipamount
+  \ifvmode\advance\@topsepadd\partopsep\fi
+  \parshape\@ne\@totalleftmargin\linewidth
+  \item[\hskip\labelsep \AJStatementHeadingFont #1#2%
+    \IfValueT{#3}{\ifstrempty{#3}{}{\space(#3)}}\ ]\ignorespaces
+}
+\newcommand{\AJStatementEnd}{\endtrivlist}
+\newcommand{\AJProofBegin}{%
+  \par\addvspace{\topsep}\noindent
+  {\sffamily\bfseries\CJKfamily{pffont}Proof}\enspace\ignorespaces
+}
+\newcommand{\AJProofEnd}{%
+  \ifhmode\unskip\nobreak\else\noindent\fi\hfill\openbox\par\addvspace{\topsep}%
+}
+\endinput

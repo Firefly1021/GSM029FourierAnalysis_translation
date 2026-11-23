@@ -1,0 +1,5 @@
+# Chapter 11 complete, chapter-local QA passed
+
+Original PDF 390--404 / printed 380--394. Both sections and all eight subsections, full printed Galerkin existence arguments, uniqueness and weak/strong continuity arguments, regularity calculations, three PDE applications and all 11 Problems retained. The 69 numbered formulas and nine statement objects have consecutive source numbering. All 57 chapter reference uses resolve and actual PDF link order is verified.
+
+Two full-section chapter-only previews were used, followed by one clean multipass integration (310 pages) at chapter completion. No new name/punctuation violations, undefined chapter targets, duplicate labels, missing glyphs or blocking issues. Original source locators and formula forms retained, not mathematically repaired. The full book still awaits Chapter 12 and final acceptance. Original source/template, accepted/frozen earlier chapters, shared terminology and unrelated edits remain unchanged. Frozen source/body/formula hashes are in the receipt. No remote push.

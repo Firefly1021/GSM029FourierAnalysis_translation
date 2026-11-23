@@ -9,42 +9,40 @@
 
 首先回顾有限元方法的一些经典理论, 为后文作准备. 有限元最简单的应用情形是 Poisson 方程 Dirichlet 问题的数值求解. 给定 $\mathbb R^n$ 中区域 $\Omega$ 上的实值函数 $f$, 我们寻求满足下式的函数 $u$:
 \[
--\Delta u=f\text{{ 在 }}\Omega,\qquad u=0\text{{ 在 }}\partial\Omega.
+\begin{cases}
+    -\Delta u=f,&\text{ in }\Omega,\\
+    u=0,&\text{ on }\partial\Omega.
+\end{cases}
 \]
 
-有限元方法并不从这一强表述出发, 而是从该边值问题的弱表述出发. 我们在 Sobolev 空间 $\mathring H^1(\Omega)$ 中寻求解 $u$, 这个空间由一阶偏导数也属于 $L^2(\Omega)$ 且在 $\partial\Omega$ 上为零的 $L^2(\Omega)$ 函数组成. 解由要求下式成立来确定:
+有限元方法并不从这一强表述出发, 而是从该边值问题的弱表述出发. 我们在 Sobolev 空间 $H^1_0(\Omega)$ 中寻求解 $u$, 这个空间由一阶偏导数也属于 $L^2(\Omega)$ 且在 $\partial\Omega$ 上为零的 $L^2(\Omega)$ 函数组成. 解由要求下式成立来确定:
 \begin{equation}\label{eq:poisson-weak-form}
-\int_\Omega\operatorname{grad}u\cdot\operatorname{grad}v\,dx=\int_\Omega fv\,dx
+\int_\Omega\operatorname{grad}u\cdot\operatorname{grad}v\,\mathrm{d}x=\int_\Omega fv\,\mathrm{d}x
 \end{equation}
+对检验空间 $H^1_0(\Omega)$ 中的所有函数 $v$ 成立 (在本例中, 检验空间与寻求 $u$ 的试探空间相同). 该方程由原 Poisson 方程乘以检验函数 $v$, 再在区域 $\Omega$ 上作分部积分得到. 该问题的弱表述是适定的, 即对任意 $f$ (属于 $L^2(\Omega)$, 甚至属于对偶 Sobolev 空间 $H^{-1}(\Omega)=H^1_0(\Omega)'$), 都存在唯一弱解 $u$, 并且作为 $H^1$ 中的元素, 它连续依赖于 $L^2$ 或 $H^{-1}$ 中的 $f$.
 
-对检验空间 $\mathring H^1(\Omega)$ 中的所有函数 $v$ 成立 (在本例中, 检验空间与寻求 $u$ 的试探空间相同). 该方程由原 Poisson 方程乘以检验函数 $v$, 再在区域 $\Omega$ 上作分部积分得到. 该问题的弱表述是适定的, 即对任意 $f$ (属于 $L^2(\Omega)$, 甚至属于对偶 Sobolev 空间 $H^{-1}(\Omega)=\mathring H^1(\Omega)'$), 都存在唯一弱解 $u$, 并且作为 $H^1$ 中的元素, 它连续依赖于 $L^2$ 或 $H^{-1}$ 中的 $f$.
-
-为计算近似解 $u_h$, 我们先考虑包含有限元方法在内的 Galerkin 方法. Galerkin 方法要求指定 $\mathring H^1(\Omega)$ 的一个有限维子空间 $V_h$, 在离散层次同时用作试探空间和检验空间. 因此, 我们通过要求弱方程 \eqref{eq:poisson-weak-form} 对属于 $V_h$ 的检验函数 $v$ 成立, 来寻求近似解 $u_h\in V_h$:
+为计算近似解 $u_h$, 我们先考虑包含有限元方法在内的 Galerkin 方法. Galerkin 方法要求指定 $H^1_0(\Omega)$ 的一个有限维子空间 $V_h$, 在离散层次同时用作试探空间和检验空间. 因此, 我们通过要求弱方程 \eqref{eq:poisson-weak-form} 对属于 $V_h$ 的检验函数 $v$ 成立, 来寻求近似解 $u_h\in V_h$:
 \begin{equation}\label{eq:poisson-galerkin-form}
-\int_\Omega\operatorname{grad}u_h\cdot\operatorname{grad}v\,dx=\int_\Omega fv\,dx,\qquad v\in V_h.
+\int_\Omega\operatorname{grad}u_h\cdot\operatorname{grad}v\,\mathrm{d}x=\int_\Omega fv\,\mathrm{d}x,\qquad v\in V_h.
 \end{equation}
 
-这是一个维数等于 $\dim V_h$ 的有限维线性方程组. 为计算其解, 需要指定 $V_h$ 的一组基 $\phi_i$, 计算以 $\int_\Omega\operatorname{grad}\phi_j\cdot\operatorname{grad}\phi_i\,dx$ 为元素的刚度矩阵和以 $\int_\Omega f\phi_i\,dx$ 为元素的载荷向量, 然后求解所得矩阵方程; 其解给出 $u_h$ 在所选基下的系数. 在这个简单情形下, 刚度矩阵对称正定, 因而近似解唯一确定. 注意, 计算 Galerkin 解的代价由两部分组成: 计算每个基元素对应的刚度矩阵和载荷向量元素的代价, 以及求解所得线性方程组的代价.
+这是一个维数等于 $\dim V_h$ 的有限维线性方程组. 为计算其解, 需要指定 $V_h$ 的一组基 $\phi_i$, 计算以 $\int_\Omega\operatorname{grad}\phi_j\cdot\operatorname{grad}\phi_i\,\mathrm{d}x$ 为元素的刚度矩阵和以 $\int_\Omega f\phi_i\,\mathrm{d}x$ 为元素的载荷向量, 然后求解所得矩阵方程; 其解给出 $u_h$ 在所选基下的系数. 在这个简单情形下, 刚度矩阵对称正定, 因而近似解唯一确定. 注意, 计算 Galerkin 解的代价由两部分组成: 计算每个基元素对应的刚度矩阵和载荷向量元素的代价, 以及求解所得线性方程组的代价.
 
 Galerkin 方法的解不仅唯一确定且可计算, 而且其误差估计也容易导出. 在当前情形下, 只需调用 Poincaré 不等式
 \[
-\|w\|_{H^1}\le c\|\operatorname{grad}w\|_{L^2},\qquad w\in\mathring H^1,
+\|w\|_{H^1}\le c\|\operatorname{grad}w\|_{L^2},\qquad w\in H^1_0,
 \]
 
-其中常数 $c$ 只依赖于区域 $\Omega$. 因而 \eqref{eq:poisson-weak-form} 左端的双线性型在 $\mathring H^1$ 上定义一个内积, 其范数与 $H^1$ 内积所对应的范数等价. 因此, 可以应用 Hilbert 投影定理证明该解在 $H^1$ 范数下拟最优:
+其中常数 $c$ 只依赖于区域 $\Omega$. 因而 \eqref{eq:poisson-weak-form} 左端的双线性型在 $H^1_0$ 上定义一个内积, 其范数与 $H^1$ 内积所对应的范数等价. 因此, 可以应用 Hilbert 投影定理证明该解在 $H^1$ 范数下拟最优:
 \begin{equation}\label{eq:galerkin-quasioptimality}
 \|u-u_h\|_{H^1}\le c\inf_{v\in V_h}\|u-v\|_{H^1},
 \end{equation}
-
-其中的常数仍为同一个 $c$, 与 $f$、$u$ 以及子空间 $V_h$ 的选择无关.
-
+其中的常数仍为同一个 $c$, 与 $f$、$u$ 以及子空间 $V_h$ 的选择无关.\par
 有限元方法是一种 Galerkin 方法, 其中的 Galerkin 子空间 $V_h$ 是可高效计算的分片多项式空间 (更准确地说, 它可以通过 Section~\ref{sec:complete-polynomial-forms} 开头回顾的组装过程构造). 最简单的有限元是 Lagrange 分片线性元. 在二维情形下, 将区域 $\Omega$ 作三角剖分 (因此假设区域是多边形, 或用多边形逼近), 并令 $V_h$ 由在剖分的每个三角形上都是次数至多为 1 的多项式、且在 $\partial\Omega$ 上为零的所有连续函数组成, 就得到有限元空间. Figure~\ref{fig:annular-lagrange-basis} 展示了区域 $\Omega=(0,3)\times(0,3)\setminus[2/3,2]\times[3/4,2]$ 的一个相当粗的三角剖分, 共含 256 个三角形. 图的中间是一个满足 Dirichlet 边界条件的分片线性函数的例子.
-
 \begin{figure}[H]\centering
 \includegraphics[page=13,trim=106bp 573bp 56bp 62bp,clip,width=.9\linewidth]{../input/source/Finite Element Exterior Calculus.pdf}
 \caption{左: 环状多边形区域的三角剖分. 中: 一个分片线性函数. 右: 一个 Lagrange 基函数.}\label{fig:annular-lagrange-basis}
 \end{figure}
-
 这个空间的维数等于三角剖分的内部顶点数, 它有一组方便的基, 称为 Lagrange 基: 每个基函数在唯一一个内部顶点处等于一, 在其余内部顶点处等于零, 如图的右侧所示. 这是一组局部基, 意指每个基函数的支集仅覆盖少数几个三角形. 因而, 刚度矩阵和载荷向量所需的积分可以很快算出, 且刚度矩阵高度稀疏 (当网格加密时, 渐近地每行平均只有七个非零元素). 因此有限元解可高效计算. 由 \eqref{eq:galerkin-quasioptimality}, 它在 $H^1(\Omega)$ 中的精度与该网格上最佳连续分片线性逼近的精度相当. 为提高有限元解的精度, 可以通过加密网格来扩充有限元空间. 也可以使用更高次的 Lagrange 有限元, 即把分片多项式的次数提高到某个 $d>1$. 将估计 \eqref{eq:galerkin-quasioptimality} 与逼近理论结合, 可保证当网格尺寸趋于 0 或单元次数趋于 $\infty$ 时, 误差趋于 0.
 
 我们用一个简单的模型问题说明了有限元方法的基本方面. 通常, 接下来会建立收敛阶及其对三角剖分和解正则性的依赖关系, 证明 $H^1$ 范数以外其他范数下的误差估计, 发展后验误差估计和自适应网格算法并分析其性能, 当然还会推广到其他问题. 这方面的论述可参见众多现有著作, 例如 \BookCite{21}、\BookCite{22}、\BookCite{31}、\BookCite{40}.
@@ -56,11 +54,13 @@ Galerkin 方法的解不仅唯一确定且可计算, 而且其误差估计也容
 
 转为弱表述并应用 Galerkin 方法, 就得到求 $\lambda_h\in\mathbb R$ 和非零 $u_h\in V_h$ 的离散特征值问题, 使得
 \[
-\int_\Omega\operatorname{grad}u_h\cdot\operatorname{grad}v\,dx=\lambda_h\int_\Omega u_hv\,dx,\qquad v\in V_h.
+\int_\Omega\operatorname{grad}u_h\cdot\operatorname{grad}v\,\mathrm{d}x=\lambda_h\int_\Omega u_hv\,\mathrm{d}x,\qquad v\in V_h.
 \]
 
 \begin{table}[H]\centering
 \caption{Figure~\ref{fig:annular-lagrange-basis} 中区域上 Laplacian 的第一和第二特征值, 在给定网格的均匀加密网格上使用 1 次和 3 次 Lagrange 元计算. 精确到最接近的 0.001, 正确值为 9.190 和 11.166.}\label{tab:scalar-laplacian-eigenvalues}
+\renewcommand{\arraystretch}{1.0}
+\setlength{\tabcolsep}{14pt}
 \begin{tabular}{r|rr|rr}\hline
 &\multicolumn{2}{c|}{{1 次}}&\multicolumn{2}{c}{{3 次}}\\
 单元数&$\lambda_1$&$\lambda_2$&$\lambda_1$&$\lambda_2$\\\hline
@@ -87,17 +87,19 @@ Galerkin 方法的解不仅唯一确定且可计算, 而且其误差估计也容
 \caption{在 65,536 个三角形上用分片线性元计算的基特征函数.}\label{fig:scalar-fundamental-mode}
 \end{figure}
 
-这些边界条件因其在电磁学中的应用, 有时称为磁边界条件, 它们允许一种简单的弱表述. 定义空间 $\mathring H(\operatorname{div})$, 由散度属于 $L^2$ 且在边界上 $u\cdot n$ 为零的 $L^2$ 向量场组成; 再定义空间 $H(\operatorname{curl})$, 由旋度属于 $L^2$ 的 $L^2$ 向量场组成 (不施加边界条件). 取任意检验向量场 $v\in\mathring H(\operatorname{div})\cap H(\operatorname{curl})$, 计算它与 \eqref{eq:vector-laplacian-eigenproblem} 两端向量场的 $L^2$ 内积, 分部积分后得到
+这些边界条件因其在电磁学中的应用, 有时称为磁边界条件, 它们允许一种简单的弱表述. 定义空间 $ H_0(\operatorname{div})$, 由散度属于 $L^2$ 且在边界上 $u\cdot n$ 为零的 $L^2$ 向量场组成; 再定义空间 $H(\operatorname{curl})$, 由旋度属于 $L^2$ 的 $L^2$ 向量场组成 (不施加边界条件). 取任意检验向量场 $v\in H_0(\operatorname{div})\cap H(\operatorname{curl})$, 计算它与 \eqref{eq:vector-laplacian-eigenproblem} 两端向量场的 $L^2$ 内积, 分部积分后得到
 \begin{equation}\label{eq:vector-laplacian-primal-form}
-\int_\Omega[\operatorname{curl}u\cdot\operatorname{curl}v+(\operatorname{div}u)(\operatorname{div}v)]\,dx=\lambda\int_\Omega u\cdot v\,dx,
+\int_\Omega[\operatorname{curl}u\cdot\operatorname{curl}v+(\operatorname{div}u)(\operatorname{div}v)]\,\mathrm{d}x=\lambda\int_\Omega u\cdot v\,\mathrm{d}x,
 \end{equation}
 
-其中, 因为边界上 $\operatorname{curl}u=0$, 对旋度作分部积分不产生边界积分项; 因为 $v\cdot n=0$, 对梯度作分部积分也不产生边界积分项. 因此, 通过寻求 $u\in\mathring H(\operatorname{div})\cap H(\operatorname{curl})$, 使 \eqref{eq:vector-laplacian-primal-form} 对同一空间中的所有 $v$ 成立, 我们得到 \eqref{eq:vector-laplacian-eigenproblem} 的弱表述. 注意, 在该表述中, 关于 $u\cdot n$ 的边界条件是本质边界条件, 它施加在寻求解的空间上; 而关于 $\operatorname{curl}u$ 的边界条件是自然边界条件, 由弱表述产生.
+其中, 因为边界上 $\operatorname{curl}u=0$, 对旋度作分部积分不产生边界积分项; 因为 $v\cdot n=0$, 对梯度作分部积分也不产生边界积分项. 因此, 通过寻求 $u\in H_0(\operatorname{div})\cap H(\operatorname{curl})$, 使 \eqref{eq:vector-laplacian-primal-form} 对同一空间中的所有 $v$ 成立, 我们得到 \eqref{eq:vector-laplacian-eigenproblem} 的弱表述. 注意, 在该表述中, 关于 $u\cdot n$ 的边界条件是本质边界条件, 它施加在寻求解的空间上; 而关于 $\operatorname{curl}u$ 的边界条件是自然边界条件, 由弱表述产生.
 
 如果直接尝试用类似于标量 Laplacian 情形的方法计算这些特征值, 结果会令人大失所望. 为说明这一点, 用 Galerkin 方法离散弱表述 \eqref{eq:vector-laplacian-primal-form}, 取两个分量均为连续分片线性多项式的向量场空间作为 Galerkin 子空间 (也可以是更高次分片多项式: $d$ 次向量 Lagrange 元). 结果列于 Table~\ref{tab:vector-lagrange-wrong-eigenvalues}. 该表与 Table~\ref{tab:scalar-laplacian-eigenvalues} 完全类似, 只是针对向量 Laplacian 特征值问题 \eqref{eq:vector-laplacian-eigenproblem}, 而非标量 Laplacian 特征值问题 \eqref{eq:scalar-laplacian-eigenproblem}. Table~\ref{tab:vector-lagrange-wrong-eigenvalues} 所列的计算特征值看起来正在收敛. 例如, 计算强烈暗示基本特征值约为 1.8. \textbf{但这完全错误!} 正如我们将在本书后面看到的, 在给定边界条件下, 平面区域上的向量 Laplacian 的核的维数是该区域的第一 Betti 数, 即洞的数量. 因此, 对本问题, Laplacian 有一维核, 第一个特征值恰为 0. 使用 Lagrange 元的有限元计算收敛到 1.8, 完全具有误导性. 第二个特征值的情况也没有更好. Lagrange 有限元计算收敛到约 1.86, 但正确值实际上截然不同, 为 0.617.
 
 \begin{table}[H]\centering
 \caption{用 1 次和 3 次向量 Lagrange 元计算的向量 Laplacian 的第一和第二特征值. 结果完全错误, 正确值为 0 和 0.617.}\label{tab:vector-lagrange-wrong-eigenvalues}
+\renewcommand{\arraystretch}{1.0}
+\setlength{\tabcolsep}{12pt}
 \begin{tabular}{r|rr|rr}\hline
 &\multicolumn{2}{c|}{{1 次}}&\multicolumn{2}{c}{{3 次}}\\
 单元数&$\lambda_1$&$\lambda_2$&$\lambda_1$&$\lambda_2$\\\hline
@@ -112,6 +114,8 @@ Galerkin 方法的解不仅唯一确定且可计算, 而且其误差估计也容
 
 \begin{table}[H]\centering
 \caption{用 FEEC 计算的向量 Laplacian 的第一和第二特征值, 显示出向正确值 0 和 0.617 的收敛.}\label{tab:feec-vector-eigenvalues}
+\renewcommand{\arraystretch}{1.0}
+\setlength{\tabcolsep}{12pt}
 \begin{tabular}{r|rr|rr}\hline
 &\multicolumn{2}{c|}{{1 次}}&\multicolumn{2}{c}{{3 次}}\\
 单元数&$\lambda_1$&$\lambda_2$&$\lambda_1$&$\lambda_2$\\\hline
@@ -154,12 +158,12 @@ u(x,y)=\operatorname{curl}(\sin mx\sin ny)=(n\sin mx\cos ny,-m\cos mx\sin ny),
 \lambda=1,1,2,4,4,5,5,6,7,7,10,10,13,13,\ldots.
 \]
 
-该特征值问题的一种弱表述是寻求非零 $u\in\mathring H(\operatorname{curl})$ 和 $\lambda>0$, 使得
+该特征值问题的一种弱表述是寻求非零 $u\in H_0(\operatorname{curl})$ 和 $\lambda>0$, 使得
 \[
-\int_\Omega\operatorname{curl}u\operatorname{curl}v\,dx=\lambda\int_\Omega u\cdot v\,dx,\qquad v\in\mathring H(\operatorname{curl}),
+\int_\Omega\operatorname{curl}u\operatorname{curl}v\,\mathrm{d}x=\lambda\int_\Omega u\cdot v\,\mathrm{d}x,\qquad v\in H_0(\operatorname{curl}),
 \]
 
-其中空间 $\mathring H(\operatorname{curl})$ 包含边界条件 $u\times n=0$. 现在展示用 Galerkin 方法离散这一表述的结果. 对 Galerkin 有限元方法, 我们考察两类不同的均匀三角剖分, 并在每一类上考察两个不同的有限元空间. 第一类为对角型网格: 将正方形分成 $40\times40$ 个小正方形, 再用正斜率对角线将每个小正方形分成两个三角形. 第二类为交叉型网格: 用两条对角线将每个小正方形分成四个三角形. Figure~\ref{fig:diagonal-crisscross-meshes} 展示了两类网格, 但为便于观察, 只使用 $10\times10$ 个小正方形.
+其中空间 $ H_0(\operatorname{curl})$ 包含边界条件 $u\times n=0$. 现在展示用 Galerkin 方法离散这一表述的结果. 对 Galerkin 有限元方法, 我们考察两类不同的均匀三角剖分, 并在每一类上考察两个不同的有限元空间. 第一类为对角型网格: 将正方形分成 $40\times40$ 个小正方形, 再用正斜率对角线将每个小正方形分成两个三角形. 第二类为交叉型网格: 用两条对角线将每个小正方形分成四个三角形. Figure~\ref{fig:diagonal-crisscross-meshes} 展示了两类网格, 但为便于观察, 只使用 $10\times10$ 个小正方形.
 
 \begin{figure}[H]\centering
 \includegraphics[page=18,trim=140bp 82bp 107bp 518bp,clip,width=.65\linewidth]{../input/source/Finite Element Exterior Calculus.pdf}

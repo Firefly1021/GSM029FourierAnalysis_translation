@@ -1,0 +1,432 @@
+现在回到存在性问题. 我们将使用变分法中所谓的\emph{直接法}. (我们将尝试直接极小化能量, 而不是去解例如 Euler-Lagrange 方程.) 下面的引理给出第一个重要步骤.
+
+\begin{Lemma}
+\label{lem:elasticity-weakly-convergent-minimizing-sequence}
+存在极小化序列 $\{\bm{p}_n\}\in\mathcal{D}_{\mathcal{E}}$, 使得
+\begin{equation}\label{eq:elasticity-minimizing-sequence-energy-infimum}
+\lim_{n\to\infty}\mathcal{E}(\bm{p}_n)\leq\mathcal{E}(\bm{p})\quad\text{for all }\bm{p}\in\mathcal{D}_{\mathcal{E}}
+\end{equation}
+并且还具有 $\bm{p}_n$ 弱收敛这一性质; 即存在 $\widetilde{\bm{p}}\in W^{1,p}(\Omega)$, 使得
+\begin{equation}\label{eq:elasticity-minimizing-sequence-weak-limit}
+\bm{p}_n\rightharpoonup\widetilde{\bm{p}}\text{ in }W^{1,p}(\Omega).
+\end{equation}
+
+\end{Lemma}
+
+\begingroup
+\renewcommand{\endProof}{\par\nobreak\hfill$\blacksquare$\par\vspace{0.1cm}}
+\begin{Proof}
+首先注意到 $\mathcal{E}$ 在 $\mathcal{D}_{\mathcal{E}}$ 上有下界; 即对任意 $\bm{p}\in\mathcal{D}_{\mathcal{E}}$, 利用 \eqref{eq:elasticity-stored-energy-p-growth-bound} 和 \eqref{eq:elasticity-potential-energy-uniform-lower-bound} 有
+\begin{equation}\label{eq:elasticity-total-energy-lower-bound}
+\mathcal{E}(\bm{p})\geq\int_\Omega\omega(\bm{x})+\Psi(\bm{p}(\bm{x}))\,\mathrm{d}\bm{x}\geq C-\|\omega\|_\infty|\Omega|,
+\end{equation}
+其中 $|\Omega|$ 为 $\Omega$ 的体积. 由于 $\mathcal{E}(\bm{p})$ 有下界, 它必有最大下界 $L$, 因此必存在序列 $\bm{p}_n\in\mathcal{D}_{\mathcal{E}}$, 使得
+\begin{equation}\label{eq:elasticity-minimizing-sequence-infimum-limit}
+\lim_{n\to\infty}\mathcal{E}(\bm{p}_n)=L.
+\end{equation}
+由于 $\mathcal{E}(\bm{p}_n)$ 是 $\mathbb{R}$ 中的收敛序列, 它必有界, 设其界为常数 $K$. 利用这一事实和 \eqref{eq:elasticity-stored-energy-p-growth-bound}, 得到
+\begin{equation}\label{eq:elasticity-minimizing-gradient-p-bound}
+K\geq|\mathcal{E}(\bm{p}_n)|\geq k\int_\Omega|\nabla\bm{p}_n(\bm{x})|^p\,\mathrm{d}\bm{x}-\|\omega\|_\infty|\Omega|-C.
+\end{equation}
+整理此式并结合 Poincaré 不等式 (应用于 $\bm{p}_n-\bm{g}$), 得到
+\begin{equation}\label{eq:elasticity-minimizing-sobolev-norm-bound}
+\|\bm{p}_n\|_{1,p}\leq\widetilde K,
+\end{equation}
+其中常数 $\widetilde K$ 与 $n$ 无关.
+
+由于 $\bm{p}_n$ 有界, Theorem~\ref{thm:alaoglu-weak-star-subsequence} 蕴含它有一个弱收敛子序列 (仍记为 $\bm{p}_n$). 将 $\widetilde{\bm{p}}$ 定义为该序列的弱极限, 就得到 \eqref{eq:elasticity-minimizing-sequence-weak-limit}. 由于原序列 $\mathcal{E}(\bm{p}_n)$ 收敛到 $L$, 任意子序列也如此; 这给出 \eqref{eq:elasticity-minimizing-sequence-energy-infimum}, 从而完成证明.
+\end{Proof}
+\endgroup
+
+当然, 由于 $\bm{p}_n$ 是极小化序列, 我们首先猜想其 ``极限\textquotesingle\textquotesingle\ $\widetilde{\bm{p}}$ 是问题的解. 但还剩下两个问题.\begin{enumerate}\item 是否有 $\widetilde{\bm{p}}\in\mathcal{D}_{\mathcal{E}}$, 即约束 $\det\nabla\widetilde{\bm{p}}>0$ 是否满足?\item 如果满足, $\widetilde{\bm{p}}$ 是否确实为极小元, 即是否有
+\begin{equation}\label{eq:elasticity-weak-limit-minimizer-question}
+\mathcal{E}(\widetilde{\bm{p}})=\lim_{n\to\infty}\mathcal{E}(\bm{p}_n)=L\leq\mathcal{E}(\bm{p})\quad\text{for all }\bm{p}\in\mathcal{D}_{\mathcal{E}}?
+\end{equation}
+\end{enumerate}
+
+为回答第一个问题, 将 $\mathcal{E}$ 的定义域扩充到不满足约束 \eqref{eq:elasticity-positive-orientation-determinant} 的函数. 定义函数
+\begin{equation}\label{eq:elasticity-extended-stored-density-mapping}
+\Omega\times\mathcal{M}^{3\times3}\ni(\bm{x},\bm{f})\mapsto\overline{\mathcal{W}}(\bm{x},\bm{F})\in\overline{\mathbb{R}}:=\mathbb{R}\cup\{-\infty,\infty\}
+\end{equation}
+为
+\begin{equation}\label{eq:elasticity-extended-density-by-determinant}
+\overline{\mathcal{W}}(\bm{x},\bm{F}):=\begin{cases}\mathcal{W}(\bm{x},\bm{F}),&\det\bm{F}>0,\\\infty,&\det\bm{F}\leq0.\end{cases}
+\end{equation}
+现在可通过定义
+\begin{equation}\label{eq:elasticity-extended-sobolev-affine-domain}
+W_{\bm{g}}^{1,p}(\Omega):=\{\bm{p}\in W^{1,p}(\Omega)\mid\bm{p}-\bm{g}\in W_0^{1,p}(\Omega)\},
+\end{equation}
+上的总能量
+\begin{equation}\label{eq:elasticity-extended-total-energy-functional}
+\overline{\mathcal{E}}(\bm{p}):=\int_\Omega\overline{\mathcal{W}}(\bm{x},\bm{F}(\bm{x}))\,\mathrm{d}\bm{x}+\int_\Omega\Psi(\bm{p}(\bm{x}))\,\mathrm{d}\bm{x}.
+\end{equation}
+来扩充其定义域. 于是立即得到下面的结果.
+
+\begin{Lemma}
+\label{lem:elasticity-finite-extended-energy-admissibility}
+若 $\overline{\mathcal{E}}(\bm{p})<\infty$, 则 $\bm{p}\in\mathcal{D}_{\mathcal{E}}$.
+\end{Lemma}
+
+这意味着, 若确实能够对第二个问题作肯定回答, 即 $\widetilde{\bm{p}}$ 为极小元, 则 $\widetilde{\bm{p}}\in\mathcal{D}_{\mathcal{E}}$. 因此, 我们集中讨论第二个问题, 找出保证弱极限确实为极小元的条件.
+
+\begin{Definition}
+\label{def:sequential-weak-semicontinuity-and-continuity}
+设 $X$ 为 Banach 空间. 若每当
+\begin{equation}\label{eq:sequential-weak-lower-semicontinuity-sequence}
+v_n\rightharpoonup\overline v\text{ in }X,
+\end{equation}
+就有
+\begin{equation}\label{eq:sequential-weak-lower-semicontinuity-inequality}
+\mathcal{F}(\overline v)\leq\liminf_{n\to\infty}\mathcal{F}(v_n).
+\end{equation}
+则称非线性映射 $\mathcal{F}:X\to\mathbb{R}$ 为\textbf{序列弱下半连续的 (wlsc)}. 若每当
+\begin{equation}\label{eq:sequential-weak-star-lower-semicontinuity-sequence}
+v_n\overset{*}{\rightharpoonup}\overline v\text{ in }X,
+\end{equation}
+就有 \eqref{eq:sequential-weak-lower-semicontinuity-inequality} 成立, 则称 $\mathcal{F}:X\to\mathbb{R}$ 为\textbf{序列弱星下半连续的 (wslsc)}.
+
+若每当 $v_n\rightharpoonup\overline v$ ($v_n\overset{*}{\rightharpoonup}\overline v$) 在 $X$ 中成立时, 都有
+\begin{equation}\label{eq:sequential-weak-continuity-functional-limit}
+\mathcal{F}(\overline v)=\lim_{n\to\infty}\mathcal{F}(v_n)
+\end{equation}
+则称映射 $\mathcal{F}$ 为\textbf{序列弱 (弱星) 连续的}.
+\end{Definition}
+
+\begin{Remark}
+\label{rem:sequential-semicontinuity-terminology-omission}
+从现在起, 将省略 ``序列\textquotesingle\textquotesingle\ 一词. (更深入的泛函分析研究会强调连续性和下半连续性的序列概念与拓扑概念之间的区别.)
+\end{Remark}
+
+\begin{Remark}
+\label{rem:fatou-lone-norm-lower-semicontinuity}
+读者已经知道一个基本的下半连续性结果: \emph{Fatou 引理}, 它特别蕴含 $L^1$ 范数的下半连续性.
+\end{Remark}
+
+下面陈述一个通常归于 Tonelli 的定理, 它是关于弱下半连续性的基本结果. 不过在此之前, 先定义定义域位于一般 Banach 空间 $X$ 中, 值域为扩充实数轴 $\overline{\mathbb{R}}$ 的凸函数.
+
+\begin{Definition}
+\label{def:extended-real-convex-function}
+设 $K\subset X$ 为凸集. 若对任意 $u,v\in K$, 只要不等式右端有良好定义, 就有
+\begin{equation}\label{eq:extended-real-convex-function-definition}
+G(\lambda u+(1-\lambda)v)\leq\lambda G(u)+(1-\lambda)G(v)\quad\text{for all }\lambda\in[0,1],
+\end{equation}
+则称映射 $G:K\to\overline{\mathbb{R}}$ 为\textbf{凸的}.
+\end{Definition}
+
+\begin{Theorem}{Tonelli}
+\label{thm:tonelli-convexity-weak-lower-semicontinuity}
+对函数 $\bm{u}:\Omega\to\mathbb{R}^m$, 定义非线性函数
+\begin{equation}\label{eq:tonelli-integral-functional-definition}
+\mathcal{F}(\bm{u}):=\int_\Omega f(\bm{u}(\bm{x}))\,\mathrm{d}\bm{x},
+\end{equation}
+其中 $f:\mathbb{R}^m\to\overline{\mathbb{R}}$ 连续. 则函数 $\mathcal{F}$ 在空间 $L^p(\Omega)$ ($1<p<\infty$) 上序列弱下半连续, 并在 $L^\infty(\Omega)$ 上弱星下半连续, 当且仅当 $\mathbb{R}^m\ni\bm{u}\mapsto f(\bm{u})\in\overline{\mathbb{R}}$ 为凸的.
+\end{Theorem}
+
+\begingroup
+\renewcommand{\endProof}{\par}
+\begin{Proof}
+这一定理的证明可见于许多凸分析或变分法教材. 这里只给出证明的概要. 首先证明 $\mathcal{F}$ 在 $L^\infty(\Omega)$ 中的弱星下半连续性蕴含 $f$ 为凸的. 先证明一个引理, 它突出显示弱收敛最重要的类型之一: 剧烈振荡的序列收敛到其平均值.
+\end{Proof}
+\endgroup
+
+\begin{Lemma}
+\label{lem:oscillating-sequence-average}
+对任意 $\bm{a},\bm{b}\in\mathbb{R}^m$ 和 $\theta\in(0,1)$, 将 $\bm{u}:\mathbb{R}\to\mathbb{R}^m$ 定义为周期为一且满足下式的函数
+\begin{equation}\label{eq:oscillating-two-value-periodic-function}
+\bm{u}(x):=\begin{cases}\bm{a},&x\in[0,\theta),\\\bm{b},&x\in[\theta,1).\end{cases}
+\end{equation}
+设函数序列 $\bm{u}_n:[0,1]\to\mathbb{R}^m$ 由下式给出
+\begin{equation}\label{eq:oscillating-rescaled-periodic-sequence}
+\bm{u}_n(x):=\bm{u}(nx),\quad x\in[0,1].
+\end{equation}
+则
+\begin{equation}\label{eq:oscillating-sequence-weak-lp-limit}
+\bm{u}_n\rightharpoonup\overline{\bm{u}}
+\end{equation}
+在 $L^p(0,1)$ 中成立, 其中 $1<p<\infty$, 且
+\begin{equation}\label{eq:oscillating-sequence-weak-star-linfty-limit}
+\bm{u}_n\overset{*}{\rightharpoonup}\overline{\bm{u}}
+\end{equation}
+在 $L^\infty(0,1)$ 中成立, 其中 $\overline{\bm{u}}:=\theta\bm{a}+(1-\theta)\bm{b}$ 为常函数.
+\end{Lemma}
+
+\begingroup
+\renewcommand{\endProof}{\par\nobreak\hfill$\blacksquare$\par\vspace{0.1cm}}
+\begin{Proof}
+这里同样只给出证明的概要. 要证明对任意 $\phi\in L^p(0,1)$, $1\leq p<\infty$, 都有
+\begin{equation}\label{eq:oscillating-sequence-tested-average-limit}
+\lim_{n\to\infty}\int_0^1\bm{u}_n(x)\phi(x)\,\mathrm{d}x=[\theta\bm{a}+(1-\theta)\bm{b}]\int_0^1\phi(x)\,\mathrm{d}x,
+\end{equation}
+读者应补全以下步骤.\begin{enumerate}\item 对如下形式的函数, 该断言容易证明
+\begin{equation}\label{eq:oscillating-sequence-interval-step-test}
+\phi(x)=\begin{cases}c,&x\in I\\0,&x\notin I,\end{cases}
+\end{equation}
+其中 $I\subset[0,1]$ 为区间. (当 $n$ 很大时, 区间 $I$ 将包含 $\bm{u}_n$ 的很多个完整周期, 两端再各有一点很小的 ``余段\textquotesingle\textquotesingle.)\item 利用前面的观察, 可以证明若 $\phi$ 为\emph{简单函数}, 即 $\phi$ 为只有有限个跳跃间断点的分片常函数, 则 \eqref{eq:oscillating-sequence-tested-average-limit} 成立.\item 然后可以证明, 对任意 $\phi\in L^p(0,1)$, $p\in[1,\infty)$, 以及任意 $\epsilon>0$, 都能找到简单函数 $\phi_s$, 使得
+\begin{equation}\label{eq:oscillating-sequence-simple-function-lone-approximation}
+\|\phi-\phi_s\|_1<\epsilon.
+\end{equation}
+(由本书给出的 $L^1$ 的定义, 可以用有界连续函数任意逼近 $\phi$. 读者应验证, 有界连续函数可以在 $L^1$ 范数下由简单函数任意逼近.)\end{enumerate}综合这些观察, 证明即告完成.
+\end{Proof}
+\endgroup
+
+\begin{Remark}
+\label{rem:oscillating-sequence-interval-and-dimension}
+区间 $[0,1]$ 的选择是任意的. 只需对证明作平凡的修改, 就能证明对任意紧区间 $I\subset\mathbb{R}$, 都有
+\begin{equation}\label{eq:oscillating-sequence-general-compact-interval-limit}
+\bm{u}_n\rightharpoonup\overline{\bm{u}}
+\end{equation}
+在 $L^p(I)$ 中成立. 此外, 仅为清楚起见, 我们才对定义域位于 $\mathbb{R}$ 的子集中的函数证明了这一结果; 对定义在区域 $\Omega\subset\mathbb{R}^n$ 上的函数 $\bm{u}_n$, 让它们仅沿一个坐标方向振荡, 就能作出类似的构造.
+\end{Remark}
+
+现在回到 Tonelli 定理的证明. 假设 $\mathcal{F}$ 弱星下半连续. 设 $C\subset\Omega\subset\mathbb{R}^n$ 为超立方体. 对任意 $\bm{a},\bm{b}\in\mathbb{R}^m$, $\theta\in(0,1)$, 设 $\bm{u}_n$ 为支集位于 $C$ 上的振荡函数序列, 且
+\begin{equation}\label{eq:tonelli-necessity-two-state-weak-limit}
+\bm{u}_n\rightharpoonup\overline{\bm{u}}=\theta\bm{a}+(1-\theta)\bm{b}
+\end{equation}
+在 $L^\infty(\Omega)$ 中成立. 这里的关键观察是, 复合函数序列 $f(\bm{u}_n)$ 在数值 $f(\bm{a})$ 和 $f(\bm{b})$ 之间振荡, 相应的体积分数分别为 $\theta$ 和 $1-\theta$. 因此, 由上面引理证明中的论证可得
+\begin{equation}\label{eq:tonelli-necessity-composite-weak-star-limit}
+f(\bm{u}_n)\overset{*}{\rightharpoonup}\theta f(\bm{a})+(1-\theta)f(\bm{b})
+\end{equation}
+在 $L^\infty(\Omega)$ 中成立. 将其与 $\mathcal{F}$ 的弱星下半连续性结合, 有\[
+\begin{aligned}
+ |\Omega|f(\theta\bm{a}+(1-\theta)\bm{b})&=\mathcal{F}(\overline{\bm{u}})\\
+ &\leq\liminf_{n\to\infty}\mathcal{F}(\bm{u}_n)\\
+ &=\lim_{n\to\infty}\int_\Omega f(\bm{u}_n)\\
+ &=|\Omega|\{\theta f(\bm{a})+(1-\theta)f(\bm{b})\}.
+\end{aligned}
+\]由此可知 $f$ 为凸的.
+
+现在假设 $f$ 为凸的, 并证明 $\mathcal{F}$ 弱星下半连续. 设 $\bm{u}_n\rightharpoonup\overline{\bm{u}}$ 为任意弱收敛序列, 并令
+\begin{equation}\label{eq:tonelli-sufficiency-liminf-energy}
+L=\liminf\mathcal{F}(\bm{u}_n).
+\end{equation}
+取一个子序列后, 实际上可假设
+\begin{equation}\label{eq:tonelli-sufficiency-subsequence-energy-limit}
+L=\lim\mathcal{F}(\bm{u}_n).
+\end{equation}
+
+
+\PDEIndexMark{idx:mazur-lemma-introduction-no-invented-proof}为完成该定理的证明, 将使用 Mazur 引理, 这里只陈述而不证明. (其证明使用初等凸分析, 可见于许多教材, 例如参见 \cite{ET}.)
+
+\begin{Lemma}{Mazur}
+\label{lem:mazur-strong-convex-combinations}
+设 $X$ 为 Banach 空间, 并假设
+\begin{equation}\label{eq:mazur-weakly-convergent-sequence}
+u_n\rightharpoonup\overline u
+\end{equation}
+在 $X$ 中成立. 则存在函数 $N:\mathbb{N}\to\mathbb{N}$, 以及实数集序列 $\{\alpha(n)_k\}_{k=n}^{N(n)}$, 满足 $\alpha(n)_k\geq0$ 且 $\sum_{k=n}^{N(n)}\alpha(n)_k=1$, 使序列
+\begin{equation}\label{eq:mazur-strongly-convergent-convex-combinations}
+v_n:=\sum_{k=n}^{N(n)}\alpha(n)_ku_k
+\end{equation}
+在 $X$ 中强收敛到 $\overline u$.
+\end{Lemma}
+
+\begin{Remark}
+\label{rem:convex-combination-and-convex-hull}
+称上面定义的 $v_n$ 为集合 $\{u_k\}_{k=n}^{N(n)}$ 的元素的\emph{凸组合}. 集合 $S$ 的元素的一切可能的凸组合所构成的集合称为 $S$ 的\emph{凸包}.
+\end{Remark}
+
+\begingroup
+\renewenvironment{Proof}{\par}{\par\nobreak\hfill$\blacksquare$\par\vspace{0.1cm}}
+\begin{Proof}
+利用 Mazur 引理, 可以构造一个序列, 使 $\bm{v}_n\to\overline{\bm{u}}$ 对每个 $p\in[1,\infty)$ 都在 $L^p(\Omega)$ 中强收敛. 因而至少对某个子序列, 有 $\bm{v}_n\to\overline{\bm{u}}$ 几乎处处成立. Theorem~\ref{thm:tonelli-convexity-weak-lower-semicontinuity} 的剩余证明分为两步.\begin{enumerate}\item 由于 $f(\bm{v}_n)\to f(\overline{\bm{u}})$ 几乎处处成立, 由 Fatou 引理和 $f$ 的凸性可得
+\begin{equation}\label{eq:tonelli-sufficiency-fatou-lower-bound}
+\mathcal{F}(\overline{\bm{u}})\leq\liminf_{n\to\infty}\mathcal{F}(\bm{v}_n).
+\end{equation}
+(若 $f$ 有下界, 正如多数应用中的情形, 则可以不使用凸性而直接使用 Fatou 引理. 否则, 可以利用任意凸函数都有一个仿射函数作为下界这一事实.)\item 现给定 $\epsilon>0$, 取充分大的 $N$, 使当 $k\geq N$ 时, 有 $\mathcal{F}(\overline{\bm{u}})\leq\mathcal{F}(\bm{v}_k)+\epsilon/2$ 且 $\mathcal{F}(\bm{u}_k)\leq L+\epsilon/2$. 则当 $n\geq N$ 时有\[
+\begin{aligned}
+ \mathcal{F}(\overline{\bm{u}})&\leq\mathcal{F}(\bm{v}_n)+\epsilon/2\\
+ &=\int_\Omega f\left(\sum_{k=n}^{N(n)}\alpha(n)_k\bm{u}_k\right)\,\mathrm{d}\bm{x}+\epsilon/2\\
+ &\leq\sum_{k=n}^{N(n)}\alpha(n)_k\int_\Omega f(\bm{u}_k)\,\mathrm{d}\bm{x}+\epsilon/2\\
+ &\leq L+\epsilon.
+\end{aligned}
+\]这里使用了 $\alpha(n)_k\geq0$ 和 $\sum_{k=n}^{N(n)}\alpha(n)_k=1$ 这一事实. 由于 $\epsilon$ 任意, 证明完成.\end{enumerate}
+\end{Proof}
+\endgroup
+
+将前一定理应用于 $\mathcal{F}$ 和 $-\mathcal{F}$, 立即得到下面的结果.
+
+\begin{Corollary}
+\label{cor:tonelli-affine-integrand-weak-continuity}
+映射 $\mathcal{F}$ 弱 (弱星) 连续, 当且仅当 $\bm{u}\mapsto f(\bm{u})$ 为仿射的; 即存在 $\alpha\in\mathbb{R}$ 和 $\bm{b}\in\mathbb{R}^n$, 使
+\begin{equation}\label{eq:weak-continuity-integral-affine-integrand}
+f(\bm{u})=\alpha+\bm{b}\cdot\bm{u},
+\end{equation}
+
+\end{Corollary}
+
+(读者应验证或已知, 若 $f$ 和 $-f$ 都为凸的, 则 $f$ 为仿射的.)
+
+现在可以将 Tonelli 定理直接应用于能量泛函 $\overline{\mathcal{E}}$.
+
+\begin{Corollary}
+\label{cor:convex-elasticity-energy-equilibrium-existence}
+若函数 $\bm{F}\mapsto\overline{\mathcal{W}}(\bm{x},\bm{F})$ 为凸的, 则 $\overline{\mathcal{E}}$ 弱下半连续. 此外, 存在平衡态 $\overline{\bm{p}}$.
+\end{Corollary}
+
+\begingroup
+\renewcommand{\endProof}{\par\nobreak\hfill$\blacksquare$\par\vspace{0.1cm}}
+\begin{Proof}
+该定理直接适用于极小化序列和储能 $\mathcal{W}$. 为处理势能项, 利用紧嵌入得到 $\bm{p}_n\to\overline{\bm{p}}$ 在 $L^p(\Omega)$ 中强收敛. 再次利用 Fatou 引理, 得到
+\begin{equation}\label{eq:elasticity-potential-energy-fatou-weak-limit}
+\int_\Omega\Psi(\overline{\bm{p}})\,\mathrm{d}\bm{x}\leq\liminf_{n\to\infty}\int_\Omega\Psi(\bm{p}_n)\,\mathrm{d}\bm{x}
+\end{equation}
+证明完成.
+\end{Proof}
+\endgroup
+
+上面的结果在某些情形下是有用的 (例如线性弹性). 然而, 对非线性弹性问题 (这正是我们原本真正希望应用这一理论的地方), 有充分的理由说明能量密度的凸性假设在物理上并不合理. 这里不讨论这些理由; 关于这些问题的入门讨论, 读者可参阅 \cite{Ba}.
+
+若减弱对 $\mathcal{W}$ 的凸性假设, Tonelli 定理似乎意味着我们将无法证明能量 $\mathcal{E}$ 弱下半连续. 但情况并非如此. 关于序列 $\bm{F}_n\rightharpoonup\overline{\bm{F}}$, 除了弱收敛这一事实外, 我们还知道更多信息. 我们知道序列的每一个元素都是梯度, 即 $\bm{F}_n=\nabla\bm{p}_n$. 如何判别哪些矩阵值函数 $\bm{F}:\mathbb{R}^3\to Q$ 可以表示为梯度? 利用混合偏导数相等, 可知
+\begin{equation}\label{eq:deformation-gradient-mixed-partial-constraint}
+\dfrac{\partial F_{ij}}{\partial x_k}=\dfrac{\partial^2p_i}{\partial x_j\partial x_k}=\dfrac{\partial^2p_i}{\partial x_k\partial x_j}=\dfrac{\partial F_{ik}}{\partial x_j}.
+\end{equation}
+(若 $\bm{p}$ 光滑, 这是显然的. 对一般的 $\bm{p}\in W^{1,p}(\Omega)$, 它在空间 $W^{-1,p}(\Omega)$ 中成立.) 这只是梯度的旋度为零这一条件的复杂写法. 因此, 自然应研究在\emph{微分约束}假设下的弱下半连续性. 下面给出这类结果中一个非常重要的例子, 通常称为 \emph{div-curl 引理}.
+
+\begin{Theorem}{Div-Curl}
+\label{thm:div-curl-compact-negative-norm}
+设 $\Omega\subseteq\mathbb{R}^n$ 为区域. 假设 $\bm{u}^k:\Omega\to\mathbb{R}^n$ 和 $\bm{v}^k:\Omega\to\mathbb{R}^n$ 是满足下式的向量值函数序列
+\begin{equation}\label{eq:div-curl-first-vector-weak-limit}
+\bm{u}^k\rightharpoonup\overline{\bm{u}}\text{ in }L^2(\Omega),
+\end{equation}
+
+\begin{equation}\label{eq:div-curl-second-vector-weak-limit}
+\bm{v}^k\rightharpoonup\overline{\bm{v}}\text{ in }L^2(\Omega),
+\end{equation}
+并假设序列
+\begin{equation}\label{eq:div-curl-divergence-sequence}
+\operatorname{div}\bm{u}^k:=\sum_{i=1}^n\dfrac{\partial u_i^k}{\partial x_i},
+\end{equation}
+
+\begin{equation}\label{eq:div-curl-curl-sequence}
+\operatorname{curl}\bm{v}^k:=\dfrac{\partial v_j^k}{\partial x_i}-\dfrac{\partial v_i^k}{\partial x_j},\quad i,j=1,\ldots,n,
+\end{equation}
+位于 $H_{\mathrm{loc}}^{-1}(\Omega)$ 中的某个紧集中. 则
+\begin{equation}\label{eq:div-curl-product-distributional-limit}
+\bm{u}^k\cdot\bm{v}^k\to\overline{\bm{u}}\cdot\overline{\bm{v}}\text{ in }\mathcal{D}^{\prime}(\Omega).
+\end{equation}
+
+\end{Theorem}
+
+这里, $H_{\mathrm{loc}}^{-1}(\Omega)$ 为满足下述条件的函数 $f$ 的集合: 对任意测试函数 $\phi\in\mathcal{D}(\Omega)$, 都有 $\phi f\in H^{-1}(\Omega)$.
+
+由于下文不会使用这一引理, 这里略去证明. 不过, 我们将一个较容易的版本的证明留作习题 (参见 Problem~\ref{ex:div-curl-scalar-gradient-version}).
+
+从我们所研究的弹性问题的角度看, 下面关于梯度的子行列式弱连续性的定理更加有用.
+
+\begin{Theorem}
+\label{thm:gradient-minors-weak-continuity}
+设 $\Omega\subset\mathbb{R}^n$ 为有界区域. 假设 $n<p<\infty$, 并假设函数序列 $\bm{p}_k:\Omega\to\mathbb{R}^n$ 满足
+\begin{equation}\label{eq:gradient-minors-weak-sobolev-sequence}
+\bm{p}_k\rightharpoonup\overline{\bm{p}}\text{ in }W^{1,p}(\Omega).
+\end{equation}
+设 $m\leq n$, 并令 $M_k$ 为选取 $\nabla\bm{p}_k$ 的固定 $m$ 行和 $m$ 列得到的 $m\times m$ 子行列式序列, 令 $\overline M$ 为 $\nabla\overline{\bm{p}}$ 的对应子行列式. 则
+\begin{equation}\label{eq:gradient-minors-weak-lp-over-order-limit}
+M_k\rightharpoonup\overline M\quad\text{in }L^{p/m}(\Omega).
+\end{equation}
+
+\end{Theorem}
+
+\begingroup
+\renewcommand{\endProof}{\par\nobreak\hfill$\blacksquare$\par\vspace{0.1cm}}
+\begin{Proof}
+证明采用归纳法, 第一步留给读者 (Problem~\ref{ex:gradient-minors-induction-first-step}).
+
+不失一般性, 只需在任意 $(n-1)\times(n-1)$ 子行列式 $M_k$ 满足 \eqref{eq:gradient-minors-weak-lp-over-order-limit} (取 $m=n-1$) 的假设下, 证明
+\begin{equation}\label{eq:gradient-determinant-weak-lp-over-dimension-limit}
+\det(\nabla\bm{p}_k)\rightharpoonup\det(\nabla\overline{\bm{p}})\quad\text{in }L^{p/n}(\Omega)
+\end{equation}
+即可完成证明. 而在这一假设下, 有
+\begin{equation}\label{eq:gradient-cofactor-weak-limit-induction}
+\operatorname{cof}\nabla\bm{p}_k\rightharpoonup\operatorname{cof}\nabla\overline{\bm{p}}\quad\text{in }L^{p/(n-1)}(\Omega).
+\end{equation}
+这里用 $\operatorname{cof}\bm{A}$ 表示 $\bm{A}$ 的\emph{余子式矩阵}. (余子式矩阵的第 $(i,j)$ 个分量为 $(-1)^{i+j}$ 乘以第 $(i,j)$ 个子式.)
+
+现在利用如下事实: 对光滑函数 $\bm{p}$, 有
+\begin{equation}\label{eq:gradient-determinant-cofactor-row-expansion}
+\det\nabla\bm{p}=\sum_j\dfrac{\partial p_i}{\partial x_j}(\operatorname{cof}\nabla\bm{p})_{ij},
+\end{equation}
+其中 $i=1,\ldots,n$ 任意. 此外, 利用恒等式
+\begin{equation}\label{eq:gradient-cofactor-row-divergence-identity}
+\sum_j\dfrac{\partial}{\partial x_j}(\operatorname{cof}\nabla\bm{p})_{ij}=0,\quad i=1,\ldots,n.
+\end{equation}
+(此恒等式可通过直接计算验证, 参见 Problem~\ref{ex:subdeterminants-null-lagrangians}.) 因此, 可导出公式
+\begin{equation}\label{eq:gradient-determinant-divergence-form}
+\det\nabla\bm{p}=\sum_j\dfrac{\partial}{\partial x_j}\bigl(p_i(\operatorname{cof}\nabla\bm{p})_{ij}\bigr).
+\end{equation}
+于是, 用光滑函数逼近序列 $\bm{p}_k$ 后, 对任意 $\phi\in\mathcal{D}(\Omega)$ 都有\[
+\begin{aligned}
+ \int_\Omega\phi\det\nabla\bm{p}_k\,\mathrm{d}\bm{x}&=-\int_\Omega\sum_j\dfrac{\partial\phi}{\partial x_j}p_i^k(\operatorname{cof}\nabla\bm{p}_k)_{ij}\,\mathrm{d}\bm{x}\\
+ &\to-\int_\Omega\sum_j\dfrac{\partial\phi}{\partial x_j}\overline p_i(\operatorname{cof}\nabla\overline{\bm{p}})_{ij}\,\mathrm{d}\bm{x}\\
+ &=\int_\Omega\phi\det\nabla\overline{\bm{p}}\,\mathrm{d}\bm{x}.
+\end{aligned}
+\]在上面取极限时, 利用了由紧嵌入得到的 $\bm{p}^k\to\overline{\bm{p}}$ 在 $L^p(\Omega)$ 中的强收敛, 从而 (由于 $\Omega$ 有界) $\bm{p}^k\to\overline{\bm{p}}$ 也在 $L^q(\Omega)$ 中强收敛, 其中 $q=p/(1+p-n)$ 为 $p/(n-1)$ 的共轭指数. 利用这一事实和 Problem~\ref{ex:weak-strong-holder-dual-product-distribution-limit}, 就可以取极限.
+
+因此, $\det\nabla\bm{p}_k\to\det\nabla\overline{\bm{p}}$ 在 $\mathcal{D}^{\prime}(\Omega)$ 中成立. 为完成证明, 利用 $\det\nabla\bm{p}_k$ 在 $L^{p/n}(\Omega)$ 中有界这一事实以及稠密性论证 (参见 Problem~\ref{ex:bounded-l-two-distribution-limit-is-weak-limit}).
+\end{Proof}
+\endgroup
+
+在研究非线性弹性的变分问题时, 可以将这一结果与下面的定义结合使用.
+
+\begin{Definition}
+\label{def:polyconvex-function}
+设 $\mathcal{M}^{m\times n}$ 为 $m\times n$ 矩阵的集合. 若 $\bm{A}\mapsto G(\bm{A})$ 可以表示为 $\bm{A}$ 的子行列式的凸函数, 则称函数 $G:\mathcal{M}^{m\times n}\to\mathbb{R}$ 为\textbf{多凸的}.
+\end{Definition}
+
+在三维弹性这一特殊情形下, 若存在函数
+\begin{equation}\label{eq:polyconvex-elastic-energy-convex-representation-map}
+\Omega\times\mathcal{M}^{3\times3}\times\mathcal{M}^{3\times3}\times(0,\infty)\ni(\bm{x},\bm{A},\bm{B},d)\mapsto g(\bm{x},\bm{A},\bm{B},d)\in\mathbb{R},
+\end{equation}
+使对每个 $\bm{x}\in\Omega$, $(\bm{A},\bm{B},d)\mapsto g(\bm{x},\bm{A},\bm{B},d)$ 为凸的, 且
+\begin{equation}\label{eq:polyconvex-elastic-energy-gradient-minor-representation}
+\mathcal{W}(\bm{x},\bm{F})=g(\bm{x},\bm{F},\operatorname{cof}\bm{F},\det\bm{F}).
+\end{equation}
+则称储能密度 $\mathcal{W}(\bm{x},\bm{F})$ 为多凸的.
+
+\begin{Remark}
+\label{rem:polyconvexity-weaker-than-convexity}
+多凸性确实是比凸性更弱的假设. 特别地, 如下这样的函数
+\begin{equation}\label{eq:polyconvex-nonconvex-inverse-determinant-example}
+G(\bm{F})=\begin{cases}\dfrac{1}{\det\bm{F}},&\det\bm{F}>0,\\\infty,&\det\bm{F}\leq0,\end{cases}
+\end{equation}
+是多凸的, 但不是凸的.
+\end{Remark}
+
+\begin{Remark}
+\label{rem:deformation-minors-geometric-meaning}
+在弹性中, $\bm{F}(\bm{x})$ 为 $\bm{x}\in\Omega$ 处的形变梯度, $\bm{F}(\bm{x})$ 的分量反映形变下经过 $\bm{x}$ 的曲线长度的局部变化, $\operatorname{cof}\bm{F}(\bm{x})$ 的分量反映各种定向曲面面积的变化, 而 $\det\bm{F}(\bm{x})$ 反映体积的局部变化.
+\end{Remark}
+
+\begin{Remark}
+\label{rem:polyconvexity-physical-reasonableness}
+文献中针对凸储能函数提出的物理上的异议并不适用于多凸函数. 多凸性被广泛接受为一个既极其一般又在物理上合理的假设.
+\end{Remark}
+
+现在陈述具有多凸能量的弹性材料的基本存在性结果.
+
+\begin{Theorem}
+\label{thm:polyconvex-energy-equilibrium-existence}
+设 $\overline{\mathcal{W}}$ 满足第~\pageref{eq:elasticity-stored-energy-p-growth-bound}~页的假设 1--5, 并且是多凸的. 则能量 $\overline{\mathcal{E}}$ 存在极小元 $\widetilde{\bm{p}}\in\mathcal{D}_{\mathcal{E}}$.
+\end{Theorem}
+
+\begingroup
+\renewcommand{\endProof}{\par\nobreak\hfill$\blacksquare$\par\vspace{0.1cm}}
+\begin{Proof}
+由 Lemma~\ref{lem:elasticity-weakly-convergent-minimizing-sequence}, 存在极小化序列 $\bm{p}_n\in\mathcal{D}_{\mathcal{E}}$ 和函数 $\widetilde{\bm{p}}\in W_{\bm{g}}^{1,p}(\Omega)$, 使 $\bm{p}_n\rightharpoonup\widetilde{\bm{p}}$ 在 $W^{1,p}(\Omega)$ 中成立. 现在令 $\bm{F}_n:=\nabla\bm{p}_n$, $\widetilde{\bm{F}}:=\nabla\widetilde{\bm{p}}$. 则由 Theorem~\ref{thm:gradient-minors-weak-continuity} 可得
+\begin{equation}\label{eq:polyconvex-existence-cofactor-weak-limit}
+\operatorname{cof}\bm{F}_n\rightharpoonup\operatorname{cof}\widetilde{\bm{F}}\quad\text{in }L^{p/2}(\Omega),
+\end{equation}
+
+\begin{equation}\label{eq:polyconvex-existence-determinant-weak-limit}
+\det\bm{F}_n\rightharpoonup\det\widetilde{\bm{F}}\quad\text{in }L^{p/3}(\Omega).
+\end{equation}
+现在利用 Theorem~\ref{thm:tonelli-convexity-weak-lower-semicontinuity}, 得到\[
+\begin{aligned}
+\overline{\mathcal{E}}(\widetilde{\bm{p}})&=\int_\Omega\overline{\mathcal{W}}(\bm{x},\widetilde{\bm{F}}(\bm{x}))+\Psi(\widetilde{\bm{p}}(\bm{x}))\,\mathrm{d}\bm{x}\\
+&=\int_\Omega g(\bm{x},\widetilde{\bm{F}}(\bm{x}),\operatorname{cof}\widetilde{\bm{F}}(\bm{x}),\det\widetilde{\bm{F}}(\bm{x}))+\Psi(\widetilde{\bm{p}}(\bm{x}))\,\mathrm{d}\bm{x}\\
+&\leq\liminf_{n\to\infty}\int_\Omega g(\bm{x},\bm{F}_n(\bm{x}),\operatorname{cof}\bm{F}_n(\bm{x}),\det\bm{F}_n(\bm{x}))+\Psi(\bm{p}_n(\bm{x}))\,\mathrm{d}\bm{x}\\
+&=\lim_{n\to\infty}\int_\Omega\overline{\mathcal{W}}(\bm{x},\bm{F}_n(\bm{x}))+\Psi(\bm{p}_n(\bm{x}))\,\mathrm{d}\bm{x}\\
+&=L.
+\end{aligned}
+\]其中 $L$ 为 $\overline{\mathcal{E}}$ 在 $\mathcal{D}_{\mathcal{E}}$ 上的最大下界. 因此, $\widetilde{\bm{p}}$ 确实为极小元, 证明完成.
+\end{Proof}
+\endgroup

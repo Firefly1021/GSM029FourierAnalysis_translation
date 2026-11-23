@@ -1,0 +1,1001 @@
+\chapter{泛函分析}\label{app:functional-analysis}
+
+\begin{note}[动机]\label{note:appendix-a-1}
+研究 Navier--Stokes 方程解的存在性与唯一性,以及有限元误差分析,都需要用到泛函分析工具,尤其是函数空间、若干不等式和嵌入定理.对于标量值、向量值和张量值函数,记号不作区分.
+
+设 $\Omega\subset\mathbb R^d$,其中 $d\in\{2,3\}$,并且 $\Omega$ 是一个区域,即开集.
+\end{note}
+
+\section{度量空间、Banach 空间与 Hilbert 空间}\label{sec:appendix-a-metric-banach-hilbert}
+
+\begin{definition}[度量空间]\label{def:appendix-a-2}
+设 $X\ne\varnothing$.映射 $d:X\times X\to\mathbb R$ 称为 $X$ 上的度量,若对任意 $x,y,z\in X$,均有:
+\begin{enumerate}[label=(\roman*)]
+  \item $d(x,y)=0$ 当且仅当 $x=y$;
+  \item 对称性:$d(x,y)=d(y,x)$;
+  \item 三角不等式:$d(x,y)\le d(x,z)+d(z,y)$.
+\end{enumerate}
+此时称 $(X,d)$ 为度量空间.
+\end{definition}
+\index{度量空间}
+
+\begin{definition}[等距的度量空间]\label{def:appendix-a-3}
+若存在满射 $g:X_1\to X_2$,使得对任意 $x,y\in X_1$,
+\[
+ d_1(x,y)=d_2\bigl(g(x),g(y)\bigr),
+\]
+则称度量空间 $(X_1,d_1)$ 与 $(X_2,d_2)$ 等距.
+\end{definition}
+\index{等距映射}
+
+\begin{definition}[柯西序列与收敛序列]\label{def:appendix-a-4}
+设 $\{x_n\}_{n=1}^{\infty}$ 是度量空间 $(X,d)$ 中的序列.若对每个 $\varepsilon>0$,存在 $N\in\mathbb N$,使得当 $k,l\ge N$ 时
+\[
+ d(x_k,x_l)<\varepsilon,
+\]
+则称该序列为柯西序列.
+
+若 $\{x_n\}_{n=1}^{\infty}$ 收敛到 $x\in X$,记作 $x_n\to x$,其定义是
+\[
+ \lim_{n\to\infty}d(x_n,x)=0.
+\]
+\end{definition}
+\index{柯西序列}
+\index{收敛序列}
+
+\begin{definition}[完备度量空间]\label{def:appendix-a-5}
+若度量空间 $(X,d)$ 中的每个柯西序列都在 $X$ 中收敛,则称 $(X,d)$ 为完备度量空间.也就是说,对每个柯西序列 $\{x_n\}_{n=1}^{\infty}$,都存在 $x\in X$ 使得 $x_n\to x$.
+\end{definition}
+\index{完备度量空间}
+
+\begin{definition}[范数、三角不等式、半范数与赋范空间]\label{def:appendix-a-6}
+设 $X$ 是定义在 $\mathbb R$(或 $\mathbb C$)上的线性空间.映射 $\|\cdot\|_X:X\to\mathbb R$ 称为 $X$ 上的范数,若它满足:
+\begin{enumerate}[label=(\roman*)]
+  \item 正定性:$\|x\|_X=0$ 当且仅当 $x=0$;
+  \item 齐次性:对任意 $x\in X$ 及底域中的标量 $\alpha$,有 $\|\alpha x\|_X=|\alpha|\,\|x\|_X$;
+  \item 三角不等式:对任意 $x,y\in X$,有 $\|x+y\|_X\le\|x\|_X+\|y\|_X$.
+\end{enumerate}
+只满足 (ii)、(iii) 的映射称为半范数.空间 $(X,\|\cdot\|_X)$ 称为赋范空间.
+\end{definition}
+\index{范数}
+\index{半范数}
+\index{赋范空间}
+
+\begin{definition}[等价范数]\label{def:appendix-a-7}
+赋范空间 $X$ 上的两个范数 $\|\cdot\|_{X,1}$ 和 $\|\cdot\|_{X,2}$ 称为等价范数,若存在正常数 $C_1,C_2$,使得对所有 $x\in X$,
+\[
+ C_1\|x\|_{X,1}\le\|x\|_{X,2}\le C_2\|x\|_{X,1}.
+\]
+\end{definition}
+\index{等价范数}
+
+\begin{note}[关于范数]\label{note:appendix-a-8}
+有限维空间上的所有范数都等价.赋范空间 $(X,\|\cdot\|_X)$ 可由范数诱导出度量:
+\[
+ d(x_1,x_2)=\|x_1-x_2\|_X,\qquad x_1,x_2\in X.
+\]
+\end{note}
+\index{范数!等价性}
+
+\begin{definition}[Banach 空间]\label{def:appendix-a-9}
+若赋范空间在其诱导度量下完备,则称该空间为完备赋范空间,或 Banach 空间.
+\end{definition}
+\index{Banach 空间}
+
+\begin{note}[紧集与预紧集]\label{note:appendix-a-10}
+设 $Y$ 是赋范空间 $X$ 的子集.若 $Y$ 中任意序列都存在一个子序列,该子序列在 $X$ 的范数下收敛到 $Y$ 中的某个元素,则称 $Y$ 为紧集.若 $Y$ 的闭包 $\overline Y$ 是紧集,则称 $Y$ 为预紧集.
+
+紧集是闭且有界的.反过来,闭且有界的集合只有在有限维空间中才一定紧.
+\end{note}
+\index{紧集}
+\index{预紧集}
+
+\begin{definition}[内积与标量积]\label{def:appendix-a-11}
+设 $X$ 是定义在 $\mathbb R$ 上的线性空间.映射 $(\cdot,\cdot)_X:X\times X\to\mathbb R$ 若满足下列条件,则称为对称双线性型:对任意 $x,y,z\in X$ 及 $\alpha\in\mathbb R$,
+\begin{enumerate}[label=(\roman*)]
+  \item 对称性:$(x,y)_X=(y,x)_X$;
+  \item $(\alpha x,y)_X=\alpha(x,y)_X$;
+  \item $(x,y+z)_X=(x,y)_X+(x,z)_X$.
+\end{enumerate}
+若对所有 $x\in X$,有 $(x,x)_X\ge0$,则称该对称双线性型为半正定.若半正定的对称双线性型还满足
+\[
+ (x,x)_X=0\quad\Longleftrightarrow\quad x=0,
+\]
+则称其为 $X$ 上的内积或标量积.
+\end{definition}
+\index{内积}
+\index{标量积}
+
+\begin{definition}[诱导范数、内积空间与 Hilbert 空间]\label{def:appendix-a-12}
+设 $(\cdot,\cdot)_X$ 是 $X$ 上的内积,则 $(X,(\cdot,\cdot)_X)$ 称为内积空间(预 Hilbert 空间).该内积在 $X$ 上诱导范数
+\[
+ \|x\|_X=(x,x)_X^{1/2}.
+\]
+完备的内积空间称为 Hilbert 空间.为简化记号,若上下文中的内积明确,则省略内积符号的下标.
+\end{definition}
+\index{内积空间}
+\index{Hilbert 空间}
+
+\begin{lemma}[Cauchy--Schwarz 不等式]\label{lem:appendix-a-13}
+设 $(X,(\cdot,\cdot))$ 是内积空间,则有 Cauchy--Schwarz 不等式
+\begin{equation}\label{eq:appendix-a-1}
+ |(x,y)|\le\|x\|_X\,\|y\|_X\qquad\forall x,y\in X.
+\end{equation}
+\end{lemma}
+\index{Cauchy--Schwarz 不等式}
+
+\begin{example}[求和形式的 Cauchy--Schwarz 不等式]\label{ex:appendix-a-14}
+考虑带有标准向量内积的空间 $X=\mathbb R^n$.由三角不等式和 Cauchy--Schwarz 不等式\hyperref[eq:appendix-a-1]{(A.1)}可得
+\begin{equation}\label{eq:appendix-a-2}
+ \left|\sum_{i=1}^n x_i y_i\right|
+ \le\sum_{i=1}^n|x_i|\,|y_i|
+ \le\left(\sum_{i=1}^n x_i^2\right)^{1/2}
+      \left(\sum_{i=1}^n y_i^2\right)^{1/2},
+\end{equation}
+其中 $x=(x_1,\ldots,x_n)^{\mathsf T}$、$y=(y_1,\ldots,y_n)^{\mathsf T}\in\mathbb R^n$.
+\end{example}
+\index{Cauchy--Schwarz 不等式!求和形式}
+
+\begin{example}[求和形式的 Hölder 不等式]\label{ex:appendix-a-15}
+Cauchy--Schwarz 不等式\hyperref[eq:appendix-a-2]{(A.2)}是 Hölder 不等式的特例:
+\begin{equation}\label{eq:appendix-a-3}
+ \sum_{i=1}^n|a_i b_i|
+ \le\left(\sum_{i=1}^n|a_i|^p\right)^{1/p}
+     \left(\sum_{i=1}^n|b_i|^q\right)^{1/q},
+ \qquad 1<p,q<\infty,\quad \frac1p+\frac1q=1.
+\end{equation}
+
+非负实数还满足下列不等式:
+\begin{equation}\label{eq:appendix-a-4}
+ \sum_{i=1}^n a_i
+ \le\left(\sum_{i=1}^n a_i^{1/p}\right)^p
+ \le n^{p/q}\sum_{i=1}^n a_i,
+ \qquad a_i\ge0,\quad p\in(1,\infty),\quad \frac1p+\frac1q=1.
+\end{equation}
+式\hyperref[eq:appendix-a-4]{(A.4)}右侧的不等式可直接由式\hyperref[eq:appendix-a-3]{(A.3)}推出.
+\end{example}
+\index{Hölder 不等式}
+
+\begin{definition}[正交元素与子空间的正交补]\label{def:appendix-a-16}
+设 $X$ 是带有内积 $(\cdot,\cdot)$ 的赋范空间.若 $x,y\in X$ 满足 $(x,y)=0$,则称 $x$ 与 $y$ 正交.
+
+设 $Y\subset X$ 是 $X$ 的子空间,则
+\[
+ Y^\perp=\{x\in X:(x,y)=0\text{ 对所有 }y\in Y\}
+\]
+称为 $Y$ 的正交补.
+\end{definition}
+\index{正交}
+\index{正交补}
+
+\begin{lemma}[正交补是闭子空间]\label{lem:appendix-a-17}
+设 $W\subset V$ 是 Hilbert 空间 $V$ 的子空间,则 $W^\perp$ 是 $V$ 的闭子空间.
+\end{lemma}
+\index{正交补!闭性}
+
+\begin{lemma}[Young 不等式]\label{lem:appendix-a-18}
+设 $a,b\ge0$,则对任意 $t>0$ 及 $1<p,q<\infty$、$1/p+1/q=1$,有
+\begin{equation}\label{eq:appendix-a-5}
+ ab\le\frac{t}{p}a^p+\frac{t^{-q/p}}{q}b^q.
+\end{equation}
+\end{lemma}
+\index{Young 不等式}
+\begin{proof}
+证明基于指数函数的严格凸性,而严格凸性可由其二阶导数处处为正推出.对满足式\hyperref[eq:appendix-a-5]{(A.5)}条件的 $p,q$ 及 $\alpha,\beta\in\mathbb R$,有
+\[
+ \exp\left(\frac{\alpha}{p}+\frac{\beta}{q}\right)
+ \le\frac1p\exp(\alpha)+\frac1q\exp(\beta).
+\]
+若 $a=0$ 或 $b=0$,不等式显然成立.以下设 $a,b>0$.取 $\alpha=\ln(ta^p)$、$\beta=\ln(t^{-q/p}b^q)$,即可得到式\hyperref[eq:appendix-a-5]{(A.5)}.
+\end{proof}
+
+\begin{lemma}[Rayleigh 商估计]\label{lem:appendix-a-19}
+设 $A\in\mathbb R^{m\times n}$ 为矩阵,则
+\[
+ \inf_{\substack{x\in\mathbb R^n\\x\ne0}}
+ \frac{x^{\mathsf T}A^{\mathsf T}Ax}{x^{\mathsf T}x}
+ =\lambda_{\min}(A^{\mathsf T}A),
+\]
+其中 $\lambda_{\min}(A^{\mathsf T}A)$ 是 $A^{\mathsf T}A$ 的最小特征值.这里的下确界能够达到,因而实际上是最小值.左侧的商称为 Rayleigh 商.
+\end{lemma}
+\index{Rayleigh 商}
+\begin{proof}
+矩阵 $A^{\mathsf T}A$ 对称且半正定,因此其所有特征值均非负;相应的归一化特征向量 $\{\varphi_i\}_{i=1}^n$ 构成 $\mathbb R^n$ 的一组标准正交基.设特征值按如下次序排列:
+\[
+ 0\le\lambda_{\min}(A^{\mathsf T}A)=\lambda_1\le\lambda_2\le\cdots\le\lambda_n.
+\]
+每个 $x\in\mathbb R^n$ 都能写成 $x=\sum_{i=1}^n x_i\varphi_i$.利用特征向量的标准正交性,得到
+\[
+ x^{\mathsf T}x=\sum_{i=1}^n x_i^2,
+ \qquad
+ x^{\mathsf T}A^{\mathsf T}Ax
+ =\sum_{i=1}^n\lambda_i x_i^2
+ \ge\lambda_{\min}(A^{\mathsf T}A)\sum_{i=1}^n x_i^2.
+\]
+因此,Rayleigh 商的下确界不小于 $\lambda_{\min}(A^{\mathsf T}A)$.取 $x=x_1\varphi_1$,其中 $x_1\ne0$,即可得到
+\[
+ \frac{x^{\mathsf T}A^{\mathsf T}Ax}{x^{\mathsf T}x}
+ =\frac{\lambda_1x_1^2}{x_1^2}
+ =\lambda_1=\lambda_{\min}(A^{\mathsf T}A),
+\]
+故等号成立.
+\end{proof}
+
+
+\section{函数空间}\label{sec:appendix-a-function-spaces}
+
+\begin{definition}[导数与多重指标]\label{def:appendix-a-20}
+多重指标 $\alpha$ 是向量 $\alpha=(\alpha_1,\ldots,\alpha_d)$,其中 $\alpha_i\in\mathbb N\cup\{0\}$,$i=1,\ldots,d$.记
+\[
+ D^\alpha=\frac{\partial^{|\alpha|}}{\partial x_1^{\alpha_1}\cdots\partial x_d^{\alpha_d}},
+ \qquad |\alpha|=\sum_{i=1}^d\alpha_i.
+\]
+低阶导数也常用下标表示,例如 $\partial_x u=\partial u/\partial x$.
+\end{definition}
+\index{多重指标}
+\index{弱导数}
+
+\begin{definition}[连续可微函数空间 $C^m(\Omega)$、$C^m(\overline\Omega)$ 与 $C_B^m(\Omega)$]\label{def:appendix-a-21}
+设 $m\in\mathbb N\cup\{0\}$.在 $\Omega$ 中 $m$ 次连续可微的函数空间记为
+\[
+ C^m(\Omega)=\{f:f\text{ 及其所有不超过 }m\text{ 阶的导数在 }\Omega\text{ 中连续}\}.
+\]
+并记 $C^\infty(\Omega)=\bigcap_{m=0}^\infty C^m(\Omega)$.当 $m<\infty$ 时,若 $f\in C^m(\Omega)$ 且其所有导数均可连续延拓到 $\overline\Omega$,则称 $f\in C^m(\overline\Omega)$;相应地,$C^\infty(\overline\Omega)=\bigcap_{m=0}^\infty C^m(\overline\Omega)$.此外,定义
+\begin{equation}\label{eq:appendix-a-6}
+ C_B^m(\Omega)=\{f:f\in C^m(\Omega)\text{ 且 }f\text{ 及其所有不超过 }m\text{ 阶的导数均有界}\}.
+\end{equation}
+\end{definition}
+\index{连续可微函数空间}
+\index{有界连续可微函数空间}
+
+\begin{note}[连续可微函数空间]\label{note:appendix-a-22}
+若 $\Omega$ 有界,则 $C^m(\overline\Omega)$ 在范数
+\[
+ \|f\|_{C^m(\overline\Omega)}=
+ \sum_{0\le |\alpha|\le m}\sup_{x\in\overline\Omega}|D^\alpha f(x)|
+\]
+下是 Banach 空间.赋予范数
+\[
+ \|f\|_{C_B^m(\Omega)}=
+ \max_{0\le |\alpha|\le m}\sup_{x\in\Omega}|D^\alpha f(x)|
+\]
+后,$C_B^m(\Omega)$ 也是 Banach 空间.并且
+\[
+ C^m(\overline\Omega)\subset C_B^m(\Omega)\subset C^m(\Omega).
+\]
+例如,取 $\Omega=(0,1)$、$f(x)=\sin(1/x)$,则 $f\in C_B(\Omega)$,但 $f\notin C(\overline\Omega)$.
+\end{note}
+\index{Banach 空间}
+
+\begin{definition}[支集]\label{def:appendix-a-23}
+设 $f\in C(\Omega)$.集合
+\[
+ \operatorname{supp}(f)=\overline{\{x\in\Omega:f(x)\ne0\}}^{\,\mathbb R^d}
+\]
+称为 $f$ 的支集,其中闭包取在 $\mathbb R^d$ 中.若 $\operatorname{supp}(f)$ 在 $\mathbb R^d$ 中有界且包含于 $\Omega$,则称 $f$ 有紧支集.
+\end{definition}
+\index{支集}
+\index{紧支集}
+
+\begin{definition}[空间 $C_0^m(\Omega)$]\label{def:appendix-a-24}
+空间 $C_0^m(\Omega)$ 定义为
+\[
+ C_0^m(\Omega)=\{f:f\in C^m(\Omega)\text{ 且 }f\text{ 在 }\Omega\text{ 中有紧支集}\}.
+\]
+文献中,$C_0^\infty(\Omega)$ 常记作 $\mathcal D(\Omega)$.研究 Navier--Stokes 方程时常用的空间为
+\begin{equation}\label{eq:appendix-a-7}
+ C_{0,\mathrm{div}}^1(\Omega)=\{\bm f:\bm f\in C_0^1(\Omega),\ \nabla\cdot\bm f=0\}.
+\end{equation}
+\end{definition}
+\index{紧支集光滑函数空间}
+\index{散度无关函数空间}
+
+\begin{definition}[Hölder 连续函数空间 $C^{m,\alpha}(\Omega)$]\label{def:appendix-a-25}
+设 $M\subset\mathbb R^d$,$d\in\{2,3\}$,且 $\alpha\in(0,1]$.常数
+\[
+ |f|_{C^{0,\alpha}(M)}=
+ \sup_{\substack{x,y\in M\\x\ne y}}\frac{|f(x)-f(y)|}{|x-y|^\alpha}
+\]
+称为 $f$ 的 Hölder 系数或 Hölder 常数.当 $\alpha=1$ 时,通常称其为 Lipschitz 常数.设 $\Omega$ 有界.对 $m\in\mathbb N\cup\{0\}$,定义
+\[
+ C^{m,\alpha}(\Omega)=\left\{f\in C^m(\Omega):
+ |D^\beta f|_{C^{0,\alpha}(\Omega)}<\infty\text{ 对所有 }|\beta|=m\right\}.
+\]
+当 $m=0$ 时,这些空间称为 Hölder 连续函数空间;当 $\alpha=1$ 时,称为 Lipschitz 连续函数空间.
+\end{definition}
+\index{Hölder 连续函数空间}
+\index{Lipschitz 连续函数空间}
+
+\begin{note}[Hölder 连续函数空间]\label{note:appendix-a-26}
+赋予范数
+\[
+ \|f\|_{C^{m,\alpha}(\Omega)}=
+ \|f\|_{C^m(\Omega)}+
+ \sum_{|\beta|=m}|D^\beta f|_{C^{0,\alpha}(\Omega)}
+\]
+后,$C^{m,\alpha}(\Omega)$ 是 Banach 空间.
+\end{note}
+
+\begin{definition}[(Lebesgue)可积函数空间 $L^p(\Omega)$]\label{def:appendix-a-27}
+Lebesgue 空间定义为
+\[
+ L^p(\Omega)=\left\{f:\int_\Omega |f(x)|^p\,\mathrm dx<\infty\right\},
+ \qquad p\in[1,\infty),
+\]
+其中积分按 Lebesgue 意义理解.空间 $L^\infty(\Omega)$ 由几乎处处有界的函数组成:
+\[
+ L^\infty(\Omega)=\left\{f:\operatorname*{ess\,sup}_{x\in\Omega}|f(x)|<\infty\right\}.
+\]
+\end{definition}
+\index{Lebesgue 空间}
+
+\begin{note}[Lebesgue 空间]\label{note:appendix-a-28}
+空间 $L^p(\Omega)$ 是赋范线性空间,其范数为
+\[
+ \|f\|_{L^p(\Omega)}=\left(\int_\Omega|f(x)|^p\,\mathrm dx\right)^{1/p},
+ \qquad p\in[1,\infty).
+\]
+其中,$L^2(\Omega)$ 尤为重要,因为它是 Hilbert 空间;其内积及诱导范数为
+\[
+ (f,g)_{L^2(\Omega)}=\int_\Omega f(x)g(x)\,\mathrm dx,
+ \qquad \|f\|_{L^2(\Omega)}=(f,f)_{L^2(\Omega)}^{1/2}.
+\]
+赋予范数
+\[
+ \|f\|_{L^\infty(\Omega)}=\operatorname*{ess\,sup}_{x\in\Omega}|f(x)|
+\]
+后,$L^\infty(\Omega)$ 是 Banach 空间;此处 $\operatorname*{ess\,sup}$ 表示本质上确界.
+
+若 $|\Omega|<\infty$ 且 $1\le p\le q\le\infty$,则 $u\in L^q(\Omega)$ 蕴含 $u\in L^p(\Omega)$,并且
+\begin{equation}\label{eq:appendix-a-8}
+ \|u\|_{L^p(\Omega)}\le |\Omega|^{1/p-1/q}\|u\|_{L^q(\Omega)}.
+\end{equation}
+参见 \textcite[定理 2.8]{Adams1975}.
+\end{note}
+\index{Lebesgue 空间!嵌入}
+\index{本质上确界}
+
+\begin{example}[Cauchy--Schwarz 不等式与 Hölder 不等式]\label{ex:appendix-a-29}
+设 $f\in L^p(\Omega)$、$g\in L^q(\Omega)$,其中 $p,q\in[1,\infty]$ 且 $1/p+1/q=1$.则 $fg\in L^1(\Omega)$,并且 Hölder 不等式成立:
+\begin{equation}\label{eq:appendix-a-9}
+ \|fg\|_{L^1(\Omega)}\le\|f\|_{L^p(\Omega)}\,\|g\|_{L^q(\Omega)}.
+\end{equation}
+当 $p=q=2$ 时,该不等式称为 Cauchy--Schwarz 不等式:
+\begin{equation}\label{eq:appendix-a-10}
+ \|fg\|_{L^1(\Omega)}\le\|f\|_{L^2(\Omega)}\,\|g\|_{L^2(\Omega)}.
+\end{equation}
+\end{example}
+\index{Hölder 不等式}
+\index{Cauchy--Schwarz 不等式}
+
+\begin{definition}[Sobolev 空间 $W^{k,p}(\Omega)$]\label{def:appendix-a-30}
+设 $k\in\mathbb N$、$p\in[1,\infty]$.Sobolev 空间 $W^{k,p}(\Omega)$ 由所有函数 $f:\Omega\to\mathbb R$ 组成,这些函数及其所有不超过 $k$ 阶的弱导数均属于 $L^p(\Omega)$.
+\end{definition}
+\index{Sobolev 空间}
+
+\begin{note}[Sobolev 空间]\label{note:appendix-a-31}
+有 $L^p(\Omega)=W^{0,p}(\Omega)$.Sobolev 空间上的一个范数定义为
+\[
+ \|f\|_{W^{k,p}(\Omega)}=
+ \begin{cases}
+ \displaystyle\left(\sum_{|\alpha|\le k}\|D^\alpha f\|_{L^p(\Omega)}^p\right)^{1/p},&p\in[1,\infty),\\[1ex]
+ \displaystyle\max_{|\alpha|\le k}\operatorname*{ess\,sup}_{x\in\Omega}|D^\alpha f(x)|,&p=\infty.
+ \end{cases}
+\]
+赋予此范数后,Sobolev 空间是 Banach 空间,参见 \textcite[第 262 页]{Evans2010}.当 $p=2$ 时,Sobolev 空间是 Hilbert 空间,常记为 $W^{m,2}(\Omega)=H^m(\Omega)$,其内积为
+\[
+ (f,g)_{H^k(\Omega)}=\sum_{|\alpha|\le k}(D^\alpha f,D^\alpha g)_{L^2(\Omega)}.
+\]
+
+Navier--Stokes 方程研究中特别常用一阶 Sobolev 空间:
+\[
+ W^{1,p}(\Omega)=\left\{f:\int_\Omega\bigl(|f(x)|^p+|\nabla f(x)|^p\bigr)\,\mathrm dx<\infty\right\},
+ \qquad p\in[1,\infty),
+\]
+其范数为
+\[
+ \|f\|_{W^{1,p}(\Omega)}=
+ \left(\int_\Omega\bigl(|f(x)|^p+|\nabla f(x)|^p\bigr)\,\mathrm dx\right)^{1/p}.
+\]
+Sobolev 空间的定义还可推广到 $k\in\mathbb R$,参见 \textcite{Adams1975}.
+\end{note}
+\index{Sobolev 空间!范数}
+
+\begin{definition}[Sobolev 空间 $W_0^{k,p}(\Omega)$]\label{def:appendix-a-32}
+Sobolev 空间 $W_0^{k,p}(\Omega)$ 定义为 $C_0^\infty(\Omega)$ 在 $W^{k,p}(\Omega)$ 范数下的闭包.
+\end{definition}
+\index{Sobolev 空间!零边界值}
+
+\begin{note}[区域边界的光滑性]\label{note:appendix-a-33}
+Sobolev 嵌入定理要求 $\Omega$ 具有所谓的锥性质或强局部 Lipschitz 性质.若 $\Omega$ 有界,这些条件可简化为 $\Omega$ 的边界局部 Lipschitz 连续,参见 \textcite[第 67 页]{Adams1975}.具体而言,对边界 $\partial\Omega$ 上的每一点 $x$,都存在其邻域 $U_x$,使得 $\partial\Omega\cap U_x$ 是某个 Lipschitz 连续函数的图像.
+\end{note}
+\index{Lipschitz 边界}
+
+\begin{theorem}[迹定理]\label{thm:appendix-a-34}
+参见\textcite[定理 9.4]{LionsMagenes1972};$m=1$ 时还可参见\textcite[定理 II.4.1]{Galdi2011}.
+设 $\Omega$ 是边界局部 Lipschitz 连续的有界区域.则存在有界线性算子 $T:W^{1,q}(\Omega)\to L^r(\partial\Omega)$,其中 $q\in[1,\infty)$,并满足:
+\begin{enumerate}[label=(\roman*)]
+ \item 若 $q<d$,则 $r\in\left[1,\frac{q(d-1)}{d-q}\right]$;否则 $r\in[1,\infty)$;
+ \item 若 $f\in W^{1,q}(\Omega)\cap C(\overline\Omega)$,则 $Tf=f|_{\partial\Omega}$;
+ \item 对每个 $f\in W^{1,q}(\Omega)$,有 $\|Tf\|_{L^r(\partial\Omega)}\le C\|f\|_{W^{1,q}(\Omega)}$,其中常数 $C$ 仅依赖于 $q$ 和 $\Omega$.
+\end{enumerate}
+映射
+\begin{equation}\label{eq:appendix-a-11}
+ H^s(\Omega)\longrightarrow\prod_{j=0}^{s'}H^{s-j-1/2}(\partial\Omega),
+ \qquad f\longmapsto\left(\left.\frac{\partial^j f}{\partial n^j}\right|_{\partial\Omega}\right)_{j=0}^{s'},
+\end{equation}
+是连续的,其中 $s'$ 是满足 $s'<s-\tfrac12$ 的最大整数,$n$ 为指向外侧的单位法向量.该映射是满射,并存在连续右逆.
+\end{theorem}
+\index{迹定理}
+
+\begin{theorem}[零迹函数]\label{thm:appendix-a-35}
+参见\textcite[定理 II.4.2]{Galdi2011} 及\textcite[第 273 页]{Evans2010}.
+在定理\hyperref[thm:appendix-a-34]{A.34} 的假设下,$f\in W_0^{1,p}(\Omega)$ 当且仅当 $Tf=0$ 于 $\partial\Omega$ 上.
+\end{theorem}
+\index{零迹函数}
+
+\Needspace{10\baselineskip}
+\begin{theorem}[Poincaré 不等式]\label{thm:appendix-a-36}
+该不等式亦称 Poincaré--Friedrichs 不等式,参见\textcite[定理 II.5.1]{Galdi2011} 及\textcite[第 164 页]{GilbargTrudinger1983}.
+设 $\Omega$ 是有界区域,$f\in W_0^{1,p}(\Omega)$,则
+\begin{equation}\label{eq:appendix-a-12}
+ \|f\|_{L^p(\Omega)}\le\left(\frac{|\Omega|}{\Omega_d}\right)^{1/d}
+ \|\nabla f\|_{L^p(\Omega)}=C_{\mathrm{PF}}\|\nabla f\|_{L^p(\Omega)},
+ \qquad p\in[1,\infty),
+\end{equation}
+其中 $\Omega_d$ 是 $\mathbb R^d$ 中单位球的体积.
+\end{theorem}
+\index{Poincaré 不等式}
+
+\begin{note}[Poincaré 不等式]\label{note:appendix-a-37}
+对于满足 $v=0$ 于 $\Gamma_0$ 上且 $|\Gamma_0|>0$ 的函数 $v\in H^1(\Omega)$,Poincaré 不等式\hyperref[eq:appendix-a-12]{(A.12)} 仍然成立.
+
+若 $\Omega$ 有界且边界局部 Lipschitz 连续,则对向量值函数 $v\in W^{1,q}(\Omega)$、$1\le q<\infty$,只要 $v\cdot n=0$ 于 $\partial\Omega$ 上,Poincaré 不等式也成立,参见\textcite[第 II.4 节]{Galdi2000}.
+\end{note}
+
+\begin{theorem}[Sobolev 空间中连续函数的稠密性]\label{thm:appendix-a-38}
+参见\textcite[第 154 页]{GilbargTrudinger1983}.
+子空间 $C^\infty(\Omega)\cap W^{k,p}(\Omega)$ 在 $W^{k,p}(\Omega)$ 中稠密.
+\end{theorem}
+\index{稠密性}
+
+\begin{note}[Sobolev 空间中连续函数的稠密性]\label{note:appendix-a-39}
+要使 $C^\infty(\overline\Omega)$ 在 $W^{k,p}(\Omega)$ 中稠密,需要对边界 $\partial\Omega$ 作一定的光滑性假设,例如 $\partial\Omega$ 为 $C^1$,或满足所谓线段性质;参见\textcite[第 155 页]{GilbargTrudinger1983}.由强局部 Lipschitz 性质可推出线段性质,参见 \textcite[第 67 页]{Adams1975}.
+\end{note}
+
+\begin{theorem}[Sobolev 空间插值定理]\label{thm:appendix-a-40}
+参见\textcite[定理 4.17]{Adams1975}.
+设 $\Omega\subset\mathbb R^d$ 是边界局部 Lipschitz 连续的有界区域,$m\in\mathbb N$、$p\in[1,\infty)$.则存在常数 $C(m,p,\Omega)$,使得对 $0\le j\le m$ 及任意 $u\in W^{m,p}(\Omega)$,
+\begin{equation}\label{eq:appendix-a-13}
+ \|u\|_{W^{j,p}(\Omega)}\le C(m,p,\Omega)
+ \|u\|_{W^{m,p}(\Omega)}^{j/m}\|u\|_{L^p(\Omega)}^{(m-j)/m}.
+\end{equation}
+此外,对所有 $u\in W_0^{m,p}(\Omega)$,估计\hyperref[eq:appendix-a-13]{(A.13)} 也成立;此时常数 $C(m,p,d)$ 与 $\Omega$ 无关.
+\end{theorem}
+\index{插值定理}
+
+\begin{note}[嵌入定理]\label{note:appendix-a-41}
+偏微分方程分析中经常要用到 Sobolev 空间嵌入定理.嵌入定理说明,属于某个函数空间的函数也属于另一个函数空间,并且较大空间中的函数范数可由较小空间中的范数估计.若 Banach 空间 $V$ 满足嵌入 $W^{m,p}(\Omega)\hookrightarrow V$,则存在仅依赖于 $\Omega$ 的常数 $C$,使得对所有 $v\in W^{m,p}(\Omega)$,
+\[
+ \|v\|_V\le C\|v\|_{W^{m,p}(\Omega)}.
+\]
+嵌入是否成立取决于区域 $\Omega$ 的维数 $d$.维数越大,可成立的嵌入越少;参见例题\hyperref[ex:appendix-a-44]{A.44}.
+\end{note}
+
+\begin{theorem}[Sobolev 嵌入定理]\label{thm:appendix-a-42}
+参见\textcite[定理 5.4、注 5.5(6) 与定理 6.2]{Adams1975}.
+设 $\Omega\subset\mathbb R^d$ 是边界局部 Lipschitz 连续的有界区域,$j,m$ 为非负整数,且 $1\le p<\infty$.
+\begin{enumerate}[label=(\roman*)]
+ \item 若 $mp<d$,则
+ \begin{equation}\label{eq:appendix-a-14}
+ W^{j+m,p}(\Omega)\hookrightarrow W^{j,q}(\Omega),
+ \qquad 1\le q\le\frac{dp}{d-mp}.
+ \end{equation}
+ 特别地,
+ \begin{equation}\label{eq:appendix-a-15}
+ W^{m,p}(\Omega)\hookrightarrow L^q(\Omega),
+ \qquad 1\le q\le\frac{dp}{d-mp}.
+ \end{equation}
+ \item 若 $mp=d$,则
+ \begin{equation}\label{eq:appendix-a-16}
+ W^{m,p}(\Omega)\hookrightarrow L^q(\Omega),
+ \qquad 1\le q<\infty.
+ \end{equation}
+ 若进一步有 $p=1$,则该嵌入对 $q=\infty$ 也成立:
+ \begin{equation}\label{eq:appendix-a-17}
+ W^{d,1}(\Omega)\hookrightarrow L^\infty(\Omega),
+ \end{equation}
+ 甚至 $W^{d,1}(\Omega)\hookrightarrow C_B(\Omega)$;后一个空间见式\hyperref[eq:appendix-a-6]{(A.6)} 的定义.
+ \item 若 $mp>d$,则
+ \begin{equation}\label{eq:appendix-a-18}
+ W^{m,p}(\Omega)\hookrightarrow C_B(\Omega).
+ \end{equation}
+ \item 若 $mp>d>(m-1)p$,则
+ \begin{equation}\label{eq:appendix-a-19}
+ W^{j+m,p}(\Omega)\hookrightarrow C^{j,\lambda}(\overline\Omega),
+ \qquad 0<\lambda\le m-\frac{d}{p}.
+ \end{equation}
+ \item 若 $d=(m-1)p$,则 $W^{j+m,p}(\Omega)\hookrightarrow C^{j,\lambda}(\overline\Omega)$ 对 $0<\lambda<1$ 成立.当 $p=1$ 且 $d=m-1$ 时,该嵌入对 $\lambda=1$ 也成立.
+ \item 若将嵌入两侧的 $W$ 空间换成相应的 $W_0$ 空间,则以上结论对任意区域均成立.
+ \item Rellich--Kondrachov 定理:在本定理开头所述的区域条件下,嵌入\hyperref[eq:appendix-a-14]{(A.14)}--\hyperref[eq:appendix-a-16]{(A.16)} 在目标空间的指数严格低于临界 Sobolev 指数时是紧嵌入;特别地,$mp=d$ 时对每个有限 $q$ 均紧.也就是说,嵌入算子是紧算子,见定义\hyperref[def:appendix-a-63]{A.63}.
+\end{enumerate}
+\end{theorem}
+\index{Sobolev 嵌入定理}
+\index{Rellich--Kondrachov 定理}
+
+\begin{note}[连续函数空间的嵌入]\label{note:appendix-a-43}
+对于有界区域,紧嵌入 $C^{j,\lambda}(\overline\Omega)\hookrightarrow C^j(\overline\Omega)$ 对 $j\ge0$、$0<\lambda\le1$ 成立,参见\textcite[定理 1.31]{Adams1975}.由定理\hyperref[thm:appendix-a-42]{A.42} 的 (iv)、(v) 两种情形还可推出:若 $mp>d\ge(m-1)p$ 且 $p\in[1,\infty)$,则
+\begin{equation}\label{eq:appendix-a-20}
+ W^{j+m,p}(\Omega)\hookrightarrow C^j(\overline\Omega).
+\end{equation}
+\end{note}
+
+\begin{example}[若干重要的 Sobolev 嵌入]\label{ex:appendix-a-44}
+当 $d=2$ 时,由式\hyperref[eq:appendix-a-16]{(A.16)} 得
+\begin{equation}\label{eq:appendix-a-21}
+ H^1(\Omega)=W^{1,2}(\Omega)\hookrightarrow L^q(\Omega),
+ \qquad q\in[1,\infty).
+\end{equation}
+当 $d=3$ 时,由式\hyperref[eq:appendix-a-15]{(A.15)} 得
+\begin{equation}\label{eq:appendix-a-22}
+ H^1(\Omega)=W^{1,2}(\Omega)\hookrightarrow L^q(\Omega),
+ \qquad q\in[1,6].
+\end{equation}
+\end{example}
+\index{Sobolev 嵌入定理!典型例子}
+
+\begin{note}[时空区域上的函数空间]\label{note:appendix-a-45}
+设 $X$ 是前文定义的任意赋范空间,其范数记作 $\|\cdot\|_X$,时间区间为 $(t_0,t_1)$.在时空区域上定义函数空间
+\[
+ L^p(t_0,t_1;X)=\left\{f(t,x):\int_{t_0}^{t_1}\|f(\cdot,\tau)\|_X^p\,\mathrm d\tau<\infty\right\},
+ \qquad p\in[1,\infty).
+\]
+其范数为
+\[
+ \|f\|_{L^p(t_0,t_1;X)}=
+ \left(\int_{t_0}^{t_1}\|f(\cdot,\tau)\|_X^p\,\mathrm d\tau\right)^{1/p},
+ \qquad p\in[1,\infty).
+\]
+当 $p=\infty$ 时,相应定义与 Lebesgue 空间的情形相同.
+\end{note}
+
+\section{若干定义、命题与定理}\label{sec:appendix-a-statements-theorems}
+
+\begin{note}[卷积]\label{note:appendix-a-46}
+两个标量函数 $f$ 与 $g$ 的卷积定义为
+\[
+ (f*g)(y)=\int_{\mathbb R}f(y-x)g(x)\,\mathrm dx
+ =\int_{\mathbb R}f(x)g(y-x)\,\mathrm dx=(g*f)(y),
+\]
+只要上述积分对几乎所有 $y\in\mathbb R$ 存在即可.
+\end{note}
+\index{卷积}
+
+\begin{note}[Fourier 变换的定义与若干性质]\label{note:appendix-a-47}
+标量函数 $f$ 的 Fourier 变换定义为
+\begin{equation}\label{eq:appendix-a-23}
+ \mathcal F(f)(y)=\int_{\mathbb R}f(x)e^{-i xy}\,\mathrm dx,
+\end{equation}
+而 $\mathcal F(y)$ 的逆 Fourier 变换为
+\begin{equation}\label{eq:appendix-a-24}
+ \mathcal F^{-1}(\mathcal F)(x)=\frac{1}{2\pi}
+ \int_{\mathbb R}\mathcal F(y)e^{i xy}\,\mathrm dy.
+\end{equation}
+有
+\begin{equation}\label{eq:appendix-a-25}
+ \mathcal F(f*g)=\mathcal F(f)\,\mathcal F(g),
+ \qquad \mathcal F(fg)=\mathcal F(f)*\mathcal F(g).
+\end{equation}
+若 $f$ 可微且 $\lim_{|x|\to\infty}f(x)=0$,分部积分可得
+\[
+ y\,\mathcal F(f)(y)=-i\,\mathcal F(f')(y).
+\]
+由此推出下列关系:
+\begin{align}
+ \|y\|_2^2\mathcal F(f)(y)&=-\mathcal F(\Delta f)(y),\label{eq:appendix-a-26}\\
+ \frac{1}{\|y\|_2^2}\mathcal F(f)(y)&=-\mathcal F(\Delta^{-1}(f))(y),\label{eq:appendix-a-27}\\
+ \frac{1}{1+c\|y\|_2^2}\mathcal F(f)(y)&=\mathcal F\bigl((I-c\Delta)^{-1}(f)\bigr)(y).\label{eq:appendix-a-28}
+\end{align}
+对 $1\le r\le\infty$,卷积 $f*g$ 的 $L^r(\mathbb R^d)$ 范数可由卷积的 Young 不等式估计(有时也称卷积形式的 Hölder 不等式);参见\textcite[第 IV.4.5 节]{Hormander1990}.设 $1\le p,q\le\infty$、$p^{-1}+q^{-1}\ge1$,并令 $r^{-1}=p^{-1}+q^{-1}-1$.若 $f\in L^p(\mathbb R^d)$、$g\in L^q(\mathbb R^d)$,则 $f*g\in L^r(\mathbb R^d)$,且
+\begin{equation}\label{eq:appendix-a-29}
+ \|f*g\|_{L^r(\mathbb R^d)}\le\|f\|_{L^p(\mathbb R^d)}\,\|g\|_{L^q(\mathbb R^d)}.
+\end{equation}
+若 $p^{-1}+q^{-1}-1=0$,则 $f*g\in L^r(\mathbb R^d)$ 连续且有界.
+\end{note}
+\index{Fourier 变换}
+\index{Young 不等式!卷积形式}
+
+\begin{definition}[绝对连续函数]\label{def:appendix-a-48}
+设 $I\subset\mathbb R$ 是一个区间.若对每个 $\varepsilon>0$,都存在 $\delta>0$,使得对 $I$ 中任意有限个两两不相交的子区间 $(x_k,y_k)$,只要
+\[
+ \sum_k(y_k-x_k)<\delta,
+\]
+就有
+\[
+ \sum_k|f(y_k)-f(x_k)|<\varepsilon,
+\]
+则称函数 $f:I\to\mathbb R$ 绝对连续.
+\end{definition}
+\index{绝对连续函数}
+
+\begin{note}[绝对连续函数]\label{note:appendix-a-49}
+函数绝对连续比连续、甚至比一致连续都强.在紧区间 $I=[a,b]$ 上,函数 $f$ 绝对连续,当且仅当其导数 $f'$ 几乎处处存在、$f'$ Lebesgue 可积,且对每个 $t\in[a,b]$ 都有
+\[
+ f(t)=f(a)+\int_a^t f'(\tau)\,\mathrm d\tau
+\]
+(微积分基本定理).
+\end{note}
+\index{绝对连续函数!微积分基本定理}
+
+\begin{theorem}[Carathéodory 局部存在唯一性定理]\label{thm:appendix-a-50}
+本定理可参见\textcite[第 11 章]{Caratheodory1918}、\textcite[第 34 页]{Kamke1944} 及\textcite[第 1.1 节]{Filippov1988}.设 $f_m(t,y_1,\ldots,y_n)$($m=1,\ldots,n$)定义在
+\[
+ \Omega_T=(t_0,t_0+T)\times\Omega_y,
+ \qquad \Omega_y=\left\{y=(y_1,\ldots,y_n)^{\mathsf T}:\|y-y_0\|_2\le b\right\},
+\]
+其中 $b>0$.固定 $y_1,\ldots,y_n$ 时,函数 $f_1,\ldots,f_n$ 关于 $t$ 可测;固定 $t$ 时,它们关于 $y_1,\ldots,y_n$ 连续.并且
+\[
+ |f_m(t,y_1,\ldots,y_n)|\le F(t),\qquad m=1,\ldots,n,
+\]
+其中 $F(t)$ 在 $(t_0,t_0+T)$ 上 Lebesgue 可积.则存在一组绝对连续函数 $y_1(t),\ldots,y_n(t)$,使得对某个区间 $[t_0,t_0+a]$ 中的所有 $t$,其中 $0<a\le T$,均有
+\begin{equation}\label{eq:appendix-a-30}
+ y_m(t)=y_{0,m}+\int_{t_0}^t f_m\bigl(s,y_1(s),\ldots,y_n(s)\bigr)\,\mathrm ds,
+ \qquad m=1,\ldots,n.
+\end{equation}
+在被积项连续的每一点,这些函数满足常微分方程
+\begin{equation}\label{eq:appendix-a-31}
+ \frac{\mathrm d}{\mathrm dt}y_m(t)=f_m\bigl(t,y_1(t),\ldots,y_n(t)\bigr),
+ \qquad m=1,\ldots,n.
+\end{equation}
+
+若进一步对 $\Omega_T$ 中任意两点 $(t,y)$ 与 $(t,\widehat y)$,其中 $y,\widehat y\in\Omega_y$,均有 Lipschitz 条件
+\[
+ \begin{gathered}
+ |f_m(t,y)-f_m(t,\widehat y)|\\
+ \le G(t)\sum_{\ell=1}^n|y_\ell-\widehat y_\ell|,
+ \qquad m=1,\ldots,n,
+ \end{gathered}
+\]
+其中 $G(t)$ 在 $(t_0,t_0+T)$ 上 Lebesgue 可积,则积分方程\hyperref[eq:appendix-a-30]{(A.30)} 在 $[t_0,t_0+a]$ 上恰有一个解.
+\end{theorem}
+\index{Carathéodory 定理}
+
+\begin{note}[Carathéodory 定理]\label{note:appendix-a-51}
+Carathéodory 定理将 Peano 定理推广到右端项不连续的常微分方程\hyperref[eq:appendix-a-31]{(A.31)}.
+\end{note}
+
+\begin{note}[Gronwall 引理]\label{note:appendix-a-52}
+Gronwall 引理是研究含时问题及其有限元分析的重要工具.下面给出连续情形的两个版本;关于完整证明及这两个版本之间差别的讨论,参见\textcite{Emmrich1999}.
+\end{note}
+\index{Gronwall 引理}
+
+\begin{lemma}[积分形式的 Gronwall 引理]\label{lem:appendix-a-53}\label{thm:appendix-a-33}
+设 $T>0$,允许 $T=\infty$;$f,g,\lambda\in L^1(0,T)$,且 $\lambda(t)\ge0$ 对几乎所有 $t\in[0,T]$ 成立.若
+\begin{equation}\label{eq:appendix-a-32}
+ f(t)\le g(t)+\int_0^t\lambda(s)f(s)\,\mathrm ds
+ \quad\text{对几乎处处的 }t\in[0,T]
+\end{equation}
+成立,则对几乎所有 $t\in[0,T]$,有
+\begin{equation}\label{eq:appendix-a-33}
+ f(t)\le g(t)+\int_0^t\exp\left(\int_s^t\lambda(\tau)\,\mathrm d\tau\right)
+ \lambda(s)g(s)\,\mathrm ds.
+\end{equation}
+若 $g\in W^{1,1}(0,T)$,则还有
+\[
+ f(t)\le \exp\left(\int_0^t\lambda(\tau)\,\mathrm d\tau\right)
+ \left(g(0)+\int_0^t\exp\left(-\int_0^s\lambda(\tau)\,\mathrm d\tau\right)g'(s)\,\mathrm ds\right).
+\]
+此外,若 $g(t)$ 连续且单调递增,则
+\begin{equation}\label{eq:appendix-a-34}
+ f(t)\le \exp\left(\int_0^t\lambda(\tau)\,\mathrm d\tau\right)g(t).
+\end{equation}
+\end{lemma}
+\index{Gronwall 引理!积分形式}
+\begin{proof}
+下面示范式\hyperref[eq:appendix-a-33]{(A.33)} 与式\hyperref[eq:appendix-a-34]{(A.34)} 的推导.先令
+\[
+ \widetilde f(t)=\exp\left(-\int_0^t\lambda(\tau)\,\mathrm d\tau\right)
+ \int_0^t\lambda(s)f(s)\,\mathrm ds.
+\]
+由乘积法则、Leibniz 积分法则、式\hyperref[eq:appendix-a-32]{(A.32)} 及 $\lambda(t)\ge0$,对几乎所有 $t\in[0,T]$,有
+\begin{align*}
+ \widetilde f'(t)
+ &=\exp\left(-\int_0^t\lambda(\tau)\,\mathrm d\tau\right)
+ \left(-\lambda(t)\int_0^t\lambda(s)f(s)\,\mathrm ds+\lambda(t)f(t)\right)\\
+ &\le\exp\left(-\int_0^t\lambda(\tau)\,\mathrm d\tau\right)
+ \left(\lambda(t)(g(t)-f(t))+\lambda(t)f(t)\right)\\
+ &=\exp\left(-\int_0^t\lambda(\tau)\,\mathrm d\tau\right)\lambda(t)g(t).
+\end{align*}
+积分并利用 $\widetilde f(0)=0$,得到
+\[
+ \widetilde f(t)\le\int_0^t\exp\left(-\int_0^s\lambda(\tau)\,\mathrm d\tau\right)
+ \lambda(s)g(s)\,\mathrm ds.
+\]
+再由式\hyperref[eq:appendix-a-32]{(A.32)} 可知
+\begin{align*}
+ \exp\left(-\int_0^t\lambda(\tau)\,\mathrm d\tau\right)(f(t)-g(t))
+ &\le \exp\left(-\int_0^t\lambda(\tau)\,\mathrm d\tau\right)
+ \int_0^t\lambda(s)f(s)\,\mathrm ds\\
+ &=\widetilde f(t)\\
+ &\le\int_0^t\exp\left(-\int_0^s\lambda(\tau)\,\mathrm d\tau\right)
+ \lambda(s)g(s)\,\mathrm ds.
+\end{align*}
+将此不等式两边乘以 $\exp\bigl(\int_0^t\lambda(\tau)\,\mathrm d\tau\bigr)$,并把 $g(t)$ 移至右侧,即得式\hyperref[eq:appendix-a-33]{(A.33)}.
+
+若 $g(t)$ 连续且单调递增,则由式\hyperref[eq:appendix-a-33]{(A.33)},利用 $g(t)$ 在终点处取最大值、$\lambda(t)\ge0$ 以及微积分基本定理,有
+\begin{align*}
+ f(t)&\le g(t)\left(1+\int_0^t\exp\left(\int_s^t\lambda(\tau)\,\mathrm d\tau\right)\lambda(s)\,\mathrm ds\right)\\
+ &=g(t)\left(1+\exp\left(\int_0^t\lambda(\tau)\,\mathrm d\tau\right)
+ \int_0^t\exp\left(-\int_0^s\lambda(\tau)\,\mathrm d\tau\right)\lambda(s)\,\mathrm ds\right)\\
+ &=g(t)\left(1+\exp\left(\int_0^t\lambda(\tau)\,\mathrm d\tau\right)
+ \int_0^t\frac{\mathrm d}{\mathrm ds}\left[-\exp\left(-\int_0^s\lambda(\tau)\,\mathrm d\tau\right)\right]\,\mathrm ds\right)\\
+ &=g(t)\exp\left(\int_0^t\lambda(\tau)\,\mathrm d\tau\right),
+\end{align*}
+即得式\hyperref[eq:appendix-a-34]{(A.34)}.
+\end{proof}
+
+\begin{lemma}[微分形式的 Gronwall 引理]\label{lem:appendix-a-54}
+设 $T>0$(允许 $T=\infty$),$f\in W^{1,1}(0,T)$,且 $g,\lambda\in L^1(0,T)$.若
+\begin{equation}\label{eq:appendix-a-35}
+ f'(t)\le g(t)+\lambda(t)f(t)
+ \quad\text{对几乎处处的 }t\in[0,T]
+\end{equation}
+成立,则对几乎所有 $t\in[0,T]$,有
+\begin{equation}\label{eq:appendix-a-36}
+ f(t)\le \exp\left(\int_0^t\lambda(\tau)\,\mathrm d\tau\right)f(0)
+ +\int_0^t\exp\left(\int_s^t\lambda(\tau)\,\mathrm d\tau\right)g(s)\,\mathrm ds.
+\end{equation}
+\end{lemma}
+\index{Gronwall 引理!微分形式}
+\begin{proof}
+令 $\Lambda(t)=\int_0^t\lambda(\tau)\,\mathrm d\tau$,并定义
+\begin{equation}\label{eq:appendix-a-37}
+ \widetilde f(t)=\exp\left(-\int_0^t\lambda(\tau)\,\mathrm d\tau\right)f(t)
+ =\exp\bigl(-\Lambda(t)\bigr)f(t).
+\end{equation}
+由链式法则、Leibniz 积分法则及式\hyperref[eq:appendix-a-35]{(A.35)},有
+\[
+ \widetilde f'(t)=-\Lambda'(t)e^{-\Lambda(t)}f(t)+e^{-\Lambda(t)}f'(t)
+ =e^{-\Lambda(t)}\bigl(f'(t)-\lambda(t)f(t)\bigr)
+ \le e^{-\Lambda(t)}g(t).
+\]
+在 $(0,t)$ 上积分,并利用式\hyperref[eq:appendix-a-37]{(A.37)},得
+\[
+ \widetilde f(t)-\widetilde f(0)
+ =\exp\left(-\int_0^t\lambda(\tau)\,\mathrm d\tau\right)f(t)-f(0)
+ \le\int_0^t\exp\bigl(-\Lambda(s)\bigr)g(s)\,\mathrm ds.
+\]
+两边乘以 $\exp\bigl(\int_0^t\lambda(\tau)\,\mathrm d\tau\bigr)$,即得式\hyperref[eq:appendix-a-36]{(A.36)}.
+\end{proof}
+
+\begin{lemma}[微分形式的 Gronwall 引理变式]\label{lem:appendix-a-55}
+设 $T>0$(允许 $T=\infty$),$f\in W^{1,1}(0,T)$,$h,g,\lambda\in L^1(0,T)$,且 $h(t),\lambda(t)\ge0$ 对几乎所有 $t\in(0,T)$ 成立.若
+\begin{equation}\label{eq:appendix-a-38}
+ f'(t)+h(t)\le g(t)+\lambda(t)f(t)
+ \quad\text{对几乎处处的 }t\in[0,T]
+\end{equation}
+成立,则对几乎所有 $t\in[0,T]$,有
+\begin{equation}\label{eq:appendix-a-39}
+\begin{aligned}
+ f(t)+\int_0^t h(s)\,\mathrm ds
+ &\le \exp\left(\int_0^t\lambda(\tau)\,\mathrm d\tau\right)f(0)\\
+ &\quad+\int_0^t\exp\left(\int_s^t\lambda(\tau)\,\mathrm d\tau\right)g(s)\,\mathrm ds.
+\end{aligned}
+\end{equation}
+此外,若 $g(t)\ge0$ 对几乎所有 $t\in(0,T)$ 成立,则
+\begin{equation}\label{eq:appendix-a-40}
+ f(t)+\int_0^t h(s)\,\mathrm ds
+ \le \exp\left(\int_0^t\lambda(\tau)\,\mathrm d\tau\right)
+ \left(f(0)+\int_0^t g(s)\,\mathrm ds\right).
+\end{equation}
+\end{lemma}
+\begin{proof}
+令 $\Lambda(s)=\int_0^s\lambda(\tau)\,\mathrm d\tau$.由式\hyperref[eq:appendix-a-38]{(A.38)},对几乎所有 $s\in[0,T]$,有
+\[
+ f'(s)-\lambda(s)f(s)+h(s)\le g(s).
+\]
+将不等式两边乘以正数 $e^{-\Lambda(s)}$,得
+\[
+ e^{-\Lambda(s)}\bigl(f'(s)-\lambda(s)f(s)+h(s)\bigr)
+ \le e^{-\Lambda(s)}g(s).
+\]
+在 $(0,t)$ 上积分,得到
+\begin{equation}\label{eq:appendix-a-41}
+\begin{split}
+ e^{-\Lambda(t)}f(t)-f(0)\\
+ +\int_0^t e^{-\Lambda(s)}h(s)\,\mathrm ds
+ \le\int_0^t e^{-\Lambda(s)}g(s)\,\mathrm ds.
+\end{split}
+\end{equation}
+由于 $\lambda\ge0$,指数函数 $\exp(-\int_0^s\lambda)$ 随 $s$ 单调不增.于是
+\[
+ e^{-\Lambda(t)}\int_0^t h(s)\,\mathrm ds
+ \le\int_0^t e^{-\Lambda(s)}h(s)\,\mathrm ds.
+\]
+用此不等式估计式\hyperref[eq:appendix-a-41]{(A.41)} 左端的积分项,并将所得不等式两边乘以 $\exp\bigl(\int_0^t\lambda(\tau)\,\mathrm d\tau\bigr)$,便得式\hyperref[eq:appendix-a-39]{(A.39)}.
+
+若 $g\ge0$,则
+\[
+ \int_0^t\exp\left(\int_s^t\lambda(\tau)\,\mathrm d\tau\right)g(s)\,\mathrm ds
+ \le \exp\left(\int_0^t\lambda(\tau)\,\mathrm d\tau\right)\int_0^t g(s)\,\mathrm ds,
+\]
+由此即得式\hyperref[eq:appendix-a-40]{(A.40)}.
+\end{proof}
+
+\begin{lemma}[离散 Gronwall 引理]\label{lem:appendix-a-56}\label{lem:appendix-a-43}\label{lem:appendix-a-45}
+本引理见\textcite[引理 5.1]{HeywoodRannacher1990}.设 $k,B,a_n,b_n,c_n,\alpha_n$ 均为非负数,$n\ge1$ 为整数.若对 $N\ge0$ 有
+\begin{equation}\label{eq:appendix-a-42}
+ a_{N+1}+k\sum_{n=1}^{N+1}b_n
+ \le B+k\sum_{n=1}^{N+1}c_n+k\sum_{n=1}^{N+1}\alpha_n a_n,
+\end{equation}
+且对 $n=1,\ldots,N+1$ 均有 $k\alpha_n<1$,则
+\begin{equation}\label{eq:appendix-a-43}
+ \begin{split}
+ a_{N+1}+k\sum_{n=1}^{N+1}b_n
+ &\le \exp\left(k\sum_{n=1}^{N+1}\frac{\alpha_n}{1-k\alpha_n}\right)\\
+ &\qquad\times\left(B+k\sum_{n=1}^{N+1}c_n\right),
+ \qquad N\ge0.
+ \end{split}
+\end{equation}
+若已知的是
+\begin{equation}\label{eq:appendix-a-44}
+ a_{N+1}+k\sum_{n=1}^{N+1}b_n
+ \le B+k\sum_{n=1}^{N+1}c_n+k\sum_{n=1}^{N}\alpha_n a_n,
+ \qquad N\ge0,
+\end{equation}
+则有
+\begin{equation}\label{eq:appendix-a-45}
+ \begin{split}
+ a_{N+1}+k\sum_{n=1}^{N+1}b_n
+ &\le \exp\left(k\sum_{n=1}^{N}\alpha_n\right)\\
+ &\qquad\times\left(B+k\sum_{n=1}^{N+1}c_n\right),
+ \qquad N\ge0.
+ \end{split}
+\end{equation}
+\end{lemma}
+\index{Gronwall 引理!离散形式}
+
+\begin{definition}[弱收敛与弱*收敛]\label{def:appendix-a-57}
+本定义及其记号参见\textcite[第 120、125 页]{Yosida1995}.设 $\{x_n\}_{n=1}^{\infty}$ 是赋范线性空间 $X$ 中的序列.若对每个 $f\in X'$,数列 $f(x_n)$ 均有有限极限,则称 $\{x_n\}$ 弱收敛.若
+\[
+ \lim_{n\to\infty}f(x_n)=f(x)\qquad\forall f\in X',
+\]
+则称 $\{x_n\}$ 弱收敛到 $x$,记作 $x_n\rightharpoonup x$.这里 $X'$ 表示 $X$ 的(强)对偶空间.
+
+设 $\{f_n\}_{n=1}^{\infty}$ 是线性空间 $X$ 的(强)对偶空间 $X'$ 中的序列.若对每个 $x\in X$,$f_n(x)$ 均有有限极限,则称 $\{f_n\}$ 弱*收敛.若
+\[
+ \lim_{n\to\infty}f_n(x)=f(x)\qquad\forall x\in X,
+\]
+则称 $\{f_n\}$ 弱*收敛到 $f\in X'$,记作 $f_n\stackrel{*}{\rightharpoonup}f$.
+\end{definition}
+\index{弱收敛}
+\index{弱*收敛}
+
+\begin{note}[弱收敛与弱*收敛]\label{note:appendix-a-58}
+\begin{itemize}
+ \item 若极限 $x$ 或 $f$ 存在,则该极限唯一,参见\textcite[第 120 页]{Yosida1995}.
+ \item 若 $X$ 是自反 Banach 空间且序列 $\{x_n\}_{n=1}^{\infty}\subset X$ 有界,则存在子列 $\{x_{n_\ell}\}_{\ell=1}^{\infty}$ 以及 $x\in X$,使得 $x_{n_\ell}\rightharpoonup x$;参见\textcite[第 723 页]{Evans2010}.
+ \item 若 $\{f_n\}_{n=1}^{\infty}\subset X'$ 在 $X'$ 中有界,且 $X$ 是可分 Banach 空间,则存在弱*收敛子列.
+\end{itemize}
+\end{note}
+
+\begin{definition}[线性算子、值域与核]\label{def:appendix-a-59}
+设 $X,Y$ 是实 Banach 空间.映射 $A:X\to Y$ 若满足
+\[
+ A(\alpha x_1+\beta x_2)=\alpha Ax_1+\beta Ax_2
+ \qquad\forall x_1,x_2\in X,\quad \alpha,\beta\in\mathbb R,
+\]
+则称为线性算子.$A$ 的值域(或像)为
+\[
+ \operatorname{range}(A)=\{y\in Y:y=Ax\text{ 对某个 }x\in X\},
+\]
+而 $A$ 的核(或零空间)定义为
+\[
+ \ker(A)=\{x\in X:Ax=0\}.
+\]
+\end{definition}
+\index{线性算子}
+\index{值域}
+\index{核}
+
+\begin{definition}[有界算子与连续算子]\label{def:appendix-a-60}
+设 $A:X\to Y$,其中 $X,Y$ 为 Banach 空间.若
+\begin{equation}\label{eq:appendix-a-46}
+ \|A\|=\sup_{\substack{x\in X\\x\ne0}}\frac{\|Ax\|_Y}{\|x\|_X}
+ =\sup_{\substack{x\in X\\\|x\|_X\le1}}\|Ax\|_Y
+ =\sup_{\substack{x\in X\\\|x\|_X=1}}\|Ax\|_Y<\infty,
+\end{equation}
+则称 $A$ 为有界算子.若对每个 $\varepsilon>0$,都存在 $\delta>0$,使得对所有满足 $\|x-x_0\|_X<\delta$ 的 $x\in X$,均有 $\|Ax-Ax_0\|_Y<\varepsilon$,则称 $A$ 在 $x_0\in X$ 处连续.若 $A$ 在每个 $x\in X$ 处都连续,则称 $A$ 为连续算子.
+\end{definition}
+\index{有界算子}
+\index{连续算子}
+
+\begin{note}[连续算子的等价定义]\label{note:appendix-a-61}
+设 $A:X\to Y$,其中 $X,Y$ 为 Banach 空间.算子 $A$ 在 $x_0\in X$ 处连续,当且仅当对所有满足 $x_n\to x_0$ 的序列 $\{x_n\}_{n=1}^{\infty}$($x_n\in X$),都有 $Ax_n\to Ax_0$ 于 $Y$ 中.
+\end{note}
+
+\begin{lemma}[有界线性算子的性质]\label{lem:appendix-a-62}
+设 $X,Y$ 为 Banach 空间.相关结果参见\textcite[第 4.5.2、4.5.3 节]{KolmogorovFomin1975} 及\textcite[第 43 页]{Yosida1995}.
+\begin{enumerate}[label=(\roman*)]
+ \item 有界线性算子 $A:X\to Y$ 连续.
+ \item 连续线性算子 $A:X\to Y$ 有界.
+ \item 集合
+ \[
+  \mathcal L(X,Y)=\{A:A\text{ 是从 }X\text{ 到 }Y\text{ 的有界线性算子}\}
+ \]
+ 在由式\hyperref[eq:appendix-a-46]{(A.46)} 定义的范数下是 Banach 空间.
+\end{enumerate}
+\end{lemma}
+\index{有界线性算子}
+
+\begin{definition}[紧算子]\label{def:appendix-a-63}
+若算子 $A:X\to Y$ 将 $X$ 中每个有界子集 $\widetilde X$ 映为 $Y$ 中的预紧集,即 $A(\widetilde X)$ 在 $Y$ 中预紧,则称 $A$ 为紧算子.
+\end{definition}
+\index{紧算子}
+
+\begin{theorem}[秩--零度定理]\label{thm:appendix-a-64}\label{thm:rank-nullity}
+设 $A:V\to W$ 是两个有限维线性空间之间的线性映射,则
+\[
+ \dim V=\dim\bigl(\ker(A)\bigr)+\dim\bigl(\operatorname{range}(A)\bigr).
+\]
+\end{theorem}
+\index{秩--零度定理}
+
+\begin{definition}[线性泛函]\label{def:appendix-a-65}
+Banach 空间 $X$ 上的实线性泛函 $f$ 是一个线性算子,且其值域满足 $\operatorname{range}(f)\subset\mathbb R$.
+\end{definition}
+\index{线性泛函}
+
+\begin{definition}[有界双线性型、强制双线性型与 $V$-椭圆双线性型]\label{def:appendix-a-66}
+设 $b(\cdot,\cdot):V\times V\to\mathbb R$ 是 Banach 空间 $V$ 上的双线性型.若
+\begin{equation}\label{eq:appendix-a-47}
+ |b(u,v)|\le M\|u\|_V\|v\|_V\qquad\forall u,v\in V,\quad M>0,
+\end{equation}
+其中常数 $M$ 与 $u,v$ 无关,则称 $b$ 有界.若
+\begin{equation}\label{eq:appendix-a-48}
+ b(u,u)\ge m\|u\|_V^2\qquad\forall u\in V,\quad m>0,
+\end{equation}
+其中常数 $m$ 与 $u$ 无关,则称 $b$ 强制,或称 $V$-椭圆.
+\end{definition}
+\index{双线性型!有界}
+\index{强制双线性型}
+\index{$V$-椭圆双线性型}
+
+\begin{note}[内积作为双线性型]\label{note:appendix-a-67}
+设 $V$ 是 Hilbert 空间.由 Cauchy--Schwarz 不等式,内积 $a(\cdot,\cdot)$ 是有界且强制的双线性型,因为
+\[
+ |a(u,v)|\le\|u\|_V\|v\|_V\qquad\forall u,v\in V,
+\]
+且显然 $a(u,u)=\|u\|_V^2$.因此,可取 $M=1$、$m=1$.
+\end{note}
+
+\begin{theorem}[Banach 不动点定理]\label{thm:appendix-a-68}
+参见\textcite[定理 5.1]{GilbargTrudinger1983}.Banach 空间 $B$ 上的压缩映射 $T$ 有唯一不动点,即方程 $Tx=x$ 在 $B$ 中有唯一解 $x$.若把 $B$ 换成其任意闭子集,只要 $T$ 将该闭集映入自身,上述结论仍成立;参见\textcite[第 74 页]{GilbargTrudinger1983}.
+\end{theorem}
+\index{Banach 不动点定理}
+
+\begin{theorem}[Schauder 不动点定理]\label{thm:appendix-a-69}
+参见\textcite[定理 11.1]{GilbargTrudinger1983}.设 $S$ 是 Banach 空间 $B$ 中的非空紧凸集,$T:S\to S$ 连续,则 $T$ 有不动点,即存在 $x\in S$ 使得 $Tx=x$.
+\end{theorem}
+\index{Schauder 不动点定理}
+
+\begin{theorem}[Banach 逆算子定理]\label{thm:appendix-a-70}
+参见\textcite[第 225 页]{KolmogorovFomin1975}.设 $A:X\to Y$ 是 Banach 空间 $X,Y$ 之间的有界线性双射,则逆算子 $A^{-1}$ 有界.
+\end{theorem}
+\index{逆算子定理}
+
+\begin{theorem}[Banach 闭值域定理]\label{thm:appendix-a-71}
+参见\textcite[第 205 页]{Yosida1995}.设 $X,Y$ 为 Banach 空间,$A:X\to Y$ 是有界线性算子,$A':Y'\to X'$ 是其对偶算子.下列命题等价:
+\begin{enumerate}[label=(\roman*)]
+ \item $\operatorname{range}(A)$ 在 $Y$ 中闭;
+ \item $\operatorname{range}(A)=\{y\in Y:\langle y',y\rangle_{Y',Y}=0\text{ 对所有 }y'\in\ker(A')\}$;
+ \item $\operatorname{range}(A')$ 在 $X'$ 中闭;
+ \item $\operatorname{range}(A')=\{x'\in X':\langle x',x\rangle_{X',X}=0\text{ 对所有 }x\in\ker(A)\}$.
+\end{enumerate}
+\end{theorem}
+\index{闭值域定理}
+
+\begin{theorem}[Hahn--Banach 定理]\label{thm:appendix-a-72}
+参见\textcite[第 IV.1 节]{Yosida1995} 及\textcite[第 67 页]{Triebel1972}.设 $X$ 为 Banach 空间,$Y$ 是 $X$ 的子空间,$f$ 是定义在 $Y$ 上的有界线性泛函.则存在 $f$ 在 $X$ 上的延拓 $g$,且 $g$ 是线性泛函并满足 $\|g\|=\|f\|$.
+\end{theorem}
+\index{Hahn--Banach 定理}

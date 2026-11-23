@@ -1,0 +1,66 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{import-compatibility}[2026/11/22 AJbook manuscript compatibility]
+\RequirePackage{booktabs,enumitem,float,multirow,needspace}\RequirePackage[nameinlink,noabbrev]{cleveref}
+% Preserve manuscript grammar and counters; use the AJbook statement typography.
+\xeCJKsetup{AutoFallBack=true}
+\setCJKfallbackfamilyfont{\CJKrmdefault}[Path=\AJNotoSansFolder]{\AJNotoSansRegular}
+\setCJKfallbackfamilyfont{song}[Path=\AJNotoSansFolder]{\AJNotoSansRegular}
+\setCJKfallbackfamilyfont{fangsong}[Path=\AJNotoSansFolder]{\AJNotoSansRegular}
+\RequirePackage{newunicodechar}
+\newunicodechar{α}{\texorpdfstring{\ensuremath{\alpha}}{\string α}}
+\newcommand{\ImportedHead}[3]{\AJStatementBegin{#1}{#2}{#3}}
+\newcommand{\ImportedStatement}[4]{%
+  \refstepcounter{#2}%
+  #4\ImportedHead{#1}{\ \csname the#2\endcsname}{#3}%
+}
+\AtBeginDocument{%
+\RenewDocumentEnvironment{proof}{}{\AJProofBegin}{\AJProofEnd}
+}
+\AtBeginDocument{%
+  \DeclareRobustCommand{\[}{\begin{equation*}}%
+  \DeclareRobustCommand{\]}{\end{equation*}}%
+}
+
+% The source uses one chapterwise sequence for statements, remarks and examples.
+\newcounter{importstatement}[chapter]
+\renewcommand{\theimportstatement}{\thechapter.\arabic{importstatement}}
+\newcommand{\FlowStatement}[3]{%
+  \csname #3DocumentEnvironment\endcsname{#1}{o}{%
+    \crefalias{importstatement}{#1}\refstepcounter{importstatement}%
+    \ifstrequal{#1}{note}{\AJStatementInformalFont}{%
+      \ifstrequal{#1}{example}{\AJStatementInformalFont}{\AJStatementFormalFont}}%
+    \ImportedHead{#2}{\ \theimportstatement}{##1}%
+  }{\AJStatementEnd}%
+}
+\AtBeginDocument{%
+\FlowStatement{theorem}{Theorem}{Renew}
+\FlowStatement{lemma}{Lemma}{Renew}
+\FlowStatement{corollary}{Corollary}{Renew}
+\FlowStatement{proposition}{Proposition}{Renew}
+\FlowStatement{definition}{Definition}{Renew}
+\FlowStatement{example}{Example}{Renew}
+\FlowStatement{note}{Remark}{New}
+}
+\crefname{chapter}{第}{第}
+\crefname{section}{节}{节}
+\crefname{subsection}{小节}{小节}
+\crefname{figure}{图}{图}
+\crefname{table}{表}{表}
+\crefname{equation}{式}{式}
+\crefname{note}{Remark}{Remarks}
+\crefname{example}{Example}{Examples}
+\crefname{theorem}{Theorem}{Theorems}
+\crefname{lemma}{Lemma}{Lemmas}
+\crefname{corollary}{Corollary}{Corollaries}
+\crefname{proposition}{Proposition}{Propositions}
+\crefname{definition}{Definition}{Definitions}
+% The superconvergence index entry lives in this example. Use its semantic
+% anchor because the page's automatic hyperref anchor is absent.
+\newcommand{\ImportedSuperconvergencePage}[1]{\hyperref[ex:stokes-convergence]{#1}}
+\newcommand{\thmref}[1]{Theorem~\hyperref[#1]{\ref*{#1}}}
+\newcommand{\lemref}[1]{Lemma~\hyperref[#1]{\ref*{#1}}}
+\newcommand{\corref}[1]{Corollary~\hyperref[#1]{\ref*{#1}}}
+\newcommand{\propref}[1]{Proposition~\hyperref[#1]{\ref*{#1}}}
+\newcommand{\defref}[1]{Definition~\hyperref[#1]{\ref*{#1}}}
+
+\endinput

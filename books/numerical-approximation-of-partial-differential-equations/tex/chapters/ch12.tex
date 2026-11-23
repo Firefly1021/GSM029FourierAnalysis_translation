@@ -1,0 +1,935 @@
+\chapter{非定常对流--扩散问题}\label{ch:12}
+\SourcePage{414}
+
+本章研究对流项强于扩散项的二阶线性抛物型方程.对应的定常情形已在第~\ref{ch:8}~章讨论.
+
+首先回顾抛物型问题的数学表述,并指出强对流或弱扩散所带来的困难.接着引入一族采用有限差分推进时间的格式,包括显式、隐式和半隐式格式.通过分析它们的稳定性,可以改进第~\ref{ch:11}~章的一些结果.随后讨论间断 Galerkin 法,并纳入第~\ref{sec:8.3.2}~节介绍的空间离散稳定化方法.接下来讨论算子分裂法,把对流与扩散解耦.最后介绍特征 Galerkin 法,其基本做法是将方程的时间导数与对流部分合并为沿特征线的全导数.
+
+\section{数学表述}\label{sec:12.1}
+
+设 \(\Omega\) 是 \(\mathbb R^d\)(\(d=2,3\))中具有 Lipschitz 边界的有界区域.考虑下列抛物型初边值问题.求各 \(t\in[0,T]\) 对应的 \(u(t)\),使得
+\begin{equation}\label{eq:12.1.1}
+  \begin{cases}
+    \dfrac{\partial u}{\partial t}+Lu=f & \text{在 } Q_T:=(0,T)\times\Omega,\\[2pt]
+    Bu=0 & \text{在 } \Sigma_T:=(0,T)\times\partial\Omega,\\
+    u=u_0 & \text{在 } \Omega,\quad t=0,
+  \end{cases}
+\end{equation}
+其中 \(L\) 是二阶椭圆型算子
+\begin{equation}\label{eq:12.1.2}
+  Lw:=-\varepsilon\Delta w+\sum_{i=1}^d D_i(b_iw)+a_0w,
+\end{equation}
+边界算子 \(B\) 表示第~\ref{ch:6}~章讨论的任一种边界条件,即 Dirichlet、Neumann、混合或 Robin 边界条件.
+
+\SourcePage{415}
+分析中考虑 \(\varepsilon\ll\|\boldsymbol{b}\|_{L^\infty(\Omega)}\) 的情形.这种情形在实际计算中更难处理.如果空间网格尺度 \(h\) 不够小,就会出现不稳定现象.定常情形也有类似问题,第~\ref{ch:8}~章已讨论过克服这些困难的一些方法.
+
+对于更一般的算子 \(L\),其表达式见\eqref{eq:8.1.1}.只要扩散系数 \(a_{ij}\) 显著小于对流系数 \(b_i\)(\(i,j=1,\ldots,d\)),就可以用简化形式\eqref{eq:12.1.2}来代表这一类问题.不失一般性,进一步假定 \(\boldsymbol{b}\) 已归一化,即 \(\|\boldsymbol{b}\|_{L^\infty(\Omega)}=1\).
+
+假设存在两个正常数 \(\mu_0\) 和 \(\mu_1\),使得几乎处处的 \(\boldsymbol{x}\in\Omega\) 均满足
+\begin{equation}\label{eq:12.1.3}
+  0<\mu_0\le\mu(\boldsymbol{x})
+    :=\tfrac12\operatorname{div}\boldsymbol{b}(\boldsymbol{x})+a_0(\boldsymbol{x})
+    \le\mu_1.
+\end{equation}
+在此条件下,双线性形式
+\begin{equation}\label{eq:12.1.4}
+  a(w,v):=\int_\Omega
+    \biggl[\varepsilon\nabla w\cdot\nabla v-\sum_{i=1}^d b_iwD_iv+a_0wv\biggr]
+\end{equation}
+在 Hilbert 空间 \(H_0^1(\Omega)\) 上具有强制性,即满足\eqref{eq:5.1.14},其中可取
+\[
+  \alpha=\min\bigl\{\varepsilon,
+    (\varepsilon+C_\Omega\mu_0)/(1+C_\Omega)\bigr\},
+\]
+\(C_\Omega\) 是 Poincaré 不等式\eqref{eq:1.3.2}中的常数.
+
+条件\eqref{eq:12.1.3}并不构成限制.作变量变换 \(u_\lambda(t,\boldsymbol{x}):=e^{-\lambda t}u(t,\boldsymbol{x})\) 后,问题可用辅助双线性形式
+\[
+  a_\lambda(w,v):=a(w,v)+\lambda(w,v)
+\]
+来表述,其中 \((\cdot,\cdot)\) 是 \(L^2(\Omega)\) 中的内积.只要 \(a_0\) 和 \(\operatorname{div}\boldsymbol{b}\) 均属于 \(L^\infty(\Omega)\),取足够大的 \(\lambda\),修正后的系数就满足\eqref{eq:12.1.3}.
+
+为简便起见,下文采用齐次 Dirichlet 边界条件.抛物型对流--扩散问题\eqref{eq:12.1.1}可改写为如下弱形式.给定 \(f\in L^2(Q_T)\) 和 \(u_0\in L^2(\Omega)\),求 \(u\in L^2(0,T;V)\cap C^0([0,T];L^2(\Omega))\),使得
+\begin{equation}\label{eq:12.1.5}
+  \begin{cases}
+    \dfrac{d}{dt}(u(t),v)+a(u(t),v)=(f(t),v)
+      & \forall v\in V,\\[2pt]
+    u(0)=u_0,
+  \end{cases}
+\end{equation}
+其中 \(V=H_0^1(\Omega)\),方程应在 \((0,T)\) 上按分布意义理解.相应的半离散逼近在时间上连续,其形式见\eqref{eq:11.2.1}.
+
+不过,对\eqref{eq:11.2.1}所作的稳定性和收敛性分析表明,在\eqref{eq:12.1.2}中取 \(\varepsilon\ll1\) 可能遇到一些困难.例如,从命题~\ref{pro:11.2.1}的证明很容易看出,其中常数 \(C_{\alpha,\gamma}\) 按 \(\gamma^2/\alpha\) 增长,\(\gamma\) 是
+\SourcePage{416}
+双线性形式 \(a(\cdot,\cdot)\) 的连续性常数.将双线性形式改写为
+\begin{equation}\label{eq:12.1.6}
+  a(w,v)=\int_\Omega\biggl[\varepsilon\nabla w\cdot\nabla v
+    -\tfrac12\sum_{i=1}^d(b_iwD_iv-b_ivD_iw)+\mu wv\biggr],
+\end{equation}
+容易看出 \(a(\cdot,\cdot)\) 满足\eqref{eq:5.1.13},且其连续性常数 \(\gamma\) 可估计为
+\[
+  \gamma\le\varepsilon+1+\mu_1.
+\]
+因此,当 \(\varepsilon\) 很小时,半离散逼近的误差估计\eqref{eq:11.2.3}或\eqref{eq:11.2.7}会变差.定常情形也曾出现类似现象,见第~\ref{sec:8.1}~节.
+
+显然,这些困难也会出现在 \(\theta\) 格式\eqref{eq:11.3.4}给出的全离散逼近中.定理~\ref{thm:11.3.2}给出了误差估计,推论~\ref{cor:11.3.1}又进一步给出了收敛阶.其中的乘法常数都随 \(\varepsilon^{-1}\) 增大而增大.
+
+最后再看定理~\ref{thm:11.3.1}中 \(\theta\) 格式的稳定性条件\eqref{eq:11.3.7}.它可以写成
+\[
+  \Delta t\le\frac{Ch^2\alpha}{(1-2\theta)\gamma^2},
+  \qquad 0\le\theta<\tfrac12.
+\]
+当 \(\varepsilon\) 很小时,这一条件可写为
+\begin{equation}\label{eq:12.1.7}
+  \Delta t\le\frac{Ch^2\varepsilon}
+    {(1-2\theta)(\varepsilon^2+1+\mu_1^2)}.
+\end{equation}
+由能量分析得到的这一限制还有改进空间.实际上,按照 von Neumann 稳定性分析来推测,固定 \(h\) 时,\(\varepsilon\) 越小,时间步长 \(\Delta t\) 的允许范围应当越宽.
+
+本章有两个目标.其一是改进第~\ref{ch:11}~章的一些结果,减弱稳定性和收敛性估计对小扩散系数 \(\varepsilon\) 的依赖.下一节首先将通过更精细的分析证明,只要 \(\Delta t\) 满足比\eqref{eq:12.1.7}更宽松的条件,稳定性依然成立.我们还将引入一种对时间步长无稳定性限制的半隐式格式.其二是介绍第~\ref{ch:11}~章未曾讨论的其他时间推进方法,它们更适合逼近对流占优的抛物型问题.
+
+\section{用有限差分推进时间}\label{sec:12.2}
+\SourcePage{417}
+
+仿照\eqref{eq:11.2.1},考虑对流--扩散初边值问题\eqref{eq:12.1.5}的如下半离散逼近,其中时间保持连续：
+\begin{equation}\label{eq:12.2.1}
+  \begin{cases}
+    \begin{aligned}
+      \dfrac{d}{dt}(u_h(t),v_h)+a(u_h(t),v_h)
+        &=(f(t),v_h) &&\forall v_h\in V_h,\quad t\in(0,T),
+    \end{aligned}\\[2pt]
+    u_h(0)=u_{0,h}.
+  \end{cases}
+\end{equation}
+这里 \(V_h\subset H_0^1(\Omega)\) 是适当的有限维空间,\(u_{0,h}\in V_h\) 是初值 \(u_0\) 的一个逼近.
+
+关于空间的选择,第~\ref{ch:8}~章已经指出,当对流远强于扩散时,用经典有限元空间\eqref{eq:6.2.4}对定常问题作 Galerkin 逼近,数值解会剧烈振荡,除非网格尺度 \(h\) 与 \(\varepsilon\) 相当.为避开这些困难,本节余下部分着重考虑扩散占优的情形.第~\BookRef{sec:12.3}{12.3}、\BookRef{sec:12.4}{12.4} 和~\BookRef{sec:12.5}{12.5}~节将介绍和讨论更适合对流占优情形的方法.
+
+\subsection{\texorpdfstring{\(\theta\)}{θ} 格式的精细稳定性估计}\label{sec:12.2.1}
+
+第~\ref{sec:11.3}~节分析了一族基于 \(\theta\) 格式的时间推进方法：
+\begin{equation}\label{eq:12.2.2}
+  \begin{cases}
+    \begin{aligned}
+      &\dfrac{1}{\Delta t}(u_h^{n+1}-u_h^n,v_h)
+         +a(\theta u_h^{n+1}+(1-\theta)u_h^n,v_h)\\
+      &\hspace{2.5em}=(\theta f(t_{n+1})+(1-\theta)f(t_n),v_h)
+           \quad\forall v_h\in V_h,
+    \end{aligned}\\[2pt]
+    u_h^0=u_{0,h},
+  \end{cases}
+\end{equation}
+其中 \(n=0,1,\ldots,\mathcal N-1\),\(0\le\theta\le1\),时间步长 \(\Delta t:=T/\mathcal N\),\(\mathcal N\) 为正整数,\(u_{0,h}\in V_h\) 是初值 \(u_0\) 的适当逼近.回顾一下,这族格式包括向前 Euler 格式(\(\theta=0\))、向后 Euler 格式(\(\theta=1\))以及 Crank--Nicolson 格式(\(\theta=1/2\)).
+
+每个时间步都需求解以 \(M+\theta\Delta t A\) 为系数矩阵的线性方程组,其中刚度矩阵 \(A\) 和质量矩阵 \(M\) 的定义与\eqref{eq:11.2.2}相同,即
+\begin{equation}\label{eq:12.2.3}
+  A_{ij}:=a(\varphi_j,\varphi_i),\qquad M_{ij}:=(\varphi_i,\varphi_j),
+\end{equation}
+这里 \(\{\varphi_j\mid j=1,\ldots,N_h\}\) 是 \(V_h\) 的一组基.注意,向前 Euler 格式也需要解方程组,除非用质量集中把 \(M\) 化为对角矩阵,见第~\ref{sec:11.4}~节.
+
+\SourcePage{418}
+下面证明这族格式的一个新稳定性结果,它改进了定理~\ref{thm:11.3.1}.
+
+\begin{proposition}[]{12.2.1}
+假设\eqref{eq:12.1.3}成立,且 \(t\mapsto\|f(t)\|_0\) 在 \([0,T]\) 上有界.若 \(0\le\theta<1/2\),还假设 \(\mathcal T_h\) 是一族拟一致三角剖分,且时间步长满足
+\begin{equation}\label{eq:12.2.4}
+  \Delta t\le\frac{h^2}{(1-2\theta)C^*}
+    \min\biggl\{\frac1\varepsilon,\frac{2\mu_0}{1+h^2\mu_1^2}\biggr\},
+\end{equation}
+其中 \(C^*\) 是下文不等式\eqref{eq:12.2.10}中的常数.那么,\eqref{eq:12.2.2}的解 \(u_h^n\) 满足
+\begin{equation}\label{eq:12.2.5}
+  \|u_h^n\|_0
+    \le\|u_{0,h}\|_0+C^{**}\sqrt{\frac{T}{\varepsilon}}\,
+    \sup_{t\in[0,T]}\|f(t)\|_0,
+\end{equation}
+其中正常数 \(C^{**}\) 仅依赖于 \(\Omega\) 和剖分的拟一致性常数.
+\end{proposition}
+
+\begin{proof}
+首先,由\eqref{eq:12.1.3}可知,\eqref{eq:11.1.6}中的常数 \(\lambda\) 可以取为零.以下着重考虑 \(0\le\theta<1/2\) 的情形.由定理~\ref{thm:11.3.1}的证明可得
+\begin{equation}\label{eq:12.2.6}
+  \begin{aligned}
+    &\tfrac12\|u_h^{n+1}\|_0^2-\tfrac12\|u_h^n\|_0^2
+      +\Delta t\,a(u_{h,\theta}^{n+1},u_{h,\theta}^{n+1})\\
+    &\qquad=\Delta t(f_\theta^{n+1},u_{h,\theta}^{n+1})
+      +\bigl(\tfrac12-\theta\bigr)\|u_h^{n+1}-u_h^n\|_0^2,
+  \end{aligned}
+\end{equation}
+其中采用简记
+\[
+  u_{h,\theta}^{n+1}:=\theta u_h^{n+1}+(1-\theta)u_h^n,\qquad
+  f_\theta^{n+1}:=\theta f(t_{n+1})+(1-\theta)f(t_n).
+\]
+根据\eqref{eq:12.1.3}有
+\begin{equation}\label{eq:12.2.7}
+  a(u_{h,\theta}^{n+1},u_{h,\theta}^{n+1})
+    \ge\varepsilon\|\nabla u_{h,\theta}^{n+1}\|_0^2
+      +\mu_0\|u_{h,\theta}^{n+1}\|_0^2.
+\end{equation}
+此外,存在仅依赖于 \(\Omega\) 的常数 \(\widehat C_1>0\),使得
+\begin{equation}\label{eq:12.2.8}
+  \Delta t(f_\theta^{n+1},u_{h,\theta}^{n+1})
+    \le\widehat C_1\frac{\Delta t}{\varepsilon}\|f_\theta^{n+1}\|_{-1,h}^2
+      +\Delta t\,\frac{\varepsilon}{2}\|\nabla u_{h,\theta}^{n+1}\|_0^2,
+\end{equation}
+其中范数 \(\|\cdot\|_{-1,h}\) 定义于\eqref{eq:11.3.6}.最后,有
+\begin{equation}\label{eq:12.2.9}
+  \begin{aligned}
+    \|u_h^{n+1}-u_h^n\|_0^2
+      &=-\Delta t\,a(u_{h,\theta}^{n+1},u_h^{n+1}-u_h^n)
+        +\Delta t(f_\theta^{n+1},u_h^{n+1}-u_h^n)\\
+      &=:\widehat a+\widehat f.
+  \end{aligned}
+\end{equation}
+利用\eqref{eq:12.1.6},分别对各项作精细估计,便可控制右端第一项.
+\SourcePage{419}
+这样得到
+\[
+  \begin{aligned}
+    \widehat a
+      &\le\Delta t\,\varepsilon\|\nabla u_{h,\theta}^{n+1}\|_0
+          \|\nabla u_h^{n+1}-\nabla u_h^n\|_0
+        +\frac{\Delta t}{2}\|u_{h,\theta}^{n+1}\|_0
+          \|\nabla u_h^{n+1}-\nabla u_h^n\|_0\\
+      &\quad+\Delta t\bigl(\tfrac12\|\nabla u_{h,\theta}^{n+1}\|_0
+          +\mu_1\|u_{h,\theta}^{n+1}\|_0\bigr)\|u_h^{n+1}-u_h^n\|_0.
+  \end{aligned}
+\]
+由逆不等式\eqref{eq:6.3.21}可得
+\[
+  \widehat a\le
+  \Delta t\Bigl[C_3^{1/2}h^{-1}\varepsilon\|\nabla u_{h,\theta}^{n+1}\|_0
+  +(C_3^{1/2}h^{-1}+\mu_1)\|u_{h,\theta}^{n+1}\|_0\Bigr]\|u_h^{n+1}-u_h^n\|_0.
+\]
+再次利用\eqref{eq:6.3.21},\eqref{eq:12.2.9}右端第二项满足
+\[
+  \widehat f\le\widehat C_2\Delta t\,h^{-1}\|f_\theta^{n+1}\|_{-1,h}
+    \|u_h^{n+1}-u_h^n\|_0.
+\]
+综上,由\eqref{eq:12.2.9}得
+\begin{equation}\label{eq:12.2.10}
+  \begin{aligned}
+    \|u_h^{n+1}-u_h^n\|_0^2
+      &\le C^*(\Delta t)^2\bigl[h^{-2}\varepsilon^2
+         \|\nabla u_{h,\theta}^{n+1}\|_0^2\\
+      &\hspace{5em}+h^{-2}(1+h^2\mu_1^2)\|u_{h,\theta}^{n+1}\|_0^2
+        +h^{-2}\|f_\theta^{n+1}\|_{-1,h}^2\bigr],
+  \end{aligned}
+\end{equation}
+其中 \(C^*>0\) 仅依赖于 \(\Omega\) 和剖分的拟一致性常数.若时间步长 \(\Delta t\) 满足\eqref{eq:12.2.4},则可得
+\[
+  \|u_h^{n+1}\|_0^2-\|u_h^n\|_0^2
+    \le\widehat C_3\frac{\Delta t}{\varepsilon}\|f_\theta^{n+1}\|_{-1,h}^2,
+\]
+其中 \(\widehat C_3>0\) 的依赖关系与 \(C^*\) 相同.最后仿照定理~\ref{thm:11.3.1}的证明,即得稳定性估计\eqref{eq:12.2.5}.
+\end{proof}
+
+随着 \(\varepsilon\) 减小,稳定性条件\eqref{eq:12.2.4}放宽,其主要限制来自对流系数 \(\boldsymbol{b}\) 和系数 \(a_0\),两者通过\eqref{eq:12.1.3}中的常数 \(\mu_0\) 和 \(\mu_1\) 进入条件.至少在某些特殊情形下,这一限制仍可进一步放宽.例如,在全实轴 \(\mathbb R\) 上考虑一维对流--扩散算子 \(Lu:=-\varepsilon u''+bu'+a_0u\),其中 \(\varepsilon\)、\(b\) 和 \(a_0\) 均为正常数.对时间向前(\(\theta=0\))、空间对流项向后差分的格式作 von Neumann 稳定性分析,可得稳定性条件
+\[
+  \Delta t\le\frac{h^2}{2\varepsilon+bh+\tfrac12 a_0h^2}.
+\]
+参见\BookCite{strikwerda1989}{Strikwerda(1989,第 129–132 页)}.在扩散很弱、\(\varepsilon\lesssim bh\) 的范围内,该条件允许时间步长取 \(O(h)\),而\eqref{eq:12.2.4}对每个固定的 \(\varepsilon>0\) 都要求 \(O(h^2)\).
+
+\subsection{一种半隐式格式}\label{sec:12.2.2}
+\SourcePage{420}
+
+为避免稳定性对步长的限制,又无需求解全隐式逼近,可以采用\emph{半隐式}时间离散.其做法是在时间层 \(t_{n+1}\) 计算算子 \(L\) 的主部,即二阶项 \(-\varepsilon\Delta\),而其余部分在 \(t_n\) 计算.具体来说,格式为
+\begin{equation}\label{eq:12.2.11}
+  \begin{cases}
+    \begin{aligned}
+      &\dfrac{1}{\Delta t}(u_h^{n+1}-u_h^n,v_h)
+        +\varepsilon(\nabla u_h^{n+1},\nabla v_h)
+        -\displaystyle\sum_{i=1}^d(b_iu_h^n,D_iv_h)\\
+      &\qquad+(a_0u_h^n,v_h)=(f(t_{n+1}),v_h)
+        \quad\forall v_h\in V_h,
+    \end{aligned}\\[2pt]
+    u_h^0=u_{0,h},
+  \end{cases}
+\end{equation}
+其中 \(n=0,1,\ldots,\mathcal N-1\).预期此格式比前面分析的格式具有更好的稳定性.事实上可以证明如下定理.
+
+\begin{theorem}[]{12.2.1}
+假设 \(t\mapsto\|f(t)\|_0\) 在 \([0,T]\) 上有界.那么,半隐式逼近格式\eqref{eq:12.2.11}在任意有限时间区间 \([0,T]\) 上无条件稳定,且其解 \(u_h^n\) 满足
+\begin{equation}\label{eq:12.2.12}
+  \begin{aligned}
+    \|u_h^n\|_0
+      &\le\biggl(\|u_{0,h}\|_0+C\sqrt{\frac{T}{\varepsilon}}\,
+            \sup_{t\in[0,T]}\|f(t)\|_0\biggr)\\
+      &\qquad\times\exp\biggl[\frac{CT}{\varepsilon}
+           \bigl(1+\|a_0\|_{L^\infty(\Omega)}^2\bigr)\biggr],
+  \end{aligned}
+\end{equation}
+其中 \(n=0,1,\ldots,\mathcal N\),常数 \(C>0\) 仅依赖于 \(\Omega\).
+\end{theorem}
+
+\begin{proof}
+基本上沿用定理~\ref{thm:11.3.1}的证明.在\eqref{eq:12.2.11}中取 \(v_h=u_h^{n+1}\),得到
+\[
+  \begin{aligned}
+    &\tfrac12\|u_h^{n+1}\|_0^2-\tfrac12\|u_h^n\|_0^2
+      +\tfrac12\|u_h^{n+1}-u_h^n\|_0^2
+      +\varepsilon\Delta t\|\nabla u_h^{n+1}\|_0^2\\
+    &\qquad\le C\Delta t(1+\|a_0\|_{L^\infty(\Omega)})
+           \|u_h^n\|_0\|\nabla u_h^{n+1}\|_0
+         +C\Delta t\|f(t_{n+1})\|_{-1,h}\|\nabla u_h^{n+1}\|_0.
+  \end{aligned}
+\]
+容易推出
+\[
+  \begin{aligned}
+    \|u_h^{n+1}\|_0^2-\|u_h^n\|_0^2
+      &\le\frac{C}{\varepsilon}\Delta t
+        (1+\|a_0\|_{L^\infty(\Omega)}^2)\|u_h^n\|_0^2\\
+      &\qquad+\frac{C}{\varepsilon}\Delta t\|f(t_{n+1})\|_{-1,h}^2.
+  \end{aligned}
+\]
+固定下标 \(m\),\(1\le m\le\mathcal N\).对 \(n=0,\ldots,m-1\) 求和,得
+\SourcePage{421}
+\[
+  \begin{aligned}
+    \|u_h^m\|_0^2
+      &\le\|u_{0,h}\|_0^2+\frac{C}{\varepsilon}\Delta t
+        (1+\|a_0\|_{L^\infty(\Omega)}^2)\sum_{n=0}^{m-1}\|u_h^n\|_0^2\\
+      &\qquad+\frac{C}{\varepsilon}\Delta t\sum_{n=0}^{m-1}
+          \|f(t_{n+1})\|_{-1,h}^2.
+  \end{aligned}
+\]
+应用离散 Gronwall 不等式(见引理~\ref{lem:1.4.1}),并注意对每个 \(\phi\in L^2(\Omega)\) 均有 \(\|\phi\|_{-1,h}\le\|\phi\|_0\),便得到\eqref{eq:12.2.12}.
+\end{proof}
+
+稳定性估计\eqref{eq:12.2.12}随 \(\varepsilon^{-1}\) 增大而按指数速度变差.不过数值实验表明,至少在某些情形下,这个上界过于悲观,对 \(\varepsilon^{-1}\) 的依赖实际为线性.参见\BookCite{bressan-quarteroni1986}{Bressan 和 Quarteroni(1986)}.
+
+现在转向半隐式问题\eqref{eq:12.2.11}的收敛性分析,有如下定理.
+
+\begin{theorem}[]{12.2.2}
+假设 \(u_0\in H_0^1(\Omega)\),且\eqref{eq:11.1.5}的解 \(u\) 满足 \(\partial u/\partial t\in L^2(0,T;H_0^1(\Omega))\) 和 \(\partial^2u/\partial t^2\in L^2(0,T;L^2(\Omega))\).那么,\eqref{eq:12.2.11}定义的 \(u_h^n\) 对每个 \(n=0,1,\ldots,\mathcal N\) 均满足
+\begin{equation}\label{eq:12.2.13}
+  \begin{aligned}
+    \|u_h^n-u(t_n)\|_0
+      &\le\|(I-\Pi_{1,h}^k)u(t_n)\|_0+\exp(C_\varepsilon t_n)\\
+      &\quad\times\biggl\{\|u_{0,h}-\Pi_{1,h}^k(u_0)\|_0^2
+        +C_\varepsilon\int_0^{t_n}\biggl\|(I-\Pi_{1,h}^k)
+          \frac{\partial u}{\partial t}(s)\biggr\|_0^2\,\mathrm ds\\
+      &\qquad+C_\varepsilon(\Delta t)^2\int_0^{t_n}
+        \biggl(\biggl\|\frac{\partial u}{\partial t}(s)\biggr\|_1^2
+          +\biggl\|\frac{\partial^2u}{\partial t^2}(s)\biggr\|_0^2\biggr)\,\mathrm ds
+        \biggr\}^{1/2},
+  \end{aligned}
+\end{equation}
+其中 \(\Pi_{1,h}^k\) 是\eqref{eq:11.2.8}定义的椭圆投影算子,\(C_\varepsilon>0\) 是 \(\varepsilon^{-1}\) 的非减函数.
+\end{theorem}
+
+\begin{proof}
+由假设可知 \(u\in C^0([0,T];H_0^1(\Omega))\),因而对每个 \(n=0,1,\ldots,\mathcal N\),\(\Pi_{1,h}^k(u(t_n))\) 都有定义.令 \(\eta_h^n:=u_h^n-\Pi_{1,h}^k(u(t_n))\).对每个 \(v_h\in V_h\) 和 \(n=0,1,\ldots,\mathcal N-1\),有
+\SourcePage{422}
+\begin{equation}\label{eq:12.2.14}
+  \begin{aligned}
+    &\frac1{\Delta t}(\eta_h^{n+1}-\eta_h^n,v_h)
+      +\varepsilon(\nabla\eta_h^{n+1},\nabla v_h)
+      -\sum_{i=1}^d(b_i\eta_h^n,D_iv_h)+(a_0\eta_h^n,v_h)\\
+    &\quad=(f(t_{n+1}),v_h)
+      -\frac1{\Delta t}\bigl(\Pi_{1,h}^k(u(t_{n+1})-u(t_n)),v_h\bigr)\\
+    &\qquad-\varepsilon\bigl(\nabla\Pi_{1,h}^k(u(t_{n+1})),\nabla v_h\bigr)
+      +\sum_{i=1}^d\bigl(b_i\Pi_{1,h}^k(u(t_n)),D_iv_h\bigr)
+      -\bigl(a_0\Pi_{1,h}^k(u(t_n)),v_h\bigr).
+  \end{aligned}
+\end{equation}
+另一方面,解 \(u\) 满足
+\[
+  \begin{aligned}
+    \biggl(\frac{\partial u}{\partial t}(t_{n+1}),v_h\biggr)
+      &=(f(t_{n+1}),v_h)-\varepsilon(\nabla u(t_{n+1}),\nabla v_h)\\
+      &\qquad+\sum_{i=1}^d(b_iu(t_{n+1}),D_iv_h)-(a_0u(t_{n+1}),v_h).
+  \end{aligned}
+\]
+再回顾 \(\Pi_{1,h}^k(\cdot)\) 的定义：
+\[
+  \begin{aligned}
+    &-\varepsilon(\nabla u(t_{n+1}),\nabla v_h)
+       +\sum_{i=1}^d(b_iu(t_{n+1}),D_iv_h)-(a_0u(t_{n+1}),v_h)\\
+    &\quad=-\varepsilon(\nabla\Pi_{1,h}^k(u(t_{n+1})),\nabla v_h)
+      +\sum_{i=1}^d(b_i\Pi_{1,h}^k(u(t_{n+1})),D_iv_h)
+      -(a_0\Pi_{1,h}^k(u(t_{n+1})),v_h).
+  \end{aligned}
+\]
+由于 \(\partial/\partial t\) 与 \(\Pi_{1,h}^k\) 可交换,\eqref{eq:12.2.14}最终可以写成
+\[
+  \begin{aligned}
+    &\frac1{\Delta t}(\eta_h^{n+1}-\eta_h^n,v_h)
+       +\varepsilon(\nabla\eta_h^{n+1},\nabla v_h)\\
+    &\qquad-\sum_{i=1}^d(b_i\eta_h^n,D_iv_h)+(a_0\eta_h^n,v_h)
+       =(\varepsilon_h^n,v_h),
+  \end{aligned}
+\]
+其中 \(\varepsilon_h^n\in V_h\) 由下式确定：
+\SourcePage{423}
+\begin{equation}\label{eq:12.2.15}
+  \begin{aligned}
+    (\varepsilon_h^n,v_h)
+      &=\biggl(\frac{\partial u}{\partial t}(t_{n+1})
+         -\frac{u(t_{n+1})-u(t_n)}{\Delta t},v_h\biggr)\\
+      &\quad+\frac1{\Delta t}\biggl(\int_{t_n}^{t_{n+1}}
+          (I-\Pi_{1,h}^k)\frac{\partial u}{\partial t}(s)\,\mathrm ds,v_h\biggr)\\
+      &\quad+\sum_{i=1}^d\bigl(b_i\Pi_{1,h}^k(u(t_n)-u(t_{n+1})),D_iv_h\bigr)
+       -\bigl(a_0\Pi_{1,h}^k(u(t_n)-u(t_{n+1})),v_h\bigr).
+  \end{aligned}
+\end{equation}
+因此,\(\eta_h^n\) 满足形如\eqref{eq:12.2.11}的格式,进而有
+\begin{equation}\label{eq:12.2.16}
+  \begin{aligned}
+    \|\eta_h^n\|_0^2
+      &\le\biggl(\|u_{0,h}-\Pi_{1,h}^k(u_0)\|_0^2
+          +\frac C\varepsilon\Delta t\sum_{m=0}^{n-1}
+             \|\varepsilon_h^m\|_{-1,h}^2\biggr)\\
+      &\qquad\times\exp\biggl[\frac{Ct_n}{\varepsilon}
+                 \bigl(1+\|a_0\|_{L^\infty(\Omega)}^2\bigr)\biggr].
+  \end{aligned}
+\end{equation}
+容易给出 \(\|\varepsilon_h^n\|_{-1,h}\) 的适当上界.事实上,\eqref{eq:12.2.15}右端的前两项可以沿用定理~\ref{thm:11.3.2}证明中的方法估计.此外,
+\[
+  \sum_{i=1}^d\bigl(b_i\Pi_{1,h}^k(u(t_n)-u(t_{n+1})),D_iv_h\bigr)
+    \le\|\Pi_{1,h}^k(u(t_{n+1})-u(t_n))\|_0\|v_h\|_1.
+\]
+因此可得
+\begin{equation}\label{eq:12.2.17}
+  \begin{aligned}
+    \|\varepsilon_h^n\|_{-1,h}^2
+      &\le C\biggl[\Delta t\int_{t_n}^{t_{n+1}}
+           \biggl\|\frac{\partial^2u}{\partial t^2}(s)\biggr\|_{-1,h}^2\,\mathrm ds\\
+      &\quad+\frac1{\Delta t}\int_{t_n}^{t_{n+1}}
+          \biggl\|(I-\Pi_{1,h}^k)\frac{\partial u}{\partial t}(s)\biggr\|_{-1,h}^2\,\mathrm ds\\
+      &\quad+\bigl(1+\|a_0\|_{L^\infty(\Omega)}^2\bigr)
+             \|\Pi_{1,h}^k(u(t_{n+1})-u(t_n))\|_0^2\biggr].
+  \end{aligned}
+\end{equation}
+最后,由于算子 \(\Pi_{1,h}^k\) 在 \(H_0^1(\Omega)\) 中一致有界,得到
+\begin{equation}\label{eq:12.2.18}
+  \begin{aligned}
+    \|\Pi_{1,h}^k(u(t_{n+1})-u(t_n))\|_0^2
+      &\le\Delta t\int_{t_n}^{t_{n+1}}
+        \biggl\|\Pi_{1,h}^k\frac{\partial u}{\partial t}(s)\biggr\|_0^2\,\mathrm ds\\
+      &\le\Delta t\,\frac{\gamma^2}{\alpha^2}\int_{t_n}^{t_{n+1}}
+        \biggl\|\frac{\partial u}{\partial t}(s)\biggr\|_1^2\,\mathrm ds,
+  \end{aligned}
+\end{equation}
+其中 \(\alpha\) 和 \(\gamma\) 分别是 \(a(\cdot,\cdot)\) 的强制性常数和连续性常数.结合\eqref{eq:12.2.16}至\eqref{eq:12.2.18}即得结论.
+\end{proof}
+
+沿用推论~\ref{cor:11.3.1}的做法,容易从\eqref{eq:12.2.13}得到关于 \(h\) 和 \(\Delta t\) 的误差估计.若再假设 \(u_0\in H^{k+1}(\Omega)\) 和 \(\partial u/\partial t\in L^2(0,T;H^{k+1}(\Omega))\),最终得到
+\SourcePage{424}
+\[
+  \|u_h^n-u(t_n)\|_0=O(h^{k+1}+\Delta t).
+\]
+
+对扩散部分作隐式处理、对对流部分作显式处理,主要出于以下考虑.如定理~\ref{thm:12.2.1}所证,该格式在有限时间区间上积分时无条件稳定.此外,尽管原问题并非自伴,每一步要解的线性方程组却具有\emph{对称}系数矩阵.进一步说,用于非线性对流问题时,半隐式格式也是一种有效的线性化方法,因为它仍给出对称系数矩阵,且矩阵在各时间层都相同.
+
+\section{稳定化问题的间断 Galerkin 法}\label{sec:12.3}
+
+第~\ref{ch:8}~章已经说明,对流占优时,单纯用 Galerkin 法作空间离散可能效果很差.这时需要进行稳定化.若只对空间变量作稳定化,可以沿用第~\ref{ch:8}~章处理定常对流--扩散问题的做法.例如,在\eqref{eq:12.2.1}中可以采用\eqref{eq:8.3.15}引入的空间 \(V_h\),即在 \(X_h^k\cap H_0^1(\Omega)\) 的基础上,对每个单元 \(K\in\mathcal T_h\) 加入一个泡函数.换言之,
+\[
+  V_h=V_h^b:=[X_h^k\cap H_0^1(\Omega)]\oplus B,
+\]
+其中 \(B\) 是一个有限维泡函数空间,参见\eqref{eq:8.3.16}.然而,所得格式在陡峭层处容易产生过度扩散.
+
+也可以换一种做法,采用类似第~\ref{sec:8.3.2}~节的稳定化技术.此时取 \(V_h=X_h^k\cap H_0^1(\Omega)\),\(k\ge1\),其中 \(X_h^k\) 是\eqref{eq:3.2.4}或\eqref{eq:3.2.5}定义的有限元空间,同时把\eqref{eq:12.2.1}中的双线性形式 \(a(\cdot,\cdot)\) 和右端项换成更复杂的形式.例如,可以考虑下列稳定化半离散问题：
+\begin{equation}\label{eq:12.3.1}
+  \begin{cases}
+    \begin{aligned}
+      &\dfrac{d}{dt}(u_h(t),v_h)+a(u_h(t),v_h)\\
+      &\qquad+\displaystyle\sum_{K\in\mathcal T_h}\delta\biggl(
+          \dfrac{\partial u_h}{\partial t}(t)+Lu_h(t),
+          \dfrac{h_K}{|\boldsymbol{b}|}(L_{SS}v_h+\rho L_Sv_h)\biggr)_K\\
+      &\quad=(f(t),v_h)
+        +\displaystyle\sum_{K\in\mathcal T_h}\delta\biggl(
+          f(t),\dfrac{h_K}{|\boldsymbol{b}|}(L_{SS}v_h+\rho L_Sv_h)\biggr)_K
+          \quad\forall v_h\in V_h,
+    \end{aligned}\\[2pt]
+    u_h(0)=u_{0,h},
+  \end{cases}
+\end{equation}
+\SourcePage{425}
+其中 \(t\in(0,T)\).不过,后一种格式在实际计算中通常也不够理想,对时间导数较大的解尤其如此.事实上,对\eqref{eq:12.3.1}应用向后 Euler 格式进行全离散时,若 \(\Delta t/h\) 太接近零,所得格式就会失稳.这妨碍了在时间上达到最优精度.
+
+一种更有效的做法是采用间断 Galerkin 法,尽管其计算代价通常相当高.它对时间和空间变量都采用有限元表述,特点是试探函数在空间上连续,在时间上可以间断.关于这一方法及所用记号,见第~\ref{sec:11.3.1}~节.
+
+在介绍\eqref{eq:12.1.5}的数值逼近之前,沿用第~\ref{sec:8.3.2}~节的记号,分别以 \(L_S\) 和 \(L_{SS}\) 表示算子 \(L\) 的对称部分和反对称部分,即
+\begin{equation}\label{eq:12.3.2}
+  L_Sz:=-\varepsilon\Delta z
+      +\bigl(\tfrac12\operatorname{div}\boldsymbol{b}+a_0\bigr)z,
+\end{equation}
+\begin{equation}\label{eq:12.3.3}
+  L_{SS}z:=\tfrac12\operatorname{div}(\boldsymbol{b}z)+\tfrac12\boldsymbol{b}\cdot\nabla z.
+\end{equation}
+对每个 \(z,v\in W_h^{\Delta t}\),引入记号
+\[
+  \begin{aligned}
+    \mathcal M_h^{(\rho)}(z,v)(t)
+      &:=\sum_{K\in\mathcal T_h}\delta\biggl(\frac{\partial z}{\partial t}(t)+Lz(t),
+        \frac{h_K}{|\boldsymbol{b}|}\biggl(\frac{\partial v}{\partial t}(t)
+            +L_{SS}v(t)+\rho L_Sv(t)\biggr)\biggr)_K,\\
+    \psi_h^{(\rho)}(v)(t)
+      &:=\sum_{K\in\mathcal T_h}\delta\biggl(f(t),
+        \frac{h_K}{|\boldsymbol{b}|}\biggl(\frac{\partial v}{\partial t}(t)
+            +L_{SS}v(t)+\rho L_Sv(t)\biggr)\biggr)_K.
+  \end{aligned}
+\]
+间断 Galerkin 法如下.给定 \(U_{-1}(0):=u_0\),对 \(n=0,1,\ldots,\mathcal N-1\),求 \(U_n\colon[t_n,t_{n+1}]\to V_h\),使 \(U_n\in\mathbb P_q^n(V_h)\) 且满足
+\begin{equation}\label{eq:12.3.4}
+  \begin{aligned}
+    &\int_{t_n}^{t_{n+1}}\biggl[\biggl(\frac{\partial U_n}{\partial t}(t),v(t)\biggr)
+       +a(U_n(t),v(t))\biggr]\,\mathrm dt+(U_n(t_n),v(t_n))\\
+    &\qquad+\int_{t_n}^{t_{n+1}}\mathcal M_h^{(\rho)}(U_n,v)(t)\,\mathrm dt\\
+    &\quad=\int_{t_n}^{t_{n+1}}(f(t),v(t))\,\mathrm dt
+           +(U_{n-1}(t_n),v(t_n))\\
+    &\qquad+\int_{t_n}^{t_{n+1}}\psi_h^{(\rho)}(v)(t)\,\mathrm dt
+      \qquad\forall v\in\mathbb P_q^n(V_h).
+  \end{aligned}
+\end{equation}
+与此前一样,\(\delta>0\) 和 \(\rho\in\mathbb R\) 是参数.为简便起见,假定 \(\inf_\Omega|\boldsymbol{b}(\boldsymbol{x})|>0\),这在全局对流占优的情形下是合理的,
+\SourcePage{426}
+见\eqref{eq:8.3.11}.取 \(\rho=1,0,-1\),分别对应第~\ref{sec:8.3.2}~节引入的 GALS、SUPG 和 DWG 方法.
+
+对每个 \(n=0,1,\ldots,\mathcal N-1\),问题\eqref{eq:12.3.4}等价于一个代数线性方程组.适当选择参数 \(\delta\) 时,方程组有唯一解.事实上,取 \(v=U_n\),沿用命题~\ref{pro:8.4.1}、\ref{pro:8.4.2}和\ref{pro:8.4.3}的方法,即可得到 \(U_n\) 的能量估计.例如,在 GALS 情形下,对每个稳定化参数 \(\delta>0\) 都有
+\begin{equation}\label{eq:12.3.5}
+  \begin{aligned}
+    &\|U_n(t_{n+1})\|_0^2+2\varepsilon\int_{t_n}^{t_{n+1}}\|\nabla U_n(t)\|_0^2\,\mathrm dt
+       +\mu_0\int_{t_n}^{t_{n+1}}\|U_n(t)\|_0^2\,\mathrm dt\\
+    &\qquad+\int_{t_n}^{t_{n+1}}\sum_{K\in\mathcal T_h}\delta
+       \biggl\|\frac{h_K^{1/2}}{|\boldsymbol{b}|^{1/2}}
+          \biggl(\frac{\partial U_n}{\partial t}(t)+LU_n(t)\biggr)\biggr\|_{0,K}^2\,\mathrm dt\\
+    &\quad\le\|U_{n-1}(t_n)\|_0^2+\frac1{\mu_0}\int_{t_n}^{t_{n+1}}\|f(t)\|_0^2\,\mathrm dt
+       +\int_{t_n}^{t_{n+1}}\sum_{K\in\mathcal T_h}\delta
+           \biggl\|\frac{h_K^{1/2}}{|\boldsymbol{b}|^{1/2}}f(t)\biggr\|_{0,K}^2\,\mathrm dt,
+  \end{aligned}
+\end{equation}
+其中 \(\mu_0>0\) 由\eqref{eq:12.1.3}定义.仍以 \(\|\cdot\|_0\) 表示 \(L^2(\Omega)\) 范数,以 \(\|\cdot\|_{0,K}\) 表示 \(L^2(K)\) 范数.
+
+从类似\eqref{eq:11.3.44}的表述出发,还可以得到时间区间 \([0,T]\) 上的整体估计.设 \(u_-^0:=u_0\),则对每个 \(n=0,1,\ldots,\mathcal N-1\),有
+\begin{equation}\label{eq:12.3.6}
+  \begin{aligned}
+    &\|u_-^{n+1}\|_0^2+\sum_{m=0}^n\|[u^m]\|_0^2\\
+    &\qquad+2\varepsilon\int_0^{t_{n+1}}\|\nabla u(t)\|_0^2\,\mathrm dt
+       +\mu_0\int_0^{t_{n+1}}\|u(t)\|_0^2\,\mathrm dt\\
+    &\qquad+\int_0^{t_{n+1}}\sum_{K\in\mathcal T_h}\delta
+       \biggl\|\frac{h_K^{1/2}}{|\boldsymbol{b}|^{1/2}}
+         \biggl(\frac{\partial u}{\partial t}(t)+Lu(t)\biggr)\biggr\|_{0,K}^2\,\mathrm dt\\
+    &\quad\le\|u_0\|_0^2+\frac1{\mu_0}\int_0^{t_{n+1}}\|f(t)\|_0^2\,\mathrm dt
+       +\int_0^{t_{n+1}}\sum_{K\in\mathcal T_h}\delta
+         \biggl\|\frac{h_K^{1/2}}{|\boldsymbol{b}|^{1/2}}f(t)\biggr\|_{0,K}^2\,\mathrm dt.
+  \end{aligned}
+\end{equation}
+这里 \(u|_{(t_m,t_{m+1})}=U_m\),故对 \(m=0,1,\ldots,\mathcal N-1\),有 \([u^m]=U_m(t_m)-U_{m-1}(t_m)\).\(\delta>0\) 时,\eqref{eq:12.3.6}中的额外稳定性项体现了这一方法比纯 Galerkin 法(即 \(\delta=0\))具有更好的性质.
+
+\(\rho=0\) 时的收敛性分析见\BookCite{hughes-franca-mallet1987}{Hughes、Franca 和 Mallet(1987)},\(\rho=1\) 时的分析见\BookCite{hughes-franca-hulbert1989}{Hughes、Franca 和 Hulbert(1989)}.
+\SourcePage{427}
+按\eqref{eq:12.3.6}左端定义的范数度量,该方法的精度为 \(O(h^{k+1/2})\).当 \(\rho=0\) 时,须把该范数中的 \(L\) 换成其反对称部分 \(L_{SS}\).
+
+还可以在各个区间 \([t_n,t_{n+1}]\) 上选用不同的有限维空间 \(V_h\),或者选用不同的多项式次数 \(q\),也可以两者都变.
+
+\BookCite{johnson-navert-pitkaranta1984}{Johnson、Nävert 和 Pitkäranta(1984)}提出了更一般的做法,对每个条带 \(S_n:=[t_n,t_{n+1}]\times\Omega\) 作时空三角剖分.这时对每个 \(n\),在
+\[
+  H_*^1(S_n):=\{v\in H^1(S_n)\mid v=0\text{ 在 }[t_n,t_{n+1}]\times\partial\Omega\}
+\]
+中选取一个有限元子空间 \(V_h^{(n)}\),其中时空单元的尺度不超过 \(h\).相邻条带的剖分可以在公共时间层上不匹配.问题仍由\eqref{eq:12.3.4}表述,但现在解 \(U_n\) 和试验函数 \(v\) 都属于 \(V_h^{(n)}\),而 \(\mathcal T_h\) 表示 \(S_n\) 的一族三角剖分.
+
+\section{算子分裂法}\label{sec:12.4}
+
+求非定常对流--扩散方程近似解的另一种有效途径是算子分裂.仍考虑问题\eqref{eq:12.1.1}.将算子 \(L\) 写成
+\begin{equation}\label{eq:12.4.1}
+  L=L_1+L_2,
+\end{equation}
+其中 \(L_1,L_2\) 是适当的算子.例如,对流--扩散情形下的一种典型分裂为
+\begin{equation}\label{eq:12.4.2}
+  L_1u=-\varepsilon\Delta u+\eta\mu u,\qquad
+  L_2u=\tfrac12\operatorname{div}(\boldsymbol{b}u)
+          +\tfrac12\boldsymbol{b}\cdot\nabla u+(1-\eta)\mu u,
+\end{equation}
+其中 \(\mu\) 由\eqref{eq:12.1.3}定义,\(0\le\eta\le1\).这样就把扩散和对流分开了.特别地,当 \(\eta=1\) 时,有 \(L_1=L_S\) 和 \(L_2=L_{SS}\),分别是算子 \(L\) 关于 \(L^2(\Omega)\) 内积的对称部分和反对称部分,见\eqref{eq:12.3.2}和\eqref{eq:12.3.3}.
+
+算子分裂的基本思想如下.以 \(u(t_n,\boldsymbol{x})\) 的近似 \(u^n(\boldsymbol{x})\) 为起点,通过两个或更多中间值构造 \(u^{n+1}(\boldsymbol{x})\).每个中间值只需求解一个仅涉及某一算子 \(L_i\) 的边值问题.关于这类方法的一般介绍,见第~\ref{sec:5.7}~节.
+
+先看 Peaceman--Rachford 格式.给定 \(u^0:=u_0\),对 \(n=0,1,\ldots,\mathcal N-1\),先解
+\begin{equation}\label{eq:12.4.3}
+  \frac{u^{n+1/2}-u^n}{\tau}+L_1u^{n+1/2}+L_2u^n
+    =f(t_{n+1/2})\qquad\text{在 }\Omega,
+\end{equation}
+\SourcePage{428}
+再解
+\begin{equation}\label{eq:12.4.4}
+  \frac{u^{n+1}-u^{n+1/2}}{\tau}+L_1u^{n+1/2}+L_2u^{n+1}
+    =f(t_{n+1/2})\qquad\text{在 }\Omega,
+\end{equation}
+其中 \(\tau=\Delta t/2\),\(t_{n+1/2}=t_n+\Delta t/2\).
+
+显然,须分别给\eqref{eq:12.4.3}和\eqref{eq:12.4.4}配上适当的边界条件.一般而言,应施加何种边界条件,很大程度上取决于算子 \(L_1,L_2\) 的性质以及给定的边界算子 \(B\).以齐次 Dirichlet 情形为例,即\eqref{eq:12.1.1}中 \(Bu=u\),并设 \(L_1,L_2\) 由\eqref{eq:12.4.2}给出.则应在\eqref{eq:12.4.3}中施加 \(u=0\) 于 \(\partial\Omega\).而\eqref{eq:12.4.4}是一个定常对流问题,见第~\ref{sec:5.1}~节和第~\BookRef{ch:14}{14}~章,因此只须在流入边界上施加齐次 Dirichlet 条件,即在
+\[
+  \partial\Omega^{\rm in}:=\{\boldsymbol{x}\in\partial\Omega
+       \mid \boldsymbol{b}(\boldsymbol{x})\cdot\boldsymbol{n}(\boldsymbol{x})<0\}
+\]
+上施加,其中 \(\boldsymbol{n}\) 是 \(\partial\Omega\) 上的单位外法向量.这样选定边界条件后,问题\eqref{eq:12.4.4}存在唯一解.
+
+此时,仍设\eqref{eq:12.1.3}成立,有
+\begin{equation}\label{eq:12.4.5}
+  (L_1v,v)=\int_\Omega(\varepsilon|\nabla v|^2+\eta\mu v^2)
+    \ge\alpha\|v\|_1^2\qquad\forall v\in H_0^1(\Omega),
+\end{equation}
+其中 \(\alpha:=\min\{\varepsilon,\eta\mu_0\}\),以及
+\begin{equation}\label{eq:12.4.6}
+  \begin{aligned}
+    (L_2v,v)
+      &=\int_\Omega\bigl\{\tfrac12[\operatorname{div}(\boldsymbol{b}v)v
+           +(\boldsymbol{b}\cdot\nabla v)v]+(1-\eta)\mu v^2\bigr\}\\
+      &=\tfrac12\int_{\partial\Omega\setminus\partial\Omega^{\rm in}}
+         \boldsymbol{b}\cdot\boldsymbol{n}\,v^2+(1-\eta)\int_\Omega\mu v^2\\
+      &\ge(1-\eta)\mu_0\|v\|_0^2\qquad\forall v\in H^1_{\partial\Omega^{\rm in}}(\Omega).
+  \end{aligned}
+\end{equation}
+这里,对任意子集 \(\Sigma\subset\partial\Omega\),有 \(H_\Sigma^1(\Omega):=\{v\in H^1(\Omega)\mid v=0\text{ 在 }\Sigma\}\),见第~\ref{sec:1.3}~节.关于以非负算子为基础的分裂,在 \(\Delta t\to0\) 时的稳定性和收敛性可见\BookCite{yanenko1971}{Yanenko(1971)}和\BookCite{marchuk1990}{Marchuk(1990)}等.关于非线性算子,参见\BookCite{lions-mercier1979}{Lions 和 Mercier(1979)}.
+
+第~\ref{sec:5.7}~节引入的其他分步格式,也可用来代替 Peaceman--Rachford 格式.
+
+为实际求解问题,对每个 \(n\) 都要对\eqref{eq:12.4.3}和\eqref{eq:12.4.4}作有限维逼近.只要近似算子 \(L_{1,h}\) 和 \(L_{2,h}\) 对相应有限维空间中的所有 \(v\) 都满足\eqref{eq:12.4.5}和\eqref{eq:12.4.6}的性质,所得离散分步格式的收敛性就有保证.
+
+上述分裂还可以在代数层面实施,即应用于\eqref{eq:12.2.1}这样的半离散逼近.此时,问题成为
+\SourcePage{429}
+\begin{equation}\label{eq:12.4.7}
+  \begin{cases}
+    M\dfrac{d\boldsymbol{\xi}}{dt}(t)+A\boldsymbol{\xi}(t)=\boldsymbol{F}(t)
+        & t\in(0,T),\\[2pt]
+    \boldsymbol{\xi}(0)=\boldsymbol{\xi}_0,
+  \end{cases}
+\end{equation}
+其中矩阵 \(A\) 和 \(M\) 由\eqref{eq:12.2.3}定义,\(F_i(t):=(f(t),\varphi_i)\),并且令
+\[
+  u_h(t,\boldsymbol{x})=\sum_{j=1}^{N_h}\xi_j(t)\varphi_j(\boldsymbol{x}),\qquad
+  u_{0,h}(\boldsymbol{x})=\sum_{j=1}^{N_h}\xi_{0,j}\varphi_j(\boldsymbol{x}),
+\]
+这里 \(\{\varphi_j\mid j=1,\ldots,N_h\}\) 是 \(V_h\) 的一组基.回顾一下,矩阵 \(M\) 对称正定.
+
+算子分裂\eqref{eq:12.4.1}和\eqref{eq:12.4.2}诱导矩阵分裂 \(A=A_1+A_2\),其中
+\begin{equation}\label{eq:12.4.8}
+  (A_1)_{ij}:=a_1(\varphi_j,\varphi_i),\qquad
+  (A_2)_{ij}:=a_2(\varphi_j,\varphi_i),
+\end{equation}
+\(i,j=1,\ldots,N_h\),且
+\begin{equation}\label{eq:12.4.9}
+  a_1(w,v):=\varepsilon\int_\Omega\nabla w\cdot\nabla v+\int_\Omega\eta\mu wv,
+\end{equation}
+\begin{equation}\label{eq:12.4.10}
+  a_2(w,v):=-\tfrac12\int_\Omega\sum_{k=1}^d b_k(wD_kv-vD_kw)
+    +\int_\Omega(1-\eta)\mu wv.
+\end{equation}
+这里的边界处理很直接,因为原矩阵 \(A\) 已经计入边界条件.
+
+这种做法可称为\emph{代数分裂},可据此实现分步格式.例如,此时的 Peaceman--Rachford 法如下.取 \(\boldsymbol{\xi}^0:=\boldsymbol{\xi}_0\),再对 \(n=0,1,\ldots,\mathcal N-1\) 求解
+\begin{equation}\label{eq:12.4.11}
+  \begin{cases}
+    M\dfrac{\boldsymbol{\xi}^{n+1/2}-\boldsymbol{\xi}^n}{\tau}
+      +A_1\boldsymbol{\xi}^{n+1/2}+A_2\boldsymbol{\xi}^n=\boldsymbol{F}(t_{n+1/2}),\\[4pt]
+    M\dfrac{\boldsymbol{\xi}^{n+1}-\boldsymbol{\xi}^{n+1/2}}{\tau}
+      +A_1\boldsymbol{\xi}^{n+1/2}+A_2\boldsymbol{\xi}^{n+1}=\boldsymbol{F}(t_{n+1/2}),
+  \end{cases}
+\end{equation}
+其中 \(\tau=\Delta t/2\).回顾一下,\(u_h^n(\boldsymbol{x})=\sum_{j=1}^{N_h}\xi_j^n\varphi_j(\boldsymbol{x})\) 是 \(u(t_n,\boldsymbol{x})\) 的近似.
+
+容易看出,对每个 \(0\le\eta\le1\),\(A_1\) 都正定.当 \(0\le\eta<1\) 时,\(A_2\) 正定,当 \(\eta=1\) 时,\(A_2\) 半正定.因此,\(\boldsymbol{\xi}^{n+1/2}\) 和 \(\boldsymbol{\xi}^{n+1}\) 都可由\eqref{eq:12.4.11}唯一确定.
+
+现在可以证明 Peaceman--Rachford 格式的一个稳定性结果.
+
+\begin{proposition}[]{12.4.1}
+设 \(M\) 是\eqref{eq:12.4.11}中的对称正定矩阵.引入内积及其相应的范数
+\SourcePage{430}
+\begin{equation}\label{eq:12.4.12}
+  (\boldsymbol{\eta},\boldsymbol{\xi})_M:=(M\boldsymbol{\eta},\boldsymbol{\xi}),
+  \qquad |\boldsymbol{\eta}|_M^2=(M\boldsymbol{\eta},\boldsymbol{\eta}),
+\end{equation}
+其中 \(\boldsymbol{\eta},\boldsymbol{\xi}\in\mathbb R^{N_h}\).假设 \(M^{-1}A_1\) 与 \(M^{-1}A_2\) 可交换,即
+\begin{equation}\label{eq:12.4.13}
+  M^{-1}A_1M^{-1}A_2=M^{-1}A_2M^{-1}A_1.
+\end{equation}
+令 \(u_h^n(\boldsymbol{x})=\sum_{j=1}^{N_h}\xi_j^n\varphi_j(\boldsymbol{x})\),其中 \(\boldsymbol{\xi}^n\) 是由\eqref{eq:12.4.11}构造的 Peaceman--Rachford 序列.则
+\begin{equation}\label{eq:12.4.14}
+  \|u_h^n\|_0\le\|u_{0,h}\|_0+t_n\sup_{t\in[0,T]}\|f(t)\|_0.
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+从递推关系出发：
+\begin{equation}\label{eq:12.4.15}
+  \boldsymbol{\xi}^{n+1}=\mathcal B\boldsymbol{\xi}^n+\Delta t\,\mathcal G M^{-1}\boldsymbol{F}(t_{n+1/2}),
+\end{equation}
+其中
+\begin{equation}\label{eq:12.4.16}
+  \begin{aligned}
+    \mathcal B:={}&(I+\tau M^{-1}A_2)^{-1}(I-\tau M^{-1}A_1)\\
+      &\quad\times(I+\tau M^{-1}A_1)^{-1}(I-\tau M^{-1}A_2),
+  \end{aligned}
+\end{equation}
+以及
+\begin{equation}\label{eq:12.4.17}
+  \mathcal G:=(I+\tau M^{-1}A_2)^{-1}(I+\tau M^{-1}A_1)^{-1}.
+\end{equation}
+由\eqref{eq:12.4.15}可得
+\begin{equation}\label{eq:12.4.18}
+  \boldsymbol{\xi}^n=\mathcal B^n\boldsymbol{\xi}_0
+    +\Delta t\sum_{k=1}^n\mathcal B^{n-k}\mathcal G M^{-1}\boldsymbol{F}(t_{k-1/2}),
+\end{equation}
+从而
+\begin{equation}\label{eq:12.4.19}
+  |\boldsymbol{\xi}^n|_M\le|\mathcal B^n\boldsymbol{\xi}_0|_M
+    +\Delta t\sum_{k=1}^n|\mathcal B^{n-k}\mathcal G M^{-1}\boldsymbol{F}(t_{k-1/2})|_M.
+\end{equation}
+根据\eqref{eq:12.4.13},可以写成
+\[
+  \begin{aligned}
+    \mathcal B=\widehat{\mathcal B}:={}&
+      (I-\tau M^{-1}A_1)(I+\tau M^{-1}A_1)^{-1}\\
+      &\quad\times(I-\tau M^{-1}A_2)(I+\tau M^{-1}A_2)^{-1}.
+  \end{aligned}
+\]
+注意,对于内积 \((\cdot,\cdot)_M\),\(M^{-1}A_1\) 对每个 \(0\le\eta\le1\) 都正定.\(M^{-1}A_2\) 在 \(0\le\eta<1\) 时正定,在 \(\eta=1\) 时半正定.因此仿照命题~\ref{pro:2.3.1}可得
+\[
+  \|\widehat{\mathcal B}\|_M
+    :=\max_{\substack{\boldsymbol{\eta}\in\mathbb R^{N_h}\\\boldsymbol{\eta}\ne0}}
+      \frac{|\widehat{\mathcal B}\boldsymbol{\eta}|_M}{|\boldsymbol{\eta}|_M}<1.
+\]
+同理可证 \(\|\mathcal G\|_M<1\),进而
+\begin{equation}\label{eq:12.4.20}
+  |\boldsymbol{\xi}^n|_M\le|\boldsymbol{\xi}_0|_M+t_n\sup_{t\in[0,T]}|M^{-1}\boldsymbol{F}(t)|_M,
+  \qquad n=0,1,\ldots,\mathcal N.
+\end{equation}
+\SourcePage{431}
+最后,容易看出
+\[
+  |\boldsymbol{\xi}^n|_M=\|u_h^n\|_0,\qquad
+  |M^{-1}\boldsymbol{F}(t)|_M=\|P_h^k(f(t))\|_0\le\|f(t)\|_0,
+\]
+其中 \(P_h^k\) 是关于 \(L^2(\Omega)\) 内积到 \(V_h\) 的正交投影算子.
+\end{proof}
+
+交换关系\eqref{eq:12.4.13}的限制相当强,按\eqref{eq:12.4.8}至\eqref{eq:12.4.10}选取的矩阵 \(A_1,A_2\) 一般并不满足它.不过,引入辅助未知量
+\begin{equation}\label{eq:12.4.21}
+  \boldsymbol{\zeta}^n:=(I+\tau M^{-1}A_2)\boldsymbol{\xi}^n,
+\end{equation}
+关系\eqref{eq:12.4.15}便成为
+\begin{equation}\label{eq:12.4.22}
+  \boldsymbol{\zeta}^{n+1}=\widehat{\mathcal B}\boldsymbol{\zeta}^n
+    +\Delta t(I+\tau M^{-1}A_1)^{-1}M^{-1}\boldsymbol{F}(t_{n+1/2}).
+\end{equation}
+由此可以重复上述步骤,将\eqref{eq:12.4.20}中的 \(\boldsymbol{\xi}^n\) 换成 \(\boldsymbol{\zeta}^n\).这相当于在对称正定矩阵
+\[
+  \widehat M:=M+\tau(A_2+A_2^{\mathsf T})
+    +\tau^2A_2^{\mathsf T}M^{-1}A_2
+\]
+所确定的向量范数下,得到 \(\boldsymbol{\xi}^n\) 的稳定性估计.
+
+Peaceman--Rachford 法的收敛性分析见\BookCite{yanenko1971}{Yanenko(1971)}和\BookCite{marchuk1990}{Marchuk(1990)}.
+
+注意,\eqref{eq:12.4.8}和\eqref{eq:12.4.9}所定义的 \(A_1\),对应于\eqref{eq:12.4.2}中算子 \(L_1\) 的齐次 Dirichlet 问题的离散.矩阵 \(A_2\) 也按\eqref{eq:12.4.8}定义,双线性形式见\eqref{eq:12.4.10},故其阶数为 \(N_h\).如果只在 \(\partial\Omega^{\rm in}\) 上给定 Dirichlet 条件,离散 \(L_2\) 所得的矩阵一般会不同.后一种情形只在 \(\partial\Omega^{\rm in}\) 上给定边界条件,所以自由度除了 \(N_h\) 个内部节点,还包括 \(\partial\Omega\setminus\partial\Omega^{\rm in}\) 上的节点.
+
+因此,若先按\eqref{eq:12.4.3}和\eqref{eq:12.4.4}作分步,再逼近得到的两个边值问题,所得格式未必与另一种次序相同.后一种次序是先将原问题半离散为\eqref{eq:12.4.7},再用分步格式\eqref{eq:12.4.11}推进时间.
+
+此外,在算子分裂中处理更一般的边界条件时,需要保证所得格式与原边值问题相容.有时边界条件本身也须分裂.例如,考虑 Neumann 问题
+\[
+  \begin{cases}
+    Lu=f & \text{在 }\Omega,\\[2pt]
+    \varepsilon\dfrac{\partial u}{\partial n}-\boldsymbol{b}\cdot\boldsymbol{n}\,u=g
+      & \text{在 }\partial\Omega.
+  \end{cases}
+\]
+\SourcePage{432}
+可以按\eqref{eq:12.4.9}选取 \(a_1(\cdot,\cdot)\),并取
+\[
+  a_2(w,v):=-\tfrac12\int_\Omega\sum_{k=1}^d b_k(wD_kv-vD_kw)
+    +\int_\Omega(1-\eta)\mu wv
+    -\tfrac12\int_{\partial\Omega}\boldsymbol{b}\cdot\boldsymbol{n}\,wv.
+\]
+此时,矩阵 \(A_1\) 对应于微分算子 \(L_1\) 与边界算子 \(\varepsilon\partial/\partial n\) 所构成的问题的离散,而 \(A_2\) 对应于 \(L_2\) 在 \(\partial\Omega^{\rm in}\) 上弱施加 Dirichlet 边界条件时的离散.
+
+\section{一种特征 Galerkin 法}\label{sec:12.5}
+
+这种方法采用 Lagrange 观点,沿运动粒子的轨迹考察非定常对流--扩散方程.Euler 观点考察的是固定空间位置处的变化.其源头可追溯到\BookCite{pironneau1982}{Pironneau(1982)}、\BookCite{douglas-russell1982}{Douglas 和 Russell(1982)}以及\BookCite{ewing-russell-wheeler1984}{Ewing、Russell 和 Wheeler(1984)}.
+
+先定义与向量场 \(\boldsymbol{b}=\boldsymbol{b}(t,\boldsymbol{x})\) 对应的特征线.给定 \(\boldsymbol{x}\in\overline\Omega\) 和 \(s\in[0,T]\),特征线是由下列方程确定的向量函数 \(\boldsymbol{X}=\boldsymbol{X}(t;s,\boldsymbol{x})\)：
+\begin{equation}\label{eq:12.5.1}
+  \begin{cases}
+    \dfrac{d\boldsymbol{X}}{dt}(t;s,\boldsymbol{x})=\boldsymbol{b}(t,\boldsymbol{X}(t;s,\boldsymbol{x}))
+       & t\in(0,T),\\[2pt]
+    \boldsymbol{X}(s;s,\boldsymbol{x})=\boldsymbol{x}.
+  \end{cases}
+\end{equation}
+在对 \(\boldsymbol{b}\) 作适当假设的条件下,每一组 \(s,\boldsymbol{x}\) 都有唯一的特征线.例如,\(\boldsymbol{b}\) 在 \([0,T]\times\overline\Omega\) 上连续,且关于空间变量在 \(\overline\Omega\) 上 Lipschitz 连续,Lipschitz 常数对 \(t\in[0,T]\) 一致.参见\BookCite{hartman1973}{Hartman(1973)}.以下讨论在所需时间范围内留在 \(\overline\Omega\) 中的特征线.
+
+从几何上看,\(\boldsymbol{X}(t;s,\boldsymbol{x})\) 是由场 \(\boldsymbol{b}\) 驱动、在时刻 \(s\) 位于 \(\boldsymbol{x}\) 的粒子在时刻 \(t\) 的位置.唯一性特别给出
+\begin{equation}\label{eq:12.5.2}
+  \boldsymbol{X}(t;s,\boldsymbol{X}(s;\tau,\boldsymbol{x}))=\boldsymbol{X}(t;\tau,\boldsymbol{x})
+\end{equation}
+对每个 \(t,s,\tau\in[0,T]\) 和 \(\boldsymbol{x}\in\overline\Omega\) 成立.因此 \(\boldsymbol{X}(t;s,\boldsymbol{X}(s;t,\boldsymbol{x}))=\boldsymbol{X}(t;t,\boldsymbol{x})=\boldsymbol{x}\).也就是说,固定 \(t\) 和 \(s\) 后,映射 \(\boldsymbol{x}\mapsto\boldsymbol{X}(s;t,\boldsymbol{x})\) 的逆映射为 \(\boldsymbol{y}\mapsto\boldsymbol{X}(t;s,\boldsymbol{y})\).
+
+因此,定义
+\begin{equation}\label{eq:12.5.3}
+  \overline u(t,\boldsymbol{y}):=u(t,\boldsymbol{X}(t;0,\boldsymbol{y})),
+\end{equation}
+或者等价地,\(u(t,\boldsymbol{x})=\overline u(t,\boldsymbol{X}(0;t,\boldsymbol{x}))\).由\eqref{eq:12.5.1}得到
+\SourcePage{433}
+\begin{equation}\label{eq:12.5.4}
+  \begin{aligned}
+    \frac{\partial\overline u}{\partial t}(t,\boldsymbol{y})
+      &=\frac{\partial u}{\partial t}(t,\boldsymbol{X}(t;0,\boldsymbol{y}))
+        +\sum_{i=1}^d D_i u(t,\boldsymbol{X}(t;0,\boldsymbol{y}))
+              \frac{dX_i}{dt}(t;0,\boldsymbol{y})\\
+      &=\biggl(\frac{\partial u}{\partial t}+\boldsymbol{b}\cdot\nabla u\biggr)
+            (t,\boldsymbol{X}(t;0,\boldsymbol{y})).
+  \end{aligned}
+\end{equation}
+沿用\eqref{eq:12.5.3}引入的上横线记号,将非定常对流--扩散方程改写为
+\begin{equation}\label{eq:12.5.5}
+  \frac{\partial\overline u}{\partial t}
+    -\varepsilon\overline{\Delta u}
+    +(\overline{\operatorname{div}\boldsymbol{b}}+\overline{a_0})\overline u
+    =\overline f\qquad\text{在 }Q_T.
+\end{equation}
+接着离散\eqref{eq:12.5.5}.时间导数采用向后 Euler 格式逼近,即
+\begin{equation}\label{eq:12.5.6}
+  \frac{\partial\overline u}{\partial t}(t_{n+1},\boldsymbol{y})
+    \simeq\frac{\overline u(t_{n+1},\boldsymbol{y})-\overline u(t_n,\boldsymbol{y})}{\Delta t}.
+\end{equation}
+取 \(\boldsymbol{y}=\boldsymbol{X}(0;t_{n+1},\boldsymbol{x})\),由\eqref{eq:12.5.3}得到
+\[
+  \frac{\partial\overline u}{\partial t}(t_{n+1},\boldsymbol{X}(0;t_{n+1},\boldsymbol{x}))
+    \simeq\frac{u(t_{n+1},\boldsymbol{x})-u(t_n,\boldsymbol{X}(t_n;t_{n+1},\boldsymbol{x}))}{\Delta t}.
+\]
+对 \(n=0,1,\ldots,\mathcal N-1\),以 \(\boldsymbol{X}^n(\boldsymbol{x})\) 表示 \(\boldsymbol{X}(t_n;t_{n+1},\boldsymbol{x})\) 的适当逼近.最终可把问题\eqref{eq:12.5.5}的隐式离散格式写成如下形式.取 \(u^0:=u_0\),对 \(n=0,1,\ldots,\mathcal N-1\) 求解
+\begin{equation}\label{eq:12.5.7}
+  \begin{aligned}
+    &\frac{u^{n+1}-u^n\circ\boldsymbol{X}^n}{\Delta t}
+      -\varepsilon\Delta u^{n+1}
+      +[\operatorname{div}\boldsymbol{b}(t_{n+1})+a_0]u^{n+1}\\
+    &\qquad=f(t_{n+1})\qquad\text{在 }\Omega.
+  \end{aligned}
+\end{equation}
+显然,须在 \(\partial\Omega\) 上施加边界条件.为简便起见,取齐次 Dirichlet 条件 \(u^{n+1}|_{\partial\Omega}=0\).
+
+离散特征线方程
+\begin{equation}\label{eq:12.5.8}
+  \frac{d\boldsymbol{X}}{dt}(t;t_{n+1},\boldsymbol{x})
+    =\boldsymbol{b}(t,\boldsymbol{X}(t;t_{n+1},\boldsymbol{x}))
+\end{equation}
+时,通常可从 \(t_{n+1}\) 出发,沿时间向后作一步显式 Euler 推进.这给出 \(\boldsymbol{X}(t_n;t_{n+1},\boldsymbol{x})\) 的如下逼近：
+\begin{equation}\label{eq:12.5.9}
+  \boldsymbol{X}_{(1)}^n(\boldsymbol{x}):=\boldsymbol{x}-\boldsymbol{b}(t_{n+1},\boldsymbol{x})\Delta t.
+\end{equation}
+注意,这里只在长度为 \(\Delta t\) 的时间区间 \((t_n,t_{n+1})\) 上积分\eqref{eq:12.5.8},故 \(\boldsymbol{X}_{(1)}^n\) 逼近 \(\boldsymbol{X}(t_n;t_{n+1},\boldsymbol{x})\) 的误差为二阶.
+
+用二阶 Runge--Kutta 格式可得到更准确的逼近：
+\begin{equation}\label{eq:12.5.10}
+  \boldsymbol{X}_{(2)}^n(\boldsymbol{x}):=\boldsymbol{x}-\boldsymbol{b}\biggl(
+     t_{n+1/2},\boldsymbol{x}-\boldsymbol{b}(t_{n+1},\boldsymbol{x})\frac{\Delta t}{2}\biggr)\Delta t.
+\end{equation}
+这给出 \(\boldsymbol{X}(t_n;t_{n+1},\boldsymbol{x})\) 的三阶单步逼近.
+
+\SourcePage{434}
+要计算 \(u^n\circ\boldsymbol{X}_{(i)}^n\),必须验证 \(\boldsymbol{X}_{(i)}^n(\boldsymbol{x})\in\Omega\) 对每个 \(\boldsymbol{x}\in\Omega\) 和 \(i=1,2\) 成立.为简便起见,假设对每个 \(t\in[0,T]\) 和 \(\boldsymbol{x}\in\partial\Omega\),有 \(\boldsymbol{b}(t,\boldsymbol{x})=0\).于是边界上的 \(\boldsymbol{x}\) 满足 \(\boldsymbol{X}_{(i)}^n(\boldsymbol{x})=\boldsymbol{x}\),\(i=1,2\).记 \(\boldsymbol{x}^*\in\partial\Omega\) 为离 \(\boldsymbol{x}\in\Omega\) 最近的点,则
+\[
+  \begin{aligned}
+    |\boldsymbol{X}_{(1)}^n(\boldsymbol{x})-\boldsymbol{x}|
+      &=|\boldsymbol{b}(t_{n+1},\boldsymbol{x})|\Delta t
+        =|\boldsymbol{b}(t_{n+1},\boldsymbol{x})-\boldsymbol{b}(t_{n+1},\boldsymbol{x}^*)|\Delta t\\
+      &\le|\boldsymbol{b}(t_{n+1})|_{\operatorname{Lip}(\overline\Omega)}
+               |\boldsymbol{x}-\boldsymbol{x}^*|\Delta t,
+  \end{aligned}
+\]
+其中
+\[
+  |\boldsymbol{g}|_{\operatorname{Lip}(\overline\Omega)}
+    :=\sup_{\substack{\boldsymbol{x}_1,\boldsymbol{x}_2\in\overline\Omega\\\boldsymbol{x}_1\ne\boldsymbol{x}_2}}
+         \frac{|\boldsymbol{g}(\boldsymbol{x}_1)-\boldsymbol{g}(\boldsymbol{x}_2)|}{|\boldsymbol{x}_1-\boldsymbol{x}_2|}.
+\]
+假设
+\begin{equation}\label{eq:12.5.11}
+  \sup_{t\in[0,T]}|\boldsymbol{b}(t)|_{\operatorname{Lip}(\overline\Omega)}\Delta t<1,
+\end{equation}
+立即得到,对每个 \(\boldsymbol{x}\in\Omega\) 以及 \(n=0,1,\ldots,\mathcal N-1\),有 \(\boldsymbol{X}_{(1)}^n(\boldsymbol{x})\in\Omega\).\(\boldsymbol{X}_{(2)}^n\) 有类似的结果,只需相应缩小步长.
+
+下文采用二阶单步逼近\eqref{eq:12.5.9}.基于\eqref{eq:12.5.10}的更高阶格式可见\BookCite{pironneau1988}{Pironneau(1988,第 86–90 页)}.假设对每个 \(t\in[0,T]\) 和几乎处处的 \(\boldsymbol{x}\in\Omega\),有
+\begin{equation}\label{eq:12.5.12}
+  \operatorname{div}\boldsymbol{b}(t,\boldsymbol{x})+a_0(\boldsymbol{x})\ge0,
+\end{equation}
+则容易证明稳定性.事实上,以 \(u^{n+1}\) 乘\eqref{eq:12.5.7}并在 \(\Omega\) 上积分,得到
+\begin{equation}\label{eq:12.5.13}
+  \begin{aligned}
+    &\|u^{n+1}\|_0^2+\varepsilon\Delta t\,\|\nabla u^{n+1}\|_0^2\\
+    &\qquad\le\bigl(\|u^n\circ\boldsymbol{X}_{(1)}^n\|_0+\Delta t\|f(t_{n+1})\|_0\bigr)
+          \|u^{n+1}\|_0.
+  \end{aligned}
+\end{equation}
+由\eqref{eq:12.5.11}还可推出 \(\boldsymbol{X}_{(1)}^n\) 是单射.因此可作变量变换 \(\boldsymbol{y}=\boldsymbol{X}_{(1)}^n(\boldsymbol{x})\).令 \(\boldsymbol{Y}_{(1)}^n(\boldsymbol{y}):=(\boldsymbol{X}_{(1)}^n)^{-1}(\boldsymbol{y})\),有
+\begin{equation}\label{eq:12.5.14}
+  \|u^n\circ\boldsymbol{X}_{(1)}^n\|_0^2
+    =\int_{\boldsymbol{X}_{(1)}^n(\Omega)}u^n(\boldsymbol{y})^2
+       \bigl|\det(\operatorname{Jac}\boldsymbol{X}_{(1)}^n)
+             \circ\boldsymbol{Y}_{(1)}^n(\boldsymbol{y})\bigr|^{-1}\,\mathrm d\boldsymbol{y}.
+\end{equation}
+另一方面,只要
+\begin{equation}\label{eq:12.5.15}
+  \mu_1^\star\Delta t\le C_2,
+\end{equation}
+就对几乎处处的 \(\boldsymbol{x}\in\Omega\) 有
+\[
+  |\det(\operatorname{Jac}\boldsymbol{X}_{(1)}^n)(\boldsymbol{x})|
+    \ge1-\Delta t\,C_1\|\operatorname{Jac}\boldsymbol{b}(t_{n+1})\|_{L^\infty(\Omega)}>0,
+\]
+其中
+\SourcePage{435}
+\[
+  \mu_1^\star:=\sup_{t\in[0,T]}
+    \|\operatorname{Jac}\boldsymbol{b}(t)\|_{L^\infty(\Omega)},
+\]
+而 \(C_1>0\) 和 \(0<C_2<C_1^{-1}\) 是适当的常数.因此,在必要时缩小\eqref{eq:12.5.15}中的 \(C_2\),由\eqref{eq:12.5.14}得到
+\begin{equation}\label{eq:12.5.16}
+  \|u^n\circ\boldsymbol{X}_{(1)}^n\|_0^2\le(1+\Delta t\,C_3\mu_1^\star)\|u^n\|_0^2.
+\end{equation}
+注意,\(C_2\) 足够小时,条件\eqref{eq:12.5.15}蕴含\eqref{eq:12.5.11}.最后,由\eqref{eq:12.5.13}得到,对每个 \(n=0,1,\ldots,\mathcal N-1\),
+\begin{equation}\label{eq:12.5.17}
+  \begin{aligned}
+    &\bigl(\|u^{n+1}\|_0^2+\varepsilon\Delta t\,\|\nabla u^{n+1}\|_0^2\bigr)^{1/2}\\
+    &\quad\le(1+C_3\mu_1^\star\Delta t)^{1/2}\|u^n\|_0
+            +\Delta t\|f(t_{n+1})\|_0\\
+    &\quad\le(1+C_3\mu_1^\star\Delta t)^{(n+1)/2}\|u_0\|_0
+       +\Delta t\sum_{k=1}^{n+1}(1+C_3\mu_1^\star\Delta t)^{(n+1-k)/2}\|f(t_k)\|_0\\
+    &\quad\le\biggl(\|u_0\|_0+t_{n+1}\sup_{t\in[0,T]}\|f(t)\|_0\biggr)
+        \exp\biggl(\frac{C_3}{2}\mu_1^\star t_{n+1}\biggr).
+  \end{aligned}
+\end{equation}
+注意,\(L^2(\Omega)\) 稳定性与 \(\varepsilon\) 无关.
+
+用类似的方法可以证明 \(u^n\) 收敛到 \(u(t_n)\).定义误差函数 \(\epsilon^n:=u(t_n)-u^n\),由\eqref{eq:12.5.7}得到,对 \(n=0,1,\ldots,\mathcal N-1\),
+\begin{equation}\label{eq:12.5.18}
+  \begin{aligned}
+    &\frac{\epsilon^{n+1}-\epsilon^n\circ\boldsymbol{X}_{(1)}^n}{\Delta t}
+      -\varepsilon\Delta\epsilon^{n+1}
+      +[\operatorname{div}\boldsymbol{b}(t_{n+1})+a_0]\epsilon^{n+1}\\
+    &\quad=\frac{u(t_{n+1})-u(t_n)\circ\boldsymbol{X}_{(1)}^n}{\Delta t}
+      -\frac{\partial u}{\partial t}(t_{n+1})
+      -\boldsymbol{b}(t_{n+1})\cdot\nabla u(t_{n+1})\qquad\text{在 }\Omega.
+  \end{aligned}
+\end{equation}
+由于 \(\boldsymbol{X}_{(1)}^n(\boldsymbol{x})-\boldsymbol{X}(t_n;t_{n+1},\boldsymbol{x})=O((\Delta t)^2)\),容易证明在解充分光滑时,\eqref{eq:12.5.18}的右端为 \(O(\Delta t)\).对 \(\epsilon^n\) 应用\eqref{eq:12.5.17},并注意 \(\epsilon^0=0\),即得收敛性.
+
+上述方法也适用于\eqref{eq:12.5.7}经空间离散得到的全离散问题.例如,采用有限元法时,所得格式如下.给定 \(u_h^0:=u_{0,h}\in V_h\),对每个 \(n=0,1,\ldots,\mathcal N-1\),求 \(u_h^{n+1}\in V_h\),使得
+\begin{equation}\label{eq:12.5.19}
+  \begin{aligned}
+    &\frac1{\Delta t}(u_h^{n+1}-u_h^n\circ\boldsymbol{X}^n,v_h)\\
+    &\qquad+\varepsilon(\nabla u_h^{n+1},\nabla v_h)
+           +([\operatorname{div}\boldsymbol{b}(t_{n+1})+a_0]u_h^{n+1},v_h)\\
+    &\quad=(f(t_{n+1}),v_h)\qquad\forall v_h\in V_h,
+  \end{aligned}
+\end{equation}
+其中 \((\cdot,\cdot)\) 表示 \(L^2(\Omega)\) 的内积,\(V_h\) 是 \(V=H_0^1(\Omega)\) 的适当有限元子空间.其他边界条件可按通常方式作相应调整.
+\SourcePage{436}
+在\eqref{eq:12.5.12}和\eqref{eq:12.5.15}成立,且对每个 \(t\in[0,T]\) 有 \(\boldsymbol{b}(t)|_{\partial\Omega}=0\) 的条件下,可以完全仿照前面的做法证明稳定性.进一步,若 \(V_h=X_h^1\cap H_0^1(\Omega)\),即在 \(\partial\Omega\) 上为零的连续分片线性多项式空间,则可证明 \(\|u(t_n)-u_h^n\|_0=O(h+\Delta t+h^2/\Delta t)\),参见\BookCite{pironneau1988}{Pironneau(1988,第 86–89 页)}.
+
+本节最后指出,实际实现这种方法时还会遇到几个问题.首先,需要计算积分 \((u_h^n\circ\boldsymbol{X}^n,v_h)\),通常要用求积公式,而这一求积过程可能导致不稳定现象,见\BookCite{morton-priestley-suli1988}{Morton、Priestley 和 Süli(1988)}.此外,数值积分需要知道 \(u_h^n\circ\boldsymbol{X}^n\) 在某些节点处的值.这意味着对任一给定节点 \(\boldsymbol{x}_k\),都须确定 \(\mathcal T_h\) 中哪个三角形 \(K\) 包含点 \(\boldsymbol{X}^n(\boldsymbol{x}_k)\).关于这一方法的实现,另见\BookCite{pironneau1988}{Pironneau(1988,第 91–93 页)}和\BookCite{priestley1993}{Priestley(1993)}.
+
+这种思想也可以在谱方法框架中实现.例如,关于不可压缩 Navier--Stokes 方程,参见\BookCite{ho-maday-patera-ronquist1990}{Ho、Maday、Patera 和 Rønquist(1990)}及\BookCite{suli-ware1992}{Süli 和 Ware(1992)}.关于对流占优的椭圆型问题和双曲型问题,参见\BookCite{suli-ware1991}{Süli 和 Ware(1991)}.

@@ -1,0 +1,303 @@
+\section{半群方法}\label{chap:semigroup-methods}
+
+粗略地说, 半群方法是将依赖时间的 PDE 视为函数空间上的 ODE 的一种观点. 例如, 考虑热方程的如下初边值问题:
+\begin{equation}\label{eq:semigroup-motivation-heat-initial-boundary-problem}
+\begin{aligned}u_t&=u_{xx},&x\in(0,1),\ t>0,\\u(0,t)&=0,&t>0,\\u(1,t)&=0,&t>0,\\u(x,0)&=u_0(x),&x\in(0,1).\end{aligned}
+\end{equation}
+设 $X$ 为函数空间 $L^2(0,1)$, $A=\mathrm{d}^2/\mathrm{d}x^2$ 为定义域为 $\mathcal{D}(A)=\{u\in H^2(0,1)\mid u(0)=u(1)=0\}$ 的二阶导数算子. 则可将 \eqref{eq:semigroup-motivation-heat-initial-boundary-problem} 看作 $X$ 中 ODE 的初值问题:
+\begin{equation}\label{eq:semigroup-motivation-abstract-heat-ode}
+\dot u=Au,\ u(0)=u_0.
+\end{equation}
+
+
+\PDEIndexMark{idx:semigroup-matrix-exponential-motivation}任何有自尊心的物理学家都 ``知道\textquotesingle\textquotesingle\ \eqref{eq:semigroup-motivation-abstract-heat-ode} 的解为 $\exp(At)u_0$. 对数学家而言, 事情却没那么简单: 必须面对赋予 $\exp(At)$ 意义这一恼人的问题. 线性算子半群理论将矩阵指数 (或对非自治问题而言的基本矩阵) 的概念推广到无限维空间中涉及无界算子的问题. 作为准备, 回顾有限维情形下定义矩阵指数的各种方法, 并初步评估它们推广到无限维情形的可能性.
+
+\begin{enumerate}\item 幂级数法: 定义矩阵 $A$ 的指数的通常方法是使用幂级数
+\begin{equation}\label{eq:matrix-exponential-power-series}
+e^A=\sum_{n=0}^\infty\dfrac{A^n}{n!}.
+\end{equation}
+显然, 对无界算子而言, 这样的定义实际上没有用处. 例如, 若 $A$ 为上例中的二阶导数算子, 则要使 $A^nu$ 对所有 $n$ 都有定义, $u$ 必须为 $C^\infty$ 类, 且所有偶数阶导数都必须在端点处为零. 指数级数的收敛性要求还会进一步限制 $u$.
+
+\item 谱方法: 教科书告诉我们, 计算矩阵指数的方法是先将 $A$ 对角化 (或更一般地, 化为 Jordan 标准形). 若 $A=T^{-1}DT$, 其中 $D$ 为对角矩阵, 则由 \eqref{eq:matrix-exponential-power-series} 容易得到
+\begin{equation}\label{eq:matrix-exponential-diagonal-similarity}
+e^A=T^{-1}e^DT.
+\end{equation}
+对角矩阵的指数当然很容易计算. 在无限维情形下, 即使对有界算子, 一般也没有对角化或 Jordan 标准形的对应物. 然而, 对某些受限的算子类, 例如 Hilbert 空间中的自伴算子, 谱定理可以看作一种对角化, 此时确实可以用 \eqref{eq:matrix-exponential-diagonal-similarity} 定义指数.
+
+\item 定义 $A$ 的指数的另一种方法是
+\begin{equation}\label{eq:matrix-exponential-positive-power-limit}
+e^A=\lim_{n\to\infty}\left(I+\dfrac{A}{n}\right)^n.
+\end{equation}
+显然, 对无界算子而言, 这种方法与幂级数具有相同的缺陷. 不过, 可以将其修改如下:
+\begin{equation}\label{eq:matrix-exponential-resolvent-power-limit}
+e^A=\lim_{n\to\infty}\left(I-\dfrac{A}{n}\right)^{-n}.
+\end{equation}
+现在取的不是 $A$ 的幂, 而是预解算子的幂. 将看到, 公式 \eqref{eq:matrix-exponential-resolvent-power-limit} 确实可以使用.
+
+\item 用 Cauchy 公式表示: 设 $C$ 为包围 $A$ 的所有特征值的正向可求长简单闭曲线. 则得到
+\begin{equation}\label{eq:matrix-exponential-cauchy-integral}
+e^A=\dfrac{1}{2\pi i}\int_C e^\lambda(\lambda I-A)^{-1}\,\mathrm{d}\lambda.
+\end{equation}
+在 PDE 应用中, $A$ 的谱通常无界, 因而无法找到包围它的曲线. 然而, 可以考虑采用适当的无界曲线作为 $C$. 实际上, 在讨论解析半群时还将回到这一思想.
+
+\item Laplace 变换: 有
+\begin{equation}\label{eq:matrix-exponential-laplace-transform-resolvent}
+\int_0^\infty e^{At}e^{-\lambda t}\,\mathrm{d}t=(\lambda I-A)^{-1};
+\end{equation}
+即预解算子是矩阵指数的 Laplace 变换. 对该变换求逆, 得到
+\begin{equation}\label{eq:matrix-exponential-inverse-laplace-transform}
+e^{At}=\dfrac{1}{2\pi i}\int_{\gamma-i\infty}^{\gamma+i\infty}e^{\lambda t}(\lambda I-A)^{-1}\,\mathrm{d}\lambda.
+\end{equation}
+这里必须取 $\gamma$ 大于 $A$ 的任意特征值的实部. 除去积分路径的变形, \eqref{eq:matrix-exponential-inverse-laplace-transform} 实际上与 \eqref{eq:matrix-exponential-cauchy-integral} 相同.\end{enumerate}
+
+本章只考虑形如 $\dot u=Au+f(t)$ 的线性自治演化问题; 然而, 强调这里讨论的方法已经推广到非自治和非线性方程. 这类结果请参阅相关文献.
+
+\Needspace{5\baselineskip}\textbf{Problem}
+
+\begin{enumerate}[label=\thesection.\arabic*.,ref=\thesection.\arabic*,start=1,series=book-problems]
+
+\item\label{ex:matrix-exponential-definitions-equivalence} 验证上面讨论的矩阵指数的各种定义确实等价.
+
+\end{enumerate}
+
+\subsection{半群与无穷小生成元}\label{sec:semigroups-infinitesimal-generators}
+
+\subsubsection{强连续半群}\label{subsec:strongly-continuous-semigroups}
+
+若 $A$ 为 $n\times n$ 矩阵, 则有 $\exp(A(t+s))=\exp(At)\exp(As)$, 即矩阵 $\exp(At)$, $t\geq0$, 构成一个\emph{半群}. 将考虑具有相同性质的有界线性算子族.
+
+\begin{Definition}
+\label{def:strongly-continuous-semigroup}
+设 $X$ 为 Banach 空间. 若 $X$ 中的有界线性算子族 $\{T(t)\}$, $t\geq0$, 满足以下性质, 则称它为\textbf{强连续半群}或 \textbf{$C_0$ 半群}:\begin{enumerate}\item\label{hyp:semigroup-composition-law} $T(t+s)=T(t)T(s)$, $t,s\geq0$,\item\label{hyp:semigroup-zero-identity} $T(0)=I$,\item\label{hyp:semigroup-orbit-continuity} 对每个 $x\in X$,\[[0,\infty)\ni t\mapsto T(t)x\in X\]连续.\end{enumerate}
+\end{Definition}
+
+\begin{Remark}
+\label{rem:semigroup-continuity-at-zero}
+可以证明, 不必要求条件~\ref{hyp:semigroup-orbit-continuity}, 只需要求 $T(t)x$ 在 $t=0$ 处连续. 再由一致有界原理可证明 $\|T(t)\|$ 在零的某邻域内有界. 有了这一点, 半群性质便给出 $\|T(t)\|$ 在任意有限区间上有界. 现在, $T(t)x$ 的右连续性直接由半群性质得到, 而左连续性可利用恒等式 $T(t-h)-T(t)=T(t-h)(I-T(h))$ 证明. 论证细节留给读者; 见 Problem~\ref{ex:semigroup-continuity-at-zero-details}.
+\end{Remark}
+
+\Needspace{4\baselineskip}
+\begin{Example}
+\label{ex:bounded-generator-uniformly-continuous-semigroup}
+若 $A$ 为 $X$ 中的有界算子, 则例如可用幂级数定义 $\exp(At)$. 容易看出, 算子 $\exp(At)$ 构成强连续半群. 实际上, $\exp(At)$ 不仅强连续, 甚至在范数拓扑下连续; 即\[[0,\infty)\ni t\mapsto\exp(At)\in\mathcal{L}(X)\]连续. 这样的半群称为一致连续半群. 可以证明, 每个一致连续半群都具有 $\exp(At)$ 的形式, 其中 $A$ 为有界算子. 由于这一结果对 PDE 的意义不大, 这里不予证明.
+\end{Example}
+
+\begin{Example}
+\label{ex:ltwo-translation-semigroup}
+设 $X=L^2(\mathbb{R})$, 并定义 $(T(t)u)(x)=u(x+t)$. 则 $\{T(t)\}$, $t\geq0$, 为强连续半群. 它并不一致连续; 实际上, 只要 $t\neq s$, 就有 $\|T(t)-T(s)\|=2$.
+\end{Example}
+
+\begin{Example}
+\label{ex:bounded-continuous-translation-not-strongly-continuous}
+设 $X=C_b(\mathbb{R})$, 且 $T(t)$ 如前一例. 则 $T(t)$ 不强连续; 当 $t\to0$ 时, $T(t)u$ 到 $u$ 的收敛未必在 $\mathbb{R}$ 上一致. (读者应构造一个反例: 一个不满足 $\lim_{t\to0}T(t)u=0$ 的函数 $u(x)$. 试用由一列越来越窄且高度为一的 ``凸起\textquotesingle\textquotesingle\ 构成的函数.)
+\end{Example}
+
+以关于强连续半群的 $\|T(t)\|$ 的增长的结果结束本小节. 作为准备, 需要一个引理.
+
+\begin{Lemma}
+\label{lem:subadditive-growth-limit}
+设 $\omega:[0,\infty)\to\mathbb{R}$ 在每个有限区间上有上界且次可加 (即 $\omega(t_1+t_2)\leq\omega(t_1)+\omega(t_2)$). 则\[\inf_{t>0}\omega(t)/t=\lim_{t\to\infty}\omega(t)/t;\](这里允许等式两端均为 $-\infty$).
+\end{Lemma}
+
+\begin{Proof}
+令 $\omega_0=\inf_{t>0}\omega(t)/t$, 并设 $\gamma>\omega_0$. 则存在 $t_0>0$, 使 $\omega(t_0)/t_0<\gamma$. 任意 $t\geq0$ 可表示为 $t_0$ 的整数倍加上余项: $t=nt_0+r$, $n\in\mathbb{N}\cup\{0\}$, $r\in[0,t_0)$. 次可加性给出
+\begin{equation}\label{eq:subadditive-growth-quotient-bound}
+\dfrac{\omega(t)}{t}\leq\dfrac{n\omega(t_0)+\omega(r)}{t}.
+\end{equation}
+当 $t\to\infty$ 时, $n/t$ 趋于 $1/t_0$, 且 $\omega(r)/t$ 小于或等于 $\sup_{s\in[0,t_0)}\omega(s)/t$. 因而 \eqref{eq:subadditive-growth-quotient-bound} 给出
+\begin{equation}\label{eq:subadditive-growth-limsup-bound}
+\limsup_{t\to\infty}\dfrac{\omega(t)}{t}\leq\dfrac{\omega(t_0)}{t_0}<\gamma.
+\end{equation}
+引理由此立即得到.
+\end{Proof}
+
+\begin{Theorem}
+\label{thm:semigroup-logarithmic-growth-type}
+设 $\{T(t)\}$, $t\geq0$, 为 Banach 空间 $X$ 上的有界线性算子强连续半群. 则极限
+\begin{equation}\label{eq:strongly-continuous-semigroup-logarithmic-growth-type}
+\omega_0=\lim_{t\to\infty}(\log\|T(t)\|)/t
+\end{equation}
+存在 (允许其值为 $-\infty$). 对每个 $\gamma>\omega_0$, 都存在常数 $M_\gamma$, 使 $\|T(t)\|\leq M_\gamma\exp(\gamma t)$.
+\end{Theorem}
+
+\begin{Proof}
+由半群性质立即得到, $\log\|T(t)\|$ 为次可加函数. 此外, 由强连续性, $\|T(t)x\|$ 在任意有限时间区间上有界, 再由一致有界原理, $\|T(t)\|$ 在有限区间上有界. 根据前一引理, \eqref{eq:strongly-continuous-semigroup-logarithmic-growth-type} 给出的 $\omega_0$ 存在. 对任意 $\gamma>\omega_0$, 都存在 $t_0$, 使对 $t\geq t_0$ 有 $\log\|T(t)\|/t<\gamma$, 即对 $t\geq t_0$ 有 $\|T(t)\|\leq\exp(\gamma t)$. 取
+\begin{equation}\label{eq:semigroup-exponential-growth-bound-constant}
+M_\gamma=\max\left(1,\sup_{t\in[0,t_0]}\|T(t)\|e^{-\gamma t}\right).
+\end{equation}
+即可得到定理. 证明完成.
+\end{Proof}
+
+\begin{Definition}
+\label{def:semigroup-type}
+前一定理给出的数 $\omega_0$ 称为该半群的\emph{型}.
+\end{Definition}
+
+\begin{Example}
+\label{ex:absorbing-translation-minus-infinite-type}
+设 $X=L^2(0,1)$, 且令
+\begin{equation}\label{eq:finite-interval-absorbing-translation-semigroup}
+(T(t)u)(x)=\begin{cases}u(x+t),&x+t<1,\\0,&\text{otherwise}.\end{cases}
+\end{equation}
+则对 $t\geq1$, 有 $T(t)=0$. 这一例子说明, 半群的型完全可能为 $-\infty$.
+\end{Example}
+
+\subsubsection{无穷小生成元}\label{subsec:semigroup-infinitesimal-generator}
+
+研究算子半群的动机是推广矩阵指数. 这自然提出一个问题: 是否每个强连续半群都可以在某种有待明确的意义下, 写成某个算子 $A$ 的 $\exp(At)$. 将对这一问题给出肯定回答. 先给出以下定义.
+
+\begin{Definition}
+\label{def:semigroup-infinitesimal-generator}
+设 $\{T(t)\}$, $t\geq0$, 为 Banach 空间 $X$ 上的有界线性算子强连续半群. 该半群的\textbf{无穷小生成元}是由
+\begin{equation}\label{eq:semigroup-infinitesimal-generator-definition}
+Ax=\lim_{h\to0+}\dfrac{T(h)x-x}{h},
+\end{equation}
+定义的算子 $A$, 而 $A$ 的定义域为所有使该极限存在的向量 $x\in X$ 构成的集合.
+\end{Definition}
+
+当然, 从这一定义还看不出 $\mathcal{D}(A)$ 除 0 以外是否还包含其他元素. 除非 $\mathcal{D}(A)$ 足够大, 无穷小生成元这一概念就没有多大意义. 将看到 $\mathcal{D}(A)$ 实际上在 $X$ 中稠密. 作为准备, 将建立若干对其他目的也有用的事实.
+
+\begin{Lemma}
+\label{lem:semigroup-generator-four-identities}
+设 $A$ 为强连续半群 $T(t)$ 的无穷小生成元. 则有以下结论.\begin{enumerate}\item 对 $x\in X$,
+\begin{equation}\label{eq:semigroup-local-average-continuity-limit}
+\lim_{h\to0}\dfrac{1}{h}\int_t^{t+h}T(s)x\,\mathrm{d}s=T(t)x.
+\end{equation}
+\item 对 $x\in X$ 和任意 $t>0$, 有 $\int_0^t T(s)x\,\mathrm{d}s\in\mathcal{D}(A)$, 且
+\begin{equation}\label{eq:semigroup-integrated-orbit-in-generator-domain}
+A\left(\int_0^t T(s)x\,\mathrm{d}s\right)=T(t)x-x.
+\end{equation}
+\item 对 $x\in\mathcal{D}(A)$, 有 $T(t)x\in\mathcal{D}(A)$. 此外, 函数\[[0,\infty)\ni t\mapsto T(t)x\in X\]可微. (这意味着差商在 $X$ 中的范数收敛意义下有极限.) 实际上,
+\begin{equation}\label{eq:semigroup-orbit-generator-differentiation}
+\dfrac{\mathrm{d}}{\mathrm{d}t}T(t)x=AT(t)x=T(t)Ax.
+\end{equation}
+\item 对 $x\in\mathcal{D}(A)$,
+\begin{equation}\label{eq:semigroup-generator-orbit-integral-identity}
+T(t)x-T(s)x=\int_s^t T(\tau)Ax\,\mathrm{d}\tau=\int_s^t AT(\tau)x\,\mathrm{d}\tau.
+\end{equation}
+\end{enumerate}
+\end{Lemma}
+
+\begin{Proof}
+第 1 部分直接由半群的强连续性得到. 对第 2 部分, 取 $h>0$, 得到\[\begin{aligned}
+\dfrac{T(h)-I}{h}\int_0^t T(s)x\,\mathrm{d}s&=\dfrac{1}{h}\int_0^t(T(s+h)-T(s))x\,\mathrm{d}s\\
+&=\dfrac{1}{h}\int_t^{t+h}T(s)x\,\mathrm{d}s-\dfrac{1}{h}\int_0^h T(s)x\,\mathrm{d}s.
+\end{aligned}\]根据第 1 部分, 右端趋于 $T(t)x-x$. 这就证明了第 2 部分. 为证明第 3 部分, 考虑恒等式
+\begin{equation}\label{eq:semigroup-orbit-forward-difference-commutation}
+\dfrac{T(t+h)x-T(t)x}{h}=\dfrac{T(h)-I}{h}T(t)x=T(t)\dfrac{T(h)x-x}{h}
+\end{equation}
+以及
+\begin{equation}\label{eq:semigroup-orbit-backward-difference-identity}
+\dfrac{T(t)x-T(t-h)x}{h}=T(t-h)\dfrac{T(h)x-x}{h},
+\end{equation}
+并取极限 $h\to0+$. 最后, 由微积分基本定理, 第 4 部分由第 3 部分得到.
+\end{Proof}
+
+\begin{Theorem}
+\label{thm:semigroup-generator-dense-closed}
+设 $A$ 为 $C_0$ 半群的无穷小生成元. 则 $\mathcal{D}(A)$ 稠密, 且 $A$ 为闭算子.
+\end{Theorem}
+
+\begin{Proof}
+有
+\begin{equation}\label{eq:semigroup-generator-domain-dense-average-approximation}
+x=\lim_{h\to0+}\dfrac{1}{h}\int_0^h T(s)x\,\mathrm{d}s,
+\end{equation}
+并且由前一引理, 右端属于 $\mathcal{D}(A)$. 因而 $\mathcal{D}(A)$ 稠密. 现在假设 $x_n\in\mathcal{D}(A)$, $x_n\to x$ 且 $Ax_n\to y$. 则由前一引理的第 4 部分,
+\begin{equation}\label{eq:semigroup-generator-closedness-sequence-identity}
+T(h)x_n-x_n=\int_0^h T(s)Ax_n\,\mathrm{d}s
+\end{equation}
+令 $n\to\infty$, 得到
+\begin{equation}\label{eq:semigroup-generator-closedness-limit-identity}
+T(h)x-x=\int_0^h T(s)y\,\mathrm{d}s.
+\end{equation}
+只需再除以 $h$ 并令 $h\to0+$.
+\end{Proof}
+
+\begin{Example}
+\label{ex:ltwo-translation-generator}
+设 $X=L^2(\mathbb{R})$, 且 $(T(t)u)(x)=u(x+t)$. 则无穷小生成元为 $A=\mathrm{d}/\mathrm{d}x$, 其定义域为 $H^1(\mathbb{R})$.
+\end{Example}
+
+\subsubsection{抽象 ODE}\label{subsec:semigroup-abstract-odes}
+
+本节始终设 $T(t)$ 为 $X$ 中的强连续算子半群, $A$ 为无穷小生成元. 关心的是初值问题
+\begin{equation}\label{eq:semigroup-abstract-inhomogeneous-initial-value-problem}
+\dot u=Au+f(t),\ u(0)=u_0.
+\end{equation}
+的解. 采用经典解的概念; 假设 $u_0\in\mathcal{D}(A)$ 且 $f\in C([0,T];X)$, 寻求解 $u\in C^1([0,T];X)\cap C([0,T];\mathcal{D}(A))$. (这里将 $\mathcal{D}(A)$ 看作赋有图范数的 Banach 空间.) 下面给出熟知的 ODE 常数变易公式的抽象版本.
+
+\begin{Theorem}
+\label{thm:semigroup-variation-of-constants}
+设 $u$ 为 \eqref{eq:semigroup-abstract-inhomogeneous-initial-value-problem} 的经典解. 则 $u$ 由公式
+\begin{equation}\label{eq:semigroup-variation-of-constants-formula}
+u(t)=T(t)u_0+\int_0^t T(t-s)f(s)\,\mathrm{d}s.
+\end{equation}
+表示.
+\end{Theorem}
+
+\begin{Proof}
+令 $g(s)=T(t-s)u(s)$. 则
+\begin{equation}\label{eq:semigroup-variation-of-constants-proof-derivative}
+\begin{aligned}\dfrac{\mathrm{d}g}{\mathrm{d}s}&=-AT(t-s)u(s)+T(t-s)\dot u(s)\\&=-AT(t-s)u(s)+T(t-s)(Au(s)+f(s))=T(t-s)f(s).\end{aligned}
+\end{equation}
+于是得到
+\begin{equation}\label{eq:semigroup-variation-of-constants-proof-integral}
+g(t)-g(0)=u(t)-T(t)u_0=\int_0^t T(t-s)f(s)\,\mathrm{d}s.
+\end{equation}
+证明完成.
+\end{Proof}
+
+显然, 在弱得多的假设下, \eqref{eq:semigroup-variation-of-constants-formula} 也有意义. 例如, 只要假设 $u_0\in X$ 且 $f\in L^1([0,T];X)$, \eqref{eq:semigroup-variation-of-constants-formula} 就表示 $t$ 的一个连续函数. 由此引出以下定义.
+
+\begin{Definition}
+\label{def:semigroup-mild-solution}
+假设 $u_0\in X$ 且 $f\in L^1([0,T];X)$. 则 \eqref{eq:semigroup-variation-of-constants-formula} 给出的 $u(t)$ 称为 \eqref{eq:semigroup-abstract-inhomogeneous-initial-value-problem} 的\textbf{温和解}.
+\end{Definition}
+
+自然地, 今后无论温和解实际上是否为经典解, 都将其视为一个 ``解\textquotesingle\textquotesingle. 然而, 解的正则性也值得关注, 现在考察何时能断言解为经典解. 下面的定理回答这一问题.
+
+\begin{Theorem}
+\label{thm:semigroup-mild-solution-classical-regularity}
+假设 $u_0\in\mathcal{D}(A)$, $f\in C([0,T];X)$, 且另外满足 $f\in W^{1,1}([0,T];X)$ 或 $f\in L^1([0,T];\mathcal{D}(A))$. 则 \eqref{eq:semigroup-abstract-inhomogeneous-initial-value-problem} 的温和解为经典解.
+\end{Theorem}
+
+\begin{Proof}
+利用 Lemma~\ref{lem:semigroup-generator-four-identities} 很容易处理项 $T(t)u_0$. 因而只需关注项
+\begin{equation}\label{eq:semigroup-inhomogeneous-orbit-convolution}
+v(t):=\int_0^t T(t-s)f(s)\,\mathrm{d}s.
+\end{equation}
+需要证明 $v\in C^1([0,T];X)\cap C([0,T];\mathcal{D}(A))$, 并且 $\dot v=Av+f$. 为此, 首先注意恒等式
+\begin{equation}\label{eq:semigroup-convolution-generator-difference-identity}
+\dfrac{T(h)-I}{h}v(t)=\dfrac{v(t+h)-v(t)}{h}-\dfrac{1}{h}\int_t^{t+h}T(t+h-s)f(s)\,\mathrm{d}s.
+\end{equation}
+利用 $f$ 的连续性和半群的强连续性, 可知当 $h\to0+$ 时右端最后一项趋于 $-f(t)$. 若 $v$ 关于 $t$ 可微, 则 \eqref{eq:semigroup-convolution-generator-difference-identity} 的右端在 $h\to0+$ 时有极限, 从而左端也有极限, 即 $Av(t)$ 存在. 反之, 若 $Av(t)$ 存在且连续, 则右导数 $D_{+h}v(t)$ 存在且连续. 在 \eqref{eq:semigroup-convolution-generator-difference-identity} 中以 $t-h$ 替换 $t$, 也得到左导数的存在性. 因而 $v\in C^1([0,T];X)$ 当且仅当 $v\in C([0,T];\mathcal{D}(A))$, 且无论哪种情形都有 $\dot v=Av+f$. 若 $f\in L^1([0,T];\mathcal{D}(A))$, 则由 \eqref{eq:semigroup-inhomogeneous-orbit-convolution} 显然有 $v\in C([0,T];\mathcal{D}(A))$. 另一方面, 若 $f\in W^{1,1}([0,T];X)$, 将 $v$ 改写为
+\begin{equation}\label{eq:semigroup-convolution-time-variable-reversal}
+v(t)=\int_0^t T(s)f(t-s)\,\mathrm{d}s,
+\end{equation}
+由此得到
+\begin{equation}\label{eq:semigroup-convolution-with-differentiable-data}
+\dot v(t)=T(t)f(0)+\int_0^t T(s)\dot f(t-s)\,\mathrm{d}s.
+\end{equation}
+因此 $v\in C^1([0,T];X)$.
+\end{Proof}
+
+\Needspace{5\baselineskip}\textbf{Problems}
+
+\begin{enumerate}[label=\thesection.\arabic*.,ref=\thesection.\arabic*,start=2,series=book-problems]
+
+\item\label{ex:semigroup-continuity-at-zero-details} 补全 Remark~\ref{rem:semigroup-continuity-at-zero} 中论证的细节.
+
+\item\label{ex:translation-semigroup-on-vanishing-continuous-functions} 设 $C_0(\mathbb{R})$ 为 $\mathbb{R}$ 上所有在无穷远处趋于零的连续函数构成的空间, 且 $T(t)$ 如 Example~\ref{ex:bounded-continuous-translation-not-strongly-continuous}. 证明 $T(t)$ 强连续.
+
+\item\label{ex:semigroup-nonzero-eigenvalue-finite-type} 假设存在某个 $t_0>0$, 使 $T(t_0)$ 有非零特征值. 证明该半群的型不可能为 $-\infty$.
+
+\item\label{ex:semigroup-generator-determines-semigroup} 设两个 $C_0$ 半群 $T(t)$ 和 $S(t)$ 具有相同的无穷小生成元 $A$. 证明这两个半群相等. 提示: 对 $x\in\mathcal{D}(A)$, 考虑 $\frac{\mathrm{d}}{\mathrm{d}s}T(t-s)S(s)x$.
+
+\item\label{ex:semigroup-smooth-integrated-orbits-dense-powers-domain} 设 $T(t)$ 为无穷小生成元为 $A$ 的 $C_0$ 半群. 设 $\phi\in\mathcal{D}(0,\infty)$. 证明 $\int_0^\infty\phi(s)T(s)x$ 对每个 $n\in\mathbb{N}$ 都属于 $A^n$ 的定义域. 利用这一点证明 $\bigcap_{n\in\mathbb{N}}\mathcal{D}(A^n)$ 在 $X$ 中稠密.
+
+\item\label{ex:absorbing-translation-generator-characterization} 刻画 Example~\ref{ex:absorbing-translation-minus-infinite-type} 中半群的无穷小生成元.
+
+\item\label{ex:continuous-forcing-insufficient-classical-solution} 用反例说明, 仅有 $f$ 的连续性不足以保证 Theorem~\ref{thm:semigroup-mild-solution-classical-regularity} 的结论成立. 提示: 对某个固定的 $x$, 考虑方程 $\dot u=Au+T(t)x$, $u(0)=0$. 其解为 $u(t)=tT(t)x$.
+
+\end{enumerate}

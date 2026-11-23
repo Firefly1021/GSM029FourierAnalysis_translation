@@ -1,0 +1,458 @@
+\chapter{量子力学的路径积分表述}
+\label{chap:path-integral}
+
+现在转向一个对普通量子力学已经很重要、对量子场论更是不可或缺的主题:所谓路径积分.在本书所讨论的普通量子力学中,相关积分是在“路径”空间上进行的,也就是在区间 $[a,b]$ 到 $\mathbb R^n$ 的映射空间上进行积分.在量子场论中,相关积分则是在“场”空间上进行的,也就是在 $\mathbb R^d$ 的某个区域到 $\mathbb R^n$ 的映射空间上进行积分.物理文献中到处都是这类形式积分,通常很难赋予它们严格的数学意义,尽管人们已经为此付出了大量努力！本章将使用 Wiener 测度,在路径空间上构造一种严格的积分,并由此得到 Feynman--Kac 公式.
+
+我们从 Trotter 乘积公式开始,它是推导路径积分公式的主要工具.随后讨论 Feynman 的(启发式)路径积分公式,再转向 M. Kac 得到的 Feynman 结果的严格版本,即所谓 Feynman--Kac 公式.虽然不可能给出这里所有结果的完整证明,但我们会给出足够多的证明,使读者感受到其中的数学.我们将证明 Trotter 乘积公式的一个版本,并在假设 Wiener 测度存在的前提下,证明 Feynman--Kac 公式的一个版本.
+
+\section{Trotter 乘积公式}
+\label{sec:trotter-product}
+
+Lie 乘积公式(定理~\ref{thm:matrix-exponential-properties} 的第 7 点)说,对所有 $X,Y\in M_n(\mathbb C)$,
+\[
+ e^{X+Y}=\lim_{m\to\infty}(e^{X/m}e^{Y/m})^m.
+\]
+Trotter 乘积公式断言,对 Hilbert 空间上的某些无界算子,也有类似结果.
+
+\begin{theorem}[Trotter 乘积公式]\label{thm:trotter-product}
+设 $A,B$ 是 $\mathcal H$ 上的自伴算子,并且 $A+B$ 在 $\operatorname{Dom}(A)\cap\operatorname{Dom}(B)$ 上稠密定义且本质自伴.则:
+\begin{enumerate}
+\item 对所有 $\psi\in\mathcal H$,
+\[
+ \lim_{N\to\infty}
+ \left\|e^{it(A+B)}\psi-
+ \bigl(e^{itA/N}e^{itB/N}\bigr)^N\psi\right\|=0.\label{eq:trotter-unitary}
+\]
+\item 如果 $A,B$ 都有下界,则对所有 $\psi\in\mathcal H$,
+\[
+ \lim_{N\to\infty}
+ \left\|e^{-t(A+B)}\psi-
+ \bigl(e^{-tA/N}e^{-tB/N}\bigr)^N\psi\right\|=0.\label{eq:trotter-semigroup}
+\]
+\end{enumerate}
+在这两个结论中,$A+B$ 指在 $\operatorname{Dom}(A)\cap\operatorname{Dom}(B)$ 上定义的算子的唯一自伴延拓.
+\end{theorem}
+
+按泛函分析的通常术语,式~\eqref{eq:trotter-unitary} 断言算子
+\[
+ \bigl(e^{itA/N}e^{itB/N}\bigr)^N
+\]
+在“强算子拓扑”下收敛于 $e^{it(A+B)}$;式~\eqref{eq:trotter-semigroup} 也有类似含义.
+
+我们将在 $A+B$ 在 $\operatorname{Dom}(A)\cap\operatorname{Dom}(B)$ 上稠密定义且自伴的特殊情形证明该结果.例如,只要 Kato--Rellich 定理(定理~\ref{thm:kato-rellich})适用,这个条件就成立.上面定理的完整版本见文献 [14] 的附录 A.5.
+
+\begin{proof}
+在定理第 1 点中出现的所有算子都是酉的.因此,如果结论在 $\mathcal H$ 的某个稠密子空间 $W$ 上成立,那么它就在整个 $\mathcal H$ 上成立.对于第 2 点,先通过一个简单的约化把问题化为 $A,B$ 都非负的情形;此时所有涉及的算子都是压缩算子,因而同样可以从稠密子空间推广到整个空间.
+
+我们证明第 1 点,第 2 点的证明类似.记
+\[
+ S_s=e^{is(A+B)},\qquad T_s=e^{isA}e^{isB}.
+\]
+需要证明,对每个 $\psi\in\mathcal H$,
+\[
+ \|(S_t-(T_{t/N})^N)\psi\|\longrightarrow0.
+\]
+直接计算得到
+\[
+ \begin{aligned}
+ (S_t-(T_{t/N})^N)\psi
+ =\sum_{j=0}^{N-1}
+ (T_{t/N})^j(S_{t/N}-T_{t/N})(S_{t/N})^{N-j-1}\psi.
+ \end{aligned}\label{eq:trotter-telescoping}
+\]
+由于 $S_\bullet$ 是一参数酉群,令
+\[
+ s=\frac{(N-j-1)t}{N},\qquad \psi_s=S_s\psi,
+\]
+则
+\[
+ \|(S_t-(T_{t/N})^N)\psi\|
+ \le N\sup_{0\le s\le t}
+ \|(S_{t/N}-T_{t/N})\psi_s\|.\label{eq:trotter-uniform-bound}
+\]
+
+对任意 $\psi\in\operatorname{Dom}(A+B)$,由 Stone 定理,
+\[
+ \lim_{N\to\infty}N(S_{t/N}\psi-\psi)=it(A+B)\psi.
+\]
+另一方面,根据练习 2,对所有 $\psi\in\operatorname{Dom}(A)\cap\operatorname{Dom}(B)$,
+\[
+ \lim_{s\to0}\frac1s(T_s-I)\psi=iA\psi+iB\psi.\label{eq:trotter-first-order}
+\]
+(在启发式层面,这个结果是显然的.)于是,对每个 $\psi\in\operatorname{Dom}(A)\cap\operatorname{Dom}(B)$,
+\[
+\begin{aligned}
+ \lim_{N\to\infty}N(S_{t/N}-T_{t/N})\psi
+ &=\lim_{N\to\infty}N(S_{t/N}-I)\psi
+  -\lim_{N\to\infty}N(T_{t/N}-I)\psi\\
+ &=it(A+B)\psi-it(A+B)\psi=0.\label{eq:trotter-first-order-difference}
+\end{aligned}
+\]
+
+令 $W=\operatorname{Dom}(A)\cap\operatorname{Dom}(B)$,并赋予 $W$ 范数
+\[
+ \|\psi\|_1=\|\psi\|+\|(A+B)\psi\|.
+\]
+按假设,$W$ 在 $\mathcal H$ 中稠密.由于 $A+B$ 在 $W$ 上自伴,因而闭,$W$ 关于 $\|\cdot\|_1$ 是 Banach 空间(见第 9 章练习 6).对每个 $N$,算子 $N(S_{t/N}-T_{t/N})$ 显然是从 $W$ 到 $\mathcal H$ 的有界算子.此外,由式~\eqref{eq:trotter-first-order-difference},对每个 $\psi\in W$,
+\[
+ \sup_N\|N(S_{t/N}-T_{t/N})\psi\|<\infty.
+\]
+由一致有界原理(定理~\ref{app:thm:uniform-boundedness}),存在常数 $C$,使对所有 $\psi\in W$,
+\[
+ \|N(S_{t/N}-T_{t/N})\psi\|\le C\|\psi\|_1.
+\]
+由练习 3,$N(S_{t/N}-T_{t/N})\psi$ 在 $W$ 的每个紧子集上一致趋于零.
+
+现在假设对每个 $\psi\in W$,映射 $s\mapsto\psi_s$ 关于 $W$ 的 $\|\cdot\|_1$ 范数连续.那么,紧区间 $[0,t]$ 在该映射下的像是 $W$ 中的紧集,因此
+\[
+ \|N(S_{t/N}-T_{t/N})\psi_s\|
+\]
+关于 $0\le s\le t$ 一致趋于零.由式~\eqref{eq:trotter-uniform-bound},定理第 1 点成立.
+
+下面证明所需的连续性.由引理~\ref{lem:generator-domain-invariant},$S_s=e^{is(A+B)}$ 保持 $\operatorname{Dom}(A+B)=W$ 不变.对 $s,r\in[0,t]$ 与 $\psi\in W$,
+\[
+\begin{aligned}
+ \|e^{is(A+B)}\psi-e^{ir(A+B)}\psi\|_1
+ &\le \|(e^{is(A+B)}-e^{ir(A+B)})\psi\|\\
+ &\quad+\|(e^{is(A+B)}-e^{ir(A+B)})(A+B)\psi\|.
+\end{aligned}\label{eq:trotter-graph-continuity}
+\]
+这里第二项使用了引理~\ref{lem:generator-domain-invariant}.由强连续性(命题~\ref{thm:stone}),当 $s\to r$ 时,式~\eqref{eq:trotter-graph-continuity} 右端趋于零.
+\end{proof}
+
+\section{Feynman 路径积分的形式推导}
+\label{sec:formal-feynman-path-integral}
+
+本节把 Trotter 乘积公式第 1 点应用于算子
+\[
+ -\frac{i}{\hbar}\widehat H
+ =\frac{i\hbar}{2m}\Delta-\frac{i}{\hbar}V(X).\label{eq:schrodinger-generator-splitting}
+\]
+分别把式~\eqref{eq:schrodinger-generator-splitting} 右边的两个算子记为 $A,B$,并假设 $V$ 足够良好,使 $\widehat H$ 在 $\operatorname{Dom}(A)\cap\operatorname{Dom}(B)$ 上本质自伴.任意有界势都满足这一性质,许多无界势也满足(例如见定理~\ref{thm:kato-rellich}).
+
+由定理~\ref{thm:trotter-product} 第 1 点,
+\[
+ e^{-it\widehat H/\hbar}\psi
+ =\lim_{N\to\infty}
+ \left(
+ \exp\left(\frac{it\hbar\Delta}{2mN}\right)
+ \exp\left(-\frac{itV(X)}{N\hbar}\right)
+ \right)^N\psi.
+\]
+在 $\psi$ 满足适当条件时,定理~\ref{thm:free-convolution}(推广到 $n$ 维)告诉我们
+\[
+\left(\exp\left(\frac{it\hbar\Delta}{2mN}\right)\psi\right)(x_0)
+=\left(\frac{mN}{2\pi i t\hbar}\right)^{n/2}
+\int_{\mathbb R^n}
+\exp\left(\frac{imN}{2t\hbar}|x_1-x_0|^2\right)\psi(x_1)\,dx_1.
+\]
+另一方面,$\exp(-itV(X)/(N\hbar))$ 只是一个乘法算子.
+
+假设定理~\ref{thm:free-convolution} 在每一步都适用,则
+\[
+\begin{aligned}
+ &\left[
+ \exp\left(\frac{it\hbar\Delta}{2mN}\right)
+ \exp\left(-\frac{itV(X)}{N\hbar}\right)
+ \right]^N\psi(x_0)\\
+ &=C\int_{\mathbb R^n}\exp\left(\frac{imN}{2t\hbar}|x_1-x_0|^2\right)
+ \exp\left(-\frac{itV(x_1)}{N\hbar}\right)\\
+ &\quad\times
+ \exp\left(\frac{imN}{2t\hbar}|x_2-x_1|^2\right)
+ \exp\left(-\frac{itV(x_2)}{N\hbar}\right)\cdots\\
+ &\quad\times
+ \exp\left(\frac{imN}{2t\hbar}|x_N-x_{N-1}|^2\right)
+ \exp\left(-\frac{itV(x_N)}{N\hbar}\right)\\
+ &\quad\times\psi(x_N)\,dx_N\cdots dx_1,
+\end{aligned}
+\]
+其中
+\[
+ C=\left(\frac{mN}{2\pi i t\hbar}\right)^{nN/2}.
+\]
+令 $\varepsilon=t/N$,并假设可以自由交换积分次序,便得到
+\[
+\begin{aligned}
+ (e^{-it\widehat H/\hbar}\psi)(x_0)
+ =\lim_{N\to\infty}C\int_{(\mathbb R^n)^N}
+ \exp\left\{\frac{i}{\hbar}\sum_{j=1}^N\varepsilon
+ \left[\frac m2\left|\frac{x_j-x_{j-1}}{\varepsilon}\right|^2
+ -V(x_{j-1})\right]\right\}\\
+ \qquad\times\psi(x_N)\,dx_1\cdots dx_N.\label{eq:finite-dimensional-feynman}
+\end{aligned}
+\]
+
+到这里,论证主要是严格的:使用了 Trotter 乘积公式和定理~\ref{thm:free-convolution}.不严格的部分在于试图计算式~\eqref{eq:finite-dimensional-feynman} 右端的极限.把 $x_j$ 看作路径 $x(s)$ 在
+\[
+ s_j=j\varepsilon=\frac{jt}{N}
+\]
+处的取值,即 $x_j=x(jt/N)$.由于 $s_{j-1}$ 与 $s_j$ 相距 $\varepsilon$,$|x_j-x_{j-1}|/\varepsilon$ 近似于 $x(s)$ 对 $s$ 的导数;同时,式中的求和近似于积分.因此,以完全非严格的方式取右端极限,可得到
+\[
+\begin{aligned}
+ (e^{-it\widehat H/\hbar}\psi)(x_0)
+ =C\int_{\substack{\text{路径 }x(0)=x_0}}
+ \exp\left\{\frac{i}{\hbar}\int_0^t
+ \left[\frac m2\left|\frac{dx}{ds}\right|^2-V(x(s))\right]ds\right\}
+ \psi(x(t))\,Dx.\label{eq:formal-feynman-path}
+\end{aligned}
+\]
+这里 $C$ 是归一化常数,而 $Dx$ 类似于路径空间上“Lebesgue 测度”;路径空间由所有把 $[0,t]$ 映到 $\mathbb R^n$ 的路径组成.表达式中的 $x$ 是一条路径,而不是 $\mathbb R^n$ 中的一个点.
+
+熟悉 Lagrange 力学的读者会认出式~\eqref{eq:formal-feynman-path} 指数中方括号内的表达式,这正是粒子的 Lagrange 函数
+\[
+ L=T-V,\qquad T=\frac12m|v|^2.
+\]
+Lagrange 函数在某个时间区间上的积分称为作用量泛函,记作 $S$.对路径 $x(\cdot)$,定义其在时间区间 $[a,b]$ 上的作用量为
+\[
+ S(x(\cdot),a,b)
+ :=\int_a^b\left[\frac m2\left|\frac{dx}{ds}\right|^2
+ -V(x(s))\right]ds.\label{eq:action-functional}
+\]
+在 Lagrange 力学中,可以证明 Newton 定律的解恰好是作用量泛函的驻点.用式~\eqref{eq:action-functional} 的记号,式~\eqref{eq:formal-feynman-path} 可以写成
+\[
+ (e^{-it\widehat H/\hbar}\psi)(x_0)
+ =C\int_{\substack{\text{路径 }x(0)=x_0}}
+ \exp\left(\frac{i}{\hbar}S(x(\cdot),0,t)\right)
+ \psi(x(t))\,Dx.\label{eq:feynman-path-integral}
+\]
+这就是 Feynman 路径积分公式.
+
+严格说来,为路径积分公式赋予严格意义是出了名的困难.形式表达式 $Dx$ 是式~\eqref{eq:finite-dimensional-feynman} 中关于 Lebesgue 测度 $dx_1\cdots dx_N$ 的 $(\mathbb R^n)^N$ 上积分在 $N\to\infty$ 时的极限.因此,$Dx$ 应当类似于所有路径(即从 $[0,t]$ 到 $\mathbb R^n$ 的映射)空间上的 Lebesgue 测度.然而,已知无限维向量空间(例如 Banach 空间)不存在可以充当 Lebesgue 测度的“合理”(例如 $\sigma$-有限)平移不变测度.此外,容易看出常数 $C$ 的绝对值是无穷大.因此,绝不可能把式~\eqref{eq:feynman-path-integral} 右端按字面理解.
+
+更好的方法是避免把 Feynman 路径积分拆成各个组成部分,而是把整个表达式看作与 $\psi(x(t))$ 一起被积分的对象.如果能够严格解释
+\[
+ C\exp\left(\frac{i}{\hbar}S(x(\cdot),0,t)\right)Dx\label{eq:feynman-complex-measure}
+\]
+例如把它解释成连续路径空间上的复值测度,就可以用它赋予路径积分以意义.然而,已知不存在一种路径空间上的复测度,使 Feynman 路径积分公式成立.式~\eqref{eq:feynman-complex-measure} 指数中的 $i$ 产生的振荡行为,使原始形式的 Feynman 路径积分很难具有严格意义.
+
+\section{虚时间计算}
+\label{sec:imaginary-time}
+
+为了给 Feynman 的路径积分公式赋予严格意义,Kac 考察了“虚时间”演化算子
+\[
+ e^{-t\widehat H/\hbar},
+\]
+它就是把通常的时间演化算子 $e^{-it\widehat H/\hbar}$ 中的 $t$ 换成 $-it$.其思想是:如果能够用路径积分理解 $e^{-t\widehat H/\hbar}$,就可以对 $t$ 作解析延拓,从而回到“实时间”算子 $e^{-it\widehat H/\hbar}$.
+
+与定理~\ref{thm:free-convolution} 对应的热核公式为
+\[
+ (e^{-t\hbar\Delta/(2m)}\psi)(x_0)
+ =\left(\frac{m}{2\pi t\hbar}\right)^{n/2}
+ \int_{\mathbb R^n}
+ \exp\left(-\frac{m}{2t\hbar}|x_1-x_0|^2\right)
+ \psi(x_1)\,dx_1.\label{eq:heat-kernel-free}
+\]
+与定理~\ref{thm:free-convolution} 不同,上式对所有 $\psi\in L^2(\mathbb R^n)$ 成立,并且对每个 $x_0\in\mathbb R^n$,积分绝对收敛.像之前一样应用 Trotter 乘积公式并重排积分,得到
+\[
+\begin{aligned}
+ (e^{-t\widehat H/\hbar}\psi)(x_0)
+ =\lim_{N\to\infty}C\int_{(\mathbb R^n)^N}
+ \exp\left\{-\frac1\hbar\sum_{j=1}^N\varepsilon
+ \left[\frac m2\left|\frac{x_j-x_{j-1}}{\varepsilon}\right|^2
+ +V(x_{j-1})\right]\right\}\\
+ \qquad\times\psi(x_N)\,dx_1\cdots dx_N.\label{eq:finite-dimensional-imaginary-time}
+\end{aligned}
+\]
+其中 $\varepsilon=t/N$.如果 $V$ 有下界,那么由于被积函数的快速衰减,交换积分次序没有困难.注意,与式~\eqref{eq:finite-dimensional-feynman} 相比,方括号中两项之间的相对符号发生了改变.形式地取极限可得
+\[
+\begin{aligned}
+ (e^{-t\widehat H/\hbar}\psi)(x)
+ =C\int_{\substack{\text{路径 }x(0)=x_0}}
+ \exp\left\{-\frac1\hbar\int_0^t
+ \left[\frac m2\left|\frac{dx}{ds}\right|^2+V(x(s))\right]ds\right\}
+ \psi(x(t))\,Dx.\label{eq:formal-imaginary-time-path}
+\end{aligned}
+\]
+注意,式~\eqref{eq:formal-imaginary-time-path} 指数中的积分不是式~\eqref{eq:action-functional} 中的经典作用量,因为势能项的符号相反.
+
+Kac 的思想是,把式~\eqref{eq:formal-imaginary-time-path} 指数中的二次部分分离出来,并尝试把
+\[
+ C\exp\left\{-\frac1\hbar\int_0^t\frac m2
+ \left|\frac{dx}{ds}\right|^2ds\right\}Dx\label{eq:wiener-formal}
+\]
+解释为路径空间上的测度.具体而言,这是一个 Gaussian 测度,即相对于 Lebesgue 测度具有一个形式密度,而该密度是某个二次表达式的指数.无限维空间上的 Gaussian 测度有一套成熟理论.虽然无限维情形没有 Lebesgue 测度,但可以把 Gaussian 测度构造成大有限维空间上的 Gaussian 测度的极限.
+
+\section{Wiener 测度}
+\label{sec:wiener-measure}
+
+Kac 识别出式~\eqref{eq:wiener-formal} 中的形式表达式就是 Wiener 测度.准确地说,对每个固定的 $x_0\in\mathbb R^n$,都有一个 Wiener 测度 $\mu_{x_0}^{\sigma}$,它支撑在满足 $x(0)=x_0$ 的路径 $x:[0,t]\to\mathbb R^n$ 上.Wiener 测度由 Norbert Wiener 发展而来,是 Albert Einstein 对 Brown 运动数学模型的严格实现.在他 1905 年的一篇论文中,Einstein 提出 Brown 路径的增量,即形如 $x(t)-x(s)$ 的量,在不相交时间区间上应当相互独立,并且应当是均值为零、方差与 $t-s$ 成正比的正态随机变量.下面的定理说明,在连续路径空间上存在唯一测度满足 Einstein 的这些条件.
+
+令 $C_{x_0}([0,t];\mathbb R^n)$ 表示所有满足 $x(0)=x_0$ 的连续映射 $x(\cdot):[0,t]\to\mathbb R^n$ 组成的空间,并赋予上确界范数.
+
+\begin{theorem}[Wiener 测度的刻画]\label{thm:wiener-measure}
+对每个向量 $x_0\in\mathbb R^n$ 以及每一对正数 $\sigma,t$,在 $C_{x_0}([0,t];\mathbb R^n)$ 的 Borel $\sigma$-代数上存在唯一测度 $\mu_{x_0}^{\sigma}$,满足下述条件:对任意实数序列 $0=t_0<t_1<\cdots<t_N\le t$ 以及 $(\mathbb R^n)^N$ 上任意非负可测函数 $f$,
+\[
+\begin{aligned}
+ &\int_{C_{x_0}([0,t];\mathbb R^n)}
+ f(x(t_1),\ldots,x(t_N))\,d\mu_{x_0}^{\sigma}(x)\\
+ &=C\int_{(\mathbb R^n)^N}
+ \exp\left\{-\frac1{2\sigma}
+ \sum_{j=1}^N\frac{|x_j-x_{j-1}|^2}{t_j-t_{j-1}}\right\}
+ f(x_1,\ldots,x_N)\,dx_1\cdots dx_N,
+\end{aligned}\label{eq:wiener-finite-dimensional}
+\]
+其中
+\[
+ C=\prod_{j=1}^N
+ \left(\frac1{2\pi\sigma(t_j-t_{j-1})}\right)^{n/2}.
+\]
+\end{theorem}
+
+注意,式~\eqref{eq:wiener-finite-dimensional} 的右端与式~\eqref{eq:finite-dimensional-imaginary-time} 极其相似,只是前者的指数中没有势 $V$ 的项.因此,可以合理地把 Wiener 测度看作式~\eqref{eq:wiener-formal} 的严格版本.不过要注意,形式表达式~\eqref{eq:wiener-formal} 在一个重要方面会误导人:它暗示测度支撑在满足 $dx/dt\in L^2([0,t];\mathbb R^n)$ 的路径上,因为指数因子似乎会抑制不满足这一条件的路径.但这个结论是错误的.一般而言,读者应当对从纯形式表达式得出的结论保持高度谨慎.事实上,相对于 Wiener 测度,“典型”路径处处不可微;甚至在任意一个给定的 $t$ 值上可微的路径所组成的集合也具有测度零.
+
+这种不一致其实是无限维 Gaussian 测度的普遍特征:它们总是支撑在比形式表达式暗示的空间更大的空间上.对 Wiener 测度而言,测度实际生活的空间(连续函数空间)足够良好,所以不会给 Feynman--Kac 公式的表述带来困难.在量子场论中,Gaussian 测度支撑的问题则会造成严重困难.更多信息见第~\ref{sec:qft-path-integrals} 节.
+
+\section{Feynman--Kac 公式}
+\label{sec:feynman-kac}
+
+Wiener 测度为式~\eqref{eq:wiener-formal} 提供了严格解释.因此,Wiener 测度包含式~\eqref{eq:formal-imaginary-time-path} 中除势能项和因子 $\psi(x(t))$ 之外的全部内容.这解释了下面结果的形式.
+
+\begin{theorem}[Feynman--Kac 公式]\label{thm:feynman-kac}
+设 $V:\mathbb R^3\to\mathbb R$ 可以表示为 $L^2(\mathbb R^3)$ 中函数与有界函数之和.则对所有 $x_0\in\mathbb R^3$,
+\[
+ (e^{-t\widehat H/\hbar}\psi)(x_0)
+ =\int_{C_{x_0}([0,t];\mathbb R^3)}
+ \exp\left(-\frac1\hbar\int_0^tV(x(s))\,ds\right)
+ \psi(x(t))\,d\mu_{x_0}^{\sigma}(x),\label{eq:feynman-kac-formula}
+\]
+其中 $\mu_{x_0}^{\sigma}$ 是 $C_{x_0}([0,t];\mathbb R^3)$ 上的 Wiener 测度,$\sigma=\hbar/m$.
+\end{theorem}
+
+在其他维数下、对满足适当条件的势,也有类似结果.关于 Feynman--Kac 公式的不同版本,见文献 [37] 或 [14].定理~\ref{thm:feynman-kac} 不能直接从 Trotter 乘积公式得到,因为式~\eqref{eq:finite-dimensional-imaginary-time} 中的极限是 $L^2$ 极限,而非逐点极限.我们只对良好势证明 Feynman--Kac 公式的一个“积分形式”;定理~\ref{thm:feynman-kac} 是文献 [37] 的定理 6.5.
+
+\begin{definition}[全路径空间上的 Wiener 测度]\label{def:wiener-global}
+令 $C([0,t];\mathbb R^n)$ 表示所有在 $[0,t]$ 上连续、取值于 $\mathbb R^n$ 的路径组成的空间.对 $\sigma>0$,定义测度
+\[
+ \mu^\sigma(E)=\int_{\mathbb R^n}\mu_{x_0}^{\sigma}(E)\,dx_0.
+\]
+\end{definition}
+
+\begin{proposition}[积分形式的 Feynman--Kac 公式]\label{prop:integrated-feynman-kac}
+设 $V:\mathbb R^n\to\mathbb R$ 有界且连续.则对所有 $\phi,\psi\in L^2(\mathbb R^n)$,
+\[
+ \langle\phi,e^{-t\widehat H/\hbar}\psi\rangle
+ =\int_{C([0,t];\mathbb R^n)}
+ \phi(x(0))\exp\left(-\frac1\hbar\int_0^tV(x(s))\,ds\right)
+ \psi(x(t))\,d\mu^\sigma(x),\label{eq:integrated-feynman-kac}
+\]
+其中 $\mu^\sigma$ 如定义~\ref{def:wiener-global},$\sigma=\hbar/m$.
+\end{proposition}
+
+\begin{proof}
+从式~\eqref{eq:finite-dimensional-imaginary-time} 出发,应用定理~\ref{thm:wiener-measure}.取 $\sigma=\hbar/m$,取 $t_j=jt/N$,并令 $f(x_1,\ldots,x_N)=\psi(x_N)$.定理~\ref{thm:wiener-measure} 把有限维积分表示为 Wiener 测度下的积分.由于极限是 $L^2$ 极限,可以把与 $\phi$ 的内积移到极限之内,并把关于 $\mu_{x_0}^{\sigma}$ 的积分与关于 $dx_0$ 的积分合并为关于 $\mu^\sigma$ 的积分,从而得到
+\[
+\begin{aligned}
+ \langle\phi,e^{-t\widehat H/\hbar}\psi\rangle
+ =\lim_{N\to\infty}\int_{C([0,t];\mathbb R^n)}
+ \phi(x(0))
+ \exp\left(-\frac1\hbar\sum_{j=1}^N\frac tN
+ V\left(x\left(\frac{jt}{N}\right)\right)\right)
+ \psi(x(t))\,d\mu^\sigma(x).\label{eq:integrated-feynman-kac-limit}
+\end{aligned}
+\]
+连续性保证对每条连续路径有
+\[
+ \lim_{N\to\infty}\sum_{j=1}^N\frac tN
+ V\left(x\left(\frac{jt}{N}\right)\right)
+ =\int_0^tV(x(s))\,ds.
+\]
+另外,关于 $\mu^\sigma$,$x(s)$ 的分布是 $\mathbb R^n$ 上的 Lebesgue 测度.因此 $\phi(x(0))\psi(x(t))$ 是关于 $\mu^\sigma$ 的 $L^1$ 函数.由于 $V$ 有界,可以用控制收敛定理把极限移入积分,得到结论.
+\end{proof}
+
+\section{量子场论中的路径积分}
+\label{sec:qft-path-integrals}
+
+本节简要讨论量子场论中的路径积分方法.考虑 $d$ 维时空中的量子场论,因此空间维数为 $d-1$.理论的经典版本的构型空间,是所有从 $\mathbb R^{d-1}$ 到某个有限维向量空间 $V$ 的“空间”场 $\phi(x)$ 组成的集合.场空间中的路径就是从 $\mathbb R^{d-1}\times\mathbb R\cong\mathbb R^d$ 到 $V$ 的映射 $\phi(x,t)$.路径积分方法是量子场论中最常用的方法,它考虑在这些路径空间上积分.
+
+考虑一个简单例子,称为 $\phi^4$ 理论.在这个理论中,场 $\phi$ 取值于 $\mathbb R$,并考虑
+\[
+ \int_{\mathcal F_d}
+ \exp\left[-\frac1\hbar\int_{\mathbb R^d}
+ \bigl(c_1\|\nabla\phi(x)\|^2+c_2\phi(x)^2+c_3\phi(x)^4\bigr)\,dx\right]
+ F(\phi)\,D\phi.\label{eq:phi4-path-integral}
+\]
+这里 $F(\phi)$ 是场空间上的某个泛函.式~\eqref{eq:phi4-path-integral} 更准确地说是一个“Euclidean”或“虚时间”路径积分,是量子场论中对应于量子力学 Feynman--Kac 公式中积分的对象.$\mathcal F_d$ 表示所有把 $\mathbb R^d$ 映到 $\mathbb R$ 的“场”(即函数)组成的空间.
+
+为使这个启发式表达式有意义,可以仿照推导 Feynman--Kac 公式时的策略,把指数中的二次部分分离出来.考虑由形式表达式
+\[
+ d\mu(\phi)\overset{\text{形式}}{=}
+ C\exp\left[-\frac1\hbar\int_{\mathbb R^d}
+ \bigl(c_1\|\nabla\phi(x)\|^2+c_2\phi(x)^2\bigr)\,dx\right]D\phi\label{eq:phi4-gaussian-measure}
+\]
+给出的测度 $\mu$.利用 Gaussian 测度理论,可以构造一个严格定义的测度,对应于式~\eqref{eq:phi4-gaussian-measure} 的启发式表达式.不过,这种方法存在一个严重困难:测度 $\mu$ 支撑在非常“粗糙”的场上,远比启发式表达式所暗示的粗糙.事实上,有如下结果.
+
+\begin{proposition}[Gaussian 场的正则性]\label{prop:gaussian-field-regularity}
+对所有 $d\ge1$,存在 $\mathbb R^d$ 上场空间 $\mathcal F_d$ 的 Gaussian 测度,对应于式~\eqref{eq:phi4-gaussian-measure} 的启发式表达式.然而,当 $d\ge2$ 时,这个测度并不支撑在任何通常函数空间上,而是支撑在分布空间上.
+\end{proposition}
+
+这里不证明这个结果,更多信息见文献 [14] 第 8.5 节.于是,在 $d\ge2$ 维时空上采用量子场论路径积分方法的问题是:对于式~\eqref{eq:phi4-gaussian-measure} 中测度 $\mu$ 的“典型”场,泛函
+\[
+ \int_{\mathbb R^d}\phi(x)^4\,dx
+\]
+没有意义.因此,不能简单地把所有 Gaussian 部分吸收到测度 $\mu$ 的定义中来解释式~\eqref{eq:phi4-path-integral},因为剩下的部分不是一个关于 $\mu$ 几乎处处有定义的 $\phi$ 泛函.事实上,对任意有界区域 $U\subset\mathbb R^d$,局部积分
+\[
+ \int_U\phi(x)^4\,dx
+\]
+也关于 $\mu$ 几乎处处没有定义;如果它有意义,那么 $\phi$ 就会是局部 $L^4$ 函数,而不是分布.
+
+必须强调,上一段描述的困难不只是可以用某个简单技巧一扫而空的技术细节.这个困难也不只存在于 $\phi^4$ 理论,而是所有“非平凡”场论的共同问题.在所有有趣的场论中,Gaussian 部分路径积分所定义的场从根本上说都“太粗糙”,无法解释积分中的非 Gaussian 部分.这个现象是路径积分方法的基本数学困难.
+
+若要有希望严格解释量子场论中的路径积分,就必须采用一种复杂的正则化过程,称为重整化.到目前为止,只有极少数场论被严格地完成了这一过程.Clay 千禧年难题之一,就是在四维时空中严格构造 Yang--Mills 场论.关于量子场论路径积分方法涉及的数学问题,见文献 [14] 的详细综述;也见文献 [13],其中更重视量子场论与重整化的物理内容.
+
+既然场的粗糙性是严格解释路径积分时的主要问题,不妨思考它为何出现.设我们希望从形式表达式 $\mu=Ce^{-Q(x)}Dx$ 构造 Gaussian 测度,其中 $Q$ 是 $x$ 的正定二次泛函.一个合理方法是考虑实 Hilbert 空间 $\mathcal H$,使
+\[
+ \|x\|_{\mathcal H}^2=Q(x).
+\]
+(在式~\eqref{eq:phi4-gaussian-measure} 的情形中,$\mathcal H$ 会是导数属于 $L^2$ 的场组成的“Sobolev 空间”.)于是 Gaussian 测度的启发式表达式为
+\[
+ d\mu(x)=Ce^{-\|x\|_{\mathcal H}^2}Dx.\label{eq:gaussian-hilbert-formal}
+\]
+现在可以尝试用有限维、维数为 $N$ 的 Hilbert 空间 $\mathcal H_N$ 上的 Gaussian 测度 $\mu_N$ 来逼近 $\mu$.如果 $\dim\mathcal H<\infty$,式~\eqref{eq:gaussian-hilbert-formal} 完全严格,此时可以选择常数 $C$ 把 $\mu$ 归一化为概率测度.然而,简单计算(练习 4)表明,对任意 $R$,
+\[
+ \lim_{N\to\infty}\mu_N(B_{R,N})=0,
+\]
+其中 $B_{R,N}$ 表示 $\mathcal H_N$ 中半径为 $R$ 的球.这意味着在 $N\to\infty$ 的极限中,对每个 $R$,测度的全部“质量”都在半径 $R$ 的球之外.因此,极限测度完全支撑在满足 $\|x\|_{\mathcal H}=\infty$ 的点上,即支撑在实际上不属于 $\mathcal H$ 的点上.
+
+测度 $\mu_N$ 确实会在 $N\to\infty$ 时收敛到某个测度 $\mu$,但 $\mu$ 不生活在 $\mathcal H$ 上,而生活在某个更大的空间 $B\supset\mathcal H$ 上.原空间 $\mathcal H$ 在 $B$ 中是 $\mu$-零测集.关于更多信息见文献 [16].对于对应于式~\eqref{eq:phi4-gaussian-measure} 的测度 $\mu$,它并不像式中的形式表达式所暗示的那样生活在一阶导数属于 $L^2$ 的 Sobolev 场空间上,而生活在更大的空间上;这个空间最终是一个分布空间.
+
+\section{练习}
+\label{sec:chapter20-exercises}
+
+\begin{exercise}[验证 Trotter 恒等式]\label{ex:trotter-telescoping}
+验证 Trotter 乘积公式证明中的式~\eqref{eq:trotter-telescoping}.
+\end{exercise}
+
+\begin{exercise}[Trotter 乘积的一阶展开]\label{ex:trotter-first-order}
+在 Stone 定理的帮助下,利用下列恒等式验证 Trotter 乘积公式证明中的式~\eqref{eq:trotter-first-order}:
+\[
+\begin{aligned}
+ \frac1s(e^{isA}e^{isB}-I)\psi
+ &=e^{isA}(iB\psi)
+ +e^{isA}\left(\frac1s(e^{isB}-I)\psi-iB\psi\right)\\
+ &\quad+\frac1s(e^{isA}-I)\psi.
+\end{aligned}
+\]
+\end{exercise}
+
+\begin{exercise}[一致收敛于紧集]\label{ex:uniform-on-compact}
+设 $\{A_N\}$ 是一族从 Banach 空间 $W_1$ 到 Banach 空间 $W_2$ 的有界算子.假设存在常数 $C$ 使对所有 $N$,$\|A_N\|\le C$;并假设对每个 $\psi\in W_1$,$\|A_N\psi\|\to0$.
+\begin{enumerate}
+\item 证明,对每个 $\psi\in W_1$ 和每个 $\varepsilon>0$,存在 $\psi$ 的一个邻域 $U$ 以及整数 $M$,使对所有 $\phi\in U$ 和 $N\ge M$,$\|A_N\phi\|<\varepsilon$.
+\item 如果 $K$ 是 $W_1$ 的紧子集,证明 $\|A_N\psi\|$ 关于 $\psi\in K$ 一致趋于零.
+\end{enumerate}
+\end{exercise}
+
+\begin{exercise}[有限维 Gaussian 测度的质量逃逸]\label{ex:gaussian-mass-escape}
+\begin{enumerate}
+\item 设 $\mathcal H_N$ 是 $N$ 维 Hilbert 空间.证明测度
+\[
+ d\mu_N(x)=\pi^{-N/2}e^{-\|x\|^2}\,dx
+\]
+是概率测度.这里 $dx$ 是 $\mathcal H_N$ 上的 Lebesgue 测度,并归一化为单位立方体体积为 $1$.
+
+提示:使用命题~\ref{app:prop:gaussian}.
+\item 令 $B_{R,N}$ 表示 $\mathcal H_N$ 中半径为 $R$ 的球.证明对每个 $R<\infty$,存在 $a_R<1$,使 $\mu_N(B_{R,N})<(a_R)^N$,由此推出 $\lim_{N\to\infty}\mu_N(B_{R,N})=0$.
+\end{enumerate}
+
+提示:半径为 $R$ 的球包含在以原点为中心、边长为 $2R$ 的立方体中.
+\end{exercise}

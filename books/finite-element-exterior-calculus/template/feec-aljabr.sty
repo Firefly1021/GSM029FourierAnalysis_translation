@@ -1,12 +1,11 @@
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{feec-aljabr}[2026/10/21 FEEC-only AJbook integration]
 \RequirePackage{xparse}
-\RequirePackage{tikz-cd,needspace,refcount,bm,mathrsfs,stmaryrd}
+\RequirePackage{tikz-cd,needspace,refcount}
 \RequirePackage{enumitem,tabularx,array,multirow,float}
 \RequirePackage[xindy,splitindex]{imakeidx}
 \makeindex[columns=2,program=truexindy,title={索引}]
 \usetikzlibrary{matrix,decorations.pathreplacing,calc,arrows.meta,positioning}
-\renewcommand*\arraystretch{1.5}
 \numberwithin{equation}{chapter}
 \newcounter{statement}[chapter]
 \renewcommand{\thestatement}{\thechapter.\arabic{statement}}
@@ -46,22 +45,16 @@
   }%
 }{\endlist}
 \AtBeginDocument{%
-  \theoremstyle{plain}\theoremsymbol{}%
-  \theoremheaderfont{\sffamily\bfseries\thmheiti}%
-  \theoremseparator{\ }\theorembodyfont{\fangsong}%
+  \AJUsePDEPlainTheorems
   \newtheorem{AJTheorem}[statement]{Theorem}%
   \newtheorem{AJDefinition}[statement]{Definition}%
   \newtheorem{AJLemma}[statement]{Lemma}%
   \newtheorem{AJProposition}[statement]{Proposition}%
   \newtheorem{AJCorollary}[statement]{Corollary}%
-  \theorembodyfont{\songti}%
+  \theorembodyfont{\AJStatementInformalFont}%
   \newtheorem{AJExample}[statement]{Example}%
   \newtheorem{AJRemark}[statement]{Remark}%
   \newtheorem{AJExercise}[statement]{Exercise}%
-  \theoremstyle{nonumberplain}\theorembodyfont{}%
-  \theoremheaderfont{\sffamily\bfseries\CJKfamily{pffont}}%
-  \theoremseparator{\enspace}%
-  \theoremsymbol{\openbox}\newtheorem{AJProof}{Proof}%
 }
 \NewDocumentEnvironment{Theorem}{g}{\IfValueTF{#1}{\begin{AJTheorem}[#1]}{\begin{AJTheorem}}}{\end{AJTheorem}}
 \NewDocumentEnvironment{Definition}{g}{\IfValueTF{#1}{\begin{AJDefinition}[#1]}{\begin{AJDefinition}}}{\end{AJDefinition}}
@@ -71,5 +64,5 @@
 \NewDocumentEnvironment{Example}{g}{\IfValueTF{#1}{\begin{AJExample}[#1]}{\begin{AJExample}}}{\end{AJExample}}
 \NewDocumentEnvironment{Remark}{g}{\IfValueTF{#1}{\begin{AJRemark}[#1]}{\begin{AJRemark}}}{\end{AJRemark}}
 \NewDocumentEnvironment{Exercise}{g}{\IfValueTF{#1}{\begin{AJExercise}[#1]}{\begin{AJExercise}}}{\end{AJExercise}}
-\NewDocumentEnvironment{Proof}{}{\begin{AJProof}}{\end{AJProof}}
+\NewDocumentEnvironment{Proof}{}{\AJProofBegin}{\AJProofEnd}
 \endinput

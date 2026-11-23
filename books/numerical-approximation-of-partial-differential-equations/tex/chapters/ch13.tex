@@ -1,0 +1,770 @@
+\chapter{非定常 Navier--Stokes 问题}\label{ch:13}
+\SourcePage{437}
+
+本章转向非定常黏性流动,重点讨论不可压缩流动.对应的定常问题见第~\ref{ch:10}~章.
+它包括动量方程\eqref{eq:10.1.1}、\allowbreak 无散度条件\eqref{eq:10.1.2}以及边界条件\eqref{eq:10.1.3}.其含时形式为
+\begin{equation}\tag{13.1}\label{eq:13.1}
+  \begin{cases}
+    \dfrac{\partial\boldsymbol{u}}{\partial t}-\nu\Delta\boldsymbol{u}
+      +(\boldsymbol{u}\cdot\nabla)\boldsymbol{u}+\nabla p=\boldsymbol{f}
+       & \text{在 }Q_T:=(0,T)\times\Omega,\\[2pt]
+    \operatorname{div}\boldsymbol{u}=0 & \text{在 }Q_T,\\
+    \boldsymbol{u}=0 & \text{在 }\Sigma_T:=(0,T)\times\partial\Omega,\\
+    \boldsymbol{u}|_{t=0}=\boldsymbol{u}_0 & \text{在 }\Omega,
+  \end{cases}
+\end{equation}
+其中 \(\boldsymbol{f}=\boldsymbol{f}(t,\boldsymbol{x})\) 和 \(\boldsymbol{u}_0=\boldsymbol{u}_0(\boldsymbol{x})\) 为给定数据,\(\Omega\) 是 \(\mathbb R^d\)(\(d=2,3\))中的有界开区域,\(\partial\Omega\) 是其边界.问题\eqref{eq:13.1}的一个显著特点是,没有任何一个方程含有 \(\partial p/\partial t\).这里的压力 \(p\) 是与无散度约束 \(\operatorname{div}\boldsymbol{u}=0\) 对应的 Lagrange 乘子.
+
+首先,第~\BookRef{sec:13.1}{13.1}~节推导描述一般流体运动的方程,涵盖可压缩流体和不可压缩流体.第~\BookRef{sec:13.2}{13.2}~节给出问题\eqref{eq:13.1}的弱形式,并讨论解的存在性、唯一性和性质.接下来研究数值逼近.多数有效的数值方法都可以把时间离散与空间离散分开.因此,第~\ref{ch:10}~章为定常问题建立的大部分论证也适用于含时情形.关于时间离散,我们将回顾若干常用的有限差分格式和算子分裂算法.本章限于层流问题.
+
+关于 Navier--Stokes 方程的数学分析,可参阅\BookCite{ladyzhenskaya1969}{Ladyzhenskaya(1969)}、\BookCite{lions1969}{Lions(1969)}、Temam(\BookCite{temam1983}{1983}、\BookCite{temam1984}{1984})以及\BookCite{kreiss-lorenz1989}{Kreiss 和 Lorenz(1989)}的专著.关于数值逼近方法的分析,可参阅\BookCite{temam1984}{Temam(1984)}、\BookCite{thomasset1981}{Thomasset(1981)}、\BookCite{peyret-taylor1983}{Peyret 和 Taylor(1983)}、Fletcher(\BookCite{fletcher1988a}{1988a}、\BookCite{fletcher1988b}{1988b})、\BookCite{canuto-hussaini-quarteroni-zang1988}{Canuto、Hussaini、Quarteroni 和 Zang(1988)}、\BookCite{gunzburger1989}{Gunzburger(1989)}、\BookCite{pironneau1988}{Pironneau(1988)}及\BookCite{quartapelle1993}{Quartapelle(1993)}.
+
+\section{可压缩流动与不可压缩流动的 Navier--Stokes 方程}\label{sec:13.1}
+\SourcePage{438}
+
+描述一般流体运动的方程由三条守恒原理导出,即动量守恒、质量守恒和能量守恒.以 \(\boldsymbol{u}\) 表示流体速度,\(\rho>0\) 表示密度,\(e\) 表示单位质量的内能,则方程如下.参见\BookCite{landau-lifshitz1959}{Landau 和 Lifshitz(1959,第 15、1、49 节)}.
+\begin{equation}\label{eq:13.1.1}
+  \frac{\partial(\rho\boldsymbol{u})}{\partial t}
+    +\operatorname{div}(\rho\boldsymbol{u}\otimes\boldsymbol{u})
+    =\operatorname{div}\boldsymbol{T}+\rho\boldsymbol{f}
+\end{equation}
+\begin{equation}\label{eq:13.1.2}
+  \frac{\partial\rho}{\partial t}+\operatorname{div}(\rho\boldsymbol{u})=0
+\end{equation}
+\begin{equation}\label{eq:13.1.3}
+  \begin{aligned}
+    \frac{\partial(\rho e+\tfrac12\rho|\boldsymbol{u}|^2)}{\partial t}
+      +\operatorname{div}\bigl[(\rho e+\tfrac12\rho|\boldsymbol{u}|^2)\boldsymbol{u}\bigr]
+     ={}&\operatorname{div}(\boldsymbol{T}\cdot\boldsymbol{u})\\
+      &-\operatorname{div}\boldsymbol{q}+\rho\boldsymbol{f}\cdot\boldsymbol{u}+\rho r.
+  \end{aligned}
+\end{equation}
+这里 \(\boldsymbol{u}\otimes\boldsymbol{u}\) 表示张量 \(\{u_i u_j\}\)(\(i,j=1,\ldots,d\)),\(\boldsymbol{T}=\boldsymbol{T}(\boldsymbol{u},\widehat p)\) 表示应力张量,\(\widehat p\) 表示压力,\(\boldsymbol{q}=\boldsymbol{q}(\vartheta)\) 表示热流密度,\(\vartheta>0\) 是绝对温度,\(\boldsymbol{f}\) 和 \(r\) 分别表示单位质量所受的外力场和单位质量在单位时间内得到的热量.所用的记号还有
+\[
+  (\operatorname{div}\boldsymbol{T})_i:=\sum_{j=1}^dD_jT_{ij},\qquad
+  (\boldsymbol{T}\cdot\boldsymbol{u})_i:=\sum_{j=1}^dT_{ij}u_j,\qquad i=1,\ldots,d.
+\]
+利用\eqref{eq:13.1.2},可以把\eqref{eq:13.1.1}和\eqref{eq:13.1.3}改写为非守恒形式：
+\begin{equation}\label{eq:13.1.4}
+  \rho\biggl[\frac{\partial\boldsymbol{u}}{\partial t}
+      +(\boldsymbol{u}\cdot\nabla)\boldsymbol{u}\biggr]
+    =\operatorname{div}\boldsymbol{T}+\rho\boldsymbol{f}
+\end{equation}
+\begin{equation}\label{eq:13.1.5}
+  \rho\biggl[\frac{\partial e}{\partial t}+\boldsymbol{u}\cdot\nabla e\biggr]
+    =\boldsymbol{T}:\boldsymbol{D}-\operatorname{div}\boldsymbol{q}+\rho r,
+\end{equation}
+其中 \(\boldsymbol{D}=\boldsymbol{D}(\boldsymbol{u})\) 是变形率张量,
+\[
+  D_{ij}:=\tfrac12(D_ju_i+D_iu_j),
+\]
+并且采用了记号
+\[
+  \boldsymbol{T}:\boldsymbol{D}:=\sum_{i,j=1}^d T_{ij}D_{ij}.
+\]
+
+\SourcePage{439}
+写出这些守恒定律后,就可以引入刻画具体流体运动的本构方程.这里只讨论下列本构方程成立的情形：
+\begin{equation}\label{eq:13.1.6}
+  T_{ij}=\biggl[-\widehat p+\biggl(\zeta-\frac{2\mu}{d}\biggr)
+     \operatorname{div}\boldsymbol{u}\biggr]\delta_{ij}+2\mu D_{ij}
+\end{equation}
+\begin{equation}\label{eq:13.1.7}
+  \boldsymbol{q}=-\chi\nabla\vartheta,
+\end{equation}
+其中 \(\mu\) 和 \(\zeta\) 分别是剪切黏度和体积黏度系数,\(\chi\) 是热导率.符号 \(\delta_{ij}\) 表示 Kronecker 张量,即 \(\delta_{ii}=1\),当 \(i\ne j\) 时 \(\delta_{ij}=0\),\(i,j=1,\ldots,d\).
+
+为使方程组封闭,还要加入由热力学原理给出的若干关系.这里必须区分可压缩与不可压缩流动,因为刻画这两类流动所用的热力学假设不同.
+
+\subsection{可压缩流动}\label{sec:13.1.1}
+
+选取密度 \(\rho\) 和温度 \(\vartheta\) 作为热力学未知量.为使方程组封闭,加入如下状态方程：
+\begin{equation}\label{eq:13.1.8}
+  \widehat p=P(\rho,\vartheta)
+\end{equation}
+\begin{equation}\label{eq:13.1.9}
+  e=E(\rho,\vartheta)
+\end{equation}
+\begin{equation}\label{eq:13.1.10}
+  \mu=\mu^*(\rho,\vartheta),\qquad
+  \zeta=\zeta^*(\rho,\vartheta),\qquad
+  \chi=\chi^*(\rho,\vartheta),
+\end{equation}
+其中 \(P\)、\(E\)、\(\mu^*\)、\(\zeta^*\) 和 \(\chi^*\) 为已知函数,且须满足热力学约束(Clausius--Duhem 不等式)
+\begin{equation}\label{eq:13.1.11}
+  \mu^*\ge0,\qquad\zeta^*\ge0,\qquad\chi^*\ge0.
+\end{equation}
+出于物理原因,有 \(E_\vartheta>0\),这是实际材料的普遍性质.还有 \(P_\rho>0\),此条件对单相流体一般成立.此外,由已知关系(例如见\BookCite{landau-lifshitz1959}{Landau 和 Lifshitz(1959,第 6 节)})
+\begin{equation}\label{eq:13.1.12}
+  \mathrm dE=\vartheta\,\mathrm dS-P\,\mathrm d(\rho^{-1}),
+  \qquad S\text{ 为比熵},
+\end{equation}
+可知 \(E\) 和 \(P\) 必须满足相容性条件
+\begin{equation}\label{eq:13.1.13}
+  E_\rho=\rho^{-2}(P-\vartheta P_\vartheta).
+\end{equation}
+最后,可以把\eqref{eq:13.1.4}和\eqref{eq:13.1.5}改写为
+\begin{equation}\label{eq:13.1.14}
+  \begin{aligned}
+    \rho\biggl[\frac{\partial\boldsymbol{u}}{\partial t}
+       +(\boldsymbol{u}\cdot\nabla)\boldsymbol{u}\biggr]
+      &=-\nabla P+\sum_{j=1}^dD_j(\mu^* D_j\boldsymbol{u}+\mu^*\nabla u_j)\\
+      &\qquad+\nabla\biggl[\biggl(\zeta^*-\frac{2\mu^*}{d}\biggr)
+            \operatorname{div}\boldsymbol{u}\biggr]+\rho\boldsymbol{f}
+  \end{aligned}
+\end{equation}
+\SourcePage{440}
+\begin{equation}\label{eq:13.1.15}
+  \begin{aligned}
+    \rho E_\vartheta\biggl(\frac{\partial\vartheta}{\partial t}
+       +\boldsymbol{u}\cdot\nabla\vartheta\biggr)
+      &=-\vartheta P_\vartheta\operatorname{div}\boldsymbol{u}
+           +\frac{\mu^*}{2}\sum_{i,j=1}^d(D_i u_j+D_j u_i)^2\\
+      &\qquad+\biggl(\zeta^*-\frac{2\mu^*}{d}\biggr)
+            (\operatorname{div}\boldsymbol{u})^2+\operatorname{div}(\chi^*\nabla\vartheta)+\rho r.
+  \end{aligned}
+\end{equation}
+当黏度 \(\mu^*>0\) 时,\eqref{eq:13.1.14}、\eqref{eq:13.1.2}和\eqref{eq:13.1.15}称为可压缩流动的 \emph{Navier--Stokes 方程}.取 \(\mu^*=0\)、\(\zeta^*=0\),则得到可压缩流动的 \emph{Euler 方程}.
+
+\subsection{不可压缩流动}\label{sec:13.1.2}
+
+在这种情形下,压力 \(\widehat p\) 不再由热力学未知量决定,而须通过动量方程确定.状态方程\eqref{eq:13.1.8}由下列要求取代：任取一定量流体,其体积在运动中保持不变.这一物理假设写为
+\begin{equation}\label{eq:13.1.16}
+  \operatorname{div}\boldsymbol{u}=0.
+\end{equation}
+此时,热力学关系\eqref{eq:13.1.9}和\eqref{eq:13.1.10}简化为
+\begin{equation}\label{eq:13.1.17}
+  e=E(\vartheta),\qquad\mu=\mu^*(\vartheta),\qquad\chi=\chi^*(\vartheta).
+\end{equation}
+由\eqref{eq:13.1.6}可见,体积黏度 \(\zeta\) 不再出现在应力张量中.
+
+最后,以
+\begin{equation}\label{eq:13.1.18}
+  \mathrm dE=\vartheta\,\mathrm dS
+\end{equation}
+代替\eqref{eq:13.1.12},从而把比熵 \(S\) 与 \(E\) 和 \(\vartheta\) 联系起来.
+
+因此,\eqref{eq:13.1.4}、\eqref{eq:13.1.2}和\eqref{eq:13.1.5}可改写为
+\begin{equation}\label{eq:13.1.19}
+  \rho\biggl[\frac{\partial\boldsymbol{u}}{\partial t}
+    +(\boldsymbol{u}\cdot\nabla)\boldsymbol{u}\biggr]
+     =-\nabla\widehat p+\sum_{j=1}^d D_j(\mu^*D_j\boldsymbol{u}+\mu^*\nabla u_j)+\rho\boldsymbol{f}
+\end{equation}
+\begin{equation}\label{eq:13.1.20}
+  \frac{\partial\rho}{\partial t}+\boldsymbol{u}\cdot\nabla\rho=0
+\end{equation}
+\begin{equation}\label{eq:13.1.21}
+  \begin{aligned}
+    \rho E_\vartheta\biggl(\frac{\partial\vartheta}{\partial t}
+      +\boldsymbol{u}\cdot\nabla\vartheta\biggr)
+      &=\frac{\mu^*}{2}\sum_{i,j=1}^d(D_i u_j+D_j u_i)^2\\
+      &\qquad+\operatorname{div}(\chi^*\nabla\vartheta)+\rho r.
+  \end{aligned}
+\end{equation}
+当 \(\mu^*>0\) 时,\eqref{eq:13.1.19}至\eqref{eq:13.1.21}与\eqref{eq:13.1.16}构成不可压缩流动的 \emph{Navier--Stokes 方程组}.取 \(\mu^*=0\) 这一特例,则得到不可压缩流动的 \emph{Euler 方程组}.
+\SourcePage{441}
+本书不讨论后一种情形,感兴趣的读者可参阅\BookCite{marchioro-pulvirenti1993}{Marchioro 和 Pulvirenti(1993)}.
+
+\begin{definition*}
+若流动的密度 \(\rho=\rho(t)\),即与空间变量 \(\boldsymbol{x}\) 无关,则称这种流动为{\heiti 均质流动}.
+\end{definition*}
+容易验证,流动既不可压缩又均质,当且仅当其密度 \(\rho\) 为常数.进一步,如果不可压缩流动在初始时刻是均质的,即初始密度为常数,例如对每个 \(\boldsymbol{x}\in\overline\Omega\),有 \(\rho_0(\boldsymbol{x})=\rho^*>0\),那么由\eqref{eq:13.1.20}可得,对每个 \((t,\boldsymbol{x})\in\overline Q_T\),有 \(\rho(t,\boldsymbol{x})=\rho^*\).因此,描述均质不可压缩流动的方程组可去掉\eqref{eq:13.1.20}.此外,如果 \(\mu^*\) 是常数,速度和压力便与 \(\vartheta\) 无关,可以先解\eqref{eq:13.1.19}和\eqref{eq:13.1.16},再单独解\eqref{eq:13.1.21}.在这两个假设下,Navier--Stokes 方程组取熟知的形式\eqref{eq:13.1},其中 \(\nu:=\mu^*/\rho^*\),\(p:=\widehat p/\rho^*\).
+
+\section{数学表述与解的性质}\label{sec:13.2}
+
+沿用第~\ref{ch:10}~章的 Hilbert 空间 \(H_{\rm div}\) 和 \(V_{\rm div}\),以及
+\[
+  V=(H_0^1(\Omega))^d,\qquad Q=L_0^2(\Omega).
+\]
+见\eqref{eq:10.1.8}、\eqref{eq:9.1.3}和\eqref{eq:9.1.9}.推广\eqref{eq:10.1.7},容易看出\eqref{eq:13.1}的弱形式如下.给定 \(\boldsymbol{f}\in L^2(0,T;H_{\rm div})\) 和 \(\boldsymbol{u}_0\in H_{\rm div}\),求 \(\boldsymbol{u}\in L^2(0,T;V_{\rm div})\cap L^\infty(0,T;H_{\rm div})\),使得
+\begin{equation}\label{eq:13.2.1}
+  \begin{cases}
+    \begin{aligned}
+      &\dfrac{d}{dt}(\boldsymbol{u}(t),\boldsymbol{v})+a(\boldsymbol{u}(t),\boldsymbol{v})
+       +c(\boldsymbol{u}(t);\boldsymbol{u}(t),\boldsymbol{v})\\
+      &\qquad=(\boldsymbol{f}(t),\boldsymbol{v})\qquad\forall\boldsymbol{v}\in V_{\rm div},
+    \end{aligned}\\[2pt]
+    \boldsymbol{u}(0)=\boldsymbol{u}_0.
+  \end{cases}
+\end{equation}
+上式在 \((0,T)\) 上按分布意义理解.符号 \((\cdot,\cdot)\) 表示 \((L^2(\Omega))^d\) 中的内积.双线性形式 \(a(\cdot,\cdot)\) 和 \(b(\cdot,\cdot)\) 以及三线性形式 \(c(\cdot;\cdot,\cdot)\) 分别定义于\eqref{eq:9.1.5}、\eqref{eq:9.1.10}和\eqref{eq:10.1.5}.
+
+\BookCite{leray1934}{Leray(1934)}和\BookCite{hopf1951}{Hopf(1951)}证明了\eqref{eq:13.2.1}解的存在性.三维情形下,弱解的唯一性仍是一个公开问题.当 \(d=2\) 时,已证明解 \(\boldsymbol{u}\) 属于 \(C^0([0,T];H_{\rm div})\) 且唯一.见 Ladyzhenskaya(\BookCite{ladyzhenskaya1958}{1958}、\BookCite{ladyzhenskaya1959}{1959})和\BookCite{lions-prodi1959}{Lions 和 Prodi(1959)}.
+
+\eqref{eq:13.2.1}的能量解还满足下列估计：
+\begin{equation}\label{eq:13.2.2}
+  \operatorname*{ess\,sup}_{0<t<T}\biggl(
+     \|\boldsymbol{u}(t)\|_0^2+\nu\int_0^t\|\nabla\boldsymbol{u}(s)\|_0^2\,\mathrm ds\biggr)
+     \le\|\boldsymbol{u}_0\|_0^2+\frac{C_\Omega}{\nu}
+       \int_0^T\|\boldsymbol{f}(t)\|_0^2\,\mathrm dt,
+\end{equation}
+其中 \(C_\Omega\) 是 Poincaré 不等式\eqref{eq:1.3.2}中的常数.
+
+\SourcePage{442}
+在附加假设下,还可证明存在正则性更高的解.具体来说,在二维情形,设边界 \(\partial\Omega\) 是正则流形,且 \(\boldsymbol{u}_0\in V_{\rm div}\).则\eqref{eq:13.2.1}的解 \(\boldsymbol{u}\) 属于 \(L^2(0,T;(H^2(\Omega))^2)\cap C^0([0,T];V_{\rm div})\).三维情形有类似的结果,但一般只在时间上局部成立.更确切地说,存在 \(T^*\in(0,T]\),其中 \(T^*\) 未必等于 \(T\),使得\eqref{eq:13.2.1}的解 \(\boldsymbol{u}\) 属于 \(L^2(0,T^*;(H^2(\Omega))^3)\cap C^0([0,T^*];V_{\rm div})\),且在此类解中唯一,见\BookCite{prodi1962}{Prodi(1962)}.还须指出,只要数据 \(\boldsymbol{f}\) 和 \(\boldsymbol{u}_0\) 相对于黏度 \(\nu\) 足够小,三维情形也能保证存在全局时间唯一解.
+
+上述结果的证明可见\BookCite{temam1984}{Temam(1984,第 III 章)}.关于在 \(\overline Q_T\) 上正则性更高的解的存在性,以及 \(t=0\) 时 \(\partial\Omega\) 上的数据必须满足非局部相容性条件的其他结果,见\BookCite{heywood1980}{Heywood(1980)}和\BookCite{temam1982}{Temam(1982)}.
+
+\eqref{eq:13.1}还有一种弱形式,与\eqref{eq:10.1.4}对应.求 \(\boldsymbol{u}(t)\in V\) 和 \(p(t)\in Q\),使得对几乎处处的 \(t\in(0,T)\),有
+\begin{equation}\label{eq:13.2.3}
+  \begin{cases}
+    \begin{aligned}
+      &\dfrac{d}{dt}(\boldsymbol{u}(t),\boldsymbol{v})+a(\boldsymbol{u}(t),\boldsymbol{v})
+            +c(\boldsymbol{u}(t);\boldsymbol{u}(t),\boldsymbol{v})\\
+      &\qquad+b(\boldsymbol{v},p(t))=(\boldsymbol{f}(t),\boldsymbol{v})
+           \qquad\forall\boldsymbol{v}\in V,
+    \end{aligned}\\[2pt]
+    b(\boldsymbol{u}(t),q)=0 \qquad\forall q\in Q,\\
+    \boldsymbol{u}(0)=\boldsymbol{u}_0.
+  \end{cases}
+\end{equation}
+显然,这个问题的任何解的速度分量也是\eqref{eq:13.2.1}的解.反过来,只要\eqref{eq:13.2.1}的解有足够的正则性,可应用引理~\ref{lem:9.1.1},便能得到这个问题的解.例如,当 \(\boldsymbol{u}\in L^2(0,T;(H^2(\Omega))^2)\cap C^0([0,T];V_{\rm div})\) 时,可以确定属于 \(L^2(0,T;H^1(\Omega))\) 的压力 \(p\).
+
+\section{半离散逼近}\label{sec:13.3}
+
+\eqref{eq:13.2.1}的空间离散完全可以沿用第~\ref{ch:10}~章处理定常情形的做法.首先选取有限维空间 \(V_{{\rm div},h}\subset V_{\rm div}\).无散度空间 \(V_{\rm div}\) 见\eqref{eq:9.1.3}.由此得到约化的单场问题.对每个 \(t\in[0,T]\),求 \(\boldsymbol{u}_h(t,\cdot)\in V_{{\rm div},h}\),使得
+\begin{equation}\label{eq:13.3.1}
+  \begin{cases}
+    \begin{aligned}
+      &\dfrac{d}{dt}(\boldsymbol{u}_h(t),\boldsymbol{v}_h)+a(\boldsymbol{u}_h(t),\boldsymbol{v}_h)
+         +c(\boldsymbol{u}_h(t);\boldsymbol{u}_h(t),\boldsymbol{v}_h)\\
+      &\qquad=(\boldsymbol{f}(t),\boldsymbol{v}_h)
+           \qquad\forall\boldsymbol{v}_h\in V_{{\rm div},h},\quad t\in(0,T),
+    \end{aligned}\\[2pt]
+    \boldsymbol{u}_h(0)=\boldsymbol{u}_{0,h},
+  \end{cases}
+\end{equation}
+\SourcePage{443}
+其中 \(\boldsymbol{u}_{0,h}\in V_{{\rm div},h}\) 是初值 \(\boldsymbol{u}_0\) 的逼近.因此,这是\eqref{eq:13.2.1}的一种 Galerkin 逼近.
+
+逼近问题\eqref{eq:13.2.3}时,则考虑两个子空间 \(V_h\subset V\) 和 \(Q_h\subset Q\).对每个 \(t\in[0,T]\),求 \(\boldsymbol{u}_h(t,\cdot)\in V_h\) 和 \(p_h(t,\cdot)\in Q_h\),使得
+\begin{equation}\label{eq:13.3.2}
+  \begin{cases}
+    \begin{aligned}
+      &\dfrac{d}{dt}(\boldsymbol{u}_h(t),\boldsymbol{v}_h)+a(\boldsymbol{u}_h(t),\boldsymbol{v}_h)
+         +c(\boldsymbol{u}_h(t);\boldsymbol{u}_h(t),\boldsymbol{v}_h)\\
+      &\qquad+b(\boldsymbol{v}_h,p_h(t))=(\boldsymbol{f}(t),\boldsymbol{v}_h)
+         \qquad\forall\boldsymbol{v}_h\in V_h,\quad t\in(0,T),
+    \end{aligned}\\[2pt]
+    b(\boldsymbol{u}_h(t),q_h)=0\qquad\forall q_h\in Q_h,\quad t\in(0,T),\\
+    \boldsymbol{u}_h(0)=\boldsymbol{u}_{0,h},
+  \end{cases}
+\end{equation}
+其中 \(\boldsymbol{u}_{0,h}\in V_h\),并满足离散无散度约束 \(b(\boldsymbol{u}_{0,h},q_h)=0\)(\(q_h\in Q_h\)).
+
+对半离散格式\eqref{eq:13.3.2}的分析见 Heywood 和 Rannacher 的系列论文(\BookCite{heywood-rannacher1982}{1982}、\BookCite{heywood-rannacher1986a}{1986a}、\BookCite{heywood-rannacher1988}{1988}、\BookCite{heywood-rannacher1990}{1990}).另见\BookCite{okamoto1982}{Okamoto(1982)}及\BookCite{bernardi-raugel1985}{Bernardi 和 Raugel(1985)}.这些论文对格式\eqref{eq:13.3.2}作了修改,用
+\[
+  \widetilde c(\boldsymbol{w};\boldsymbol{z},\boldsymbol{v})
+    :=\tfrac12[c(\boldsymbol{w};\boldsymbol{z},\boldsymbol{v})-c(\boldsymbol{w};\boldsymbol{v},\boldsymbol{z})]
+\]
+代替三线性形式 \(c(\boldsymbol{w};\boldsymbol{z},\boldsymbol{v})\).
+
+这样做是为了保证稳定性.事实上,新三线性形式 \(\widetilde c(\cdot;\cdot,\cdot)\) 关于后两个变量反对称,即对每个 \(\boldsymbol{v}\in V\),都有 \(\widetilde c(\boldsymbol{w};\boldsymbol{v},\boldsymbol{v})=0\).这样就可以应用能量法.对每个固定的 \(t\),在修改后的\eqref{eq:13.3.2}中取 \(\boldsymbol{v}_h=\boldsymbol{u}_h(t)\),可得稳定性估计
+\begin{equation}\label{eq:13.3.3}
+  \|\boldsymbol{u}_h(t)\|_0^2+\nu\int_0^t\|\nabla\boldsymbol{u}_h(\tau)\|_0^2\,\mathrm d\tau
+   \le\|\boldsymbol{u}_{0,h}\|_0^2+\frac{C_\Omega}{\nu}
+         \int_0^t\|\boldsymbol{f}(\tau)\|_0^2\,\mathrm d\tau,
+\end{equation}
+这正是\eqref{eq:13.2.2}的离散对应式.在连续层面,引入三线性形式 \(\widetilde c(\cdot;\cdot,\cdot)\) 相当于在\eqref{eq:13.1}的第一个方程左端加入 \(\tfrac12(\operatorname{div}\boldsymbol{u})\boldsymbol{u}\).由于精确速度场无散度,这一扰动与 Navier--Stokes 方程相容.采用修改后的格式,需要额外逼近这个对流项.
+
+现在转向\eqref{eq:13.3.2}的收敛性分析.设有限元空间 \(V_h\) 和 \(Q_h\) 满足相容性条件\eqref{eq:9.2.9}.此外,假设对所有固定的 \(\boldsymbol{v}\in V\) 和 \(q\in Q\) 都有
+\[
+  \inf_{\boldsymbol{v}_h\in V_h}\|\boldsymbol{v}-\boldsymbol{v}_h\|_1
+     +\inf_{q_h\in Q_h}\|q-q_h\|_0\longrightarrow0
+     \qquad(h\to0),
+\]
+且当 \(\boldsymbol{v}\in V\cap(H^2(\Omega))^d\)、\(q\in Q\cap H^1(\Omega)\) 时,两个逼近误差之和为 \(O(h)\).第~\ref{sec:9.3}~节给出的所有 \(V_h\) 和 \(Q_h\) 的选法都满足这些假设.
+
+在这些条件下,可证明下面的误差估计.
+\SourcePage{444}
+\begin{equation}\label{eq:13.3.4}
+  \|\boldsymbol{u}(t)-\boldsymbol{u}_h(t)\|_0\le C_1(t)h^2,\qquad
+  \|p(t)-p_h(t)\|_0\le C_2(t)h.
+\end{equation}
+如果数据满足适当的正则性假设,那么在 Dirichlet 积分 \(\|\nabla\boldsymbol{u}\|_0^2\) 一致有界的任一时间区间 \((0,T)\) 上,有
+\begin{equation}\label{eq:13.3.5}
+  C_1(t)\le Ke^{Kt},\qquad C_2(t)\le K\tau(t)^{-1/2}e^{Kt},
+\end{equation}
+其中 \(\tau(t):=\min(t,1)\).
+
+由于含有指数因子,这些估计在时间很大时几乎没有实际意义.不过,如果问题的数据足够小,可以证明 \(C_1\) 和 \(C_2\) 在 \(t\to\infty\) 时确实一致有界.此外,在 \(\boldsymbol{u}_0=\boldsymbol{f}(0,\cdot)=0\) 的特殊情形下,\(C_2\) 在 \(t\to0\) 时仍然有界.另一方面,若未假设精确解具有稳定性,就应当预料到 \(C_1\) 和 \(C_2\) 可能按指数增长,因为两个初始状态相近的精确解之间的差异也可能按指数增长.
+
+误差估计\eqref{eq:13.3.4}对 \((\boldsymbol{u},p)\) 在 \(t\to0\) 时的正则性没有特别要求,只须 \(\boldsymbol{u}_0\in V_{\rm div}\).这点很重要,因为初边值问题的解要正则到 \(t=0\),在 \(t=0\) 时的边界数据就必须满足适当的相容性条件.对抛物型方程,这些条件是局部的.Navier--Stokes 问题的相容性条件如下.如果 \(\boldsymbol{u}(t)\) 的 \(H^3(\Omega)\) 范数,或等价地 \(\partial\boldsymbol{u}/\partial t(t)\) 的 \(H^1(\Omega)\) 范数,直到 \(t=0\) 都保持有界,那么 \(t=0\) 时的外力场 \(\boldsymbol{f}\) 和初始速度 \(\boldsymbol{u}_0\) 必须使
+\begin{equation}\label{eq:13.3.6}
+  \nabla p_0=\boldsymbol{f}(0,\cdot)+\nu\Delta\boldsymbol{u}_0\qquad\text{在 }\partial\Omega,
+\end{equation}
+其中 \(p_0\) 是下列 Neumann 问题的解,在相差一个加法常数的意义下唯一：
+\[
+  \begin{cases}
+    \Delta p_0=-\operatorname{div}[(\boldsymbol{u}_0\cdot\nabla)\boldsymbol{u}_0]
+       & \text{在 }\Omega,\\[2pt]
+    \dfrac{\partial p_0}{\partial n}=\nu\Delta\boldsymbol{u}_0\cdot\boldsymbol{n}
+       & \text{在 }\partial\Omega.
+  \end{cases}
+\]
+这里已经假定 \(\boldsymbol{f}(0,\cdot)\in H_{\rm div}\).由于条件\eqref{eq:13.3.6}是非局部的,面对一般数据几乎无法直接检验；\(\boldsymbol{u}_0=\boldsymbol{f}(0,\cdot)=0\) 是一个例外.
+
+对初值仍只要求相容性条件 \(\boldsymbol{u}_0\in V_{\rm div}\).只要有限维空间 \(V_h\) 和 \(Q_h\) 具有相应的逼近性质,便可把误差估计\eqref{eq:13.3.4}改进为
+\begin{equation}\label{eq:13.3.7}
+  \|\boldsymbol{u}(t)-\boldsymbol{u}_h(t)\|_0\le C_1(t)h^k,\qquad
+  \|p(t)-p_h(t)\|_0\le C_2(t)h^{k-1},
+\end{equation}
+其中 \(k=2,\ldots,5\).此时 \(C_1\) 和 \(C_2\) 满足
+\begin{equation}\label{eq:13.3.8}
+  C_1(t)\le K\tau(t)^{-(k-2)/2}e^{Kt},\qquad
+  C_2(t)\le K\tau(t)^{-(k-1)/2}e^{Kt}.
+\end{equation}
+
+\SourcePage{445}
+如果精确解在适当意义下稳定,还可以进一步改进估计.这时可以预期 \(t\to\infty\) 时 \(C_1(t)\) 和 \(C_2(t)\) 有统一上界.事实上,当解 \(\boldsymbol{u}\) \emph{指数稳定}时,可以证明这一点.精确定义见 Heywood 和 Rannacher(\BookCite{heywood-rannacher1986a}{1986a}、\BookCite{heywood-rannacher1986b}{1986b}).大致说来,存在一个固定的时间长度,从任意时刻 \(t_0\ge0\) 开始的任一足够小的扰动,都会在这段时间内衰减到初始大小的一半.应当注意,指数稳定性弱于“普适能量”稳定性.后者要求一切扰动,无论初始大小如何,都按 \(L^2(\Omega)\) 范数单调且指数地衰减.特别地,流动的 Reynolds 数(见\eqref{eq:10.2.2})不必小到足以保证这种更强的性质.上述论文还考虑了更一般的稳定性定义,看来足以应用于 Taylor 涡胞和 von Kármán 涡脱落等现象,并据此给出了若干误差估计.
+
+这类结果也适用于\eqref{eq:13.2.3}的全离散逼近,其中时间推进用有限差分逼近时间导数.向前 Euler、向后 Euler 和 Crank--Nicolson 格式的分析分别见\BookCite{rannacher1982}{Rannacher(1982)}、\BookCite{heywood-rannacher1986a}{Heywood 和 Rannacher(1986a)}以及\BookCite{heywood-rannacher1990}{Heywood 和 Rannacher(1990)}.另见下文第~\BookRef{sec:13.4}{13.4}~节.
+
+一种比\eqref{eq:13.3.2}稍为一般的做法可以表述如下.对每个 \(t\in[0,T]\),求 \(\boldsymbol{u}_h(t,\cdot)\in V_h\) 和 \(p_h(t,\cdot)\in Q_h\),使得
+\begin{equation}\label{eq:13.3.9}
+  \begin{cases}
+    \begin{aligned}
+      &\dfrac{d}{dt}(\boldsymbol{u}_h(t),\boldsymbol{v}_h)_h+a_h(\boldsymbol{u}_h(t),\boldsymbol{v}_h)
+           +c_h(\boldsymbol{u}_h(t);\boldsymbol{u}_h(t),\boldsymbol{v}_h)\\
+      &\qquad+b_{1,h}(\boldsymbol{v}_h,p_h(t))=(\boldsymbol{f}(t),\boldsymbol{v}_h)_h
+           \qquad\forall\boldsymbol{v}_h\in V_h,\quad t\in(0,T),
+    \end{aligned}\\[2pt]
+    b_{2,h}(\boldsymbol{u}_h(t),q_h)=0\qquad\forall q_h\in Q_h,\quad t\in(0,T),\\
+    \boldsymbol{u}_h(0)=\boldsymbol{u}_{0,h},
+  \end{cases}
+\end{equation}
+其中 \((\cdot,\cdot)_h\) 逼近 \((\cdot,\cdot)\),\(a_h(\cdot,\cdot)\) 逼近 \(a(\cdot,\cdot)\),\(c_h(\cdot;\cdot,\cdot)\) 逼近 \(c(\cdot;\cdot,\cdot)\),而 \(b_{1,h}(\cdot,\cdot)\) 和 \(b_{2,h}(\cdot,\cdot)\) 都逼近 \(b(\cdot,\cdot)\).例如,在有限元或谱方法中采用数值积分时,就会遇到\emph{广义 Galerkin 法}\eqref{eq:13.3.9}.对于谱方法,尤其值得一提的是谱配置法,第~\ref{sec:9.5.2}~节和第~\ref{sec:10.2.3}~节已就定常问题讨论过这种方法.
+
+\begin{note}
+\NumberedNote{note:13.3.1}
+上述理论适用于 Reynolds 数较低的情形,见\eqref{eq:10.2.2}.Reynolds 数高时,对流项若处理不当,可能引起数值振荡,见第~\ref{sec:8.2}~节和第~\ref{sec:8.3}~节.因此,应当采用迎风方法逼近对流项,例如见\BookCite{girault-raviart1986}{Girault 和 Raviart(1986,第 336–352 页)},或者采用
+\SourcePage{446}
+类似第~\ref{sec:8.3}~节的稳定化方法.例如见\BookCite{brooks-hughes1982}{Brooks 和 Hughes(1982)}、\BookCite{johnson-saranen1986}{Johnson 和 Saranen(1986)}、\BookCite{hansbo-szepessy1990}{Hansbo 和 Szepessy(1990)}以及\BookCite{franca-frey1992}{Franca 和 Frey(1992)}.\hfill\(\square\)
+\end{note}
+
+沿用第~\ref{sec:9.2.1}~节的方法,容易导出问题\eqref{eq:13.3.2}的代数形式.分别以 \(\{\boldsymbol{\varphi}_j\mid j=1,\ldots,N_h\}\) 和 \(\{\psi_l\mid l=1,\ldots,K_h\}\) 表示 \(V_h\) 和 \(Q_h\) 的基,考虑展开式
+\[
+  \boldsymbol{u}_h(t,\boldsymbol{x})=\sum_{j=1}^{N_h}u_j(t)\boldsymbol{\varphi}_j(\boldsymbol{x}),\qquad
+  p_h(t,\boldsymbol{x})=\sum_{l=1}^{K_h}p_l(t)\psi_l(\boldsymbol{x}),
+\]
+得到以下非线性方程组：
+\begin{equation}\label{eq:13.3.10}
+  \begin{cases}
+    M\dfrac{d\boldsymbol{u}}{dt}(t)+A\boldsymbol{u}(t)
+      +C(\boldsymbol{u}(t))\boldsymbol{u}(t)+B^{\mathsf T}\boldsymbol{p}(t)=\boldsymbol{f}(t)
+       & t\in(0,T),\\[2pt]
+    B\boldsymbol{u}(t)=0 & t\in(0,T),\\
+    \boldsymbol{u}(0)=\boldsymbol{u}_0.
+  \end{cases}
+\end{equation}
+这里令
+\begin{equation}\label{eq:13.3.11}
+  \begin{aligned}
+    M_{ij}&:=(\boldsymbol{\varphi}_i,\boldsymbol{\varphi}_j),\qquad
+    A_{ij}:=a(\boldsymbol{\varphi}_j,\boldsymbol{\varphi}_i),\\
+    (C(\boldsymbol{w}))_{ij}&:=\sum_{m=1}^{N_h}w_m
+        c(\boldsymbol{\varphi}_m;\boldsymbol{\varphi}_j,\boldsymbol{\varphi}_i),\\
+    B_{li}&:=b(\boldsymbol{\varphi}_i,\psi_l),\qquad
+    f_i(t):=(\boldsymbol{f}(t),\boldsymbol{\varphi}_i).
+  \end{aligned}
+\end{equation}
+这是一个微分代数方程组,参见\BookCite{brenan-campbell-petzold1989}{Brenan、Campbell 和 Petzold(1989)}.回顾一下,采用谱配置法,或在有限元法中采用质量集中(见第~\ref{sec:11.4}~节)时,质量矩阵 \(M\) 是对角矩阵.
+
+\section{用有限差分推进时间}\label{sec:13.4}
+
+问题\eqref{eq:13.3.10}可以用适当的有限差分格式作时间推进.例如,采用第~\ref{sec:5.6.2}~节引入的单步 \(\theta\) 格式,在每个时间层 \(t_{n+1}=(n+1)\Delta t\)(\(n=0,1,\ldots,\mathcal N-1\))上得到方程组
+\begin{equation}\label{eq:13.4.1}
+  \begin{cases}
+    M\dfrac{\boldsymbol{u}^{n+1}-\boldsymbol{u}^n}{\Delta t}
+      +A\boldsymbol{u}_\theta^{n+1}+C(\boldsymbol{u}_\theta^{n+1})\boldsymbol{u}_\theta^{n+1}
+      +B^{\mathsf T}\boldsymbol{p}_\theta^{n+1}=\widehat{\boldsymbol{f}}_\theta^{n+1},\\[4pt]
+    B\boldsymbol{u}^{n+1}=0,
+  \end{cases}
+\end{equation}
+其中 \(0\le\theta\le1\),
+\[
+  \begin{aligned}
+    \boldsymbol{u}_\theta^{n+1}&:=\theta\boldsymbol{u}^{n+1}+(1-\theta)\boldsymbol{u}^n,\\
+    \boldsymbol{p}_\theta^{n+1}&:=\theta\boldsymbol{p}^{n+1}+(1-\theta)\boldsymbol{p}^n,\\
+    \widehat{\boldsymbol{f}}_\theta^{n+1}&:=\boldsymbol{f}(\theta t_{n+1}+(1-\theta)t_n),
+  \end{aligned}
+\]
+而 \(M\)、\(A\)、\(C(\boldsymbol{w})\) 和 \(B\) 的定义见
+\SourcePage{447}
+\eqref{eq:13.3.11}.当 \(\theta=1/2\) 时,这个格式关于 \(\Delta t\) 有二阶精度,其余 \(\theta\) 值则只有一阶精度.当然,速度各分量的精度按 \(H^1\) 范数度量,压力精度按 \(L^2\) 范数度量.
+
+求解时采用带下标 \(\theta\) 的变量比较方便.为此,当 \(\theta\ne0\) 时,将连续性方程改写为
+\[
+  B\boldsymbol{u}_\theta^{n+1}=
+    \begin{cases}
+      (1-\theta)B\boldsymbol{u}^0 & n=0,\\
+      0 & n\ge1,
+    \end{cases}
+\]
+类似地,写成
+\[
+  \frac1{\Delta t}M(\boldsymbol{u}^{n+1}-\boldsymbol{u}^n)
+    =\frac1{\theta\Delta t}M(\boldsymbol{u}_\theta^{n+1}-\boldsymbol{u}^n).
+\]
+于是直接求出 \(\boldsymbol{u}_\theta^{n+1}\) 和 \(\boldsymbol{p}_\theta^{n+1}\),再令
+\[
+  \boldsymbol{u}^{n+1}=\tfrac1\theta(\boldsymbol{u}_\theta^{n+1}-(1-\theta)\boldsymbol{u}^n),
+  \qquad
+  \boldsymbol{p}^{n+1}=\tfrac1\theta(\boldsymbol{p}_\theta^{n+1}-(1-\theta)\boldsymbol{p}^n).
+\]
+应当注意,当 \(0<\theta<1\) 时,按这个递推式恢复各时间层的压力,需要指定初始时刻 \(t_0=0\) 的压力 \(\boldsymbol{p}^0\),而问题\eqref{eq:13.1}并未给定这个值.
+
+当 \(\theta=1\)(\emph{向后 Euler} 情形)时,在每个时间层得到问题
+\begin{equation}\label{eq:13.4.2}
+  \begin{cases}
+    \biggl(A+\dfrac{M}{\Delta t}\biggr)\boldsymbol{u}
+       +C(\boldsymbol{u})\boldsymbol{u}+B^{\mathsf T}\boldsymbol{p}=\boldsymbol{G},\\[2pt]
+    B\boldsymbol{u}=0,
+  \end{cases}
+\end{equation}
+其中 \(\boldsymbol{G}\) 已知.它类似于第~\ref{ch:10}~章离散定常 Navier--Stokes 问题时遇到的方程,因此可以用 Newton 法,也可以用第~\ref{sec:10.4}~节介绍的任一种方法处理.如果 \(\Delta t\) 较小,上一个时间步给出的解可以作为很好的初始猜测.
+
+在\eqref{eq:13.4.1}中取 \(\theta=1\),再用两步二阶向后差商 \((3\boldsymbol{u}^{n+1}-4\boldsymbol{u}^n+\boldsymbol{u}^{n-1})/(2\Delta t)\) 代替一阶向后差商 \((\boldsymbol{u}^{n+1}-\boldsymbol{u}^n)/\Delta t\),便得到二阶\emph{向后差分}格式,见\eqref{eq:5.6.17}.与单步二阶 Crank--Nicolson 法相比,这个格式需要更多存储空间,还须另外给出二阶精度的起步值 \(\boldsymbol{u}^1\).
+
+全隐式格式在每个时间步都要求解非线性方程组.\emph{半隐式}方法可以将这一步化为线性求解.例如,可以先将\eqref{eq:13.4.1}作 Newton 线性化,再在每个时间步只作一次迭代.另一种类似的方法是
+\SourcePage{448}
+\begin{equation}\label{eq:13.4.3}
+  \begin{cases}
+    \begin{aligned}
+      &\dfrac1{\theta\Delta t}M\boldsymbol{u}_\theta^{n+1}
+        +A\boldsymbol{u}_\theta^{n+1}+C(\boldsymbol{u}^n)\boldsymbol{u}_\theta^{n+1}
+        +B^{\mathsf T}\boldsymbol{p}_\theta^{n+1}\\
+      &\qquad=\widehat{\boldsymbol{f}}_\theta^{n+1}+\dfrac1{\theta\Delta t}M\boldsymbol{u}^n,
+    \end{aligned}\\[2pt]
+    B\boldsymbol{u}_\theta^{n+1}=
+      \begin{cases}
+        (1-\theta)B\boldsymbol{u}^0 & n=0,\\
+        0 & n\ge1.
+      \end{cases}
+  \end{cases}
+\end{equation}
+还有一些半隐式做法对非线性项完全作显式处理.例如,下面的二阶格式用 Crank--Nicolson 法逼近线性项,用显式 Adams--Bashforth 法逼近非线性对流项.参见\eqref{eq:5.6.16}.
+\begin{equation}\label{eq:13.4.4}
+  \begin{cases}
+    \begin{aligned}
+      &\dfrac2{\Delta t}M\boldsymbol{u}^{n+1}+A\boldsymbol{u}^{n+1}+B^{\mathsf T}\boldsymbol{p}^{n+1}\\
+      &\quad=\dfrac2{\Delta t}M\boldsymbol{u}^n+\boldsymbol{f}^{n+1}+\boldsymbol{f}^n
+         -A\boldsymbol{u}^n-B^{\mathsf T}\boldsymbol{p}^n\\
+      &\qquad-3C(\boldsymbol{u}^n)\boldsymbol{u}^n+C(\boldsymbol{u}^{n-1})\boldsymbol{u}^{n-1},
+    \end{aligned}\\[2pt]
+    B\boldsymbol{u}^{n+1}=0,
+  \end{cases}
+\end{equation}
+其中 \(n=1,2,\ldots,\mathcal N-1\),并已选好适当的二阶起步值 \(\boldsymbol{u}^1\).只要数据和解关于时间变量足够光滑,该离散关于 \(\Delta t\) 就有二阶精度.
+
+\eqref{eq:13.4.3}和\eqref{eq:13.4.4}的实质区别在于,后者所得线性方程组的系数矩阵与 \(n\) 无关.事实上,此时有
+\begin{equation}\label{eq:13.4.5}
+  \begin{cases}
+    \biggl(A+\dfrac2{\Delta t}M\biggr)\boldsymbol{u}+B^{\mathsf T}\boldsymbol{p}=\boldsymbol{H},\\[2pt]
+    B\boldsymbol{u}=0,
+  \end{cases}
+\end{equation}
+其中 \(\boldsymbol{u}=\boldsymbol{u}^{n+1}\),\(\boldsymbol{p}=\boldsymbol{p}^{n+1}\),适当的右端项 \(\boldsymbol{H}\) 由 \(t_n\) 和 \(t_{n-1}\) 处的已知值确定.它类似于 Stokes 问题\eqref{eq:9.1}对应的方程组\eqref{eq:9.2.14},因而可以用第~\ref{sec:9.6}~节介绍的算法求解.
+
+空间逼近采用谱配置法时,常用半隐式格式\eqref{eq:13.4.4},因为谱配置可以直接显式计算非线性项.在此情形下,若 \(\Delta t=O(N^{-2})\) 且比例常数适当,方法是稳定的,其中 \(N\) 是速度场的多项式次数.
+
+还有一种半隐式做法也具有每步系数矩阵相同的性质.参见\BookCite{gunzburger1989}{Gunzburger(1989,第 128 页)}.其形式如下：
+\SourcePage{449}
+\begin{equation}\label{eq:13.4.6}
+  \begin{cases}
+    \begin{aligned}
+      &\dfrac3{2\Delta t}M\boldsymbol{u}^{n+1}+A\boldsymbol{u}^{n+1}+B^{\mathsf T}\boldsymbol{p}^{n+1}\\
+      &\qquad=\boldsymbol{f}^{n+1}-C(\boldsymbol{u}^*)\boldsymbol{u}^*
+            +\dfrac2{\Delta t}M\boldsymbol{u}^n-\dfrac1{2\Delta t}M\boldsymbol{u}^{n-1},
+    \end{aligned}\\[2pt]
+    B\boldsymbol{u}^{n+1}=0,
+  \end{cases}
+\end{equation}
+其中 \(\boldsymbol{u}^*:=2\boldsymbol{u}^n-\boldsymbol{u}^{n-1}\),可取 \(\boldsymbol{u}^{-1}:=\boldsymbol{u}^0\) 起步.该格式基于时间二阶精度的向后差分公式,但只在一定条件下稳定.例如,在有限元情形,\BookCite{baker-dougalis-karakashian1982}{Baker、Dougalis 和 Karakashian(1982)}证明须满足步长限制 \(\Delta t=O(h^{4/5})\).
+
+\section{算子分裂法}\label{sec:13.5}
+
+\BookCite{chorin1967}{Chorin(1967)}、\BookCite{chorin1968}{Chorin(1968)}和\BookCite{temam1969}{Temam(1969)}提出了求解问题\eqref{eq:13.2.1}的一种经典分步法.这里限于二维情形 \(d=2\).对 \(\boldsymbol{w},\boldsymbol{z},\boldsymbol{v}\in V=(H_0^1(\Omega))^2\),定义
+\[
+  \begin{aligned}
+    a_j(\boldsymbol{w},\boldsymbol{v})&:=\nu\int_\Omega D_j\boldsymbol{w}\cdot D_j\boldsymbol{v},\\
+    \widetilde c_j(\boldsymbol{w};\boldsymbol{z},\boldsymbol{v})
+      &:=\tfrac12\sum_{i=1}^2\int_\Omega w_j[v_iD_jz_i-z_iD_jv_i],
+  \end{aligned}
+\]
+其中 \(j=1,2\).还把外力场分成 \(\boldsymbol{f}=\sum_{j=1}^2\boldsymbol{f}_j\).
+
+分步法如下.对每个 \(n=0,1,\ldots,\mathcal N-1\),先求 \(\boldsymbol{u}_h^{n+1/3}\in V_h\),使得
+\begin{equation}\label{eq:13.5.1}
+  \begin{aligned}
+    &\frac1{\Delta t}(\boldsymbol{u}_h^{n+1/3}-\boldsymbol{u}_h^n,\boldsymbol{v}_h)
+       +a_1(\boldsymbol{u}_h^{n+1/3},\boldsymbol{v}_h)\\
+    &\qquad+\widetilde c_1(\boldsymbol{u}_h^n;\boldsymbol{u}_h^{n+1/3},\boldsymbol{v}_h)
+        =(\boldsymbol{f}_{1,*}^{n+1/2},\boldsymbol{v}_h)\qquad\forall\boldsymbol{v}_h\in V_h,
+  \end{aligned}
+\end{equation}
+其中 \((\cdot,\cdot)\) 表示 \((L^2(\Omega))^2\) 中的内积,且对每个向量函数 \(\boldsymbol{g}\in(L^2(Q_T))^2\),令
+\[
+  \boldsymbol{g}_*^{n+1/2}:=\frac1{\Delta t}\int_{t_n}^{t_{n+1}}\boldsymbol{g}(t)\,\mathrm dt.
+\]
+接着求 \(\boldsymbol{u}_h^{n+2/3}\in V_h\),使得
+\begin{equation}\label{eq:13.5.2}
+  \begin{aligned}
+    &\frac1{\Delta t}(\boldsymbol{u}_h^{n+2/3}-\boldsymbol{u}_h^{n+1/3},\boldsymbol{v}_h)
+      +a_2(\boldsymbol{u}_h^{n+2/3},\boldsymbol{v}_h)\\
+    &\qquad+\widetilde c_2(\boldsymbol{u}_h^{n+1/3};\boldsymbol{u}_h^{n+2/3},\boldsymbol{v}_h)
+        =(\boldsymbol{f}_{2,*}^{n+1/2},\boldsymbol{v}_h)\qquad\forall\boldsymbol{v}_h\in V_h.
+  \end{aligned}
+\end{equation}
+最后,令 \(\boldsymbol{u}_h^{n+1}\in W_h\) 为下列问题的唯一解：
+\SourcePage{450}
+\begin{equation}\label{eq:13.5.3}
+  (\boldsymbol{u}_h^{n+1},\boldsymbol{w}_h)=(\boldsymbol{u}_h^{n+2/3},\boldsymbol{w}_h)
+      \qquad\forall\boldsymbol{w}_h\in W_h,
+\end{equation}
+其中 \(W_h\) 是 \(V_h\) 的一个子空间,作为 \(V_{\rm div}\) 的适当逼近,见\eqref{eq:9.1.3}.一般不要求 \(W_h\subset V_{\rm div}\).
+
+由正定性可推出\eqref{eq:13.5.1}和\eqref{eq:13.5.2}解的存在性与唯一性,因为对于所有 \(\boldsymbol{z},\boldsymbol{v}\in V\) 和 \(j=1,2\),均有 \(\widetilde c_j(\boldsymbol{z};\boldsymbol{v},\boldsymbol{v})=0\).另一方面,\eqref{eq:13.5.3}表明 \(\boldsymbol{u}_h^{n+1}\) 是 \(\boldsymbol{u}_h^{n+2/3}\) 到 \(W_h\) 的 \(L^2\) 正交投影.换言之,\eqref{eq:13.5.3}表示
+\[
+  \boldsymbol{u}_h^{n+1}=P_h\boldsymbol{u}_h^{n+2/3},
+\]
+其中 \(P_h\colon V_h\to W_h\) 是关于 \((L^2(\Omega))^2\) 内积的正交投影算子.因此,分步格式\eqref{eq:13.5.1}至\eqref{eq:13.5.3}称为\emph{投影法}.
+
+这个格式在 \((L^2(\Omega))^2\) 范数下无条件稳定.此外,若时间步长满足 \(\Delta t=O(h^2)\),则
+\[
+  \Delta t\sum_{n=0}^{\mathcal N-1}\|\boldsymbol{u}_h^{n+1}\|_1^2\le C.
+\]
+在这一限制下,格式还收敛,参见 Temam(\BookCite{temam1969}{1969}、\BookCite{temam1984}{1984}).
+
+还有一种略有不同的两步做法.先求非线性椭圆型对流--扩散问题的解 \(\boldsymbol{u}_h^{n+1/2}\in V_h\),使得
+\begin{equation}\label{eq:13.5.4}
+  \begin{aligned}
+    &\frac1{\Delta t}(\boldsymbol{u}_h^{n+1/2}-\boldsymbol{u}_h^n,\boldsymbol{v}_h)
+       +a(\boldsymbol{u}_h^{n+1/2},\boldsymbol{v}_h)\\
+    &\qquad+\widetilde c(\boldsymbol{u}_h^{n+1/2};\boldsymbol{u}_h^{n+1/2},\boldsymbol{v}_h)
+        =(\boldsymbol{f}_*^{n+1/2},\boldsymbol{v}_h)\qquad\forall\boldsymbol{v}_h\in V_h,
+  \end{aligned}
+\end{equation}
+其中 \(\widetilde c:=\widetilde c_1+\widetilde c_2\).接着求 \(\boldsymbol{u}_h^{n+1}\in W_h\),使得
+\begin{equation}\label{eq:13.5.5}
+  (\boldsymbol{u}_h^{n+1},\boldsymbol{w}_h)=(\boldsymbol{u}_h^{n+1/2},\boldsymbol{w}_h)
+       \qquad\forall\boldsymbol{w}_h\in W_h,
+\end{equation}
+即 \(\boldsymbol{u}_h^{n+1}=P_h\boldsymbol{u}_h^{n+1/2}\).\eqref{eq:13.5.4}解的存在性,以及在相应条件下的唯一性,可以仿照第~\ref{sec:10.1}~节和第~\ref{sec:10.2}~节证明.用最小二乘法求解这一问题的做法见\BookCite{glowinski1984}{Glowinski(1984,第 VII 章)}.
+
+在空间连续的版本中,这个方法给出两个向量函数序列 \(\boldsymbol{u}^{n+1/2}\)、\(\boldsymbol{u}^{n+1}\) 和一个标量函数序列 \(q^{n+1}\).从 \(\boldsymbol{u}^0:=\boldsymbol{u}_0\) 开始,对 \(n=0,1,\ldots,\mathcal N-1\) 递推如下：
+\begin{equation}\label{eq:13.5.6}
+  \begin{cases}
+    \begin{aligned}
+      &\dfrac1{\Delta t}(\boldsymbol{u}^{n+1/2}-\boldsymbol{u}^n)
+         -\nu\Delta\boldsymbol{u}^{n+1/2}
+         +(\boldsymbol{u}^{n+1/2}\cdot\nabla)\boldsymbol{u}^{n+1/2}\\
+      &\qquad+\tfrac12(\operatorname{div}\boldsymbol{u}^{n+1/2})\boldsymbol{u}^{n+1/2}
+          =\boldsymbol{f}_*^{n+1/2} \qquad\text{在 }\Omega,
+    \end{aligned}\\[2pt]
+    \boldsymbol{u}^{n+1/2}=0 \qquad\text{在 }\partial\Omega,
+  \end{cases}
+\end{equation}
+\SourcePage{451}
+\begin{equation}\label{eq:13.5.7}
+  \begin{cases}
+    \dfrac1{\Delta t}(\boldsymbol{u}^{n+1}-\boldsymbol{u}^{n+1/2})+\nabla q^{n+1}=0
+      & \text{在 }\Omega,\\[2pt]
+    \operatorname{div}\boldsymbol{u}^{n+1}=0 & \text{在 }\Omega,\\
+    \boldsymbol{u}^{n+1}\cdot\boldsymbol{n}=0 & \text{在 }\partial\Omega,
+  \end{cases}
+\end{equation}
+其中 \(\boldsymbol{n}\) 是 \(\partial\Omega\) 上的单位外法向量.如第~\ref{sec:13.3}~节所指出的,\eqref{eq:13.5.6}中的 \(\tfrac12(\operatorname{div}\boldsymbol{u}^{n+1/2})\boldsymbol{u}^{n+1/2}\) 项用于保证稳定性.
+
+方程\eqref{eq:13.5.7}来自以下事实：\(\boldsymbol{u}^{n+1}\) 是 \(\boldsymbol{u}^{n+1/2}\) 到空间 \(H_{\rm div}\) 的 \(L^2\) 正交投影,见\eqref{eq:10.1.8}.后两个方程直接由此得出,而标量 \(q^{n+1}\) 的存在性来自 Helmholtz 分解原理.该原理表明,每个 \(\boldsymbol{v}\in(L^2(\Omega))^2\) 都有唯一的分解 \(\boldsymbol{v}=\boldsymbol{w}+\nabla q\),其中 \(\boldsymbol{w}\in H_{\rm div}\)、\(q\in H^1(\Omega)\),\(q\) 的常数项可自由选取.显然,对每个 \(\boldsymbol{z}\in H_{\rm div}\),有 \(\int_\Omega\boldsymbol{z}\cdot\nabla q=0\),因此 \(\boldsymbol{w}=P_{\rm div}\boldsymbol{v}\),其中 \(P_{\rm div}\) 是从 \((L^2(\Omega))^2\) 到 \(H_{\rm div}\) 的正交投影算子.再由 \(\boldsymbol{w}\in H_{\rm div}\) 可知,\(q\) 是下列 Neumann 问题的弱解：
+\[
+  \begin{cases}
+    \Delta q=\operatorname{div}\boldsymbol{v} & \text{在 }\Omega,\\[2pt]
+    \dfrac{\partial q}{\partial n}=\boldsymbol{v}\cdot\boldsymbol{n}
+      & \text{在 }\partial\Omega.
+  \end{cases}
+\]
+这个问题确定了 \(q\),相差一个加法常数.
+
+如果还需要逼近压力,应当怎样恢复压力函数？\BookCite{temam1969}{Temam(1969)}证明,标量函数 \(q^{n+1}(\boldsymbol{x})\) 确实逼近 \(p(t_{n+1},\boldsymbol{x})\),不过逼近是在很弱的意义下成立的.事实上,由\eqref{eq:13.5.6}和\eqref{eq:13.5.7}容易推出
+\begin{equation}\label{eq:13.5.8}
+  \frac{\partial q^{n+1}}{\partial n}
+     =\nabla q^{n+1}\cdot\boldsymbol{n}=0\qquad\text{在 }\partial\Omega,
+\end{equation}
+因为 \(\boldsymbol{u}^{n+1}\cdot\boldsymbol{n}\) 和 \(\boldsymbol{u}^{n+1/2}\cdot\boldsymbol{n}\) 在 \(\partial\Omega\) 上均为零.由\eqref{eq:13.5.7}还可得
+\begin{equation}\label{eq:13.5.9}
+  \begin{aligned}
+    \Delta q^{n+1}
+      &=\frac1{\Delta t}\operatorname{div}\boldsymbol{u}^{n+1/2}\\
+      &=\operatorname{div}(\boldsymbol{f}_*^{n+1/2}+\nu\Delta\boldsymbol{u}^{n+1/2})
+         -\sum_{i,j}D_j u_i^{n+1/2}\,D_i u_j^{n+1/2}\\
+      &\qquad-\tfrac12(\operatorname{div}\boldsymbol{u}^{n+1/2})^2
+         -\tfrac32\boldsymbol{u}^{n+1/2}\cdot\nabla\operatorname{div}\boldsymbol{u}^{n+1/2}
+            \qquad\text{在 }\Omega,
+  \end{aligned}
+\end{equation}
+最后一个等号由\eqref{eq:13.5.6}得到.因此,\(q^{n+1}\) 满足带\emph{齐次} Neumann 条件的 Poisson 问题.另一方面,精确压力 \(p\) 满足下列\emph{非齐次} Neumann 边值问题：
+\SourcePage{452}
+\begin{equation}\label{eq:13.5.10}
+  \begin{cases}
+    \Delta p=\operatorname{div}\boldsymbol{f}-\displaystyle\sum_{i,j}D_j u_i\,D_i u_j
+      & \text{在 }\Omega,\\[2pt]
+    \dfrac{\partial p}{\partial n}=(\boldsymbol{f}+\nu\Delta\boldsymbol{u})\cdot\boldsymbol{n}
+      & \text{在 }\partial\Omega.
+  \end{cases}
+\end{equation}
+\eqref{eq:13.5.8}和\eqref{eq:13.5.9}的右端与\eqref{eq:13.5.10}的右端有差异,因而实际计算中 \(q^{n+1}(\boldsymbol{x})\) 向 \(p(t_{n+1},\boldsymbol{x})\) 的收敛效果很差.关于这一点的进一步讨论,见\BookCite{temam1991a}{Temam(1991a)}.不过,这种方法能正确给出许多具有物理意义的流动问题的速度场,例如见\BookCite{gresho-chan1990}{Gresho 和 Chan(1990)}.如果希望在整个区域 \(\Omega\) 中同时获得满意的压力和速度逼近,就需要修改投影法.有关例子见\BookCite{kim-moin1985}{Kim 和 Moin(1985)}、\BookCite{orszag-israeli-deville1986}{Orszag、Israeli 和 Deville(1986)}、\BookCite{gresho1990}{Gresho(1990)}及\BookCite{gresho-chan1990}{Gresho 和 Chan(1990)}.\BookCite{perot1993}{Perot(1993)}提出了另一种解释,即对\eqref{eq:13.1}全离散后的代数问题作分块 \(LU\) 分解.
+
+\BookCite{rannacher1992}{Rannacher(1992)}详细分析了投影法及其与\eqref{eq:9.6.11}一类稳定化方法的联系,其中 \(\varepsilon=\Delta t\).对 \(n=0,1,\ldots,\mathcal N-1\),将格式等价地写为
+\begin{equation}\label{eq:13.5.11}
+  \begin{cases}
+    \begin{aligned}
+      &\dfrac1{\Delta t}(\boldsymbol{u}^{n+1/2}-\boldsymbol{u}^{n-1/2})
+        -\nu\Delta\boldsymbol{u}^{n+1/2}
+        +(\boldsymbol{u}^{n+1/2}\cdot\nabla)\boldsymbol{u}^{n+1/2}\\
+      &\qquad+\tfrac12(\operatorname{div}\boldsymbol{u}^{n+1/2})\boldsymbol{u}^{n+1/2}
+        +\nabla q^n=\boldsymbol{f}_*^{n+1/2}\qquad\text{在 }\Omega,
+    \end{aligned}\\[2pt]
+    \boldsymbol{u}^{n+1/2}=0\qquad\text{在 }\partial\Omega,
+  \end{cases}
+\end{equation}
+\begin{equation}\label{eq:13.5.12}
+  \begin{cases}
+    \Delta q^{n+1}=\dfrac1{\Delta t}\operatorname{div}\boldsymbol{u}^{n+1/2}
+      & \text{在 }\Omega,\\[2pt]
+    \dfrac{\partial q^{n+1}}{\partial n}=0 & \text{在 }\partial\Omega.
+  \end{cases}
+\end{equation}
+这里还需要起步值 \(\boldsymbol{u}^{-1/2}:=\boldsymbol{u}_0\) 和 \(q^0=0\).已证明,速度在 \((L^2(\Omega))^2\) 范数下、压力在 \(H^1(\Omega)\cap L_0^2(\Omega)\) 的对偶空间范数下,均关于 \(\Delta t\) 一阶收敛.进一步,分别用 \((H^1(\Omega))^2\) 和 \(L^2(\Omega)\) 范数度量时,两者的收敛阶均为 \(1/2\).值得注意的是,对\eqref{eq:13.5.11}中的非线性对流--扩散方程作线性化后,仍得到相同的收敛结果.其做法是用 \((\boldsymbol{u}^n\cdot\nabla)\boldsymbol{u}^{n+1/2}\) 代替 \((\boldsymbol{u}^{n+1/2}\cdot\nabla)\boldsymbol{u}^{n+1/2}\),其中 \(\boldsymbol{u}^n:=P_{\rm div}\boldsymbol{u}^{n-1/2}\).此外,省去稳定化项 \(\tfrac12(\operatorname{div}\boldsymbol{u}^{n+1/2})\boldsymbol{u}^{n+1/2}\),结论仍然成立.
+
+Rannacher 的分析还表明,在区域 \(\Omega\) 内部,\(q^n\) 的确是精确压力 \(p(t_n,\cdot)\) 的合理逼近.因为非物理 Neumann 边界条件的影响随 \(\operatorname{dist}(\boldsymbol{x},\partial\Omega)/\sqrt{\nu\Delta t}\) 指数衰减.
+
+\SourcePage{453}
+\BookCite{shen1992}{Shen(1992)}对投影法的另一种修改得到了类似的收敛结果.
+
+\BookCite{temam1983}{Temam(1983,第 94 页)}给出了另一种算子分裂法.仍以 \(V_h\) 表示 \(V\) 的有限维子空间,以 \(W_h\) 表示 \(V_h\) 中适当逼近 \(V_{\rm div}\) 的子空间.由 \(t_n\) 推进到 \(t_{n+1}\) 时,先求 \(\boldsymbol{u}_h^{n+1/2}\in W_h\),使得
+\begin{equation}\label{eq:13.5.13}
+  \begin{aligned}
+    &\frac1{\Delta t}(\boldsymbol{u}_h^{n+1/2}-\boldsymbol{u}_h^n,\boldsymbol{w}_h)
+         +\tfrac12a(\boldsymbol{u}_h^{n+1/2},\boldsymbol{w}_h)\\
+    &\qquad=(\boldsymbol{f}_*^{n+1/2},\boldsymbol{w}_h)\qquad\forall\boldsymbol{w}_h\in W_h,
+  \end{aligned}
+\end{equation}
+再求 \(\boldsymbol{u}_h^{n+1}\in V_h\),使得
+\begin{equation}\label{eq:13.5.14}
+  \begin{aligned}
+    &\frac1{\Delta t}(\boldsymbol{u}_h^{n+1}-\boldsymbol{u}_h^{n+1/2},\boldsymbol{v}_h)
+         +\tfrac12a(\boldsymbol{u}_h^{n+1},\boldsymbol{v}_h)\\
+    &\qquad+\widetilde c(\boldsymbol{u}_h^{n+1};\boldsymbol{u}_h^{n+1},\boldsymbol{v}_h)=0
+         \qquad\forall\boldsymbol{v}_h\in V_h.
+  \end{aligned}
+\end{equation}
+对每个 \(n\),问题\eqref{eq:13.5.13}可看作形如\eqref{eq:9.1.6}的线性问题的非协调逼近.解 \(\boldsymbol{u}_h^{n+1/2}\) 的存在性和唯一性由 Lax--Milgram 引理给出.另一方面,\eqref{eq:13.5.14}是一个非线性椭圆型对流--扩散问题,可仿照第~\ref{sec:10.1}~节和第~\ref{sec:10.2}~节作分析.这种算子分裂法把非线性带来的困难与不可压缩约束带来的困难分开处理.其无条件稳定性和收敛性的证明见\BookCite{temam1983}{Temam(1983,第 13 节)}.不过,这种方法无法给出压力的逼近.
+
+另一种做法是把下列 Peaceman--Rachford 型公式应用于\eqref{eq:13.2.3}.参见\eqref{eq:5.7.7}以及\BookCite{glowinski1984}{Glowinski(1984,第 VII 章)}.先求解 Stokes 问题,即求 \((\boldsymbol{u}_h^{n+1/2},p_h^{n+1/2})\in V_h\times Q_h\),使得
+\begin{equation}\label{eq:13.5.15}
+  \begin{cases}
+    \begin{aligned}
+      &\dfrac2{\Delta t}(\boldsymbol{u}_h^{n+1/2}-\boldsymbol{u}_h^n,\boldsymbol{v}_h)
+        +\eta a(\boldsymbol{u}_h^{n+1/2},\boldsymbol{v}_h)+b(\boldsymbol{v}_h,p_h^{n+1/2})\\
+      &\quad=(\boldsymbol{f}^{n+1/2},\boldsymbol{v}_h)-(1-\eta)a(\boldsymbol{u}_h^n,\boldsymbol{v}_h)
+        -c(\boldsymbol{u}_h^n;\boldsymbol{u}_h^n,\boldsymbol{v}_h)
+           \qquad\forall\boldsymbol{v}_h\in V_h,
+    \end{aligned}\\[2pt]
+    b(\boldsymbol{u}_h^{n+1/2},q_h)=0\qquad\forall q_h\in Q_h,
+  \end{cases}
+\end{equation}
+其中 \(0<\eta<1\),\(\boldsymbol{u}_h^0:=\boldsymbol{u}_{0,h}\in V_h\),且 \(\boldsymbol{f}^{n+\theta}:=\boldsymbol{f}((n+\theta)\Delta t)\)(\(0\le\theta\le1\)).然后求解非线性椭圆型对流--扩散问题,即求 \(\boldsymbol{u}_h^{n+1}\in V_h\),使得
+\begin{equation}\label{eq:13.5.16}
+  \begin{aligned}
+    &\frac2{\Delta t}(\boldsymbol{u}_h^{n+1}-\boldsymbol{u}_h^{n+1/2},\boldsymbol{v}_h)
+      +(1-\eta)a(\boldsymbol{u}_h^{n+1},\boldsymbol{v}_h)
+      +c(\boldsymbol{u}_h^{n+1};\boldsymbol{u}_h^{n+1},\boldsymbol{v}_h)\\
+    &\qquad=(\boldsymbol{f}^{n+1/2},\boldsymbol{v}_h)-\eta a(\boldsymbol{u}_h^{n+1/2},\boldsymbol{v}_h)
+      -b(\boldsymbol{v}_h,p_h^{n+1/2})\qquad\forall\boldsymbol{v}_h\in V_h.
+  \end{aligned}
+\end{equation}
+
+\SourcePage{454}
+\eqref{eq:13.5.15}和\eqref{eq:13.5.16}还有一种基于 Strang 型分裂的三步变体,见\eqref{eq:5.7.11}.其定义如下.令 \(\boldsymbol{u}_h^0:=\boldsymbol{u}_{0,h}\in V_h\),取 \(0<\vartheta<1/2\).先求解下列 Stokes 问题,得到 \((\boldsymbol{u}_h^{n+\vartheta},p_h^{n+\vartheta})\in V_h\times Q_h\)：
+\begin{equation}\label{eq:13.5.17}
+  \begin{cases}
+    \begin{aligned}
+      &\dfrac1{\vartheta\Delta t}(\boldsymbol{u}_h^{n+\vartheta}-\boldsymbol{u}_h^n,\boldsymbol{v}_h)
+        +\eta a(\boldsymbol{u}_h^{n+\vartheta},\boldsymbol{v}_h)+b(\boldsymbol{v}_h,p_h^{n+\vartheta})\\
+      &\quad=(\boldsymbol{f}^n,\boldsymbol{v}_h)-(1-\eta)a(\boldsymbol{u}_h^n,\boldsymbol{v}_h)
+          -c(\boldsymbol{u}_h^n;\boldsymbol{u}_h^n,\boldsymbol{v}_h)
+          \qquad\forall\boldsymbol{v}_h\in V_h,
+    \end{aligned}\\[2pt]
+    b(\boldsymbol{u}_h^{n+\vartheta},q_h)=0\qquad\forall q_h\in Q_h.
+  \end{cases}
+\end{equation}
+接着,求下列非线性椭圆型对流--扩散问题的解 \(\boldsymbol{u}_h^{n+1-\vartheta}\in V_h\)：
+\begin{equation}\label{eq:13.5.18}
+  \begin{aligned}
+    &\frac1{(1-2\vartheta)\Delta t}(\boldsymbol{u}_h^{n+1-\vartheta}-\boldsymbol{u}_h^{n+\vartheta},\boldsymbol{v}_h)
+      +(1-\eta)a(\boldsymbol{u}_h^{n+1-\vartheta},\boldsymbol{v}_h)\\
+    &\qquad+c(\boldsymbol{u}_h^{n+1-\vartheta};\boldsymbol{u}_h^{n+1-\vartheta},\boldsymbol{v}_h)\\
+    &\quad=(\boldsymbol{f}^{n+\vartheta},\boldsymbol{v}_h)-\eta a(\boldsymbol{u}_h^{n+\vartheta},\boldsymbol{v}_h)
+       -b(\boldsymbol{v}_h,p_h^{n+\vartheta})\qquad\forall\boldsymbol{v}_h\in V_h.
+  \end{aligned}
+\end{equation}
+最后,通过求解另一个 Stokes 问题,得到 \((\boldsymbol{u}_h^{n+1},p_h^{n+1})\in V_h\times Q_h\)：
+\begin{equation}\label{eq:13.5.19}
+  \begin{cases}
+    \begin{aligned}
+      &\dfrac1{\vartheta\Delta t}(\boldsymbol{u}_h^{n+1}-\boldsymbol{u}_h^{n+1-\vartheta},\boldsymbol{v}_h)
+         +\eta a(\boldsymbol{u}_h^{n+1},\boldsymbol{v}_h)+b(\boldsymbol{v}_h,p_h^{n+1})\\
+      &\quad=(\boldsymbol{f}^{n+1-\vartheta},\boldsymbol{v}_h)-(1-\eta)a(\boldsymbol{u}_h^{n+1-\vartheta},\boldsymbol{v}_h)\\
+      &\qquad-c(\boldsymbol{u}_h^{n+1-\vartheta};\boldsymbol{u}_h^{n+1-\vartheta},\boldsymbol{v}_h)
+         \qquad\forall\boldsymbol{v}_h\in V_h,
+    \end{aligned}\\[2pt]
+    b(\boldsymbol{u}_h^{n+1},q_h)=0\qquad\forall q_h\in Q_h.
+  \end{cases}
+\end{equation}
+\BookCite{kloucek-rys1994}{Klouček 和 Rys(1994)}分析了这一格式.对精确解、时间步长 \(\Delta t\) 和网格尺度 \(h\) 作适当假设时,该格式稳定且收敛.
+
+其他分裂法见\BookCite{yanenko1971}{Yanenko(1971)}和\BookCite{marchuk1990}{Marchuk(1990)}.谱逼近中的分步法见\BookCite{canuto-hussaini-quarteroni-zang1988}{Canuto、Hussaini、Quarteroni 和 Zang(1988)}.
+
+\section{其他方法}\label{sec:13.6}
+
+特征 Galerkin 法将对流--扩散方程所用的思想推广到 Navier--Stokes 方程\eqref{eq:13.1}.对流--扩散的做法见
+\SourcePage{455}
+第~\ref{sec:12.5}~节.给定 \(\boldsymbol{x}\in\overline\Omega\) 和 \(s\in[0,T]\),由下式定义特征流 \(\boldsymbol{X}=\boldsymbol{X}(t;s,\boldsymbol{x})\)：
+\begin{equation}\label{eq:13.6.1}
+  \begin{cases}
+    \dfrac{d\boldsymbol{X}}{dt}(t;s,\boldsymbol{x})=\boldsymbol{u}(t,\boldsymbol{X}(t;s,\boldsymbol{x}))
+       &t\in(0,T),\\[2pt]
+    \boldsymbol{X}(s;s,\boldsymbol{x})=\boldsymbol{x}.
+  \end{cases}
+\end{equation}
+随后沿特征流离散方程\eqref{eq:13.1}.在最简单的单步情形下,通过求解下列 Stokes 问题,从 \(t_n\) 推进到 \(t_{n+1}\)：
+\begin{equation}\label{eq:13.6.2}
+  \begin{cases}
+    \boldsymbol{u}^{n+1}-\nu\Delta t\,\Delta\boldsymbol{u}^{n+1}+\Delta t\,\nabla p^{n+1}
+        =\boldsymbol{u}^n\circ\boldsymbol{X}^n+\Delta t\,\boldsymbol{f}^{n+1}
+         & \text{在 }\Omega,\\
+    \operatorname{div}\boldsymbol{u}^{n+1}=0 & \text{在 }\Omega,
+  \end{cases}
+\end{equation}
+其中 \(\boldsymbol{X}^n\) 是 \(\boldsymbol{X}(t_n;t_{n+1},\boldsymbol{x})\) 的适当逼近.要计算右端的第一项,必须对每个网格点 \(\boldsymbol{x}_k\),从 \(t=t_{n+1}\) 出发求解\eqref{eq:13.6.1},沿特征线回溯到前一时间层 \(t_n\),见第~\ref{sec:12.5}~节.
+
+采用空间分片线性有限元时,特征格式的误差满足
+\[
+  \|\boldsymbol{u}_h^n-\boldsymbol{u}(t_n)\|_{L^2(\Omega)}
+    =O\biggl(h+\Delta t+\frac{h^2}{\Delta t}\biggr),
+\]
+且这一估计关于 \(\nu\) 一致.有关这种做法,见\BookCite{pironneau1982}{Pironneau(1982)}和\BookCite{suli1988}{Süli(1988)}.在谱方法框架中,\BookCite{ho-maday-patera-ronquist1990}{Ho、Maday、Patera 和 Rønquist(1990)}、\BookCite{maday-patera-ronquist1990}{Maday、Patera 和 Rønquist(1990)}以及\BookCite{suli-ware1992}{Süli 和 Ware(1992)}提出了这种类型的高阶方法.
+
+在湍流逼近方面,\BookCite{marion-temam1989}{Marion 和 Temam(1989)}提出了\emph{非线性 Galerkin 法},用于逼近惯性流形.惯性流形是分析工具,可以用来描述能量如何从低频模态转移到高频模态.
+
+在谱方法框架中实现这种方法相当自然,只需以 Stokes 算子的特征函数作为基函数.先将动量方程投影到低频模态子空间,再投影到它的正交补.解的高频分量 \(\boldsymbol{u}_{\rm high}\) 和低频分量 \(\boldsymbol{u}_{\rm low}\) 之间的非线性相互作用由对流项驱动,见\BookCite{foias-manley-temam1988}{Foias、Manley 和 Temam(1988)}.假设存在解析关系 \(\boldsymbol{u}_{\rm high}=\mathcal M(\boldsymbol{u}_{\rm low})\),即惯性流形.由低频方程消去 \(\boldsymbol{u}_{\rm high}\),便得到关于低频解 \(\boldsymbol{u}_{\rm low}\) 的非线性动量方程.再以有限维逼近 \(\mathcal M_N\) 代替方程中的 \(\mathcal M\),就得到有限维问题,即\emph{非线性 Galerkin 问题}.
+
+\SourcePage{456}
+关于 Navier--Stokes 方程非线性谱 Galerkin 法的稳定性和收敛性分析,见\BookCite{jauberteau-rosier-temam1990}{Jauberteau、Rosier 和 Temam(1990)}及\BookCite{devulder-marion-titi1993}{Devulder、Marion 和 Titi(1993)},也可参阅其中的参考文献.其他相关结果见\BookCite{shen1990}{Shen(1990)}、\BookCite{titi1990}{Titi(1990)}、\BookCite{foias-jolly-kevrekidis-titi1991}{Foias、Jolly、Kevrekidis 和 Titi(1991)}及\BookCite{temam1991b}{Temam(1991b)}.\BookCite{marion-temam1990}{Marion 和 Temam(1990)}提议在此框架下采用有限元法.
+
+\section{补充说明}\label{sec:13.7}
+
+与第~\ref{sec:8.3}~节和第~\ref{sec:9.4}~节所介绍的类似,稳定化方法已经用于流动计算,有时还配合适当的分步法.例见\BookCite{hughes-brooks1982}{Hughes 和 Brooks(1982)}、\BookCite{hansbo-szepessy1990}{Hansbo 和 Szepessy(1990)}、\BookCite{franca-frey1992}{Franca 和 Frey(1992)}、\BookCite{tezduyar-mittal-shih1991}{Tezduyar、Mittal 和 Shih(1991)}以及\BookCite{tezduyar-mittal-ray-shih1992}{Tezduyar、Mittal、Ray 和 Shih(1992)}.
+
+模拟涡量的一种专门做法是\emph{涡方法}.早期成果包括 Chorin 的论文(\BookCite{chorin1973}{1973}、\BookCite{chorin1980}{1980}),以及\BookCite{hald1979}{Hald(1979)}、\BookCite{leonard1980}{Leonard(1980)}和\BookCite{beale-majda1982}{Beale 和 Majda(1982)}的论文.后续成果可见\BookCite{anderson-greengard1991}{Anderson 和 Greengard(1991)}及其中的参考文献.

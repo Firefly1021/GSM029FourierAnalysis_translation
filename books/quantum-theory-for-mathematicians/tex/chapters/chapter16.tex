@@ -1,0 +1,1076 @@
+\chapter{Lie 群、Lie 代数与表示}
+\label{chap:lie-groups}
+
+物理学中的一个重要概念是对称性,例如许多物理系统的旋转对称性,或相对论系统中的 Lorentz 对称性.在许多情况下,一个系统的对称群是连续群,也就是说,它由一个或多个实参数参数化.更准确地说,对称群往往是 Lie 群:它是一个光滑流形,同时带有群结构,并且求逆与群乘法都是光滑的.Lie 群单位元处的切空间具有自然的“括号”运算,使这个切空间成为 Lie 代数.Lie 群的许多性质都编码在它的 Lie 代数中,而 Lie 代数由于是线性空间,通常更容易处理.
+
+在量子力学中,对称性通常通过群在相关 Hilbert 空间上的酉作用来编码.也就是说,我们假定给定一个相关对称群 $G$ 的酉表示,即一个从 $G$ 到量子 Hilbert 空间上的酉算子群 $U(\mathcal H)$ 的连续同态.实际上,由于只相差一个常数的两个单位向量代表同一个物理状态,更准确的对象应当是射影酉表示.射影表示是从 $G$ 到 $U(\mathcal H)/U(1)$ 的同态,其中 $U(1)$ 是模长为 $1$ 的复数构成的群,并被看作 $U(\mathcal H)$ 中的恒等算子的倍数.Lie 群的普通表示或射影表示都会给出其 Lie 代数的普通表示或射影表示.例如,角动量算子就构成旋转群 Lie 代数的一个表示.
+
+例如,称某量子系统的 Hamilton 算子在旋转下不变,意味着 $\widehat H$ 与旋转群的相关表示对易,因而也与相应的 Lie 代数算子对易.这种对易性意味着 $\widehat H$ 的特征子空间在旋转下不变.第 18 章研究氢原子时,我们将利用这一点来确定能量特征向量.
+
+本章简要介绍 Lie 群、Lie 代数及其表示.我们只需考虑矩阵 Lie 群,即能够实现为某个 $n\times n$ 可逆矩阵群的闭子群的 Lie 群.有些较深的结果不可避免地只能陈述而不证明;这里陈述的所有结果都可在参考文献~[21] 中找到.本章的结果将在第 17 章研究角动量、以及第 18 章研究氢原子时使用.
+
+\section{概要}
+\label{sec:lie-summary}
+
+本章考虑矩阵 Lie 群 $G$.按定义,它是某个 $\operatorname{GL}(n;\mathbb C)$ 的(拓扑)闭子群,其中 $\operatorname{GL}(n;\mathbb C)$ 是复系数 $n\times n$ 可逆矩阵群.对每个这样的 $G$,我们关联一个 Lie 代数 $\mathfrak g$;$\mathfrak g$ 是全体复矩阵空间 $M_n(\mathbb C)$ 的实子空间.我们将看到,$G$ 自动是 $M_n(\mathbb C)$ 中的嵌入实子流形,而 $\mathfrak g$ 正是 $G$ 在单位矩阵处的切空间.
+
+$\mathfrak g$ 不仅是实向量空间,还带有一个“括号”运算.具体地,对 $X,Y\in\mathfrak g$,矩阵 $XY-YX$ 仍属于 $\mathfrak g$,于是定义
+\[
+[X,Y]=XY-YX.
+\label{eq:lie-commutator}
+\]
+事实证明,作为带括号运算的向量空间,Lie 代数 $\mathfrak g$ 编码了群 $G$ 的大量信息.另一方面,在 Lie 代数层面计算通常比在群层面计算容易,因为 $\mathfrak g$ 是线性空间.
+
+我们尤其关心群 $G$ 的酉表示,即从 $G$ 到 Hilbert 空间上的酉算子群的连续同态.最初限制在有限维 Hilbert 空间上时,$G$ 的每个表示 $\Pi$ 都会给出 $G$ 的 Lie 代数 $\mathfrak g$ 的一个表示 $\pi$.也就是说,$\pi$ 是从 $\mathfrak g$ 到 $V$ 上线性算子空间的线性映射,并满足
+\[
+\pi([X,Y])=[\pi(X),\pi(Y)].
+\]
+一个更深的问题是:$\mathfrak g$ 的每个表示 $\pi$ 是否都来自 $G$ 的某个表示 $\Pi$？一般答案是否定的,但若 $G$ 是单连通的,答案为肯定.
+
+例如,$G=\operatorname{SO}(3)$ 时,$\operatorname{SO}(3)$ 的 Lie 代数 $\mathfrak{so}(3)$ 同构于 $\operatorname{SU}(2)$ 的 Lie 代数 $\mathfrak{su}(2)$,而 $\operatorname{SU}(2)$ 是单连通的(即 $\operatorname{SU}(2)$ 是 $\operatorname{SO}(3)$ 的“万能覆盖”).因此,给定 $\mathfrak{so}(3)$ 的一个表示,可能存在也可能不存在相应的 $\operatorname{SO}(3)$ 表示;但总存在 $\operatorname{SU}(2)$ 的表示.
+
+在量子力学中,向量 $e^{i\theta}\psi$ 与 $\psi$ 代表同一物理状态.因此,自然要考虑“射影”酉表示,即到商群 $U(\mathcal H)/\{e^{i\theta}I\}$ 的同态.在有限维情形,每个射影表示都能在 Lie 代数层面“去射影化”,然后提升到 $G$ 的万能覆盖.特别地,有限维的 $\operatorname{SO}(3)$ 不可约射影酉表示与其万能覆盖 $\operatorname{SU}(2)$ 的不可约普通酉表示一一对应.虽然物理系统的 Hilbert 空间通常是无限维的,但对于 $\operatorname{SO}(3)$ 这样的紧群,一般的酉表示可以分解为有限维表示的直和.
+
+\section{矩阵 Lie 群}
+\label{sec:matrix-lie-groups}
+
+记 $M_n(\mathbb C)$ 为复系数 $n\times n$ 矩阵空间.我们把 $M_n(\mathbb C)$ 识别为 $\mathbb C^{n^2}$,赋予通常的拓扑;也就是说,矩阵序列 $A_m$ 收敛到 $A$,当且仅当每个矩阵元 $(A_m)_{jk}$ 都收敛到 $A_{jk}$.记 $\operatorname{GL}(n;\mathbb C)$ 为全体复系数可逆矩阵,在矩阵乘法下它构成一个群.由于
+\[
+\operatorname{GL}(n;\mathbb C)=\{A\in M_n(\mathbb C)\mid\det A\neq0\}
+\]
+是 $M_n(\mathbb C)$ 的开子集,它是一个维数为 $2n^2$ 的实流形.
+
+\begin{definition}[矩阵 Lie 群]\label{def:matrix-lie-group}
+$\operatorname{GL}(n;\mathbb C)$ 的子群 $G$ 称为闭的,如果 $G$ 中任意收敛到矩阵 $A$ 的序列,要么 $A$ 仍属于 $G$,要么 $A$ 不可逆.矩阵 Lie 群就是某个 $\operatorname{GL}(n;\mathbb C)$ 的闭子群.
+\end{definition}
+
+这里的“闭”是把 $G$ 看作 $\operatorname{GL}(n;\mathbb C)$ 的子集时的拓扑闭性;它不一定是 $M_n(\mathbb C)$ 的闭子集.我们将看到,每个矩阵 Lie 群都是 $\operatorname{GL}(n;\mathbb C)$ 中的嵌入实子流形,因而是 Lie 群.
+
+\begin{definition}[Lie 群同态与同构]\label{def:lie-group-homomorphism}
+若 $G_1,G_2$ 是矩阵 Lie 群,则从 $G_1$ 到 $G_2$ 的 Lie 群同态是从 $G_1$ 到 $G_2$ 的连续群同态.若 Lie 群同态既是一一映射又是满射,并且逆映射连续,则称其为 Lie 群同构.两个矩阵 Lie 群称为同构的,是指它们之间存在 Lie 群同构.
+\end{definition}
+
+\begin{example}[一般线性群与特殊线性群]\label{ex:linear-lie-groups}
+实一般线性群 $\operatorname{GL}(n,\mathbb R)$ 是全体实系数可逆 $n\times n$ 矩阵构成的群.$\operatorname{SL}(n,\mathbb C)$ 与 $\operatorname{SL}(n,\mathbb R)$ 分别是复矩阵和实矩阵中行列式为 $1$ 的群,称为特殊线性群.
+\end{example}
+
+\begin{example}[酉群]\label{ex:unitary-group}
+若 $U\in M_n(\mathbb C)$ 满足
+\[
+U^*U=UU^*=I,
+\]
+则称 $U$ 为酉矩阵.等价地,对任意 $v,w\in\mathbb C^n$,有
+\[
+\langle Uv,Uw\rangle=\langle v,w\rangle.
+\]
+酉矩阵构成的群记为 $U(n)$,称为 $n\times n$ 酉群.特殊酉群 $SU(n)$ 是 $U(n)$ 中行列式为 $1$ 的子群.
+\end{example}
+
+条件 $(U^*U)_{jk}=\delta_{jk}$ 等价于 $U$ 的各列构成正交归一组,这可以直接计算得到.几何上,$U^*U=I$ 等价于 $U$ 保持 $\mathbb C^n$ 的内积.对 $U^*U=I$ 取行列式可知,任意 $U\in U(n)$ 都满足 $|\det U|=1$.在有限维情形,$U^*U=I$ 自动推出 $U$ 是 $U^*$ 的逆,所以也有 $UU^*=I$;无限维情形并非如此.
+
+\begin{example}[正交群]\label{ex:orthogonal-group}
+若实矩阵 $R\in M_n(\mathbb R)$ 满足
+\[
+R^{\mathsf{tr}}R=RR^{\mathsf{tr}}=I,
+\]
+则称 $R$ 为正交矩阵.等价地,对任意 $v,w\in\mathbb R^n$,有 $\langle Rv,Rw\rangle=\langle v,w\rangle$.正交矩阵构成的群记为 $O(n)$,称为正交群;特殊正交群 $SO(n)$ 是 $O(n)$ 中行列式为 $1$ 的子群.
+\end{example}
+
+与酉矩阵情形一样,$R^{\mathsf{tr}}R=I$ 推出 $RR^{\mathsf{tr}}=I$,并且 $R$ 的各列构成正交归一组.对 $R^{\mathsf{tr}}R=I$ 取行列式可知 $O(n)$ 中的矩阵行列式只能是 $1$ 或 $-1$.容易验证,例~\ref{ex:linear-lie-groups}、例~\ref{ex:unitary-group} 与例~\ref{ex:orthogonal-group} 中的各群确实都是 $\operatorname{GL}(n;\mathbb C)$ 的闭子群.
+
+\begin{definition}[连通、单连通与紧]\label{def:connected-simply-connected-compact}
+矩阵 Lie 群 $G$ 称为连通的,是指任意 $A,B\in G$ 都存在连续路径 $A(t)$,$0\leq t\leq1$,使 $A(0)=A$、$A(1)=B$ 且 $A(t)\in G$.若 $G$ 连通,并且 $G$ 中每条连续闭路都能在 $G$ 中连续收缩为一点,则称 $G$ 单连通.若 $G$ 作为 $M_n(\mathbb C)\cong\mathbb R^{2n^2}$ 的子集是紧的,则称 $G$ 紧.
+\end{definition}
+
+由 Heine--Borel 定理,矩阵 Lie 群紧,当且仅当它是 $M_n(\mathbb C)$ 中的闭且有界子集.这里称为“连通”的条件更准确地说是道路连通;不过我们将看到,每个矩阵 Lie 群都是嵌入实子流形,因而局部道路连通,所以对矩阵 Lie 群而言连通与道路连通等价.要证明矩阵 Lie 群 $G$ 连通,只需证明每个 $A\in G$ 都能在 $G$ 中用连续路径与 $I$ 相连.
+
+\begin{example}[紧矩阵 Lie 群]\label{ex:compact-matrix-lie-groups}
+$O(n)$、$SO(n)$、$U(n)$ 与 $SU(n)$ 都是紧的.
+\end{example}
+
+\begin{proof}
+定义这些群的条件都是令某些连续函数取定值.例如,$SU(n)$ 由 $(U^*U)_{jk}=\delta_{jk}$ 及 $\det U=1$ 定义,因此不仅在 $\operatorname{GL}(n;\mathbb C)$ 中闭,在 $M_n(\mathbb C)$ 中也闭.此外,各群中的任意矩阵的每一列都是单位向量,所以这些群有界.
+\end{proof}
+
+\def\ChapterSixteenProjectiveCover{
+\begin{theorem}[有限维射影表示与万能覆盖]\label{thm:projective-representation-universal-cover}
+设 $G$ 是矩阵 Lie 群,$(\widetilde G,\Phi)$ 是其万能覆盖.则:
+\begin{enumerate}
+\item 若 $\Pi:G\to PU(V)$ 是有限维射影酉表示,则存在 $\widetilde G$ 的普通酉表示 $\Sigma:\widetilde G\to U(V)$,使
+\[
+\Pi\circ\Phi=Q\circ\Sigma.
+\]
+任意这样的 $\Sigma$ 不可约,当且仅当 $\Pi$ 不可约;并且可要求 $\det\Sigma(A)=1$,在此条件下 $\Sigma$ 唯一.
+\item 若 $\Sigma$ 是 $\widetilde G$ 的有限维不可约酉表示,则相应射影表示 $Q\circ\Sigma$ 的核包含覆盖映射 $\Phi$ 的核.因此 $Q\circ\Sigma$ 可下降到 $G$,给出 $G$ 的射影酉表示.
+\end{enumerate}
+因而有限维情形下,$G$ 的不可约射影酉表示与 $\widetilde G$ 的不可约、行列式为 $1$ 的普通酉表示一一对应.
+\end{theorem}
+
+\begin{proof}
+设 $\mathfrak g$ 是 $G$ 的 Lie 代数.由命题~\ref{prop:projective-representation-lie-lift},可取普通表示 $\sigma:\mathfrak g\to\mathfrak u(V)$,使 $q\circ\sigma=\pi$.若 $\phi:\widetilde{\mathfrak g}\to\mathfrak g$ 是覆盖诱导的 Lie 代数同构,定义
+\[
+\widetilde\sigma(X)=\sigma(\phi(X)).
+\]
+因为 $\widetilde G$ 单连通,定理~\ref{thm:lie-algebra-homomorphism-integrates} 给出唯一 $\Sigma:\widetilde G\to U(V)$,满足 $\Sigma(e^X)=e^{\widetilde\sigma(X)}$.由 $q\circ\widetilde\sigma=\pi\circ\phi$,得到 $Q\circ\Sigma=\Pi\circ\Phi$.若要求 $\Sigma$ 取值于 $SU(V)$,则 $\sigma$ 取值于 $\mathfrak{su}(V)$,迹为零的条件使其唯一.
+
+对第 2 条,$\ker\Phi$ 是 $\widetilde G$ 的离散正规子群,因而位于中心.若 $A\in\ker\Phi$,则 $\Sigma(A)$ 与所有 $\Sigma(B)$ 对易,是 $V$ 到自身的交织映射.由 Schur 引理,$\Sigma(A)=cI$,其中 $|c|=1$,所以 $A$ 在 $Q\circ\Sigma$ 的核中.
+\end{proof}
+
+}
+
+\def\ChapterSixteenNewRepresentations{
+\section{由旧表示构造新表示}
+\label{sec:new-representations-from-old}
+
+本节讨论把表示组合成新表示的三种基本机制:直和、张量积和对偶.这里假设读者熟悉向量空间层面的这些概念.
+
+\begin{definition}[表示的直和、张量积与对偶]\label{def:representation-sum-tensor-dual}
+设 $(\Pi_1,V_1)$、$(\Pi_2,V_2)$ 是矩阵 Lie 群 $G$ 的表示.直和表示定义为
+\[
+(\Pi_1\oplus\Pi_2)(A)=\Pi_1(A)\oplus\Pi_2(A).
+\]
+张量积表示定义为
+\[
+(\Pi_1\otimes\Pi_2)(A)=\Pi_1(A)\otimes\Pi_2(A).
+\]
+最后,$\Pi_1$ 的对偶表示记为 $\Pi_1^{\mathsf{tr}}$,定义为
+\[
+\Pi_1^{\mathsf{tr}}(A)=\Pi_1(A^{-1})^{\mathsf{tr}}=\Pi_1(A)^{-\mathsf{tr}}.
+\]
+Lie 代数表示的对应定义为
+\[
+\begin{aligned}
+(\pi_1\oplus\pi_2)(X)&=\pi_1(X)\oplus\pi_2(X),\\
+(\pi_1\otimes\pi_2)(X)&=\pi_1(X)\otimes I+I\otimes\pi_2(X),\\
+\pi_1^{\mathsf{tr}}(X)&=-\pi_1(X)^{\mathsf{tr}}.
+\end{aligned}
+\]
+\end{definition}
+
+群表示与 Lie 代数表示在张量积和对偶情形的公式不同.若 $G$ 在 $V_1\otimes V_2$ 上通过 $\Pi_1(A)\otimes\Pi_2(A)$ 作用,则相应 Lie 代数作用由
+\[
+\left.\frac{d}{dt}\bigl(\Pi_1(e^{tX})\otimes\Pi_2(e^{tX})\bigr)\right|_{t=0}
+=\pi_1(X)\otimes I+I\otimes\pi_2(X)
+\]
+给出;即使没有对应群表示,我们也采用这个 Lie 代数张量积公式.
+
+\begin{remark}[直积群与张量积表示]\label{rem:tensor-product-direct-product}
+若 $(\Pi_1,V_1)$、$(\Pi_2,V_2)$ 是群 $G$ 的表示,也可以把 $V_1\otimes V_2$ 看成直积群 $G\times G$ 的表示:
+\[
+(\Pi_1\otimes\Pi_2)(A,B)=\Pi_1(A)\otimes\Pi_2(B).
+\]
+类似地,若 $(\pi_1,V_1), (\pi_2,V_2)$ 是 Lie 代数 $\mathfrak g$ 的表示,则可把张量积看作 $\mathfrak g\oplus\mathfrak g$ 的表示:
+\[
+(\pi_1\otimes\pi_2)(X,Y)=\pi_1(X)\otimes I+I\otimes\pi_2(Y).
+\]
+不过通常把 $V_1\otimes V_2$ 看作 $G$ 自身的表示更自然.即使 $V_1,V_2$ 都不可约,张量积通常也不再不可约;例如 $V_1=V_2=V$ 时,$V\otimes V$ 中的对称张量构成不变子空间(除非 $\dim V=1$).表示论中的重要问题之一,就是把两个不可约表示的张量积分解为不可约表示的直和;$\mathfrak{su}(2)$ 的情形将在第 17 章讨论.
+\end{remark}
+
+\begin{definition}[完全可约表示]\label{def:completely-reducible-representation}
+群或 Lie 代数的有限维表示称为完全可约的,是指它同构于不可约表示的直和.
+\end{definition}
+
+\begin{proposition}[有限维酉表示完全可约]\label{prop:unitary-completely-reducible}
+每个群或 Lie 代数的有限维酉表示都是完全可约的.
+\end{proposition}
+
+\begin{proof}
+设 $(\Pi,V)$ 是矩阵 Lie 群 $G$ 的酉表示.若 $W$ 在每个 $\Pi(A)$ 下不变,则 $W^\perp$ 在每个 $\Pi(A)^*$ 下不变;而酉性给出 $\Pi(A)^*=\Pi(A)^{-1}=\Pi(A^{-1})$,所以 $W^\perp$ 也在每个 $\Pi(A)$ 下不变.若 $V$ 不可约则结论显然;否则取非平凡不变子空间 $W$,分解 $V=W\oplus W^\perp$,并在两个子空间上重复.由于 $V$ 有限维,过程最终停止,得到不可约不变子空间的正交直和.
+
+Lie 代数表示的论证相同,只需把 $\Pi(A)^*=\Pi(A^{-1})$ 换成 $\pi(X)^*=-\pi(X)$.
+\end{proof}
+
+\begin{proposition}[紧群的有限维表示酉化]\label{prop:compact-group-unitarization}
+设 $K$ 是紧矩阵 Lie 群.对 $K$ 的任意有限维表示 $(\Pi,V)$,都存在 $V$ 上的内积,使得所有 $\Pi(A)$ 都酉.因此,$K$ 的每个有限维表示都完全可约.
+\end{proposition}
+
+这是参考文献~[21] 的命题 4.36.
+}
+
+\def\ChapterSixteenInfiniteRepresentations{
+\section{无限维酉表示}
+\label{sec:infinite-dimensional-unitary-representations}
+
+本书的应用需要考虑无限维表示.无限维表示的理论必然比有限维情形复杂.对我们的目的而言,考虑 Hilbert 空间中的最良性的一类——酉表示——就足够了.
+
+\subsection{普通酉表示}
+\label{subsec:ordinary-unitary-representations}
+
+先处理普通表示,再转向射影表示.
+
+\begin{definition}[无限维普通酉表示]\label{def:infinite-dimensional-unitary-representation}
+设 $G$ 是矩阵 Lie 群.$G$ 的酉表示是从 $G$ 到 Hilbert 空间 $\mathcal H$ 上酉算子群 $U(\mathcal H)$ 的强连续同态 $\Pi$,其中 $\mathcal H$ 是可分 Hilbert 空间.强连续性是指:若 $A_m\to A$,则对每个 $\psi\in\mathcal H$,
+\[
+\lim_{m\to\infty}\|\Pi(A_m)\psi-\Pi(A)\psi\|=0.
+\]
+\end{definition}
+
+我们可以仿照定理~\ref{thm:group-homomorphism-differential},尝试把酉表示 $\Pi$ 与 $G$ 的 Lie 代数 $\mathfrak g$ 的某种表示 $\pi$ 关联起来.对 $X\in\mathfrak g$,$t\mapsto\Pi(e^{tX})$ 是强连续的一参数酉群.由 Stone 定理(定理~\ref{thm:stone}),存在唯一自伴算子 $A$,使 $\Pi(e^{tX})=e^{itA}$.若令 $\pi(X)=iA$,则
+\[
+\Pi(e^{tX})=e^{t\pi(X)}.
+\label{eq:infinite-representation-exponential}
+\]
+$\pi(X)$ 通常是无界算子,只定义在 $\mathcal H$ 的稠密子空间上.不过可以证明存在一个稠密子空间 $\mathcal V\subset\mathcal H$,它包含在每个 $\pi(X)$ 的定义域中,并且在每个 $\pi(X)$ 下不变;在该子空间上有
+\[
+\pi([X,Y])=[\pi(X),\pi(Y)].
+\]
+下一章的具体表示中,我们将通过考察有限维不变子空间来避开这些困难.
+
+\begin{proposition}[有限维不变子空间上的无穷维表示]\label{prop:infinite-representation-finite-subspace}
+设 $G$ 是矩阵 Lie 群,$\Pi:G\to U(\mathcal H)$ 是酉表示.对 $X\in\mathfrak g$,令 $\pi(X)$ 为式~\eqref{eq:infinite-representation-exponential} 中的算子.若 $\mathcal V\subset\mathcal H$ 是有限维子空间,且 $\Pi(A)\mathcal V\subset\mathcal V$ 对所有 $A\in G$ 成立,则对所有 $X\in\mathfrak g$,$\mathcal V\subset\operatorname{Dom}(\pi(X))$,$\pi(X)$ 把 $\mathcal V$ 映到自身,并且
+\[
+\pi([X,Y])v=[\pi(X),\pi(Y)]v,qquad v\in\mathcal V.
+\label{eq:finite-subspace-lie-relation}
+\]
+反过来,若 $G$ 连通,且有限维子空间 $\mathcal V$ 满足对所有 $X\in\mathfrak g$ 有 $\mathcal V\subset\operatorname{Dom}(\pi(X))$ 且 $\pi(X)\mathcal V\subset\mathcal V$,则 $\Pi(A)\mathcal V\subset\mathcal V$ 对所有 $A\in G$ 成立.
+\end{proposition}
+
+\begin{proof}
+由于 $\mathcal V$ 同时在 $\Pi(A)$ 与 $\Pi(A)^*=\Pi(A^{-1})$ 下不变,$\Pi(A)$ 在 $\mathcal V$ 上的限制是酉的.这些限制构成 $G$ 的有限维酉表示,并且强连续性在有限维情形等价于通常连续性.由定理~\ref{thm:one-parameter-exponential},对每个 $X$ 存在 $\mathcal V$ 上算子 $\widetilde X$,使
+\[
+\Pi(e^{tX})|_{\mathcal V}=e^{t\widetilde X}.
+\]
+于是对 $v\in\mathcal V$,
+\[
+\lim_{t\to0}\frac{\Pi(e^{tX})v-v}{t}
+=\lim_{t\to0}\frac{e^{t\widetilde X}v-v}{t}=\widetilde Xv.
+\]
+这说明 $v\in\operatorname{Dom}(\pi(X))$ 且 $\pi(X)v=\widetilde Xv$,故式~\eqref{eq:finite-subspace-lie-relation} 成立.
+
+反过来,若 $\mathcal V$ 在 $\pi(X)$ 下不变,则 $\pi(X)|_{\mathcal V}$ 有界,从而存在常数 $C$ 使
+\[
+\|\pi(X)^m v\|\leq C^m\|v\|.
+\label{eq:finite-subspace-generator-bound}
+\]
+令 $A=-i\pi(X)$.由自伴算子的谱定理,式~\eqref{eq:finite-subspace-generator-bound} 迫使 $v$ 在谱表示中支集落在 $A$ 的谱中的某个有界区间内.于是 $\lambda\mapsto e^{t\lambda}$ 的幂级数在该区间上一致收敛,并且
+\[
+\Pi(e^{tX})v=e^{itA}v=\sum_{m=0}^{\infty}\frac{t^m\pi(X)^m}{m!}v.
+\]
+每一项都属于有限维且闭的 $\mathcal V$,故 $\Pi(e^{tX})v\in\mathcal V$.连通性与推论~\ref{cor:connected-group-products-exponentials} 完成证明.
+\end{proof}
+
+\subsection{射影酉表示}
+\label{subsec:infinite-dimensional-projective-representations}
+
+设 $S\mathcal H$ 是 $\mathcal H$ 中的单位球面,令 $P\mathcal H=S\mathcal H/\sim$,其中 $u\sim v$ 当且仅当 $u=e^{i\theta}v$.商映射 $q:S\mathcal H\to P\mathcal H$ 诱导出 $P\mathcal H$ 的拓扑:$U\subset P\mathcal H$ 开,当且仅当 $q^{-1}(U)$ 是度量空间 $S\mathcal H$ 的开集.
+
+如有限维情形,可定义
+\[
+PU(\mathcal H):=U(\mathcal H)/\{e^{i\theta}I\}.
+\]
+$U(\mathcal H)$ 在 $S\mathcal H$ 上的作用下降为 $PU(\mathcal H)$ 在 $P\mathcal H$ 上的良定义作用.
+
+\begin{definition}[无限维射影酉表示]\label{def:infinite-dimensional-projective-representation}
+矩阵 Lie 群 $G$ 的射影酉表示是同态 $\Pi:G\to PU(\mathcal H)$,其中 $\mathcal H$ 是 Hilbert 空间,并且满足:若 $A_m\to A$,则对所有 $x\in P\mathcal H$,
+\[
+\Pi(A_m)x\to\Pi(A)x.
+\]
+\end{definition}
+
+有限维时,每个射影酉表示都可通过转到 Lie 代数、选择每个等价类的迹零代表,再指数化到原群的万能覆盖来“去射影化”.无限维时这种方法不起作用:即使能够为每个 $X$ 构造 Lie 代数算子 $\pi(X)$,它们通常是无界算子,迹没有意义.这个困难并非技术性的;无限维对应结论事实上是假的.
+
+\begin{example}[不能去射影化的无限维表示]\label{ex:weyl-projective-representation-not-liftable}
+对任意 $(a,b)\in\mathbb R^2$,在 $L^2(\mathbb R)$ 上定义
+\[
+(T_{(a,b)}\psi)(x)=e^{iax}\psi(x-b).
+\]
+则每个 $T_{(a,b)}$ 都是酉的,并且
+\[
+\begin{aligned}
+T_{(a,b)}T_{(a',b')}\psi(x)
+&=e^{iax}e^{ia'(x-b)}\psi(x-b-b')\\
+&=e^{-ia'b}T_{(a+a',b+b')}\psi(x).
+\end{aligned}
+\label{eq:weyl-projective-multiplication}
+\]
+因此 $(a,b)\mapsto[T_{(a,b)}]$ 是 $\mathbb R^2$ 到 $PU(L^2(\mathbb R))$ 的同态,并且按定义~\ref{def:infinite-dimensional-projective-representation} 连续.但不存在同态 $S:\mathbb R^2\to U(L^2(\mathbb R))$,使 $[S(a,b)]=[T_{(a,b)}]$ 对所有 $(a,b)$ 成立.
+\end{example}
+
+\begin{proof}
+$(a,b)\mapsto T_{(a,b)}$ 易见强连续,故其射影表示连续.若存在 $S$,则有常数 $\theta_{a,b}$ 使 $S(a,b)=e^{i\theta_{a,b}}T_{(a,b)}$.由于 $\mathbb R^2$ 交换,$S(a,b)$ 必须彼此对易,因而 $T_{(a,b)}$ 也必须彼此对易.但由式~\eqref{eq:weyl-projective-multiplication},$T_{(a,0)}$ 与 $T_{(0,b')}$ 一般不对易,矛盾.
+\end{proof}
+
+尽管例~\ref{ex:weyl-projective-representation-not-liftable} 否定了普遍的去射影化结论,若 $G$ 连通且“半单”,则每个 $G$ 的射影酉表示都能在转到万能覆盖后去射影化.Lie 代数 $\mathfrak g$ 称为简单的,是指它没有非平凡理想且 $\dim\mathfrak g\geq2$;若它是简单 Lie 代数的直和,则称为半单.Lie 群称为半单,是指其 Lie 代数半单.
+
+对任意连通 Lie 群 $G$,射影酉表示都可以通过一个一维中心扩张去射影化.一维中心扩张是一个 Lie 群 $G'$ 与满射同态 $\Phi:G'\to G$,其中 $\ker\Phi$ 是一维且位于 $G'$ 的中心.更多内容见 V. Bargmann 的文章~[1].
+}
+
+\def\ChapterSixteenExercises{
+\section{习题}
+\label{sec:lie-group-exercises}
+
+\begin{exercise}[离散正规子群是中心子群]\label{ex:discrete-normal-central}
+设 $G$ 是连通矩阵 Lie 群,$N$ 是离散正规子群,即存在单位元的某个邻域 $U$,使 $U\cap N=\{I\}$.证明 $N$ 包含于 $G$ 的中心.提示:考察 $gng^{-1}$,其中 $g\in G,n\in N$.
+\end{exercise}
+
+\begin{exercise}[$SU(2)$ 的中心]\label{ex:su2-center}
+\begin{enumerate}
+\item 设 $U,V\in SU(2)$ 对易.证明 $U$ 的每个特征子空间都在 $V$ 下不变,反之亦然.
+\item 证明若 $U$ 位于 $SU(2)$ 的中心,则 $U=I$ 或 $U=-I$.
+\end{enumerate}
+\end{exercise}
+
+\begin{exercise}[Hilbert--Schmidt 范数]\label{ex:hilbert-schmidt-submultiplicative}
+对 $X\in M_n(\mathbb C)$ 定义 Hilbert--Schmidt 范数
+\[
+\|X\|_{\mathrm{HS}}^2=\sum_{j,k=1}^n|X_{jk}|^2.
+\]
+用 Cauchy--Schwarz 不等式证明对所有 $X,Y\in M_n(\mathbb C)$ 有
+\[
+\|XY\|_{\mathrm{HS}}\leq\|X\|_{\mathrm{HS}}\|Y\|_{\mathrm{HS}}.
+\label{eq:hilbert-schmidt-product-bound}
+\]
+\end{exercise}
+
+\begin{exercise}[矩阵指数的逐项求导]\label{ex:matrix-exponential-entry-derivative}
+用幂级数逐项求导证明:对所有 $X\in M_n(\mathbb C)$ 及 $1\leq j,k\leq n$,
+\[
+\left.\frac{d}{dt}(e^{tX})_{jk}\right|_{t=0}=X_{jk}.
+\]
+\end{exercise}
+
+\begin{exercise}[行列式与矩阵指数]\label{ex:matrix-exponential-determinant}
+验证定理~\ref{thm:matrix-exponential-properties} 的性质 4,即 $\det(e^X)=e^{\operatorname{tr}(X)}$.可对可对角化矩阵直接证明;一般情形使用 Jordan 标准形,或利用可对角化矩阵在 $M_n(\mathbb C)$ 中稠密这一事实.
+\end{exercise}
+
+\begin{exercise}[可交换矩阵的指数]\label{ex:commuting-matrix-exponential}
+设 $X,Y$ 是可交换的 $n\times n$ 矩阵.证明
+\[
+e^Xe^Y=e^{X+Y}.
+\]
+这是定理~\ref{thm:matrix-exponential-properties} 的性质 5.提示:将 $e^X,e^Y$ 的幂级数相乘,再按 $X,Y$ 总次数分组.
+\end{exercise}
+
+\begin{exercise}[Lie 乘积公式]\label{ex:lie-product-formula}
+对 $A\in M_n(\mathbb C)$,在级数收敛时定义
+\[
+\log A=(A-I)-\frac{(A-I)^2}{2}+\frac{(A-I)^3}{3}-\cdots.
+\]
+假定 $A$ 充分接近 $I$ 时 $\log A$ 有定义且 $e^{\log A}=A$.
+\begin{enumerate}
+\item 证明存在常数 $C$,使 $\|A-I\|<1/2$ 时
+\[
+\|\log A-(A-I)\|\leq C\|A-I\|^2.
+\]
+\item 证明对任意 $X,Y\in M_n(\mathbb C)$,
+\[
+\log(e^{X/m}e^{Y/m})=\frac Xm+\frac Ym+O(m^{-2}).
+\]
+注意 $e^{X/m}e^{Y/m}\to I$,所以当 $m$ 足够大时左侧有定义.
+\item 证明 Lie 乘积公式.
+\end{enumerate}
+\end{exercise}
+
+\begin{exercise}[指数映射的微分]\label{ex:exponential-differential-at-zero}
+\begin{enumerate}
+\item 证明对任意 $X,Y\in M_n(\mathbb C)$,
+\[
+\left.\left\|\frac{d}{dt}(X+tY)^m\right\|\right|_{t=0}
+\leq m\|X\|^{m-1}\|Y\|.
+\]
+\item 证明 $X\mapsto e^X$ 是 $M_n(\mathbb C)\cong\mathbb R^{2n^2}$ 到自身的连续可微映射.
+\item 用练习~\ref{ex:matrix-exponential-entry-derivative} 证明指数映射在 $X=0$ 处的微分是 $M_n(\mathbb C)$ 到自身的恒等映射.
+\end{enumerate}
+\end{exercise}
+
+\begin{exercise}[商 Lie 代数]\label{ex:lie-algebra-quotient}
+设 $\mathfrak g$ 是 Lie 代数,$\mathfrak h$ 是其理想.令 $\mathfrak g/\mathfrak h$ 为向量空间商.证明 $\mathfrak g$ 的括号无歧义地下降为 $\mathfrak g/\mathfrak h$ 上的双线性映射,并且该商空间在此括号下成为 Lie 代数.
+\end{exercise}
+
+\begin{exercise}[复合同态的 Lie 代数映射]\label{ex:composition-lie-homomorphisms}
+设 $G_1,G_2,G_3$ 是 Lie 代数分别为 $\mathfrak g_1,\mathfrak g_2,\mathfrak g_3$ 的矩阵 Lie 群.若 $\Phi:G_1\to G_2$、$\Psi:G_2\to G_3$ 是 Lie 群同态,对应 Lie 代数同态为 $\phi,\psi$,证明 $\Psi\circ\Phi$ 对应的 Lie 代数同态是 $\psi\circ\phi$.
+\end{exercise}
+
+\begin{exercise}[同构群的 Lie 代数]\label{ex:lie-isomorphic-algebras}
+证明同构的矩阵 Lie 群具有同构的 Lie 代数.
+\end{exercise}
+
+\begin{exercise}[Lie 代数单射与群核]\label{ex:injective-lie-map-local-kernel}
+设 $G_1,G_2$ 的 Lie 代数为 $\mathfrak g_1,\mathfrak g_2$,且 $\Phi:G_1\to G_2$ 是 Lie 群同态,对应 Lie 代数同态 $\phi:\mathfrak g_1\to\mathfrak g_2$ 为单射.证明存在单位元邻域 $U$,使 $U\cap\ker\Phi=\{I\}$.提示:使用定理~\ref{thm:local-exponential-diffeomorphism}.
+\end{exercise}
+
+\begin{exercise}[$SO(3)$ 的指数与连通性]\label{ex:so3-exponential-surjective}
+\begin{enumerate}
+\item 证明每个 $R\in SO(3)$ 都有特征值 $1$.
+\item 证明每个 $R\in SO(3)$ 都能在 $SO(3)$ 中共轭为
+\[
+\begin{pmatrix}1&0&0\\0&\cos\theta&-\sin\theta\\0&\sin\theta&\cos\theta\end{pmatrix}
+\]
+的形式,其中 $\theta\in\mathbb R$.
+\item 证明从 $\mathfrak{so}(3)$ 到 $SO(3)$ 的指数映射是满射.
+\item 证明 $SO(3)$ 连通.
+\end{enumerate}
+\end{exercise}
+
+\begin{exercise}[$SO(3)$ 的中心]\label{ex:so3-center}
+证明 $SO(3)$ 的中心是平凡的.提示:使用练习~\ref{ex:so3-exponential-surjective} 的第 1 部分.
+\end{exercise}
+
+\begin{exercise}[交换子理想]\label{ex:commutator-ideal}
+给定 Lie 代数 $\mathfrak g$,令 $[\mathfrak g,\mathfrak g]$ 为由所有交换子 $[X,Y]$ 的线性组合张成的空间.
+\begin{enumerate}
+\item 证明 $[\mathfrak g,\mathfrak g]$ 是 $\mathfrak g$ 的理想,且商 $\mathfrak g/[\mathfrak g,\mathfrak g]$ 交换.该理想称为交换子理想.
+\item 若 $\mathfrak g=\mathfrak{so}(3)$,证明 $[\mathfrak g,\mathfrak g]=\mathfrak g$.
+\item 若 $\pi:\mathfrak g\to\mathfrak{gl}(V)$ 是任意有限维表示,证明 $\pi([\mathfrak g,\mathfrak g])$ 包含于 $\mathfrak{sl}(V)$,即迹为零的端omorphism空间.
+\end{enumerate}
+\end{exercise}
+
+\begin{exercise}[射影酉群与特殊酉群]\label{ex:projective-unitary-group}
+\begin{enumerate}
+\item 证明 $\mathfrak{pu}(n)\cong\mathfrak u(n)/\{iaI\}$ 同构于 $\mathfrak{su}(n)$.
+\item 令 $\{e^{2\pi ik/n}I\}$ 表示 $n$ 次单位根乘以恒等矩阵构成的群.证明
+\[
+PU(n)\cong SU(n)/\{e^{2\pi ik/n}I\}.
+\]
+\end{enumerate}
+\end{exercise}
+
+\begin{exercise}[单位元邻域的指数坐标]\label{ex:left-translation-exponential}
+设 $G$ 是 Lie 代数为 $\mathfrak g$ 的矩阵 Lie 群,$A\in G$.证明左乘 $A^{-1}$ 是 $M_n(\mathbb C)$ 的微分同胚.再证明存在 $0$ 的邻域 $U$ 与 $A$ 的邻域 $V$,使 $X\mapsto Ae^X$ 把 $U$ 微分同胚地映到 $V$,且对 $X\in U$,$X\in\mathfrak g$ 当且仅当 $Ae^X\in V$.提示:使用定理~\ref{thm:local-exponential-diffeomorphism}.
+\end{exercise}
+
+\begin{exercise}[矩阵的交换子中心]\label{ex:scalar-commutant}
+设 $Z\in M_n(\mathbb C)$ 与所有 $X\in M_n(\mathbb C)$ 对易.证明存在 $c\in\mathbb C$,使 $Z=cI$.
+\end{exercise}
+
+\begin{exercise}[不等价不可约子表示的正交性]\label{ex:inequivalent-unitary-subspaces-orthogonal}
+设 $(\Pi,\mathcal H)$ 是矩阵 Lie 群 $G$ 的酉表示,$V_1,V_2$ 是 $\mathcal H$ 中有限维不可约不变子空间.证明:若 $V_1,V_2$ 作为 $G$ 的表示不等价,则 $V_1$ 与 $V_2$ 在 $\mathcal H$ 中正交.提示:证明从 $\mathcal H$ 到 $V_1$ 或 $V_2$ 的正交投影是交织映射,并使用 Schur 引理.
+\end{exercise}
+
+}
+
+\def\ChapterSixteenFiniteUnitaryProjective{
+\subsection{酉表示}
+\label{subsec:finite-dimensional-unitary-representations}
+
+量子力学关心的不只是向量空间,而是带内积的 Hilbert 空间,因为期望值由内积定义.因此我们希望群作用既保持线性结构,也保持内积.虽然量子力学中的 Hilbert 空间通常是无限维的,本节先限制在有限维情形.
+
+\begin{definition}[有限维酉表示]\label{def:finite-dimensional-unitary-representation}
+设 $V$ 是复有限维 Hilbert 空间.记 $U(V)$ 为保持内积的可逆线性变换群.矩阵 Lie 群 $G$ 的有限维酉表示是从 $G$ 到 $U(V)$ 的连续同态,其中 $V$ 是某个有限维 Hilbert 空间.
+\end{definition}
+
+\begin{proposition}[酉表示的 Lie 代数判据]\label{prop:finite-dimensional-unitary-criterion}
+设 $G$ 是连通矩阵 Lie 群,$\Pi:G\to\operatorname{GL}(V)$ 是有限维表示,$\pi$ 是对应 Lie 代数 $\mathfrak g$ 的表示,$\langle\cdot,\cdot\rangle$ 是 $V$ 上的内积.则 $\Pi$ 关于该内积酉,当且仅当对所有 $X\in\mathfrak g$,$\pi(X)$ 斜自伴,即
+\[
+\pi(X)^*=-\pi(X).
+\]
+\end{proposition}
+
+我们也把满足上述条件的有限维内积空间上的 Lie 代数表示称为酉表示.
+
+\begin{proof}
+若所有 $\Pi(A)$ 酉,则对 $X\in\mathfrak g,t\in\mathbb R$,
+\[
+\Pi(e^{tX})^*=\Pi(e^{tX})^{-1}=\Pi(e^{-tX})=e^{-t\pi(X)}.
+\]
+另一方面,
+\[
+\Pi(e^{tX})^*=(e^{t\pi(X)})^*=e^{t\pi(X)^*}.
+\]
+对 $t=0$ 求导得 $\pi(X)^*=-\pi(X)$.
+
+反过来,若 $\pi(X)^*=-\pi(X)$,则
+\[
+\Pi(e^X)^*=e^{\pi(X)^*}=e^{-\pi(X)}=\Pi(e^{-X})=\Pi(e^X)^{-1},
+\]
+所以 $\Pi(e^X)$ 酉.连通性与推论~\ref{cor:connected-group-products-exponentials} 说明每个群元素都是指数之积,故每个 $\Pi(A)$ 都酉.
+\end{proof}
+
+\subsection{射影酉表示}
+\label{subsec:finite-dimensional-projective-unitary-representations}
+
+在量子力学中,相差一个常数倍的两个单位向量代表同一物理状态.因此,$e^{i\theta}I$ 在物理状态层面起恒等作用.设 $V$ 是复有限维 Hilbert 空间,自然要考虑到商群
+\[
+U(V)/\{e^{i\theta}I\}
+\]
+的同态,而不只是到 $U(V)$ 的同态.普通酉表示总能通过商映射得到射影表示,但反过来并非总能做到.
+
+\begin{definition}[有限维射影酉群]\label{def:projective-unitary-group}
+复有限维 Hilbert 空间 $V$ 上的射影酉群记为 $PU(V)$,定义为
+\[
+PU(V)=U(V)/\{e^{i\theta}I\mid\theta\in\mathbb R\}.
+\]
+\end{definition}
+
+标量矩阵群 $\{e^{i\theta}I\}$ 是 $U(V)$ 的闭正规子群.一般来说,矩阵 Lie 群除以闭正规子群未必仍是矩阵 Lie 群;但这里可以把 $U(n)/\{e^{i\theta}I\}$ 实现为矩阵 Lie 群.
+
+\begin{proposition}[射影酉群是矩阵 Lie 群]\label{prop:projective-unitary-matrix-lie}
+若 $V$ 是有限维复 Hilbert 空间,则 $PU(V)$ 同构于某个矩阵 Lie 群.
+\end{proposition}
+
+令 $Q:U(V)\to PU(V)$ 为商同态,$q:\mathfrak u(V)\to\mathfrak{pu}(V)$ 为相应 Lie 代数同态.则 $q$ 满射,且核是形如 $iaI$、$a\in\mathbb R$ 的矩阵空间,所以
+\[
+\mathfrak{pu}(V)\cong\mathfrak u(V)/\{iaI\}.
+\]
+若 $\dim V=N$,则 $\mathfrak{pu}(V)$ 同构于 $\mathfrak{su}(N)$,但 $PU(V)$ 本身不与 $SU(N)$ 同构(见练习~\ref{ex:projective-unitary-group}).
+
+\begin{proof}
+令 $\dim V=N$,对 $U\in U(V)$ 定义 $\operatorname{gl}(V)$ 上的共轭算子
+\[
+C_U(X)=UXU^{-1}.
+\]
+有 $C_U^{-1}=C_{U^{-1}}$ 且 $C_{UV}=C_UC_V$,故 $U\mapsto C_U$ 是到 $\operatorname{GL}(\operatorname{gl}(V))$ 的连续同态.若 $U$ 是恒等矩阵的倍数,则 $C_U=I$;反过来,若 $C_U=I$,则 $U$ 与所有 $\operatorname{gl}(V)$ 中的算子对易,由练习~\ref{ex:scalar-commutant},$U$ 是恒等矩阵的倍数.因此该同态的核恰为 $\{e^{i\theta}I\}$.
+
+于是 $U(V)$ 的像是 $\operatorname{GL}(\operatorname{gl}(V))\cong\operatorname{GL}(N^2;\mathbb C)$ 的矩阵 Lie 子群,并同构于 $PU(V)$.由于 $U(V)$ 紧,其像紧且闭.
+
+令 $c$ 为相应 Lie 代数同态,则由定理~\ref{thm:group-homomorphism-differential}
+\[
+c_X(Y)=\left.\frac{d}{dt}\left(e^{tX}Ye^{-tX}\right)\right|_{t=0}=XY-YX=[X,Y].
+\]
+由练习~\ref{ex:scalar-commutant},$c_X=0$ 当且仅当 $X$ 是恒等矩阵的倍数,因此核是 $\{iaI\}$;像满射,从而 $\mathfrak{pu}(V)\cong\mathfrak u(V)/\{iaI\}$.
+\end{proof}
+
+\begin{definition}[有限维射影酉表示]\label{def:finite-dimensional-projective-representation}
+矩阵 Lie 群 $G$ 的有限维射影酉表示是到 $PU(V)$ 的连续同态 $\Pi$,其中 $V$ 是复有限维 Hilbert 空间.若子空间 $W\subset V$ 对每个 $A\in G$ 及每个代表 $[U]=\Pi(A)$ 的 $U\in U(V)$ 都不变,则称 $W$ 在 $\Pi$ 下不变.若唯一不变子空间是 $\{0\}$ 与 $V$,则称 $(\Pi,V)$ 不可约.
+\end{definition}
+
+普通酉表示 $\Sigma:G\to U(V)$ 总能通过 $\Pi=Q\circ\Sigma$ 得到射影表示,但并非每个射影表示都如此得到;因此射影表示提供了更大的灵活性.
+
+\begin{proposition}[射影表示的 Lie 代数去射影化]\label{prop:projective-representation-lie-lift}
+设 $\Pi:G\to PU(V)$ 是矩阵 Lie 群的有限维射影酉表示,$\pi:\mathfrak g\to\mathfrak{pu}(V)$ 是相应 Lie 代数同态.则存在 Lie 代数同态 $\sigma:\mathfrak g\to\mathfrak u(V)$,使
+\[
+\pi(X)=q(\sigma(X)).
+\]
+可以选择 $\sigma$ 使对所有 $X$ 有 $\operatorname{tr}(\sigma(X))=0$;在此条件下 $\sigma$ 唯一.
+\end{proposition}
+
+\begin{proof}
+由于 $\mathfrak{pu}(V)\cong\mathfrak u(V)/\{iaI\}$,对每个 $X$,$\pi(X)$ 代表一族相差 $iaI$ 的算子.取任意代表 $Y\in\mathfrak u(V)$,其迹为纯虚数.存在唯一纯虚常数 $c=-\operatorname{tr}(Y)/\dim V$,使 $Y+cI$ 的迹为零,定义 $\sigma(X)=Y+cI$.由于 $\pi$ 是 Lie 代数同态,$\sigma([X,Y])$ 与 $[\sigma(X),\sigma(Y)]$ 至多相差 $iaI$;但左边迹为零,而交换子的迹总为零,故这个标量项实际为零.唯一性由迹为零的归一化立即得到.
+\end{proof}
+
+}
+
+\def\ChapterSixteenFiniteRepresentations{
+\section{Lie 群与 Lie 代数的有限维表示}
+\label{sec:finite-dimensional-representations}
+
+群 $G$ 的表示是从 $G$ 到 $\operatorname{GL}(V)$(某个向量空间上的可逆线性变换群)的同态.若表示是单射,则 $G$ 与其像同构;即使不是单射,我们仍称其为表示.类似地,Lie 代数 $\mathfrak g$ 的表示是从 $\mathfrak g$ 到 $\mathfrak{gl}(V)$ 的 Lie 代数同态,其中 $\mathfrak{gl}(V)$ 的括号定义为 $[X,Y]=XY-YX$.
+
+回忆,群 $G$ 在集合 $X$ 上的作用是从 $G\times X$ 到 $X$ 的映射 $(g,x)\mapsto g\cdot x$,满足 $e\cdot x=x$ 以及 $g\cdot(h\cdot x)=(gh)\cdot x$.表示 $\Pi$ 给出 $G$ 在 $V$ 上的线性作用 $g\cdot v=\Pi(g)v$.
+
+\subsection{有限维表示}
+\label{subsec:finite-dimensional-representations}
+
+矩阵 Lie 群已经作为矩阵群表示了自己;但研究它的其他表示仍然很有意义.由于矩阵 Lie 群继承了 $M_n(\mathbb C)$ 的拓扑,自然要求表示连续.先研究向量空间有限维的表示,稍后再处理无限维表示.
+
+\begin{definition}[有限维群表示]\label{def:finite-dimensional-group-representation}
+设 $G\subset\operatorname{GL}(n;\mathbb C)$ 是矩阵 Lie 群.$G$ 的有限维表示是从 $G$ 到 $\operatorname{GL}(V)$ 的连续同态,其中 $V$ 是有限维向量空间.
+\end{definition}
+
+本章默认向量空间在 $\mathbb C$ 上,尽管实表示也值得研究.$\operatorname{GL}(V)$ 的拓扑由选取基并把 $V$ 上的线性映射空间识别为矩阵空间得到,这个拓扑与基的选择无关.
+
+量子理论中,一个重要的表示例子来自 $\mathbb R^n$ 中的定态 Schrödinger 方程
+\[
+\widehat H\psi=E\psi.
+\]
+若 $\widehat H$ 在旋转下不变,则该方程的解空间在旋转下不变.单个解不一定是旋转不变(径向)函数,但旋转一个解仍给出另一个解.即便量子 Hilbert 空间无限维,$\widehat H\psi=E\psi$ 的解空间通常是有限维的,从而构成旋转群 $SO(n)$ 的有限维表示.理解 $SO(n)$ 的所有有限维表示,将帮助我们理解旋转不变情形下方程的解;第 18 章将详细讨论这一点.
+
+\begin{definition}[有限维 Lie 代数表示]\label{def:finite-dimensional-lie-algebra-representation}
+Lie 代数 $\mathfrak g$ 的有限维表示是从 $\mathfrak g$ 到 $\mathfrak{gl}(V)$ 的 Lie 代数同态,其中 $\mathfrak{gl}(V)$ 的括号为 $[X,Y]=XY-YX$.
+\end{definition}
+
+我们通常考虑实 Lie 代数,因为矩阵 Lie 群的 Lie 代数一般只是 $M_n(\mathbb C)$ 的实子空间.不过允许 $V$ 以及 $\mathfrak{gl}(V)$ 是复向量空间;此时从实 Lie 代数到 $\mathfrak{gl}(V)$ 的映射只需实线性.为简化术语,有时直接说“表示 $V$”,而不明确写出同态 $\Pi$ 或 $\pi$.
+
+\begin{definition}[不变子空间与不可约表示]\label{def:invariant-irreducible-representation}
+若 $\Pi:G\to\operatorname{GL}(V)$ 是群表示,则 $V$ 的子空间 $W$ 称为不变子空间,是指对任意 $g\in G,w\in W$,$\Pi(g)w\in W$.Lie 代数表示 $\pi:\mathfrak g\to\mathfrak{gl}(V)$ 的不变子空间定义为对任意 $X\in\mathfrak g,w\in W$ 有 $\pi(X)w\in W$.若表示的唯一不变子空间是 $\{0\}$ 与 $V$,则称表示不可约.
+\end{definition}
+
+\begin{definition}[交织映射与表示同构]\label{def:intertwining-map}
+设 $(\Pi,V_1)$ 与 $(\Sigma,V_2)$ 是矩阵 Lie 群 $G$ 的表示.映射 $\Phi:V_1\to V_2$ 称为交织映射(或态射),如果
+\[
+\Phi(\Pi(g)v)=\Sigma(g)\Phi(v)
+\]
+对所有 $g\in G,v\in V_1$ 成立;Lie 代数表示的交织映射类似定义.若交织映射是可逆线性映射,则称为同构.存在同构的两个表示称为同构(或等价)的.
+\end{definition}
+
+给定矩阵 Lie 群 $G$ 的表示 $\Pi:G\to\operatorname{GL}(V)$,选取 $V$ 的一组基并应用定理~\ref{thm:group-homomorphism-differential},得到 Lie 代数表示 $\pi:\mathfrak g\to\mathfrak{gl}(V)$,满足
+\[
+\Pi(e^X)=e^{\pi(X)}.
+\label{eq:group-lie-representation-exponential}
+\]
+
+\begin{proposition}[群表示与 Lie 代数表示的不变子空间]\label{prop:group-lie-invariant-subspaces}
+设 $G$ 是连通矩阵 Lie 群,Lie 代数为 $\mathfrak g$.若 $\Pi:G\to\operatorname{GL}(V)$ 是有限维表示,$\pi$ 是对应的 Lie 代数表示,则 $V$ 的子空间 $W$ 在 $G$ 下不变,当且仅当它在 $\mathfrak g$ 下不变.因此,$\Pi$ 不可约当且仅当 $\pi$ 不可约;两个 $G$ 的表示同构,当且仅当相应的 Lie 代数表示同构.
+\end{proposition}
+
+一般而言,给定 $\mathfrak g$ 的表示 $\pi$,可能不存在与之对应的 $G$ 表示;若 $G$ 单连通,则由定理~\ref{thm:lie-algebra-homomorphism-integrates},每个 $\pi$ 都对应一个 $\Pi$.
+
+\begin{proof}
+若 $W$ 在所有 $\pi(X)$ 下不变,则在所有 $\pi(X)^m$ 下不变.有限维子空间自动闭,因此由级数
+\[
+\Pi(e^X)=e^{\pi(X)}=\sum_{m=0}^{\infty}\frac{\pi(X)^m}{m!}
+\]
+知 $W$ 在 $\Pi(e^X)$ 下不变.连通性与推论~\ref{cor:connected-group-products-exponentials} 说明每个 $G$ 中元素都是指数之积,所以 $W$ 在所有 $\Pi(A)$ 下不变.
+
+反过来,若 $W$ 在所有 $\Pi(A)$ 下不变,则由于 $W$ 闭,它也在极限
+\[
+\pi(X)=\lim_{h\to0}\frac{e^{h\pi(X)}-I}{h}
+\]
+下不变.这里利用了 $\Pi(e^{hX})=e^{h\pi(X)}$.
+
+若 $\Pi_1,\Pi_2$ 分别作用于 $V_1,V_2$,同样的论证表明可逆线性映射 $\Phi$ 满足 $\Phi\Pi_1(A)=\Pi_2(A)\Phi$ 对所有 $A$ 成立,当且仅当 $\Phi\pi_1(X)=\pi_2(X)\Phi$ 对所有 $X$ 成立.因此表示同构性也等价.
+\end{proof}
+
+\begin{theorem}[Schur 引理]\label{thm:schur-lemma}
+若 $V_1,V_2$ 是群或 Lie 代数的两个不可约表示,则:
+\begin{enumerate}
+\item 若 $\Phi:V_1\to V_2$ 是交织映射,则 $\Phi=0$ 或 $\Phi$ 是同构;
+\item 若 $\Phi,\Psi:V_1\to V_2$ 是非零交织映射,则存在非零常数 $c\in\mathbb C$,使 $\Phi=c\Psi$.特别地,若 $\Phi$ 是 $V_1$ 到自身的交织映射,则 $\Phi=cI$.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+$\ker\Phi$ 是 $V_1$ 的不变子空间,所以要么等于 $V_1$(此时 $\Phi=0$),要么为 $\{0\}$(此时 $\Phi$ 单射).$\Phi$ 的值域是不变子空间;若 $\Phi\neq0$,值域非零,故等于 $V_2$,于是 $\Phi$ 是同构.
+
+若 $\Phi,\Psi$ 非零,则它们都是同构.令 $\Gamma=\Phi^{-1}\Psi$,只需证明 $\Gamma$ 是恒等映射的倍数.由于在 $\mathbb C$ 上,$\Gamma$ 有特征值 $\lambda$.对应的特征子空间是不变的,且非零,所以等于 $V_1$;因此 $\Gamma=\lambda I$.
+\end{proof}
+
+}
+
+\def\ChapterSixteenRelationshipContinuation{
+我们已经看到,矩阵 Lie 群同态给出相应 Lie 代数的同态,而且当定义域群连通时,Lie 代数同态决定 Lie 群同态.更困难的问题是反向过程:给定两个矩阵 Lie 群的 Lie 代数之间的同态,是否存在以通常方式与之对应的 Lie 群同态？答案是肯定的,只要定义域群 $G_1$ 连通且单连通.
+
+\begin{theorem}[单连通群上的 Lie 代数同态可积分]\label{thm:lie-algebra-homomorphism-integrates}
+设 $G_1,G_2$ 是 Lie 代数分别为 $\mathfrak g_1,\mathfrak g_2$ 的矩阵 Lie 群,且 $\phi:\mathfrak g_1\to\mathfrak g_2$ 是 Lie 代数同态.若 $G_1$ 连通且单连通,则存在唯一 Lie 群同态 $\Phi:G_1\to G_2$,使 $\Phi$ 与 $\phi$ 满足定理~\ref{thm:group-homomorphism-differential} 中的关系.
+\end{theorem}
+
+该深刻结果的一种证明使用 Baker--Campbell--Hausdorff 公式.对充分小的 $X,Y$,该公式为
+\[
+e^Xe^Y=e^{X+Y+\frac12[X,Y]+\frac1{12}[X,[X,Y]]-\frac1{12}[Y,[X,Y]]+\cdots}.
+\label{eq:lie-bch}
+\]
+其中省略项由 $X,Y$ 的反复交换子表示,系数是与矩阵大小及 $X,Y$ 的具体选择无关的“普适”系数.给定 Lie 代数同态 $\phi$,可利用这一公式构造从 $G_1$ 单位元邻域到 $G_2$ 的局部同态;若 $G_1$ 连通且单连通,则可把局部表示延拓为全局表示.
+
+\begin{corollary}[单连通 Lie 群由 Lie 代数决定]\label{cor:simply-connected-lie-groups-determined}
+设 $G_1,G_2$ 是连通且单连通的矩阵 Lie 群.若它们的 Lie 代数同构,则 $G_1$ 与 $G_2$ 同构.
+\end{corollary}
+
+\begin{proof}
+设 $\phi:\mathfrak g_1\to\mathfrak g_2$ 是 Lie 代数同构.由定理~\ref{thm:lie-algebra-homomorphism-integrates},存在 $\Phi:G_1\to G_2$ 与之对应;对 $\phi^{-1}$ 同理得到 $\Psi:G_2\to G_1$.复合 $\Psi\circ\Phi$ 对应的 Lie 代数同态是恒等映射,故由推论~\ref{cor:connected-homomorphism-determined},$\Psi\circ\Phi=I$;同样 $\Phi\circ\Psi=I$,所以 $\Phi$ 是 Lie 群同构.
+\end{proof}
+
+\begin{example}[$SU(2)$ 与 $SO(3)$ 的 Lie 代数]\label{ex:su2-so3-lie-algebras}
+Lie 代数 $\mathfrak{su}(2)$ 与 $\mathfrak{so}(3)$ 同构,但群 $SU(2)$ 与 $SO(3)$ 不同构.
+\end{example}
+
+\begin{proof}
+$SU(2)$ 的 Lie 代数是迹为零的 $2\times2$ 斜自伴矩阵空间,即
+\[
+\mathfrak{su}(2)=\left\{
+\begin{pmatrix}ia&b+ic\\-b+ic&-ia\end{pmatrix}\mathrel{\Big|}a,b,c\in\mathbb R
+\right\}.
+\]
+取基
+\[
+E_1=\frac12\begin{pmatrix}i&0\\0&-i\end{pmatrix},\quad
+E_2=\frac12\begin{pmatrix}0&1\\-1&0\end{pmatrix},\quad
+E_3=\frac12\begin{pmatrix}0&i\\i&0\end{pmatrix}.
+\label{eq:su2-basis}
+\]
+直接计算得到 $[E_1,E_2]=E_3$,以及指标循环置换得到的关系.这些正是基 $F_1,F_2,F_3$ 在式~\eqref{eq:so3-commutators} 中满足的关系.因此存在 Lie 代数同构 $\phi:\mathfrak{su}(2)\to\mathfrak{so}(3)$,使 $\phi(E_j)=F_j$.
+
+但 $SU(2)$ 与 $SO(3)$ 不可能同构:$SU(2)$ 有非平凡中心(至少包含 $I$ 与 $-I$),而 $SO(3)$ 的中心是平凡的(见练习~\ref{ex:so3-center}).由于 $SU(2)$ 单连通,这也说明 $SO(3)$ 不是单连通的.
+\end{proof}
+
+\begin{definition}[万能覆盖]\label{def:universal-cover-lie-group}
+设 $G$ 是 Lie 代数为 $\mathfrak g$ 的连通矩阵 Lie 群.$G$ 的一个万能覆盖是有序对 $(\widetilde G,\Phi)$,其中 $\widetilde G$ 是单连通矩阵 Lie 群,$\Phi:\widetilde G\to G$ 是 Lie 群同态,并且其诱导的 Lie 代数同态是 $\widetilde G$ 的 Lie 代数 $\widetilde{\mathfrak g}$ 到 $\mathfrak g$ 的同构.映射 $\Phi$ 称为覆盖映射.
+\end{definition}
+
+每个 Lie 群都有一个仍为 Lie 群的万能覆盖,但矩阵 Lie 群的万能覆盖不一定同构于任何矩阵 Lie 群(例如 $SL(2;\mathbb R)$ 的万能覆盖不是矩阵 Lie 群).不过,若矩阵 Lie 群 $G$ 紧,则它的万能覆盖仍是矩阵 Lie 群,虽然不一定紧.
+
+若 $\widetilde G$ 是任意单连通 Lie 群,且其 Lie 代数 $\widetilde{\mathfrak g}$ 与 $\mathfrak g$ 同构,则选定一个同构 $\phi:\widetilde{\mathfrak g}\to\mathfrak g$,由定理~\ref{thm:lie-algebra-homomorphism-integrates} 得到 Lie 群同态 $\Phi:\widetilde G\to G$,于是 $(\widetilde G,\Phi)$ 是 $G$ 的万能覆盖.若 $(\widetilde G_1,\Phi_1)$ 与 $(\widetilde G_2,\Phi_2)$ 是同一 $G$ 的两个万能覆盖,则存在唯一 Lie 群同构 $\Psi:\widetilde G_1\to\widetilde G_2$,使 $\Phi_2\circ\Psi=\Phi_1$.因此通常直接说“这个”万能覆盖.
+
+\begin{example}[$SU(2)$ 是 $SO(3)$ 的万能覆盖]\label{ex:su2-universal-cover-so3}
+令 $\Phi:SU(2)\to SO(3)$ 是唯一一个诱导 Lie 代数同态满足 $\phi(E_j)=F_j$ 的 Lie 群同态,则
+\[
+\ker\Phi=\{I,-I\},
+\]
+并且 $(SU(2),\Phi)$ 是 $SO(3)$ 的万能覆盖.
+\end{example}
+
+\begin{proof}
+由于 $E_1$ 是对角矩阵,容易看到 $e^{2\pi E_1}=-I$.另一方面,由例~\ref{ex:rotation-matrix-exponential} 的直接扩展,
+\[
+e^{aF_1}=\begin{pmatrix}1&0&0\\0&\cos a&-\sin a\\0&\sin a&\cos a\end{pmatrix},
+\]
+所以 $e^{2\pi F_1}=I$,从而 $\Phi(-I)=I$,即 $-I\in\ker\Phi$.
+
+由于 $\phi$ 单射,$\Phi$ 在 $I$ 的某邻域内单射:若邻域内 $A=e^X,B=e^Y$ 且 $A\neq B$,则小元素 $X\neq Y$,因此 $\phi(X)\neq\phi(Y)$,再由单位元邻域的指数坐标,$\Phi(A)\neq\Phi(B)$.于是 $\ker\Phi$ 是 $SU(2)$ 的离散正规子群.连通群的离散正规子群必在中心中(练习~\ref{ex:discrete-normal-central}),而 $SU(2)$ 的中心是 $\{I,-I\}$(练习~\ref{ex:su2-center}),故核不能更大.
+
+最后,练习~\ref{ex:so3-exponential-surjective} 说明 $SO(3)$ 中每个元素都可写成 $e^X$、$X\in\mathfrak{so}(3)$.由于 $\phi$ 满射且 $\Phi(e^X)=e^{\phi(X)}$,$\Phi$ 满射到 $SO(3)$.
+\end{proof}
+
+}
+
+\def\ChapterSixteenConnectedExamples{
+\begin{example}[酉群的连通性]\label{ex:unitary-connected}
+$U(n)$ 是连通的.
+\end{example}
+
+\begin{proof}
+若 $U$ 是酉矩阵,则 $U$ 有一组由特征向量组成的正交归一基,且特征值的模为 $1$.因此存在酉矩阵 $V$ 和实数 $\theta_1,\ldots,\theta_n$,使
+\[
+U=V\operatorname{diag}(e^{i\theta_1},\ldots,e^{i\theta_n})V^{-1}.
+\]
+定义
+\[
+U(t)=V\operatorname{diag}(e^{it\theta_1},\ldots,e^{it\theta_n})V^{-1}.
+\]
+这是位于 $U(n)$ 中的连续路径,并且 $U(0)=I$、$U(1)=U$.
+\end{proof}
+
+\begin{example}[$SU(2)$ 的单连通性]\label{ex:su2-simply-connected}
+$SU(2)$ 是单连通的.
+\end{example}
+
+\begin{proof}
+我们有
+\[
+SU(2)=\left\{
+\begin{pmatrix}\alpha&-\overline\beta\\ \beta&\overline\alpha\end{pmatrix}
+\mathrel{\Big|}\alpha,\beta\in\mathbb C, |\alpha|^2+|\beta|^2=1
+\right\}.
+\]
+直接验证可知,上式中的每个矩阵都是酉矩阵且行列式为 $1$.反过来,若 $U\in SU(2)$,则它的第一列是单位向量 $(\alpha,\beta)\in\mathbb C^2$.第二列必须与之正交,而 $(-\overline\beta,\overline\alpha)$ 与它正交;由于 $\mathbb C^2$ 是二维的,第二列必为它的倍数.再由行列式为 $1$,这个倍数只能是 $1$.
+
+因此,从拓扑上看,$SU(2)$ 就是 $\mathbb C^2\cong\mathbb R^4$ 中的单位球面 $S^3$,从而是单连通的.
+\end{proof}
+
+}
+
+\def\ChapterSixteenLieAlgebras{
+\section{Lie 代数}
+\label{sec:lie-algebras}
+
+现在引入 Lie 代数的一般代数概念,然后说明如何从任意矩阵 Lie 群得到一个实 Lie 代数.
+
+\begin{definition}[Lie 代数]\label{def:lie-algebra}
+域 $\mathbb F$ 上的 Lie 代数是一个 $\mathbb F$ 上的向量空间 $\mathfrak g$,以及一个“括号”映射 $[\cdot,\cdot]:\mathfrak g\times\mathfrak g\to\mathfrak g$,满足:
+\begin{enumerate}
+\item $[\cdot,\cdot]$ 是双线性的;
+\item 对任意 $X,Y\in\mathfrak g$,$[Y,X]=-[X,Y]$;
+\item 对任意 $X\in\mathfrak g$,$[X,X]=0$;
+\item 对任意 $X,Y,Z\in\mathfrak g$,满足 Jacobi 恒等式
+\[
+[X,[Y,Z]]+[Y,[Z,X]]+[Z,[X,Y]]=0.
+\]
+\end{enumerate}
+若 $\mathbb F=\mathbb R$,则称其为实 Lie 代数.
+\end{definition}
+
+当 $\mathbb F$ 的特征不为 $2$ 时,性质 3 是性质 2 的推论.一个实 Lie 代数的例子是带叉积括号的 $\mathbb R^3$.叉积的双线性、反对称性和 $X\times X=0$ 显然成立,而 Jacobi 恒等式是叉积的已知性质,也可直接计算验证.
+
+\begin{example}[结合代数中的 Lie 代数]\label{ex:associative-commutator-lie}
+设 $A$ 是结合代数,$\mathfrak g$ 是 $A$ 的子空间,并且对任意 $x,y\in\mathfrak g$,$xy-yx$ 仍属于 $\mathfrak g$.则定义
+\[
+[x,y]:=xy-yx
+\]
+会使 $\mathfrak g$ 成为 Lie 代数.
+\end{example}
+
+在例~\ref{ex:associative-commutator-lie} 中,可以取 $\mathfrak g=A$.由定义可见,括号的双线性、反对称性和 $[x,x]=0$ 直接成立,Jacobi 恒等式也可直接计算验证.事实上,每个 Lie 代数都同构于这样得到的 Lie 代数;这是 Poincaré--Birkhoff--Witt 定理的推论.
+
+\begin{definition}[Lie 代数同态与同构]\label{def:lie-algebra-homomorphism}
+若 $\mathfrak g_1,\mathfrak g_2$ 是 Lie 代数,映射 $\phi:\mathfrak g_1\to\mathfrak g_2$ 称为 Lie 代数同态,是指 $\phi$ 线性且
+\[
+\phi([X,Y])=[\phi(X),\phi(Y)]
+\]
+对所有 $X,Y\in\mathfrak g_1$ 成立.若它既是一一映射又是满射,则称为 Lie 代数同构.
+\end{definition}
+
+\begin{definition}[子代数与理想]\label{def:lie-subalgebra-ideal}
+若 $\mathfrak g$ 是 Lie 代数,$\mathfrak h$ 称为 $\mathfrak g$ 的子代数,是指 $\mathfrak h$ 是 $\mathfrak g$ 的子空间且对任意 $X,Y\in\mathfrak h$ 有 $[X,Y]\in\mathfrak h$.若对任意 $X\in\mathfrak g$、$Y\in\mathfrak h$ 都有 $[X,Y]\in\mathfrak h$,则称 $\mathfrak h$ 为 $\mathfrak g$ 的理想.
+\end{definition}
+
+Lie 代数子代数的概念类似于群的子群,而理想的概念类似于正规子群.特别地,任意 Lie 代数同态的核都是理想,正如群同态的核是正规子群.
+
+\begin{definition}[Lie 代数直和]\label{def:lie-algebra-direct-sum}
+Lie 代数 $\mathfrak g_1,\mathfrak g_2$ 的直和 $\mathfrak g_1\oplus\mathfrak g_2$ 是它们作为向量空间的直和,并赋予括号
+\[
+[(X_1,Y_1),(X_2,Y_2)]=([X_1,X_2],[Y_1,Y_2]).
+\]
+\end{definition}
+
+}
+
+\def\ChapterSixteenMatrixExponential{
+\section{矩阵指数}
+\label{sec:matrix-exponential}
+
+下一节将把每个矩阵 Lie 群与一个 Lie 代数关联起来.为说明这一关联,需要矩阵指数的概念.对 $X\in M_n(\mathbb C)$,定义
+\[
+e^X=\exp(X):=\sum_{m=0}^{\infty}\frac{X^m}{m!},
+\qquad X^0=I.
+\label{eq:matrix-exponential}
+\]
+这个级数对所有 $X$ 绝对收敛,因为若 $\|X\|$ 是算子范数,则 $\|X^m\|\leq\|X\|^m$.在有限维情形,也可以使用 Hilbert--Schmidt 范数.
+
+\begin{theorem}[矩阵指数的性质]\label{thm:matrix-exponential-properties}
+对任意 $X,Y\in M_n(\mathbb C)$,矩阵指数满足:
+\begin{enumerate}
+\item $e^0=I$;
+\item $(e^X)^{\mathsf{tr}}=e^{X^{\mathsf{tr}}}$ 且 $(e^X)^*=e^{X^*}$;
+\item 若 $A$ 可逆,则 $e^{AXA^{-1}}=Ae^XA^{-1}$;
+\item $\det(e^X)=e^{\operatorname{tr}(X)}$;
+\item 若 $XY=YX$,则 $e^{X+Y}=e^Xe^Y$;
+\item $e^X$ 可逆且 $(e^X)^{-1}=e^{-X}$;
+\item 即使 $XY\neq YX$,仍有 Lie 乘积公式
+\[
+e^{X+Y}=\lim_{m\to\infty}\left(e^{X/m}e^{Y/m}\right)^m.
+\]
+\end{enumerate}
+\end{theorem}
+
+}
+
+\def\ChapterSixteenMatrixGroupLieAlgebra{
+\section{矩阵 Lie 群的 Lie 代数}
+\label{sec:lie-algebra-of-matrix-group}
+
+现在把 Lie 代数 $\mathfrak g$ 与每个矩阵 Lie 群 $G$ 关联起来.
+
+\begin{definition}[矩阵 Lie 群的 Lie 代数]\label{def:matrix-group-lie-algebra}
+若 $G\subset\operatorname{GL}(n;\mathbb C)$ 是矩阵 Lie 群,则定义
+\[
+\mathfrak g=\{X\in M_n(\mathbb C)\mid e^{tX}\in G\text{ 对所有 }t\in\mathbb R\}.
+\label{eq:matrix-group-lie-algebra}
+\]
+也就是说,$X\in\mathfrak g$ 当且仅当由 $X$ 生成的单参数子群完全位于 $G$ 中.
+\end{definition}
+
+\begin{proposition}[矩阵 Lie 群 Lie 代数的基本性质]\label{prop:matrix-group-lie-algebra-properties}
+任意矩阵 Lie 群 $G$ 的 Lie 代数 $\mathfrak g$ 具有以下性质:
+\begin{enumerate}
+\item 零矩阵 $0\in\mathfrak g$;
+\item 若 $X\in\mathfrak g$,则对任意实数 $t$,$tX\in\mathfrak g$;
+\item 若 $X,Y\in\mathfrak g$,则 $X+Y\in\mathfrak g$;
+\item 若 $A\in G$、$X\in\mathfrak g$,则 $AXA^{-1}\in\mathfrak g$;
+\item 若 $X,Y\in\mathfrak g$,则 $[X,Y]:=XY-YX\in\mathfrak g$.
+\end{enumerate}
+\end{proposition}
+
+前 3 条说明 $\mathfrak g$ 是实向量空间,第 5 条结合例~\ref{ex:associative-commutator-lie} 说明它是实 Lie 代数.
+
+\begin{proof}
+前两条是初等的.第 3 条由 Lie 乘积公式和 $G$ 的闭性得到.第 4 条是定理~\ref{thm:matrix-exponential-properties} 的性质 3 的直接推论.为验证第 5 条,利用式~\eqref{eq:matrix-exponential-derivative} 及矩阵值函数的乘积求导法则,有
+\[
+[X,Y]=\left.\frac{d}{dt}\left(e^{tX}Ye^{-tX}\right)\right|_{t=0}.
+\]
+由第 4 条,$e^{tX}Ye^{-tX}\in\mathfrak g$;而 $\mathfrak g$ 是 $M_n(\mathbb C)$ 的实子空间,因而是闭集.所以
+\[
+[X,Y]=\lim_{h\to0}\frac{e^{hX}Ye^{-hX}-Y}{h}\in\mathfrak g.
+\]
+\end{proof}
+
+\begin{example}[一般线性群与特殊线性群的 Lie 代数]\label{ex:gl-sl-lie-algebras}
+记 $\mathfrak{gl}(n;\mathbb C)$、$\mathfrak{gl}(n;\mathbb R)$、$\mathfrak{sl}(n;\mathbb C)$ 和 $\mathfrak{sl}(n;\mathbb R)$ 为相应矩阵群的 Lie 代数,则
+\[
+\begin{aligned}
+\mathfrak{gl}(n;\mathbb C)&=M_n(\mathbb C),&
+\mathfrak{gl}(n;\mathbb R)&=M_n(\mathbb R),\\
+\mathfrak{sl}(n;\mathbb C)&=\{X\in M_n(\mathbb C)\mid\operatorname{tr}(X)=0\},&
+\mathfrak{sl}(n;\mathbb R)&=\{X\in M_n(\mathbb R)\mid\operatorname{tr}(X)=0\}.
+\end{aligned}
+\]
+\end{example}
+
+\begin{proof}
+以 $\mathfrak{sl}(n;\mathbb C)$ 为例.若 $\operatorname{tr}(X)=0$,则由定理~\ref{thm:matrix-exponential-properties} 的性质 4,
+\[
+\det(e^{tX})=e^{t\operatorname{tr}(X)}=1,
+\]
+所以 $e^{tX}\in SL(n;\mathbb C)$.反过来,若 $X\in\mathfrak{sl}(n;\mathbb C)$,则 $e^{t\operatorname{tr}(X)}=1$ 对所有 $t$ 成立,这只能说明 $\operatorname{tr}(X)=0$.其他情形类似.
+\end{proof}
+
+\begin{example}[酉群与正交群的 Lie 代数]\label{ex:unitary-orthogonal-lie-algebras}
+酉群与特殊酉群的 Lie 代数为
+\[
+\mathfrak u(n)=\{X\in M_n(\mathbb C)\mid X^*=-X\},
+\qquad
+\mathfrak{su}(n)=\{X\in\mathfrak u(n)\mid\operatorname{tr}(X)=0\}.
+\]
+特殊正交群的 Lie 代数为
+\[
+\mathfrak{so}(n)=\{X\in M_n(\mathbb R)\mid X^{\mathsf{tr}}=-X\}.
+\]
+最后,$O(n)$ 的 Lie 代数也等于 $\mathfrak{so}(n)$.
+\end{example}
+
+\begin{proof}
+若 $X^*=-X$,则
+\[
+(e^{tX})^*=e^{tX^*}=e^{-tX}=(e^{tX})^{-1},
+\]
+所以 $e^{tX}$ 酉.反过来,若 $e^{tX}$ 对所有 $t$ 都酉,则
+\[
+(e^{tX})^*=(e^{tX})^{-1}=e^{-tX}.
+\]
+对 $t=0$ 求导得到 $X^*=-X$.特殊酉群再加上迹为零的条件即可.$SO(n)$ 的计算类似.
+
+若实矩阵满足 $X^{\mathsf{tr}}=-X$,则其对角元均为零,迹自动为零,这解释了 $O(n)$ 与 $SO(n)$ 的 Lie 代数相同.
+\end{proof}
+
+特别地,$n=3$ 时
+\[
+\mathfrak{so}(3)=\left\{
+\begin{pmatrix}0&a&b\\-a&0&c\\-b&-c&0\end{pmatrix}\mathrel{\Big|}a,b,c\in\mathbb R
+\right\}.
+\]
+可取基
+\[
+F_1=\begin{pmatrix}0&0&0\\0&0&-1\\0&1&0\end{pmatrix},\quad
+F_2=\begin{pmatrix}0&0&1\\0&0&0\\-1&0&0\end{pmatrix},\quad
+F_3=\begin{pmatrix}0&-1&0\\1&0&0\\0&0&0\end{pmatrix}.
+\label{eq:so3-basis}
+\]
+直接计算得到交换关系
+\[
+[F_1,F_2]=F_3,qquad [F_2,F_3]=F_1,qquad [F_3,F_1]=F_2.
+\label{eq:so3-commutators}
+\]
+更简洁地说,只需给出 $[F_1,F_2]=F_3$,其余关系由指标循环置换得到.剩余交换关系由括号的反对称性推出,例如 $[F_2,F_1]=-F_3$ 且 $[F_1,F_1]=0$.
+}
+
+\def\ChapterSixteenRelationshipBase{
+\section{Lie 群与 Lie 代数的关系}
+\label{sec:lie-group-algebra-relations}
+
+本节研究矩阵 Lie 群与其 Lie 代数之间的关系,尤其考察一个矩阵 Lie 群在多大程度上由其 Lie 代数(在同构意义下)决定.先证明每个 Lie 群同态都自然地产生一个 Lie 代数同态.
+
+\begin{theorem}[Lie 群同态诱导的 Lie 代数同态]\label{thm:group-homomorphism-differential}
+设 $G_1,G_2$ 是 Lie 代数分别为 $\mathfrak g_1,\mathfrak g_2$ 的矩阵 Lie 群,且 $\Phi:G_1\to G_2$ 是 Lie 群同态.则存在唯一线性映射 $\phi:\mathfrak g_1\to\mathfrak g_2$,使
+\[
+\Phi(e^{tX})=e^{t\phi(X)}
+\]
+对所有 $t\in\mathbb R$、$X\in\mathfrak g_1$ 成立.此外:
+\begin{enumerate}
+\item $\phi([X,Y])=[\phi(X),\phi(Y)]$;
+\item $\phi(AXA^{-1})=\Phi(A)\phi(X)\Phi(A)^{-1}$;
+\item
+\[
+\phi(X)=\left.\frac{d}{dt}\Phi(e^{tX})\right|_{t=0}.
+\]
+\end{enumerate}
+\end{theorem}
+
+第 1 条说明 $\phi$ 是 Lie 代数同态;第 3 条的一部分断言,对每个 $X$,$\Phi(e^{tX})$ 关于 $t$ 光滑.事实上,连续同态 $\Phi$ 把 $t\mapsto e^{tX}$ 送到一个单参数子群,故由定理~\ref{thm:one-parameter-exponential} 存在唯一 $Y$ 使 $\Phi(e^{tX})=e^{tY}$,令 $\phi(X)=Y$ 即可.其余性质的证明与命题~\ref{prop:matrix-group-lie-algebra-properties} 的证明类似.
+
+\begin{corollary}[Lie 群同构诱导 Lie 代数同构]\label{cor:lie-group-isomorphism-algebra}
+若两个矩阵 Lie 群同构,则它们的 Lie 代数同构.
+\end{corollary}
+
+\begin{proof}
+见练习~\ref{ex:lie-isomorphic-algebras}.
+\end{proof}
+
+接下来证明,对任意矩阵 Lie 群 $G$,其 Lie 代数 $\mathfrak g$ 足够大,能够捕捉 $G$ 在单位元邻域内的行为.这也将说明,对连通矩阵 Lie 群,Lie 群同态由对应的 Lie 代数同态决定.
+
+\begin{theorem}[单位元附近的指数坐标]\label{thm:local-exponential-diffeomorphism}
+设 $G$ 是 Lie 代数为 $\mathfrak g$ 的矩阵 Lie 群.则存在 $M_n(\mathbb C)$ 中 $0$ 的邻域 $U$ 和 $I$ 的邻域 $V$,使矩阵指数把 $U$ 微分同胚地映到 $V$;并且对 $X\in U$,有
+\[
+X\in\mathfrak g\quad\Longleftrightarrow\quad e^X\in G.
+\]
+\end{theorem}
+
+\begin{corollary}[矩阵 Lie 群是嵌入实子流形]\label{cor:matrix-lie-embedded-submanifold}
+每个矩阵 Lie 群 $G\subset\operatorname{GL}(n;\mathbb C)$ 都是 $M_n(\mathbb C)$ 中的嵌入实子流形,并且 $G$ 的维数等于其 Lie 代数作为实向量空间的维数.
+\end{corollary}
+
+更准确地说,对每个 $A\in G$,存在 $A$ 的邻域 $U$ 以及把 $U$ 微分同胚到 $\mathbb R^{2n^2}$ 的某邻域的映射,使 $U\cap G$ 被映到 $\mathbb R^{d}$ 与该邻域的交,其中 $d=\dim\mathfrak g$.换言之,经过坐标变换,$G$ 在局部看起来像位于 $M_n(\mathbb C)\cong\mathbb R^{2n^2}$ 中的一小块 $\mathbb R^d$.
+
+\begin{proof}
+在 $I$ 的邻域使用指数坐标,即把每个 $A\in V$ 写成 $A=e^X$、$X\in U$.定理~\ref{thm:local-exponential-diffeomorphism} 说明,在单位元附近的这些坐标中,$G$ 看起来就是 $M_n(\mathbb C)$ 中的实向量空间 $\mathfrak g$.对任意其他点 $A\in G$,用左乘 $A^{-1}$ 把问题移回单位元(见练习~\ref{ex:left-translation-exponential}),即可得到结论.
+\end{proof}
+
+\begin{corollary}[Lie 代数是单位元处的切空间]\label{cor:tangent-space-lie-algebra}
+矩阵 Lie 群 $G$ 的 Lie 代数 $\mathfrak g$ 正是 $G$ 在 $I$ 处的切空间.也就是说,$\mathfrak g$ 等于所有满足下述条件的 $X\in M_n(\mathbb C)$ 的集合:存在完全位于 $G$ 中的光滑曲线 $\gamma:\mathbb R\to M_n(\mathbb C)$,使 $\gamma(0)=I$ 且 $\gamma'(0)=X$.
+\end{corollary}
+
+\begin{proof}
+若 $X\in\mathfrak g$,则 $X$ 是 $e^{tX}$ 在 $t=0$ 处的导数,所以 $\mathfrak g$ 包含于切空间.反过来,若 $\gamma$ 完全位于 $G$ 且经过 $I$,由定理~\ref{thm:local-exponential-diffeomorphism},至少对小 $t$ 可写成 $\gamma(t)=e^{\delta(t)}$,其中 $\delta(t)$ 是位于 $\mathfrak g$ 中的光滑曲线,且 $\delta(0)=0$.容易验证(见练习~\ref{ex:exponential-differential-at-zero})$\gamma'(0)=\delta'(0)$;由于 $\mathfrak g$ 是实向量空间,$\delta'(0)\in\mathfrak g$.
+\end{proof}
+
+\begin{corollary}[连通群由指数生成]\label{cor:connected-group-products-exponentials}
+若矩阵 Lie 群 $G$ 连通,则对每个 $A\in G$,存在 $\mathfrak g$ 中有限个元素 $X_1,\ldots,X_N$,使
+\[
+A=e^{X_1}e^{X_2}\cdots e^{X_N}.
+\]
+\end{corollary}
+
+\begin{proof}
+令 $U$ 为所有能写成 $\mathfrak g$ 中元素的指数之积的 $G$ 中点的集合.若 $A\in U$ 且 $B$ 充分接近 $A$,则 $A^{-1}B$ 接近 $I$,所以 $A^{-1}B=e^X$,其中 $X\in\mathfrak g$,从而 $B=Ae^X\in U$;故 $U$ 在 $G$ 中开.类似地,若 $B$ 属于 $U$ 的闭包,可取 $U$ 中接近 $B$ 的 $A$,再写 $B=Ae^X$,故 $B\in U$;所以 $U$ 也闭.由于 $G$ 连通且 $I\in U$,得到 $U=G$.
+\end{proof}
+
+\begin{corollary}[连通群上的同态由 Lie 代数决定]\label{cor:connected-homomorphism-determined}
+设 $G_1,G_2$ 的 Lie 代数分别为 $\mathfrak g_1,\mathfrak g_2$,且 $\Phi_1,\Phi_2:G_1\to G_2$ 是 Lie 群同态,对应 Lie 代数同态为 $\phi_1,\phi_2$.若 $G_1$ 连通且 $\phi_1=\phi_2$,则 $\Phi_1=\Phi_2$.
+\end{corollary}
+
+\begin{proof}
+由推论~\ref{cor:connected-group-products-exponentials},$G_1$ 的每个元素是指数之积,而 $\Phi_j(e^X)=e^{\phi_j(X)}$,故结论成立.
+\end{proof}
+
+这里 $X^{\mathsf{tr}}$ 与 $X^*$ 分别表示转置和共轭转置.性质 7 是 Trotter 乘积公式的特例.性质 1、2、3 可逐项计算验证;性质 6 由性质 5 取 $Y=-X$ 并使用性质 1 得到;性质 4、5、7 的证明将在习题 5、6、7 中概述.
+
+若矩阵 $X$ 可对角化,即存在可逆矩阵 $A$ 与复数 $\lambda_1,\ldots,\lambda_n$ 使
+\[
+X=A\operatorname{diag}(\lambda_1,\ldots,\lambda_n)A^{-1},
+\]
+则由定理~\ref{thm:matrix-exponential-properties} 的性质 3 可得
+\[
+e^X=A\operatorname{diag}(e^{\lambda_1},\ldots,e^{\lambda_n})A^{-1}.
+\]
+若 $X$ 不可对角化,则可用 Schur 分解计算 $e^X$.
+
+}
+
+\def\ChapterSixteenMatrixExponentialExample{
+\begin{example}[二维旋转矩阵的指数]\label{ex:rotation-matrix-exponential}
+若
+\[
+X=\begin{pmatrix}0&a\\-a&0\end{pmatrix},
+\]
+则
+\[
+e^X=\begin{pmatrix}\cos a&\sin a\\-\sin a&\cos a\end{pmatrix}.
+\]
+\end{example}
+
+\begin{proof}
+$X$ 的特征值为 $\pm ia$,相应特征向量为 $(1,\pm i)$.对角化并计算后得到上式.
+\end{proof}
+
+一般而言,关系 $e^{X+Y}=e^Xe^Y$ 不成立.不过,对任意 $X\in M_n(\mathbb C)$ 及 $s,t\in\mathbb R$,由于 $sX$ 与 $tX$ 对易,有
+\[
+e^{(s+t)X}=e^{sX}e^{tX}.
+\]
+因此,对每个 $X$,形如 $e^{tX}$、$t\in\mathbb R$ 的矩阵构成 $\operatorname{GL}(n;\mathbb C)$ 的一个子群.逐项微分可知
+\[
+\left.\frac{d}{dt}e^{tX}\right|_{t=0}=X.
+\label{eq:matrix-exponential-derivative}
+\]
+
+\begin{definition}[单参数子群]\label{def:one-parameter-subgroup}
+$\operatorname{GL}(n;\mathbb C)$ 的单参数子群是从 $\mathbb R$ 到 $\operatorname{GL}(n;\mathbb C)$ 的连续同态,即连续映射 $A:\mathbb R\to\operatorname{GL}(n;\mathbb C)$,满足 $A(0)=I$ 且 $A(s+t)=A(s)A(t)$.
+\end{definition}
+
+\begin{theorem}[单参数子群的指数表示]\label{thm:one-parameter-exponential}
+若 $A(\cdot)$ 是单参数子群,则存在唯一的 $X\in M_n(\mathbb C)$,使对所有 $t\in\mathbb R$ 都有
+\[
+A(t)=e^{tX}.
+\]
+\end{theorem}
+}
+
+\ChapterSixteenConnectedExamples
+\ChapterSixteenLieAlgebras
+\ChapterSixteenMatrixExponential
+\ChapterSixteenMatrixExponentialExample
+\ChapterSixteenMatrixGroupLieAlgebra
+\ChapterSixteenRelationshipBase
+\ChapterSixteenRelationshipContinuation
+\ChapterSixteenFiniteRepresentations
+\ChapterSixteenFiniteUnitaryProjective
+\ChapterSixteenProjectiveCover
+\ChapterSixteenNewRepresentations
+\ChapterSixteenInfiniteRepresentations
+\ChapterSixteenExercises

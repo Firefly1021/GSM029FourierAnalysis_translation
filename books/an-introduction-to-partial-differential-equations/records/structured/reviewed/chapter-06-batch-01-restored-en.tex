@@ -1,0 +1,79 @@
+\section{Function Spaces}\label{chap:function-spaces}
+
+Both the data and the solutions for problems in PDEs are functions defined on certain domains or manifolds. In order to formulate precise theorems of existence, uniqueness, continuous dependence, etc., it is essential to specify the spaces in which the functions lie and to give a precise meaning to convergence in those spaces. This issue has led to the development of what is now considered one of the main (``core'') fields of pure mathematics, namely, functional analysis. In this and the subsequent chapter, we shall give a brief introduction to this field, with particular emphasis on those issues and concepts that are important in differential equations. This introduction is limited to what is needed in the rest of the book and is not meant as a substitute for a proper course in functional analysis.
+
+\subsection{Banach Spaces and Hilbert Spaces}\label{sec:banach-hilbert-spaces}
+
+\subsubsection{Banach Spaces}\label{subsec:banach-spaces}
+
+The fundamental concept used to define a notion of distance between functions is that of a norm.
+
+\begin{Definition}
+\label{def:normed-vector-space-norm}
+Let $X$ be a real or complex vector space. A \textbf{norm} on $X$ is a function $\|\cdot\|:X\to[0,\infty)$ such that\begin{enumerate}
+\item $\|x\|=0$ if and only if $x=0$,
+\item $\|\lambda x\|=|\lambda|\|x\|$ for every $x\in X$, $\lambda\in\mathbb{R}$ (or $\mathbb{C}$),
+\item $\|x+y\|\leq\|x\|+\|y\|$ for every $x,y\in X$.
+\end{enumerate}
+\end{Definition}
+
+It is easy to see (cf. Problem~\ref{ex:norm-induced-metric}) that the function $d(x,y)=\|x-y\|$ defines a metric on $X$. From this, we also obtain a notion of convergence, i.e., we say that $x_n\to x$ if $\|x_n-x\|\to0$. Terminology familiar from the finite-dimensional case will be adopted in a natural way, e.g., a (closed) ball centered at $x$ with radius $r$ is the set of all $y$ with $\|y-x\|\leq r$, a set $M$ is bounded, if $\{\|x\|\mid x\in M\}$ is bounded etc.
+
+\begin{Definition}
+\label{def:normed-vector-spaces-isometry}
+Two normed vector spaces $X$ and $Y$ are called \textbf{isometric}, if there is a linear bijection $L:X\to Y$ such that $\|L(x)\|=\|x\|$ for every $x\in X$.
+\end{Definition}
+
+\begin{Definition}
+\label{def:equivalent-norms}
+Two norms $\|\cdot\|_1$ and $\|\cdot\|_2$ on a vector space $X$ are called \textbf{equivalent} if there are constants $c,C>0$ such that $c\|x\|_1\leq\|x\|_2\leq C\|x\|_1$ for every $x\in X$.
+\end{Definition}
+
+Procedures to solve partial differential equations are usually based on iteration methods, discretization or other means of approximation. In all these cases, one generates a sequence of approximate solutions and one wants to show that this sequence converges to a limit. Since it is usually not a priori clear that a solution to the PDE exists, one needs a convergence criterion that does not involve the limit. This leads to the notion of a Cauchy sequence. It is hence an important issue whether a normed vector space is complete.
+
+\begin{Definition}
+\label{def:banach-space}
+A normed vector space $X$ is called a \textbf{Banach space} if it is complete, i.e., if every sequence $x_n$ such that $\lim_{m,n\to\infty}\|x_n-x_m\|=0$ has a limit $x\in X$.
+\end{Definition}
+
+If a normed space is not complete, we can define its completion; the procedure for this is the usual one for completing a metric space, i.e., by considering equivalence classes of Cauchy sequences.
+
+\begin{Theorem}
+\label{thm:normed-space-completion}
+Let $X$ be a normed vector space. Then there exists a normed vector space $Y$ such that $Y$ is complete and $X$ is a dense subspace of $Y$. Up to isometry, the space $Y$ is unique.
+\end{Theorem}
+
+\begin{Definition}
+\label{def:normed-space-completion}
+The space $Y$ given by Theorem~\ref{thm:normed-space-completion} is called the \textbf{completion} of $X$.
+\end{Definition}
+
+\begingroup
+\renewenvironment{Proof}{\vspace{0.1cm}\par}
+{\par\hfill$\blacksquare$\par\vspace{0.1cm}}
+\begin{Proof}
+\textbf{Proof of Theorem~\ref{thm:normed-space-completion}}: We only sketch the main ideas. We assume that our readers have seen the construction of the real numbers (a Banach space) from the rational numbers, and readers should keep this example in mind. We will use subscripts to identify the norms in the various spaces (i.e., $\|\cdot\|_X$ and $\|\cdot\|_Y$).\begin{itemize}\item We call two Cauchy sequences $\{x_n\}_{n=1}^\infty$ and $\{y_n\}_{n=1}^\infty$ in $X$ \emph{equivalent} if $\lim_{n\to\infty}\|x_n-y_n\|_X=0$. We denote the set of equivalence classes of Cauchy sequences by $Y$. The reader should verify that $Y$ is a vector space.
+\item It follows from the triangle inequality (condition 3 of Definition~\ref{def:normed-vector-space-norm}) that
+\begin{equation}\label{eq:norm-reverse-triangle-inequality}
+|\|x\|_X-\|y\|_X|\leq\|x-y\|_X,
+\end{equation}
+and hence if $\{x_n\}_{n=1}^\infty$ is a Cauchy sequence in $X$, then $\{\|x_n\|\}_{n=1}^\infty$ is a Cauchy sequence in $\mathbb{R}$. We now define
+\begin{equation}\label{eq:completion-cauchy-class-norm}
+\|\{x_n\}_{n=1}^\infty\|_Y=\lim_{n\to\infty}\|x_n\|_X
+\end{equation}
+for every Cauchy sequence $\{x_n\}_{n=1}^\infty$. Using \eqref{eq:norm-reverse-triangle-inequality} again, we see that equivalent Cauchy sequences have equal norms. Hence \eqref{eq:completion-cauchy-class-norm} defines a norm on the space $Y$. We leave it to the reader to check the properties 1--3 of Definition~\ref{def:normed-vector-space-norm} and thus verify that $Y$ is a normed space.
+\item The original space $X$ becomes a subspace of $Y$ by identification with (equivalence classes of) constant Cauchy sequences. It is clear that $X$ is dense in $Y$.
+\item We need to show that $Y$ is complete. Let $\{y_i\}_{i=1}^\infty=\{\{w_{i,n}\}_{n=1}^\infty\}_{i=1}^\infty$ be a Cauchy sequence (of equivalence classes of Cauchy sequences) in $Y$. Recall that $X$ (thought of as a set of constant sequences) is dense in $Y$; hence for every $i$ there is an element $x_i\in X$ such that $\lim_{n\to\infty}\|x_i-w_{i,n}\|_X<1/i$. The reader should show that the sequence $\{x_i\}_{i=1}^\infty$ is Cauchy in $X$ and hence can be identified with an element $y\in Y$. It can then be shown that this element $y$ is the limit of the Cauchy sequence $\{y_i\}_{i=1}^\infty$ in $Y$.
+\item It remains to prove that $Y$ is unique up to isometry. Let $\widetilde Y$ be a Banach space containing $X$ as a dense subspace. Then every $y\in\widetilde Y$ is the limit of a Cauchy sequence $\{x_n\}_{n=1}^\infty$ in $X$, and we must have
+\begin{equation}\label{eq:completion-isometry-unique-norm}
+\|y\|=\lim_{n\to\infty}\|x_n\|_X.
+\end{equation}
+On the other hand, every Cauchy sequence in $X$ can be identified with an element of $Y$. The reader should use these ideas to define the bijection from $\widetilde Y$ to $Y$ and verify the isometry.\end{itemize}
+This completes the proof.
+\end{Proof}
+\endgroup
+
+\begin{Remark}
+\label{rem:completion-limit-notation}
+One of the greatest difficulties with the proof above is the rather cumbersome notation required. In practice, we dispense with the notation and refer to an element of $Y$ as the \emph{limit} of a Cauchy sequence in $X$; i.e., for any $y\in Y$, we will say that a sequence $\{y_n\}\subset X$ satisfies $y_n\to y$ rather than say that $\{y_n\}$ is a member of the equivalence class $y$. We work with the space $Y$ directly and revive $X$ only when absolutely necessary. Of course, you already do this unconsciously in the case of real numbers: $\sqrt2$ and $\pi$ are thought of as single points on the number line or at worst as decimal expansions rather than as equivalence classes of rational sequences.
+\end{Remark}

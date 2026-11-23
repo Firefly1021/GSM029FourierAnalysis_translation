@@ -1,0 +1,269 @@
+\subsubsection{热方程}\label{subsec:heat-equation}
+
+接下来考察的初等问题是\emph{热方程}:
+\begin{equation}\label{eq:heat-general}
+u_t=\Delta u.
+\end{equation}
+这里, $u$ 是依赖于"空间"变量 $\bm{x}\in\mathbb{R}^n$ 和"时间" $t\in\mathbb{R}$ 的实值函数, 算子 $\Delta$ 是 \eqref{eq:laplace-general} 中定义的 Laplace 算子, 假定它仅作用于空间变量 $(x_1,\ldots,x_n)$. (上面使用引号的原因是, 下一节将以一种不依赖于把自变量具体解释为空间或时间的方式, 描述微分方程的"类型". 不过, 即使在那之后, 为了与本章介绍的初等 Laplace 方程, 波动方程和热方程作类比, 我们仍会经常回到空间和时间的术语.) 顾名思义, \eqref{eq:heat-general} 描述热传导 (通常将因变量 $u$ 解释为温度), 但更一般地, 它支配着一系列被称为\emph{扩散型}的物理现象.
+
+讨论典型边界条件时, 只考虑定义在时空柱体 $\Omega_t^+:=\{(\bm{x},t)\in\Omega\times(0,\infty)\}$ 上的问题, 其中 $\Omega$ 是 $\mathbb{R}^n$ 中的有界区域. 由于热方程关于时间是一阶的, 所以对解施加一个\emph{初始条件}. 设 $\theta:\Omega\to\mathbb{R}$ 是给定函数, 要求
+\begin{equation}\label{eq:heat-general-initial}
+u(\bm{x},0)=\theta(\bm{x}).
+\end{equation}
+通常会在物体的边界上施加各种不同的条件.
+
+\textbf{温度条件.} 在部分边界上固定因变量 $u$.
+\begin{equation}\label{eq:heat-temperature-boundary}
+u(\bm{x},t)=f(\bm{x})
+\end{equation}
+其中 $\bm{x}\in\partial\Omega$, $t\in(0,\infty)$. 在热传导问题中, 这相当于让部分边界与一个恒温源 (如冰浴等) 接触. 当然, 这样的条件可以与 Laplace 方程的 Dirichlet 条件相对应.
+
+\textbf{热通量条件.} 在部分边界上固定 $u$ 的法向导数.
+\begin{equation}\label{eq:heat-flux-boundary}
+\dfrac{\partial u}{\partial n}(\bm{x},t)=g(\bm{x})
+\end{equation}
+其中 $\bm{x}\in\partial\Omega$, $t\in(0,\infty)$, $\bm{n}$ 是 $\partial\Omega$ 的单位外法向量. Fourier 热传导定律的一个简化形式指出, 时刻 $t$ 在点 $\bm{x}$ 处的\emph{热通量向量} $\bm{q}$ 由下式给出:
+\begin{equation}\label{eq:fourier-heat-flux-law}
+\bm{q}(\bm{x},t)=-\kappa\nabla u(\bm{x},t),
+\end{equation}
+其中 $\kappa$ 是称为\emph{热导率}的正常数. 因而, 条件 \eqref{eq:heat-flux-boundary} 可以理解为固定穿过部分边界的热流. (如果 $g=0$, 就称这部分边界是绝热的.) 热通量条件与 Laplace 方程的 Neumann 条件之间的联系应当是显然的.
+
+\textbf{线性辐射条件.} 这里要求
+\begin{equation}\label{eq:linear-radiation-boundary}
+-\dfrac{\partial u}{\partial n}(\bm{x},t)=\alpha u(\bm{x},t)
+\end{equation}
+其中 $\bm{x}\in\partial\Omega$, $t\in(0,\infty)$, $\alpha$ 是正常数. 可以将它看作 \emph{Stefan 辐射定律}
+\begin{equation}\label{eq:stefan-radiation-law}
+\bm{q}(\bm{x},t)\cdot\bm{n}(\bm{x})=\beta u^4(\bm{x},t)
+\end{equation}
+在边值问题的某个稳态解附近的线性化. Stefan 定律描述物体通过向周围环境辐射而损失热能的过程.
+
+\paragraph*{用分离变量法求解}
+
+作为初等求解方法回顾的一部分, 现在考察用分离变量法求解一维热传导问题. 考虑如下\emph{初边值问题}. 令
+\[
+D^+:=\{(x,t)\in\mathbb{R}^2\mid 0<x<1,\ 0<t<\infty\}.
+\]
+求函数 $u:\overline{D^+}\to\mathbb{R}$, 使其在 $(x,t)\in D^+$ 时满足微分方程
+\begin{equation}\label{eq:heat-one-dimensional}
+u_t=u_{xx}
+\end{equation}
+在 $x\in(0,1)$ 时满足初始条件
+\begin{equation}\label{eq:heat-interval-initial}
+u(x,0)=f(x)
+\end{equation}
+并在 $t>0$ 时满足边界条件
+\begin{equation}\label{eq:heat-left-boundary}
+u(0,t)=0,
+\end{equation}
+
+\begin{equation}\label{eq:heat-right-boundary}
+u(1,t)=0
+\end{equation}
+
+
+同前面一样, 寻找形如
+\begin{equation}\label{eq:heat-separated-product}
+u(x,t):=X(x)T(t).
+\end{equation}
+的解. 将它代入微分方程 \eqref{eq:heat-one-dimensional}, 得到
+\begin{equation}\label{eq:heat-product-substitution}
+XT'=X''T.
+\end{equation}
+当 $u$ 非零时, 有
+\begin{equation}\label{eq:heat-separated-ratios}
+\dfrac{T'(t)}{T(t)}=\dfrac{X''(x)}{X(x)}.
+\end{equation}
+
+
+再次作如下论证: 方程右端不依赖 $t$, 左端不依赖 $x$, 因此两端都必须不依赖这两个变量, 从而等于一个常数. 于是得到两个常微分方程
+\begin{equation}\label{eq:heat-separated-time-equation}
+T'=\lambda T,
+\end{equation}
+
+\begin{equation}\label{eq:heat-separated-space-equation}
+X''=\lambda X.
+\end{equation}
+
+
+解这些方程并利用 \eqref{eq:heat-separated-product}, 得到 \eqref{eq:heat-one-dimensional} 的如下三参数解族:
+\begin{equation}\label{eq:heat-three-parameter-family}
+u(x,t)=e^{\lambda t}(Ae^{\sqrt{\lambda}x}+Be^{-\sqrt{\lambda}x}).
+\end{equation}
+
+
+此解族中的函数只有在
+\begin{equation}\label{eq:heat-boundary-eigenvalues}
+\lambda=-n^2\pi^2,\qquad n=1,2,3,\ldots,
+\end{equation}
+时才满足边界条件 \eqref{eq:heat-left-boundary} 和 \eqref{eq:heat-right-boundary}; 此时解族缩减为
+\begin{equation}\label{eq:heat-decaying-sine-modes}
+u(x,t)=Ae^{-n^2\pi^2t}\sin n\pi x.
+\end{equation}
+
+
+为满足初始条件, 利用 \eqref{eq:fourier-sine-series}, \eqref{eq:sine-coefficient-integral} 所给出的初始函数 $f$ 的 Fourier 展开, 定义
+\begin{equation}\label{eq:heat-sine-series-solution}
+u(x,t):=\sum_{n=1}^{\infty}A_ne^{-n^2\pi^2t}\sin n\pi x,
+\end{equation}
+其中 $A_n$ 等于 $f$ 的 Fourier 系数. 在 Section~\ref{subsec:laplace-equation} 末尾针对 Laplace 方程的级数解提出的问题, 对这个热方程解也可以再次提出. (级数是否收敛? 它的极限是否满足微分方程和边界条件?) 同样, 一般性的答案有待后面各章给出.
+
+\begin{Example}
+\label{ex:heat-tent-data}
+现在形式地计算初边值问题 \eqref{eq:heat-one-dimensional}--\eqref{eq:heat-right-boundary} 的级数解. 为了将这里得到的解与第 \pageref{ex:tent-dirichlet-data} 页得到的 Laplace 方程解作比较, 采用 \eqref{eq:tent-boundary-data} 中定义的函数 $f$ 作为初始数据. 由于已经在 \eqref{eq:tent-sine-coefficients} 中计算了 Fourier 系数, 可以将它们代入 \eqref{eq:heat-sine-series-solution} 来定义所求的解.
+\begin{equation}\label{eq:heat-tent-data-solution}
+u(x,t):=\sum_{k=0}^{\infty}\dfrac{4(-1)^k}{(2k+1)^2\pi^2}e^{-(2k+1)^2\pi^2t}\sin(2k+1)\pi x.
+\end{equation}
+
+\end{Example}
+
+\paragraph*{反向热方程的不稳定性}
+
+\PDEIndexMark{idx:backwards-heat-heading}本节考虑如下问题. 令
+\[
+D^-:=\{(x,t)\in\mathbb{R}^2\mid 0<x<1,\ -\infty<t<0\}.
+\]
+希望求出函数 $u:\overline{D^-}\to\mathbb{R}$, 使其在 $D^-$ 内满足热方程 \eqref{eq:heat-one-dimensional}, 在 $t<0$ 时满足边界条件 \eqref{eq:heat-left-boundary} 和 \eqref{eq:heat-right-boundary}, 并在 $x\in(0,1)$ 时满足\emph{终端条件}
+\begin{equation}\label{eq:heat-terminal-condition}
+u(x,0)=f(x)
+\end{equation}
+
+
+通常使用变量变换
+\begin{equation}\label{eq:heat-time-reversal}
+\bar t=-t.
+\end{equation}
+来变换这一问题. 在此变换下, 要求在 $(x,\bar t)\in D^+$ 时求解微分方程
+\begin{equation}\label{eq:backwards-heat-equation}
+u_{\bar t}=-u_{xx}
+\end{equation}
+边界条件 \eqref{eq:heat-left-boundary} 和 \eqref{eq:heat-right-boundary} 现在施加于正的 $t$, 而终端条件 \eqref{eq:heat-terminal-condition} 保持不变, 但现在被看作初始条件. 这一形式的问题称为\emph{反向热方程}. 当然, 这一名称源于原来的表述: 我们试图求出终端条件 \eqref{eq:heat-terminal-condition} \emph{之前}各时刻的热方程解.
+
+反向热方程的形式分离变量解为
+\begin{equation}\label{eq:backwards-heat-series}
+u(x,t):=\sum_{n=1}^{\infty}A_ne^{n^2\pi^2t}\sin n\pi x,
+\end{equation}
+其中 $A_n$ 是 $f$ 的 Fourier 系数. 推导过程几乎与前面完全相同, 唯一的区别是最后得到的指数函数\emph{随时间增长而不是衰减}. 因而可以得到下面的不稳定性结果: 可以找到初始数据, 使反向热方程的解以任意希望的速度爆破.
+
+\begin{Lemma}
+\label{lem:backwards-heat-instability}
+对任意 $T>0$, $M>0$ 和 $\epsilon>0$, 都存在满足
+\begin{equation}\label{eq:backwards-small-initial-norm}
+\|f\|_{C([0,1])}=\epsilon
+\end{equation}
+的初始函数 $f$, 使反向热传导问题具有由 \eqref{eq:backwards-heat-series} 定义的分离变量解 $u(x,t)$, 且该解满足
+\begin{equation}\label{eq:backwards-large-terminal-norm}
+\|u(\cdot,T)\|_{C([0,1])}\geq M.
+\end{equation}
+
+\end{Lemma}
+
+这里, $\|f\|_{C([0,1])}$ 表示 $|f|$ 在 $[0,1]$ 上的最大值.
+
+\begin{Proof}
+取充分大的 $n$, 使得
+\begin{equation}\label{eq:backwards-frequency-choice}
+n^2\pi^2T\geq\ln\left(\dfrac M\epsilon\right).
+\end{equation}
+那么, 如果
+\begin{equation}\label{eq:backwards-sine-initial-data}
+f(x)=\epsilon\sin n\pi x,
+\end{equation}
+则解
+\begin{equation}\label{eq:backwards-growing-sine-solution}
+u(x,t)=\epsilon e^{n^2\pi^2t}\sin n\pi x
+\end{equation}
+满足要求.
+\end{Proof}
+
+\paragraph*{能量不等式}
+
+\PDEIndexMark{idx:heat-energy-introduction}最后以证明一个\emph{能量估计}来结束对热方程的讨论. 本节推导的简单估计将作为后面各章所推导估计的原型. 我们将证明以下结果.
+
+\begin{Lemma}
+\label{lem:heat-energy-decay}
+设 $u:\overline{D^+}\to\mathbb{R}$ 是热方程 \eqref{eq:heat-one-dimensional} 的一个 $C^2$ 解, 满足边界条件 \eqref{eq:heat-left-boundary} 和 \eqref{eq:heat-right-boundary}. 那么对任意 $t_1\geq t_0\geq0$, 解 $u$ 满足
+\begin{equation}\label{eq:heat-energy-decay}
+\int_0^1u^2(x,t_1)\,\mathrm{d}x\leq\int_0^1u^2(x,t_0)\,\mathrm{d}x.
+\end{equation}
+
+\end{Lemma}
+
+用 Chapter~\ref{chap:function-spaces} 的语言来说, 满足给定边界条件的任意热方程解, 其 (关于空间的) $L^2$ 范数都随时间减小.
+
+\begin{Proof}
+首先利用热方程推导 $u$ 的下列微分恒等式.
+\begin{equation}\label{eq:heat-pointwise-energy-identity}
+\begin{aligned}
+\dfrac{\mathrm{d}}{\mathrm{d}t}u^2&=2uu_t\\
+&=2uu_{xx}\\
+&=2(uu_x)_x-2u_x^2.
+\end{aligned}
+\end{equation}
+将此恒等式两端对 $x$ 积分, 得到
+\begin{equation}\label{eq:heat-integrated-energy-identity}
+\begin{aligned}
+\dfrac12\int_0^1(u^2(x,t))_t\,\mathrm{d}x
+&=u(1,t)u_x(1,t)-u(0,t)u_x(0,t)\\
+&\quad-\int_0^1u_x^2(x,t)\,\mathrm{d}x.
+\end{aligned}
+\end{equation}
+现在利用边界条件消去上式中的边界项, 再对时间积分. 交换左端的积分次序后, 得到
+\begin{equation}\label{eq:heat-energy-dissipation}
+\begin{aligned}
+\int_0^1u^2(x,t_1)\,\mathrm{d}x-\int_0^1u^2(x,t_0)\,\mathrm{d}x
+&=\int_0^1\int_{t_0}^{t_1}(u^2)_t\,\mathrm{d}t\,\mathrm{d}x\\
+&=-2\int_0^1\int_{t_0}^{t_1}u_x^2\,\mathrm{d}t\,\mathrm{d}x\leq0.
+\end{aligned}
+\end{equation}
+证明完毕.
+\end{Proof}
+
+\paragraph*{Problems}
+
+\begin{enumerate}[label=\thesection.\arabic*.,ref=\thesection.\arabic*,start=21,series=book-problems]
+
+\item\label{ex:heat-three-boundary-problems} 用分离变量法求解满足下列边界条件的一维热方程:\begin{enumerate}[label=(\alph*)]
+\item $\begin{aligned}u(x,0)&=x^2-x,\\u_x(0,t)&=0,\\u_x(1,t)&=0.\end{aligned}$
+\item $\begin{aligned}u(x,0)&=\sin\pi x,\\u(0,t)&=0,\\u_x(1,t)&=0.\end{aligned}$
+\item $\begin{aligned}
+u(x,0)&=\begin{cases}x,&x\in[0,1/2)\\1-x,&x\in[1/2,1],\end{cases}\\
+u(0,t)&=0,\\u(1,t)&=0.
+\end{aligned}$
+\end{enumerate}
+
+\item\label{ex:heat-physical-time-scaling} 在典型的热传导物理问题中, 人们研究微分方程
+\[
+c\rho u_t=\kappa\Delta u
+\]
+其中 $c$ 是所考察介质的\emph{比热}, $\rho$ 是\emph{密度}, $\kappa$ 是热导率. 如果 $c$, $\rho$ 和 $\kappa$ 都是常数, 证明存在线性的时间尺度变换 $\bar t=\gamma t$, 将上述微分方程化为 \eqref{eq:heat-general}.
+
+\item\label{ex:duhamel-heat-pulse} 设 $f:\overline{D^+}\to\mathbb{R}$ 连续, 且 $u:\overline{D^+}\to\mathbb{R}$ 是如下非齐次初边值问题的一个解:
+\[
+\begin{gathered}
+u_t(x,t)-u_{xx}(x,t)=f(x,t),\quad(x,t)\in D^+,\\
+u(x,0)=0,\quad x\in[0,1],\\
+u(0,t)=u(1,t)=0,\quad t\in[0,\infty).
+\end{gathered}
+\]
+现在, 对每个 $\tau\in[0,\infty)$, 令 $w(x,t,\tau)$ 为如下\emph{脉冲问题}的解:
+\[
+\begin{gathered}
+w_t-w_{xx}=0,\quad(x,t)\in(0,1)\times(\tau,\infty),\\
+w(x,\tau,\tau)=f(x,\tau),\quad x\in[0,1],\\
+w(0,t,\tau)=w(1,t,\tau)=0,\quad t\in[\tau,\infty).
+\end{gathered}
+\]
+证明 $u$ 和 $w$ 满足关系
+\[
+u(x,t)=\int_0^tw(x,t,\tau)\,\mathrm{d}\tau.
+\]
+这种方法以及类似的将具有齐次初始条件的非齐次偏微分方程与具有非齐次初始条件的齐次偏微分方程相联系的方法, 称为 Duhamel 原理.
+
+\item\label{ex:heat-step-cauchy-problem} 求解 Cauchy 问题
+\[
+u_t=u_{xx},\qquad u(x,0)=\begin{cases}0,&x<0\\1,&x>0.\end{cases}
+\]
+Hint: 寻找形如 $u(x,t)=\phi(x/\sqrt t)$ 的解.
+
+\end{enumerate}

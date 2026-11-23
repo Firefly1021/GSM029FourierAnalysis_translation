@@ -1,0 +1,59 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{pde-adapter}[2026/11/18 PDE integration for AJbook]
+\RequirePackage{cases,empheq}
+\RequirePackage{needspace,multicol,enumitem,float,tikz-cd}
+\usetikzlibrary{decorations.pathmorphing}
+
+\numberwithin{equation}{chapter}
+\numberwithin{figure}{chapter}
+\renewcommand{\figurename}{Figure}
+\newcounter{statement}[chapter]
+\renewcommand{\thestatement}{\thechapter.\arabic{statement}}
+\providecolor{PageColor}{named}{black}
+
+% Supply the mathematical glyph used in a section's PDF bookmark.
+\AtBeginDocument{\pdfstringdefDisableCommands{\def\Omega{Ω}}}
+
+% The English statement styles match the FEEC edition.
+\AtBeginDocument{%
+  \AJUsePDEPlainTheorems
+  \newtheorem{PDETheorem}[statement]{Theorem}%
+  \newtheorem{PDEDefinition}[statement]{Definition}%
+  \newtheorem{PDELemma}[statement]{Lemma}%
+  \newtheorem{PDEProposition}[statement]{Proposition}%
+  \newtheorem{PDECorollary}[statement]{Corollary}%
+  \theorembodyfont{\AJStatementInformalFont}%
+  \newtheorem{PDEExample}[statement]{Example}%
+  \newtheorem{PDERemark}[statement]{Remark}%
+}
+\NewDocumentEnvironment{Theorem}{g}{\IfValueTF{#1}{\begin{PDETheorem}[#1]}{\begin{PDETheorem}}}{\end{PDETheorem}}
+\NewDocumentEnvironment{Definition}{g}{\IfValueTF{#1}{\begin{PDEDefinition}[#1]}{\begin{PDEDefinition}}}{\end{PDEDefinition}}
+\NewDocumentEnvironment{Lemma}{g}{\IfValueTF{#1}{\begin{PDELemma}[#1]}{\begin{PDELemma}}}{\end{PDELemma}}
+\NewDocumentEnvironment{Proposition}{g}{\IfValueTF{#1}{\begin{PDEProposition}[#1]}{\begin{PDEProposition}}}{\end{PDEProposition}}
+\NewDocumentEnvironment{Corollary}{g}{\IfValueTF{#1}{\begin{PDECorollary}[#1]}{\begin{PDECorollary}}}{\end{PDECorollary}}
+\NewDocumentEnvironment{Example}{g}{\IfValueTF{#1}{\begin{PDEExample}[#1]}{\begin{PDEExample}}}{\end{PDEExample}}
+\NewDocumentEnvironment{Remark}{g}{\IfValueTF{#1}{\begin{PDERemark}[#1]}{\begin{PDERemark}}}{\end{PDERemark}}
+
+% Split proofs in the original sources locally replace or suppress \endProof.
+\newenvironment{Proof}{\AJProofBegin}{\AJProofEnd}
+
+% Adapt the accepted article-style headings without rewriting the chapters.
+\newcommand{\PDESaveHeadings}{%
+  \let\PDEChapter\chapter
+  \let\PDESection\section
+  \let\PDESubsection\subsection
+}
+\newcommand{\PDEBodyHeadings}{%
+  \let\section\PDEChapter
+  \let\subsection\PDESection
+  \let\subsubsection\PDESubsection
+}
+% In the legacy exercise-list keys, \thesection denotes the chapter number.
+% The environment hook runs inside the list group; real headings are unaffected.
+\AddToHook{env/enumerate/begin}{\let\thesection\thechapter}
+\newcommand{\PDEFrontBackHeadings}{%
+  \let\section\PDEChapter
+  \let\PDEAddContentsLine\addcontentsline
+  \renewcommand{\addcontentsline}[3]{\PDEAddContentsLine{##1}{chapter}{##3}}%
+}
+\endinput

@@ -1,0 +1,1003 @@
+\chapter{定常 Navier--Stokes 问题}\label{ch:10}
+\SourcePage{348}
+
+本章讨论定常 Navier--Stokes 方程,它描述均质不可压缩流体不随时间变化的运动.第~\BookRef{sec:13.1}{13.1}~节将完整推导这些方程.
+
+在引入问题的弱形式之后,着重讨论如何用有限元法和谱方法逼近非奇异解分支.接着分析求解非线性方程组的几种迭代方法,最后考察以流函数和涡量为变量的 Navier--Stokes 方程表述.
+
+\section{数学表述}\label{sec:10.1}
+
+Navier--Stokes 方程为均质不可压缩 Newton 流体的运动提供了一个模型.在定常情形下,这组方程为
+\begin{align}
+  -\nu\Delta\boldsymbol{u}+(\boldsymbol{u}\cdot\nabla)\boldsymbol{u}+\nabla p
+      &=\boldsymbol{f}&&\text{在 }\Omega\text{ 内},\label{eq:10.1.1}\\
+  \operatorname{div}\boldsymbol{u}&=0&&\text{在 }\Omega\text{ 内},\label{eq:10.1.2}
+\end{align}
+其中记
+\[
+  (\boldsymbol{u}\cdot\nabla)\boldsymbol{u}:=\sum_{i=1}^d u_iD_i\boldsymbol{u}.
+\]
+设 \(\Omega\) 是 \(\mathbb R^d\)(\(d=2,3\))中具有 Lipschitz 连续边界 \(\partial\Omega\) 的有界区域.沿用第~\ref{ch:9}~章的记号,以 \(\boldsymbol{u}\) 表示流体速度,\(p\) 表示压力与密度之比,\(\boldsymbol{f}\) 表示单位质量所受的外力场.\(\nu>0\) 是常数运动黏度.\eqref{eq:10.1.1}和\eqref{eq:10.1.2}的推导见第~\BookRef{sec:13.1}{13.1}~节.
+
+上述方程还须配以边界条件.为简便起见,考察下列齐次 Dirichlet 条件：
+\begin{equation}\label{eq:10.1.3}
+  \boldsymbol{u}=0\qquad\text{在 }\partial\Omega\text{ 上}.
+\end{equation}
+它描述流体被限制在边界固定的区域 \(\Omega\) 内.其他边界条件描述不同的\SourcePage{349}物理情形.关于这些条件,见第~\BookRef{sec:10.1.1}{10.1.1}~节.
+
+与 Stokes 方程组相比,Navier--Stokes 方程组多了非线性对流项 \((\boldsymbol{u}\cdot\nabla)\boldsymbol{u}\).如第~\ref{ch:9}~章所述,取两个 Hilbert 空间 \(V=(H_0^1(\Omega))^d\) 和 \(Q=L_0^2(\Omega)\),则\eqref{eq:10.1.1}至\eqref{eq:10.1.3}的弱形式如下.给定 \(\boldsymbol{f}\in(L^2(\Omega))^d\),
+\begin{equation}\label{eq:10.1.4}
+  \left\{
+  \begin{aligned}
+    &\text{求 }\boldsymbol{u}\in V,\ p\in Q,\ \text{使}\\
+    &a(\boldsymbol{u},\boldsymbol{v})+c(\boldsymbol{u};\boldsymbol{u},\boldsymbol{v})+b(\boldsymbol{v},p)
+       =(\boldsymbol{f},\boldsymbol{v})&&\forall\,\boldsymbol{v}\in V,\\
+    &b(\boldsymbol{u},q)=0&&\forall\,q\in Q .
+  \end{aligned}
+  \right.
+\end{equation}
+回顾一下,
+\[
+  a\colon V\times V\to\mathbb R,\qquad b\colon V\times Q\to\mathbb R
+\]
+是双线性形式 \(a(\boldsymbol{w},\boldsymbol{v}):=\nu(\nabla\boldsymbol{w},\nabla\boldsymbol{v})\) 和 \(b(\boldsymbol{v},q):=-(q,\operatorname{div}\boldsymbol{v})\),其中 \((\cdot,\cdot)\) 表示 \(L^2(\Omega)\) 或其向量值空间中的内积.另定义 \(c\colon V\times V\times V\to\mathbb R\) 为
+\begin{equation}\label{eq:10.1.5}
+  c(\boldsymbol{w};\boldsymbol{z},\boldsymbol{v}):=
+      \int_\Omega[(\boldsymbol{w}\cdot\nabla)\boldsymbol{z}]\cdot\boldsymbol{v}
+      =\sum_{i,j=1}^d\left(w_j\frac{\partial z_i}{\partial x_j},v_i\right).
+\end{equation}
+这是与非线性对流项对应的三线性形式.
+
+首先注意,形式 \(c(\cdot;\cdot,\cdot)\) 在 \((H^1(\Omega))^d\) 上连续.事实上,由 Hölder 不等式容易得到
+\[
+  \left|\int_\Omega w_j\frac{\partial z_i}{\partial x_j}v_i\,\mathrm d\boldsymbol{x}\right|
+      \le\|w_j\|_{L^4(\Omega)}
+          \left\|\frac{\partial z_i}{\partial x_j}\right\|_0
+          \|v_i\|_{L^4(\Omega)}.
+\]
+由于 \(d=2,3\) 时 \(H^1(\Omega)\subset L^4(\Omega)\)(见定理~\ref{thm:1.3.4}),由 Poincaré 不等式\eqref{eq:1.3.2}可知,存在常数 \(\widehat C>0\),使
+\begin{equation}\label{eq:10.1.6}
+  |c(\boldsymbol{w};\boldsymbol{z},\boldsymbol{v})|
+      \le\widehat C|\boldsymbol{w}|_1|\boldsymbol{z}|_1|\boldsymbol{v}|_1
+      \qquad\forall\,\boldsymbol{w},\boldsymbol{z},\boldsymbol{v}\in(H_0^1(\Omega))^d.
+\end{equation}
+Sobolev 空间中的范数与半范数见第~\ref{sec:1.2}~节.特别地,固定任意 \(\boldsymbol{w}\in V\),则 \(\boldsymbol{v}\mapsto c(\boldsymbol{w};\boldsymbol{w},\boldsymbol{v})\) 是 \(V\) 上的连续线性泛函,即属于 \(V'\).
+
+作为\eqref{eq:10.1.4}的另一种写法,可以将 Navier--Stokes 问题表述为
+\begin{equation}\label{eq:10.1.7}
+  \text{求 }\boldsymbol{u}\in V_{\mathrm{div}},\quad\text{使}\quad
+   a(\boldsymbol{u},\boldsymbol{v})+c(\boldsymbol{u};\boldsymbol{u},\boldsymbol{v})=(\boldsymbol{f},\boldsymbol{v})
+      \qquad\forall\,\boldsymbol{v}\in V_{\mathrm{div}},
+\end{equation}
+其中 \(V_{\mathrm{div}}\) 是\eqref{eq:9.1.3}引入的 \(V\) 中无散度函数组成的子空间.显然,\eqref{eq:10.1.4}推广了线性问题\eqref{eq:9.1.11}.同样,\eqref{eq:10.1.7}是\eqref{eq:9.1.6}的非线性推广.
+
+若 \((\boldsymbol{u},p)\) 是\eqref{eq:10.1.4}的解,则 \(\boldsymbol{u}\) 是\eqref{eq:10.1.7}的解.反过来,在下述意义下也成立.
+
+\SourcePage{350}
+\begin{lemma}[]{10.1.1}
+设 \(\boldsymbol{u}\) 是问题\eqref{eq:10.1.7}的解.则存在唯一的 \(p\in Q\),使 \((\boldsymbol{u},p)\) 是问题\eqref{eq:10.1.4}的解.
+\end{lemma}
+\begin{proof}
+映射 \(\boldsymbol{v}\mapsto a(\boldsymbol{u},\boldsymbol{v})+c(\boldsymbol{u};\boldsymbol{u},\boldsymbol{v})-(\boldsymbol{f},\boldsymbol{v})\) 属于 \(V'\),并在 \(V_{\mathrm{div}}\) 上恒为零.因此,由引理~\ref{lem:9.1.1}立即得到结论.\hfill\(\square\)
+\end{proof}
+
+现在证明\eqref{eq:10.1.7}解的存在性和唯一性.先定义空间
+\begin{equation}\label{eq:10.1.8}
+  H_{\mathrm{div}}:=\{\boldsymbol{v}\in(L^2(\Omega))^d\mid
+   \operatorname{div}\boldsymbol{v}=0\text{ 在 }\Omega\text{ 内},\
+   \boldsymbol{v}\cdot\boldsymbol{n}=0\text{ 在 }\partial\Omega\text{ 上}\},
+\end{equation}
+其中 \(\boldsymbol{n}\) 是 \(\partial\Omega\) 上的单位外法向量.再选 \(H^1(\Omega)\) 半范数 \(|\cdot|_1\) 作为 \(V_{\mathrm{div}}\) 上的范数.
+
+\begin{theorem}[]{10.1.1}
+设 \(\boldsymbol{f}\in H_{\mathrm{div}}\),且
+\begin{equation}\label{eq:10.1.9}
+  \frac{\|\boldsymbol{f}\|_0}{\nu^2}<\frac{1}{\widehat C C_\Omega^{1/2}},
+\end{equation}
+其中 \(\widehat C>0\) 是\eqref{eq:10.1.6}中的常数,\(C_\Omega>0\) 是 Poincaré 不等式\eqref{eq:1.3.2}的常数.则问题\eqref{eq:10.1.7}存在唯一解 \(\boldsymbol{u}\in V_{\mathrm{div}}\).
+\end{theorem}
+
+\begin{proof}
+对每个 \(\boldsymbol{w}\in V_{\mathrm{div}}\),定义双线性形式
+\begin{equation}\label{eq:10.1.10}
+  \mathcal A_{\boldsymbol{w}}(\boldsymbol{z},\boldsymbol{v})
+      :=a(\boldsymbol{z},\boldsymbol{v})+c(\boldsymbol{w};\boldsymbol{z},\boldsymbol{v}),
+\end{equation}
+它显然在 \(V_{\mathrm{div}}\times V_{\mathrm{div}}\) 上连续.它还具有强制性,因为对每个 \(\boldsymbol{v}\in V_{\mathrm{div}}\),分部积分得到
+\begin{equation}\label{eq:10.1.11}
+  \begin{aligned}
+    \mathcal A_{\boldsymbol{w}}(\boldsymbol{v},\boldsymbol{v})
+      &=\nu|\boldsymbol{v}|_1^2+\int_\Omega\sum_{i,j=1}^d w_i v_jD_i v_j\\
+      &=\nu|\boldsymbol{v}|_1^2+\frac12\int_\Omega\sum_{i=1}^d w_iD_i(|\boldsymbol{v}|^2)\\
+      &=\nu|\boldsymbol{v}|_1^2-\frac12\int_\Omega
+         (\operatorname{div}\boldsymbol{w})|\boldsymbol{v}|^2
+          +\frac12\int_{\partial\Omega}(\boldsymbol{w}\cdot\boldsymbol{n})|\boldsymbol{v}|^2\\
+      &=\nu|\boldsymbol{v}|_1^2.
+  \end{aligned}
+\end{equation}
+应用 Lax--Milgram 引理(见定理~\ref{thm:5.1.1}),对每个 \(\boldsymbol{w}\in V_{\mathrm{div}}\),存在唯一的 \(\boldsymbol{z}\in V_{\mathrm{div}}\) 使
+\begin{equation}\label{eq:10.1.12}
+  \mathcal A_{\boldsymbol{w}}(\boldsymbol{z},\boldsymbol{v})=(\boldsymbol{f},\boldsymbol{v})
+      \qquad\forall\,\boldsymbol{v}\in V_{\mathrm{div}}.
+\end{equation}
+
+非线性映射 \(\Phi\colon\boldsymbol{w}\mapsto\boldsymbol{z}\) 的不动点显然是\eqref{eq:10.1.7}的解.为证明这种不动点存在,先证明\eqref{eq:10.1.12}的任一解,以及\eqref{eq:10.1.7}的任一解,都属于 \(V_{\mathrm{div}}\) 中同一个固定的球.在\eqref{eq:10.1.12}中取 \(\boldsymbol{v}=\boldsymbol{z}\),由\eqref{eq:10.1.11}得到
+\SourcePage{351}
+\[
+  |\boldsymbol{z}|_1^2\le\frac1\nu\|\boldsymbol{f}\|_0\|\boldsymbol{z}\|_0
+         \le\frac{C_\Omega^{1/2}}{\nu}\|\boldsymbol{f}\|_0|\boldsymbol{z}|_1,
+\]
+其中 \(C_\Omega\) 为 Poincaré 不等式\eqref{eq:1.3.2}中的常数.于是得到先验估计
+\begin{equation}\label{eq:10.1.13}
+  |\boldsymbol{z}|_1\le\frac{C_\Omega^{1/2}}{\nu}\|\boldsymbol{f}\|_0.
+\end{equation}
+定义 \(V_{\mathrm{div}}\) 的闭子集 \(\mathcal K\) 为
+\begin{equation}\label{eq:10.1.14}
+  \mathcal K:=\left\{\boldsymbol{v}\in V_{\mathrm{div}}\ \middle|\
+     |\boldsymbol{v}|_1\le\frac{C_\Omega^{1/2}}{\nu}\|\boldsymbol{f}\|_0\right\}.
+\end{equation}
+由\eqref{eq:10.1.13}可知 \(\Phi(V_{\mathrm{div}})\subset\mathcal K\).
+
+下面说明 \(\Phi\colon\mathcal K\to\mathcal K\) 是压缩映射,即对每个 \(\boldsymbol{w},\overline{\boldsymbol{w}}\in\mathcal K\),有
+\begin{equation}\label{eq:10.1.15}
+  |\Phi(\boldsymbol{w})-\Phi(\overline{\boldsymbol{w}})|_1
+     =|\boldsymbol{z}-\overline{\boldsymbol{z}}|_1
+     \le\kappa|\boldsymbol{w}-\overline{\boldsymbol{w}}|_1
+\end{equation}
+对某个 \(0\le\kappa<1\) 成立.事实上,将 \(\boldsymbol{z}\) 和 \(\overline{\boldsymbol{z}}\) 所满足的方程相减,得到
+\[
+  \nu(\nabla(\boldsymbol{z}-\overline{\boldsymbol{z}}),\nabla\boldsymbol{v})
+       +c(\boldsymbol{w};\boldsymbol{z},\boldsymbol{v})
+       -c(\overline{\boldsymbol{w}};\overline{\boldsymbol{z}},\boldsymbol{v})=0
+      \qquad\forall\,\boldsymbol{v}\in V_{\mathrm{div}} .
+\]
+取 \(\boldsymbol{v}=\boldsymbol{z}-\overline{\boldsymbol{z}}\),上式可改写为
+\[
+  \begin{aligned}
+    \nu|\boldsymbol{z}-\overline{\boldsymbol{z}}|_1^2
+       &+c(\boldsymbol{w};\boldsymbol{z}-\overline{\boldsymbol{z}},\boldsymbol{z}-\overline{\boldsymbol{z}})\\
+       &+c(\boldsymbol{w}-\overline{\boldsymbol{w}};\overline{\boldsymbol{z}},\boldsymbol{z}-\overline{\boldsymbol{z}})
+        =0 .
+  \end{aligned}
+\]
+注意,分部积分并利用 \(\boldsymbol{w}\in V_{\mathrm{div}}\) 得到
+\[
+  c(\boldsymbol{w};\boldsymbol{z}-\overline{\boldsymbol{z}},\boldsymbol{z}-\overline{\boldsymbol{z}})
+    =\frac12\int_\Omega\sum_{i=1}^d w_iD_i(|\boldsymbol{z}-\overline{\boldsymbol{z}}|^2)=0.
+\]
+因此,由\eqref{eq:10.1.6}可知
+\[
+  \begin{aligned}
+    \nu|\boldsymbol{z}-\overline{\boldsymbol{z}}|_1^2
+      &=-c(\boldsymbol{w}-\overline{\boldsymbol{w}};\overline{\boldsymbol{z}},\boldsymbol{z}-\overline{\boldsymbol{z}})\\
+      &\le\widehat C|\boldsymbol{w}-\overline{\boldsymbol{w}}|_1
+            |\overline{\boldsymbol{z}}|_1|\boldsymbol{z}-\overline{\boldsymbol{z}}|_1 .
+  \end{aligned}
+\]
+由于 \(\overline{\boldsymbol{z}}\in\mathcal K\),由此得到
+\[
+  \nu|\boldsymbol{z}-\overline{\boldsymbol{z}}|_1
+       \le\frac{\widehat C C_\Omega^{1/2}}{\nu}\|\boldsymbol{f}\|_0
+            |\boldsymbol{w}-\overline{\boldsymbol{w}}|_1.
+\]
+在假设\eqref{eq:10.1.9}下,取 \(\kappa=\widehat C C_\Omega^{1/2}\|\boldsymbol{f}\|_0/\nu^2\),便得到不等式\eqref{eq:10.1.15}.
+
+由 Banach 压缩映射定理,存在唯一不动点 \(\boldsymbol{u}=\Phi(\boldsymbol{u})\in\mathcal K\),因而是\eqref{eq:10.1.7}的解.由于\eqref{eq:10.1.7}的任一其他解也属于 \(\mathcal K\),并且是 \(\Phi\) 的不动点,所以解唯一.\hfill\(\square\)
+\end{proof}
+
+\SourcePage{352}假定 \(\boldsymbol{f}\in H_{\mathrm{div}}\) 不会损失一般性.事实上,所谓 Helmholtz 分解原理表明,空间 \((L^2(\Omega))^d\) 可分解为 \(H_{\mathrm{div}}\) 和 \(\mathcal G\) 的直和,其中
+\begin{equation}\label{eq:10.1.16}
+  \mathcal G:=\{\boldsymbol{v}\in(L^2(\Omega))^d\mid\boldsymbol{v}=\nabla q,\ q\in H^1(\Omega)\}
+\end{equation}
+(例如,见\BookCite{temam1984}{Temam(1984)}第 15 页).此外,分部积分容易验证
+\begin{equation}\label{eq:10.1.17}
+  (\nabla q,\boldsymbol{v})=0\qquad\forall\,q\in H^1(\Omega),\ \boldsymbol{v}\in H_{\mathrm{div}},
+\end{equation}
+因此外力场 \(\boldsymbol{f}\) 的梯度分量在\eqref{eq:10.1.7}中不起作用.
+
+还应指出,对每个 \(\boldsymbol{f}\in H_{\mathrm{div}}\),\eqref{eq:10.1.7}都确实有解,但未必唯一(例如,见\BookCite{temam1984}{Temam(1984)}第 164 页).上述唯一性证明用到了小数据条件\eqref{eq:10.1.9}.事实上,已知当 \(\nu\) 相对于 \(\boldsymbol{f}\) 较小时,类似\eqref{eq:10.1.7}的问题可能有多个解.例如,旋转的无限长圆柱之间流动的 Taylor 问题,以及导热流体的 Bénard 问题(见\BookCite{temam1984}{Temam(1984)}第 II 章第 4 节).
+
+\subsection{其他类型的边界条件}\label{sec:10.1.1}
+
+对盛在刚性容器内的黏性流体,无滑移条件\eqref{eq:10.1.3}是适当的边界条件,因为黏性效应使流体质点附着在边界上.在不同的物理情形中,需要施加其他边界条件.下面简要介绍其中几种.
+
+一种\emph{无摩擦条件}是
+\begin{equation}\label{eq:10.1.18}
+  \sum_{j=1}^d[-p\delta_{ij}+\nu(D_iu_j+D_ju_i)]n_j=g_i
+     \qquad\text{在 }\partial\Omega\text{ 上},\quad i=1,\ldots,d,
+\end{equation}
+其中 \(\delta_{ij}\) 是 Kronecker 张量,即 \(i\ne j\) 时 \(\delta_{ij}=0\),而 \(\delta_{ii}=1\).\(\boldsymbol{n}\) 表示 \(\partial\Omega\) 上的单位外法向量,\(\boldsymbol{g}\) 是给定的向量.通常取 \(\boldsymbol{g}=-p_e\boldsymbol{n}\),其中 \(p_e\) 表示外部压力,例如 \(p_e=0\).这个条件可看作虚拟边界上的流出条件,例如管道的出口.数学上,它对应于下列算子的 Neumann 条件：
+\begin{equation}\label{eq:10.1.19}
+  \sum_{j=1}^dD_j[p\delta_{ij}-\nu(D_iu_j+D_ju_i)]
+      =D_ip-\nu\Delta u_i
+\end{equation}
+(回顾一下,\(\boldsymbol{u}\) 满足不可压缩性约束 \(\operatorname{div}\boldsymbol{u}=0\)).张量 \(T_{ij}:=\rho^*[-p\delta_{ij}+\nu(D_iu_j+D_ju_i)]\) 是均质不可压缩流体运动的应力张量,其中 \(\rho^*>0\) 是常数密度(见第~\BookRef{sec:13.1}{13.1}~节).\SourcePage{353}带这一边界条件的 Stokes 问题由\BookCite{krein-laptev1968}{Kreĭn 和 Laptev(1968)}研究.
+
+一种\emph{滑移边界条件}可以写成
+\begin{align}
+  \boldsymbol{u}\cdot\boldsymbol{n}&=0
+      &&\text{在 }\partial\Omega\text{ 上},\label{eq:10.1.20}\\
+  \sum_{i,j=1}^d\nu(D_iu_j+D_ju_i)n_j\tau_i^k&=g^k
+      &&\text{在 }\partial\Omega\text{ 上},\quad k=1,\ldots,d-1,\label{eq:10.1.21}
+\end{align}
+其中 \(\boldsymbol{\tau}^k=\boldsymbol{\tau}^k(\boldsymbol{x})\) 是 \(\boldsymbol{x}\in\partial\Omega\) 处线性无关的切向量,\(g^k\) 是给定数据,\(k=1,\ldots,d-1\).此时,流体不能离开区域 \(\Omega\),但质点可以沿边界滑动.这个边值问题可以看作具有自由表面的流体运动的一个简化模型.\BookCite{solonnikov-scadilov1973}{Solonnikov 和 Ščadilov(1973)}考察了带这一滑移边界条件的 Stokes 问题.\BookCite{conca1984}{Conca(1984)}和\BookCite{verfurth1987}{Verfürth(1987)}研究了带这类条件的 Stokes 方程组和非线性 Navier--Stokes 方程组的解的逼近.
+
+\emph{自由边界问题}描述未受刚性容器约束、可自由运动的流体.其表述如下.首先,未知曲面 \(\partial\Omega\) 有待确定,并且须满足无摩擦条件\eqref{eq:10.1.18}.还需另一个边界条件才能使方程组封闭.可以要求流体中位于边界上的每个质点在运动过程中一直留在 \(\partial\Omega\) 上.在定常情形下,这就相当于施加滑移条件\eqref{eq:10.1.20}.若考虑表面张力,须以
+\begin{equation}\label{eq:10.1.22}
+  \begin{aligned}
+    \sum_{j=1}^d[-p\delta_{ij}+\nu(D_iu_j+D_ju_i)]n_j
+      &=g_i+2\sigma Hn_i\\
+      &\qquad\text{在 }\partial\Omega\text{ 上},\quad i=1,\ldots,d
+  \end{aligned}
+\end{equation}
+代替\eqref{eq:10.1.18},其中 \(\sigma>0\) 是按密度归一化的表面张力系数,\(H\) 是 \(\partial\Omega\) 的平均曲率.\BookCite{bemelmans1981}{Bemelmans(1981)}证明了 Navier--Stokes 方程自由边界问题的一个存在性定理.
+
+\BookCite{pironneau1986}{Pironneau(1986)}及\BookCite{begue-conca-murat-pironneau1988}{Bègue、Conca、Murat 和 Pironneau(1988)}还考察了其他边界条件.为简便起见,只介绍 \(d=3\) 的情形.他们对施加以下两组边界条件之一的 Navier--Stokes 方程证明了存在性和唯一性定理：
+\begin{equation}\label{eq:10.1.23}
+  \boldsymbol{u}\times\boldsymbol{n}=\boldsymbol{g}_1,\qquad
+  p+\tfrac12|\boldsymbol{u}|^2=g_2\qquad\text{在 }\partial\Omega\text{ 上},
+\end{equation}
+或者
+\begin{equation}\label{eq:10.1.24}
+  \boldsymbol{u}\cdot\boldsymbol{n}=g_1,\qquad
+  \operatorname{Curl}\boldsymbol{u}\times\boldsymbol{n}=\boldsymbol{g}_2
+       \qquad\text{在 }\partial\Omega\text{ 上}
+\end{equation}
+\SourcePage{354}(算子 \(\operatorname{Curl}\) 在\eqref{eq:9.6.30}中引入).这些边界条件可用于模拟管内流动(在流入和流出边界上用\eqref{eq:10.1.23}),或绕障碍物的外部流动(仍在远离障碍物的人工计算边界上用\eqref{eq:10.1.23}).\BookCite{girault1988}{Girault(1988}、\BookCite{girault1990}{1990)}考察了这些问题的有限元逼近,并在后一篇论文中分析了下列边界条件：
+\begin{equation}\label{eq:10.1.25}
+  \begin{gathered}
+  \boldsymbol{u}\cdot\boldsymbol{n}=0,\qquad
+  (\operatorname{Curl}\boldsymbol{u})\cdot\boldsymbol{n}=0,\qquad
+  (\operatorname{Curl}\operatorname{Curl}\boldsymbol{u})\cdot\boldsymbol{n}=0
+        \quad\text{在 }\partial\Omega\text{ 上}.
+  \end{gathered}
+\end{equation}
+上述各组边界条件也适用于 Stokes 问题\eqref{eq:9.1}.其中,\eqref{eq:10.1.23}要换成
+\begin{equation}\label{eq:10.1.26}
+  \boldsymbol{u}\times\boldsymbol{n}=\boldsymbol{g}_1,\qquad p=g_2
+     \qquad\text{在 }\partial\Omega\text{ 上}.
+\end{equation}
+关于允许采用的边界条件,更多讨论见\BookCite{pironneau1988}{Pironneau(1988)}第 123–127 页.
+
+\subsection{抽象表述}\label{sec:10.1.2}
+
+问题\eqref{eq:10.1.4}和\eqref{eq:10.1.7}都可以视为下列一类问题的特例：
+\begin{equation}\label{eq:10.1.27}
+  \text{求 }(\lambda,w)\in\Lambda\times W,\quad\text{使}\quad
+       F(\lambda,w):=w+TG(\lambda,w)=0,
+\end{equation}
+其中 \(T\in\mathcal L(Y;W)\),\(G\) 是从 \(\Lambda\times W\) 到 \(Y\) 的 \(C^2\) 映射,\(W,Y\) 为两个 Banach 空间,\(\Lambda\) 是 \(\mathbb R^+:=\{\mu\in\mathbb R\mid\mu>0\}\) 的一个连通子集.这里用 \(\mathcal L(A;B)\) 表示 Banach 空间 \(A\) 到 \(B\) 的连续线性映射空间(见第~\ref{sec:1.2}~节第 (ii) 项).
+
+先看问题\eqref{eq:10.1.4},取
+\begin{equation}\label{eq:10.1.28}
+  W=V\times Q,\qquad Y=V',\qquad \Lambda=\mathbb R^+.
+\end{equation}
+然后定义线性算子 \(T\) 如下.给定 \(\boldsymbol{f}^*\in V'\),记
+\begin{equation}\label{eq:10.1.29}
+  T\boldsymbol{f}^*:=(\boldsymbol{u}^*,p^*)\in V\times Q
+\end{equation}
+为带齐次 Dirichlet 条件的 Stokes 问题的解：
+\begin{equation}\label{eq:10.1.30}
+  \left\{
+  \begin{aligned}
+    &(\nabla\boldsymbol{u}^*,\nabla\boldsymbol{v})+b(\boldsymbol{v},p^*)
+        =\langle\boldsymbol{f}^*,\boldsymbol{v}\rangle&&\forall\,\boldsymbol{v}\in V,\\
+    &b(\boldsymbol{u}^*,q)=0&&\forall\,q\in Q.
+  \end{aligned}
+  \right.
+\end{equation}
+对给定数据 \(\boldsymbol{f}\in(L^2(\Omega))^d\),从 \(\Lambda\times W\) 到 \(Y\) 的 \(C^\infty\) 映射定义为
+\begin{equation}\label{eq:10.1.31}
+  G\colon(\mu,\boldsymbol{z})\mapsto G(\mu,\boldsymbol{z})
+     :=\mu\left(\sum_{j=1}^d v_j\frac{\partial\boldsymbol{v}}{\partial x_j}-\boldsymbol{f}\right).
+\end{equation}
+\SourcePage{355}这里 \(\boldsymbol{z}=(\boldsymbol{v},q)\in W\),映射 \(G\) 实际上与 \(q\) 无关.现在很容易给出下列结果.
+
+\begin{lemma}[]{10.1.2}
+\((\boldsymbol{u},p)\in(H_0^1(\Omega))^d\times L_0^2(\Omega)\) 是问题\eqref{eq:10.1.4}的解,当且仅当 \(\lambda=1/\nu\)、\(w=(\boldsymbol{u},p/\nu)\) 是问题\eqref{eq:10.1.27}的解.其中 \(W,Y\) 由\eqref{eq:10.1.28}定义,\(T\) 由\eqref{eq:10.1.29}和\eqref{eq:10.1.30}定义,\(G\) 由\eqref{eq:10.1.31}定义.
+\end{lemma}
+
+类似地,也可以将\eqref{eq:10.1.7}表述为\eqref{eq:10.1.27}.此时,
+\begin{equation}\label{eq:10.1.32}
+  W=V_{\mathrm{div}},\qquad Y=(V_{\mathrm{div}})',\qquad \Lambda=\mathbb R^+.
+\end{equation}
+算子 \(T\) 定义如下.对任意 \(\boldsymbol{f}^*\in(V_{\mathrm{div}})'\),记 \(T\boldsymbol{f}^*:=\boldsymbol{u}^*\in V_{\mathrm{div}}\) 为下列问题的解：
+\begin{equation}\label{eq:10.1.33}
+  -P\Delta\boldsymbol{u}^*=\boldsymbol{f}^*\qquad\text{在 }\Omega\text{ 内},
+\end{equation}
+这里 \(P\) 表示将泛函限制到 \(V_{\mathrm{div}}\) 上.换言之,
+\begin{equation}\label{eq:10.1.34}
+  (\nabla\boldsymbol{u}^*,\nabla\boldsymbol{v})=\langle\boldsymbol{f}^*,\boldsymbol{v}\rangle
+           \qquad\forall\,\boldsymbol{v}\in V_{\mathrm{div}}.
+\end{equation}
+最后,对任意 \(\boldsymbol{f}\in(L^2(\Omega))^d\),算子 \(G\colon\Lambda\times W\to Y\) 定义为
+\begin{equation}\label{eq:10.1.35}
+  G(\mu,\boldsymbol{v}):=\mu P\left(\sum_{j=1}^d v_j\frac{\partial\boldsymbol{v}}{\partial x_j}
+                                         -\boldsymbol{f}\right).
+\end{equation}
+
+\section{有限维逼近}\label{sec:10.2}
+
+本节讨论问题\eqref{eq:10.1.4}.第~\ref{sec:10.1.2}~节已将它改写如下.给定 \(\lambda\in\Lambda\),
+\begin{equation}\label{eq:10.2.1}
+  \text{求 }w(\lambda)\in W,\quad\text{使}\quad
+    F(\lambda,w(\lambda)):=w(\lambda)+TG(\lambda,w(\lambda))=0,
+\end{equation}
+其中 \(T\) 是从 \(Y\) 到 \(W\) 的连续线性映射,\(G\) 是从 \(\Lambda\times W\) 到 \(Y\) 的 \(C^2\) 映射,\(W,Y\) 为两个 Banach 空间,\(\Lambda\) 是 \(\mathbb R^+:=\{\mu\in\mathbb R\mid\mu>0\}\) 的一个连通子集.
+
+首先提出一种求解\eqref{eq:10.2.1}的通用逼近方法,并在抽象框架下说明其性质,见第~\BookRef{sec:10.2.1}{10.2.1}~节.接着,考察两种专为 Navier--Stokes 方程设计的逼近方法,并说明如何将它们纳入第~\BookRef{sec:10.2.1}{10.2.1}~节的一般框架.具体来说,第~\BookRef{sec:10.2.2}{10.2.2}~节考察直接离散动量方程和连续性方程的混合逼近方法,也简要讨论基于投影到无散度子空间的逼近.第~\BookRef{sec:10.2.3}{10.2.3}~节讨论基于谱配置法的逼近.
+
+\SourcePage{356}若 \(\lambda\mapsto w(\lambda)\) 是从 \(\Lambda\) 到 \(W\) 的连续函数,且 \(F(\lambda,w(\lambda))=0\),就称 \(\{(\lambda,w(\lambda))\mid\lambda\in\Lambda\}\) 是\eqref{eq:10.2.1}的一个\emph{解分支}.本节只分析\eqref{eq:10.2.1}的\emph{非奇异解分支}的逼近.这里的非奇异是指,在“曲线” \(\{(\lambda,w(\lambda))\mid\lambda\in\Lambda\}\) 上,映射 \(F\) 关于 \(w\) 的 Fréchet 导数 \(D_wF\) 是 \(W\) 到自身的同构.例如,若 \(D_wF\) 在该曲线上是 Fredholm 指标为零的算子,并存在常数 \(\alpha>0\),使
+\[
+  \begin{aligned}
+    \|D_wF(\lambda,w(\lambda))v\|_W
+      &=\|v+TD_wG(\lambda,w(\lambda))v\|_W\\
+      &\ge\alpha\|v\|_W\qquad\forall\,v\in W,\ \lambda\in\Lambda,
+  \end{aligned}
+\]
+则该分支非奇异.记号 \(D_wF(\lambda_0,w_0)\) 表示 \(F\) 关于变量 \(w\) 的 Fréchet 导数在点 \((\lambda_0,w_0)\) 的值.
+
+特别要注意,如果 Reynolds 数足够小,即黏度 \(\nu\) 满足\eqref{eq:10.1.9},且 \((\boldsymbol{u},p)\) 是问题\eqref{eq:10.1.4}的唯一解,则 \(\lambda=1/\nu\)、\(w=(\boldsymbol{u},p/\nu)\) 是\eqref{eq:10.1.27}的一个非奇异解.证明例如见\BookCite{girault-raviart1986}{Girault 和 Raviart(1986)}第 300 页.
+
+Reynolds 数 \(\mathrm{Re}\) 是一个无量纲数,定义如下(见\BookCite{landau-lifshitz1959}{Landau 和 Lifshitz(1959)}第 19 节)：
+\begin{equation}\label{eq:10.2.2}
+  \mathrm{Re}:=\frac{l|\boldsymbol{v}^*|}{\nu},
+\end{equation}
+其中 \(l\) 是区域 \(\Omega\) 的特征长度,\(\boldsymbol{v}^*\) 是流动的典型速度.也可以用数据的其他度量给出不同的定义.例如,根据定理~\ref{thm:10.1.1},可将 Reynolds 数定义为
+\[
+  \mathrm{Re}:=\frac{l^{3/2-d/4}\|\boldsymbol{f}\|_0^{1/2}}{\nu}.
+\]
+按\eqref{eq:10.2.2}定义的 Reynolds 数表示对流与扩散之比.它本身没有绝对含义,可用来比较几何形状相同、数据(边界数据和源项)相近的问题.在实际计算中,\(\mathrm{Re}\) 越大,问题越难处理.
+
+\subsection{抽象的近似问题}\label{sec:10.2.1}
+
+令 \(\{W_h\mid h>0\}\) 为 \(W\) 的一族有限维子空间.这里考察的\eqref{eq:10.2.1}的逼近方法具有如下抽象形式.给定 \(\lambda\in\Lambda\),
+\begin{equation}\label{eq:10.2.3}
+  \text{求 }w_h(\lambda)\in W_h,\quad\text{使}\quad
+    F_h(\lambda,w_h(\lambda)):=w_h(\lambda)+T_hG(\lambda,w_h(\lambda))=0.
+\end{equation}
+离散线性算子 \(T_h\colon Y\to W_h\) 是线性算子 \(T\) 的一个逼近.下面将对 \(T_h\) 作一组假设,以保证\eqref{eq:10.2.3}存在一个解分支,并且在 \(h\to0\) 时收敛到\eqref{eq:10.2.1}的一个非奇异解分支.
+
+\SourcePage{357}先对 \(G\) 和 \(T\) 作一些补充假设.以 \(\tnorm{\cdot}\) 表示双线性映射 \(\mathcal F\colon X_1\times X_2\to X_3\) 的范数,其中 \(X_1,X_2,X_3\) 是 Banach 空间,即
+\[
+  \tnorm{\mathcal F}:=
+   \sup_{\substack{v_1\in X_1\\v_1\ne0}}\ 
+   \sup_{\substack{v_2\in X_2\\v_2\ne0}}
+   \frac{\|\mathcal F(v_1,v_2)\|_{X_3}}{\|v_1\|_{X_1}\|v_2\|_{X_2}}.
+\]
+假定
+\begin{equation}\label{eq:10.2.4}
+  \begin{gathered}
+    \text{存在连续嵌入 \(Y\) 的 Banach 空间 \(H\subset Y\),}\\
+    \text{使 \(G\) 是从 \(\Lambda\times W\) 到 \(H\) 的 \(C^2\) 映射.}
+  \end{gathered}
+\end{equation}
+此外,要求 \(D^2G\) 将 \(\Lambda\times W\) 的每个有界子集映成 \(H\) 中的有界集.这意味着,存在局部有界的函数 \(\Phi\colon\mathbb R^+\to\mathbb R^+\),使
+\begin{equation}\label{eq:10.2.5}
+  \tnorm{D^2G(\mu,v)}\le\Phi(\mu+\|v\|_W)\qquad\forall\,\mu\in\Lambda,\ v\in W.
+\end{equation}
+最后,假定
+\begin{equation}\label{eq:10.2.6}
+  T\text{ 是从 \(H\) 到 \(W\) 的紧算子.}
+\end{equation}
+关于 Banach 空间之间紧算子的定义,见第~\ref{sec:1.3}~节.由于已经假定 \(T\in\mathcal L(Y;W)\),只要嵌入 \(H\subset Y\) 是紧的,\eqref{eq:10.2.6}就成立.
+
+下列结果给出问题\eqref{eq:10.2.3}的解稳定并收敛到问题\eqref{eq:10.2.1}的解所需的条件.
+
+\begin{theorem}[]{10.2.1}
+设 \(\Lambda\) 是 \(\mathbb R^+\) 中的一个紧区间,\(\{(\lambda,w(\lambda))\mid\lambda\in\Lambda\}\) 是\eqref{eq:10.2.1}的一个非奇异解分支,且满足\eqref{eq:10.2.4}至\eqref{eq:10.2.6}.再假设：
+\begin{enumerate}[label=\alph*.]
+  \item 算子 \(T_h\in\mathcal L(Y;W)\) 满足
+  \begin{equation}\label{eq:10.2.7}
+    \begin{aligned}
+      \lim_{h\to0}\|(T-T_h)\psi\|_W&=0\qquad\forall\,\psi\in Y,\\
+      \lim_{h\to0}\|T-T_h\|_{\mathcal L(H;W)}&=0.
+    \end{aligned}
+  \end{equation}
+  \item 存在线性算子 \(\Pi_h\colon W\to W_h\),满足
+  \begin{equation}\label{eq:10.2.8}
+    \lim_{h\to0}\|v-\Pi_hv\|_W=0\qquad\forall\,v\in W.
+  \end{equation}
+\end{enumerate}
+则存在 \(W\) 中原点的一个邻域 \(\Theta\),且当 \(h\) 充分小时,存在唯一的 \(C^2\) 映射 \(\lambda\in\Lambda\mapsto w_h(\lambda)\in W_h\),使对所有 \(\lambda\in\Lambda\),
+\begin{equation}\label{eq:10.2.9}
+  F_h(\lambda,w_h(\lambda))=0,\qquad w_h(\lambda)-w(\lambda)\in\Theta.
+\end{equation}
+此外,成立下列收敛不等式：
+\begin{equation}\label{eq:10.2.10}
+  \begin{aligned}
+    \|w(\lambda)-w_h(\lambda)\|_W
+      &\le C\bigl\{\|w(\lambda)-\Pi_hw(\lambda)\|_W\\
+      &\hspace{4em}+\|(T-T_h)G(\lambda,w(\lambda))\|_W\bigr\},
+  \end{aligned}
+\end{equation}
+\SourcePage{358}其中 \(C>0\) 与 \(h\) 和 \(\lambda\) 无关.
+\end{theorem}
+
+注意,只要嵌入 \(H\subset Y\) 是紧的,\eqref{eq:10.2.7}的第二个条件就可由第一个条件推出.
+
+定理~\ref{thm:10.2.1}的证明见\BookCite{girault-raviart1986}{Girault 和 Raviart(1986)}第 307–308 页.\BookCite{brezzi-rappaz-raviart1980}{Brezzi、Rappaz 和 Raviart(1980)}早先证明过一个略有不同的版本.\BookCite{maday-quarteroni1982b}{Maday 和 Quarteroni(1982b)}得到一个更一般的结果,其中非线性映射 \(G\) 也由适当的 \(G_h\) 逼近.
+
+收敛估计\eqref{eq:10.2.10}涉及有限维逼近的各个组成部分.事实上,右端第一项度量解 \(w(\lambda)\) 与子空间 \(W_h\) 的距离,第二项取决于 \(T_h\) 逼近线性算子 \(T\) 的程度.
+
+\subsection{混合有限元法逼近}\label{sec:10.2.2}
+
+可以将 Galerkin 法用于\eqref{eq:10.1.4},构造 Navier--Stokes 方程\eqref{eq:10.1.1}至\eqref{eq:10.1.3}的逼近.为此,令 \(\{V_h\mid h>0\}\) 为 \(V\) 的一族子空间,令 \(\{Q_h\mid h>0\}\) 为 \(Q\) 的一族子空间.为便于论述,可以把 \(Q_h\) 和 \(V_h\) 看作有限元空间,不过下面的论证也容易推广到谱 Galerkin 逼近.于是,假设 \(Q_h\) 和 \(V_h\) 如第~\ref{sec:9.3}~节所定义,并且是\emph{相容的空间},即以与 \(h\) 无关的常数满足相容性条件\eqref{eq:9.2.9}.此外,假设满足以下逼近性质：存在两个算子 \(r_h\colon V\to V_h\) 和 \(s_h\colon Q\to Q_h\),使
+\begin{equation}\label{eq:10.2.11}
+  \begin{aligned}
+    \|\boldsymbol{v}-r_h(\boldsymbol{v})\|_1
+       &\le Ch^{l_1}\|\boldsymbol{v}\|_{l_1+1}
+       &&\forall\,\boldsymbol{v}\in V\cap(H^{l_1+1}(\Omega))^d,\\
+    \|q-s_h(q)\|_0&\le Ch^{l_2+1}\|q\|_{l_2+1}
+       &&\forall\,q\in Q\cap H^{l_2+1}(\Omega),
+  \end{aligned}
+\end{equation}
+其中 \(l_1\ge1\)、\(l_2\ge0\) 为给定整数.例如,若如\eqref{eq:9.3.4}那样取 \(V_h=(X_h^k\cap H_0^1(\Omega))^d\)、\(Q_h=Y_h^m\cap L_0^2(\Omega)\),则可取 \(r_h=\pi_h^k\),即取值于 \(V_h\) 的有限元插值算子,并取 \(s_h=p_h^m\),即到 \(Q_h\) 的 \(L^2\) 正交投影.这样选取时,\eqref{eq:10.2.11}以 \(l_1=k\)、\(l_2=m\) 成立.
+
+于是,对每个 \(h>0\),考察问题
+\begin{equation}\label{eq:10.2.12}
+  \left\{
+  \begin{aligned}
+    &\text{求 }\boldsymbol{u}_h\in V_h,\ p_h\in Q_h,\ \text{使}\\
+    &a(\boldsymbol{u}_h,\boldsymbol{v}_h)+c(\boldsymbol{u}_h;\boldsymbol{u}_h,\boldsymbol{v}_h)
+         +b(\boldsymbol{v}_h,p_h)=(\boldsymbol{f},\boldsymbol{v}_h)&&\forall\,\boldsymbol{v}_h\in V_h,\\
+    &b(\boldsymbol{u}_h,q_h)=0&&\forall\,q_h\in Q_h .
+  \end{aligned}
+  \right.
+\end{equation}
+这正是有限维 Stokes 问题\eqref{eq:9.2.4}的非线性推广.
+
+\SourcePage{359}问题\eqref{eq:10.2.12}可以写成\eqref{eq:10.2.3}的形式.事实上,如\eqref{eq:10.1.28}那样定义 \(W=V\times Q\)、\(Y=V'=(H^{-1}(\Omega))^d\)、\(\Lambda=\mathbb R^+\),按\eqref{eq:10.1.29}和\eqref{eq:10.1.30}定义 \(T\),并按\eqref{eq:10.1.31}定义 \(G\).再令 \(W_h=V_h\times Q_h\),并如下定义 \(T_h\colon(H^{-1}(\Omega))^d\to W_h\).对任意 \(\boldsymbol{f}^*\in(H^{-1}(\Omega))^d\),令 \(T_h\boldsymbol{f}^*:=(\boldsymbol{u}_h^*,p_h^*)\in V_h\times Q_h\) 满足
+\begin{equation}\label{eq:10.2.13}
+  \left\{
+  \begin{aligned}
+    &(\nabla\boldsymbol{u}_h^*,\nabla\boldsymbol{v}_h)+b(\boldsymbol{v}_h,p_h^*)
+       =\langle\boldsymbol{f}^*,\boldsymbol{v}_h\rangle&&\forall\,\boldsymbol{v}_h\in V_h,\\
+    &b(\boldsymbol{u}_h^*,q_h)=0&&\forall\,q_h\in Q_h .
+  \end{aligned}
+  \right.
+\end{equation}
+换言之,\eqref{eq:10.2.13}是 Stokes 问题\eqref{eq:10.1.30}的有限维逼近.若令 \(w_h:=(\boldsymbol{u}_h,p_h/\nu)\),则由\eqref{eq:10.2.12}可得
+\[
+  w_h=-T_hG(1/\nu,w_h),
+\]
+或等价地,令 \(\lambda=1/\nu\),有
+\[
+  F_h(\lambda,w_h):=w_h+T_hG(\lambda,w_h)=0.
+\]
+
+下面简要说明这一逼近如何满足定理~\ref{thm:10.2.1}的要求.完整证明例如见\BookCite{girault-raviart1986}{Girault 和 Raviart(1986)}第 IV 章第 4.1 和 4.2 节.
+
+首先,应用第~\ref{sec:9.2}~节的收敛理论,并沿用命题~\ref{pro:6.2.1}中的论证,可得
+\[
+  \lim_{h\to0}\{\|\boldsymbol{u}^*-\boldsymbol{u}_h^*\|_1+\|p^*-p_h^*\|_0\}=0,
+\]
+也就是说,对所有 \(\boldsymbol{f}^*\in(H^{-1}(\Omega))^d\),有
+\begin{equation}\label{eq:10.2.14}
+  \lim_{h\to0}\|(T-T_h)\boldsymbol{f}^*\|_W=0.
+\end{equation}
+因此,\eqref{eq:10.2.7}的第一个条件成立.
+
+现在希望找到满足\eqref{eq:10.2.4}和\eqref{eq:10.2.5}的空间 \(H\),并且它紧嵌入 \(Y\),从而\eqref{eq:10.2.6}和\eqref{eq:10.2.7}的第二个条件也成立.例如,可以取 \(H=(L^{3/2}(\Omega))^d\).事实上,由定理~\ref{thm:1.3.5}可知,嵌入 \(L^{3/2}(\Omega)\subset H^{-1}(\Omega)\) 是紧的,因此 \(H\) 紧嵌入 \(Y\).还应注意,由定理~\ref{thm:1.3.4},当 \(d\le3\) 时,空间 \(H_0^1(\Omega)\) 连续嵌入 \(L^6(\Omega)\).所以,用 Hölder 不等式\eqref{eq:1.2.8}可知,对每个 \(\boldsymbol{v},\boldsymbol{w}\in V\),有
+\[
+  \sum_{j=1}^d\left(v_j\frac{\partial\boldsymbol{w}}{\partial x_j}
+             +w_j\frac{\partial\boldsymbol{v}}{\partial x_j}\right)
+       \in(L^{3/2}(\Omega))^d.
+\]
+只要假设 \(\boldsymbol{f}\in(L^{3/2}(\Omega))^d\),\eqref{eq:10.2.4}和\eqref{eq:10.2.5}即成立.
+
+最后,对每个 \(v=(\boldsymbol{v},q)\in V\times Q\),定义
+\SourcePage{360}
+\[
+  \Pi_hv:=(P_{V_h}(\boldsymbol{v}),P_{Q_h}(q)),
+\]
+其中 \(P_{V_h}\) 和 \(P_{Q_h}\) 分别是关于 \((H^1(\Omega))^d\) 内积和 \(L^2(\Omega)\) 内积到 \(V_h\) 和 \(Q_h\) 的正交投影.沿用命题~\ref{pro:6.2.1}中的论证并利用\eqref{eq:10.2.11},可知性质\eqref{eq:10.2.8}成立.
+
+由定理~\ref{thm:10.2.1}可知,当 \(h\) 足够小时,在所考察的连续分支附近,\eqref{eq:10.2.12}存在唯一的非奇异解分支.此外,收敛估计\eqref{eq:10.2.10}在本情形下给出
+\begin{equation}\label{eq:10.2.15}
+  \begin{aligned}
+    \|\boldsymbol{u}(\lambda)-\boldsymbol{u}_h(\lambda)\|_1
+      &+\|p(\lambda)-p_h(\lambda)\|_0\\
+      &\le C\bigl(h^{l_1}\|\boldsymbol{u}(\lambda)\|_{l_1+1}
+                    +h^{l_2+1}\|p(\lambda)\|_{l_2+1}\bigr).
+  \end{aligned}
+\end{equation}
+事实上,记 \(\widetilde p(\lambda)=p(\lambda)/\nu\),则
+\[
+  \begin{aligned}
+    \|w(\lambda)-\Pi_hw(\lambda)\|_W^2
+      &=\|\boldsymbol{u}(\lambda)-P_{V_h}(\boldsymbol{u}(\lambda))\|_1^2
+             +\|\widetilde p(\lambda)-P_{Q_h}(\widetilde p(\lambda))\|_0^2\\
+      &\le\|\boldsymbol{u}(\lambda)-r_h(\boldsymbol{u}(\lambda))\|_1^2
+             +\|\widetilde p(\lambda)-s_h(\widetilde p(\lambda))\|_0^2.
+  \end{aligned}
+\]
+右端可用\eqref{eq:10.2.11}来估计.此外,\(\|(T-T_h)G(\lambda,w(\lambda))\|_W\) 正是以 \(G(\lambda,w(\lambda))\) 为右端的一个 Stokes 问题的有限元逼近误差.由第~\ref{sec:9.3}~节关于 Stokes 问题的结果,该项可用\eqref{eq:10.2.15}的右端来控制.
+
+若有限维子空间是 \(V_{\mathrm{div},h}\subset V_{\mathrm{div}}\),可以推广第~\ref{sec:9.2}~节对 Stokes 问题的处理,得到问题\eqref{eq:10.1.7}的下列 Galerkin 逼近：
+\[
+  \begin{aligned}
+    &\text{求 }\boldsymbol{u}_h\in V_{\mathrm{div},h},\quad\text{使}\\
+    &a(\boldsymbol{u}_h,\boldsymbol{v}_h)+c(\boldsymbol{u}_h;\boldsymbol{u}_h,\boldsymbol{v}_h)
+         =(\boldsymbol{f},\boldsymbol{v}_h)\qquad\forall\,\boldsymbol{v}_h\in V_{\mathrm{div},h}.
+  \end{aligned}
+\]
+容易看出,这一问题可以表述为\eqref{eq:10.2.3},而\eqref{eq:10.1.7}可以表述为\eqref{eq:10.1.27}.因此,可以用定理~\ref{thm:10.2.1}作分析.有兴趣的读者可参见\BookCite{girault-raviart1986}{Girault 和 Raviart(1986)}第 IV 章第 4.3 节.
+
+\subsection{谱配置法逼近}\label{sec:10.2.3}
+
+用谱配置法或采用数值积分的有限元法逼近 Navier--Stokes 方程时,得到一个类似于\eqref{eq:10.2.12}的方程组,但所有积分预先由适当的求积公式代替.
+
+例如,设 \(\Omega=(-1,1)^2\),采用第~\ref{sec:9.5.3}~节考察的 \(\mathbb Q_N\)--\(\mathbb Q_{N-2}\) 表示,即 \(V_N:=(\mathbb Q_N^0)^2\)、\(Q_N:=\mathbb Q_{N-2}\cap L_0^2(\Omega)\).若在 Legendre--Gauss--Lobatto 公式的 \((N-1)^2\) 个内部节点上配置动量方程,则得到问题
+\SourcePage{361}
+\begin{equation}\label{eq:10.2.16}
+  \left\{
+  \begin{aligned}
+    &\text{求 }\boldsymbol{u}_N\in V_N,\ p_N\in Q_N,\ \text{使}\\
+    &a_N(\boldsymbol{u}_N,\boldsymbol{v}_N)+c_N(\boldsymbol{u}_N;\boldsymbol{u}_N,\boldsymbol{v}_N)
+       +b(\boldsymbol{v}_N,p_N)\\
+    &\qquad=(\boldsymbol{f},\boldsymbol{v}_N)_N
+            \qquad\forall\,\boldsymbol{v}_N\in V_N,\\
+    &b(\boldsymbol{u}_N,q_N)=0\qquad\forall\,q_N\in Q_N,
+  \end{aligned}
+  \right.
+\end{equation}
+它将\eqref{eq:9.5.30}推广到非线性 Navier--Stokes 方程.这里令
+\[
+  \begin{aligned}
+    a_N(\boldsymbol{u},\boldsymbol{v})&:=\nu(\nabla\boldsymbol{u},\nabla\boldsymbol{v})_N,\\
+    c_N(\boldsymbol{u};\boldsymbol{u},\boldsymbol{v})&:=((\boldsymbol{u}\cdot\nabla)\boldsymbol{u},\boldsymbol{v})_N,
+  \end{aligned}
+\]
+其中仍用 \((\varphi,\psi)_N:=\sum_{i,j=0}^N\varphi(\boldsymbol{x}_{ij})\psi(\boldsymbol{x}_{ij})w_{ij}\) 表示逼近积分 \((\varphi,\psi)=\int_\Omega\varphi\psi\) 的 Legendre--Gauss--Lobatto 求积公式(见\eqref{eq:4.5.39}).注意,由 Gauss--Lobatto 求积公式的精确性(见\eqref{eq:4.5.40}),对所有 \(\boldsymbol{v}_N\in V_N\)、\(q_N\in Q_N\) 有
+\[
+  b(\boldsymbol{v}_N,q_N)=-(q_N,\operatorname{div}\boldsymbol{v}_N)_N.
+\]
+
+定义 \(W_N:=V_N\times Q_N\),取 \(\lambda=1/\nu\)、\(w_N=(\boldsymbol{u}_N,p_N/\nu)\),并按下面的方式定义 \(T_N\) 和 \(G_N\),则问题\eqref{eq:10.2.16}容易改写成
+\[
+  \text{求 }w_N\in W_N,\quad\text{使}\quad
+    F_N(\lambda,w_N):=w_N+T_NG_N(\lambda,w_N)=0.
+\]
+对任意连续向量函数 \(\boldsymbol{f}^*\),令 \(T_N\boldsymbol{f}^*:=(\boldsymbol{u}_N^*,p_N^*)\in V_N\times Q_N\) 满足
+\begin{equation}\label{eq:10.2.17}
+  \left\{
+  \begin{aligned}
+    &(\nabla\boldsymbol{u}_N^*,\nabla\boldsymbol{v}_N)+b(\boldsymbol{v}_N,p_N^*)
+       =(\boldsymbol{f}^*,\boldsymbol{v}_N)_N&&\forall\,\boldsymbol{v}_N\in V_N,\\
+    &b(\boldsymbol{u}_N^*,q_N)=0&&\forall\,q_N\in Q_N .
+  \end{aligned}
+  \right.
+\end{equation}
+换言之,\(T_N\boldsymbol{f}^*\) 给出 \(T\boldsymbol{f}^*:=(\boldsymbol{u}^*,p^*)\) 的谱配置逼近,后者是下列 Stokes 问题的解：
+\[
+  \begin{cases}
+    -\Delta\boldsymbol{u}^*+\nabla p^*=\boldsymbol{f}^*,&\text{在 }\Omega\text{ 内},\\
+    \operatorname{div}\boldsymbol{u}^*=0,&\text{在 }\Omega\text{ 内},\\
+    \boldsymbol{u}^*=0,&\text{在 }\partial\Omega\text{ 上}.
+  \end{cases}
+\]
+由\eqref{eq:9.5.32}可知,只要 \(\boldsymbol{f}^*\) 和 \(T\boldsymbol{f}^*\) 光滑,\(T_N\) 就以谱精度收敛到 \(T\)(精确的 Stokes 解算子).
+
+关于 \(G_N\),对每个 \(\boldsymbol{v}_N,\boldsymbol{w}_N\in V_N\)、\(q_N\in Q_N\) 和 \(\boldsymbol{f}\in(C^0([-1,1]^2))^2\),定义
+\begin{equation}\label{eq:10.2.18}
+  \langle G_N(\mu,z_N),\boldsymbol{w}_N\rangle
+    :=\mu[c_N(\boldsymbol{v}_N;\boldsymbol{v}_N,\boldsymbol{w}_N)-(\boldsymbol{f},\boldsymbol{w}_N)_N],
+\end{equation}
+这里,\(z_N:=(\boldsymbol{v}_N,q_N)\),尖括号表示 \(V'\) 与 \(V\) 的对偶配对.由于 \((\varphi,\psi)_N\) 以谱精度收敛到 \((\varphi,\psi)\)(见\eqref{eq:4.4.24}),\SourcePage{362}\(G_N\) 显然是\eqref{eq:10.1.31}所定义的算子 \(G\) 的良好逼近.后者的作用可写成
+\begin{equation}\label{eq:10.2.19}
+  \langle G(\mu,z),\boldsymbol{w}\rangle
+    =\mu[c(\boldsymbol{v};\boldsymbol{v},\boldsymbol{w})-(\boldsymbol{f},\boldsymbol{w})]
+         \qquad\forall\,\boldsymbol{w}\in V,
+\end{equation}
+其中 \(z:=(\boldsymbol{v},q)\).
+
+由于 \(G_N\) 与 \(G\) 不同,收敛性证明应应用\BookCite{maday-quarteroni1982b}{Maday 和 Quarteroni(1982b)}对定理~\ref{thm:10.2.1}的推广.关于这类分析,虽背景略有不同,可参见\BookCite{maday-quarteroni1982a}{Maday 和 Quarteroni(1982a}、\BookCite{maday-quarteroni1982b}{1982b)}.
+
+\section{数值算法}\label{sec:10.3}
+
+这里简要讨论求解非线性问题\eqref{eq:10.2.3}的主要算法.值得一提的是,定常问题\eqref{eq:10.1.1}至\eqref{eq:10.1.3}的解常被视为时间依赖 Navier--Stokes 问题的定常极限.在这种情形下,第~\BookRef{ch:13}{13}~章考察的任何适当逼近方法,都可用来得到\eqref{eq:10.1.1}至\eqref{eq:10.1.3}的近似解.
+
+本节直接处理问题\eqref{eq:10.2.3}.为简化记号,略去各处的下标 \(h\),因此仍采用问题\eqref{eq:10.1.27}的记号.
+
+\subsection{Newton 法与延拓法}\label{sec:10.3.1}
+
+考虑求解抽象问题\eqref{eq:10.1.27},其中
+\begin{equation}\label{eq:10.3.1}
+  F\colon\Lambda\times W\to W
+\end{equation}
+是可微映射.固定 \(\lambda\in\Lambda\),若要寻找孤立的非奇异解 \(w=w(\lambda)\),一种高效的办法是采用下列 Newton 算法.
+
+从初始近似 \(w^0\) 出发,按下式在 \(W\) 中构造序列 \(\{w^n\}\)：
+\begin{equation}\label{eq:10.3.2}
+  D_wF(\lambda,w^n)(w^{n+1}-w^n)=-F(\lambda,w^n).
+\end{equation}
+因此,每一步都要解一个与线性算子 \(D_wF(\lambda,w^n)\) 对应的线性微分问题.
+
+由于该算子随 \(n\) 变化,上述过程的代价可能太高.一种代价较低的办法是用
+\begin{equation}\label{eq:10.3.3}
+  D_wF(\lambda,w^0)(w^{n+1}-w^n)=-F(\lambda,w^n)
+\end{equation}
+代替\eqref{eq:10.3.2}.
+
+只要 \(D_wF(\lambda,v)\) 在适当的球 \(S(w;\delta)\) 内关于 \(v\) 为 Lipschitz 连续,两种方法都收敛.更确切地说,假设存在 \(K>0\),使
+\SourcePage{363}
+\begin{equation}\label{eq:10.3.4}
+  \|D_wF(\lambda,v)-D_wF(\lambda,v^*)\|_{\mathcal L(W;W)}
+     \le K\|v-v^*\|_W\qquad\forall\,v,v^*\in S(w;\delta).
+\end{equation}
+则存在 \(0<\delta'\le\delta\),使对 \(S(w;\delta')\) 中的每个初值 \(w^0\),Newton 算法\eqref{eq:10.3.2}都确定唯一的序列 \(\{w^n\}\subset S(w;\delta')\),并且该序列二次收敛到 \(w\),即
+\begin{equation}\label{eq:10.3.5}
+  \exists\,C_1>0:\qquad\|w^{n+1}-w\|_W\le C_1\|w^n-w\|_W^2.
+\end{equation}
+类似地,存在 \(0<\delta''\le\delta\),使对 \(S(w;\delta'')\) 中的每个初始近似 \(w^0\),算法\eqref{eq:10.3.3}都确定唯一的序列 \(\{w^n\}\subset S(w;\delta'')\),且该序列线性收敛到 \(w\),即
+\begin{equation}\label{eq:10.3.6}
+  \exists\,0<C_2<1:\qquad\|w^{n+1}-w\|_W\le C_2\|w^n-w\|_W.
+\end{equation}
+
+\begin{proof}
+这里概述上述结果的证明,详情见\BookCite{girault-raviart1986}{Girault 和 Raviart(1986)}第 362–367 页.首先定义常数 \(\gamma=\gamma(\lambda)\)：
+\[
+  \gamma(\lambda):=\|[D_wF(\lambda,w(\lambda))]^{-1}\|_{\mathcal L(W;W)},
+       \qquad\lambda\in\Lambda.
+\]
+由于 \(w=w(\lambda)\) 是非奇异解,该常数存在.令 \(v\in S(w;\delta')\),其中 \(\delta'\le\delta\) 待选.记
+\[
+  \begin{aligned}
+    \mathcal B&:=[D_wF(\lambda,w(\lambda))]^{-1}
+        [D_wF(\lambda,w(\lambda))-D_wF(\lambda,v)]\\
+        &=I-[D_wF(\lambda,w(\lambda))]^{-1}D_wF(\lambda,v).
+  \end{aligned}
+\]
+由\eqref{eq:10.3.4}可得
+\[
+  \|\mathcal B\|_{\mathcal L(W;W)}\le\gamma K\delta'.
+\]
+因此,若 \(\gamma K\delta'<1\),算子 \(I-\mathcal B\) 可逆,并且
+\(\|(I-\mathcal B)^{-1}\|_{\mathcal L(W;W)}\le1/(1-\gamma K\delta')\).于是
+\([D_wF(\lambda,v)]^{-1}=(I-\mathcal B)^{-1}[D_wF(\lambda,w(\lambda))]^{-1}\),且
+\begin{equation}\label{eq:10.3.7}
+  \|[D_wF(\lambda,v)]^{-1}\|_{\mathcal L(W;W)}
+      \le\frac{\gamma}{1-\gamma K\delta'}\qquad\forall\,v\in S(w;\delta').
+\end{equation}
+
+现在证明,只要 \(w^0\in S(w;\delta')\),其中 \(\delta'\) 如上选取,则\eqref{eq:10.3.2}给出序列 \(w^n\in S(w;\delta')\),且它收敛到 \(w\).可用归纳法.假设 \(w^n\in S(w;\delta')\),则 \([D_wF(\lambda,w^n)]^{-1}\) 存在,并且
+\[
+  \begin{aligned}
+    w^{n+1}-w
+      &=w^n-w+[D_wF(\lambda,w^n)]^{-1}\bigl(F(\lambda,w)-F(\lambda,w^n)\bigr)\\
+      &=[D_wF(\lambda,w^n)]^{-1}
+        [F(\lambda,w)-F(\lambda,w^n)-D_wF(\lambda,w^n)(w-w^n)]\\
+      &=[D_wF(\lambda,w^n)]^{-1}
+        \int_0^1[D_wF(\lambda,w^n+t(w-w^n))-D_wF(\lambda,w^n)](w-w^n)\,\mathrm dt .
+  \end{aligned}
+\]
+\SourcePage{364}由\eqref{eq:10.3.4}和\eqref{eq:10.3.7}可知,
+\[
+  \|w^{n+1}-w\|_W
+      \le\frac{\gamma K}{2(1-\gamma K\delta')}\|w^n-w\|_W^2.
+\]
+由于 \(\|w^n-w\|_W\le\delta'\),还得到
+\[
+  \|w^{n+1}-w\|_W
+      \le\frac{\gamma K\delta'}{2(1-\gamma K\delta')}\|w^n-w\|_W.
+\]
+取 \(\delta'\) 使 \(\gamma K\delta'<2/3\),则 \(\gamma K\delta'/[2(1-\gamma K\delta')]<1\).因而 \(w^{n+1}\in S(w;\delta')\),且最后两个不等式保证序列二次收敛.
+
+算法\eqref{eq:10.3.3}的收敛性证明类似.沿用前面的做法,这时得到
+\[
+  \begin{aligned}
+    w^{n+1}-w
+      &=[D_wF(\lambda,w^0)]^{-1}
+        \int_0^1[D_wF(\lambda,w^n+t(w-w^n))-D_wF(\lambda,w^0)]\\
+      &\hspace{17em}\cdot(w-w^n)\,\mathrm dt .
+  \end{aligned}
+\]
+假设 \(w^n\in S(w;\delta'')\),并取 \(\gamma K\delta''<1/2\).可推得
+\[
+  \begin{aligned}
+    \|w^{n+1}-w\|_W
+      &\le2\gamma K(\|w^n-w^0\|_W+\|w^n-w\|_W)\|w^n-w\|_W\\
+      &\le6\gamma K\delta''\|w^n-w\|_W.
+  \end{aligned}
+\]
+取 \(\delta''<1/(6\gamma K)\),便得到 \(w^{n+1}\in S(w;\delta'')\),并且\eqref{eq:10.3.3}生成的序列 \(\{w^n\}\) 线性收敛到 \(w\).
+\end{proof}
+
+将 Newton 法\eqref{eq:10.3.2}用于 Navier--Stokes 问题\eqref{eq:10.1.4},回顾这时 \(\lambda=1/\nu\),可写成求 \((\boldsymbol{u}^{n+1},p^{n+1})\in V\times Q\),使
+\begin{equation}\label{eq:10.3.8}
+  \left\{
+  \begin{aligned}
+    &a(\boldsymbol{u}^{n+1},\boldsymbol{v})+c(\boldsymbol{u}^{n+1};\boldsymbol{u}^n,\boldsymbol{v})
+      +c(\boldsymbol{u}^n;\boldsymbol{u}^{n+1},\boldsymbol{v})+b(\boldsymbol{v},p^{n+1})\\
+    &\quad=c(\boldsymbol{u}^n;\boldsymbol{u}^n,\boldsymbol{v})+(\boldsymbol{f},\boldsymbol{v})
+              \qquad\forall\,\boldsymbol{v}\in V,\\
+    &b(\boldsymbol{u}^{n+1},q)=0\qquad\forall\,q\in Q.
+  \end{aligned}
+  \right.
+\end{equation}
+类似地,变体\eqref{eq:10.3.3}写成求 \((\boldsymbol{u}^{n+1},p^{n+1})\in V\times Q\),使
+\begin{equation}\label{eq:10.3.9}
+  \left\{
+  \begin{aligned}
+    &a(\boldsymbol{u}^{n+1},\boldsymbol{v})+c(\boldsymbol{u}^{n+1};\boldsymbol{u}^0,\boldsymbol{v})
+      +c(\boldsymbol{u}^0;\boldsymbol{u}^{n+1},\boldsymbol{v})+b(\boldsymbol{v},p^{n+1})\\
+    &\quad=c(\boldsymbol{u}^0-\boldsymbol{u}^n;\boldsymbol{u}^n,\boldsymbol{v})
+       +c(\boldsymbol{u}^n;\boldsymbol{u}^0,\boldsymbol{v})+(\boldsymbol{f},\boldsymbol{v})
+          \qquad\forall\,\boldsymbol{v}\in V,\\
+    &b(\boldsymbol{u}^{n+1},q)=0\qquad\forall\,q\in Q .
+  \end{aligned}
+  \right.
+\end{equation}
+这里有几点说明.首先,新的迭代值 \((\boldsymbol{u}^{n+1},p^{n+1})\) 与 \(p^n\) 无关.固定 \(\lambda\) 时,\(D_w^2G(\lambda,w)\) 与 \(w\) 无关,所以 \(D_wF(\lambda,w)\) 为 Lipschitz 连续.因此,若 \((\boldsymbol{u},p)\) 是\eqref{eq:10.1.4}的一个非奇异解,等价地,是\eqref{eq:10.1.1}至\eqref{eq:10.1.3}的一个非奇异解,那么对于任意充分接近\SourcePage{365}\(\boldsymbol{u}\) 的 \(\boldsymbol{u}^0\),格式\eqref{eq:10.3.8}和\eqref{eq:10.3.9}各自确定唯一的序列,分别以二次和线性速率收敛到 \((\boldsymbol{u},p)\).
+
+算法\eqref{eq:10.3.2}和\eqref{eq:10.3.3}的一个主要缺点是,初始近似必须接近精确解.若该解是一个非奇异解分支上的点,即对于固定的 \(\lambda\) 有 \(w=w(\lambda)\),而且已知一个邻近的解,例如对于某个小增量 \(\Delta\lambda\),已知 \(w(\lambda-\Delta\lambda)\),就可以用后者给迭代过程提供初始近似.这便是所谓的\emph{延拓法}.下面说明这一方法.对\eqref{eq:10.1.27}作形式微分,得到
+\[
+  D_wF(\lambda,w(\lambda))\frac{\mathrm dw(\lambda)}{\mathrm d\lambda}
+    +D_\lambda F(\lambda,w(\lambda))=0\qquad\forall\,\lambda\in\Lambda,
+\]
+因而
+\begin{equation}\label{eq:10.3.10}
+  \frac{\mathrm dw(\lambda)}{\mathrm d\lambda}=-\psi(\lambda),
+\end{equation}
+其中
+\[
+  \psi(\lambda)=[D_wF(\lambda,w(\lambda))]^{-1}D_\lambda F(\lambda,w(\lambda)).
+\]
+常微分方程\eqref{eq:10.3.10}可以用任一种单步法求解,例如 Euler 法或 Runge--Kutta 法,也可用显式多步法.为简便起见,若用步长为 \(\Delta\lambda\) 的向前 Euler 法,且假定 \(w(\lambda-\Delta\lambda)\) 已知,则得到
+\begin{equation}\label{eq:10.3.11}
+  \overline w(\lambda)=w(\lambda-\Delta\lambda)-\psi(\lambda-\Delta\lambda)\Delta\lambda.
+\end{equation}
+这就是说,\(\overline w(\lambda)\) 由下式确定：
+\[
+  \begin{aligned}
+   &D_wF(\lambda-\Delta\lambda,w(\lambda-\Delta\lambda))
+            (\overline w(\lambda)-w(\lambda-\Delta\lambda))\\
+   &\quad=-D_\lambda F(\lambda-\Delta\lambda,w(\lambda-\Delta\lambda))\Delta\lambda.
+  \end{aligned}
+\]
+由于精确值为
+\[
+  w(\lambda)=w(\lambda-\Delta\lambda)-\int_{\lambda-\Delta\lambda}^{\lambda}\psi(\mu)\,\mathrm d\mu,
+\]
+将\eqref{eq:10.3.11}从上式减去,得到
+\[
+  \begin{aligned}
+    w(\lambda)-\overline w(\lambda)
+      &=-\int_{\lambda-\Delta\lambda}^{\lambda}
+         [\psi(\mu)-\psi(\lambda-\Delta\lambda)]\,\mathrm d\mu\\
+      &=-\int_{\lambda-\Delta\lambda}^{\lambda}
+          \int_{\lambda-\Delta\lambda}^{\mu}\psi'(\eta)\,\mathrm d\eta\,\mathrm d\mu .
+  \end{aligned}
+\]
+因此,
+\[
+  \|w(\lambda)-\overline w(\lambda)\|_W
+      \le\frac{(\Delta\lambda)^2}{2}
+          \max_{\lambda-\Delta\lambda\le\eta\le\lambda}\|\psi'(\eta)\|_W .
+\]
+\SourcePage{366}若 \(\Delta\lambda\) 足够小,\(\overline w(\lambda)\) 就属于 \(S(w(\lambda);\delta')\),因而可用作 Newton 迭代的初始近似 \(w^0\).
+
+将上述延拓法用于 Navier--Stokes 问题.为便于记号,令
+\[
+  \begin{aligned}
+    \lambda&:=1/\nu,\qquad \lambda^*:=\lambda-\Delta\lambda,\\
+    \boldsymbol{u}&:=\boldsymbol{u}(\lambda),\qquad p:=p(\lambda),\qquad
+    \boldsymbol{u}^*:=\boldsymbol{u}(\lambda-\Delta\lambda),\qquad
+    p^*:=p(\lambda-\Delta\lambda),\\
+    \delta\boldsymbol{u}&:=\overline{\boldsymbol{u}}(\lambda)-\boldsymbol{u}^*,\qquad
+    \delta p:=\overline p(\lambda)-p^*.
+  \end{aligned}
+\]
+这里 \(p(\lambda)\) 表示抽象变量 \(w(\lambda)\) 的第二分量,即除以 \(\nu\) 后的压力.于是得到下列问题：求 \(\delta\boldsymbol{u}\in V\)、\(\delta p\in Q\),使
+\begin{equation}\label{eq:10.3.12}
+  \left\{
+  \begin{aligned}
+    &\frac1{\lambda^*}(\nabla\delta\boldsymbol{u},\nabla\boldsymbol{v})
+       +c(\boldsymbol{u}^*;\delta\boldsymbol{u},\boldsymbol{v})
+       +c(\delta\boldsymbol{u};\boldsymbol{u}^*,\boldsymbol{v})
+       +\frac1{\lambda^*}b(\boldsymbol{v},\delta p)\\
+    &\quad=\frac{\Delta\lambda}{\lambda^*}
+           [(\boldsymbol{f},\boldsymbol{v})-c(\boldsymbol{u}^*;\boldsymbol{u}^*,\boldsymbol{v})]
+          \qquad\forall\,\boldsymbol{v}\in V,\\
+    &b(\delta\boldsymbol{u},q)=0\qquad\forall\,q\in Q .
+  \end{aligned}
+  \right.
+\end{equation}
+这一问题的计算复杂度与一次 Newton 迭代相同.
+
+\begin{note}\NumberedNote{note:10.3.1}
+求解\eqref{eq:10.1.27}时,除了\eqref{eq:10.3.2}和\eqref{eq:10.3.3},还可采用更一般的拟 Newton 法：
+\[
+  H(\lambda,w^n)(w^{n+1}-w^n)=-F(\lambda,w^n),
+\]
+其中 \(H\) 是 Jacobi 算子 \(D_wF\) 的一个便于计算的逼近.从这个角度看,算法\eqref{eq:10.3.3}也属于这一类.
+
+也可在 Newton 法的每一步中求解线性问题\eqref{eq:10.3.2},所用的 GMRES 迭代见第~\ref{sec:2.6.2}~节.具体来说,先将\eqref{eq:10.3.2}改写成\eqref{eq:10.3.8},再对每个 \(n\) 作空间离散,得到形如下式的线性方程组：
+\begin{equation}\label{eq:10.3.13}
+  J_n\begin{pmatrix}\boldsymbol{u}^{n+1}\\\boldsymbol{p}^{n+1}\end{pmatrix}
+       =\begin{pmatrix}\boldsymbol{g}^n\\0\end{pmatrix},
+\end{equation}
+其中 \(J_n\) 是与 Jacobi 算子 \(D_wF(\lambda,w^n)\) 对应的矩阵,\(\boldsymbol{g}^n\) 是离散动量方程右端对应的向量.按通常的记号,可将方程组\eqref{eq:10.3.13}写成抽象形式 \(A\boldsymbol{x}=\boldsymbol{b}\),然后用 GMRES 迭代\eqref{eq:2.6.20},取初值
+\[
+  \boldsymbol{x}^0=\begin{pmatrix}\boldsymbol{u}^n\\\boldsymbol{p}^n\end{pmatrix}.
+\]
+迭代收敛时便得到\eqref{eq:10.3.13}的解.详细介绍见\BookCite{brown-saad1990}{Brown 和 Saad(1990)}.\hfill\(\square\)
+\end{note}
+
+\subsection{一种算子分裂算法}\label{sec:10.3.2}
+\SourcePage{367}
+
+另一种迭代办法是把\eqref{eq:10.1.1}和\eqref{eq:10.1.2}的解看作伪时间推进格式的极限.例如,可以在每一步把方程分成一个线性 Stokes 问题和一个关于速度场的非线性对流--扩散方程,所用的过程类似于 Peaceman--Rachford 格式\eqref{eq:5.7.7}.用微分形式表示,从 \((\boldsymbol{u}^0,p^0)\) 出发,按下式构造序列 \((\boldsymbol{u}^n,p^n)\)：
+\begin{equation}\label{eq:10.3.14}
+  \left\{
+  \begin{aligned}
+    &-\eta\nu\Delta\boldsymbol{u}^{n+1/2}+\alpha_n\boldsymbol{u}^{n+1/2}+\nabla p^{n+1/2}\\
+    &\quad=\boldsymbol{f}-(\boldsymbol{u}^n\cdot\nabla)\boldsymbol{u}^n
+       +(1-\eta)\nu\Delta\boldsymbol{u}^n+\alpha_n\boldsymbol{u}^n
+         \qquad\text{在 }\Omega\text{ 内},\\
+    &\operatorname{div}\boldsymbol{u}^{n+1/2}=0\qquad\text{在 }\Omega\text{ 内},\\
+    &\boldsymbol{u}^{n+1/2}=0\qquad\text{在 }\partial\Omega\text{ 上},
+  \end{aligned}
+  \right.
+\end{equation}
+\begin{equation}\label{eq:10.3.15}
+  \left\{
+  \begin{aligned}
+    &-(1-\eta)\nu\Delta\boldsymbol{u}^{n+1}+(\boldsymbol{u}^{n+1}\cdot\nabla)\boldsymbol{u}^{n+1}
+       +\alpha_n\boldsymbol{u}^{n+1}\\
+    &\quad=\boldsymbol{f}-\nabla p^{n+1/2}+\eta\nu\Delta\boldsymbol{u}^{n+1/2}
+        +\alpha_n\boldsymbol{u}^{n+1/2}\qquad\text{在 }\Omega\text{ 内},\\
+    &\boldsymbol{u}^{n+1}=0\qquad\text{在 }\partial\Omega\text{ 上},
+  \end{aligned}
+  \right.
+\end{equation}
+其中 \(0<\eta<1\),并以 \(p^{n+1/2}\) 作为这一步的压力近似.应适当选取参数 \(\alpha_n\),使迭代加快收敛.
+
+一般来说,证明这种格式的收敛性并不容易.如果已知待逼近的精确定常解稳定,就能为这一方法提供依据,例如见\BookCite{heywood-rannacher1986a}{Heywood 和 Rannacher(1986a)}.
+
+方法\eqref{eq:10.3.14}、\eqref{eq:10.3.15}由\BookCite{glowinski1984}{Glowinski(1984)}第 255 页引入.后来将它推广为一种 Strang 型三步算法(见\eqref{eq:5.7.11}).前两步重现\eqref{eq:10.3.14}和\eqref{eq:10.3.15},第三步再解一个形如\eqref{eq:10.3.14}的 Stokes 问题(见\BookCite{bristeau-glowinski-periaux1987}{Bristeau、Glowinski 和 Périaux(1987)}).
+
+Stokes 问题\eqref{eq:10.3.14}可按第~\ref{ch:9}~章所讨论的方法处理.\eqref{eq:10.3.15}则是一个形如
+\begin{equation}\label{eq:10.3.16}
+  \begin{cases}
+    -\nu_*\Delta\boldsymbol{v}+(\boldsymbol{v}\cdot\nabla)\boldsymbol{v}+\alpha^*\boldsymbol{v}
+       =\boldsymbol{g},&\text{在 }\Omega\text{ 内},\\
+    \boldsymbol{v}=0,&\text{在 }\partial\Omega\text{ 上}
+  \end{cases}
+\end{equation}
+的非线性对流--扩散方程组,其中 \(\nu_*=(1-\eta)\nu\).容易看出,这一问题也可写成 \(F(\nu_*,\boldsymbol{v})=0\) 的形式,并在第~\ref{sec:10.1}~节和第~\ref{sec:10.2}~节的抽象框架下分析.有多种求解方法,例如梯度算法(见\BookCite{girault-raviart1986}{Girault 和 Raviart(1986)}第 361 页)或共轭梯度算法(见\BookCite{glowinski-mantel-periaux-perrier-pironneau1982}{Glowinski、Mantel、Périaux、Perrier 和 Pironneau(1982)}).这两种算法都需要在每次迭代中为向量算子 \(-\nu_*\Delta\boldsymbol{v}+\alpha^*\boldsymbol{v}\) 求解四个 Dirichlet 问题.
+
+\section{Navier--Stokes 方程的流函数--涡量表述}\label{sec:10.4}
+\SourcePage{368}
+
+速度 \(\boldsymbol{u}\) 和压力 \(p\) 通常称为 Navier--Stokes 方程的原始变量.也可以引入其他未知量,即非原始变量,来重新表述问题.下面是一个典型例子.
+
+若 \(\Omega\subset\mathbb R^2\) 是单连通区域,一个标准结果表明,向量函数 \(\boldsymbol{u}\in(L^2(\Omega))^2\) 满足 \(\operatorname{div}\boldsymbol{u}=0\),当且仅当存在函数 \(\psi\in H^1(\Omega)\),称为\emph{流函数},使
+\begin{equation}\label{eq:10.4.1}
+  \boldsymbol{u}=\operatorname{\mathbf{curl}}\psi
+    :=\left(\frac{\partial\psi}{\partial x_2},-\frac{\partial\psi}{\partial x_1}\right).
+\end{equation}
+显然,\(\psi\) 只确定到一个加性常数.证明例如见\BookCite{girault-raviart1986}{Girault 和 Raviart(1986)}第 37 页.
+
+同时,将与 \(\boldsymbol{u}\in(H^1(\Omega))^2\) 对应的\emph{涡量}定义为标量场 \(\omega\in L^2(\Omega)\),使
+\begin{equation}\label{eq:10.4.2}
+  \omega:=\operatorname{curl}\boldsymbol{u}
+       =\frac{\partial u_2}{\partial x_1}-\frac{\partial u_1}{\partial x_2}.
+\end{equation}
+算子 \(\operatorname{\mathbf{curl}}\) 和 \(\operatorname{curl}\) 互为形式伴随,具体来说,
+\begin{equation}\label{eq:10.4.3}
+  \begin{aligned}
+    \int_\Omega\boldsymbol{v}\cdot\operatorname{\mathbf{curl}}\varphi\,\mathrm d\boldsymbol{x}
+      -\int_\Omega\varphi\operatorname{curl}\boldsymbol{v}\,\mathrm d\boldsymbol{x}
+       &=\int_{\partial\Omega}\varphi(v_1n_2-v_2n_1)\,\mathrm d\gamma\\
+       &=\int_{\partial\Omega}\varphi(\boldsymbol{v}\times\boldsymbol{n})_3\,\mathrm d\gamma,
+  \end{aligned}
+\end{equation}
+其中假定各项运算均有意义.例如,当 \(\varphi\in H^1(\Omega)\) 且 \(\boldsymbol{v}\in(H^1(\Omega))^2\) 时便是如此.这里,\(\boldsymbol{n}\) 是 \(\partial\Omega\) 上的单位外法向量.
+
+若从三维问题出发,并将任意标量函数 \(\varphi\) 与向量函数 \((0,0,\varphi)\) 等同起来,就可以用统一的方式理解算子 \(\operatorname{\mathbf{curl}}\) 和 \(\operatorname{curl}\).在这种理解下,容易验证
+\[
+  \begin{aligned}
+    ((\operatorname{\mathbf{curl}}\varphi)_1,
+         (\operatorname{\mathbf{curl}}\varphi)_2,0)
+        &=\operatorname{Curl}(0,0,\varphi),\\
+    (0,0,\operatorname{curl}\boldsymbol{v})&=\operatorname{Curl}(v_1,v_2,0),
+  \end{aligned}
+\]
+其中如\eqref{eq:9.6.30}所示,对每个向量函数 \(\boldsymbol{v}=(v_1,v_2,v_3)\),定义
+\[
+  \operatorname{Curl}\boldsymbol{v}
+      :=(D_2v_3-D_3v_2,\ D_3v_1-D_1v_3,\ D_1v_2-D_2v_1).
+\]
+最后,容易验证,对任意充分光滑的标量函数 \(\varphi\) 和向量函数 \(\boldsymbol{v}\),有
+\begin{equation}\label{eq:10.4.4}
+  \left\{
+  \begin{aligned}
+    \operatorname{div}\operatorname{\mathbf{curl}}\varphi&=0,\quad&
+        \operatorname{div}\operatorname{Curl}\boldsymbol{v}&=0,\\
+    \operatorname{curl}\nabla\varphi&=0,&\operatorname{Curl}\nabla\varphi&=0,\\
+    \operatorname{curl}\operatorname{\mathbf{curl}}\varphi&=-\Delta\varphi,&
+       \operatorname{Curl}\operatorname{Curl}\boldsymbol{v}
+        &=-\Delta\boldsymbol{v}+\nabla\operatorname{div}\boldsymbol{v}.
+  \end{aligned}
+  \right.
+\end{equation}
+
+\SourcePage{369}现在令 \(\boldsymbol{u}\) 表示 Navier--Stokes 方程\eqref{eq:10.1.1}至\eqref{eq:10.1.3}的解,令 \(\psi\) 和 \(\omega\) 分别为相应的流函数和涡量.由\eqref{eq:10.4.1}和\eqref{eq:10.4.2}容易得到
+\begin{equation}\label{eq:10.4.5}
+  -\Delta\psi=\omega.
+\end{equation}
+此外,对动量方程\eqref{eq:10.1.1}施加 \(\operatorname{curl}\) 算子,并利用连续性方程\eqref{eq:10.1.2}及\eqref{eq:10.4.4},得到
+\begin{equation}\label{eq:10.4.6}
+  -\nu\Delta\omega+\operatorname{\mathbf{curl}}\psi\cdot\nabla\omega
+        =\operatorname{curl}\boldsymbol{f}.
+\end{equation}
+这样,方程中不再出现压力,不可压缩性约束也已自动满足.
+
+\eqref{eq:10.4.5}和\eqref{eq:10.4.6}配以下列边界条件：
+\begin{equation}\label{eq:10.4.7}
+  \psi=0,\qquad \frac{\partial\psi}{\partial n}=0
+         \qquad\text{在 }\partial\Omega\text{ 上},
+\end{equation}
+它们等价于 \(\boldsymbol{u}=0\) 在 \(\partial\Omega\) 上成立.流函数--涡量表述的一处微妙之处在于,涡量没有由物理问题直接给出的边界条件.
+
+还可以将问题化为仅含一个未知量,即流函数的问题.事实上,借助\eqref{eq:10.4.5}从\eqref{eq:10.4.6}中消去涡量,得到四阶方程
+\begin{equation}\label{eq:10.4.8}
+  \nu\Delta^2\psi-\operatorname{\mathbf{curl}}\psi\cdot\nabla\Delta\psi
+        =\operatorname{curl}\boldsymbol{f}.
+\end{equation}
+给这个椭圆型方程配以边界条件\eqref{eq:10.4.7},可改写成如下变分形式：
+\begin{equation}\label{eq:10.4.9}
+  \begin{aligned}
+    \text{求 }\psi\in H_0^2(\Omega),\quad\text{使}\quad
+      \nu(\Delta\psi,\Delta\varphi)+(\Delta\psi\operatorname{\mathbf{curl}}\psi,\nabla\varphi)
+         &=(\boldsymbol{f},\operatorname{\mathbf{curl}}\varphi)\\
+         &\qquad\forall\,\varphi\in H_0^2(\Omega).
+  \end{aligned}
+\end{equation}
+得到解 \(\psi\) 后,即可直接由\eqref{eq:10.4.5}恢复涡量 \(\omega\).
+
+相应的双线性形式 \(\nu(\Delta\psi,\Delta\varphi)\) 在 \(H_0^2(\Omega)\) 中连续且具有强制性,而三线性项 \((\Delta\psi\operatorname{\mathbf{curl}}\psi,\nabla\varphi)\) 是一个紧扰动.因此,可将问题\eqref{eq:10.4.9}改写成抽象形式\eqref{eq:10.1.27},并应用第~\ref{sec:10.2}~节的方法建立逼近理论.
+
+用标准协调有限元逼近\eqref{eq:10.4.9}不太容易实现,因为分片多项式函数的一阶导数必须在单元的公共边界上连续,函数才能属于 \(H_0^2(\Omega)\).对流函数--涡量表述\eqref{eq:10.4.5}、\eqref{eq:10.4.6}采用混合有限元更为合适,例如见\BookCite{brezzi-fortin1991}{Brezzi 和 Fortin(1991)}第 VI 章,亦见\BookCite{gunzburger-peterson1988}{Gunzburger 和 Peterson(1988)}及\BookCite{gunzburger1989}{Gunzburger(1989)}.采用谱逼近时,可以利用双调和问题的\SourcePage{370}收敛性分析,得到误差 \(\|\psi-\psi_N\|_{H^2(\Omega)}\) 的最优估计,见\BookCite{bernardi-maday1992}{Bernardi 和 Maday(1992)}第 V 章.
+
+将流函数--涡量方法推广到三维问题,需要作更细致的分析.这时,假定区域 \(\Omega\) 单连通且 \(\partial\Omega\) 连通,则条件 \(\operatorname{div}\boldsymbol{u}=0\) 等价于存在一个向量流函数 \(\boldsymbol{\psi}\),使 \(\operatorname{Curl}\boldsymbol{\psi}=\boldsymbol{u}\) 且 \(\operatorname{div}\boldsymbol{\psi}=0\).沿用二维情形中的论证,容易看出,流函数表述\eqref{eq:10.4.9}应替换为
+\begin{equation}\label{eq:10.4.10}
+  \begin{aligned}
+    \text{求 }\boldsymbol{\psi}\in\boldsymbol{\Psi},\quad\text{使}\quad
+    \nu(\Delta\boldsymbol{\psi},\Delta\boldsymbol{\varphi})
+       -(\Delta\boldsymbol{\psi}\times\operatorname{Curl}\boldsymbol{\psi},
+                \operatorname{Curl}\boldsymbol{\varphi})
+       &=(\boldsymbol{f},\operatorname{Curl}\boldsymbol{\varphi})\\
+       &\qquad\forall\,\boldsymbol{\varphi}\in\boldsymbol{\Psi},
+  \end{aligned}
+\end{equation}
+其中
+\[
+  \boldsymbol{\Psi}:=\{\boldsymbol{\varphi}\in(L^2(\Omega))^3\mid
+     \operatorname{div}\boldsymbol{\varphi}\in H^1(\Omega),\
+     \operatorname{Curl}\boldsymbol{\varphi}\in(H_0^1(\Omega))^3,\
+     (\boldsymbol{\varphi}\times\boldsymbol{n})|_{\partial\Omega}=0\}.
+\]
+要证明这一表述与\eqref{eq:10.1.7}等价,还需要证明\eqref{eq:10.4.10}的解 \(\boldsymbol{\psi}\) 满足 \(\operatorname{div}\boldsymbol{\psi}=0\).这样,令 \(\boldsymbol{u}=\operatorname{Curl}\boldsymbol{\psi}\),并定义向量涡量 \(\boldsymbol{\omega}:=\operatorname{Curl}\boldsymbol{u}\),由\eqref{eq:10.4.4}可得
+\[
+  \boldsymbol{\omega}=\operatorname{Curl}\boldsymbol{u}
+       =\operatorname{Curl}\operatorname{Curl}\boldsymbol{\psi}
+       =-\Delta\boldsymbol{\psi}.
+\]
+这里不再详述这一表述,有兴趣的读者可参见\BookCite{girault-raviart1986}{Girault 和 Raviart(1986)}第 294–297 页.以非原始变量表述 Navier--Stokes 方程的全面介绍,另见\BookCite{quartapelle1993}{Quartapelle(1993)}.
+
+\section{补充说明}\label{sec:10.5}
+
+\BookCite{gresho1991}{Gresho(1991)}的综述讨论了 Navier--Stokes 方程逼近中值得关注的理论和计算问题.
+
+本章始终考察 Navier--Stokes 方程的正则解分支.关于奇异点(分岔点和折返点)的逼近,可参见\BookCite{brezzi-rappaz-raviart1981a}{Brezzi、Rappaz 和 Raviart(1981a}、\BookCite{brezzi-rappaz-raviart1981b}{1981b)}建立的抽象理论,以及\BookCite{crouzeix-rappaz1990}{Crouzeix 和 Rappaz(1990)}的专著.
+
+\BookCite{reinhart1980}{Reinhart(1980)}在求解非线性偏微分方程的背景下研究了第~\ref{sec:10.3.1}~节提到的延拓法.更一般的介绍例如见\BookCite{allgower-georg1990}{Allgower 和 Georg(1990}、\BookCite{allgower-georg1993}{1993)}.
+
+将第~\ref{sec:8.3}~节和第~\ref{sec:9.4}~节介绍的那类稳定化方法用于 Navier--Stokes 方程,已有\BookCite{brooks-hughes1982}{Brooks 和 Hughes(1982)}、\BookCite{behr-franca-tezduyar1993}{Behr、Franca 和 Tezduyar(1993)}及\BookCite{zhou-feng1993}{Zhou 和 Feng(1993)}提出并加以分析.
+
+\SourcePage{371}流动计算常用 Navier--Stokes 方程的流函数--涡量表述,也可与稳定化技术结合.
+
+参见\BookCite{tezduyar-glowinski-liou1988}{Tezduyar、Glowinski 和 Liou(1988)}、\BookCite{tezduyar-liou-ganjoo1990}{Tezduyar、Liou 和 Ganjoo(1990)}及其中所引文献.

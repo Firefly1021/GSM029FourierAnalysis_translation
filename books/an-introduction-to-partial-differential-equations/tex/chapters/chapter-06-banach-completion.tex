@@ -1,0 +1,79 @@
+\section{函数空间}\label{chap:function-spaces}
+
+偏微分方程问题的数据和解都是定义在某些区域或流形上的函数. 为精确陈述存在性, 唯一性, 连续依赖性等定理, 必须指明这些函数所在的空间, 并精确定义这些空间中的收敛. 这一问题推动了如今被视为纯数学主要 (``核心'') 领域之一的泛函分析的发展. 在本章及下一章中, 将简要介绍这一领域, 特别着重于在微分方程中重要的问题和概念. 本介绍仅限于本书其余部分所需的内容, 并不意在替代一门正规的泛函分析课程.
+
+\subsection{Banach 空间与 Hilbert 空间}\label{sec:banach-hilbert-spaces}
+
+\subsubsection{Banach 空间}\label{subsec:banach-spaces}
+
+用于定义函数之间距离概念的基本概念是范数.
+
+\begin{Definition}
+\label{def:normed-vector-space-norm}
+设 $X$ 为实或复向量空间. $X$ 上的\textbf{范数}是函数 $\|\cdot\|:X\to[0,\infty)$, 满足\begin{enumerate}
+\item $\|x\|=0$ 当且仅当 $x=0$,
+\item 对每个 $x\in X$, $\lambda\in\mathbb{R}$ (或 $\mathbb{C}$), 有 $\|\lambda x\|=|\lambda|\|x\|$,
+\item 对每个 $x,y\in X$, 有 $\|x+y\|\leq\|x\|+\|y\|$.
+\end{enumerate}
+\end{Definition}
+
+容易看出 (参见 Problem~\ref{ex:norm-induced-metric}), 函数 $d(x,y)=\|x-y\|$ 在 $X$ 上定义了一个度量. 由此也得到收敛概念, 即若 $\|x_n-x\|\to0$, 就说 $x_n\to x$. 将自然沿用有限维情形中熟悉的术语, 例如, 以 $x$ 为中心, 半径为 $r$ 的 (闭) 球是所有满足 $\|y-x\|\leq r$ 的 $y$ 的集合; 若 $\{\|x\|\mid x\in M\}$ 有界, 就称集合 $M$ 有界, 等等.
+
+\begin{Definition}
+\label{def:normed-vector-spaces-isometry}
+若存在一个线性双射 $L:X\to Y$, 使对每个 $x\in X$ 有 $\|L(x)\|=\|x\|$, 则称两个赋范向量空间 $X$ 和 $Y$ \textbf{等距}.
+\end{Definition}
+
+\begin{Definition}
+\label{def:equivalent-norms}
+若存在常数 $c,C>0$, 使对每个 $x\in X$ 有 $c\|x\|_1\leq\|x\|_2\leq C\|x\|_1$, 则称向量空间 $X$ 上的两个范数 $\|\cdot\|_1$ 和 $\|\cdot\|_2$ \textbf{等价}.
+\end{Definition}
+
+求解偏微分方程的过程通常基于迭代方法, 离散化或其他逼近手段. 在所有这些情形中, 都会产生一个近似解序列, 并希望证明该序列收敛到某个极限. 由于通常事先并不清楚偏微分方程的解是否存在, 因而需要不涉及极限的收敛判据. 这就引出了 Cauchy 序列的概念. 因此, 赋范向量空间是否完备是一个重要问题.
+
+\begin{Definition}
+\label{def:banach-space}
+若赋范向量空间 $X$ 完备, 即每个满足 $\lim_{m,n\to\infty}\|x_n-x_m\|=0$ 的序列 $x_n$ 都有极限 $x\in X$, 则称其为 \textbf{Banach 空间}.
+\end{Definition}
+
+若赋范空间不完备, 可以定义它的完备化; 其过程是度量空间完备化的通常过程, 即考察 Cauchy 序列的等价类.
+
+\begin{Theorem}
+\label{thm:normed-space-completion}
+设 $X$ 为赋范向量空间. 那么存在赋范向量空间 $Y$, 使 $Y$ 完备且 $X$ 为 $Y$ 的稠密子空间. 在等距意义下, 空间 $Y$ 唯一.
+\end{Theorem}
+
+\begin{Definition}
+\label{def:normed-space-completion}
+Theorem~\ref{thm:normed-space-completion} 给出的空间 $Y$ 称为 $X$ 的\textbf{完备化}.
+\end{Definition}
+
+\begingroup
+\renewenvironment{Proof}{\vspace{0.1cm}\par}
+{\par\hfill$\blacksquare$\par\vspace{0.1cm}}
+\begin{Proof}
+\textbf{Proof of Theorem~\ref{thm:normed-space-completion}}: 这里只概述主要想法. 假定读者已经见过由有理数构造实数 (一个 Banach 空间) 的过程, 应始终记住这个例子. 将用下标区分各空间中的范数 (即 $\|\cdot\|_X$ 和 $\|\cdot\|_Y$).\begin{itemize}\item 若 $\lim_{n\to\infty}\|x_n-y_n\|_X=0$, 就称 $X$ 中的两个 Cauchy 序列 $\{x_n\}_{n=1}^\infty$ 和 $\{y_n\}_{n=1}^\infty$ \emph{等价}. 用 $Y$ 表示 Cauchy 序列的等价类的集合. 读者应验证 $Y$ 是向量空间.
+\item 由三角不等式 (Definition~\ref{def:normed-vector-space-norm} 的条件 3) 可得
+\begin{equation}\label{eq:norm-reverse-triangle-inequality}
+|\|x\|_X-\|y\|_X|\leq\|x-y\|_X,
+\end{equation}
+因而, 若 $\{x_n\}_{n=1}^\infty$ 是 $X$ 中的 Cauchy 序列, 则 $\{\|x_n\|\}_{n=1}^\infty$ 是 $\mathbb{R}$ 中的 Cauchy 序列. 现在定义
+\begin{equation}\label{eq:completion-cauchy-class-norm}
+\|\{x_n\}_{n=1}^\infty\|_Y=\lim_{n\to\infty}\|x_n\|_X
+\end{equation}
+对每个 Cauchy 序列 $\{x_n\}_{n=1}^\infty$ 成立. 再次利用 \eqref{eq:norm-reverse-triangle-inequality}, 可见等价的 Cauchy 序列具有相等的范数. 因而 \eqref{eq:completion-cauchy-class-norm} 定义了空间 $Y$ 上的范数. 留给读者检验 Definition~\ref{def:normed-vector-space-norm} 的性质 1--3, 从而验证 $Y$ 为赋范空间.
+\item 通过与常值 Cauchy 序列 (的等价类) 相认同, 原空间 $X$ 成为 $Y$ 的子空间. 显然 $X$ 在 $Y$ 中稠密.
+\item 需要证明 $Y$ 完备. 设 $\{y_i\}_{i=1}^\infty=\{\{w_{i,n}\}_{n=1}^\infty\}_{i=1}^\infty$ 是 $Y$ 中 (Cauchy 序列等价类的) 一个 Cauchy 序列. 回顾 $X$ (看作常值序列的集合) 在 $Y$ 中稠密; 因而对每个 $i$, 存在元素 $x_i\in X$, 使 $\lim_{n\to\infty}\|x_i-w_{i,n}\|_X<1/i$. 读者应证明序列 $\{x_i\}_{i=1}^\infty$ 在 $X$ 中为 Cauchy 序列, 从而可与某个元素 $y\in Y$ 相认同. 随后可证明, 此元素 $y$ 就是 Cauchy 序列 $\{y_i\}_{i=1}^\infty$ 在 $Y$ 中的极限.
+\item 还需证明 $Y$ 在等距意义下唯一. 设 $\widetilde Y$ 为以 $X$ 为稠密子空间的 Banach 空间. 那么每个 $y\in\widetilde Y$ 都是 $X$ 中某个 Cauchy 序列 $\{x_n\}_{n=1}^\infty$ 的极限, 并且必须有
+\begin{equation}\label{eq:completion-isometry-unique-norm}
+\|y\|=\lim_{n\to\infty}\|x_n\|_X.
+\end{equation}
+另一方面, $X$ 中的每个 Cauchy 序列都可以与 $Y$ 的一个元素相认同. 读者应利用这些想法定义从 $\widetilde Y$ 到 $Y$ 的双射, 并验证等距性.\end{itemize}
+证明完成.
+\end{Proof}
+\endgroup
+
+\begin{Remark}
+\label{rem:completion-limit-notation}
+上述证明的最大困难之一是所需的记号相当繁琐. 实际上, 会省去这些记号, 将 $Y$ 的一个元素称为 $X$ 中某个 Cauchy 序列的\emph{极限}; 即对任意 $y\in Y$, 会说序列 $\{y_n\}\subset X$ 满足 $y_n\to y$, 而不说 $\{y_n\}$ 是等价类 $y$ 的一个成员. 直接使用空间 $Y$, 只在绝对必要时才重新提及 $X$. 当然, 对实数你早已不自觉地这样做了: $\sqrt2$ 和 $\pi$ 被视为数轴上的单个点, 或至多视为小数展开, 而不是有理数序列的等价类.
+\end{Remark}

@@ -1,0 +1,636 @@
+\chapter{Euclidean 空间上的几何量子化}
+\label{chap:geometric-quantization-euclidean}
+\index{几何量子化}
+\index{预量子化}
+\index{极化}
+
+\section{引言}
+\label{sec:geometric-quantization-euclidean-intro}
+
+本章在带典范 2-形式
+\[
+ \omega=dp_j\wedge dx^j
+\]
+的辛流形 $\mathbb R^{2n}$ 上考察几何量子化.我们从“预量子” Hilbert 空间 $L^2(\mathbb R^{2n})$ 开始,定义“预量子”算子 $Q_{\mathrm{pre}}(f)$.这些算子对所有 $f,g$ 满足
+\[
+ Q_{\mathrm{pre}}(\{f,g\})
+ =\frac1{i\hbar}[Q_{\mathrm{pre}}(f),Q_{\mathrm{pre}}(g)].
+\]
+然而,预量子化映射存在一些不适宜把它解释为“量子化”的缺陷.为了得到量子 Hilbert 空间,我们把变量数从 $2n$ 降到 $n$.根据采用的约化方式,可以得到位置 Hilbert 空间、动量 Hilbert 空间或 Segal--Bargmann 空间.这些子空间都被预量子化的位置、动量算子,以及某些其他形如 $Q_{\mathrm{pre}}(f)$ 的算子保持不变.
+
+本章的内容是第 23 章工作的特殊情形.先处理这个例子,可以在不发展一般辛流形上线丛、联络和极化的完整工具之前,迅速熟悉几何量子化的方法和结果.无论如何,最终仍需完成本章的大部分计算,把它们作为一般理论的标准例子.
+
+本章不需要辛流形的全部工具,但会使用 $\mathbb R^{2n}$ 上 1-形式和 2-形式的概念,以及 1-形式的微分.特别会使用式~\eqref{eq:d-one-form} 给出的 1-形式微分表达式.
+
+需要提醒读者,几何量子化中的符号约定并没有统一标准.本章采用的约定是为了与物理文献保持一致.特别地,如果允许函数 $p_j$ 量子化为 $i\hbar\,\partial/\partial x^j$,就可以消除全纯子空间定义中的一个令人不快的负号;但物理文献普遍采用
+\[
+ P_j=-i\hbar\frac{\partial}{\partial x^j},
+\]
+所以我们选择遵循这个约定,并接受其他地方出现的一些稍显不便的符号.我们继续使用求和约定,即重复指标总是求和.
+
+\section{预量子化}
+\label{sec:prequantization}
+
+理想的量子化过程 $Q$ 把辛流形 $N$ 上的函数映射为某个 Hilbert 空间 $\mathcal H$ 上的算子,并应满足以下性质.第一,若 $f$ 为实值函数,则 $Q(f)$ 应自伴.第二,应有 $Q(1)=I$,其中 $1$ 是常函数.第三,应有
+\[
+ Q(\{f,g\})=\frac1{i\hbar}[Q(f),Q(g)].
+\]
+第四,应有某种“微小性”假设.例如,当 $N=\mathbb R^{2n}$ 时,可以要求 $\mathcal H$ 在(指数化的)位置和动量算子作用下不可约(见定理~\ref{thm:stone-von-neumann}).虽然 Groenewold 定理(定理~\ref{thm:groenewold})提示我们不应期待量子化过程精确满足所有这些性质,但我们仍试图尽可能接近.
+
+本章沿用第 2 章练习 14 的约定,把 $\mathbb R^N$ 上的“向量场”看作一阶微分算子.例如,对 $\mathbb R^2$ 上的向量值函数
+\[
+ X=(2x^1+x^2,x^1x^2),
+\]
+把 $X$ 识别为沿 $X$ 方向微分的一阶微分算子:
+\[
+ X=(2x^1+x^2)\frac{\partial}{\partial x^1}
+ +x^1x^2\frac{\partial}{\partial x^2}.
+\]
+
+特别地,对 $\mathbb R^{2n}$ 上的光滑函数 $f$,与 $f$ 关联的 Hamilton 向量场 $X_f$ 被看作微分算子:
+\[
+ X_f=\{f,\cdot\}
+ =\frac{\partial f}{\partial x^j}\frac{\partial}{\partial p_j}
+ -\frac{\partial f}{\partial p_j}\frac{\partial}{\partial x^j}.\label{eq:euclidean-hamiltonian-vector-field}
+\]
+它作用于 $C^\infty(\mathbb R^{2n})$.由命题~\ref{prop:hamiltonian-vector-field-bracket},两个 Hamilton 向量场作为微分算子的交换子为 $X_{\{f,g\}}$.因此算子 $i\hbar X_f$ 满足所需交换关系:
+\[
+ [i\hbar X_f,i\hbar X_g]
+ =(i\hbar)^2X_{\{f,g\}}
+ =(i\hbar)(i\hbar X_{\{f,g\}}).
+\]
+于是很容易想到,直接令 $Q(f)=i\hbar X_f$,把它看作 Hilbert 空间 $L^2(\mathbb R^{2n})$ 上的自伴算子.但这个映射不满足 $Q(1)=I$.若改为 $Q(f)=i\hbar X_f+f$,其中 $f$ 表示乘以 $f$ 的算子,虽然 $Q(1)=I$,却破坏了所需的交换关系.
+
+通过再加一项,可以同时实现 $Q(1)=I$ 和所需交换关系.令 $\omega=dp_j\wedge dx^j$ 是 $\mathbb R^{2n}$ 上的典范 2-形式,$\theta$ 是 $\omega$ 的任意辛势,即满足
+\[
+ d\theta=\omega.\label{eq:symplectic-potential}
+\]
+例如可以取 $\theta=p_jdx^j$.对 $\mathbb R^{2n}$ 上的光滑函数 $f$,在 $C^\infty(\mathbb R^{2n})$ 上定义算子
+\[
+ Q_{\mathrm{pre}}(f)
+ =i\hbar X_f-\theta(X_f)+f.\label{eq:prequantum-operator}
+\]
+式~\eqref{eq:prequantum-operator} 右端的 $f$ 更准确地说是乘以 $f$ 的算子,$\theta(X_f)$ 同样表示相应的乘法算子.由于 $\theta$ 是 1-形式、$X_f$ 是向量场,$\theta(X_f)$ 是 $\mathbb R^{2n}$ 上的函数.算子 $Q_{\mathrm{pre}}(f)$ 是 $f$ 的预量子化,并被看作 $L^2(\mathbb R^{2n})$ 上的无界算子;称 $L^2(\mathbb R^{2n})$ 为预量子 Hilbert 空间.
+
+由练习 1,$\mathbb R^N$ 上任意散度为零的向量场都是 $C_c^\infty(\mathbb R^N)\subset L^2(\mathbb R^N)$ 上的斜对称算子.另一方面,每个 Hamilton 向量场都是散度为零的,正如 Liouville 定理(定理~\ref{thm:liouville})的证明中已经说明的.因此,对 $\mathbb R^{2n}$ 上任意光滑实值函数 $f$,$Q_{\mathrm{pre}}(f)$ 至少是对称的.可以证明,如果 $X_f$ 完备,即相应 Hamilton 流对所有时间都有定义,那么 $Q_{\mathrm{pre}}(f)$ 在自然定义域上实际上是自伴的(见命题~\ref{prop:connection-flow} 证明后的讨论).
+
+事实证明,式~\eqref{eq:prequantum-operator} 中的 $\theta(X_f)$ 项恰好能够恢复所需的交换关系,同时保留 $Q_{\mathrm{pre}}(1)=I$.
+
+\begin{proposition}[预量子化保持 Poisson 括号]\label{prop:prequantum-commutator}
+对所有 $f,g\in C^\infty(\mathbb R^{2n})$,
+\[
+ \frac1{i\hbar}[Q_{\mathrm{pre}}(f),Q_{\mathrm{pre}}(g)]
+ =Q_{\mathrm{pre}}(\{f,g\}),
+\]
+这里等式理解为 $C^\infty(\mathbb R^{2n})$ 上的算子等式.
+\end{proposition}
+
+在证明前,先理解预量子算子定义中出现的
+\[
+ X_f-\frac{i}{\hbar}\theta(X_f)
+\]
+的行为.
+
+\begin{definition}[协变导数]\label{def:prequantum-covariant-derivative}
+给定辛势 $\theta$ 与 $\mathbb R^{2n}$ 上的向量场 $X$,令 $\nabla_X$ 为作用于 $C^\infty(\mathbb R^{2n})$ 的协变导数算子:
+\[
+ \nabla_X=X-\frac{i}{\hbar}\theta(X).\label{eq:covariant-derivative}
+\]
+\end{definition}
+
+于是预量子算子可以写成
+\[
+ Q_{\mathrm{pre}}(f)=i\hbar\nabla_{X_f}+f.
+\]
+
+\begin{proposition}[协变导数的交换子]\label{prop:covariant-derivative-commutator}
+对任意辛势 $\theta$,令 $\nabla_X$ 为式~\eqref{eq:covariant-derivative} 关联的协变导数.对 $\mathbb R^{2n}$ 上任意光滑向量场 $X,Y$,
+\[
+ [\nabla_X,\nabla_Y]
+ =\nabla_{[X,Y]}-\frac{i}{\hbar}\omega(X,Y).\label{eq:covariant-derivative-commutator}
+\]
+特别地,如果 $X=X_f,Y=X_g$,则
+\[
+ [\nabla_{X_f},\nabla_{X_g}]
+ =\nabla_{X_{\{f,g\}}}+\frac{i}{\hbar}\{f,g\}.
+\]
+\end{proposition}
+
+按照微分几何的标准定义,式~\eqref{eq:covariant-derivative-commutator} 右端的 $\omega/\hbar$ 是协变导数 $\nabla$ 的曲率.对本章而言,$[\nabla_{X_f},\nabla_{X_g}]$ 不仅仅是 $\nabla_{X_{\{f,g\}}}$ 反而是有利的:交换子公式中多出的项正好补偿 $i\hbar X_f+f$ 不满足所需交换关系的部分.
+
+\begin{proof}
+使用容易验证的恒等式
+\[
+ [\nabla_X,f]=X(f),
+\]
+得到
+\[
+ [\nabla_X,\nabla_Y]-\nabla_{[X,Y]}
+ =-\frac{i}{\hbar}
+ [X(\theta(Y))-Y(\theta(X))-\theta([X,Y])].
+\]
+根据式~\eqref{eq:d-one-form},右端等于 $-(i/\hbar)(d\theta)(X,Y)$;而 $d\theta=\omega$.
+\end{proof}
+
+\begin{proof}[命题~\ref{prop:prequantum-commutator} 的证明]
+利用命题~\ref{prop:covariant-derivative-commutator},
+\[
+\begin{aligned}
+ \frac1{i\hbar}[i\hbar\nabla_{X_f}+f,i\hbar\nabla_{X_g}+g]
+ &=i\hbar\left(\nabla_{X_{\{f,g\}}}
+ +\frac{i}{\hbar}\{f,g\}\right)
+ +X_f(g)-X_g(f)\\
+ &=i\hbar\nabla_{X_{\{f,g\}}}
+ -\{f,g\}+\{f,g\}+\{f,g\}\\
+ &=Q_{\mathrm{pre}}(\{f,g\}).
+\end{aligned}
+\]
+\end{proof}
+
+\begin{example}[预量子位置与动量算子]\label{ex:prequantum-position-momentum}
+若取 $\theta=p_jdx^j$,则
+\[
+ Q_{\mathrm{pre}}(x^j)=x^j+i\hbar\frac{\partial}{\partial p_j},
+\qquad
+ Q_{\mathrm{pre}}(p_j)=-i\hbar\frac{\partial}{\partial x^j}.
+\]
+这些算子在 $C_c^\infty(\mathbb R^{2n})$ 上本质自伴,其自伴延拓满足定义~\ref{def:exponentiated-commutation} 的指数化交换关系.
+\end{example}
+
+\begin{proof}
+计算得 $X_{x^j}=\partial/\partial p_j$,且 $\theta(X_{x^j})=0$,从而得到 $Q_{\mathrm{pre}}(x^j)$.另一方面,$X_{p_j}=-\partial/\partial x^j$,$\theta(X_{p_j})=-p_j$.定义~\eqref{eq:prequantum-operator} 中的 $\theta(X_{p_j})$ 项与 $p_j$ 项抵消,留下 $Q_{\mathrm{pre}}(p_j)=i\hbar X_{p_j}$.
+
+由命题~\ref{prop:linear-position-momentum-essential},这些算子本质自伴.为验证指数化交换关系,计算相应的一参数酉群:
+\[
+\begin{aligned}
+ (e^{itQ_{\mathrm{pre}}(x^j)}\psi)(x,p)
+ &=e^{itx^j}\psi(x,p-t\hbar e_j),\\
+ (e^{itQ_{\mathrm{pre}}(p_j)}\psi)(x,p)
+ &=\psi(x+t\hbar e_j,p).\label{eq:prequantum-unitary-groups}
+\end{aligned}
+\]
+这里 $Q_{\mathrm{pre}}(x^j),Q_{\mathrm{pre}}(p_j)$ 表示给定算子在 $C_c^\infty(\mathbb R^{2n})$ 上的唯一自伴延拓.现在直接计算即可验证指数化交换关系.
+\end{proof}
+
+到目前为止,协变导数以及预量子化都依赖辛势 $\theta$ 的选择.但这种依赖是表面的;下面说明,使用两个不同辛势得到的预量子映射酉等价.
+
+\begin{proposition}[预量子化的规范变换]\label{prop:prequantum-gauge}
+设 $\theta_1,\theta_2$ 是典范 2-形式 $\omega$ 的两个辛势,因此 $d(\theta_1-\theta_2)=0$.记相应协变导数为 $\nabla_1,\nabla_2$.取实值函数 $\gamma$,使
+\[
+ d\gamma=\theta_1-\theta_2,
+\]
+并令 $U_\gamma$ 为 $L^2(\mathbb R^{2n})$ 到自身的酉映射:
+\[
+ U_\gamma\psi=e^{-i\gamma/\hbar}\psi.
+\]
+则对每个向量场 $X$,
+\[
+ U_\gamma\nabla_{1,X}U_\gamma^{-1}=\nabla_{2,X}.\label{eq:gauge-covariant-derivative}
+\]
+如果 $Q_{\mathrm{pre}}^j(f)$ 是相应的预量子化映射,则
+\[
+ U_\gamma Q_{\mathrm{pre}}^1(f)U_\gamma^{-1}
+ =Q_{\mathrm{pre}}^2(f).\label{eq:gauge-prequantum}
+\]
+映射 $U_\gamma$ 称为规范变换.
+\end{proposition}
+
+\begin{proof}
+乘以 $\theta_1(X)$ 的算子与乘以 $e^{-i\gamma/\hbar}$ 的算子对易,而
+\[
+ X(e^{i\gamma/\hbar}\psi)
+ =e^{i\gamma/\hbar}X\psi
+ +\frac{i}{\hbar}e^{i\gamma/\hbar}X(\gamma)\psi.
+\]
+由于 $X(\gamma)=d\gamma(X)=\theta_1(X)-\theta_2(X)$,有
+\[
+\begin{aligned}
+ \nabla_{1,X}(e^{i\gamma/\hbar}\psi)
+ &=e^{i\gamma/\hbar}
+ \left(X+\frac{i}{\hbar}X(\gamma)
+ -\frac{i}{\hbar}\theta_1(X)\right)\psi\\
+ &=e^{i\gamma/\hbar}
+ \left(X-\frac{i}{\hbar}\theta_2(X)\right)\psi
+ =e^{i\gamma/\hbar}\nabla_{2,X}\psi.
+\end{aligned}
+\]
+两边乘以 $e^{-i\gamma/\hbar}$ 得到式~\eqref{eq:gauge-covariant-derivative}.式~\eqref{eq:gauge-prequantum} 则由乘以 $f$ 的算子与乘以 $e^{-i\gamma/\hbar}$ 的算子对易得到.
+\end{proof}
+
+\section{预量子化的问题}
+\label{sec:problems-with-prequantization}
+
+预量子化的构造如此自然,以至于人们很容易把它本身看作量子化:为什么不直接取 Hilbert 空间为 $L^2(\mathbb R^{2n})$,并把量子化后的算子取为 $Q_{\mathrm{pre}}(f)$ 呢？下面考察预量子化的几个不理想性质.
+
+首先,在量子化的位置、动量算子作用下,Hilbert 空间 $L^2(\mathbb R^{2n})$ 与普通 Schrödinger Hilbert 空间 $L^2(\mathbb R^n)$ 相比远非不可约;后者由命题~\ref{prop:usual-position-momentum-irreducible} 可知是不可约的.事实上,在第~\ref{sec:geometric-quantization-euclidean-quantization} 节中我们将构造出一大族不变子空间(见命题~\ref{prop:holomorphic-quantum-space}).
+
+其次,预量子化映射远非乘法的.由于量子算子一般不对易,当然不能期待任意量子化方案 $Q$ 对所有 $f,g$ 都满足 $Q(fg)=Q(f)Q(g)$.不过,第 13 章所考察的标准量子化方案,对于某些可观测量类确实满足这一关系.例如在 Weyl 量子化中,若 $f,g$ 都只依赖 $x$ 而与 $p$ 无关(或者都只依赖 $p$),则有乘法性.可是对预量子化映射而言,乘法性几乎从不成立:$Q_{\mathrm{pre}}(fg)$ 是一阶微分算子,而只要 $X_f$ 与 $X_g$ 至少在某一点同时非零,$Q_{\mathrm{pre}}(f)Q_{\mathrm{pre}}(g)$ 就是二阶微分算子.
+
+第三,预量子化映射严重地无法把正函数映为正算子.第 13 章的大多数量子化方案虽然也不总是把正函数映为正算子,却多少接近这一性质.例如,Weyl、Wick 和反 Wick 量子化都把谐振子 Hamiltonian 映为非负算子,因为 $a^*a+\tfrac12I$、$a^*a$ 和 $aa^*$ 都是非负的(见第 13 章练习 4).相反,预量子谐振子 Hamiltonian 的谱无下界,下面就来说明这一点.
+
+\begin{proposition}[预量子谐振子的谱]
+\label{prop:prequantum-harmonic-oscillator}
+设谐振子 Hamiltonian 为
+\[
+ H(x,p)=\frac{1}{2m}\bigl(p^2+(m\omega x)^2\bigr).
+\]
+则对每个整数 $n$,数 $n\hbar\omega$ 都是 $Q_{\mathrm{pre}}(H)$ 的一个特征值.
+\end{proposition}
+
+注意,命题中的 $n$ 可以是负整数.因此,$Q_{\mathrm{pre}}(H)$ 的谱甚至没有下界.另一方面,在第~\ref{sec:geometric-quantization-euclidean-quantization} 节中,我们将考察预量子 Hilbert 空间的某个闭子空间 $\mathcal H_\alpha$,它是量子 Hilbert 空间的候选者之一.对适当的 $\alpha$,$\mathcal H_\alpha$ 在 $Q_{\mathrm{pre}}(H)$ 下不变,而限制算子是自伴的,其谱为 $n\hbar\omega$,其中 $n$ 取遍非负整数(见命题~\ref{prop:holomorphic-oscillator-spectrum}).最后,在第 23 章引入半形式后,我们将恢复第 11 章得到的谱 $(n+\tfrac12)\hbar\omega$,其中 $n=0,1,2,\ldots$.
+
+\begin{proof}
+令 $y=m\omega x$,则
+\[
+ H(x,p)=\frac{1}{2m}(p^2+y^2).
+\]
+与该 Hamiltonian 对应的流是在 $(y,p)$ 平面中的旋转.取辛势
+\[
+ \theta=\frac12(p\,dx-x\,dp)
+ =\frac{1}{2m\omega}(p\,dy-y\,dp),
+\]
+则 $\theta(X_H)$ 项与 $H$ 项抵消,从而
+\[
+ Q_{\mathrm{pre}}(H)=i\hbar X_H
+ =i\hbar\omega\left(y\frac{\partial}{\partial p}-p\frac{\partial}{\partial y}\right).
+\]
+若 $\phi$ 是 $(y,p)$ 平面极坐标中的角变量,则
+$y\,\partial/\partial p-p\,\partial/\partial y=\partial/\partial\phi$.因此可以取形如
+\[
+ \psi_n(r,\phi)=f(r)e^{-in\phi}
+\]
+的特征向量,其中 $n$ 为整数,且 $f$ 是任意满足
+$\int_0^\infty |f(r)|^2r\,dr<\infty$ 的函数.由此
+$Q_{\mathrm{pre}}(H)\psi_n=n\hbar\omega\psi_n$.
+\end{proof}
+
+因此,预量子化不适合作为物理上的量子化方案.接下来我们转向一个更小的 Hilbert 空间,在这个空间上位置和动量算子的作用是不可约的.
+
+\section{量子化}
+\label{sec:geometric-quantization-euclidean-quantization}
+
+为了得到可以称为“量子化”而非“预量子化”的 $\mathbb R^{2n}$ Hilbert 空间,我们把自己限制在预量子 Hilbert 空间的一个子空间中.基本想法是只使用 $\mathbb R^{2n}$ 上一半的变量.例如,可以考虑只依赖位置变量、而与动量变量无关的函数.不过,通常意义下与 $p$ 无关的函数空间,即满足 $\psi(x,p)=\psi(x,p')$ 的函数空间,在规范变换(命题~\ref{prop:prequantum-gauge} 中的映射 $U_\gamma$)下并不不变.因此,与 $p$ 无关的规范不变表述应当是:$\psi$ 在 $p$ 方向的协变导数为零.同样,我们也可以考虑在另外 $n$ 个方向上协变导数为零的函数空间.
+
+\begin{definition}[位置、动量与全纯子空间]
+\label{def:quantum-polarizations-euclidean}
+固定一个辛势 $\theta$.位置子空间定义为 $C^\infty(\mathbb R^{2n})$ 中满足
+\[
+ \nabla_{\partial/\partial p_j}\psi=0
+\]
+(对每个 $j$)的函数所成的子空间.类似地,动量子空间由满足
+\[
+ \nabla_{\partial/\partial x^j}\psi=0
+\]
+(对每个 $j$)的函数组成.最后,取参数 $\alpha$ 的全纯子空间由满足
+\[
+ \nabla_{\partial/\partial\bar z_j}\psi=0
+\]
+(对每个 $j$)的函数组成,其中
+\[
+ z_j=x_j-i\alpha p_j,
+\]
+并且
+\[
+ \frac{\partial}{\partial z_j}
+ =\frac12\left(\frac{\partial}{\partial x_j}
+ +\frac{i}{\alpha}\frac{\partial}{\partial p_j}\right),
+ \qquad
+ \frac{\partial}{\partial\bar z_j}
+ =\frac12\left(\frac{\partial}{\partial x_j}
+ -\frac{i}{\alpha}\frac{\partial}{\partial p_j}\right).
+ \label{eq:holomorphic-coordinates}
+\]
+\end{definition}
+
+这里的 $\partial/\partial z_j$ 和 $\partial/\partial\bar z_j$ 只是把通常的 $\mathbb C^n$ 复导数算子写成 $x,p$ 变量的形式;我们通过映射 $(x,p)\mapsto x-i\alpha p$ 把 $\mathbb R^{2n}$ 认作 $\mathbb C^n$.
+
+当然,定义~\ref{def:quantum-polarizations-euclidean} 中各子空间的具体形式取决于辛势的选择.下面取方便的辛势 $\theta=p_jdx^j$.
+
+\begin{proposition}[三个子空间的具体形式]
+\label{prop:quantum-polarization-functions}
+取辛势 $\theta=p_jdx^j$.则位置、动量和全纯子空间分别如下.
+
+位置子空间由形如
+\[
+ \psi(x,p)=\phi(x)
+\]
+的光滑函数组成,其中 $\phi$ 是 $\mathbb R^n$ 上任意光滑函数.动量子空间由形如
+\[
+ \psi(x,p)=e^{ix\cdot p/\hbar}\phi(p)
+ \label{eq:momentum-polarized-function}
+\]
+的光滑函数组成,其中 $\phi$ 是 $\mathbb R^n$ 上任意光滑函数.全纯子空间由形如
+\[
+ \psi(x,p)=F(z_1,\ldots,z_n)e^{-\alpha|p|^2/(2\hbar)},
+ \qquad z_j=x_j-i\alpha p_j,
+ \label{eq:holomorphic-polarized-function}
+\]
+的函数组成,其中 $F$ 是 $\mathbb C^n$ 上任意全纯函数.
+\end{proposition}
+
+\begin{proof}
+由于 $\theta(\partial/\partial p_j)=0$,有
+$\nabla_{\partial/\partial p_j}=\partial/\partial p_j$,所以在 $p$ 方向协变常数的函数实际上就是与 $p$ 无关的函数.另一方面,$\theta(\partial/\partial x_j)=p_j$,故
+\[
+ \nabla_{\partial/\partial x_j}
+ =\frac{\partial}{\partial x_j}-\frac{i}{\hbar}p_j.
+\]
+任意 $\mathbb R^{2n}$ 上的函数都可以写成
+$\psi(x,p)=e^{ix\cdot p/\hbar}\phi(x,p)$.将此形式代入
+$\nabla_{\partial/\partial x_j}\psi$ 时,指数因子产生的项恰好抵消,得到
+\[
+ \left(\nabla_{\partial/\partial x_j}\psi\right)(x,p)
+ =e^{ix\cdot p/\hbar}\frac{\partial\phi}{\partial x_j}(x,p).
+\]
+因此,所有 $x$ 方向协变导数均为零,当且仅当 $\phi$ 与 $x$ 无关,这就给出了动量子空间的形式.
+
+最后,注意到 $\theta(\partial/\partial\bar z_j)=p_j/2$,因此
+\[
+ \nabla_{\partial/\partial\bar z_j}
+ =\frac{\partial}{\partial\bar z_j}-\frac{i}{2\hbar}p_j.
+\]
+任意函数都可以写成
+\[
+ \psi(x,p)=e^{-\alpha|p|^2/(2\hbar)}F(x,p).
+\]
+由
+\[
+ e^{-\alpha|p|^2/(2\hbar)}
+ =\exp\left(\sum_j\frac{(\bar z_j-z_j)^2}{8\alpha\hbar}\right)
+\]
+可得
+\[
+ \frac{\partial}{\partial\bar z_j}e^{-\alpha|p|^2/(2\hbar)}
+ =\frac{\bar z_j-z_j}{4\alpha\hbar}e^{-\alpha|p|^2/(2\hbar)}
+ =\frac{i}{2\hbar}p_j e^{-\alpha|p|^2/(2\hbar)}.
+\]
+于是
+\[
+ \left(\nabla_{\partial/\partial\bar z_j}\psi\right)(x,p)
+ =e^{-\alpha|p|^2/(2\hbar)}
+ \frac{\partial F}{\partial\bar z_j}(x,p).
+\]
+因此,全体协变导数为零,当且仅当 $F$ 是变量 $z_j$ 的全纯函数.
+\end{proof}
+
+从物理观点看,我们需要的不是单纯的函数向量空间,而是 Hilbert 空间.因此,要考察命题~\ref{prop:quantum-polarization-functions} 中所给形式且属于 $L^2(\mathbb R^{2n})$ 的函数.对位置和动量子空间会遇到一个严重问题:没有非零的此类函数在 $\mathbb R^{2n}$ 上平方可积.事实上,若 $\psi$ 属于位置子空间,则 $\psi(x,p)$ 与 $p$ 无关;除非 $\psi$ 几乎处处为零,否则对 $p$ 变量的 $|\psi|^2$ 积分必为无穷大.动量子空间的情形同理,因为 $|\psi|^2$ 与 $x$ 无关.
+
+解决方法不是在 $\mathbb R^{2n}$ 上积分,而是在 $\mathbb R^n$ 上积分.严格地说,要正确地完成这种积分改变,应当引入第 23 章中的“半形式”概念;本章暂时采用如下简单规则:只对 $|\psi|$ 所依赖的变量积分.若要得到 Hilbert 空间而不只是内积空间,还必须允许指定形式的函数平方可积但不一定光滑.因此,位置和动量 Hilbert 空间可以如下确定.
+
+\begin{conclusion}
+\label{con:position-momentum-hilbert-spaces}
+位置 Hilbert 空间是 $\mathbb R^{2n}$ 上形如
+\[
+ \psi(x,p)=\phi(x),
+\]
+的函数所成的空间,其中 $\phi\in L^2(\mathbb R^n)$.此类函数的范数定义为
+\[
+ \|\psi\|^2=\int_{\mathbb R^n}|\phi(x)|^2\,dx.
+\]
+
+动量 Hilbert 空间是 $\mathbb R^{2n}$ 上形如
+\[
+ \psi(x,p)=e^{ix\cdot p/\hbar}\phi(p),
+\]
+的函数所成的空间,其中 $\phi\in L^2(\mathbb R^n)$.此类函数的范数定义为
+\[
+ \|\psi\|^2=\int_{\mathbb R^n}|\phi(p)|^2\,dp.
+\]
+\end{conclusion}
+
+全纯子空间的表现更好:存在非零的形如~\eqref{eq:holomorphic-polarized-function} 且在 $\mathbb R^{2n}$ 上平方可积的函数,稍后即将看到.此外,这些在 $\mathbb R^{2n}$ 上平方可积的函数构成 $L^2(\mathbb R^{2n})$ 的闭子空间,其证明与命题~\ref{prop:segal-bargmann-complete} 的证明相同.
+
+\begin{conclusion}
+\label{con:holomorphic-hilbert-space}
+全纯 Hilbert 空间由形如~\eqref{eq:holomorphic-polarized-function} 且在 $\mathbb R^{2n}$ 上平方可积的函数 $\psi$ 组成.若把 $\psi$ 与式~\eqref{eq:holomorphic-polarized-function} 中的全纯函数 $F$ 对应,则这个 Hilbert 空间可认作带权空间 $\mathcal H L^2(\mathbb C^n,\nu)$,其中
+\[
+ \nu(z)=e^{-|\operatorname{Im}z|^2/(\alpha\hbar)}.
+\]
+\end{conclusion}
+
+空间 $\mathcal H L^2(\mathbb C^n,\nu)$ 正是 Segal--Bargmann 空间(定义~\ref{def:segal-bargmann-space})的一个不变形式;这里“不变”是指密度 $\nu$ 在实方向平移下不变.它可以与通常的 Segal--Bargmann 空间 $\mathcal H L^2(\mathbb C^n,\mu_{2\alpha\hbar})$ 作如下酉等价.定义
+\[
+ \Psi:\mathcal H L^2(\mathbb C^n,\mu_{2\alpha\hbar})\longrightarrow
+ \mathcal H L^2(\mathbb C^n,\nu)
+\]
+为
+\[
+ \Psi(F)(z)=(2\pi\alpha\hbar)^{-n/2}
+ e^{-z^2/(4\alpha\hbar)}F(z),
+ \qquad z^2=z_1^2+\cdots+z_n^2.
+ \label{eq:invariant-segal-bargmann-map}
+\]
+直接计算可得
+\[
+ \|\Psi(F)\|_{\mathcal H L^2(\mathbb C^n,\nu)}^2
+ =\int_{\mathbb C^n}|F(z)|^2\,d\mu_{2\alpha\hbar}(z).
+\]
+由于 $e^{-z^2/(4\alpha\hbar)}$ 作为 $z$ 的函数也是全纯的,$\Psi$ 把 $\mathcal H L^2(\mathbb C^n,\mu_{2\alpha\hbar})$ 等距地映入 $\mathcal H L^2(\mathbb C^n,\nu)$.其逆映射由乘以 $(2\pi\alpha\hbar)^{n/2}e^{z^2/(4\alpha\hbar)}$ 给出,所以 $\Psi$ 实际上是酉映射.特别地,$\mathbb C^n$ 上存在许多属于 $\mathcal H L^2(\mathbb C^n,\nu)$ 的非零全纯函数.
+
+我们可以把结论~\ref{con:position-momentum-hilbert-spaces} 和~\ref{con:holomorphic-hilbert-space} 中的任一 Hilbert 空间作为量子 Hilbert 空间.它们应与预量子 Hilbert 空间 $L^2(\mathbb R^{2n})$ 比较:后者在某种意义上更“大”,因为其中的函数依赖两倍数量的变量.注意,量子 Hilbert 空间有多种可能.要从预量子 Hilbert 空间约化到量子 Hilbert 空间,必须选定 $n$ 个变量,并考察只依赖这些变量的函数.当然,量子 Hilbert 空间还有许多其他可能性;这里只讨论了最常见的几种.一般理论留待第 23 章.
+
+读者可能会问,为什么采用 $z_j=x_j-i\alpha p_j$($\alpha>0$),而不是 $z_j=x_j+i\alpha p_j$.如果对 $z_j=x_j+i\alpha p_j$ 重复上述计算,并相应改变 $\partial/\partial\bar z_j$ 的定义,就会发现 $\psi$ 满足所有 $\nabla_{\partial/\partial\bar z_j}\psi=0$,当且仅当
+\[
+ \psi(x,p)=F(z_1,\ldots,z_n)e^{\alpha|p|^2/(2\hbar)},
+ \label{eq:opposite-holomorphic-polarization}
+\]
+其中 $F$ 在 $\mathbb C^n$ 上全纯.指数中的符号从式~\eqref{eq:holomorphic-polarized-function} 到式~\eqref{eq:opposite-holomorphic-polarization} 的改变会产生剧烈影响:不存在非零全纯函数 $F$ 使式~\eqref{eq:opposite-holomorphic-polarization} 中的 $\psi$ 在 $\mathbb R^{2n}$ 上平方可积(见练习~\ref{ex:opposite-holomorphic-l2}).与位置、动量 Hilbert 空间不同,这里没有自然的方法改变积分区域来使这种形式的函数具有有限范数.
+
+因此,$z_j=x_j-i\alpha p_j$ 与 $z_j=x_j+i\alpha p_j$ 之间存在本质差异.在几何量子化的一般框架中也有类似区别:满足某种正性条件的复结构表现良好,而“相反”的复结构则表现很差(见第 23.4 节定义~\ref{def:kahler-polarization}).
+
+\section{可观测量的量子化}
+\label{sec:quantization-of-observables-euclidean}
+
+既然已经构造了量子 Hilbert 空间(而不是预量子 Hilbert 空间),现在就需要在这些空间上构造算子.按照几何量子化的标准方案,与函数 $f$ 对应的量子算子应当只是预量子算子 $Q_{\mathrm{pre}}(f)$ 在量子 Hilbert 空间上的限制,前提是 $Q_{\mathrm{pre}}(f)$ 保持该量子 Hilbert 空间不变.
+
+\begin{proposition}[位置、动量与全纯子空间的不变性]
+\label{prop:quantum-position-momentum-operators}
+定义~\ref{def:quantum-polarizations-euclidean} 中的位置、动量和全纯子空间都在预量子算子 $Q_{\mathrm{pre}}(x_j)$ 与 $Q_{\mathrm{pre}}(p_j)$ 下不变.具体地,在位置子空间中,
+\[
+ Q_{\mathrm{pre}}(x_j)\phi(x)=x_j\phi(x),
+ \qquad
+ Q_{\mathrm{pre}}(p_j)\phi(x)=-i\hbar\frac{\partial\phi}{\partial x_j};
+\]
+在动量子空间中,
+\[
+ \begin{aligned}
+ Q_{\mathrm{pre}}(x_j)(e^{ix\cdot p/\hbar}\phi(p))
+ &=e^{ix\cdot p/\hbar}\,i\hbar\frac{\partial\phi}{\partial p_j}(p),\\
+ Q_{\mathrm{pre}}(p_j)(e^{ix\cdot p/\hbar}\phi(p))
+ &=e^{ix\cdot p/\hbar}\,p_j\phi(p);
+ \end{aligned}
+\]
+在全纯子空间中,
+\[
+ \begin{aligned}
+ Q_{\mathrm{pre}}(x_j)(F(z)e^{-\alpha|p|^2/(2\hbar)})
+ &=\left(\alpha\hbar\frac{\partial F}{\partial z_j}+z_jF(z)\right)e^{-\alpha|p|^2/(2\hbar)},\\
+ Q_{\mathrm{pre}}(p_j)(F(z)e^{-\alpha|p|^2/(2\hbar)})
+ &=-i\hbar\frac{\partial F}{\partial z_j}e^{-\alpha|p|^2/(2\hbar)}.
+ \end{aligned}
+\]
+\end{proposition}
+
+\begin{proof}[证明]
+见练习~\ref{ex:prove-prequantum-polarized-operators}.
+\end{proof}
+
+三个子空间在预量子位置、动量算子下保持不变,是几何量子化中的一个一般事实:对实值函数 $f$,预量子算子 $Q_{\mathrm{pre}}(f)$ 保持给定量子空间不变,当且仅当由 $f$ 生成的 Hamilton 流保持定义该量子空间的极化不变.“极化”一词指量子空间元素在其中协变常数的那些方向.在位置、动量和全纯空间的情形,这些方向在每一点都相同,也就是说极化在平移下不变.而 $x_j$ 与 $p_j$ 生成的 Hamilton 流,恰好分别是沿 $-p_j$ 方向和沿 $x_j$ 方向的平移.当然,在这个简单例子中也可以直接计算不变性;这同时给出各子空间上算子的具体形式.
+
+还应注意,在每种情形中,“首选”的函数都作为乘法算子简单作用.例如在位置子空间中,位置算子 $Q_{\mathrm{pre}}(x_j)$ 就是乘以 $x_j$;而在动量子空间中,$Q_{\mathrm{pre}}(p_j)$ 就是乘以 $p_j$.最后,在全纯子空间中,由于涉及 $\partial F/\partial z_j$ 的项会抵消,有
+\[
+ Q_{\mathrm{pre}}(z_j)\left(F(z)e^{-\alpha|p|^2/(2\hbar)}\right)
+ =(z_jF(z))e^{-\alpha|p|^2/(2\hbar)},
+ \qquad z_j=x_j-i\alpha p_j.
+\]
+
+现在聚焦于位置 Hilbert 空间,考察哪些形如 $Q_{\mathrm{pre}}(f)$ 的算子保持位置子空间不变.
+
+\begin{proposition}[位置子空间中的可量子化函数]
+\label{prop:position-polarization-affine-momentum}
+若函数具有形式
+\[
+ f(x,p)=a(x)+b_j(x)p_j,
+ \label{eq:position-polarization-observable}
+\]
+其中 $a,b_1,\ldots,b_n$ 是 $\mathbb R^n$ 上的光滑函数,则位置子空间在 $Q_{\mathrm{pre}}(f)$ 下不变.另一方面,位置子空间在算子 $Q_{\mathrm{pre}}(p_j^2)$ 下不变.
+\end{proposition}
+
+\begin{proof}
+若 $f$ 具有式~\eqref{eq:position-polarization-observable} 的形式,直接计算可得
+$\theta(X_f)+f=a(x)$.在位置子空间上,$X_f$ 中涉及 $\partial/\partial p_j$ 的项作用为零,因此保留下来的部分给出
+\[
+ Q_{\mathrm{pre}}(f)(\phi(x))
+ =-i\hbar b_j(x)\frac{\partial\phi}{\partial x_j}+a(x)\phi(x).
+ \label{eq:position-polarization-restriction}
+\]
+这仍属于位置子空间.式~\eqref{eq:position-polarization-restriction} 中 $\partial/\partial x_j$ 的系数不依赖 $p$,因为 $\partial f/\partial p_j$ 与 $p$ 无关.另一方面,直接计算表明,$Q_{\mathrm{pre}}(p_j^2)$ 在位置子空间上的作用为
+\[
+ -2i\hbar p_j\frac{\partial}{\partial x_j}-p_j^2,
+\]
+它不保持与 $p$ 无关的函数空间.
+\end{proof}
+
+应当指出,式~\eqref{eq:position-polarization-restriction} 右端未必是 $L^2(\mathbb R^n)$ 上的自伴算子,甚至未必是对称算子,除非向量场 $b(x)$ 恰好散度为零.(虽然 $X_f$ 在 $\mathbb R^{2n}$ 上散度为零,但 $X_f$ 对与 $p$ 无关函数的作用,在 $\mathbb R^n$ 上未必给出散度为零的向量场.)这一不理想特征源自我们在推导结论~\ref{con:position-momentum-hilbert-spaces} 时,把 $L^2(\mathbb R^{2n})$ 简单约化到 $L^2(\mathbb R^n)$ 的方法.使用半形式正确地完成约化后,将得到自伴算子;见第 23.6 节.
+
+现在考察全纯子空间在预量子位置、动量算子下的行为.
+
+\begin{proposition}[全纯量子空间]
+\label{prop:holomorphic-quantum-space}
+对任意 $\alpha>0$,令 $\mathcal H_\alpha$ 为 $L^2(\mathbb R^{2n})$ 中满足
+$\nabla_{\partial/\partial\bar z_j}\psi=0$ 的光滑函数所成的子空间,其中 $\partial/\partial\bar z_j$ 如式~\eqref{eq:holomorphic-coordinates} 所示.则 $\mathcal H_\alpha$ 是 $L^2(\mathbb R^{2n})$ 的闭子空间,并且在由 $Q_{\mathrm{pre}}(x_j)$ 与 $Q_{\mathrm{pre}}(p_j)$ 生成的一参数酉群下不变.此外,按照定义~\ref{def:irreducible-exponentiated-action} 的意义,$Q_{\mathrm{pre}}(x_j)$ 与 $Q_{\mathrm{pre}}(p_j)$ 在 $\mathcal H_\alpha$ 上的作用不可约.
+\end{proposition}
+
+对每个 $\alpha>0$,全纯 Hilbert 空间都是预量子 Hilbert 空间的一个子空间,并且在指数化的位置、动量算子下不变.因此,预量子 Hilbert 空间在这些算子作用下远非不可约.
+
+\begin{proof}
+$\mathcal H_\alpha$ 的不变性是一个直接计算(见练习~\ref{ex:holomorphic-subspace-invariance}).不可约性可以归结为第 14 章定理~\ref{thm:segal-translation} 中 Segal--Bargmann 空间在算子 $T_a$ 下的不可约性.为此,需要验证式~\eqref{eq:invariant-segal-bargmann-map} 中的酉映射 $\Psi$,把 $Q_{\mathrm{pre}}(x_j)$ 与 $Q_{\mathrm{pre}}(p_j)$ 的指数乘积交织为 $T_a$ 型的算子(其中将 $\hbar$ 换成 $2\alpha\hbar$).这是直接但繁琐的计算,细节从略.
+\end{proof}
+
+最后给出一个量子子空间在(预)量子化谐振子 Hamiltonian 下不变的例子.
+
+\begin{proposition}[全纯谐振子的谱]
+\label{prop:holomorphic-oscillator-spectrum}
+考虑 Hamiltonian
+\[
+ H=\frac{1}{2m}\left(p^2+(m\omega x)^2\right).
+\]
+再考虑命题~\ref{prop:holomorphic-quantum-space} 中的子空间 $\mathcal H_\alpha$,其中 $\alpha=1/(m\omega)$.则算子 $Q_{\mathrm{pre}}(H)$ 保持 $\mathcal H_\alpha$ 不变.此外,$Q_{\mathrm{pre}}(H)$ 在 $\mathcal H_\alpha$ 上的限制具有非负谱,且谱由 $n\hbar\omega$ 形式的特征值组成,其中 $n$ 取遍非负整数.
+\end{proposition}
+
+命题~\ref{prop:holomorphic-oscillator-spectrum} 对非负函数 $H$ 的量子化,比在整个预量子 Hilbert 空间上得到的结果物理上合理得多;在那里,命题~\ref{prop:prequantum-harmonic-oscillator} 表明 $Q_{\mathrm{pre}}(H)$ 的谱甚至没有下界.当我们在第 23.7 节引入“半形式修正”后,才能最终得到正确的量子谐振子谱 $(n+\tfrac12)\hbar\omega$,其中 $n=0,1,2,\ldots$(见例~\ref{ex:half-form-harmonic-oscillator}).
+
+\begin{proof}
+像命题~\ref{prop:prequantum-harmonic-oscillator} 的证明一样,令 $y=m\omega x$.当 $\alpha=1/(m\omega)$ 时,
+\[
+ z=\frac{y-ip}{m\omega}.
+\]
+取辛势
+\[
+ \theta=\frac12(p\,dx-x\,dp)
+ =\frac{1}{2m\omega}(p\,dy-y\,dp).
+\]
+于是
+\[
+ \theta\left(\frac{\partial}{\partial\bar z}\right)
+ =\frac12\left(p+\frac{i}{\alpha}x\right)
+ =\frac{i}{2\alpha}z,
+\]
+从而
+\[
+ \nabla_{\partial/\partial\bar z}
+ =\frac{\partial}{\partial\bar z}+\frac{z}{2\alpha\hbar}.
+\]
+由此容易检查,全纯子空间由形如
+\[
+ F(z)e^{-|z|^2/(2\alpha\hbar)}
+ =F(z)\exp\left(-\frac{y^2+p^2}{2m\omega\hbar}\right),
+ \label{eq:holomorphic-oscillator-functions}
+\]
+的函数组成,其中 $F$ 全纯.
+
+另一方面,像命题~\ref{prop:prequantum-harmonic-oscillator} 的证明一样,有
+\[
+ Q_{\mathrm{pre}}(H)=i\hbar\omega
+ \left(y\frac{\partial}{\partial p}-p\frac{\partial}{\partial y}\right),
+\]
+这正是 $(y,p)$ 平面中的角向导数.式~\eqref{eq:holomorphic-oscillator-functions} 中的指数因子具有旋转不变性,所以 $Q_{\mathrm{pre}}(H)$ 只作用于 $F$.又因为
+\[
+ \begin{aligned}
+ \left(y\frac{\partial}{\partial p}-p\frac{\partial}{\partial y}\right)
+ F\left(\frac{y-ip}{m\omega}\right)
+ &=-i\frac{y-ip}{m\omega}\frac{dF}{dz}\\
+ &=-iz\frac{dF}{dz},
+ \end{aligned}
+\]
+故
+\[
+ Q_{\mathrm{pre}}(H)\left(F(z)e^{-|z|^2/(2\alpha\hbar)}\right)
+ =\hbar\omega z\frac{dF}{dz}e^{-|z|^2/(2\alpha\hbar)},
+\]
+这仍属于全纯子空间.
+
+最后,与命题~\ref{prop:segal-bargmann-complete} 一样,$z^n$($n=0,1,2,\ldots$)构成 $\mathcal H_\alpha$ 的正交基.每个单项式 $z^n$ 都是算子 $z\,d/dz$ 的特征向量,对应特征值 $n$.这就证明了 $Q_{\mathrm{pre}}(H)$ 在 $\mathcal H_\alpha$ 上的限制的谱结论.
+
+全纯 Hilbert 空间上的算子 $F\mapsto\hbar\omega z\,dF/dz$ 是自伴的,与式~\eqref{eq:position-polarization-restriction} 中位置情形的算子不同.事实上,这里的自伴性是“自动”的,因为全纯 Hilbert 空间是预量子 Hilbert 空间的子空间,而自伴算子在不变子空间上的限制仍为自伴.
+\end{proof}
+
+\section{练习}
+\label{sec:geometric-quantization-euclidean-exercises}
+
+\begin{exercise}[散度与反自伴性]\label{ex:divergence-skew-adjoint}
+考虑 $\mathbb R^{2n}$ 上的向量场
+\[
+ X=a_j(x)\frac{\partial}{\partial x_j},
+\]
+其中 $a_j$ 是光滑实值函数.证明:$X$ 在 $C_c^\infty(\mathbb R^N)$ 上反自伴,当且仅当 $X$ 的散度(即 $\partial a_j/\partial x_j$)恒等于零.
+\end{exercise}
+
+\begin{exercise}[预量子化的非乘法性]\label{ex:prequantum-nonmultiplicative}
+取辛势 $\theta=p\,dx$,计算 $Q_{\mathrm{pre}}(xp^2)$.证明 $Q_{\mathrm{pre}}(xp^2)$ 不属于由 $Q_{\mathrm{pre}}(x)$ 和 $Q_{\mathrm{pre}}(p)$ 生成的算子代数.
+
+提示:考察 $Q_{\mathrm{pre}}(xp^2)$ 对与 $p$ 无关函数的作用.
+\end{exercise}
+
+\begin{exercise}[全纯函数的可积性]\label{ex:opposite-holomorphic-l2}
+\begin{enumerate}
+\item 设 $F$ 是 $\mathbb C$ 上的全纯函数,并满足
+\[
+ \int_{\mathbb C}|F(z)|^2\,dz<\infty,
+\]
+其中 $dz$ 表示 $\mathbb C\cong\mathbb R^2$ 上的二维 Lebesgue 测度.证明 $F$ 恒等于零.
+
+提示:若 $F$ 不恒等于零,利用幂级数展开证明 $F$ 在半径为 $R$ 的圆盘上的 $L^2$ 范数随 $R\to\infty$ 趋于无穷.
+\item 证明:若式~\eqref{eq:opposite-holomorphic-polarization} 形式的函数在 $\mathbb R^{2n}$ 上平方可积,且 $F$ 在 $\mathbb C^n$ 上全纯,则 $F$ 必须恒等于零.
+\end{enumerate}
+\end{exercise}
+
+\begin{exercise}[证明三个子空间上的算子公式]\label{ex:prove-prequantum-polarized-operators}
+利用例~\ref{ex:prequantum-position-momentum} 中 $Q_{\mathrm{pre}}(x_j)$ 和 $Q_{\mathrm{pre}}(p_j)$ 的显式形式,证明命题~\ref{prop:quantum-position-momentum-operators}.
+
+提示:在全纯子空间的情形中,用式~\eqref{eq:holomorphic-coordinates} 把 $\partial/\partial x_j$ 与 $\partial/\partial p_j$ 表示为 $\partial/\partial z_j$ 与 $\partial/\partial\bar z_j$ 的组合.
+\end{exercise}
+
+\begin{exercise}[全纯子空间在指数算子下的不变性]\label{ex:holomorphic-subspace-invariance}
+证明:当 $F$ 是 $\mathbb C^n$ 上的全纯函数时,式~\eqref{eq:holomorphic-polarized-function} 形式的函数空间在式~\eqref{eq:prequantum-unitary-groups} 中计算出的算子 $e^{itQ_{\mathrm{pre}}(x_j)}$ 和 $e^{itQ_{\mathrm{pre}}(p_j)}$ 下不变;这里 $t\in\mathbb R$,$j=1,2,\ldots,n$.
+\end{exercise}

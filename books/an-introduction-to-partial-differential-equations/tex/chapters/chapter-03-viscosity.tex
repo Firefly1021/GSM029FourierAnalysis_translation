@@ -1,0 +1,62 @@
+\subsubsection{黏性解}\label{subsec:viscosity-solutions}
+
+另一条重要的选择准则 (其物理意义也许更容易理解) 是要求只接受\emph{黏性解}.
+
+\begin{Definition}
+\label{def:viscosity-solution}
+若 $\bm{u}$ 可由抛物型微分方程组的解取极限
+\begin{equation}\label{eq:vanishing-viscosity-solution-definition}
+\bm{u}=\lim_{\epsilon\to0^+}\bm{u}^\epsilon
+\end{equation}
+得到, 其中方程组为
+\begin{equation}\label{eq:viscous-conservation-law}
+\bm{u}_t^\epsilon+\bm{f}(\bm{u}^\epsilon)_x=\epsilon\bm{A}\bm{u}_{xx}^\epsilon.
+\end{equation}
+且 $\bm{A}$ 为某个正定矩阵, 则称 $\bm{u}$ 为 \eqref{eq:conservation-law-system} 的\textbf{黏性解}.
+\end{Definition}
+
+\begin{Remark}
+\label{rem:viscosity-limit-sense}
+读者想必想知道, \eqref{eq:vanishing-viscosity-solution-definition} 中的极限是在何种意义下达到的. 暂且还不告诉你. (好吧, 如果一定要知道, 它是 $L^\infty$ 中的弱星极限, 但这一术语要到后面的章节才解释.) 这里只需说明: 若 $\bm{u}$ 为含有单个激波的分片 $C^1$ 解, 则在任意包含该激波的邻域之外, 收敛都是一致的.
+\end{Remark}
+
+选择这一准则的依据是, 大多数守恒律 (这里首先想到的仍是气体动力学方程组) 只是物理系统的近似数学模型; 而"真实的"物理系统具有某些诸如黏性的耗散效应, 由 \eqref{eq:viscous-conservation-law} 中的 $\bm{A}\bm{u}_{xx}$ 项来描述. 当然, 马上就会产生一个问题: "如果 \eqref{eq:viscous-conservation-law} 是更好的模型, 为什么还花这么多时间求解近似守恒律 \eqref{eq:conservation-law-system}?" 对这个问题有几种不同的回答.
+
+\begin{enumerate}
+\item 耗散项所体现的黏性效应通常很小, 因而难以测量. 所以, 不容易以任何精度确定 $\bm{A}$ 或 $\epsilon$.
+\item 在 \eqref{eq:viscous-conservation-law} 的数值实现中, 小的耗散项通常无助于数值算法的稳定.
+\item 已有相当高效且准确的数值方法计算 \eqref{eq:conservation-law-system} 的解, 也有确定简单不连续解的解析方法.
+\end{enumerate}
+
+即使接受应继续研究双曲守恒律而非抛物型方程组这一想法, 关于黏性解仍有几个问题尚未回答.
+\begin{enumerate}
+\item 黏性解是否不止一个? 更确切地说, 极限 $\bm{u}$ 如何依赖于矩阵 $\bm{A}$ 的选择?
+\item 黏性解与其他小的高阶效应在其强度趋于零时的极限之间有何关系? (例如, 三阶效应\emph{毛细作用}曾以类似于这里使用黏性的方式被采用.)
+\end{enumerate}
+简言之, 是否应质疑守恒律方程组应当具有唯一解这一观念? 目前的共识似乎是, 在大多数情形下, 物理要求唯一性.
+
+下一个定理涉及黏性解与满足熵条件的解之间的关系. 由于这里黏性解的定义具有模糊性, 无法给出严格证明, 但会提供一些形式上的论证.
+
+\begin{Theorem}
+\label{thm:viscosity-implies-entropy}
+对守恒律方程组 \eqref{eq:conservation-law-system}, 若存在熵/熵通量对 $(U,F)$, 且熵 $U$ 凸, 则任意黏性解也满足熵条件.
+\end{Theorem}
+
+\begin{Proof}
+这里给出的是合理性论证, 而非证明. 虽然没有分布理论与 $L^p$ 空间的工具就无法使这里的论证严格化, 但它们应能让读者了解这一定理为何成立. 事实上, 非常熟悉上述较高深主题的读者, 可能会认为这些论证已经足够严格. 为清楚起见, 只考虑 $\bm{A}=\bm{I}$ 的情形; 推广到其他正定 $\bm{A}$ 是直接的.
+
+将 \eqref{eq:viscous-conservation-law} 乘以 $\nabla U$, 并利用 \eqref{eq:entropy-flux-pair-definition}, 得到
+\[
+\begin{aligned}
+U(\bm{u}^\epsilon)_t+F(\bm{u}^\epsilon)_x
+&=\nabla U\cdot\bm{u}_t^\epsilon+\nabla U^T\nabla\bm{f}\,\bm{u}_x^\epsilon\\
+&=\epsilon\nabla U\cdot\bm{u}_{xx}^\epsilon\\
+&=\epsilon(U_{xx}-(\bm{u}_x^\epsilon)^T\nabla^2U\bm{u}_x^\epsilon)
+\end{aligned}
+\]
+利用 $U$ 的凸性 (它蕴含 Hessian 矩阵 $\nabla^2U$ 的正定性), 得到
+\begin{equation}\label{eq:viscous-entropy-differential-inequality}
+U_t+F_x\leq\epsilon U_{xx}.
+\end{equation}
+当 $\epsilon\to0$ 时, 右端在分布意义下趋于 $0$, 因而得到 \eqref{eq:entropy-distribution-inequality}.
+\end{Proof}

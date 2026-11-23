@@ -1,0 +1,414 @@
+\begin{note}[系统矩阵的分解与 Schur 补矩阵]
+\label{note:chapter9-schur-complement}
+在式\hyperref[eq:chapter9-coupled-system]{(9.1)}中令 $D=B^{\mathsf T}$、$C=0$.直接计算可得
+\begin{equation}\label{eq:chapter9-system-factorization}
+\begin{pmatrix}A&B^{\mathsf T}\\B&0\end{pmatrix}
+=
+\begin{pmatrix}I&0\\BA^{-1}&I\end{pmatrix}
+\begin{pmatrix}A&0\\0&-BA^{-1}B^{\mathsf T}\end{pmatrix}
+\begin{pmatrix}I&A^{-1}B^{\mathsf T}\\0&I\end{pmatrix}.
+\end{equation}
+矩阵
+\begin{equation}\label{eq:chapter9-schur-complement}
+S=-BA^{-1}B^{\mathsf T}
+\end{equation}
+称为 Schur 补矩阵(Schur complement matrix),也称压力 Schur 补矩阵.通常无法显式得到该矩阵;由于其中含有因子 $A^{-1}$,它一般也不是稀疏矩阵.
+\end{note}
+
+\index{Schur 补矩阵}
+\index{压力 Schur 补矩阵}
+
+\begin{example}[(压力耦合方程的半隐式方法 SIMPLE)]
+\label{ex:chapter9-simple}
+压力耦合方程的半隐式方法(semi-implicit method for pressure-linked equations,SIMPLE)是一种经典预条件子,由 \textcite{Patankar1980} 提出.其基本思路如下:
+\begin{itemize}
+  \item 假定已知压力的一个近似值,例如取自前一次迭代.
+  \item 随后由动量方程计算速度,见式\hyperref[eq:chapter9-simple-velocity]{(9.14)}.由于所用压力只是与新速度相对应压力的近似值,所得速度通常不满足离散连续性方程.
+  \item 最后修正速度和压力,使其满足离散连续性方程,见式\hyperref[eq:chapter9-simple-pressure]{(9.15)}和式\hyperref[eq:chapter9-simple-pressure-update]{(9.16)}.
+\end{itemize}
+
+从线性代数的角度看,SIMPLE 基于如下分解:
+\begin{equation}\label{eq:chapter9-simple-factorization}
+\begin{pmatrix}A&B^{\mathsf T}\\B&0\end{pmatrix}
+\begin{pmatrix}\bm u\\p\end{pmatrix}
+=
+\begin{pmatrix}A&0\\B&-BA^{-1}B^{\mathsf T}\end{pmatrix}
+\begin{pmatrix}I&A^{-1}B^{\mathsf T}\\0&I\end{pmatrix}
+\begin{pmatrix}\bm u\\p\end{pmatrix}
+=
+\begin{pmatrix}\bm f\\f_p\end{pmatrix}.
+\end{equation}
+这里将式\hyperref[eq:chapter9-system-factorization]{(9.8)}中的前两个因子相乘,所得分解具有块 LU 分解的形式.SIMPLE 方法采用近似
+\[
+ A^{-1}\approx (\operatorname{diag}(A))^{-1}=:A_{\mathrm{diag}}^{-1}.
+\]
+Schur 补矩阵的近似记为
+\begin{equation}\label{eq:chapter9-simple-schur}
+ S_d=-BA_{\mathrm{diag}}^{-1}B^{\mathsf T}.
+\end{equation}
+由于 $B^{\mathsf T}$ 表示离散梯度算子,而 $B$ 表示离散散度算子,因此 $S_d$ 可视为具有非恒定扩散系数的离散扩散算子;该扩散系数由 $A_{\mathrm{diag}}^{-1}$ 给出.于是,SIMPLE 的一次迭代求解下列系统:
+\begin{equation}\label{eq:chapter9-simple-approximate-system}
+\begin{pmatrix}A&0\\B&S_d\end{pmatrix}
+\begin{pmatrix}I&A_{\mathrm{diag}}^{-1}B^{\mathsf T}\\0&I\end{pmatrix}
+\begin{pmatrix}\bm u\\p\end{pmatrix}
+=
+\begin{pmatrix}\bm f\\f_p\end{pmatrix}.
+\end{equation}
+
+实际计算时,可以一步直接求出新的迭代值,也可以只求旧迭代值的更新量.下面介绍后一种形式.给定第 $m$ 次迭代值,设下一次迭代值为
+\begin{equation}\label{eq:chapter9-simple-update}
+\begin{pmatrix}\bm u^{(m+1)}\\p^{(m+1)}\end{pmatrix}
+=
+\begin{pmatrix}\bm u^{(m)}\\p^{(m)}\end{pmatrix}
++\Omega\begin{pmatrix}\delta\bm u\\\delta p\end{pmatrix},
+\end{equation}
+其中阻尼因子 $\Omega\in(0,1]$.将此设定代入式\hyperref[eq:chapter9-simple-factorization]{(9.10)},得到
+\[
+\begin{aligned}
+\Omega
+\begin{pmatrix}A&0\\B&-BA^{-1}B^{\mathsf T}\end{pmatrix}
+\begin{pmatrix}I&A^{-1}B^{\mathsf T}\\0&I\end{pmatrix}
+\begin{pmatrix}\delta\bm u\\\delta p\end{pmatrix}
+&=\begin{pmatrix}\bm f\\f_p\end{pmatrix}\\
+&-
+\begin{pmatrix}A&B^{\mathsf T}\\B&0\end{pmatrix}
+\begin{pmatrix}\bm u^{(m)}\\p^{(m)}\end{pmatrix}
+&=\begin{pmatrix}\bm r_u\\r_p\end{pmatrix}.
+\end{aligned}
+\]
+
+SIMPLE 按如下步骤进行:
+\begin{itemize}
+  \item 求解
+  \[
+  \begin{pmatrix}A&0\\B&S_d\end{pmatrix}
+  \begin{pmatrix}\delta\bm u^{\star}\\\delta p^{\star}\end{pmatrix}
+  =\begin{pmatrix}\bm r_u\\r_p\end{pmatrix}.
+  \]
+  也就是说,先求解
+  \begin{equation}\label{eq:chapter9-simple-velocity}
+   A\delta\bm u^{\star}=\bm r_u,
+  \end{equation}
+  再求解
+  \begin{equation}\label{eq:chapter9-simple-pressure}
+   S_d\delta p^{\star}=r_p-B\delta\bm u^{\star}.
+  \end{equation}
+  \item 求解
+  \[
+  \begin{pmatrix}I&A_{\mathrm{diag}}^{-1}B^{\mathsf T}\\0&I\end{pmatrix}
+  \begin{pmatrix}\delta\bm u\\\delta p\end{pmatrix}
+  =\begin{pmatrix}\delta\bm u^{\star}\\\delta p^{\star}\end{pmatrix}.
+  \]
+  这等价于先令
+  \begin{equation}\label{eq:chapter9-simple-pressure-update}
+   \delta p=\delta p^{\star},
+  \end{equation}
+  再令
+  \[
+   \delta\bm u=\delta\bm u^{\star}-A_{\mathrm{diag}}^{-1}B^{\mathsf T}\delta p.
+  \]
+  \item 由式\hyperref[eq:chapter9-simple-update]{(9.13)}计算新的迭代值.
+\end{itemize}
+
+SIMPLE 既可用作左预条件子,也可用作右预条件子.采用左预条件时,结合式\hyperref[eq:chapter9-simple-approximate-system]{(9.12)}可得
+\[
+\begin{aligned}
+&\left(
+ \begin{pmatrix}A&0\\B&S_d\end{pmatrix}
+ \begin{pmatrix}I&A_{\mathrm{diag}}^{-1}B^{\mathsf T}\\0&I\end{pmatrix}
+ \right)^{-1}
+ \begin{pmatrix}A&B^{\mathsf T}\\B&0\end{pmatrix}\\
+&=\begin{pmatrix}I&-A_{\mathrm{diag}}^{-1}B^{\mathsf T}\\0&I\end{pmatrix}
+  \begin{pmatrix}A^{-1}&0\\-S_d^{-1}BA^{-1}&S_d^{-1}\end{pmatrix}
+  \begin{pmatrix}A&B^{\mathsf T}\\B&0\end{pmatrix}\\
+&=\begin{pmatrix}
+ I&A^{-1}B^{\mathsf T}+A_{\mathrm{diag}}^{-1}B^{\mathsf T}S_d^{-1}BA^{-1}B^{\mathsf T}\\
+ 0&-S_d^{-1}BA^{-1}B^{\mathsf T}
+ \end{pmatrix}.
+\end{aligned}
+\]
+由于式\hyperref[eq:chapter9-simple-schur]{(9.11)}是对式\hyperref[eq:chapter9-schur-complement]{(9.9)}的近似,上式是单位矩阵的近似.类似地,采用 SIMPLE 作为右预条件子时有
+\[
+\begin{aligned}
+&\begin{pmatrix}A&B^{\mathsf T}\\B&0\end{pmatrix}
+ \left(
+ \begin{pmatrix}A&0\\B&S_d\end{pmatrix}
+ \begin{pmatrix}I&A_{\mathrm{diag}}^{-1}B^{\mathsf T}\\0&I\end{pmatrix}
+ \right)^{-1}\\
+&=\begin{pmatrix}A&B^{\mathsf T}\\B&0\end{pmatrix}
+  \begin{pmatrix}I&-A_{\mathrm{diag}}^{-1}B^{\mathsf T}\\0&I\end{pmatrix}
+  \begin{pmatrix}A^{-1}&0\\-S_d^{-1}BA^{-1}&S_d^{-1}\end{pmatrix}\\
+&=\begin{pmatrix}
+ I+AA_{\mathrm{diag}}^{-1}B^{\mathsf T}S_d^{-1}BA^{-1}-B^{\mathsf T}S_d^{-1}BA^{-1}
+ &-AA_{\mathrm{diag}}^{-1}B^{\mathsf T}S_d^{-1}+B^{\mathsf T}S_d^{-1}\\
+ 0&I
+ \end{pmatrix}.
+\end{aligned}
+\]
+若 $A_{\mathrm{diag}}^{-1}$ 是 $A^{-1}$ 的良好近似,则上式同样近似于单位矩阵.
+\end{example}
+
+\index{SIMPLE}
+\index{预条件子!SIMPLE}
+
+\begin{note}[关于 SIMPLE]
+\label{note:chapter9-simple-comments}
+SIMPLE 易于实现,因此颇具吸引力.它利用已经组装好的矩阵块,只需计算式\hyperref[eq:chapter9-simple-schur]{(9.11)}给出的 Schur 补矩阵近似 $S_d$.这个矩阵会耦合压力自由度;而这些自由度在有限元扩散算子的离散中通常彼此并不耦合.尽管如此,$S_d$ 仍是稀疏矩阵.
+
+SIMPLE 的效率取决于 $A_{\mathrm{diag}}^{-1}$ 对 $A^{-1}$ 的近似程度.已有研究表明,对于对流占优问题,该方法效率较低,因为 $A$ 的对角线并未包含足够的对流项信息(见\textcite{Elman2008b}).此外,网格加密后迭代次数也可能增加,例如见\textcite{SchoenKnecht2015}.
+\end{note}
+
+\index{SIMPLE!数值表现}
+
+\begin{example}[(最小二乘交换子(LSC)预条件子)]
+\label{ex:chapter9-lsc-preconditioner}
+SIMPLE 效率不高的原因在于:对于对流占优问题,式\hyperref[eq:chapter9-simple-schur]{(9.11)}对 Schur 补矩阵的近似通常较差.\textcite{Elman2006} 提出了一种包含对流信息的预条件子,称为最小二乘交换子(least-squares commutator,LSC)预条件子.
+
+推导从将式\hyperref[eq:chapter9-system-factorization]{(9.8)}中的第二、第三个因子相乘开始:
+\[
+\begin{pmatrix}A&B^{\mathsf T}\\B&0\end{pmatrix}
+=\begin{pmatrix}I&0\\BA^{-1}&I\end{pmatrix}
+ \begin{pmatrix}A&B^{\mathsf T}\\0&S\end{pmatrix}.
+\]
+对右侧最后一个矩阵取逆,可得
+\begin{equation}\label{eq:chapter9-lsc-factorization}
+\begin{pmatrix}A&B^{\mathsf T}\\B&0\end{pmatrix}
+\begin{pmatrix}A&B^{\mathsf T}\\0&S\end{pmatrix}^{-1}
+=\begin{pmatrix}I&0\\BA^{-1}&I\end{pmatrix}^{-1}
+=\begin{pmatrix}I&0\\-BA^{-1}&I\end{pmatrix}.
+\end{equation}
+由此可见,矩阵
+\begin{equation}\label{eq:chapter9-lsc-preconditioner-form}
+\begin{pmatrix}A&B^{\mathsf T}\\0&S\end{pmatrix}^{-1}
+\end{equation}
+可能是一个良好的右预条件子,因为式\hyperref[eq:chapter9-lsc-factorization]{(9.17)}右端是下三角矩阵.要应用该预条件子的近似形式,必须先近似 Schur 补矩阵 $S$.
+
+Schur 补近似通过构造下列近似得到:
+\begin{equation}\label{eq:chapter9-lsc-commutator}
+A\bigl(D_{\mathrm{lsc}}^{-1}B^{\mathsf T}\bigr)\approx B^{\mathsf T}A_{\mathrm{pres}},
+\end{equation}
+其中 $A_{\mathrm{pres}}$ 表示压力对流扩散算子的离散矩阵,$D_{\mathrm{lsc}}$ 是对角元为正的对角缩放矩阵.暂且令 $D_{\mathrm{lsc}}=I$,则式\hyperref[eq:chapter9-lsc-commutator]{(9.19)}左侧表示速度对流扩散算子作用于离散梯度,右侧表示离散梯度作用于压力对流扩散算子;可参见\textcite[第 9.2.3 节]{Elman2014}.若式\hyperref[eq:chapter9-lsc-commutator]{(9.19)}取等号,对流扩散算子与梯度算子便可交换.
+
+将式\hyperref[eq:chapter9-lsc-commutator]{(9.19)}左乘 $-BA^{-1}$、右乘 $A_{\mathrm{pres}}^{-1}$,并结合式\hyperref[eq:chapter9-schur-complement]{(9.9)},得到
+\begin{equation}\label{eq:chapter9-lsc-schur-first}
+S=-BA^{-1}B^{\mathsf T}\approx
+-BD_{\mathrm{lsc}}^{-1}B^{\mathsf T}A_{\mathrm{pres}}^{-1}
+=:S_{\mathrm{lsc}}.
+\end{equation}
+
+现在逐列最小化式\hyperref[eq:chapter9-lsc-commutator]{(9.19)}中的交换子误差,并采用加权范数.用 $[\cdot]_k$ 表示矩阵的第 $k$ 列,则相应的最小化问题为
+\begin{equation}\label{eq:chapter9-lsc-least-squares}
+\min_{[A_{\mathrm{pres}}]_k}
+\left\|\left[AD_{\mathrm{lsc}}^{-1}B^{\mathsf T}\right]_k
+-B^{\mathsf T}[A_{\mathrm{pres}}]_k\right\|_{D_{\mathrm{lsc}}^{-1}}^2,
+\qquad k=1,\ldots,N_p,
+\end{equation}
+其中范数由内积
+\[
+(\bm x,\bm y)_{D_{\mathrm{lsc}}^{-1}}
+=\bm x^{\mathsf T}D_{\mathrm{lsc}}^{-1}\bm y
+\]
+定义.因此,最小二乘问题\hyperref[eq:chapter9-lsc-least-squares]{(9.21)}的正规方程为
+\[
+BD_{\mathrm{lsc}}^{-1}
+\left(\left[AD_{\mathrm{lsc}}^{-1}B^{\mathsf T}\right]_k
+-B^{\mathsf T}[A_{\mathrm{pres}}]_k\right)=0.
+\]
+由此得到
+\[
+[A_{\mathrm{pres}}]_k
+=(BD_{\mathrm{lsc}}^{-1}B^{\mathsf T})^{-1}
+\left(BD_{\mathrm{lsc}}^{-1}
+\left[AD_{\mathrm{lsc}}^{-1}B^{\mathsf T}\right]_k\right),
+\]
+进而
+\[
+A_{\mathrm{pres}}
+=(BD_{\mathrm{lsc}}^{-1}B^{\mathsf T})^{-1}
+(BD_{\mathrm{lsc}}^{-1}AD_{\mathrm{lsc}}^{-1}B^{\mathsf T}).
+\]
+将此表达式代入式\hyperref[eq:chapter9-lsc-schur-first]{(9.20)},得到 Schur 补矩阵的近似
+\begin{equation}\label{eq:chapter9-lsc-schur}
+S_{\mathrm{lsc}}
+=-BD_{\mathrm{lsc}}^{-1}B^{\mathsf T}
+(BD_{\mathrm{lsc}}^{-1}AD_{\mathrm{lsc}}^{-1}B^{\mathsf T})^{-1}
+BD_{\mathrm{lsc}}^{-1}B^{\mathsf T}.
+\end{equation}
+\textcite{Elman2006} 建议将速度质量矩阵的对角部分作为 $D_{\mathrm{lsc}}$,见式\hyperref[eq:theta-temporal-mass-matrix]{(7.87)}.
+
+应用 LSC 预条件子时,需要作为预条件步骤求解
+\[
+\begin{pmatrix}A&B^{\mathsf T}\\0&S_{\mathrm{lsc}}\end{pmatrix}
+\begin{pmatrix}\bm v\\q\end{pmatrix}
+=\begin{pmatrix}\bm b_v\\b_q\end{pmatrix}
+\]
+,其中给定向量为 $(\bm b_v,b_q)^{\mathsf T}$.第一步先求解
+\[
+S_{\mathrm{lsc}}q=b_q.
+\]
+这需要求解两个离散压力扩散问题,二者使用同一矩阵 $BD_{\mathrm{lsc}}^{-1}B^{\mathsf T}$,因为
+\begin{equation}\label{eq:chapter9-lsc-schur-inverse}
+S_{\mathrm{lsc}}^{-1}
+=-(BD_{\mathrm{lsc}}^{-1}B^{\mathsf T})^{-1}
+(BD_{\mathrm{lsc}}^{-1}AD_{\mathrm{lsc}}^{-1}B^{\mathsf T})
+(BD_{\mathrm{lsc}}^{-1}B^{\mathsf T})^{-1}.
+\end{equation}
+求得 $q$ 后,再求解
+\[
+A\bm v=\bm b_v-B^{\mathsf T}q,
+\]
+这需要求解一个关于速度未知量的系统.
+\end{example}
+
+\index{LSC 预条件子}
+\index{最小二乘交换子预条件子}
+
+\begin{note}[边界修正的 LSC 预条件子]
+\label{note:chapter9-boundary-corrected-lsc}
+例题\hyperref[ex:chapter9-lsc-preconditioner]{9.30}中推导的 LSC 预条件子,在构造 $A_{\mathrm{pres}}$ 时没有考虑具体问题的边界条件.然而,\textcite{ElmanTuminaro2009}观察到,对某些边界条件作相应修改,可以显著提高该预条件子的效率.
+
+\textcite{ElmanTuminaro2009}对一个一维模型问题作了细致分析,发现若采用式\hyperref[eq:chapter9-lsc-commutator]{(9.19)}形式的交换子,交换子误差并不会消失.相反,可以研究
+\[
+BA\approx A_{\mathrm{pres}}B.
+\]
+对于这种形式的一维模型问题,若在定义 $A_{\mathrm{pres}}$ 时于流入边界施加 Robin 边界条件、于流出边界施加 Dirichlet 边界条件,则交换子误差会消失.
+
+进一步考察边界平行于坐标轴的矩形区域后,研究者发现无法选取一组边界条件使边界上的所有交换子误差都消失.对不同边界条件及相应交换子误差的分析,最终促使研究者在 LSC 预条件子中加入对角加权矩阵 $W_{\mathrm{lsc}}$,其定义为
+\begin{equation}\label{eq:chapter9-lsc-boundary-weight}
+(W_{\mathrm{lsc}})_{ii}=
+\begin{cases}
+\varepsilon, &\begin{array}{l}
+\text{若指标 $i$ 对应的速度自由度基函数为}\\
+\text{$(\varphi_i,0)^{\mathsf T}$,且某个水平 Dirichlet 边界}\\
+\text{$\Gamma_{\mathrm{diri}}$ 上的压力自由度 $j$ 满足 $b_{ji}\ne0$;}
+\end{array}\\[2mm]
+\varepsilon, &\begin{array}{l}
+\text{若指标 $i$ 对应的速度自由度基函数为}\\
+\text{$(0,\varphi_i)^{\mathsf T}$,且某个竖直 Dirichlet 边界}\\
+\text{$\Gamma_{\mathrm{diri}}$ 上的压力自由度 $j$ 满足 $b_{ji}\ne0$;}
+\end{array}\\[2mm]
+1, &\text{其他情形.}
+\end{cases}
+\end{equation}
+类似于 LSC 预条件子的推导,通过最小二乘法最小化交换子误差,最终得到所谓边界修正的 LSC 预条件子
+\[
+S_{\mathrm{bdr-lsc}}
+=-BH^{-1}B^{\mathsf T}
+(BD_{\mathrm{lsc}}^{-1}AH^{-1}B^{\mathsf T})^{-1}
+BD_{\mathrm{lsc}}^{-1}B^{\mathsf T},
+\]
+其中 $H=W_{\mathrm{lsc}}^{-1/2}D_{\mathrm{lsc}}W_{\mathrm{lsc}}^{-1/2}$,而 $D_{\mathrm{lsc}}$ 为速度质量矩阵的对角部分.对于式\hyperref[eq:chapter9-lsc-boundary-weight]{(9.24)}中的权重,\textcite[第 9.2.4 节]{Elman2014}建议取 $\varepsilon=0.1$.该文还指出,边界修正 LSC 预条件子的构造可以推广到边界不与坐标轴对齐的区域以及三维区域.
+\end{note}
+
+\index{LSC 预条件子!边界修正}
+
+\begin{note}[适用于 inf-sup 稳定化离散的 LSC 预条件子]
+\label{note:chapter9-stabilized-lsc}
+对于不满足离散 inf-sup 条件\hyperref[eq:discrete-infsup-condition]{(3.51)}、且离散中包含用于缓解该条件违背的稳定化项的有限元空间对,也可以构造 LSC 预条件子.\textcite{Elman2008a} 为低阶空间对(例如 $P_1/P_0$ 或 $P_1/P_1$)推导了所谓稳定化 LSC 预条件子.
+\end{note}
+
+\index{LSC 预条件子!稳定化离散}
+
+\begin{note}[其他基于压力 Schur 补近似的预条件子]
+\label{note:chapter9-other-schur-preconditioners}
+\textcite{OlshanskiiVassilevski2007}比较了三种需要近似压力 Schur 补的预条件子,其中一种是例题\hyperref[ex:chapter9-lsc-preconditioner]{9.30}介绍的 LSC 预条件子.其余两种如下:
+\begin{itemize}
+  \item Kay 等人(\textcite{Kay2002})提出的压力对流扩散(pressure convection-diffusion,PCD)预条件子,另见\textcite[第 9.2.1 节]{Elman2014}.该预条件子需要在离散压力空间中近似对流扩散算子和 Laplace 算子.这些近似矩阵必须在其他矩阵之外额外组装,并且须考虑具体问题的边界条件.
+  \item 基于 $h\to0$ 时 LSC 预条件子的研究,另一种预条件子通过交换离散缩放压力 Laplace 算子与离散散度算子的作用而构造:也就是说,将式\hyperref[eq:chapter9-lsc-schur-inverse]{(9.23)}的第一个因子与 $B$、最后一个因子与 $B^{\mathsf T}$ 交换.这样得到的是速度 Poisson 问题,而不是压力 Poisson 问题.
+\end{itemize}
+\end{note}
+
+\index{压力对流扩散(PCD)预条件子}
+
+\begin{note}[LSC 预条件子的数值表现]
+\label{note:chapter9-lsc-numerical-experience}
+\textcite{OlshanskiiVassilevski2007}的数值研究在 BiCGStab 和 GMRES 中考察了 LSC 预条件子以及笔记\hyperref[note:chapter9-other-schur-preconditioners]{9.33}介绍的预条件子.结果显示,当黏度较大或处于中等水平时,这些预条件子的表现都令人满意,并且仅对黏度有轻微依赖;黏度较小时,效率则明显变差.
+
+LSC 预条件子与基于增广拉格朗日方法的预条件子的比较结果见笔记\hyperref[note:chapter9-augmented-lagrangian-experience]{9.36}.
+\end{note}
+
+\index{LSC 预条件子!数值表现}
+
+\begin{note}[基于增广拉格朗日方法的预条件子]
+\label{note:chapter9-augmented-lagrangian}\label{note:linear-saddle-point-augmented-lagrangian-preconditioner}
+此类增广拉格朗日预条件子(augmented Lagrangian-based preconditioner)由 \textcite{BenziOlshanskii2006} 提出,并由\textcite{BenziWang2011}分析.
+
+考虑式\hyperref[eq:chapter9-coupled-system]{(9.1)},令 $C=0$、$D=B^{\mathsf T}$.则线性鞍点问题\hyperref[eq:chapter9-coupled-system]{(9.1)}等价于
+\begin{equation}\label{eq:chapter9-augmented-lagrangian-system}
+\begin{aligned}
+\begin{pmatrix}A+\gamma B^{\mathsf T}W^{-1}B&B^{\mathsf T}\\B&0\end{pmatrix}
+\begin{pmatrix}\bm u\\p\end{pmatrix}
+&=\begin{pmatrix}\bm f+\gamma B^{\mathsf T}W^{-1}f_p\\f_p\end{pmatrix},\\
+&\Longleftrightarrow
+\begin{pmatrix}A&B^{\mathsf T}\\B&0\end{pmatrix}
+\begin{pmatrix}\bm u\\p\end{pmatrix}
+&=\begin{pmatrix}\bm f\\f_p\end{pmatrix}.
+\end{aligned}
+\end{equation}
+其中 $W$ 为任意对称正定矩阵,$\gamma>0$ 为参数.\textcite{BenziOlshanskii2006}证明,矩阵 $W$ 的一个理论上良好的选择是压力质量矩阵 $M_p$:
+\[
+(M_p)_{ij}=(\psi_j^h,\psi_i^h),\qquad i=1,\ldots,N_p.
+\]
+实际计算中通常取其对角部分 $W=\operatorname{diag}(M_p)$.
+
+项 $\gamma B^{\mathsf T}W^{-1}B$ 称为增广拉格朗日项(augmented Lagrangian term).由于 $B$ 表示离散散度算子的负算子,见式\hyperref[eq:stokes-algebraic-matrix-b]{(4.92)},而 $B^{\mathsf T}$ 表示离散梯度,该增广拉格朗日项相当于一个经缩放的强 grad-div 稳定化项,参见笔记\hyperref[note:stokes-grad-div-term]{4.117}.
+
+基于增广拉格朗日方法的预条件子的主要目标,是构造如下形式的上三角块矩阵:
+\begin{equation}\label{eq:chapter9-augmented-lagrangian-preconditioner}
+\begin{pmatrix}\widehat A_\gamma&B^{\mathsf T}\\0&\widehat S_\gamma\end{pmatrix},
+\end{equation}
+其中 $\widehat A_\gamma$ 也是上三角块矩阵.为便于说明,考虑二维情形
+\[
+A=\begin{pmatrix}A_1&0\\0&A_2\end{pmatrix},
+\qquad B=(B_1,B_2).
+\]
+记 $G_{ij}=\gamma B_i^{\mathsf T}W^{-1}B_j$($i,j\in\{1,2\}$).直接计算可得
+\[
+\begin{aligned}
+A_\gamma:=A+\gamma B^{\mathsf T}W^{-1}B
+&=\begin{pmatrix}
+A_1+G_{11}&G_{12}\\
+G_{21}&A_2+G_{22}
+\end{pmatrix}\\
+&=\begin{pmatrix}\widehat A_{11}&\widehat A_{12}\\
+\widehat A_{21}&\widehat A_{22}\end{pmatrix}.
+\end{aligned}
+\]
+接着采用近似
+\[
+\widehat A_\gamma=
+\begin{pmatrix}\widehat A_{11}&\widehat A_{12}\\0&\widehat A_{22}\end{pmatrix}.
+\]
+根据\textcite{BenziWang2011}的分析,可取 $\widehat S_\gamma^{-1}=\gamma W^{-1}$.式\hyperref[eq:chapter9-augmented-lagrangian-preconditioner]{(9.26)}的逆可写为
+\begin{equation}\label{eq:chapter9-augmented-lagrangian-inverse}
+\begin{pmatrix}\widehat A_\gamma&B^{\mathsf T}\\0&\widehat S_\gamma\end{pmatrix}^{-1}
+=
+\begin{pmatrix}\widehat A_\gamma^{-1}&0\\0&I\end{pmatrix}
+\begin{pmatrix}I&B^{\mathsf T}\\0&-I\end{pmatrix}
+\begin{pmatrix}I&0\\0&-\widehat S_\gamma^{-1}\end{pmatrix}.
+\end{equation}
+由式\hyperref[eq:chapter9-augmented-lagrangian-inverse]{(9.27)}可见,一次预条件步骤需要求解一个系数矩阵为 $\widehat S_\gamma$ 的系统(实际中该矩阵为对角矩阵),并分别求解速度各分量对应的两个系统,其系数矩阵为 $\widehat A_{22}$ 和 $\widehat A_{11}$.该方法不需要求解压力 Schur 补系统.
+
+这一方法可以直接推广到 $A$ 具有完整块结构以及三维问题的情形.
+
+影响增广拉格朗日预条件子效率的关键,是参数 $\gamma$ 的选择.\textcite{BenziWang2011}基于 Fourier 分析并作若干简化后发现,最优 $\gamma$ 是一个非凸、非光滑优化问题的解.由于直接求解该优化问题过于复杂,他们建议在较大的参数集合上计算待最小化的向量值函数的范数,并选取使范数最小的参数.
+
+\index{增广拉格朗日项}
+\index{增广拉格朗日预条件子}
+\end{note}
+
+\index{预条件子!增广拉格朗日}
+
+\begin{note}[增广拉格朗日预条件子的数值表现]
+\label{note:chapter9-augmented-lagrangian-experience}
+增广拉格朗日预条件子既可用作左预条件子,也可用作右预条件子.\textcite{BenziWang2011}报告,两种用法在效率上的差别很小.
+
+该预条件子的构造可以推广到不满足离散 inf-sup 条件\hyperref[eq:discrete-infsup-condition]{(3.51)}的稳定化离散,见\textcite{BenziWang2011}.
+
+增广拉格朗日预条件子与 LSC 预条件子曾用于求解二维定常问题,具体而言,是对流向量 $\bm b$ 取若干次 Picard 迭代得到的近似值、且 $c=0$ 的 Oseen 问题\hyperref[eq:oseen-strong]{(5.1)}.对于笔记\hyperref[note:chapter9-augmented-lagrangian]{9.35}中的启发式参数选择,当黏度较大时,两种预条件子的表现相近;黏度较小时,增广拉格朗日预条件子的效率更高.它也能够处理拉伸网格,以及在应用它时对线性系统进行非精确求解的情形,见式\hyperref[eq:chapter9-augmented-lagrangian-inverse]{(9.27)}.
+
+在\textcite{UrRehman2008}对一个二维问题的数值研究中,增广拉格朗日预条件子优于 LSC 预条件子,而 LSC 预条件子又优于 PCD 预条件子.
+\end{note}
+
+\index{预条件子!增广拉格朗日!数值表现}
+\index{LSC 预条件子!数值比较}

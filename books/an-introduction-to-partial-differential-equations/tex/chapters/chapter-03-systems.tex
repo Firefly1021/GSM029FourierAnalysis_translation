@@ -1,0 +1,133 @@
+\section{守恒律与激波}\label{chap:conservation-laws-shocks}\label{chap:local-existence}
+
+\PDEIndexMark{idx:conservation-intro-weak-wave}回忆在 Problem~\ref{ex:discontinuous-weak-wave-solutions} 中, 将一维波动方程的弱解定义为函数 $u(x,t)$, 它对每个 $\phi\in C_0^2(\mathbb{R}^2)$ 满足
+\begin{equation}\label{eq:conservation-intro-weak-wave}
+\int_{-\infty}^{\infty}\int_{-\infty}^{\infty}u(x,t)(\phi_{tt}(x,t)-\phi_{xx}(x,t))\,\mathrm{d}x\,\mathrm{d}t=0
+\end{equation}
+该题要求证明以下事实:
+\begin{enumerate}
+\item 波动方程的任意强解 (经典 $C^2$ 解) 也是弱解,
+\item 具有如下形式的不连续函数
+\begin{equation}\label{eq:conservation-intro-right-step}
+u(x,t):=H(x-t),
+\end{equation}
+及
+\begin{equation}\label{eq:conservation-intro-left-step}
+u(x,t):=H(x+t),
+\end{equation}
+其中 $H$ 为 Heaviside 函数,
+\begin{equation}\label{eq:conservation-intro-heaviside}
+H(x):=\begin{cases}0,&x<0\\1,&x\geq0\end{cases}
+\end{equation}
+是波动方程的弱解.\end{enumerate}
+
+\PDEIndexMark{idx:conservation-introduction}在本节中, 将弱解概念推广到一维空间中的严格双曲守恒律方程组. 与波动方程的情形一样, 将会看到不连续解. 用\emph{激波}一词描述不连续弱解起源于气体动力学的研究, 如今则用于双曲问题的任意不连续解.
+
+\subsection{一维空间中的方程组}\label{sec:one-dimensional-conservation-systems}
+
+考虑如下一阶拟线性方程组的 Cauchy 问题
+\begin{equation}\label{eq:conservation-law-system}
+\bm{u}_t+\bm{f}(\bm{u})_x=0.
+\end{equation}
+这里 $(x,t)$ 位于上半平面 $\mathbb{R}^{2+}:=(-\infty,\infty)\times[0,\infty)$; 未知量为 $\bm{u}:\mathbb{R}^{2+}\to\mathbb{R}^n$, 而 $\bm{f}:\mathbb{R}^n\to\mathbb{R}^n$ 是给定函数, 假定它足够光滑 (通常至少在某个开集 $D\subseteq\mathbb{R}^n$ 上属于 $C^2(D)$). 将未知量的因变量所在的空间 $\mathbb{R}^n$ 称为\emph{状态空间}. 初始条件为
+\begin{equation}\label{eq:conservation-law-cauchy-data}
+\bm{u}(x,0)=\bm{u}_0(x)
+\end{equation}
+其中 $x\in\mathbb{R}$, 函数 $\bm{u}_0:\mathbb{R}\to\mathbb{R}^n$ 已给定.
+
+以下例子将在本章中反复提到.
+
+\begin{Example}{Burgers 方程}
+\label{ex:burgers-equation}
+以下方程是单个 $(n=1)$ 非线性守恒律最常用的例子.
+\begin{equation}\label{eq:burgers-conservation-law}
+u_t+\left(\dfrac{u^2}{2}\right)_x=u_t+uu_x=0.
+\end{equation}
+这里 $u:\mathbb{R}^{2+}\to\mathbb{R}$. Burgers 和 Hopf 研究过这个方程, 并将它视为湍流的一个粗略模型.
+\end{Example}
+
+\begin{Example}{波动方程}
+\label{ex:wave-first-order-system}
+令 $v=u_t$ 和 $w=u_x$, 就可将线性一维波动方程 \eqref{eq:wave-one-dimensional} 从单个二阶方程化为一阶方程组. 所得方程组为
+\begin{equation}\label{eq:wave-first-order-w}
+w_t=v_x,
+\end{equation}
+
+\begin{equation}\label{eq:wave-first-order-v}
+v_t=w_x.
+\end{equation}
+当然, 第一个方程只是 $u$ 的混合偏导数相等, 第二个则是原来的波动方程.
+\end{Example}
+
+\begin{Example}{$p$ 方程组}
+\label{ex:p-system}
+这就是由非线性波动方程
+\[
+u_{tt}=\phi(u_x)_x,
+\]
+导出的一阶方程组, 其中 $\phi:\mathbb{R}\to\mathbb{R}$ 是给定函数. 与波动方程一样, 令 $v=u_t$ 和 $w=u_x$, 得到
+\begin{equation}\label{eq:nonlinear-wave-first-order-w}
+w_t=v_x,
+\end{equation}
+
+\begin{equation}\label{eq:nonlinear-wave-first-order-v}
+v_t=\phi(w)_x.
+\end{equation}
+通常定义 $p(w):=-\phi(w)$, 并将方程组写为
+\begin{equation}\label{eq:p-system-volume}
+w_t-v_x=0,
+\end{equation}
+
+\begin{equation}\label{eq:p-system-velocity}
+v_t+p(w)_x=0.
+\end{equation}
+等熵气体动力学的一个常用模型采用这一方程组, 其中
+\begin{equation}\label{eq:isentropic-pressure-law}
+p(w):=kw^{-\gamma},
+\end{equation}
+并限制 $w>0$. 这里 $\gamma>1$ 和 $k>0$ 为常数.
+\end{Example}
+
+\begin{Example}{Lagrangian 坐标下的气体动力学}
+\label{ex:lagrangian-gas-dynamics}
+以下方程描述不导热的无黏气体的运动:
+\begin{equation}\label{eq:lagrangian-gas-mass}
+v_t-u_x=0,
+\end{equation}
+
+\begin{equation}\label{eq:lagrangian-gas-momentum}
+u_t+p_x=0,
+\end{equation}
+
+\begin{equation}\label{eq:lagrangian-gas-energy}
+E_t+(up)_x=0.
+\end{equation}
+这里 $v$ 为\emph{比容}, $u$ 为\emph{速度}, $p$ 为\emph{压力}, $E$ 为\emph{单位质量的能量}. 比容定义为\emph{密度} $\rho$ 的倒数
+\begin{equation}\label{eq:specific-volume-density}
+v:=1/\rho.
+\end{equation}
+方程 \eqref{eq:lagrangian-gas-mass} 表示质量守恒, \eqref{eq:lagrangian-gas-momentum} 表示线动量守恒, \eqref{eq:lagrangian-gas-energy} 表示能量守恒.
+
+为使这个含四个未知量的三个方程组成的方程组适定, 必须添加一个\emph{本构方程}或\emph{状态方程}, 将其中一个变量表示为另外三个变量的给定函数. 这里对压力这样处理, 通常给定为
+\begin{equation}\label{eq:gas-pressure-state-equation}
+p:=\hat p(e,v),
+\end{equation}
+其中 $e:=E-u^2/2$ 为\emph{内能}.
+\end{Example}
+
+\begin{Example}{Eulerian 坐标下的气体动力学}
+\label{ex:eulerian-gas-dynamics}
+在上述气体动力学的 \emph{Lagrangian} 描述中, 变量 $x$ 描述一个固定的气体质点. 在 \emph{Eulerian} 描述中, $x$ 描述空间中的一个固定点. 使用这种模型推导方程时, 得到以下方程组:
+\begin{equation}\label{eq:eulerian-gas-mass}
+\rho_t+(\rho u)_x=0,
+\end{equation}
+
+\begin{equation}\label{eq:eulerian-gas-momentum}
+(\rho u)_t+(\rho u^2+p)_x=0,
+\end{equation}
+
+\begin{equation}\label{eq:eulerian-gas-energy}
+\left[\rho\left(\dfrac{u^2}{2}+e\right)\right]_t+\left[\rho u\left(\dfrac{u^2}{2}+i\right)\right]_x=0.
+\end{equation}
+这里 $\rho$, $u$, $p$ 和 $e$ 的定义同上; $i:=e+p/\rho$ 为\emph{比焓}. 与上述方程类似, \eqref{eq:eulerian-gas-mass} 表示质量守恒, \eqref{eq:eulerian-gas-momentum} 表示线动量守恒, \eqref{eq:eulerian-gas-energy} 表示能量守恒.
+\end{Example}

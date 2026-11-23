@@ -1,0 +1,171 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{ajbook-legacy}[2026/11/18 Compatibility for accepted translations]
+\RequirePackage{cases,physics2,empheq}
+\RequirePackage{flowchart,array,multirow,float,subfigure,tabularx,caption,pgfplots,enumitem}
+\RequirePackage{algorithm,algpseudocode,listings,needspace,multicol}
+\RequirePackage{ajbook-cover}
+\pgfplotsset{compat=newest}
+\graphicspath{{figures/}}
+
+\newif\ifAJlegacyArticle
+\newif\ifAJlegacyChapterSections
+\newif\ifAJlegacyNumberlessChapters
+\newif\ifAJlegacyScanBook
+\newcommand{\AJLegacyCounter}{statement}
+\DeclareOption{article}{\AJlegacyArticletrue}
+\DeclareOption{chaptersections}{\AJlegacyArticletrue\AJlegacyChapterSectionstrue}
+\DeclareOption{numberlesschapters}{\AJlegacyArticletrue\AJlegacyNumberlessChapterstrue}
+\DeclareOption{thmcount}{\renewcommand{\AJLegacyCounter}{thmcount}}
+\DeclareOption{scanbook}{\AJlegacyScanBooktrue}
+\ProcessOptions\relax
+
+% Older manuscripts explicitly set or reference these counter names.
+\newcounter{statement}[section]
+\newcounter{thmcount}[section]
+\newcounter{defcount}[section]
+\renewcommand{\thestatement}{\thesection.\arabic{statement}}
+\renewcommand{\thethmcount}{\thesection.\arabic{thmcount}}
+\renewcommand{\thedefcount}{\thesection.\arabic{defcount}}
+\providecommand{\theHstatement}{\theHsection.\arabic{statement}}
+\providecommand{\theHthmcount}{\theHsection.\arabic{thmcount}}
+\providecommand{\theHdefcount}{\theHsection.\arabic{defcount}}
+\numberwithin{equation}{section}
+
+\ifAJlegacyArticle
+  \renewcommand{\thesection}{\arabic{section}}
+  \counterwithout{figure}{chapter}
+  \counterwithout{table}{chapter}
+  \setcounter{secnumdepth}{3}
+  \setcounter{tocdepth}{3}
+  \renewcommand{\contentsname}{目录}
+  \renewcommand{\appendix}{%
+    \par\setcounter{section}{0}\setcounter{subsection}{0}%
+    \gdef\thesection{\Alph{section}}%
+    \gdef\theHsection{appendix.\Alph{section}}%
+  }
+\fi
+
+\ifAJlegacyChapterSections
+  % Map source counter names to the very same display roles as the PDE book.
+  \titleclass{\section}{top}
+  \AJHeadingChapter{\section}{\thesection}
+  \AJHeadingSection{\subsection}{\thesubsection}
+  \AJHeadingSubsection{\subsubsection}{\thesubsubsection}
+  \AJContentsChapter{section}
+  \AJContentsSection{subsection}
+  \AJContentsSubsection{subsubsection}
+  \AtEndPreamble{%
+    \renewcommand{\sectionmark}[1]{\markboth{第\zhnumber{\thesection}章\quad #1}{}}%
+    \renewcommand{\subsectionmark}[1]{\markright{\S\thesubsection\quad #1}}%
+  }
+\fi
+\ifAJlegacyNumberlessChapters
+  \AtEndPreamble{%
+    \renewcommand{\sectionmark}[1]{\markright{\S\thesection\quad #1}}%
+  }
+\fi
+\ifboolexpr{bool {AJlegacyChapterSections} or bool {AJlegacyNumberlessChapters}}{%
+  \titleformat{name=\section,numberless}
+    {\filright\sffamily\CJKfamily{hei2}\bfseries\Huge}
+    {}{0mm}{\MakeChapBoxSingle{#1}}[\markboth{#1}{#1}]%
+  \titlespacing*{name=\section,numberless}{1pc}{*4}{1em}
+}{}
+
+% Match the accepted amsmath semantics for \tag and \begin{split} inside
+% bracket displays despite AJbook's ntheorem display hooks.
+\AtBeginDocument{%
+  \DeclareRobustCommand{\[}{\begin{equation*}}%
+  \DeclareRobustCommand{\]}{\end{equation*}}%
+}
+
+\ifAJlegacyScanBook
+  % The three old ctexset calls set an Arabic chapter counter and Chinese
+  % heading affixes. Both are already supplied by AJbook and by the source's
+  % explicit \thechapter declarations.
+  \providecommand{\ctexset}[1]{}
+  % The existing source sets the preface between \frontmatter and its TOC.
+  \newcommand{\AJFrontMatterWithoutContents}{%
+    \let\AJSavedContents\tableofcontents
+    \let\tableofcontents\relax
+    \frontmatter
+    \let\tableofcontents\AJSavedContents
+  }
+  \newcommand{\AJUseChineseChapterReference}[1]{%
+    \let\AJLegacyLabel\label
+    \renewcommand{\label}[1]{%
+      \ifstrequal{##1}{#1}{%
+        \begingroup\protected@edef\@currentlabel{\zhnum{chapter}}%
+        \AJLegacyLabel{##1}\endgroup
+      }{\AJLegacyLabel{##1}}%
+    }%
+  }
+\fi
+
+% Non-visual helpers previously provided by the read-only Mystyle package.
+\providecommand{\MathBookSourcePage}[1]{}
+\providecommand{\MathBookFormulaID}[1]{}
+\providecommand{\MathBookReviewStatus}[1]{}
+\providecommand{\MBUnresolvedReference}[2]{#2}
+\providecommand{\ttt}{\mathcal T}
+\providecommand{\A}{\boldsymbol A}
+\providecommand{\R}{\mathbb R}
+\providecommand{\tR}{\tilde{\mathcal R}}
+\providecommand{\m}{m^*}
+\providecommand{\X}{(X,\mathcal M,\mu)}
+\providecommand{\ii}{\mathrm i}
+\providecommand{\dd}{\mathrm d}
+\providecommand{\supp}{\operatorname{supp}}
+\providecommand{\pa}{\partial}
+\providecommand{\paa}{\partial^\alpha}
+\providecommand{\Lp}{L^p(\Omega)}
+\providecommand{\sbev}{W^{k,p}(\Omega)}
+\providecommand{\sch}{\mathcal S(\R^n)}
+\providecommand{\sgn}{\operatorname{sgn}}
+\providecommand{\vecb}[1]{\bm{#1}}
+\providecommand{\tr}{\operatorname{tr}}
+\providecommand{\re}{\operatorname{Re}}
+\providecommand{\im}{\operatorname{Im}}
+\providecommand{\diam}{\operatorname{diam}}
+\providecommand{\curl}{\operatorname{curl}}
+\providecommand{\norm}[1]{\| #1 \|}
+\providecommand{\tnorm}[1]{|\!|\!| #1 |\!|\!|}
+\DeclarePairedDelimiterX{\induct}[2]{\langle}{\rangle}{#1, #2}
+\NewDocumentCommand{\Wkp}{ O{\Omega} m m }{W^{#2,#3}(#1)}
+\def\AJXint#1{\mathchoice
+  {\AJXXint\displaystyle\textstyle{#1}}%
+  {\AJXXint\textstyle\scriptstyle{#1}}%
+  {\AJXXint\scriptstyle\scriptscriptstyle{#1}}%
+  {\AJXXint\scriptscriptstyle\scriptscriptstyle{#1}}%
+  \!\int}
+\def\AJXXint#1#2#3{{\setbox0=\hbox{$#1{#2#3}{\int}$}
+  \vcenter{\hbox{\copy0}}\kern-.5\wd0}}
+\def\ddashint{\AJXint=}
+\def\fint{\AJXint-}
+
+\providecolor{PageColor}{named}{black}
+\providecolor{SectionColor}{named}{black}
+\providecolor{ZhengWen}{named}{black}
+\providecolor{KuangNei}{gray}{0.95}
+\providecolor{BianKuang}{gray}{0.45}
+\ExecuteBibliographyOptions{sorting=nty,backref=false}
+
+% Keep the old optional [name] grammar, and the original refstepcounter.
+% Do not consume a following group: in these accepted files it is body text.
+\newcommand{\AJLegacyStatement}[3]{%
+  \refstepcounter{\AJLegacyCounter}%
+  #3\AJStatementBegin{#1}{\ \csname the\AJLegacyCounter\endcsname}{#2}%
+}
+\newcommand{\AJLegacyNewStatement}[3]{%
+  \NewDocumentEnvironment{#1}{o}{\AJLegacyStatement{#2}{##1}{#3}}%
+    {\AJStatementEnd}%
+}
+\AJLegacyNewStatement{Theorem}{Theorem}{\fangsong}
+\AJLegacyNewStatement{Definition}{Definition}{\fangsong}
+\AJLegacyNewStatement{Lemma}{Lemma}{\fangsong}
+\AJLegacyNewStatement{Proposition}{Proposition}{\fangsong}
+\AJLegacyNewStatement{Corollary}{Corollary}{\fangsong}
+\AJLegacyNewStatement{Example}{Example}{\songti}
+\AJLegacyNewStatement{Remark}{Remark}{\songti}
+\AJLegacyNewStatement{Exercise}{Exercise}{\songti}
+\newenvironment{Proof}{\AJProofBegin}{\AJProofEnd}
+\endinput

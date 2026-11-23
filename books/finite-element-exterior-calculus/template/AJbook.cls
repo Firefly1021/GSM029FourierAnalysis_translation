@@ -44,7 +44,7 @@
 % Package loading
 % ---------------------
 % 基于 book class, 选项一并载入.
-\LoadClass[10pt]{book}
+\LoadClass[12pt]{book}
 
 \RequirePackage{fontspec}				% XeLaTeX
 \RequirePackage[CJKchecksingle]{xeCJK}	% XeCJK
@@ -52,7 +52,6 @@
 
 % 引入 AMS 宏包 + mathtools
 \RequirePackage[intlimits]{amsmath}
-\RequirePackage{amssymb}
 \RequirePackage[centercolon]{mathtools}
 
 % 支持直接引入 PDF 页面
@@ -90,7 +89,7 @@
 \RequirePackage[iso, english]{isodate}  % 使 \today 印出 yyyy-mm-dd
 \providecommand{\@AJ@draftstring}{{\color{gray!40}\heiti 未定稿: \today}}
 
-\onehalfspacing	% 行距
+\setstretch{1.3}	% 12 pt 正文的基线距: 14.5 pt × 1.3 = 18.85 pt
 %\raggedbottom	% 减小页面空白
 
 \setlength{\parindent}{2em}	% 设置适合于汉语排版的段落缩进
@@ -205,11 +204,11 @@
 
 % 汉化 figure 和 table 环境
 \if@AJ@traditional
-	\renewcommand{\figurename}{圖}
-	\renewcommand{\tablename}{表}
+	\renewcommand{\figurename}{Fig.}
+	\renewcommand{\tablename}{Table.}
 \else
-	\renewcommand{\figurename}{图}
-	\renewcommand{\tablename}{表}
+	\renewcommand{\figurename}{Fig.}
+	\renewcommand{\tablename}{Table.}
 \fi
 
 % 汉化 figure 和 table 索引

@@ -1,0 +1,508 @@
+\section{迭代求解器的预条件子}\label{sec:chapter9-preconditioners}
+
+\begin{note}[预条件子]
+\label{note:chapter9-preconditioners}
+众所周知,采用预条件子可以显著改善迭代求解器的性能.预条件子是对 $\mathcal A^{-1}$ 的近似,且能够以相对较低的计算代价求得.这种近似可以是一个固定矩阵、一种数值(迭代)方法,或二者的组合.
+
+预条件分为左预条件和右预条件.记预条件子为 $M^{-1}$.对于左预条件,迭代求解器求解的系统由式\hyperref[eq:chapter9-coupled-system]{(9.1)}改为
+\[
+ M^{-1}\mathcal A\bm x=M^{-1}\bm y.
+\]
+采用右预条件时,迭代求解器求解
+\[
+ \mathcal A M^{-1}\bm z=\bm y,
+ \qquad \bm x=M^{-1}\bm z.
+\]
+同一迭代求解器配合同一预条件子,采用左预条件和右预条件时的表现可能不同.例如,左、右预条件 GMRES 最小化的残量不同;详见\textcite[第 9.3.4 节]{Saad2003}.
+\end{note}
+
+
+
+\subsection{不完全分解}\label{subsec:chapter9-incomplete-factorizations}
+
+\begin{note}[不完全分解]
+\label{note:chapter9-incomplete-factorizations}
+对稀疏矩阵 $\mathcal A$ 作 LU 分解时,所得因子 $L$ 和 $U$ 通常会比 $\mathcal A$ 稠密得多.在不完全 LU 分解(incomplete LU factorization,ILU)中,$L$ 和 $U$ 保留与 $\mathcal A$ 相同的稀疏结构:$L$ 的稀疏结构对应于 $\mathcal A$ 的严格下三角部分,$U$ 的稀疏结构对应于 $\mathcal A$ 的上三角部分.执行不带主元选取的标准 LU 分解算法时,舍弃所有不符合预定稀疏结构的项,由此得到不完全分解
+\begin{equation}\label{eq:chapter9-ilu-incomplete-factorization}
+ \mathcal A=LU+E,
+\end{equation}
+其中 $E$ 为误差矩阵.
+
+例如,\textcite{DahlWille1992}指出,对 $\mathcal A$ 作 ILU 分解时不采用主元选取,并不一定会导致算法失败.首先,应按压力自由度排在最后的方式排列自由度,这与式\hyperref[eq:chapter9-coupled-system]{(9.1)}中的排列一致.其次,需要给定稀疏矩阵 $C$,其稀疏结构应包含压力自由度之间的全部连接(与 inf-sup 稳定化方法中的情形相同),并将 $C$ 的所有项初始化为零.在这两个条件下,\textcite{DahlWille1992}观察到,不完全分解过程中主对角线上的零项会消失,因此不会发生除以零.
+
+所谓 ILUT$(l,\tau)$ 方法(\textcite[第 10.4.1 节]{Saad2003})允许保留 LU 分解中模大于阈值 $\tau\ge0$ 的项,即使这些项不符合原有稀疏结构.对于当前行,只保留 $L$ 部分中按绝对值计最大的 $l$ 项、$U$ 部分中按绝对值计最大的 $l$ 项,另加对角项.这样得到式\hyperref[eq:chapter9-ilu-incomplete-factorization]{(9.2)}形式的不完全分解;其误差矩阵的非零项预计会更小,同时避免完整 LU 分解产生的全部填充.
+\end{note}
+
+\begin{note}[带填充的不完全 LU 预条件子]
+\label{note:chapter9-ilu-fill-in}
+\textcite{Konshin2015}提出了一种 ILU 预条件子,用于求解非定常 Navier--Stokes 方程组离散后产生的线性鞍点问题.该预条件子对整体矩阵 $\mathcal A$ 作不带主元选取的分解,其形式为
+\[
+ \mathcal A=LU+L R_u+R_l U+E,
+\]
+其中 $R_u$ 为严格上三角矩阵,$R_l$ 为严格下三角矩阵,$E$ 仍为误差矩阵.给定两个参数 $\tau_1\ge\tau_2>0$,构造分解时要求 $L$ 和 $U$ 的非对角项要么为零,要么其绝对值大于 $\tau_1$;而 $R_u$ 和 $R_l$ 的非对角项要么为零,要么其绝对值属于 $(\tau_2,\tau_1]$.因此,误差矩阵 $E$ 中的项为 $O(\tau_2)$.如\textcite{Konshin2015}所述,该方法的填充量由 $\tau_1$ 决定;当 $\tau_2=O(\tau_1)$ 时,所得预条件子的质量则由 $\tau_2$ 控制.
+
+要使该预条件子高效工作,首先需要对矩阵 $\mathcal A$ 进行适当缩放.\textcite{Konshin2015}表明,选取合适的 $\tau_1$ 和 $\tau_2$ 后,该预条件子可用于一大类黏度下的层流三维非定常 Navier--Stokes 问题,并能高效求解.
+\end{note}
+
+\index{预条件子!左预条件}
+\index{预条件子!右预条件}
+\index{不完全 LU 分解(ILU)}
+\index{不完全 LU 预条件子!带填充}
+
+\subsection{耦合多重网格方法}
+\label{subsec:chapter9-coupled-multigrid}\label{subsec:multigrid-method}
+\label{subsec:chapter9-iterative-solvers}
+
+\begin{note}[多重网格方法]
+\label{note:chapter9-multigrid-methods}\label{note:multigrid-method}
+多重网格方法通过一系列网格层级求解线性方程组.在每一层上,都近似求解相应的方程;只有在最粗层(称为第 0 层)上,方程才可能被高精度求解.多重网格方法需要在相邻层级之间传递信息:由细层向粗层传递称为限制,由粗层向细层传递称为延拓.关于多重网格方法的介绍可参见\textcite{Hackbusch1985,Trottenberg2001,Briggs2000}.
+
+下面介绍用于求解式\hyperref[eq:chapter9-coupled-system]{(9.1)}的多重网格方法的组成部分.该方法同时求解速度 $\bm u$ 和压力 $p$ 两类未知量,因而称为耦合多重网格方法.它由以下部分定义:
+\begin{itemize}
+  \item 网格层级,见笔记\hyperref[note:chapter9-grid-hierarchy]{9.12};
+  \item 粗层系统矩阵的定义,见笔记\hyperref[note:chapter9-coarse-system-matrices]{9.13};
+  \item 网格间传递算子:
+  \begin{itemize}
+    \item 函数延拓,见笔记\hyperref[note:chapter9-function-prolongation]{9.14};
+    \item 缺陷限制,见笔记\hyperref[note:chapter9-defect-restriction]{9.18};
+    \item 函数限制,见笔记\hyperref[note:chapter9-function-restriction]{9.19};
+  \end{itemize}
+  \item 细层上的光滑子,见笔记\hyperref[note:chapter9-vanka-smoother]{9.20};
+  \item 粗网格求解器,见笔记\hyperref[note:chapter9-coarse-grid-solver]{9.24}.
+\end{itemize}
+\end{note}
+
+\index{多重网格方法}
+
+
+\begin{note}[网格层级]
+\label{note:chapter9-grid-hierarchy}
+定义多重网格层级有多种方式.标准做法是沿用几何网格的层级,并在各层上采用相同的离散方法.不过,多重网格层级也可以多于几何网格层级,并且粗层可采用不同于最细层的离散方法.图\hyperref[fig:chapter9-multigrid-approaches]{9.1}所示的多重离散多层方法就是一例.
+
+\begin{elegantfigure}[333.25pt]
+\includegraphics[width=333.25pt]{figures/Chapter_09/Fig_9_01__PDFp663__Bookp655.pdf}
+\captionof{figure}{标准多重网格方法(左)与面向高阶离散的多重离散多层方法(右).}
+\label{fig:chapter9-multigrid-approaches}
+\end{elegantfigure}
+
+在\textcite{JohnMatthies2001}关于例题\hyperref[ex:appendix-d-5]{D.5}以及\textcite{John2002}关于例题\hyperref[ex:appendix-d-6]{D.6}的数值研究中,研究者发现:对于某些高阶有限元离散所得的线性鞍点问题,标准多重网格方法会遇到困难.高阶有限元离散能够较准确地计算感兴趣量,参见例题\hyperref[ex:steady-ns-flow-around-cylinder]{6.36}.与此相反,带迎风稳定化的最低阶非协调离散的精度较低,参见笔记\hyperref[note:oseen-upwind-nonconforming]{5.58};但标准多重网格方法已被证明是一种效率很高的求解器,另见\textcite{JohnTobiska2000}.由此产生了一个构造高阶有限元离散多层方法的思路:以稳定的最低阶非协调有限元离散所用的多层方法为基础.这就是图\hyperref[fig:chapter9-multigrid-approaches]{9.1}所示的多重离散多层方法.
+
+该方法的多层层级比几何网格层级多一层.在最细的几何网格(第 $L$ 层)上采用两种离散方法:其中一种是所关注的高阶离散,它构成多层层级的最细层;另一种是在几何第 $L$ 层上采用带迎风稳定化的最低阶非协调离散.在所有更粗的几何层上,也采用经过稳定化的最低阶非协调离散.
+
+在多重网格方法中,网格序列的组织方式称为循环.最常见的多重网格循环见图\hyperref[fig:chapter9-multigrid-cycles]{9.2}.
+
+\begin{elegantfigure}[333.25pt]
+\includegraphics[width=333.25pt]{figures/Chapter_09/Fig_9_02__PDFp664__Bookp656.pdf}
+\captionof{figure}{多重网格 V 循环、F 循环和 W 循环(依次为左上、右上和下图);$s$ 表示光滑,$r$ 表示限制,$p$ 表示延拓,$e$ 表示精确求解器.}
+\label{fig:chapter9-multigrid-cycles}
+\end{elegantfigure}
+从浮点运算次数看,V 循环代价最低,W 循环代价最高;从稳定性看,情况正好相反.F 循环通常是在计算代价与稳定性之间折中的一种选择.
+\end{note}
+
+\index{多重网格方法!V 循环}
+\index{多重网格方法!F 循环}
+\index{多重网格方法!W 循环}
+\index{多层方法!多重离散}
+
+
+\begin{note}[粗层线性系统的定义]
+\label{note:chapter9-coarse-system-matrices}
+所谓 Galerkin 投影利用第 $l$ 层的系统矩阵以及延拓、限制算子,定义第 $l-1$ 层的系统矩阵.然而,这种方法无法在不同层级上使用不同的离散方法,而后者正是多重离散多层方法的核心思想.此外,从实现角度看,在粗层上直接组装系统矩阵、并采用与最细层相同的组装方式,似乎更为简便.因此,实际中常采用直接组装.
+\end{note}
+
+\begin{note}[函数延拓]
+\label{note:chapter9-function-prolongation}
+多重网格方法需要将有限元函数从某一层级传递到紧邻的更细层.在多重离散多层方法中,相邻层上的有限元空间可能并不嵌套,因此传递算子必须能够处理这种情形.\textcite{Schieweck2000}提出并分析了一种可在几乎任意有限元空间之间传递函数的算子.下面以标量有限元函数为例,较详细地介绍这一算子.它基于节点泛函的概念(见笔记\hyperref[note:appendix-b-18]{B.18})和局部基(见笔记\hyperref[note:appendix-b-20]{B.20}).
+
+考虑从有限元空间 $V_{l-1}^h$ 到有限元空间 $V_l^h$ 的传递(延拓).设 $\mathcal T_{l-1}$ 和 $\mathcal T_l$ 分别为相应的区域剖分,其中 $\mathcal T_l$ 由 $\mathcal T_{l-1}$ 加密得到,或者 $\mathcal T_l=\mathcal T_{l-1}$.后一种情形适用于多重离散多层方法中的 $l=L+1$,见图\hyperref[fig:chapter9-multigrid-approaches]{9.1}.
+
+设 $S_l^h$ 是定义在 $\mathcal T_l$ 上的不连续有限元空间:
+\[
+ S_l^h=\left\{w\in L^2(\Omega):
+     w|_K\in S_l^h(K)\quad\forall K\in\mathcal T_l\right\}.
+\]
+局部空间 $S_l^h(K)$ 的选取取决于 $V_{l-1}^h$ 和 $V_l^h$,并须满足包含关系
+\begin{equation}\label{eq:chapter9-transfer-space-inclusion}
+ V_{l-1}^h+V_l^h\subseteq S_l^h.
+\end{equation}
+从实际实现角度看,构造传递算子时并不需要用到局部空间 $S_l^h(K)$.从理论角度看,可以证明,对于由单形构成的剖分,总能找到适当的 $S_l^h(K)$,见\textcite{JohnKnoblochMatthiesTobiska2002}.
+
+利用整体节点泛函(见笔记\hyperref[note:appendix-b-23]{B.23}),延拓传递算子定义为
+\begin{equation}\label{eq:chapter9-function-prolongation}
+ P_{l-1}^{l}:S_l^h\longrightarrow V_l^h,
+ \qquad
+ P_{l-1}^{l}w=\sum_{i=1}^{\dim(V_l^h)}N_{l,i}(w)\,\varphi_{l,i}^h,
+\end{equation}
+其中 $\{\varphi_{l,i}^h\}_{i=1}^{\dim(V_l^h)}$ 是 $V_l^h$ 的有限元基,$N_{l,i}$ 是第 $l$ 层的整体节点泛函,满足
+\[
+ N_{l,i}(\varphi_{l,j}^h)=\delta_{ij}.
+\]
+由包含关系\hyperref[eq:chapter9-transfer-space-inclusion]{(9.3)}可知,算子\hyperref[eq:chapter9-function-prolongation]{(9.4)}特别适用于 $V_{l-1}^h$ 中的函数.
+\end{note}
+
+\begin{note}[用局部泛函计算整体泛函]
+\label{note:chapter9-local-functionals}
+设 $\{\varphi_{l-1,i}^h\}_{i=1}^{\dim(V_{l-1}^h)}$ 是 $V_{l-1}^h$ 的有限元基,并令
+\[
+ w_{l-1}^h=\sum_{i=1}^{\dim(V_{l-1}^h)}w_{l-1,i}\,\varphi_{l-1,i}^h
+ \in V_{l-1}^h.
+\]
+要计算将 $w_{l-1}^h$ 延拓时 $\varphi_{l,i}^h$ 的系数,需计算
+\[
+\begin{aligned}
+ N_{l,i}(w_{l-1}^h)
+ &=\frac{1}{\operatorname{card}(\mathcal T_{l,i})}
+   \sum_{K\in\mathcal T_{l,i}}
+   N_{l,i}^K\!\left(w_{l-1}^h|_K\right)\\
+ &=\frac{1}{\operatorname{card}(\mathcal T_{l,i})}
+   \sum_{K\in\mathcal T_{l,i}}\sum_{j=1}^{\dim(V_{l-1}^h)}
+   w_{l-1,j}\,
+   N_{l,i}^K\!\left(\varphi_{l-1,j}^h|_K\right),
+\end{aligned}
+\]
+其中 $\mathcal T_{l,i}$ 表示与第 $l$ 层第 $i$ 个节点相关联的网格单元,$N_{l,i}^K$ 是单元 $K$ 上相应的局部节点泛函.
+\end{note}
+
+\begin{elegantfigure}[226.5pt]
+\includegraphics[width=226.5pt]{figures/Chapter_09/Fig_9_03__PDFp666__Bookp658.pdf}
+\captionof{figure}{红色加密三角形网格,$P_1(P(K))\to P_1(K)$.}
+\label{fig:chapter9-red-refined-p1}
+\end{elegantfigure}
+
+\begin{example}[(局部泛函的计算)]
+\label{ex:chapter9-local-functional-evaluation}
+下面详细说明计算 $N_{l,i}^K\bigl(\varphi_{l-1,j}^h|_K\bigr)$ 的几种具体情形.为简便起见,只讨论二维有限元.设 $P(K)\in\mathcal T_{l-1}$ 是 $K\in\mathcal T_l$ 的父网格单元.图\hyperref[fig:chapter9-red-refined-p1]{9.3}--\hyperref[fig:chapter9-rotated-q1-q2]{9.6}中以圆圈表示 $P(K)$ 的局部自由度,以方块表示 $K$ 的局部自由度.
+
+\begin{itemize}
+\item \textbf{红色加密三角形:$P_1(P(K))\to P_1(K)$.} 考虑图\hyperref[fig:chapter9-red-refined-p1]{9.3}所示的两种情形.对这一有限元,局部节点泛函是点值,因此 $N_{l,i}^K\bigl(\varphi_{l-1,j}^h|_K\bigr)$ 等于 $\varphi_{l-1,j}^h$ 在 $K$ 中第 $i$ 个局部自由度位置处的取值.所得数值如下:
+
+\begin{eleganttable}[0.84\linewidth]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.08}
+\begin{tabular}{c|ccc|ccc}
+\multicolumn{1}{c}{} & \multicolumn{3}{c|}{图\hyperref[fig:chapter9-red-refined-p1]{9.3} 左图} & \multicolumn{3}{c}{图\hyperref[fig:chapter9-red-refined-p1]{9.3} 右图}\\
+ & $\varphi_{l-1,0}^h$ & $\varphi_{l-1,1}^h$ & $\varphi_{l-1,2}^h$ & $\varphi_{l-1,0}^h$ & $\varphi_{l-1,1}^h$ & $\varphi_{l-1,2}^h$\\
+\hline
+$N_{l,0}^K$ & $1$ & $0$ & $0$ & $\tfrac12$ & $\tfrac12$ & $0$\\
+$N_{l,1}^K$ & $\tfrac12$ & $\tfrac12$ & $0$ & $0$ & $\tfrac12$ & $\tfrac12$\\
+$N_{l,2}^K$ & $\tfrac12$ & $0$ & $\tfrac12$ & $\tfrac12$ & $0$ & $\tfrac12$\\
+\end{tabular}
+\end{eleganttable}
+
+可见,这种延拓就是标准的包含算子.
+
+\item \textbf{红色加密三角形:$P_1^{\mathrm{nc}}(P(K))\to P_1^{\mathrm{nc}}(K)$.} 再考虑图\hyperref[fig:chapter9-red-refined-p1-nc]{9.4}所示的两种情形.此时,局部节点泛函是 $K$ 各边上的积分平均值.例如,
+\[
+ N_{l,0}^K\!\left(\varphi_{l-1,j}^h|_K\right)
+ =\frac{1}{\|x_0-x_1\|_2}
+   \int_{x_0}^{x_1}\varphi_{l-1,j}^h|_K\,\mathrm ds.
+\]
+所得局部节点泛函数值如下:
+
+\begin{eleganttable}[0.84\linewidth]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.08}
+\begin{tabular}{c|ccc|ccc}
+\multicolumn{1}{c}{} & \multicolumn{3}{c|}{图\hyperref[fig:chapter9-red-refined-p1-nc]{9.4} 左图} & \multicolumn{3}{c}{图\hyperref[fig:chapter9-red-refined-p1-nc]{9.4} 右图}\\
+ & $\varphi_{l-1,0}^h$ & $\varphi_{l-1,1}^h$ & $\varphi_{l-1,2}^h$ & $\varphi_{l-1,0}^h$ & $\varphi_{l-1,1}^h$ & $\varphi_{l-1,2}^h$\\
+\hline
+$N_{l,0}^K$ & $1$ & $-\tfrac12$ & $\tfrac12$ & $\tfrac12$ & $\tfrac12$ & $0$\\
+$N_{l,1}^K$ & $\tfrac12$ & $0$ & $\tfrac12$ & $0$ & $\tfrac12$ & $\tfrac12$\\
+$N_{l,2}^K$ & $\tfrac12$ & $-\tfrac12$ & $1$ & $\tfrac12$ & $0$ & $\tfrac12$\\
+\end{tabular}
+\end{eleganttable}
+
+\begin{elegantfigure}[225.75pt]
+\includegraphics[width=225.75pt]{figures/Chapter_09/Fig_9_04__PDFp667__Bookp659.pdf}
+\captionof{figure}{红色加密三角形网格,$P_1^{\mathrm{nc}}(P(K))\to P_1^{\mathrm{nc}}(K)$.}
+\label{fig:chapter9-red-refined-p1-nc}
+\end{elegantfigure}
+
+将这些局部节点泛函代入延拓算子\hyperref[eq:chapter9-function-prolongation]{(9.4)},便得到标准的平均算子,见图\hyperref[fig:chapter9-prolongation-weights]{9.5}.图中方块表示待计算的 $V_l^h$ 自由度,圆圈表示 $V_{l-1}^h$ 的节点;标注的数值是对 $V_{l-1}^h$ 中相应节点处函数系数所用的权重.可以看到,图\hyperref[fig:chapter9-prolongation-weights]{9.5}左图中的延拓值,正是 $V_{l-1}^h$ 中有限元函数在该点的取值:将此函数限制到 $\mathcal T_{l-1}$ 中相邻三角形后,所得取值取平均即可.
+
+\begin{elegantfigure}[226.25pt]
+\includegraphics[width=226.25pt]{figures/Chapter_09/Fig_9_05__PDFp667__Bookp659.pdf}
+\captionof{figure}{红色加密三角形网格上,$P_1^{\mathrm{nc}}(P(K))\to P_1^{\mathrm{nc}}(K)$ 延拓所用的权重.}
+\label{fig:chapter9-prolongation-weights}
+\end{elegantfigure}
+
+\item \textbf{未加密的仿射映射四边形:$Q_{\mathrm{rot}}^1(P(K))\to Q_2(K)$.} 此时 $P(K)=K$.首先在 $Q_{\mathrm{rot}}^1(\widehat K)$ 中更换基.容易验证,式\hyperref[eq:appendix-b-22]{(B.22)}给出的 $Q_{\mathrm{rot}}^1(\widehat K)$ 局部基满足
+\[
+ \frac{1}{|\widehat E_i|}
+ \int_{\widehat E_i}\widehat\varphi_j^h\,\mathrm ds
+ =\delta_{ij},
+\]
+其中参考单元的边 $\widehat E_i$ 按逆时针方向编号,从底边开始.设 $K$ 是具有仿射参考变换的任意网格单元,且参考单元上的点 $(\widehat x_1,\widehat x_2)\in\widehat K$ 经映射后对应到 $K$ 中的点 $(x_1,x_2)$.相应基函数满足变换关系
+\[
+ \widehat\varphi^h(\widehat x_1,\widehat x_2)
+ =\varphi^h(x_1,x_2).
+\]
+因此,只需在参考单元上计算基函数取值,就能方便地得到变换后基函数在 $K$ 上的取值.仿射参考变换对应图\hyperref[fig:chapter9-rotated-q1-q2]{9.6}所示情形.$Q_2(K)$ 的局部节点泛函定义为 $Q_{\mathrm{rot}}^1(\widehat K)$ 局部基函数的点值.如前所述,这些点值可在参考单元 $\widehat K$ 上计算,所得结果与 $K$ 无关:
+
+\begin{eleganttable}[0.84\linewidth]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{5pt}
+\renewcommand{\arraystretch}{1.06}
+\begin{tabular}{c|rrrr}
+ & $\varphi_{l-1,0}^h|_K$ & $\varphi_{l-1,1}^h|_K$ & $\varphi_{l-1,2}^h|_K$ & $\varphi_{l-1,3}^h|_K$\\
+\hline
+$N_{l,0}^K$ & $\tfrac34$ & $-\tfrac14$ & $-\tfrac14$ & $\tfrac34$\\
+$N_{l,1}^K$ & $\tfrac98$ & $-\tfrac18$ & $\tfrac18$ & $-\tfrac18$\\
+$N_{l,2}^K$ & $\tfrac34$ & $\tfrac34$ & $-\tfrac14$ & $-\tfrac14$\\
+$N_{l,3}^K$ & $-\tfrac18$ & $\tfrac18$ & $-\tfrac18$ & $\tfrac98$\\
+$N_{l,4}^K$ & $\tfrac14$ & $\tfrac14$ & $\tfrac14$ & $\tfrac14$\\
+$N_{l,5}^K$ & $-\tfrac18$ & $\tfrac98$ & $-\tfrac18$ & $\tfrac18$\\
+$N_{l,6}^K$ & $-\tfrac14$ & $-\tfrac14$ & $\tfrac34$ & $\tfrac34$\\
+$N_{l,7}^K$ & $\tfrac18$ & $-\tfrac18$ & $\tfrac98$ & $-\tfrac18$\\
+$N_{l,8}^K$ & $-\tfrac14$ & $\tfrac34$ & $\tfrac34$ & $-\tfrac14$\\
+\end{tabular}
+\end{eleganttable}
+
+\begin{elegantfigure}[160.25pt]
+\includegraphics[width=160.25pt]{figures/Chapter_09/Fig_9_06__PDFp668__Bookp660.pdf}
+\captionof{figure}{未加密的仿射映射四边形,$Q_{\mathrm{rot}}^1(P(K))\to Q_2(K)$.}
+\label{fig:chapter9-rotated-q1-q2}
+\end{elegantfigure}
+
+实际计算中,双线性参考映射的情形也采用同一组数值.上述例子表明,局部节点泛函 $N_{l,i}^K\bigl(\varphi_{l-1,j}^h|_K\bigr)$ 的取值通常会在许多网格单元上重复出现.因此,可以在预处理阶段预先计算并存入数据库.计算延拓时,只需利用这些数值进行局部矩阵--向量乘法.采用这一策略可以加速延拓算子\hyperref[eq:chapter9-function-prolongation]{(9.4)}的计算.
+\end{itemize}
+\end{example}
+
+\index{节点泛函}
+\index{延拓算子}
+\index{多重网格方法!层间传递}
+
+
+\begin{note}[延拓后的更新]
+\label{note:chapter9-update-after-prolongation}
+设 $(\bm u_l^h,p_l^h)$ 是第 $l$ 层当前的迭代值,$(\delta\bm u_{l-1}^h,\delta p_{l-1}^h)$ 是在第 $l-1$ 层上计算得到的更新量.则第 $l$ 层的下一次迭代值为
+\[
+ (\bm u_l^h,p_l^h)+
+ \eta_l P_{l-1}^{l}(\delta\bm u_{l-1}^h,\delta p_{l-1}^h),
+\]
+其中 $\eta_l$ 为阻尼因子.实践中,速度和压力通常需要分别使用不同算子进行延拓.取 $\eta_l=1$ 往往效果良好;但有时较小的 $\eta_l$ 有助于提高方法的效率和稳健性.
+\end{note}
+
+\begin{note}[缺陷限制]
+\label{note:chapter9-defect-restriction}
+缺陷限制算子 $(R_0)_l^{l-1}:(V_l^h)'\to(V_{l-1}^h)'$ 的定义使用式\hyperref[eq:chapter9-function-prolongation]{(9.4)}中的延拓算子.设 $d_l\in(V_l^h)'$ 是给定的缺陷泛函,则将它限制到 $(V_{l-1}^h)'$ 的定义为
+\[
+ \int_\Omega (R_0)_l^{l-1}(d_l)\,\varphi_{l-1}^h\,\mathrm dx
+ =\int_\Omega d_l\,P_{l-1}^{l}(\varphi_{l-1}^h)\,\mathrm dx,
+ \qquad \forall\varphi_{l-1}^h\in V_{l-1}^h.
+\]
+由于延拓算子在许多情形下就是标准算子(见例题\hyperref[ex:chapter9-local-functional-evaluation]{9.16}),缺陷限制算子也具有这一性质.
+\end{note}
+
+\begin{note}[函数限制]
+\label{note:chapter9-function-restriction}
+如笔记\hyperref[note:chapter9-coarse-system-matrices]{9.13}所述,粗层系统矩阵将通过直接组装得到.线性化 Navier--Stokes 方程组中对流项的组装,以当前有限元速度 $\bm u_{\mathrm{old}}^h$ 为参数,因此需要能够在所有层级上获得该函数的适当限制.为此需要一个限制算子
+\[
+ R_l^{l-1}:V_l^h\longrightarrow V_{l-1}^h,
+\]
+将多层层级中第 $l$ 层有限元空间里的函数映射到第 $l-1$ 层的有限元空间.该算子的一种可能定义基于 $L^2(K)$ 意义下的局部投影与平均.
+
+分别用 $\{\varphi_{l,i}^h\}_{i=1}^{\dim(V_l^h)}$ 和 $\{\varphi_{l-1,i}^h\}_{i=1}^{\dim(V_{l-1}^h)}$ 表示 $V_l^h$ 和 $V_{l-1}^h$ 的基.给定 $v_l^h\in V_l^h$,目标是计算 $R_l^{l-1}(v_l^h)$.利用这两组基,可将 $v_l^h$ 及其限制表示为
+\[
+ v_l^h=\sum_{i=1}^{\dim(V_l^h)}v_{l,i}\varphi_{l,i}^h,
+ \qquad
+ R_l^{l-1}(v_l^h)=
+ \sum_{i=1}^{\dim(V_{l-1}^h)}v_{l-1,i}\varphi_{l-1,i}^h.
+\]
+
+考虑几何网格上一单元 $K$,它属于与 $V_{l-1}^h$ 对应的网格层级,并假设 $K$ 的参考变换是仿射的.未知系数 $v_{l-1,i}|_K$ 由局部 $L^2(K)$ 投影确定:
+\[
+\begin{aligned}
+ &\sum_{i=1}^{\operatorname{card}(I_l(K,V_l^h))}
+   v_{l,i}|_K\,(\varphi_{l,i}^h,\varphi_{l-1,j}^h)_K\\
+ &=\sum_{i=1}^{\operatorname{card}(I_{l-1}(K,V_{l-1}^h))}
+   v_{l-1,i}|_K\,(\varphi_{l-1,i}^h,\varphi_{l-1,j}^h)_K,
+ \qquad \forall j\in I_{l-1}(K,V_{l-1}^h),
+\end{aligned}
+\]
+其中 $I_l(V_l^h)$ 是 $V_l^h$ 的自由度指标集合,而
+\[
+ I_l(K,V_l^h)=\left\{i\in I_l(V_l^h):
+   \operatorname{supp}(\varphi_{l,i}^h)\cap\mathring K\ne\varnothing\right\}
+\]
+是与网格单元 $K$ 对应的局部自由度指标集合.
+
+将变量变换式\hyperref[eq:appendix-b-32]{(B.32)}用于参考单元 $\widehat K$,得
+\[
+\begin{aligned}
+ &\sum_{i=1}^{\operatorname{card}(I_l(K,V_l^h))}v_{l,i}|_K\\
+ &\quad\cdot\int_{\widehat K}
+   \widehat\varphi_{l,i}^h\widehat\varphi_{l-1,j}^h
+   |\det J_K(\widehat x)|\,\mathrm d\widehat x\\
+ &=\sum_{i=1}^{\operatorname{card}(I_{l-1}(K,V_{l-1}^h))}v_{l-1,i}|_K\\
+ &\quad\cdot\int_{\widehat K}
+   \widehat\varphi_{l-1,i}^h\widehat\varphi_{l-1,j}^h
+   |\det J_K(\widehat x)|\,\mathrm d\widehat x\\
+ &\qquad \forall j\in I_{l-1}(K,V_{l-1}^h).
+\end{aligned}
+\]
+由于 $|\det J_K(\widehat x)|$ 为常数,该关系可简化为
+\begin{equation}\label{eq:chapter9-local-projection-reference}
+\begin{aligned}
+ &\sum_{i=1}^{\operatorname{card}(I_l(K,V_l^h))}
+   v_{l,i}|_K\int_{\widehat K}
+   \widehat\varphi_{l,i}^h\widehat\varphi_{l-1,j}^h\,\mathrm d\widehat x\\
+ &=\sum_{i=1}^{\operatorname{card}(I_{l-1}(K,V_{l-1}^h))}
+   v_{l-1,i}|_K\int_{\widehat K}
+   \widehat\varphi_{l-1,i}^h\widehat\varphi_{l-1,j}^h\,\mathrm d\widehat x,
+ \qquad \forall j\in I_{l-1}(K,V_{l-1}^h).
+\end{aligned}
+\end{equation}
+因此得到形如
+\[
+ Gv_l|_K=Mv_{l-1}|_K
+\]
+的线性方程组,未知系数的局部值为
+\begin{equation}\label{eq:chapter9-local-restriction-matrix}
+ v_{l-1}|_K=M^{-1}Gv_l|_K=Rv_l|_K.
+\end{equation}
+矩阵 $R$ 与单元 $K$ 无关,因此也可用于参考单元上基函数形式相同的其他网格单元;这种情形十分常见.例如,在均匀加密且各层采用相同有限元空间时,每一层的每个网格单元都要用到矩阵 $R$.该矩阵可预先计算并存入数据库,随后只需执行局部矩阵--向量乘法,即可得到高效算法.最终的限制值通过平均得到:
+\[
+ v_{l-1,i}=\frac{1}{\operatorname{card}(\mathcal T_{l-1,i})}
+   \sum_{K\in\mathcal T_{l-1,i}}v_{l-1,i}|_K.
+\]
+
+对于参考变换非仿射的网格单元,也可以为简便起见使用式\hyperref[eq:chapter9-local-projection-reference]{(9.5)},并按与仿射单元相同的方式处理.这可以看作是在参考单元上作局部 $L^2(\widehat K)$ 投影,它近似于原网格单元上的 $L^2(K)$ 投影.
+\end{note}
+
+\begin{note}[通过局部问题求解进行光滑:Vanka 光滑子]
+\label{note:chapter9-vanka-smoother}
+用于线性化 Navier--Stokes 方程组的耦合多重网格方法通常采用局部光滑子,称为 Vanka 型光滑子,参见\textcite{Vanka1986}.Vanka 型光滑子可视为块 Gauss--Seidel 方法.设 $\mathcal V^h$ 和 $\mathcal Q^h$ 分别为速度和压力自由度集合,将这两个集合分解为
+\begin{equation}\label{eq:chapter9-vanka-dof-partition}
+ \mathcal V^h=\bigcup_{j=1}^{J}\mathcal V_j^h,
+ \qquad
+ \mathcal Q^h=\bigcup_{j=1}^{J}\mathcal Q_j^h.
+\end{equation}
+这些子集不要求互不相交.
+
+令 $W_j^h=\mathcal V_j^h\cup\mathcal Q_j^h$.记 $\mathcal A_j$ 为系统矩阵 $\mathcal A$ 中与 $W_j^h$ 的自由度相连的块,即取 $\mathcal A$ 中全局指标属于 $W_j^h$ 的行与列所形成的交块:
+\[
+ \mathcal A_j=
+ \begin{pmatrix}A_j&D_j\\B_j&0\end{pmatrix}
+ \in\mathbb{R}^{\dim(W_j^h)\times\dim(W_j^h)}.
+\]
+类似地,记 $(\cdot)_j$ 为将向量限制到与 $W_j^h$ 自由度相对应的行上.Vanka 型光滑子的每一步都要遍历所有集合 $W_j^h$,并对每个 $W_j^h$ 求解由该集合自由度构成的局部方程组.局部解按 Gauss--Seidel 方式更新.Vanka 光滑子通过下式计算新的速度和压力值:
+\[
+ \begin{pmatrix}\bm u\\p\end{pmatrix}_j
+ :=\begin{pmatrix}\bm u\\p\end{pmatrix}_j
+ +\mathcal A_j^{-1}
+   \left(
+      \begin{pmatrix}\bm f\\f_p\end{pmatrix}
+      -\mathcal A\begin{pmatrix}\bm u\\p\end{pmatrix}
+   \right)_j.
+\]
+局部线性系统通常用直接求解器求解.
+
+选择集合 $\mathcal V_j^h$ 和 $\mathcal Q_j^h$ 的一般策略如下:首先,选取一些压力自由度,以此确定 $\mathcal Q_j^h$;其次,将所有通过矩阵 $B$ 的稀疏结构与 $\mathcal Q_j^h$ 中压力自由度相连的速度自由度收集起来,构成 $\mathcal V_j^h$.
+\end{note}
+
+\index{Vanka 光滑子}
+\index{光滑子!Vanka}
+
+
+\begin{example}[(不连续压力空间对的网格单元型 Vanka 光滑子)]
+\label{ex:chapter9-mesh-cell-vanka}
+对于网格单元型 Vanka 光滑子,$\mathcal Q_j^h$ 由与网格单元 $j$ 相连的所有压力自由度组成.这种 Vanka 光滑子中的 $J$ 等于网格单元总数.网格单元型 Vanka 光滑子通常用于压力采用不连续近似的离散方法,即
+$\mathcal Q^h\in\{P_0,Q_0,P_1^{\mathrm{disc}},P_2^{\mathrm{disc}}\}$.此时,$\mathcal V_j^h$ 包含与网格单元 $j$ 相连的所有速度自由度.
+
+\begin{eleganttable}[0.94\linewidth]
+\centering
+\captionof{table}{网格单元型 Vanka 光滑子的局部系统自由度数(速度列按每个分量计).}
+\label{tab:chapter9-mesh-cell-vanka-dofs}
+\scriptsize
+\setlength{\tabcolsep}{3.2pt}
+\renewcommand{\arraystretch}{1.12}
+\begin{tabular}{c|rrr|rrr}
+\multicolumn{1}{c|}{有限元空间对} & \multicolumn{3}{c|}{二维} & \multicolumn{3}{c}{三维}\\
+ & 速度 & 压力 & 总计 & 速度 & 压力 & 总计\\
+\hline
+$Q_{\mathrm{rot}}^1/Q_0$ & 4 & 1 & 9 & 6 & 1 & 19\\
+$Q_2/P_1^{\mathrm{disc}}$ & 9 & 3 & 21 & 27 & 4 & 85\\
+$Q_3/P_2^{\mathrm{disc}}$ & 16 & 6 & 38 & 64 & 10 & 202\\
+$P_1^{\mathrm{nc}}/P_0$ & 3 & 1 & 7 & 4 & 1 & 13\\
+\end{tabular}
+\end{eleganttable}
+
+对于采用不连续压力离散的情形,网格单元型 Vanka 光滑子的局部矩阵可在当前网格单元上生成.局部系统的规模可预先确定;若干离散方法的自由度数见表\hyperref[tab:chapter9-mesh-cell-vanka-dofs]{9.1}.
+\end{example}
+
+\index{Vanka 光滑子!网格单元型}
+
+
+\begin{example}[(连续压力空间对的压力节点型 Vanka 光滑子)]
+\label{ex:chapter9-pressure-node-vanka}
+对于压力连续的空间,通常采用如下分解:每个 $\mathcal Q_j^h$ 只包含一个压力自由度,即 $\dim(\mathcal Q_j^h)=1$.这种压力节点型 Vanka 光滑子的子集数 $J$ 等于压力自由度数.
+
+对于连续压力近似,给定网格单元 $K$ 上的压力自由度通常会与其他网格单元上的速度自由度相连.
+
+连续压力近似下,压力节点型 Vanka 光滑子的局部系统规模取决于具体的压力自由度和给定网格.采用自适应网格加密时,该规模还无法先验地给出上界,因为它取决于单元 $K$ 的最大相邻单元数;与 $K$ 相邻是指网格单元 $K_1$ 满足 $\overline K\cap\overline{K_1}\ne\varnothing$.在自适应加密网格上,单元 $K$ 的最大相邻单元数可能增加.图\hyperref[fig:chapter9-pressure-node-vanka]{9.7}所示的典型情形对应的具体局部系统规模列于表\hyperref[tab:chapter9-pressure-node-vanka-dofs]{9.2}.可以看到,与压力采用不连续近似时的网格单元型 Vanka 光滑子相比,压力节点型 Vanka 光滑子的局部系统规模大得多,参见表\hyperref[tab:chapter9-mesh-cell-vanka-dofs]{9.1}.此外,每一步光滑中需要求解的局部系统通常也更多,因为压力自由度数一般多于网格单元数.
+
+\begin{eleganttable}[0.94\linewidth]
+\centering
+\captionof{table}{图\hyperref[fig:chapter9-pressure-node-vanka]{9.7}中压力自由度对应的压力节点型 Vanka 光滑子局部系统自由度数(速度列按每个分量计).}
+\label{tab:chapter9-pressure-node-vanka-dofs}
+\scriptsize
+\setlength{\tabcolsep}{3.2pt}
+\renewcommand{\arraystretch}{1.12}
+\begin{tabular}{c|rrr|rrr}
+\multicolumn{1}{c|}{有限元空间对} & \multicolumn{3}{c|}{二维} & \multicolumn{3}{c}{三维}\\
+ & 速度 & 压力 & 总计 & 速度 & 压力 & 总计\\
+\hline
+$Q_2/Q_1$ & 25 & 1 & 51 & 125 & 1 & 376\\
+$Q_3/Q_2$ & 49 & 1 & 99 & 343 & 1 & 1030\\
+$P_2/P_1$ & 19 & 1 & 39 & 65 & 1 & 196\\
+$P_3/P_2$ & 37 & 1 & 75 & 175 & 1 & 526\\
+\end{tabular}
+\end{eleganttable}
+
+\begin{elegantfigure}[281pt]
+\includegraphics[width=281pt]{figures/Chapter_09/Fig_9_07__PDFp673__Bookp665.pdf}
+\captionof{figure}{表\hyperref[tab:chapter9-pressure-node-vanka-dofs]{9.2}列出了图中压力自由度对应的压力节点型 Vanka 光滑子局部系统规模(右下图:沿两个方向各含 6 个四面体,沿另外六个方向各含 2 个四面体;因此与该压力自由度相连的四面体共 24 个).}
+\label{fig:chapter9-pressure-node-vanka}
+\end{elegantfigure}
+\end{example}
+
+\index{Vanka 光滑子!压力节点型}
+
+
+\begin{note}[光滑子迭代的阻尼]
+\label{note:chapter9-smoother-damping}
+有时对光滑子迭代值作阻尼会更有利.设 $(\bm u_l,p_l)$ 是第 $l$ 层的当前迭代值,$(\delta\bm u_l,\delta p_l)$ 是由一次光滑子迭代得到的更新量,则新的迭代值为
+\[
+ (\bm u_l,p_l)+\Omega_l(\delta\bm u_l,\delta p_l).
+\]
+多重网格层级的不同层上可以选取不同的阻尼参数.除了采用固定阻尼因子 $\Omega_l$ 外,有时采用\textcite{JohnTobiska2000}提出的自动步长控制也很有帮助.
+\end{note}
+
+\begin{note}[粗网格求解器]
+\label{note:chapter9-coarse-grid-solver}
+粗网格求解器可以采用 Vanka 光滑子或直接求解器.若采用 Vanka 光滑子,通常需要比细网格上更多的迭代次数,往往约为 $10$--$50$ 次.
+\end{note}
+
+\begin{note}[耦合多重网格方法作为求解器或预条件子]
+\label{note:chapter9-coupled-multigrid-as-preconditioner}
+耦合多重网格方法既可用作求解器,也可用作预条件子.经验表明,将其用作预条件子更为高效,例如\textcite{John2002}中的讨论.此时预条件子不是固定矩阵,而是一种数值方法,因此应将其用于灵活 Krylov 子空间方法,例如 FGMRES,见笔记\hyperref[note:chapter9-iterative-solvers]{9.6}.\textcite{John2002,John2006}以及本书中的模拟均采用了右预条件 FGMRES.
+\end{note}
+
+\subsection{分别处理速度与压力的预条件子}
+\label{sec:chapter9-decoupled-preconditioners}
+
+\begin{note}[动机]
+\label{note:chapter9-decoupled-motivation}
+由于式\hyperref[eq:chapter9-coupled-system]{(9.1)}中的系统矩阵具有块结构,许多标准线性系统求解方法或预条件子的直接应用会变得困难.为此,人们开发了一类预条件子,分别求解压力系统和速度各分量的系统.这些独立的系统不含块结构,因此可以采用标准求解器与预条件子.这类方法有时称为分离式格式.
+\end{note}
+
+\index{分离式格式}
+\index{预条件子!分别处理速度与压力}
+
+\input{chapters/ch09-3}

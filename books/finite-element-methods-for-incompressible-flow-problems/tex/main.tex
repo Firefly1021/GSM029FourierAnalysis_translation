@@ -1,0 +1,100 @@
+\PassOptionsToPackage{citestyle=authoryear,bibstyle=authoryear}{biblatex}
+\makeatletter
+\def\input@path{{../template/}}
+\makeatother
+\documentclass[traditional=false,draftmark=false,colors=true,fontsetup=feec-fonts.tex,titlesetup=titles-setup.tex]{AJbook}
+\usepackage{ajbook-page-layout}
+\usepackage{ajbook-cover}
+\usepackage[unicode,bookmarksnumbered]{hyperref}
+\usepackage{import-compatibility}
+\usepackage{caption}
+\captionsetup{hypcap=false}
+\usepackage{needspace}
+\usepackage[noautomatic]{imakeidx}
+\AtBeginDocument{%
+  \def\crefpairconjunction{和}%
+  \def\crefmiddleconjunction{、}%
+  \def\creflastconjunction{和}%
+  \def\crefrangeconjunction{至}%
+}
+
+\setcounter{tocdepth}{3}
+\setcounter{secnumdepth}{3}
+\setlength{\emergencystretch}{2em}
+
+\hypersetup{
+  pdftitle={不可压缩流问题的有限元方法},
+  pdfauthor={Volker John},
+  bookmarksopen=true,
+  bookmarksnumbered=true,
+  unicode=true,
+  linktoc=all,
+  hyperindex=true
+}
+
+\addbibresource{references/references.bib}
+\makeindex[title=索引,columns=2,intoc=true]
+% The class loads hyperref before imakeidx, so restore linked index pages
+% explicitly after imakeidx installs its own index writer.
+\makeatletter
+\let\codex@originalindex\index
+\renewcommand\index[2][]{%
+  \if\relax\detokenize{#1}\relax
+    \ifstrequal{#2}{超收敛}
+      {\codex@originalindex{#2|ImportedSuperconvergencePage}}%
+      {\codex@originalindex{#2|hyperpage}}%
+  \else
+    \codex@originalindex[#1]{#2|hyperpage}%
+  \fi}
+\newcommand\indexsee[2]{\codex@originalindex{#1|see{#2}}}
+\makeatother
+
+% ElegantBook recommends fixed-position captions rather than figure floats.
+\NewDocumentEnvironment{elegantfigure}{O{0.9\linewidth}}
+  {\par\medskip\begingroup\noindent\centering\begin{minipage}{#1}\centering}
+  {\end{minipage}\par\endgroup\medskip}
+\NewDocumentEnvironment{eleganttable}{O{\linewidth}}
+  {\par\medskip\noindent\begin{minipage}{#1}\centering}
+  {\end{minipage}\par\medskip}
+
+\newcommand{\ImportedFrontMatter}{%
+  \let\SavedBookContents\tableofcontents
+  \let\tableofcontents\relax
+  \frontmatter
+  \let\tableofcontents\SavedBookContents
+}
+\ExecuteBibliographyOptions{backref=false,sorting=nyt}
+\begin{document}
+\hypersetup{pageanchor=false}
+\input{frontmatter/cover.tex}
+\hypersetup{pageanchor=true}
+\ImportedFrontMatter
+\chapter*{前言}
+\input{chapters/preface}
+\tableofcontents
+\mainmatter
+\input{chapters/ch01}
+\input{chapters/ch02}
+\input{chapters/ch03}
+\input{chapters/ch04}
+\input{chapters/ch05}
+\input{chapters/ch06}
+\input{chapters/ch07}
+\input{chapters/ch08}
+\input{chapters/ch09}
+\appendix
+\input{appendices/appA}
+\input{appendices/appB}
+\input{appendices/appC}
+\input{appendices/appC4}
+\input{appendices/appD}
+\input{appendices/appD5}
+\input{appendices/appD7}
+\input{appendices/appD12}
+\backmatter
+% Retain the source bibliography's 2006a/2006b entries so the cited 2006c
+% work keeps its original year suffix.
+\nocite{Gravemeier2006a,Gravemeier2006b}
+\printbibliography[heading=bibintoc,title={参考文献}]
+\printindex
+\end{document}

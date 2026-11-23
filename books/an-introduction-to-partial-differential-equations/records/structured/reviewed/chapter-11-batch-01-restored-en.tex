@@ -1,0 +1,257 @@
+\section{Energy Methods for Evolution Problems}\label{chap:energy-methods-evolution-problems}
+
+\subsection{Parabolic Equations}\label{sec:parabolic-equations}
+
+In this section, we shall consider evolution problems of the form\[u_t=A(t)u,\]where $u$ depends on $t\in[0,T]$ and $\bm{x}\in\Omega\subset\mathbb{R}^n$, and $A(t)$ is some elliptic differential operator. We shall formulate such problems as abstract evolution problems in a Hilbert space, such as $L^2(\Omega)$. In order to do so, we must first introduce spaces of functions whose values are in a Banach space.
+
+\subsubsection{Banach Space Valued Functions and Distributions}\label{subsec:banach-valued-functions-distributions}
+
+Let $X$ be a Banach space, and let $I$ be an interval (more generally, $I$ could also be a set in $\mathbb{R}^n$). We define $C(I,X)$ to be the bounded continuous functions of the form
+\begin{equation}\label{eq:banach-valued-continuous-function-domain}
+\mathbb{R}\supset I\ni t\mapsto u(t)\in X.
+\end{equation}
+We equip this space with the norm
+\begin{equation}\label{eq:banach-valued-continuous-function-sup-norm}
+\|u\|=\sup_{t\in I}\|u(t)\|_X.
+\end{equation}
+The space $C^n(I,X)$ contains functions whose derivatives (in $I$) up to order $n$ are in $C(I,X)$.
+
+\begin{Example}
+\label{ex:banach-valued-time-spatial-functions}
+What we have in mind here is letting functions of both space and time,\[\mathbb{R}\times\mathbb{R}^n\supset I\times\Omega\ni(t,\bm{x})\mapsto u(t,\bm{x})\in\mathbb{R},\]be thought of as a collection of functions of space parameterized by time. For instance, the function described above might be of the form\[\mathbb{R}\supset I\in t\mapsto u(t,\cdot)\in L^2(\Omega).\]Note that a function in, say $C([0,1],L^2(\Omega))$ need not be continuous in $\bm{x}$. It needs only be true that any two ``snapshots\textquotesingle\textquotesingle\ of the function at nearby times be close in $L^2(\Omega)$. For example, if $v\in L^2(\Omega)$ and $g\in C^n(I)$, then\[u(t,\bm{x}):=g(t)v(\bm{x})\]is in $C^n(I,L^2(\Omega))$ no matter how many discontinuities $v$ has.
+\end{Example}
+
+We now let $I$ be an open interval and define $\mathcal{D}(I,X)$ to be the space of all $C^\infty$-functions from $I$ to $X$ which have compact support in $I$. A notion of convergence in $\mathcal{D}(I,X)$ is defined analogously as in Chapter~\ref{chap:distributions}; i.e., a sequence converges if the supports are contained in a common compact subset of $I$ and all derivatives converge uniformly.\par Let $X^*$ be the dual space of $X$. Then we denote the set of continuous linear mappings from $\mathcal{D}(I,X)$ to the field of scalars (i.e., $\mathbb{R}$ or $\mathbb{C}$) by $\mathcal{D}^{\prime}(I,X^*)$. We refer to the elements of $\mathcal{D}^{\prime}(I,X^*)$ as $X^*$-valued distributions. It is clear that $C(I,X^*)$ is contained in $\mathcal{D}^{\prime}(I,X^*)$. Moreover, the definitions of distributional derivatives are easily extended to Banach space valued distributions.
+
+We can now define $L^p(I,X)$ to be the completion of $C(I,X)$ with respect to the norm
+\begin{equation}\label{eq:banach-valued-lp-completion-norm}
+\|u\|=\left(\int_I\|u(t)\|_X^p\,\mathrm{d}t\right)^{1/p}.
+\end{equation}
+Clearly, the elements of $L^p(I,X)$ are $X^{**}$-valued distributions. Also, we can define Sobolev spaces of $X$-valued functions just as before. In most applications, $X$ will be a Hilbert space. In this case, the density, extension, imbedding (except for compactness of imbeddings), and trace theorems can be established the same way as for scalar-valued functions, and we shall use them without restating and proving those theorems.\par For a reflexive Banach space $X$, we shall use the notation $L^\infty(I,X)$ to denote the dual space of $L^1(I,X^*)$.
+
+\begin{Example}
+\label{ex:time-spatial-function-spaces-norms}
+Let $\Omega\subset\mathbb{R}^n$ be a domain and let $T>0$ be given. The space $C([0,T],L^2(\Omega))$ has the norm
+\begin{equation}\label{eq:time-continuous-ltwo-spatial-function-norm}
+\|u\|=\sup_{t\in[0,T]}\left\{\int_\Omega|u(\bm{x},t)|^2\,\mathrm{d}\bm{x}\right\}^{1/2}.
+\end{equation}
+The space $L^2((0,T),L^2(\Omega))$ has the norm
+\begin{equation}\label{eq:time-ltwo-ltwo-spatial-function-norm}
+\|u\|=\left\{\int_0^T\left[\int_\Omega|u(\bm{x},t)|^2\,\mathrm{d}\bm{x}\right]\,\mathrm{d}t\right\}^{1/2}.
+\end{equation}
+The space $H^1((0,T),L^2(\Omega))$ has the norm
+\begin{equation}\label{eq:time-hone-ltwo-spatial-function-norm}
+\|u\|=\left\{\int_0^T\left[\int_\Omega|u(\bm{x},t)|^2+|u_t(\bm{x},t)|^2\,\mathrm{d}\bm{x}\right]\,\mathrm{d}t\right\}^{1/2}.
+\end{equation}
+The space $L^2((0,T),H^{-1}(\Omega))$ has the norm
+\begin{equation}\label{eq:time-ltwo-negative-spatial-sobolev-norm}
+\|u\|=\left\{\int_0^T\left[\sup_{\substack{\phi\in H_0^1(\Omega)\\\|\phi\|_{1,2}=1}}\int_\Omega u(\bm{x},t)\phi(\bm{x})\,\mathrm{d}\bm{x}\right]^2\,\mathrm{d}t\right\}^{1/2}.
+\end{equation}
+
+\end{Example}
+
+\subsubsection{Abstract Parabolic Initial-Value Problems}\label{subsec:abstract-parabolic-initial-value-problems}
+
+We consider a separable real Hilbert space $H$ and another separable Hilbert space $V$, which is continuously and densely imbedded in $H$. We identify $H$ with its own dual space; the dual of $V$ is denoted by $V^*$. Thus we have $V\subset H\subset V^*$ with continuous and dense imbeddings. (For example, we could take $H_0^1(\Omega)\subset L^2(\Omega)\subset H^{-1}(\Omega)$.) We shall use the same notation $(\cdot,\cdot)$ for the inner product in $H$ and for the pairing between $V^*$ and $V$. We assume that $A(t)\in\mathcal{L}(V,V^*)$ depends continuously on $t\in[0,T]$. With $A(t)$, we can associate the parameterized quadratic form
+\begin{equation}\label{eq:abstract-parabolic-parameterized-quadratic-form}
+a(t,u,v)=-(A(t)u,v)
+\end{equation}
+defined on $\mathbb{R}\times V\times V$. We assume that this form satisfies the coercivity condition
+\begin{equation}\label{eq:abstract-parabolic-form-coercivity}
+a(t,u,u)\geq a\|u\|_V^2-b\|u\|_H^2,
+\end{equation}
+with positive constants $a$ and $b$ which are independent of $t\in[0,T]$.
+
+We now consider the evolution problem
+\begin{equation}\label{eq:abstract-parabolic-evolution-initial-value-problem}
+\dfrac{\mathrm{d}u}{\mathrm{d}t}=A(t)u+f(t),\quad u(0)=u_0.
+\end{equation}
+We shall establish the following result.
+
+\begin{Theorem}
+\label{thm:abstract-parabolic-existence-uniqueness}
+Let $H$, $V$ and $A(t)$ be as above. Assume that the functions $f\in L^2((0,T),V^*)$ and $u_0\in H$ are given. Then \eqref{eq:abstract-parabolic-evolution-initial-value-problem} has a unique solution $u\in L^2((0,T),V)\cap H^1((0,T),V^*)$.
+\end{Theorem}
+
+In this result, the differential equation in \eqref{eq:abstract-parabolic-evolution-initial-value-problem} is of course interpreted in the sense of $V^*$-valued distributions. Moreover, by the Sobolev imbedding theorem, we have $u\in C([0,T],V^*)$, which allows us to interpret the initial condition. Indeed, we can say more.
+
+\begin{Lemma}
+\label{lem:parabolic-energy-space-hilbert-continuity}
+Suppose that $u\in L^2((0,T),V)\cap H^1((0,T),V^*)$. Then, in fact, $u\in C([0,T],H)$.
+\end{Lemma}
+
+This shows that Theorem~\ref{thm:abstract-parabolic-existence-uniqueness} is optimal; i.e., if we want a solution with the regularity guaranteed by the theorem, then the assumptions which we made on $f$ and $u_0$ are necessary.\par We now prove the lemma.
+
+\begin{Proof}
+First, let $u$ be in $C^1([0,T],H)$. We then obtain the estimate
+\begin{equation}\label{eq:parabolic-energy-space-continuity-identity}
+\|u(t)\|_H^2=\|u(t^*)\|^2+2\int_{t^*}^t(\dot u(s),u(s))\,\mathrm{d}s.
+\end{equation}
+We now choose $t^*$ in such a way that $\|u(t^*)\|^2$ is equal to the mean value of $\|u(t)\|^2$; moreover, we estimate $(\dot u,u)$ by $\|\dot u\|_{V^*}\|u\|_V$. In this fashion, we obtain
+\begin{equation}\label{eq:parabolic-energy-space-continuity-integral-bound}
+\|u(t)\|_H^2\leq\dfrac{1}{T}\int_0^T\|u(t)\|_H^2\,\mathrm{d}t+2\int_0^T\|\dot u\|_{V^*}\|u\|_V\,\mathrm{d}t.
+\end{equation}
+Using Cauchy-Schwarz, we conclude
+\begin{equation}\label{eq:parabolic-energy-space-hilbert-continuous-bound}
+\max_{t\in[0,T]}\|u(t)\|_H^2\leq\dfrac{1}{T}\|u\|_{L^2((0,T),H)}^2+2\|u\|_{H^1((0,T),V^*)}\|u\|_{L^2((0,T),V)}.
+\end{equation}
+The rest follows by a density argument.
+\end{Proof}
+
+We now turn to the proof of the theorem. Without loss of generality, we assume that the constant $b$ in \eqref{eq:abstract-parabolic-form-coercivity} is zero; we can always achieve this by the substitution $u=v\exp(bt)$.\par We first prove uniqueness. Let $u$ be a solution. Using \eqref{eq:abstract-parabolic-evolution-initial-value-problem}, we take the inner product with $u$ and integrate from 0 to $T$. This yields
+\begin{equation}\label{eq:abstract-parabolic-solution-energy-identity}
+\dfrac{1}{2}(\|u(T)\|_H^2-\|u_0\|_H^2)+\int_0^T a(t,u,u)\,\mathrm{d}t=\int_0^T(f,u)\,\mathrm{d}t.
+\end{equation}
+Combining this with condition \eqref{eq:abstract-parabolic-evolution-initial-value-problem} leads to an a priori estimate of the form
+\begin{equation}\label{eq:abstract-parabolic-solution-apriori-bound}
+\|u\|_{L^2((0,T),V)}\leq C(\|f\|_{L^2((0,T),V^*)}+\|u_0\|_H).
+\end{equation}
+From this and linearity, uniqueness of solutions is obvious.
+
+The realization that a priori estimates like \eqref{eq:abstract-parabolic-solution-apriori-bound} can indeed be used as a foundation of existence proofs rather than just uniqueness was one of the milestones in the modern theory of PDEs. We have already encountered this idea (in the form of Galerkin\textquotesingle s method) in the proof of the Browder-Minty theorem in Chapter~\ref{chap:nonlinear-elliptic-equations}. More generally, the technique proceeds as follows. One first constructs a family of approximate problems for which an a priori estimate analogous to \eqref{eq:abstract-parabolic-solution-apriori-bound} holds, but which are easily shown to have solutions. This yields a sequence of approximate solutions, for which one has uniform bounds. Uniform bounds imply the existence of a weakly convergent subsequence. One then shows that the weak limit is the solution we seek.
+
+To carry out this program for the abstract parabolic problem above, we need a set $\{\phi_n\mid n\in\mathbb{N}\}$ of linearly independent elements of $V$ such that the linear span of the $\phi_n$ is dense in $V$. Let $V_n$ be the span of $\phi_1,\phi_2,\ldots,\phi_n$ and let $P_n$ be the orthogonal projection from $H$ (not $V$!) onto $V_n$. Let now $u_n(t)=\sum_{i=1}^n\alpha_i(t)\phi_i$ be the solution of the following problem:
+\begin{equation}\label{eq:abstract-parabolic-galerkin-ode-system}
+\begin{gathered}\left(\dfrac{\mathrm{d}u_n}{\mathrm{d}t},\phi_i\right)=(A(t)u_n,\phi_i)+(f(t),\phi_i),\quad i=1,\ldots,n,\\u_n(0)=P_nu_0.\end{gathered}
+\end{equation}
+The system \eqref{eq:abstract-parabolic-galerkin-ode-system} is simply a system of linear ODEs for the coefficients $\alpha_i(t)$, which clearly has a unique solution. In complete analogy to \eqref{eq:abstract-parabolic-solution-energy-identity}, we obtain
+\begin{equation}\label{eq:abstract-parabolic-galerkin-energy-identity}
+\dfrac{1}{2}(\|u_n(T)\|_H^2-\|P_nu_0\|_H^2)+\int_0^T a(t,u_n,u_n)\,\mathrm{d}t=\int_0^T(f,u_n)\,\mathrm{d}t.
+\end{equation}
+From this, we obtain an a priori bound (independent of $n$) for the norm of $u_n$ in $L^2((0,T),\allowbreak V)$. Hence a subsequence converges, weakly in $L^2((0,T),\allowbreak V)$, to a limit $u$. Let $\phi\in\mathcal{D}((0,T),V)$ be of the form
+\begin{equation}\label{eq:abstract-parabolic-finite-span-time-test-function}
+\phi(t)=\sum_{i=1}^N\beta_i(t)\phi_i
+\end{equation}
+for some $N$, where $\beta_i\in\mathcal{D}((0,T),\mathbb{R})$. For $n\geq N$, we have
+\begin{equation}\label{eq:abstract-parabolic-galerkin-finite-test-identity}
+\left(\dfrac{\mathrm{d}u_n}{\mathrm{d}t},\phi\right)=(A(t)u_n,\phi)+(f,\phi);
+\end{equation}
+integrating in time and passing to the limit we find
+\begin{equation}\label{eq:abstract-parabolic-galerkin-distributional-limit}
+\int_0^T\left(\dfrac{\mathrm{d}u}{\mathrm{d}t},\phi\right)\,\mathrm{d}t=\int_0^T(A(t)u,\phi)+(f,\phi)\,\mathrm{d}t.
+\end{equation}
+Since test functions of the form \eqref{eq:abstract-parabolic-finite-span-time-test-function} are dense in $\mathcal{D}((0,T),V)$, it follows that \eqref{eq:abstract-parabolic-evolution-initial-value-problem} holds in the sense of $V^*$-valued distributions. In particular, this implies that $u\in H^1((0,T),V^*)$ and hence $u\in C([0,T],H)$.
+
+Consider now, more generally, $\phi\in H^1((0,T),V)$ with the property that $\phi(T)=0$. Again, functions of the form \eqref{eq:abstract-parabolic-finite-span-time-test-function} are dense in this space of functions. Moreover, if $\phi$ has the form \eqref{eq:abstract-parabolic-finite-span-time-test-function} and $n\geq N$, then
+\begin{equation}\label{eq:abstract-parabolic-galerkin-initial-trace-identity}
+-\int_0^T(u_n(t),\dot\phi(t))\,\mathrm{d}t-(u_n(0),\phi(0))=\int_0^T(A(t)u_n(t)+f(t),\phi(t))\,\mathrm{d}t.
+\end{equation}
+In the limit we find
+\begin{equation}\label{eq:abstract-parabolic-limit-prescribed-initial-value}
+-\int_0^T(u(t),\dot\phi(t))\,\mathrm{d}t-(u_0,\phi(0))=\int_0^T(A(t)u(t)+f(t),\phi(t))\,\mathrm{d}t.
+\end{equation}
+If, on the other hand, we multiply \eqref{eq:abstract-parabolic-evolution-initial-value-problem} by $\phi$ and integrate, we find
+\begin{equation}\label{eq:abstract-parabolic-limit-solution-initial-value}
+-\int_0^T(u(t),\dot\phi(t))\,\mathrm{d}t-(u(0),\phi(0))=\int_0^T(A(t)u(t)+f(t),\phi(t))\,\mathrm{d}t.
+\end{equation}
+By comparing \eqref{eq:abstract-parabolic-limit-prescribed-initial-value} and \eqref{eq:abstract-parabolic-limit-solution-initial-value}, we conclude that $u(0)=u_0$.
+
+\subsubsection{Applications}\label{subsec:parabolic-pde-applications}
+
+\begin{Example}
+\label{ex:parabolic-divergence-dirichlet-problem}
+Let $H=L^2(\Omega)$, $V=H_0^1(\Omega)$ and
+\begin{equation}\label{eq:parabolic-dirichlet-spatial-divergence-operator}
+A(t)u=\dfrac{\partial}{\partial x_j}\left(a_{ij}(\bm{x},t)\dfrac{\partial u}{\partial x_i}\right)+b_i(\bm{x},t)\dfrac{\partial u}{\partial x_i}+c(\bm{x},t)u.
+\end{equation}
+If the coefficients are continuous and the matrix $a_{ij}$ is strictly positive definite, then the assumptions above apply (cf. Theorem~\ref{thm:garding-elliptic-energy-inequality}). This yields an existence result for the initial/boundary-value problem
+\begin{equation}\label{eq:parabolic-dirichlet-initial-boundary-value-problem}
+\begin{aligned}
+\dfrac{\partial u}{\partial t}&=\dfrac{\partial}{\partial x_j}\left(a_{ij}(\bm{x},t)\dfrac{\partial u}{\partial x_i}\right)+b_i(\bm{x},t)\dfrac{\partial u}{\partial x_i}+c(\bm{x},t)u+f(\bm{x},t),\\
+&\hspace{3em}\bm{x}\in\Omega,\ t\in(0,T),\\
+u(\bm{x},t)&=0,\ \bm{x}\in\partial\Omega,\ t\in(0,T),\\
+u(\bm{x},0)&=u_0(\bm{x}),\ \bm{x}\in\Omega.
+\end{aligned}
+\end{equation}
+Here we have to assume $f\in L^2((0,T),H^{-1}(\Omega))$, $u_0\in L^2(\Omega)$.
+\end{Example}
+
+\begin{Example}
+\label{ex:biharmonic-parabolic-clamped-problem}
+Let $H=L^2(\Omega)$, $V=H_0^2(\Omega)$ and $Au=-\Delta\Delta u$. Then the associated quadratic form is $a(u,u)=(\Delta u,\Delta u)$. By using the elliptic regularity results for Laplace\textquotesingle s equation (see Chapter~\ref{chap:linear-elliptic-equations}), it can be shown that this quadratic form is equivalent to the inner product in $H_0^2(\Omega)$, provided $\partial\Omega$ is sufficiently smooth (say of class $C^2$) and $\Omega$ is bounded. Again the result above is applicable, yielding an existence result for the problem
+\begin{equation}\label{eq:biharmonic-parabolic-clamped-initial-boundary-problem}
+\begin{aligned}u_t&=-\Delta\Delta u,\ \bm{x}\in\Omega,\ t\in(0,T),\\u&=\dfrac{\partial u}{\partial n}=0,\ \bm{x}\in\partial\Omega,\ t\in(0,T),\\u(\bm{x},0)&=u_0(\bm{x}),\ \bm{x}\in\Omega.\end{aligned}
+\end{equation}
+
+\end{Example}
+
+\begin{Example}
+\label{ex:parabolic-natural-boundary-problem}
+Let
+\begin{equation}\label{eq:parabolic-natural-boundary-quadratic-form}
+a(t,u,v)=\int_\Omega a_{ij}(\bm{x},t)\dfrac{\partial u}{\partial x_i}\dfrac{\partial v}{\partial x_j}-b_i(\bm{x},t)\dfrac{\partial u}{\partial x_i}v-c(\bm{x},t)uv\,\mathrm{d}\bm{x}.
+\end{equation}
+We assume that the coefficients are continuous on $\overline\Omega\times[0,T]$ and that the matrix $a_{ij}$ is strictly positive definite. We choose $V=H^1(\Omega)$ and $H=L^2(\Omega)$. Let $A(t)$ be the operator from $V$ to $V^*$ defined by $(A(t)u,v)=-a(t,u,v)$. Again the assumptions of the theorem above are satisfied. That is, for every $u_0\in L^2(\Omega)$ and every $f\in L^2((0,T),V^*)$ we have a unique solution of the problem $\dot u=A(t)u+f$ with initial condition $u(0)=u_0$. Since, however, $V^*$ is not a space of distributions on $\Omega$, we have to think a little about the interpretation of this equation. If $\Omega$ is smooth enough, then every function in $H^1(\Omega)$ has a trace on $\partial\Omega$, which lies in $H^{1/2}(\partial\Omega)$. If, for instance, we take $g\in L^2(\Omega)$ and $h\in H^{-1/2}(\partial\Omega)$, then the functional $g\oplus h$ defined by
+\begin{equation}\label{eq:parabolic-natural-boundary-sum-functional}
+(g\oplus h,v)=(g,v)+\int_{\partial\Omega}h(\bm{x})v(\bm{x})\,\mathrm{d}S
+\end{equation}
+is certainly in $V^*$. Let us assume that $f(t)$ has this form. Then, formally, we have\[\begin{aligned}
+(A(t)u+f(t),v)&=-a(t,u,v)+(g,v)+\int_{\partial\Omega}h(\bm{x})v(\bm{x})\,\mathrm{d}S\\
+&=-\int_\Omega a_{ij}(\bm{x},t)\dfrac{\partial u}{\partial x_i}\dfrac{\partial v}{\partial x_j}-b_i(\bm{x},t)\dfrac{\partial u}{\partial x_i}v-c(\bm{x},t)uv\,\mathrm{d}\bm{x}\\
+&\quad+(g,v)+\int_{\partial\Omega}h(\bm{x})v(\bm{x})\,\mathrm{d}S\\
+&=\int_\Omega\left(\dfrac{\partial}{\partial x_j}\left(a_{ij}(\bm{x},t)\dfrac{\partial u}{\partial x_i}\right)+b_i(\bm{x},t)\dfrac{\partial u}{\partial x_i}+c(\bm{x},t)u+g(\bm{x},t)\right)v\,\mathrm{d}\bm{x}\\
+&\quad+\int_{\partial\Omega}\left(-a_{ij}(\bm{x},t)n_j(\bm{x})\dfrac{\partial u}{\partial x_i}+h(\bm{x},t)\right)v(\bm{x})\,\mathrm{d}S.
+\end{aligned}\]In a formal or ``generalized\textquotesingle\textquotesingle\ sense, $u$ is therefore a solution of the PDE
+\begin{equation}\label{eq:parabolic-natural-boundary-interior-equation}
+\dfrac{\partial u}{\partial t}=\dfrac{\partial}{\partial x_j}\left(a_{ij}(\bm{x},t)\dfrac{\partial u}{\partial x_i}\right)+b_i(\bm{x},t)\dfrac{\partial u}{\partial x_i}+c(\bm{x},t)u+g(\bm{x},t)
+\end{equation}
+with boundary condition
+\begin{equation}\label{eq:parabolic-natural-conormal-boundary-condition}
+a_{ij}(\bm{x},t)n_j(\bm{x})\dfrac{\partial u}{\partial x_i}=h(\bm{x},t).
+\end{equation}
+A stricter interpretation of the boundary condition requires higher regularity, since the expression in \eqref{eq:parabolic-natural-conormal-boundary-condition} does not exist in the sense of trace if only $u\in H^1$ is assumed.
+\end{Example}
+
+\subsubsection{Regularity of Solutions}\label{subsec:parabolic-solution-regularity}
+
+The usual way of proving regularity for solutions of evolution problems such as \eqref{eq:abstract-parabolic-evolution-initial-value-problem} is to first establish temporal regularity and then use elliptic estimates for the operator $A$ to show spatial regularity. Let $\mathcal{D}(A)$ denote the domain of $A$ as an unbounded operator in $H$, i.e., $\mathcal{D}(A)=\{u\in V\mid Au\in H\}$. Assume now that $u_0\in\mathcal{D}(A(0))$ and that $f\in H^1((0,T),V^*)\cap L^2((0,T),V)$. Moreover, let us assume that $A\in C^1([0,T],\mathcal{L}(V,V^*))$. We can then formally differentiate equation \eqref{eq:abstract-parabolic-evolution-initial-value-problem} with respect to time. This yields
+\begin{equation}\label{eq:parabolic-formally-differentiated-evolution-problem}
+\ddot u=A(t)\dot u+\dot A(t)u+\dot f(t),\quad\dot u(0)=A(0)u_0+f(0).
+\end{equation}
+
+
+We now consider $\dot u$ as a new variable $v$ and consider the evolution problem
+\begin{equation}\label{eq:parabolic-time-derivative-auxiliary-problem}
+\dot v=A(t)v+(\dot A(t)u+\dot f(t)),\quad v(0)=A(0)u_0+f(0).
+\end{equation}
+We now have $\dot A(t)u+\dot f(t)\in L^2((0,T),V^*)$ and $A(0)u_0+f(0)\in H$ according to our assumptions. Hence Theorem~\ref{thm:abstract-parabolic-existence-uniqueness} is applicable and \eqref{eq:parabolic-time-derivative-auxiliary-problem} has a solution $v\in H^1((0,T),V^*)\cap L^2((0,T),V)$. Below we shall prove that actually $v=\dot u$. Once this is known, it follows that $u\in H^1((0,T),V)\cap H^2((0,T),V^*)$. Moreover, the equation $\dot u=A(t)u+f(t)$ implies that $A(t)u\in H^1((0,T),V^*)\cap L^2((0,T),V)$. In concrete examples where $A$ is an elliptic operator, this implies further spatial regularity of $u$ (see Problem~\ref{ex:parabolic-regularity-applications}).
+
+It remains to give a rigorous justification that $v$ is really equal to $\dot u$. For this, set
+\begin{equation}\label{eq:parabolic-time-regularity-integrated-auxiliary-solution}
+z(t)=u_0+\int_0^t v(\tau)\,\mathrm{d}\tau.
+\end{equation}
+We conclude that $\dot z=v$ and\[\begin{aligned}
+A(t)z(t)&=A(t)u_0+\int_0^t A(t)v(\tau)\,\mathrm{d}\tau\\
+&=\int_0^t A(\tau)v(\tau)\,\mathrm{d}\tau+\int_0^t(A(t)-A(\tau))v(\tau)\,\mathrm{d}\tau+A(t)u_0\\
+&=v(t)-v(0)-f(t)+f(0)-\int_0^t\dot A(\tau)u(\tau)\,\mathrm{d}\tau\\
+&\quad+\int_0^t\dot A(\tau)z(\tau)\,\mathrm{d}\tau-(A(t)-A(0))u_0+A(t)u_0\\
+&=v(t)-f(t)+\int_0^t\dot A(\tau)(z(\tau)-u(\tau))\,\mathrm{d}\tau.
+\end{aligned}\]With $w$ denoting $z-u$, we thus obtain
+\begin{equation}\label{eq:parabolic-time-regularity-volterra-difference-problem}
+\dot w=A(t)w-\int_0^t\dot A(\tau)w(\tau)\,\mathrm{d}\tau,\quad w(0)=0.
+\end{equation}
+We take the inner product with $w$ and integrate. This yields
+\begin{equation}\label{eq:parabolic-time-regularity-volterra-energy-identity}
+\begin{aligned}\dfrac{1}{2}(w(t),w(t))+\int_0^t a(s,w(s),w(s))\,\mathrm{d}s&=-\int_0^t\left(\int_0^s\dot A(\tau)w(\tau)\,\mathrm{d}\tau,w(s)\right)\,\mathrm{d}s\end{aligned}
+\end{equation}
+for every $t\in[0,T]$. From this it is easy to show that $w=0$; see Problem~\ref{ex:parabolic-volterra-energy-zero-solution}.
+
+\Needspace{5\baselineskip}\textbf{Problems}
+
+\begin{enumerate}[label=\thesection.\arabic*.,ref=\thesection.\arabic*,start=1,series=book-problems]
+
+\item\label{ex:banach-valued-sobolev-generalization-obstructions} As mentioned in the introduction to this section, the main results on Sobolev spaces can be generalized to Hilbert space valued functions with essentially the same proofs. Where do problems arise when one wants to consider Banach space valued functions?
+
+\item\label{ex:spectral-square-root-parabolic-space-choices} Let $A$ be a self-adjoint, strictly negative definite operator in a Hilbert space $K$. Assume that $A$ has a compact resolvent and let $-\lambda_n$ be the eigenvalues of $A$ and $\phi_n$ the corresponding eigenfunctions. We define $(-A)^{1/2}$ as follows:
+\begin{equation}\label{eq:negative-self-adjoint-operator-spectral-square-root}
+(-A)^{1/2}\sum_{i=1}^\infty\alpha_i\phi_i=\sum_{i=1}^\infty\alpha_i\lambda_i^{1/2}\phi_i.
+\end{equation}
+Formulate and prove existence results for the problem\[\dot u=Au+f(t),\quad u(0)=u_0,\]based on the following choices: (a) $H=K$, $V=\mathcal{D}((-A)^{1/2})$, (b) $H=\mathcal{D}((-A)^{1/2})$, $V=\mathcal{D}(A)$.
+
+\item\label{ex:biharmonic-parabolic-alternative-boundary-spaces} In Example~\ref{ex:biharmonic-parabolic-clamped-problem}, consider the choice $V=H_0^1(\Omega)\cap H^2(\Omega)$ instead of $H_0^2(\Omega)$. To which boundary conditions does this correspond? Can one also choose $V=H^2(\Omega)$?
+
+\item\label{ex:parabolic-regularity-applications} Apply the regularity results of Section~\ref{subsec:parabolic-solution-regularity} to the examples in Section~\ref{subsec:parabolic-pde-applications}.
+
+\item\label{ex:parabolic-volterra-energy-zero-solution} Use \eqref{eq:parabolic-time-regularity-volterra-energy-identity} to show that $w=0$.
+
+\end{enumerate}

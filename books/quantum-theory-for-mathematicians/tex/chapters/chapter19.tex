@@ -1,0 +1,823 @@
+\chapter{系统与子系统,多粒子}
+\label{chap:systems-subsystems}
+\index{密度矩阵}
+\index{纯态}
+\index{混合态}
+\index{部分迹}
+
+\section{引言}
+\label{sec:systems-subsystems-intro}
+
+到目前为止,我们一直把量子系统的状态看作相应 Hilbert 空间中的单位向量;更准确地说,是关于等价关系
+\[
+ \psi\sim e^{i\theta}\psi
+\]
+的单位向量等价类.本章将看到,这种状态概念过于狭窄.我们将引入一种更一般的状态概念,用密度矩阵描述系统的状态.系统可以用单位向量描述的特殊情形称为纯态.
+
+要看出把状态限定为单位向量为何不够,可以考察系统与子系统.我们将在第~\ref{sec:composite-systems-tensor} 节更详细地研究这个主题;现在先考虑由两个无自旋、“可区分”的粒子组成的系统,它们在 $\mathbb R^3$ 中运动.(暂时不必纠结“可区分粒子”的含义;只需把它们想成两种不同类型的粒子,例如质量或电荷不同.)假设两个粒子的联合状态可以用相应 Hilbert 空间中的单位向量描述.按照第~\ref{sec:multiple-particles-distinguishable} 节,这个空间是 $L^2(\mathbb R^6)$.因此,我们有一个波函数 $\psi(x,y)$,其中 $x$ 是第一粒子的位置,$y$ 是第二粒子的位置.
+
+给定联合系统的波函数 $\psi(x,y)$,怎样得到只描述第一粒子状态的波函数？如果联合系统的波函数恰好是乘积,例如
+\[
+ \psi(x,y)=\psi_1(x)\psi_2(y),
+\]
+那么自然会说,第一粒子的状态就是 $\psi_1$.当然,也可以把 $\psi$ 改写成
+\[
+ \psi(x,y)=[c\psi_1(x)][\psi_2(y)/c]
+\]
+其中 $c$ 是任意常数;但这只会使第一粒子的波函数乘上一个常数,并不改变物理状态.
+
+然而,一般而言,联合系统的波函数不必是乘积.即使
+\[
+ \psi(x,y)=\psi_1(x)\psi_2(y)+\phi_1(x)\phi_2(y)
+\]
+是两个乘积的线性组合,也很难说清正确的第一粒子波函数是什么.乍看之下,似乎可以尝试 $\psi_1(x)+\phi_1(x)$;但仔细看就会发现,这个提议并不明确.毕竟同一个 $\psi(x,y)$ 也可以写成
+\[
+ [c_1\psi_1(x)][\psi_2(y)/c_1]+[c_2\phi_1(x)][\phi_2(y)/c_2],
+\]
+于是得到的第一粒子波函数 $\psi_1(x)+\phi_1(x)$ 与 $c_1\psi_1(x)+c_2\phi_1(x)$ 并不一定互为标量倍数.对于 $L^2(\mathbb R^6)$ 中的一般单位向量 $\psi$,情形会更加棘手.结论是:似乎不存在一种办法,能把 $\psi$ 关联到 $L^2(\mathbb R^3)$ 中的某个一般单位向量 $\psi'$,并且合理地把 $\psi'$ 称为“第一粒子的状态”.
+
+虽然不能把 $\psi$ 关联到第一粒子的某个波函数 $\psi'$,但计算与第一粒子有关的可观测量的期望值却毫无困难.例如,第一粒子位置的期望值完全可以定义为
+\[
+ \langle\psi,X_j^{(1)}\psi\rangle
+ =\int_{\mathbb R^6}x_j|\psi(x,y)|^2\,dx\,dy.
+\]
+这里 $X_j^{(1)}$ 表示乘以第一粒子位置向量第 $j$ 个分量的算子.也就是说,若 $X_j$ 是作用于 $L^2(\mathbb R^3)$ 的算子,那么可以把它“提升”为作用于 $L^2(\mathbb R^6)$ 的算子,让它只作用在第一个变量上.类似地,$L^2(\mathbb R^3)$ 上的动量算子 $P_j$ 可以提升为 $L^2(\mathbb R^6)$ 上的 $P_j^{(1)}$,其作用就是对第一变量的第 $j$ 个分量求偏导,再乘以 $-i\hbar$.事实上,正如第~\ref{sec:composite-systems-tensor} 节所述,$L^2(\mathbb R^3)$ 上任意自伴算子都有一种自然方式可以提升为 $L^2(\mathbb R^6)$ 上的算子,因而可以在后者中定义它的期望值.
+
+因此,虽然没有自然办法把 $L^2(\mathbb R^6)$ 中的单位向量 $\psi$ 关联到 $L^2(\mathbb R^3)$ 中的单位向量,却有自然办法把 $L^2(\mathbb R^3)$ 上可观测量的期望值关联到 $\psi$.这提示我们,应当引入一种更一般的“量子系统状态”概念,使每一族“合理的”量子可观测量期望值都对应一个量子状态.事实证明,这种概念就是密度矩阵,即迹为 $1$ 的正自伴算子.
+
+在第~\ref{sec:density-matrices} 节,我们引入密度矩阵.该节中的定理~\ref{thm:density-matrix-characterization} 将说明:给定一族合理地赋予可观测量期望值的映射 $\Phi$,存在唯一密度矩阵 $\rho$,使得对所有可观测量 $A$,
+\[
+ \Phi(A)=\operatorname{tr}(\rho A).
+\]
+如果系统的状态由 Hilbert 空间中的单位向量 $\psi$ 给出,那么 $\rho$ 就是投影到 $\psi$ 所张成空间上的正交投影,而 $\operatorname{tr}(\rho A)$ 恰好等于熟悉的表达式 $\langle\psi,A\psi\rangle$.在第~\ref{sec:composite-systems-tensor} 节,我们考察复合量子系统,并介绍从整体系统的密度矩阵为子系统定义密度矩阵的方法,即部分迹.最后,在第~\ref{sec:multiple-particles-identical} 节讨论由多个相同粒子组成的复合系统这一重要特殊情形.
+
+\section{迹类算子与 Hilbert--Schmidt 算子}
+\label{sec:trace-class-hilbert-schmidt}
+
+本节探讨 Hilbert 空间上算子的迹以及与之相关的概念.本节结果不加证明地给出;证明和更多信息见文献 [34] 第一卷第 VI 章.
+
+\begin{proposition}[非负算子的迹与正交归一基无关]\label{prop:trace-positive-basis-independent}
+设 $A\in B(\mathcal H)$ 是非负自伴算子.若 $\{e_j\}$ 与 $\{f_j\}$ 是 $\mathcal H$ 的两组正交归一基,则
+\[
+ \sum_j\langle e_j,Ae_j\rangle
+ =\sum_j\langle f_j,Af_j\rangle.
+\]
+\end{proposition}
+
+注意,由于 $A$ 非负,$\langle e_j,Ae_j\rangle$ 与 $\langle f_j,Af_j\rangle$ 都是非负实数.因此这些和总是有定义的,但取值可能为 $+\infty$.
+
+\begin{definition}[迹与迹类算子]\label{def:trace-class}
+若 $A\in B(\mathcal H)$ 是非负自伴算子,则对任意选定的正交归一基 $\{e_j\}$,数
+\[
+ \operatorname{tr}(A)=\sum_j\langle e_j,Ae_j\rangle
+\]
+称为 $A$ 的迹.如果 $\operatorname{tr}(A)<+\infty$,则称 $A$ 为迹类算子.
+
+对一般的 $A\in B(\mathcal H)$,如果非负自伴算子 $A^*A$ 是迹类的,则也称 $A$ 为迹类算子.
+\end{definition}
+
+注意,对任意 $A\in B(\mathcal H)$,$A^*A$ 都是自伴且非负的.因此可以用函数演算定义 $\sqrt{A^*A}$(见定义~\ref{def:functional-calculus} 或命题~\ref{thm:spectral-theorem-first}).
+
+\begin{proposition}[迹类算子的基本性质]\label{prop:trace-class-properties}
+\begin{enumerate}
+\item 如果 $A\in B(\mathcal H)$ 是迹类算子,那么对任意正交归一基 $\{e_j\}$,级数 $\sum_j\langle e_j,Ae_j\rangle$ 绝对收敛;我们记这个和为 $\operatorname{tr}(A)$,并且它与正交归一基的选择无关.
+\item 如果 $A$ 是迹类算子,那么 $A^*$ 也是迹类算子,并且
+\[
+ \operatorname{tr}(A^*)=\overline{\operatorname{tr}(A)}.
+\]
+\item 如果 $A$ 是迹类算子,$B\in B(\mathcal H)$,那么 $AB$ 与 $BA$ 也是迹类算子,并且
+\[
+ \operatorname{tr}(AB)=\operatorname{tr}(BA).
+\]
+\end{enumerate}
+\end{proposition}
+
+回忆一下,如果算子 $A$ 把 $\mathcal H$ 中每个有界集映到一个相对紧集,那么称 $A$ 为紧算子.若自伴算子 $A$ 是迹类的,则它必然是紧算子,因而存在由特征向量组成的正交归一基 $\{e_j\}$;相应特征值 $\lambda_j$ 为实数,并在 $j\to\infty$ 时趋于零.(见文献 [34] 第一卷的定理 VI.16.也可以从有界自伴算子谱定理的直积分解形式出发,验证除非 $A$ 有趋于零的点谱,否则直积分解中的乘法算子 $\lambda$ 不可能是紧的.)命题~\ref{prop:trace-class-properties} 第 1 点于是告诉我们
+\[
+ \sum_j|\lambda_j|<\infty,\qquad
+ \operatorname{tr}(A)=\sum_j\lambda_j.
+\]
+反过来,如果自伴算子 $A$ 有一组由特征向量组成的正交归一基,且对应特征值满足 $\sum_j|\lambda_j|<\infty$,那么 $A$ 是迹类算子.
+
+\begin{definition}[Hilbert--Schmidt 算子]\label{def:hilbert-schmidt}
+若 $A\in B(\mathcal H)$ 满足
+\[
+ \operatorname{tr}(A^*A)<\infty,
+\]
+则称 $A$ 为 Hilbert--Schmidt 算子.
+\end{definition}
+
+由于 $A^*A$ 自伴且非负,$\operatorname{tr}(A^*A)$ 对任意 $A\in B(\mathcal H)$ 都有定义,不过可能为无穷大.如果 $A$ 是迹类算子,那么根据定义 $\sqrt{A^*A}$ 的迹有限;由命题~\ref{prop:trace-class-properties} 第 3 点,$\sqrt{A^*A}\sqrt{A^*A}=A^*A$ 的迹也有限.因此每个迹类算子都是 Hilbert--Schmidt 算子,但反之不成立.
+
+\begin{proposition}[Hilbert--Schmidt 算子的乘积]\label{prop:hilbert-schmidt-products}
+如果 $A\in B(\mathcal H)$ 是 Hilbert--Schmidt 算子,那么 $A^*$ 也是 Hilbert--Schmidt 算子.如果 $A,B\in B(\mathcal H)$ 都是 Hilbert--Schmidt 算子,那么 $AB$ 与 $BA$ 是迹类算子,并且
+\[
+ \operatorname{tr}(AB)=\operatorname{tr}(BA).
+\]
+\end{proposition}
+
+若 $A,B$ 是 Hilbert--Schmidt 算子,则称
+\[
+ \langle A,B\rangle_{\mathrm{HS}}
+ :=\operatorname{tr}(A^*B)
+\]
+为 $A,B$ 的 Hilbert--Schmidt 内积,并定义
+\[
+ \|A\|_{\mathrm{HS}}=\sqrt{\langle A,A\rangle_{\mathrm{HS}}}.
+\]
+Hilbert--Schmidt 算子空间在该内积下是一个 Hilbert 空间.
+
+\section{密度矩阵:量子系统状态的一般概念}
+\label{sec:density-matrices}
+
+通常,我们把希望取期望值的量子可观测量看作无界自伴算子.当然,也可以对有界自伴算子取期望值;事实上,有界算子的期望值决定了无界算子的期望值.设 $A$ 是无界自伴算子,并假设我们知道对每个 Borel 集 $E\subset\mathbb R$,投影 $\mathbf 1_E(A)$ 的期望值,其中 $\mathbf 1_E$ 是指标函数,而 $\mathbf 1_E(A)$ 由函数演算定义(定义~\ref{def:functional-calculus}).$\mathbf 1_E(A)$ 的期望值就是测量可观测量 $A$ 时结果落在 $E$ 中的概率.如果知道每个 $E$ 的这个概率,就知道测量的完整概率分布,从而可以计算 $A$ 的期望值.此外,我们总可以为(有界的)非自伴算子引入期望值.每个这样的算子都可以写成 $A=A_1+iA_2$,其中 $A_1,A_2$ 自伴;因此,可以合理地把 $A$ 的期望值定义为 $A_1$ 的期望值加上 $i$ 倍 $A_2$ 的期望值.
+
+于是我们假设,量子系统的“一般状态”应当只是所有有界算子期望值的一张“列表”,并满足一些合理条件.
+
+\begin{definition}[期望值族]\label{def:family-expectation-values}
+线性映射 $\Phi:B(\mathcal H)\to\mathbb C$ 称为一族期望值,如果满足:
+\begin{enumerate}
+\item $\Phi(I)=1$;
+\item 当 $A$ 自伴时,$\Phi(A)$ 为实数;
+\item 当 $A$ 自伴且非负时,$\Phi(A)\ge0$;
+\item 对 $B(\mathcal H)$ 中任意序列 $A_n$,如果对所有 $\psi\in\mathcal H$ 都有 $\|A_n\psi-A\psi\|\to0$,则 $\Phi(A_n)\to\Phi(A)$.
+\end{enumerate}
+\end{definition}
+
+定义中的第 4 点说,$\Phi$ 关于 $B(\mathcal H)$ 中的强(序列)收敛连续.由练习 3,满足第 1、2、3 点的 $B(\mathcal H)$ 上线性映射自动关于算子范数拓扑连续,即若 $\|A_n-A\|\to0$,则 $\Phi(A_n)\to\Phi(A)$.但是,为了用密度矩阵刻画期望值族,需要 $\Phi$ 关于更一般的收敛连续,只假设对每个 $\psi$ 有 $\|A_n\psi-A\psi\|\to0$.这种更强的连续性并不能从性质 1–3 推出.练习 5 给出了 $B(\mathcal H)$ 上一个满足定义~\ref{def:family-expectation-values} 第 1–3 点、但不满足第 4 点的线性泛函.
+
+\begin{definition}[密度矩阵]\label{def:density-matrix}
+算子 $\rho\in B(\mathcal H)$ 称为密度矩阵,如果 $\rho$ 自伴且非负,并且
+\[
+ \operatorname{tr}(\rho)=1.
+\]
+\end{definition}
+
+当然,因为密度矩阵的迹有限,所以每个密度矩阵都是迹类算子.下面两个结果将精确刻画期望值族与密度矩阵之间的关系.
+
+\begin{proposition}[密度矩阵给出期望值族]\label{prop:density-matrix-expectation}
+设 $\rho$ 是 $\mathcal H$ 上的密度矩阵.则映射
+\[
+ \Phi_\rho:B(\mathcal H)\to\mathbb C,\qquad
+ \Phi_\rho(A)=\operatorname{tr}(\rho A)=\operatorname{tr}(A\rho)
+\]
+是一族期望值.
+\end{proposition}
+
+\begin{proof}
+定义 $\Phi_\rho(A)=\operatorname{tr}(\rho A)$.则 $\Phi_\rho(I)=\operatorname{tr}(\rho)=1$.对任意 $A\in B(\mathcal H)$,
+\[
+ \operatorname{tr}(\rho A^*)=\operatorname{tr}(A^*\rho)
+ =\operatorname{tr}((\rho A)^*)=\overline{\operatorname{tr}(\rho A)}.
+\]
+因此当 $A$ 自伴时,$\operatorname{tr}(\rho A)$ 为实数.令 $\rho^{1/2}$ 为 $\rho$ 的非负自伴平方根.$\rho^{1/2}$ 与 $A\rho^{1/2}$ 都是 Hilbert--Schmidt 算子(后者由命题~\ref{prop:trace-class-properties} 第 3 点得到).由命题~\ref{prop:hilbert-schmidt-products},
+\[
+ \operatorname{tr}(A\rho^{1/2}\rho^{1/2})
+ =\operatorname{tr}(\rho^{1/2}A\rho^{1/2}).
+\]
+因此,当 $A$ 自伴且非负时,
+\[
+ \operatorname{tr}(\rho A)
+ =\operatorname{tr}(\rho^{1/2}\rho^{1/2}A)
+ =\operatorname{tr}(\rho^{1/2}A\rho^{1/2})\ge0,\label{eq:density-positive}
+\]
+因为 $\rho^{1/2}A\rho^{1/2}$ 自伴且非负.这就证明了 $\Phi_\rho$ 满足第 1、2、3 点.
+
+现在假设对每个 $\psi\in\mathcal H$,$A_n\psi$ 在范数下收敛于 $A\psi$.于是,对每个固定的 $\psi$,$\|A_n\psi\|$ 作为 $n$ 的函数有界;由一致有界原理(定理~\ref{app:thm:uniform-boundedness}),存在常数 $C$ 使 $\|A_n\|\le C$.若 $\{e_j\}$ 是 $\mathcal H$ 的一组正交归一基,则
+\[
+ \left|\left\langle e_j,\rho^{1/2}A_n\rho^{1/2}e_j\right\rangle\right|
+ =\left|\left\langle\rho^{1/2}e_j,A_n\rho^{1/2}e_j\right\rangle\right|
+ \le C\|\rho^{1/2}e_j\|^2,
+\]
+并且
+\[
+ \sum_j\|\rho^{1/2}e_j\|^2
+ =\sum_j\langle e_j,\rho e_j\rangle
+ =\operatorname{tr}(\rho)<\infty.
+\]
+此外,对每个 $j$,$A_n(\rho^{1/2}e_j)$ 收敛到 $A(\rho^{1/2}e_j)$,所以由控制收敛定理,
+\[
+\begin{aligned}
+ \operatorname{tr}(\rho^{1/2}A\rho^{1/2})
+ &=\sum_j\langle e_j,\rho^{1/2}A\rho^{1/2}e_j\rangle\\
+ &=\lim_{n\to\infty}\sum_j\langle e_j,\rho^{1/2}A_n\rho^{1/2}e_j\rangle\\
+ &=\lim_{n\to\infty}\operatorname{tr}(\rho^{1/2}A_n\rho^{1/2}).
+\end{aligned}
+\]
+像式~\eqref{eq:density-positive} 那样,把迹中的第二个 $\rho^{1/2}$ 移到最前面,就得到定义~\ref{def:family-expectation-values} 的第 4 点.
+\end{proof}
+
+\begin{theorem}[期望值族的密度矩阵刻画]\label{thm:density-matrix-characterization}
+对任意一族期望值 $\Phi:B(\mathcal H)\to\mathbb C$,存在唯一密度矩阵 $\rho$,使得对所有 $A\in B(\mathcal H)$,
+\[
+ \Phi(A)=\operatorname{tr}(\rho A).
+\]
+\end{theorem}
+
+\begin{proof}
+回忆第~\ref{sec:physics-notation} 节的 Dirac 记号.算子 $|\phi\rangle\langle\psi|$ 表示把任意 $\chi\in\mathcal H$ 映到向量
+\[
+ |\phi\rangle\langle\psi|\chi\rangle
+ =\langle\psi,\chi\rangle\phi.
+\]
+如果存在具有所需性质的算子 $\rho$,那么由练习 2 必须有
+\[
+ \langle\psi,\rho\phi\rangle
+ =\Phi(|\phi\rangle\langle\psi|).
+\]
+
+由练习 3,$\Phi$ 满足 $|\Phi(A)|\le\|A\|$.因此映射
+\[
+ L_\Phi(\phi,\psi):=\Phi(|\phi\rangle\langle\psi|)
+\]
+是有界半双线性型,故由命题~\ref{app:prop:quadratic-operator},存在唯一有界算子 $\rho$,使
+\[
+ \Phi(|\phi\rangle\langle\psi|)
+ =\langle\psi,\rho\phi\rangle.
+\]
+由于 $|\phi\rangle\langle\phi|$ 自伴且非负,$L_\Phi(\phi,\phi)$ 是实数且非负,这意味着 $\rho$ 自伴且非负.
+
+另一方面,设 $\{e_j\}$ 是 $\mathcal H$ 的一组正交归一基.由定义~\ref{def:trace-class},
+\[
+\begin{aligned}
+ \operatorname{tr}(\rho)
+ &=\lim_{N\to\infty}\sum_{j=1}^N\langle e_j,\rho e_j\rangle\\
+ &=\lim_{N\to\infty}\Phi\!\left(\sum_{j=1}^N|e_j\rangle\langle e_j|\right)\\
+ &=\Phi(I)=1.
+\end{aligned}
+\]
+从第二行到第三行用到了定义~\ref{def:family-expectation-values} 的第 4 点.因此 $\rho$ 是密度矩阵.
+
+我们已经找到密度矩阵 $\rho$,使得对所有 $\phi,\psi\in\mathcal H$,
+\[
+ \Phi(|\phi\rangle\langle\psi|)
+ =\operatorname{tr}(\rho|\phi\rangle\langle\psi|).
+\]
+由线性性,对所有有限秩算子 $A$ 都有 $\Phi(A)=\operatorname{tr}(\rho A)$(见练习 4).现在设 $\{e_j\}$ 是正交归一基,$P_N$ 是投影到 $e_1,\ldots,e_N$ 张成空间上的正交投影.对任意 $A\in B(\mathcal H)$,$P_NA$ 是有限秩算子,并且对所有 $\psi\in\mathcal H$,$P_NA\psi\to A\psi$.于是
+\[
+ \Phi(A)=\lim_{N\to\infty}\Phi(P_NA)
+ =\lim_{N\to\infty}\operatorname{tr}(\rho P_NA)
+ =\operatorname{tr}(\rho A),
+\]
+最后一步由命题~\ref{prop:density-matrix-expectation} 得到.
+
+唯一性也很直接:若 $\rho_1,\rho_2$ 都满足结论,则对任意 $\phi,\psi$,
+\[
+ \langle\psi,(\rho_1-\rho_2)\phi\rangle
+ =\operatorname{tr}((\rho_1-\rho_2)|\phi\rangle\langle\psi|)=0,
+\]
+故 $\rho_1=\rho_2$.
+\end{proof}
+
+\begin{proposition}[单位向量与纯态]\label{prop:unit-vector-pure-state}
+对任意 Hilbert 空间 $\mathcal H$ 中的单位向量 $\psi$,令 $|\psi\rangle\langle\psi|$ 表示投影到 $\psi$ 所张成空间上的正交投影.则 $|\psi\rangle\langle\psi|$ 是密度矩阵,并且对所有 $A\in B(\mathcal H)$,
+\[
+ \operatorname{tr}(|\psi\rangle\langle\psi|A)
+ =\langle\psi,A\psi\rangle.
+\]
+\end{proposition}
+
+注意,如果 $\psi_2=e^{i\theta}\psi_1$,那么
+\[
+ |\psi_1\rangle\langle\psi_1|
+ =|\psi_2\rangle\langle\psi_2|.
+\]
+因此,从新的观点看,$\psi_1,\psi_2$ 表示同一个“物理状态”的原因,是它们确定了同一个密度矩阵.
+
+\begin{proof}
+由于 $|\psi\rangle\langle\psi|$ 是正交投影,它有界、自伴且非负.为了计算其迹,取一组满足 $e_1=\psi$ 的正交归一基 $\{e_j\}$,得到 $\operatorname{tr}(|\psi\rangle\langle\psi|)=1$.使用同一组正交归一基,对任意 $A\in B(\mathcal H)$,
+\[
+ \operatorname{tr}(|\psi\rangle\langle\psi|A)
+ =\sum_j\langle e_j,\psi\rangle\langle\psi,Ae_j\rangle
+ =\langle\psi,A\psi\rangle.
+\]
+\end{proof}
+
+\begin{definition}[纯态与混合态]\label{def:pure-mixed-state}
+密度矩阵 $\rho\in B(\mathcal H)$ 称为纯态,如果存在单位向量 $\psi\in\mathcal H$,使 $\rho$ 等于投影到 $\psi$ 所张成空间上的正交投影.如果不存在这样的单位向量,则称 $\rho$ 为混合态.
+\end{definition}
+
+一个初始处于纯态的孤立系统在之后的所有时刻都仍处于纯态,因为初态 $\psi_0$ 会演化为纯态
+\[
+ e^{-it\widehat H/\hbar}\psi_0,
+\]
+其中 $\widehat H$ 是系统的 Hamilton 算子.但是,如果系统与环境相互作用,那么正如第~\ref{sec:composite-systems-tensor} 节所述,系统在稍后的时刻可能进入混合态.
+
+刻画纯态在密度矩阵集合中的位置有几种不同方法.首先,不难证明(练习 6),密度矩阵 $\rho$ 是纯态,当且仅当
+\[
+ \operatorname{tr}(\rho^2)=1.
+\]
+其次,密度矩阵的集合是凸集:若 $\rho_1,\rho_2$ 非负且迹为 $1$,则对 $0<\lambda<1$,$\lambda\rho_1+(1-\lambda)\rho_2$ 也非负且迹为 $1$.根据练习 7,纯态恰好是这个凸集的极点.也就是说,密度矩阵 $\rho$ 是纯态,当且仅当它不能写成
+\[
+ \rho=\lambda\rho_1+(1-\lambda)\rho_2,
+\]
+其中 $\rho_1,\rho_2$ 是不同的密度矩阵,且 $0<\lambda<1$.第三,可以用函数演算定义密度矩阵 $\rho$ 的 von Neumann 熵
+\[
+ S(\rho)=\operatorname{tr}(-\rho\log\rho).
+\]
+这里 $\rho\log\rho$ 由函数演算定义;由于 $\lim_{\lambda\to0^+}\lambda\log\lambda=0$,我们约定 $0\log0=0$.由于 $\rho$ 的特征值都介于 $0$ 与 $1$ 之间,$-\rho\log\rho$ 是非负自伴算子,其迹有定义,但可能取 $+\infty$.根据练习 8,密度矩阵 $\rho$ 是纯态,当且仅当 $S(\rho)=0$.
+
+设两个纯态分别来自单位向量 $\psi_1,\psi_2$.对相应的量子状态取叠加,也就是线性组合,有两种不同含义.沿用旧观点,把状态看作 $\mathcal H$ 中的向量,那么可以取线性组合 $c_1\psi_1+c_2\psi_2$,再把它归一化为单位向量.采用新观点,把状态看作密度矩阵,那么可以取
+\[
+ c_1|\psi_1\rangle\langle\psi_1|
+ +c_2|\psi_2\rangle\langle\psi_2|,
+\]
+其中 $c_1,c_2$ 应为非负数且和为 $1$.这两个概念不同,因为无论选择怎样的常数 $C$,都有
+\[
+ C|c_1\psi_1+c_2\psi_2\rangle\langle c_1\psi_1+c_2\psi_2|
+ \ne c_1|\psi_1\rangle\langle\psi_1|
+ +c_2|\psi_2\rangle\langle\psi_2|.\label{eq:coherent-incoherent-superposition}
+\]
+左边是纯态,而右边(除非 $\psi_2$ 是 $\psi_1$ 的倍数)是混合态,因为该算子的值域是二维而不是一维.
+
+物理学家把第一种叠加称为相干叠加或量子叠加,把第二种叠加称为非相干叠加.之所以称为“相干”,是因为相干叠加依赖系数的相位:如果 $\psi_1,\psi_2$ 线性无关,则向量
+\[
+ c_1e^{i\theta}\psi_1+c_2e^{i\phi}\psi_2
+\]
+除非 $e^{i\theta}=e^{i\phi}$,否则不代表与 $c_1\psi_1+c_2\psi_2$ 相同的量子状态.相反,与 $e^{i\theta}\psi$ 关联的密度矩阵和与 $\psi$ 关联的密度矩阵相同,因此,对与 $\mathcal H$ 中向量对应的密度矩阵作线性组合时,相位不起作用.取相干叠加时,状态 $\psi_1,\psi_2$ 中某个可观测量的期望值与状态 $c_1\psi_1+c_2\psi_2$ 中同一可观测量的期望值之间没有简单关系.另一方面,取非相干叠加时,新状态中的期望值就是原来期望值的线性组合:
+\[
+\begin{aligned}
+ &\operatorname{tr}\bigl((c_1|\psi_1\rangle\langle\psi_1|
+ c_2|\psi_2\rangle\langle\psi_2|)A\bigr)\\
+ &=c_1\langle\psi_1,A\psi_1\rangle
+ c_2\langle\psi_2,A\psi_2\rangle.
+\end{aligned}
+\]
+
+\section{量子力学的修订公理}
+\label{sec:modified-quantum-axioms}
+
+现在可以修改第~\ref{sec:quantum-axioms} 节中介绍的量子力学公理,以纳入密度矩阵.先从修订后的状态概念开始.
+
+\begin{axiom}[状态与期望值]\label{ax:density-matrix-state}
+量子系统的状态由适当 Hilbert 空间 $\mathcal H$ 上的密度矩阵 $\rho$ 描述.如果 $A$ 是 $\mathcal H$ 上任意有界算子,则状态 $\rho$ 中 $A$ 的期望值定义为
+\[
+ \operatorname{tr}(\rho A)=\operatorname{tr}(A\rho).
+\]
+\end{axiom}
+
+在公理~\ref{ax:density-matrix-state} 中,我们假设 $A$ 有界,因此由命题~\ref{prop:trace-class-properties},$\operatorname{tr}(\rho A)$ 和 $\operatorname{tr}(A\rho)$ 有定义且相等.如果 $A$ 是无界自伴算子,则可以按如下方式构造概率测度 $\mu_\rho^A$,描述状态 $\rho$ 下对 $A$ 测量的概率:
+\[
+ \mu_\rho^A(E)=\operatorname{tr}\bigl(\rho\,\mathbf1_E(A)\bigr),
+\]
+其中 $\mathbf1_E(A)$ 由函数演算定义.然后,只要积分绝对收敛,就把状态 $\rho$ 下 $A$ 的期望值定义为
+\[
+ \int_{\mathbb R}\lambda\,d\mu_\rho^A(\lambda).
+\]
+如果积分绝对收敛,可以合理地期待 $\rho A$ 与 $A\rho$ 在稠密子空间上有定义并可延拓为有界算子,这些延拓是迹类的,而且 $\operatorname{tr}(\rho A)$、$\operatorname{tr}(A\rho)$ 都等于上述积分.但这里不讨论这些问题.
+
+\begin{axiom}[测量后的状态]\label{ax:density-matrix-collapse}
+假设量子系统初始处于状态 $\rho$,并对具有点谱的自伴算子 $A$ 作测量.如果测量结果是 $A$ 的特征值 $\lambda$,那么测量后系统立即处于状态
+\[
+ \rho'=\frac1ZP_\lambda\rho P_\lambda,
+\qquad
+ Z=\operatorname{tr}(P_\lambda\rho P_\lambda),
+\]
+其中 $P_\lambda$ 是投影到 $A$ 的 $\lambda$-特征子空间上的正交投影.
+\end{axiom}
+
+注意,如果 $\rho$ 非负、自伴且为迹类,则 $P_\lambda\rho P_\lambda$ 也是非负、自伴且为迹类的.公理~\ref{ax:density-matrix-collapse} 隐含地假设,测量只能得到满足 $P_\lambda\rho P_\lambda\ne0$ 的 $\lambda$;特别地,$\lambda$ 必须是 $A$ 的特征值.
+
+\begin{axiom}[密度矩阵的时间演化]\label{ax:density-matrix-evolution}
+时间依赖密度矩阵 $\rho(t)$ 描述系统状态的时间演化,并满足
+\[
+ \frac{d\rho}{dt}=-\frac1{i\hbar}[\rho,\widehat H].\label{eq:density-matrix-evolution}
+\]
+\end{axiom}
+
+形式上,可以令
+\[
+ \rho(t)=e^{-it\widehat H/\hbar}\rho_0e^{it\widehat H/\hbar},\label{eq:density-matrix-unitary-evolution}
+\]
+其中 $\rho_0$ 是 $t=0$ 时的系统状态.解释式~\eqref{eq:density-matrix-evolution} 时会遇到一些定义域问题.这里不深入讨论,而把式~\eqref{eq:density-matrix-unitary-evolution} 作为密度矩阵时间演化的定义.假定 $\rho_0$ 足够良好,映射 $t\mapsto\rho(t)$ 应当是 Banach 空间 $B(\mathcal H)$ 中的可微曲线,其导数是式~\eqref{eq:density-matrix-evolution} 右端算子的某个延拓.作为比较,由 Stone 定理和引理~\ref{lem:generator-domain-invariant},纯态族
+\[
+ \psi(t):=e^{-it\widehat H/\hbar}\psi_0
+\]
+当且仅当 $\psi_0$ 属于 $\widehat H$ 的定义域时,满足自然 Hilbert 空间意义下的 Schrödinger 方程.
+
+为看出式~\eqref{eq:density-matrix-unitary-evolution} 与此前定义的纯态演化一致,注意
+\[
+\begin{aligned}
+ e^{-it\widehat H/\hbar}|\psi_0\rangle\langle\psi_0|e^{it\widehat H/\hbar}
+ &=|e^{-it\widehat H/\hbar}\psi_0\rangle
+ \langle e^{-it\widehat H/\hbar}\psi_0|\\
+ &=|\psi(t)\rangle\langle\psi(t)|,
+\end{aligned}
+\]
+因为 $(e^{it\widehat H/\hbar})^*=e^{-it\widehat H/\hbar}$.
+
+值得注意的是,式~\eqref{eq:density-matrix-evolution} 与量子力学 Heisenberg 图像中的时间演化(定义~\ref{def:heisenberg-picture})相差一个负号.虽然这看起来奇怪,但要记住:在 Heisenberg 图像中,状态与时间无关而可观测量随时间演化;这里采用的是修订后的 Schrödinger 图像,状态随时间演化,但状态现在是某种算子.虽然状态和可观测量都是算子,但为了使两个图像中的可观测量期望值相同,Heisenberg 图像中的可观测量与 Schrödinger 图像中的状态必须沿相反方向演化.
+
+\section{复合系统与张量积}
+\label{sec:composite-systems-tensor}
+
+如第~\ref{sec:multiple-particles-distinguishable} 节所述,两个(不相同、无自旋)粒子在 $\mathbb R^3$ 中运动时,Hilbert 空间是 $L^2(\mathbb R^6)$.若 $\psi\in L^2(\mathbb R^6)$ 是单位向量,也就是纯态,则
+\[
+ |\psi(x_1,x_2)|^2
+\]
+表示第一粒子位于 $x_1$、第二粒子位于 $x_2$ 的联合概率分布.下面的结果说明,$L^2(\mathbb R^6)$ 自然同构于两个单粒子 Hilbert 空间 $L^2(\mathbb R^3)$ 的 Hilbert 张量积.
+
+\begin{proposition}[乘积测度下的 $L^2$ 张量积]\label{prop:l2-product-decomposition}
+设 $(X_1,\mu_1)$ 与 $(X_2,\mu_2)$ 是 $\sigma$-有限测度空间.则存在唯一酉映射
+\[
+ p:L^2(X_1,\mu_1)\widehat\otimes L^2(X_2,\mu_2)
+ \longrightarrow L^2(X_1\times X_2,\mu_1\times\mu_2),
+\]
+满足对所有 $\phi\in L^2(X_1,\mu_1)$ 与 $\psi\in L^2(X_2,\mu_2)$,
+\[
+ p(\phi\otimes\psi)(x,y)=\phi(x)\psi(y).
+\]
+\end{proposition}
+
+这里 $\widehat\otimes$ 表示附录~\ref{app:subsec:hilbert-tensor} 中定义的 Hilbert 张量积.
+
+\begin{proof}
+为简化记号,暂时省略 $L^2$ 空间对测度的依赖,写作 $L^2(X_1)$ 等.先考虑代数张量积 $L^2(X_1)\otimes L^2(X_2)$.由张量积的泛性质,可以构造唯一线性映射
+\[
+ p:L^2(X_1)\otimes L^2(X_2)\longrightarrow L^2(X_1\times X_2),
+\]
+其在简单张量上满足
+\[
+ p(\phi\otimes\psi)(x,y)=\phi(x)\psi(y).
+\]
+代数张量积中的每个元素都可以写成有限个简单张量 $\phi_j\otimes\psi_j$ 的线性组合.直接计算可验证 $p$ 是等距映射.因此,由有界线性变换定理(定理~\ref{app:thm:bounded-extension}),$p$ 唯一延拓为从完备张量积 $L^2(X_1)\widehat\otimes L^2(X_2)$ 到 $L^2(X_1\times X_2)$ 的等距映射.
+
+只需证明这个延拓是满射.由于两个测度都是 $\sigma$-有限的,容易把问题约化到 $\mu_1,\mu_2$ 都有限的情形,以下假设如此.设 $\psi\in L^2(X_1\times X_2)$ 与 $p$ 的像正交.则 $\psi$ 与每个可测矩形的指标函数正交,从而也与任意有限个两两不交可测矩形的并的指标函数正交.所有这类不交并组成的集合族 $\mathcal A$ 是一个集合代数.令 $\mathcal M$ 表示 $X_1\times X_2$ 的所有可测子集 $E$,使得 $\psi$ 在 $E$ 上的积分为零.则 $\mathcal M$ 是包含 $\mathcal A$ 的单调类.由单调类引理(定理~\ref{app:thm:monotone-class}),$\mathcal M$ 包含 $\mathcal A$ 生成的 $\sigma$-代数,即 $\mu_1\times\mu_2$ 所定义的 $\sigma$-代数.因此 $\psi$ 在每个可测集上的积分都为零,这推出 $\psi$ 几乎处处为零.
+\end{proof}
+
+上面的例子提示了如下的一般原则.
+
+\begin{axiom}[复合系统的 Hilbert 空间]\label{ax:composite-hilbert-space}
+由两个子系统组成的复合系统的 Hilbert 空间,是描述两个子系统的 Hilbert 空间 $\mathcal H_1,\mathcal H_2$ 的 Hilbert 张量积
+\[
+ \mathcal H_1\widehat\otimes\mathcal H_2.
+\]
+\end{axiom}
+
+若 $A,B$ 分别是 $\mathcal H_1,\mathcal H_2$ 上的有界算子,则存在唯一的 $\mathcal H_1\widehat\otimes\mathcal H_2$ 上有界算子 $A\otimes B$,满足
+\[
+ (A\otimes B)(\phi\otimes\psi)=(A\phi)\otimes(B\psi)
+\]
+对所有 $\phi\in\mathcal H_1,\psi\in\mathcal H_2$ 成立.(见附录~\ref{app:subsec:hilbert-tensor}.)
+
+\begin{theorem}[部分迹]\label{thm:partial-trace}
+设 $\rho$ 是 $\mathcal H_1\widehat\otimes\mathcal H_2$ 上的密度矩阵.则存在唯一的 $\mathcal H_1$ 上的密度矩阵 $\rho^{(1)}$,满足对所有 $A\in B(\mathcal H_1)$,
+\[
+ \operatorname{tr}(\rho^{(1)}A)
+ =\operatorname{tr}\bigl(\rho(A\otimes I)\bigr).\label{eq:partial-trace-characterization}
+\]
+称 $\rho^{(1)}$ 为关于 $\mathcal H_2$ 的 $\rho$ 的部分迹.如果 $\{f_k\}$ 是 $\mathcal H_2$ 的一组正交归一基,则对所有 $\phi,\psi\in\mathcal H_1$,
+\[
+ \langle\phi,\rho^{(1)}\psi\rangle
+ =\sum_k\langle\phi\otimes f_k,\rho(\psi\otimes f_k)\rangle.\label{eq:partial-trace-first}
+\]
+类似地,存在唯一的 $\mathcal H_2$ 上密度矩阵 $\rho^{(2)}$,满足对所有 $B\in B(\mathcal H_2)$,
+\[
+ \operatorname{tr}(\rho^{(2)}B)
+ =\operatorname{tr}\bigl(\rho(I\otimes B)\bigr),
+\]
+并且若 $\{e_j\}$ 是 $\mathcal H_1$ 的一组正交归一基,则对所有 $\phi,\psi\in\mathcal H_2$,
+\[
+ \langle\phi,\rho^{(2)}\psi\rangle
+ =\sum_j\langle e_j\otimes\phi,\rho(e_j\otimes\psi)\rangle.\label{eq:partial-trace-second}
+\]
+\end{theorem}
+
+“部分迹”这一术语的动机来自式~\eqref{eq:partial-trace-first} 与式~\eqref{eq:partial-trace-second}:它们类似于算子迹的公式,只是求和仅遍历两个 Hilbert 空间之一的基.定理~\ref{thm:partial-trace} 的一个特殊情形是 $\rho=\rho_1\otimes\rho_2$,其中 $\rho_1,\rho_2$ 分别是 $\mathcal H_1,\mathcal H_2$ 上的密度矩阵.(这种形式的算子是 $\mathcal H_1\widehat\otimes\mathcal H_2$ 上的密度矩阵.)此时容易看出 $\rho^{(1)}=\rho_1$ 且 $\rho^{(2)}=\rho_2$.我们可以说,第一系统的状态与第二系统的状态“彼此独立”.
+
+\begin{lemma}[张量积算子的强收敛]\label{lem:tensor-product-strong-convergence}
+设 $A_n\in B(\mathcal H_1)$,且对所有 $\psi\in\mathcal H_1$,$\|A_n\psi-A\psi\|\to0$,其中 $A\in B(\mathcal H_1)$.则对所有 $\phi\in\mathcal H_1\widehat\otimes\mathcal H_2$,
+\[
+ \|(A_n\otimes I)\phi-(A\otimes I)\phi\|\to0.
+\]
+对 $I\otimes B_n$ 形式的算子也有类似结论.
+\end{lemma}
+
+\begin{proof}
+见练习 9.
+\end{proof}
+
+\begin{proof}[定理~\ref{thm:partial-trace} 的证明]
+由引理~\ref{lem:tensor-product-strong-convergence} 与定理~\ref{thm:density-matrix-characterization},$\rho^{(1)}$ 与 $\rho^{(2)}$ 的存在性和唯一性成立.现在设 $\{e_j\}$ 与 $\{f_k\}$ 分别是 $\mathcal H_1,\mathcal H_2$ 的正交归一基.则
+\[
+\begin{aligned}
+ \langle\phi,\rho^{(1)}\psi\rangle
+ &=\operatorname{tr}\bigl(\rho^{(1)}|\psi\rangle\langle\phi|\bigr)\\
+ &=\sum_{j,k}\langle e_j\otimes f_k,
+ \rho\bigl(|\psi\rangle\langle\phi|\otimes I\bigr)(e_j\otimes f_k)\rangle\\
+ &=\sum_{j,k}\langle e_j\otimes f_k,
+ \rho(\psi\langle\phi,e_j\rangle\otimes f_k)\rangle\\
+ &=\sum_k\left\langle\left(\sum_j\langle e_j,\phi\rangle e_j\right)
+ \otimes f_k,\rho(\psi\otimes f_k)\right\rangle\\
+ &=\sum_k\langle\phi\otimes f_k,\rho(\psi\otimes f_k)\rangle.
+\end{aligned}
+\]
+这就是式~\eqref{eq:partial-trace-first}.注意,由于 $\rho$ 是迹类算子,而 $|\psi\rangle\langle\phi|\otimes I$ 有界,$\rho(|\psi\rangle\langle\phi|\otimes I)$ 是迹类算子;由命题~\ref{prop:trace-class-properties},上面第二行的级数绝对收敛,因此可以自由重排求和.
+\end{proof}
+
+设两个量子系统的 Hilbert 空间分别为 $\mathcal H_1,\mathcal H_2$,Hamilton 算子分别为 $\widehat H_1,\widehat H_2$.若两个系统互不相互作用,且复合系统初始处于 $\phi_0\otimes\psi_0$ 这种(纯)态,我们预计在稍后的时刻,复合系统处于 $\phi(t)\otimes\psi(t)$,其中
+\[
+ \phi(t)=e^{-it\widehat H_1/\hbar}\phi_0,\qquad
+ \psi(t)=e^{-it\widehat H_2/\hbar}\psi_0.
+\]
+忽略定义域问题,可以计算
+\[
+\begin{aligned}
+ i\hbar\frac{d}{dt}[\phi(t)\otimes\psi(t)]
+ &= (\widehat H_1\phi(t))\otimes\psi(t)
+ +\phi(t)\otimes(\widehat H_2\psi(t))\\
+ &= (\widehat H_1\otimes I+I\otimes\widehat H_2)
+ (\phi(t)\otimes\psi(t)).
+\end{aligned}
+\]
+这提示我们,无相互作用复合系统的正确 Hamilton 算子应为
+\[
+ \widehat H_1\otimes I+I\otimes\widehat H_2.
+\]
+但如何选择 $\widehat H_1\otimes I+I\otimes\widehat H_2$ 的定义域,使其成为自伴算子,并不明显.(读者可以尝试“手动”选择一个定义域.)处理这个问题的最简单方法是使用 Stone 定理.
+
+\begin{definition}[两个自伴算子的张量和]\label{def:tensor-sum-selfadjoint}
+若 $A,B$ 分别是 $\mathcal H_1,\mathcal H_2$ 上的自伴算子,则把算子 $A\otimes I+I\otimes B$ 定义为强连续一参数酉群
+\[
+ e^{itA}\otimes e^{itB}
+\]
+的无穷小生成元.因此,由 Stone 定理,$A\otimes I+I\otimes B$ 是自伴算子.
+\end{definition}
+
+不难验证 $e^{itA}\otimes e^{itB}$ 确实强连续.当 $B=0$ 时,$A\otimes I$ 定义为 $e^{itA}\otimes I$ 的无穷小生成元.如果 $A,B$ 有界,那么定义~\ref{def:tensor-sum-selfadjoint} 给出的 $A\otimes I+I\otimes B$ 与按附录~\ref{app:subsec:hilbert-tensor} 中有界算子张量积的和定义的算子一致.
+
+\begin{axiom}[无相互作用复合系统的 Hamilton 算子]\label{ax:noninteracting-composite-hamiltonian}
+若 $\mathcal H_1,\mathcal H_2$ 是两个量子系统的 Hilbert 空间,Hamilton 算子分别为 $\widehat H_1,\widehat H_2$,则无相互作用复合系统的 Hamilton 算子是
+\[
+ \widehat H_1\otimes I+I\otimes\widehat H_2,
+\]
+其定义域按定义~\ref{def:tensor-sum-selfadjoint} 取.
+\end{axiom}
+
+物理学家会把 $\widehat H_1\otimes I+I\otimes\widehat H_2$ 简写为 $\widehat H_1+\widehat H_2$,并约定 $\widehat H_1$ 只作用在张量积的第一个因子,$\widehat H_2$ 只作用在第二个因子上.
+
+一般而言,复合系统的两个部分会相互作用,此时复合系统的 Hamilton 算子通常形如
+\[
+ \widehat H=\widehat H_1\otimes I+I\otimes\widehat H_2+\widehat H_{\mathrm{int}},
+\]
+其中 $\widehat H_{\mathrm{int}}$ 是“相互作用项”.相互作用项相对于 Hamilton 算子中的其他项通常可以看作“小量”.例如考虑盒中的粒子系统,盒子中间有一道屏障把盒子分成两半.假设粒子通过两粒子势相互作用,势的形式为(见第~\ref{subsec:many-particle-potentials} 节)
+\[
+ \sum_{j<k}V(x_j-x_k),
+\]
+并且当两个粒子相距较远时 $V(x_j-x_k)$ 很小.那么,同在盒子一侧的近邻粒子对通常远多于分处两侧的近邻粒子对.因此,虽然两个系统之间的相互作用可能在长时间内显著影响复合系统的行为,但仍然可以合理地把 $\widehat H_1\otimes I$ 看作“第一子系统的能量”,把 $I\otimes\widehat H_2$ 看作“第二子系统的能量”.
+
+假设复合系统初始处于状态 $\rho$,且第一子系统的状态 $\rho^{(1)}$ 是纯态.如果系统存在相互作用,那么第一子系统在稍后时刻很可能不再保持纯态.事实上,设第二子系统是一个温度为 $T$ 的很大系统.根据量子统计力学的假设,两个系统达到热平衡后,第一子系统的状态应是如下高度混合的状态:
+\[
+ \rho^{(1)}=\frac1{Z(\beta)}e^{-\beta\widehat H_1},\label{eq:gibbs-density-matrix}
+\]
+其中 $\beta=1/(k_BT)$,$k_B$ 是 Boltzmann 常数,$Z(\beta)$ 是理论的归一化常数,称为配分函数:
+\[
+ Z(\beta)=\operatorname{tr}(e^{-\beta\widehat H_1}).
+\]
+当然,要使这个想法有意义,$e^{-\beta\widehat H_1}$ 必须是迹类算子.当 $\widehat H_1$ 的谱离散且特征值以适当速率趋于 $+\infty$ 时,通常会满足这一点.因此,在量子统计力学中,第一子系统达到平衡后,可观测量 $A$ 的期望值为
+\[
+ \langle A\rangle
+ =\frac1{Z}\operatorname{tr}(e^{-\beta\widehat H_1}A).\label{eq:thermal-expectation}
+\]
+特别地,取 $A=\widehat H_1$,式~\eqref{eq:thermal-expectation} 给出了 Planck 黑体辐射模型的自然推广;比较第 1 章习题 2.
+
+\section{多粒子:玻色子与费米子}
+\label{sec:multiple-particles-identical}
+
+如第~\ref{sec:spin} 节所述,每一类粒子(电子、质子、中子等)都有一个自旋 $l$,可能的 $l$ 值为
+\[
+ l=0,\frac12,1,\frac32,\ldots.
+\]
+具有自旋 $l$、在 $\mathbb R^3$ 中运动的粒子的 Hilbert 空间是
+\[
+ L^2(\mathbb R^3)\widehat\otimes V_l,
+\]
+其中 $V_l$ 是有限维 Hilbert 空间,承载 $SO(3)$ 的不可约射影酉表示,维数为 $2l+1$.存在一个自然的酉同构
+\[
+ L^2(\mathbb R^3)\widehat\otimes V_l
+ \cong L^2(\mathbb R^3;V_l),
+\]
+即取值于 $V_l$ 的平方可积函数空间;简单张量 $\psi\otimes v$ 对应于函数
+\[
+ x\longmapsto\psi(x)v.
+\]
+
+我们在第~\ref{sec:multiple-particles-distinguishable} 节已经提到,量子力学中的相同粒子是不可区分的.考察两个具有自旋 $l$ 的相同粒子.首先猜测,这类系统的 Hilbert 空间是两个 $L^2(\mathbb R^3;V_l)$ 的张量积,可以识别为
+\[
+ L^2(\mathbb R^6;V_l\otimes V_l).
+\]
+若 $\psi$ 是此空间中的单位向量,也就是纯态,那么说两个粒子“不可区分”,意味着 $\psi(x_2,x_1)$ 应代表与 $\psi(x_1,x_2)$ 相同的物理状态,即
+\[
+ \psi(x_2,x_1)=c\psi(x_1,x_2)
+\]
+其中 $c$ 是某个非零常数.把这一规则应用两次可知,$c$ 必须是 $1$ 或 $-1$.
+
+大量理论和实验考量提示如下原则:对于整数自旋粒子($l=0,1,\ldots$),上述常数 $c$ 为 $1$;对于半整数自旋粒子($l=\frac12,\frac32,\ldots$),$c$ 为 $-1$.整数自旋粒子称为玻色子,半整数自旋粒子称为费米子.前面两段讨论可概括为下述公理.
+
+\begin{axiom}[相同粒子的对称性与反对称性]\label{ax:boson-fermion}
+考虑 $N$ 个在 $\mathbb R^3$ 中运动、具有整数自旋 $l$ 的相同粒子.其 Hilbert 空间是 $L^2(\mathbb R^{3N};V_l^{\otimes N})$ 的子空间,由满足
+\[
+ \psi(x_{\sigma(1)},x_{\sigma(2)},\ldots,x_{\sigma(N)})
+ =\psi(x_1,x_2,\ldots,x_N)
+\]
+对每个置换 $\sigma$ 都成立的平方可积函数组成.
+
+再考虑 $N$ 个在 $\mathbb R^3$ 中运动、具有半整数自旋 $l$ 的相同粒子.其 Hilbert 空间是 $L^2(\mathbb R^{3N};V_l^{\otimes N})$ 的子空间,由满足
+\[
+ \psi(x_{\sigma(1)},x_{\sigma(2)},\ldots,x_{\sigma(N)})
+ =\operatorname{sign}(\sigma)\psi(x_1,x_2,\ldots,x_N)
+\]
+对每个置换 $\sigma$ 都成立的平方可积函数组成.
+\end{axiom}
+
+人们自然会问,公理~\ref{ax:boson-fermion} 为什么成立.更具体地说,首先可以问相同粒子为什么不可区分;其次可以问为什么整数自旋与半整数自旋对应对称与反对称条件.这里不回答第一个问题,只说明量子场论如何帮助理解这两个问题.
+
+在量子场论中,基本对象不是粒子,而是定义在空间区域上的场.例如,经典电磁场由 $\mathbb R^3$ 上的函数描述:三个函数描述电场的三个分量,另外三个函数描述磁场的三个分量.这些函数随后按照 Maxwell 方程随时间演化.在量子场论中,可以把 Maxwell 方程看作某种无限维动力系统,并以类似把 Newton 方程量子化为普通非相对论量子力学的方式来量子化它.在 Maxwell 方程的量子版本中,场的每个模式的能量都是“量子化”的,即只能以某个固定能量单位(或“量子”)的整数倍增加.这类似于量子谐振子,其中允许的能量相差 $\hbar\omega$ 的整数倍.因此,在量子场论中,一个粒子就是某个场的一份量子激发.
+
+为简单起见,设经典场取值于 $\mathbb R$.即使在经典层面,也可以把场看作包含类似粒子的对象:场 $\phi(x)$ 在空间中若干不同点附近有局域化的凸起,例如高斯包络乘以正弦振荡函数.设 $\mathbb R^3$ 中点 $a$ 附近有一个高斯波包,点 $b$ 附近有另一个形状完全相同的高斯波包.无论先说 $a$ 附近的波包再说 $b$ 附近的波包,还是反过来,场的状态 $\phi(x)$ 完全相同.也就是说,不存在一个对应“交换两个粒子”的不同系统状态;无论把哪个凸起称为“第一粒子”,得到的场 $\phi(x)$ 都一样.即使在这类系统的量子版本中,询问哪个是第一粒子、哪个是第二粒子也没有意义.因此,即使在作为量子场论低能近似的非相对论量子力学中,也应当期待相同粒子是不可区分的.
+
+上述讨论没有解释玻色子与费米子的区别,但这种区别同样会从量子场论中出现,具体通过所谓自旋--统计定理(例如见文献 [38]).
+
+\section{“统计”与 Pauli 不相容原理}
+\label{sec:pauli-exclusion}
+
+电子的自旋等于 $1/2$,因此电子是费米子.著名的 Pauli 不相容原理是电子费米子本性的结果.Pauli 原理说,两个电子不能在同一时刻处于同一状态.这意味着,如果 $\psi$ 是 $\mathbb R^3$ 上取值于 $\mathbb C^2$ 的平方可积函数(可以描述单个电子的状态),那么定义在 $\mathbb R^6$ 上、取值于 $\mathbb C^2\otimes\mathbb C^2$ 的函数
+\[
+ \Psi(x_1,x_2)=\psi(x_1)\otimes\psi(x_2)
+\]
+不可能是双电子系统的状态,因为 $\Psi$ 不满足公理~\ref{ax:boson-fermion}.另一方面,如果 $\psi_1,\psi_2$ 是 $L^2(\mathbb R^3;\mathbb C^2)$ 中两个线性无关的元素,则函数
+\[
+ \Phi(x_1,x_2)
+ =\psi_1(x_1)\otimes\psi_2(x_2)
+ -\psi_2(x_1)\otimes\psi_1(x_2)\label{eq:two-electron-antisymmetric}
+\]
+是双电子系统的一个可能状态.(如果 $\psi_1,\psi_2$ 线性无关,则 $\Phi$ 是 $L^2(\mathbb R^6;\mathbb C^2\otimes\mathbb C^2)$ 中的非零元素,再把它归一化为单位向量即可.见练习 10.)
+
+现在考察 Pauli 不相容原理对多电子原子的影响.把一个 $N$ 电子原子粗略模型化为一个带正电 $Nq$ 的原子核,每个电子带电 $-q$.由于原子核的质量远大于电子,可以把原子核视为固定的,而电子在形如 $-Nq^2/|x|$ 的势中运动.作为原子结构的极粗略近似,忽略电子之间的相互作用,取 Hamilton 算子
+\[
+ \widehat H=\sum_{j=1}^N\left(-\frac{\hbar^2}{2m}\Delta_j-\frac{Nq^2}{|x_j|}\right),\label{eq:multi-electron-hamiltonian}
+\]
+其中 $\Delta_j$ 是作用于第 $j$ 个变量的 Laplace 算子.也就是说,我们取
+\[
+\begin{aligned}
+ &(\widehat H\otimes I\otimes I\otimes\cdots\otimes I)
+ +(I\otimes\widehat H\otimes I\otimes\cdots\otimes I)\\
+ &\quad +(I\otimes I\otimes\widehat H\otimes\cdots\otimes I)+\cdots,
+\end{aligned}
+\]
+其中 $\widehat H$ 是单电子 Hamilton 算子.
+
+假设 $N$ 为偶数.这个 Hamilton 算子在 $L^2(\mathbb R^{3N};(\mathbb C^2)^{\otimes N})$ 的反对称子空间上的最低能量状态为
+\[
+\begin{aligned}
+ \Psi_0(x_1,\ldots,x_N)
+ =\operatorname{AS}\bigl(&\psi_0^+(x_1)\otimes\psi_0^-(x_2)
+ \otimes\psi_1^+(x_3)\otimes\cdots\\
+ &\otimes\psi_{N/2}^+(x_{N-1})
+ \otimes\psi_{N/2}^-(x_N)\bigr).\label{eq:multi-electron-ground-state}
+\end{aligned}
+\]
+如果 $N$ 为奇数,乘积最后一项为 $\psi_{(N+1)/2}^+(x_N)$.式~\eqref{eq:multi-electron-ground-state} 中的记号如下.首先,$\operatorname{AS}$ 是反对称化算子:
+\[
+ \operatorname{AS}(f)(x_1,\ldots,x_N)
+ =\sum_{\sigma\in S_N}\operatorname{sign}(\sigma)
+ f(x_{\sigma(1)},x_{\sigma(2)},\ldots,x_{\sigma(N)}).
+\]
+其次,函数 $\psi_0,\psi_1,\psi_2,\ldots$ 是 $\mathbb R^3$ 中、处于势 $-Nq^2/|x|$ 中运动的单粒子 Hamilton 算子的特征向量,并按照相应特征值非递减的顺序排列.这些 $\psi_j$ 正是第 18 章计算出的状态,只是把 $q$ 换成 $Nq$.第三,若 $\{e_1,e_2\}$ 是 $\mathbb C^2$ 的标准基,则
+\[
+ \psi_j^+(x)=\psi_j(x)\otimes e_1,\qquad
+ \psi_j^-(x)=\psi_j(x)\otimes e_2.
+\]
+
+式~\eqref{eq:multi-electron-ground-state} 的含义是:先忽略电子之间的相互作用,但保留 Pauli 不相容原理;把第一个电子放入单电子系统的基态,并取“自旋向上”(即与 $e_1$ 张量积);把第二个电子放入基态并取“自旋向下”(与 $e_2$ 张量积);第三个电子进入单电子系统的第一激发态并取“自旋向上”,依此类推.当然,这个多电子原子模型十分粗糙,因为电子之间的相互作用实际上具有重要作用.不过,该模型突出说明了不相容原理的关键作用:它迫使后来的电子进入越来越高的能量态.特别地,这个粗略近似正确地提示出,即使对多电子原子采用更现实的模型,$L^2(\mathbb R^{3N};(\mathbb C^2)^{\otimes N})$ 反对称子空间中的最低能级,也会远高于同一 Hamilton 算子在整个 $L^2(\mathbb R^{3N};(\mathbb C^2)^{\otimes N})$ 中的最低能级.
+
+另一方面,量子统计力学研究被限制在有限空间区域中的大量相同粒子.如果系统是孤立的(而不是与环境处于热平衡),统计力学的目标是计算能量小于 $E$ 的量子态数 $N(E)$,把它看成 $E$ 的函数.也就是说,$N(E)$ 是 Hamilton 算子的特征值中小于 $E$ 的那些特征值数目,并按重数计数.正如上面对 Pauli 不相容原理的讨论所提示的那样,如果粒子是费米子而不是玻色子,$N(E)$ 会得到截然不同的答案.玻色子被称为遵循 Bose--Einstein 统计,费米子被称为遵循 Fermi--Dirac 统计.这里“统计”指的是这两类粒子在量子统计力学中的不同表现.量子场论中的自旋--统计定理告诉我们,整数自旋粒子必须是玻色子(遵循 Bose--Einstein 统计),半整数自旋粒子必须是费米子(遵循 Fermi--Dirac 统计).
+
+量子统计力学中有一个很有趣的例子:粒子是玻色子,并且粒子之间的相互作用可以忽略.在这种情况下,最低能量状态就是
+\[
+ \Psi_0(x_1,x_2,\ldots,x_N)
+ =\psi_0(x_1)\otimes\psi_0(x_2)\otimes\cdots\otimes\psi_0(x_N),
+\]
+其中 $\psi_0$ 是单粒子系统的基态.量子统计力学告诉我们,在给定温度下,系统状态是基态与各种激发态的一个(非相干)叠加.如果温度足够低,基态的系数会接近 $1$,于是可以说“所有粒子都处于基态”.处于这种状态的系统称为 Bose--Einstein 凝聚态;这一状态由 Satyendra Nath Bose 与 Einstein 在 20 世纪 20 年代从理论上预言.1995 年 6 月,人们首次在激光冷却气体中实验观察到 Bose--Einstein 凝聚态;Eric Cornell、Carl Wieman 与 Wolfgang Ketterle 因此项工作获得了 2001 年诺贝尔物理学奖.
+
+\section{练习}
+\label{sec:chapter19-exercises}
+
+\begin{exercise}[Hilbert--Schmidt 范数的矩阵元表达式]\label{ex:hilbert-schmidt-matrix-elements}
+设 $X$ 是 $\mathcal H$ 上的 Hilbert--Schmidt 算子,$\{e_j\}$ 是 $\mathcal H$ 的一组正交归一基.证明
+\[
+ \|X\|_{\mathrm{HS}}^2
+ =\sum_{j,k}|\langle e_j,Xe_k\rangle|^2.
+\]
+\end{exercise}
+
+\begin{exercise}[秩一算子的迹]\label{ex:trace-rank-one}
+给定 $\phi,\psi\in\mathcal H$,令 $|\phi\rangle\langle\psi|$ 表示记号~\ref{def:rank-one-dirac} 中定义的算子.证明,如果 $A\in B(\mathcal H)$ 是迹类算子,则
+\[
+ \operatorname{tr}(A|\phi\rangle\langle\psi|)
+ =\langle\psi,A\phi\rangle.
+\]
+
+提示:若 $\{e_j\}$ 是一组正交归一基,则对任意 $\chi\in\mathcal H$,
+\[
+ \chi=\sum_j\langle e_j,\chi\rangle e_j.
+\]
+\end{exercise}
+
+\begin{exercise}[正性泛函的范数估计]\label{ex:positive-functional-bound}
+设 $\Phi:B(\mathcal H)\to\mathbb C$ 是线性泛函,满足:若 $A$ 自伴,则 $\Phi(A)$ 为实数;若 $A$ 自伴且非负,则 $\Phi(A)$ 为实数且非负.证明,若 $A$ 自伴,则
+\[
+ -\|A\|\Phi(I)\le\Phi(A)\le\|A\|\Phi(I).
+\]
+由此推出 $\Phi$ 关于 $B(\mathcal H)$ 上算子范数有界.
+
+提示:证明当 $A$ 自伴时,$\|A\|I+A$ 与 $\|A\|I-A$ 都非负.
+\end{exercise}
+
+\begin{exercise}[有限秩算子]\label{ex:finite-rank-operators}
+称 $A\in B(\mathcal H)$ 具有有限秩,如果 $\operatorname{Ran}(A)$ 是有限维的.
+\begin{enumerate}
+\item 证明如果 $A$ 具有有限秩,则 $A^*$ 也具有有限秩.
+\item 给定 $A\in B(\mathcal H)$,证明 $A$ 具有有限秩,当且仅当存在向量 $\phi_1,\ldots,\phi_N$ 与 $\psi_1,\ldots,\psi_N$,使
+\[
+ A=|\phi_1\rangle\langle\psi_1|+\cdots+|\phi_N\rangle\langle\psi_N|.
+\]
+\item 设 $A\in B(\mathcal H)$,$\{e_j\}$ 是一组正交归一基,$P_N$ 是投影到 $e_1,\ldots,e_N$ 张成空间上的正交投影.证明 $P_NA$ 是有限秩的,并且对所有 $\psi\in\mathcal H$,
+\[
+ \lim_{N\to\infty}\|P_NA\psi-A\psi\|=0.
+\]
+\end{enumerate}
+
+\begin{note}
+这个结果说明,每个有界算子都可以表示为有限秩算子列的强极限.相反,如果 $\dim\mathcal H=\infty$,练习 5(a) 说明,并非每个有界算子都可以表示为有限秩算子列的算子范数极限.
+\end{note}
+\end{exercise}
+
+\begin{exercise}[强连续性与算子范数连续性的区别]\label{ex:strong-not-norm-functional}
+本题假设 $\dim\mathcal H=\infty$.
+\begin{enumerate}
+\item 证明如果 $A$ 具有有限秩,则对任意 $c\in\mathbb C$,
+\[
+ \|A+cI\|\ge|c|.
+\]
+取 $c=-1$,说明 $I$ 不是有限秩算子的算子范数极限.
+\item 令 $K(\mathcal H)$ 表示关于 $B(\mathcal H)$ 上算子范数的有限秩算子闭包.令 $V$ 表示所有形如 $B+cI$ 的算子组成的空间,其中 $B\in K(\mathcal H)$.定义线性泛函 $\Phi:V\to\mathbb C$:
+\[
+ \Phi(B+cI)=c.
+\]
+证明对所有 $A\in V$,$|\Phi(A)|\le\|A\|$.
+
+\begin{note}
+可以证明,$K(\mathcal H)$ 恰好是 $\mathcal H$ 上的紧算子空间.
+\end{note}
+
+\item 令 $\Psi_1:B(\mathcal H)\to\mathbb C$ 是任意线性泛函,满足 $\Psi_1=\Phi$(在 $V$ 上),并且对所有 $A\in B(\mathcal H)$ 有 $|\Psi_1(A)|\le\|A\|$.(这样的泛函由 Hahn--Banach 定理存在.)定义
+\[
+ \Psi_2(A)=\frac12\bigl(\Psi_1(A)+\overline{\Psi_1(A^*)}\bigr).
+\]
+证明 $\Psi_2$ 满足定义~\ref{def:family-expectation-values} 的性质 1、2、3,但不存在密度矩阵 $\rho$ 使得对所有 $A\in B(\mathcal H)$,
+\[
+ \Psi_2(A)=\operatorname{tr}(\rho A).
+\]
+因此,根据定理~\ref{thm:density-matrix-characterization},$\Psi_2$ 不满足性质 4.
+\end{enumerate}
+\end{exercise}
+
+在练习 6、7、8 中,假设每个密度矩阵 $\rho$ 都是紧算子,因此 $\rho$ 有一组由特征向量组成的正交归一基 $\{e_j\}$;相应特征值 $\{\lambda_j\}$ 为实数,并在 $j\to\infty$ 时趋于零.(比较文献 [34] 第一卷的定理 VI.16.)
+
+\begin{exercise}[纯态的迹判据]\label{ex:pure-state-trace}
+在练习 6、7、8 的假设下,证明密度矩阵 $\rho$ 是纯态,当且仅当
+\[
+ \operatorname{tr}(\rho^2)=1.
+\]
+\end{exercise}
+
+\begin{exercise}[纯态与凸组合]\label{ex:pure-state-extreme}
+\begin{enumerate}
+\item 证明每个混合态 $\rho$ 都可以写成其他密度矩阵的非平凡凸组合.
+\item 证明纯态不能表示为其他密度矩阵的非平凡凸组合.
+\end{enumerate}
+提示:证明函数
+\[
+ f(\lambda)=\operatorname{tr}\bigl((\lambda\rho_1+(1-\lambda)\rho_2)^2\bigr)
+\]
+是 $\lambda$ 的凸函数.
+\end{exercise}
+
+\begin{exercise}[von Neumann 熵与纯态]\label{ex:von-neumann-entropy}
+对任意密度矩阵 $\rho$,证明 von Neumann 熵
+\[
+\ S(\rho):=\operatorname{tr}(-\rho\log\rho)
+\]
+为零,当且仅当 $\rho$ 是纯态.
+\end{exercise}
+
+\begin{exercise}[张量积算子的强收敛]\label{ex:tensor-product-strong}
+证明引理~\ref{lem:tensor-product-strong-convergence}.
+
+提示:先用一致有界原理(定理~\ref{app:thm:uniform-boundedness})证明存在常数 $C$ 使 $\|A_n\|\le C$.然后把 $\mathcal H_1\widehat\otimes\mathcal H_2$ 看作子空间 $\mathcal H_1\otimes f_j$ 的 Hilbert 空间直和,其中 $\{f_j\}$ 是 $\mathcal H_2$ 的正交归一基,每个子空间以显然的方式等距识别为 $\mathcal H_1$.
+\end{exercise}
+
+\begin{exercise}[反对称双电子波函数非零]\label{ex:two-electron-antisymmetric-nonzero}
+设 $\psi_1,\psi_2$ 是 $L^2(\mathbb R^3;\mathbb C^2)$ 中两个线性无关的元素.证明式~\eqref{eq:two-electron-antisymmetric} 中的函数 $\Phi$ 是 $L^2(\mathbb R^6;\mathbb C^2\otimes\mathbb C^2)$ 中的非零元素.
+\end{exercise}

@@ -1,0 +1,76 @@
+\subsubsection{卷积的 Fourier 变换}\label{subsec:fourier-convolutions}
+
+Fourier 变换的另一个有用性质是, 它将卷积变为乘积, 反之亦然. 首先考虑试验函数. 容易看出, $\mathcal{S}(\mathbb{R}^m)$ 中函数的乘积和卷积仍属于 $\mathcal{S}(\mathbb{R}^m)$. 下一引理给出它们在 Fourier 变换下的行为.
+
+\begin{Lemma}
+\label{lem:fourier-convolution-test-functions}
+设 $\phi,\psi\in\mathcal{S}(\mathbb{R}^m)$. 那么
+\begin{equation}\label{eq:fourier-convolution-product-test-functions}
+\mathcal{F}[\phi*\psi]=(2\pi)^{m/2}\mathcal{F}[\phi]\mathcal{F}[\psi],
+\end{equation}
+
+\begin{equation}\label{eq:fourier-product-convolution-test-functions}
+\mathcal{F}[\phi\psi]=(2\pi)^{-m/2}\mathcal{F}[\phi]*\mathcal{F}[\psi].
+\end{equation}
+
+\end{Lemma}
+
+\begin{Proof}
+有
+\begin{equation}\label{eq:fourier-convolution-test-functions-proof}
+\begin{aligned}
+\mathcal{F}[\phi*\psi](\bm{\xi})
+&=(2\pi)^{-m/2}\int_{\mathbb{R}^m}e^{-i\bm{\xi}\cdot\bm{x}}\int_{\mathbb{R}^m}\phi(\bm{x}-\bm{y})\psi(\bm{y})\,\mathrm{d}\bm{y}\,\mathrm{d}\bm{x}\\
+&=(2\pi)^{-m/2}\int_{\mathbb{R}^m}\psi(\bm{y})\int_{\mathbb{R}^m}e^{-i\bm{\xi}\cdot\bm{x}}\phi(\bm{x}-\bm{y})\,\mathrm{d}\bm{x}\,\mathrm{d}\bm{y}\\
+&=(2\pi)^{-m/2}\int_{\mathbb{R}^m}\psi(\bm{y})\int_{\mathbb{R}^m}e^{-i\bm{\xi}\cdot(\bm{z}+\bm{y})}\phi(\bm{z})\,\mathrm{d}\bm{z}\,\mathrm{d}\bm{y}\\
+&=(2\pi)^{m/2}\mathcal{F}[\phi](\bm{\xi})\mathcal{F}[\psi](\bm{\xi}).
+\end{aligned}
+\end{equation}
+这给出 \eqref{eq:fourier-convolution-product-test-functions}. 应用 Fourier 逆变换, 可将 \eqref{eq:fourier-convolution-product-test-functions} 重新表述为
+\begin{equation}\label{eq:inverse-fourier-product-convolution}
+\mathcal{F}^{-1}[\widehat\phi\widehat\psi]=(2\pi)^{-m/2}\mathcal{F}^{-1}[\widehat\phi]*\mathcal{F}^{-1}[\widehat\psi].
+\end{equation}
+由此及显然的恒等式
+\begin{equation}\label{eq:inverse-fourier-forward-reflection}
+\mathcal{F}^{-1}[\widehat\phi](\bm{x})=\mathcal{F}[\widehat\phi](-\bm{x})
+\end{equation}
+得到 \eqref{eq:fourier-product-convolution-test-functions}.
+\end{Proof}
+
+现在将这一结果推广到分布.
+
+\begin{Theorem}
+\label{thm:fourier-convolution-compact-distribution}
+设 $f,g\in\mathcal{S}^{\prime}(\mathbb{R}^m)$, 并设 $g$ 具有紧支集. 那么 $f*g\in\mathcal{S}^{\prime}(\mathbb{R}^m)$, 且
+\begin{equation}\label{eq:fourier-convolution-compact-distribution-product}
+\mathcal{F}[f*g]=(2\pi)^{m/2}\mathcal{F}[f]\mathcal{F}[g].
+\end{equation}
+
+\end{Theorem}
+
+注意, $\mathcal{F}[g]$ 是具有多项式增长的 $C^\infty$ 函数 (见上面的 Example~\ref{ex:fourier-compact-distribution-entire}), 因而 \eqref{eq:fourier-convolution-compact-distribution-product} 的右端有良好定义. 对 $\mathbb{R}$ 上支集在同一侧有界的缓增分布也可建立类似结果; 见 Problem~\ref{ex:one-sided-tempered-fourier-product}.
+
+\begin{Proof}
+由定义有
+\begin{equation}\label{eq:convolution-nested-pairing-proof}
+(f*g,\phi)=(f(\bm{x}),(g(\bm{y}),\phi(\bm{x}+\bm{y}))).
+\end{equation}
+由于 $g$ 具有紧支集, 它具有有限阶, 即用 $Q$ 表示任意内部包含 $g$ 的支集的紧集, 则存在 $n\in\mathbb{N}$ 和 $C>0$, 使
+\begin{equation}\label{eq:compact-distribution-parameter-pairing-bound}
+|(g(\bm{y}),\phi(\bm{x}+\bm{y}))|\leq C\max_{\bm{y}\in Q}\sum_{|\alpha|\leq n}|D^\alpha\phi(\bm{x}+\bm{y})|.
+\end{equation}
+容易看出, 对每个 $k$ 和 $\alpha$, $|\bm{x}|^k|D^\alpha\phi(\bm{x}+\bm{y})|$ 对 $\bm{x}\in\mathbb{R}^m$ 和 $\bm{y}\in Q$ 一致有界; 因而 \eqref{eq:compact-distribution-parameter-pairing-bound} 给出 $|\bm{x}|^k|(g(\bm{y}),\phi(\bm{x}+\bm{y}))|$ 的一致界. 也可以将 \eqref{eq:compact-distribution-parameter-pairing-bound} 中的 $\phi$ 替换为它的任意导数. 得到映射 $\phi\mapsto(g(\bm{y}),\phi(\bm{x}+\bm{y}))$ 从 $\mathcal{S}(\mathbb{R}^m)$ 到其自身连续. 因而 \eqref{eq:convolution-nested-pairing-proof} 有良好定义, 并表示 $\mathcal{S}(\mathbb{R}^m)$ 上的连续线性泛函.
+
+现在由 Fourier 变换的定义得到
+\begin{equation}\label{eq:fourier-convolution-compact-distribution-proof}
+\begin{aligned}
+&(\mathcal{F}[f*g](\bm{\xi}),\phi(\bm{\xi}))=(f*g(\bm{x}),\mathcal{F}^{-1}[\phi](\bm{x}))\\
+&\quad=(2\pi)^{-m/2}\left(f(\bm{x}),\left(g(\bm{y}),\int_{\mathbb{R}^m}e^{i\bm{\xi}\cdot(\bm{x}+\bm{y})}\phi(\bm{\xi})\,\mathrm{d}\bm{\xi}\right)\right)\\
+&\quad=\left(f(\bm{x}),\int_{\mathbb{R}^m}e^{i\bm{\xi}\cdot\bm{x}}\phi(\bm{\xi})\overline{\mathcal{F}[g](\bm{\xi})}\,\mathrm{d}\bm{\xi}\right)\\
+&\quad=(2\pi)^{m/2}(f,\mathcal{F}^{-1}[\phi\overline{\mathcal{F}[g]}])\\
+&\quad=(2\pi)^{m/2}(\mathcal{F}[f],\phi\overline{\mathcal{F}[g]})\\
+&\quad=(2\pi)^{m/2}(\mathcal{F}[f]\mathcal{F}[g],\phi).
+\end{aligned}
+\end{equation}
+这给出 \eqref{eq:fourier-convolution-compact-distribution-product}, 从而完成证明.
+\end{Proof}

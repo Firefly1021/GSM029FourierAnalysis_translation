@@ -1,0 +1,770 @@
+\chapter{欧氏空间上的量子化方案}
+\label{chap:quantization-schemes}
+
+\section{排序歧义}
+\label{sec:ordering-ambiguities}
+
+量子力学的一条公理说:“经典相空间上的每个取实值函数 $f$ 都对应于量子 Hilbert 空间上的一个自伴算子 $\widehat f$.”细心的读者会注意到,直到现在,我们还没有给出从 $f$ 构造 $\widehat f$ 的一般程序.如果称 $\widehat f$ 为 $f$ 的量子化,那么我们只讨论过少数非常特殊的经典可观测量的量子化,例如位置、动量和能量.
+
+现在考虑如何量子化一个(大致而言)一般的可观测量.为简单起见,考虑 $\mathbb R$ 中运动的粒子,并假设 $x,p$ 的量子化分别是通常的位置、动量算子 $X,P$.例如,$xp$ 应该量子化成什么？在经典力学中 $xp=px$,但在量子力学中 $XP\neq PX$.而且 $XP$ 与 $PX$ 都不是自伴的,因为 $(XP)^*=P^*X^*=PX\neq XP$.因此,一个合理的候选是
+\[
+\widehat{xp}=\frac12(XP+PX).
+\]
+
+这个简单例子的重要性在于:量子算子的不交换性在量子化过程中造成了歧义.不能简单地把公式中的 $x$ 处处替换成 $X$、把 $p$ 处处替换成 $P$,因为在经典一侧位置与动量的排序没有影响,而在量子一侧却有影响.到目前为止,我们之所以没有真正面对这种歧义,是因为所量子化的可观测量形式特殊.例如,Hamilton 函数通常为
+\[
+H(x,p)=\frac{p^2}{2m}+V(x).
+\]
+每一项只含 $x$ 或只含 $p$,所以自然量子化为
+\[
+\widehat H=\frac{P^2}{2m}+V(X),
+\]
+其中 $V(X)$ 可以由函数演算定义,或者简单地理解为乘法算子.在定义角动量算子时确实会遇到位置与动量的乘积,但不会遇到同一分量的位置与动量的乘积.例如,在 $\mathbb R^2$ 中,$J=x_1p_2-x_2p_1$;量子侧 $X_1$ 与 $P_2$ 对易、$X_2$ 与 $P_1$ 对易,因此 $X_1P_2-X_2P_1$ 与 $P_2X_1-P_1X_2$ 相同.
+
+然而,量子化一般可观测量时,必须直接面对排序歧义.Groenewold 定理(见第~\ref{sec:groenewold-no-go} 节)暗示不存在单一的“完美”量子化方案.不过,Weyl 量子化通常被认为具有最佳性质,我们将主要研究它.其他量子化方案在物理学中也发挥作用;特别是 Wick 排序量子化在量子场论中很重要.在量子场论中,用某些 Wick 量子化算子替代 Weyl 量子化算子,通常被解释为一种重整化.
+
+\section{几种常见的量子化方案}
+\label{sec:common-quantization}
+
+本节考虑几种最常用的量子化方案.为简单起见,只讨论一个自由度,并且只考虑关于 $x,p$ 的多项式经典可观测量(第~\ref{sec:weyl-r2n} 节将在更一般的情形下讨论 Weyl 量子化).此外,本节暂不处理定义域问题,所有算子都取 $C_c^\infty(\mathbb R)$ 作为定义域.因此,算子相等是指它们作为从 $C_c^\infty(\mathbb R)$ 到自身的映射相等.需要注意,即使某些算子对称,它们也可能不是本质自伴的;例如第~\ref{sec:second-counterexample} 节说明,$P^2-cX^4$($c>0$)在 $C_c^\infty(\mathbb R)$ 上不是本质自伴的.沿用调和分析的术语,把经典符号 $f$ 称为其量子化 $\widehat f$ 的符号.下面先简要介绍各方案,再在定义~\ref{def:quantization-schemes} 中形式化定义.
+
+最简单的方案是预先决定位置算子或动量算子谁放在前面.例如,可以规定动量算子放在右侧,先作用;位置算子放在左侧,后作用.这样,关于 $x,p$ 的多项式被量子化成“标准形式”的微分算子:所有微分先作用,随后才进行乘法.在调和分析中,这一方案可以推广到大致任意的符号 $f$;所得算子称为伪微分算子.
+
+伪微分量子化的一个严重缺点是:即使符号 $f$ 为实值,它产生的算子 $\widehat f$ 通常也不是自伴的(甚至不对称).例如 $f(x,p)=xp$ 时,对应算子是 $XP$,其伴随为 $PX$,与 $XP$ 不同.最简单的修正方法是取算子与其伴随之和的一半,即对称化伪微分量子化.
+
+Weyl 量子化则更认真地对待不同排序的可能性,把所有可能的排序都纳入考虑.例如,$x^2p^2$ 的 Weyl 量子化为
+\[
+\frac16\left(X^2P^2+XPXP+XP^2X+PX^2P+PXPX+P^2X^2\right).
+\]
+一般单项式的 Weyl 量子化同样是位置、动量算子所有可能排序的平均.
+
+对于 Wick 排序与反 Wick 排序量子化,我们不再把位置、动量视为基本算子,而把产生、湮灭算子视为基本算子.给定正实数 $\alpha$,在经典相空间上引入复坐标
+\[
+z=x-i\alpha p,
+\qquad
+\bar z=x+i\alpha p.
+\label{eq:wick-classical-coordinates}
+\]
+(看起来把 $z$ 定义为 $x+i\alpha p$ 更自然,但那样会在后面,尤其是 Segal--Bargmann 变换中造成问题.)相应的量子算子定义为升降算子
+\[
+a^*=X-i\alpha P,
+\qquad
+a=X+i\alpha P.
+\label{eq:wick-quantum-operators}
+\]
+与第~\ref{chap:harmonic-oscillator} 章谐振子中的算子比较时,应把 $\alpha$ 看作 $1/(m\omega)$.即使作此对应,式~\eqref{eq:wick-quantum-operators} 中的算子也与第 11 章的升降算子相差一个常数;在这里,只要经典变量与量子算子之间的归一化保持一致,整体归一化并不重要.特别地,$a$ 与 $a^*$ 的对易子不是 $I$,而是
+\[
+[a,a^*]=2\alpha\hbar I.
+\]
+
+在 Wick 排序量子化中,先用 $z,\bar z$ 表示经典可观测量 $f$,而不是用 $x,p$ 表示.量子化时,把 $f$ 中来自 $\bar z$ 因子的所有降算子放到右侧先作用,把来自 $z$ 因子的所有升算子放到左侧后作用.这种方法在量子场论中很有用:让降算子先作用,能够使某些原本没有定义的表达式变得有定义.在反 Wick 排序中次序相反,把升算子放到右侧先作用.虽然反 Wick 排序在量子场论中似乎是奇异的,但在自由度有限的系统中,它实际上比 Wick 排序具有更好的性质.
+
+\begin{definition}[几种量子化方案]\label{def:quantization-schemes}
+对关于 $x,p$ 的多项式,定义如下量子化方案.每个方案都由下列公式唯一确定;它们都是从 $\mathbb R^2$ 上多项式到作用在 $C_c^\infty(\mathbb R)$ 上的算子的映射.
+\begin{enumerate}
+\item 伪微分算子量子化:
+\[
+Q_{\mathrm{ps}}(x^jp^k)=X^jP^k.
+\]
+\item 对称化伪微分算子量子化:
+\[
+Q_{\mathrm{sps}}(x^jp^k)=\frac12(X^jP^k+P^kX^j).
+\]
+\item Weyl 量子化:
+\[
+Q_{\mathrm W}(x^jp^k)=\frac1{(j+k)!}\sum_{\sigma\in S_{j+k}}
+\sigma(\underbrace{X,\ldots,X}_{j\text{ 个}},\underbrace{P,\ldots,P}_{k\text{ 个}}),
+\]
+其中对任意算子 $A_1,\ldots,A_n$ 与 $\sigma\in S_n$,定义
+\[
+\sigma(A_1,\ldots,A_n)=A_{\sigma(1)}A_{\sigma(2)}\cdots A_{\sigma(n)}.
+\label{eq:permutation-operator-order}
+\]
+\item 参数为 $\alpha$ 的 Wick 排序量子化:
+\[
+Q_{\mathrm{Wick}}\bigl((x+i\alpha p)^j(x-i\alpha p)^k\bigr)
+=(X-i\alpha P)^k(X+i\alpha P)^j,
+\qquad \alpha>0.
+\]
+\item 参数为 $\alpha$ 的反 Wick 排序量子化:
+\[
+Q_{\mathrm{aW}}\bigl((x+i\alpha p)^j(x-i\alpha p)^k\bigr)
+=(X+i\alpha P)^j(X-i\alpha P)^k,
+\qquad \alpha>0.
+\]
+\end{enumerate}
+最有用的量子化方案是 Wick 排序、反 Wick 排序与 Weyl 量子化.定义中除伪微分量子化以外的所有方案,都把实值多项式映到 $C_c^\infty(\mathbb R)$ 上的对称算子(Wick、反 Wick 情形见练习~\ref{ex:wick-symmetric}).
+\end{definition}
+
+比较不同量子化方案时,必须认识到不同的表达式可能描述同一个算子.例如
+\[
+\frac12(XP^2+P^2X)
+=\frac12\bigl(PXP+[X,P]P+PXP-P[X,P]\bigr)=PXP,
+\]
+因为 $[X,P]$ 是恒等算子的倍数,因而与 $P$ 对易.因此,$xp^2$ 的 Weyl 量子化中可以消去 $PXP$ 项,得到
+\[
+Q_{\mathrm W}(xp^2)=\frac13(XP^2+PXP+P^2X)
+=\frac12(XP^2+P^2X),
+\label{eq:weyl-xp2}
+\]
+在这一特殊例子中,它恰好与对称化伪微分量子化一致.
+
+\begin{example}[$x^2$ 的不同量子化]\label{ex:quantization-x2}
+若 $f(x,p)=x^2$,则
+\[
+Q_{\mathrm W}(x^2)=X^2,
+\qquad
+Q_{\mathrm{Wick}}(x^2)=X^2-\frac12\alpha\hbar I,
+\qquad
+Q_{\mathrm{aW}}(x^2)=X^2+\frac12\alpha\hbar I.
+\]
+\end{example}
+
+\begin{proof}
+$Q_{\mathrm W}(x^2)=X^2$ 显然.为计算 Wick 与反 Wick 量子化,先写成 $x=(z+\bar z)/2$,于是
+\[
+x^2=\frac14(z+\bar z)^2=\frac14(z^2+2z\bar z+\bar z^2).
+\]
+因此
+\[
+Q_{\mathrm{Wick}}(x^2)=\frac14\left((X-i\alpha P)^2
++2(X-i\alpha P)(X+i\alpha P)+(X+i\alpha P)^2\right).
+\]
+展开后 $P^2$ 项抵消,前后两个平方中的 $XP$、$PX$ 项也抵消,只剩 $X^2$ 项以及交叉项中的 $XP$、$PX$:
+\[
+Q_{\mathrm{Wick}}(x^2)=\frac14\left(4X^2+2i\alpha[X,P]\right),
+\]
+使用 $[X,P]=i\hbar I$ 即得所述结果.反 Wick 量子化的计算相同,只是交叉项中的因子顺序相反,因此 $[X,P]$ 项的符号相反.
+\end{proof}
+
+\begin{proposition}[Weyl 量子化的线性特征]\label{prop:weyl-linear-characterization}
+把 Weyl 量子化看作从 $\mathbb R^2$ 上多项式到作用在 $C_c^\infty(\mathbb R)$ 上的算子的线性映射,则它由恒等式
+\[
+Q_{\mathrm W}\bigl((ax+bp)^j\bigr)=(aX+bP)^j
+\label{eq:weyl-linear-power}
+\]
+唯一刻画,其中 $j$ 为任意非负整数,$a,b\in\mathbb C$.
+\end{proposition}
+
+\begin{proof}
+容易看出,对任意复数列 $a_1,\ldots,a_j$ 与 $b_1,\ldots,b_j$,有
+\[
+Q_{\mathrm W}\left(\prod_{r=1}^j(a_rx+b_rp)\right)
+=\frac1{j!}\sum_{\sigma\in S_j}
+\sigma(a_1X+b_1P,\ldots,a_jX+b_jP).
+\label{eq:weyl-multilinear}
+\]
+令所有 $a_r=a$、所有 $b_r=b$ 即得到式~\eqref{eq:weyl-linear-power}.
+
+反过来,设 $Q$ 是任意满足式~\eqref{eq:weyl-linear-power} 的线性映射.对每个 $j$,令 $V_j$ 为所有满足 $Q(f)=Q_{\mathrm W}(f)$ 的 $j$ 次齐次多项式组成的空间.$V_j$ 包含所有 $(ax+bp)^j$;由练习~\ref{ex:homogeneous-span},这些多项式张成全部 $j$ 次齐次多项式空间,因此 $V_j$ 就是整个空间,从而 $Q=Q_{\mathrm W}$.
+\end{proof}
+
+\begin{proposition}[Weyl 量子化与乘法的关系]\label{prop:weyl-multiplication}
+对关于 $x,p$ 的任意多项式 $g$,有
+\begin{align}
+Q_{\mathrm W}(xg)&=Q_{\mathrm W}(x)Q_{\mathrm W}(g)-\frac{i\hbar}{2}Q_{\mathrm W}\left(\frac{\partial g}{\partial p}\right),\\
+Q_{\mathrm W}(xg)&=Q_{\mathrm W}(g)Q_{\mathrm W}(x)+\frac{i\hbar}{2}Q_{\mathrm W}\left(\frac{\partial g}{\partial p}\right),\\
+Q_{\mathrm W}(pg)&=Q_{\mathrm W}(p)Q_{\mathrm W}(g)+\frac{i\hbar}{2}Q_{\mathrm W}\left(\frac{\partial g}{\partial x}\right),\\
+Q_{\mathrm W}(pg)&=Q_{\mathrm W}(g)Q_{\mathrm W}(p)-\frac{i\hbar}{2}Q_{\mathrm W}\left(\frac{\partial g}{\partial x}\right).
+\label{eq:weyl-product-rules}
+\end{align}
+\end{proposition}
+
+\begin{proof}
+令 $A=a_1X+b_1P$、$B=a_2X+b_2P$.$[A,B]$ 是 $I$ 的倍数,因而可验证,对 $0\leq k\leq j$,
+\[
+AB^j=B^kAB^{j-k}+k[A,B]B^{j-1}.
+\]
+对 $k$ 求和并除以 $j+1$,得到
+\[
+AB^j=\frac1{j+1}\sum_{k=0}^jB^kAB^{j-k}
++\frac{j}{2}[A,B]B^{j-1}.
+\]
+由式~\eqref{eq:weyl-multilinear},右侧两项都可识别为 Weyl 量子化.整理并代入对易子,得到
+\[
+Q_{\mathrm W}\bigl((a_1x+b_1p)(a_2x+b_2p)^j\bigr)
+=Q_{\mathrm W}(a_1x+b_1p)Q_{\mathrm W}\bigl((a_2x+b_2p)^j\bigr)
+-\frac{i\hbar j}{2}(a_1b_2-a_2b_1)Q_{\mathrm W}\bigl((a_2x+b_2p)^{j-1}\bigr).
+\]
+从 $B^jA$ 开始同样计算,得到相应的反向公式.取 $(a_1,b_1)=(1,0)$、$(a_2,b_2)=(a,b)$,即得式~\eqref{eq:weyl-product-rules} 的第一式在 $g=(ax+bp)^j$ 时的结论;其中最后一项正是 $-i\hbar/2$ 乘以 $\partial (ax+bp)^j/\partial p$ 的 Weyl 量子化.由练习~\ref{ex:homogeneous-span} 可推广到任意多项式 $g$.其余三式相同.
+\end{proof}
+
+\def\ChapterThirteenSectionTwo{
+\subsection{复合公式}
+\label{subsec:weyl-composition}
+
+若 $f,g\in L^2(\mathbb R^{2n})$,则 $Q_{\mathrm W}(f)$ 与 $Q_{\mathrm W}(g)$ 是 Hilbert--Schmidt 算子,它们的乘积仍是 Hilbert--Schmidt 算子(Hilbert--Schmidt 算子与有界算子的乘积总是 Hilbert--Schmidt).由于 $Q_{\mathrm W}$ 是 $L^2(\mathbb R^{2n})$ 与 $\mathrm{HS}(L^2(\mathbb R^n))$ 之间的双射,存在唯一的 $L^2$ 函数,记为 $f\star g$,使得
+\[
+Q_{\mathrm W}(f)Q_{\mathrm W}(g)=Q_{\mathrm W}(f\star g).
+\label{eq:moyal-composition}
+\]
+当然,运算 $\star$ 与 Weyl 量子化一样依赖于 $\hbar$,这里只是省略这种依赖.
+
+\begin{proposition}[Moyal 乘积]\label{prop:moyal-product}
+Moyal 乘积 $f\star g$ 可以用 Fourier 变换刻画为
+\[
+\widehat{f\star g}(a,b)=(2\pi)^{-n}\int_{\mathbb R^n}\int_{\mathbb R^n}
+e^{-i\hbar(a\cdot b'-b\cdot a')/2}
+\widehat f(a-a',b-b')\widehat g(a',b')\,da'\,db'.
+\label{eq:moyal-fourier}
+\]
+\end{proposition}
+
+若在式~\eqref{eq:moyal-fourier} 中令 $\hbar=0$,则 $\widehat{f\star g}$ 变成 $(2\pi)^{-n}$ 乘以 $\widehat f$ 与 $\widehat g$ 的卷积,也就是 $fg$ 的 Fourier 变换.因此(见练习~\ref{ex:moyal-classical-limit})
+\[
+\lim_{\hbar\to0^+}f\star g=fg.
+\]
+也就是说,Moyal 乘积是 $\mathbb R^{2n}$ 上普通逐点乘法的一个“变形”.更一般地,Moyal 乘积可以按 $\hbar$ 的幂展开成渐近级数;当 $f,g$ 都是多项式时,这个展开终止.
+
+\begin{proof}
+当然可以用积分核得到式~\eqref{eq:moyal-fourier};不过,当 $f$ 是 Schwartz 函数时,式~\eqref{eq:weyl-fourier-definition}(由练习~\ref{ex:weyl-fourier-integral} 可知)比定义~\ref{def:weyl-l2} 更方便.假设 Banach 空间值 Bochner 积分具有与 Lebesgue 积分相同的标准性质.于是
+\[
+\begin{aligned}
+Q_{\mathrm W}(f)Q_{\mathrm W}(g)
+&=(2\pi)^{-2n}\int\!\int
+\widehat f(a,b)\widehat g(a',b')
+e^{i(a\cdot X+b\cdot P)}e^{i(a'\cdot X+b'\cdot P)}\,da\,db\,da'\,db'.
+\end{aligned}
+\]
+由命题~\ref{prop:weyl-one-parameter},直接计算可得
+\[
+e^{i(a\cdot X+b\cdot P)}e^{i(a'\cdot X+b'\cdot P)}
+=e^{-i\hbar(a\cdot b'-b\cdot a')/2}
+e^{i((a+a')\cdot X+(b+b')\cdot P)}.
+\label{eq:weyl-exponential-product}
+\]
+这正是形式地使用式~\eqref{eq:bch-special} 所得到的结果.令 $c=a+a'$、$d=b+b'$,并交换积分顺序,则
+\[
+\begin{aligned}
+Q_{\mathrm W}(f)Q_{\mathrm W}(g)
+&=(2\pi)^{-n}\int\!\int\Bigl[(2\pi)^{-n}\int\!\int
+e^{-i\hbar(c\cdot b'-d\cdot a')/2}\\
+&\qquad\qquad\times\widehat f(c-a',d-b')\widehat g(a',b')\,da'\,db'\Bigr]
+e^{i(c\cdot X+d\cdot P)}\,dc\,dd.
+\end{aligned}
+\]
+与式~\eqref{eq:weyl-fourier-definition} 比较,方括号中的量正是 $f\star g$ 的 Fourier 变换.
+\end{proof}
+
+\begin{proposition}[Moyal 乘积的连续延拓]\label{prop:moyal-continuous}
+Moyal 乘积延拓为从 $L^2(\mathbb R^{2n})\times L^2(\mathbb R^{2n})$ 到 $L^2(\mathbb R^{2n})$ 的连续映射,并且复合公式~\eqref{eq:moyal-composition} 对所有 $f,g\in L^2(\mathbb R^{2n})$ 成立.
+\end{proposition}
+
+\begin{proof}
+Hilbert--Schmidt 算子满足
+\[
+\|AB\|_{\mathrm{HS}}\leq\|A\|_{\mathrm{HS}}\|B\|_{\mathrm{HS}}.
+\]
+所以乘法映射 $(A,B)\mapsto AB$ 是从 $\mathrm{HS}(L^2(\mathbb R^n))^2$ 到 $\mathrm{HS}(L^2(\mathbb R^n))$ 的连续映射.另一方面,Weyl 量子化是从 $L^2(\mathbb R^{2n})$ 到该 Hilbert--Schmidt 空间的酉映射乘以常数.对 Schwartz 函数,
+\[
+f\star g=Q_{\mathrm W}^{-1}\bigl(Q_{\mathrm W}(f)Q_{\mathrm W}(g)\bigr).
+\]
+右端给出所需的连续延拓,复合公式显然对该延拓成立.
+\end{proof}
+
+\subsection{对易关系}
+\label{subsec:weyl-commutation}
+
+在量子力学中,算子对易子除以 $i\hbar$ 所扮演的角色类似于经典力学中的 Poisson 括号.因此自然要问:Weyl 量子化(或其他量子化方案)在多大程度上把 Poisson 括号映到对易子？简短答案是:并不总是.第~\ref{sec:groenewold-no-go} 节将说明,没有“合理”的量子化方案能对一般 $f,g$ 在经典侧的 $\{f,g\}$ 与量子侧的 $[A,B]/(i\hbar)$ 建立精确对应.
+
+不过,对某些特殊符号类确实存在精确对应.例如,只依赖 $x$ 而不依赖 $p$ 的符号在经典侧两两 Poisson 对易;Weyl 量子化把 $f(x)$ 映为乘法算子,所以这些函数的量子化也两两对易.下面给出一个更有趣、并且非交换的例子.
+
+\begin{proposition}[低阶符号的 Poisson--对易对应]\label{prop:weyl-poisson-commutator}
+设 $f$ 是关于 $x,p$ 的次数至多为 $2$ 的多项式,$g$ 是任意关于 $x,p$ 的多项式,则
+\[
+\frac1{i\hbar}[Q_{\mathrm W}(f),Q_{\mathrm W}(g)]
+=Q_{\mathrm W}(\{f,g\}),
+\label{eq:weyl-poisson-commutator}
+\]
+其中 $\{f,g\}$ 是 Poisson 括号.这里 Weyl 量子化取定义~\ref{def:quantization-schemes} 的 $n$ 变量自然推广,所有算子只作用在 $C_c^\infty(\mathbb R^n)$ 上.
+\end{proposition}
+
+\begin{proof}
+记 $Q_{\mathrm W}$ 为 $Q$.若 $f$ 次数为零,两边均为零.若 $f$ 次数为一,由命题~\ref{prop:weyl-multiplication} 的 $n$ 变量版本,
+\[
+Q(x_jg)=Q(x_j)Q(g)-\frac{i\hbar}{2}Q\left(\frac{\partial g}{\partial p_j}\right)
+=Q(g)Q(x_j)+\frac{i\hbar}{2}Q\left(\frac{\partial g}{\partial p_j}\right).
+\]
+相减并整理即得
+\[
+\frac1{i\hbar}[Q(x_j),Q(g)]=Q\left(\frac{\partial g}{\partial p_j}\right)=Q(\{x_j,g\}).
+\]
+当 $f=p_j$ 时同理,因而一次齐次多项式的情形成立.
+
+现在设 $f_1,f_2$ 是 $x,p$ 中的一次齐次多项式.由命题~\ref{prop:weyl-multiplication},对任意多项式 $h$,
+\[
+Q(f_jh)=\frac12\bigl(Q(f_j)Q(h)+Q(h)Q(f_j)\bigr),
+\qquad j=1,2.
+\label{eq:weyl-degree1-product}
+\]
+特别地,
+\[
+Q(f_1f_2)=\frac12\bigl(Q(f_1)Q(f_2)+Q(f_2)Q(f_1)\bigr).
+\]
+利用命题~\ref{prop:commutator-properties} 的对易子乘法法则,以及一次情形,得到
+\[
+\begin{aligned}
+\frac1{i\hbar}[Q(f_1f_2),Q(g)]
+&=\frac12\bigl(Q(\{f_1,g\})Q(f_2)+Q(f_1)Q(\{f_2,g\})\\
+&\qquad+Q(\{f_2,g\})Q(f_1)+Q(f_2)Q(\{f_1,g\})\bigr)\\
+&=Q\bigl(f_2\{f_1,g\}+f_1\{f_2,g\}\bigr)
+=Q(\{f_1f_2,g\}).
+\end{aligned}
+\]
+这里最后一步用了 Poisson 括号的乘法法则.至此次数为 $0,1,2$ 的齐次多项式都已证明,线性性给出一般结论.
+
+值得注意的是,次数三时上述论证会失败:$Q(f_j)$ 不对易,因此算子不一定以能把 $f_j$ 拉回 Weyl 量子化内部的正确顺序出现.直接计算得到
+\[
+\frac1{i\hbar}[Q_{\mathrm W}(x^2p),Q_{\mathrm W}(xp^2)]
+=3X^2P^2-6i\hbar XP-\hbar^2I,
+\]
+而
+\[
+Q_{\mathrm W}(\{x^2p,xp^2\})
+=3X^2P^2-6i\hbar XP-\frac32\hbar^2I,
+\]
+两式相差 $\hbar^2I/2$.
+\end{proof}
+
+最后简要提及 Weyl 量子化的重要“协变性”.两个实值二次齐次多项式的 Poisson 括号仍是实值二次齐次多项式,因此所有实二次齐次多项式在 Poisson 括号下构成一个 Lie 代数;它自然同构于实辛群 $\mathrm{Sp}(n;\mathbb R)$ 的 Lie 代数 $\mathfrak{sp}(n;\mathbb R)$.命题~\ref{prop:weyl-poisson-commutator} 说明 $\pi(f):=Q_{\mathrm W}(f)$ 是作用在 $L^2(\mathbb R^n)$ 上的斜对称算子空间中的一个表示.与这一表示对应的是 $\mathrm{Sp}(n;\mathbb R)$ 的射影酉表示 $\Pi$,称为 metaplectic 表示.命题~\ref{prop:weyl-poisson-commutator} 是下列 Weyl 量子化协变性的无穷小版本:对 $A\in\mathrm{Sp}(n;\mathbb R)$ 与 $f\in L^2(\mathbb R^{2n})$,
+\[
+Q_{\mathrm W}(f\circ A^{-1})=\Pi(A)Q_{\mathrm W}(f)\Pi(A)^{-1}.
+\]
+
+}
+
+\def\ChapterThirteenLater{
+\section{Groenewold 的“禁行”定理}
+\label{sec:groenewold-no-go}
+
+第~\ref{subsec:weyl-commutation} 节指出,对多项式,Weyl 量子化满足
+\[
+\frac1{i\hbar}[Q_{\mathrm W}(f),Q_{\mathrm W}(g)]
+=Q_{\mathrm W}(\{f,g\})
+\]
+的充分条件是 $f$ 次数至多为 $2$;一般并不成立.或许有人会认为这是 Weyl 量子化定义的缺陷,可以用另一种定义修正.但本节将看到:不存在一种把 $x_j,p_j$ 映到通常的位置、动量算子 $X_j,P_j$ 的量子化方案,能够对一般的 $x,p$ 多项式满足上述关系.这类关于满足自然且理想条件的构造不存在的结果,在物理学文献中称为“禁行”定理.
+
+这一结果也许让人想到,位置、动量算子应当以不同方式定义,或者应当改变量子 Hilbert 空间.确实存在对所有 $f,g$ 满足 Poisson--对易对应的映射,即第~\ref{sec:prequantization} 节介绍的预量子化映射;但它把量子 Hilbert 空间从 $L^2(\mathbb R^n)$ 大幅扩大为 $L^2(\mathbb R^{2n})$.从物理角度看,后者“太大”,这正是该映射称为“预量子化”而不是“量子化”的原因.若对量子 Hilbert 空间施加自然的“小性”条件,即位置、动量算子作用的不可约性,那么 Stone--von Neumann 定理会告诉我们(在适当定义域条件下),任何满足正则对易关系的位置、动量算子都与通常的算子酉等价.
+
+下面证明 Groenewold 的禁行定理.为使量子化算子之间的对易子有意义,需作定义域假设.最简单的做法是假设任意多项式 $f$ 的量子化 $Q(f)$ 属于由 $X$、$P$ 生成的代数,因此是具有多项式系数的微分算子.van Hove 定理在更一般的假设下给出类似的禁行结论.
+
+\begin{definition}[齐次多项式空间]\label{def:homogeneous-polynomial-space}
+对 $k\geq0$,令 $\mathcal P_k$ 为次数为 $k$ 的齐次多项式空间,令 $\mathcal P_{\leq k}$ 为次数不超过 $k$ 的所有多项式空间.
+\end{definition}
+
+\begin{theorem}[Groenewold 定理]\label{thm:groenewold}
+令 $\mathcal D(\mathbb R^n)$ 表示具有多项式系数的 $\mathbb R^n$ 上微分算子空间.不存在从 $\mathcal P_{\leq4}$ 到 $\mathcal D(\mathbb R^n)$ 的线性映射 $Q$,同时满足:
+\begin{enumerate}
+\item $Q(1)=I$;
+\item $Q(x_j)=X_j$ 且 $Q(p_j)=P_j$;
+\item 对任意 $f,g\in\mathcal P_{\leq3}$,
+\[
+Q(\{f,g\})=\frac1{i\hbar}[Q(f),Q(g)].
+\label{eq:groenewold-condition}
+\]
+\end{enumerate}
+第三条只要求 $f,g$ 属于 $\mathcal P_{\leq3}$,因为这样 $\{f,g\}$ 属于 $\mathcal P_{\leq4}$,左侧才有定义.
+\end{theorem}
+
+证明策略如下.由命题~\ref{prop:weyl-poisson-commutator},Weyl 量子化在 $f$ 次数至多为 $2$、$g$ 次数至多为 $3$ 时满足式~\eqref{eq:groenewold-condition}.由此可证明,满足定理条件的任意 $Q$ 在 $\mathcal P_{\leq3}$ 上必须与 Weyl 量子化一致.接着找一个四次多项式 $f$,它能以两种方式写成 Poisson 括号 $f=\{g,h\}=\{g',h'\}$,其中 $g,h,g',h'\in\mathcal P_{\leq3}$,但相应的 Weyl 量子化对易子不相等,即可得到矛盾.
+
+\begin{lemma}[微分算子的系数唯一性]\label{lem:differential-operator-coefficients}
+设 $A\in\mathcal D(\mathbb R^n)$,写成
+\[
+A=\sum_k f_k(x)\left(\frac{\partial}{\partial x}\right)^k,
+\]
+其中 $k$ 遍历多重指标,$f_k$ 为多项式,且只有有限多个 $f_k$ 非零.若 $A$ 在 $C_c^\infty(\mathbb R^n)$ 上为零算子,则每个 $f_k$ 都为零.
+\end{lemma}
+
+\begin{proof}
+对多重指标 $k$ 令 $|k|=k_1+\cdots+k_n$.若并非所有 $f_k$ 都为零,取使某个 $f_k\neq0$ 的最小非负整数 $N=|k|$,并取 $|k_0|=N$ 且 $f_{k_0}\neq0$.取一个在原点邻域内等于 $x^{k_0}$ 的紧支撑光滑函数 $g$.在原点邻域内,$Ag$ 中除 $f_{k_0}$ 对应项之外的项都为零,而该项是非零常数,故 $A$ 不可能是零算子.
+\end{proof}
+
+\begin{lemma}[与位置、动量都对易的微分算子]\label{lem:differential-commutant}
+若 $A\in\mathcal D(\mathbb R^n)$ 与所有 $X_j,P_j$ 对易,则 $A=cI$,其中 $c\in\mathbb C$.
+\end{lemma}
+
+\begin{proof}
+对多项式 $g$,归纳可得
+\[
+\left(\frac{\partial}{\partial x_j}\right)^k(x_jg(x))
+=k\left(\frac{\partial}{\partial x_j}\right)^{k-1}g(x)
++x_j\left(\frac{\partial}{\partial x_j}\right)^kg(x),
+\]
+从而
+\[
+\left[f(x)\left(\frac{\partial}{\partial x}\right)^k,X_j\right]
+=k_jf(x)\left(\frac{\partial}{\partial x}\right)^{k-e_j}.
+\label{eq:differential-commutator}
+\]
+若 $A$ 与每个 $X_j$ 对易,设 $A$ 的阶为 $M$.若 $M>0$,取 $|k_0|=M$ 且 $f_{k_0}\neq0$ 的项,并选取 $k_0$ 的某个非零分量 $k_{0j}$.由式~\eqref{eq:differential-commutator} 与引理~\ref{lem:differential-operator-coefficients},$[A,X_j]$ 不可能为零.因此 $A$ 的阶必须为零,即 $A$ 是某个多项式 $f(x)$ 的乘法算子.再由
+\[
+0=[f(x),P_j]=i\hbar\frac{\partial f}{\partial x_j}(x),
+\]
+可知 $f$ 为常数.
+\end{proof}
+
+\begin{lemma}[低阶多项式的 Poisson 括号分解]\label{lem:poisson-bracket-decomposition}
+对任意 $f\in\mathcal P_2$,存在 $g_1,\ldots,g_j,h_1,\ldots,h_j\in\mathcal P_2$,使
+\[
+f=\{g_1,h_1\}+\cdots+\{g_j,h_j\}.
+\]
+此外,对任意 $f'\in\mathcal P_3$,存在 $g'_1,\ldots,g'_k\in\mathcal P_3$ 与 $h'_1,\ldots,h'_k\in\mathcal P_2$,使
+\[
+f'=\{g'_1,h'_1\}+\cdots+\{g'_k,h'_k\}.
+\]
+\end{lemma}
+
+\begin{proof}
+见练习~\ref{ex:poisson-bracket-decomposition}.
+\end{proof}
+
+\begin{lemma}[量子化在三次以下的唯一性]\label{lem:quantization-unique-degree3}
+若 $Q$ 满足定理~\ref{thm:groenewold} 的条件,则 $Q$ 在 $\mathcal P_{\leq3}$ 上与 $Q_{\mathrm W}$ 一致.
+\end{lemma}
+
+\begin{proof}
+由假设,$Q$ 与 $Q_{\mathrm W}$ 在 $\mathcal P_{\leq1}$ 上一致.对 $f\in\mathcal P_2$ 写成 $Q(f)=Q_{\mathrm W}(f)+A_f$.对任意 $g\in\mathcal P_{\leq1}$,由式~\eqref{eq:groenewold-condition} 与命题~\ref{prop:weyl-poisson-commutator},
+\[
+Q(\{f,g\})=Q_{\mathrm W}(\{f,g\})+\frac1{i\hbar}[A_f,Q_{\mathrm W}(g)].
+\]
+由于 $\{f,g\}\in\mathcal P_{\leq1}$,左侧等于 $Q_{\mathrm W}(\{f,g\})$,故 $A_f$ 与所有 $Q_{\mathrm W}(g)$($g\in\mathcal P_1$)对易.由引理~\ref{lem:differential-commutant},$A_f=c_fI$.
+
+若 $h\in\mathcal P_2$,则
+\[
+\frac1{i\hbar}[Q(f),Q(h)]
+=\frac1{i\hbar}[Q_{\mathrm W}(f)+c_fI,Q_{\mathrm W}(h)+c_hI]
+=Q_{\mathrm W}(\{f,h\}).
+\]
+因此 $Q$ 与 $Q_{\mathrm W}$ 在形如 $\{f,h\}$($f,h\in\mathcal P_2$)的二次多项式上一致.由引理~\ref{lem:poisson-bracket-decomposition},它们在全部 $\mathcal P_2$ 上一致,因而在 $\mathcal P_{\leq2}$ 上一致.
+
+对 $f\in\mathcal P_3$ 写 $Q(f)=Q_{\mathrm W}(f)+B_f$.对 $g\in\mathcal P_{\leq1}$,因为 $\{f,g\}\in\mathcal P_{\leq2}$,同样的论证给出 $B_f=d_fI$.再令 $h\in\mathcal P_2$,使用已证明的二次情形与 $c_h=0$,可知 $Q$ 与 $Q_{\mathrm W}$ 在所有形如 $\{f,h\}$($f\in\mathcal P_3,h\in\mathcal P_2$)的三次多项式上一致.由引理~\ref{lem:poisson-bracket-decomposition},三次情形也成立.
+\end{proof}
+
+\begin{proof}[定理~\ref{thm:groenewold} 的证明]
+反设存在满足定理条件的 $Q$.令
+\[
+f(x,p)=x_1^2p_1^2.
+\]
+它有两种 Poisson 括号表示:
+\[
+x_1^2p_1^2=\frac19\{x_1^3,p_1^3\}
+=\frac13\{x_1^2p_1,x_1p_1^2\}.
+\]
+由引理~\ref{lem:quantization-unique-degree3},必有
+\[
+\frac19[Q_{\mathrm W}(x_1^3),Q_{\mathrm W}(p_1^3)]
+=i\hbar Q(x_1^2p_1^2)
+=\frac13[Q_{\mathrm W}(x_1^2p_1),Q_{\mathrm W}(x_1p_1^2)].
+\]
+但把两个对易子作用于常函数 $1$(或在原点邻域等于 $1$ 的函数),左侧给出
+\[
+\frac19[Q_{\mathrm W}(x_1^3),Q_{\mathrm W}(p_1^3)]1
+=\frac19(X_1^3P_1^3-P_1^3X_1^3)1
+=-\frac19(-i\hbar)^3 6\cdot1.
+\]
+另一方面,用式~\eqref{eq:weyl-xp2} 计算两个二次--一次量子化,并删去含 $P_1 1$ 的项,可得
+\[
+\frac13[Q_{\mathrm W}(x_1^2p_1),Q_{\mathrm W}(x_1p_1^2)]1
+=-\frac1{12}(-i\hbar)^3 4\cdot1.
+\]
+由于 $6/9\neq4/12$,矛盾成立.
+\end{proof}
+
+\section{练习}
+\label{sec:chapter13-exercises}
+
+\begin{exercise}[齐次多项式的张成]\label{ex:homogeneous-span}
+令 $\mathcal P_j$ 为 $\mathbb R^2$ 上次数为 $j$ 的复值齐次多项式空间.它是维数为 $j+1$ 的复向量空间.令 $V_j$ 为由 $(ax+bp)^j$($a,b\in\mathbb C$)张成的子空间.证明 $V_j=\mathcal P_j$.
+
+提示:$\mathbb C^{j+1}$ 的每个子空间都是(拓扑意义下)闭的;若光滑曲线 $\gamma(t)$ 取值于 $V_j$,则其导数 $\gamma'(t)$ 也取值于 $V_j$.
+\end{exercise}
+
+\begin{exercise}[对称化与 Weyl 量子化]\label{ex:symmetrized-weyl}
+证明 $x^2p^2$ 的对称化伪微分算子量子化等于
+\[
+Q_{\mathrm W}(x^2p^2)-\frac{\hbar^2}{2}I.
+\]
+\end{exercise}
+
+\begin{exercise}[Wick 排序的对称性]\label{ex:wick-symmetric}
+证明 Wick 排序与反 Wick 排序量子化把实值多项式映到 $C_c^\infty(\mathbb R)$ 上的对称算子.
+
+提示:比较两个方案在 $z^k\bar z^l$ 与 $\overline{z^k\bar z^l}$ 上的取值.
+\end{exercise}
+
+\begin{exercise}[谐振子的三种量子化]\label{ex:quantization-harmonic-oscillator}
+考虑经典谐振子
+\[
+H(x,p)=\frac{p^2}{2m}+\frac12m\omega^2x^2
+=\frac12m\omega^2x^2+\frac12\frac{p^2}{m\omega^2},
+\]
+其中 $\omega$ 为频率.取参数 $\alpha=1/(m\omega)$ 的 Wick 与反 Wick 量子化.证明
+\[
+Q_{\mathrm{Wick}}(H)=Q_{\mathrm W}(H)-\frac12\hbar\omega I,
+\qquad
+Q_{\mathrm{aW}}(H)=Q_{\mathrm W}(H)+\frac12\hbar\omega I.
+\]
+\end{exercise}
+
+\begin{exercise}[Weyl 一参数群]\label{ex:weyl-one-parameter-group}
+令 $U_{a,b}(t)$ 如命题~\ref{prop:weyl-one-parameter} 所定义.直接计算证明它们构成一参数酉群.
+\end{exercise}
+
+\begin{exercise}[积分算子的伴随]\label{ex:kernel-adjoint}
+给定 $\kappa\in L^2(\mathbb R^n\times\mathbb R^n)$,令 $A_\kappa$ 为命题~\ref{prop:kernel-hilbert-schmidt} 中的积分算子.证明其伴随也是积分算子,并且积分核为
+\[
+\kappa'(x,y)=\overline{\kappa(y,x)}.
+\]
+\end{exercise}
+
+\begin{exercise}[Fourier 积分与 Weyl 量子化]\label{ex:weyl-fourier-integral}
+设 $f\in L^2(\mathbb R^{2n})$ 且 $\widehat f\in L^1(\mathbb R^{2n})$.证明式~\eqref{eq:weyl-fourier-definition} 右端可以理解为取值于 $\mathcal B(L^2(\mathbb R^n))$ 的绝对收敛 Bochner 积分,并且该式定义的 $Q_{\mathrm W}(f)$ 与定义~\ref{def:weyl-l2} 中的 $Q_{\mathrm W}(f)$ 一致.
+
+提示:Bochner 积分与施加有界线性泛函可交换.对 $\mathcal B(L^2(\mathbb R^n))$ 使用 $\Lambda_{\phi,\psi}(A)=\langle\phi,A\psi\rangle$,再利用式~\eqref{eq:weyl-kernel-formal}.
+\end{exercise}
+
+\begin{exercise}[一类精确的 Poisson--对易对应]\label{ex:weyl-linear-momentum-class}
+\begin{enumerate}
+\item 证明,对任意一元多项式 $f$,
+\[
+Q_{\mathrm W}(f(x)p)=f(X)P-\frac{i\hbar}{2}f'(X).
+\]
+\item 证明任意两个多项式 $f,g$ 的 Poisson 括号 $\{f(x)p,g(x)p\}$ 都具有 $h(x)p$ 的形式,其中 $h$ 是多项式.
+\item 证明
+\[
+\frac1{i\hbar}[Q_{\mathrm W}(f(x)p),Q_{\mathrm W}(g(x)p)]
+=Q_{\mathrm W}(\{f(x)p,g(x)p\}).
+\]
+\end{enumerate}
+\end{exercise}
+
+\begin{exercise}[投影算子的 Weyl 符号]\label{ex:weyl-rank-one-projection}
+\begin{enumerate}
+\item 对 $\phi,\psi\in L^2(\mathbb R^n)$,令 $|\phi\rangle\langle\psi|$ 为定义~\ref{def:rank-one-dirac} 中的算子.证明它可以写成命题~\ref{prop:kernel-hilbert-schmidt} 中的积分算子,并求出积分核.
+\item 对 $\sigma>0$,令
+\[
+\psi_\sigma(x)=(\pi\sigma)^{-n/4}e^{-|x|^2/(2\sigma)}.
+\]
+利用命题~\ref{app:prop:gaussian} 证明 $\psi_\sigma$ 是 $L^2(\mathbb R^n)$ 中的单位向量,并证明相应一维投影算子 $|\psi_\sigma\rangle\langle\psi_\sigma|$ 的 Weyl 符号为
+\[
+Q_{\mathrm W}^{-1}(|\psi_\sigma\rangle\langle\psi_\sigma|)(x,p)
+=2^n e^{-|x|^2/\sigma}e^{-\sigma|p|^2/\hbar^2}.
+\]
+\end{enumerate}
+注:若取 $\sigma=\hbar/(m\omega)$,则 $\psi_\sigma$ 可视为 $n$ 维谐振子的基态(比较定理~\ref{thm:harmonic-hermite-states}).本练习的计算将在第~14 章 Stone--von Neumann 定理的证明中发挥重要作用.
+\end{exercise}
+
+\begin{exercise}[Moyal 乘积的经典极限]\label{ex:moyal-classical-limit}
+若 $f,g$ 是 $\mathbb R^{2n}$ 上的 Schwartz 函数,证明 $f\star g$ 在 $L^1$ 范数下收敛到 $(2\pi)^{-n}\widehat f*\widehat g$,其中 $*$ 表示卷积.推出当 $\hbar\to0^+$ 时,$f\star g$ 一致收敛到 $fg$.
+\end{exercise}
+
+\begin{exercise}[二次 Hamilton 流]\label{ex:quadratic-hamilton-flow}
+设 $f(p,q)$ 是二次齐次多项式.证明对每个 $t$,由 $f$ 产生的 Hamilton 流 $\Phi_t$ 是从 $\mathbb R^{2n}$ 到自身的线性映射.
+\end{exercise}
+
+\begin{exercise}[证明 Poisson 括号分解引理]\label{ex:poisson-bracket-decomposition}
+证明引理~\ref{lem:poisson-bracket-decomposition}.
+
+提示:令
+\[
+g_1(x,p)=\sum_{j=1}^n x_jp_j.
+\]
+证明对任意单项式 $x^jp^k$,有
+\[
+\{g_1,x^jp^k\}=(|k|-|j|)x^jp^k.
+\]
+因此,$\mathcal P_2$ 的大多数标准基元素以及 $\mathcal P_3$ 的全部标准基元素,都可以表示为某个 $\{g_1,f\}$ 的非零倍数.
+\end{exercise}
+
+}
+
+\ChapterThirteenSectionTwo
+
+\section{$\mathbb R^{2n}$ 上的 Weyl 量子化}
+\label{sec:weyl-r2n}
+
+本节把 Weyl 量子化从上一节的多项式符号推广到更大的符号类,并从 $\mathbb R^2$ 推广到 $\mathbb R^{2n}$.
+
+\subsection{启发式构造}
+\label{subsec:weyl-heuristics}
+
+从 $\mathbb R^2$ 到 $\mathbb R^{2n}$ 的多项式 Weyl 量子化是直接的推广.对任意 $a,b\in\mathbb R^n$ 与非负整数 $j$,它满足
+\[
+Q_{\mathrm W}\bigl((a\cdot x+b\cdot p)^j\bigr)=(a\cdot X+b\cdot P)^j.
+\label{eq:weyl-r2n-linear-power}
+\]
+若把式~\eqref{eq:weyl-r2n-linear-power} 乘以 $i^j/j!$ 并对 $j$ 求和,就自然期望
+\[
+Q_{\mathrm W}\left(e^{i(a\cdot x+b\cdot p)}\right)=e^{i(a\cdot X+b\cdot P)}.
+\label{eq:weyl-exponential-symbol}
+\]
+
+现在设 $f$ 是 $\mathbb R^{2n}$ 上足够良好的函数.由 Fourier 变换,
+\[
+f(x,p)=(2\pi)^{-n}\int_{\mathbb R^{2n}}\widehat f(a,b)e^{i(a\cdot x+b\cdot p)}\,da\,db.
+\]
+结合式~\eqref{eq:weyl-exponential-symbol},自然的定义是
+\[
+Q_{\mathrm W}(f)=(2\pi)^{-n}\int_{\mathbb R^{2n}}\widehat f(a,b)e^{i(a\cdot X+b\cdot P)}\,da\,db.
+\label{eq:weyl-fourier-definition}
+\]
+
+先计算算子 $e^{i(a\cdot X+b\cdot P)}$.若有界算子 $A,B$ 与其对易子对易,即 $[A,[A,B]]=[B,[A,B]]=0$,则
+\[
+e^{A+B}=e^{-[A,B]/2}e^Ae^B.
+\label{eq:bch-special}
+\]
+这是 Baker--Campbell--Hausdorff 公式的一个特殊情形(见定理~\ref{thm:bch-special}).形式地令 $A=ia\cdot X$、$B=ib\cdot P$,尽管它们无界,得到
+\[
+e^{i(a\cdot X+b\cdot P)}=e^{i\hbar(a\cdot b)/2}e^{ia\cdot X}e^{ib\cdot P}.
+\label{eq:weyl-exponential-factor}
+\]
+另一方面,由例~\ref{ex:translation-unitary-group},
+\[
+(e^{ib\cdot P}\psi)(x)=\psi(x+\hbar b).
+\]
+因此合理地期望
+\[
+\left(e^{i(a\cdot X+b\cdot P)}\psi\right)(x)
+=e^{i\hbar(a\cdot b)/2}e^{ia\cdot x}\psi(x+\hbar b).
+\label{eq:weyl-exponential-action}
+\]
+一般来说,把有界算子的结论形式地应用到无界算子会得到错误结果;但在这里形式计算恰好正确.最简单的严格证明是把 $a,b$ 替换为 $ta,tb$,验证右侧构成强连续的一参数酉群.
+
+\begin{proposition}[Weyl 算子的一参数群]\label{prop:weyl-one-parameter}
+对任意 $a,b\in\mathbb R^n$,在 $L^2(\mathbb R^n)$ 上定义
+\[
+(U_{a,b}(t)\psi)(x)=e^{it^2\hbar(a\cdot b)/2}e^{ita\cdot x}\psi(x+t\hbar b).
+\label{eq:weyl-one-parameter}
+\]
+则 $U_{a,b}(t)$ 构成强连续的一参数酉群.该群的无穷小生成元在 $C_c^\infty(\mathbb R^n)$ 上与 $a\cdot X+b\cdot P$ 一致,并且该算子在此定义域上本质自伴.因此,若 $a\cdot X+b\cdot P$ 表示其在 $C_c^\infty(\mathbb R^n)$ 上的唯一自伴延拓,则
+\[
+e^{it(a\cdot X+b\cdot P)}
+=e^{it^2\hbar(a\cdot b)/2}e^{ita\cdot X}e^{itb\cdot P},
+\qquad t\in\mathbb R.
+\]
+特别地,式~\eqref{eq:weyl-exponential-factor} 与式~\eqref{eq:weyl-exponential-action} 成立.
+\end{proposition}
+
+\begin{proof}
+对每个 $a,b$,$U_{a,b}(t)$ 显然是酉的,直接计算即可验证群性质.强连续性按例~\ref{ex:translation-unitary-group} 的方法,先在稠密子空间上验证,再推广到整个空间.若 $\psi\in C_c^\infty(\mathbb R^n)$,对式~\eqref{eq:weyl-one-parameter} 关于 $t$ 在 $0$ 处求导,立即得到无穷小生成元.最后,$a\cdot X+b\cdot P$ 在 $C_c^\infty(\mathbb R^n)$ 上本质自伴正是命题~\ref{prop:linear-position-momentum-essential} 的内容.由 Stone 定理得到所述指数公式.
+\end{proof}
+
+有了 $e^{i(a\cdot X+b\cdot P)}$ 的计算,我们回到式~\eqref{eq:weyl-fourier-definition}.若 $\widehat f\in L^1(\mathbb R^{2n})$,右侧可以看作取值于 Banach 空间 $\mathcal B(L^2(\mathbb R^n))$ 的绝对收敛 Bochner 积分.不过,为了得到更方便的表达式,我们把 $L^2(\mathbb R^n)$ 上的算子视为积分算子,并用 $f$ 本身写出积分核.
+
+形式上,映射 $\psi\mapsto e^{i\hbar(a\cdot b)/2}e^{ia\cdot x}\psi(x+\hbar b)$ 的积分核为
+\[
+e^{i\hbar(a\cdot b)/2}e^{ia\cdot x}\delta_n(x+\hbar b-y).
+\]
+在式~\eqref{eq:weyl-fourier-definition} 中对这一表达式积分,并作变量代换 $c=\hbar b$,得到
+\[
+\begin{aligned}
+&(2\pi\hbar)^{-n}\int\!\int e^{i(a\cdot c)/2}e^{ia\cdot x}
+\delta_n(x+c-y)\widehat f(a,c/\hbar)\,dc\,da\\
+&=\hbar^{-n}(2\pi)^{-n/2}
+\left[(2\pi)^{-n/2}\int e^{ia\cdot(x+y)/2}
+\widehat f(a,(y-x)/\hbar)\,da\right].
+\end{aligned}
+\]
+方括号中的积分是对 $f$ 的 $x$ 变量 Fourier 变换的逆变换,因此留下 $p$ 变量的部分 Fourier 变换,并在 $((x+y)/2,(y-x)/\hbar)$ 处取值.于是期望 $Q_{\mathrm W}(f)$ 是积分核为
+\[
+\kappa_f(x,y)=(2\pi\hbar)^{-n}\int_{\mathbb R^n}
+f\left(\frac{x+y}{2},p\right)e^{-i(y-x)\cdot p/\hbar}\,dp
+\label{eq:weyl-kernel-formal}
+\]
+的积分算子.
+
+\subsection{$L^2$ 理论}
+\label{subsec:weyl-l2}
+
+受上述计算启发,现在从 $f\in L^2(\mathbb R^{2n})$ 开始,用核 $\kappa_f$ 定义 Weyl 量子化.所得算子将是 $L^2(\mathbb R^n)$ 上的 Hilbert--Schmidt 算子.
+
+若 $\mathcal H$ 是 Hilbert 空间,$A\in\mathcal B(\mathcal H)$ 是非负自伴算子,则可以定义 $A$ 的迹(允许为 $+\infty$):
+\[
+\operatorname{tr}(A)=\sum_j\langle e_j,Ae_j\rangle,
+\]
+其中 $\{e_j\}$ 是任意正交归一基,所得值与基的选择无关.因为 $A$ 非负,$\langle e_j,Ae_j\rangle$ 是非负实数,所以级数总有定义,只是可能等于 $+\infty$.
+
+对任意有界算子 $A$,$A^*A$ 是自伴非负算子.若
+\[
+\operatorname{tr}(A^*A)<\infty,
+\]
+则称 $A$ 为 Hilbert--Schmidt 算子.对两个 Hilbert--Schmidt 算子 $A,B$,$A^*B$ 是迹类算子,即
+\[
+\operatorname{tr}(A^*B)=\sum_{j=1}^{\infty}\langle e_j,A^*Be_j\rangle
+\]
+绝对收敛且与正交归一基的选择无关.定义 Hilbert--Schmidt 内积与范数
+\[
+\langle A,B\rangle_{\mathrm{HS}}=\operatorname{tr}(A^*B),
+\qquad
+\|A\|_{\mathrm{HS}}=\sqrt{\operatorname{tr}(A^*A)}.
+\]
+Hilbert 空间上的 Hilbert--Schmidt 算子空间在此内积下本身构成 Hilbert 空间;记为 $\mathrm{HS}(\mathcal H)$.
+
+\begin{proposition}[积分核与 Hilbert--Schmidt 算子]\label{prop:kernel-hilbert-schmidt}
+若 $\kappa\in L^2(\mathbb R^n\times\mathbb R^n)$,则对每个 $\psi\in L^2(\mathbb R^n)$,积分
+\[
+A_\kappa(\psi)(x)=\int_{\mathbb R^n}\kappa(x,y)\psi(y)\,dy
+\label{eq:integral-operator-kernel}
+\]
+对几乎处处的 $x$ 绝对收敛,且 $A_\kappa(\psi)\in L^2(\mathbb R^n)$.此外,$A_\kappa$ 是 Hilbert--Schmidt 算子,并且
+\[
+\|A_\kappa\|_{\mathrm{HS}}=\|\kappa\|_{L^2(\mathbb R^n\times\mathbb R^n)}.
+\]
+反之,对 $L^2(\mathbb R^n)$ 上任意 Hilbert--Schmidt 算子 $A$,都存在唯一的 $\kappa\in L^2(\mathbb R^n\times\mathbb R^n)$,使 $A=A_\kappa$.
+\end{proposition}
+
+\begin{definition}[$L^2$ 符号的 Weyl 量子化]\label{def:weyl-l2}
+对任意 $f\in L^2(\mathbb R^{2n})$,定义
+\[
+\kappa_f(x,y)=(2\pi\hbar)^{-n}\int_{\mathbb R^n}
+f\left(\frac{x+y}{2},p\right)e^{-i(y-x)\cdot p/\hbar}\,dp,
+\label{eq:weyl-l2-kernel}
+\]
+并定义 $f$ 的 Weyl 量子化为作用在 $L^2(\mathbb R^n)$ 上的算子
+\[
+Q_{\mathrm W}(f)=A_{\kappa_f},
+\]
+其中 $A_{\kappa_f}$ 由式~\eqref{eq:integral-operator-kernel} 定义.
+\end{definition}
+
+式~\eqref{eq:weyl-l2-kernel} 中的积分不一定绝对收敛,应理解为计算部分 Fourier 变换.严格地说,右端应替换为
+\[
+\lim_{R\to\infty}(2\pi\hbar)^{-n}
+\int_{|p|\leq R}f\left(\frac{x+y}{2},p\right)e^{-i(y-x)\cdot p/\hbar}\,dp,
+\label{eq:weyl-l2-kernel-limit}
+\]
+其中极限在 $L^2(\mathbb R^{2n})$ 的范数拓扑中成立.部分 Fourier 变换把 Schwartz 空间映到自身;由 Fubini 定理与 Plancherel 公式,它是 $L^2(\mathbb R^{2n})$ 上的等距映射,并延拓为酉映射.对于一般函数,可以用类似式~\eqref{eq:weyl-l2-kernel-limit} 的极限计算.
+
+换言之,在点 $(x_1,x_2)\in\mathbb R^{2n}$ 处计算 $\kappa_f$ 的步骤是:先对 $f(x,p)$ 的 $p$ 变量作部分 Fourier 变换,得到 $(\mathcal F_pf)(x,\xi)$;再在 $x=(x_1+x_2)/2$、$\xi=(x_2-x_1)/\hbar$ 处取值;最后乘以 $\hbar^{-n}(2\pi)^{-n/2}$,即
+\[
+\kappa_f(x_1,x_2)=\hbar^{-n}(2\pi)^{-n/2}
+(\mathcal F_pf)\left(\frac{x_1+x_2}{2},\frac{x_2-x_1}{\hbar}\right).
+\label{eq:weyl-partial-fourier}
+\]
+
+\begin{theorem}[$L^2$ Weyl 量子化的酉性]\label{thm:weyl-l2-unitary}
+映射 $Q_{\mathrm W}$ 是从 $L^2(\mathbb R^{2n})$ 到 $\mathrm{HS}(L^2(\mathbb R^n))$ 的酉映射乘以一个常数.其逆映射由下式给出:若 $A$ 的积分核为 $\kappa$,则
+\[
+Q_{\mathrm W}^{-1}(A)(x,p)=\hbar^n\int_{\mathbb R^n}
+\kappa\left(x-\frac{\hbar b}{2},x+\frac{\hbar b}{2}\right)e^{ib\cdot p}\,db.
+\]
+此外,对任意 $f\in L^2(\mathbb R^{2n})$,有
+\[
+Q_{\mathrm W}(\bar f)=Q_{\mathrm W}(f)^*.
+\]
+特别地,若 $f$ 为实值,$Q_{\mathrm W}(f)$ 自伴.
+\end{theorem}
+
+严格说来,定理中的积分也应理解为与式~\eqref{eq:weyl-l2-kernel-limit} 类似的 $L^2$ 极限.$Q_{\mathrm W}$(相差常数)为酉映射这一事实意味着,适当选取常数 $c$ 后,算子 $ce^{i(a\cdot X+b\cdot P)}$ 构成 Hilbert--Schmidt 空间的“连续意义下的正交归一基”(与附录~\ref{app:subsec:fourier-transform} 相比较).用同样的公式还可以把 Weyl 量子化推广到温和分布,即 Schwartz 空间 $\mathcal S(\mathbb R^{2n})$ 上的连续线性泛函;本书不展开这一构造.
+
+\begin{proof}
+命题~\ref{prop:kernel-hilbert-schmidt} 给出了 $\mathrm{HS}(L^2(\mathbb R^n))$ 与 $L^2(\mathbb R^n\times\mathbb R^n)$ 的酉对应.因此,只需证明 $f\mapsto\kappa_f$(相差常数)是酉映射.部分 Fourier 变换是 $L^2(\mathbb R^{2n})$ 上的酉映射,而与可逆线性变换复合只会产生一个常数因子,所以结论成立.逆映射由逆线性变换和逆部分 Fourier 变换得到.最后,由式~\eqref{eq:weyl-l2-kernel} 直接看出
+\[
+\kappa_{\bar f}(x,y)=\kappa_f(y,x).
+\]
+结合练习~\ref{ex:kernel-adjoint},得到 $Q_{\mathrm W}(\bar f)=Q_{\mathrm W}(f)^*$.
+\end{proof}
+
+\ChapterThirteenLater

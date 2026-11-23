@@ -1,0 +1,101 @@
+\subsubsection{Test Functions}\label{subsec:test-functions}
+
+Let $\Omega$ be a nonempty open set in $\mathbb{R}^m$. We make the following definition.
+
+\begin{Definition}
+\label{def:test-function}
+A function $f$ defined on $\Omega$ is called a \textbf{test function} if $f\in C^\infty(\Omega)$ and there is a compact set $K\subset\Omega$ such that the support of $f$ lies in $K$. The set of all test functions on $\Omega$ is denoted by $\mathcal{D}(\Omega)=C_0^\infty(\Omega)$.
+\end{Definition}
+
+Obviously, $\mathcal{D}(\Omega)$ is a linear space. To do analysis, we need a notion of convergence. It is possible to define open sets in $\mathcal{D}(\Omega)$ and use the notions of general topology. However, for most purposes in PDEs this is not necessary; only a definition for the convergence of sequences is required. This definition is as follows.
+
+\begin{Definition}
+\label{def:test-function-convergence}
+Let $\phi_n$, $n\in\mathbb{N}$ and $\phi$ be elements of $\mathcal{D}(\Omega)$. We say that $\phi_n$ \textbf{converges} to $\phi$ in $\mathcal{D}(\Omega)$, if there is a compact subset $K$ of $\Omega$ such that the supports of all the $\phi_n$ (and of $\phi$) lie in $K$ and, moreover, $\phi_n$ and derivatives of $\phi_n$ of arbitrary order converge uniformly to those of $\phi$.
+\end{Definition}
+
+\begin{Remark}
+\label{rem:test-function-convergence-nonmetric}
+Note that the notion of convergence defined above does not come from a metric or norm.
+\end{Remark}
+
+It is often important to know that test functions with certain properties exist; for example one often needs a function that is positive in a small neighborhood of a given point $\bm{y}$ and zero outside that neighborhood. Such a function can be given explicitly:
+\begin{equation}\label{eq:smooth-compact-bump-function}
+\phi_{\bm{y},\epsilon}(\bm{x})=\begin{cases}\exp\left(-\dfrac{\epsilon^2}{\epsilon^2-|\bm{x}-\bm{y}|^2}\right),&|\bm{x}-\bm{y}|<\epsilon,\\0,&\text{otherwise.}\end{cases}
+\end{equation}
+
+
+Indeed, this example can be used generate other examples of test functions. The following theorem states that any continuous function of compact support can be approximated uniformly by test functions.
+
+\begin{Theorem}
+\label{thm:test-functions-uniform-approximation}
+Let $K$ be a compact subset of $\Omega$ and let $f\in C(\Omega)$ have support contained in $K$. For $\epsilon>0$, let
+\begin{equation}\label{eq:test-function-uniform-approximation}
+f_\epsilon(\bm{x})=\dfrac1{C(\epsilon)}\int_K\phi_{\bm{y},\epsilon}(\bm{x})f(\bm{y})\,\mathrm{d}\bm{y},
+\end{equation}
+where
+\begin{equation}\label{eq:test-function-bump-normalization}
+C(\epsilon)=\int_{\mathbb{R}^m}\phi_{\bm{y},\epsilon}(\bm{x})\,\mathrm{d}\bm{y}.
+\end{equation}
+If $\epsilon<\operatorname{dist}(K,\partial\Omega)$, then $f_\epsilon\in\mathcal{D}(\Omega)$; moreover, $f_\epsilon\to f$ uniformly as $\epsilon\to0$.
+\end{Theorem}
+
+The proof is left as an exercise.
+
+In a similar fashion, we can construct test functions which are equal to 1 on a given set and equal to 0 on another.
+
+\begin{Theorem}
+\label{thm:smooth-cutoff}
+Let $K$ be a compact subset of $\Omega$ and let $U\subset\Omega$ be an open set containing $K$. Then there is a test function which is equal to 1 on $K$, is equal to 0 outside $U$ and assumes values in $[0,1]$ on $U\setminus K$.
+\end{Theorem}
+
+\begin{Proof}
+Let $\epsilon>0$ be such that the $\epsilon$-neighborhood of $K$ is contained in $U$. Let $K_1$ be the closure of the $\epsilon/3$-neighborhood of $K$ and define
+\begin{equation}\label{eq:continuous-neighborhood-cutoff}
+f(\bm{x})=1-\min\left\{1,\dfrac3\epsilon\operatorname{dist}(\bm{x},K_1)\right\}.
+\end{equation}
+The function $f$ is continuous, equal to 1 on $K_1$ and equal to zero outside of the $2\epsilon/3$-neighborhood of $K$. A function with the properties desired by the theorem is given by $f_{\epsilon/3}$ as defined by \eqref{eq:test-function-uniform-approximation}.
+\end{Proof}
+
+Many proofs in PDEs involve a reduction to local considerations in a small neighborhood of a point. (See, for example, Chapter~\ref{chap:linear-elliptic-equations}.) The device by which this is achieved is known as a partition of unity.
+
+\begin{Definition}
+\label{def:partition-of-unity}
+Let $U_i$, $i\in\mathbb{N}$ be a family of bounded open subsets of $\Omega$ such that
+\begin{enumerate}
+\item the closure of each $U_i$ is contained in $\Omega$,
+\item every compact subset of $\Omega$ intersects only a finite number of the $U_i$ (this property is called local finiteness), and
+\item $\bigcup_{i\in\mathbb{N}}U_i=\Omega$.
+\end{enumerate}
+A \textbf{partition of unity} subordinate to the covering $\{U_i\}$ is a set of test functions $\phi_i$ such that
+\begin{enumerate}
+\item $0\leq\phi_i\leq1$,
+\item $\operatorname{supp}\phi_i\subset U_i$,
+\item $\sum_{i\in\mathbb{N}}\phi_i(\bm{x})=1$ for every $\bm{x}\in\Omega$.
+\end{enumerate}
+\end{Definition}
+
+The following theorem says that such partitions of unity exist.
+
+\begin{Theorem}
+\label{thm:partition-of-unity-existence}
+Let $U_i$, $i\in\mathbb{N}$ be a collection of sets with the properties stated in Definition~\ref{def:partition-of-unity}. Then there is a partition of unity subordinate to the covering $\{U_i\}$.
+\end{Theorem}
+
+\begin{Proof}
+We first construct a new covering $\{V_i\}$, where the $V_i$ have all the properties of Definition~\ref{def:partition-of-unity} and the closure of $V_i$ is contained in $U_i$. The $V_i$ are constructed inductively. Suppose $V_1$, $V_2$, $\ldots$, $V_{k-1}$ have already been found such that $U_j$ contains $\overline V_j$ and
+\begin{equation}\label{eq:shrinking-cover-inductive-invariant}
+\Omega=\bigcup_{j=1}^{k-1}V_j\cup\bigcup_{j=k}^\infty U_j.
+\end{equation}
+Let $F_k$ be the complement of the set
+\begin{equation}\label{eq:shrinking-cover-complement-set}
+\bigcup_{j=1}^{k-1}V_j\cup\bigcup_{j=k+1}^\infty U_j.
+\end{equation}
+Then $F_k$ is a closed set contained in $U_k$. We choose $V_k$ to be any open set containing $F_k$ such that $\overline V_k\subset U_k$. Each point $\bm{x}\in\Omega$ is contained in only finitely many of the $U_i$; hence there is $N\in\mathbb{N}$ with $\bm{x}\notin\bigcup_{j=N+1}^\infty U_j$. But this implies that $\bm{x}\in\bigcup_{j=1}^NV_j$. Hence the $V_i$ have property 3 of Definition~\ref{def:partition-of-unity}; the other two properties follow trivially from the fact that $V_i\subset U_i$.
+
+Let $W_k$ be an open set such that $\overline V_k\subset W_k$, $\overline W_k\subset U_k$. According to Theorem~\ref{thm:smooth-cutoff}, there is now a test function $\psi_k$, which is equal to 1 on $\overline V_k$, is equal to zero outside $W_k$ and takes values between 0 and 1 otherwise. Let
+\begin{equation}\label{eq:partition-of-unity-normalizing-sum}
+\psi(\bm{x})=\sum_{k\in\mathbb{N}}\psi_k(\bm{x}).
+\end{equation}
+Because of property 2 in Definition~\ref{def:partition-of-unity}, the right-hand side of \eqref{eq:partition-of-unity-normalizing-sum} has only finitely many nonzero terms in the neighborhood of any given $\bm{x}$, and there is no issue of convergence. The functions $\phi_k:=\psi_k/\psi$ yield the desired partition of unity.
+\end{Proof}

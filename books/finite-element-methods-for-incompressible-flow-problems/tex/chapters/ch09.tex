@@ -1,0 +1,120 @@
+\chapter{耦合线性方程组的求解器}\label{chap:coupled-linear-solvers}
+
+\begin{note}[动机]
+\label{note:coupled-solvers-motivation}
+许多不可压缩流动模拟方法都需要求解速度与压力耦合的线性问题:
+\begin{equation}\label{eq:chapter9-coupled-system}
+\mathcal A\,\bm{x}
+=\begin{pmatrix}A&D\\B&-C\end{pmatrix}
+  \begin{pmatrix}\bm{u}\\p\end{pmatrix}
+=\begin{pmatrix}\bm{f}\\f_p\end{pmatrix}
+=\bm{y}.
+\end{equation}
+其中
+\[
+ A\in\mathbb{R}^{dN_v\times dN_v},\qquad
+ D\in\mathbb{R}^{dN_v\times N_p},\qquad
+ B\in\mathbb{R}^{N_p\times dN_v},\qquad
+ C\in\mathbb{R}^{N_p\times N_p},
+\]
+\[
+ \bm{u},\bm{f}\in\mathbb{R}^{dN_v},\qquad
+ p,f_p\in\mathbb{R}^{N_p},
+\]
+并且
+\[
+ \mathcal A\in\mathbb{R}^{(dN_v+N_p)\times(dN_v+N_p)},
+ \qquad
+ \bm{x},\bm{y}\in\mathbb{R}^{dN_v+N_p}.
+\]
+若 $C=0$,则式\hyperref[eq:chapter9-coupled-system]{(9.1)}是一个线性鞍点问题.对 Navier--Stokes 方程组,尤其是含时问题,往往需要反复求解式\hyperref[eq:chapter9-coupled-system]{(9.1)}这样的系统.高效求解这类系统,是实现不可压缩流动高效数值模拟的核心.
+\end{note}
+
+\begin{note}[本章内容]
+\label{note:chapter9-contents}
+针对式\hyperref[eq:chapter9-coupled-system]{(9.1)}这类问题开发快速求解器,仍是一个活跃的研究领域.\textcite{BenziGolubLiesen2005}综述了这类系统的性质及其经典求解方法.对于不可压缩流动问题离散后得到的式\hyperref[eq:chapter9-coupled-system]{(9.1)},可参见\textcite[第 4、9 章]{Elman2014}和\textcite[第 5.2 节]{OlshanskiiTyrtyshnikov2014}的详细讨论.
+
+本章重点讨论线性鞍点问题,即式\hyperref[eq:chapter9-coupled-system]{(9.1)}中的 $C=0$,并介绍本书数值结果所采用的求解器.此外,也将简要介绍文献中提出的其他一些求解器.
+\end{note}
+
+\begin{note}[稀疏矩阵与 CSR 存储格式]
+\label{note:chapter9-csr-storage}
+各矩阵块都是稀疏矩阵,因此整体矩阵 $\mathcal A$ 也是稀疏的.稀疏矩阵通常采用专门的存储格式,其中压缩稀疏行(compressed sparse row,CSR)格式十分常用.该格式按行存储非零项,无须按列下标排序.
+
+设 $A\in\mathbb{R}^{m\times n}$,其非零项数为 $\mathrm{nnz}$.使用 CSR 格式存储 $A$ 需要三个数组:
+\begin{itemize}
+  \item 长度为 $\mathrm{nnz}$ 的数组,存储 $A$ 的非零项;
+  \item 长度为 $\mathrm{nnz}$ 的整数数组,存储前一个数组中各项对应的列下标;
+  \item 长度为 $m+1$ 的整数数组,其中第 $i$ 项指出第 $i$ 行在前两个数组中的起始位置;最后一项指出第 $m+1$ 行本应开始的位置.
+\end{itemize}
+对于不可压缩流问题,常见做法是将 $\mathcal A$ 中的 $A$、$B$、$D$ 各块分别按这种格式存储.
+\end{note}
+
+\begin{note}[系统矩阵的若干性质]
+\label{note:chapter9-system-matrix-properties}
+在许多问题中,系统矩阵具有比式\hyperref[eq:chapter9-coupled-system]{(9.1)}更特殊的形式,或者某些矩阵块具有特殊性质.对于满足 inf-sup 条件的有限元空间,采用 Galerkin 有限元法时有 $C=0$ 且 $D=B^{\mathsf T}$;后一性质还取决于具体问题的边界条件.对于 Stokes 方程,矩阵块 $A$ 是对称的.通常 $C$ 也对称,例如在压力稳定化 Petrov--Galerkin(PSPG)方法中.
+\end{note}
+
+\section{耦合问题的求解器}\label{sec:chapter9-coupled-solvers}
+
+\begin{note}[稀疏直接求解器]
+\label{note:chapter9-solver-choice}\label{note:umfpack}\label{note:ch09-sparse-direct-solvers}
+稀疏线性方程组最容易采用直接求解器求解,这类方法称为稀疏直接求解器.常用软件包括:
+\begin{itemize}
+  \item MUMPS,\textcite{Amestoy2001,Amestoy2006};
+  \item PARDISO,\textcite{Schenk2008};
+  \item UMFPACK,\textcite{Davis2004}.
+\end{itemize}
+对于二维问题以及自由度较少或中等规模(约不超过 $500{,}000$ 个自由度)的问题,这些求解器尤其高效.不过,对于三维问题,它们往往效率较低,参见笔记\hyperref[note:time-dependent-picard-newton-comparison]{7.56}及例题\hyperref[ex:time-dependent-picard-vs-newton]{7.57}.这是由二维和三维离散矩阵的稀疏结构不同造成的:三维问题中的内部自由度通常比二维问题有更多相邻自由度,因而矩阵项更多、稀疏程度更低.稀疏直接求解器试图在矩阵分解中尽量减少填充;矩阵越稀疏,通常越容易做到这一点.
+
+直接求解器无法利用已有的良好近似解.对于时间依赖问题,若时间步不太大,前一离散时刻的解或由多个先前时刻的解外推得到的结果,通常都能较好地近似当前时刻的解;此时直接求解器无法利用这一优势.
+
+数值线性代数研究表明,对于病态问题,直接求解器所得结果可能不够准确.此时建议再用迭代方法作后处理,以提高精度.
+\end{note}
+
+\begin{note}[迭代求解器与 Krylov 子空间方法]
+\label{note:chapter9-iterative-solvers}
+\label{note:chapter9-multigrid-preconditioner}
+设 $\bm r\in\mathbb{R}^{dN_v+N_p}$.对整数 $k\ge 1$,定义
+\[
+ \mathcal K_k(\bm r,\mathcal A)
+ :=\operatorname{span}\{\bm r,\mathcal A\bm r,\ldots,
+              \mathcal A^{k-1}\bm r\}.
+\]
+称这一空间为由 $\bm r$ 和 $\mathcal A$ 张成的 $k$ 维 Krylov 子空间.
+
+求解式\hyperref[eq:chapter9-coupled-system]{(9.1)}的常用迭代方法属于 Krylov 子空间方法.设 $\bm{x}^{(0)}$ 是式\hyperref[eq:chapter9-coupled-system]{(9.1)}解的一个初始近似,则残量向量为
+\[
+ \bm r^{(0)}=\bm y-\mathcal A\bm x^{(0)}.
+\]
+相应地,考察子空间 $\mathcal K_k(\bm r^{(0)},\mathcal A)$.
+
+\begin{itemize}
+  \item \textbf{GMRES 与 FGMRES.} GMRES(generalized minimal residual,广义最小残量)方法由\textcite{SaadSchultz1986}提出.它在仿射空间 $\bm{x}^{(0)}+\mathcal K_k(\bm r^{(0)},\mathcal A)$ 中选取第 $k$ 次迭代,使残量向量的欧几里得范数最小.其优点是残量范数不会增大,因而可以直接监控;缺点是必须存储整个 Krylov 子空间的一组基.通常只有在 $k$ 较小时,这种存储需求才可接受.此外,每次迭代的运算量会随迭代次数增加.实践中常把最大迭代次数 $k$ 设为 $10$ 至 $100$.若迭代 $k$ 步后仍未收敛,就以当前迭代值为初值重新启动;这种策略称为重启 GMRES,记作 GMRES(restart).
+
+  如第\hyperref[sec:chapter9-preconditioners]{9.2 节}所述,通常需要采用预条件子加快收敛.若预条件子不是固定矩阵,而是一种数值方法,则应采用\textcite{Saad1993}提出的灵活 GMRES(flexible GMRES,FGMRES)方法.数值方法的作用可以用一个矩阵表示;这个矩阵通常未知,而且可能随迭代而改变.FGMRES 能够处理迭代过程中预条件子的变化,但需要存储两个 Krylov 子空间的基,因此内存需求更高.
+
+  \item \textbf{CGS.} CGS(conjugate gradient squared,平方共轭梯度)由\textcite{Sonneveld1989}提出.其基本思想是计算第 $k$ 次迭代,使残量向量与子空间 $\mathcal K_k(\bm r^{(0)},\mathcal A^{\mathsf T})$ 正交.CGS 是这一思想的一种实现,不需要显式知道 $\mathcal A^{\mathsf T}$.该方法可采用所谓短递推实现,即只需少量数组,且迭代过程中所需数组数量不增加.因此,它的内存需求远低于 GMRES.不过,CGS 不会使残量向量的欧几里得范数最小,该范数在迭代中甚至可能大幅增大,所以收敛过程可能不规则.
+
+  \item \textbf{BiCGStab.} BiCGStab(bi-conjugate gradient stabilized,稳定双共轭梯度)方法由\textcite{VanDerVorst1992}提出,其依据与 CGS 相同;它是 CGS 的一种改进,通常更加稳定.
+\end{itemize}
+
+要加快迭代求解器的收敛,必须采用预条件子,参见第\hyperref[sec:chapter9-preconditioners]{9.2 节}.提供适用于线性鞍点问题的迭代求解器和预条件子的程序库包括 PETSc(\textcite{Balay2016})和 Trilinos(\textcite{Trilinos2016}).
+\end{note}
+
+\begin{note}[迭代求解式(9.1)的策略]
+\label{note:chapter9-inexact-strategy}
+对于 Navier--Stokes 方程组,式\hyperref[eq:chapter9-coupled-system]{(9.1)}这样的系统会出现在 Picard 迭代或 Newton 迭代中,参见第\hyperref[sec:steady-ns-iterations]{6.3 节}.经验表明,使用迭代求解器时,若将式\hyperref[eq:chapter9-coupled-system]{(9.1)}求解到很高精度,往往效率不高.因此通常采用非精确求解:将最大迭代次数设得较小,或者要求残量向量的欧几里得范数达到较小的缩减因子,例如降至 $10^{-1}$,从而获得一位有效数字.满足任一停止准则后,就进入下一步 Picard 或 Newton 迭代.这一策略的性能见例题\hyperref[ex:steady-ns-picard-vs-newton]{6.47}和例题\hyperref[ex:time-dependent-picard-vs-newton]{7.57}.
+\end{note}
+
+\index{稀疏矩阵}
+\index{压缩稀疏行(CSR)存储格式}
+\index{稀疏直接求解器}
+\index{Krylov 子空间方法}
+\index{GMRES}
+\index{灵活 GMRES(FGMRES)}
+\index{CGS}
+\index{BiCGStab}
+\index{线性鞍点问题!迭代求解器}
+
+\input{chapters/ch09-2}

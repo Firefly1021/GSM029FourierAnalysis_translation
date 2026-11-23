@@ -1,0 +1,1217 @@
+\chapter{量子力学的初步方法}\label{chap:first-quantum}
+
+在本章中,我们试图理解量子力学的主要思想.在量子力学中,即使在原则上,测量结果也不能预先确定;我们能够预测的只有测量结果出现的概率.这些概率由波函数编码.波函数是位置变量 \(x\in\mathbb{R}^{n}\) 的函数,其绝对值的平方编码粒子位置的概率.另一方面,粒子动量的概率由波函数的振荡频率编码.位置算子与动量算子可以用来描述这些概率,而波函数的时间演化则由 Hamilton 算子描述;Hamilton 算子对应于 Hamilton 方程中的 Hamilton 函数(或能量函数).
+
+\section{波、粒子与概率}\label{sec:waves-particles-probabilities}\index{波函数}
+
+量子理论有两个关键成分,它们都源于实验.第一是波粒二象性:人们观察到物体同时具有波动性与粒子性.例如,在十九世纪的大部分时间里,光被认为是一种波;但在二十世纪初,人们又观察到光具有粒子性.另一方面,电子最初被认为是粒子,后来也观察到它具有波动性.
+
+量子理论的第二个成分是概率性.例如,在双缝实验中,“制备完全相同”的电子并不会全部击中屏幕上的同一点.量子理论假定,这种随机性是自然运行方式的基本组成部分.按照量子力学的观点,我们不可能(这不仅是实践上不可能,而是理论上也不可能)预先知道一次实验的结果.我们能做的最好预测,是给出实验结果的概率.
+
+这两个方面在波函数中结合起来.波函数是变量 \(x\in\mathbb{R}^{n}\) 的函数;我们把 \(x\) 理解为描述粒子可能位置的变量,而波函数随时间按照一个具有波动形式的方程(Schrödinger 方程)演化.波函数及其时间演化体现了量子理论的波动方面;理论的粒子方面则来自我们对波函数的解释.把波函数理解成某种云状物体似乎很有诱惑力:比如这里有一点电子云,那里还有一点电子云.然而,这种解释与实验不符.每当我们试图测量单个电子的位置时,总会在一个确定的点找到电子.双缝实验中的单个电子也会在屏幕上的一个确定点被观测到,而不会像波函数那样铺展在整个屏幕上.对于单个粒子,波函数并不直接描述某种可观测对象;相反,波函数决定了一长串制备完全相同的粒子的统计行为.图~\ref{fig:electron-interference} 展示了这一效应的一个非常醒目的实验演示.
+
+以双缝实验为例,我们可以通过求解(确定性的)Schrödinger 方程来确定波函数随时间的变化.然而,知道某个电子的波函数,并不能确定这个电子会在屏幕上的什么位置击中屏幕.波函数只能告诉我们电子可能击中位置的概率分布,而这个分布只有在向屏幕发射一长串电子时才会显现出来.
+
+把量子理论的波粒二象性这样描述虽然过于简化,却很有用:单个电子(或光子,或其他粒子)表现得像粒子,但大量电子的集合表现得像波.单次测量单个电子,总会得到一个点位置,这正是我们对粒子的预期.不过,即使我们以完全相同的方式把每个电子射向屏幕,这个点也会因电子而异.对制备完全相同的电子反复测量,会得到一个分布;例如,这个分布可以呈现干涉图样,正如我们对波的预期.再次参见图~\ref{fig:electron-interference},并将其与图~\ref{fig:interference-waves} 和图~\ref{fig:intensity-plot} 比较.
+
+值得注意的是,在量子效应并不明显的宏观尺度上,光表现得像波,而电子表现得像粒子.即便如此,光和电子实际上都是由波函数以概率方式描述的波粒混合体.两种情形的差异在于:光的粒子——光子——质量为零,而电子具有正质量.这意味着,与电子不同,光子即使在低能量下也能够轻易地产生和湮灭.因此,光的离散性——也就是光的能量只能取离散的“量子”,即光子——不像电子相应的离散性那样明显.
+
+\section{关于算子及其伴随的一些说明}\label{sec:operators-adjoints}\index{自伴算子}
+
+在量子力学中,位置、动量、能量等物理量由某个 Hilbert 空间 \(\mathcal{H}\) 上的算子表示.这些算子通常是无界算子,反映出在经典力学中,这些物理量是经典相空间上的无界函数.本节简要讨论无界算子及其伴随算子的一些技术问题.关于这些技术性的完整讨论,我们留到已经理解量子力学基本思想之后的附录~\ref{chap:appendix}.
+
+在本书中,\(\mathcal{H}\) 总表示一个复数域上的 Hilbert 空间,并始终假定它是可分的.我们遵循物理学文献的约定:内积关于第二个因子线性,即对任意 \(\phi,\psi\in\mathcal{H}\) 及 \(\lambda\in\mathbb{C}\),有
+\[
+\langle\phi,\lambda\psi\rangle=\lambda\langle\phi,\psi\rangle,
+\qquad
+\langle\lambda\phi,\psi\rangle=\overline{\lambda}\langle\phi,\psi\rangle.
+\]
+
+回顾附录~\ref{app:subsec:hilbert},线性算子 \(A:\mathcal{H}\to\mathcal{H}\) 有界,是指存在常数 \(C\),使得对所有 \(\psi\in\mathcal{H}\) 都有 \(\|A\psi\|\le C\|\psi\|\).对于任意有界算子 \(A\),存在唯一的有界算子 \(A^{*}\),称为 \(A\) 的伴随算子,使得
+\[
+\langle\phi,A\psi\rangle=\langle A^{*}\phi,\psi\rangle
+\]
+对所有 \(\phi,\psi\in\mathcal{H}\) 成立.利用 Riesz 定理(定理~\ref{app:thm:riesz}),只需注意,对每个固定的 \(\phi\),映射 \(\psi\mapsto\langle\phi,A\psi\rangle\) 是 \(\mathcal{H}\) 上的有界线性泛函,即可得到 \(A^{*}\) 的存在性.若 \(A^{*}=A\),则称 \(A\) 为自伴算子.
+
+出于物理和数学上的多种原因,我们希望量子力学中的算子是自伴的.然而,一旦写出这些算子的公式,就会遇到一个严重的技术困难:它们不是有界的.
+
+如果线性算子 \(A\) 定义在整个 \(\mathcal{H}\) 上,并且对所有 \(\phi,\psi\in\mathcal{H}\) 满足
+\[
+\langle\phi,A\psi\rangle=\langle A\phi,\psi\rangle,
+\]
+那么 \(A\) 会自动有界(这是有界算子理论中的基本结论).换句话说,一个无界的自伴算子不可能定义在整个 Hilbert 空间上.因此,为了处理量子力学中的无界算子,我们必须考虑只定义在相关 Hilbert 空间的某个子空间上的算子;这个子空间称为算子的定义域.
+
+\begin{definition}[无界算子]\label{def:unbounded-operator}
+Hilbert 空间 \(\mathcal{H}\) 上的无界算子 \(A\),是从稠密子空间 \(\operatorname{Dom}(A)\subset\mathcal{H}\) 到 \(\mathcal{H}\) 的线性映射.
+\end{definition}
+
+更准确地说,定义中的“无界”应理解为“未必有界”:定义并没有排除 \(\operatorname{Dom}(A)=\mathcal{H}\) 且 \(A\) 有界的情形.
+
+在定义无界算子的伴随时,立即会遇到一个困难:对于给定的 \(\phi\in\mathcal{H}\),线性泛函 \(\langle\phi,A\mathord{\cdot}\rangle\) 可能不是有界的;这时就不能使用 Riesz 定理来定义 \(A^{*}\phi\).这意味着,与 \(A\) 本身一样,\(A\) 的伴随也不会定义在整个 \(\mathcal{H}\) 上,而只定义在其中的某个子空间上.
+
+\begin{definition}[无界算子的伴随]\label{def:unbounded-adjoint}
+设 \(A\) 是 \(\mathcal{H}\) 上的无界算子.按如下方式定义 \(A\) 的伴随 \(A^{*}\):若 \(\phi\in\mathcal{H}\) 使得定义在 \(\operatorname{Dom}(A)\) 上的线性泛函 \(\langle\phi,A\mathord{\cdot}\rangle\) 有界,则 \(\phi\) 属于 \(A^{*}\) 的定义域 \(\operatorname{Dom}(A^{*})\).对于 \(\phi\in\operatorname{Dom}(A^{*})\),令 \(A^{*}\phi\) 为满足
+\[
+\langle\chi,\psi\rangle=\langle\phi,A\psi\rangle
+\]
+对所有 \(\psi\in\operatorname{Dom}(A)\) 成立的唯一向量 \(\chi\).
+\end{definition}
+
+说线性泛函 \(\langle\phi,A\mathord{\cdot}\rangle\) 有界,是指存在常数 \(C\),使得对所有 \(\psi\in\operatorname{Dom}(A)\),
+\[
+|\langle\phi,A\psi\rangle|\le C\|\psi\|.
+\]
+若 \(\langle\phi,A\mathord{\cdot}\rangle\) 有界,由于 \(\operatorname{Dom}(A)\) 稠密,BLT 定理(定理~\ref{app:thm:bounded-extension})说明 \(\langle\phi,A\mathord{\cdot}\rangle\) 有唯一的有界延拓到整个 \(\mathcal{H}\).随后 Riesz 定理保证了 \(\chi\) 的存在性与唯一性.无界线性算子的伴随是一个定义在其定义域上的线性算子.
+
+现在可以定义无界算子的自伴性(以及相关概念).
+
+\begin{definition}[对称、自伴与本质自伴]\label{def:symmetric-self-adjoint}
+Hilbert 空间 \(\mathcal{H}\) 上的无界算子 \(A\) 称为\emph{对称的},如果对所有 \(\phi,\psi\in\operatorname{Dom}(A)\),有
+\[
+\langle\phi,A\psi\rangle=\langle A\phi,\psi\rangle.
+\]
+若 \(\operatorname{Dom}(A^{*})=\operatorname{Dom}(A)\),且对所有 \(\phi\in\operatorname{Dom}(A)\) 有 \(A^{*}\phi=A\phi\),则称 \(A\) 为\emph{自伴的}.最后,如果 \(A\) 在 \(\mathcal{H}\times\mathcal{H}\) 中的图的闭包是某个自伴算子的图,则称 \(A\) 为\emph{本质自伴的}.
+\end{definition}
+
+也就是说,当且仅当 \(A^{*}\) 与 \(A\) 是定义域相同且取值相同的算子时,\(A\) 才是自伴的.每个自伴算子或本质自伴算子都是对称的,但并非每个对称算子都是本质自伴的.对于任意对称算子,都有 \(\operatorname{Dom}(A^{*})\supset\operatorname{Dom}(A)\),并且 \(A^{*}\) 在 \(\operatorname{Dom}(A)\) 上与 \(A\) 一致.对称算子可能不是自伴的原因,在于 \(\operatorname{Dom}(A^{*})\) 可能严格大于 \(\operatorname{Dom}(A)\).
+
+虽然对称条件显然比自伴条件更容易理解和验证,但自伴性才是“正确”的条件.特别是,量子力学中至关重要的谱定理只适用于自伴算子,而不适用于仅仅对称的算子.如果 \(A\) 本质自伴,那么只需取 \(A\) 的图的闭包,就能得到一个自伴算子,然后可以对这个自伴算子应用谱定理.因此,在很多目的下,只要算子是本质自伴而不必自伴就足够了.
+
+验证量子力学中的算子(表示位置、动量等的算子)在适当选取的定义域上对称,通常并不困难.然而,证明这些算子本质自伴则要困难得多.虽然本质自伴性是一个关键技术问题,但第一次接触量子力学时,最好不要过分担心这些细节.在本章中,我们不会过多处理本质自伴性以及算子定义域的精确选择,而把这些问题留给附录~\ref{chap:appendix}.现在,我们只推导对称算子(因而也包括自伴算子)的一些最基本性质.
+
+\begin{proposition}[对称算子的基本性质]\label{prop:symmetric-properties}
+设 \(A\) 是 \(\mathcal{H}\) 上的对称算子.
+\begin{enumerate}
+\item 对所有 \(\psi\in\operatorname{Dom}(A)\),\(\langle\psi,A\psi\rangle\) 为实数.更一般地,如果 \(\psi,A\psi,\ldots,A^{m-1}\psi\) 都属于 \(\operatorname{Dom}(A)\),则 \(\langle\psi,A^{m}\psi\rangle\) 为实数.
+\item 若 \(\psi\ne0\) 且 \(A\psi=\lambda\psi\),则 \(\lambda\in\mathbb{R}\).
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+由于 \(A\) 对称,
+\[
+\langle\psi,A\psi\rangle=\langle A\psi,\psi\rangle
+\]
+而右端正是左端的复共轭,所以 \(\langle\psi,A\psi\rangle\) 为实数.如果 \(\psi,A\psi,\ldots,A^{m-1}\psi\) 都属于 \(A\) 的定义域,则反复使用对称性可得
+\[
+\langle\psi,A^{m}\psi\rangle=\langle A^{m}\psi,\psi\rangle
+=\overline{\langle\psi,A^{m}\psi\rangle}.
+\]
+最后,若 \(A\psi=\lambda\psi\),则
+\[
+\lambda\langle\psi,\psi\rangle
+=\langle\psi,A\psi\rangle
+=\langle A\psi,\psi\rangle
+=\overline{\lambda}\langle\psi,\psi\rangle.
+\]
+由于 \(\psi\ne0\),从而 \(\lambda=\overline{\lambda}\).
+\end{proof}
+
+在物理上,\(\langle\psi,A\psi\rangle\) 表示(正如本章稍后将看到的)处于状态 \(\psi\) 时对 \(A\) 的测量期望值,而特征值 \(\lambda\) 表示这次测量可能得到的值.从物理角度看,我们希望这两个数都是实数.如果 \(A\) 自伴而不仅仅是对称的,那么谱定理会给出一种规范方式:对每个 \(\psi\in\mathcal{H}\),关联一个实轴上的概率测度,用来编码处于状态 \(\psi\) 时测量 \(A\) 的概率.
+
+\section{位置与位置算子}\label{sec:position-operator}\index{位置算子}
+
+先考虑一个在实轴 \(\mathbb{R}^{1}\) 上运动的单粒子.这样的粒子的波函数是映射 \(\psi:\mathbb{R}^{1}\to\mathbb{C}\).虽然这个映射会随时间演化,但现在先固定时间.我们把函数 \(|\psi(x)|^{2}\) 解释为粒子位置的概率密度.这意味着,粒子位置属于集合 \(E\subset\mathbb{R}^{1}\) 的概率为
+\[
+\int_{E}|\psi(x)|^{2}\,\mathrm{d}x.
+\]
+
+为了使这个约定有意义,\(\psi\) 应当归一化,即
+\begin{equation}
+\int_{\mathbb{R}}|\psi(x)|^{2}\,\mathrm{d}x=1.
+\label{eq:wavefunction-normalization}
+\end{equation}
+换言之,\(\psi\) 应是 Hilbert 空间 \(L^{2}(\mathbb{R})\) 中的单位向量.既然 \(|\psi(x)|^{2}\) 是粒子位置的概率密度,按照概率论的标准定义,位置的期望值为
+\begin{equation}
+\mathbb{E}(x)=\int_{\mathbb{R}}x|\psi(x)|^{2}\,\mathrm{d}x,
+\label{eq:position-expectation}
+\end{equation}
+前提是该积分绝对收敛.更一般地,位置的任意阶矩(即位置的某个幂的期望值)为
+\begin{equation}
+\mathbb{E}(x^{m})=\int_{\mathbb{R}}x^{m}|\psi(x)|^{2}\,\mathrm{d}x,
+\label{eq:position-moment}
+\end{equation}
+同样假定积分收敛.
+
+量子理论的一个关键思想,是使用算子和相关 Hilbert 空间上的内积来表达位置、动量、能量等各种物理量的期望值.在位置的情形,我们引入位置算子 \(X\),定义为
+\[
+(X\psi)(x)=x\psi(x).
+\]
+也就是说,\(X\) 是“乘以 \(x\)”的算子.引入这个算子的意义在于,式~\eqref{eq:position-expectation} 中定义的位置期望值现在可以写成
+\[
+\mathbb{E}(x)=\langle\psi,X\psi\rangle,
+\]
+其中 \(L^{2}(\mathbb{R})\) 上的内积是
+\[
+\langle\phi,\psi\rangle=\int_{\mathbb{R}}\overline{\phi(x)}\psi(x)\,\mathrm{d}x.
+\]
+(回忆我们采用的物理学约定:内积的第一个因子取复共轭.)
+
+我们用如下记号表示状态 \(\psi\) 中位置算子 \(X\) 的期望值:
+\[
+\langle X\rangle_{\psi}:=\langle\psi,X\psi\rangle.
+\]
+式~\eqref{eq:position-moment} 中的位置高阶矩同样可以用位置算子计算:
+\[
+\mathbb{E}(x^{m})=\langle\psi,X^{m}\psi\rangle.
+\]
+此时,把矩写成算子和内积的形式,表面上似乎没有比积分式~\eqref{eq:position-moment} 获得更多东西.不过,算子描述将为我们提供一个平行框架,用于用相应算子表示粒子的动量、能量或角动量的矩.
+
+需要注意,对给定的 \(\psi\in L^{2}(\mathbb{R})\),\(X\psi\) 可能不属于 \(L^{2}(\mathbb{R})\).这正是 \(X\) 不是定义在整个 Hilbert 空间上的无界算子的反映.即使 \(X\psi\in L^{2}(\mathbb{R})\),对于某个 \(m\),\(X^{m}\psi\) 也可能不属于 \(L^{2}(\mathbb{R})\).不过,对 \(L^{2}(\mathbb{R})\) 中任意单位向量 \(\psi\),我们都有定义良好的 \(\mathbb{R}\) 上的概率密度 \(|\psi(x)|^{2}\).
+
+\section{动量与动量算子}\label{sec:momentum-operator}\index{动量算子}
+
+在任意固定时刻,根据 Schrödinger 提出的波动理论,粒子的波函数 \(\psi(x)\) 只是位置变量 \(x\) 的函数.波函数通过 \(|\psi(x)|^{2}\) 直接编码了位置的概率,但粒子动量的信息如何编码在其中,并不那么明显.事实证明,动量编码在波函数的振荡中.量子力学的一个关键思想是 de Broglie 假说;在第~\ref{subsec:bohr-debroglie} 节中,我们曾把它作为理解氢原子 Bohr 模型中允许能量的一种方式.de Broglie 假说给出了固定时刻波函数的空间振荡频率与粒子动量之间的特定关系.
+
+\begin{proposition}[de Broglie 假说]\label{prop:de-broglie}
+如果粒子的波函数具有空间频率 \(k\),那么粒子的动量 \(p\) 为
+\begin{equation}
+p=\hbar k.
+\label{eq:de-broglie-quantum}
+\end{equation}
+\end{proposition}
+
+第~\ref{subsec:electron-diffraction} 节所述的 Davisson--Germer 电子衍射实验,不仅有力支持了电子具有波动性的观点,也有力支持了式~\eqref{eq:de-broglie-quantum} 中电子动量与相应波的空间频率之间的具体关系.当然,命题~\ref{prop:de-broglie} 还相当含糊.更准确地说,它意味着形式为 \(\psi(x)=e^{ikx}\) 的波函数表示动量为 \(p=\hbar k\) 的粒子.(这里与第~\ref{chap:first-classical-mechanics} 章一样,“频率”指角频率;按单位距离的周期数计的频率为 \(\nu=k/(2\pi)\).)
+
+显然,函数 \(e^{ikx}\) 不平方可积,因此严格来说,它不能作为应满足式~\eqref{eq:wavefunction-normalization} 的波函数.为了暂时避开某些技术问题,我们先把粒子想成在圆上运动.把粒子的波函数 \(\psi\) 看作 \(\mathbb{R}\) 上的 \(2\pi\)-周期函数,并满足归一化条件
+\[
+\int_{0}^{2\pi}|\psi(x)|^{2}\,\mathrm{d}x=1.
+\]
+对任意整数 \(k\),归一化波函数
+\[
+\psi(x)=\frac{e^{ikx}}{\sqrt{2\pi}}
+\]
+表示动量为 \(p=\hbar k\) 的粒子.在这里,我们认为粒子的动量是确定的,即不具有随机性.如果粒子的波函数为上述形式,那么测量粒子的动量应以概率 \(1\) 得到 \(\hbar k\).
+
+函数 \(e^{ikx}/\sqrt{2\pi}\)(\(k\in\mathbb{Z}\))构成 Hilbert 空间中所有 \(2\pi\)-周期平方可积函数的一个标准正交基;这个空间可与 \(L^{2}([0,2\pi])\) 认同.因此,圆上粒子的典型波函数为
+\begin{equation}
+\psi(x)=\sum_{k=-\infty}^{\infty}a_{k}\frac{e^{ikx}}{\sqrt{2\pi}},
+\label{eq:circle-wavefunction}
+\end{equation}
+其中级数在 \(L^{2}([0,2\pi])\) 中收敛.如果 \(\psi\) 归一化为单位向量,则
+\begin{equation}
+\sum_{k=-\infty}^{\infty}|a_{k}|^{2}
+=\|\psi\|_{L^{2}([0,2\pi])}^{2}=1.
+\label{eq:circle-normalization}
+\end{equation}
+
+对于式~\eqref{eq:circle-wavefunction} 给出的波函数,粒子的动量不再确定.相反,我们认为测量粒子动量会得到某个 \(\hbar k\)(\(k\in\mathbb{Z}\)),得到特定值 \(\hbar k\) 的概率为 \(|a_{k}|^{2}\).根据初等概率论,动量的期望值为
+\begin{equation}
+\mathbb{E}(p)=\sum_{k=-\infty}^{\infty}\hbar k|a_{k}|^{2},
+\label{eq:momentum-expectation-circle}
+\end{equation}
+动量的高阶矩为
+\begin{equation}
+\mathbb{E}(p^{m})=\sum_{k=-\infty}^{\infty}(\hbar k)^{m}|a_{k}|^{2},
+\label{eq:momentum-moment-circle}
+\end{equation}
+仍假定级数绝对收敛.
+
+我们希望定义动量算子 \(P\),使得当粒子的波函数由式~\eqref{eq:circle-wavefunction} 给出时,有
+\[
+\mathbb{E}(p^{m})=\langle\psi,P^{m}\psi\rangle.
+\]
+如果 \(P\) 满足
+\[
+Pe^{ikx}=\hbar k e^{ikx},
+\]
+那么就能实现这个关系,因为
+\[
+\langle\psi,P^{m}\psi\rangle
+=\sum_{k=-\infty}^{\infty}(\hbar k)^{m}|a_{k}|^{2}
+=\mathbb{E}(p^{m}).
+\]
+满足该关系的(推测是唯一的)\(P\) 的选择是
+\[
+P=-i\hbar\frac{\mathrm{d}}{\mathrm{d}x}.
+\]
+
+回到实轴的情形,自然会假定实轴上的动量算子也由
+\[
+P=-i\hbar\frac{\mathrm{d}}{\mathrm{d}x}
+\]
+给出.这个算子满足 \(Pe^{ikx}=(\hbar k)e^{ikx}\),因而捕捉了波函数 \(e^{ikx}\) 具有动量 \(\hbar k\) 的思想.虽然 \(e^{ikx}\) 关于 \(x\) 不是平方可积的,但 Fourier 变换允许我们把任意平方可积函数构造成 \(e^{ikx}\) 的“叠加”.(叠加是物理学家对线性组合或其连续模拟——即积分——所使用的术语.)这意味着,类比于式~\eqref{eq:circle-wavefunction},有
+\begin{equation}
+\psi(x)=\frac{1}{\sqrt{2\pi}}\int_{-\infty}^{\infty}e^{ikx}\widehat{\psi}(k)\,\mathrm{d}k,
+\label{eq:inverse-fourier-wavefunction}
+\end{equation}
+其中 \(\widehat{\psi}(k)\) 是 \(\psi\) 的 Fourier 变换,定义为
+\begin{equation}
+\widehat{\psi}(k)=\frac{1}{\sqrt{2\pi}}\int_{-\infty}^{\infty}e^{-ikx}\psi(x)\,\mathrm{d}x.
+\label{eq:fourier-transform}
+\end{equation}
+关于 Fourier 变换的信息,见附录~\ref{app:subsec:fourier-transform}.
+
+Plancherel 定理(定理~\ref{app:thm:plancherel-II})说明,Fourier 变换是从 \(L^{2}(\mathbb{R})\) 到 \(L^{2}(\mathbb{R})\) 的酉映射.因此,对于 \(L^{2}(\mathbb{R})\) 中的任意单位向量 \(\psi\),
+\[
+\int_{-\infty}^{\infty}|\psi(x)|^{2}\,\mathrm{d}x
+=\int_{-\infty}^{\infty}|\widehat{\psi}(k)|^{2}\,\mathrm{d}k=1.
+\]
+结合圆上的情形,自然可以认为 \(|\widehat{\psi}(k)|^{2}\) 基本上是粒子动量的概率密度.(更精确地说,\(|\widehat{\psi}(k)|^{2}\) 是 \(p/\hbar\) 的概率密度.)
+
+现在可以完全在 Hilbert 空间 \(L^{2}(\mathbb{R})\) 内表达动量算子的性质,而不必明确提及那些不可平方积的函数 \(e^{ikx}\).
+
+\begin{proposition}[动量算子的矩]\label{prop:momentum-moments}
+定义动量算子 \(P\) 为
+\[
+P=-i\hbar\frac{\mathrm{d}}{\mathrm{d}x}.
+\]
+则对 \(L^{2}(\mathbb{R})\) 中所有足够光滑的单位向量 \(\psi\),以及所有正整数 \(m\),有
+\begin{equation}
+\langle\psi,P^{m}\psi\rangle
+=\int_{-\infty}^{\infty}(\hbar k)^{m}|\widehat{\psi}(k)|^{2}\,\mathrm{d}k.
+\label{eq:momentum-moments-line}
+\end{equation}
+式~\eqref{eq:momentum-moments-line} 中的量被解释为动量 \(m\) 阶矩 \(\mathbb{E}(p^{m})\).
+\end{proposition}
+
+式~\eqref{eq:momentum-moments-line} 应与圆的情形(式~\eqref{eq:momentum-moment-circle})相比较.
+
+\begin{proof}
+若 \(\psi\) 属于 Schwartz 空间(定义~\ref{app:def:schwartz}),则反复应用命题~\ref{app:prop:fourier-derivatives},可知 \(\psi\) 的 \(m\) 阶导数的 Fourier 变换为 \((ik)^{m}\widehat{\psi}(k)\),从而 \(P^{m}\psi\) 的 Fourier 变换为 \((\hbar k)^{m}\widehat{\psi}(k)\).另一方面,由于 Fourier 变换是酉的,
+\[
+\langle\psi,P^{m}\psi\rangle
+=\int_{-\infty}^{\infty}\overline{\widehat{\psi}(k)}(\hbar k)^{m}\widehat{\psi}(k)\,\mathrm{d}k,
+\]
+这就给出了式~\eqref{eq:momentum-moments-line}.(假设 \(\psi\) 属于 Schwartz 空间比实际需要的条件更强.读者可以使用分部积分和 Fourier 变换的定义,找出允许相同结论成立的更弱条件.)
+\end{proof}
+
+\section{位置算子与动量算子}\label{sec:position-momentum}
+
+下面的定义总结了前两节关于位置与动量算子的内容.
+
+\begin{definition}[位置与动量算子]\label{def:position-momentum}
+对于在 \(\mathbb{R}^{1}\) 中运动的粒子,令量子 Hilbert 空间为 \(L^{2}(\mathbb{R})\),并定义位置算子 \(X\) 与动量算子 \(P\):
+\[
+X\psi(x)=x\psi(x),\qquad
+P\psi(x)=-i\hbar\frac{\mathrm{d}\psi}{\mathrm{d}x}.
+\]
+\end{definition}
+
+位置算子和动量算子都没有定义为把整个 Hilbert 空间 \(L^{2}(\mathbb{R})\) 映射到自身.毕竟,对 \(\psi\in L^{2}(\mathbb{R})\),函数 \(x\psi(x)\) 可能不属于 \(L^{2}(\mathbb{R})\).类似地,\(L^{2}(\mathbb{R})\) 中的函数可能不可微;即便可微,其导数也可能不属于 \(L^{2}(\mathbb{R})\).这意味着 \(X\) 和 \(P\) 是前面简要讨论过的无界算子.它们定义在 \(L^{2}(\mathbb{R})\) 的适当稠密子空间 \(\operatorname{Dom}(X)\) 和 \(\operatorname{Dom}(P)\) 上.关于这些算子定义域的详细研究,留到附录~\ref{chap:appendix}.
+
+这对算子具有一个至关重要的性质:它们不对易.
+
+\begin{proposition}[正则对易关系]\label{prop:canonical-commutation-one}
+位置算子和动量算子不对易,而满足
+\begin{equation}
+XP-PX=i\hbar I.
+\label{eq:canonical-commutation-one}
+\end{equation}
+这个关系称为正则对易关系.
+\end{proposition}
+
+\begin{proof}
+使用乘积法则,计算得
+\[
+PX\psi=-i\hbar\frac{\mathrm{d}}{\mathrm{d}x}(x\psi(x))
+=-i\hbar\psi(x)-i\hbar x\frac{\mathrm{d}\psi}{\mathrm{d}x}
+=-i\hbar\psi+XP\psi,
+\]
+于是得到式~\eqref{eq:canonical-commutation-one}.
+\end{proof}
+
+关系~\eqref{eq:canonical-commutation-one} 有许多重要后果,我们将在第~11--14 章中详细考察.这里暂时只指出它与经典力学中 Poisson 括号关系 \(\{x,p\}=1\) 的平行性;后者直接由 Poisson 括号的定义得到.这暗示了一个类比:在量子一侧,两个算子 \(A,B\) 的对易子 \(AB-BA\),对应于经典一侧两个函数 \(f,g\) 的 Poisson 括号.本章第~\ref{sec:time-evolution} 节还会进一步讨论这一类比.
+
+\begin{proposition}[位置与动量算子的对称性]\label{prop:position-momentum-symmetric}
+对 \(L^{2}(\mathbb{R})\) 中所有足够光滑的函数 \(\phi,\psi\),有
+\[
+\langle\phi,X\psi\rangle=\langle X\phi,\psi\rangle,
+\qquad
+\langle\phi,P\psi\rangle=\langle P\phi,\psi\rangle.
+\]
+\end{proposition}
+
+\begin{proof}
+先假设 \(\phi,\psi\in L^{2}(\mathbb{R})\),并且 \(x\phi(x)\) 与 \(x\psi(x)\) 也属于 \(L^{2}(\mathbb{R})\).由于 \(x\) 为实数,
+\[
+\int_{-\infty}^{\infty}\overline{\phi(x)}x\psi(x)\,\mathrm{d}x
+=\int_{-\infty}^{\infty}\overline{x\phi(x)}\psi(x)\,\mathrm{d}x,
+\]
+两边的积分都收敛,因为它们都是两个 \(L^{2}\) 函数乘积的积分.
+
+对于第二个等式,假设 \(\phi,\psi\) 连续可微,并且当 \(x\to\pm\infty\) 时 \(\phi(x),\psi(x)\) 都趋于零;同时假设 \(\phi,\psi,\mathrm{d}\phi/\mathrm{d}x,\mathrm{d}\psi/\mathrm{d}x\) 都属于 \(L^{2}(\mathbb{R})\).注意 \(\mathrm{d}\overline{\phi}/\mathrm{d}x\) 等于 \(\overline{\mathrm{d}\phi/\mathrm{d}x}\).于是利用分部积分,对 \(A>0\) 有
+\[
+-i\hbar\int_{-A}^{A}\overline{\phi(x)}\frac{\mathrm{d}\psi}{\mathrm{d}x}\,\mathrm{d}x
+=-i\hbar\left.\overline{\phi(x)}\psi(x)\right|_{-A}^{A}
++i\hbar\int_{-A}^{A}\overline{\frac{\mathrm{d}\phi}{\mathrm{d}x}}\psi(x)\,\mathrm{d}x.
+\]
+在我们的假设下,令 \(A\to\infty\),边界项趋于零,其余积分由控制收敛定理趋于整个实轴上的积分.因此
+\[
+\int_{-\infty}^{\infty}\overline{\phi(x)}
+\left(-i\hbar\frac{\mathrm{d}\psi}{\mathrm{d}x}\right)\,\mathrm{d}x
+=\int_{-\infty}^{\infty}
+\overline{\left(-i\hbar\frac{\mathrm{d}\phi}{\mathrm{d}x}\right)}\psi(x)\,\mathrm{d}x,
+\]
+即得到第二个等式.
+\end{proof}
+
+用定义~\ref{def:symmetric-self-adjoint} 的语言来说,命题~\ref{prop:position-momentum-symmetric} 意味着 \(X\) 和 \(P\) 在 \(L^{2}(\mathbb{R})\) 的某些稠密子空间上是对称算子(本命题证明所涉及的函数空间).事实上,\(X\) 和 \(P\) 在这些定义域上本质自伴.不过,本质自伴性的证明必须等到附录~\ref{chap:appendix}.
+
+\section{量子力学公理:算子与测量}\label{sec:quantum-axioms}\index{Born 规则}
+
+本节讨论量子力学的一般“公理”.这里的公理不应理解为严格演绎意义上由其推出所有其他结果的数学公理,而应理解为量子力学运行方式的主要原则.下面考察的是“运动学”公理,即适用于某个固定时刻的公理.还有一个支配系统时间演化的公理,将在下一节讨论.
+
+\begin{axiom}[公理 1:状态]\label{ax:quantum-state}
+系统的状态由适当 Hilbert 空间 \(\mathcal{H}\) 中的一个单位向量 \(\psi\) 表示.如果 \(\mathcal{H}\) 中的两个单位向量 \(\psi_{1},\psi_{2}\) 满足 \(\psi_{2}=c\psi_{1}\),其中 \(c\in\mathbb{C}\),则 \(\psi_{1}\) 和 \(\psi_{2}\) 表示同一个物理状态.
+\end{axiom}
+
+Hilbert 空间 \(\mathcal{H}\) 常被称为“量子 Hilbert 空间”.不过,这并不意味着 \(\mathcal{H}\) 是 Hilbert 空间概念的某种变体,就像量子群是群概念的某种变体一样.“量子 Hilbert 空间”只不过是“与给定量子系统关联的 Hilbert 空间”的简称.
+
+公理~\ref{ax:quantum-state} 中需要注意,\(\mathcal{H}\) 中的单位向量实际上只表示理论的“纯态”.还有一种更一般的“混合态”概念(由“密度矩阵”描述),我们将在第~19 章讨论.按照大多数物理学教材的惯例,我们暂时只考虑纯态.
+
+\begin{axiom}[公理 2:量子化]\label{ax:quantization}
+经典相空间上的每一个实值函数 \(f\),都对应于量子 Hilbert 空间上的一个自伴算子 \(\widehat{f}\).
+\end{axiom}
+
+几乎在所有情形下,算子 \(\widehat{f}\) 都是无界的.当我们意识到经典相空间上具有物理意义的函数(例如位置和动量)本身就是无界函数时,这种无界性并不令人意外.在无界情形下,自伴性的概念相当技术化,见定义~\ref{def:symmetric-self-adjoint}.在多数应用中,并不需要为经典相空间上的所有函数定义 \(\widehat{f}\),而只需为位置、动量、能量和角动量等基本函数定义它们.本章将描述这些基本函数的量子化.如果确实需要为满足一定正则性条件的任意函数 \(f\) 定义 \(\widehat{f}\),标准方法是使用第~13 章介绍的 Weyl 量子化方案.
+
+对于在 \(\mathbb{R}^{1}\) 中运动的粒子,经典相空间是 \(\mathbb{R}^{2}\),我们把它看成由 \((x,p)\) 组成,其中 \(x\) 是粒子的位置,\(p\) 是粒子的动量.此时的量子 Hilbert 空间通常取为 \(L^{2}(\mathbb{R})\),而不是 \(L^{2}(\mathbb{R}^{2})\).若公理~\ref{ax:quantization} 中的函数 \(f\) 是位置函数 \(f(x,p)=x\),则相应的算子 \(\widehat f\) 是位置算子 \(X\),即乘以 \(x\) 的算子.若 \(f\) 是动量函数 \(f(x,p)=p\),则 \(\widehat f\) 是动量算子 \(P=-i\hbar\,\mathrm{d}/\mathrm{d}x\).
+
+在物理文献中,经典相空间上的函数 \(f\) 称为经典可观测量,意思是它是可以通过对系统进行测量而观测到的物理量.相应的算子 \(\widehat f\) 则称为量子可观测量.
+
+\begin{axiom}[公理 3:测量的矩]\label{ax:quantum-measurement}
+如果量子系统处于单位向量 \(\psi\in\mathcal{H}\) 所描述的状态,某个可观测量 \(f\) 的测量概率分布满足
+\begin{equation}
+\mathbb{E}(f^{m})=\left\langle\psi,\widehat f^{\,m}\psi\right\rangle.
+\label{eq:quantum-moments}
+\end{equation}
+特别地,\(f\) 的测量期望值为
+\begin{equation}
+\mathbb{E}(f)=\langle\psi,\widehat f\psi\rangle.
+\label{eq:quantum-expectation}
+\end{equation}
+\end{axiom}
+
+这里采取的观点是:即使在量子系统中,被测量的仍然是经典可观测量 \(f\).不过在量子情形下,\(f\) 不再有确定值,而只有由量子可观测量 \(\widehat f\) 与向量 \(\psi\in\mathcal{H}\) 编码的概率.
+
+如果 \(\psi\) 是 \(\mathcal{H}\) 中的非零向量但不是单位向量,则式~\eqref{eq:quantum-expectation} 应替换为
+\[
+\frac{\langle\psi,\widehat f\psi\rangle}{\langle\psi,\psi\rangle}
+=\langle\widetilde\psi,\widehat f\widetilde\psi\rangle,
+\qquad
+\widetilde\psi:=\frac{\psi}{\|\psi\|}.
+\]
+为避免在期望值中反复除以 \(\langle\psi,\psi\rangle\),我们约定向量已经归一化为单位向量.
+
+由于 \(\widehat f\) 假定为自伴算子,而每个自伴算子都是对称的,命题~\ref{prop:symmetric-properties} 告诉我们,矩 \(\mathbb{E}(f^{m})\),特别是期望值 \(\mathbb{E}(f)\),都是实数.由于 \(\widehat f\) 是自伴而不仅仅是对称的,谱定理(第~7 章和第~10 章)将给出一种规范方式,构造实轴上的概率测度 \(\mu_{\widehat f,\psi}\),把它解释为状态 \(\psi\) 中测量 \(f\) 的概率分布.
+
+公理~\ref{ax:quantum-measurement} 也解释了为什么相差一个模为 \(1\) 的常数的两个单位向量代表同一个物理状态.若 \(\psi_{2}=c\psi_{1}\) 且 \(|c|=1\),则对任意算子 \(A\),
+\[
+\langle\psi_{2},A\psi_{2}\rangle
+=\langle c\psi_{1},Ac\psi_{1}\rangle
+=|c|^{2}\langle\psi_{1},A\psi_{1}\rangle
+=\langle\psi_{1},A\psi_{1}\rangle.
+\]
+因此,在状态 \(\psi_{2}\) 中所有可观测量的期望值都与状态 \(\psi_{1}\) 中相同.
+
+\begin{definition}[量子期望值的记号]\label{def:quantum-expectation-notation}
+若 \(A\) 是 \(\mathcal{H}\) 上的自伴算子,\(\psi\in\mathcal{H}\) 是单位向量,则状态 \(\psi\) 中 \(A\) 的期望值记为 \(\langle A\rangle_{\psi}\),定义为
+\[
+\langle A\rangle_{\psi}:=\langle\psi,A\psi\rangle.
+\]
+\end{definition}
+
+\begin{proposition}[特征向量]\label{prop:quantum-eigenvector}
+若量子系统处于单位向量 \(\psi\in\mathcal{H}\) 所描述的状态,并且对某个量子可观测量 \(\widehat f\),有 \(\widehat f\psi=\lambda\psi\),其中 \(\lambda\in\mathbb{R}\),则
+\begin{equation}
+\mathbb{E}(f^{m})=\langle\widehat f^{\,m}\rangle_{\psi}=\lambda^{m}
+\label{eq:eigenvector-moments}
+\end{equation}
+对所有正整数 \(m\) 成立.与这一条件相容的唯一概率测度,是以概率 \(1\) 在确定值 \(\lambda\) 处取值的概率测度.
+\end{proposition}
+
+该命题的含义是:如果 \(\psi\) 是 \(\widehat f\) 的特征向量,那么对处于状态 \(\psi\) 的粒子测量 \(f\) 实际上并非随机,而总会给出 \(\lambda\).如果 \(\widehat f\psi=\lambda\psi\),则
+\[
+\langle\psi,\widehat f^{\,m}\psi\rangle
+=\lambda^{m}\langle\psi,\psi\rangle=\lambda^{m}.
+\]
+于是,根据式~\eqref{eq:quantum-moments},我们希望找到实轴上的概率测度 \(\mu\),使得对所有非负整数 \(m\),
+\[
+\int_{\mathbb{R}}x^{m}\,\mathrm{d}\mu=\lambda^{m}.
+\]
+命题声称这样的测度唯一,即 \(\lambda\) 处的 Dirac 测度.
+
+由于 \(\widehat f\) 自伴,因而是对称的,命题~\ref{prop:symmetric-properties} 也说明 \(\widehat f\) 的每个特征值都是实数.
+
+\begin{proof}
+式~\eqref{eq:eigenvector-moments} 由公理~\ref{ax:quantum-measurement} 以及 \(\widehat f\psi=\lambda\psi\) 立即得到.若 \(\mu\) 是集中在 \(\lambda\) 处的 Dirac 测度,则式~\eqref{eq:eigenvector-moments} 中的矩条件显然成立.另一方面,由于第 \(m\) 阶矩至多按 \(m\) 指数增长,矩问题中最基本的唯一性结果就说明,Dirac 测度是具有这些矩的唯一测度(例如见文献~[18] 第~4 章定理 8.1).
+\end{proof}
+
+更一般地,如果系统状态是 \(\widehat f\) 的若干特征向量的线性组合,那么 \(f\) 的测量将不再是确定性的.
+
+\begin{example}[特征向量展开与测量概率]\label{ex:eigenbasis-probability}
+设 \(\widehat f\) 有一个由特征向量 \(\{e_{j}\}\) 构成的标准正交基,且相应特征值 \(\lambda_{j}\) 两两不同.再设 \(\psi\in\mathcal{H}\) 是单位向量,并展开为
+\begin{equation}
+\psi=\sum_{j=1}^{\infty}a_{j}e_{j}.
+\label{eq:eigenbasis-expansion}
+\end{equation}
+那么在状态 \(\psi\) 中测量可观测量 \(f\) 时,观测到的 \(f\) 值必为某个 \(\lambda_{j}\).此外,观测到 \(\lambda_{j}\) 的概率为
+\begin{equation}
+\operatorname{Prob}\{f=\lambda_{j}\}=|a_{j}|^{2}.
+\label{eq:eigenbasis-probability}
+\end{equation}
+\end{example}
+
+假定 \(\psi\) 属于 \(\widehat f^{\,m}\) 的定义域,容易验证式~\eqref{eq:eigenbasis-probability} 给出的概率与公理~\ref{ax:quantum-measurement} 的期望值相容.事实上,如果 \(\psi\) 如式~\eqref{eq:eigenbasis-expansion},则
+\[
+\langle\psi,\widehat f^{\,m}\psi\rangle
+=\sum_{j}|a_{j}|^{2}\lambda_{j}^{m},
+\]
+这正是式~\eqref{eq:eigenbasis-probability} 所给概率分布的 \(m\) 阶矩.一般来说,我们不能仅由公理~\ref{ax:quantum-measurement} 推导式~\eqref{eq:eigenbasis-probability},因为矩问题的唯一性结论未必适用.不过,该公式是最自然的概率候选,我们将假定它成立.
+
+当特征值不同时,例题~\ref{ex:eigenbasis-probability} 也不难推广:对于任意一列特征值 \(\{\lambda_{j}\}\),观测到某个值 \(\lambda\) 的概率,是所有满足 \(\lambda_{j}=\lambda\) 的 \(j\) 所对应的 \(|a_{j}|^{2}\) 之和.对于任意自伴算子 \(A\),谱定理说明,\(A\) 要么有一个由特征向量构成的标准正交基,要么有某种连续的对应物.特别地,给定自伴算子 \(A\) 和单位向量 \(\psi\),谱定理会给出实轴上的概率测度 \(\mu_{A,\psi}\),我们将其解释为状态 \(\psi\) 中测量 \(A\) 的概率;有界与无界情形将在后面的谱定理章节中分别讨论.
+
+\begin{axiom}[公理 4:波函数坍缩]\label{ax:wavefunction-collapse}
+设量子系统最初处于状态 \(\psi\),并对可观测量 \(f\) 进行测量.如果测量结果为 \(\lambda\in\mathbb{R}\),那么测量之后系统立即处于状态 \(\psi'\),并满足
+\[
+\widehat f\psi'=\lambda\psi'.
+\]
+从 \(\psi\) 到 \(\psi'\) 的过程称为波函数坍缩.这里 \(\widehat f\) 是由公理~\ref{ax:quantization} 与 \(f\) 关联的自伴算子.
+\end{axiom}
+
+仍假设 \(\widehat f\) 有由特征向量 \(\{e_{j}\}\) 构成的标准正交基,且特征值 \(\lambda_{j}\) 两两不同.那么,更具体地说,如果测量 \(\widehat f\) 得到 \(\lambda_{j}\)(测量总会得到某个 \(\lambda_{j}\)),则 \(\psi'=e_{j}\).也就是说,测量通过丢弃 \(\psi\) 在各个 \(e_{k}\) 方向上的所有分量(保留 \(k=j\) 的那个分量),使波函数发生“坍缩”.
+
+波函数坍缩的思想引发了大量讨论和争议.一种看待这种情形的方式是:波函数 \(\psi\) 实际上并不是系统的状态——尽管我们仍沿用物理学中“状态”这一标准术语.更准确地说,波函数是编码系统状态概率的对象.于是,波函数坍缩有些类似于条件概率:系统未来测量的概率应当与刚刚完成的测量结果相一致.Paul Dirac 曾把波函数坍缩描述为:不是系统状态发生了不连续的变化,而是我们对系统状态的认识发生了不连续的变化.
+
+无论如何,公理~\ref{ax:wavefunction-collapse} 保证了一个合理原则:如果测量 \(f\),然后在很短时间后再次测量 \(f\),第二次测量的结果将与第一次相同.因此,第一次测量之后,第二次测量 \(f\) 的概率不再由向量 \(\psi\) 决定,而由状态 \(\psi'\) 决定.(由于 \(\psi'\) 是特征值为 \(\lambda\) 的 \(\widehat f\) 的特征向量,命题~\ref{prop:quantum-eigenvector} 告诉我们,在状态 \(\psi'\) 中测量 \(f\) 总会得到 \(\lambda\).)
+
+需要注意,公理~\ref{ax:wavefunction-collapse} 只说明测量之后系统立即处于什么状态.测量完成后,系统仍会按照通常方式随时间演化(见第~\ref{sec:time-evolution} 节).因此,在测量之后经过足够长的时间,系统很可能已经不再处于状态 \(\psi'\).
+
+最后考虑一个真实物理系统的测量例子:氢原子.氢原子的 Hamilton 算子 \(\widehat H\) 具有如下形式的负特征值:
+\begin{equation}
+-\frac{R}{n^{2}},\qquad n=1,2,3,\ldots,
+\label{eq:hydrogen-energy-spectrum}
+\end{equation}
+其中 \(R\) 是 Rydberg 常数.这些能量将在第~18 章推导.负特征值比正特征值更受关注,因为负特征值描述电子束缚在原子核附近的状态.如果电子处于能量为 \(-R/n_{1}^{2}\) 的状态,其中 \(n_{1}>1\),它最终会“衰变”到一个更低能量的状态,例如能量为 \(-R/n_{2}^{2}\),其中 \(n_{2}<n_{1}\).(最容易观测的情形是 \(n_{2}=2\) 和 \(n_{2}=1\).)在衰变过程中,电子发射一个光子,光子的能量等于电子能量的变化:
+\begin{equation}
+E_{\mathrm{photon}}=\frac{R}{n_{2}^{2}}-\frac{R}{n_{1}^{2}}.
+\label{eq:hydrogen-photon-energy}
+\end{equation}
+同时,光子的频率与其能量成正比.因此,通过观察发射光子的频率,可以确定电子能量的变化,从而确定 \(n_{1}\) 和 \(n_{2}\) 的值.
+
+氢原子的一般“束缚态”(即电子束缚在原子核附近的状态)是 \(\widehat H\) 的、对应于式~\eqref{eq:hydrogen-energy-spectrum} 中不同特征值的特征向量的线性组合.为了测量电子的能量,我们只需等待电子衰变到更低能量的状态并发射光子,观察光子的频率,再反推电子的能量.如果考虑许多波函数相同、制备方式相同的电子,就会观察到许多不同的发射光子频率,从而得到电子的许多不同能量.观测到的电子能量的概率遵循例题~\ref{ex:eigenbasis-probability} 中的原则.
+
+在初等概率论中,若 \(Y\) 是随机变量,则 \(Y\) 的方差 \(\sigma^{2}\) 定义为
+\[
+\sigma^{2}=\mathbb{E}\bigl((Y-\mathbb{E}(Y))^{2}\bigr),
+\]
+其中 \(\mathbb{E}\) 表示均值或期望值.标准差 \(\sigma:=\sqrt{\sigma^{2}}\) 衡量 \(Y\) 偏离均值 \(\mathbb{E}(Y)\) 的“典型”程度.注意,方差也可以写成
+\begin{equation}
+\sigma^{2}=\mathbb{E}(Y^{2})-\mathbb{E}(Y)^{2}.
+\label{eq:variance-formula}
+\end{equation}
+
+\begin{definition}[不确定度]\label{def:quantum-uncertainty}
+若 \(A\) 是 Hilbert 空间 \(\mathcal{H}\) 上的自伴算子,\(\psi\in\mathcal{H}\) 是单位向量,则令 \(\Delta_{\psi}A\) 表示状态 \(\psi\) 中对 \(A\) 的测量所对应的标准差:
+\[
+(\Delta_{\psi}A)^{2}
+=\left\langle(A-\langle A\rangle_{\psi}I)^{2}\right\rangle_{\psi}
+=\langle A^{2}\rangle_{\psi}-\langle A\rangle_{\psi}^{2}.
+\]
+我们称 \(\Delta_{\psi}A\) 为状态 \(\psi\) 中 \(A\) 的不确定度.
+\end{definition}
+
+对于单个可观测量 \(A\),总可以选择 \(\psi\),使 \(\Delta_{\psi}A\) 任意小.不过,在第~12 章中我们将看到,当两个可观测量 \(A,B\) 不对易时,对同一个 \(\psi\),\(\Delta_{\psi}A\) 和 \(\Delta_{\psi}B\) 不可能同时任意小.特别地,我们将在那里推导著名的 Heisenberg 不确定性原理:
+\[
+(\Delta_{\psi}X)(\Delta_{\psi}P)\ge\frac{\hbar}{2},
+\]
+对所有定义了 \(\Delta_{\psi}X\) 和 \(\Delta_{\psi}P\) 的 \(\psi\) 成立.
+
+\section{量子理论中的时间演化}\label{sec:time-evolution}
+
+\subsection{Schrödinger 方程}\label{subsec:schrodinger-equation}
+
+到目前为止,我们一直考察固定时刻的波函数.现在转而考虑波函数随时间的演化.回忆第~\ref{chap:first-classical-mechanics} 章中的 Hamilton 形式经典力学:系统的时间演化由 Hamilton(能量)函数 \(H\) 通过 Hamilton 方程控制.根据公理~\ref{ax:quantization},量子 Hilbert 空间 \(\mathcal{H}\) 上有一个相应的自伴线性算子 \(\widehat H\),称为系统的 Hamilton 算子.第~\ref{subsec:schrodinger-operator} 节将给出一个例子.
+
+回忆我们曾通过 de Broglie 假说 \(p=\hbar k\) 来动机化动量算子的定义,其中 \(k\) 是波函数的空间频率.同样,我们可以用波函数的能量与时间频率之间的类似关系来动机化量子力学中的时间演化:
+\begin{equation}
+E=\hbar\omega.
+\label{eq:energy-frequency}
+\end{equation}
+这个能量与时间频率之间的关系,正是 Planck 在黑体辐射模型中提出的关系(见第~\ref{subsec:blackbody-radiation} 节).设波函数 \(\psi_{0}\) 具有确定能量 \(E\),即 \(\psi_{0}\) 是特征值为 \(E\) 的 \(\widehat H\) 的特征向量.那么,式~\eqref{eq:energy-frequency} 意味着波函数的时间依赖应当只有 \(\omega=E/\hbar\) 这一频率.也就是说,如果系统在 \(t=0\) 时的状态为 \(\psi_{0}\),那么任意时刻的状态应为
+\begin{equation}
+\psi(t)=e^{-i\omega t}\psi_{0}
+=e^{-iEt/\hbar}\psi_{0}.
+\label{eq:energy-eigenstate-time}
+\end{equation}
+把式~\eqref{eq:energy-eigenstate-time} 改写为微分方程,得到
+\begin{equation}
+\frac{\mathrm{d}\psi}{\mathrm{d}t}
+=-\frac{iE}{\hbar}\psi
+=\frac{E}{i\hbar}\psi.
+\label{eq:energy-eigenstate-ode}
+\end{equation}
+
+注意,我们把“时间频率 \(\omega\)”理解为时间依赖 \(e^{-i\omega t}\) 的频率;而把“空间频率 \(k\)”理解为形如 \(e^{ikx}\) 的空间依赖,指数中没有负号.这一看似奇特的约定,在考察自由 Schrödinger 方程的纯指数解 \(\exp[i(kx-\omega t)]\) 时很方便;这种解描述以速度 \(\omega/k\) 向右运动的波.
+
+式~\eqref{eq:energy-eigenstate-ode} 给出了最初处于确定能量状态(即 Hamilton 算子的特征向量)时粒子的时间演化.推广这个方程的自然方式,是注意到 \(E\psi\) 正是 \(\widehat H\psi\),因为 \(\psi\) 只是 \(\widehat H\) 的特征值为 \(E\) 的特征向量 \(\psi_{0}\) 的常数倍.将 \(E\) 替换为 \(\widehat H\),就得到量子系统时间演化的一般规定.
+
+\begin{axiom}[公理 5:Schrödinger 方程]\label{ax:schrodinger}
+量子系统中波函数 \(\psi\) 的时间演化由 Schrödinger 方程给出:
+\begin{equation}
+\frac{\mathrm{d}\psi}{\mathrm{d}t}
+=\frac{1}{i\hbar}\widehat H\psi.
+\label{eq:schrodinger-equation}
+\end{equation}
+这里的 \(\widehat H\) 是通过公理~\ref{ax:quantization} 与经典 Hamilton 函数 \(H\) 对应的算子.
+\end{axiom}
+
+虽然 Hamilton 方程和 Schrödinger 方程都涉及 Hamilton 量,但除此之外两者看起来并不平行.当然,既然量子力学不是经典力学,我们不应期待两个理论具有相同的时间演化.不过,我们仍可能希望看到经典系统与相应量子系统的时间演化之间存在某些相似性.当考察量子力学中可观测量的期望值如何演化时,确实可以看到这种相似性.
+
+\begin{proposition}[期望值的演化]\label{prop:expectation-evolution}
+设 \(\psi(t)\) 是 Schrödinger 方程的解,\(A\) 是 \(\mathcal{H}\) 上的自伴算子.假设满足适当的定义域条件,则
+\begin{equation}
+\frac{\mathrm{d}}{\mathrm{d}t}\langle A\rangle_{\psi(t)}
+=\left\langle\frac{1}{i\hbar}[A,\widehat H]\right\rangle_{\psi(t)},
+\label{eq:expectation-commutator}
+\end{equation}
+其中 \(\langle A\rangle_{\psi}\) 如定义~\ref{def:quantum-expectation-notation},而 \([\,\cdot\,,\,\cdot\,]\) 表示对易子:
+\[
+[A,B]=AB-BA.
+\]
+\end{proposition}
+
+式~\eqref{eq:expectation-commutator} 应与经典相空间上的函数 \(f\) 沿 Hamilton 方程解随时间的变化率
+\[
+\frac{\mathrm{d}f}{\mathrm{d}t}=\{f,H\}
+\]
+相比较.因此,对易子除以 \(i\hbar\) 在量子力学中扮演的角色,类似于 Poisson 括号在经典力学中的角色.
+
+\begin{proof}
+设 \(\psi(t)\) 是 Schrödinger 方程的解.先暂时不考虑算子定义域问题.对内积使用乘积法则(见练习~\ref{ex:inner-product-derivative}),得
+\[
+\begin{aligned}
+\frac{\mathrm{d}}{\mathrm{d}t}\langle\psi(t),A\psi(t)\rangle
+&=\left\langle\frac{\mathrm{d}\psi}{\mathrm{d}t},A\psi\right\rangle
++\left\langle\psi,A\frac{\mathrm{d}\psi}{\mathrm{d}t}\right\rangle\\
+&=\frac{i}{\hbar}\langle\widehat H\psi,A\psi\rangle
+-\frac{i}{\hbar}\langle\psi,A\widehat H\psi\rangle\\
+&=\frac{1}{i\hbar}\langle\psi,[A,\widehat H]\psi\rangle.
+\end{aligned}
+\]
+最后一步使用了 \(\widehat H\) 的自伴性,将它移到内积的另一侧.回忆我们采用内积第一个因子取复共轭的约定;这正是第二行第一项出现正号的原因.用定义~\ref{def:quantum-expectation-notation} 改写,就得到所需结果.
+
+如果 \(A\) 和 \(\widehat H\)(如通常情形)都是无界算子,那么上述计算并不完全严格.由于我们把无界算子问题留到第~9 章,这里只陈述使计算成立所需的条件:对每个 \(t\in\mathbb{R}\),需要 \(\psi(t)\in\operatorname{Dom}(A)\cap\operatorname{Dom}(\widehat H)\),需要 \(A\psi(t)\in\operatorname{Dom}(\widehat H)\),还需要 \(\widehat H\psi(t)\in\operatorname{Dom}(A)\).(这些条件保证 \([A,\widehat H]\psi(t)\) 有定义.)此外,还需要 \(A\psi(t)\) 是 \(\mathcal{H}\) 中的连续路径.
+\end{proof}
+
+要让量子系统的时间演化表现出有趣的行为,系统中必须存在不对易性.如果所有物理上重要的算子都与 Hamilton 算子 \(\widehat H\) 对易,那么 \([\widehat H,A]\) 就为零,这些算子的期望值将随时间保持不变.因此,基本算子的不对易性是量子力学的本质性质.对于在 \(\mathbb{R}^{1}\) 中运动的粒子,这种不对易性已经包含在命题~\ref{prop:canonical-commutation-one} 给出的位置与动量对易关系中.
+
+当然,物理上重要的算子不可能全都与 \(\widehat H\) 对易,但有些算子可能具有这一性质.如果 \([A,\widehat H]=0\),那么沿 Schrödinger 方程的任意解,\(A\) 的期望值(事实上 \(A\) 的所有矩)都与时间无关.因此,可以把这样的 \(A\) 称为守恒量(或运动常数).正如经典情形,守恒量(如果能够找到)有助于理解 Schrödinger 方程的求解.
+
+\begin{proposition}[对易子的基本性质]\label{prop:commutator-properties}
+设 \(V\) 是复数域 \(\mathbb{C}\) 上的任意向量空间,\(A,B,C\) 是 \(V\) 上的线性算子,则有:
+\begin{enumerate}
+\item 对任意 \(\alpha\in\mathbb{C}\),
+\[
+[A,B+\alpha C]=[A,B]+\alpha[A,C],
+\]
+\item
+\[
+[B,A]=-[A,B],
+\]
+\item
+\[
+[A,BC]=[A,B]C+B[A,C],
+\]
+\item
+\[
+[A,[B,C]]=[[A,B],C]+[B,[A,C]].
+\]
+\end{enumerate}
+性质 4 等价于 Jacobi 恒等式
+\begin{equation}
+[A,[B,C]]+[B,[C,A]]+[C,[A,B]]=0.
+\label{eq:jacobi-identity}
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+对易子的前两个性质显然,第三个性质将各项展开即可验证.性质 4 也可以直接展开证明,不过计算稍微繁琐.式~\eqref{eq:jacobi-identity} 左端的三个二重对易子各产生四项,共有 12 项;每一项都是 \(A,B,C\) 按某种次序相乘的结果.直接计算可知,\(A,B,C\) 的六种可能排列各出现两次,且符号相反.
+
+如果 \(A,B\) 是某个 Hilbert 空间上的有界自伴算子,那么容易验证 \((1/(i\hbar))[A,B]\) 仍为自伴算子(见练习~\ref{ex:adjoint-commutator}).如果 \(A,B\) 是无界自伴算子,则在关于 \(A,B\) 的定义域满足适当条件时,\((1/(i\hbar))[A,B]\) 也会自伴.
+\end{proof}
+
+\begin{proposition}[内积守恒]\label{prop:inner-product-conservation}
+若 \(\phi(t)\) 和 \(\psi(t)\) 都是 Schrödinger 方程~\eqref{eq:schrodinger-equation} 的解,则 \(\langle\phi(t),\psi(t)\rangle\) 与 \(t\) 无关.特别地,对于 Schrödinger 方程的任意解 \(\psi(t)\),\(\|\psi(t)\|\) 与 \(t\) 无关.
+\end{proposition}
+
+\begin{proof}
+再次使用乘积法则,有
+\[
+\begin{aligned}
+\frac{\mathrm{d}}{\mathrm{d}t}\langle\phi(t),\psi(t)\rangle
+&=\left\langle\frac{1}{i\hbar}\widehat H\phi(t),\psi(t)\right\rangle
++\left\langle\phi(t),\frac{1}{i\hbar}\widehat H\psi(t)\right\rangle\\
+&=-\frac{1}{i\hbar}\langle\widehat H\phi(t),\psi(t)\rangle
++\frac{1}{i\hbar}\langle\phi(t),\widehat H\psi(t)\rangle.
+\end{aligned}
+\]
+由于 \(\widehat H\) 自伴,可以把第一项中的 \(\widehat H\) 移到内积的另一侧,于是导数为零.
+\end{proof}
+
+\subsection{用指数函数求解 Schrödinger 方程}\label{subsec:schrodinger-exponentiation}
+
+Schrödinger 方程是形如
+\begin{equation}
+\frac{\mathrm{d}v}{\mathrm{d}t}=Av
+\label{eq:abstract-linear-evolution}
+\end{equation}
+的方程,其中 \(A\) 是 Hilbert 空间上的线性算子.先考虑 Hilbert 空间为有限维空间 \(\mathbb{C}^{n}\) 的情形.此时可以把 \(A\) 看成一个 \(n\times n\) 矩阵,而式~\eqref{eq:abstract-linear-evolution} 正是初等常微分方程理论中遇到的那类方程.有限维情形下,这个系统的解可以写成
+\[
+v(t)=e^{tA}v_{0},
+\]
+其中矩阵指数 \(e^{tA}\) 由收敛幂级数定义,\(v_{0}=v(0)\) 是初始条件.如果 \(A\) 可对角化,还可以利用特征向量基计算指数(更多信息见第 16.4 节).
+
+Schrödinger 方程只是把 \(\mathbb{C}^{n}\) 换成 Hilbert 空间 \(\mathcal{H}\),把矩阵 \(A\) 换成线性算子 \(-i\widehat H/\hbar\).
+
+\begin{custom}{主张 3.17}
+\label{clm:schrodinger-exponentiation}
+设 \(\widehat H\) 是 \(\mathcal{H}\) 上的自伴算子.如果表达式 \(e^{-it\widehat H/\hbar}\) 可以赋予合理的意义,那么令
+\begin{equation}
+\psi(t)=e^{-it\widehat H/\hbar}\psi_{0}
+\label{eq:schrodinger-exponential-solution}
+\end{equation}
+即可解出 Schrödinger 方程.
+\end{custom}
+
+这个主张之所以合理,是因为我们期望可以像有限维情形那样对算子值表达式 \(e^{-it\widehat H/\hbar}\) 关于 \(t\) 求导.求导会带下来一个因子 \(-i\widehat H/\hbar\),从而说明 \(\psi(t)\) 确实满足 Schrödinger 方程.此外,当 \(t=0\) 时,\(e^{-it\widehat H/\hbar}\) 应等于 \(I\),于是 \(\psi(0)=\psi_{0}\).
+
+如果 \(\widehat H\) 是有界算子(这很少见),则可以像有限维情形那样,用收敛幂级数定义 \(e^{-it\widehat H/\hbar}\).在这种情况下,主张~\ref{clm:schrodinger-exponentiation} 很容易证明为定理.
+
+在更典型的无界情形下,指数级数的收敛是一个相当微妙的问题;较好的方法是使用谱定理.我们把谱定理的一般讨论留给第~7 章和第~10 章,这里只考虑纯点谱情形.若(可能无界的)自伴算子 \(\widehat H\) 有一个由 \(\widehat H\) 的特征向量组成的标准正交基 \(\{e_{j}\}\),则称 \(\widehat H\) 具有纯点谱.如果 \(\widehat He_{j}=E_{j}e_{j}\),其中 \(E_{j}\in\mathbb{R}\),则可以要求
+\begin{equation}
+e^{-it\widehat H/\hbar}e_{j}
+=e^{-itE_{j}/\hbar}e_{j}
+\label{eq:spectral-exponential}
+\end{equation}
+来定义该指数.算子 \(e^{-it\widehat H/\hbar}\) 是酉的,因而有界;它是满足式~\eqref{eq:spectral-exponential} 的唯一有界算子.
+
+并非每个自伴算子都有由特征向量构成的标准正交基,即使有界算子也不例外.不过,给定一个自伴算子 \(A\),谱定理会给出 \(\mathcal{H}\) 关于 \(A\) 的“广义特征子空间”分解.精确陈述这种分解尤其在无界情形下有些复杂.尽管如此,主张~\ref{clm:schrodinger-exponentiation} 让我们明确了谱定理的一个目标:无论谱定理的精确表述是什么,它都应当允许我们对任意自伴算子 \(A\) 和实数 \(a\) 解释表达式 \(e^{iaA}\).这个目标确实会实现:有界情形见第~7 章,无界情形见第~10 章.
+
+关于式~\eqref{eq:schrodinger-exponential-solution} 还需澄清两点.第一,写出这个式子并不意味着我们已经“真正”求解了 Schrödinger 方程.为了使表达式有用,我们必须以相对明确的方式计算 \(e^{-it\widehat H/\hbar}\).例如,如果能实际计算出 \(\widehat H\) 的特征向量标准正交基,那么结合式~\eqref{eq:spectral-exponential},我们就已经朝理解算子 \(e^{-it\widehat H/\hbar}\) 的行为迈出了一步.第二,虽然 \(\widehat H\) 是无界算子,只定义在稠密子空间上,但 \(e^{-it\widehat H/\hbar}\) 是酉的,并定义在整个 \(\mathcal{H}\) 上.因此,式~\eqref{eq:schrodinger-exponential-solution} 的右端对任意 \(\psi_{0}\in\mathcal{H}\) 都有意义.不过,除非 \(\psi_{0}\) 属于 \(\widehat H\) 的定义域,否则不能期待 \(e^{-it\widehat H/\hbar}\psi_{0}\) 在自然的 Hilbert 空间意义下真正解 Schrödinger 方程(相关无界算子技术见附录~\ref{chap:appendix}).
+
+\subsection{特征向量与定态 Schrödinger 方程}\label{subsec:time-independent-schrodinger}
+
+如上一小节所见,Hamilton 算子的特征向量对求解 Schrödinger 方程非常重要.基于这一事实,作如下定义.
+
+\begin{definition}[定态 Schrödinger 方程]\label{def:time-independent-schrodinger}
+若 \(\widehat H\) 是量子系统的 Hamilton 算子,则特征向量方程
+\begin{equation}
+\widehat H\psi=E\psi,\qquad E\in\mathbb{R},
+\label{eq:time-independent-schrodinger}
+\end{equation}
+称为\emph{定态 Schrödinger 方程}.
+\end{definition}
+
+与所有特征向量方程一样,我们要同时确定使式~\eqref{eq:time-independent-schrodinger} 有非零解的数 \(E\)(特征值)以及相应的向量 \(\psi\)(特征向量).量子力学教材中所说的“求解”量子谐振子,通常指找出定态 Schrödinger 方程的所有解(例如见第~5 章和第~11 章).如果 \(\psi\) 是定态 Schrödinger 方程的解,那么初值为 \(\psi\) 的含时 Schrödinger 方程的解就是 \(\psi(t)=e^{-itE/\hbar}\psi\).由于 \(\psi(t)\) 只是 \(\psi\) 的常数倍,它表示与 \(\psi\) 相同的物理状态.因此,定态 Schrödinger 方程的解有时称为\emph{定态}.
+
+\subsection{\(\mathbb{R}^{1}\) 中的 Schrödinger 方程}\label{subsec:schrodinger-operator}
+
+现在考虑 Hamilton 算子 \(\widehat H\) 的最简单例子.回忆第~\ref{sec:position-momentum} 节,对于在 \(\mathbb{R}^{1}\) 中运动的粒子,位置算子 \(X\) 是乘以 \(x\),动量算子为 \(P=-i\hbar\,\mathrm{d}/\mathrm{d}x\).这类粒子的经典 Hamilton 函数通常取为
+\[
+H(x,p)=\frac{p^{2}}{2m}+V(x),
+\]
+其中 \(V\) 是势能函数.于是,可以合理地取
+\[
+\widehat H=\frac{P^{2}}{2m}+V(X).
+\]
+这里的算子 \(V(X)\) 只是乘以势能函数 \(V(x)\) 的算子.(也可以把这个算子理解为谱定理所给出的函数演算意义下,将函数 \(V\) 应用于算子 \(X\).)于是
+\begin{equation}
+\widehat H\psi(x)=-\frac{\hbar^{2}}{2m}\frac{\mathrm{d}^{2}\psi}{\mathrm{d}x^{2}}+V(x)\psi(x).
+\label{eq:schrodinger-operator}
+\end{equation}
+形如式~\eqref{eq:schrodinger-operator} 的算子,或高维中以类似方式定义的算子,称为 Schrödinger 算子.(Hamilton 算子的含义更一般:无论其形式如何,只要它控制量子系统的时间演化,就可称为 Hamilton 算子.)
+
+如果 Hamilton 算子具有式~\eqref{eq:schrodinger-operator} 的形式,含时 Schrödinger 方程就成为
+\begin{equation}
+\frac{\partial\psi(x,t)}{\partial t}
+=\frac{i\hbar}{2m}\frac{\partial^{2}\psi(x,t)}{\partial x^{2}}
+-\frac{i}{\hbar}V(x)\psi(x,t),
+\label{eq:schrodinger-pde}
+\end{equation}
+这是一个线性偏微分方程.相比之下,\(\mathbb{R}^{1}\) 中粒子的 Newton 方程通常是非线性常微分方程.
+
+对于在 \(\mathbb{R}^{1}\) 中运动的粒子,定态 Schrödinger 方程是一个线性但系数不恒定的常微分方程,除非 \(V\) 恰好为常数.对势能函数 \(V\) 的简单例子,可以使用常微分方程的标准方法研究定态 Schrödinger 方程.
+
+\subsection{期望位置与期望动量的时间演化}\label{subsec:expected-position-momentum}
+
+量子粒子没有固定的位置或动量,因此询问粒子是否满足 Newton 方程没有意义.不过,询问位置和动量的期望值是否满足 Newton 方程(以 Hamilton 方程的形式)是有意义的.
+
+\begin{proposition}[期望位置与期望动量的演化]\label{prop:expected-position-momentum}
+设 \(\psi(t)\) 是式~\eqref{eq:schrodinger-pde} 的 Schrödinger 方程的解,且势能 \(V\) 与初始条件 \(\psi(0)=\psi_{0}\) 足够光滑.那么状态 \(\psi(t)\) 中的位置和动量期望值满足
+\begin{align}
+\frac{\mathrm{d}}{\mathrm{d}t}\langle X\rangle_{\psi(t)}
+&=\frac{1}{m}\langle P\rangle_{\psi(t)},\label{eq:expected-position-evolution}\\
+\frac{\mathrm{d}}{\mathrm{d}t}\langle P\rangle_{\psi(t)}
+&=-\langle V'(X)\rangle_{\psi(t)}.\label{eq:expected-momentum-evolution}
+\end{align}
+\end{proposition}
+
+命题中的假设有两个目的:第一,保证 \(\widehat H\) 确实是自伴算子(见第~9 章);第二,保证命题~\ref{prop:expectation-evolution} 中的定义域假设成立.例如,如果 \(V(x)\) 是关于 \(x\) 有下界的多项式,且 \(\psi_{0}\) 属于 Schwartz 空间(定义~\ref{app:def:schwartz}),这两个问题都能解决.一旦处理好这些技术细节,命题~\ref{prop:expected-position-momentum} 就是命题~\ref{prop:expectation-evolution} 的直接应用;见练习~\ref{ex:verify-expected-motion}.注意,式~\eqref{eq:expected-position-evolution} 以某种意义说明量子粒子的速度是动量除以 \(m\),与经典情形相同.
+
+乍看之下,\(\bigl(\langle X\rangle_{\psi(t)},\langle P\rangle_{\psi(t)}\bigr)\) 似乎是一条 Hamilton 方程的解;事实上,式~\eqref{eq:expected-position-evolution} 正是 Hamilton 方程所要求的形式.不过,要得到 Hamilton 方程的解,式~\eqref{eq:expected-momentum-evolution} 右端还必须等于 \(-V'(\langle X\rangle_{\psi(t)})\).但一般来说,
+\[
+\langle V'(X)\rangle_{\psi}\ne V'(\langle X\rangle_{\psi}).
+\]
+例如,设 \(V'(x)=x^{3}+x^{2}\).如果 \(\psi\) 是偶函数,那么 \(\langle X\rangle_{\psi}=0\),因而 \(V'(\langle X\rangle_{\psi})=0\).但 \((X^{3}+X^{2})\psi\) 不会为零,因为 \(X^{3}\) 项的期望为零,而 \(X^{2}\) 项的期望为正.由此可见,\(\langle X\rangle_{\psi(t)}\) 与 \(\langle P\rangle_{\psi(t)}\) 通常并不沿 Hamilton 方程的解演化.
+
+有一种情形下 \(\langle V'(X)\rangle_{\psi}\) 与 \(V'(\langle X\rangle_{\psi})\) 一致,那就是 \(V\) 为二次函数、因而 \(V'\) 为线性函数的情形.此时
+\[
+\langle V'(X)\rangle_{\psi}
+=\langle aX+bI\rangle_{\psi}
+=a\langle X\rangle_{\psi}+b
+=V'(\langle X\rangle_{\psi}).
+\]
+因此,在二次势能的情形,期望位置和期望动量确实沿经典轨迹演化.量子力学中这个情形很特殊并不令人意外,因为它在经典力学中也很特殊:这是 Newton 定律成为线性微分方程的情形.
+
+虽然期望位置和期望动量通常不严格沿经典轨迹演化,但在某些条件下会近似如此.如果波函数 \(\psi(x)\) 主要集中在某个点 \(x=x_{0}\) 附近,那么 \(\langle V'(X)\rangle_{\psi}\) 和 \(V'(\langle X\rangle_{\psi})\) 都近似等于 \(V'(x_{0})\).在这种情形下,只要波函数仍集中在单个点附近,粒子的期望位置和期望动量就近似沿经典轨迹演化.
+% End of the introductory Schrödinger-picture discussion.
+\section{Heisenberg 绘景}\label{sec:heisenberg-picture}
+
+量子力学的“Heisenberg 绘景”建立在 Heisenberg 的量子力学矩阵模型(见第~\ref{sec:schrodinger-heisenberg} 节)之上.在 Heisenberg 绘景中,人们认为算子(量子可观测量)随时间演化,而 Hilbert 空间中的向量(量子态)与时间无关.这与我们到目前为止采用的方法(“Schrödinger 绘景”)相反:在 Schrödinger 绘景中,可观测量与时间无关,而状态随时间演化.
+
+\begin{definition}[Heisenberg 绘景]\label{def:heisenberg-picture}
+在 Heisenberg 绘景中,每个自伴算子 \(A\) 按照算子值微分方程随时间演化:
+\begin{equation}
+\frac{\mathrm{d}A(t)}{\mathrm{d}t}
+=\frac{1}{i\hbar}[A(t),\widehat H],
+\label{eq:heisenberg-equation}
+\end{equation}
+其中 \(\widehat H\) 是系统的 Hamilton 算子,\([A,B]=AB-BA\) 是对易子.
+\end{definition}
+
+由于 \(\widehat H\) 与自身对易,即使在 Heisenberg 绘景中,Hamilton 算子也保持不变.这是量子情形对应于经典事实“Hamilton 函数沿 Hamilton 方程保持不变”的现象.
+
+给定自伴算子 \(\widehat H\),谱定理给出一族酉算子 \(e^{-it\widehat H/\hbar}\)(\(t\in\mathbb{R}\));这族算子计算 Schrödinger 绘景中的状态时间演化(见小节~\ref{subsec:schrodinger-exponentiation}).容易(至少形式上)验证,式~\eqref{eq:heisenberg-equation} 的解为
+\begin{equation}
+A(t)=e^{it\widehat H/\hbar}Ae^{-it\widehat H/\hbar}.
+\label{eq:heisenberg-solution}
+\end{equation}
+
+现在,若 \(\psi\) 是系统状态(在这里被视为与时间无关),则状态 \(\psi\) 中 \(A(t)\) 的期望值定义为 \(\langle A(t)\rangle_{\psi}=\langle\psi,A(t)\psi\rangle\).于是
+\[
+\begin{aligned}
+\langle A(t)\rangle_{\psi}
+&=\langle\psi,e^{it\widehat H/\hbar}Ae^{-it\widehat H/\hbar}\psi\rangle\\
+&=\langle e^{-it\widehat H/\hbar}\psi,Ae^{-it\widehat H/\hbar}\psi\rangle\\
+&=\langle\psi(t),A\psi(t)\rangle,
+\end{aligned}
+\]
+其中 \(\psi(t)\) 是 Schrödinger 绘景中的时间演化状态.这里使用了 \((e^{it\widehat H/\hbar})^{*}=e^{-it\widehat H/\hbar}\);这一点形式上显然,也是谱定理的结果.
+
+注意,在 Schrödinger 绘景中,\(\langle\psi(t),A\psi(t)\rangle\) 是状态 \(\psi(t)\) 中 \(A\) 的期望值.因此,Heisenberg 绘景和 Schrödinger 绘景对可观测量随时间的期望值给出完全相同的结果,在物理上是等价的.虽然本书主要使用 Schrödinger 绘景,但 Heisenberg 绘景也很重要,例如在量子场论中.
+
+\begin{proposition}[Heisenberg 绘景中的 Hamilton 算子]\label{prop:heisenberg-hamiltonian}
+设
+\[
+\widehat H=\frac{P^{2}}{2m}+V(X),
+\]
+其中 \(V\) 是有下界的多项式.那么对任意 \(t\in\mathbb{R}\),有
+\begin{equation}
+\widehat H=\frac{1}{2m}(P(t))^{2}+V(X(t)).
+\label{eq:heisenberg-hamiltonian}
+\end{equation}
+\end{proposition}
+
+由于 \([\widehat H,\widehat H]=0\),Hamilton 算子 \(\widehat H\) 在 Heisenberg 绘景中与时间无关.因此,式~\eqref{eq:heisenberg-hamiltonian} 的右端虽然含有随时间变化的 \(P(t)\) 与 \(X(t)\),实际上却与 \(t\) 无关.对足够光滑的非多项式函数 \(V\),式~\eqref{eq:heisenberg-hamiltonian} 也成立,但证明需要某种极限论证.假定 \(V\) 有下界,是为了保证 \(\widehat H\) 确实是(本质)自伴算子;比较第~9 章.
+
+\begin{lemma}[算子幂的时间演化]\label{lem:heisenberg-powers}
+设 \(A\) 是 \(\mathcal{H}\) 上的自伴算子,\(A(\cdot)\) 是满足式~\eqref{eq:heisenberg-equation} 且 \(A(0)=A\) 的解.那么对任意正整数 \(m\),映射
+\[
+t\longmapsto(A(t))^{m}
+\]
+也是式~\eqref{eq:heisenberg-equation} 的解.
+\end{lemma}
+
+也就是说,\(A\) 的 \(m\) 次幂的时间演化等于 \(A\) 的时间演化的 \(m\) 次幂,即 \(A^{m}(t)=(A(t))^{m}\).
+
+\begin{proof}
+使用式~\eqref{eq:heisenberg-solution},有
+\[
+\begin{aligned}
+e^{it\widehat H/\hbar}A^{m}e^{-it\widehat H/\hbar}
+&=e^{it\widehat H/\hbar}Ae^{-it\widehat H/\hbar}
+e^{it\widehat H/\hbar}Ae^{-it\widehat H/\hbar}\cdots
+e^{it\widehat H/\hbar}Ae^{-it\widehat H/\hbar}\\
+&=\left(e^{it\widehat H/\hbar}Ae^{-it\widehat H/\hbar}\right)^{m}.
+\end{aligned}
+\]
+直接验证 \((A(t))^{m}\) 也满足微分方程~\eqref{eq:heisenberg-equation}.
+\end{proof}
+
+有了这个引理,命题~\ref{prop:heisenberg-hamiltonian} 很容易证明.
+
+\begin{proof}[命题~\ref{prop:heisenberg-hamiltonian} 的证明]
+一方面,由于 \([\widehat H,\widehat H]=0\),时间演化后的算子 \(\widehat H(t)\) 就是 \(\widehat H\) 本身.另一方面,利用引理~\ref{lem:heisenberg-powers} 对 \(P^{2}/(2m)+V(X)\) 作时间演化,就得到式~\eqref{eq:heisenberg-hamiltonian} 右端.
+\end{proof}
+
+\begin{proposition}[Heisenberg 方程的运动学形式]\label{prop:heisenberg-newton}
+若量子系统的 Hamilton 算子如命题~\ref{prop:heisenberg-hamiltonian},则由式~\eqref{eq:heisenberg-equation} 定义的 \(X(t)\) 和 \(P(t)\) 满足
+\begin{align}
+\frac{\mathrm{d}X(t)}{\mathrm{d}t}&=\frac{1}{m}P(t),\label{eq:heisenberg-position}\\
+\frac{\mathrm{d}P(t)}{\mathrm{d}t}&=-V'(X(t)).\label{eq:heisenberg-momentum}
+\end{align}
+\end{proposition}
+
+\begin{proof}
+见练习~\ref{ex:prove-heisenberg-equations}.
+\end{proof}
+
+命题~\ref{prop:heisenberg-newton} 意味着算子值函数 \(X(t)\) 和 \(P(t)\) 满足经典运动方程 \(\mathrm{d}x/\mathrm{d}t=p(t)/m\) 与 \(\mathrm{d}p/\mathrm{d}t=-V'(x(t))\) 的算子类比.不过,\(X(t)\) 与 \(P(t)\) 的期望值并不满足通常的运动方程;我们已经在 Schrödinger 绘景中看到了这一点.对式~\eqref{eq:heisenberg-position}--\eqref{eq:heisenberg-momentum} 取期望值,会得到与命题~\ref{prop:expected-position-momentum} 相同的结果:
+\[
+\frac{\mathrm{d}}{\mathrm{d}t}\langle X(t)\rangle_{\psi}
+=\frac{1}{m}\langle P(t)\rangle_{\psi},
+\qquad
+\frac{\mathrm{d}}{\mathrm{d}t}\langle P(t)\rangle_{\psi}
+=-\langle V'(X(t))\rangle_{\psi}.
+\]
+除非 \(V'(X(t))\) 的算子期望值恰好等于 \(V'\) 作用于 \(X(t)\) 期望值的结果,否则这些并不是经典运动方程;而这通常并不成立.
+
+\section{例题:盒中的粒子}\label{sec:particle-in-box}
+
+考虑一维量子力学中被限制在一个“盒子”内运动的粒子;盒子描述为区间 \(0\le x\le L\).我们的目标是找出 Schrödinger 算子的所有特征向量和特征值,即找出定态 Schrödinger 方程 \(\widehat H\psi=E\psi\) 的所有解.
+
+在求解这个方程时,可以这样理解盒子的约束:设粒子在 \(\mathbb{R}^{1}\) 中运动,处于势能 \(V\) 的作用下,其中 \(0\le x\le L\) 时 \(V=0\),实轴其余部分 \(V\) 取某个非常大的常数 \(C\).在经典力学中,粒子必须具有超过 \(C\) 的非常高能量才可能逃出盒子.在量子力学中,如果对这个势能有一个定态 Schrödinger 方程的解 \(\widehat H\psi=E\psi\),且 \(E\ll C\),那么我们预计 \(\psi\) 在盒子外会快速衰减.(第~5 章将明确看到这一行为.)当 \(C\to\infty\) 时,我们预计定态 Schrödinger 方程的解在盒子外为零,并且趋近盒子两端时趋于零.
+
+归结起来,我们要寻找区间 \([0,L]\) 上的光滑函数 \(\psi\),满足微分方程
+\begin{equation}
+-\frac{\hbar^{2}}{2m}\frac{\mathrm{d}^{2}\psi}{\mathrm{d}x^{2}}
+=E\psi(x),\qquad 0\le x\le L
+\label{eq:particle-box-ode}
+\end{equation}
+以及边界条件
+\begin{equation}
+\psi(0)=\psi(L)=0.
+\label{eq:particle-box-boundary}
+\end{equation}
+
+当 \(E>0\) 时,式~\eqref{eq:particle-box-ode} 的解空间由两个复指数张成,或者等价地由正弦和余弦函数张成:
+\begin{equation}
+\psi(x)=a\sin\left(\frac{\sqrt{2mE}}{\hbar}x\right)
++b\cos\left(\frac{\sqrt{2mE}}{\hbar}x\right).
+\label{eq:particle-box-general}
+\end{equation}
+若施加边界条件 \(\psi(0)=0\),就得到 \(b=0\),只剩下正弦项.再施加 \(\psi(L)=0\),除非
+\begin{equation}
+\sin\left(\frac{\sqrt{2mE}}{\hbar}L\right)=0,
+\label{eq:particle-box-sine-condition}
+\end{equation}
+否则只能得到 \(a=0\),即 \(\psi\) 恒等于零.
+
+由于我们关心的是 \(\psi\) 不恒等于零的解,式~\eqref{eq:particle-box-sine-condition} 要求正弦函数的自变量为 \(\pi\) 的整数倍.于是 \(E\) 必须具有如下形式:
+\begin{equation}
+E_{j}:=\frac{j^{2}\pi^{2}\hbar^{2}}{2mL^{2}},
+\qquad j=1,2,3,\ldots.
+\label{eq:particle-box-energy}
+\end{equation}
+对于 \(E\le0\),很容易验证(见练习~\ref{ex:negative-box-energy}),满足边界条件~\eqref{eq:particle-box-boundary} 的式~\eqref{eq:particle-box-ode} 的唯一解是 \(\psi\equiv0\).
+
+\begin{proposition}[盒中粒子的能级与本征函数]\label{prop:particle-in-box}
+以下函数满足式~\eqref{eq:particle-box-ode} 和边界条件~\eqref{eq:particle-box-boundary}:
+\begin{equation}
+\psi_{j}(x)=\sqrt{\frac{2}{L}}\sin\left(\frac{j\pi x}{L}\right),
+\qquad j=1,2,3,\ldots,
+\label{eq:particle-box-eigenfunctions}
+\end{equation}
+相应特征值 \(E_{j}\) 由式~\eqref{eq:particle-box-energy} 给出.函数 \(\psi_{j}\) 构成 Hilbert 空间 \(L^{2}([0,L])\) 的标准正交基.
+\end{proposition}
+
+\begin{proof}
+我们已经验证了每个 \(\psi_{j}\) 满足方程并具有相应特征值.直接计算可验证 \(\psi_{j}\) 两两正交归一;初等 Fourier 级数理论(这里是 Fourier 正弦级数)说明它们构成 \(L^{2}([0,L])\) 的标准正交基.
+\end{proof}
+
+这个问题的 Hamilton 算子(盒子内部 \(V=0\))为
+\[
+\widehat H\psi=-\frac{\hbar^{2}}{2m}\frac{\mathrm{d}^{2}\psi}{\mathrm{d}x^{2}}.
+\]
+该算子是无界算子,并未定义在整个 Hilbert 空间 \(L^{2}([0,L])\) 上,而只定义在其中的稠密子空间 \(\operatorname{Dom}(\widehat H)\) 上.应当选择 \(\widehat H\) 的定义域,使 \(\widehat H\) 本质自伴,因而是对称的(见定义~\ref{def:symmetric-self-adjoint}),即
+\begin{equation}
+\langle\phi,\widehat H\psi\rangle=\langle\widehat H\phi,\psi\rangle
+\label{eq:box-symmetric}
+\end{equation}
+对所有 \(\phi,\psi\in\operatorname{Dom}(\widehat H)\) 成立.为了使式~\eqref{eq:box-symmetric} 成立,\(\phi,\psi\) 必须满足适当边界条件,以便分部积分中的边界项为零(见练习~\ref{ex:box-integration-by-parts}).
+
+从数学上说,为了使 \(\widehat H\) 成为本质自伴算子,必须施加某些边界条件.这里选择边界条件~\eqref{eq:particle-box-boundary},是基于用盒子外非常大的“限制性”势能近似盒子的思想.关于无界算子定义域问题的广泛讨论,见第~9 章.
+
+\section{\(\mathbb{R}^{n}\) 中粒子的量子力学}\label{sec:quantum-particle-rn}
+
+到目前为止,我们一直考察在 \(\mathbb{R}^{1}\) 中运动的量子粒子.不过,很容易推广到在 \(\mathbb{R}^{n}\) 中运动的量子粒子.此时粒子的 Hilbert 空间是 \(L^{2}(\mathbb{R}^{n})\),而不是 \(L^{2}(\mathbb{R})\).我们不再只有一个位置算子,而有 \(n\) 个位置算子:
+\[
+X_{j}\psi(x)=x_{j}\psi(x),\qquad j=1,\ldots,n.
+\]
+类似地,有 \(n\) 个动量算子:
+\[
+P_{j}\psi(x)=-i\hbar\frac{\partial\psi}{\partial x_{j}}.
+\]
+
+与一维情形一样,\(X_{j}\) 不与 \(P_{j}\) 对易,而满足 \([X_{j},P_{j}]=i\hbar I\).另一方面,\(X_{j}\) 与 \(X_{k}\) 对易,\(P_{j}\) 与 \(P_{k}\) 对易;当 \(j\ne k\) 时,\(X_{j}\) 与 \(P_{k}\) 也对易.这些公式称为正则对易关系.
+
+\begin{proposition}[正则对易关系]\label{prop:canonical-commutation-relations}
+位置算子与动量算子满足
+\begin{align}
+\frac{1}{i\hbar}[X_{j},X_{k}]&=0,\notag\\
+\frac{1}{i\hbar}[P_{j},P_{k}]&=0,\notag\\
+\frac{1}{i\hbar}[X_{j},P_{k}]&=\delta_{jk}I,\label{eq:canonical-commutation-relations}
+\end{align}
+对所有 \(1\le j,k\le n\) 成立.
+\end{proposition}
+
+这些关系是经典力学中位置函数和动量函数之间 Poisson 括号关系的量子对应物.具体地说,在命题~\ref{pro:canonical-poisson-relations} 中,Poisson 括号所扮演的角色由命题~\ref{prop:canonical-commutation-relations} 中的 \((1/(i\hbar))[\,\cdot\,,\,\cdot\,]\) 扮演.
+
+如果 \(\mathbb{R}^{n}\) 中粒子的经典 Hamilton 函数具有通常形式(动能加势能),那么类似地可以定义 Hamilton 算子:
+\begin{equation}
+\widehat H=\sum_{j=1}^{n}\frac{P_{j}^{2}}{2m}+V(X),
+\label{eq:rn-hamiltonian}
+\end{equation}
+其中 \(V(X)\) 表示把函数 \(V\) 应用于相互对易的算子族 \(X=(X_{1},\ldots,X_{n})\) 的结果.自然地,可以把 \(V(X)\) 认作乘以函数 \(V(x)\) 的算子.于是更明确地,
+\[
+\widehat H\psi(x)=-\frac{\hbar^{2}}{2m}\Delta\psi(x)+V(x)\psi(x),
+\]
+其中 \(\Delta\) 是 Laplace 算子:
+\[
+\Delta=\sum_{j=1}^{n}\frac{\partial^{2}}{\partial x_{j}^{2}}.
+\]
+我们把式~\eqref{eq:rn-hamiltonian} 形式的算子称为 Schrödinger 算子.
+
+还可以类比经典角动量函数,引入角动量算子.
+
+\begin{definition}[角动量算子]\label{def:angular-momentum-operator}
+对每一对满足 \(1\le j,k\le n\) 的指标,定义角动量算子 \(\widehat J_{jk}\) 为
+\[
+\widehat J_{jk}=X_{j}P_{k}-X_{k}P_{j}.
+\]
+\end{definition}
+
+与经典情形一样,当 \(j=k\) 时 \(\widehat J_{jk}=0\).当 \(j\ne k\) 时,\(X_{j}\) 与 \(P_{k}\) 对易,因此定义式中因子的次序无关紧要.明确写出,
+\[
+\widehat J_{jk}=-i\hbar\left(x_{j}\frac{\partial}{\partial x_{k}}-x_{k}\frac{\partial}{\partial x_{j}}\right).
+\]
+括号中的算子是 \((x_{j},x_{k})\) 平面中的角向导数 \(\partial/\partial\theta\).
+
+当 \(n=3\) 时,通常使用经典角动量向量的量子对应物:
+\begin{equation}
+\widehat J_{1}=X_{2}P_{3}-X_{3}P_{2},\qquad
+\widehat J_{2}=X_{3}P_{1}-X_{1}P_{3},\qquad
+\widehat J_{3}=X_{1}P_{2}-X_{2}P_{1}.
+\label{eq:angular-momentum-three-quantum}
+\end{equation}
+当 \(n=3\) 时,每个 \(j\ne k\) 的 \(\widehat J_{jk}\) 都是上述三个算子之一或其相反数.
+
+\section{多粒子系统}\label{sec:multiple-particles-distinguishable}
+
+现在设有一个由 \(N\) 个在 \(\mathbb{R}^{n}\) 中运动的量子粒子组成的系统.如果粒子都是不同类型的(例如一个电子和一个质子),那么系统的 Hilbert 空间是 \(L^{2}(\mathbb{R}^{nN})\).也就是说,系统的波函数 \(\psi\) 是变量 \(x_{1},x_{2},\ldots,x_{N}\) 的函数,其中每个 \(x_{j}\in\mathbb{R}^{n}\).如果将 \(\psi\) 归一化为 \(L^{2}(\mathbb{R}^{nN})\) 中的单位向量,那么
+\[
+|\psi(x_{1},x_{2},\ldots,x_{N})|^{2}
+\]
+应解释为 \(N\) 个粒子位置的联合概率分布.
+
+可以按照单粒子情形的明显类比,引入位置算子 \(X_{k}^{j}\)(第 \(j\) 个粒子位置的第 \(k\) 个分量)和动量算子 \(P_{k}^{j}\).此类系统的典型 Hamilton 算子为
+\[
+\widehat H\psi(x_{1},\ldots,x_{N})
+=-\sum_{j=1}^{N}\frac{\hbar^{2}}{2m_{j}}\Delta_{j}\psi(x_{1},\ldots,x_{N})
++V(x_{1},\ldots,x_{N})\psi(x),
+\]
+其中 \(m_{j}\) 是第 \(j\) 个粒子的质量,\(\Delta_{j}\) 表示关于变量 \(x_{j}\in\mathbb{R}^{n}\)(固定其他变量)取 Laplace 算子.
+
+如第~19 章所述,由若干子系统组成的复合系统,其 Hilbert 空间通常取为各个 Hilbert 空间的(Hilbert)张量积.在这里,可以把系统看成由 \(N\) 个子系统组成,每个子系统就是一个单独的粒子.幸运的是,\(L^{2}(\mathbb{R}^{nN})\) 与 \(N\) 个 \(L^{2}(\mathbb{R}^{n})\) 的张量积之间存在自然同构(命题~\ref{app:prop:hilbert-operator-tensor}),因此我们采取的方法与一般哲学是一致的.
+
+如果所考虑的粒子是相同的(例如全都是电子),那么系统 Hilbert 空间的描述还会遇到一个额外困难.在标准量子理论中,我们应当相信“相同粒子不可区分”.这意味着,如果交换 \(x_{1}\) 与 \(x_{2}\),新的波函数应代表与原波函数相同的物理状态.回忆公理~\ref{ax:quantum-state}:量子 Hilbert 空间中的两个单位向量当且仅当相差一个模为 \(1\) 的常数时,表示同一物理状态.因此必须有
+\[
+\psi(x_{2},x_{1},x_{3},\ldots,x_{N})
+=u\psi(x_{1},x_{2},x_{3},\ldots,x_{N}),
+\]
+其中 \(u\) 是满足 \(|u|=1\) 的常数.把这个规则应用两次,会得到 \(\psi=u^{2}\psi\),所以 \(u\) 必须是 \(1\) 或 \(-1\).
+
+量子力学中的粒子按上述常数 \(u\) 是 \(1\) 还是 \(-1\) 分为两类.\(u=1\) 的粒子称为\emph{玻色子},\(u=-1\) 的粒子称为\emph{费米子}.粒子属于玻色子还是费米子,由粒子的自旋决定;自旋的概念要到后面才引入.不过可以说,无自旋粒子是玻色子.对于在 \(\mathbb{R}^{3}\) 中运动的一组 \(N\) 个相同的无自旋粒子,正确的 Hilbert 空间是 \(L^{2}(\mathbb{R}^{3N})\) 的对称子空间,即在变量任意置换下保持不变的 \(L^{2}(\mathbb{R}^{3N})\) 函数空间.关于自旋和相同粒子系统,我们将在第~17 章和第~19 章进一步讨论.
+
+\section{物理学记号}\label{sec:physics-notation}
+
+在量子力学中,物理学家几乎总是使用 Dirac 记号(或 bra--ket 记号);这是 Dirac 于 1939 年引入的记号~\cite{Dirac1939}.下面的记号~3.27--3.29 构成了 Dirac 记号.在本节中,我们将探讨 Dirac 记号以及数学文献和物理学文献之间其他一些记号差异.
+
+在继续之前,必须强调:使用 Dirac 记号时,内积中的复共轭必须放在第一个因子上.
+
+\begin{definition}[记号 3.27:bra 与 ket]\label{def:bra-ket}
+\(\mathcal{H}\) 中的向量 \(\psi\) 称为一个 ket,记为 \(\lvert\psi\rangle\).\(\mathcal{H}\) 上的连续线性泛函称为一个 bra.对任意 \(\phi\in\mathcal{H}\),令 \(\langle\phi\rvert\) 表示如下 bra:
+\[
+\langle\phi\rvert(\psi)=\langle\phi,\psi\rangle.
+\]
+也就是说,\(\langle\phi\rvert\) 是“与 \(\phi\) 作内积”的泛函.两个向量 \(\phi,\psi\in\mathcal{H}\) 的 bracket(或 bra--ket)是 bra \(\langle\phi\rvert\) 作用于 ket \(\lvert\psi\rangle\) 的结果,即 \(\phi,\psi\) 的内积,记为 \(\langle\phi\vert\psi\rangle\).
+\end{definition}
+
+如果 \(A\) 是 \(\mathcal{H}\) 上的算子,\(\phi\in\mathcal{H}\),则可以构造线性泛函 \(\langle\phi\rvert A\),即映射 \(\psi\mapsto\langle\phi\rvert A\psi\rangle\).物理学家通常把这种表达式写成
+\[
+\langle\phi\vert A\vert\psi\rangle.
+\]
+这个记号强调了同一量的两种看法:既可以把 \(\langle\phi\vert A\) 看作作用于向量 \(\lvert\psi\rangle\) 的线性泛函,也可以把 \(\langle\phi\vert\) 看作作用于向量 \(A\lvert\psi\rangle\) 的线性泛函.
+
+\begin{definition}[记号 3.28:秩一算子]\label{def:rank-one-dirac}
+对任意 \(\phi,\psi\in\mathcal{H}\),表达式 \(\lvert\phi\rangle\langle\psi\rvert\) 表示 \(\mathcal{H}\) 上的线性算子,定义为
+\[
+(\lvert\phi\rangle\langle\psi\rvert)(\chi)
+=\lvert\phi\rangle\langle\psi\vert\chi\rangle
+=\langle\psi\vert\chi\rangle\,\lvert\phi\rangle.
+\]
+用数学记号写,就是把 \(\chi\) 送到 \(\langle\psi,\chi\rangle\phi\) 的算子.
+\end{definition}
+
+算子 \(\lvert\phi\rangle\langle\psi\rvert\) 把每个 ket 向量 \(\lvert\chi\rangle\) 关联到一个新向量,而且这是使记号有意义的唯一方式:我们把 \(\lvert\phi\rangle\langle\psi\vert\lvert\chi\rangle\) 理解为向量 \(\lvert\phi\rangle\) 乘以标量 \(\langle\psi\vert\chi\rangle\).
+
+\begin{definition}[记号 3.29:指标记号]\label{def:dirac-index-notation}
+给定一个由三个指标 \(n,l,m\) 标记的向量族,物理学家不会把这些向量写成 \(\lvert\psi_{n,l,m}\rangle\),而会直接写成 \(\lvert n,l,m\rangle\).
+\end{definition}
+
+这个记号并非没有缺点.如果有两组向量由同一组指标标记,数学家可以把它们分别写成 \(\phi_{n,l,m}\) 和 \(\psi_{n,l,m}\),但物理学家就会遇到问题.
+
+例如,设算子 \(\widehat H\) 有一个由特征向量 \(\psi_{n}\) 组成的标准正交基.物理学家会用如下方式表示一般向量关于此基的分解:
+\begin{equation}
+I=\sum_{n}\lvert n\rangle\langle n\rvert,
+\label{eq:dirac-resolution-identity}
+\end{equation}
+这里 \(\psi_{n}\) 简单记作 \(\lvert n\rangle\),而 \(\lvert n\rangle\langle n\rvert\)(由于 \(\lvert n\rangle\) 是单位向量)是投影到 \(\lvert n\rangle\) 所张成的一维子空间上的正交投影.
+
+\begin{definition}[记号 3.30:物理学中的伴随]\label{def:physics-adjoint}
+在物理学文献中,复数 \(z\) 的共轭记为 \(z^{*}\),而不是数学文献中的 \(\overline z\).数学家称为算子伴随并记为 \(A^{*}\) 的对象,物理学家称为算子的 Hermitian 共轭,并记为 \(A^{\dagger}\).物理学家把自伴算子称为 Hermitian 算子.
+\end{definition}
+
+可以用 Dirac 记号表达算子的伴随(或 Hermitian 共轭)概念:若 \(A\) 是 \(\mathcal{H}\) 上的有界算子,则 \(A^{\dagger}\) 是满足
+\[
+\langle\psi\vert A=(A^{\dagger}\psi)^{*}
+\]
+的唯一有界算子.
+
+量子力学物理学文献的一个特点,是大多数文章明显不说明 Hilbert 空间是什么.物理学家通常不先定义所使用的 Hilbert 空间,而是直接写出空间上各种算子满足的对易关系.例如,物理学家可能从满足 \([X,P]=i\hbar I\) 的位置算子 \(X\) 和动量算子 \(P\) 开始,而完全不说明这些算子作用在哪个空间上.出现这种省略的理由大概是 Stone--von Neumann 定理:只要算子满足预期的“指数化”关系,并且在其作用的空间上不可约,那么满足这些关系的 Hilbert 空间在酉等价意义下只有一个(精确表述见第~14 章).不过,对于数学家而言,遇到一整篇都在计算某些算子,却不说明算子作用于什么空间、甚至不说明算子如何作用,仍然会令人不安.
+
+物理学家的这种做法多少体现了一种角色互换.例如在线性代数中,数学家可能说:“令 \(V\) 是 \(\mathbb{R}\) 上的 \(n\) 维向量空间.”如果物理学家说:“哦,所以它是 \(\mathbb{R}^{n}\).”数学家会回答:“不,不需要选择基.”但在量子力学中,却是物理学家不希望选择空间的特定实现.物理学家只写下 \(X\) 和 \(P\) 之间满足的对易关系;如果追问,他可能说自己正在这些关系的一个不可约表示中工作.如果数学家于是说:“哦,所以它是 \(L^{2}(\mathbb{R})\).”物理学家会回答:“不,不存在优先选定的实现.”
+
+\begin{definition}[记号 3.31:位置波函数]\label{def:position-wavefunction-dirac}
+给定正则对易关系的一个不可约表示,并给定相应 Hilbert 空间中的向量 \(\psi\),物理学家把位置波函数 \(\psi(x)\) 定义为
+\begin{equation}
+\psi(x)=\langle x\vert\psi\rangle.
+\label{eq:position-wavefunction-dirac}
+\end{equation}
+这里 \(\langle x\vert\) 是与 ket \(\lvert x\rangle\) 关联的 bra,而 \(\lvert x\rangle\) 被设想为位置算子的特征值为 \(x\) 的特征向量.
+\end{definition}
+
+再参见第~14 章关于“正则对易关系的不可约表示”的精确定义.类似地,可以通过与动量算子的特征向量取内积来定义动量波函数;动量算子的特征向量同样不可归一化,见第~\ref{sec:momentum-operator} 节.
+
+数学家可能会认为记号~\ref{def:position-wavefunction-dirac} 有问题,因为算子 \(X\) 实际上没有任何特征向量.毕竟,在“Schrödinger 表示”中工作是无害的:Hilbert 空间为 \(L^{2}(\mathbb{R})\),位置算子 \(X\) 就是乘以 \(x\).给定 \(x_{0}\),不存在 \(L^{2}(\mathbb{R})\) 中的非零元素 \(\psi\) 满足 \(X\psi=x_{0}\psi\).因为任何满足这个方程的 \(\psi\) 都必须支集在点 \(x=x_{0}\) 上,所以 \(\psi\) 几乎处处为零,从而是 \(L^{2}(\mathbb{R})\) 中的零元素.另一方面,物理学家会说所需的特征函数是 \(\psi(x)=\delta(x-x_{0})\),其中 \(\delta\) 是 Dirac delta-“函数”.\(\delta(x-x_{0})\) 实际上不属于 Hilbert 空间 \(L^{2}(\mathbb{R})\) 并不困扰物理学家;它只是一个“不可归一化的态”.研究这类不可归一化状态的数学理论称为“广义特征向量”理论.关于动量算子特征向量的这一问题,见第~6.6 节.
+
+关于“位置特征向量”还有一个更微妙的问题:每个特征向量都只能确定到乘以一个常数为止.如果希望动量算子以通常方式作用在式~\eqref{eq:position-wavefunction-dirac} 定义的位置波函数上,就必须一致地选择位置算子特征向量的归一化.具体来说,应当选择这些常数,使得动量算子的指数化算子 \(\exp(iaP/\hbar)\) 把 \(\lvert x\rangle\) 映射为 \(\lvert x+a\rangle\).
+
+\section{练习}\label{sec:chapter3-exercises}
+
+\begin{exercise}\label{ex:inner-product-derivative}
+设 \(\phi(t)\) 和 \(\psi(t)\) 是取值于 Hilbert 空间 \(\mathcal{H}\) 的可微函数;也就是说,对每个 \(t\),极限
+\[
+\frac{\mathrm{d}\phi}{\mathrm{d}t}
+:=\lim_{h\to0}\frac{\phi(t+h)-\phi(t)}{h}
+\]
+在 \(\mathcal{H}\) 的范数拓扑中存在,\(\psi\) 也满足同样条件.证明
+\[
+\frac{\mathrm{d}}{\mathrm{d}t}\langle\phi(t),\psi(t)\rangle
+=\left\langle\frac{\mathrm{d}\phi}{\mathrm{d}t},\psi(t)\right\rangle
++\left\langle\phi(t),\frac{\mathrm{d}\psi}{\mathrm{d}t}\right\rangle.
+\]
+\end{exercise}
+
+\begin{exercise}\label{ex:finite-dimensional-commutator}
+设 \(A,B\) 是有限维 Hilbert 空间上的算子,且 \(AB-BA=cI\),其中 \(c\) 是常数.证明 \(c=0\).
+
+\begin{note}
+这说明式~\eqref{eq:canonical-commutation-one} 中的对易关系是一个纯粹的无限维现象.
+\end{note}
+\end{exercise}
+
+\begin{exercise}\label{ex:adjoint-commutator}
+设 \(A\) 是 Hilbert 空间 \(\mathcal{H}\) 上的有界算子.则存在唯一有界算子 \(A^{*}\),满足对所有 \(\phi,\psi\in\mathcal{H}\),
+\[
+\langle\phi,A\psi\rangle=\langle A^{*}\phi,\psi\rangle.
+\]
+算子 \(A^{*}\) 称为 \(A\) 的伴随;若 \(A^{*}=A\),则称 \(A\) 自伴.
+\begin{enumerate}
+\item 证明,对任意有界算子 \(A\) 和常数 \(c\in\mathbb{C}\),有
+\[
+(cA)^{*}=\overline c\,A^{*}.
+\]
+\item 证明,如果 \(A\) 和 \(B\) 自伴,则算子
+\[
+\frac{1}{i\hbar}[A,B]
+\]
+也是自伴的.
+\end{enumerate}
+\end{exercise}
+
+\begin{exercise}\label{ex:verify-expected-motion}
+利用命题~\ref{prop:expectation-evolution} 验证命题~\ref{prop:expected-position-momentum}.注意,算子 \(V'(X)\) 只是乘以函数 \(V'(x)\) 的算子.
+\end{exercise}
+
+\begin{exercise}\label{ex:position-variance}
+设 \(\psi\) 是 \(L^{2}(\mathbb{R})\) 中的单位向量,且 \(x\psi(x)\) 与 \(x^{2}\psi(x)\) 也属于 \(L^{2}(\mathbb{R})\).证明
+\[
+\langle X^{2}\rangle_{\psi}\ge\langle X\rangle_{\psi}^{2}.
+\]
+\begin{solution}
+考虑积分
+\[
+\int_{-\infty}^{\infty}(x-a)^{2}|\psi(x)|^{2}\,\mathrm{d}x,
+\qquad a=\langle X\rangle_{\psi}.
+\]
+将被积函数展开,并使用 \(\|\psi\|=1\),即可得到所需不等式.
+\end{solution}
+\end{exercise}
+
+\begin{exercise}\label{ex:harmonic-oscillator-ground}
+考虑量子谐振子的 Hamilton 算子
+\[
+\widehat H=-\frac{\hbar^{2}}{2m}\frac{\mathrm{d}^{2}}{\mathrm{d}x^{2}}+\frac{k}{2}x^{2},
+\]
+其中 \(k\) 是弹簧常数.证明函数
+\[
+\psi_{0}(x)=\exp\left(-\frac{\sqrt{km}}{2\hbar}x^{2}\right)
+\]
+是 \(\widehat H\) 的特征向量,特征值为 \(\hbar\omega/2\),其中 \(\omega:=\sqrt{k/m}\) 是经典振子的频率.
+\begin{note}
+第~11 章将详细研究 \(\widehat H\) 的特征向量和特征值.
+\end{note}
+\end{exercise}
+
+\begin{exercise}\label{ex:prove-heisenberg-equations}
+证明命题~\ref{prop:heisenberg-newton}.
+\begin{solution}
+证明 \([P(t),\widehat H]=([P,\widehat H])(t)\) 以及 \([X(t),\widehat H]=([X,\widehat H])(t)\),然后使用正则对易关系和乘积法则.
+\end{solution}
+\end{exercise}
+
+\begin{exercise}\label{ex:negative-box-energy}
+\begin{enumerate}
+\item 求解式~\eqref{eq:particle-box-ode} 在 \(E<0\) 时的一般解,并证明满足边界条件~\eqref{eq:particle-box-boundary} 的唯一解是恒等于零的解.
+\item 对 \(E=0\) 建立同样的结论.
+\end{enumerate}
+\end{exercise}
+
+\begin{exercise}\label{ex:box-integration-by-parts}
+\begin{enumerate}
+\item 设 \(\phi,\psi\) 是 \([0,L]\) 上满足边界条件~\eqref{eq:particle-box-boundary} 的光滑函数.利用分部积分,证明
+\[
+\langle\phi,\widehat H\psi\rangle=\langle\widehat H\phi,\psi\rangle,
+\]
+其中 \(\widehat H=-(\hbar^{2}/2m)\,\mathrm{d}^{2}/\mathrm{d}x^{2}\),且
+\[
+\langle\phi,\psi\rangle=\int_{0}^{L}\overline{\phi(x)}\psi(x)\,\mathrm{d}x.
+\]
+\item 证明,如果 \(\phi,\psi\) 是任意光滑函数而不满足边界条件,(a) 的结论会失败.
+\end{enumerate}
+\end{exercise}
+
+\begin{exercise}\label{ex:angular-momentum-commutators}
+设 \(\widehat J_{1},\widehat J_{2},\widehat J_{3}\) 是 \(\mathbb{R}^{3}\) 中粒子的角动量算子.利用正则对易关系~\eqref{eq:canonical-commutation-relations},证明
+\[
+\frac{1}{i\hbar}[\widehat J_{1},\widehat J_{2}]=\widehat J_{3},
+\qquad
+\frac{1}{i\hbar}[\widehat J_{2},\widehat J_{3}]=\widehat J_{1},
+\qquad
+\frac{1}{i\hbar}[\widehat J_{3},\widehat J_{1}]=\widehat J_{2}.
+\]
+这是经典力学中第~2 章练习~19 的量子对应物.
+\end{exercise}

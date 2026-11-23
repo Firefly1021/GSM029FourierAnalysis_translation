@@ -1,0 +1,194 @@
+\subsection{The Cauchy-Kovalevskaya Theorem}\label{sec:cauchy-kovalevskaya}
+
+The theorem of Cauchy and Kovalevskaya quite generally asserts the local existence of solutions to a system of partial differential equations with initial conditions on a noncharacteristic surface. The coefficients in the equations, the initial data and the surface on which they are prescribed are required to be analytic. This is a severe restriction which, in general, cannot be removed. Moreover, we shall see that the theorem does not distinguish between well-posed and ill-posed problems; it covers situations where a small change in the data leads to a large change in the solution. For these reasons, the theorem has little practical importance. Historically, however, it is the first existence theorem for a general class of PDEs and it is one of very few such theorems which can be proved without the tools of functional analysis.
+
+We shall state and prove the theorem for quasilinear first-order systems of the form
+\begin{equation}\label{eq:ck-intro-quasilinear-system}
+\dfrac{\partial u_i}{\partial x_n}=\sum_{k=1}^{n-1}\sum_{j=1}^Na_{ij}^k(\bm{p})\dfrac{\partial u_j}{\partial x_k}+b_i(\bm{p}),\qquad i=1,\ldots,N,
+\end{equation}
+where $\bm{p}$ stands for the vector $(x_1,\ldots,x_{n-1},u_1,\ldots,u_N)$, and the functions $a_{ij}^k$ and $b_i$ are assumed analytic. The initial conditions are
+\begin{equation}\label{eq:ck-intro-zero-initial-data}
+u_i=0\quad\text{on }x_n=0,\qquad i=1,\ldots,N.
+\end{equation}
+A general noncharacteristic initial-value problem for a system of PDEs can always be reduced to the form \eqref{eq:ck-intro-quasilinear-system}, \eqref{eq:ck-intro-zero-initial-data}; below we shall discuss the reduction algorithm in detail. We shall start the section by reviewing some basic facts about real analytic functions.
+
+\subsubsection{Real Analytic Functions}\label{subsec:real-analytic-functions}
+
+Analytic functions are functions which can be represented locally by power series. We shall use the multi-index notation introduced in the previous section and write the power series of a function of $n$ variables in the form
+\begin{equation}\label{eq:multivariable-power-series}
+f(\bm{x})=\sum_\alpha c_\alpha\bm{x}^{\alpha},
+\end{equation}
+where $\alpha=(\alpha_1,\ldots,\alpha_n)$ is a multi-index and $\bm{x}^{\alpha}$ has the meaning introduced in equation \eqref{eq:multi-index-monomial}.
+
+We note the following facts about power series:
+\begin{enumerate}
+\item Suppose that \eqref{eq:multivariable-power-series} converges absolutely for $\bm{x}=\bm{y}$, where all components of $\bm{y}$ are different from zero. Then it converges absolutely in the domain $D=\{\bm{x}\in\mathbb{R}^n\mid |x_i|<|y_i|,\ i=1,\ldots,n\}$ and it converges uniformly absolutely in any compact subset of $D$.
+\item In $D$, the power series \eqref{eq:multivariable-power-series} can be differentiated term by term. We shall obtain an estimate for the derivatives. Let $|x_i|\leq q|y_i|$ for $i=1,\ldots,n$, where $0\leq q<1$. We compute
+\begin{equation}\label{eq:power-series-termwise-derivative}
+D^\beta f(\bm{x})=\sum_{\alpha\geq\beta}c_\alpha D^\beta\bm{x}^{\alpha}=\sum_{\alpha\geq\beta}c_\alpha\dfrac{\alpha!}{(\alpha-\beta)!}\bm{x}^{\alpha-\beta},
+\end{equation}
+and hence
+\[
+\begin{aligned}
+|D^\beta f(\bm{x})|
+&\leq\sum_{\alpha\geq\beta}\dfrac{\alpha!}{(\alpha-\beta)!}|c_\alpha|q^{|\alpha-\beta|}|\bm{y}^{\alpha-\beta}|\\
+&\leq\dfrac1{|\bm{y}^{\beta}|}\sup_\alpha(|c_\alpha||\bm{y}^{\alpha}|)
+\sum_{\alpha\geq\beta}\dfrac{\alpha!}{(\alpha-\beta)!}q^{|\alpha-\beta|}.
+\end{aligned}
+\]
+We have (see Problem~\ref{ex:multi-index-geometric-series-identity})
+\begin{equation}\label{eq:multi-index-geometric-derivative-sum}
+\sum_{\alpha\geq\beta}\dfrac{\alpha!}{(\alpha-\beta)!}q^{|\alpha-\beta|}=\dfrac{\beta!}{(1-q)^{n+|\beta|}},
+\end{equation}
+and with
+\begin{equation}\label{eq:power-series-derivative-bound-constants}
+M=(1-q)^{-n}\sup_\alpha(|c_\alpha||\bm{y}^{\alpha}|),\qquad r=(1-q)\min_i|y_i|,
+\end{equation}
+we finally obtain
+\begin{equation}\label{eq:power-series-factorial-derivative-bound}
+|D^\beta f(\bm{x})|\leq M|\beta|!r^{-|\beta|}.
+\end{equation}
+\item We have
+\begin{equation}\label{eq:power-series-taylor-coefficients}
+c_\alpha=\dfrac1{\alpha!}D^\alpha f(\bm{0}).
+\end{equation}
+\end{enumerate}
+
+With these preliminaries we are ready to define real analytic functions.
+
+\begin{Definition}
+\label{def:real-analytic-function}
+Let $f$ be a real-valued function defined on the open set $\Omega\subseteq\mathbb{R}^n$. We call $f$ \textbf{real analytic} at $\bm{y}$ if there is a neighborhood of $\bm{y}$ within which $f$ can be represented as a Taylor series
+\begin{equation}\label{eq:real-analytic-local-taylor-series}
+f(\bm{x})=\sum_\alpha c_\alpha(\bm{x}-\bm{y})^\alpha.
+\end{equation}
+We say $f$ is real analytic in $\Omega$ if it is analytic at every point in $\Omega$.
+\end{Definition}
+
+Vector- or matrix-valued functions will be called analytic if their components are analytic. The symbol $C^\omega(\Omega)$ is used to denote the class of functions analytic in $\Omega$, whereas $C^\infty(\Omega)$ denotes functions which have derivatives of all orders. Obviously $C^\omega(\Omega)\subset C^\infty(\Omega)$. Like holomorphic functions of a single complex variable, analytic functions have a unique continuation property.
+
+\begin{Theorem}
+\label{thm:real-analytic-unique-continuation}
+Let $\Omega$ be a domain (i.e., an open connected set), and let $f$ and $g$ be analytic in $\Omega$. If, for some point $\bm{x}_0\in\Omega$, we have $D^\alpha f(\bm{x}_0)=D^\alpha g(\bm{x}_0)$ for every $\alpha$, then $f=g$ in $\Omega$.
+\end{Theorem}
+
+\begin{Proof}
+Let
+\begin{equation}\label{eq:analytic-identity-derivative-set}
+S=\{\bm{x}\in\Omega\mid D^\alpha f(\bm{x})=D^\alpha g(\bm{x})\ \forall\alpha\}.
+\end{equation}
+Then $S$ is the intersection of sets which are relatively closed in $\Omega$; hence $S$ is itself relatively closed. On the other hand, $S$ is also open, because if $\bm{y}\in S$, then the Taylor coefficients of $f$ and $g$ agree at the point $\bm{y}$, and hence $f=g$ in a neighborhood of $\bm{y}$. Since $\Omega$ is connected and, by assumption, $S\ne\emptyset$, we must have $S=\Omega$.
+\end{Proof}
+
+If $f$ is analytic at a point $\bm{y}$, then the derivatives of $f$ satisfy a bound of the form \eqref{eq:power-series-factorial-derivative-bound} in some neighborhood of $\bm{y}$. It turns out that this property characterizes real analytic functions.
+
+\begin{Definition}
+\label{def:factorial-derivative-class}
+Let $f$ be defined in a neighborhood of the point $\bm{y}$. For given positive numbers $M$ and $r$, we say that $f\in C_{M,r}(\bm{y})$ if $f$ is of class $C^\infty$ in a neighborhood of $\bm{y}$ and
+\begin{equation}\label{eq:factorial-derivative-class-bound}
+|D^\beta f(\bm{y})|\leq M|\beta|!r^{-|\beta|}\qquad\forall\beta.
+\end{equation}
+
+\end{Definition}
+
+The following equivalence holds.
+
+\begin{Theorem}
+\label{thm:factorial-bound-analytic-equivalence}
+Let $\Omega$ be an open set and let $f\in C^\infty(\Omega)$. Then $f\in C^\omega(\Omega)$ if and only if the following holds: For every compact set $S\subset\Omega$ there exist positive numbers $M$ and $r$ with $f\in C_{M,r}(\bm{y})$ for every $\bm{y}\in S$.
+\end{Theorem}
+
+\begin{Proof}
+If $f\in C^\omega(\Omega)$, then for every $\bm{y}\in\Omega$ we find a neighborhood $N(\bm{y})$ and numbers $M(\bm{y})$ and $r(\bm{y})$ such that \eqref{eq:factorial-derivative-class-bound} holds in $N(\bm{y})$. A finite number of these neighborhoods covers $S$, and it suffices to take the maximum of the $M$'s and the minimum of the $r$'s.
+
+For the converse, choose $\bm{x}\in\Omega$ and let $S$ be a closed ball of radius $s$ centered at $\bm{x}$, with $s$ chosen small enough so that $S\subset\Omega$. Let $M,r$ be the values for which $f\in C_{M,r}(\bm{y})$ for all $\bm{y}\in S$. We shall prove that
+\begin{equation}\label{eq:derivative-bound-taylor-representation}
+f(\bm{y})=\sum_\alpha\dfrac1{\alpha!}D^\alpha f(\bm{x})(\bm{y}-\bm{x})^\alpha,
+\end{equation}
+whenever $d:=\sum_{i=1}^n|y_i-x_i|<\min(r,s)$. For such a $\bm{y}$, we introduce the scalar function
+\begin{equation}\label{eq:analytic-proof-line-segment-function}
+\phi(t):=f(\bm{x}+t(\bm{y}-\bm{x})).
+\end{equation}
+We compute, for any integer $j\geq0$ and $0\leq t\leq1$,
+\[
+\begin{aligned}
+\left|\dfrac1{j!}\dfrac{\mathrm{d}^j}{\mathrm{d}t^j}\phi(t)\right|
+&=\left|\sum_{|\alpha|=j}\dfrac1{\alpha!}D^\alpha f(\bm{x}+t(\bm{y}-\bm{x}))(\bm{y}-\bm{x})^\alpha\right|\\
+&\leq\sum_{|\alpha|=j}M\dfrac{|\alpha|!}{\alpha!}r^{-|\alpha|}|(\bm{y}-\bm{x})^\alpha|\\
+&=Mr^{-j}d^j.
+\end{aligned}
+\]
+From Taylor's theorem, we find
+\begin{equation}\label{eq:analytic-proof-taylor-remainder}
+f(\bm{y})=\phi(1)=\sum_{k=0}^{j-1}\dfrac1{k!}\phi^{(k)}(0)+\dfrac1{j!}\phi^{(j)}(\tau_j),
+\end{equation}
+where $0\leq\tau_j\leq1$. The remainder term in \eqref{eq:analytic-proof-taylor-remainder} is bounded by $Mr^{-j}d^j$ and tends to zero for $d<r$. Hence \eqref{eq:derivative-bound-taylor-representation} follows.
+\end{Proof}
+
+Real analytic functions can also be characterized as restrictions of complex analytic functions. One direction is clear. If the Taylor series \eqref{eq:real-analytic-local-taylor-series} converges absolutely, say for $|\bm{x}-\bm{y}|<R$, it will still converge if the components of $\bm{x}$ are allowed to be complex. Thus every real analytic function can be extended into a subset of the complex plane, and since power series can be differentiated term by term, the extended function is differentiable. On the other hand, consider a differentiable function $f(\bm{z})$ of $n$ complex variables, defined in the neighborhood of the point $\bm{x}$, say in a domain including the set $S=\{\bm{z}\in\mathbb{C}^n\mid |z_i-x_i|\leq r,\ i=1,\ldots,n\}$. Choose $\bm{y}$ in the interior of $S$. By repeated application of Cauchy's formula for functions of a single complex variable, we find that
+\begin{equation}\label{eq:multivariable-cauchy-formula}
+\begin{aligned}
+f(\bm{y})&=(2\pi i)^{-n}\int_{\Gamma_1}\dfrac1{z_1-y_1}\int_{\Gamma_2}\dfrac1{z_2-y_2}\cdots\\
+&\qquad\int_{\Gamma_n}\dfrac1{z_n-y_n}f(\bm{z})\,\mathrm{d}z_n\,\mathrm{d}z_{n-1}\cdots\mathrm{d}z_1,
+\end{aligned}
+\end{equation}
+
+
+where $\Gamma_i$ is the positively oriented circle $z_i-x_i=r$. We now write
+\begin{equation}\label{eq:cauchy-kernel-geometric-factorization}
+\dfrac1{z_i-y_i}=\dfrac1{(z_i-x_i)\left(1-\dfrac{y_i-x_i}{z_i-x_i}\right)},
+\end{equation}
+and expand in a geometric series with respect to powers of $(y_i-x_i)/(z_i-x_i)$. By inserting this series in \eqref{eq:multivariable-cauchy-formula}, we obtain
+\begin{equation}\label{eq:complex-restriction-taylor-series}
+f(\bm{y})=\sum_\alpha c_\alpha(\bm{y}-\bm{x})^\alpha,
+\end{equation}
+where
+\begin{equation}\label{eq:complex-restriction-taylor-coefficients}
+\begin{aligned}
+c_\alpha&=(2\pi i)^{-n}\int_{\Gamma_1}\dfrac1{(z_1-x_1)^{1+\alpha_1}}\int_{\Gamma_2}\dfrac1{(z_2-x_2)^{1+\alpha_2}}\cdots\\
+&\qquad\int_{\Gamma_n}\dfrac1{(z_n-x_n)^{1+\alpha_n}}f(\bm{z})\,\mathrm{d}z_n\,\mathrm{d}z_{n-1}\cdots\mathrm{d}z_1.
+\end{aligned}
+\end{equation}
+
+
+The characterization of real analytic functions as restrictions of complex differentiable functions allows a simple proof of the implicit function theorem for real analytic functions.
+
+\begin{Theorem}
+\label{thm:real-analytic-implicit-function}
+Let the functions $F_i(x_1,\ldots,x_n,y_1,\ldots,y_m)$, $i=1,\ldots,m$, be real analytic at the point $(\bm{x}^0,\bm{y}^0)\in\mathbb{R}^n\times\mathbb{R}^m$. Assume that
+\begin{equation}\label{eq:analytic-implicit-function-hypothesis}
+\bm{F}(\bm{x}^0,\bm{y}^0)=0,\qquad\det\left(\dfrac{\partial F_i}{\partial y_j}\right)(\bm{x}^0,\bm{y}^0)\ne0.
+\end{equation}
+Then, in a neighborhood of the point $(\bm{x}^0,\bm{y}^0)$, the system $\bm{F}(\bm{x},\bm{y})=0$ has a unique solution $\hat{\bm{y}}(\bm{x})$ and the function $\hat{\bm{y}}(\bm{x})$ is real analytic at $\bm{x}^0$.
+\end{Theorem}
+
+By extending $\bm{x}$ and $\bm{y}$ to $\mathbb{C}^n$, the theorem is reduced to the implicit function theorem for differentiable functions, a generalization of Theorem~\ref{thm:implicit-function}.
+
+The characterization of analytic functions as differentiable functions of complex variables also implies that the composite of two analytic functions is analytic.
+
+\subsubsection{Majorization}\label{subsec:majorization}
+
+The proof of the Cauchy-Kovalevskaya theorem uses the method of majorization, which consists of comparing analytic functions with other functions which have larger Taylor coefficients, but can be given explicitly. We make the following definition.
+
+\begin{Definition}
+\label{def:analytic-majorization}
+Let $f$, $F$ be real analytic functions defined in a neighborhood of the origin of $\mathbb{R}^n$. Then we say that $f$ is \textbf{majorized} by $F$, $f\preceq F$ if $|D^\alpha f(\bm{0})|\leq D^\alpha F(\bm{0})$ for every $\alpha$.
+\end{Definition}
+
+\begin{Example}
+\label{ex:rational-analytic-majorant}
+If $f\in C_{M,r}(\bm{0})$, then $f$ is majorized by the function
+\begin{equation}\label{eq:analytic-rational-majorant}
+\phi(\bm{x})=\dfrac{Mr}{r-x_1-x_2-\cdots-x_n}.
+\end{equation}
+This is clear, since $D^\alpha\phi(\bm{0})=M|\alpha|!r^{-|\alpha|}$.
+\end{Example}
+
+We need the following result concerning composite functions.
+
+\begin{Theorem}
+\label{thm:majorization-under-composition}
+Let $\bm{f}$, $\bm{F}$ be vector-valued real analytic functions from a neighborhood of the origin in $\mathbb{R}^n$ into $\mathbb{R}^m$ such that $\bm{f}(\bm{0})=\bm{F}(\bm{0})=0$. Let $g$, $G$ be real analytic functions from a neighborhood of the origin in $\mathbb{R}^m$ into $\mathbb{R}$. Assume that $f_i\preceq F_i$ for $i=1,\ldots,m$ and $g\preceq G$. Then $g\circ\bm{f}\preceq G\circ\bm{F}$.
+\end{Theorem}
+
+The proof follows by noting that all derivatives of $g\circ\bm{f}$ can be expressed as polynomials involving derivatives of $g$ and $\bm{f}$. All these polynomials have positive coefficients. Hence they can be estimated by the corresponding polynomials involving derivatives of $G$ and $\bm{F}$.

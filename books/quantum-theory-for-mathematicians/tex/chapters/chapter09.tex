@@ -1,0 +1,880 @@
+\chapter{无界自伴算子}
+\label{chap:unbounded-selfadjoint}
+\index{本质自伴}
+\index{Kato--Rellich 定理}
+
+\section{引言}
+\label{sec:unbounded-introduction}
+
+量子力学中的大多数算子,包括表示位置、动量和能量的算子,并不定义在相关 Hilbert 空间的整个空间上,而只定义在其中的一个稠密子空间上.以位置算子为例,给定 \(\psi\in L^{2}(\mathbb{R})\),函数 \(X\psi(x)=x\psi(x)\) 很可能不属于 \(L^{2}(\mathbb{R})\).不过,所有使 \(x\psi(x)\) 仍属于 \(L^{2}(\mathbb{R})\) 的 \(\psi\) 组成的空间,在 \(L^{2}(\mathbb{R})\) 中是稠密的.与此密切相关的是,这些算子通常无界,即不存在常数 \(C\),使得对所有属于定义域的 \(\psi\) 都有
+\[
+\|A\psi\|\leq C\|\psi\|.
+\]
+由于算子无界,我们不能使用 BLT(有界线性变换)定理把它延拓到整个 Hilbert 空间.
+
+本章和下一章研究定义在 Hilbert 空间 \(\mathcal{H}\) 的稠密子空间上的无界算子.我们将介绍适用于无界算子、并且能使谱定理成立的“正确”自伴性概念.显然的候选定义
+\[
+\langle\phi,A\psi\rangle=\langle A\phi,\psi\rangle
+\]
+对定义域中的所有 \(\phi,\psi\) 成立,并不是正确的定义.相反,对任意无界算子 \(A\),我们将定义另一个无界算子 \(A^{*}\),它有自己的自然定义域;称 \(A\) 自伴,是指 \(A^{*}\) 与 \(A\) 作为具有相同定义域的算子相等.
+
+本章给出无界自伴算子的定义、自伴性条件、若干例子与反例.谱定理本身留到第~10 章.它的投影值测度形式和直积分形式与有界情形基本相同,只需对算子定义域作少量修改.若愿意暂时接受一些结论,也可以只阅读第~\ref{sec:adjoint-closure} 节中自伴与本质自伴算子的定义,再跳到第~\ref{sec:selfadjointness-criteria} 节的定理~\ref{thm:essential-selfadjoint-criterion} 和推论~\ref{cor:essential-selfadjoint-criterion}.
+
+\section{无界算子的伴随与闭包}
+\label{sec:adjoint-closure}
+
+回忆第~\ref{sec:operators-adjoints} 节的定义:Hilbert 空间 \(\mathcal{H}\) 上的无界算子 \(A\),是从某个稠密子空间 \(\operatorname{Dom}(A)\subset\mathcal{H}\)(称为 \(A\) 的定义域)到 \(\mathcal{H}\) 的线性映射.“无界”在这里表示“不必有界”,所以允许 \(\operatorname{Dom}(A)=\mathcal{H}\) 且 \(A\) 有界.
+
+若 \(A\) 有界,则对任意 \(\phi\),线性泛函 \(\langle\phi,A\mathord{\cdot}\rangle\) 有界.由 Riesz 定理(定理~\ref{app:thm:riesz}),存在唯一 \(\chi\),使
+\[
+\langle\phi,A\mathord{\cdot}\rangle=\langle\chi,\mathord{\cdot}\rangle.
+\]
+定义 \(A^{*}\phi=\chi\) 即得通常的伴随.若 \(A\) 无界,则 \(\langle\phi,A\mathord{\cdot}\rangle\) 不一定有界,但对某些向量仍可能有界.这导致如下定义.
+
+\begin{definition}[无界算子的伴随]\label{def:unbounded-adjoint-ch09}
+设 \(A\) 定义在稠密子空间 \(\operatorname{Dom}(A)\subset\mathcal{H}\) 上.令 \(\operatorname{Dom}(A^{*})\) 为所有满足以下条件的 \(\phi\in\mathcal{H}\) 组成的空间:线性泛函
+\[
+\psi\longmapsto\langle\phi,A\psi\rangle,qquad \psi\in\operatorname{Dom}(A),
+\]
+有界.对 \(\phi\in\operatorname{Dom}(A^{*})\),定义 \(A^{*}\phi\) 为唯一满足
+\[
+\langle\phi,A\psi\rangle=\langle A^{*}\phi,\psi\rangle,qquad \psi\in\operatorname{Dom}(A)
+\label{eq:unbounded-adjoint-def}
+\]
+的向量.
+\end{definition}
+
+这里“有界”明确表示存在常数 \(C\),使
+\[
+|\langle\phi,A\psi\rangle|\leq C\|\psi\|,qquad \psi\in\operatorname{Dom}(A).
+\]
+与有界情形一样,\(A^{*}\) 在其定义域上是线性的.等价地,若存在 \(\chi\) 使 \(\langle\phi,A\psi\rangle=\langle\chi,\psi\rangle\) 对所有 \(\psi\in\operatorname{Dom}(A)\) 成立,则 \(\phi\in\operatorname{Dom}(A^{*})\) 且 \(A^{*}\phi=\chi\).由 Riesz 定理,这正好等价于上述有界性条件.
+
+给定稠密定义的算子 \(A\),其伴随 \(A^{*}\) 可能不是稠密定义的.不过,对实际应用中常见的算子,这种病态情形通常不会发生.
+
+\begin{definition}[对称算子]\label{def:symmetric-unbounded}
+若无界算子 \(A\) 满足
+\[
+\langle\phi,A\psi\rangle=\langle A\phi,\psi\rangle
+\label{eq:symmetric-unbounded}
+\]
+对所有 \(\phi,\psi\in\operatorname{Dom}(A)\) 成立,则称 \(A\) 为对称算子.
+\end{definition}
+
+\begin{definition}[算子的延拓]\label{def:operator-extension}
+若无界算子 \(A,B\) 满足 \(\operatorname{Dom}(A)\supset\operatorname{Dom}(B)\),且 \(A=B\) 在 \(\operatorname{Dom}(B)\) 上成立,则称 \(A\) 是 \(B\) 的延拓.
+\end{definition}
+
+延拓算子通常由与原算子相同的“公式”给出,只是定义域更大.例如在 \(L^{2}(\mathbb{R})\) 上,两个算子都可能由 \(-i\hbar\,\mathrm{d}/\mathrm{d}x\) 给出,但若定义域不同,它们仍是不同的算子.
+
+\begin{proposition}[对称性与伴随]\label{prop:symmetric-adjoint-extension}
+无界算子 \(A\) 对称,当且仅当 \(A^{*}\) 是 \(A\) 的延拓.
+\end{proposition}
+
+\begin{proof}
+若 \(A\) 对称,则对 \(\phi,\psi\in\operatorname{Dom}(A)\),由式~\eqref{eq:symmetric-unbounded} 和 Cauchy--Schwarz 不等式,
+\[
+|\langle\phi,A\psi\rangle|=|\langle A\phi,\psi\rangle|
+\leq\|A\phi\|\,\|\psi\|.
+\]
+所以 \(\phi\in\operatorname{Dom}(A^{*})\),且由定义 \(A^{*}\phi=A\phi\).因此 \(A^{*}\) 延拓 \(A\).反之,若 \(A^{*}\) 延拓 \(A\),则对 \(\phi,\psi\in\operatorname{Dom}(A)\),
+\[
+\langle\phi,A\psi\rangle=\langle A^{*}\phi,\psi\rangle=\langle A\phi,\psi\rangle.
+\]
+故 \(A\) 对称.
+\end{proof}
+
+\begin{definition}[自伴算子]\label{def:unbounded-selfadjoint}
+无界算子 \(A\) 称为自伴的,是指
+\[
+\operatorname{Dom}(A^{*})=\operatorname{Dom}(A),
+\]
+并且对所有 \(\phi\in\operatorname{Dom}(A)\),有 \(A^{*}\phi=A\phi\).
+\end{definition}
+
+换言之,自伴算子是满足 \(A^{*}=A\) 的算子,其中等号必须同时包含定义域相等.每个自伴算子都是对称的,但有许多对称算子不是自伴的.由命题~\ref{prop:symmetric-adjoint-extension},对称算子自伴,当且仅当 \(\operatorname{Dom}(A^{*})=\operatorname{Dom}(A)\).困难就在于证明伴随的定义域没有更大.
+
+\begin{definition}[闭算子与可闭算子]\label{def:closed-closable-operator}
+若算子 \(A\) 的图
+\[
+\operatorname{Graph}(A):=\{(\psi,A\psi):\psi\in\operatorname{Dom}(A)\}
+\]
+是 \(\mathcal{H}\times\mathcal{H}\) 中的闭集,则称 \(A\) 为闭算子.若图的闭包仍是某个函数的图,则称 \(A\) 可闭,并把其图等于 \(\operatorname{Graph}(A)\) 闭包的算子记为 \(A^{\mathrm{cl}}\),称为 \(A\) 的闭包.
+\end{definition}
+
+具体地,\(A\) 闭,当且仅当:若 \(\psi_{n}\in\operatorname{Dom}(A)\),\(\psi_{n}\to\psi\),且 \(A\psi_{n}\to\phi\),则 \(\psi\in\operatorname{Dom}(A)\) 且 \(A\psi=\phi\).算子不可闭,当且仅当其图的闭包含有两个形如 \((\phi,\psi)\) 和 \((\phi,\chi)\) 的元素,且 \(\psi\neq\chi\).等价地,算子可闭,当且仅当存在某个闭延拓;此时闭包是最小的闭延拓.
+
+闭包扫除了算子定义域选择中的一部分任意性.例如在 \(L^{2}(\mathbb{R})\) 上考虑 \(-i\hbar\,\mathrm{d}/\mathrm{d}x\),可以取紧支集光滑函数、Schwartz 空间,或满足 \(\psi,\psi'\in L^{2}\) 的连续可微函数作为定义域.这三种选择给出同一个闭包.这里并不是说每种定义域都会给出相同闭包,而是许多自然选择确实如此.
+
+\begin{definition}[本质自伴算子]\label{def:essentially-selfadjoint}
+若 \(A\) 对称且可闭,并且其闭包 \(A^{\mathrm{cl}}\) 自伴,则称 \(A\) 本质自伴.
+\end{definition}
+
+对称算子实际上总是可闭的;许多对称算子甚至不是本质自伴的.本章第~\ref{sec:counterexample-unbounded} 节和第~\ref{sec:second-counterexample} 节将给出例子.
+
+\section{伴随与闭算子的初等性质}
+\label{sec:elementary-unbounded-properties}
+
+本节列出伴随与闭包的基本性质.下文中说两个算子“相同”,是指它们有相同的定义域,并且在该共同定义域上相等.
+
+\begin{proposition}[伴随的闭性与对称算子的可闭性]\label{prop:adjoint-closed-symmetric-closable}
+\begin{enumerate}
+\item 无界算子 \(A\) 的伴随 \(A^{*}\) 的图在 \(\mathcal{H}\times\mathcal{H}\) 中是闭的(无论 \(A^{*}\) 是否稠密定义);
+\item 对称算子总是可闭的.
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+设 \(\psi_{n}\in\operatorname{Dom}(A^{*})\),\(\psi_{n}\to\psi\),且 \(A^{*}\psi_{n}\to\phi\).对任意 \(\chi\in\operatorname{Dom}(A)\),
+\[
+\langle\psi,A\chi\rangle
+=\lim_{n\to\infty}\langle\psi_{n},A\chi\rangle
+=\lim_{n\to\infty}\langle A^{*}\psi_{n},\chi\rangle
+=\langle\phi,\chi\rangle.
+\]
+故 \(\psi\in\operatorname{Dom}(A^{*})\) 且 \(A^{*}\psi=\phi\),从而 \(A^{*}\) 闭.若 \(A\) 对称,则 \(A^{*}\) 延拓 \(A\),而刚才证明了 \(A^{*}\) 闭,所以 \(A\) 有闭延拓,因而可闭.
+\end{proof}
+
+\begin{corollary}[处处定义的对称算子有界]\label{cor:everywhere-defined-symmetric-bounded}
+若对称算子 \(A\) 满足 \(\operatorname{Dom}(A)=\mathcal{H}\),则 \(A\) 有界.
+\end{corollary}
+
+\begin{proof}
+由命题~\ref{prop:adjoint-closed-symmetric-closable},\(A\) 可闭;定义域已经是整个 \(\mathcal{H}\),所以闭包仍是 \(A\).于是 \(A\) 是定义在整个 Hilbert 空间上的闭算子,闭图定理(定理~\ref{app:thm:closed-graph})说明 \(A\) 有界.
+\end{proof}
+
+\begin{proposition}[闭包的伴随]\label{prop:closure-adjoint}
+若 \(A\) 可闭,则 \((A^{\mathrm{cl}})^{*}=A^{*}\).
+\end{proposition}
+
+\begin{proof}
+若 \(\psi\in\operatorname{Dom}((A^{\mathrm{cl}})^{*})\),存在 \(\phi\) 使 \(\langle\psi,A^{\mathrm{cl}}\chi\rangle=\langle\phi,\chi\rangle\) 对所有 \(\chi\in\operatorname{Dom}(A^{\mathrm{cl}})\) 成立.由于 \(A^{\mathrm{cl}}\) 延拓 \(A\),可得 \(\psi\in\operatorname{Dom}(A^{*})\),且两者在此定义域上一致.
+
+反过来,若 \(\psi\in\operatorname{Dom}(A^{*})\),存在 \(\phi\) 使 \(\langle\psi,A\chi\rangle=\langle\phi,\chi\rangle\) 对所有 \(\chi\in\operatorname{Dom}(A)\) 成立.取 \(\xi\in\operatorname{Dom}(A^{\mathrm{cl}})\),并令 \(A^{\mathrm{cl}}\xi=\eta\).存在 \(\chi_{n}\in\operatorname{Dom}(A)\),使 \(\chi_{n}\to\xi\)、\(A\chi_{n}\to\eta\).令 \(n\to\infty\),得到 \(\langle\psi,\eta\rangle=\langle\phi,\xi\rangle\),故 \(\psi\in\operatorname{Dom}((A^{\mathrm{cl}})^{*})\) 且 \((A^{\mathrm{cl}})^{*}\psi=\phi\).
+\end{proof}
+
+\begin{proposition}[本质自伴算子的唯一自伴延拓]\label{prop:unique-selfadjoint-extension}
+若 \(A\) 本质自伴,则 \(A^{\mathrm{cl}}\) 是 \(A\) 的唯一自伴延拓.
+\end{proposition}
+
+\begin{proof}
+设 \(B\) 是 \(A\) 的自伴延拓.自伴算子必闭,所以 \(B\) 延拓 \(A^{\mathrm{cl}}\).由伴随定义,\(\operatorname{Dom}(B^{*})\subset\operatorname{Dom}(A^{\mathrm{cl}})\).因此
+\[
+\operatorname{Dom}(B^{*})\subset\operatorname{Dom}(A^{\mathrm{cl}})\subset\operatorname{Dom}(B).
+\]
+由于 \(B\) 自伴,三者相等,故 \(B=A^{\mathrm{cl}}\).
+\end{proof}
+
+\begin{proposition}[无界算子的值域与伴随核]\label{prop:unbounded-range-kernel}
+对任意无界算子 \(A\),有
+\[
+\operatorname{Range}(A)^{\perp}=\ker(A^{*}).
+\]
+\end{proposition}
+
+\begin{proof}
+若 \(\psi\in\operatorname{Range}(A)^{\perp}\),则 \(\langle\psi,A\phi\rangle=0\) 对所有 \(\phi\in\operatorname{Dom}(A)\) 成立,因此该泛函有界,且 \(\psi\in\operatorname{Dom}(A^{*})\)、\(A^{*}\psi=0\).反之,若 \(\psi\in\operatorname{Dom}(A^{*})\) 且 \(A^{*}\psi=0\),则 \(\langle\psi,A\phi\rangle=0\),所以 \(\psi\) 与 \(A\) 的值域正交.
+\end{proof}
+
+\begin{proposition}[加有界算子后的伴随]\label{prop:adjoint-bounded-perturbation}
+设 \(A\) 是无界算子,\(B\) 是定义在整个 \(\mathcal{H}\) 上的有界算子.令 \(A+B\) 的定义域为 \(\operatorname{Dom}(A)\),并令 \((A+B)\psi=A\psi+B\psi\).则
+\[
+\operatorname{Dom}((A+B)^{*})=\operatorname{Dom}(A^{*}),
+\]
+且对所有 \(\psi\in\operatorname{Dom}(A^{*})\),
+\[
+(A+B)^{*}\psi=A^{*}\psi+B^{*}\psi.
+\]
+特别地,无界自伴算子与定义在整个空间上的有界自伴算子之和,在无界算子的定义域上自伴.
+\end{proposition}
+
+\begin{proof}
+见练习~\ref{ex:adjoint-sum-bounded}.
+\end{proof}
+
+\begin{proposition}[下界估计与闭值域]\label{prop:closed-range-unbounded}
+设 \(A\) 是闭算子,\(\lambda\in\mathbb{C}\).若存在 \(\varepsilon>0\),使得对所有 \(\psi\in\operatorname{Dom}(A)\),
+\[
+\|(A-\lambda I)\psi\|\geq\varepsilon\|\psi\|,
+\label{eq:unbounded-lower-bound}
+\]
+则 \(A-\lambda I\) 的值域是 \(\mathcal{H}\) 的闭子空间.
+\end{proposition}
+
+\begin{proof}
+设 \(\phi_{n}=(A-\lambda I)\psi_{n}\) 且 \(\phi_{n}\to\phi\).由式~\eqref{eq:unbounded-lower-bound},\(\psi_{n}\) 是 Cauchy 列,故 \(\psi_{n}\to\psi\).于是
+\[
+A\psi_{n}=\lambda\psi_{n}+\phi_{n}\to\lambda\psi+\phi.
+\]
+由于 \(A\) 闭,\(\psi\in\operatorname{Dom}(A)\),且 \(A\psi=\lambda\psi+\phi\).所以 \((A-\lambda I)\psi=\phi\),值域闭.
+\end{proof}
+
+\begin{example}[对角无界算子]\label{ex:diagonal-unbounded-operator}
+设 \(\{e_{j}\}\) 是 \(\mathcal{H}\) 的标准正交基,\(\{\lambda_{j}\}\) 是任意实数列.令 \(A\) 的定义域为所有有限个 \(e_{j}\) 的线性组合,并令 \(Ae_{j}=\lambda_{j}e_{j}\).则 \(A\) 对称且可闭,并且
+\[
+\operatorname{Dom}(A^{*})=\operatorname{Dom}(A^{\mathrm{cl}})=V,
+\]
+其中
+\[
+V=\left\{\psi=\sum_{j}a_{j}e_{j}:\sum_{j}(1+\lambda_{j}^{2})|a_{j}|^{2}<\infty\right\}.
+\label{eq:diagonal-domain}
+\]
+对 \(\psi=\sum_{j}a_{j}e_{j}\in V\),
+\[
+A^{*}\psi=A^{\mathrm{cl}}\psi=\sum_{j}a_{j}\lambda_{j}e_{j}.
+\label{eq:diagonal-closure}
+\]
+因此 \((A^{\mathrm{cl}})^{*}=A^{*}=A^{\mathrm{cl}}\),说明 \(A\) 本质自伴.
+\end{example}
+
+\begin{proof}
+若 \(\psi=\sum a_{j}e_{j}\in V\),则对定义域中的有限和 \(\chi=\sum b_{j}e_{j}\),
+\[
+\langle\psi,A\chi\rangle=\sum_{j}\overline{a_{j}}\lambda_{j}b_{j},
+\]
+由 Cauchy--Schwarz 不等式可知这是关于 \(\chi\) 的有界泛函,且伴随由式~\eqref{eq:diagonal-closure} 给出.反过来,若 \(\psi=\sum a_{j}e_{j}\in\operatorname{Dom}(A^{*})\),取
+\[
+\chi_{N}=\sum_{j=1}^{N}\lambda_{j}a_{j}e_{j},
+\]
+由伴随泛函的有界性可知 \(\sum_{j}\lambda_{j}^{2}|a_{j}|^{2}\) 有界,故 \(\psi\in V\).
+
+若 \(\psi\in V\),取有限和 \(\psi_{N}=\sum_{j=1}^{N}a_{j}e_{j}\),则 \(\psi_{N}\to\psi\),且 \(A\psi_{N}\to\sum a_{j}\lambda_{j}e_{j}\),所以 \(\psi\in\operatorname{Dom}(A^{\mathrm{cl}})\).反过来,赋予 \(V\) 范数
+\[
+\|\psi\|_{V}^{2}=\sum_{j}(1+\lambda_{j}^{2})|a_{j}|^{2}
+\]
+后,\(V\) 是 Banach 空间.若 \(\psi_{m}\in\operatorname{Dom}(A)\),且 \(\psi_{m},A\psi_{m}\) 都收敛,则 \(\psi_{m}\) 在 \(V\) 中 Cauchy,极限属于 \(V\).这说明闭包的定义域不超出 \(V\),从而得到结论.
+\end{proof}
+
+\section{无界算子的谱}
+\label{sec:unbounded-spectrum}
+
+对无界算子 \(A\),若存在有界算子 \(B\),满足:对所有 \(\psi\in\mathcal{H}\),\(B\psi\in\operatorname{Dom}(A)\) 且 \((A-\lambda I)B\psi=\psi\),并且对所有 \(\psi\in\operatorname{Dom}(A)\),\(B(A-\lambda I)\psi=\psi\),则称 \(\lambda\) 属于 \(A\) 的预解集;否则称其属于谱.这里 \(\operatorname{Dom}(A-\lambda I)=\operatorname{Dom}(A)\).
+
+若 \(A\psi=\lambda\psi\) 且 \(\psi\neq0\),则 \(A-\lambda I\) 不单射,故 \(\lambda\in\sigma(A)\).但谱中的点不必是特征值.
+
+\begin{definition}[无界算子的谱与预解集]\label{def:unbounded-spectrum}
+设 \(A\) 是无界算子.若存在有界算子 \(B\),满足
+\[
+(A-\lambda I)B=I\quad\text{在 }\mathcal{H}\text{ 上},
+\qquad
+B(A-\lambda I)=I\quad\text{在 }\operatorname{Dom}(A)\text{ 上},
+\]
+则称 \(\lambda\) 属于预解集;否则称其属于谱.
+\end{definition}
+
+\begin{theorem}[自伴算子的谱为实数]\label{thm:unbounded-selfadjoint-real-spectrum}
+若 \(A\) 是无界自伴算子,则 \(\sigma(A)\subset\mathbb{R}\).
+\end{theorem}
+
+\begin{proof}
+设 \(\lambda=a+ib\),\(b\neq0\).由于 \(A\) 对称,引理~\ref{lem:selfadjoint-resolvent-estimate} 的证明只需对称性即可给出
+\[
+\|(A-\lambda I)\psi\|^{2}\geq b^{2}\|\psi\|^{2},\qquad \psi\in\operatorname{Dom}(A).
+\]
+所以 \(A-\lambda I\) 单射.又由命题~\ref{prop:unbounded-range-kernel} 和命题~\ref{prop:adjoint-bounded-perturbation},
+\[
+\operatorname{Range}(A-\lambda I)^{\perp}
+=\ker((A-\lambda I)^{*})
+=\ker(A^{*}-\overline{\lambda}I)
+=\ker(A-\overline{\lambda}I)=\{0\}.
+\]
+值域稠密.由于 \(A=A^{*}\) 闭,利用命题~\ref{prop:closed-range-unbounded} 可知值域闭,因而等于整个 \(\mathcal{H}\).逆算子由上述估计有界,所以 \(\lambda\) 属于预解集.
+\end{proof}
+
+\begin{proposition}[无界自伴算子的谱刻画]\label{prop:unbounded-spectrum-characterization}
+若 \(A\) 是无界自伴算子,则:
+\begin{enumerate}
+\item \(\lambda\in\mathbb{R}\) 属于 \(\sigma(A)\),当且仅当存在非零 \(\psi_{n}\in\operatorname{Dom}(A)\),使
+\[
+\lim_{n\to\infty}\frac{\|(A-\lambda I)\psi_{n}\|}{\|\psi_{n}\|}=0;
+\label{eq:unbounded-almost-eigenvalue}
+\]
+\item \(\sigma(A)\) 是 \(\mathbb{R}\) 的闭子集.
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+第一点的一个方向与命题~\ref{prop:selfadjoint-spectrum-characterization} 相同:若存在这样的向量列,则 \(A-\lambda I\) 不可能有有界逆.反之,若不存在,则存在 \(\varepsilon>0\),使
+\[
+\|(A-\lambda I)\psi\|\geq\varepsilon\|\psi\|.
+\]
+于是值域闭;由于 \((A-\lambda I)^{*}=A-\lambda I\) 且算子单射,命题~\ref{prop:unbounded-range-kernel} 说明值域等于 \(\mathcal{H}\),逆有界,故 \(\lambda\) 不在谱中.第二点见练习~\ref{ex:unbounded-spectrum-closed}.
+\end{proof}
+
+\begin{definition}[非负与有下界算子]\label{def:unbounded-bounded-below}
+若无界算子 \(A\) 满足 \(\langle\psi,A\psi\rangle\geq0\) 对所有 \(\psi\in\operatorname{Dom}(A)\) 成立,则称其非负.若存在 \(c\in\mathbb{R}\),使
+\[
+\langle\psi,A\psi\rangle\geq c\|\psi\|^{2}
+\]
+对所有定义域中的 \(\psi\) 成立,则称 \(A\) 以 \(c\) 为下界.
+\end{definition}
+
+\begin{proposition}[有下界自伴算子的谱]\label{prop:unbounded-spectrum-below}
+若无界自伴算子 \(A\) 非负,则 \(\sigma(A)\subset[0,\infty)\).更一般地,若 \(A\) 以 \(c\) 为下界,则 \(\sigma(A)\subset[c,\infty)\).
+\end{proposition}
+
+\begin{proof}
+设 \(A\) 以 \(c\) 为下界,\(\lambda\in\sigma(A)\),取式~\eqref{eq:unbounded-almost-eigenvalue} 中归一化的向量列.则
+\[
+\langle\psi_{n},(A-\lambda I)\psi_{n}\rangle\to0.
+\]
+由于 \(\langle\psi_{n},A\psi_{n}\rangle=\lambda+\langle\psi_{n},(A-\lambda I)\psi_{n}\rangle\),左端极限必须是 \(\lambda\).而下界条件给出 \(\langle\psi_{n},A\psi_{n}\rangle\geq c\),所以 \(\lambda\geq c\).
+\end{proof}
+
+\section{自伴与本质自伴的条件}
+\label{sec:selfadjointness-criteria}
+
+\begin{theorem}[本质自伴性的判据]\label{thm:essential-selfadjoint-criterion}
+对称算子 \(A\) 本质自伴,当且仅当 \(\operatorname{Range}(A-iI)\) 和 \(\operatorname{Range}(A+iI)\) 在 \(\mathcal{H}\) 中稠密.
+\end{theorem}
+
+\begin{corollary}[用伴随的核刻画本质自伴性]\label{cor:essential-selfadjoint-criterion}
+对称算子 \(A\) 本质自伴,当且仅当 \(A^{*}+iI\) 和 \(A^{*}-iI\) 在 \(\operatorname{Dom}(A^{*})\) 上都是单射.
+\end{corollary}
+
+\begin{proof}[定理~\ref{thm:essential-selfadjoint-criterion} 的证明]
+若 \(A\) 本质自伴,则 \(A^{\mathrm{cl}}\) 自伴,且由命题~\ref{prop:closure-adjoint},\(A^{*}=(A^{\mathrm{cl}})^{*}=A^{\mathrm{cl}}\).由定理~\ref{thm:unbounded-selfadjoint-real-spectrum},\(A^{\mathrm{cl}}+iI\) 与 \(A^{\mathrm{cl}}-iI\) 的核为零.故
+\[
+\operatorname{Range}(A-iI)^{\perp}=\ker(A^{*}+iI)=\{0\},
+\]
+另一值域同理稠密.
+
+反之,假设两个值域都稠密.由于 \((A^{\mathrm{cl}})^{*}=A^{*}\) 是 \(A\) 的闭延拓,它也是 \(A^{\mathrm{cl}}\) 的延拓,所以 \(A^{\mathrm{cl}}\) 对称.对它使用引理~\ref{lem:selfadjoint-resolvent-estimate} 在 \(\lambda=i\) 时的估计,得到
+\[
+\|(A^{\mathrm{cl}}-iI)\psi\|^{2}\geq\|\psi\|^{2}.
+\]
+因此 \(A^{\mathrm{cl}}-iI\) 单射,且值域闭;原来 \(A-iI\) 的值域稠密,所以闭包的值域也稠密,故等于 \(\mathcal{H}\).同理 \(A^{\mathrm{cl}}+iI\) 满射.
+
+由命题~\ref{prop:adjoint-bounded-perturbation},\((A^{\mathrm{cl}}-iI)^{*}=(A^{\mathrm{cl}})^{*}+iI\) 延拓 \(A^{\mathrm{cl}}+iI\).若这是严格延拓,由于 \(A^{\mathrm{cl}}+iI\) 已满射,前者不可能单射;于是 \((A^{\mathrm{cl}})^{*}+iI=A^{*}+iI=(A-iI)^{*}\) 有非零核,与 \(\operatorname{Range}(A-iI)\) 稠密矛盾.因此两者定义域相同,\(A^{\mathrm{cl}}\) 自伴.
+\end{proof}
+
+\begin{proposition}[自伴性的判据]\label{prop:selfadjoint-range-criterion}
+对称算子 \(A\) 自伴,当且仅当
+\[
+\operatorname{Range}(A-iI)=\operatorname{Range}(A+iI)=\mathcal{H}.
+\]
+\end{proposition}
+
+\begin{proof}
+若 \(A\) 自伴,由定理~\ref{thm:essential-selfadjoint-criterion} 值域稠密;估计
+\[
+\|(A\mp iI)\psi\|^{2}\geq\|\psi\|^{2}
+\]
+及命题~\ref{prop:closed-range-unbounded} 说明值域闭,故为整个空间.反之,若两个值域都是整个空间,则 \(A\) 本质自伴.若 \(A^{*}\) 是 \(A\) 的严格延拓,则 \(A^{*}-iI\) 不单射;但同一估计对自伴算子 \(A^{*}\) 成立,矛盾.因此 \(A=A^{*}\).
+\end{proof}
+
+\begin{theorem}[非负对称算子的判据]\label{thm:nonnegative-essential-selfadjoint}
+设对称算子 \(A\) 满足 \(\langle\psi,A\psi\rangle\geq0\) 对所有定义域中的 \(\psi\) 成立.则 \(A\) 本质自伴,当且仅当 \(A+I\) 的值域稠密;等价地,当且仅当 \(A^{*}+I\) 单射.
+\end{theorem}
+
+\begin{proof}
+若 \(A\) 本质自伴,则 \(A^{\mathrm{cl}}\) 仍非负,且
+\[
+\langle\psi,(A^{\mathrm{cl}}+I)\psi\rangle
+\geq\|\psi\|^{2}.
+\]
+因此 \(A^{*}+I=(A^{\mathrm{cl}}+I)\) 单射,由命题~\ref{prop:unbounded-range-kernel},\(\operatorname{Range}(A+I)\) 稠密.
+
+反之,若 \(A+I\) 值域稠密,上述估计及命题~\ref{prop:closed-range-unbounded} 说明 \(A^{\mathrm{cl}}+I\) 满射.若 \(\operatorname{Dom}(A^{*})\) 严格大于 \(\operatorname{Dom}(A^{\mathrm{cl}})\),则 \(A^{*}+I\) 不单射,进而 \(\operatorname{Range}(A+I)\) 不稠密,矛盾.因此 \(A^{\mathrm{cl}}\) 自伴.
+\end{proof}
+
+\begin{example}[有标准正交特征向量基的对称算子]\label{ex:symmetric-orthonormal-eigenbasis}
+设对称算子 \(A\) 有一组标准正交特征向量基 \(\{e_{j}\}\),即 \(e_{j}\in\operatorname{Dom}(A)\),且 \(Ae_{j}=\lambda_{j}e_{j}\),其中 \(\lambda_{j}\in\mathbb{R}\).则 \(A\) 本质自伴.
+\end{example}
+
+\begin{proof}
+对每个 \(j\),\((A-iI)e_{j}=(\lambda_{j}-i)e_{j}\),因为 \(\lambda_{j}\) 实,\(e_{j}\) 的非零倍数属于 \(\operatorname{Range}(A-iI)\).故该值域稠密;\(A+iI\) 同理.使用定理~\ref{thm:essential-selfadjoint-criterion}.
+\end{proof}
+
+\begin{example}[Hilbert 空间直和中的算子]\label{ex:direct-sum-essential-selfadjoint}
+设
+\[
+\mathcal{H}=\bigoplus_{j=1}^{\infty}\mathcal{H}_{j},
+\]
+其中每个 \(\mathcal{H}_{j}\) 可分,且 \(A_{j}\) 是 \(\mathcal{H}_{j}\) 上的有界自伴算子.令 \(A\) 是定义在包含有限直和的子空间上的对称算子,且 \(A|_{\mathcal{H}_{j}}=A_{j}\).定义
+\[
+V=\left\{\psi=(\psi_{1},\psi_{2},\ldots):\sum_{j=1}^{\infty}\bigl(\|\psi_{j}\|^{2}+\|A_{j}\psi_{j}\|^{2}\bigr)<\infty\right\}.
+\]
+则 \(A\) 本质自伴,且
+\[
+\operatorname{Dom}(A^{\mathrm{cl}})=\operatorname{Dom}(A^{*})=V,
+\qquad
+A^{\mathrm{cl}}\psi=A^{*}\psi=(A_{1}\psi_{1},A_{2}\psi_{2},\ldots).
+\]
+\end{example}
+
+\begin{proof}
+每个 \(A_{j}\mp iI\) 的值域在 \(\mathcal{H}_{j}\) 中稠密,因此 \(A\mp iI\) 的值域闭包包含每个 \(\mathcal{H}_{j}\),从而在 \(\mathcal{H}\) 中稠密.定理~\ref{thm:essential-selfadjoint-criterion} 给出本质自伴性.定义域的计算可先限制到有限直和,再用命题~\ref{prop:adjoint-closed-symmetric-closable} 和 Cauchy--Schwarz 不等式逐分量计算;所得条件正是 \(V\).
+\end{proof}
+
+\section{一个反例}
+\label{sec:counterexample-unbounded}
+
+取 Hilbert 空间 \(L^{2}([0,1])\).令 \(\operatorname{Dom}(A)\) 为满足 \(\psi(0)=\psi(1)=0\) 的连续可微函数空间,并定义
+\[
+A\psi=-i\hbar\frac{\mathrm{d}\psi}{\mathrm{d}x}.
+\]
+
+\begin{proposition}[有限区间上的错误边界条件]\label{prop:finite-interval-counterexample}
+上述算子 \(A\) 对称但不是本质自伴的.
+\end{proposition}
+
+\begin{proof}
+分部积分给出
+\[
+\int_{0}^{1}\overline{\phi(x)}\psi'(x)\,\mathrm{d}x
+=\overline{\phi(1)}\psi(1)-\overline{\phi(0)}\psi(0)
+-\int_{0}^{1}\overline{\phi'(x)}\psi(x)\,\mathrm{d}x.
+\]
+边界条件使第一、二项为零,故 \(A\) 对称.
+
+若 \(\psi\in\operatorname{Dom}(A^{\mathrm{cl}})\),则存在 \(\psi_{n}\in\operatorname{Dom}(A)\),使 \(\psi_{n}\to\psi\) 且 \(A\psi_{n}\) 收敛.由于导数在 \(L^{2}\) 中收敛,可由把函数写成导数的积分看出 \(\psi_{n}\) 一致收敛.因此 \(\operatorname{Dom}(A^{\mathrm{cl}})\) 中的每个函数连续且在两个端点为零.
+
+另一方面,每个连续可微函数都属于 \(\operatorname{Dom}(A^{*})\),且
+\[
+A^{*}\phi=-i\hbar\phi'.
+\]
+其中有许多函数不在端点消失.因此 \(A^{\mathrm{cl}}\) 与 \((A^{\mathrm{cl}})^{*}=A^{*}\) 的定义域不同,\(A\) 不是本质自伴.
+\end{proof}
+
+方程 \(A\psi=\lambda\psi\) 的一般解为 \(\psi(x)=ce^{i\lambda x/\hbar}\),只有 \(c=0\) 才能满足两个边界条件,所以 \(A\) 没有特征向量.相反,若仍使用公式 \(-i\hbar\,\mathrm{d}/\mathrm{d}x\),但取满足 \(\psi(0)=\psi(1)\) 的定义域,则 \(e^{2\pi inx}\)(\(n\in\mathbb{Z}\))组成特征向量标准正交基,特征值为 \(2\pi\hbar n\),对应算子本质自伴.
+
+\section{一个本质自伴的例子}
+\label{sec:essential-selfadjoint-example}
+
+令 \(C_{c}^{\infty}(\mathbb{R})\) 为紧支集光滑函数空间.
+
+\begin{proposition}[实轴上的动量算子]\label{prop:momentum-essential-selfadjoint}
+令 \(P\) 的定义域为 \(C_{c}^{\infty}(\mathbb{R})\subset L^{2}(\mathbb{R})\),并令
+\[
+P\psi=-i\hbar\frac{\mathrm{d}\psi}{\mathrm{d}x}.
+\]
+则 \(P\) 本质自伴.
+\end{proposition}
+
+\begin{proof}
+使用推论~\ref{cor:essential-selfadjoint-criterion}.若 \(\psi\in\ker(P^{*}+iI)\),则在分布意义下
+\[
+-i\hbar\psi'=-i\psi,
+\qquad \psi'=\frac{1}{\hbar}\psi.
+\]
+所以 \(\psi(x)=ce^{x/\hbar}\).它只有在 \(c=0\) 时属于 \(L^{2}(\mathbb{R})\).同理,\(\ker(P^{*}-iI)=\{0\}\).故 \(P\) 本质自伴.
+\end{proof}
+
+\section{量子力学的基本算子}
+\label{sec:basic-unbounded-operators}
+
+\begin{proposition}[势能乘法算子]\label{prop:unbounded-potential-selfadjoint}
+设 \(V:\mathbb{R}^{n}\to\mathbb{R}\) 可测.定义
+\[
+\operatorname{Dom}(V(X)):=\{\psi\in L^{2}(\mathbb{R}^{n}):V(x)\psi(x)\in L^{2}(\mathbb{R}^{n})\},
+\]
+并令 \([V(X)\psi](x)=V(x)\psi(x)\).则定义域在 \(L^{2}(\mathbb{R}^{n})\) 中稠密,且 \(V(X)\) 在该定义域上自伴.
+\end{proposition}
+
+\begin{proof}
+令 \(E_{m}=\{x:|V(x)|<m\}\).则 \(\bigcup_{m}E_{m}=\mathbb{R}^{n}\),且 \(\psi\mathbf{1}_{E_{m}}\in\operatorname{Dom}(V(X))\).由支配收敛,\(\psi\mathbf{1}_{E_{m}}\to\psi\),故定义域稠密.由于 \(V\) 实值,算子对称.
+
+若 \(\phi\in\operatorname{Dom}(V(X)^{*})\),则 \(\langle\phi,V\psi\rangle\) 是关于 \(\psi\) 的有界泛函,所以存在 \(\chi\in L^{2}\),使
+\[
+\int\overline{\phi(x)}V(x)\psi(x)\,\mathrm{d}x
+=\int\overline{\chi(x)}\psi(x)\,\mathrm{d}x.
+\]
+取 \(\psi=(V\phi-\chi)\mathbf{1}_{E_{m}}\),得到 \(V\phi=\chi\) 几乎处处,故 \(\phi\in\operatorname{Dom}(V(X))\).所以伴随定义域与原定义域相同.
+\end{proof}
+
+\begin{corollary}[位置算子的自伴性]\label{cor:position-selfadjoint}
+位置算子 \(X_{j}\) 在
+\[
+\operatorname{Dom}(X_{j})=\{\psi\in L^{2}(\mathbb{R}^{n}):x_{j}\psi(x)\in L^{2}(\mathbb{R}^{n})\}
+\]
+上自伴.
+\end{corollary}
+
+\begin{proposition}[动量算子的自伴域]\label{prop:momentum-selfadjoint-domain}
+对 \(j=1,\ldots,n\),令
+\[
+\operatorname{Dom}(P_{j})
+=\{\psi\in L^{2}(\mathbb{R}^{n}):k_{j}\widehat\psi(k)\in L^{2}(\mathbb{R}^{n})\},
+\]
+并定义
+\[
+P_{j}\psi=\mathcal{F}^{-1}(\hbar k_{j}\widehat\psi(k)).
+\]
+则 \(P_{j}\) 在该定义域上自伴.
+\end{proposition}
+
+该定义域也可以描述为所有分布导数 \(\partial\psi/\partial x_{j}\) 属于 \(L^{2}\) 的 \(\psi\).对这样的 \(\psi\),
+\[
+P_{j}\psi=-i\hbar\frac{\partial\psi}{\partial x_{j}}
+\]
+(导数按分布意义理解).这是 Fourier 变换把微分变成乘法的直接结果,结合命题~\ref{prop:unbounded-potential-selfadjoint} 与 Fourier 变换的酉性即可证明.
+
+\begin{lemma}[Fourier 变换与分布导数]\label{lem:fourier-distribution-derivative}
+若 \(\psi\in L^{2}(\mathbb{R}^{n})\),且 \(\partial\psi/\partial x_{j}\) 在分布意义下等于 \(L^{2}\) 函数 \(\phi\),则
+\[
+\widehat\phi(k)=ik_{j}\widehat\psi(k),
+\]
+从而 \(k_{j}\widehat\psi\in L^{2}\).反之,若 \(k_{j}\widehat\psi\in L^{2}\),则分布导数等于 \(\mathcal{F}^{-1}(ik_{j}\widehat\psi)\).
+\end{lemma}
+
+\begin{proof}
+由分布导数定义、Fourier 变换的酉性及其微分性质,对任意 \(\chi\in C_{c}^{\infty}(\mathbb{R}^{n})\),
+\[
+\langle\chi,\phi\rangle
+=-\left\langle\frac{\partial\chi}{\partial x_{j}},\psi\right\rangle
+=-\langle ik_{j}\widehat\chi,\widehat\psi\rangle.
+\]
+写成积分并利用测试函数的稠密性,得到 \(\widehat\phi=ik_{j}\widehat\psi\) 几乎处处.反向同理.
+\end{proof}
+
+\begin{proposition}[Laplacian 的自伴性]\label{prop:laplacian-selfadjoint}
+令
+\[
+\operatorname{Dom}(\Delta)=\{\psi\in L^{2}(\mathbb{R}^{n}):|k|^{2}\widehat\psi(k)\in L^{2}(\mathbb{R}^{n})\}
+\]
+并定义
+\[
+\Delta\psi=-\mathcal{F}^{-1}(|k|^{2}\widehat\psi(k)).
+\label{eq:laplacian-fourier-domain}
+\]
+则 \(\Delta\) 在该定义域上自伴.该定义域也可描述为分布意义下 \(\Delta\psi\in L^{2}\) 的函数空间.动能算子 \(-\hbar^{2}\Delta/(2m)\) 在同一定义域上自伴且非负.
+\end{proposition}
+
+证明与命题~\ref{prop:momentum-selfadjoint-domain} 极其相似.注意,具有奇点的函数不能简单地在奇点之外计算 Laplacian.例如 \(\mathbb{R}^{3}\setminus\{0\}\) 上的 \(1/|x|\) 是调和函数,但它在分布意义下的 Laplacian 不是零,而是 \(\delta\) 函数的非零倍数.类似地,
+\[
+\phi(x)=\frac{e^{-|x|^{2}}}{|x|}
+\]
+在 \(\mathbb{R}^{3}\setminus\{0\}\) 上函数本身及其逐点 Laplacian 都平方可积,却不属于 \(\operatorname{Dom}(\Delta)\).
+
+\begin{proposition}[径向奇点的 Laplacian 判据]\label{prop:radial-laplacian-domain}
+设 \(\psi(x)=g(x)f(|x|)\),其中 \(g\) 是 \(\mathbb{R}^{n}\) 上光滑函数,\(f\) 是 \((0,\infty)\) 上光滑函数.若
+\[
+\lim_{r\to0^{+}}r^{n-1}f(r)=0,
+\qquad
+\lim_{r\to0^{+}}r^{n-1}f'(r)=0,
+\]
+且 \(\psi,\Delta\psi\) 在 \(\mathbb{R}^{n}\setminus\{0\}\) 上平方可积,则 \(\psi\in\operatorname{Dom}(\Delta)\).
+\end{proposition}
+
+\begin{proof}
+对任意 \(\chi\in C_{c}^{\infty}\),取包含 \(\chi\) 支集的大立方体,并从中挖去以原点为中心、边长为 \(\varepsilon\) 的小立方体.在剩余区域上对每个坐标方向分部积分两次.边界项分别含有 \(\overline\psi\,\partial\chi/\partial x_{j}\) 与 \((\partial\overline\psi/\partial x_{j})\chi\),而小立方体面的面积为 \(\varepsilon^{n-1}\).上述两个极限条件保证边界项在 \(\varepsilon\to0\) 时消失;由平方可积性,体积分收敛到整个空间的积分.因此
+\[
+\langle\psi,\Delta\chi\rangle=\langle\Delta\psi,\chi\rangle,
+\]
+分布 Laplacian 正是忽略原点后的逐点 Laplacian.由命题~\ref{prop:laplacian-selfadjoint} 得结论.
+\end{proof}
+
+\section{自伴算子之和}
+\label{sec:sums-selfadjoint}
+
+势能算子 \(V(X)\) 和动能算子 \(-\hbar^{2}\Delta/(2m)\) 都已经在自然的稠密定义域上自伴.要构造 Schrödinger 算子,只需形式上把二者相加,但两个无界自伴算子之和可能既不是自伴,甚至也不是本质自伴.
+
+\begin{definition}[无界算子之和]\label{def:unbounded-sum}
+若 \(A,B\) 是无界算子,定义
+\[
+\operatorname{Dom}(A+B):=\operatorname{Dom}(A)\cap\operatorname{Dom}(B),
+\qquad
+(A+B)\psi=A\psi+B\psi.
+\]
+\end{definition}
+
+\begin{theorem}[Kato--Rellich 定理]\label{thm:kato-rellich}
+设 \(A,B\) 是无界自伴算子,\(\operatorname{Dom}(A)\subset\operatorname{Dom}(B)\),并存在正数 \(a,b\),其中 \(a<1\),使得
+\[
+\|B\psi\|\leq a\|A\psi\|+b\|\psi\|,
+\label{eq:kato-rellich-bound}
+\]
+对所有 \(\psi\in\operatorname{Dom}(A)\) 成立.则 \(A+B\) 在 \(\operatorname{Dom}(A)\) 上自伴,并在任何使 \(A\) 本质自伴的 \(\operatorname{Dom}(A)\) 子空间上本质自伴.若 \(A\) 非负,则 \(A+B\) 的谱以下界 \(-b/(1-a)\).
+\end{theorem}
+
+\begin{proof}
+取足够大的 \(\mu>0\),使 \(a+b/\mu<1\).对 \(\psi\in\operatorname{Dom}(A)\),
+\[
+(A+B+i\mu I)\psi
+=\left[B(A+i\mu I)^{-1}+I\right](A+i\mu I)\psi.
+\]
+由练习~\ref{ex:unbounded-resolvent-estimates},
+\[
+\|B(A+i\mu I)^{-1}\psi\|
+\leq\left(a+\frac{b}{\mu}\right)\|\psi\|<\|\psi\|.
+\]
+所以 \(I+B(A+i\mu I)^{-1}\) 可逆.又 \(A+i\mu I\) 从定义域映到整个空间,故 \(A+B+i\mu I\) 满射;负号同理.由练习~\ref{ex:scaled-selfadjoint-criterion},\(A+B\) 自伴.
+
+若 \(A\) 非负,取 \(\lambda>0\) 代替 \(i\mu\).相同估计给出
+\[
+\|B(A+\lambda I)^{-1}\|\leq a+b/\lambda.
+\]
+若 \(\lambda>b/(1-a)\),则 \(A+B+\lambda I\) 满射.它是自伴的,且命题~\ref{prop:unbounded-range-kernel} 说明其核为零,所以可逆,\(-\lambda\) 属于预解集.故谱包含于 \([-b/(1-a),\infty)\).本定理关于本质自伴性的最后结论见练习~\ref{ex:kato-rellich-essential-domain}.
+\end{proof}
+
+\begin{theorem}[低维 Schrödinger 算子的自伴性]\label{thm:schrodinger-selfadjoint-L2-potential}
+设 \(n\leq3\),且 \(V:\mathbb{R}^{n}\to\mathbb{R}\) 可测,可写成 \(V=V_{1}+V_{2}\),其中 \(V_{1}\in L^{2}(\mathbb{R}^{n})\),\(V_{2}\) 有界.则
+\[
+\widehat H=-\frac{\hbar^{2}}{2m}\Delta+V(X)
+\]
+在 \(\operatorname{Dom}(\Delta)\) 上自伴,且有下界.
+\end{theorem}
+
+\begin{proof}
+对 \(A=-\hbar^{2}\Delta/(2m)\)、\(B=V(X)\) 应用 Kato--Rellich 定理.对 \(\psi\in\operatorname{Dom}(\Delta)\),练习~\ref{ex:laplacian-continuity} 给出对任意 \(\varepsilon>0\) 存在 \(c_{\varepsilon}\),使
+\[
+\sup_{x}|\psi(x)|\leq\varepsilon\|\Delta\psi\|+c_{\varepsilon}\|\psi\|.
+\]
+于是
+\[
+\|V\psi\|
+\leq\|V_{1}\|_{2}\sup|\psi|+\|V_{2}\|_{\infty}\|\psi\|
+\leq\varepsilon\|V_{1}\|_{2}\|\Delta\psi\|
++(c_{\varepsilon}\|V_{1}\|_{2}+\|V_{2}\|_{\infty})\|\psi\|.
+\]
+选择 \(\varepsilon\) 使第一项系数小于 1,即得结论.
+\end{proof}
+
+\begin{theorem}[低维 Schrödinger 算子的本质自伴性]\label{thm:schrodinger-essential-selfadjoint}
+设 \(n\leq3\),且 \(V=V_{1}+V_{2}+V_{3}\),其中 \(V_{1}\in L^{2}\)、\(V_{2}\) 有界,\(V_{3}\) 非负且局部平方可积.则 \(-\hbar^{2}\Delta/(2m)+V(X)\) 在 \(C_{c}^{\infty}(\mathbb{R}^{n})\) 上本质自伴.
+\end{theorem}
+
+本定理的证明超出本书范围;见文献~[34] 第二卷定理 X.29.注意 \(V_{3}\) 只需非负且局部平方可积,它在无穷远处可以任意快地趋于 \(+\infty\).
+
+\begin{proposition}[线性位置动量组合]\label{prop:linear-position-momentum-essential}
+固定 \(a,b\in\mathbb{R}^{n}\),令
+\[
+(a\cdot X+b\cdot P)\psi(x)
+=(a\cdot x)\psi(x)-i\hbar\sum_{j=1}^{n}b_{j}\frac{\partial\psi}{\partial x_{j}}.
+\]
+则该算子在 \(C_{c}^{\infty}(\mathbb{R}^{n})\) 上本质自伴.
+\end{proposition}
+
+证明可像命题~\ref{prop:momentum-essential-selfadjoint} 一样,通过显式求解 \(A^{*}\psi=\pm i\psi\) 并证明不存在非零平方可积解.若 \(b\neq0\),经旋转坐标可令 \(b=\alpha e_{1}\)、\(a=\beta e_{1}+\gamma e_{2}\),方程化为一阶分布微分方程;其解包含一个关于 \(x_{1}\) 的指数因子,该因子不可能平方可积,故解只能为零.
+
+\section{另一个反例}
+\label{sec:second-counterexample}
+
+考虑
+\[
+\widehat H=\frac{P^{2}}{2m}-X^{4}
+\]
+在 \(C_{c}^{\infty}(\mathbb{R})\) 上的限制.它是对称的,但不是本质自伴.与之相反,\(P^{2}/(2m)+X^{4}\) 由定理~\ref{thm:schrodinger-essential-selfadjoint} 本质自伴.
+
+\begin{theorem}[负四次势的反例]\label{thm:negative-quartic-counterexample}
+令 \(\widehat H\) 的定义域为 \(C_{c}^{\infty}(\mathbb{R})\),并令
+\[
+\widehat H=-\frac{\hbar^{2}}{2m}\frac{\mathrm{d}^{2}}{\mathrm{d}x^{2}}-x^{4}.
+\]
+则 \(\widehat H\) 不是本质自伴.
+\end{theorem}
+
+取 \(\alpha>0\),令
+\[
+p(x)=\sqrt{2m(x^{4}+i\alpha)}
+\]
+(平方根取第一象限的分支),并定义
+\[
+\psi_{\alpha}(x)=\frac{1}{\sqrt{p(x)}}
+\exp\left(\frac{i}{\hbar}\int_{0}^{x}p(y)\,\mathrm{d}y\right).
+\label{eq:negative-quartic-approx-eigenvector}
+\]
+
+\begin{lemma}[负四次势的近似特征向量]\label{lem:negative-quartic-approx}
+函数 \(\psi_{\alpha}\in L^{2}(\mathbb{R})\),且
+\[
+-\frac{\hbar^{2}}{2m}\psi_{\alpha}''-x^{4}\psi_{\alpha}\in L^{2}(\mathbb{R}).
+\]
+此外,
+\[
+\left(-\frac{\hbar^{2}}{2m}\frac{\mathrm{d}^{2}}{\mathrm{d}x^{2}}-x^{4}-i\alpha\right)\psi_{\alpha}(x)
+=-\frac{\hbar^{2}}{2m}\,m_{\alpha}(x)\psi_{\alpha}(x),
+\]
+其中
+\[
+m_{\alpha}(x)=\frac{5}{4}\frac{x^{6}}{(x^{4}+i\alpha)^{2}}-\frac{x^{2}}{x^{4}+i\alpha}.
+\]
+\end{lemma}
+
+\begin{proof}
+对大 \(y\),
+\[
+\sqrt{y^{4}+i\alpha}=y^{2}\left(1+\frac{i\alpha}{2y^{4}}+O(y^{-8})\right),
+\]
+所以 \(\int_{0}^{x}p(y)\,\mathrm{d}y\) 的虚部在 \(|x|\to\infty\) 时有界,指数因子有界,因而 \(\psi_{\alpha}\) 平方可积.对式~\eqref{eq:negative-quartic-approx-eigenvector} 求两次导数,利用 \(p(x)^{2}=2m(x^{4}+i\alpha)\),可得所述等式;因子 \(p(x)^{-1/2}\) 正是为了抵消二阶求导产生的两个项.
+\end{proof}
+
+\begin{proof}[定理~\ref{thm:negative-quartic-counterexample} 的证明]
+若 \(\widehat H\) 本质自伴,则 \(\widehat H^{*}\) 自伴,从而对所有定义域中的 \(\psi\) 及实数 \(\alpha\),有
+\[
+\| (\widehat H^{*}-i\alpha I)\psi\|^{2}
+\geq\alpha^{2}\|\psi\|^{2}.
+\]
+引理~\ref{lem:negative-quartic-approx} 说明 \(\psi_{\alpha}\in\operatorname{Dom}(\widehat H^{*})\).又存在与 \(\alpha\geq1\) 无关的常数 \(C\),使 \(|m_{\alpha}(x)|\leq C\).因此对充分大的 \(\alpha\),
+\[
+\|(\widehat H^{*}-i\alpha I)\psi_{\alpha}\|^{2}
+\leq\frac{\hbar^{4}}{4m^{2}}C^{2}\|\psi_{\alpha}\|^{2}
+<\alpha^{2}\|\psi_{\alpha}\|^{2},
+\]
+矛盾.
+\end{proof}
+
+\section{练习}
+\label{sec:chapter9-exercises}
+
+\begin{exercise}[不可闭算子的判据]\label{ex:not-closable-graph}
+证明无界算子 \(A\) 不可闭,当且仅当其图的闭包包含形如 \((0,\psi)\) 的元素,其中 \(\psi\neq0\).
+\end{exercise}
+
+\begin{exercise}[不可闭的取值算子]\label{ex:not-closable-evaluation}
+在 \(L^{2}([0,1])\) 上令 \(\operatorname{Dom}(A)=C([0,1])\),并定义 \(Af=f(0)\mathbf{1}\).证明 \(A\) 不可闭.
+\end{exercise}
+
+\begin{exercise}[有界扰动的伴随]\label{ex:adjoint-sum-bounded}
+证明命题~\ref{prop:adjoint-bounded-perturbation}.
+\end{exercise}
+
+\begin{exercise}[无界自伴谱的闭性]\label{ex:unbounded-spectrum-closed}
+设无界自伴算子 \(A\) 的谱中数列 \(\lambda_{n}\) 收敛到 \(\lambda\in\mathbb{R}\).使用命题~\ref{prop:unbounded-spectrum-characterization} 的第一点证明 \(\lambda\in\sigma(A)\).
+\end{exercise}
+
+\begin{exercise}[闭算子的核]\label{ex:closed-kernel}
+证明闭算子的核是闭子空间.
+\end{exercise}
+
+\begin{exercise}[图范数]\label{ex:graph-norm-banach}
+设 \(A\) 闭.对 \(\operatorname{Dom}(A)\) 定义
+\[
+\|\psi\|_{1}:=\|\psi\|+\|A\psi\|.
+\]
+证明 \(\operatorname{Dom}(A)\) 关于此范数是 Banach 空间.
+\end{exercise}
+
+\begin{exercise}[延拓与伴随]\label{ex:extension-adjoint-properties}
+设 \(A\) 是无界算子.
+\begin{enumerate}[label=(\alph*)]
+\item 证明若 \(A\) 对称,则 \(A^{\mathrm{cl}}\) 也对称;
+\item 证明若 \(B\) 延拓 \(A\),则 \(A^{*}\) 延拓 \(B^{*}\);
+\item 设 \(A\) 自伴,且 \(B\) 延拓 \(A\).证明若 \(B\) 对称,则 \(\operatorname{Dom}(A)=\operatorname{Dom}(B)\).
+\end{enumerate}
+\end{exercise}
+
+\begin{exercise}[缩放后的自伴性判据]\label{ex:scaled-selfadjoint-criterion}
+固定正实数 \(\mu\).证明:对称算子 \(A\) 自伴,当且仅当 \(\operatorname{Range}(A+i\mu I)=\operatorname{Range}(A-i\mu I)=\mathcal{H}\);本质自伴,当且仅当这两个值域都稠密.
+\end{exercise}
+
+\begin{exercise}[有限区间反例的谱]\label{ex:finite-interval-adjoint-spectrum}
+设 \(A\) 是第~\ref{sec:counterexample-unbounded} 节中的算子.使用引理~\ref{prop:finite-interval-counterexample} 的证明,证明对每个 \(\lambda\in\mathbb{C}\),存在 \(\psi\in\operatorname{Dom}(A^{*})\) 使 \(A^{*}\psi=\lambda\psi\).推出 \(A^{\mathrm{cl}}\) 的谱是整个 \(\mathbb{C}\).
+\end{exercise}
+
+\begin{exercise}[闭包中的边界条件]\label{ex:finite-interval-closure-boundary}
+设 \(A\) 是第~\ref{sec:counterexample-unbounded} 节中的算子.若 \(\psi\in\operatorname{Dom}(A^{\mathrm{cl}})\),存在 \(\psi_{n}\in\operatorname{Dom}(A)\),使 \(\psi_{n}\to\psi\) 且 \(A\psi_{n}\to\chi\).证明:
+\begin{enumerate}[label=(\alph*)]
+\item \(\psi_{n}(x)=\langle\mathbf{1}_{[0,x]},\psi_{n}\rangle\),并写出它与 \(A\psi_{n}\) 的关系;
+\item \(\psi_{n}\) 一致收敛到 \(\psi(x)=\langle i\mathbf{1}_{[0,x]},\chi\rangle\);
+\item \(\psi\) 连续且 \(\psi(0)=\psi(1)=0\).
+\end{enumerate}
+\end{exercise}
+
+\begin{exercise}[半直线上的动量算子]\label{ex:halfline-momentum-adjoint}
+取 \(\mathcal{H}=L^{2}((0,\infty))\),令 \(A=-i\,\mathrm{d}/\mathrm{d}x\),定义域为支集包含于 \((0,\infty)\) 的光滑函数.证明 \(A\) 对称,且 \(A^{*}+iI\) 单射而 \(A^{*}-iI\) 不单射.
+\end{exercise}
+
+\begin{exercise}[分布导数的反向命题]\label{ex:distributional-derivative-converse}
+证明引理~\ref{lem:fourier-distribution-derivative} 的反向部分.
+\end{exercise}
+
+\begin{exercise}[三维中的 Coulomb 奇点]\label{ex:coulomb-laplacian-distribution}
+设 \(\chi\) 是 \(\mathbb{R}^{3}\) 上光滑径向函数,\(|x|<1\) 时 \(\chi=1\),\(|x|>2\) 时 \(\chi=0\),且 \(1<|x|<2\) 时 \(\partial\chi/\partial r<0\).证明
+\[
+\int_{\mathbb{R}^{3}}\frac{1}{|x|}\Delta\chi(x)\,\mathrm{d}x<0,
+\]
+从而 \(1/|x|\) 的分布 Laplacian 不为零.
+\end{exercise}
+
+\begin{exercise}[Laplacian 定义域的连续性]\label{ex:laplacian-continuity}
+假设 \(n\leq3\),并令 \(\operatorname{Dom}(\Delta)\) 如命题~\ref{prop:laplacian-selfadjoint} 所定义.
+\begin{enumerate}[label=(\alph*)]
+\item 证明每个 \(\psi\in\operatorname{Dom}(\Delta)\) 连续,且存在常数 \(c_{1},c_{2}\),使
+\[
+|\psi(x)|\leq c_{1}\|\psi\|+c_{2}\||k|^{9/5}\widehat\psi\|.
+\]
+\emph{提示:}将 \(\widehat\psi\) 写成两个 \(L^{2}\) 函数的乘积,证明其属于 \(L^{1}\).
+\item 证明对任意 \(\varepsilon>0\),存在 \(c_{\varepsilon}\),使
+\[
+|\psi(x)|\leq c_{\varepsilon}\|\psi\|+\varepsilon\|\Delta\psi\|.
+\]
+\end{enumerate}
+\end{exercise}
+
+\begin{exercise}[动量平方与 Laplacian 的定义域]\label{ex:momentum-square-domain}
+令 \(\operatorname{Dom}(P_{j}^{2})\) 为所有属于 \(\operatorname{Dom}(P_{j})\) 且 \(P_{j}\psi\in\operatorname{Dom}(P_{j})\) 的 \(\psi\).证明
+\[
+\bigcap_{j=1}^{n}\operatorname{Dom}(P_{j}^{2})=\operatorname{Dom}(\Delta).
+\]
+\end{exercise}
+
+\begin{exercise}[紧支集动量算子的本质自伴性]\label{ex:compact-momentum-adjoint-domain}
+令 \(Q_{j}\) 为动量算子 \(P_{j}\) 在 \(C_{c}^{\infty}(\mathbb{R}^{n})\) 上的限制.证明 \(\operatorname{Dom}(Q_{j}^{*})=\operatorname{Dom}(P_{j})\),推出 \(Q_{j}\) 本质自伴.
+\end{exercise}
+
+\begin{exercise}[无界预解算子估计]\label{ex:unbounded-resolvent-estimates}
+设 \(A\) 是无界自伴算子,\(\mu\neq0\) 为实数.
+\begin{enumerate}[label=(\alph*)]
+\item 证明 \(\|(A+i\mu I)^{-1}\|\leq1/|\mu|\);
+\item 证明对所有 \(\psi\in\mathcal{H}\),
+\[
+\|\psi\|^{2}=\|A(A+i\mu I)^{-1}\psi\|^{2}+\mu^{2}\|(A+i\mu I)^{-1}\psi\|^{2},
+\]
+推出 \(\|A(A+i\mu I)^{-1}\|\leq1\).
+\end{enumerate}
+\end{exercise}
+
+\begin{exercise}[非负算子的正实预解估计]\label{ex:nonnegative-resolvent-estimates}
+设 \(A\) 无界自伴且非负,\(\lambda>0\).证明
+\[
+\|(A+\lambda I)^{-1}\|\leq1/\lambda,
+\]
+并证明
+\[
+\|\psi\|^{2}\geq\|A(A+\lambda I)^{-1}\psi\|^{2}+\lambda^{2}\|(A+\lambda I)^{-1}\psi\|^{2}.
+\]
+推出 \(\|A(A+\lambda I)^{-1}\|<1\).
+\end{exercise}
+
+\begin{exercise}[Kato--Rellich 的本质自伴性]\label{ex:kato-rellich-essential-domain}
+证明定理~\ref{thm:kato-rellich} 关于本质自伴定义域的最后结论.
+
+\emph{提示:}若 \(A\) 在 \(\operatorname{Dom}(A)\) 上自伴,且 \(V\subset\operatorname{Dom}(A)\) 是稠密子空间,则 \(A\) 在 \(V\) 上本质自伴,当且仅当 \(A|_{V}\) 的闭包等于 \(A\).
+\end{exercise}
+
+\begin{exercise}[线性位置算子]\label{ex:linear-position-essential}
+令 \(A=b\cdot X\) 在 \(C_{c}^{\infty}(\mathbb{R}^{n})\) 上定义,其中 \(b\in\mathbb{R}^{n}\).
+\begin{enumerate}[label=(\alph*)]
+\item 由无界算子伴随的定义证明 \(\operatorname{Dom}(A^{*})\) 是所有满足 \((b\cdot x)\psi(x)\in L^{2}\) 的 \(\psi\);
+\item 使用命题~\ref{prop:unbounded-potential-selfadjoint},证明 \(A\) 本质自伴.
+\end{enumerate}
+\end{exercise}
+
+\begin{exercise}[分布的零偏导数]\label{ex:distribution-zero-derivative}
+\begin{enumerate}[label=(\alph*)]
+\item 证明 \(\phi\in C_{c}^{\infty}(\mathbb{R}^{n})\) 可写成 \(\phi=\partial\chi/\partial x_{1}\)(\(\chi\in C_{c}^{\infty}\)),当且仅当对所有 \((x_{2},\ldots,x_{n})\),
+\[
+\int_{-\infty}^{\infty}\phi(x_{1},x_{2},\ldots,x_{n})\,\mathrm{d}x_{1}=0.
+\]
+\item 取 \(\gamma\in C_{c}^{\infty}(\mathbb{R})\),且 \(\int\gamma=1\).证明每个 \(\phi\in C_{c}^{\infty}(\mathbb{R}^{n})\) 都可写为
+\[
+\phi(x)=f(x_{2},\ldots,x_{n})\gamma(x_{1})+\frac{\partial\chi}{\partial x_{1}},
+\]
+其中 \(f\) 是沿 \(x_{1}\) 积分所得的紧支集光滑函数.
+\item 若分布 \(T\) 满足 \(\partial T/\partial x_{1}=0\),定义 \(\mathbb{R}^{n-1}\) 上的分布 \(c\) 为
+\[
+c(f)=T(f(x_{2},\ldots,x_{n})\gamma(x_{1})).
+\]
+证明对所有测试函数 \(\phi\),有 \(T(\phi)=c(\widetilde\phi)\),其中 \(\widetilde\phi\) 是沿 \(x_{1}\) 的积分.
+\end{enumerate}
+\end{exercise}
+
+\begin{exercise}[负四次势反例的直接验证]\label{ex:negative-quartic-direct}
+令 \(\widehat H\) 和 \(\psi_{\alpha}\) 如定理~\ref{thm:negative-quartic-counterexample} 与引理~\ref{lem:negative-quartic-approx}.证明
+\[
+\langle\psi_{\alpha},\widehat H^{*}\psi_{\alpha}\rangle
+\neq\langle\widehat H^{*}\psi_{\alpha},\psi_{\alpha}\rangle.
+\]
+\end{exercise}

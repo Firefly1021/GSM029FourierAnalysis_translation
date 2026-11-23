@@ -1,0 +1,100 @@
+\subsubsection{分布的卷积}\label{subsec:distribution-convolution}
+
+设 $f$ 和 $g$ 为 $\mathbb{R}^m$ 上在无穷远处快速衰减的连续函数. 那么有以下恒等式:
+\begin{equation}\label{eq:convolution-test-pairing-integral-identity}
+\begin{aligned}
+(f*g,\phi)&=\int_{\mathbb{R}^m}(f*g)(\bm{x})\phi(\bm{x})\,\mathrm{d}\bm{x}\\
+&=\int_{\mathbb{R}^m}\int_{\mathbb{R}^m}f(\bm{x}-\bm{y})g(\bm{y})\phi(\bm{x})\,\mathrm{d}\bm{x}\,\mathrm{d}\bm{y}\\
+&=\int_{\mathbb{R}^m}\int_{\mathbb{R}^m}f(\bm{x})g(\bm{y})\phi(\bm{x}+\bm{y})\,\mathrm{d}\bm{x}\,\mathrm{d}\bm{y}.
+\end{aligned}
+\end{equation}
+将用这一恒等式作为两个分布的卷积的定义.
+
+\begingroup
+\RenewDocumentEnvironment{Definition}{g}
+{
+    \refstepcounter{statement}
+    {\sffamily\bfseries\color{PageColor}\fontsize{10.95}{13.2}\selectfont
+     \textquotedbl Definition\textquotedbl~\thestatement
+     \IfValueT{#1}{{\mdseries\ (#1)}}\textbf{:}}\quad
+    \kaishu
+}
+{\par}
+\begin{Definition}
+\label{def:distribution-convolution-formal}
+设 $f,g\in\mathcal{D}^{\prime}(\mathbb{R}^m)$. 那么 $f$ 与 $g$ 的卷积定义为
+\begin{equation}\label{eq:distribution-convolution-formal-definition}
+(f*g,\phi)=(f(\bm{x})g(\bm{y}),\phi(\bm{x}+\bm{y})).
+\end{equation}
+
+\end{Definition}
+\endgroup
+
+引号是为了提请注意, 这实际上没有任何意义. 直积 $f(\bm{x})g(\bm{y})$ 被定义为 $\mathcal{D}^{\prime}(\mathbb{R}^{2m})$ 的元素, 但 $\phi(\bm{x}+\bm{y})$ 不属于 $\mathcal{D}(\mathbb{R}^{2m})$; 它没有紧支集. 事实上, 不能以合理方式定义任意分布的卷积. 然而, 存在一些特殊情形, 能赋予 \eqref{eq:distribution-convolution-formal-definition} 意义. 在最简单的这类情形中, $\phi(\bm{x}+\bm{y})$ 的支集与 $f(\bm{x})g(\bm{y})$ 的支集具有紧的交集. 此时, 可以用任意在 $\operatorname{supp}(f(\bm{x})g(\bm{y}))$ 的某个邻域内与 $\phi(\bm{x}+\bm{y})$ 一致的试验函数替换 $\phi(\bm{x}+\bm{y})$. 特别地, 在以下任一条件下, \eqref{eq:distribution-convolution-formal-definition} 有意义:
+\begin{enumerate}
+\item $f$ 或 $g$ 具有紧支集.
+\item 在一维情形中, $f$ 与 $g$ 的支集在同一侧有界 (例如, 当 $x<a$ 时 $f=0$, 当 $x<b$ 时 $g=0$).
+\end{enumerate}
+
+由直积的相应性质可得, 在卷积有定义的地方, 它具有交换性和结合性.
+
+考虑一些特殊情形:
+
+\begin{enumerate}\item 有
+\begin{equation}\label{eq:delta-convolution-identity-pairing}
+\begin{aligned}
+(\delta*f,\phi)&=(\delta(\bm{x})f(\bm{y}),\phi(\bm{x}+\bm{y}))\\
+&=(f(\bm{y}),(\delta(\bm{x}),\phi(\bm{x}+\bm{y})))\\
+&=(f(\bm{y}),\phi(\bm{y}))\\
+&=(f,\phi),
+\end{aligned}
+\end{equation}
+即 $\delta*f=f$.
+\item 考虑 $f*\psi$, 其中 $\psi\in\mathcal{D}(\mathbb{R}^m)$. 有
+\begin{equation}\label{eq:distribution-test-convolution-smooth-pairing}
+\begin{aligned}
+(f*\psi,\phi)&=(f(\bm{x})\psi(\bm{y}),\phi(\bm{x}+\bm{y}))\\
+&=\left(f(\bm{x}),\int_{\mathbb{R}^m}\psi(\bm{y})\phi(\bm{x}+\bm{y})\,\mathrm{d}\bm{y}\right)\\
+&=\left(f(\bm{x}),\int_{\mathbb{R}^m}\psi(\bm{y}-\bm{x})\phi(\bm{y})\,\mathrm{d}\bm{y}\right)\\
+&=\int_{\mathbb{R}^m}(f(\bm{x}),\psi(\bm{y}-\bm{x}))\phi(\bm{y})\,\mathrm{d}\bm{y}.
+\end{aligned}
+\end{equation}
+最后一步利用了泛函 $f$ 的连续性, 将其移入积分号内; 见 Problem~\ref{ex:test-function-integral-riemann-sums}. 因而 $f*\psi(\bm{y})$ 等于函数 $(f(\bm{x}),\psi(\bm{y}-\bm{x}))$. 这一函数属于 $C^\infty$ 类, 且若 $f$ 具有紧支集, 则它为试验函数.
+\end{enumerate}
+
+接着考虑卷积的微分. 由定义有
+\begin{equation}\label{eq:distribution-convolution-derivative-pairing}
+\begin{aligned}
+(D^\alpha(f*g),\phi)&=(-1)^{|\alpha|}(f*g,D^\alpha\phi)\\
+&=(-1)^{|\alpha|}(g(\bm{y}),(f(\bm{x}),D^\alpha\phi(\bm{x}+\bm{y})))\\
+&=(g(\bm{y}),(D^\alpha f(\bm{x}),\phi(\bm{x}+\bm{y})))\\
+&=(D^\alpha f*g,\phi).
+\end{aligned}
+\end{equation}
+于是 $D^\alpha(f*g)=D^\alpha f*g$, 再利用交换性, 还得到 $D^\alpha(f*g)=f*D^\alpha g$. 对卷积求导, 只需对其中任一因子求导.
+
+以下引理表述卷积运算的连续性.
+
+\begin{Lemma}
+\label{lem:distribution-convolution-continuity}
+假设在 $\mathcal{D}^{\prime}(\mathbb{R}^m)$ 中 $f_n\to f$, 且以下条件之一成立:
+\begin{enumerate}
+\item 所有 $f_n$ 的支集均包含于同一个紧集;
+\item $g$ 具有紧支集;
+\item $m=1$, 且 $f_n$ 与 $g$ 的支集在同一侧有界, 界不依赖于 $n$.
+\end{enumerate}
+那么在 $\mathcal{D}^{\prime}(\mathbb{R}^m)$ 中 $f_n*g\to f*g$.
+\end{Lemma}
+
+证明留作习题 (参见 Problem~\ref{ex:distribution-convolution-continuity}). 其一个推论是以下定理.
+
+\begin{Theorem}
+\label{thm:test-functions-dense-distributions}
+$\mathcal{D}(\mathbb{R}^m)$ 在 $\mathcal{D}^{\prime}(\mathbb{R}^m)$ 中稠密.
+\end{Theorem}
+
+\begin{Proof}
+首先证明紧支集分布是稠密的. 为说明这一点, 只需取试验函数 $e_n$, 在集合 $\{|\bm{x}|\leq n\}$ 上等于 1. 那么对每个 $f\in\mathcal{D}^{\prime}(\mathbb{R}^m)$, 有 $e_nf\to f$, 且 $e_nf$ 的支集包含于 $e_n$ 的支集, 因而为紧集.
+
+因此, 只需证明紧支集分布是试验函数的极限. 设 $f$ 为紧支集分布, 并设 $\phi_n$ 为收敛到 delta 的试验函数序列; 例如可以选取序列 $\phi_n=C(1/n)^{-1}\phi_{0,1/n}$, 其中 $\phi_{0,\epsilon}$ 和 $C(\epsilon)$ 由 \eqref{eq:smooth-compact-bump-function} 和 \eqref{eq:test-function-bump-normalization} 定义. 那么 $\phi_n*f$ 为试验函数, 并由前一引理, $\phi_n*f$ 收敛到 $\delta*f=f$.
+\end{Proof}

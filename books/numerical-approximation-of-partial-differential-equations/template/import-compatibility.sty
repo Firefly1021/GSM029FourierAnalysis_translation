@@ -1,0 +1,57 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{import-compatibility}[2026/11/22 AJbook manuscript compatibility]
+\RequirePackage{booktabs,enumitem,float,multirow,needspace}% Preserve manuscript grammar and counters; use the AJbook statement typography.
+\xeCJKsetup{AutoFallBack=true}
+\setCJKfallbackfamilyfont{\CJKrmdefault}[Path=\AJNotoSansFolder]{\AJNotoSansRegular}
+\setCJKfallbackfamilyfont{song}[Path=\AJNotoSansFolder]{\AJNotoSansRegular}
+\setCJKfallbackfamilyfont{fangsong}[Path=\AJNotoSansFolder]{\AJNotoSansRegular}
+\newcommand{\ImportedHead}[3]{\AJStatementBegin{#1}{#2}{#3}}
+\newcommand{\ImportedStatement}[4]{%
+  \refstepcounter{#2}%
+  #4\ImportedHead{#1}{\ \csname the#2\endcsname}{#3}%
+}
+\AtBeginDocument{%
+\RenewDocumentEnvironment{proof}{}{\AJProofBegin}{\AJProofEnd}
+}
+\AtBeginDocument{%
+  \DeclareRobustCommand{\[}{\begin{equation*}}%
+  \DeclareRobustCommand{\]}{\end{equation*}}%
+}
+
+% This manuscript numbers Theorem, Definition, Lemma, etc. separately by section.
+% ElegantBook's optional second braced ID supplies the type-specific label.
+\newcommand{\QuarteroniStatement}[3]{%
+  \newcounter{import#1}[section]%
+  \expandafter\renewcommand\csname theimport#1\endcsname{\thesection.\arabic{import#1}}%
+  \expandafter\providecommand\csname theHimport#1\endcsname{\theHsection.\arabic{import#1}}%
+  \RenewDocumentEnvironment{#1}{o g}{%
+    \ImportedStatement{#2}{import#1}{##1}{\AJStatementFormalFont}%
+    \IfValueT{##2}{\ifstrempty{##2}{}{\label{#3:##2}}}\ignorespaces
+  }{\AJStatementEnd}%
+}
+\AtBeginDocument{%
+\QuarteroniStatement{theorem}{Theorem}{thm}
+\QuarteroniStatement{definition}{Definition}{def}
+\QuarteroniStatement{lemma}{Lemma}{lem}
+\QuarteroniStatement{proposition}{Proposition}{pro}
+\QuarteroniStatement{corollary}{Corollary}{cor}
+\AtBeginDocument{%
+  \DeclareDocumentEnvironment{theorem*}{o}{\AJStatementFormalFont\ImportedHead{Theorem}{}{#1}\ignorespaces}{\AJStatementEnd}%
+  \DeclareDocumentEnvironment{definition*}{o}{\AJStatementFormalFont\ImportedHead{Definition}{}{#1}\ignorespaces}{\AJStatementEnd}%
+}
+\newcounter{importexample}[chapter]
+\renewcommand{\theimportexample}{\thechapter.\arabic{importexample}}
+\RenewDocumentEnvironment{example}{o}{\ImportedStatement{Example}{importexample}{#1}{\AJStatementInformalFont}}{\AJStatementEnd}
+}
+\NewDocumentEnvironment{note}{}{\ImportedHead{Remark}{}{}}{\AJStatementEnd}
+\setcounter{tocdepth}{2}
+\setcounter{secnumdepth}{2}
+% Index indentation uses the width of one Chinese character.
+\newlength{\ccwd}
+\AtBeginDocument{\settowidth{\ccwd}{字}}
+% Keep the legacy value printed by \ref to parts, without changing the AJbook title label.
+\newcommand{\ImportedPartLabel}[1]{%
+  \begingroup\protected@edef\@currentlabel{第\thepart 部分}\label{#1}\endgroup
+}
+
+\endinput

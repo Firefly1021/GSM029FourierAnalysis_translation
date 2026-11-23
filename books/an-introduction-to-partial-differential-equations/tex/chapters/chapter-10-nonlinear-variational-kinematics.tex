@@ -1,0 +1,43 @@
+\subsection{非线性变分问题}\label{sec:nonlinear-variational-problems}
+
+\subsubsection{凸问题}\label{subsec:convex-variational-problems}
+
+一类重要的非线性椭圆 PDE 来源于变分法中的问题. 我们将着重讨论这一类中一组尤为重要的代表: 描述\emph{弹性}材料平衡的问题. 在讨论这类问题时, 我们不仅能够考察变分法中处理椭圆问题的许多经典技术, 还能够考察过去二十年间发展起来的一些重要技术.
+
+\PDEIndexMark{idx:elasticity-reference-configuration-and-components}我们对非线性弹性的简要讨论, 从描述三维物体形变的\emph{运动学}或几何学开始. 用区域 $\Omega\subset\mathbb{R}^3$ 表示一个物质体的\emph{参考构形}. 假设 $\Omega$ 有界且具有 Lipschitz 边界. (通常将参考构形 $\Omega$ 看作物体的 ``静止\textquotesingle\textquotesingle\ 或 ``无应力\textquotesingle\textquotesingle\ 构形是方便的, 但我们并不限于这种情形.) 物体的\emph{形变}就是如下形式的映射
+\begin{equation}\label{eq:elasticity-reference-deformation-mapping}
+\mathbb{R}^3\supset\Omega\ni\bm{x}\mapsto\bm{p}(\bm{x})\in\mathbb{R}^3.
+\end{equation}
+将所有向量和矩阵都用分量写出, 会使计算稍为简便. 因此, 令 $\bm{e}_1,\bm{e}_2,\bm{e}_3$ 构成 $\mathbb{R}^3$ 的一组固定标准正交基; 对给定向量 $\bm{v}$, 定义 $v_i:=\bm{v}\cdot\bm{e}_i$.
+
+我们将假设形变具有一定的光滑性: 或作经典假设 $\bm{p}\in C_b^1(\overline\Omega)$, 或使用 Sobolev 空间 $\bm{p}\in W^{1,p}(\Omega)$. 在任一种情形下, 都能够定义\emph{形变梯度}
+\begin{equation}\label{eq:elasticity-deformation-gradient}
+\bm{F}(\bm{x}):=\dfrac{\partial\bm{p}}{\partial\bm{x}}(\bm{x}).
+\end{equation}
+用分量表示, 有
+\begin{equation}\label{eq:elasticity-deformation-gradient-components}
+F_{ij}(\bm{x}):=\dfrac{\partial p_i}{\partial x_j}(\bm{x}).
+\end{equation}
+我们希望将形变限制为一一映射, 使材料在形变时不相互穿透或重叠. 但这一约束难以作分析处理, 因此将忽略它. 不过, 我们将假设材料\emph{保定向} (即没有 ``镜像\textquotesingle\textquotesingle\ 形变). 若 $\bm{p}\in C_b^1(\overline\Omega)$, 这一约束可用逐点不等式表示为
+\begin{equation}\label{eq:elasticity-positive-orientation-determinant}
+\det\bm{F}(\bm{x})>0.
+\end{equation}
+若取 $\bm{p}\in W^{1,p}(\Omega)$, 则假设不等式 \eqref{eq:elasticity-positive-orientation-determinant} 几乎处处成立.
+
+我们将对形变规定\emph{位移边界条件}. 表述这类条件最自然的方式是规定连续函数 $\bm{b}:\partial\Omega\to\mathbb{R}^3$, 并要求
+\begin{equation}\label{eq:elasticity-prescribed-boundary-deformation}
+\bm{p}(\bm{x})=\bm{b}(\bm{x})\quad\text{for all }\bm{x}\in\partial\Omega.
+\end{equation}
+若考虑 $\bm{p}\in W^{1,p}(\Omega)$, 就必须要求 \eqref{eq:elasticity-prescribed-boundary-deformation} 在迹的意义下成立. 但在 Sobolev 空间中工作时, 更方便的方式是规定函数 $\bm{g}:\Omega\to\mathbb{R}^3$, 其中 $\bm{g}\in W^{1,p}(\Omega)$, 并要求
+\begin{equation}\label{eq:elasticity-homogeneous-trace-difference}
+\bm{p}_0:=\bm{p}-\bm{g}\in W_0^{1,p}(\Omega).
+\end{equation}
+这保证 $\bm{p}$ 和 $\bm{g}$ 在 $\Omega$ 的边界上具有相同的迹. 若所考虑的形变属于空间 $H^1(\Omega)$, 且 $\partial\Omega$ 属于 $C^1$ 类, 则 Theorem~\ref{thm:higher-normal-trace-bounded-right-inverse} (逆迹定理) 保证: 若 $\bm{b}\in H^{1/2}(\partial\Omega)$, 则存在 $\bm{g}\in H^1(\Omega)$, 使 $\bm{g}$ 在 $\partial\Omega$ 上的迹为 $\bm{b}$. 因此, 利用这一 $\bm{g}$, 可以使两个边界条件 \eqref{eq:elasticity-prescribed-boundary-deformation} 和 \eqref{eq:elasticity-homogeneous-trace-difference} 相一致. 利用 Theorem~\ref{thm:higher-normal-trace-bounded-right-inverse} 的更一般版本, 可以对 $p\neq2$ 的空间 $W^{1,p}(\Omega)$ 得到类似结果; 但我们不去寻找最一般的逆迹定理 (适用于尽可能粗糙的边界), 而满足于 \eqref{eq:elasticity-homogeneous-trace-difference} 形式的边界条件. 此外, 还能够假设如下条件
+\begin{equation}\label{eq:elasticity-boundary-extension-positive-determinant}
+\det\left(\dfrac{\partial\bm{g}}{\partial\bm{x}}\right)>0
+\end{equation}
+几乎处处成立. (在一般的逆迹定理中, 这样的 $\bm{g}$ 的存在性难以处理.) 总之, 假设存在满足 \eqref{eq:elasticity-boundary-extension-positive-determinant} 的 $\bm{g}\in W^{1,p}(\Omega)$, 并将弹性边值问题的定义域取为
+\begin{equation}\label{eq:elasticity-admissible-deformation-domain}
+\mathcal{D}_{\mathcal{E}}:=\{\bm{p}\in W^{1,p}(\Omega)\mid\det\nabla\bm{p}>0\text{ a.e., and }\bm{p}-\bm{g}\in W_0^{1,p}(\Omega)\}.
+\end{equation}
+

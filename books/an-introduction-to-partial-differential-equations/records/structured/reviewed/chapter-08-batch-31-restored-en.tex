@@ -1,0 +1,77 @@
+We can use these results to prove the following eigenfunction expansion theorem. This will prove very useful in solving elliptic boundary-value problems.
+
+\begin{Theorem}{Hilbert-Schmidt theorem}
+\label{thm:hilbert-schmidt-spectral}
+Let $H$ be a Hilbert space and let $A\in\mathcal{L}(H)$ be a compact, self-adjoint operator.
+
+Then there is a sequence of nonzero real eigenvalues $\{\lambda_i\}_{i=1}^N$ with $N$ equal to the rank of the operator $A$, such that $|\lambda_i|$ is monotone nonincreasing, and if $N=\infty$,
+\begin{equation}\label{eq:compact-self-adjoint-nonzero-eigenvalue-limit}
+\lim_{i\to\infty}\lambda_i=0.
+\end{equation}
+Furthermore, if each eigenvalue of $A$ is repeated in the sequence according to its multiplicity, then there exists an orthonormal set $\{\phi_i\}_{i=1}^N$ of corresponding eigenfunctions; i.e.,
+\begin{equation}\label{eq:compact-self-adjoint-eigenfunction-equations}
+A\phi_i=\lambda_i\phi_i.
+\end{equation}
+Moreover, $\{\phi_i\}_{i=1}^N$ is an orthonormal basis for $\mathcal{R}(A)$; and $A$ can be represented by
+\begin{equation}\label{eq:hilbert-schmidt-operator-eigenfunction-expansion}
+Au=\sum_{i=1}^N\lambda_i(\phi_i,u)\phi_i.
+\end{equation}
+
+\end{Theorem}
+
+\begingroup
+\postdisplaypenalty=10000
+\renewcommand{\endProof}{\par\nobreak\hfill$\blacksquare$\par\vspace{0.1cm}}
+\begin{Proof}
+Note that by Theorem~\ref{thm:symmetric-operator-spectral-properties}, the eigenvalues are real of $A$ are real since $A$ is self-adjoint. By the Fredholm alternative theorem (Theorem~\ref{thm:fredholm-alternative-compact}), the nonzero eigenvalues are discrete, bounded, and have finite multiplicity. Thus, we can list them (repeating according to multiplicity) in a sequence $\{\lambda_i\}_{i=1}^N$ of decreasing absolute value, with $N$ possibly infinite. Since the eigenvalues can have no accumulation point other than zero, \eqref{eq:compact-self-adjoint-nonzero-eigenvalue-limit} must hold if $N$ is infinite.
+
+We now choose an orthonormal basis for the eigenspace corresponding to each distinct nonzero eigenvalue, and use the collection of these bases (numbered according to the eigenvalue to which they correspond) to make up the sequence $\{\phi_i\}_{i=1}^N$. By Theorem~\ref{thm:symmetric-operator-spectral-properties}, the entire set is orthonormal.
+
+Let $M$ be the closure of the span of $\{\phi_i\}_{i=1}^N$. We claim that $M\supseteq\mathcal{R}(A)$. Note that since $A$ is self-adjoint, both $M$ and $M^\perp$ are invariant under $A$. Let $\widehat A$ be the restriction of $A$ to $M^\perp$. The operator $\widehat A\in\mathcal{L}(M^\perp)$ is self-adjoint and compact since $A$ is. Thus, by Theorem~\ref{thm:fredholm-alternative-compact}, any nonzero spectral value of $\widehat A$ is an eigenvalue. However, any eigenvalue of $\widehat A$ is also an eigenvalue of $A$. Thus, the spectral radius of $\widehat A$ is zero. By Problem~\ref{ex:self-adjoint-spectral-radius-equals-norm}, this implies that $\widehat A$ is the zero operator. Thus, every element of $M^\perp$ is an eigenvector corresponding to the eigenvalue $0$. Thus, $M^\perp=\mathcal{N}(A)$ and $\{\phi_i\}_{i=1}^N$ forms a basis for $\mathcal{R}(A)$.
+
+Now, since $\{\phi_i\}_{i=1}^N$ forms a basis for $\mathcal{R}(A)$, we have\[\begin{aligned}
+A(u)&=\sum_{i=1}^N(\phi_i,A(u))\phi_i\\
+&=\sum_{i=1}^N(A(\phi_i),u)\\
+&=\sum_{i=1}^N\lambda_i(\phi_i,u)\phi_i.
+\end{aligned}\]This completes the proof.
+\end{Proof}
+\endgroup
+
+The following important corollary gives us a method for solving the nonhomogeneous problem.
+
+\begin{Corollary}
+\label{cor:compact-self-adjoint-nonhomogeneous-alternative}
+Let $A\in\mathcal{L}(H)$ be a compact, self-adjoint operator, and let $\{\lambda_i\}_{i=1}^N$ be the nonzero eigenvalues and $\{\phi_i\}_{i=1}^N$ the corresponding eigenfunctions as described in the previous theorem. For any $f\in H$ let
+\begin{equation}\label{eq:hilbert-schmidt-nullspace-data-projection}
+f_{\mathcal{N}(A)}:=f-\sum_{i=1}^N(\phi_i,f)\phi_i
+\end{equation}
+be the projection of $f$ onto the nullspace of $A$. Then the following alternative holds for the nonhomogeneous problem
+\begin{equation}\label{eq:compact-self-adjoint-nonhomogeneous-equation}
+Au-\lambda u=f,
+\end{equation}
+for $\lambda\ne0$. Either\begin{enumerate}\item $\lambda$ is not an eigenvalue of $A$, in which case \eqref{eq:compact-self-adjoint-nonhomogeneous-equation} has the unique solution
+\begin{equation}\label{eq:compact-self-adjoint-noneigenvalue-unique-solution}
+u=\sum_{i=1}^\infty\dfrac{(\phi_i,f)}{\lambda_i-\lambda}\phi_i-\dfrac{1}{\lambda}f_{\mathcal{N}(A)};
+\end{equation}
+or\item $\lambda$ is an eigenvalue of $A$. In this case, we let $J$ be the finite index set of natural numbers $j$ such that $\lambda_j=\lambda$. Then \eqref{eq:compact-self-adjoint-nonhomogeneous-equation} has a solution if and only if
+\begin{equation}\label{eq:compact-self-adjoint-eigenvalue-solvability-condition}
+(\phi_j,f)=0\quad\text{for all }j\in J.
+\end{equation}
+In this case \eqref{eq:compact-self-adjoint-nonhomogeneous-equation} has a family of solutions
+\begin{equation}\label{eq:compact-self-adjoint-eigenvalue-solution-family}
+u=\sum_{j\in J}c_j\phi_j+\sum_{i\in\mathbb{N}\backslash J}\dfrac{(\phi_i,f)}{\lambda_i-\lambda}\phi_i-\dfrac{1}{\lambda}f_{\mathcal{N}(A)},
+\end{equation}
+where $\{c_j\}_{j\in J}$ are arbitrary constants.\end{enumerate}
+\end{Corollary}
+
+\begingroup
+\postdisplaypenalty=10000
+\renewcommand{\endProof}{\par\nobreak\hfill$\blacksquare$\par\vspace{0.1cm}}
+\begin{Proof}
+The proof of this follows immediately from the Fredholm alternative and Hilbert-Schmidt theorems by writing
+\begin{equation}\label{eq:compact-self-adjoint-solution-nullspace-decomposition}
+u=\sum_{i=1}^N(\phi_i,u)\phi_i+u_{\mathcal{N}(A)},
+\end{equation}
+expanding \eqref{eq:compact-self-adjoint-nonhomogeneous-equation}, and equating coefficients. The details are left to the reader.
+\end{Proof}
+\endgroup

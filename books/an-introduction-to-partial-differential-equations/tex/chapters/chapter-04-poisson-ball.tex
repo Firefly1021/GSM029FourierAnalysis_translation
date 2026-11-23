@@ -1,0 +1,59 @@
+\subsection{Dirichlet 问题的一个存在性证明}\label{sec:dirichlet-existence-proof}
+
+本节将证明 Dirichlet 问题解的存在性. 具体地说, 将证明以下定理:
+
+\begin{Theorem}
+\label{thm:dirichlet-continuous-data-existence}
+设 $\Omega$ 为 $\mathbb{R}^n$ 中具有 $C^2$ 边界的有界区域. 那么对任意函数 $g\in C(\partial\Omega)$, 都存在唯一的 $u\in C^2(\Omega)\cap C(\overline\Omega)$, 满足在 $\Omega$ 内 $\Delta u=0$, 且在 $\partial\Omega$ 上 $u=g$.
+\end{Theorem}
+
+从证明中将清楚看到, $\partial\Omega$ 属于 $C^2$ 类这一假设可以放宽; 例如, 所有凸区域都是允许的.
+
+\PDEIndexMark{idx:perron-method-outline}证明基于 Perron 的思想, 利用以下概念. 若在 $\Omega$ 内 $\Delta v\geq0$ ($\Delta v\leq0$), 且在 $\partial\Omega$ 上 $v\leq g$ ($v\geq g$), 则称 $v$ 为下解 (上解). 显然下解存在, 例如每个足够小的常数都是下解. 最大值原理 (弱形式) 表明, 若 $u$ 为解, 则对每个下解都有 $v\leq u$ (这正是称其为下解的原因). 因此, 所有下解的逐点上确界 (这是一个良定义的函数) 给出一个显然的候选解. 若能证明这个函数确实解该问题, 存在性证明就完成了. 在证明这一点之前, 先需要发展一些预备知识.
+
+\subsubsection{球上的 Dirichlet 问题}\label{subsec:dirichlet-problem-on-ball}
+
+证明解存在的最传统方法就是给出解的公式. (Section~\ref{subsec:laplace-equation} 中讨论过一些实现这一点的初等方法.) 现在求出球上 Dirichlet 问题的显式解.
+
+\begin{Theorem}
+\label{thm:poisson-ball-formula}
+设 $B$ 为以原点为球心, 半径为 $R$ 的球, $g$ 在 $\partial B$ 上连续. 那么函数
+\begin{equation}\label{eq:poisson-ball-solution-formula}
+u(\bm{x})=\dfrac{R^2-|\bm{x}|^2}{n\omega_nR}\int_{\partial B}\dfrac{g(\bm{y})}{|\bm{x}-\bm{y}|^n}\,\mathrm{d}S_{\bm{y}}
+\end{equation}
+属于 $C^2(B)$ 类, 并满足 $\Delta u=0$. 此外, 对每个 $\bm{y}\in\partial B$, 都有
+\begin{equation}\label{eq:poisson-ball-boundary-limit}
+\lim_{\bm{x}\to\bm{y}}u(\bm{x})=g(\bm{y}).
+\end{equation}
+这里 $\omega_n$ 表示 $\mathbb{R}^n$ 中单位球的体积, 曲面积分中的记号 $\mathrm{d}S_{\bm{y}}$ 表明积分变量.
+\end{Theorem}
+
+\PDEIndexMark{idx:poisson-mean-value-comment}方程 \eqref{eq:poisson-ball-solution-formula} 称为 Poisson 公式. 注意, 特殊情形 $\bm{x}=0$ 导出众所周知的平均值性质: 调和函数在某点的值等于它在以该点为球心的任意球上的平均值.
+
+\begin{Proof}
+由于可以在积分号下求导, $u$ 实际上在 $B$ 内属于 $C^\infty$ 类, 简单计算即可证明它是调和的. 剩下只需证明 \eqref{eq:poisson-ball-boundary-limit}. 令
+\begin{equation}\label{eq:poisson-ball-kernel}
+K(\bm{x},\bm{y})=\dfrac{R^2-|\bm{x}|^2}{n\omega_nR|\bm{x}-\bm{y}|^n},\quad\bm{x}\in B,\ \bm{y}\in\partial B,
+\end{equation}
+及
+\begin{equation}\label{eq:poisson-ball-kernel-normalization-function}
+\psi(\bm{x})=\int_{\partial B}K(\bm{x},\bm{y})\,\mathrm{d}S_{\bm{y}}.
+\end{equation}
+显然, \eqref{eq:poisson-ball-kernel-normalization-function} 就是 \eqref{eq:poisson-ball-solution-formula} 中 $g=1$ 的特殊情形; 因而 $\psi$ 调和. $\psi$ 是径向对称函数也很明显. 对径向对称函数, Laplace 方程写为
+\begin{equation}\label{eq:radial-laplace-equation}
+u_{rr}+\dfrac{n-1}{r}u_r=0,
+\end{equation}
+这个方程在原点正则的解只能是常数. 因此 $\psi(\bm{x})=\psi(0)=1$.
+
+现在设 $\bm{x}_0\in\partial B$, 并给定 $\epsilon>0$. 选取 $\delta>0$, 使得当 $|\bm{y}-\bm{x}_0|<\delta$ 时有 $|g(\bm{y})-g(\bm{x}_0)|<\epsilon$, 并设 $M$ 为 $g$ 在 $\partial B$ 上的一个上界. 当 $|\bm{x}-\bm{x}_0|<\delta/2$ 时, 有
+\begin{equation}\label{eq:poisson-ball-boundary-estimate}
+\begin{aligned}
+|u(\bm{x})-g(\bm{x}_0)|
+&=\left|\int_{\partial B}K(\bm{x},\bm{y})(g(\bm{y})-g(\bm{x}_0))\,\mathrm{d}S_{\bm{y}}\right|\\
+&\leq\int_{|\bm{y}-\bm{x}_0|\leq\delta}K(\bm{x},\bm{y})|g(\bm{y})-g(\bm{x}_0)|\,\mathrm{d}S_{\bm{y}}\\
+&\quad+\int_{|\bm{y}-\bm{x}_0|\geq\delta}K(\bm{x},\bm{y})|g(\bm{y})-g(\bm{x}_0)|\,\mathrm{d}S_{\bm{y}}\\
+&\leq\epsilon+\dfrac{2M(R^2-|\bm{x}|^2)R^{n-2}}{(\delta/2)^n}.
+\end{aligned}
+\end{equation}
+当 $\bm{x}\to\bm{x}_0$ 时, 右端最后一项趋于零, 从而定理成立.
+\end{Proof}

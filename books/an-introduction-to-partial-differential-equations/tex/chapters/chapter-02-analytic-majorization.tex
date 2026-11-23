@@ -1,0 +1,194 @@
+\subsection{Cauchy-Kovalevskaya 定理}\label{sec:cauchy-kovalevskaya}
+
+Cauchy 和 Kovalevskaya 的定理相当一般地断言, 在非特征曲面上给定初始条件的偏微分方程组存在局部解. 它要求方程中的系数, 初始数据以及施加这些数据的曲面都是解析的. 这是一个严格限制, 一般不能去掉. 此外, 我们将看到, 这一定理并不区分适定问题与不适定问题; 它也涵盖数据的微小改变导致解发生很大改变的情形. 由于这些原因, 这一定理的实际重要性不大. 然而, 从历史上看, 它是关于一般一类偏微分方程的第一个存在性定理, 也是极少数不借助泛函分析工具就能证明的此类定理之一.
+
+将对如下形式的一阶拟线性方程组陈述并证明这一定理:
+\begin{equation}\label{eq:ck-intro-quasilinear-system}
+\dfrac{\partial u_i}{\partial x_n}=\sum_{k=1}^{n-1}\sum_{j=1}^Na_{ij}^k(\bm{p})\dfrac{\partial u_j}{\partial x_k}+b_i(\bm{p}),\qquad i=1,\ldots,N,
+\end{equation}
+其中 $\bm{p}$ 表示向量 $(x_1,\ldots,x_{n-1},u_1,\ldots,u_N)$, 并假设函数 $a_{ij}^k$ 和 $b_i$ 解析. 初始条件为
+\begin{equation}\label{eq:ck-intro-zero-initial-data}
+u_i=0\quad\text{on }x_n=0,\qquad i=1,\ldots,N.
+\end{equation}
+偏微分方程组的一般非特征初值问题总能化为 \eqref{eq:ck-intro-quasilinear-system}, \eqref{eq:ck-intro-zero-initial-data} 的形式; 下文将详细讨论这一化简算法. 本节先回顾实解析函数的一些基本事实.
+
+\subsubsection{实解析函数}\label{subsec:real-analytic-functions}
+
+解析函数是局部可表示为幂级数的函数. 使用上一节引入的多重指标记号, 将 $n$ 个变量的函数的幂级数写成形式
+\begin{equation}\label{eq:multivariable-power-series}
+f(\bm{x})=\sum_\alpha c_\alpha\bm{x}^{\alpha},
+\end{equation}
+其中 $\alpha=(\alpha_1,\ldots,\alpha_n)$ 是多重指标, $\bm{x}^{\alpha}$ 的含义已在方程 \eqref{eq:multi-index-monomial} 中给出.
+
+注意幂级数的下列事实:
+\begin{enumerate}
+\item 假设 \eqref{eq:multivariable-power-series} 在 $\bm{x}=\bm{y}$ 处绝对收敛, 其中 $\bm{y}$ 的所有分量都不为零. 那么它在区域 $D=\{\bm{x}\in\mathbb{R}^n\mid |x_i|<|y_i|,\ i=1,\ldots,n\}$ 内绝对收敛, 并在 $D$ 的任意紧子集上一致绝对收敛.
+\item 在 $D$ 内, 幂级数 \eqref{eq:multivariable-power-series} 可以逐项求导. 下面给出导数的一个估计. 设对 $i=1,\ldots,n$ 有 $|x_i|\leq q|y_i|$, 其中 $0\leq q<1$. 计算得到
+\begin{equation}\label{eq:power-series-termwise-derivative}
+D^\beta f(\bm{x})=\sum_{\alpha\geq\beta}c_\alpha D^\beta\bm{x}^{\alpha}=\sum_{\alpha\geq\beta}c_\alpha\dfrac{\alpha!}{(\alpha-\beta)!}\bm{x}^{\alpha-\beta},
+\end{equation}
+从而
+\[
+\begin{aligned}
+|D^\beta f(\bm{x})|
+&\leq\sum_{\alpha\geq\beta}\dfrac{\alpha!}{(\alpha-\beta)!}|c_\alpha|q^{|\alpha-\beta|}|\bm{y}^{\alpha-\beta}|\\
+&\leq\dfrac1{|\bm{y}^{\beta}|}\sup_\alpha(|c_\alpha||\bm{y}^{\alpha}|)
+\sum_{\alpha\geq\beta}\dfrac{\alpha!}{(\alpha-\beta)!}q^{|\alpha-\beta|}.
+\end{aligned}
+\]
+有 (参见 Problem~\ref{ex:multi-index-geometric-series-identity})
+\begin{equation}\label{eq:multi-index-geometric-derivative-sum}
+\sum_{\alpha\geq\beta}\dfrac{\alpha!}{(\alpha-\beta)!}q^{|\alpha-\beta|}=\dfrac{\beta!}{(1-q)^{n+|\beta|}},
+\end{equation}
+令
+\begin{equation}\label{eq:power-series-derivative-bound-constants}
+M=(1-q)^{-n}\sup_\alpha(|c_\alpha||\bm{y}^{\alpha}|),\qquad r=(1-q)\min_i|y_i|,
+\end{equation}
+最终得到
+\begin{equation}\label{eq:power-series-factorial-derivative-bound}
+|D^\beta f(\bm{x})|\leq M|\beta|!r^{-|\beta|}.
+\end{equation}
+\item 有
+\begin{equation}\label{eq:power-series-taylor-coefficients}
+c_\alpha=\dfrac1{\alpha!}D^\alpha f(\bm{0}).
+\end{equation}
+\end{enumerate}
+
+有了这些准备, 就可以定义实解析函数.
+
+\begin{Definition}
+\label{def:real-analytic-function}
+设 $f$ 是定义在开集 $\Omega\subseteq\mathbb{R}^n$ 上的实值函数. 如果存在 $\bm{y}$ 的一个邻域, 在其中 $f$ 可表示为 Taylor 级数
+\begin{equation}\label{eq:real-analytic-local-taylor-series}
+f(\bm{x})=\sum_\alpha c_\alpha(\bm{x}-\bm{y})^\alpha.
+\end{equation}
+则称 $f$ 在 $\bm{y}$ 处\textbf{实解析}. 如果 $f$ 在 $\Omega$ 的每一点处都解析, 就称它在 $\Omega$ 内实解析.
+\end{Definition}
+
+若向量值或矩阵值函数的各分量都解析, 就称该函数解析. 用符号 $C^\omega(\Omega)$ 表示在 $\Omega$ 内解析的函数类, 而 $C^\infty(\Omega)$ 表示具有各阶导数的函数. 显然 $C^\omega(\Omega)\subset C^\infty(\Omega)$. 同单复变全纯函数一样, 解析函数具有唯一延拓性质.
+
+\begin{Theorem}
+\label{thm:real-analytic-unique-continuation}
+设 $\Omega$ 为区域 (即连通开集), $f$ 和 $g$ 在 $\Omega$ 内解析. 如果存在某点 $\bm{x}_0\in\Omega$, 使每个 $\alpha$ 都满足 $D^\alpha f(\bm{x}_0)=D^\alpha g(\bm{x}_0)$, 则在 $\Omega$ 内有 $f=g$.
+\end{Theorem}
+
+\begin{Proof}
+令
+\begin{equation}\label{eq:analytic-identity-derivative-set}
+S=\{\bm{x}\in\Omega\mid D^\alpha f(\bm{x})=D^\alpha g(\bm{x})\ \forall\alpha\}.
+\end{equation}
+则 $S$ 是一些在 $\Omega$ 内相对闭的集合的交, 因而 $S$ 本身也相对闭. 另一方面, $S$ 也是开的, 因为若 $\bm{y}\in S$, 则 $f$ 与 $g$ 在点 $\bm{y}$ 处的 Taylor 系数相同, 从而在 $\bm{y}$ 的一个邻域内 $f=g$. 由于 $\Omega$ 连通, 且根据假设 $S\ne\emptyset$, 必有 $S=\Omega$.
+\end{Proof}
+
+如果 $f$ 在点 $\bm{y}$ 处解析, 那么 $f$ 的导数在 $\bm{y}$ 的某个邻域内满足形如 \eqref{eq:power-series-factorial-derivative-bound} 的界. 这一性质实际上刻画了实解析函数.
+
+\begin{Definition}
+\label{def:factorial-derivative-class}
+设 $f$ 定义在点 $\bm{y}$ 的一个邻域内. 对给定的正数 $M$ 和 $r$, 如果 $f$ 在 $\bm{y}$ 的一个邻域内属于 $C^\infty$ 类, 并且
+\begin{equation}\label{eq:factorial-derivative-class-bound}
+|D^\beta f(\bm{y})|\leq M|\beta|!r^{-|\beta|}\qquad\forall\beta.
+\end{equation}
+则称 $f\in C_{M,r}(\bm{y})$.
+\end{Definition}
+
+有如下等价关系.
+
+\begin{Theorem}
+\label{thm:factorial-bound-analytic-equivalence}
+设 $\Omega$ 为开集, $f\in C^\infty(\Omega)$. 那么 $f\in C^\omega(\Omega)$ 当且仅当以下条件成立: 对每个紧集 $S\subset\Omega$, 都存在正数 $M$ 和 $r$, 使每个 $\bm{y}\in S$ 都有 $f\in C_{M,r}(\bm{y})$.
+\end{Theorem}
+
+\begin{Proof}
+如果 $f\in C^\omega(\Omega)$, 那么对每个 $\bm{y}\in\Omega$, 都能找到邻域 $N(\bm{y})$ 及数 $M(\bm{y})$ 和 $r(\bm{y})$, 使 \eqref{eq:factorial-derivative-class-bound} 在 $N(\bm{y})$ 中成立. 有限个这样的邻域覆盖 $S$, 取各个 $M$ 的最大值与各个 $r$ 的最小值即可.
+
+反过来, 选取 $\bm{x}\in\Omega$, 令 $S$ 为以 $\bm{x}$ 为中心, 半径为 $s$ 的闭球, 其中 $s$ 取得充分小, 使 $S\subset\Omega$. 令 $M,r$ 为使所有 $\bm{y}\in S$ 都满足 $f\in C_{M,r}(\bm{y})$ 的值. 将证明, 只要 $d:=\sum_{i=1}^n|y_i-x_i|<\min(r,s)$, 就有
+\begin{equation}\label{eq:derivative-bound-taylor-representation}
+f(\bm{y})=\sum_\alpha\dfrac1{\alpha!}D^\alpha f(\bm{x})(\bm{y}-\bm{x})^\alpha,
+\end{equation}
+对这样的 $\bm{y}$, 引入标量函数
+\begin{equation}\label{eq:analytic-proof-line-segment-function}
+\phi(t):=f(\bm{x}+t(\bm{y}-\bm{x})).
+\end{equation}
+对任意整数 $j\geq0$ 及 $0\leq t\leq1$, 计算得到
+\[
+\begin{aligned}
+\left|\dfrac1{j!}\dfrac{\mathrm{d}^j}{\mathrm{d}t^j}\phi(t)\right|
+&=\left|\sum_{|\alpha|=j}\dfrac1{\alpha!}D^\alpha f(\bm{x}+t(\bm{y}-\bm{x}))(\bm{y}-\bm{x})^\alpha\right|\\
+&\leq\sum_{|\alpha|=j}M\dfrac{|\alpha|!}{\alpha!}r^{-|\alpha|}|(\bm{y}-\bm{x})^\alpha|\\
+&=Mr^{-j}d^j.
+\end{aligned}
+\]
+由 Taylor 定理得
+\begin{equation}\label{eq:analytic-proof-taylor-remainder}
+f(\bm{y})=\phi(1)=\sum_{k=0}^{j-1}\dfrac1{k!}\phi^{(k)}(0)+\dfrac1{j!}\phi^{(j)}(\tau_j),
+\end{equation}
+其中 $0\leq\tau_j\leq1$. \eqref{eq:analytic-proof-taylor-remainder} 中的余项以 $Mr^{-j}d^j$ 为界, 当 $d<r$ 时趋于零. 因而得到 \eqref{eq:derivative-bound-taylor-representation}.
+\end{Proof}
+
+实解析函数也可以刻画为复解析函数的限制. 一个方向是显然的. 如果 Taylor 级数 \eqref{eq:real-analytic-local-taylor-series} 绝对收敛, 例如在 $|\bm{x}-\bm{y}|<R$ 时绝对收敛, 则允许 $\bm{x}$ 的分量取复数时, 它仍然收敛. 因此, 每个实解析函数都可以延拓到复平面的一个子集, 又因为幂级数可以逐项求导, 延拓后的函数可微. 另一方面, 考虑 $n$ 个复变量的可微函数 $f(\bm{z})$, 它定义在点 $\bm{x}$ 的邻域内, 例如定义在包含集合 $S=\{\bm{z}\in\mathbb{C}^n\mid |z_i-x_i|\leq r,\ i=1,\ldots,n\}$ 的某个区域内. 在 $S$ 的内部选取 $\bm{y}$. 反复应用单复变函数的 Cauchy 公式, 得到
+\begin{equation}\label{eq:multivariable-cauchy-formula}
+\begin{aligned}
+f(\bm{y})&=(2\pi i)^{-n}\int_{\Gamma_1}\dfrac1{z_1-y_1}\int_{\Gamma_2}\dfrac1{z_2-y_2}\cdots\\
+&\qquad\int_{\Gamma_n}\dfrac1{z_n-y_n}f(\bm{z})\,\mathrm{d}z_n\,\mathrm{d}z_{n-1}\cdots\mathrm{d}z_1,
+\end{aligned}
+\end{equation}
+
+
+其中 $\Gamma_i$ 是正向圆周 $z_i-x_i=r$. 现在写成
+\begin{equation}\label{eq:cauchy-kernel-geometric-factorization}
+\dfrac1{z_i-y_i}=\dfrac1{(z_i-x_i)\left(1-\dfrac{y_i-x_i}{z_i-x_i}\right)},
+\end{equation}
+并按 $(y_i-x_i)/(z_i-x_i)$ 的幂展开成几何级数. 将此级数代入 \eqref{eq:multivariable-cauchy-formula}, 得到
+\begin{equation}\label{eq:complex-restriction-taylor-series}
+f(\bm{y})=\sum_\alpha c_\alpha(\bm{y}-\bm{x})^\alpha,
+\end{equation}
+其中
+\begin{equation}\label{eq:complex-restriction-taylor-coefficients}
+\begin{aligned}
+c_\alpha&=(2\pi i)^{-n}\int_{\Gamma_1}\dfrac1{(z_1-x_1)^{1+\alpha_1}}\int_{\Gamma_2}\dfrac1{(z_2-x_2)^{1+\alpha_2}}\cdots\\
+&\qquad\int_{\Gamma_n}\dfrac1{(z_n-x_n)^{1+\alpha_n}}f(\bm{z})\,\mathrm{d}z_n\,\mathrm{d}z_{n-1}\cdots\mathrm{d}z_1.
+\end{aligned}
+\end{equation}
+
+
+\PDEIndexMark{idx:analytic-implicit-theorem-introduction}将实解析函数刻画为复可微函数的限制, 就能简单地证明实解析函数的隐函数定理.
+
+\begin{Theorem}
+\label{thm:real-analytic-implicit-function}
+设函数 $F_i(x_1,\ldots,x_n,y_1,\ldots,y_m)$, $i=1,\ldots,m$, 在点 $(\bm{x}^0,\bm{y}^0)\in\mathbb{R}^n\times\mathbb{R}^m$ 处实解析. 假设
+\begin{equation}\label{eq:analytic-implicit-function-hypothesis}
+\bm{F}(\bm{x}^0,\bm{y}^0)=0,\qquad\det\left(\dfrac{\partial F_i}{\partial y_j}\right)(\bm{x}^0,\bm{y}^0)\ne0.
+\end{equation}
+那么, 在点 $(\bm{x}^0,\bm{y}^0)$ 的一个邻域内, 方程组 $\bm{F}(\bm{x},\bm{y})=0$ 具有唯一解 $\hat{\bm{y}}(\bm{x})$, 并且函数 $\hat{\bm{y}}(\bm{x})$ 在 $\bm{x}^0$ 处实解析.
+\end{Theorem}
+
+将 $\bm{x}$ 和 $\bm{y}$ 延拓到 $\mathbb{C}^n$, 这一定理就归结为可微函数的隐函数定理, 即 Theorem~\ref{thm:implicit-function} 的推广.
+
+将解析函数刻画为复变量的可微函数, 还意味着两个解析函数的复合也是解析的.
+
+\subsubsection{优控}\label{subsec:majorization}
+
+Cauchy-Kovalevskaya 定理的证明使用优控方法, 即将解析函数与具有更大 Taylor 系数, 但可以显式给出的其他函数作比较. 作如下定义.
+
+\begin{Definition}
+\label{def:analytic-majorization}
+设 $f$, $F$ 为定义在 $\mathbb{R}^n$ 原点的某个邻域内的实解析函数. 如果对每个 $\alpha$ 都有 $|D^\alpha f(\bm{0})|\leq D^\alpha F(\bm{0})$, 则称 $f$ \textbf{受} $F$ \textbf{优控}, 记作 $f\preceq F$.
+\end{Definition}
+
+\begin{Example}
+\label{ex:rational-analytic-majorant}
+如果 $f\in C_{M,r}(\bm{0})$, 那么 $f$ 受函数
+\begin{equation}\label{eq:analytic-rational-majorant}
+\phi(\bm{x})=\dfrac{Mr}{r-x_1-x_2-\cdots-x_n}.
+\end{equation}
+优控. 这是显然的, 因为 $D^\alpha\phi(\bm{0})=M|\alpha|!r^{-|\alpha|}$.
+\end{Example}
+
+需要以下关于复合函数的结果.
+
+\begin{Theorem}
+\label{thm:majorization-under-composition}
+设 $\bm{f}$, $\bm{F}$ 为从 $\mathbb{R}^n$ 原点的某个邻域映入 $\mathbb{R}^m$ 的向量值实解析函数, 满足 $\bm{f}(\bm{0})=\bm{F}(\bm{0})=0$. 设 $g$, $G$ 为从 $\mathbb{R}^m$ 原点的某个邻域映入 $\mathbb{R}$ 的实解析函数. 假设对 $i=1,\ldots,m$ 有 $f_i\preceq F_i$, 并且 $g\preceq G$. 那么 $g\circ\bm{f}\preceq G\circ\bm{F}$.
+\end{Theorem}
+
+注意到 $g\circ\bm{f}$ 的所有导数都可表示为含有 $g$ 和 $\bm{f}$ 的导数的多项式, 就得到证明. 这些多项式的系数都为正. 因而可以用含有 $G$ 和 $\bm{F}$ 的导数的对应多项式来估计它们.

@@ -1,0 +1,61 @@
+\subsubsection{Laplace 变换}\label{subsec:laplace-transforms}
+
+设 $f\in\mathcal{S}^{\prime}(\mathbb{R})$ 的支集包含于 $\{x\geq0\}$. 那么显然, 对每个 $\mu>0$, $e^{-\mu x}f(x)$ 也属于 $\mathcal{S}^{\prime}(\mathbb{R})$. 形式上有
+\begin{equation}\label{eq:laplace-fourier-complex-frequency-shift}
+\mathcal{F}[e^{-\mu x}f](\xi)=\dfrac1{\sqrt{2\pi}}\int_0^\infty f(x)e^{-i\xi x}e^{-\mu x}\,\mathrm{d}x=\mathcal{F}[f](\xi-i\mu).
+\end{equation}
+因而, 将 $\mathcal{F}[f](\xi-i\mu)$ 定义为 $\mathcal{F}[f\exp(-\mu x)](\xi)$ 是合理的. 这在复 $\xi$ 平面的下半平面定义了 $\mathcal{F}[f]$ --- 作为 $\operatorname{Re}\xi$ 的广义函数, 以 $\operatorname{Im}\xi$ 为参数. 然而, 实际上 $\mathcal{F}[f]$ 是开半平面 $\{\operatorname{Im}\xi<0\}$ 内 $\xi$ 的解析函数; 用与 Example~\ref{ex:fourier-compact-distribution-entire} 中类似的论证即可证明 (参见 Problem~\ref{ex:one-sided-tempered-fourier-product}).
+
+Laplace 变换定义为
+\begin{equation}\label{eq:laplace-transform-fourier-definition}
+\mathcal{L}[f](s):=\sqrt{2\pi}\mathcal{F}[f](-is);
+\end{equation}
+对支集位于 $\{x\geq0\}$ 中的 $f\in\mathcal{S}^{\prime}(\mathbb{R})$, 它在右半平面内有定义. 形式上有
+\begin{equation}\label{eq:laplace-transform-formal-integral}
+\mathcal{L}[f](s)=\int_0^\infty e^{-sx}f(x)\,\mathrm{d}x.
+\end{equation}
+
+
+若 $f$ 不属于 $\mathcal{S}^{\prime}(\mathbb{R})$, 但对某个正的 $\mu$, $\exp(-\mu x)f$ 属于 $\mathcal{S}^{\prime}(\mathbb{R})$, 则可以在半平面 $\{\operatorname{Re}s\geq\mu\}$ 内定义 $\mathcal{L}[f]$. 注意, 对 \eqref{eq:laplace-transform-fourier-definition} 中的 Fourier 变换求逆, 得到
+\begin{equation}\label{eq:laplace-inversion-weighted-fourier-formula}
+e^{-\mu x}f(x)=\dfrac1{\sqrt{2\pi}}\mathcal{F}^{-1}[\mathcal{L}[f](\mu+i\xi)]
+\end{equation}
+或等价地,
+\begin{equation}\label{eq:inverse-laplace-contour-formula}
+f(x)=\dfrac1{2\pi i}\int_{\mu-i\infty}^{\mu+i\infty}e^{sx}\mathcal{L}[f](s)\,\mathrm{d}s.
+\end{equation}
+
+
+使用 \eqref{eq:inverse-laplace-contour-formula} 时, 必须小心确保所得表达式在 $x<0$ 时确实为零, 因为这是基本假设. 通常, 通过向右补上一个半圆来闭合积分路径, 证明这一点; $e^{sx}$ 在右半平面快速衰减. 要使这一论证成立, 必须将 $\mu$ 选在 $\mathcal{L}[f]$ 的所有奇点的右侧.
+
+现在给出几个 Laplace 变换的应用例子.
+
+\Needspace{4\baselineskip}
+\begin{Example}
+\label{ex:laplace-linear-ode}
+考虑初值问题
+\begin{equation}\label{eq:laplace-linear-ode-initial-problem}
+y'(x)=ay(x)+f(x),\quad y(0)=\alpha.
+\end{equation}
+关心的是正的 $x$ 所对应的解. 对负的 $x$, 将 $y$ 和 $f$ 作零延拓. 延拓后的函数不满足 \eqref{eq:laplace-linear-ode-initial-problem}: 由于它在原点从 0 跳到 $\alpha$, 其导数包含一项 $\alpha\delta(x)$. 因此, 延拓后函数的正确方程为
+\begin{equation}\label{eq:laplace-linear-ode-zero-extension}
+y'(x)=ay(x)+f(x)+\alpha\delta(x).
+\end{equation}
+现在作 Laplace 变换. 得到
+\begin{equation}\label{eq:laplace-linear-ode-transformed-equation}
+s\mathcal{L}[y](s)=a\mathcal{L}[y](s)+\mathcal{L}[f](s)+\alpha,
+\end{equation}
+因而
+\begin{equation}\label{eq:laplace-linear-ode-transform-solution}
+\mathcal{L}[y](s)=\dfrac{\mathcal{L}[f](s)+\alpha}{s-a}.
+\end{equation}
+为得到 $y(x)$, 现在必须对 Laplace 变换求逆; 例如, 由 \eqref{eq:inverse-laplace-contour-formula}, $1/(s-a)$ 的 Laplace 逆变换为
+\begin{equation}\label{eq:laplace-exponential-residue-integral}
+\dfrac1{2\pi i}\int_{\mu-i\infty}^{\mu+i\infty}\dfrac{e^{sx}}{s-a}\,\mathrm{d}s.
+\end{equation}
+这一积分容易用留数法计算; 当 $\mu>a$ 时, 对 $x>0$ 得到 $e^{ax}$, 对 $x<0$ 得到 0. (注意, 若选取 $\mu<a$, 仍会得到 \eqref{eq:laplace-linear-ode-zero-extension} 的一个解, 但它在 $x>0$ 而非 $x<0$ 时为零; 因而得不到原问题 \eqref{eq:laplace-linear-ode-initial-problem} 的解.) 若利用乘积的变换为卷积这一事实, 现在可以将解写为
+\begin{equation}\label{eq:laplace-linear-ode-causal-solution}
+y(x)=\alpha e^{ax}+\int_0^xe^{a(x-t)}f(t)\,\mathrm{d}t,\quad x>0;
+\end{equation}
+当然, 不用变换也能求出这一结果.
+\end{Example}

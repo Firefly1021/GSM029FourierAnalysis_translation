@@ -1,0 +1,61 @@
+\subsection{Riemann Problems}\label{sec:riemann-problems}
+
+The "shock tube" experiment is one of the classic experiments of gas dynamics. To perform it one takes a long cylindrical tube separated into halves by a thin membrane. A gas is placed into each side, usually with both sides at rest, but with different pressures and densities. The membrane is then suddenly removed, and the evolution of the gas is observed.
+
+The mathematical problem illustrated by the shock tube experiment was analyzed by Riemann, and this problem (and the analogous problem for other conservation laws) now bears his name. The problem consists in solving the Cauchy problem for the conservation law \eqref{eq:conservation-law-system}
+\[
+\bm{u}_t+\bm{f}(\bm{u})_x=0
+\]
+with the piecewise constant initial data
+\begin{equation}\label{eq:riemann-piecewise-constant-data}
+\bm{u}(x,0)=\begin{cases}\bm{u}^l,&x<0\\\bm{u}^r,&x\geq0.\end{cases}
+\end{equation}
+
+
+The study of the Riemann problem is pedagogically important, in that it allows us to examine a variety of wave-like behavior that includes shocks in as simple a setting as possible. But the problem also has great practical importance in that some of the most useful numerical techniques for studying conservation laws are based on solving a succession of Riemann problems. Furthermore, these numerical techniques are the basis for general existence proofs.
+
+We will limit our study to just two simple cases: the single conservation law and the $p$ system. These cases, however, give only a tempting hint of the full breadth of this subject. The interested reader should consult the references given at the end of this section for further material.
+
+\subsubsection{Single Equations}\label{subsec:scalar-riemann-problems}
+
+The Riemann problem for a single conservation law \eqref{eq:scalar-conservation-law-quasilinear} is exceedingly simple, at least in the case where $f$ is strongly convex. We assume throughout that $f\in C^2(\mathbb{R})$. We need only consider three cases here.
+
+\begin{enumerate}
+\item \textbf{The initial condition is a constant.} When $u^l=u^r$ we get the trivial, classical, constant solution, $u(x,t)\equiv u^l$.
+\item \textbf{The initial condition jumps down.} In this case, where $u^l>u^r$, we can use the shock solution
+\begin{equation}\label{eq:scalar-riemann-shock-solution}
+u(x,t):=\begin{cases}u^l,&x<st\\u^r,&x\geq st,\end{cases}
+\end{equation}
+where the shock speed is given by the Rankine-Hugoniot condition
+\begin{equation}\label{eq:scalar-riemann-shock-speed}
+s:=\dfrac{f(u^l)-f(u^r)}{u^l-u^r}.
+\end{equation}
+Note that because $f$ is convex our shock meets the Lax shock criterion
+\begin{equation}\label{eq:scalar-riemann-shock-lax-condition}
+f'(u^l)>s>f'(u^r).
+\end{equation}
+Hence, the shock satisfies the entropy condition as well.\item \textbf{The initial condition jumps up.} In this case we introduce a continuous \emph{rarefaction wave} (the term, like so many others in the subject, comes from gas dynamics), which generalizes example \eqref{eq:burgers-rarefaction-wave} given above. To give some mathematical motivation for the formula for rarefaction waves given below, we note that since the jump in our initial data occurs at $x=0$, we can take any weak solution $u(x,t)$ of \eqref{eq:scalar-conservation-law-quasilinear} and form a parameterized family of solutions via the formula
+\begin{equation}\label{eq:scalar-riemann-scaled-solution}
+u^\lambda(x,t):=u(\lambda x,\lambda t).
+\end{equation}
+If we expect our problem to have a unique solution, then $u$ should have the form
+\begin{equation}\label{eq:scalar-riemann-self-similar-form}
+u(x,t)=\tilde u(x/t).
+\end{equation}
+Placing this in \eqref{eq:scalar-conservation-law-quasilinear} gives us
+\begin{equation}\label{eq:scalar-rarefaction-similarity-equation}
+-\tilde u'\dfrac{x}{t^2}+f'(\tilde u)\tilde u'\dfrac1t=0.
+\end{equation}
+Thus, either $\tilde u$ is constant or
+\begin{equation}\label{eq:scalar-rarefaction-speed-value}
+f'(\tilde u(x/t))=x/t.
+\end{equation}
+In this case, we use the fact that $f''>0$ to deduce that $f'$ is invertible and get
+\begin{equation}\label{eq:scalar-rarefaction-source-inverse-notation}
+\tilde u(x/t)=f'(x/t)^{-1}.
+\end{equation}
+We thus justify the following formula for the classical rarefaction solution
+\begin{equation}\label{eq:scalar-riemann-classical-rarefaction}
+u(x,t):=\begin{cases}u^l,&x<f'(u^l)t\\f'(x/t)^{-1},&f'(u^l)t\leq x<f'(u^r)t\\u^r,&f'(u^r)t\leq x.\end{cases}
+\end{equation}
+\end{enumerate}

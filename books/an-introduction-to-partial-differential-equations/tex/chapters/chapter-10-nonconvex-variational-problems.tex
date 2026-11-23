@@ -1,0 +1,165 @@
+\subsubsection{非凸问题}\label{subsec:nonconvex-variational-problems}
+
+\PDEIndexMark{idx:nonconvex-variational-physical-motivation}过去二十年间, PDE 研究者中有相当一部分从事非凸变分问题的研究. 这类问题出现在描述相变的 PDE 中, 例如液气相变, 晶体固体中的相变, 铁磁性和超导性. 我们通过一个简单的一维例子讨论其中出现的主要问题.
+
+\Needspace{4\baselineskip}\textbf{一个非凸模型问题}
+
+尝试在边界条件 $u(0)=u(1)=0$ 下极小化
+\begin{equation}\label{eq:nonconvex-one-dimensional-model-energy}
+I(u)=\int_0^1u(x)^2+(u^{\prime}(x)^2-1)^2\,\mathrm{d}x,
+\end{equation}
+注意, 为此必须满足两个相互冲突的要求. 积分号下的第二项是 $u$ 的一个 ``良好\textquotesingle\textquotesingle\ 的凸函数. 为使它很小, 必须寻找尽可能接近零的函数 $u$. 第二项是非凸的. 当 $u^{\prime}$ 等于一或负一时, 它取极小值. 在这两个值之间, 当 $u^{\prime}=0$ 时, 该项取局部极大值.
+
+由此容易找到极小化序列. 对每个 $i=0,1,\ldots,n-1$, 令
+\begin{equation}\label{eq:nonconvex-zigzag-minimizing-sequence}
+u_n(x)=\begin{cases}x-\dfrac{i}{n},&\dfrac{i}{n}\leq x\leq\dfrac{i}{n}+\dfrac{1}{2n},\\\dfrac{i+1}{n}-x,&\dfrac{i}{n}+\dfrac{1}{2n}\leq x\leq\dfrac{i+1}{n}.\end{cases}
+\end{equation}
+即 $u_n$ 是一个分片线性函数序列, 其导数在 $\pm1$ 之间 ``锯齿式\textquotesingle\textquotesingle\ 变动. 函数的最大高度为 $1/2n$. 由于 $I$ 中的第二项恒为零, 容易算出 $I(u_n)=1/(12n^2)$. 因此\[\lim_{n\to\infty}I(u_n)=0,\]而且由于 $I$ 总是非负的, 这一序列趋近于 $I$ 的极小值.
+
+然而, 由于存在非凸项, $I$ 并不以我们可能期待的方式连续. 即尽管函数序列 $u_n$ 一致收敛到零, 仍有\[I\left(\lim_{n\to\infty}u_n\right)=I(0)=1\neq\lim_{n\to\infty}I(u_n).\]事实上, 容易看出没有函数能够达到 $I$ 的极小值. 任何满足 $I(u)=0$ 的函数 $u$, 都必须同时满足 $u=0$ 和 $u^{\prime}=\pm1$, 但这样的函数并不存在.
+
+这一例子中的现象实际上是非凸变分问题的典型现象. 有两种可能的应对策略:\begin{enumerate}\item 找出极小化序列的极限所满足的问题; 显然, 这将是不同于原问题的另一个问题.\item 真正定义一个等于零但导数为 $\pm1$ 的 ``函数\textquotesingle\textquotesingle.\end{enumerate}本节将分别简要介绍这两种方法.
+
+\Needspace{4\baselineskip}\textbf{凸化}
+
+\begin{Definition}
+\label{def:lower-convex-envelope}
+对定义在某个区间上的函数 $f(p)$, 将其下凸包络定义为
+\begin{equation}\label{eq:lower-convex-envelope-definition}
+Cf=\sup\{g\mid g\text{ convex},\ g\leq f\}.
+\end{equation}
+
+\end{Definition}
+
+还有若干其他等价刻画, 例如参见 \cite{Dac}. 对如下形式的变分问题
+\begin{equation}\label{eq:one-dimensional-unrelaxed-variational-problem}
+\min\int_a^bf(x,u,u^{\prime})\,\mathrm{d}x,
+\end{equation}
+在相当一般的假设下, 可以证明极小化序列的极限满足问题
+\begin{equation}\label{eq:one-dimensional-convexified-variational-problem}
+\min\int_a^bCf(x,u,u^{\prime})\,\mathrm{d}x,
+\end{equation}
+其中下凸包络是关于第三个变量取的. 例如, 在上面的例子中, 有 (见 Problem~\ref{ex:quartic-double-well-lower-convex-envelope})
+\begin{equation}\label{eq:nonconvex-model-integrand}
+f(x,u,u^{\prime})=((u^{\prime})^2-1)^2+u^2,
+\end{equation}
+和
+\begin{equation}\label{eq:nonconvex-model-lower-convex-envelope}
+Cf(x,u,u^{\prime})=\begin{cases}((u^{\prime})^2-1)^2+u^2,&|u^{\prime}|\geq1,\\u^2,&|u^{\prime}|<1.\end{cases}
+\end{equation}
+显然, $u=0$ 确实为修改后的问题的极小元.
+
+然而在多维情形下, 凸性并非恰当的概念, 这在前一节已经看到. 恰当的概念是拟凸性.
+
+\begin{Definition}
+\label{def:quasiconvex-function}
+若对每个有界区域 $D\subset\mathbb{R}^n$, 每个 $\bm{A}\in\mathbb{R}^{nm}$ 以及每个 $\bm{u}\in(\mathcal{D}(D))^m$, 都有
+\begin{equation}\label{eq:quasiconvex-function-integral-definition}
+\dfrac{1}{m(D)}\int_Df(\bm{A}+\nabla\bm{u}(\bm{x}))\,\mathrm{d}\bm{x}\geq f(\bm{A})
+\end{equation}
+则称函数 $f:\mathbb{R}^{nm}\to\mathbb{R}$ 为\emph{拟凸的}. 这里 $m(D)$ 表示 $D$ 的体积.
+\end{Definition}
+
+在多维情形下, 拟凸性与下半连续性的联系, 就像一维情形下凸性与下半连续性的联系一样. 因此, 若满足适当的技术假设, 就可以证明问题
+\begin{equation}\label{eq:multidimensional-unrelaxed-variational-problem}
+\min\int_\Omega f(\bm{x},\bm{u},\nabla\bm{u})\,\mathrm{d}\bm{x}
+\end{equation}
+的极小化序列的极限为泛函
+\begin{equation}\label{eq:multidimensional-quasiconvexified-variational-problem}
+\min\int_\Omega Qf(\bm{x},\bm{u},\nabla\bm{u})\,\mathrm{d}\bm{x},
+\end{equation}
+的极小元, 其中 $Qf$ 表示关于第三个变量的下拟凸包络:
+\begin{equation}\label{eq:lower-quasiconvex-envelope-definition}
+Qf(\bm{x},\bm{u},\bm{A})=\sup\{g\mid g\text{ quasiconvex in }\bm{A},\ g\leq f\}.
+\end{equation}
+遗憾的是, 拟凸性不像凸性那样是关于 $f$ 的一个简单逐点条件, 而且难以验证. 前一节定义的多凸性是一个充分条件. 一个必要条件是秩一凸性.
+
+\begin{Definition}
+\label{def:rank-one-convex-function}
+若对每个 $\lambda\in(0,1)$ 以及每对满足 $\operatorname{rank}(\bm{A}-\bm{B})=1$ 的 $\bm{A}$ 和 $\bm{B}$, 都有
+\begin{equation}\label{eq:rank-one-convex-function-definition}
+f(\lambda\bm{A}+(1-\lambda)\bm{B})\leq\lambda f(\bm{A})+(1-\lambda)f(\bm{B})
+\end{equation}
+则称函数 $f:\mathbb{R}^{nm}\to\mathbb{R}$ 为\emph{秩一凸的}.
+\end{Definition}
+
+与下凸包络 $Cf$ 和下拟凸包络 $Qf$ 类似, 可以定义下多凸包络 $Pf$ 和下秩一凸包络 $Rf$. 由于可以证明
+\begin{equation}\label{eq:convexity-polyconvexity-quasiconvexity-rank-one-implications}
+\begin{aligned}\text{convexity}&\Longrightarrow\text{polyconvexity}\Longrightarrow\text{quasiconvexity}\\&\Longrightarrow\text{rank one convexity},\end{aligned}
+\end{equation}
+所以有
+\begin{equation}\label{eq:convex-envelope-order-relations}
+Cf\leq Pf\leq Qf\leq Rf\leq f.
+\end{equation}
+因此, 若能证明 $Pf=Rf$, 就得到了 $Qf$ 的一个刻画.
+
+\Needspace{4\baselineskip}\textbf{广义函数}
+
+如何定义一个等于零但导数为 $\pm1$ 的 ``函数\textquotesingle\textquotesingle? 解决这一困境的办法是给导数赋予概率, 而不是数值. 经典导数于是为概率分布的平均值. 只要两个值以相同概率出现, 这就允许函数 0 具有导数 $\pm1$. 这一最初由 L.C. Young 引入的理论, 其发展基于下面的结果 (见 \cite{Dac}).
+
+\begin{Theorem}
+\label{thm:young-measure-subsequence-existence}
+设 $K\subset\mathbb{R}^m$, $\Omega\subset\mathbb{R}^n$ 为有界开集, 并设 $\bm{v}_n\in(L^\infty(\Omega))^m$, 且 $\bm{v}_n$ 在 $K$ 中取值. 则存在 $\overline K$ 上的一族概率测度 $\nu_x$, $x\in\Omega$, 以及子序列 $\bm{v}_{n_k}$, 使对每个连续函数 $f:\overline K\to\mathbb{R}$, 都有
+\begin{equation}\label{eq:young-measure-continuous-composition-weak-star-limit}
+\lim_{k\to\infty}f(\bm{v}_{n_k})=\int_{\overline K}\nu_x(\bm{p})f(\bm{p})\,\mathrm{d}\bm{p}
+\end{equation}
+其中收敛是 $(L^\infty(\Omega))^m$ 中的弱-* 收敛.
+\end{Theorem}
+
+例如, 若取 $v_n$ 为 \eqref{eq:nonconvex-zigzag-minimizing-sequence} 给出的锯齿函数的导数, 则有
+\begin{equation}\label{eq:zigzag-derivative-young-measure-composition-limit}
+\lim f(v_n)=\dfrac{1}{2}(f(1)+f(-1));
+\end{equation}
+特别地, 这给出 $\lim v_n=0$ 以及 $\lim(v_n^2-1)^2=0$.
+
+\Needspace{5\baselineskip}\textbf{Problems}
+
+\begin{enumerate}[label=\thesection.\arabic*.,ref=\thesection.\arabic*,start=9,series=book-problems]
+
+\item\label{ex:div-curl-scalar-gradient-version} 证明以下版本的 div-curl 引理. 设 $\Omega\subset\mathbb{R}^n$ 为区域. 设 $\bm{u}^k:\Omega\to\mathbb{R}^n$ 为向量值函数序列, $w^k:\Omega\to\mathbb{R}$ 为标量值函数序列, 满足
+\begin{equation}\label{eq:div-curl-exercise-vector-weak-ltwo-limit}
+\bm{u}^k\rightharpoonup\overline{\bm{u}}\quad\text{in }L^2(\Omega),
+\end{equation}
+
+\begin{equation}\label{eq:div-curl-exercise-divergence-ltwo-bound}
+\operatorname{div}\bm{u}^k\quad\text{bounded in }L^2(\Omega),
+\end{equation}
+
+\begin{equation}\label{eq:div-curl-exercise-scalar-weak-hone-limit}
+w^k\rightharpoonup\overline w\quad\text{in }H^1(\Omega).
+\end{equation}
+证明
+\begin{equation}\label{eq:div-curl-exercise-gradient-product-distributional-limit}
+\bm{u}^k\cdot\nabla w^k\to\overline{\bm{u}}\cdot\nabla\overline w\quad\text{in }\mathcal{D}^{\prime}(\Omega).
+\end{equation}
+
+
+\item\label{ex:gradient-minors-induction-first-step} 完成 Theorem~\ref{thm:gradient-minors-weak-continuity} 证明中归纳法的第一步; 即证明, 对从 1 到 $n$ 中任取的指标 $i,j,l,m$, 都有\[\lim_{k\to\infty}\dfrac{\partial p_i^k}{\partial x_l}\dfrac{\partial p_j^k}{\partial x_m}-\dfrac{\partial p_i^k}{\partial x_m}\dfrac{\partial p_j^k}{\partial x_l}=\dfrac{\partial\overline p_i}{\partial x_l}\dfrac{\partial\overline p_j}{\partial x_m}-\dfrac{\partial\overline p_i}{\partial x_m}\dfrac{\partial\overline p_j}{\partial x_l}.\]
+
+\item\label{ex:subdeterminants-null-lagrangians} 设 $\mathcal{M}^{n\times n}$ 为 $n\times n$ 矩阵的集合, 并设\[\mathcal{M}\ni\bm{F}\mapsto g(\bm{F})\in\mathbb{R}\]由 $\bm{F}$ 的某个 $m\times m$ 子行列式给出. 设 $\Omega\subset\mathbb{R}^n$ 为区域. 考虑函数 $\bm{p}:\Omega\to\mathbb{R}^n$. 计算能量泛函
+\begin{equation}\label{eq:subdeterminant-null-lagrangian-energy}
+\mathcal{E}(\bm{p}):=\int_\Omega g(\nabla\bm{p}(\bm{x}))\,\mathrm{d}\bm{x}.
+\end{equation}
+的 Euler-Lagrange 方程. 解释为何像 $g$ 这样的子行列式函数称为\emph{零 Lagrangian}. 还能想到其他的零 Lagrangian 吗?
+
+\item\label{ex:quartic-double-well-lower-convex-envelope} 设 $f(p)=(p^2-1)^2$, 并令
+\begin{equation}\label{eq:quartic-double-well-convex-minorant}
+F(p)=\begin{cases}f(p),&|p|\geq1,\\0,&|p|<1.\end{cases}
+\end{equation}
+\begin{enumerate}[label=\alph*.]\item 证明 $F$ 为凸的.\item 证明, 若 $x=\lambda y+(1-\lambda)z$, 其中 $0\leq\lambda\leq1$, 且 $g$ 为满足 $g\leq f$ 的凸函数, 则 $g(x)\leq\lambda f(y)+(1-\lambda)f(z)$.\item 证明, 若 $g$ 为满足 $g\leq f$ 的凸函数, 则 $g\leq F$.\end{enumerate}
+
+\item\label{ex:convexity-implies-quasiconvexity-one-dimensional-converse} 证明凸性蕴含拟凸性, 且当 $n=m=1$ 时逆命题成立.
+
+\item\label{ex:rank-one-convexity-euler-lagrange-implications} 写出问题
+\begin{equation}\label{eq:rank-one-convexity-euler-lagrange-exercise}
+\min\int_\Omega f(\bm{x},\bm{u},\nabla\bm{u})\,\mathrm{d}\bm{x}.
+\end{equation}
+的 Euler-Lagrange 方程. 探讨 $f$ 的秩一凸性对这些方程意味着什么.
+
+\item\label{ex:sine-oscillation-young-measure-density} 设 $u_n(x)=\sin(nx)$. 显式求出函数 $r(x)$, 使
+\begin{equation}\label{eq:sine-oscillation-young-measure-density-exercise}
+\lim_{n\to\infty}f(u_n(x))=\int_{-1}^1f(y)r(y)\,\mathrm{d}y
+\end{equation}
+在弱意义下成立.
+
+\end{enumerate}

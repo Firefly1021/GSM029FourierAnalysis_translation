@@ -1,0 +1,1644 @@
+\chapter{流形上的几何量子化}
+\label{chap:geometric-quantization-manifolds}
+\index{线丛}
+\index{联络}
+\index{曲率}
+\index{半形式}
+\index{配对映射}
+
+\section{引言}
+\label{sec:geometric-quantization-manifolds-intro}
+
+几何量子化是量子化的一种形式,而“量子化”是一个统称,指把给定的经典系统与某个量子系统联系起来的过程.实际而言,若要推断什么样的量子系统能够描述某个物理现象,通常会先观察该系统的经典极限.例如,电磁辐射在宏观尺度上由 Maxwell 方程描述;在更精细的尺度上,量子效应(光子)变得重要.那么应当如何确定电磁学的正确量子理论？看来唯一合理的做法是把 Maxwell 方程“量子化”,然后将得到的量子系统与实验进行比较.
+
+然而,并非每个有物理意义的系统都以 $\mathbb R^{2n}$ 作为相空间.因此,几何量子化试图从一个以任意 $2n$ 维辛流形 $N$ 为相空间的物理系统出发,构造量子 Hilbert 空间以及适当的算子.在 $N$ 上进行几何量子化,首先必须选择一个极化,也就是大致选择 $N$ 上的 $n$ 个方向,使波函数沿这些方向保持常数.若 $N=T^*M$,可以采用“竖直极化”,此时波函数沿 $T^*M$ 的纤维保持常数.对带竖直极化的余切丛,几何量子化会复现 Blattner 的“半密度量子化”(见例~\ref{ex:cotangent-bundle-half-form} 和~\ref{ex:cotangent-bundle-half-form}).不过,即使对于余切丛,采用竖直极化之外的极化也很有意义,正如我们在 $\mathbb R^n$ 情形中已经看到的那样.例如,对紧 Lie 群的余切丛,文献~\cite{Hall2002} 说明,使用复极化会产生广义 Segal--Bargmann 变换.
+
+另一方面,有些相空间甚至不是余切丛的形式.例如,在表示论的轨道方法中,相关辛流形是“余伴随轨道”,它们通常不是余切丛.(以 $SU(2)$ 为例,这些轨道是带有自然旋转不变辛形式的 2-球面.)在量子场论中,人们还会遇到关于“速度”变量呈线性而非二次的 Lagrangian.在这种情形下,初速度由初位置决定,因而不能把初始条件空间看作某个(余)切丛.这类系统仍然可以是辛的,但不是余切丛.此外,人们通常把紧辛流形(例如带旋转不变辛形式的 $S^2$)看作自旋等内部自由度的经典模型.
+
+要量子化这些更一般的辛流形,需要更一般的方法.给定满足某种整性条件的辛流形 $(N,\omega)$,可以在 $N$ 上构造线丛 $L$ 及其上的联络 $\nabla$,使曲率为 $\omega/\hbar$.随后可以在 $L$ 的截面上定义“预量子”算子,方式与第 22 章 Euclidean 情形大体相同;这些算子将具有所需的 Poisson 括号与交换子之间的关系.然后在 $N$ 上选择一个极化,把量子 Hilbert 空间定义为沿该极化方向协变常数的截面空间.如果函数 $f$ 生成的 Hamilton 流保持相关极化不变,那么 $Q_{\mathrm{pre}}(f)$ 就会保持量子 Hilbert 空间不变.在实极化的情形中,可能不存在任何非零的、平方可积且沿极化方向协变常数的截面;这迫使我们引入“半形式”的工具.
+
+最后简要批评一下几何量子化的框架.第一,几何量子化的定义太多(丛、联络、曲率、极化、半形式),而定理太少.第二,几何量子化允许量子化的函数类——即其相应 Hamilton 流保持极化的函数——往往小得令人沮丧.例如,当 $N=T^*M$ 且采用自然的“竖直”极化时,至少按照几何量子化的“标准步骤”,动能函数就无法量子化.然而,如果希望以一种真正产生 Hilbert 空间及其上的算子的方式量子化一般辛流形,几何量子化仍然是唯一可用的方案.
+
+本章将有条理地介绍“进行”几何量子化所需的全部要素.此外,虽然这种处理会增加篇幅,本章还补充了标准参考书 Woodhouse 的著作~\cite{Woodhouse1992} 中只略作说明的若干论证细节.本章假定读者已经掌握第 21 章关于辛流形的基本结果;除了第 21.1 节回顾的流形基本结果之外,还会用到 Frobenius 定理(例如见文献~\cite{Lee2006} 第 19 章).
+
+正如第 22 章引言中已经指出的,几何量子化领域不同作者采用的符号约定并不一致.
+
+\section{线丛与联络}
+\label{sec:line-bundles-and-connections}
+
+本节发展必要的工具,把第 22.2 节的预量子化构造推广到任意辛流形.我们引入流形上的线丛及其截面的概念;截面在局部看起来像复值函数.随后引入线丛截面的协变导数;在局部表示中,这些协变导数具有 $\nabla_X=X-i\theta(X)$ 的形式,其中 $\theta$ 是某个 1-形式.然后引入曲率 2-形式:它是一个全局定义的闭 2-形式,局部可以写成 $d\theta$.本节继续采用求和约定,即重复指标总是求和.
+
+\begin{definition}[复线丛]
+\label{def:complex-line-bundle}
+设 $X$ 是光滑流形.$X$ 上的复线丛是一个光滑流形 $L$,并带有以下结构.首先,有一个光滑满射 $\pi:L\to X$.其次,对每个 $x\in X$,集合 $\pi^{-1}(\{x\})$ 都赋有一维复向量空间结构.对每个 $x\in X$,向量空间 $\pi^{-1}(\{x\})$ 称为 $L$ 在 $x$ 上的纤维.
+
+这些结构还需满足局部平凡性:对每个 $x\in X$,存在一个邻域 $U$,使得有微分同胚
+$\chi:\pi^{-1}(U)\to U\times\mathbb C$,并满足以下性质.第一,
+\[
+ \pi(p)=\pi_1(\chi(p)),
+\]
+其中 $\pi_1:U\times\mathbb C\to U$ 是投影到第一因子的映射.第二,对每个 $x\in U$,映射
+\[
+ p\longmapsto \pi_2(\chi(p))
+\]
+是从 $\pi^{-1}(\{x\})$ 到 $\mathbb C$ 的向量空间同构.
+
+线丛 $L$ 上的一个截面是映射 $s:X\to L$,满足 $\pi(s(p))=p$(对所有 $p\in X$).
+\end{definition}
+
+任意流形 $X$ 都可以构造平凡线丛 $X\times\mathbb C$,其中 $\pi(x,z)=x$,而 $\{x\}\times\mathbb C$ 的向量空间结构就是 $\mathbb C$ 的通常向量空间结构.一般线丛的局部平凡性意味着,$L$ 在局部“看起来”就像平凡线丛.
+
+\begin{definition}[线丛上的联络]
+\label{def:connection-line-bundle}
+线丛 $L$ 上的一个联络 $\nabla$ 是如下映射:对 $N$ 上的每个向量场 $X$ 和 $L$ 的每个截面 $s$,指定 $L$ 的另一个截面 $\nabla_X(s)$,并满足下列性质.第一,对 $N$ 上任意光滑函数 $f$,
+\[
+ \nabla_{fX}(s)=f\nabla_X(s)
+ \label{eq:connection-linearity-vector-field}
+\]
+(对所有向量场 $X$ 与截面 $s$).第二,乘积法则为
+\[
+ \nabla_X(fs)=X(f)s+f\nabla_X(s)
+ \label{eq:connection-product-rule}
+\]
+(对所有向量场 $X$ 与截面 $s$).
+
+注意,对 $L$ 的任意截面 $s$ 与 $N$ 上任意函数 $f$,$fs$ 仍是 $L$ 的截面.给定联络 $\nabla$ 与向量场 $X$,算子 $\nabla_X$ 称为沿 $X$ 方向的协变导数.
+\end{definition}
+
+\begin{definition}[Hermitian 线丛]
+\label{def:hermitian-line-bundle}
+Hermitian 线丛 $L$ 是指在每个纤维 $\pi^{-1}(\{x\})$ 上选择一个内积 $(\,\cdot\,,\,\cdot\,)$,并要求对 $L$ 的每个光滑截面 $s$,$(s,s)$ 是 $N$ 上的光滑函数.带有 Hermitian 结构的线丛称为 Hermitian 线丛.若 Hermitian 线丛 $L$ 上的联络 $\nabla$ 对每个 $N$ 上的向量场 $X$ 都满足
+\[
+ (\nabla_Xs_1,s_2)+(s_1,\nabla_Xs_2)=X(s_1,s_2),
+ \label{eq:hermitian-connection}
+\]
+则称 $\nabla$ 为 Hermitian 联络.
+\end{definition}
+
+下文所说的“带联络的 Hermitian 线丛”,是指带有 Hermitian 结构和 Hermitian 联络的线丛;也就是说,在这个表述中,“Hermitian”同时修饰线丛和联络.
+
+给定带联络的 Hermitian 线丛,总可以在任意点附近选取局部定义的光滑截面 $s_0$,使 $(s_0,s_0)\equiv1$.称 $s_0$ 为 $L$ 的局部等距平凡化.任意截面 $s$ 都可以局部唯一地写成 $s=fs_0$,其中 $f$ 是复值函数.对给定向量场 $X$,令 $\theta(X)$ 为满足
+\[
+ \nabla_X(s_0)=-i\theta(X)s_0
+\]
+的唯一函数.由 $\nabla_{fX}=f\nabla_X$ 可以证明,点 $p$ 处 $\theta(X)$ 的值只取决于 $X$ 在 $p$ 处的值.因此,$\theta$ 定义了 $N$ 上的一个 1-形式.由 $\nabla$ 为 Hermitian 联络还可以证明,$\theta(X)$ 总是实值的.
+
+现在利用协变导数的乘积法则~\eqref{eq:connection-product-rule},有
+\[
+ \nabla_X(fs_0)=X(f)s_0+f\nabla_X(s_0)
+ =(X(f)-i\theta(X)f)s_0.
+\]
+因此,若在局部把 $L$ 的截面与其系数函数 $f$ 对应,则
+\[
+ \nabla_X(f)=X(f)-i\theta(X)f.
+ \label{eq:local-covariant-derivative}
+\]
+我们称 $\theta$ 为与这个特定局部等距平凡化关联的联络 1-形式.
+
+\begin{definition}[曲率 2-形式]
+\label{def:curvature-two-form}
+对任意带联络的 Hermitian 线丛 $(L,\nabla)$,定义其曲率 2-形式 $\omega$,使得对所有截面 $s$ 和向量场 $X,Y$,
+\[
+ \omega(X,Y)s
+ =i\left(\nabla_X\nabla_Y-\nabla_Y\nabla_X-\nabla_{[X,Y]}\right)(s).
+ \label{eq:curvature-definition}
+\]
+\end{definition}
+
+当然,需要检查上式确实定义了一个 2-形式:点 $z$ 处 $\omega(X,Y)$ 的值只依赖 $X,Y$ 在 $z$ 处的值,并且只要 $s(z)\ne0$,它就不依赖所选截面 $s$.一种方法是在局部等距平凡化中计算 $\omega$,如下一个结果所示(另一种方法见练习~\ref{ex:curvature-form-direct-check}).
+
+\begin{proposition}[局部曲率公式]
+\label{prop:curvature-local-formula}
+设 $s_0$ 是 $L$ 的局部等距平凡化,$\theta$ 是相应的联络 1-形式,则 $\nabla$ 的曲率 2-形式局部表示为
+\[
+ \omega=d\theta.
+ \label{eq:curvature-local-formula}
+\]
+特别地,$\omega$ 是闭 2-形式.
+\end{proposition}
+
+\begin{proof}
+该计算与 Euclidean 情形命题~\ref{prop:covariant-derivative-commutator} 的证明完全相同.
+\end{proof}
+
+\long\def\chaptertwentythreeexercises{%
+\section{练习}
+\label{sec:geometric-quantization-manifolds-exercises}
+
+\begin{exercise}[协变导数只依赖向量场的点值]\label{ex:connection-linearity-pointwise}
+设 $L$ 是 $N$ 上带联络 $\nabla$ 的线丛,$s$ 是 $L$ 的截面.设 $X_1,X_2$ 是 $N$ 上的两个向量场,并且在某个固定点 $z\in N$ 满足 $X_1(z)=X_2(z)$.证明
+\[
+ \nabla_{X_1}(s)(z)=\nabla_{X_2}(s)(z).
+\]
+
+提示:使用 $\nabla_{fX}=f\nabla_X$.
+\end{exercise}
+
+\begin{exercise}[联络 1-形式的实性]\label{ex:hermitian-connection-reality}
+设 $L$ 是带 Hermitian 联络 $\nabla$ 的 Hermitian 线丛,$s_0$ 是局部定义的截面且 $(s_0,s_0)\equiv1$.对向量场 $X$,令 $\theta(X)$ 是满足
+\[
+ \nabla_Xs_0=-i\theta(X)s_0
+\]
+的唯一函数.证明 $\theta(X)$ 是实值的.
+
+提示:使用联络的 Hermitian 性质.
+\end{exercise}
+
+\begin{exercise}[曲率 2-形式的良定义性]\label{ex:curvature-form-direct-check}
+考察定义~\ref{def:curvature-two-form} 中的曲率 2-形式 $\omega(X,Y)$.
+\begin{enumerate}
+\item 证明 $\omega$ 关于变量 $X,Y,s$ 分别是 $C^\infty$-线性的.也就是说,对任意光滑函数 $f$,证明 $\omega(fX,Y)s=f\omega(X,Y)s$,并对变量 $Y,s$ 得到类似结论.
+\item 证明点 $z$ 处 $\omega(X,Y)s$ 的值只依赖 $X,Y,s$ 在 $z$ 处的值.
+\item 证明只要 $s(z)\ne0$,点 $z$ 处 $\omega(X,Y)$ 的值与 $s$ 在 $z$ 处的取值无关.
+\end{enumerate}
+\end{exercise}
+
+\begin{exercise}[Euclidean 空间的 Kähler 极化]\label{ex:kahler-polarization-euclidean}
+考虑 $\mathbb R^2$ 上的辛形式 $\omega=dp\wedge dx$.对固定的 $\alpha>0$,按照式~\eqref{eq:holomorphic-coordinates} 取 $P_z$ 为向量 $\partial/\partial z$ 所张成的空间,在 $\mathbb R^2$ 上定义纯复极化.证明 $P$ 是 Kähler 极化.
+\end{exercise}
+
+\begin{exercise}[Euclidean 空间的 Kähler 势]\label{ex:kahler-potential-euclidean}
+令 $P$ 为练习~\ref{ex:kahler-polarization-euclidean} 中 $\mathbb R^2$ 上的极化.证明函数
+\[
+ \kappa(x,p)=\alpha p^2
+\]
+是 $P$ 的 Kähler 势.
+\end{exercise}
+
+\begin{exercise}[辛形式的类型分解]\label{ex:symplectic-form-type-one-one}
+设 $\omega$ 是复流形 $N$ 上一个在近复结构 $J$ 下不变的 2-形式.证明 $\omega$ 是 $(1,1)$-形式.(回忆引理~\ref{lem:kahler-potential} 前面对类型分解的定义.)
+
+提示:写成 $\omega=\omega_1+\omega_2$,其中 $\omega_1$ 是 $(1,1)$-形式,$\omega_2$ 是 $(2,0)$-形式与 $(0,2)$-形式之和.证明对所有切向量 $X,Y$,
+\[
+ \omega_2(JX,JY)=-\omega_2(X,Y).
+\]
+\end{exercise}
+
+\begin{exercise}[Kähler 势的实性]\label{ex:kahler-potential-reality}
+设 $\kappa$ 是复流形 $N$ 上光滑的实值函数.证明 2-形式
+\[
+ i\partial\bar\partial\kappa
+\]
+是实值的.
+\end{exercise}
+
+\begin{exercise}[圆盘例子的局部计算]\label{ex:disk-polarization-calculation}
+在例~\ref{ex:disk-polarization} 中,验证 $\theta$ 是 $\omega$ 的辛势,并计算 $\theta(\partial/\partial\bar z)$,其中 $z=x-iy$,
+\[
+ \frac{\partial}{\partial\bar z}=\frac12\left(\frac{\partial}{\partial x}-i\frac{\partial}{\partial y}\right).
+\]
+然后验证
+\[
+ s_0(z)=(1-|z|^2)^{1/\hbar}
+\]
+满足 $\nabla_{\partial/\partial\bar z}s_0=0$,从而构成一个全局的全纯平凡化截面.
+\end{exercise}
+
+\begin{exercise}[圆柱例子的半形式 Bohr--Sommerfeld 叶]\label{ex:half-form-bohr-sommerfeld-circle}
+考虑例~\ref{ex:circle-bohr-sommerfeld} 的情形.证明 $P$ 的典范丛是平凡的,平凡化截面为 $dx$.令 $\delta_P$ 为定义~\ref{def:half-form-space-real} 前一段所描述的非平凡丛.由于任意实线丛与自身的张量积都是平凡的,$\delta_P\otimes\delta_P$ 与 $K_P$ 同构.取定义在 $0\le\phi<2\pi$ 上的不连续截面 $\sqrt{dx}$,满足 $\sqrt{dx}\otimes\sqrt{dx}=dx$.证明对每个取值于 $P$ 的向量场 $X$,
+\[
+ \nabla_X(dx)=0,\qquad \nabla_X(\sqrt{dx})=0.
+\]
+然后证明,对于这个 $\delta_P$,半形式意义下的 Bohr--Sommerfeld 叶恰好是
+\[
+ \{x\}\times S^1,\qquad x/\hbar=n+\tfrac12
+\]
+($n$ 为整数)的叶.
+\end{exercise}
+
+\begin{exercise}[半形式系数的唯一性]\label{ex:symmetric-half-form-coefficient}
+设 $b$ 是 $\mathbb R$ 上的光滑实值函数,$c$ 是实常数.证明算子
+\[
+ \psi\longmapsto-i\hbar\bigl(b(x)\psi'(x)+cb'(x)\psi(x)\bigr)
+\]
+在 $C_c^\infty(\mathbb R)\subset L^2(\mathbb R)$ 上对称,当且仅当 $c=1/2$.
+\end{exercise}
+
+\begin{exercise}[极化函数的半形式量子化]\label{ex:half-form-polarized-function}
+设 $P$ 是实极化,$f$ 是 $N$ 上的光滑极化函数,即沿 $P$ 方向的导数为零.证明 $Q(f)$ 在半形式 Hilbert 空间上只是乘以 $f$.(与不使用半形式时的命题~\ref{prop:polarized-observable} 比较.)
+
+提示:证明只要 $\alpha$ 是 $K_P$ 的极化截面,就有 $\mathcal L_{X_f}\alpha=0$.
+\end{exercise}
+
+\begin{exercise}[半形式交换子中的函数恒等式]\label{ex:half-form-gamma-identity}
+利用恒等式 $\mathcal L_{[X,Y]}=[\mathcal L_X,\mathcal L_Y]$ 和 $X_{\{f,g\}}=[X_f,X_g]$,验证式~\eqref{eq:half-form-gamma-identity}.
+\end{exercise}
+
+\begin{exercise}[沿实极化消失的辛势]\label{ex:local-potential-vanishing-polarization}
+证明:若 $P$ 是 $N$ 上的实极化,则可以局部选取辛势 $\theta$,使 $\theta$ 在 $P$ 上为零.
+
+提示:使用命题~\ref{prop:local-real-polarized-section} 证明中出现的函数 $f_x$.
+\end{exercise}
+
+\begin{exercise}[叶上的常值函数]\label{ex:observable-leaf-constant}
+设 $P$ 是 $N$ 上的纯实极化,$\theta$ 是在 $P$ 上为零的局部辛势.再设 $f$ 是实值函数且 $X_f$ 保持 $P$.证明函数 $-\theta(X_f)-f$ 沿 $P$ 的每个叶为常数.
+
+提示:若 $X$ 取值于 $P$,利用式~\eqref{eq:d-one-form} 证明
+\[
+ X(\theta(X_f))=d\theta(X,X_f).
+\]
+\end{exercise}
+
+\begin{exercise}[叶空间上的分部积分]\label{ex:integration-by-parts-leaf-space}
+设 $\beta$ 是可定向流形 $\Xi$ 上处处不为零的 $n$-形式,$X$ 是 $\Xi$ 上的实向量场,$\phi,\psi$ 是光滑紧支集函数.验证分部积分公式
+\[
+ \int_\Xi(X\phi)\psi\,\beta
+ =-\int_\Xi\phi(X\psi)\,\beta
+ -\int_\Xi\phi\psi(\operatorname{div}_\beta X)\,\beta,
+\]
+其中 $\operatorname{div}_\beta X$ 由 $\mathcal L_X\beta=(\operatorname{div}_\beta X)\beta$ 定义.
+
+提示:若 $\Phi_t$ 是 $X$ 生成的流,则对充分小的 $t$,$\Phi_t(x)$ 对 $\phi\psi$ 的支集内每个 $x$ 都有定义,并且 $\int_\Xi(\Phi_t)^*(\phi\psi\beta)$ 与 $t$ 无关.
+\end{exercise}
+
+\begin{exercise}[圆盘的半形式内积]\label{ex:disk-half-form-inner-product}
+沿用练习~\ref{ex:disk-polarization-calculation} 的记号.证明 $P$ 的典范丛平凡,平凡化截面为 $dz$.取 $\delta_P$ 为平凡丛,平凡化截面为 $\sqrt{dz}$.证明 $L\otimes\delta_P$ 的每个极化截面都具有
+\[
+ s=F(z)s_0(z)\otimes\sqrt{dz}
+\]
+的形式,其中 $F$ 是全纯函数.证明这种截面的范数(差一个常数)是关于形如
+\[
+ (1-|z|^2)^\nu
+\]
+的测度的 $F$ 的 $L^2$ 范数,但此时 $\nu$ 的值与不引入半形式时不同.
+\end{exercise}
+
+\begin{exercise}[复典范丛的 Hermitian 结构]\label{ex:complex-canonical-hermitian-calculation}
+设 $P$ 是 $N$ 上的 Kähler 极化,$z_1,\ldots,z_n$ 是 $N$ 上的全纯局部坐标,令矩阵 $A$ 为
+\[
+ A_{jk}=\omega\left(\frac{\partial}{\partial\bar z_j},\frac{\partial}{\partial z_k}\right).
+\]
+\begin{enumerate}
+\item 证明矩阵 $iA$ 正定.
+\item 证明
+\[
+ \omega=A_{jk}\,d\bar z_j\wedge dz_k.
+\]
+\item 证明 $\omega^{\wedge n}/n!$ 可以计算为
+\[
+ \det(iA)(-1)^{n(n-1)/2}(-i)^n
+ d\bar z_1\wedge\cdots\wedge d\bar z_n\wedge dz_1\wedge\cdots\wedge dz_n.
+\]
+\item 验证命题~\ref{prop:complex-canonical-hermitian-structure}.
+\end{enumerate}
+\end{exercise}
+
+\begin{exercise}[复情形的半形式对称性]\label{ex:complex-half-form-symmetric}
+设 $P$ 是 $N$ 上的 Kähler 极化,$\delta_P$ 是固定的典范丛平方根,$f$ 是实值光滑函数且 $X_f$ 保持 $\overline P$.在本题中,若 $s_1,s_2$ 是局部线丛截面且 $s_2$ 不为零,用 $s_1/s_2$ 表示满足 $s_1=(s_1/s_2)s_2$ 的唯一函数.
+\begin{enumerate}
+\item 证明对 $N$ 上任意连续紧支集函数 $\psi$,有
+\[
+ \int_N X_f(\psi)\,\lambda=0.
+\]
+
+提示:使用 Liouville 定理.
+
+\begin{note}
+同样的结论对不具有紧支集但“足够良好”的 $\psi$ 也成立.
+\end{note}
+
+\item 若 $\nu$ 是 $\delta_P$ 的局部处处不为零截面,证明
+\[
+ \frac{\mathcal L_{X_f}\nu}{\nu}
+ =\frac12\frac{\mathcal L_{X_f}(\nu\otimes\nu)}{\nu\otimes\nu}.
+\]
+\item 若 $\alpha$ 是 $N$ 上任意 $2n$-形式,证明
+\[
+ \frac{\mathcal L_{X_f}\alpha}{\lambda}
+ =X_f\left(\frac{\alpha}{\lambda}\right).
+\]
+\item 设 $s_1,s_2$ 是 $L\otimes\delta_P$ 的极化截面,局部写成 $s_j=\mu_j\otimes\nu_j$($j=1,2$).证明
+\[
+\begin{aligned}
+ X_f(s_1,s_2)
+ &= (i\nabla_{X_f}\mu_1\otimes\nu_1,s_2)
+ +(i\mu_1\otimes\mathcal L_{X_f}\nu_1,s_2)\\
+ &\quad +(s_1,i\nabla_{X_f}\mu_2\otimes\nu_2)
+ +(s_1,i\mu_2\otimes\mathcal L_{X_f}\nu_2),
+\end{aligned}
+\]
+其中 $(\,\cdot\,,\,\cdot\,)$ 按第~\ref{sec:half-forms-complex} 节所述 $L\otimes\delta_P$ 上的 Hermitian 结构计算.
+
+提示:使用恒等式
+\[
+ \mathcal L_{X_f}(\alpha\wedge\beta)
+ =(\mathcal L_{X_f}\alpha)\wedge\beta
+ +\alpha\wedge(\mathcal L_{X_f}\beta).
+\]
+\item 设 $s_1,s_2$ 是属于 $Q(f)$ 定义域的 $L\otimes\delta_P$ 极化截面,且 $(s_1,s_2)$“足够良好”.证明
+\[
+ \langle s_1,Q(f)s_2\rangle
+ =\langle Q(f)s_1,s_2\rangle.
+\]
+\end{enumerate}
+\end{exercise}
+
+}% end deferred exercises
+
+\long\def\chaptertwentythreehalf{%
+\section{使用半形式的量子化:实情形}
+\label{sec:half-forms-real}
+
+本节引入一个称为半形式的概念,用来绕过实极化情形中常常不存在非零平方可积极化截面的困难.
+
+实极化的极化截面 $s$ 往往具有无穷范数,因为沿极化的叶对 $|s|^2$ 积分可能产生无穷大.为说明半形式如何绕开这个问题,考虑 $\mathbb R^2\cong T^*\mathbb R$ 上的竖直极化.半形式 Hilbert 空间的元素可以写成
+\[
+ s\otimes\sqrt{dx},
+\]
+其中 $s$ 是 $L$ 的极化截面,而 $\sqrt{dx}$ 将解释为“典范丛平方根的截面”.为了计算这个对象的范数,先在每一点把它平方,得到 $|s|^2dx$.因为 $s$ 是极化的,$|s|^2$ 只依赖 $x$,与 $p$ 无关.因此 $|s|^2dx$ 可以看作 $\mathbb R$ 而不是 $\mathbb R^2$ 上的 1-形式,继而积分得到
+\[
+ \|s\|^2=\int_{\mathbb R}|s|^2(x)\,dx.
+\]
+
+与第 22.4 节中直接在 $\mathbb R^{2n}$ 上积分 $|s|^2$ 的做法相比,这个过程有两个优点.第一,它可以推广到一般辛流形上的实极化.第二,半形式方法能使量子化的可观测量自伴;第 22.5 节把预量子可观测量直接限制到极化子空间时,则不一定能做到这一点(见命题~\ref{prop:position-polarization-affine-momentum} 后的讨论).
+
+本节始终假定 $N$ 是可量子化的辛流形,$L$ 是其固定的预量子线丛,$P$ 是固定的纯实极化.
+
+\subsection{叶空间}
+\label{subsec:space-of-leaves}
+
+回忆,$P$ 的一个叶是 $P$ 的极大连通积分子流形.于是可以构造叶空间 $\Xi$(即 $P$ 的所有叶组成的集合)以及商映射 $q:N\to\Xi$,它把每个点 $z\in N$ 映到包含 $z$ 的唯一叶.给 $\Xi$ 赋予如下拓扑:若 $U\subset\Xi$ 且 $q^{-1}(U)$ 在 $N$ 中是开集,则称 $U$ 在 $\Xi$ 中是开集.
+
+为了能够相对于 $P$ 进行几何量子化,我们必须假定 $\Xi$ 可以赋予一个光滑的 $n$ 维流形结构,使 $q:N\to\Xi$ 光滑,并且对每个 $z\in N$,$q_{*,z}$ 的核等于 $P_z$ 与实切空间的交 $P_z^{\mathbb R}$.下文用“$\Xi$ 是光滑流形”简写这一整组假设.在 $N=T^*M$ 带竖直极化的情形(例~\ref{ex:vertical-polarization}),叶空间 $\Xi$ 是光滑流形,并且微分同胚于 $M$.
+
+必须强调,即使 $\Xi$ 是光滑流形,它也没有自然的“体积测度”.因此,我们将以一种使元素逐点的“平方”成为叶空间上的 $n$-形式而非函数的方式定义半形式 Hilbert 空间;随后便可以在 $n$ 维流形 $\Xi$ 上积分.
+
+\subsection{典范丛}
+\label{subsec:canonical-bundle-real-polarization}
+
+现在介绍纯实极化 $P$ 的典范丛.它的截面是 $N$ 上某种特殊的 $n$-形式,并带有典范丛截面极化的概念.若叶空间 $\Xi$ 是光滑流形,则典范丛的极化截面空间可以与 $\Xi$ 上所有 $n$-形式的空间对应.
+
+\begin{definition}[实极化的典范丛]
+\label{def:canonical-bundle-real-polarization}
+极化 $P$ 的典范丛 $K_P$ 是如下实线丛:其截面是满足
+\[
+ \iota_X\alpha=0
+ \label{eq:canonical-bundle-annihilation}
+\]
+(对每个取值于 $P$ 的向量场 $X$)的 $n$-形式 $\alpha$.若 $K_P$ 的截面 $\alpha$ 还满足
+\[
+ \iota_X(d\alpha)=0
+ \label{eq:canonical-bundle-polarized}
+\]
+(对每个取值于 $P$ 的向量场 $X$),则称 $\alpha$ 是极化的.
+\end{definition}
+
+若 $n$-形式 $\alpha$ 满足式~\eqref{eq:canonical-bundle-annihilation},那么只要某个 $X_j$ 属于 $P$,就有 $\alpha(X_1,\ldots,X_n)=0$.因此,在每一点 $z$,$\alpha$ 的值可看作商空间 $T_zN/P_z^{\mathbb R}$ 上的交错 $n$-线性泛函,其中 $P_z^{\mathbb R}$ 是 $P_z$ 与实切空间的交.由于该商空间是 $n$ 维的,每一点处 $\alpha$ 的可能取值空间都是一维的.
+
+另一方面,若 $\alpha$ 满足式~\eqref{eq:canonical-bundle-polarized},则在每一点,$d\alpha$ 是 $T_zN/P_z^{\mathbb R}$ 上的交错 $(n+1)$-线性泛函,因而必为零.因此,对 $K_P$ 的截面而言,式~\eqref{eq:canonical-bundle-polarized} 等价于
+\[
+ d\alpha=0.
+ \label{eq:canonical-bundle-closed}
+\]
+
+也可以构造复化典范丛 $K_P^{\mathbb C}$,其截面是满足式~\eqref{eq:canonical-bundle-annihilation} 的复值 $n$-形式;称其截面极化,当且仅当满足式~\eqref{eq:canonical-bundle-polarized}.
+
+\begin{example}[余切丛上的典范丛]
+\label{ex:canonical-bundle-cotangent}
+令 $N=T^*\mathbb R^n\cong\mathbb R^{2n}$,$P$ 为竖直极化.$\mathbb R^{2n}$ 上的 $n$-形式 $\alpha$ 是 $K_P$ 的截面,当且仅当
+\[
+ \alpha=f(x,p)\,dx^1\wedge\cdots\wedge dx^n,
+ \label{eq:canonical-bundle-vertical-form}
+\]
+其中 $f$ 是 $\mathbb R^{2n}$ 上的光滑函数.$\alpha$ 是 $K_P$ 的极化截面,当且仅当
+\[
+ \alpha=g(x)\,dx^1\wedge\cdots\wedge dx^n,
+ \label{eq:canonical-bundle-vertical-polarized-form}
+\]
+其中 $g$ 是 $\mathbb R^n$ 上的光滑函数.
+\end{example}
+
+\begin{proof}
+若 $\alpha$ 含有任何包含 $dp_j$ 的项,则用 $\partial/\partial p_j$ 与 $\alpha$ 作内积不会为零,因此只有式~\eqref{eq:canonical-bundle-vertical-form} 的形式可能是 $K_P$ 的截面.若 $\alpha$ 具有该形式而 $f$ 与 $p$ 有关,则 $d\alpha$ 会包含一个非零的 $dp_j\wedge dx^1\wedge\cdots\wedge dx^n$ 项;因此,极化截面只能具有式~\eqref{eq:canonical-bundle-vertical-polarized-form} 的形式.
+\end{proof}
+
+在例~\ref{ex:canonical-bundle-cotangent} 中,$K_P$ 的极化截面实质上就是构型空间 $\mathbb R^n$ 上的 $n$-形式.以下结果是这一结论的特殊情形.
+
+\begin{proposition}[典范丛极化截面与叶空间形式]
+\label{prop:canonical-bundle-leaf-space}
+若 $P$ 的叶空间 $\Xi$ 是光滑流形,且 $\alpha$ 是 $K_P$ 的极化截面,则存在唯一的 $\Xi$ 上的 $n$-形式 $\widetilde\alpha$,使
+\[
+ \alpha=q^*(\widetilde\alpha).
+\]
+反过来,若 $\beta$ 是 $\Xi$ 上任意 $n$-形式,则 $\alpha:=q^*(\beta)$ 是 $K_P$ 的极化截面.
+\end{proposition}
+
+\begin{proof}
+先设 $\alpha=q^*(\beta)$,其中 $\beta$ 是 $\Xi$ 上的 $n$-形式.由于 $P$ 是 $q_*$ 的核,只要 $X$ 取值于 $P$ 就有 $\iota_X\alpha=0$.此外,$\beta$ 是 $n$ 维流形上的顶次形式,故 $d\beta=0$,于是 $d\alpha=q^*(d\beta)=0$;因此 $\alpha$ 是 $K_P$ 的极化截面.
+
+反过来,前面在命题~\ref{prop:local-real-polarized-section} 的证明中已经看到,$N$ 局部可以识别为 $\mathbb R^n\times\mathbb R^n$ 原点邻域 $U\times V$,使 $P$ 的叶对应于 $\{x\}\times V$.利用 $q$,可以把 $U\cong U\times\{0\}$ 识别为 $\Xi$ 中的开集 $\widetilde U$.因此 $P$ 局部就像 $\mathbb R^{2n}$ 上的竖直极化;由例~\ref{ex:canonical-bundle-cotangent},任意极化截面 $\alpha$ 局部都具有式~\eqref{eq:canonical-bundle-vertical-polarized-form} 的形式.于是 $\alpha$ 确定了 $U$ 上的一个 $n$-形式 $\widehat\alpha$,并且 $\alpha$ 是 $U\times V$ 投影到 $U$ 的拉回.故 $\alpha$ 局部是 $q$ 对 $\widetilde U$ 上某个 $n$-形式 $\widetilde\alpha$ 的拉回.读者可检查 $N$ 中相交的邻域给出 $\Xi$ 上相同的形式 $\widetilde\alpha$,从而得到全局结果.
+\end{proof}
+
+由定理~\ref{thm:polarization-preserving-quantizable} 回忆,只要 $X_f$ 的流保持 $\overline P$(在本节中 $\overline P=P$),$Q_{\mathrm{pre}}(f)$ 就保持 $P$-极化截面空间.下面证明,对任意这样的 $f$,Lie 导数 $\mathcal L_{X_f}$ 也保持 $K_P$ 的极化截面空间.这最终将使我们能够在与 $P$ 关联的半形式 Hilbert 空间上定义量子算子 $Q(f)$.
+
+\begin{proposition}[Lie 导数保持典范丛]
+\label{prop:lie-derivative-canonical-bundle}
+设 $X$ 是保持 $P$ 的 $N$ 上向量场(见定义~\ref{def:polarization-preserving-vector-field}),$\alpha$ 是 $K_P$ 的光滑截面.则 Lie 导数 $\mathcal L_X\alpha$ 仍是 $K_P$ 的截面;若 $\alpha$ 是极化的,则 $\mathcal L_X\alpha$ 也极化.
+\end{proposition}
+
+\begin{proof}
+设 $X_1,\ldots,X_n$ 是光滑向量场,且 $X_1$ 取值于 $P=\overline P$.Lie 导数的标准公式给出
+\[
+\begin{aligned}
+ (\mathcal L_X\alpha)(X_1,\ldots,X_n)
+ &=X(\alpha(X_1,\ldots,X_n))
+ -\alpha([X,X_1],X_2,\ldots,X_n)\\
+ &\quad-\sum_{j=2}^n\alpha(X_1,\ldots,X_{j-1},[X,X_j],X_{j+1},\ldots,X_n).
+ \label{eq:lie-derivative-canonical-form}
+\end{aligned}
+\]
+由于 $\alpha$ 是 $K_P$ 的截面,右端第一项和第三项为零;由于 $X$ 保持 $P$,$[X,X_1]$ 仍取值于 $P$,第二项也为零.因此 $\iota_{X_1}(\mathcal L_X\alpha)=0$,即 $\mathcal L_X\alpha$ 仍为 $K_P$ 的截面.
+
+又由 Cartan 公式 $\mathcal L_X\alpha=\iota_Xd\alpha+d(\iota_X\alpha)$,若 $\alpha$ 满足式~\eqref{eq:canonical-bundle-closed},则
+\[
+ d(\mathcal L_X\alpha)=d^2(\iota_X\alpha)=0,
+\]
+故 $\mathcal L_X\alpha$ 也极化.
+\end{proof}
+
+\begin{proposition}[叶空间上的下降向量场]
+\label{prop:vector-field-descends-leaf-space}
+设 $P$ 的叶空间 $\Xi$ 是光滑流形,且 $X$ 是保持 $P$ 的 $N$ 上向量场.则存在唯一的 $\Xi$ 上向量场 $Y$,使对所有 $z\in N$,
+\[
+ q_{*,z}(X)=Y.\label{eq:descended-vector-field}
+\]
+此外,若 $\alpha=q^*(\beta)$ 是命题~\ref{prop:canonical-bundle-leaf-space} 中的极化截面,则
+\[
+ \mathcal L_X(q^*\beta)=q^*(\mathcal L_Y\beta).
+ \label{eq:descended-lie-derivative}
+\]
+也就是说,在命题~\ref{prop:canonical-bundle-leaf-space} 对 $K_P$ 极化截面与 $\Xi$ 上 $n$-形式的识别下,$\mathcal L_X$ 对应于 $\Xi$ 上沿 $Y$ 方向的 Lie 导数.
+\end{proposition}
+
+\begin{proof}
+由定义~\ref{def:polarization-preserving-vector-field},只要 $Z$ 取值于 $P$,就有 $[X,Z]$ 取值于 $P$.因此,若函数 $\phi$ 沿 $P$ 为常数(即被所有取值于 $P$ 的向量场 $Z$ 湮灭),则 $X\phi$ 也沿 $P$ 为常数.若 $\phi=\psi\circ q$,其中 $\psi$ 是 $\Xi$ 上的函数,则 $X\phi=\widehat\psi\circ q$,其中 $\widehat\psi$ 是另一个函数.映射 $\psi\mapsto\widehat\psi$ 容易验证是一个向量场,即 $C^\infty(\Xi)$ 的导子.因此存在唯一向量场 $Y$,使
+\[
+ X(\psi\circ q)=(Y\psi)\circ q
+ \label{eq:descended-vector-field-functions}
+\]
+对每个 $\Xi$ 上光滑函数 $\psi$ 成立;由微分的定义得到式~\eqref{eq:descended-vector-field}.
+
+由式~\eqref{eq:descended-vector-field},对 $\Xi$ 上任意 $n$-形式 $\beta$ 有
+\[
+ \iota_X(q^*\beta)=q^*(\iota_Y\beta).
+ \label{eq:descended-interior-product}
+\]
+由于 $\beta$ 是顶次形式,$d\beta=0$,从而 $q^*\beta$ 也闭.对式~\eqref{eq:descended-interior-product} 使用外微分,并应用 Lie 导数的 Cartan 公式,得到式~\eqref{eq:descended-lie-derivative}.
+\end{proof}
+
+给定向量场 $Y$ 和 $\Xi$ 上处处不为零的 $n$-形式 $\beta$,令 $\operatorname{div}_\beta Y$ 为满足
+\[
+ \mathcal L_Y\beta=(\operatorname{div}_\beta Y)\beta
+\]
+的唯一函数.于是,由式~\eqref{eq:descended-lie-derivative},
+\[
+ \mathcal L_X(q^*\beta)
+ =((\operatorname{div}_\beta Y)\circ q)q^*\beta.
+ \label{eq:canonical-bundle-divergence}
+\]
+这一表达式将在第~\ref{subsec:quantization-real-observables} 节分析可观测量量子化时发挥作用.
+
+\subsection{典范丛的平方根}
+\label{subsec:square-root-canonical-bundle}
+
+现在假设 $P$ 的叶空间 $\Xi$ 是可定向流形,并选定一个定向.
+
+\begin{definition}[典范丛的正截面]
+\label{def:positive-canonical-section}
+在 $\Xi$ 上选取处处不为零的有向 $n$-形式 $\beta$,令 $\alpha:=q^*(\beta)$;根据命题~\ref{prop:canonical-bundle-leaf-space},$\alpha$ 是 $K_P$ 的处处不为零截面.若 $K_P$ 的截面在每一点都是 $\alpha$ 的非负倍数,则称其为非负的.这个概念与所选有向 $n$-形式 $\beta$ 无关.
+\end{definition}
+
+由于 $\Xi$ 可定向,典范丛 $K_P$ 可平凡化,因为定义~\ref{def:positive-canonical-section} 中的 $\alpha$ 是其全局平凡化截面.因此可以找到 $K_P$ 的平方根,即线丛 $\delta_P$,使 $\delta_P\otimes\delta_P$ 与 $K_P$ 同构.(例如,可以取 $\delta_P$ 为平凡丛.)下文所说的 $K_P$ 的平方根,更准确地是指线丛 $\delta_P$ 以及一个给定的 $\delta_P\otimes\delta_P\cong K_P$ 同构.于是,对 $\delta_P$ 的截面 $s_1,s_2$,我们把 $s_1\otimes s_2$ 看作 $K_P$ 的截面.我们进一步要求这个同构的选取满足:对 $\delta_P$ 的任意截面 $s$,$s\otimes s$ 是 $K_P$ 的非负截面.(若初始同构不满足该性质,就在 $K_P$ 的纤维上复合负恒等映射 $-I$.)
+
+也可以考虑 $\delta_P$ 的复化 $\delta_P^{\mathbb C}$,即每一点纤维的复化组成的线丛.对 $\delta_P^{\mathbb C}$ 的截面有复共轭概念,它在每一点固定 $\delta_P$ 的纤维.对 $\delta_P^{\mathbb C}$ 的截面 $s_1,s_2$,我们把 $s_1\otimes s_2$ 看作复化典范丛 $K_P^{\mathbb C}$ 的截面.
+
+若 $\alpha$ 是 $K_P$ 的截面,$X$ 是取值于 $P$ 的向量场,定义 $n$-形式
+\[
+ \nabla_X\alpha:=\iota_X(d\alpha).
+ \label{eq:canonical-partial-connection}
+\]
+由于 $\alpha$ 是 $K_P$ 的截面,$\iota_X\alpha=0$,故由 Cartan 公式,$\nabla_X\alpha$ 实际上等于 $\mathcal L_X\alpha$.因为 $X$ 取值于 $P$,它保持 $P$,于是由命题~\ref{prop:lie-derivative-canonical-bundle},$\nabla_X\alpha=\mathcal L_X\alpha$ 仍是 $K_P$ 的截面.式~\eqref{eq:canonical-partial-connection} 中的 $\nabla$ 除了只在 $P$ 的方向定义外,具备联络的全部性质.(注意,一般来说 $\mathcal L_{fX}$ 不满足定义~\ref{def:connection-line-bundle} 要求的 $\mathcal L_{fX}=f\mathcal L_X$;不过由式~\eqref{eq:canonical-partial-connection} 计算 $\mathcal L_X\alpha$ 时,该映射确实满足 $\nabla_{fX}=f\nabla_X$.)我们称 $\nabla$ 为 $K_P$ 上的自然部分联络.根据定义~\ref{def:canonical-bundle-real-polarization},$K_P$ 的截面 $\alpha$ 极化,当且仅当对每个取值于 $P$ 的向量场 $X$ 都有 $\nabla_X\alpha=0$.
+
+现在说明部分联络和 Lie 导数如何自然地“下降”到 $\delta_P$ 的截面上.这将特别允许我们定义 $\delta_P$ 的极化截面.
+
+\begin{proposition}[半形式上的部分联络与 Lie 导数]
+\label{prop:half-form-connections}
+固定 $K_P$ 的一个平方根 $\delta_P$.对每个取值于 $P$ 的向量场 $X$,存在唯一的线性算子 $\nabla_X$,把 $\delta_P$ 的截面映到 $\delta_P$ 的截面,并满足
+\[
+ \nabla_X(fs_1)=X(f)s_1+f\nabla_Xs_1,
+ \label{eq:half-form-partial-connection-product}
+\]
+\[
+ \nabla_X(s_1\otimes s_2)=(\nabla_Xs_1)\otimes s_2+s_1\otimes(\nabla_Xs_2).
+ \label{eq:half-form-partial-connection-tensor}
+\]
+这里左端的 $\nabla_X$ 是式~\eqref{eq:canonical-partial-connection} 定义的 $K_P$ 上部分联络.若 $X$ 是保持 $P$ 的向量场,则还存在唯一线性算子 $\mathcal L_X$,把 $\delta_P$ 的截面映到 $\delta_P$ 的截面,并满足
+\[
+ \mathcal L_X(fs_1)=X(f)s_1+f\mathcal L_Xs_1,
+\]
+\[
+ \mathcal L_X(s_1\otimes s_2)=(\mathcal L_Xs_1)\otimes s_2+s_1\otimes(\mathcal L_Xs_2).
+\]
+这两个构造都自然延拓到 $\delta_P^{\mathbb C}$ 的截面.称 $\delta_P^{\mathbb C}$ 的截面 $s$ 是极化的,如果对每个取值于 $P$ 的光滑向量场 $X$,都有 $\nabla_Xs=0$.
+\end{proposition}
+
+\begin{proof}
+若 $V$ 是一维向量空间,则张量积映射 $\otimes:V\times V\to V\otimes V$ 是交换的,即 $u\otimes v=v\otimes u$.此外,若 $u_0\ne0$,则 $u\mapsto u\otimes u_0$ 是从 $V$ 到 $V\otimes V$ 的可逆线性映射.设 $s_0$ 是 $\delta_P$ 的局部处处不为零截面.令式~\eqref{eq:half-form-partial-connection-tensor} 中 $s_1=s_2=s_0$,我们需要有
+\[
+ 2(\nabla_Xs_0)\otimes s_0=\nabla_X(s_0\otimes s_0).
+ \label{eq:half-form-connection-square}
+\]
+由于与 $s_0$ 张量相乘是可逆的,存在唯一的 $\delta_P$ 截面“$\nabla_Xs_0$”使式~\eqref{eq:half-form-connection-square} 成立.
+
+局部地,$\delta_P$ 的任意截面都可唯一写成 $s=gs_0$.定义
+\[
+ \nabla_Xs=X(g)s_0+g\nabla_Xs_0,
+\]
+便容易验证式~\eqref{eq:half-form-partial-connection-product}.若 $s_1=g_1s_0,s_2=g_2s_0$,利用式~\eqref{eq:half-form-connection-square} 与张量积的对称性可验证式~\eqref{eq:half-form-partial-connection-tensor},两边均等于
+\[
+ X(g_1g_2)\,\nabla_X(s_0\otimes s_0).
+\]
+由定义中同时要求式~\eqref{eq:half-form-connection-square} 和上述局部公式,得到 $\nabla_X$ 的唯一性.把截面写成复值函数乘以 $s_0$,即可把作用延拓到 $\delta_P^{\mathbb C}$.Lie 导数的构造相同,细节从略.
+\end{proof}
+
+满足 $d\theta=\omega$ 的局部定义 1-形式 $\theta$ 称为 $\omega$ 的(局部)辛势.下一个结果说明,每个辛势都是某个局部等距平凡化的联络 1-形式.
+
+}% end deferred half-form block
+
+\begin{proposition}[辛势的局部平凡化]
+\label{prop:symplectic-potential-local-trivialization}
+设 $(L,\nabla)$ 是 $N$ 上带曲率 2-形式 $\omega$ 的 Hermitian 线丛.对每个点 $z_0\in N$,设 1-形式 $\theta$ 在 $z_0$ 的邻域 $U$ 上定义并满足 $d\theta=\omega$.则存在 $z_0$ 的子邻域 $V\subset U$,以及 $L$ 在 $V$ 上的局部等距平凡化,使该平凡化的联络 1-形式为 $\theta$.
+\end{proposition}
+
+\begin{proof}
+取 $z_0$ 附近任意一个等距平凡化截面 $s_0$,记其关联的联络 1-形式为 $\eta$.由于 $d(\eta-\theta)=0$,在 $z_0$ 的某个子邻域 $V\subset U$ 上存在光滑函数 $f$,使 $\eta-\theta=df$.若令 $s_1=e^{if}s_0$,则
+\[
+\begin{aligned}
+ \nabla_X(s_1)
+ &=iX(f)e^{if}s_0+e^{if}\nabla_X(s_0)\\
+ &=iX(f)e^{if}s_0-i\eta(X)e^{if}s_0\\
+ &=-i(\eta(X)-df(X))s_1.
+\end{aligned}
+\]
+因此,$s_1$ 对应的联络 1-形式为 $\eta-df=\theta$.
+\end{proof}
+
+\begin{proposition}[张量积联络]
+\label{prop:tensor-product-line-bundle-connection}
+设 $(L_1,\nabla_1)$ 与 $(L_2,\nabla_2)$ 是 $N$ 上带联络的 Hermitian 线丛.令 $L_1\otimes L_2$ 为如下线丛:在 $x$ 上的纤维是 $L_{1,x}\otimes L_{2,x}$,并采用由两个纤维内积自然诱导的内积.则 $L_1\otimes L_2$ 上存在唯一的 Hermitian 联络 $\nabla$,满足
+\[
+ \nabla_X(s_1\otimes s_2)
+ =(\nabla_X^1s_1)\otimes s_2+s_1\otimes(\nabla_X^2s_2),
+ \label{eq:tensor-product-connection}
+\]
+其中 $X$ 是 $N$ 上任意向量场,$s_1,s_2$ 分别是 $L_1,L_2$ 的光滑截面.$\,(L_1\otimes L_2,\nabla)$ 的曲率 2-形式为
+\[
+ \omega=\omega_1+\omega_2,
+\]
+其中 $\omega_1,\omega_2$ 分别是 $(L_1,\nabla_1)$ 和 $(L_2,\nabla_2)$ 的曲率 2-形式.
+\end{proposition}
+
+这个命题的证明只是直接追踪定义,留给读者作为练习.
+
+设 $L$ 是带联络 $\nabla$、曲率 2-形式 $\omega$ 的 Hermitian 线丛.给定环路 $\gamma:[a,b]\to N$,可以构造一个定义在 $\gamma$ 上的截面 $s$,使 $s$ 沿 $\gamma$ 的方向协变常数.事实上,在局部等距平凡化中,可以取
+\[
+ s(\gamma(T))
+ =\exp\left(i\int_{\gamma|_{[a,T]}}\theta\right)s(\gamma(a)).
+ \label{eq:parallel-transport-section}
+\]
+环路终点处的截面值通常不会与起点处相同,而会相差一个绝对值为 1 的常数因子.
+
+\begin{definition}[Holonomy]
+\label{def:holonomy}
+环路 $\gamma:[a,b]\to N$ 的 holonomy 是唯一的绝对值为 1 的常数 $\alpha$,使得
+\[
+ s(\gamma(b))=\alpha s(\gamma(a)),
+\]
+其中 $s$ 是定义在 $\gamma$ 上、沿 $\gamma$ 方向协变常数的非零截面.
+\end{definition}
+
+容易看出,只要起始值非零,环路的 holonomy 与 $s$ 的起始值无关.设 $S$ 是 $N$ 中一个紧致、有向、带边界的曲面,边界 $\partial S$ 是一个环路.不难证明,沿 $\partial S$ 的 holonomy 可表示为
+\[
+ \operatorname{holonomy}(\partial S)=\exp\left(i\int_S\omega\right).
+ \label{eq:holonomy-curvature}
+\]
+事实上,若 $S$ 落在某个局部等距平凡化的定义域内,这一结果由式~\eqref{eq:parallel-transport-section} 和 Stokes 定理(第 21.1.2 节)立即得到.
+
+现在若 $S$ 是闭曲面(即无边界),其边界是平凡环路,holonomy 为 1.(可以把 $S$ 近似为边界是极小环路的曲面.)因此,对任意闭曲面 $S$,由式~\eqref{eq:holonomy-curvature} 得
+\[
+ \exp\left(i\int_S\omega\right)=1,
+ \qquad \partial S=\varnothing.
+ \label{eq:integral-curvature-exponential}
+\]
+等价地,
+\[
+ \frac{1}{2\pi}\int_S\omega\in\mathbb Z.
+ \label{eq:integral-curvature}
+\]
+条件~\eqref{eq:integral-curvature} 表示 $\omega/(2\pi)$ 是整 2-形式.显然,并非每个闭 2-形式都满足这一性质.
+
+曲率 $\omega$ 的闭性(命题~\ref{prop:curvature-local-formula})以及条件~\eqref{eq:integral-curvature} 是 Hermitian 联络曲率必须满足的必要条件.事实证明,这两个条件也是充分的.
+
+\begin{theorem}[Hermitian 线丛的存在性]
+\label{thm:hermitian-line-bundle-existence}
+设 $\omega$ 是流形 $N$ 上的闭 2-形式,并且 $\omega/(2\pi)$ 按式~\eqref{eq:integral-curvature} 的意义为整的.则存在 $N$ 上带 Hermitian 联络 $\nabla$ 的 Hermitian 线丛 $L$,使 $\nabla$ 的曲率等于 $\omega$.如果 $N$ 还是单连通的,则 $(L,\nabla)$ 在等价意义下唯一.
+\end{theorem}
+
+该结果的证明见文献~\cite{Woodhouse1992} 第 8.3 节.两个带 Hermitian 联络的 Hermitian 线丛 $L_1,L_2$ 在 $N$ 上等价,是指存在微分同胚 $\Phi:L_1\to L_2$,使对每个 $x\in N$,$\Phi$ 在纤维 $\pi_1^{-1}(\{x\})$ 上的限制是映到 $\pi_2^{-1}(\{x\})$ 的等距线性映射,并且对 $L_1$ 的每个截面 $s$ 都有
+\[
+ \Phi(\nabla_X(s))=\nabla_X(\Phi(s)).
+\]
+
+现在已经具备在辛流形上推进几何量子化方案所需的工具.
+
+\section{预量子化}
+\label{sec:geometric-quantization-prequantization}
+
+对辛流形 $(N,\omega)$ 进行几何量子化的第一步,是在 $N$ 上构造一个带 Hermitian 联络的 Hermitian 线丛 $L$,使曲率 2-形式等于 $\omega/\hbar$.定理~\ref{thm:hermitian-line-bundle-existence} 给出了此类线丛存在的条件.
+
+\begin{definition}[可量子化的辛流形]
+\label{def:quantizable-symplectic-manifold}
+若对 $N$ 中每个闭曲面 $S$ 都有
+\[
+ \frac{1}{2\pi\hbar}\int_S\omega\in\mathbb Z,
+ \label{eq:quantizable-integrality}
+\]
+则称辛流形 $(N,\omega)$(对于给定的 $\hbar$)是可量子化的.
+\end{definition}
+
+注意,如果 $(N,\omega)$ 对某个 Planck 常数值 $\hbar_0$ 可量子化,那么对每个正整数 $k$,它对 $\hbar=\hbar_0/k$ 也可量子化.事实上,若 $L$ 是曲率为 $\omega/\hbar_0$ 的带联络 Hermitian 线丛,则根据命题~\ref{prop:tensor-product-line-bundle-connection},$L^{\otimes k}$($L$ 的 $k$ 次张量积)是曲率为 $\omega/(\hbar_0/k)$ 的带联络 Hermitian 线丛.
+
+本章余下部分均假定 $(N,\omega)$ 是可量子化的辛流形,并固定一个带 Hermitian 联络的线丛 $(L,\nabla)$,其曲率为 $\omega/\hbar$.
+
+若 $L$ 是辛流形 $N$ 上的 Hermitian 线丛,则称 $L$ 的可测截面 $s$ 是平方可积的,如果
+\[
+ \|s\|:=\left(\int_N(s_1(x),s_1(x))\,\lambda(x)\right)^{1/2}
+\]
+有限,其中 $\lambda$ 是 $N$ 上的 Liouville 体积形式.对 $L$ 的两个平方可积截面 $s_1,s_2$,定义内积
+\[
+ \langle s_1,s_2\rangle
+ =\int_N(s_1(x),s_2(x))\,\lambda(x).
+ \label{eq:line-bundle-inner-product}
+\]
+这里用圆括号表示两个截面 $s_1(x),s_2(x)$ 的逐点内积,它是 $N$ 上的函数;用尖括号表示截面的整体内积,它是一个数.
+
+\begin{definition}[预量子 Hilbert 空间]
+\label{def:prequantum-hilbert-space-manifold}
+$N$ 的预量子 Hilbert 空间是 $L$ 的平方可积截面的等价类空间,其中两个截面关于 Liouville 体积测度几乎处处相等时视为等价.
+\end{definition}
+
+\begin{definition}[流形上的预量子算子]
+\label{def:prequantum-operator-manifold}
+若 $f$ 是 $N$ 上光滑的复值函数,则预量子算子 $Q_{\mathrm{pre}}(f)$ 是预量子 Hilbert 空间上的无界算子,定义为
+\[
+ Q_{\mathrm{pre}}(f)=i\hbar\nabla_{X_f}+f,
+ \label{eq:manifold-prequantum-operator}
+\]
+其中 $f$ 表示乘以 $f$ 的算子.
+\end{definition}
+
+\begin{proposition}[预量子算子的对称性]
+\label{prop:prequantum-manifold-symmetric}
+\label{prop:connection-flow}
+若 $f$ 为实值函数,则 $Q_{\mathrm{pre}}(f)$ 在 $L$ 的光滑紧支集截面空间上是对称的.
+\end{proposition}
+
+\begin{proof}
+设 $s_1,s_2$ 是 $L$ 的光滑紧支集截面,令 $\Phi_f^t$ 为 $f$ 生成的 Hamilton 流.对充分小的 $t$,$s_1,s_2$ 的支集中的每一点都包含在 $\Phi_f^t$ 的定义域中.此外,由 Liouville 定理,
+\[
+ \int_N[(s_1,s_2)\circ\Phi_f^t],\lambda
+\]
+与 $t$ 无关.对该关系关于 $t$ 求导,并在 $t=0$ 处取值,由式~\eqref{eq:hermitian-connection} 得
+\[
+ 0=\int_N\bigl[(\nabla_{X_f}s_1,s_2)+(s_1,\nabla_{X_f}s_2)\bigr],\lambda.
+\]
+因此,$\nabla_{X_f}$ 在光滑紧支集截面空间上是反对称算子,从而 $Q_{\mathrm{pre}}(f)$ 是对称的.
+\end{proof}
+
+由协变导数的乘积法则和恒等式 $X_f(f)=\{f,f\}=0$,可知 $Q_{\mathrm{pre}}(f)$ 的两个项对易.因此,我们自然会期待 $e^{itQ_{\mathrm{pre}}(f)}$ 分解为两个指数的乘积.其中一个指数就是 $e^{itf}$,另一个则可以构造为沿 $X_f$ 生成的流进行“平行输运”.因此,如果 $f$ 生成的流是完备的,就可以使用 Stone 定理,把 $Q_{\mathrm{pre}}(f)$ 构造为一个自伴算子,其定义域包含光滑紧支集截面空间.
+
+\begin{proposition}[流形上的预量子交换关系]
+\label{prop:prequantum-manifold-commutator}
+对任意 $f,g\in C^\infty(N)$,有
+\[
+ \frac1{i\hbar}[Q_{\mathrm{pre}}(f),Q_{\mathrm{pre}}(g)]
+ =Q_{\mathrm{pre}}(\{f,g\}),
+ \label{eq:manifold-prequantum-commutator}
+\]
+其中等式是在 $L$ 的光滑截面空间上作为算子成立的.
+\end{proposition}
+
+\begin{proof}
+论证与 $\mathbb R^{2n}$ 情形的命题~\ref{prop:prequantum-commutator} 完全相同.
+\end{proof}
+
+正如我们在第 22.3 节的 $\mathbb R^{2n}$ 情形中已经看到的,预量子 Hilbert 空间对于把它视为 $N$ 的量子化而言“大得过头了”.
+
+\section{极化}
+\label{sec:polarizations}
+
+在 $\mathbb R^n$ 的情形中,我们有位置、动量和全纯子空间(定义~\ref{def:quantum-polarizations-euclidean}),它们分别由只依赖 $x$、$p$ 或 $z$ 的函数组成;这里“只依赖”的含义是,这些函数在 $p$、$x$ 或 $\bar z$ 方向的协变导数为零.在每一种表示中,相应的“基本可观测量”(分别是 $x_j$、$p_j$ 和 $z_j$)都简单地作为乘法算子作用.
+
+为了把这个构造推广到 $2n$ 维辛流形 $N$,可以设想在 $N$ 上选择 $n$ 个“独立”的函数 $\alpha_1,\ldots,\alpha_n$,即在每一点 $d\alpha_1,\ldots,d\alpha_n$ 都线性无关.假设这些函数 Poisson 对易,$\{\alpha_j,\alpha_k\}=0$;这样,期待 $\alpha_j$ 的量子化能够作为(对易的)乘法算子就是合理的.对每个 $z\in N$,令 $P_z$ 为使 $\alpha_j$ 保持常数的 $n$ 维方向空间,也就是 $d\alpha_1,\ldots,d\alpha_n$ 的核的交.由于允许 $\alpha_j$ 取复值,$P_z$ 应看作复化切空间 $T_z^{\mathbb C} N$ 的子空间.我们的想法是,量子 Hilbert 空间应由预量子线丛中沿 $P$ 的方向协变常数的截面组成.
+
+在每一点 $z$,Hamilton 向量场 $X_{\alpha_j}$ 都属于 $P_z$,因为
+\[
+ d\alpha_j(X_{\alpha_k})=X_{\alpha_k}(\alpha_j)=\{\alpha_k,\alpha_j\}=0.
+\]
+此外,由于 $d\alpha_j$ 线性无关,$X_{\alpha_j}$ 也线性无关;这是因为辛形式给出的切空间与余切空间之间的同构把 $d\alpha_j$ 变为 $X_{\alpha_j}$.因此按维数计算,$X_{\alpha_j}$ 在每一点实际张成 $P_z$.又有
+\[
+ \omega(X_{\alpha_j},X_{\alpha_k})=-\{\alpha_j,\alpha_k\}=0,
+\]
+所以 $\omega$ 在 $P_z$ 上恒为零.进一步,若 $X,Y$ 是处处取值于 $P$ 的向量场,则可写成
+\[
+ X=a_j(z)X_{\alpha_j},\qquad Y=b_j(z)X_{\alpha_j}.
+\]
+由于 $[X_{\alpha_j},X_{\alpha_k}]=X_{\{\alpha_j,\alpha_k\}}=0$,有
+\[
+ [X,Y]=a_j(z)X_{\alpha_j}(b_k)X_{\alpha_k}
+ -b_k(z)X_{\alpha_k}(a_j)X_{\alpha_j},
+\]
+因此,两个取值于 $P$ 的向量场的交换子仍取值于 $P$.
+
+\begin{definition}[Lagrange 子空间]
+\label{def:lagrangian-subspace}
+对 $z\in N$,若 $P\subset T_zN$ 是一个满足 $\dim P=n$ 且对所有 $X,Y\in P$ 都有 $\omega(X,Y)=0$ 的子空间,则称 $P$ 为 Lagrange 子空间.
+\end{definition}
+
+\begin{definition}[极化]
+\label{def:polarization}
+辛流形 $N$ 的一个极化,是在每一点 $z\in N$ 选择一个 Lagrange 子空间 $P_z\subset T_z^{\mathbb C} N$,并满足以下两个条件:
+\begin{enumerate}
+\item 若复向量场 $X,Y$ 在每一点 $z$ 都属于 $P_z$,则 $[X,Y]$ 也在每一点属于 $P_z$;
+\item $P_z\cap\overline{P_z}$ 的维数为常数.
+\end{enumerate}
+第一条称为可积性;我们在定义前的讨论中已经说明了为何需要这一条件.第二条是防止某些构造(例如配对映射)出现问题的技术条件.(在实际工作中,有时必须处理违反第二条的“极化”,此时需要格外小心.)
+\end{definition}
+
+上面的讨论有一个小小的不准确之处:出于纯粹约定上的原因,量子 Hilbert 空间定义为沿 $\overline P$ 而不是沿 $P$ 协变常数的截面空间.因此,$P$ 严格说应当是截面保持常数方向空间的复共轭.不过,这一约定不影响极化的定义,因为若 $P$ 满足定义~\ref{def:polarization} 的条件,$\overline P$ 也满足.
+
+\begin{example}[余切丛的竖直极化]
+\label{ex:vertical-polarization}
+设 $M$ 是任意光滑流形,令 $N=T^*M$,并赋予其典范 2-形式 $\omega$(例~\ref{ex:cotangent-canonical-forms}).对每个 $z\in T^*M$,令 $P_z$ 为纤维 $T_z^*M$ 的切空间的复化.则 $P$ 是 $T^*M$ 上的一个极化,称为竖直极化.
+\end{example}
+
+\begin{proof}
+若 $\{x^j\}$ 是 $M$ 上的局部坐标系,记 $\{x^j,p_j\}$ 为 $T^*M$ 上相应的局部坐标系.典范 2-形式为 $\omega=dp_j\wedge dx^j$.在每一点 $z\in T^*M$,竖直子空间 $P_z$ 由向量 $\partial/\partial p_j$ 张成.由于
+\[
+ \omega\left(\frac{\partial}{\partial p_j},\frac{\partial}{\partial p_k}\right)=0,
+\]
+可知 $P_z$ 是 Lagrange 子空间.此外,每一点都有 $P_z=\overline{P_z}$,故 $\dim(P_z\cap\overline{P_z})=n=\dim M$ 为常数.最后,若两个向量场都是形如 $f_j(x,p)\partial/\partial p_j$ 的线性组合,则它们的交换子仍是 $\partial/\partial p_j$ 的线性组合,这证明了 $P$ 的可积性.也可以由 Frobenius 定理的简单方向看出这一点,因为 $T^*M$ 的纤维是 $P$ 的积分子流形.
+\end{proof}
+
+我们可以区分两类特殊极化:纯实极化(即对所有 $z\in N$ 都有 $P_z=\overline{P_z}$)和纯复极化(即对所有 $z\in N$ 都有 $P_z\cap\overline{P_z}=\{0\}$).例如,竖直极化是纯实的.
+
+若 $P$ 是纯实极化,则 $P$ 的可积性由 Frobenius 定理推出:$N$ 中每一点都包含在唯一的子流形 $R$ 中,而 $R$ 在 $P$ 的连通积分子流形类中是极大的.($P$ 的积分子流形 $R$ 是指满足对所有 $z\in R$ 都有 $T_z^{\mathbb C} R=P_z$ 的子流形.)我们把纯实极化的极大连通积分子流形称为极化的叶.
+
+一般来说,这些叶未必是 $N$ 的嵌入子流形.例如,令 $N=S^1\times S^1$,$\omega=d\theta\wedge d\phi$,其中 $\theta,\phi$ 是两个 $S^1$ 的角坐标.用基 $\{\partial/\partial\theta,\partial/\partial\phi\}$ 把每一点的切空间认作 $\mathbb R^2$.固定一个无理数 $a$,令 $P_z$ 为向量
+\[
+ \frac{\partial}{\partial\theta}+a\frac{\partial}{\partial\phi}
+\]
+所张成的子空间.此时每个叶都是
+\[
+ \{(e^{i\theta_0+it},e^{iat}):t\in\mathbb R\}
+\]
+的形式,其中 $\theta_0$ 固定;它是 $S^1\times S^1$ 中的一条“无理直线”.每个叶都稠密于 $S^1\times S^1$,因而不是嵌入子流形.若希望相对于实极化成功进行几何量子化,就必须避开这类病态例子.关于实极化结构的更多信息见文献~\cite{Woodhouse1992} 第 4.5--4.7 节.
+
+现在考察纯复极化的一些初等结果.
+
+\begin{proposition}[纯复极化给出的复结构]
+\label{prop:complex-polarization-complex-structure}
+设 $P$ 是 $N$ 上的纯复极化.对每个 $z\in N$,令 $J_z:T_z^{\mathbb C} N\to T_z^{\mathbb C} N$ 为满足
+\[
+ J_z=iI\quad\text{在 }P_z\text{ 上},\qquad
+ J_z=-iI\quad\text{在 }\overline{P_z}\text{ 上}
+\]
+的唯一线性映射.则 $J_z$ 是实的(即把实切空间映到自身),并且 $\omega$ 在 $J_z$ 下不变,即对所有 $X_1,X_2\in T_z^{\mathbb C} N$,
+\[
+ \omega(J_zX_1,J_zX_2)=\omega(X_1,X_2).
+\]
+\end{proposition}
+
+\begin{proof}
+由于 $J_z$ 在 $P_z$ 上的限制是其在 $\overline{P_z}$ 上限制的复共轭,$J_z$ 与复共轭对易,因而把满足 $\overline X=X$ 的实向量映到实向量.另一方面,$P_z$ 是 Lagrange 子空间且 $\omega$ 为实的,所以 $\overline{P_z}$ 也是 Lagrange 子空间.设 $X_1=Y_1+Z_1$,$X_2=Y_2+Z_2$,其中 $Y_j\in P_z$、$Z_j\in\overline{P_z}$.则
+\[
+\begin{aligned}
+ \omega(J_zX_1,J_zX_2)
+ &=\omega(iY_1,iY_2)+\omega(iY_1,-iZ_2)\\
+ &\quad+\omega(-iZ_1,iY_2)+\omega(-iZ_1,-iZ_2)\\
+ &=\omega(Y_1,Z_2)+\omega(Z_1,Y_2).
+\end{aligned}
+\]
+对 $\omega(X_1,X_2)$ 作同样计算得到相同结果.
+\end{proof}
+
+一个 $2n$ 维流形 $N$ 上的复结构,是一族覆盖 $N$ 的“全纯”坐标系,并要求坐标系之间的过渡映射作为 $\mathbb R^{2n}\cong\mathbb C^n$ 的开集之间的映射是全纯的.在每个点 $z\in N$,由全纯坐标实部与虚部 $x_j,y_j$ 定义
+\[
+ J_z\left(\frac{\partial}{\partial x_j}\right)=\frac{\partial}{\partial y_j},
+ \qquad
+ J_z\left(\frac{\partial}{\partial y_j}\right)=-\frac{\partial}{\partial x_j},
+\]
+这个映射与全纯坐标的选择无关,并满足 $J_z^2=-I$.在每一点,复化切空间可分解为 $J_z$ 特征值为 $i$ 与 $-i$ 的特征子空间,分别称为 $(1,0)$ 与 $(0,1)$ 切空间.
+
+另一方面,若 $N$ 是任意 $2n$ 维流形,$J$ 是每个切空间上的线性映射组成的光滑变化族,并满足对所有 $z$ 都有 $J_z^2=-I$,则称 $J$ 为近复结构.给定近复结构,可以按 $J$ 的 $\pm i$ 特征值把复化切空间分解.Newlander--Nirenberg 定理断言:如果 $+i$ 特征子空间族是可积的(即满足定义~\ref{def:polarization} 的第 1 条),则 $N$ 上存在唯一复结构,使这些特征子空间成为 $(1,0)$ 切空间.
+
+纯复极化 $P$ 会产生一个复结构:由命题~\ref{prop:complex-polarization-complex-structure} 与 Newlander--Nirenberg 定理,存在唯一复结构,使对所有 $z\in N$,$P_z$ 都是 $(1,0)$ 切空间.
+
+我们在 $\mathbb R^{2n}$ 情形中已经看到,某些纯复极化比另一些表现更好(比较式~\eqref{eq:holomorphic-polarized-function} 与式~\eqref{eq:opposite-holomorphic-polarization}).刻画“良好”极化的几何条件如下.
+
+\begin{definition}[Kähler 极化]
+\label{def:kahler-polarization}
+对任意纯复极化 $P$,令 $J$ 为满足 $J_z=iI$(在 $P_z$ 上)和 $J_z=-iI$(在 $\overline{P_z}$ 上)的唯一近复结构.若双线性型
+\[
+ g(X,Y):=\omega(X,J_zY)
+ \label{eq:kahler-metric-from-polarization}
+\]
+在每个 $z\in N$ 都正定,则称 $P$ 为 Kähler 极化.
+\end{definition}
+
+由 $\omega$ 的 $J_z$ 不变性容易验证,任意纯复极化的式~\eqref{eq:kahler-metric-from-polarization} 中的双线性型 $g$ 都是对称的.
+
+例如,固定 $\alpha>0$,通过 $z=x-i\alpha p$ 把 $\mathbb R^2$ 认作 $\mathbb C$.若令 $P_z$ 为式~\eqref{eq:holomorphic-coordinates} 中的向量 $\partial/\partial z$ 所张成的空间,则 $P$ 是 Kähler 极化(见练习~\ref{ex:kahler-polarization-euclidean}).
+
+\section{不使用半形式的量子化}
+\label{sec:quantization-without-half-forms}
+
+要构造预量子 Hilbert 空间,必须在 $(N,\omega)$ 上选择曲率为 $\omega/\hbar$ 的线丛 $(L,\nabla)$.当 $\omega/\hbar$ 是整 2-形式时,这样的线丛存在;若 $N$ 单连通,它在等价意义下唯一.为了进入量子 Hilbert 空间,还必须作一个重要的额外选择,即在 $N$ 上选择极化 $P$.我们首先尝试把与 $P$ 关联的量子 Hilbert 空间定义为 $(L,\nabla)$ 中沿 $\overline P$ 方向协变常数的截面空间.对于纯复极化,这种方法工作得相当好;但对于纯实极化,通常不存在满足这一条件的平方可积截面.(事实上,在第 22.4 节的 $\mathbb R^{2n}$ 情形中已经见过这个问题.)下一节将引入半形式来处理平方可积性失败的问题.
+
+本章余下部分固定一个极化 $P$.
+
+\subsection{一般情形}
+\label{subsec:polarization-general-case}
+
+正如前面所说,通常考虑沿 $\overline P$ 而非 $P$ 方向协变常数的截面.
+
+\begin{definition}[极化截面与量子 Hilbert 空间]
+\label{def:polarized-section}
+$L$ 的光滑截面 $s$ 称为相对于 $P$ 的极化截面,如果对每个取值于 $\overline P$ 的向量场 $X$,
+\[
+ \nabla_Xs=0.
+ \label{eq:polarized-section}
+\]
+与 $P$ 关联的量子 Hilbert 空间定义为 $L$ 的光滑平方可积极化截面空间在预量子 Hilbert 空间中的闭包.
+\end{definition}
+
+如 Euclidean 情形一样,只要预量子算子 $Q_{\mathrm{pre}}(f)$ 保持极化截面空间不变,我们就把它限制到量子 Hilbert 空间上.
+
+\begin{definition}[可量子化函数]
+\label{def:quantizable-function}
+$N$ 上光滑的复值函数 $f$ 称为相对于极化 $P$ 可量子化,如果 $Q_{\mathrm{pre}}(f)$ 保持相对于 $P$ 极化的光滑截面空间不变.
+\end{definition}
+
+\begin{definition}[保持极化的向量场]
+\label{def:polarization-preserving-vector-field}
+可能取复值的向量场 $X$ 称为保持极化 $P$,如果对每个取值于 $\overline P$ 的向量场 $Y$,交换子 $[X,Y]$ 也取值于 $\overline P$.
+\end{definition}
+
+注意,如果 $X$ 取值于 $\overline P$,则由极化的可积性,$X$ 保持 $P$.不过,通常还有许多不取值于 $\overline P$、但仍保持 $P$ 的向量场.若 $X$ 是实向量场,则 $[X,Y]$ 就是 $Y$ 沿 $X$ 的 Lie 导数.此时不难证明,$X$ 保持 $P$ 当且仅当 $X$ 的流保持 $P$,也就是说,对流 $\Phi$,
+\[
+ (\Phi_t)_*(P_z)=P_{\Phi_t(z)}
+\]
+对所有 $z,t$ 成立.此外,当 $X$ 为实向量场时,$X$ 保持 $P$ 当且仅当 $X$ 保持 $\overline P$.
+
+\begin{example}[余切丛竖直极化的可量子化函数]
+\label{ex:vertical-quantizability}
+设 $N=T^*M$,$P$ 是 $N$ 上的竖直极化.则 Hamilton 向量场 $X_f$ 保持 $P$,当且仅当
+\[
+ f=f_1+f_2,
+\]
+其中 $f_1$ 在每条纤维上为常数,$f_2$ 在每条纤维上是线性的.
+\end{example}
+
+\begin{proof}
+在局部坐标 $\{x^j,p_j\}$ 中,取值于 $P$ 的向量场具有 $X=g_j\partial/\partial p_j$ 的形式.因此
+\[
+ [X_f,X]
+ =\left[\frac{\partial f}{\partial p_j}\frac{\partial}{\partial x^j}
+ -\frac{\partial f}{\partial x^j}\frac{\partial}{\partial p_j},
+ g_k\frac{\partial}{\partial p_k}\right].
+\]
+这个交换子包含三个只涉及 $p$ 导数的“好”项,以及如下的“坏”项:
+\[
+ -g_k\frac{\partial^2f}{\partial p_k\partial p_j}
+ \frac{\partial}{\partial x^j}.
+\]
+若对所有 $j,k$ 都有 $\partial^2f/(\partial p_k\partial p_j)=0$,坏项就消失,$[X_f,X]$ 再次取值于 $P$.反过来,若希望坏项对 $g_j$ 的每一种选择都消失,就必须对所有 $j,k$ 有 $\partial^2f/(\partial p_k\partial p_j)=0$.因此,对每个固定的 $x$,$f$ 只能包含与 $p$ 无关的项和关于 $p$ 的一次项.
+\end{proof}
+
+下面给出函数可量子化的条件.
+
+\begin{theorem}[保持共轭极化的 Hamilton 向量场给出可量子化函数]
+\label{thm:polarization-preserving-quantizable}
+对 $N$ 上任意光滑复值函数 $f$,如果 Hamilton 向量场 $X_f$ 保持 $\overline P$,则 $f$ 是可量子化的.
+\end{theorem}
+
+由于不要求 $f$ 实值,$X_f$ 保持 $\overline P$ 并不等价于 $X_f$ 保持 $P$.
+
+\begin{proof}
+设 $s$ 是极化截面.我们对 $s$ 施加 $Q_{\mathrm{pre}}(f)$,再对取值于 $\overline P$ 的某个向量场 $X$ 施加 $\nabla_X$,以检验 $Q_{\mathrm{pre}}(f)s$ 是否仍为极化截面.先计算 $\nabla_X$ 与 $Q_{\mathrm{pre}}(f)$ 的交换子:
+\[
+\begin{aligned}
+\left[\nabla_X,Q_{\mathrm{pre}}(f)\right]
+ &=i\hbar[\nabla_X,\nabla_{X_f}]+[\nabla_X,f]\\
+ &=i\hbar\left(\nabla_{[X,X_f]}-\frac{i}{\hbar}\omega(X,X_f)\right)+X(f)\\
+ &=i\hbar\nabla_{[X,X_f]}.
+ \label{eq:polarization-commutator}
+\end{aligned}
+\]
+这里用到了
+\[
+ \omega(X,X_f)=-\omega(X_f,X)=-df(X)=-X(f),
+\]
+其中最后一个等式来自定义~\ref{def:hamiltonian-vector-field}.由于 $X_f$ 保持 $\overline P$,交换子 $[X,X_f]$ 仍取值于 $\overline P$,于是对每个极化截面 $s$,
+\[
+ \nabla_X(Q_{\mathrm{pre}}(f)s)
+ =Q_{\mathrm{pre}}(f)\nabla_Xs+i\hbar\nabla_{[X,X_f]}s=0.
+\]
+因此 $Q_{\mathrm{pre}}(f)s$ 仍为极化截面.
+\end{proof}
+
+定理~\ref{thm:polarization-preserving-quantizable} 的逆命题一般不成立.毕竟,正如下面的小节将看到的,对给定极化,可能根本不存在非零的全局极化截面;此时任意函数都是可量子化的.另一方面,可以证明,如果 $Q_{\mathrm{pre}}(f)$ 保持局部定义的极化截面空间,则 $f$ 生成的 Hamilton 流必保持 $\overline P$.一旦知道存在足够多的局部极化截面,这个结果就可由定理~\ref{thm:polarization-preserving-quantizable} 证明中的相同推理得到.纯实和纯复极化的这种存在性结果将在下面小节建立;一般情形见文献~\cite{Woodhouse1992} 定义 9.1.1 后的讨论.
+
+定理~\ref{thm:polarization-preserving-quantizable} 的一个特殊情形是“极化函数”,即对所有取值于 $\overline P$ 的向量场 $X$ 都满足 $X(f)=0$ 的函数.对这种 $f$,预量子算子在量子空间上的作用正如引言中所预期的,只是乘以 $f$.
+
+\begin{proposition}[极化函数的量子化]
+\label{prop:polarized-observable}
+若 $f$ 是 $N$ 上的光滑复值函数,并且沿 $\overline P$ 方向的导数均为零,则 $Q_{\mathrm{pre}}(f)$ 保持 $P$-极化截面空间不变,且其在该空间上的限制就是乘以 $f$.
+\end{proposition}
+
+\begin{proof}
+若 $f$ 沿 $\overline P$ 方向的导数为零,则对 $X\in\overline P$,有
+\[
+ 0=X(f)=df(X)=\omega(X_f,X),
+\]
+这意味着 $X_f$ 属于 $\overline P$ 的 $\omega$-正交补.但由于 $\overline P$ 是 Lagrange 子空间,该正交补就是 $\overline P$ 本身.因此 $X_f\in\overline P$,特别地,$X_f$ 保持 $\overline P$,于是由定理~\ref{thm:polarization-preserving-quantizable},$f$ 可量子化.此外,对任意 $P$-极化截面 $s$,$\nabla_{X_f}s=0$,所以 $Q_{\mathrm{pre}}(f)s$ 的公式中只剩下 $fs$ 项.
+\end{proof}
+
+\subsection{实极化}
+\label{subsec:real-polarizations}
+
+在 $\mathbb R^{2n}$ 情形中,我们已经在命题~\ref{prop:quantum-polarization-functions} 中计算了竖直极化的极化截面空间.正如当时所观察的,没有非零极化截面在 $\mathbb R^{2n}$ 上平方可积.对任意余切丛 $N=T^*M$ 上的竖直极化,同样容易看出这个困难.在第~\ref{sec:half-forms-real} 节中,我们将引入半形式来处理平方可积性失败的问题.
+
+现在考察一般实极化的性质.我们将看到,极化截面总是局部存在,但未必全局存在.
+
+\begin{proposition}[实极化截面的局部存在性]
+\label{prop:local-real-polarized-section}
+若 $P$ 是 $N$ 上的纯实极化,则对任意 $z_0\in N$,存在 $z_0$ 的邻域 $U$ 以及定义在 $U$ 上的 $P$-极化截面 $s$,使 $s(z_0)\ne0$.
+\end{proposition}
+
+\begin{proof}
+由 Frobenius 定理的局部形式,可以找到 $z_0$ 的邻域 $U$ 和一个把 $U$ 微分同胚到 $\mathbb R^n\times\mathbb R^n$ 原点邻域 $V$ 的映射 $\Phi$,使得在 $\Phi$ 下,极化 $P$ 看起来像竖直极化.也就是说,对每个 $z\in U$,$P_z$ 在 $\Phi_*(z)$ 下的像正是由第二个 $\mathbb R^n$ 上的向量 $\partial/\partial y_1,\ldots,\partial/\partial y_n$ 张成的空间.缩小 $U$ 后,可以假定 $L$ 在 $U$ 上可平凡化,且 $V=B_1\times B_2$,其中 $B_1,B_2$ 分别是两个 $\mathbb R^n$ 中以原点为中心的球.
+
+设 $\theta$ 是 $L$ 在 $U$ 上某个等距平凡化的联络 1-形式,令 $\widetilde\theta=(\Phi^{-1})^*\theta$.由于 $P_z$ 是 Lagrange 子空间,$\widetilde\theta$ 限制在每个形如 $\{x\}\times B_2$ 的集合上都是闭的.因为 $B_2$ 单连通,对每个 $x\in B_1$,存在 $B_2$ 上的函数 $f_x$,使 $\widetilde\theta$ 在 $\{x\}\times B_2$ 上的限制为 $df_x$.若令 $f_x(0)=0$,则 $f_x(y)$ 关于 $(x,y)$ 光滑,因为它只是沿竖直方向从 0 积分 $\widetilde\theta$ 得到的.
+
+取 $B_1$ 上任意满足 $\phi(0)\ne0$ 的光滑函数 $\phi$,在 $B_1\times B_2$ 上定义
+\[
+ \psi(x,y)=\phi(x)e^{if_x(y)/\hbar}.
+\]
+对任意“竖直”向量场 $X$(即带光滑系数的 $\partial/\partial y_j$ 的线性组合),有
+\[
+ X\psi=\frac{i}{\hbar}(Xf_x)\psi
+ =\frac{i}{\hbar}d f_x(X)\psi
+ =\frac{i}{\hbar}\widetilde\theta(X)\psi.
+\]
+因此
+\[
+ \left(X-\frac{i}{\hbar}\widetilde\theta(X)\right)\psi=0,
+\]
+从而函数 $\widehat\psi:=\psi\circ\Phi$ 在给定局部平凡化中表示 $U$ 上的一个极化截面.
+\end{proof}
+
+纯实极化的非零全局极化截面存在性是一个更精细的问题.若 $P$ 的叶不是嵌入的,就几乎不可能找到全局极化截面.即便叶是嵌入的,也存在障碍.由于叶的切空间是 Lagrange 子空间,$L$ 限制到叶 $R$ 上的曲率为零.然而,$R$ 中仍可能存在 holonomy 非平凡的环路.毕竟,如果 $R$ 中的环路 $\gamma$ 不是 $R$ 中某个曲面 $S$ 的边界,就不能应用式~\eqref{eq:holonomy-curvature} 来推出 $\gamma$ 的 holonomy 为平凡.一个叶 $R$ 上所有 holonomy 构成的集合,可以理解为从 $\pi_1(R)$ 到 $S^1$ 的同态.若 $R$ 中存在 holonomy 非平凡的环路,则 $L$ 的任何极化截面都必须在 $R$ 上恒为零.
+
+\begin{definition}[Lagrange 子流形与 Bohr--Sommerfeld 叶]
+\label{def:bohr-sommerfeld}
+$N$ 的子流形 $R$ 称为 Lagrange 子流形,如果 $\dim R=n$,且对每个 $z\in R$,$T_zR$ 都是 $T_zN$ 的 Lagrange 子空间.若 $L$ 在 $R$ 中每个环路上的 holonomy 都是平凡的,则称 $R$(相对于 $L$)为 Bohr--Sommerfeld 子流形.
+\end{definition}
+
+\begin{conclusion}[实极化截面的叶上消失]
+\label{con:real-polarized-vanishing}
+若纯实极化 $P$ 的叶是嵌入子流形,则任意极化截面都在每个非 Bohr--Sommerfeld 叶上恒为零.
+\end{conclusion}
+
+\begin{example}[圆柱上的 Bohr--Sommerfeld 叶]
+\label{ex:circle-bohr-sommerfeld}
+令 $N=S^1\times\mathbb R$,辛形式为 $\omega=dx\wedge d\phi$,其中 $x$ 是 $\mathbb R$ 上的线性坐标,$\phi$ 是 $S^1$ 上的角坐标.令 $L$ 为 $N$ 上的平凡线丛,把截面认作光滑函数.取 $\theta=x\,d\phi$,在 $L$ 上定义
+\[
+ \nabla_X=X-\frac{i}{\hbar}\theta(X),
+\]
+并令 $P$ 为叶 $S^1\times\{x\}$($x\in\mathbb R$)组成的纯实极化.则 $S^1\times\{x\}$ 是 Bohr--Sommerfeld 的,当且仅当 $x/\hbar$ 是整数.
+\end{example}
+
+特别地,$L$ 不存在非零的光滑极化截面.
+
+\begin{proof}
+在给定叶 $S^1\times\{x\}$ 上局部定义截面
+\[
+ s(\phi)=ce^{ix\phi/\hbar}
+\]
+(其中 $c\ne0$ 为常数),直接验证可得 $\nabla_{\partial/\partial\phi}s=0$.绕圆一周后,截面值变为起始值乘以 $e^{2\pi ix/\hbar}$.因此,$S^1\times\{x\}$ 上的 holonomy 平凡,当且仅当 $x/\hbar$ 为整数.于是,一个极化截面必须在所有 $x/\hbar$ 不是整数的叶上消失.由于这些叶在 $N$ 中构成稠密集合,任何光滑极化截面都必须恒等于零.
+\end{proof}
+
+即使在例~\ref{ex:circle-bohr-sommerfeld} 这种不存在光滑极化截面的情形中,仍可以考虑支撑在 Bohr--Sommerfeld 叶上的“分布型”极化截面,具体见文献~\cite{Woodhouse1992} 第 251--252 页.
+
+\subsection{复极化}
+\label{subsec:complex-polarizations}
+
+在命题~\ref{prop:quantum-polarization-functions} 中,我们计算了一类正的、平移不变的 $\mathbb R^{2n}$ 极化截面空间,即 $P_z$ 由式~\eqref{eq:holomorphic-coordinates} 中的向量 $\partial/\partial z_j$ 张成.相较于竖直极化,这里的情形更好,因为存在在 $\mathbb R^{2n}$ 上平方可积的非零极化截面.不过,若取由 $\partial/\partial\bar z_j$ 张成的极化,则根据式~\eqref{eq:opposite-holomorphic-polarization},不存在非零的平方可积极化截面.这说明定义~\ref{def:kahler-polarization} 中正性条件的重要性.
+
+下一个例子考虑单位圆盘 $D$,并赋予其在把 $D$ 映到自身的分式线性变换群下不变的辛形式(除常数因子外唯一).在这种情形中,量子 Hilbert 空间可认作一个带权 Bergman 空间,即关于形如 $(1-|z|^2)^\nu dx\,dy$ 的测度的 $D$ 上全纯函数 $L^2$ 空间.
+
+\begin{example}[单位圆盘上的复极化]
+\label{ex:disk-polarization}
+令 $N$ 为 $\mathbb R^2$ 中的单位圆盘 $D$,赋予辛形式
+\[
+ \omega=4(1-|z|^2)^{-2}\,dx\wedge dy
+ =(1-r^2)^{-2}r\,dr\wedge d\phi,
+\]
+其中 $(r,\phi)$ 是通常的极坐标.令 $L$ 为 $D$ 上的平凡线丛,联络为
+\[
+ \nabla_X=X-\frac{i}{\hbar}\theta(X),
+\]
+其中 $\theta$ 是 $\omega$ 的辛势:
+\[
+ \theta=\frac{2r^2}{1-r^2}\,d\phi.
+\]
+取复极化 $P_z=\operatorname{Span}(\partial/\partial z)$,其中 $z=x-iy$.此时,极化截面具有
+\[
+ s(z)=F(z)(1-|z|^2)^{1/\hbar}
+\]
+的形式,其中 $F$ 是全纯函数.此类截面的范数为
+\[
+ \|s\|^2=4\int_D|F(z)|^2(1-|z|^2)^{2/\hbar-2}\,dx\,dy.
+\]
+\end{example}
+
+与平面情形一样,看似不自然地取 $z=x-iy$ 是为了得到 Kähler 极化.若取 $z=x+iy$,则全纯截面会具有 $F(z)(1-|z|^2)^{-1/\hbar}$ 的形式;此时不存在非零的平方可积全纯截面.
+
+\begin{proof}
+见练习~\ref{ex:disk-polarization-calculation}.
+\end{proof}
+
+现在考察一般的纯复极化.回忆命题~\ref{prop:complex-polarization-complex-structure} 与 Newlander--Nirenberg 定理:$N$ 具有唯一复结构,使对所有 $z\in N$,$P_z$ 都是 $T_z^{\mathbb C} N$ 的 $(1,0)$ 子空间.与纯实情形一样,局部极化截面总是存在.
+
+\begin{theorem}[复极化截面的局部存在性]
+\label{thm:local-complex-polarized-section}
+若 $P$ 是 $N$ 上的纯复极化,则对每个 $z_0\in N$,存在 $z_0$ 的邻域,以及定义在该邻域上的 $P$-极化截面 $s$,使 $s(z_0)\ne0$.
+\end{theorem}
+
+本定理的证明暂时留到本小节末尾.设 $s$ 是定理中的截面,$s'$ 是另一个局部定义的 $P$-极化截面.则 $s'=fs$,其中 $f$ 是唯一的复值函数;由协变导数的乘积法则,对所有 $X\in\overline P_z$ 都有 $X(f)=0$.这意味着,相对于使 $P$ 成为 $(1,0)$ 切空间的复结构,$f$ 是全纯函数.因此,我们得到了 $L$ 的一族优选局部平凡化(即由非零局部极化截面给出的平凡化),任意两个平凡化的“比值”都是全纯函数.这就给了 $L$ 一个复流形 $N$ 上的“全纯线丛”结构,并且 $L$ 的全纯截面恰好是相对于 $P$ 的极化截面.
+
+仿照命题~\ref{prop:segal-bargmann-complete} 的证明,不难证明,在纯复极化下,平方可积极化截面空间是预量子 Hilbert 空间的闭子空间.对任意 $z\in N$,为 $L$ 在 $z$ 处的纤维选一个线性同构到 $\mathbb C$,则映射 $s\mapsto s(z)$ 是量子 Hilbert 空间上的线性泛函.仿照命题~\ref{prop:segal-bargmann-complete} 的证明,不难证明该线性泛函连续,因而可以表示为与量子 Hilbert 空间中唯一元素的内积.
+
+\begin{definition}[相干态]
+\label{def:coherent-state}
+设 $P$ 是 $N$ 上的纯复极化.对每个 $z\in N$,为 $L$ 在 $z$ 处的纤维选一个线性同构到 $\mathbb C$.相干态 $\chi_z$ 定义为量子 Hilbert 空间中唯一满足
+\[
+ s(z)=\langle\chi_z,s\rangle
+\]
+(对所有 $s$)的元素.
+\end{definition}
+
+例如,若 $N=\mathbb R^2$,极化为 $P_z=\operatorname{Span}(\partial/\partial z)$,其中 $z=x-i\alpha p$,并取辛势 $\theta=(p\,dx-x\,dp)/2$,则仿照命题~\ref{prop:holomorphic-oscillator-spectrum} 的证明,量子 Hilbert 空间自然地与 Segal--Bargmann 空间对应.在这种情形下,相干态可由命题~\ref{prop:segal-reproducing-kernel} 读出.
+
+也可能由于所选极化的不同,某些 $z$ 处 $\chi_z=0$,甚至对所有 $z\in N$ 都有 $\chi_z=0$.即使 $\chi_z\ne0$,$\chi_z$ 也只在乘以常数的意义下确定,因为必须选择 $L$ 的纤维 $L^{-1}(\{z\})$ 到 $\mathbb C$ 的同构.不过,只要 $\chi_z\ne0$,由 $\chi_z$ 张成的一维子空间就与这一选择无关.换言之,只要 $\chi_z\ne0$,$\chi_z$ 的张成空间就是射影空间 $\mathbb P(\mathcal H)$ 中一个定义良好的元素,其中 $\mathcal H$ 是量子 Hilbert 空间.
+
+回忆,若带联络的 Hermitian 线丛 $(L,\nabla)$ 的曲率为 $\omega/\hbar$,则对每个正整数 $k$,$L^{\otimes k}$ 上有一个自然的 Hermitian 联络,其曲率为 $k\omega/\hbar$.这意味着,如果 $L$ 对某个 Planck 常数 $\hbar_0$ 是预量子线丛,那么 $L^{\otimes k}$ 对 $\hbar_0/k$ 就是预量子线丛.下一个结果说明,对带 Kähler 极化的紧辛流形,当 $k$ 趋于无穷时,情形表现良好.
+
+\begin{theorem}[紧 Kähler 极化的量子空间]
+\label{thm:kahler-quantization-finite}
+设 $N$ 紧,$P$ 是 Kähler 极化.对每个正整数 $k$,令 $\mathcal H_k$ 为 $L^{\otimes k}$ 的极化截面空间.则对所有 $k$,$\mathcal H_k$ 都是有限维的.此外,当 $k$ 充分大时,有:第一,对每个 $z\in N$,相干态 $\chi_z\in\mathcal H_k$ 非零;第二,映射
+\[
+ z\longmapsto\operatorname{Span}(\chi_z)
+\]
+是 $N$ 到 $\mathbb P(\mathcal H_k)$ 的反全纯嵌入.
+\end{theorem}
+
+$\mathcal H_k$ 的有限维性是紧复流形理论中的标准结果.把 $N$ 嵌入 $\mathbb P(\mathcal H_k)$ 的结果是 Kodaira 嵌入定理,本书不予证明.Kodaira 嵌入定理特别推出,至少当 $k$ 足够大时,$L^{\otimes k}$ 存在非零的全局极化截面.由于 $L^{\otimes k}$ 对应的 Planck 常数是 $\hbar_0/k$,当 $k\to\infty$ 时 Planck 常数趋于零.因此,对大 $k$ 的 $L^{\otimes k}$ 的全纯截面研究可以看作半经典分析的一部分.
+
+现在证明定理~\ref{thm:local-complex-polarized-section},其中会用到复流形上复值微分形式的基本性质.“复值”是指允许一个 $k$-形式在 $k$ 个切向量上的取值为复数.在全纯局部坐标 $z_1,\ldots,z_n$ 中,每个形式都可写成 $dz_j$ 与 $d\bar z_j$ 的楔积.若一个形式是涉及 $p$ 个 $dz_j$ 因子和 $q$ 个 $d\bar z_j$ 因子的楔积的线性组合,则称为 $(p,q)$-形式.每个形式都能唯一分解为不同 $(p,q)$-形式的线性组合,而且这种分解与全纯坐标系的选择无关.若 $\alpha$ 是 $(p,q)$-形式,则 $d\alpha$ 是 $(p+1,q)$-形式和 $(p,q+1)$-形式的线性组合.定义算子 $\partial$ 与 $\bar\partial$,使 $\partial$ 把 $(p,q)$-形式映到 $(p+1,q)$-形式,$\bar\partial$ 把 $(p,q)$-形式映到 $(p,q+1)$-形式,且 $d=\partial+\bar\partial$.例如,
+\[
+\begin{aligned}
+ \partial\bigl(f\,dz_{j_1}\wedge\cdots\wedge dz_{j_p}
+ \wedge d\bar z_{k_1}\wedge\cdots\wedge d\bar z_{k_q}\bigr)
+ =\sum_l\frac{\partial f}{\partial z_l}\,dz_l\wedge dz_{j_1}\wedge\cdots\wedge dz_{j_p}
+ \wedge d\bar z_{k_1}\wedge\cdots\wedge d\bar z_{k_q}.
+\end{aligned}
+\]
+$\bar\partial$ 的公式类似,只需把 $(\partial f/\partial z_l)dz_l$ 换成 $(\partial f/\partial\bar z_l)d\bar z_l$.算子满足
+\[
+ \partial^2=\bar\partial^2=0,
+ \qquad
+ \partial\bar\partial=-\bar\partial\partial.
+\]
+Dolbeault 引理断言:若 $(p,q)$-形式 $\alpha$ 满足 $\partial\alpha=0$,则局部可写成 $\alpha=\partial\beta$,其中 $\beta$ 是 $(p-1,q)$-形式;若 $\bar\partial\alpha=0$,则局部可写成 $\alpha=\bar\partial\beta$,其中 $\beta$ 是 $(p,q-1)$-形式.若 $(p,0)$-形式 $\alpha$ 在全纯坐标中可写为
+\[
+ \alpha=\sum f(z)\,dz_{j_1}\wedge\cdots\wedge dz_{j_p},
+\]
+其中系数函数 $f$ 全纯,则称 $\alpha$ 为全纯的.$(p,0)$-形式全纯,当且仅当 $\bar\partial\alpha=0$.若全纯的 $(p,0)$-形式 $\alpha$ 还满足 $d\alpha=0$(等价地 $\partial\alpha=0$),则局部可写成 $\alpha=d\beta$,其中 $\beta$ 是全纯的 $(p-1,0)$-形式.
+
+设 $P$ 是纯复极化,$J$ 是使 $P_z$ 成为每一点 $(1,0)$ 切空间的近复结构.由于命题~\ref{prop:complex-polarization-complex-structure},$\omega$ 在 $J$ 下不变;由此可推出(见练习~\ref{ex:symplectic-form-type-one-one}),$\omega$ 是 $(1,1)$-形式.
+
+\begin{lemma}[局部 Kähler 势]
+\label{lem:kahler-potential}
+设 $N$ 是带近复结构 $J$ 的复流形,$\omega$ 是闭的、$J$-不变的实值 $(1,1)$-形式.则对每个点 $z_0\in N$,存在 $z_0$ 邻域上的光滑实值函数 $\kappa$,使
+\[
+ i\partial\bar\partial\kappa=\omega.
+ \label{eq:kahler-potential}
+\]
+\end{lemma}
+
+在 $N$ 为 Kähler 的情形(即 $\omega(X,JX)\ge0$),满足引理的 $\kappa$ 称为 $N$ 的(局部)Kähler 势.
+
+\begin{proof}
+由 $d\omega=(\partial+\bar\partial)\omega=0$,且 $\partial\omega$ 是 $(2,1)$-形式、$\bar\partial\omega$ 是 $(1,2)$-形式,分别得到 $\partial\omega=\bar\partial\omega=0$.由 Dolbeault 引理,存在 $z_0$ 邻域上的 $(1,0)$-形式 $\alpha$,使 $\bar\partial\alpha=\omega$.于是 $\partial\alpha$ 是满足
+\[
+ \bar\partial(\partial\alpha)=-\partial(\bar\partial\alpha)=-\partial\omega=0
+\]
+的 $(2,0)$-形式,因此 $\partial\alpha$ 实际上是全纯的 $(2,0)$-形式.
+
+又因为 $\partial(\partial\alpha)=0$,所以 $\partial\alpha$ 是闭的;于是存在可能需要缩小后的邻域,以及该邻域上的全纯 1-形式 $\eta$,使 $d\eta=\partial\eta=\partial\alpha$.因此 $\partial(\alpha-\eta)=0$,由 Dolbeault 引理存在函数 $g$,使 $\partial g=\alpha-\eta$.于是 $\alpha=\eta+\partial g$,并且
+\[
+ \omega=\bar\partial\alpha=\bar\partial\partial g=-\partial\bar\partial g,
+\]
+因为 $\bar\partial\eta=0$.令 $\kappa:=ig$,就得到 $i\partial\bar\partial\kappa=\omega$.
+
+最后,在坐标中计算可知,映射 $f\mapsto i\partial\bar\partial f$ 把实值函数映为实值 2-形式(见练习~\ref{ex:kahler-potential-reality}).由于 $\omega$ 为实的,算子 $i\partial\bar\partial$ 必须把 $\kappa$ 的虚部映为零.因此用 $\kappa$ 的实部替换 $\kappa$ 不会改变 $i\partial\bar\partial\kappa$.
+\end{proof}
+
+\begin{proof}[定理~\ref{thm:local-complex-polarized-section} 的证明]
+取引理~\ref{lem:kahler-potential} 中的 $\kappa$,令实值 1-形式
+\[
+ \theta=\operatorname{Im}(\partial\kappa)
+ =\frac{1}{2i}(\partial\kappa-\bar\partial\kappa).
+ \label{eq:complex-polarization-symplectic-potential}
+\]
+由 $\partial^2=\bar\partial^2=0$,有
+\[
+ d\theta=(\partial+\bar\partial)\theta
+ =\frac{1}{2i}(\partial\bar\partial\kappa-\bar\partial\partial\kappa)
+ =\omega.
+\]
+因此 $\theta$ 是 $\omega$ 的辛势.由命题~\ref{prop:symplectic-potential-local-trivialization},可以找到 $L$ 的局部等距平凡化 $s_0$,使其联络 1-形式为 $\theta/\hbar$.
+
+对任意向量场 $X$,
+\[
+ \nabla_X\left(e^{-\kappa/(2\hbar)}s_0\right)
+ =\left(-\frac{1}{2\hbar}X(\kappa)-\frac{i}{\hbar}\theta(X)\right)e^{-\kappa/(2\hbar)}s_0.
+ \label{eq:complex-polarized-local-section-computation}
+\]
+其中 $X(\kappa)=d\kappa(X)=\partial\kappa(X)+\bar\partial\kappa(X)$.若 $X$ 为 $(0,1)$ 型,则 $\partial\kappa(X)=0$;结合式~\eqref{eq:complex-polarization-symplectic-potential},式~\eqref{eq:complex-polarized-local-section-computation} 右端的两项恰好抵消.因此 $e^{-\kappa/(2\hbar)}s_0$ 就是所需的局部极化截面.
+\end{proof}
+
+\chaptertwentythreehalf
+
+\subsection{半形式 Hilbert 空间}
+\label{subsec:half-form-hilbert-space-real}
+
+继续假设叶空间 $\Xi$ 是可定向流形,并选定了一个定向;同时固定第~\ref{subsec:square-root-canonical-bundle} 节中的典范丛平方根 $\delta_P$.若 $L$ 是 $N$ 上的预量子线丛,现在构造张量积丛 $L\otimes\delta_P^{\mathbb C}$.设 $s_1,s_2$ 是 $L\otimes\delta_P^{\mathbb C}$ 的两个截面,局部写成 $s_j=\mu_j\otimes\nu_j$,其中 $\mu_j$ 是 $L$ 的截面,$\nu_j$ 是 $\delta_P^{\mathbb C}$ 的截面,并假定 $\mu_j$ 不为零.定义
+\[
+ (s_1,s_2):=(\mu_1,\mu_2)\,\nu_1\otimes\nu_2,
+ \label{eq:half-form-pointwise-pairing-real}
+\]
+其中 $(\mu_1,\mu_2)$ 是 $L$ 的 Hermitian 结构给出的逐点内积.由于 $(\mu_1,\mu_2)$ 是标量函数而 $\nu_1\otimes\nu_2$ 是 $K_P^{\mathbb C}$ 的截面,$(s_1,s_2)$ 是 $K_P^{\mathbb C}$ 的截面.若把 $s_j$ 重新分解为 $(f\mu_j)\otimes(\nu_j/f)$,其中 $f$ 是不为零的函数,则式~\eqref{eq:half-form-pointwise-pairing-real} 的值不变.因此该量与局部分解无关,实际是全局定义的.
+
+由 $L$ 上的联络和 $\delta_P^{\mathbb C}$ 上的部分联络,可以在 $L\otimes\delta_P^{\mathbb C}$ 上构造部分联络.对取值于 $P$ 的向量场 $X$ 和任意截面 $s$,若局部写成 $s=\mu\otimes\nu$,其中 $\mu$ 是 $L$ 的不为零截面、$\nu$ 是 $\delta_P$ 的截面,则定义
+\[
+ \nabla_Xs=(\nabla_X\mu)\otimes\nu+\mu\otimes(\nabla_X\nu).
+ \label{eq:half-form-tensor-connection-real}
+\]
+若用 $(f\mu)\otimes(\nu/f)$ 替换 $\mu\otimes\nu$,读者可验证式~\eqref{eq:half-form-tensor-connection-real} 的值不变.因此它也是全局定义的.称 $L\otimes\delta_P^{\mathbb C}$ 的截面 $s$ 是极化的,如果对每个取值于 $P$ 的向量场 $X$ 都有 $\nabla_Xs=0$.若 $s_1,s_2$ 是 $L\otimes\delta_P^{\mathbb C}$ 的极化截面,则式~\eqref{eq:half-form-pointwise-pairing-real} 中的 $(s_1,s_2)$ 容易验证是 $K_P$ 的极化截面.
+
+与不使用半形式的情形一样,$L\otimes\delta_P^{\mathbb C}$ 可能不存在全局定义的极化截面.若叶 $R$ 上存在一个非零的 $L\otimes\delta_P^{\mathbb C}$ 截面 $s$,并且对 $R$ 的每个切向量 $X$ 都满足 $\nabla_Xs=0$,则称 $R$ 是半形式意义下(相对于给定 $\delta_P$)的 Bohr--Sommerfeld 叶.若叶具有非平凡拓扑,半形式意义下的 Bohr--Sommerfeld 叶一般也会在全部叶空间中形成离散集合.
+
+半形式意义下的 Bohr--Sommerfeld 叶不必与定义~\ref{def:bohr-sommerfeld} 意义下的 Bohr--Sommerfeld 叶相同.例如在例~\ref{ex:circle-bohr-sommerfeld} 的情形中,$K_P$ 是平凡的,但可以取非平凡的平方根丛 $\delta_P$:在每个 $S^1$ 上绕一周时加入 $180$ 度的扭转.(也就是说,把 $S^1$ 看作端点相识的区间 $[0,2\pi]$,但在把 $2\pi$ 处的纤维与 0 处的纤维识别时使用负恒等映射.)如练习~\ref{ex:half-form-bohr-sommerfeld-circle} 所示,在这个例子中,半形式意义下的 Bohr--Sommerfeld 叶为
+\[
+ \{x\}\times S^1,\qquad x/\hbar=n+\tfrac12,
+\]
+其中 $n$ 为整数.
+
+\begin{definition}[半形式空间与半形式 Hilbert 空间]
+\label{def:half-form-space-real}
+对任意纯实极化 $P$ 及其任意典范丛平方根 $\delta_P$,半形式空间定义为 $L\otimes\delta_P^{\mathbb C}$ 的光滑极化截面空间.对这样的极化截面 $s$,定义
+\[
+ \|s\|^2=\int_\Xi(s,s),
+ \label{eq:half-form-norm-real}
+\]
+其中 $(s,s)$ 如式~\eqref{eq:half-form-pointwise-pairing-real} 定义,并把命题~\ref{prop:canonical-bundle-leaf-space} 给出的 $(s,s)$ 视为 $\Xi$ 上的 $n$-形式.若 $s_1,s_2$ 是半形式空间中范数有限的元素,定义
+\[
+ \langle s_1,s_2\rangle=\int_\Xi(s_1,s_2).
+\]
+半形式 Hilbert 空间是范数~\eqref{eq:half-form-norm-real} 下所有平方可积极化截面空间的完备化.
+\end{definition}
+
+$\Xi$ 上 $n$-形式的积分取自所选定向.局部总可以写成 $s=\mu\otimes\nu$,其中 $\nu$ 是 $\delta_P$ 的截面(而非仅是 $\delta_P^{\mathbb C}$ 的截面),$\mu$ 是 $L$ 的截面.于是
+\[
+ (s,s)=(\mu,\mu)\nu\otimes\nu,
+\]
+由此可见 $(s,s)$ 是 $K_P$ 的非负截面(定义~\ref{def:positive-canonical-section}).回忆我们选取 $\delta_P\otimes\delta_P\cong K_P$ 的方式,使 $\nu\otimes\nu$ 总是 $\Xi$ 上有向形式的拉回.因此式~\eqref{eq:half-form-norm-real} 右端非负,但可能为无穷.
+
+\begin{example}[余切直线的半形式空间]
+\label{ex:half-form-cotangent-line}
+令 $N=T^*\mathbb R\cong\mathbb R^2$,$L$ 为平凡线丛,联络为
+\[
+ \nabla_X=X-\frac{i}{\hbar}\theta(X),\qquad \theta=p\,dx.
+\]
+令 $P$ 为竖直极化,并给 $\mathbb R$ 取使有向 1-形式为 $dx$ 的非负倍数的定向.取 $\delta_P$ 为平凡丛,其平凡化截面记为 $\sqrt{dx}$,满足
+\[
+ \sqrt{dx}\otimes\sqrt{dx}=dx.
+\]
+则 $L\otimes\delta_P^{\mathbb C}$ 的每个极化截面都具有
+\[
+ s=\psi(x)\otimes\sqrt{dx}
+ \label{eq:half-form-cotangent-section}
+\]
+的形式,其中 $\psi$ 是 $\mathbb R$ 上的函数;其范数为
+\[
+ \|s\|^2=\int_{\mathbb R}|\psi(x)|^2\,dx.
+\]
+\end{example}
+
+\begin{proof}
+$K_P$ 的截面是被 $\partial/\partial p$ 内积为零的 1-形式,即 $\alpha=f(x,p)dx$.这样的 1-形式满足 $d\alpha=0$,当且仅当 $f$ 与 $p$ 无关.因此 $dx$ 是 $K_P$ 的全局极化截面.取平凡的 $\delta_P$,并令 $\sqrt{dx}\otimes\sqrt{dx}=dx$,则 $\sqrt{dx}$ 是 $\delta_P$ 的极化截面.$L\otimes\delta_P^{\mathbb C}$ 的每个截面都可唯一写成 $\psi(x,p)\otimes\sqrt{dx}$.由于 $\sqrt{dx}$ 是极化的且 $\theta(\partial/\partial p)=0$,该截面极化,当且仅当 $\psi$ 与 $p$ 无关.对式~\eqref{eq:half-form-cotangent-section} 形式的截面,$(s,s)=|\psi(x)|^2dx$;这里的 $dx$ 视作 $\Xi\cong\mathbb R$ 而不是 $\mathbb R^2$ 上的 1-形式.
+\end{proof}
+
+\subsection{可观测量的量子化}
+\label{subsec:quantization-real-observables}
+
+设 $f$ 是 $N$ 上满足 $X_f$ 保持 $P$ 的函数(见定义~\ref{def:polarization-preserving-vector-field}).现在把 $f$ 与半形式 Hilbert 空间上的一个自伴(或至少对称)算子 $Q(f)$ 关联起来.此类算子将精确满足所需的交换关系.
+
+\begin{definition}[半形式量子算子:实情形]
+\label{def:half-form-quantum-operator-real}
+若 $X_f$ 保持 $P$,定义半形式空间上的算子 $Q(f)$ 为
+\[
+ Q(f)s=(Q_{\mathrm{pre}}(f)\mu)\otimes\nu
+ +i\hbar\,\mu\otimes\mathcal L_{X_f}\nu,
+ \label{eq:half-form-quantum-operator-real}
+\]
+其中局部写 $s=\mu\otimes\nu$,$\mu$ 是 $L$ 的截面,$\nu$ 是 $\delta_P^{\mathbb C}$ 的截面.
+\end{definition}
+
+容易验证,定义~\ref{def:half-form-quantum-operator-real} 的算子与局部平凡化的选择无关.不过,这一独立性成立的原因正是第一项中 $\nabla_{X_f}$ 的系数 $i\hbar$ 与第二项中 $\mathcal L_{X_f}$ 的系数 $i\hbar$ 完全相同.
+
+\begin{example}[半形式修正的位置动量算子]
+\label{ex:half-form-position-momentum}
+沿用例~\ref{ex:half-form-cotangent-line} 的记号,取
+\[
+ f(x,p)=a(x)+b(x)p,
+\]
+其中 $a,b$ 是 $\mathbb R$ 上的光滑函数.则 $X_f$ 保持 $P$,并且
+\[
+ Q(f)\left(\psi(x)\otimes\sqrt{dx}\right)
+ =\widetilde\psi(x)\otimes\sqrt{dx},
+\]
+其中
+\[
+ \widetilde\psi(x)=-i\hbar\left(b(x)\psi'(x)+\frac12b'(x)\psi(x)\right)+a(x)\psi(x).
+ \label{eq:half-form-position-observable}
+\]
+特别地,若 $f(x,p)=x$,则 $\widetilde\psi=x\psi$;若 $f(x,p)=p$,则 $\widetilde\psi=-i\hbar\,\partial\psi/\partial x$.更一般地,若 $a,b$ 是多项式,则 $Q(f)$ 对 $\psi$ 的作用与 $f$ 的 Weyl 量子化相同(见第 13 章练习 8).
+\end{example}
+
+式~\eqref{eq:half-form-position-observable} 中的 $b'(x)$ 项来自半形式,在式~\eqref{eq:position-polarization-restriction} 的预量子算子中没有这一项.为使 $Q(f)$ 自伴(或至少对称),$b'$ 项及其精确系数 $1/2$ 是必要的;见练习~\ref{ex:symmetric-half-form-coefficient}.例~\ref{ex:half-form-position-momentum} 实际上很有代表性(比较定理~\ref{thm:half-form-symmetric-real} 的证明中的式~\eqref{eq:half-form-local-action} 与例~\ref{ex:cotangent-bundle-half-form}).
+
+\begin{proof}
+在命题~\ref{prop:position-polarization-affine-momentum} 的证明中已经计算过 $Q_{\mathrm{pre}}(f)$.这里
+\[
+ X_f=-b(x)\frac{\partial}{\partial x}+\text{含 }\frac{\partial}{\partial p}\text{ 的项}.
+\]
+由于 $dx$ 是闭的,由 Cartan 公式有
+\[
+ \mathcal L_{X_f}(dx)=d(\iota_{X_f}dx)=-db(x)=-b'(x)dx.
+\]
+由命题~\ref{prop:half-form-connections},
+\[
+ \mathcal L_{X_f}(\sqrt{dx})=-\frac12b'(x)\sqrt{dx}.
+\]
+把这一 $\mathcal L_{X_f}$ 项加到已经算出的 $Q_{\mathrm{pre}}(f)$ 表达式中,就得到式~\eqref{eq:half-form-position-observable}.
+\end{proof}
+
+回到一般实极化的情形,我们建立量子化可观测量 $Q(f)$ 的两个关键性质:它们满足所需的交换关系,并且当 $f$ 为实值时是自伴(或至少对称)的.还可以证明,若 $f$ 是极化函数,即沿 $P$ 的每个叶为常数,则 $Q(f)$ 在量子 Hilbert 空间上只是乘以 $f$(见练习~\ref{ex:half-form-polarized-function}).
+
+\begin{theorem}[半形式量子算子的交换关系]
+\label{thm:half-form-commutator-real}
+若 $f,g$ 是 $N$ 上使 $X_f,X_g$ 都保持 $P$ 的函数,则在 $L\otimes\delta_P^{\mathbb C}$ 的光滑极化截面空间上,算子 $Q(f),Q(g)$ 满足
+\[
+ \frac1{i\hbar}[Q(f),Q(g)]=Q(\{f,g\}).
+ \label{eq:half-form-commutator-real}
+\]
+\end{theorem}
+
+\begin{proof}
+由于对任意函数 $h$,$Q(h)$ 都是局部算子,只需局部证明.取 $\delta_P^{\mathbb C}$ 的局部处处不为零截面 $\nu_0$,于是 $L\otimes\delta_P^{\mathbb C}$ 的每个截面都可唯一写成 $s=\mu\otimes\nu_0$.对任意保持 $P$ 的向量场 $X$,令 $\gamma(X)$ 为满足
+\[
+ \mathcal L_X(\nu_0)=\gamma(X)\nu_0
+\]
+的函数.于是
+\[
+ Q(f)(\mu\otimes\nu_0)=\widetilde\mu\otimes\nu_0,
+ \qquad \widetilde\mu=[Q_{\mathrm{pre}}(f)+i\hbar\gamma(X_f)]\mu.
+\]
+因此
+\[
+\begin{aligned}
+ &[Q_{\mathrm{pre}}(f)+i\hbar\gamma(X_f),Q_{\mathrm{pre}}(g)+i\hbar\gamma(X_g)]\\
+ &=i\hbar Q_{\mathrm{pre}}(\{f,g\})
+ +(i\hbar)^2\bigl(X_f(\gamma(X_g))-X_g(\gamma(X_f))\bigr).
+\end{aligned}
+\]
+只要验证
+\[
+ X_f(\gamma(X_g))-X_g(\gamma(X_f))=\gamma(X_{\{f,g\}}),
+ \label{eq:half-form-gamma-identity}
+\]
+所需结果就成立.为验证式~\eqref{eq:half-form-gamma-identity},使用 Lie 导数的标准恒等式 $\mathcal L_{[X,Y]}=[\mathcal L_X,\mathcal L_Y]$.由命题~\ref{prop:half-form-connections},对保持 $P$ 的向量场,这一恒等式也成立于 $\delta_P^{\mathbb C}$ 的截面上;再作直接计算即可得到式~\eqref{eq:half-form-gamma-identity}.
+\end{proof}
+
+\begin{theorem}[实函数的半形式对称性]
+\label{thm:half-form-symmetric-real}
+若 $f\in C^\infty(N)$ 为实值函数且 $X_f$ 保持 $P$,则 $Q(f)$ 在半形式空间中满足 $(s,s)$ 在叶空间 $\Xi$ 上具有紧支集的光滑截面空间上是对称的.
+\end{theorem}
+
+\begin{proof}
+设 $\alpha=q^*(\beta)$ 是 $K_P$ 的极化截面,因此至少局部对应于 $\delta_P$ 的极化截面 $q^*(\sqrt\beta)$.若 $X_f$ 保持 $P$,由命题~\ref{prop:vector-field-descends-leaf-space},存在唯一的 $\Xi$ 上向量场 $Y_f$,满足 $q_{*,z}(X_f)=Y_f$.由式~\eqref{eq:canonical-bundle-divergence} 和命题~\ref{prop:half-form-connections},
+\[
+ \mathcal L_{X_f}(q^*\sqrt\beta)
+ =\frac12((\operatorname{div}_\beta Y_f)\circ q)q^*\sqrt\beta.
+\]
+
+不难证明(见练习~\ref{ex:local-potential-vanishing-polarization}),可以局部选择辛势 $\theta$,使它在 $P$ 的方向上为零.于是可以局部平凡化 $L$,使沿 $P$ 协变常数的截面恰好是通常意义下沿 $P$ 为常数的函数.因此,半形式空间的元素局部具有
+\[
+ s=(\psi\circ q)\otimes q^*(\sqrt\beta)
+ \label{eq:half-form-local-section}
+\]
+的形式,其中 $\psi$ 是 $\Xi$ 上的函数,$\beta$ 是 $\Xi$ 上的 $n$-形式.若 $X_f$ 保持 $P$,则按式~\eqref{eq:half-form-local-section} 局部分解 $s$,有
+\[
+ Q(f)s=(\widetilde\psi\circ q)\otimes q^*(\sqrt\beta),
+\]
+其中
+\[
+ \widetilde\psi=i\hbar Y_f\psi
+ +\frac{i\hbar}{2}(\operatorname{div}_\beta Y_f)\psi
+ +(-\theta(X_f)-f)\psi.
+ \label{eq:half-form-local-action}
+\]
+可以验证(见练习~\ref{ex:observable-leaf-constant}),函数 $-\theta(X_f)-f$ 沿 $P$ 为常数,因而可视作 $\Xi$ 上的函数.
+
+把半形式空间元素乘以 $\chi\circ q$(其中 $\chi$ 在 $\Xi$ 上有紧支集),可以把计算局部化到 $\Xi$ 上.设 $s_1,s_2$ 在 $z\in N$ 附近按式~\eqref{eq:half-form-local-section} 分解,共用同一个 $\beta$ 而对应两个函数 $\psi_1,\psi_2$.则 $(s_1,s_2)$ 在 $q(z)$ 的邻域内具有 $\overline{\psi_1}\psi_2\beta$ 的形式.利用局部化,可以假设它在某个开集 $U$ 中具有紧支集,于是
+\[
+ \langle s_1,Q(f)s_2\rangle=-i\hbar\int_\Xi \overline{\psi_1}\,\widetilde\psi_2\,\beta.
+\]
+对 $\beta$ 使用分部积分公式(练习~\ref{ex:integration-by-parts-leaf-space}),可知该量等于 $\langle Q(f)s_1,s_2\rangle$.
+\end{proof}
+
+\begin{example}[余切丛上的半形式量子化]
+\label{ex:cotangent-bundle-half-form}
+设 $N=T^*M$,其中 $M$ 是可定向流形;令 $\theta$ 为 $N$ 上的典范 1-形式,$L$ 为平凡线丛,联络为
+\[
+ \nabla_X=X-\frac{i}{\hbar}\theta(X).
+\]
+令 $P$ 为竖直极化,此时 $K_P$ 平凡;取 $\delta_P$ 为平凡丛.令 $\beta$ 是 $M$ 上任意处处不为零的有向 $n$-形式,$\alpha:=\pi^*(\beta)$,并取 $\sqrt\alpha$ 为 $\delta_P$ 的平凡化截面,满足 $\sqrt\alpha\otimes\sqrt\alpha=\alpha$.这时半形式 Hilbert 空间中的元素具有
+\[
+ s=(\psi\circ\pi)\otimes\sqrt\alpha
+\]
+的形式,其中 $\psi$ 是 $M$ 上的函数,且
+\[
+ \|s\|^2=\int_M|\psi|^2\,\beta.
+\]
+因此,半形式 Hilbert 空间可识别为 $L^2(M,\beta)$.
+
+若 $f$ 是 $T^*M$ 上的函数,形如 $f=f_1+f_2$,其中 $f_1$ 在每条纤维上为常数、$f_2$ 在每条纤维上为线性函数,则 $f_2$ 可看作 $T^*M$ 的对偶丛 $T^{**}M\cong TM$ 的截面,即 $M$ 上的向量场 $Y_f$.此时 $X_f$ 保持 $P$,并且
+\[
+ Q(f)((\psi\circ\pi)\otimes\sqrt\alpha)
+ =(\widetilde\psi\circ\pi)\otimes\sqrt\alpha,
+\]
+其中
+\[
+ \widetilde\psi=i\hbar Y_f\psi
+ +\frac{i\hbar}{2}(\operatorname{div}_\beta Y_f)\psi+f_1\psi.
+\]
+这里 $\operatorname{div}_\beta Y_f$ 是满足 $\mathcal L_{Y_f}\beta=(\operatorname{div}_\beta Y_f)\beta$ 的函数.
+\end{example}
+
+在这个例子中,直接用坐标计算可知 $Y_f$ 满足 $X_f(\psi\circ\pi)=(Y_f\psi)\circ\pi$,因此记号与命题~\ref{prop:vector-field-descends-leaf-space} 一致.
+
+\begin{proof}
+计算与定理~\ref{thm:half-form-symmetric-real} 的证明完全相同,只是式~\eqref{eq:half-form-local-section} 中的分解现在是全局的.式中 $Q(f)$ 的形式正是式~\eqref{eq:half-form-local-action},并且用局部坐标容易算出 $-\theta(X_f)-f=f_1$.
+\end{proof}
+
+遗憾的是,对余切丛上的竖直极化,几何量子化只允许量子化至多关于动量变量线性的函数.一个以 $T^*M$ 为相空间的典型物理系统,其经典 Hamiltonian 中会有关于 $p$ 的二次“动能”项.要量子化这类系统,就必须设法“无论如何”量子化动能项.
+
+一种方法是允许指数化的量子 Hamiltonian 改变极化,然后使用配对映射(第~\ref{sec:pairing-maps} 节)把结果“投影”回原极化对应的 Hilbert 空间.正如文献~\cite{Woodhouse1992} 第 9.7 节所述,当动能项为 $g(p,p)/(2m)$,其中 $g$ 是由 $TM$ 上 Riemann 结构在 $T^*M$ 上诱导的 Riemann 结构时,这种方法能够成功.量子化的动能算子最终由映射
+\[
+ \psi\longmapsto-\frac{\hbar^2}{2m}
+ \left(\Delta\psi-\frac16R\psi\right)
+ \label{eq:quantized-kinetic-energy}
+\]
+给出,其中 $\Delta$ 是 $M$ 的 Laplace 算子(取为负算子),$R(x)$ 是 $TM$ 上 Riemann 结构的标量曲率.文献~\cite{Woodhouse1992} 中的计算略去了一个技术问题:随时间演化的极化未必处处与原极化横截.不过,这一计算仍为式~\eqref{eq:quantized-kinetic-energy} 提供了合理的几何动机.
+
+必须强调,由于计算中包含投影,量子化的动能算子不满足与那些流保持竖直极化的函数的量子化之间所期望的交换关系.尽管如此,这种量子化动能的方法可能已经是所能做到的最好结果.
+
+\section{使用半形式的量子化:复情形}
+\label{sec:half-forms-complex}
+
+在纯复极化的情形中,半形式并非“必需”,因为即使不引入半形式,通常也有非零的量子 Hilbert 空间.不过,引入半形式仍有优点.第一,它使复情形与实情形更加平行.第二,带半形式的复量子化比不带半形式给出更好的结果.例如对谐振子,引入半形式后(例~\ref{ex:half-form-harmonic-oscillator}),几何量子化能精确复现传统处理得到的谱 $(n+\tfrac12)\hbar\omega$,$n=0,1,2,\ldots$.这应与不使用半形式的命题~\ref{prop:holomorphic-oscillator-spectrum} 比较,后者得到的谱为 $n\hbar\omega$.
+
+本节始终假定 $(N,\omega)$ 是 $2n$ 维可量子化辛流形,$(L,\nabla)$ 是 $N$ 上的预量子线丛,$P$ 是 Kähler 极化(定义~\ref{def:kahler-polarization}).复情形的定义与实情形非常相似(但有几处重要差异),因此这里只快速介绍.由于 $\overline P$ 不再等于 $P$,实情形第~\ref{sec:half-forms-real} 节的许多公式需要把 $P$ 换成 $\overline P$.
+
+纯复极化 $P$ 的典范丛 $K_P$ 是如下复线丛:其截面是满足
+\[
+ \iota_X\alpha=0
+ \label{eq:canonical-bundle-complex-annihilation}
+\]
+(对每个取值于 $\overline P$ 的向量场 $X$)的 $n$-形式.$K_P$ 的截面正是 $(n,0)$-形式.若一个 $K_P$ 的截面满足
+\[
+ \iota_X(d\alpha)=0
+ \label{eq:canonical-bundle-complex-polarized}
+\]
+(对每个取值于 $\overline P$ 的向量场),或者等价地满足 $d\alpha=0$,则称其为极化截面.$K_P$ 的极化截面正是全纯的 $(n,0)$-形式.
+
+在复情形中,$K_P$ 的平方根是指一个复线丛 $\delta_P$,以及一个给定的同构 $\delta_P\otimes\delta_P\cong K_P$.于是,对 $\delta_P$ 的截面 $s_1,s_2$,我们把 $s_1\otimes s_2$ 看作 $K_P$ 的截面.本节假定这种平方根存在,并固定一个平方根 $\delta_P$.
+
+若 $X$ 是保持 $\overline P$ 的向量场(见定义~\ref{def:polarization-preserving-vector-field}),则 $\mathcal L_X$ 保持 $K_P$ 的截面空间以及其极化截面空间.定义 $K_P$ 上的部分联络:对取值于 $\overline P$ 的向量场,令
+\[
+ \nabla_X\alpha=\iota_X(d\alpha).
+\]
+式~\eqref{eq:canonical-bundle-complex-polarized} 定义的极化截面条件正是 $\nabla_X\alpha=0$.如实情形命题~\ref{prop:half-form-connections} 所示,部分联络(现在只对取值于 $\overline P$ 的向量场定义)以及对保持 $\overline P$ 的向量场定义的 Lie 导数,都自然从 $K_P$ 下降到 $\delta_P$.$L$ 上的联络与 $\delta_P$ 上的部分联络结合,给出 $L\otimes\delta_P$ 上的部分联络.称 $L\otimes\delta_P$ 的截面 $s$ 是极化的,如果对所有取值于 $\overline P$ 的向量场 $X$ 都有 $\nabla_Xs=0$.
+
+\begin{note}
+\label{note:top-form-density-ratio}
+若 $\beta$ 是 $N$ 上任意 $2n$-形式,记 $\beta/\lambda$ 为满足
+\[
+ \beta=\left(\frac{\beta}{\lambda}\right)\lambda
+\]
+的唯一函数,其中 $\lambda$ 是定义~\ref{def:liouville-form} 中的 Liouville 形式.
+\end{note}
+
+与实情形的典范丛不同,纯复情形的典范丛带有自然的 Hermitian 结构.
+
+\begin{proposition}[复典范丛的自然 Hermitian 结构]
+\label{prop:complex-canonical-hermitian-structure}
+若 $\alpha$ 是 $N$ 上的 $(n,0)$-形式,则每一点处的 $2n$-形式
+\[
+ (-1)^{n(n-1)/2}(-i)^n\,\overline\alpha\wedge\alpha
+\]
+都是 Liouville 形式 $\lambda$ 的非负倍数.因此,在 $\delta_P$ 上存在唯一的 Hermitian 结构,使对 $\delta_P$ 的每个截面 $s$,
+\[
+ |s|^2=\left[
+ \frac{(-1)^{n(n-1)/2}(-i)^n
+ (s\otimes s)^*\wedge(s\otimes s)}{2^n\lambda}
+ \right]^{1/2}.
+ \label{eq:complex-half-form-hermitian-structure}
+\]
+这里分母中的 $2^n$ 是为方便而加入的,使后面的公式形式更简洁.
+\end{proposition}
+
+\begin{proof}
+见练习~\ref{ex:complex-canonical-hermitian-calculation}.
+\end{proof}
+
+由于 $L$ 已带有 Hermitian 结构,命题~\ref{prop:complex-canonical-hermitian-structure} 中 $\delta_P$ 上的 Hermitian 结构自然诱导出 $L\otimes\delta_P$ 上的 Hermitian 结构.
+
+\begin{definition}[Kähler 极化的半形式 Hilbert 空间]
+\label{def:half-form-hilbert-space-complex}
+Kähler 极化 $P$ 的半形式 Hilbert 空间,是 $L\otimes\delta_P$ 的平方可积极化截面空间.
+\end{definition}
+
+在 $\mathbb C^n$ 情形中,若用典范 1-形式作为辛势,半形式 Hilbert 空间的元素具有
+\[
+ e^{-|\operatorname{Im}z|^2/(2\alpha\hbar)}F(z)\otimes
+ \sqrt{dz_1\wedge\cdots\wedge dz_n}
+\]
+的形式.此特殊情形中,半形式因子 $\sqrt{dz_1\wedge\cdots\wedge dz_n}$ 的范数为常数,因此半形式 Hilbert 空间仍可识别为结论~\ref{con:holomorphic-hilbert-space} 中的空间.另一方面,在单位圆盘的情形中,半形式会改变内积;见练习~\ref{ex:disk-half-form-inner-product}.
+
+现在用与实情形相同的公式定义半形式 Hilbert 空间上的量子化可观测量.
+
+\begin{definition}[半形式量子算子:复情形]
+\label{def:half-form-quantum-operator-complex}
+若函数 $f$ 使 $X_f$ 保持 $\overline P$,则定义半形式 Hilbert 空间上的算子
+\[
+ Q(f)s=(Q_{\mathrm{pre}}(f)\mu)\otimes\nu
+ -i\hbar\,\mu\otimes\mathcal L_{X_f}\nu,
+ \label{eq:half-form-quantum-operator-complex}
+\]
+其中局部写 $s=\mu\otimes\nu$,$\mu$ 是 $L$ 的截面,$\nu$ 是 $\delta_P$ 的截面.
+\end{definition}
+
+在 $L\otimes\delta_P$ 的光滑极化截面空间上,这些算子满足
+\[
+ \frac1{i\hbar}[Q(f),Q(g)]=Q(\{f,g\}),
+\]
+证明与实情形定理~\ref{thm:half-form-commutator-real} 完全相同.若 $f$ 为实值且 $X_f$ 保持 $\overline P$,则在能找到由“良好”函数组成的稠密子空间时,$Q(f)$ 至少是对称的.(全纯情形中寻找稠密子空间比实情形困难;练习~\ref{ex:complex-half-form-symmetric} 给出这一结论的证明概要.)
+
+\begin{example}[半形式修正的量子谐振子]
+\label{ex:half-form-harmonic-oscillator}
+考虑 $N=\mathbb R^2\cong T^*\mathbb R$,取由全局复坐标
+\[
+ z=\frac{x-ip}{m\omega}
+\]
+给出的 Kähler 极化 $P$,其中 $\omega>0$.取 $\delta_P$ 为平凡丛,平凡化截面为 $\sqrt{dz}$.再考虑谐振子 Hamiltonian
+\[
+ H=\frac{p^2+(m\omega x)^2}{2m}.
+\]
+则 $X_H$ 保持 $P$,半形式 Hilbert 空间上的算子 $Q(H)$ 的谱由
+\[
+ (n+\tfrac12)\hbar\omega,\qquad n=0,1,2,\ldots
+\]
+组成.
+\end{example}
+
+这里的 $\omega$ 是谐振子的频率,而不是典范 2-形式.
+
+\begin{proof}
+计算与命题~\ref{prop:holomorphic-oscillator-spectrum} 的证明相同,只需加上 Lie 导数项.直接计算可得
+\[
+ \mathcal L_{X_H}(dz)=i\omega\,dz,
+\]
+从而
+\[
+ \mathcal L_{X_H}(\sqrt{dz})=\frac{i\omega}{2}\sqrt{dz}.
+\]
+容易看出,形如
+\[
+ e^{-m\omega|\operatorname{Im}z|^2/(2\hbar)}z^n\otimes\sqrt{dz}
+\]
+的元素构成半形式 Hilbert 空间的一组正交归一特征向量基,对应 $Q(H)$ 的特征值 $(n+\tfrac12)\hbar\omega$.
+\end{proof}
+
+\section{配对映射}
+\label{sec:pairing-maps}
+
+配对映射旨在比较相对于两个不同极化量子化的结果.我们主要考虑两个“横截”的实极化;两个复极化,或者一个实极化与一个复极化的情形,只需作少量修改即可处理.
+
+设 $P,P'$ 是两个纯实极化,其叶空间 $\Xi_1,\Xi_2$ 都是可定向流形.进一步假设 $P,P'$ 在每一点 $z\in N$ 横截,即 $P_z\cap P'_z=\{0\}$.若 $\alpha,\beta$ 分别是 $K_P,K_{P'}$ 的极化截面,则横截性容易推出 $\alpha\wedge\beta$ 是 $N$ 上处处不为零的 $2n$-形式.因此,对每个 $z\in N$,可以定义双线性“配对”
+\[
+ \delta_{P,z}\times\delta_{P',z}\to\mathbb R,
+ \qquad
+ (\nu_1,\nu_2)=\left[
+ \frac{(\nu_1\otimes\nu_1)\wedge(\nu_2\otimes\nu_2)}{\lambda}
+ \right]^{1/2}.
+ \label{eq:pointwise-pairing-half-forms}
+\]
+(回忆注记~\ref{note:top-form-density-ratio}.)可以把这个配对延拓为
+$\delta_{P,z}^{\mathbb C}\times\delta_{P',z}^{\mathbb C}\to\mathbb C$,使其对第一变量共轭线性、对第二变量线性.最后,在
+$(L_z\otimes\delta_{P,z}^{\mathbb C})\times(L_z\otimes\delta_{P',z}^{\mathbb C})$ 上定义配对
+\[
+ (\mu_1\otimes\nu_1,\mu_2\otimes\nu_2)
+ =(\mu_1,\mu_2)(\nu_1,\nu_2),
+\]
+其中 $(\mu_1,\mu_2)$ 用 $L$ 的 Hermitian 结构计算.
+
+令 $\mathcal H_1,\mathcal H_2$ 分别为 $P,P'$ 的半形式 Hilbert 空间.对 $s_1\in\mathcal H_1,s_2\in\mathcal H_2$,若积分绝对收敛,定义
+\[
+ \langle s_1,s_2\rangle_{P,P'}
+ =c\int_N(s_1,s_2)\,\lambda,
+ \label{eq:polarization-pairing}
+\]
+其中 $c$ 是只依赖于 $\hbar$ 和维数 $n$ 的某个“普适”常数,可以选取它使某些例子的结果形式漂亮.现在寻找配对映射 $\Lambda_{P,P'}:\mathcal H_1\to\mathcal H_2$,使
+\[
+ \langle s_1,s_2\rangle_{P,P'}
+ =\langle\Lambda_{P,P'}s_1,s_2\rangle_{\mathcal H_2}.
+ \label{eq:pairing-map-defining-property}
+\]
+若配对有界,即存在常数 $C$ 使 $|\langle s_1,s_2\rangle_{P,P'}|\le C\|s_1\|\|s_2\|$,则存在唯一满足式~\eqref{eq:pairing-map-defining-property} 的有界算子 $\Lambda_{P,P'}$.即便配对无界,也可能把 $\Lambda_{P,P'}$ 定义为无界算子.
+
+乐观地说,人们可能希望任意两个横截极化的配对映射都是酉的,或者至少是酉映射的常数倍.若果真如此,这意味着量子化在极化选择下独立:不同极化对应的 Hilbert 空间之间存在自然酉映射.然而,实际情况是,典型的配对映射并不是酉映射的常数倍.不过,也有一些特殊情形配对映射确实(差一个常数)是酉的,包括 $\mathbb R^{2n}$ 上的平移不变极化.文献~\cite{Hall2002} 还给出了一个实极化与复极化之间的配对映射为酉映射常数倍的例子.
+
+下面只计算两个实极化之间配对映射的一个非常特殊的例子.
+
+\begin{example}[位置与动量极化之间的配对映射]
+\label{ex:pairing-position-momentum}
+令 $N=\mathbb R^2\cong T^*\mathbb R$,$L$ 为平凡线丛,联络 1-形式为 $\theta=p\,dx$.令 $P$ 为处处由 $\partial/\partial p$ 张成的竖直极化,$P'$ 为处处由 $\partial/\partial x$ 张成的水平极化.则 $P$ 的半形式空间元素具有
+\[
+ s_1(x,p)=\phi(x)\otimes\sqrt{dx}
+ \label{eq:pairing-vertical-section}
+\]
+的形式,而 $P'$ 的半形式空间元素具有
+\[
+ s_2(x,p)=\psi(p)e^{ixp/\hbar}\otimes\sqrt{dp}
+ \label{eq:pairing-horizontal-section}
+\]
+的形式,其中 $\phi,\psi$ 是 $\mathbb R$ 上的函数.若 $c=1$,则配对为
+\[
+ \langle s_1,s_2\rangle_{P,P'}
+ =-\int_{\mathbb R^2}\phi(x)\psi(p)e^{ixp/\hbar}\,dx\,dp.
+ \label{eq:pairing-fourier-integral}
+\]
+若 $s_1$ 具有式~\eqref{eq:pairing-vertical-section} 的形式,则 $\Lambda_{P,P'}(s_1)$ 具有式~\eqref{eq:pairing-horizontal-section} 的形式,其中
+\[
+ \psi(p)=-\int_{\mathbb R}\phi(x)e^{-ixp/\hbar}\,dx.
+\]
+因此,$\Lambda_{P,P'}$ 是 Fourier 变换的一个倍数,特别是酉映射的一个常数倍.
+\end{example}
+
+配对一开始应定义在 Hilbert 空间的某个稠密子空间上,例如 $\phi,\psi$ 都是 Schwartz 函数的子空间.也可以先在 Schwartz 空间上定义配对映射,注意到它(差一个常数)是酉的,然后通过连续性延拓到整个 $\mathcal H_1$.一旦配对映射延拓到 $\mathcal H_1$,就可以以式~\eqref{eq:pairing-map-defining-property} 为定义,把配对本身定义在所有 $\mathcal H_1\times\mathcal H_2$ 上.尽管如上所述可以把配对延拓到整个乘积空间,式~\eqref{eq:pairing-fourier-integral} 中的积分并不总是绝对收敛.
+
+\begin{proof}
+式~\eqref{eq:pairing-vertical-section} 和式~\eqref{eq:pairing-horizontal-section} 由命题~\ref{prop:quantum-polarization-functions} 证明中的论证稍作修改即可得到.直接计算可知 $\sqrt{dx}$ 与 $\sqrt{dp}$ 的逐点配对为 $-1$,从而得到式~\eqref{eq:pairing-fourier-integral}.配对可重写为
+\[
+ \left(-\int_{\mathbb R}\phi(x)e^{-ixp/\hbar}\,dx\right)\psi(p)\,dp,
+\]
+这就给出了所述配对映射.
+\end{proof}
+
+\chaptertwentythreeexercises

@@ -1,0 +1,99 @@
+\makeatletter
+\def\input@path{{../template/}}
+\makeatother
+\documentclass[traditional=false,draftmark=false,colors=true,fontsetup=feec-fonts.tex,titlesetup=titles-setup.tex]{AJbook}
+\usepackage{ajbook-page-layout}
+\usepackage{ajbook-cover}
+\usepackage[unicode,bookmarksnumbered]{hyperref}
+\usepackage{import-compatibility}
+\usepackage{bookmark}
+\usepackage[subrefformat=parens]{subcaption}
+\captionsetup[sub]{hypcap=true}
+\usepackage{needspace}
+\usepackage{multicol}
+\usepackage{algpseudocode}
+\usepackage{varwidth}
+
+% 自动处理 For 的嵌套和结束语句
+\algdef{SE}[VFOR]{ForVar}{EndForVar}[1]
+    {\textnormal{For }#1}
+    [1]{\textnormal{end }#1}
+
+% 带左大括号和 equation 编号的算法环境
+\newenvironment{eqalgorithm}
+{%
+    \begin{equation}
+    \left\{
+    \vcenter\bgroup\hbox\bgroup
+    \begin{varwidth}{0.85\linewidth}
+    \begin{algorithmic}
+}
+{%
+    \end{algorithmic}
+    \end{varwidth}
+    \egroup\egroup
+    \right.
+    \end{equation}
+}
+\AddToHook{cmd/section/before}{\Needspace{4\baselineskip}}
+\AddToHook{cmd/subsection/before}{\Needspace{4\baselineskip}}
+\setcounter{secnumdepth}{2}
+\setcounter{tocdepth}{2}
+\counterwithin{equation}{section}
+\counterwithin{figure}{section}
+\counterwithin{table}{section}
+\newcommand{\figref}[1]{{\heiti 图}~\ref{#1}}
+\newcommand{\tabref}[1]{{\heiti 表}~\ref{#1}}
+\newcommand{\tnorm}[1]{\lVert\!\lvert #1\rvert\!\rVert}
+\newcounter{booknote}[section]
+\renewcommand{\thebooknote}{\thesection.\arabic{booknote}}
+\newcommand{\NumberedNote}[1]{\refstepcounter{booknote}\label{#1}\textbf{\thebooknote}\enspace\ignorespaces}
+\newcommand{\SourcePage}[1]{\phantomsection\label{source:#1}}
+\makeatletter
+% Use the original number in working builds while the target section is still being set.
+\newcommand{\BookRef}[2]{%
+  \@ifundefined{r@#1}{\PackageWarning{quarteroni}{Pending reference #1}#2}{\ref{#1}}}
+\newcommand{\BookCite}[2]{%
+  \allowbreak
+  \@ifundefined{r@bib:#1}{\PackageWarning{quarteroni}{Pending citation #1}#2}{\hyperref[bib:#1]{#2}}}
+\makeatother
+\graphicspath{{figures/}}
+\setlength{\emergencystretch}{2em}
+\hypersetup{pdftitle={偏微分方程的数值逼近},pdfauthor={Alfio Quarteroni; Alberto Valli},bookmarksdepth=2}
+\newcommand{\ImportedFrontMatter}{%
+  \let\SavedBookContents\tableofcontents
+  \let\tableofcontents\relax
+  \frontmatter
+  \let\tableofcontents\SavedBookContents
+}
+\begin{document}
+\hypersetup{pageanchor=false}
+\input{frontmatter/cover.tex}
+\hypersetup{pageanchor=true}
+\ImportedFrontMatter
+\input{chapters/preface}
+\cleardoublepage
+\pdfbookmark[0]{目录}{book.contents}
+\tableofcontents
+\mainmatter
+\part{偏微分方程数值逼近的基本概念与方法}\ImportedPartLabel{part:1}
+\input{chapters/ch01}
+\input{chapters/ch02}
+\input{chapters/ch03}
+\input{chapters/ch04}
+\input{chapters/ch05}
+\part{边值问题的逼近}\ImportedPartLabel{part:2}
+\input{chapters/ch06}
+\input{chapters/ch07}
+\input{chapters/ch08}
+\input{chapters/ch09}
+\input{chapters/ch10}
+\part{初边值问题的逼近}\ImportedPartLabel{part:3}
+\input{chapters/ch11}
+\input{chapters/ch12}
+\input{chapters/ch13}
+\input{chapters/ch14}
+\backmatter
+\input{chapters/references}
+\input{chapters/subject-index}
+\end{document}

@@ -1,0 +1,110 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{ajbook-cover}[2026/11/22 Fixed PDE bilingual cover]
+% Cover design copyright 2022 Wen-Wei Li, licensed under CC BY 4.0.
+% https://creativecommons.org/licenses/by/4.0/
+\RequirePackage{tikz-cd}
+\usetikzlibrary{decorations.pathmorphing}
+\newsavebox{\AJCoverTitleBox}
+\newsavebox{\AJCoverEnglishBox}
+\newsavebox{\AJCoverAuthorBox}
+\newsavebox{\AJCoverTitleRef}
+\newsavebox{\AJCoverEnglishRef}
+\newsavebox{\AJCoverAuthorRef}
+\newdimen\AJCoverTitleDelta
+\newdimen\AJCoverEnglishDelta
+\newdimen\AJCoverAuthorDelta
+\newcommand{\AJCoverDelta}[3]{%
+  #1=\dimexpr\ht#2+\dp#2-\ht#3-\dp#3\relax
+  \ifdim#1<0pt #1=0pt\relax\fi
+}
+\newcommand{\AJCoverCheckWidth}[3]{%
+  \ifdim\wd#1>#2\relax
+    \PackageError{ajbook-cover}{#3 is too wide}{Break the title into lines in frontmatter/cover.tex.}%
+  \fi
+}
+% Optional PDF anchor, followed by the Chinese title, English title, and authors.
+\NewDocumentCommand{\AJBookCover}{o m m m}{%
+\begingroup
+\setCJKfamilyfont{coverfont}[Path=../template/fonts/noto-serif-cjk-sc/]{NotoSerifCJKsc-Bold.otf}
+\setCJKfamilyfont{cover-author-font}[Path=\AJNotoSansFolder]{\AJNotoSansRegular}
+% Measure the approved PDE cover once. The reference boxes give fixed
+% anchors and are not printed. Title width never moves or shrinks a line.
+\def\AJCoverTitleFont{\fontsize{45}{45}\selectfont\CJKfamily{coverfont}}%
+\def\AJCoverEnglishFont{\fontsize{18}{22}\selectfont}%
+\def\AJCoverAuthorFont{\fontsize{18}{18}\selectfont\CJKfamily{cover-author-font}}%
+\sbox{\AJCoverTitleRef}{\AJCoverTitleFont\shortstack{偏微分方程引论}}%
+\sbox{\AJCoverEnglishRef}{\AJCoverEnglishFont\shortstack{An Introduction to\\Partial Differential Equations}}%
+\sbox{\AJCoverAuthorRef}{\AJCoverAuthorFont\shortstack[l]{Michael Renardy\\Robert C. Rogers}}%
+\sbox{\AJCoverTitleBox}{\AJCoverTitleFont\shortstack[l]{#2}}%
+\sbox{\AJCoverEnglishBox}{\AJCoverEnglishFont\shortstack{#3}}%
+\sbox{\AJCoverAuthorBox}{\AJCoverAuthorFont\shortstack[l]{#4}}%
+\AJCoverCheckWidth{\AJCoverTitleBox}{170mm}{Chinese cover title}%
+\AJCoverCheckWidth{\AJCoverEnglishBox}{136mm}{English cover title}%
+\AJCoverDelta{\AJCoverTitleDelta}{\AJCoverTitleBox}{\AJCoverTitleRef}%
+\AJCoverDelta{\AJCoverEnglishDelta}{\AJCoverEnglishBox}{\AJCoverEnglishRef}%
+\AJCoverAuthorDelta=\dimexpr\AJCoverTitleDelta+\AJCoverEnglishDelta\relax
+\colorlet{octa}{cyan!50!gray}
+\providecommand{\identity}{\ensuremath{\mathrm{id}}}
+\pgfmathsetseed{20261023}
+\begin{titlepage}
+\IfValueT{#1}{\hypertarget{#1}{}}
+\begin{tikzpicture}[remember picture, overlay, pencildraw/.style={
+  color=octa, thick,
+  decorate,
+  decoration={random steps, segment length=1pt, amplitude=0.7pt}
+}]
+\node[anchor=center] (title-ref) at ([xshift=19em,yshift=-10em] current page.north west)
+  {\phantom{\usebox{\AJCoverTitleRef}}};
+\node[anchor=center] (english-ref) at ([yshift=-7em] title-ref.center)
+  {\phantom{\usebox{\AJCoverEnglishRef}}};
+\node[anchor=west] (author-ref) at ([yshift=-5em,xshift=4pt] english-ref.south west)
+  {\phantom{\usebox{\AJCoverAuthorRef}}};
+\node[anchor=north west] (title) at (title-ref.north west) {\usebox{\AJCoverTitleBox}};
+\node[anchor=north] (volume) at ([yshift=-\AJCoverTitleDelta] english-ref.north)
+  {\usebox{\AJCoverEnglishBox}};
+\node[anchor=north west] (author) at ([yshift=-\AJCoverAuthorDelta] author-ref.north west)
+  {\usebox{\AJCoverAuthorBox}};
+\node[anchor=west] at ([xshift=2.4em] author.east)
+  {\AJCoverAuthorFont 著};
+\draw[line width=2pt, color=black!70!gray]
+  ([xshift=-2.5em, yshift=1em] author.north west) -- ++(25em,0);
+\shade[top color=gray, bottom color=black]
+  ([xshift=-1em, yshift=1em] title-ref.north west) rectangle ++(-1em,-20em);
+\coordinate (pic) at ([xshift=-23em, yshift=22em] current page.south east);
+\coordinate (pic2) at ([xshift=3em] pic);
+\begin{scope}[shift=(pic2), scale=1.5, opacity=0.55]
+  \node (P0) at (90:2.3cm) {$((X \otimes Y) \otimes Z) \otimes W$};
+  \node (P1) at (90+72:2cm) {$(X \otimes (Y \otimes Z)) \otimes W$};
+  \node (P2) at (90+2*72:2cm) {\makebox[5ex][r]{$X \otimes ((Y \otimes Z) \otimes W)$}};
+  \node (P3) at (90+3*72:2cm) {\makebox[5ex][l]{$X \otimes (Y \otimes (Z \otimes W))$}};
+  \node (P4) at (90+4*72:2cm) {$(X \otimes Y) \otimes (Z \otimes W)$};
+  \path[commutative diagrams/.cd, every arrow, every label]
+    (P0) edge node[swap] {$a(X,Y,Z) \otimes \identity_W$} (P1)
+    (P1) edge node[swap] {$a(X, Y \otimes Z, W)$} (P2)
+    (P2) edge node[swap, inner sep=1em] {$\identity_X \otimes a(Y,Z,W)$} (P3)
+    (P4) edge node {$a(X, Y, Z \otimes W)$} (P3)
+    (P0) edge node {$a(X \otimes Y, Z, W)$} (P4);
+\end{scope}
+\begin{scope}[shift=(pic), rotate=-30, scale=2]
+  \coordinate (A1) at (pic);
+  \coordinate (A2) at (6em, 2em);
+  \coordinate (A3) at (10em, 0);
+  \coordinate (A4) at (4em, -2em);
+  \coordinate (B1) at (5em, 5em);
+  \coordinate (B2) at (5em, -5em);
+\end{scope}
+\begin{scope}[loosely dashed, opacity=0.6]
+  \draw[pencildraw] (A1) -- (A2) -- (A3);
+  \draw[pencildraw] (B1) -- (A2) -- (B2);
+\end{scope}
+\draw[pencildraw, fill=octa!10, opacity=0.6] (A1) -- (A4) -- (B1);
+\draw[pencildraw, fill=octa!20, opacity=0.6] (A1) -- (A4) -- (B2);
+\draw[pencildraw, fill=octa!30, opacity=0.6] (A3) -- (A4) -- (B1);
+\draw[pencildraw, fill=octa!50, opacity=0.6] (A3) -- (A4) -- (B2);
+\draw[pencildraw] (B1) -- (A1) -- (B2) -- (A3) -- cycle;
+\end{tikzpicture}
+\cleardoublepage
+\end{titlepage}
+\endgroup
+}
+\endinput

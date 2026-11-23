@@ -1,0 +1,165 @@
+\subsubsection{Nonconvex Problems}\label{subsec:nonconvex-variational-problems}
+
+The study of nonconvex variational problems has occupied a significant fraction of the PDE community over the last twenty years. Such problems arise in PDEs which model phase transitions, e.g. the liquid-gas transition, phase transitions is crystalline solids, ferromagnetism and superconductivity. We discuss the main issues which arise in a simple one-dimensional example.
+
+\Needspace{4\baselineskip}\textbf{A nonconvex model problem}
+
+Let us try to minimize
+\begin{equation}\label{eq:nonconvex-one-dimensional-model-energy}
+I(u)=\int_0^1u(x)^2+(u^{\prime}(x)^2-1)^2\,\mathrm{d}x,
+\end{equation}
+subject to the boundary conditions $u(0)=u(1)=0$. Note that to do so we must meet two conflicting demands. The second term under the integral is a ``nice\textquotesingle\textquotesingle\ convex function of $u$. To make it small we must look for functions $u$ that are as close to zero as possible. The second term is nonconvex. It is minimized when $u^{\prime}$ is either one or minus one. In between these values the term achieves a local maximum when $u^{\prime}=0$.
+
+With this in mind minimizing sequence is easily found. For each $i=0,1,\ldots,n-1$, let
+\begin{equation}\label{eq:nonconvex-zigzag-minimizing-sequence}
+u_n(x)=\begin{cases}x-\dfrac{i}{n},&\dfrac{i}{n}\leq x\leq\dfrac{i}{n}+\dfrac{1}{2n},\\\dfrac{i+1}{n}-x,&\dfrac{i}{n}+\dfrac{1}{2n}\leq x\leq\dfrac{i+1}{n}.\end{cases}
+\end{equation}
+That is, $u_n$ is a sequence of piecewise linear functions that ``zigzag\textquotesingle\textquotesingle\ between derivatives $\pm1$. The maximum height of the function is $1/2n$. Since the second term in $I$ is identically zero, we can easily calculate that $I(u_n)=1/(12n^2)$. Thus\[\lim_{n\to\infty}I(u_n)=0,\]and since $I$ is always nonnegative, the sequence approaches the minimum value of $I$.
+
+However, because of the nonconvex term, $I$ is not continuous in the way we might expect. That is even though the sequence of functions $u_n$ converges to zero uniformly, we have\[I\left(\lim_{n\to\infty}u_n\right)=I(0)=1\neq\lim_{n\to\infty}I(u_n).\]Indeed, it is easy to see that no function can possibly attain the minimum of $I$. Any function $u$ with $I(u)=0$ would have to satisfy $u=0$ and $u^{\prime}=\pm1$, but there is no such function.
+
+The behavior found in this example turns out to be typical of nonconvex variational problems. There are two possible strategies to cope with this:\begin{enumerate}\item Identify the problem satisfied by the limits of minimizing sequences; obviously this will be a problem different from the original one.\item Actually define a ``function\textquotesingle\textquotesingle\ which is equal to zero but has derivative $\pm1$.\end{enumerate}In this section, we shall give a brief outline of each of these approaches.
+
+\Needspace{4\baselineskip}\textbf{Convexification}
+
+\begin{Definition}
+\label{def:lower-convex-envelope}
+For a function $f(p)$, defined on an interval, we define the lower convex envelope by
+\begin{equation}\label{eq:lower-convex-envelope-definition}
+Cf=\sup\{g\mid g\text{ convex},\ g\leq f\}.
+\end{equation}
+
+\end{Definition}
+
+There are several other equivalent characterizations, see for instance \cite{Dac}. For variational problems of the form
+\begin{equation}\label{eq:one-dimensional-unrelaxed-variational-problem}
+\min\int_a^bf(x,u,u^{\prime})\,\mathrm{d}x,
+\end{equation}
+it is possible to show under quite general hypotheses that the limits of minimizing sequences satisfy the problem
+\begin{equation}\label{eq:one-dimensional-convexified-variational-problem}
+\min\int_a^bCf(x,u,u^{\prime})\,\mathrm{d}x,
+\end{equation}
+where the lower convex envelope is with respect to the third variables. For instance, in the example above, we have (see Problem~\ref{ex:quartic-double-well-lower-convex-envelope})
+\begin{equation}\label{eq:nonconvex-model-integrand}
+f(x,u,u^{\prime})=((u^{\prime})^2-1)^2+u^2,
+\end{equation}
+and
+\begin{equation}\label{eq:nonconvex-model-lower-convex-envelope}
+Cf(x,u,u^{\prime})=\begin{cases}((u^{\prime})^2-1)^2+u^2,&|u^{\prime}|\geq1,\\u^2,&|u^{\prime}|<1.\end{cases}
+\end{equation}
+Obviously, $u=0$ is indeed a minimizer of the modified problem.
+
+In the multidimensional case, however, convexity is not the right notion, as we already saw in the previous section. The appropriate notion is quasiconvexity.
+
+\begin{Definition}
+\label{def:quasiconvex-function}
+The function $f:\mathbb{R}^{nm}\to\mathbb{R}$ is called \emph{quasiconvex} if
+\begin{equation}\label{eq:quasiconvex-function-integral-definition}
+\dfrac{1}{m(D)}\int_Df(\bm{A}+\nabla\bm{u}(\bm{x}))\,\mathrm{d}\bm{x}\geq f(\bm{A})
+\end{equation}
+for every bounded domain $D\subset\mathbb{R}^n$, every $\bm{A}\in\mathbb{R}^{nm}$ and every $\bm{u}\in(\mathcal{D}(D))^m$. Here $m(D)$ denotes the volume of $D$.
+\end{Definition}
+
+Quasiconvexity is linked to lower semicontinuity in the multidimensional case in the same way as convexity is in the one-dimensional case. If appropriate technical hypotheses are satisfied, it is therefore possible to show that limits of minimizing sequences for the problem
+\begin{equation}\label{eq:multidimensional-unrelaxed-variational-problem}
+\min\int_\Omega f(\bm{x},\bm{u},\nabla\bm{u})\,\mathrm{d}\bm{x}
+\end{equation}
+are minimizers for the functional
+\begin{equation}\label{eq:multidimensional-quasiconvexified-variational-problem}
+\min\int_\Omega Qf(\bm{x},\bm{u},\nabla\bm{u})\,\mathrm{d}\bm{x},
+\end{equation}
+where $Qf$ denotes the lower quasiconvex (with respect to the third variable) envelope:
+\begin{equation}\label{eq:lower-quasiconvex-envelope-definition}
+Qf(\bm{x},\bm{u},\bm{A})=\sup\{g\mid g\text{ quasiconvex in }\bm{A},\ g\leq f\}.
+\end{equation}
+Unfortunately, quasiconvexity is not a simple pointwise condition on $f$ as convexity is and is difficult to verify. Polyconvexity as defined in the preceding section is a sufficient condition. A necessary condition is rank one convexity.
+
+\begin{Definition}
+\label{def:rank-one-convex-function}
+The function $f:\mathbb{R}^{nm}\to\mathbb{R}$ is called \emph{rank one convex} if
+\begin{equation}\label{eq:rank-one-convex-function-definition}
+f(\lambda\bm{A}+(1-\lambda)\bm{B})\leq\lambda f(\bm{A})+(1-\lambda)f(\bm{B})
+\end{equation}
+for every $\lambda\in(0,1)$ and every $\bm{A}$ and $\bm{B}$ such that $\operatorname{rank}(\bm{A}-\bm{B})=1$.
+\end{Definition}
+
+We can define a lower polyconvex envelope $Pf$ and a lower rank one convex envelope $Rf$ in an analogous fashion as the lower convex envelope $Cf$ and lower quasiconvex envelope $Qf$. Since it can be shown that
+\begin{equation}\label{eq:convexity-polyconvexity-quasiconvexity-rank-one-implications}
+\begin{aligned}\text{convexity}&\Longrightarrow\text{polyconvexity}\Longrightarrow\text{quasiconvexity}\\&\Longrightarrow\text{rank one convexity},\end{aligned}
+\end{equation}
+we have
+\begin{equation}\label{eq:convex-envelope-order-relations}
+Cf\leq Pf\leq Qf\leq Rf\leq f.
+\end{equation}
+Hence we have a characterization of $Qf$ if we can show that $Pf=Rf$.
+
+\Needspace{4\baselineskip}\textbf{Generalized functions}
+
+How can one define a ``function\textquotesingle\textquotesingle\ which is equal to zero but has derivative $\pm1$? The solution to this dilemma is to assign probabilities rather than values to the derivative. The classical derivative is then the average of the probability distribution. This allows the function 0 to have derivatives $\pm1$, as long as both values occur with equal probability. The development of this theory, originally introduced by L.C. Young, rests on the following result (see \cite{Dac}).
+
+\begin{Theorem}
+\label{thm:young-measure-subsequence-existence}
+Let $K\subset\mathbb{R}^m$, $\Omega\subset\mathbb{R}^n$ be bounded, open sets, and let $\bm{v}_n\in(L^\infty(\Omega))^m$ be such that $\bm{v}_n$ has values in $K$. Then there exists a family of probability measures $\nu_x$, $x\in\Omega$, on $\overline K$ and a subsequence $\bm{v}_{n_k}$ such that, in the sense of weak-* convergence in $(L^\infty(\Omega))^m$, we have
+\begin{equation}\label{eq:young-measure-continuous-composition-weak-star-limit}
+\lim_{k\to\infty}f(\bm{v}_{n_k})=\int_{\overline K}\nu_x(\bm{p})f(\bm{p})\,\mathrm{d}\bm{p}
+\end{equation}
+for every continuous function $f:\overline K\to\mathbb{R}$.
+\end{Theorem}
+
+For instance, if we take $v_n$ to be the derivative of the zigzag function given by \eqref{eq:nonconvex-zigzag-minimizing-sequence}, we have
+\begin{equation}\label{eq:zigzag-derivative-young-measure-composition-limit}
+\lim f(v_n)=\dfrac{1}{2}(f(1)+f(-1));
+\end{equation}
+in particular this yields $\lim v_n=0$, and $\lim(v_n^2-1)^2=0$.
+
+\Needspace{5\baselineskip}\textbf{Problems}
+
+\begin{enumerate}[label=\thesection.\arabic*.,ref=\thesection.\arabic*,start=9,series=book-problems]
+
+\item\label{ex:div-curl-scalar-gradient-version} Prove the following version of the div-curl lemma. Let $\Omega\subset\mathbb{R}^n$ be a domain. Let $\bm{u}^k:\Omega\to\mathbb{R}^n$ be a sequence of vector-valued functions and $w^k:\Omega\to\mathbb{R}$ be a sequence of scalar-valued functions satisfying
+\begin{equation}\label{eq:div-curl-exercise-vector-weak-ltwo-limit}
+\bm{u}^k\rightharpoonup\overline{\bm{u}}\quad\text{in }L^2(\Omega),
+\end{equation}
+
+\begin{equation}\label{eq:div-curl-exercise-divergence-ltwo-bound}
+\operatorname{div}\bm{u}^k\quad\text{bounded in }L^2(\Omega),
+\end{equation}
+
+\begin{equation}\label{eq:div-curl-exercise-scalar-weak-hone-limit}
+w^k\rightharpoonup\overline w\quad\text{in }H^1(\Omega).
+\end{equation}
+Show that
+\begin{equation}\label{eq:div-curl-exercise-gradient-product-distributional-limit}
+\bm{u}^k\cdot\nabla w^k\to\overline{\bm{u}}\cdot\nabla\overline w\quad\text{in }\mathcal{D}^{\prime}(\Omega).
+\end{equation}
+
+
+\item\label{ex:gradient-minors-induction-first-step} Do the first step of the induction in the proof of Theorem~\ref{thm:gradient-minors-weak-continuity}; i.e., show that for any indices $i,j,l,m$ from 1 to $n$ we have\[\lim_{k\to\infty}\dfrac{\partial p_i^k}{\partial x_l}\dfrac{\partial p_j^k}{\partial x_m}-\dfrac{\partial p_i^k}{\partial x_m}\dfrac{\partial p_j^k}{\partial x_l}=\dfrac{\partial\overline p_i}{\partial x_l}\dfrac{\partial\overline p_j}{\partial x_m}-\dfrac{\partial\overline p_i}{\partial x_m}\dfrac{\partial\overline p_j}{\partial x_l}.\]
+
+\item\label{ex:subdeterminants-null-lagrangians} Let $\mathcal{M}^{n\times n}$ be the set of $n\times n$ matrices and let\[\mathcal{M}\ni\bm{F}\mapsto g(\bm{F})\in\mathbb{R}\]be given by an $m\times m$ subdeterminant of $\bm{F}$. Let $\Omega\subset\mathbb{R}^n$ be a domain. Consider functions $\bm{p}:\Omega\to\mathbb{R}^n$. Compute the Euler-Lagrange equations for the energy functional
+\begin{equation}\label{eq:subdeterminant-null-lagrangian-energy}
+\mathcal{E}(\bm{p}):=\int_\Omega g(\nabla\bm{p}(\bm{x}))\,\mathrm{d}\bm{x}.
+\end{equation}
+Explain why subdeterminant functions like $g$ are called \emph{null Lagrangians}. Can you think of any other null Lagrangians?
+
+\item\label{ex:quartic-double-well-lower-convex-envelope} Let $f(p)=(p^2-1)^2$ and let
+\begin{equation}\label{eq:quartic-double-well-convex-minorant}
+F(p)=\begin{cases}f(p),&|p|\geq1,\\0,&|p|<1.\end{cases}
+\end{equation}
+\begin{enumerate}[label=\alph*.]\item Show that $F$ is convex.\item Prove that if $x=\lambda y+(1-\lambda)z$, where $0\leq\lambda\leq1$, and if $g$ is convex with $g\leq f$, then $g(x)\leq\lambda f(y)+(1-\lambda)f(z)$.\item Show that if $g$ is convex with $g\leq f$, then $g\leq F$.\end{enumerate}
+
+\item\label{ex:convexity-implies-quasiconvexity-one-dimensional-converse} Show that convexity implies quasiconvexity and that the converse holds if $n=m=1$.
+
+\item\label{ex:rank-one-convexity-euler-lagrange-implications} Formulate the Euler-Lagrange equations for the problem
+\begin{equation}\label{eq:rank-one-convexity-euler-lagrange-exercise}
+\min\int_\Omega f(\bm{x},\bm{u},\nabla\bm{u})\,\mathrm{d}\bm{x}.
+\end{equation}
+Explore what rank one convexity of $f$ implies for these equations.
+
+\item\label{ex:sine-oscillation-young-measure-density} Let $u_n(x)=\sin(nx)$. Explicitly find a function $r(x)$ such that
+\begin{equation}\label{eq:sine-oscillation-young-measure-density-exercise}
+\lim_{n\to\infty}f(u_n(x))=\int_{-1}^1f(y)r(y)\,\mathrm{d}y
+\end{equation}
+in the weak sense.
+
+\end{enumerate}

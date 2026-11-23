@@ -1,0 +1,61 @@
+\subsubsection{Laplace Transforms}\label{subsec:laplace-transforms}
+
+Let $f\in\mathcal{S}^{\prime}(\mathbb{R})$ have support contained in $\{x\geq0\}$. Then obviously $e^{-\mu x}f(x)$ is also in $\mathcal{S}^{\prime}(\mathbb{R})$ for every $\mu>0$. Formally, we have
+\begin{equation}\label{eq:laplace-fourier-complex-frequency-shift}
+\mathcal{F}[e^{-\mu x}f](\xi)=\dfrac1{\sqrt{2\pi}}\int_0^\infty f(x)e^{-i\xi x}e^{-\mu x}\,\mathrm{d}x=\mathcal{F}[f](\xi-i\mu).
+\end{equation}
+Hence it is sensible to define $\mathcal{F}[f](\xi-i\mu)$ as $\mathcal{F}[f\exp(-\mu x)](\xi)$. This defines $\mathcal{F}[f]$ in the lower half of the complex $\xi$-plane --- as a generalized function of $\operatorname{Re}\xi$ depending on $\operatorname{Im}\xi$ as a parameter. Actually, however, $\mathcal{F}[f]$ is an analytic function of $\xi$ in the open half-plane $\{\operatorname{Im}\xi<0\}$; this is shown by an argument similar to that in Example~\ref{ex:fourier-compact-distribution-entire} (cf. Problem~\ref{ex:one-sided-tempered-fourier-product}).
+
+The Laplace transform is defined as
+\begin{equation}\label{eq:laplace-transform-fourier-definition}
+\mathcal{L}[f](s):=\sqrt{2\pi}\mathcal{F}[f](-is);
+\end{equation}
+for $f\in\mathcal{S}^{\prime}(\mathbb{R})$ with support in $\{x\geq0\}$ it is defined in the right half-plane. Formally, we have
+\begin{equation}\label{eq:laplace-transform-formal-integral}
+\mathcal{L}[f](s)=\int_0^\infty e^{-sx}f(x)\,\mathrm{d}x.
+\end{equation}
+
+
+If $f$ is not in $\mathcal{S}^{\prime}(\mathbb{R})$, but $\exp(-\mu x)f$ is in $\mathcal{S}^{\prime}(\mathbb{R})$ for some positive $\mu$, then we can define $\mathcal{L}[f]$ in the half-plane $\{\operatorname{Re}s\geq\mu\}$. We note that by inverting the Fourier transform in \eqref{eq:laplace-transform-fourier-definition} we obtain
+\begin{equation}\label{eq:laplace-inversion-weighted-fourier-formula}
+e^{-\mu x}f(x)=\dfrac1{\sqrt{2\pi}}\mathcal{F}^{-1}[\mathcal{L}[f](\mu+i\xi)]
+\end{equation}
+or, equivalently,
+\begin{equation}\label{eq:inverse-laplace-contour-formula}
+f(x)=\dfrac1{2\pi i}\int_{\mu-i\infty}^{\mu+i\infty}e^{sx}\mathcal{L}[f](s)\,\mathrm{d}s.
+\end{equation}
+
+
+In using \eqref{eq:inverse-laplace-contour-formula}, care must be taken that the resulting expression really vanishes for $x<0$, since this was our basic assumption. Typically, one shows this by closing the contour of integration by a half-circle to the right; $e^{sx}$ decays rapidly in the right half-plane. For this argument to work, it is necessary to choose $\mu$ to the right of any singularities of $\mathcal{L}[f]$.
+
+We now give a few examples of applications of Laplace transforms.
+
+\Needspace{4\baselineskip}
+\begin{Example}
+\label{ex:laplace-linear-ode}
+Consider the initial-value problem
+\begin{equation}\label{eq:laplace-linear-ode-initial-problem}
+y'(x)=ay(x)+f(x),\quad y(0)=\alpha.
+\end{equation}
+We are interested in a solution for positive $x$. For negative $x$, we extend $y$ and $f$ by zero. The extended function does not satisfy \eqref{eq:laplace-linear-ode-initial-problem}: since it jumps from 0 to $\alpha$ at the origin, its derivative contains a contribution $\alpha\delta(x)$. Thus the proper equation for the extended functions is
+\begin{equation}\label{eq:laplace-linear-ode-zero-extension}
+y'(x)=ay(x)+f(x)+\alpha\delta(x).
+\end{equation}
+We now take Laplace transforms. We obtain
+\begin{equation}\label{eq:laplace-linear-ode-transformed-equation}
+s\mathcal{L}[y](s)=a\mathcal{L}[y](s)+\mathcal{L}[f](s)+\alpha,
+\end{equation}
+and hence
+\begin{equation}\label{eq:laplace-linear-ode-transform-solution}
+\mathcal{L}[y](s)=\dfrac{\mathcal{L}[f](s)+\alpha}{s-a}.
+\end{equation}
+To obtain $y(x)$, we must now invert the Laplace transform; for instance, the inverse Laplace transform of $1/(s-a)$ is found from \eqref{eq:inverse-laplace-contour-formula} as
+\begin{equation}\label{eq:laplace-exponential-residue-integral}
+\dfrac1{2\pi i}\int_{\mu-i\infty}^{\mu+i\infty}\dfrac{e^{sx}}{s-a}\,\mathrm{d}s.
+\end{equation}
+This integral is easily evaluated by the method of residues; for $\mu>a$, we obtain $e^{ax}$ for $x>0$ and 0 for $x<0$. (Note that if we choose $\mu<a$, we still get a solution of \eqref{eq:laplace-linear-ode-zero-extension}, but one that vanishes for $x>0$ rather than $x<0$; thus we do not get a solution of the original problem \eqref{eq:laplace-linear-ode-initial-problem}.) If we exploit the fact that the transform of a product is a convolution, we can now write the solution as
+\begin{equation}\label{eq:laplace-linear-ode-causal-solution}
+y(x)=\alpha e^{ax}+\int_0^xe^{a(x-t)}f(t)\,\mathrm{d}t,\quad x>0;
+\end{equation}
+of course we could have found this without using transforms.
+\end{Example}

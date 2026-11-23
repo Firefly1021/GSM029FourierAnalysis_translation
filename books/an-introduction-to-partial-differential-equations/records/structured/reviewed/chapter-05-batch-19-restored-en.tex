@@ -1,0 +1,84 @@
+\subsection{The Fourier Transform}\label{sec:fourier-transform}
+
+\subsubsection{Fourier Transforms of Test Functions}\label{subsec:fourier-test-functions}
+
+\begin{Definition}
+\label{def:fourier-transform}
+The \textbf{Fourier transform} of a continuous, absolutely integrable function $f:\mathbb{R}^m\to\mathbb{C}$ is defined by\footnote{Definitions in the literature differ as to whether or not the minus sign is included in the exponent and whether the factor $(2\pi)^{-m/2}$ is included.}
+\begin{equation}\label{eq:fourier-transform-definition}
+\widehat f(\bm{\xi})=\mathcal{F}[f](\bm{\xi}):=(2\pi)^{-m/2}\int_{\mathbb{R}^m}e^{-i\bm{\xi}\cdot\bm{x}}f(\bm{x})\,\mathrm{d}\bm{x}.
+\end{equation}
+
+\end{Definition}
+
+In particular, this defines the Fourier transform of every $f\in\mathcal{S}(\mathbb{R}^m)$. In fact, we have the following result.
+
+\begin{Theorem}
+\label{thm:fourier-test-space-continuity}
+If $f\in\mathcal{S}(\mathbb{R}^m)$, then $\widehat f\in\mathcal{S}(\mathbb{R}^m)$. Moreover, the mapping $\mathcal{F}$ is continuous from $\mathcal{S}(\mathbb{R}^m)$ into itself.
+\end{Theorem}
+
+\begin{Proof}
+If $f\in\mathcal{S}(\mathbb{R}^m)$, then clearly $\widehat f$ is a continuous, bounded function; moreover, if $f_n\to0$ in $\mathcal{S}(\mathbb{R}^m)$, then $\widehat f_n\to0$ uniformly. The rest follows from the identities
+\begin{equation}\label{eq:fourier-frequency-derivatives}
+D^\alpha\widehat f(\bm{\xi})=\mathcal{F}[(-i\bm{x})^\alpha f](\bm{\xi}),
+\end{equation}
+
+\begin{equation}\label{eq:fourier-spatial-derivatives}
+(i\bm{\xi})^\alpha\widehat f(\bm{\xi})=\mathcal{F}[D^\alpha f](\bm{\xi}).
+\end{equation}
+The first of these identities is obtained by differentiating under the integral, the second by integration by parts.
+\end{Proof}
+
+Equation \eqref{eq:fourier-spatial-derivatives} is the principal reason why Fourier transforms are important; if $L(D)$ is a differential operator with constant coefficients, then
+\begin{equation}\label{eq:fourier-constant-coefficient-operator-symbol}
+\mathcal{F}[L(D)u]=L(i\bm{\xi})\mathcal{F}[u],
+\end{equation}
+where $L(i\bm{\xi})$ is the symbol of $L$ defined in Section~\ref{sec:classification-characteristics}. Partial differential equations with constant coefficients can therefore be transformed into algebraic equations by Fourier transform. Of course, knowing the Fourier transform of a solution is of little use, unless we know how to invert the transform. This is addressed by the next theorem.
+
+\begin{Theorem}
+\label{thm:fourier-inversion}
+Let $g\in\mathcal{S}(\mathbb{R}^m)$. Then there is a unique $f\in\mathcal{S}(\mathbb{R}^m)$ such that $g=\mathcal{F}[f]$. Furthermore, the \textbf{inverse Fourier transform} of $g$ is given by the formula
+\begin{equation}\label{eq:fourier-inversion-formula}
+f(\bm{x})=(2\pi)^{-m/2}\int_{\mathbb{R}^m}e^{i\bm{\xi}\cdot\bm{x}}g(\bm{\xi})\,\mathrm{d}\bm{\xi}.
+\end{equation}
+
+\end{Theorem}
+
+Except for the minus sign in the exponent, the formula for the inverse Fourier transform agrees with that for the Fourier transform itself. To evaluate the integrals arising in Fourier transforms, complex contour deformations are often useful; for examples, see Problem~\ref{ex:fourier-gaussian-rational-transforms}.
+
+\begin{Proof}
+Let $Q_M=[-M,M]^m$, and let $f$ be given by \eqref{eq:fourier-inversion-formula}. Then we find
+\begin{equation}\label{eq:fourier-inversion-cutoff-calculation}
+\begin{aligned}
+\widehat f(\bm{\xi})&=(2\pi)^{-m/2}\int_{\mathbb{R}^m}e^{-i\bm{\xi}\cdot\bm{x}}f(\bm{x})\,\mathrm{d}\bm{x}\\
+&=(2\pi)^{-m}\int_{\mathbb{R}^m}e^{-i\bm{\xi}\cdot\bm{x}}\int_{\mathbb{R}^m}e^{i\bm{\eta}\cdot\bm{x}}g(\bm{\eta})\,\mathrm{d}\bm{\eta}\,\mathrm{d}\bm{x}\\
+&=(2\pi)^{-m}\lim_{M\to\infty}\int_{Q_M}\int_{\mathbb{R}^m}e^{i(\bm{\eta}-\bm{\xi})\cdot\bm{x}}g(\bm{\eta})\,\mathrm{d}\bm{\eta}\,\mathrm{d}\bm{x}\\
+&=(2\pi)^{-m}\lim_{M\to\infty}\int_{\mathbb{R}^m}\int_{Q_M}e^{i(\bm{\eta}-\bm{\xi})\cdot\bm{x}}g(\bm{\eta})\,\mathrm{d}\bm{x}\,\mathrm{d}\bm{\eta}\\
+&=\pi^{-m}\lim_{M\to\infty}\int_{\mathbb{R}^m}\prod_{i=1}^m\dfrac{\sin M(\eta_i-\xi_i)}{\eta_i-\xi_i}g(\bm{\eta})\,\mathrm{d}\bm{\eta}.
+\end{aligned}
+\end{equation}
+As we have seen in Example~\ref{ex:delta-sequence-primitive}, the limit of $\sin M(\eta_i-\xi_i)/(\eta_i-\xi_i)$ as $M\to\infty$ is $\pi\delta(\eta_i-\xi_i)$ in the sense of distributions, and also in the sense of tempered distributions. Using this fact and the continuity of the direct product, we find $\widehat f(\bm{\xi})=g(\bm{\xi})$, i.e., the Fourier transform of $f$ is indeed $g$.
+
+An analogous calculation shows that if $g=\widehat h$ for some function $h\in\mathcal{S}(\mathbb{R}^m)$, then $h=f$ as given by \eqref{eq:fourier-inversion-formula}.
+\end{Proof}
+
+An important property of the Fourier transform is that it preserves the inner product.
+
+\begin{Theorem}
+\label{thm:fourier-inner-product-preservation}
+Let $f,\phi\in\mathcal{S}(\mathbb{R}^m)$. Then $(\widehat f,\widehat\phi)=(f,\phi)$.
+\end{Theorem}
+
+\begin{Proof}
+We have
+\begin{equation}\label{eq:fourier-inner-product-preservation-proof}
+\begin{aligned}
+(f,\phi)&=\int_{\mathbb{R}^m}\overline{f(\bm{x})}\phi(\bm{x})\,\mathrm{d}\bm{x}\\
+&=(2\pi)^{-m/2}\int_{\mathbb{R}^m}\overline{f(\bm{x})}\int_{\mathbb{R}^m}\widehat\phi(\bm{\xi})e^{i\bm{\xi}\cdot\bm{x}}\,\mathrm{d}\bm{\xi}\,\mathrm{d}\bm{x}\\
+&=(2\pi)^{-m/2}\int_{\mathbb{R}^m}\widehat\phi(\bm{\xi})\int_{\mathbb{R}^m}\overline{f(\bm{x})e^{-i\bm{\xi}\cdot\bm{x}}}\,\mathrm{d}\bm{x}\,\mathrm{d}\bm{\xi}\\
+&=\int_{\mathbb{R}^m}\overline{\widehat f(\bm{\xi})}\widehat\phi(\bm{\xi})\,\mathrm{d}\bm{\xi}=(\widehat f,\widehat\phi).
+\end{aligned}
+\end{equation}
+This completes the proof.
+\end{Proof}

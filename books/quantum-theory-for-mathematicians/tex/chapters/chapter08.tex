@@ -1,0 +1,516 @@
+\chapter{有界自伴算子谱定理的证明}
+\label{chap:bounded-spectral-proofs}
+
+本章证明上一章陈述的谱定理的所有形式.投影值测度形式的证明分为两步.第一步构造连续函数演算:把 \(\sigma(A)\) 上的每个连续函数 \(f\) 关联到一个算子 \(f(A)\).第二步证明这个连续函数演算可以表示为关于投影值测度的积分.
+
+\section{第一种谱定理的证明}
+\label{sec:proof-spectral-first}
+
+\subsection{第一阶段:连续函数演算}
+\label{subsec:continuous-functional-calculus-proof}
+
+对任意 \(A\in\mathcal{B}(\mathcal{H})\),定义谱半径
+\[
+R(A):=\sup_{\lambda\in\sigma(A)}|\lambda|.
+\]
+由命题~\ref{prop:spectrum-basic} 和命题~\ref{prop:selfadjoint-spectrum-characterization},当 \(A\) 自伴时,\(\sigma(A)\) 是 \(\mathbb{R}\) 中非空有界集合.由命题~\ref{prop:spectrum-basic} 的第二点,对任意有界算子都有 \(R(A)\leq\|A\|\).一般来说,\(\|A\|\) 可能远大于 \(R(A)\):例如若 \(A\) 是幂零矩阵,则 \(R(A)=0\),但 \(\|A\|\) 可以任意大.
+
+\begin{lemma}[自伴算子的谱半径]\label{lem:selfadjoint-spectral-radius}
+若 \(A\in\mathcal{B}(\mathcal{H})\) 自伴,则
+\[
+\|A\|=R(A).
+\]
+\end{lemma}
+
+为证明该引理,先确定命题~\ref{prop:spectrum-basic} 的证明中预解级数的收敛半径.由命题~\ref{prop:adjoint-norm},对任意有界算子有 \(\|A^{*}A\|=\|A\|^{2}\).若 \(A\) 自伴,则
+\[
+\|A^{2}\|=\|A\|^{2},
+\]
+迭代可得
+\[
+\|A^{2^{n}}\|=\|A\|^{2^{n}}.
+\label{eq:spectral-radius-power-norm}
+\]
+考虑有界自伴算子 \(A\) 的形式预解展开
+\[
+\begin{aligned}
+(A-\lambda I)^{-1}
+&=-\frac{1}{\lambda}\left(I-\frac{A}{\lambda}\right)^{-1}\\
+&=-\sum_{m=0}^{\infty}\frac{A^{m}}{\lambda^{m+1}}.
+\end{aligned}
+\label{eq:resolvent-series-ch8}
+\]
+若 \(|\lambda|>\|A\|\),则上一章的证明说明该级数在算子范数拓扑中收敛,且其和确实是 \((A-\lambda I)^{-1}\).反之若 \(|\lambda|\leq\|A\|\),由式~\eqref{eq:spectral-radius-power-norm},级数中相应项的范数不趋于零,所以它不可能在算子范数拓扑中收敛.于是式~\eqref{eq:resolvent-series-ch8} 的收敛半径为 \(\|A\|\).
+
+\begin{proof}[引理~\ref{lem:selfadjoint-spectral-radius} 的证明]
+已知 \(R(A)\leq\|A\|\).为证明反向不等式,注意 \((A-\lambda I)^{-1}\) 是定义在 \(|\lambda|>R(A)\) 上的算子值全纯函数,因此其 Laurent 级数必须在 \(|\lambda|>R(A)\) 上收敛.而该 Laurent 级数正是式~\eqref{eq:resolvent-series-ch8},我们已经证明它在 \(|\lambda|\leq\|A\|\) 时发散.若 \(R(A)<\|A\|\),便产生矛盾.
+
+具体地,上一章命题~\ref{prop:spectrum-basic} 的证明中式~\eqref{eq:resolvent-local-series} 表明,\(\lambda\mapsto(A-\lambda I)^{-1}\) 在预解集的每一点附近都可展开为 \(\lambda-\lambda_{0}\) 的收敛幂级数.因此,对任意有界线性泛函 \(\xi\in\mathcal{B}(\mathcal{H})^{*}\),复值函数
+\[
+\lambda\longmapsto\xi((A-\lambda I)^{-1})
+\]
+在预解集上全纯,并且有唯一的 Laurent 展开,它由对式~\eqref{eq:resolvent-series-ch8} 逐项施加 \(\xi\) 得到.这个级数在包含于预解集的最大圆环,即 \(|\lambda|>R(A)\) 上收敛.
+
+式~\eqref{eq:resolvent-series-ch8} 收敛意味着,对每个 \(|\lambda|>R(A)\) 以及每个 \(\xi\),数列 \(\{\xi(A^{m}/\lambda^{m+1})\}\) 有界.由一致有界原理(附录~\ref{app:thm:uniform-boundedness} 的推论),集合
+\[
+\left\{\frac{A^{m}}{\lambda^{m+1}}\right\}_{m=0}^{\infty}
+\]
+在 Banach 空间 \(\mathcal{B}(\mathcal{H})\) 中有界.特别地,对每个 \(|\lambda|>R(A)\),存在常数 \(C\),使得
+\[
+\frac{\|A^{2^{n}}\|}{|\lambda|^{2^{n}}}
+=\frac{\|A\|^{2^{n}}}{|\lambda|^{2^{n}}}\leq C.
+\]
+若 \(\|A\|>R(A)\),取 \(R(A)<|\lambda|<\|A\|\) 就会与此不等式矛盾.因此 \(R(A)=\|A\|\).
+\end{proof}
+
+下一步是理解多项式作用于自伴算子时谱如何变化.
+
+\begin{lemma}[谱映射定理]\label{lem:polynomial-spectral-mapping}
+对任意 \(A\in\mathcal{B}(\mathcal{H})\) 和任意多项式 \(p\),有
+\[
+\sigma(p(A))=p(\sigma(A)).
+\label{eq:polynomial-spectral-mapping}
+\]
+也就是说,\(p(A)\) 的谱恰好由 \(p(\lambda)\)(其中 \(\lambda\in\sigma(A)\))组成.
+\end{lemma}
+
+\begin{proof}
+若 \(p\) 为常数,结论显然.设 \(\deg p\geq1\),写
+\[
+p(z)=a_{n}z^{n}+a_{n-1}z^{n-1}+\cdots+a_{0}.
+\]
+先证明 \(p(\sigma(A))\subset\sigma(p(A))\).设 \(\lambda\in\sigma(A)\).注意
+\[
+p(A)-p(\lambda)I
+=a_{n}(A^{n}-\lambda^{n}I)+\cdots+a_{1}(A-\lambda I).
+\]
+又有
+\[
+A^{k}-\lambda^{k}I
+=(A-\lambda I)(A^{k-1}+\lambda A^{k-2}+\cdots+\lambda^{k-1}I).
+\]
+因此可从 \(p(A)-p(\lambda)I\) 的每一个非零项中提出因子 \(A-\lambda I\),得到
+\[
+p(A)-p(\lambda)I=(A-\lambda I)q(A),
+\]
+其中 \(q\) 是某个多项式.由于 \(A-\lambda I\) 不可逆,且它与 \(q(A)\) 相交换,\((A-\lambda I)q(A)\) 不可能可逆(见练习~\ref{ex:noninvertible-product}).所以 \(p(\lambda)\in\sigma(p(A))\).
+
+再证明 \(\sigma(p(A))\subset p(\sigma(A))\).设 \(\gamma\in\sigma(p(A))\).由于 \(\mathbb{C}\) 代数闭,存在复数 \(b_{1},\ldots,b_{n}\),使得
+\[
+p(z)-\gamma=c(z-b_{1})(z-b_{2})\cdots(z-b_{n}).
+\label{eq:polynomial-factorization}
+\]
+于是
+\[
+p(A)-\gamma I=c(A-b_{1}I)(A-b_{2}I)\cdots(A-b_{n}I).
+\]
+左端不可逆,因此右端至少有一个因子不可逆(有限个两两可交换的可逆算子之积若可逆,则每个因子都可逆).所以某个 \(b_{j}\in\sigma(A)\).由式~\eqref{eq:polynomial-factorization},\(p(b_{j})-\gamma=0\),即 \(\gamma=p(b_{j})\).
+\end{proof}
+
+最后一步使用 Stone--Weierstrass 定理,说明多项式在 \(C(\sigma(A);\mathbb{R})\)(即 \(\sigma(A)\) 上连续实值函数空间)中关于上确界范数稠密.
+
+\begin{proposition}[连续函数演算]\label{prop:continuous-functional-calculus}
+若 \(A\in\mathcal{B}(\mathcal{H})\) 自伴,则存在唯一有界线性映射
+\[
+C(\sigma(A);\mathbb{R})\longrightarrow\mathcal{B}(\mathcal{H}),\qquad f\longmapsto f(A),
+\]
+使得当 \(f(\lambda)=\lambda^{m}\) 时,\(f(A)=A^{m}\).该映射称为 \(A\) 的(实值)连续函数演算.
+\end{proposition}
+
+\begin{proof}
+若 \(A\) 自伴,且 \(p\) 是实值多项式,则 \(p(A)\) 自伴.结合谱映射定理和引理~\ref{lem:selfadjoint-spectral-radius},得到
+\[
+\|p(A)\|=\sup_{\lambda\in\sigma(A)}|p(\lambda)|.
+\label{eq:polynomial-functional-calculus-isometry}
+\]
+因此 \(p\mapsto p(A)\) 是从 \(\sigma(A)\) 上多项式空间(带上确界范数)到有界算子空间的等距线性映射.由 Stone--Weierstrass 定理,多项式在 \(C(\sigma(A);\mathbb{R})\) 中稠密;再由 BLT 定理(附录~\ref{app:thm:bounded-extension}),该映射唯一延拓为从 \(C(\sigma(A);\mathbb{R})\) 到 \(\mathcal{B}(\mathcal{H})\) 的有界线性映射.
+\end{proof}
+
+\begin{proposition}[连续函数演算的性质]\label{prop:continuous-functional-calculus-properties}
+若 \(A\in\mathcal{B}(\mathcal{H})\) 自伴,则上述连续函数演算满足:
+\begin{enumerate}
+\item 乘法性:\((fg)(A)=f(A)g(A)\);
+\item 自伴性:对所有 \(f\),\(f(A)\) 自伴;
+\item 非负性:若 \(f\geq0\),则 \(f(A)\) 是非负算子;
+\item 范数与谱:
+\[
+\|f(A)\|=\sup_{\lambda\in\sigma(A)}|f(\lambda)|,
+\label{eq:continuous-functional-calculus-norm}
+\]
+且
+\[
+\sigma(f(A))=\{f(\lambda):\lambda\in\sigma(A)\}.
+\label{eq:continuous-functional-calculus-spectrum}
+\]
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+乘法性对多项式成立,再取一致极限便对所有连续函数成立.若 \(p\) 是实值多项式且 \(A\) 自伴,则 \(p(A)\) 自伴,取极限得到第二点.若 \(f\geq0\),令 \(g=\sqrt{f}\),则 \(g\) 为实值连续函数,且对所有 \(\psi\),
+\[
+\langle\psi,f(A)\psi\rangle
+=\langle\psi,g(A)^{2}\psi\rangle
+=\langle g(A)\psi,g(A)\psi\rangle\geq0,
+\label{eq:nonnegative-functional-calculus}
+\]
+故第三点成立.式~\eqref{eq:continuous-functional-calculus-norm} 对多项式已由式~\eqref{eq:polynomial-functional-calculus-isometry} 得到,对一般连续函数取极限即可.
+
+为证明式~\eqref{eq:continuous-functional-calculus-spectrum},先设 \(\lambda_{0}\) 不在 \(f\) 的值域中.则
+\[
+g(\lambda):=\frac{1}{f(\lambda)-\lambda_{0}}
+\]
+在 \(\sigma(A)\) 上连续,且 \(g(A)\) 是 \(f(A)-\lambda_{0}I\) 的逆.因此 \(\lambda_{0}\notin\sigma(f(A))\).
+
+反过来,设 \(\lambda_{0}=f(\mu)\),其中 \(\mu\in\sigma(A)\).若 \(f(A)-f(\mu)I\) 可逆,取一致收敛于 \(f\) 的多项式列 \(p_{n}\).根据第~7 章练习~\ref{ex:invertibility-stability},只要算子在范数拓扑中充分接近一个可逆算子,它也可逆.因此对充分大的 \(n\),\(p_{n}(A)-p_{n}(\mu)I\) 必须可逆;这与谱映射定理矛盾.
+\end{proof}
+
+\subsection{第二阶段:算子值 Riesz 表示定理}
+\label{subsec:operator-valued-riesz}
+
+现在进入谱定理证明的第二阶段.我们使用测度论中的 Riesz 表示定理,而不是 Hilbert 空间连续线性泛函的 Riesz 表示定理.下述形式足够使用.
+
+\begin{theorem}[Riesz 表示定理]\label{thm:measure-riesz-representation}
+设 \(X\) 是紧度量空间,\(C(X;\mathbb{R})\) 是连续实值函数空间.若线性泛函 \(\Lambda:C(X;\mathbb{R})\to\mathbb{R}\) 在 \(f\) 的所有取值非负时满足 \(\Lambda(f)\geq0\),则存在唯一的 Borel \(\sigma\)-代数上的正实值测度 \(\mu\),使得
+\[
+\Lambda(f)=\int_{X}f\,\mathrm{d}\mu
+\]
+对所有 \(f\in C(X;\mathbb{R})\) 成立.
+\end{theorem}
+
+这是有限测度,因为 \(\mu(X)=\Lambda(1)\).关于该定理在实轴紧子集情形的简短证明,可参见文献~[34] 第 I 卷第 353--354 页;完整结果见文献~[12] 定理 7.2 和 7.8.
+
+对于有界自伴算子 \(A\),上一小节构造了映射 \(f\mapsto f(A)\).若 \(f\geq0\),则命题~\ref{prop:continuous-functional-calculus-properties} 的第三点说明 \(f(A)\) 非负.因此对每个 \(\psi\in\mathcal{H}\),定义
+\[
+\Lambda_{\psi}(f):=\langle\psi,f(A)\psi\rangle.
+\]
+它满足 Riesz 表示定理的假设,于是对每个 \(\psi\) 存在唯一测度 \(\mu_{\psi}\),使得
+\[
+\langle\psi,f(A)\psi\rangle
+=\int_{\sigma(A)}f(\lambda)\,\mathrm{d}\mu_{\psi}(\lambda)
+\label{eq:measure-riesz-functional-calculus}
+\]
+对所有 \(f\in C(\sigma(A);\mathbb{R})\) 成立.注意
+\[
+\mu_{\psi}(\sigma(A))=\Lambda_{\psi}(1)=\|\psi\|^{2}.
+\label{eq:mu-psi-total-mass}
+\]
+
+\begin{definition}[由测度族定义的二次型]\label{def:Qf-measure}
+若 \(f\) 是 \(\sigma(A)\) 上的有界可测复值函数,定义 \(Q_{f}:\mathcal{H}\to\mathbb{C}\):
+\[
+Q_{f}(\psi):=\int_{\sigma(A)}f(\lambda)\,\mathrm{d}\mu_{\psi}(\lambda).
+\label{eq:Qf-definition}
+\]
+\end{definition}
+
+当 \(f\) 是实值连续函数时,\(Q_{f}(\psi)=\langle\psi,f(A)\psi\rangle\),所以 \(Q_{f}\) 是有界二次型.事实证明,对任意有界可测 \(f\),\(Q_{f}\) 都是有界二次型,于是由命题~\ref{app:prop:quadratic-operator} 可把它关联到一个有界算子,仍记作 \(f(A)\).建立这一算子的性质后,我们将通过 \(\mu_{A}(E):=\mathbf{1}_{E}(A)\) 构造所需的投影值测度.
+
+\begin{proposition}[有界可测函数给出的二次型]\label{prop:Qf-quadratic}
+对 \(\sigma(A)\) 上任意有界可测函数 \(f\),定义~\ref{def:Qf-measure} 中的 \(Q_{f}\) 都是有界二次型.
+\end{proposition}
+
+\begin{proof}
+令 \(\mathcal{F}\) 为所有使 \(Q_{f}\) 成为二次型的有界 Borel 可测函数组成的空间.显然 \(\mathcal{F}\) 是复向量空间并包含 \(C(\sigma(A);\mathbb{R})\).它对一致有界的逐点极限封闭,因为由支配收敛定理,\(Q_{f}(\psi)\) 对这样的极限连续.标准测度论方法(见练习~\ref{ex:bounded-borel-generation})表明,\(\mathcal{F}\) 包含所有有界 Borel 可测函数.
+
+另一方面,由式~\eqref{eq:mu-psi-total-mass},
+\[
+|Q_{f}(\psi)|\leq\sup_{\lambda\in\sigma(A)}|f(\lambda)|\,\|\psi\|^{2},
+\]
+所以 \(Q_{f}\) 总是有界二次型.
+\end{proof}
+
+\begin{definition}[可测函数演算]\label{def:measurable-functional-calculus}
+对 \(\sigma(A)\) 上有界可测函数 \(f\),令 \(f(A)\) 为由 \(Q_{f}\) 通过命题~\ref{app:prop:quadratic-operator} 关联的算子,即唯一满足
+\[
+\langle\psi,f(A)\psi\rangle=Q_{f}(\psi)
+=\int_{\sigma(A)}f\,\mathrm{d}\mu_{\psi}
+\]
+对所有 \(\psi\in\mathcal{H}\) 成立的算子.
+\end{definition}
+
+若 \(f\) 为实值函数,则 \(Q_{f}(\psi)\) 对所有 \(\psi\) 为实数,因此相应算子 \(f(A)\) 自伴.下面构造 \(\mu_{A}\) 后将看到,这里的 \(f(A)\) 与定义~\ref{def:functional-calculus} 中的积分完全一致.
+
+\begin{proposition}[可测函数演算的乘法性]\label{prop:measurable-functional-calculus-multiplicative}
+对任意两个有界可测函数 \(f,g\),有
+\[
+(fg)(A)=f(A)g(A).
+\label{eq:measurable-functional-calculus-multiplicative}
+\]
+\end{proposition}
+
+\begin{proof}
+令 \(\mathcal{F}_{1}\) 为所有满足
+\[
+(fg)(A)=f(A)g(A)
+\]
+对每个 \(g\in C(\sigma(A);\mathbb{R})\) 成立的有界可测函数 \(f\) 所组成的空间.它是复向量空间并包含 \(C(\sigma(A);\mathbb{R})\).由支配收敛定理,\(f\mapsto Q_{f}(\psi)\) 对一致有界的逐点极限连续;再由极化恒等式(命题~\ref{app:prop:polarization}),与 \(Q_{f}\) 关联的半双线性型 \(L_{f}\) 也具有同样的连续性.
+
+由极化恒等式,若对所有 \(\psi\) 及所有连续实值 \(g\),
+\[
+\langle\psi,(fg)(A)\psi\rangle
+=\langle\psi,f(A)g(A)\psi\rangle,
+\]
+等价地,
+\[
+Q_{fg}(\psi)=L_{f}(\psi,g(A)\psi),
+\]
+则 \(f\in\mathcal{F}_{1}\).因此 \(\mathcal{F}_{1}\) 对一致有界逐点极限封闭.由练习~\ref{ex:bounded-borel-generation},它包含所有有界 Borel 可测函数.
+
+再令 \(\mathcal{F}_{2}\) 为所有满足式~\eqref{eq:measurable-functional-calculus-multiplicative}(对所有有界 Borel 可测 \(g\))的有界 Borel 可测函数 \(f\) 所组成的空间.刚才的结论说明 \(\mathcal{F}_{2}\) 包含连续实值函数;对 \(\mathcal{F}_{1}\) 的同一论证说明 \(\mathcal{F}_{2}\) 就是所有有界 Borel 可测函数.
+\end{proof}
+
+\begin{theorem}[投影值测度的构造]\label{thm:construct-pvm}
+设 \(A\in\mathcal{B}(\mathcal{H})\) 自伴.对 \(\sigma(A)\) 中每个可测集 \(E\),定义
+\[
+\mu_{A}(E):=\mathbf{1}_{E}(A),
+\]
+其中 \(\mathbf{1}_{E}(A)\) 由定义~\ref{def:measurable-functional-calculus} 给出.则 \(\mu_{A}\) 是 \(\sigma(A)\) 上的投影值测度,并且
+\[
+\int_{\sigma(A)}\lambda\,\mathrm{d}\mu_{A}(\lambda)=A.
+\label{eq:construct-pvm-integral}
+\]
+\end{theorem}
+
+该定理证明了第一种谱定理(定理~\ref{thm:spectral-theorem-first})中投影值测度的存在性.
+
+\begin{proof}
+由于 \(\mathbf{1}_{E}\) 是实值函数且 \(\mathbf{1}_{E}^{2}=\mathbf{1}_{E}\),命题~\ref{prop:continuous-functional-calculus-properties} 说明 \(\mathbf{1}_{E}(A)\) 自伴且满足 \(\mathbf{1}_{E}(A)^{2}=\mathbf{1}_{E}(A)\).根据附录~\ref{app:prop:orthogonal-projection},它是正交投影.
+
+若 \(E_{1},E_{2}\) 可测,则 \(\mathbf{1}_{E_{1}\cap E_{2}}=\mathbf{1}_{E_{1}}\mathbf{1}_{E_{2}}\),故
+\[
+\mu_{A}(E_{1}\cap E_{2})=\mu_{A}(E_{1})\mu_{A}(E_{2}).
+\]
+若 \(E_{1},E_{2},\ldots\) 两两不相交,则不同投影的值域相互正交.令 \(P\) 为投影到包含所有这些值域的最小闭子空间上的投影,则对所有 \(\psi\),
+\[
+\sum_{j=1}^{\infty}\mu_{A}(E_{j})\psi=P\psi,
+\]
+其中级数在范数拓扑中收敛.令 \(E=\bigcup_{j}E_{j}\),则
+\[
+f_{N}:=\sum_{j=1}^{N}\mathbf{1}_{E_{j}}
+\]
+一致有界(上界为 1),并逐点收敛到 \(\mathbf{1}_{E}\).再次使用式~\eqref{eq:measure-riesz-functional-calculus} 中的支配收敛,得到
+\[
+\lim_{N\to\infty}\left\langle\psi,\sum_{j=1}^{N}\mathbf{1}_{E_{j}}(A)\psi\right\rangle
+=\langle\psi,\mathbf{1}_{E}(A)\psi\rangle.
+\]
+所以 \(\mathbf{1}_{E}(A)=P\),这就证明了可数可加性.
+
+若 \(f=\mathbf{1}_{E}\),则
+\[
+\int_{\sigma(A)}f(\lambda)\,\mathrm{d}\mu_{A}(\lambda)=f(A).
+\label{eq:integral-equals-functional-calculus}
+\]
+由线性性,这对简单函数成立;再取极限,对所有有界 Borel 可测函数成立.特别地,当 \(f(\lambda)=\lambda\) 时,积分等于连续函数演算中的 \(f(A)\),而后者对多项式 \(f(\lambda)=\lambda\) 就是 \(A\).故式~\eqref{eq:construct-pvm-integral} 成立.
+\end{proof}
+
+现在证明上一章的命题~\ref{prop:commuting-operator-functional-calculus}.
+
+\begin{proof}[命题~\ref{prop:commuting-operator-functional-calculus} 的证明]
+若 \(B\) 与 \(A\) 相交换,则 \(B\) 与任意多项式 \(p(A)\) 相交换.按照连续函数演算的构造取极限可知,\(B\) 与任意连续实值函数 \(f(A)\) 相交换.
+
+令 \(\mathcal{F}\) 为所有使 \(f(A)\) 与 \(B\) 相交换的有界 Borel 可测函数 \(f\) 所组成的空间.对任意 \(\phi,\psi\),条件等价于
+\[
+\langle\phi,f(A)B\psi\rangle=\langle B^{*}\phi,f(A)\psi\rangle,
+\]
+即
+\[
+L_{f}(\phi,B\psi)=L_{f}(B^{*}\phi,\psi).
+\]
+前面已经说明,固定向量后 \(f\mapsto L_{f}\) 对一致有界逐点极限连续.因此 \(\mathcal{F}\) 对这类极限封闭;由练习~\ref{ex:bounded-borel-generation},它包含所有有界 Borel 可测函数.这证明了第一点,第二点则取 \(f=\mathbf{1}_{E}\) 即得.
+\end{proof}
+
+\section{第二种谱定理的证明}
+\label{sec:proof-spectral-second}
+
+现在证明定理~\ref{thm:spectral-theorem-direct-integral}.先处理 \(A\) 有循环向量的特殊情形,即存在 \(\psi\),使得 \(A^{k}\psi\)(\(k=0,1,2,\ldots\))张成稠密子空间.此时直积分就是一个 \(L^{2}\) 空间,即所有 \(\mathcal{H}_{\lambda}\) 都等于 \(\mathbb{C}\),所以直积分形式与乘法算子形式重合.
+
+\begin{lemma}[循环向量情形]\label{lem:cyclic-spectral-representation}
+设 \(A\in\mathcal{B}(\mathcal{H})\) 自伴,\(\psi\) 是 \(A\) 的循环向量.令 \(\mu_{\psi}\) 为定理~\ref{thm:measure-riesz-representation} 给出的唯一测度,使得
+\[
+\langle\psi,f(A)\psi\rangle
+=\int_{\sigma(A)}f(\lambda)\,\mathrm{d}\mu_{\psi}(\lambda)
+\]
+对所有连续实值函数 \(f\) 成立.则存在酉映射
+\[
+U:\mathcal{H}\to L^{2}(\sigma(A),\mu_{\psi}),
+\]
+使得
+\[
+\bigl[UAU^{-1}\phi\bigr](\lambda)=\lambda\phi(\lambda).
+\]
+\end{lemma}
+
+\begin{proof}
+先在形如 \(p(A)\psi\) 的向量组成的复向量空间上定义 \(U\):
+\[
+U[p(A)\psi]=p.
+\]
+写 \(p=p_{1}+ip_{2}\),其中 \(p_{1},p_{2}\) 是实值多项式.由于 \(p_{1}(A),p_{2}(A)\) 自伴且相交换,
+\[
+\begin{aligned}
+\|p(A)\psi\|^{2}
+&=\langle\psi,(p_{1}(A)^{2}+p_{2}(A)^{2})\psi\rangle\\
+&=\int_{\sigma(A)}(p_{1}(\lambda)^{2}+p_{2}(\lambda)^{2})\,\mathrm{d}\mu_{\psi}(\lambda).
+\end{aligned}
+\label{eq:cyclic-isometry}
+\]
+若 \(p(A)\psi=0\),则 \(p\) 在 \(\mu_{\psi}\)-几乎处处为零,故它表示 \(L^{2}\) 中的零元素.因此 \(U\) 定义良好,并且式~\eqref{eq:cyclic-isometry} 说明它在初始定义域上等距.初始定义域包含所有 \(A^{k}\psi\),因而在 \(\mathcal{H}\) 中稠密.由 BLT 定理,\(U\) 唯一延拓为从 \(\mathcal{H}\) 到 \(L^{2}(\sigma(A),\mu_{\psi})\) 的等距映射.由 Stone--Weierstrass 定理及附录中的稠密性结果,多项式在该 \(L^{2}\) 空间中稠密,所以 \(U\) 实际上是酉映射.
+
+由于 \(U\) 把 \(A^{k}\psi\) 映到函数 \(\lambda\mapsto\lambda^{k}\),有 \(UAU^{-1}(\lambda^{k})=\lambda^{k+1}\).因此对所有多项式 \(p\),
+\[
+\bigl[UAU^{-1}p\bigr](\lambda)=\lambda p(\lambda).
+\]
+再由多项式在 \(L^{2}\) 中稠密性,结论对所有 \(\phi\in L^{2}\) 成立.
+\end{proof}
+
+\begin{lemma}[由投影值测度构造普通测度]\label{lem:pvm-dominating-measure}
+设 \(A\in\mathcal{B}(\mathcal{H})\) 自伴,\(\mu_{A}\) 是定理~\ref{thm:construct-pvm} 中的投影值测度.则在 \(\sigma(A)\) 上存在非负实值测度 \(\mu\),使得对所有 Borel 集 \(E\),
+\[
+\mu_{A}(E)=0\quad\Longleftrightarrow\quad\mu(E)=0.
+\]
+\end{lemma}
+
+\begin{proof}
+取 \(\mathcal{H}\) 的标准正交基 \(\{e_{j}\}\),令
+\[
+\mu_{e_{j}}(E):=\langle e_{j},\mu_{A}(E)e_{j}\rangle.
+\]
+因为 \(\mu_{e_{j}}(\sigma(A))=\langle e_{j},Ie_{j}\rangle=1\),定义
+\[
+\mu:=\sum_{j=1}^{\infty}2^{-j}\mu_{e_{j}}
+\]
+得到有限测度.若 \(\mu_{A}(E)=0\),则所有 \(\mu_{e_{j}}(E)=0\),所以 \(\mu(E)=0\).反之,若 \(\mu(E)=0\),则对每个 \(j\),
+\[
+0=\langle e_{j},\mu_{A}(E)e_{j}\rangle
+=\langle\mu_{A}(E)e_{j},\mu_{A}(E)e_{j}\rangle,
+\]
+因为 \(\mu_{A}(E)\) 自伴且幂等.因此 \(\mu_{A}(E)e_{j}=0\) 对所有 \(j\) 成立,得到 \(\mu_{A}(E)=0\).
+\end{proof}
+
+\begin{lemma}[循环子空间分解]\label{lem:cyclic-decomposition}
+若 \(A\in\mathcal{B}(\mathcal{H})\) 自伴,则 \(\mathcal{H}\) 可以分解为闭的非零子空间 \(W_{j}\) 的正交直和,每个 \(W_{j}\) 在 \(A\) 下不变,且 \(A|_{W_{j}}\) 有循环向量.这样的子空间数目有限或可数无限.
+\end{lemma}
+
+\begin{proof}
+利用 \(\mathcal{H}\) 可分,取其可数稠密子集 \(\{\phi_{j}\}\).令 \(W_{1}\) 为 \(\phi_{1},A\phi_{1},A^{2}\phi_{1},\ldots\) 张成的闭子空间.它在 \(A\) 下不变,且 \(\psi_{1}:=\phi_{1}\) 是 \(A|_{W_{1}}\) 的循环向量.若 \(W_{1}=\mathcal{H}\),则完成.否则取最小的使 \(\phi_{j}\notin W_{1}\) 的 \(j\),令 \(\psi_{2}\) 为 \(\phi_{j}\) 在 \(W_{1}^{\perp}\) 上的正交投影,并令 \(W_{2}\) 为 \(\psi_{2},A\psi_{2},A^{2}\psi_{2},\ldots\) 的闭线性包.
+
+\(W_{2}\) 在 \(A\) 下不变,\(\psi_{2}\) 是循环向量.由于 \(A\) 自伴且保持 \(W_{1}\) 不变,它也保持 \(W_{1}^{\perp}\) 不变,因此所有 \(A^{k}\psi_{2}\) 都与 \(W_{1}\) 正交,故 \(W_{2}\perp W_{1}\).重复这一过程,得到一族两两正交、在 \(A\) 下不变且各自有循环向量的闭子空间.若过程有限步终止,它们张成 \(\mathcal{H}\);否则,由 \(\{\phi_{j}\}\) 的稠密性,它们的 Hilbert 空间直和仍是整个 \(\mathcal{H}\).
+\end{proof}
+
+\begin{proof}[定理~\ref{thm:spectral-theorem-direct-integral} 的证明]
+取引理~\ref{lem:cyclic-decomposition} 中的 \(\{W_{j},\psi_{j}\}\),令 \(A_{j}=A|_{W_{j}}\).对每个 \(A_{j}\),由引理~\ref{lem:cyclic-spectral-representation} 得到
+\[
+U_{j}:W_{j}\to L^{2}(\sigma(A_{j}),\mu_{\psi_{j}}),
+\]
+使 \(U_{j}A_{j}U_{j}^{-1}\) 是乘以 \(\lambda\) 的算子.为把这些映射拼合起来,需要把它们都改写到同一个测度 \(\mu\) 下.
+
+由练习~\ref{ex:restriction-spectrum},\(\sigma(A_{j})\subset\sigma(A)\).并且若 \(E\subset\sigma(A_{j})\),则 \(\mathbf{1}_{E}(A_{j})\) 等于 \(\mathbf{1}_{E}(A)\) 在 \(W_{j}\) 上的限制.因此 \(\mu_{A}(E)=0\) 会推出 \(\mu_{A_{j}}(E)=0\),进而推出 \(\mu_{\psi_{j}}(E)=0\).取引理~\ref{lem:pvm-dominating-measure} 中的测度 \(\mu\),并把每个 \(\mu_{\psi_{j}}\) 延拓到 \(\sigma(A)\)(在 \(\sigma(A)\setminus\sigma(A_{j})\) 上为零),则 \(\mu_{\psi_{j}}\ll\mu\).由 Radon--Nikodym 定理(附录~\ref{app:thm:radon-nikodym}),存在密度 \(\rho_{j}\),使得 \(\mathrm{d}\mu_{\psi_{j}}=\rho_{j}\,\mathrm{d}\mu\).
+
+映射 \(f\mapsto\rho_{j}^{1/2}f\) 是从 \(L^{2}(\sigma(A_{j}),\mu_{\psi_{j}})\) 到 \(L^{2}(\sigma(A_{j}),\mu)\) 的酉映射.因此定义
+\[
+(\widetilde U_{j}\psi)(\lambda)=\rho_{j}(\lambda)^{1/2}(U_{j}\psi)(\lambda).
+\]
+由于乘以 \(\rho_{j}^{1/2}\) 与乘以 \(\lambda\) 相交换,\(\widetilde U_{j}A_{j}\widetilde U_{j}^{-1}\) 仍是乘以 \(\lambda\) 的算子.
+
+现在把 \(L^{2}(\sigma(A_{j}),\mu)\) 看成关于 \(\sigma(A)\) 的直积分:若 \(\lambda\in\sigma(A_{j})\),令 \(\mathcal{H}_{\lambda}^{j}=\mathbb{C}\);否则令 \(\mathcal{H}_{\lambda}^{j}=\{0\}\).定义
+\[
+\mathcal{H}_{\lambda}:=\bigoplus_{j}\mathcal{H}_{\lambda}^{j}.
+\]
+可测性结构由相应的标准基截面给出:在 \(\sigma(A_{j})\) 上,\(e_{j}(\lambda)\) 是第 \(j\) 个分量为 1 的向量,在其补集上为零.由 \(\mathcal{H}_{\lambda}\) 是各 \(\mathcal{H}_{\lambda}^{j}\) 的直和,关于 \(\mathcal{H}_{\lambda}\) 的直积分就是这些 \(L^{2}(\sigma(A_{j}),\mu)\) 的 Hilbert 空间直和.最后,将各个 \(\widetilde U_{j}\) 拼合,得到从 \(\mathcal{H}=\bigoplus_{j}W_{j}\) 到该直积分的酉映射 \(U\),并且 \(UAU^{-1}\) 是乘以 \(\lambda\) 的算子.
+\end{proof}
+
+命题~\ref{prop:direct-integral-uniqueness} 的完整证明略去,只说明主要思想.根据命题~\ref{prop:spectral-measures-equivalence},两个测度都与投影值测度 \(\mu_{A}\) 有相同的零测集,所以它们互相绝对连续.另一方面,若有两个都与 \(\mathcal{H}\) 酉等价且满足式~\eqref{eq:spectral-theorem-direct-integral} 的直积分,则两个直积分之间存在一个与乘法算子 \(s(\lambda)\mapsto\lambda s(\lambda)\) 相交换的酉映射 \(V\).类似练习~\ref{ex:commuting-multiplication-operator} 的论证可知,几乎处处存在有界映射 \(V_{\lambda}:\mathcal{H}_{\lambda}^{(1)}\to\mathcal{H}_{\lambda}^{(2)}\),使得 \((Vs)(\lambda)=V_{\lambda}s(\lambda)\).再由 \(V\) 酉可知 \(V_{\lambda}\) 几乎处处酉,从而两个纤维空间的维数几乎处处相等.
+
+\begin{proof}[定理~\ref{thm:spectral-theorem-multiplication} 的证明]
+取引理~\ref{lem:cyclic-decomposition} 中的 \(W_{j}\),并令 \(A_{j}=A|_{W_{j}}\).由定理~\ref{thm:spectral-theorem-direct-integral} 的证明,每个 \(A_{j}\) 都与某个有限测度 \(\mu_{j}\) 下的 \(L^{2}(\sigma(A_{j}),\mu_{j})\) 上的乘以 \(\lambda\) 的算子酉等价.令 \(X\) 为集合 \(\sigma(A_{j})\) 的不交并,令 \(\mu\) 为各 \(\mu_{j}\) 的和,并令 \(h\) 在每个 \(\sigma(A_{j})\) 上都等于 \(\lambda\mapsto\lambda\).则 \(L^{2}(X,\mu)\) 是这些空间的正交直和,可以自然地与 \(\mathcal{H}=\bigoplus W_{j}\) 酉等同.在此等同下,\(A\) 对应于乘以 \(h\) 的算子.
+\end{proof}
+
+\section{练习}
+\label{sec:chapter8-exercises}
+
+\begin{exercise}[不可逆算子的乘积]\label{ex:noninvertible-product}
+\begin{enumerate}[label=(\alph*)]
+\item 设 \(A,B\in\mathcal{B}(\mathcal{H})\) 相交换,且 \(A\) 不可逆.证明 \(AB\) 不可逆.
+\emph{提示:}先证明若 \(AB\) 可逆,则 \(A\) 有左逆和右逆;再证明左逆和右逆必须相等.
+\item 若去掉 \(A,B\) 相交换的假设,给出说明 (a) 中结论不成立的例子.
+\end{enumerate}
+\end{exercise}
+
+\begin{exercise}[非负自伴算子的平方根]\label{ex:selfadjoint-square-root}
+\begin{enumerate}[label=(\alph*)]
+\item 设 \(A\in\mathcal{B}(\mathcal{H})\) 自伴且 \(\sigma(A)\subset[0,\infty)\).证明 \(A\) 在 \(\mathcal{B}(\mathcal{H})\) 中有自伴平方根,从而 \(A\) 是非负算子.
+\item 给出 Hilbert 空间上有界算子 \(A\) 的例子,使 \(\sigma(A)\subset[0,\infty)\),但 \(A\) 不是非负算子.
+\end{enumerate}
+\end{exercise}
+
+\begin{exercise}[有界 Borel 函数的生成]\label{ex:bounded-borel-generation}
+设 \(X\) 是紧度量空间,\(C(X;\mathbb{R})\) 是连续实值函数空间.设 \(\mathcal{F}\) 是 \(X\) 上有界可测复值函数组成的集合,满足:
+\begin{enumerate}
+\item \(\mathcal{F}\) 是复向量空间;
+\item \(\mathcal{F}\) 包含 \(C(X;\mathbb{R})\);
+\item \(\mathcal{F}\) 对一致有界序列的逐点极限封闭.
+\end{enumerate}
+其中“一致有界”是指存在常数 \(C\),使 \(|f_{n}(x)|\leq C\) 对所有 \(n,x\) 成立.
+\begin{enumerate}[label=(\alph*)]
+\item 令 \(\mathcal{L}_{0}\) 为所有满足 \(\mathbf{1}_{E}\) 是连续函数列的一致有界极限的可测集 \(E\) 的集合.证明 \(\mathcal{L}_{0}\) 是代数并包含 \(X\) 中的所有开集.
+\item 令 \(\mathcal{L}_{1}\) 为所有满足 \(\mathbf{1}_{E}\in\mathcal{F}\) 的可测集 \(E\) 的集合.使用单调类引理(附录~\ref{app:thm:monotone-class}),证明 \(\mathcal{L}_{1}\) 包含所有 Borel 集.
+\item 证明 \(\mathcal{F}\) 就是所有有界 Borel 可测函数的空间.
+\end{enumerate}
+\end{exercise}
+
+\begin{exercise}[投影值测度的唯一性]\label{ex:pvm-uniqueness}
+设 \(A\in\mathcal{B}(\mathcal{H})\) 自伴,\(\mu_{A}\) 和 \(\nu_{A}\) 是 \(\sigma(A)\) 上的两个投影值测度,且
+\[
+\int_{\sigma(A)}\lambda\,\mathrm{d}\mu_{A}(\lambda)
+=\int_{\sigma(A)}\lambda\,\mathrm{d}\nu_{A}(\lambda)=A.
+\]
+证明关于 \(\mu_{A}\) 和 \(\nu_{A}\) 的积分先对多项式、再对连续函数、最后对有界可测函数一致.推出 \(\mu_{A}=\nu_{A}\).
+
+\emph{提示:}使用练习~\ref{ex:bounded-borel-generation}.
+\end{exercise}
+
+\begin{exercise}[不变子空间的谱]\label{ex:restriction-spectrum}
+设 \(A\in\mathcal{B}(\mathcal{H})\) 自伴,\(V\) 是在 \(A\) 下不变的闭子空间.
+\begin{enumerate}[label=(\alph*)]
+\item 使用命题~\ref{prop:selfadjoint-spectrum-characterization},证明 \(A\) 在 \(V\) 上的限制的谱包含于 \(A\) 的谱.
+\item 设 \(f\) 是 \(\sigma(A)\) 上的有界可测函数,因而也是 \(\sigma(A|_{V})\subset\sigma(A)\) 上的函数.证明 \(V\) 在 \(f(A)\) 下不变,且
+\[
+f(A)|_{V}=f(A|_{V}),
+\]
+其中右端使用有界自伴算子 \(A|_{V}\) 的可测函数演算定义.
+\end{enumerate}
+\end{exercise}
+
+\begin{exercise}[特征向量上的函数演算]\label{ex:functional-calculus-eigenvector}
+设 \(A\in\mathcal{B}(\mathcal{H})\) 自伴,\(\psi\) 是特征向量,即 \(\psi\neq0\) 且 \(A\psi=\lambda\psi\),其中 \(\lambda\in\mathbb{R}\).证明对 \(\sigma(A)\) 上任意有界可测函数 \(f\),有
+\[
+f(A)\psi=f(\lambda)\psi.
+\]
+\emph{提示:}使用练习~\ref{ex:restriction-spectrum}.
+\end{exercise}
+
+\begin{exercise}[与乘法算子相交换的算子]\label{ex:commuting-multiplication-operator}
+设 \(K\subset\mathbb{R}\) 是紧集,\(\mu\) 是 \(K\) 上有限测度.令 \(A\) 是 \(L^{2}(K,\mu)\) 上的有界算子
+\[
+(A\psi)(\lambda)=\lambda\psi(\lambda).
+\]
+设 \(B\) 是与 \(A\) 相交换的有界算子.
+\begin{enumerate}[label=(\alph*)]
+\item 令 \(\phi=B\mathbf{1}\),其中 \(\mathbf{1}\) 是常值函数.证明对 \(K\) 上所有连续函数 \(\psi\),有 \(B\psi=\phi\psi\).
+\item 使用练习~\ref{ex:bounded-borel-generation},证明对所有有界 Borel 可测函数 \(\psi\),有 \(B\psi=\phi\psi\).
+\item 证明 \(\phi\) 本质有界,即除一个 \(\mu\)-零集外有界,并推出对所有 \(\psi\in L^{2}(K,\mu)\),都有 \(B\psi=\phi\psi\).
+\end{enumerate}
+\end{exercise}
+
+\begin{exercise}[一参数酉群]\label{ex:bounded-one-parameter-unitary-group}
+若 \(A\in\mathcal{B}(\mathcal{H})\) 自伴,使用 \(A\) 的函数演算对每个 \(t\in\mathbb{R}\) 定义
+\[
+U(t):=e^{itA}.
+\]
+\begin{enumerate}[label=(\alph*)]
+\item 证明每个 \(U(t)\) 都是酉算子,且 \(U(s)U(t)=U(s+t)\).(具有此性质的算子族称为一参数酉群.)
+\item 证明 \(t\mapsto U(t)\) 在算子范数拓扑下连续.
+\item 给出 Hilbert 空间上一参数酉群的例子,使其在算子范数拓扑下不连续.
+\end{enumerate}
+第~\ref{sec:one-parameter-unitary-groups} 节将进一步讨论一参数酉群.
+\end{exercise}

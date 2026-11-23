@@ -1,0 +1,354 @@
+\subsubsection{Laplace's Equation}\label{subsec:laplace-equation}
+
+Perhaps the most important of all partial differential equations is
+\begin{equation}\label{eq:laplace-general}
+\Delta u:=u_{x_1x_1}+u_{x_2x_2}+\cdots+u_{x_nx_n}=0,
+\end{equation}
+known as Laplace's equation. You will find applications of it to problems in gravitation, elastic membranes, electrostatics, fluid flow, steady-state heat conduction and many other topics in both pure and applied mathematics.
+
+As the remarks of the last section on ODEs indicated, the choice of boundary conditions is of paramount importance in determining the well-posedness of a given problem. The following two common types of boundary conditions on a bounded domain $\Omega\subset\mathbb{R}^n$ yield well-posed problems and will be studied in a more general context in later chapters.
+
+\textbf{Dirichlet conditions.} Given a function $f:\partial\Omega\to\mathbb{R}$, we require
+\begin{equation}\label{eq:dirichlet-boundary-data}
+u(\bm{x})=f(\bm{x}),\qquad\bm{x}\in\partial\Omega.
+\end{equation}
+In the context of elasticity, $u$ denotes a change of position, so Dirichlet boundary conditions are often referred to as \emph{displacement conditions}.
+
+\textbf{Neumann conditions.} Given a function $f:\partial\Omega\to\mathbb{R}$, we require
+\begin{equation}\label{eq:neumann-boundary-data}
+\dfrac{\partial u}{\partial n}(\bm{x})=f(\bm{x}),\qquad\bm{x}\in\partial\Omega.
+\end{equation}
+Here $\dfrac{\partial u}{\partial n}$ is the partial derivative of $u$ with respect to the unit outward normal of $\partial\Omega$, $\bm{n}$. In linear elasticity $\dfrac{\partial u}{\partial n}(\bm{x})=\nabla u(\bm{x})\cdot\bm{n}(\bm{x})$ can be interpreted as a force, so Neumann boundary conditions are often referred to as \emph{traction} boundary conditions.
+
+We have been intentionally vague about the smoothness required of $\partial\Omega$ and $f$, and the function space in which we wish $u$ to lie. These are central areas of concern in later chapters.
+
+\paragraph*{Solution by separation of variables}
+
+The first method we present for solving Laplace's equation is the most widely used technique for solving partial differential equations: separation of variables. The technique involves reducing a partial differential equation to a system of ordinary differential equations and expressing the solution of the PDE as a sum or infinite series.
+
+Let us consider the following Dirichlet problem on a square in the plane. Let
+\[
+\Omega=\{(x,y)\in\mathbb{R}^2\mid 0<x<1,\ 0<y<1\}.
+\]
+We wish to find a function $u:\overline\Omega\to\mathbb{R}$ satisfying Laplace's equation
+\begin{equation}\label{eq:laplace-planar}
+u_{xx}+u_{yy}=0
+\end{equation}
+at each point in $\Omega$ and satisfying the boundary conditions
+\begin{equation}\label{eq:square-left-boundary}
+u(0,y)=0,
+\end{equation}
+
+\begin{equation}\label{eq:square-right-boundary}
+u(1,y)=0,
+\end{equation}
+
+\begin{equation}\label{eq:square-bottom-boundary}
+u(x,0)=0,
+\end{equation}
+
+\begin{equation}\label{eq:square-top-boundary}
+u(x,1)=f(x).
+\end{equation}
+
+
+The key to separation of variables is to look for solutions of \eqref{eq:laplace-planar} of the form
+\begin{equation}\label{eq:laplace-separated-product}
+u(x,y)=X(x)Y(y).
+\end{equation}
+
+
+When we put a function of this form into \eqref{eq:laplace-planar}, the partial derivatives in the differential equation appear as ordinary derivatives on the functions $X$ and $Y$; i.e., \eqref{eq:laplace-planar} becomes
+\begin{equation}\label{eq:laplace-product-substitution}
+X''(x)Y(y)+X(x)Y''(y)=0.
+\end{equation}
+
+
+At any point $(x,y)$ at which $u$ is nonzero we can divide this equation by $u$ and rearrange to get
+\begin{equation}\label{eq:laplace-separated-ratios}
+\dfrac{X''(x)}{X(x)}=-\dfrac{Y''(y)}{Y(y)}.
+\end{equation}
+
+
+We now argue as follows: Since the right side of the equation does not depend on the variable $x$, neither can the left side; likewise, since the left side does not depend on $y$, neither does the right side. The only function on the plane that is independent of both $x$ and $y$ is a constant, so we must have
+\begin{equation}\label{eq:laplace-separation-constant}
+\dfrac{X''(x)}{X(x)}=-\dfrac{Y''(y)}{Y(y)}=\lambda.
+\end{equation}
+
+
+This gives us
+\begin{equation}\label{eq:laplace-separated-x-equation}
+X''=\lambda X,
+\end{equation}
+
+\begin{equation}\label{eq:laplace-separated-y-equation}
+Y''=-\lambda Y.
+\end{equation}
+
+
+Solving these equations and using \eqref{eq:laplace-separated-product}, we get the following four-parameter family of solutions of the differential equation \eqref{eq:laplace-planar}:
+\begin{equation}\label{eq:laplace-four-parameter-family}
+u(x,y)=A\left(e^{\sqrt{\lambda}x}+Be^{-\sqrt{\lambda}x}\right)\left(e^{\sqrt{-\lambda}y}+Ce^{-\sqrt{-\lambda}y}\right).
+\end{equation}
+
+
+(Since we can verify directly that each of these functions is indeed a solution of the differential equation \eqref{eq:laplace-planar}, there is no need to make the formal argument used to derive \eqref{eq:laplace-separated-x-equation} and \eqref{eq:laplace-separated-y-equation} rigorous.)
+
+The more interesting aspect of separation of variables involves finding a combination of the solutions in \eqref{eq:laplace-four-parameter-family} that satisfies given boundary conditions (and justifying this combination rigorously). In the rather simple set of boundary conditions chosen above, enforcing the three conditions \eqref{eq:square-left-boundary}, \eqref{eq:square-right-boundary} and \eqref{eq:square-bottom-boundary} reduces the family \eqref{eq:laplace-four-parameter-family} to the following infinite collection:
+\begin{equation}\label{eq:square-three-boundary-modes}
+u(x,y)=A\sin n\pi x\,\sinh n\pi y,\qquad n=1,2,3,\ldots
+\end{equation}
+
+
+The final condition \eqref{eq:square-top-boundary} presents a problem. Of course, if the function $f$ is rigged to be a finite linear combination of sine functions,
+\begin{equation}\label{eq:finite-sine-boundary-data}
+f(x):=\sum_{n=1}^N\alpha_n\sin n\pi x,
+\end{equation}
+then we can simply take
+\begin{equation}\label{eq:finite-sine-solution-coefficients}
+A_n:=\dfrac{\alpha_n}{\sinh n\pi},\qquad n=1,\ldots,N,
+\end{equation}
+and define
+\begin{equation}\label{eq:finite-sine-square-solution}
+u(x,y):=\sum_{n=1}^NA_n\sin n\pi x\,\sinh n\pi y.
+\end{equation}
+
+
+Since this is a finite sum, we can differentiate term by term; so $u$ satisfies the differential equation \eqref{eq:laplace-planar}. The boundary conditions can be confirmed simply by plugging in the boundary points.
+
+However, the question remains: What is to be done about more general functions $f$? The answer was deduced by Joseph Fourier in his 1807 paper on heat conduction. Fourier claimed, in effect, that "any" function $f$ could be "represented" by an infinite trigonometric series (now referred to as a Fourier sine series):\footnote{Anyone interested in the history of mathematics or the philosophy of science will find the history of Fourier's work fascinating. In the early nineteenth century the entire notion of convergence and the meaning of infinite series was not well formulated. Lagrange and his cohorts in the Academy of Sciences in Paris criticized Fourier for his lack of rigor. Although they were technically correct, they were essentially castigating Fourier for not having produced a body of mathematics that it took generations of mathematicians (including the likes of Cauchy) to finish.}
+\begin{equation}\label{eq:fourier-sine-series}
+f(x):=\sum_{n=1}^{\infty}\alpha_n\sin n\pi x.
+\end{equation}
+
+
+The removal of the quotation marks from the sentence above was one of the more important mathematical projects of the nineteenth century. Specifically, mathematicians needed to specify the type of convergence implied by the representation \eqref{eq:fourier-sine-series} and then identify the class of functions that can be achieved by that type of convergence. In later chapters we describe some of the main results in this area, but for the moment let us just accept Fourier's assertion and try to deduce its consequences.
+
+The first question we need to consider is the determination of the Fourier coefficients $\alpha_n$. The key here is the mutual orthogonality of the sequence of sine functions making up our series. That is,
+\begin{equation}\label{eq:sine-orthogonality}
+\int_0^1\sin(i\pi x)\sin(j\pi x)\,\mathrm{d}x=\dfrac{\delta_{ij}}{2}.
+\end{equation}
+
+
+Here $\delta_{ij}$ is the Kronecker delta:
+\begin{equation}\label{eq:kronecker-delta}
+\delta_{ij}:=\begin{cases}0,&i\ne j\\1,&i=j.\end{cases}
+\end{equation}
+
+
+Thus, if we proceed formally and multiply \eqref{eq:fourier-sine-series} by $\sin j\pi x$ and integrate, we get
+\begin{equation}\label{eq:sine-coefficient-integral}
+\int_0^1f(x)\sin(j\pi x)\,\mathrm{d}x=\sum_{n=1}^{\infty}\alpha_n\int_0^1\sin(n\pi x)\sin(j\pi x)\,\mathrm{d}x=\alpha_j/2.
+\end{equation}
+
+
+As before, we postpone the justification for taking the integral under the summation until later chapters and proceed to examine the consequences of this result.
+
+Of course, the main consequence from our point of view is that we can use the formulas above to write down a formal solution of the boundary-value problem \eqref{eq:laplace-planar}--\eqref{eq:square-top-boundary}. Namely, we write
+\begin{equation}\label{eq:infinite-sine-square-solution}
+u(x,y):=\sum_{n=1}^{\infty}A_n\sin n\pi x\,\sinh n\pi y,
+\end{equation}
+where
+\begin{equation}\label{eq:infinite-sine-solution-coefficients}
+A_n:=\dfrac{2}{\sinh n\pi}\int_0^1f(x)\sin n\pi x\,\mathrm{d}x.
+\end{equation}
+
+
+It remains to answer the following questions:
+\begin{itemize}
+\item Does the series \eqref{eq:infinite-sine-square-solution} converge and if so in what sense?
+\item Is the limit of the series differentiable, and if so, does it satisfy \eqref{eq:laplace-planar}? That is, can we take the derivatives under the summation sign?
+\item In what sense are the boundary conditions met?
+\item Is the separation of variables solution the only solution of the problem? More generally, is the problem well-posed?
+\end{itemize}
+All of these questions will be answered in a more general context in later chapters.
+
+\begin{Example}
+\label{ex:tent-dirichlet-data}
+Let us ignore for the moment the theoretical questions that remain to be answered and do a calculation for a specific problem. We wish to solve the Dirichlet problem \eqref{eq:laplace-planar}--\eqref{eq:square-top-boundary} with data
+\begin{equation}\label{eq:tent-boundary-data}
+f(x):=\begin{cases}x,&0\leq x\leq1/2\\1-x,&1/2<x\leq1.\end{cases}
+\end{equation}
+We begin by calculating the Fourier coefficients of $f$ using \eqref{eq:sine-coefficient-integral};
+\begin{equation}\label{eq:tent-sine-coefficients}
+\alpha_n:=2\int_0^1f(x)\sin n\pi x\,\mathrm{d}x=\dfrac{4}{n^2\pi^2}\sin\dfrac{n\pi}{2}.
+\end{equation}
+Note that the even coefficients vanish. Thus, we can modify \eqref{eq:infinite-sine-square-solution} to get the following separation of variables solution of our Dirichlet problem
+\begin{equation}\label{eq:tent-square-solution}
+u(x,y):=4\sum_{k=0}^{\infty}\dfrac{(-1)^k\sin(2k+1)\pi x\,\sinh(2k+1)\pi y}{(2k+1)^2\pi^2\sinh(2k+1)\pi}.
+\end{equation}
+
+\end{Example}
+
+\paragraph*{Poisson's integral formula in the upper half-plane}
+
+In this section we describe \emph{Poisson's integral formula in the upper half-plane}. This formula gives the solution of Dirichlet's problem in the upper half-plane. It is often derived in elementary complex variables courses.
+
+For a suitable class of functions $g:\mathbb{R}\to\mathbb{R}$ (which we do not make precise here) it can be shown that the function $u:(-\infty,\infty)\times(0,\infty)$ defined by
+\begin{equation}\label{eq:poisson-upper-half-plane}
+u(x,y):=\dfrac{y}{\pi}\int_{-\infty}^{\infty}\dfrac{g(\xi)}{(x-\xi)^2+y^2}\,\mathrm{d}\xi
+\end{equation}
+satisfies Laplace's equation \eqref{eq:laplace-planar} in the upper half-plane and and that it can be extended continuously to the $x$ axis so that it satisfies the Dirichlet boundary conditions
+\begin{equation}\label{eq:poisson-dirichlet-data}
+u(x,0)=g(x),
+\end{equation}
+for $x\in\mathbb{R}$.
+
+Poisson's integral formula is an example of the use of \emph{integral operators} to solve boundary-value problems. In later chapters we will generalize the technique through the use of \emph{Green's functions}.
+
+\paragraph*{Variational formulations}
+
+In this section we give a demonstration of a \emph{variational} technique for proving the existence of solutions of Dirichlet's problem on a "general" domain $\Omega\subset\mathbb{R}^n$. The technique should probably not be considered elementary (since as we shall see in later chapters its rigorous application requires some rather heavy machinery), but it is presented in many elementary courses (particularly in Physics and Engineering) using the formal arguments we sketch here.
+
+We begin by defining an energy functional
+\begin{equation}\label{eq:dirichlet-energy}
+\mathcal{E}(u):=\int_\Omega|\nabla u(\bm{x})|^2\,\mathrm{d}\bm{x}
+\end{equation}
+and a class of admissible functions
+\begin{equation}\label{eq:dirichlet-admissible-class}
+\mathcal{A}:=\{u:\Omega\to\mathbb{R}\mid u(\bm{x})=f(\bm{x})\text{ for }\bm{x}\in\partial\Omega,\ \mathcal{E}(u)<\infty\}.
+\end{equation}
+We can now show the following.
+
+\begin{Theorem}
+\label{thm:dirichlet-energy-minimizer}
+If $\mathcal{A}$ is nonempty, and if there exists $\bar u\in\mathcal{A}$ that minimizes $\mathcal{E}$ over $\mathcal{A}$; i.e.,
+\begin{equation}\label{eq:dirichlet-energy-minimizer}
+\mathcal{E}(\bar u)\leq\mathcal{E}(u)\qquad\forall\ u\in\mathcal{A},
+\end{equation}
+then $\bar u$ is a solution of the Dirichlet problem.
+\end{Theorem}
+
+Before giving the proof we note that there are some serious questions to be answered before this theorem can be applied.
+\begin{enumerate}
+\item Is $\mathcal{A}$ nonempty? More specifically, what properties do the boundary of a domain $\Omega$ and the boundary data function $f$ defined on $\partial\Omega$ need to satisfy so that $f$ can be extended into $\Omega$ using a function of finite energy?
+\item Does there exist a minimizer $\bar u\in\mathcal{A}$?
+\end{enumerate}
+These questions are often ignored (either explicitly or tacitly) in elementary presentations, but we shall see that they are far from easy to answer.
+
+\begin{Proof}We give only a sketch of the proof and that will contain a number of holes to be filled later on. Let us define
+\begin{equation}\label{eq:zero-boundary-admissible-class}
+\mathcal{A}_0:=\{v:\Omega\to\mathbb{R}\mid v(\bm{x})=0\text{ for }\bm{x}\in\partial\Omega,\ \mathcal{E}(v)<\infty\}.
+\end{equation}
+Note that using elementary inequalities one can show that if $u\in\mathcal{A}$ and $v\in\mathcal{A}_0$, then $(u+\epsilon v)\in\mathcal{A}$ for any $\epsilon\in\mathbb{R}$. We take any $v\in\mathcal{A}_0$ and define a function $\alpha:\mathbb{R}\to\mathbb{R}$ by
+\begin{equation}\label{eq:dirichlet-energy-variation}
+\begin{aligned}
+\alpha(\epsilon)&:=\mathcal{E}(\bar u+\epsilon v)\\
+&=\int_\Omega\{|\nabla\bar u|^2+2\epsilon\nabla\bar u\nabla v+\epsilon^2|\nabla v|^2\}\,\mathrm{d}\bm{x}\\
+&=\mathcal{E}(\bar u)+2\epsilon\int_\Omega\nabla\bar u\nabla v\,\mathrm{d}\bm{x}+\epsilon^2\mathcal{E}(v).
+\end{aligned}
+\end{equation}
+
+
+Inequality \eqref{eq:dirichlet-energy-minimizer} and the calculations above imply that $\epsilon\mapsto\alpha(\epsilon)$ is a quadratic function that is minimized when $\epsilon=0$. Taking its first derivative at $\epsilon=0$ yields
+\begin{equation}\label{eq:laplace-weak-form}
+\int_\Omega\nabla\bar u\cdot\nabla v\,\mathrm{d}\bm{x}=0,
+\end{equation}
+and this holds for every $v\in\mathcal{A}_0$.
+
+The result that allows us to use \eqref{eq:laplace-weak-form} to deduce that $\bar u$ satisfies Laplace's equation is a version of the \emph{fundamental lemma of the calculus of variations}. (This name has been given to a wide range of results that allow one to deduce that a function that satisfies a variational equation such as \eqref{eq:laplace-weak-form} also satisfies a pointwise differential equation. Another name commonly used in the same way is the DuBois-Reymond lemma in honor of the first versions of such a result.) We now prove a very weak version of this result.
+
+\begin{Lemma}
+\label{lem:variational-divergence}
+Let $\bm{F}:\Omega\to\mathbb{R}^n$ be in $C^1(\overline\Omega)$ and satisfy the variational equation
+\begin{equation}\label{eq:variational-divergence-identity}
+\int\bm{F}\cdot\nabla v\,\mathrm{d}\bm{x}=0,
+\end{equation}
+for every $v\in\mathcal{A}_0$ with compact support. Then
+\begin{equation}\label{eq:variational-divergence-zero}
+\operatorname{div}\bm{F}=0
+\end{equation}
+in $\Omega$.
+\end{Lemma}
+
+\begin{Proof}
+We have assumed sufficient smoothness on $\bm{F}$ so that we can use the divergence theorem to get
+\begin{equation}\label{eq:variational-divergence-theorem}
+0=\int_\Omega\bm{F}\cdot\nabla v\,\mathrm{d}\bm{x}=-\int_\Omega(\operatorname{div}\bm{F})v\,\mathrm{d}\bm{x}+\int_{\partial\Omega}v\bm{F}\cdot\bm{n}\,\mathrm{d}S,
+\end{equation}
+where $\bm{n}$ is the unit outward normal to $\partial\Omega$. Since any $v\in\mathcal{A}_0$ is zero on $\partial\Omega$ this implies
+\begin{equation}\label{eq:divergence-test-integral-zero}
+\int_\Omega(\operatorname{div}\bm{F})v\,\mathrm{d}\bm{x}=0\qquad\forall\ v\in\mathcal{A}_0.
+\end{equation}
+Since $\operatorname{div}\bm{F}$ is continuous, if there is a point $x_0$ at which it is nonzero (without loss of generality let us assume it is positive there) there is a ball $B$ around $x_0$ contained in $\Omega$ such that $\operatorname{div}\bm{F}>\delta>0$. We can then use a function $\bar v$ whose graph is a positive "blip" inside of $B$ and zero outside of $B$ (such a function is easy to construct, and the task is left to the reader) to obtain
+\begin{equation}\label{eq:positive-test-function-contradiction}
+\int_\Omega(\operatorname{div}\bm{F})\bar v\,\mathrm{d}\bm{x}=\int_B(\operatorname{div}\bm{F})\bar v\,\mathrm{d}\bm{x}>\delta\int_B\bar v\,\mathrm{d}\bm{x}>0.
+\end{equation}
+This is a contradiction, and the proof of the lemma is complete.
+\end{Proof}
+
+Now to complete the proof of the theorem, we note that if $\bar u$ is in $C^2(\overline\Omega)$ we can use Lemma~\ref{lem:variational-divergence} and \eqref{eq:laplace-weak-form} to deduce
+\begin{equation}\label{eq:minimizer-strong-laplace}
+\Delta\bar u:=\operatorname{div}\nabla\bar u=0.
+\end{equation}
+However, at this point all we know is that $\bar u\in\mathcal{A}$. We know nothing more about its smoothness. Thus, the completion of this proof awaits the results on elliptic regularity of later chapters.\end{Proof}
+
+Equation \eqref{eq:laplace-weak-form} is known as the \emph{weak form} of Laplace's equation. We refer to a solution of \eqref{eq:laplace-general} as a \emph{strong solution} and a solution of \eqref{eq:laplace-weak-form} as a \emph{weak solution} of Laplace's equation. We will generalize these notions to many other types of equations in later chapters.
+
+Note that every strong solution of Laplace's equation is also a weak solution. To see this, we simply multiply \eqref{eq:laplace-general} by any $v\in\mathcal{A}_0$, integrate by parts (use Green's identity) and use the fact that $v\equiv0$ on $\partial\Omega$. This gives
+\begin{equation}\label{eq:strong-to-weak-green-identity}
+\begin{aligned}
+0&=\int_\Omega(\Delta u)v\,\mathrm{d}\bm{x}\\
+&=-\int_\Omega\nabla u\cdot\nabla v\,\mathrm{d}\bm{x}
++\int_{\partial\Omega}v\nabla u\cdot\bm{n}\,\mathrm{d}S
+=-\int_\Omega\nabla u\cdot\nabla v\,\mathrm{d}\bm{x}.
+\end{aligned}
+\end{equation}
+
+
+However, as we noted above when we showed that a solution of the minimum energy problem was a weak solution of Laplace's equation, unless we know more about the continuity of a weak solution we cannot show it is a strong solution. This is a common theme in the modern theory of PDEs. It is often easy to find some sort of weak solution to an equation, but relatively hard to show that the weak solution is in fact a strong solution.
+
+\paragraph*{Problems}
+
+\begin{enumerate}[label=\thesection.\arabic*.,ref=\thesection.\arabic*,start=12,series=book-problems]
+
+\item\label{ex:sine-coefficients-three-functions} Compute the Fourier sine series coefficients for the following functions defined on the interval $[0,1]$.\begin{enumerate}[label=(\alph*)]
+\item $f(x)=x^2-x$.
+\item $f(x)=\cos\dfrac{\pi x}{4}$.
+\item $f(x)=\begin{cases}3x,&x\in[0,1/4)\\1-x,&x\in[1/4,1].\end{cases}$
+\end{enumerate}
+
+\item\label{ex:plot-sine-partial-sums} Write a computer program that calculates partial sums of the series defined above and displays them graphically superimposed on the limiting function.
+
+\item\label{ex:derive-cosine-coefficients} A function on the interval $[0,1]$ can also be expanded in a \emph{Fourier cosine series} of the form
+\begin{equation}\label{eq:fourier-cosine-series}
+f(x)=\sum_{n=0}^{\infty}\beta_n\cos n\pi x.
+\end{equation}
+Derive a formula for the cosine coefficients.
+
+\item\label{ex:compute-and-plot-cosine-series} Compute the Fourier cosine coefficients for the functions given in Problem~\ref{ex:sine-coefficients-three-functions}. Use a modification of the computer program developed in Problem~\ref{ex:plot-sine-partial-sums} to display partial sums of the cosine series.
+
+\item\label{ex:sine-cosine-extensions-missing-graphs} Both the Fourier sine and cosine series given above converge not only in the interval $[0,1]$, but on the entire real line. If one computed both the sine and cosine series for the functions graphed below, what would you expect the respective graphs of the limits of the series to be on the whole real line?\begin{center}\includegraphics[width=.88\linewidth]{figures/problem-sine-cosine-source.png}\end{center}
+
+\item\label{ex:square-mixed-boundary-problems} Solve Laplace's equation on the square $[0,1]\times[0,1]$ for the following boundary conditions:\begin{enumerate}[label=(\alph*)]
+\item $\begin{aligned}
+u_y(x,0)&=0,\\u(x,1)&=x^2-x,\\u(0,y)&=0,\\u(1,y)&=0.
+\end{aligned}$
+\item $\begin{aligned}
+u(x,0)&=0,\\u_y(x,1)&=\sin\pi x,\\u_x(0,y)&=0,\\u(1,y)&=0.
+\end{aligned}$
+\item $\begin{aligned}
+u(x,0)&=\begin{cases}x,&x\in[0,1/2)\\1-x,&x\in[1/2,1],\end{cases}\\
+u(x,1)&=0,\\u_x(0,y)&=0,\\u(1,y)&=0.
+\end{aligned}$
+\end{enumerate}
+
+\item\label{ex:laplacian-polar-coordinates} Verify that the Laplacian takes the following form in polar coordinates in $\mathbb{R}^2$:
+\[
+\Delta u:=\dfrac1r\dfrac{\partial}{\partial r}\left(r\dfrac{\partial u}{\partial r}\right)+\dfrac1{r^2}\dfrac{\partial^2u}{\partial\theta^2}.
+\]
+
+
+\item\label{ex:polar-separated-solutions} Use the method of separation of variables to find solutions of Laplace's equation of the form
+\[
+u(r,\theta)=R(r)\Theta(\theta).
+\]
+
+
+\item\label{ex:derive-green-identity} Use the divergence theorem to derive Green's identity
+\[
+\int_\Omega(\Delta u)v\,\mathrm{d}\bm{x}=-\int_\Omega\nabla u\cdot\nabla v\,\mathrm{d}\bm{x}+\int_{\partial\Omega}v\nabla u\cdot\bm{n}\,\mathrm{d}S.
+\]
+
+
+\end{enumerate}

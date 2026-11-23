@@ -1,0 +1,134 @@
+\subsubsection{Distributions}\label{subsec:distributions-definition}
+
+We now define the space of distributions. As we indicated in the introduction, the definition of a distribution is constructed very cleverly to achieve two seemingly contradictory goals. We wish to have a generalized notion of a "function" that includes objects that are highly singular or "rough." At the same time we wish to be able to define "derivatives" of arbitrary order of these objects.
+
+\begin{Definition}
+\label{def:distribution}
+A \textbf{distribution} or \textbf{generalized function} is a linear mapping $\phi\mapsto(f,\phi)$ from $\mathcal{D}(\Omega)$ to $\mathbb{R}$, which is continuous in the following sense: If $\phi_n\to\phi$ in $\mathcal{D}(\Omega)$, then $(f,\phi_n)\to(f,\phi)$. The set of all distributions is called $\mathcal{D}^{\prime}(\Omega)$.
+\end{Definition}
+
+\begin{Example}
+\label{ex:regular-distribution}
+Any continuous function $f$ on $\Omega$ can be identified with a generalized function by setting
+\begin{equation}\label{eq:regular-distribution-pairing}
+(f,\phi)=\int_\Omega f(\bm{x})\phi(\bm{x})\,\mathrm{d}\bm{x}.
+\end{equation}
+The continuity of the mapping follows from the familiar theorem concerning the limit of the integral of a uniformly convergent sequence of functions. Indeed, the Lebesgue dominated convergence theorem allows us to make the same claim if $f$ is merely locally integrable.
+\end{Example}
+
+\begin{Example}
+\label{ex:dirac-delta}
+Of course, there are many generalized functions which do not correspond to "functions" in the ordinary sense. The most important example is known as the Dirac delta function. We assume that $\Omega$ contains the origin, and we define
+\begin{equation}\label{eq:dirac-delta-pairing}
+(\delta,\phi)=\phi(0).
+\end{equation}
+The continuity of the functional follows from the fact that convergence of a sequence of test functions implies pointwise convergence.
+
+It is easy to show that there is no continuous function satisfying \eqref{eq:dirac-delta-pairing}, (cf. Problem~\ref{ex:delta-not-continuous-function}).
+\end{Example}
+
+\begin{Remark}
+\label{rem:generalized-function-point-values}
+Generalized functions like the delta function do not take "values" like ordinary functions. Nevertheless, it is customary to use the language of ordinary functions and speak of "the generalized function $\delta(\bm{x})$,"\footnote{We apologize to those among our friends to whom such language is an abomination --- even for ordinary functions!} even though it does not make sense to plug in a specific $\bm{x}$. We shall also write $\int_\Omega\delta(\bm{x})\phi(\bm{x})\,\mathrm{d}\bm{x}$ for $(\delta,\phi)$.
+\end{Remark}
+
+\begin{Example}
+\label{ex:point-derivative-functional}
+For any multi-index $\alpha$, the mapping \[\phi\mapsto D^\alpha\phi(0)\] is a generalized function.
+\end{Example}
+
+\begin{Example}
+\label{ex:surface-charge-distribution}
+Other singular distributions include such examples from physics as surface charge. If $S$ is a smooth two-dimensional surface in $\mathbb{R}^3$ and $q:S\to\mathbb{R}$ is integrable, then for $\phi\in\mathcal{D}(\mathbb{R}^3)$ we define\[(q,\phi)=\int_Sq(\bm{x})\phi(\bm{x})\,\mathrm{d}a(\bm{x})\]where $\mathrm{d}a(\bm{x})$ indicates integration with respect to surface area on $S$.
+\end{Example}
+
+\begin{Example}
+\label{ex:curve-current-distribution}
+A current flowing along a curve $\mathcal{C}\subset\mathbb{R}^3$ is an example of a vector-valued distribution. If $\bm{j}:\mathcal{C}\to\mathbb{R}^3$ is integrable, then for $\bm{\phi}\in\mathcal{D}(\mathbb{R}^3)^3$ we define\[(\bm{j},\bm{\phi})=\int_{\mathcal{C}}\bm{j}(\bm{x})\cdot\bm{\phi}(\bm{x})\,\mathrm{d}\sigma(\bm{x})\]where $\mathrm{d}\sigma(\bm{x})$ indicates integration with respect to arclength on $\mathcal{C}$.
+\end{Example}
+
+\begin{Remark}
+\label{rem:complex-distribution-convention}
+Of course, complex-valued distributions can be defined in the same fashion as real-valued distributions; in that case, however, it is customary to make the convention
+\begin{equation}\label{eq:complex-distribution-conjugate-pairing}
+(f,\phi)=\int_\Omega\overline{f(\bm{x})}\phi(\bm{x})\,\mathrm{d}\bm{x}
+\end{equation}
+in place of \eqref{eq:regular-distribution-pairing}; the pairing of generalized functions and test functions thus takes the same form as the inner product in the Hilbert space $L^2(\Omega)$.\footnote{One of the oldest problems in Hilbert space theory is whether to put the complex conjugate on the first or on the second factor in the inner product. The convention made here is widely followed by physicists. Pure mathematicians tend to make the opposite convention.}
+\end{Remark}
+
+An important property of distributions is that they are locally of "finite order."
+
+\begin{Lemma}
+\label{lem:distribution-local-finite-order}
+Let $f\in\mathcal{D}^{\prime}(\Omega)$ and let $K$ be a compact subset of $\Omega$. Then there exists $n\in\mathbb{N}$ and a constant $C$ such that
+\begin{equation}\label{eq:distribution-local-finite-order-bound}
+|(f,\phi)|\leq C\sum_{|\alpha|\leq n}\max_{\bm{x}\in K}|D^\alpha\phi(\bm{x})|
+\end{equation}
+for every $\phi\in\mathcal{D}(\Omega)$ with support contained in $K$.
+\end{Lemma}
+
+\begin{Proof}
+Suppose not. Then for every $n$ there exists $\psi_n$ such that\[|(f,\psi_n)|>n\sum_{|\alpha|\leq n}\max_{\bm{x}\in K}|D^\alpha\psi_n(\bm{x})|.\]Let $\phi_n:=\psi_n/|(f,\psi_n)|$. Then $\phi_n\to0$ in $\mathcal{D}(\Omega)$, but $(f,\phi_n)\equiv1$. This is a contradiction, and the proof is complete.
+\end{Proof}
+
+We conclude this subsection with some straightforward definitions.
+
+\begin{Definition}
+\label{def:distribution-linear-operations}
+For distributions $f$ and $g$ and real number $\alpha\in\mathbb{R}$, we set
+\begin{equation}\label{eq:distribution-addition}
+(f+g,\phi)=(f,\phi)+(g,\phi),
+\end{equation}
+
+\begin{equation}\label{eq:distribution-scalar-multiplication}
+(\alpha f,\phi)=(f,\alpha\phi).
+\end{equation}
+(If $\alpha$ is allowed to be complex, then the right-hand side of \eqref{eq:distribution-scalar-multiplication} is changed to $(f,\overline\alpha\phi)$.)
+\end{Definition}
+
+\begin{Remark}
+\label{rem:distribution-products}
+It is in general not possible to define the product of two generalized functions (cf. Problems~\ref{ex:distribution-multiplication-not-continuous}, \ref{ex:delta-approximation-square-divergence}). However, we can define the product of a distribution and a smooth function.
+\end{Remark}
+
+\begin{Definition}
+\label{def:distribution-smooth-product}
+For any function $a\in C^\infty(\Omega)$, we define
+\begin{equation}\label{eq:distribution-smooth-function-product}
+(af,\phi)=(f,a\phi).
+\end{equation}
+
+\end{Definition}
+
+If the graph of a function $f(x)$ is shifted by $h$, one obtains the graph of the function $f(x-h)$, i.e., $x$ is shifted by $-h$. This can be generalized to distributions on $\mathbb{R}^m$.
+
+\begin{Definition}
+\label{def:distribution-affine-change}
+Let $\bm{U}(\bm{x})=\bm{A}\bm{x}+\bm{b}$ be a nonsingular linear transformation in $\mathbb{R}^m$, and let $\bm{U}^{-1}(\bm{y})=\bm{A}^{-1}(\bm{y}-\bm{b})$ be the inverse transformation. Then we set
+\begin{equation}\label{eq:distribution-affine-change-variables}
+(\bm{U}f,\phi)=|\det A|\,(f(\bm{x}),\phi(\bm{U}(\bm{x}))).
+\end{equation}
+
+\end{Definition}
+
+This definition is motivated by the following formal calculation:\[
+\begin{aligned}
+(\bm{U}f,\phi)&=(f(\bm{U}^{-1}(\bm{x})),\phi(\bm{x}))\\
+&=\int_{\mathbb{R}^m}f(\bm{U}^{-1}(\bm{x}))\phi(\bm{x})\,\mathrm{d}\bm{x}\\
+&=|\det A|\int_{\mathbb{R}^m}f(\bm{y})\phi(\bm{U}(\bm{y}))\,\mathrm{d}\bm{y}.
+\end{aligned}
+\](We have substituted $\bm{x}=\bm{U}(\bm{y})$.)
+
+\begin{Example}
+\label{ex:translated-dirac-delta}
+The translation $\delta(\bm{x}-\bm{x}_0)$ is defined as
+\begin{equation}\label{eq:translated-dirac-delta-pairing}
+(\delta(\bm{x}-\bm{x}_0),\phi(\bm{x}))=(\delta(\bm{x}),\phi(\bm{x}+\bm{x}_0))=\phi(\bm{x}_0).
+\end{equation}
+
+\end{Example}
+
+\begin{Remark}
+\label{rem:distribution-symmetry}
+With this definition, we can define the symmetry of a generalized function; for example, $f$ is even if $f(-\bm{x})=f(\bm{x})$, i.e., $(f(\bm{x}),\phi(\bm{x}))=(f(\bm{x}),\phi(-\bm{x}))$.
+\end{Remark}

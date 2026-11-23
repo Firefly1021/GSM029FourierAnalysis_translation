@@ -4,7 +4,7 @@
 
 | 区域 | 用途 |
 | --- | --- |
-| `books/` | 每本书独立的原始 PDF、模板快照、章节 TeX、图片、英文恢复稿、译文、公式、QA 和正式输出 |
+| `books/` | 每本书独立的原始 PDF、现用模板、章节 TeX、图片、英文恢复稿、译文、公式、QA 和正式输出 |
 | `shared/` | 全部书籍共用的说明、规则、模板收藏、权威术语库、程序、配置、测试和项目登记 |
 
 本文件位于 `shared/README.md`. 下文以整个项目总目录为命令起点. Git 的隐藏管理文件留在总目录, 不需要日常操作.
@@ -17,15 +17,24 @@
 
 每本书的正式 TeX 入口和正式 PDF 都已明确登记. 不要只凭 `main.tex` 这个名字判断它是样本还是全书入口. 不要进入 `.legacy-worktrees` 编辑.
 
-已完成书籍的根目录只保留 `input/`、`tex/`、`template/`、`output/`、`records/` 和一份 `README.md`. 两本旧书另有必需的 `template-accepted/`, 用途已明确说明. `config`、`qa`、`formulae`、`glossary`、`structured`、独有译文记录及原状态说明集中到 `records/`; 空 `workspace`、`logs`、`workflow`、多余编辑器任务与旧入口已删除. 这不是用隐藏属性伪装精简.
+已完成书籍的常用目录为 `input/`、`tex/`、`template/`、`output/`、`records/` 和一份 `README.md`. `config`、`qa`、`formulae`、`glossary`、`structured`、独有译文记录及原状态说明集中到 `records/`; 空 `workspace`、`logs`、`workflow`、多余编辑器任务与旧入口已删除.
 
-FEEC 已于 2026-10-23 进一步整理为 AJbook 唯一成品: 主入口为 `tex/main.tex`, 正文为 `tex/chapters/`, 前后置页分别在 `tex/frontmatter/` 与 `tex/backmatter/`. 该书不再保留 Mystyle 版、generated 正文或书内 records. 行内/行间数学未改写, 源码只清理过程标记和无作用的分组/空段. 其他书籍仍使用各自已登记的版本.
+FEEC 已于 2026-10-23 进一步整理为 AJbook 唯一成品: 主入口为 `tex/main.tex`, 正文为 `tex/chapters/`, 前后置页分别在 `tex/frontmatter/` 与 `tex/backmatter/`. 编译产物统一位于 `tex/build/`, PDF 为 `tex/build/main.pdf`, 不再使用 `output/` 或 `.build/`. 该书不再保留 Mystyle 版、generated 正文或书内 records. 行内/行间数学未改写, 源码只清理过程标记和无作用的分组/空段. 其他书籍仍使用各自已登记的版本.
+
+## 统一版式
+
+各书均采用 AJbook, 且在自己的 `template/` 中集中存放类文件、版式、字体、封面样式和适配文件.
+各书以《偏微分方程引论》为排版基准, 使用相同的数学字体、标题视觉规则和定理样式. 单书适配只处理原稿的命令、计数及引用.
+各书的中英文书名和作者统一写在 `tex/frontmatter/cover.tex`; 左侧竖条与中文标题左边缘固定, 长书名在这里分行, 不自动缩小字号. 封面不加译稿标记或编译日期.
+各书以同一版式为起点: A4, 170 mm 正文宽度, 12 pt 正文.
+要调整一本书的纸张、页边距或段间距, 修改这本书的 `template/ajbook-page-layout.sty`, 无需改动译文或其他书.
+旧模板不参与当前编译. 旧版 PDF 与历史核验记录按书保留; 各书 README 列出实际编译入口、正式 PDF 和换版记录.
 
 ## 书籍总览
 
 见 [PROJECTS.md](PROJECTS.md). 总览中的完成状态取自各书自己的现有记录, 不是本次重新进行数学验收. 第一部 Fourier Analysis 的源 PDF 缺少书目和索引, 原有问题记录照旧保留, 不因整理目录而清除.
 
-七本书的目录分别是:
+书籍目录:
 
 1. `books/fourier-analysis/`
 2. `books/the-mathematical-theory-of-finite-element-methods/`
@@ -34,6 +43,12 @@ FEEC 已于 2026-10-23 进一步整理为 AJbook 唯一成品: 主入口为 `tex
 5. `books/finite-element-methods-for-navier-stokes-equations-theory-and-algorithms/`
 6. `books/krylov-subspace-methods-for-linear-systems/`
 7. `books/finite-element-exterior-calculus/`
+8. `books/an-introduction-to-partial-differential-equations/`
+9. `books/numerical-approximation-of-partial-differential-equations/`
+10. `books/finite-element-methods-for-incompressible-flow-problems/`
+11. `books/quantum-theory-for-mathematicians/`
+
+第 9--11 本从已有译稿项目导入. 未随工程提供的英文原书 PDF 记为待补, 不以旧中文版代替. 在原书登记前, 这三本按各书 README 直接编译, 不使用需要校验原书 PDF 的 `build-book` 命令.
 
 ## 编译与日常命令
 
@@ -45,7 +60,7 @@ FEEC 已于 2026-10-23 进一步整理为 AJbook 唯一成品: 主入口为 `tex
 .\shared\scripts\mathbook.ps1 build-book finite-element-exterior-calculus
 ```
 
-编译读取本书正式入口和本书模板快照, 在按需创建且被 Git 忽略的 `.build/` 中生成候选 PDF 和日志, **不自动覆盖已验收的正式 PDF**, 不重建退休的流程目录. 改动译文后仍须重新检查公式、引用、姓名、标点及排版.
+编译读取登记的正式 TeX 入口和该书自己的 AJbook 目录, 在本书登记的构建目录中生成候选 PDF 和日志, **不自动覆盖已验收的正式 PDF**. 改动译文后仍须重新检查公式、引用、姓名、标点及排版.
 
 已具备 Python 环境时, 跨平台入口是:
 
@@ -74,8 +89,8 @@ python shared/scripts/library_cli.py build-book <book-id>
 
 - 全局唯一权威术语库: [glossary/terminology.tsv](glossary/terminology.tsv). 按 English + Domain + Context 匹配.
 - 已完成书的术语候选、姓名和记号在 `records/glossary/` 中; 未完成书仍使用自己的 `glossary/`. 不静默覆盖全局术语.
-- 共享原始模板及收藏在 [template/](template/), Mystyle 与 AJbook 分开放置. **只有 FEEC 选用 AJbook**, 其他书籍不切换模板.
-- 各书 `template/` 是从其原工作区取得的完整快照. 更改共享模板不会自动影响旧书. 原始 `.sty`、参考 `.tex` 和模板资源仍只读.
+- 共享原始模板及收藏在 [template/](template/), Mystyle 与 AJbook 分开放置.
+- 各书自己的 `template/` 是现用 AJbook. 更改共享模板不会自动影响各书. 共享原始 `.sty`、参考 `.tex` 和模板资源仍只读.
 - 翻译规则见 [AGENTS.md](AGENTS.md) 和 [style/chinese-mathematical-style.md](style/chinese-mathematical-style.md).
 
 ## Git 与恢复
@@ -94,6 +109,6 @@ FEEC 的配置、来源与历史 QA 另存于 `shared/book-records/finite-elemen
 
 永久保留原始 PDF、完整正式 TeX 及依赖图片/宏/文献、正式 PDF、原始模板、恢复的英文原稿、公式登记、术语/姓名/记号、未解决问题和现有文字 QA. `tex/generated/` 中被正式入口实际使用的源文件也是成品工程的一部分, 不能整目录删除. 扫描恢复的少量定位裁剪作为核验依据保留, 大体积全页衍生图和 OCR 临时结果已清理.
 
-两本旧书在完成后更新过原始 `.sty`, 与其旧适配文件存在环境重定义冲突. 用户当前文件原样留在 `template/`; 当时验收的模板按原始清单逐文件校验, 单独放在 `template-accepted/`, 并由 `records/config/library-binding.json` 明确选择用于编译. 没有修改用户模板或设计新样式.
+历史上, 两本旧书曾使用 `template-accepted/` 固定验收版模板, 以避开旧适配文件的环境重定义. 现在两本均使用自己的 AJbook, 不再保留或加载 `template-accepted/`; 相关历史记录不变.
 
 重新编译会产生新的临时构建目录. 这是可清理缓存, 不是新的正式译本. 共享程序和通用检查工具只保留一套, 不在每本书中复制.

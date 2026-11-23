@@ -92,6 +92,24 @@ class UnifiedLibraryTests(unittest.TestCase):
         for name in ('workspace','logs','translation','structured','formulae','glossary','config'):
             self.assertFalse((book.root/name).exists(),name)
 
+    def test_completed_book_can_use_its_normal_tex_build_directory(self):
+        book = self.deliver_fixture()
+        binding = json.loads(book.binding_file.read_text(encoding='utf8'))
+        binding.update(build_directory='tex/build', final_output='tex/build/main.pdf')
+        book.binding_file.write_text(json.dumps(binding), encoding='utf8')
+        self.assertEqual(book.build_cache, book.root/'tex/build')
+        self.assertEqual(self.project.book('b').build_cache,
+                         self.project.book('b').root/'workspace/temporary')
+
+    def test_build_directory_rejects_escape_and_book_root(self):
+        book = self.deliver_fixture()
+        binding = json.loads(book.binding_file.read_text(encoding='utf8'))
+        for directory in ('../b', '.', str(self.project.book('b').root)):
+            binding['build_directory'] = directory
+            book.binding_file.write_text(json.dumps(binding), encoding='utf8')
+            with self.assertRaises(ProjectError):
+                _ = book.build_cache
+
     def test_completed_resume_finish_and_status_do_not_regenerate_units(self):
         from mathbook.workflow import resume_book,finish_book,book_status
         book=self.deliver_fixture();before=book.workflow_state.read_bytes()

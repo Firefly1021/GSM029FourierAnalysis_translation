@@ -1,0 +1,61 @@
+\subsection{Riemann 问题}\label{sec:riemann-problems}
+
+"激波管"实验是气体动力学的经典实验之一. 进行实验时, 取一根长圆柱管, 用薄膜将其分成两半. 两侧各放入气体, 通常都处于静止状态, 但压力与密度不同. 然后突然移去薄膜, 观察气体的演化.
+
+Riemann 分析过激波管实验所展示的数学问题, 如今这个问题 (以及其他守恒律的类似问题) 都以他的姓名命名. 该问题是求解守恒律 \eqref{eq:conservation-law-system}
+\[
+\bm{u}_t+\bm{f}(\bm{u})_x=0
+\]
+配以分片常数初始数据
+\begin{equation}\label{eq:riemann-piecewise-constant-data}
+\bm{u}(x,0)=\begin{cases}\bm{u}^l,&x<0\\\bm{u}^r,&x\geq0.\end{cases}
+\end{equation}
+的 Cauchy 问题.
+
+Riemann 问题的研究具有教学上的重要性, 因为它使人能在尽可能简单的背景下考察包括激波在内的多种波动行为. 这一问题也具有很大的实际重要性, 因为研究守恒律的一些最有用的数值技术以接连求解一系列 Riemann 问题为基础. 此外, 这些数值技术还是一般存在性证明的基础.
+
+这里只研究两个简单情形: 单个守恒律与 $p$ 方程组. 不过, 这些情形只是对这一主题全部广度的一个诱人的提示. 感兴趣的读者应查阅本节末给出的参考文献, 以获取更多材料.
+
+\subsubsection{单个方程}\label{subsec:scalar-riemann-problems}
+
+单个守恒律 \eqref{eq:scalar-conservation-law-quasilinear} 的 Riemann 问题极其简单, 至少在 $f$ 强凸时是如此. 始终假设 $f\in C^2(\mathbb{R})$. 这里只需考虑三种情形.
+
+\begin{enumerate}
+\item \textbf{初始条件为常数.} 当 $u^l=u^r$ 时, 得到平凡的经典常数解 $u(x,t)\equiv u^l$.
+\item \textbf{初始条件向下跳跃.} 此时 $u^l>u^r$, 可采用激波解
+\begin{equation}\label{eq:scalar-riemann-shock-solution}
+u(x,t):=\begin{cases}u^l,&x<st\\u^r,&x\geq st,\end{cases}
+\end{equation}
+其中激波速度由 Rankine-Hugoniot 条件给出
+\begin{equation}\label{eq:scalar-riemann-shock-speed}
+s:=\dfrac{f(u^l)-f(u^r)}{u^l-u^r}.
+\end{equation}
+注意, 由于 $f$ 凸, 这个激波满足 Lax 激波准则
+\begin{equation}\label{eq:scalar-riemann-shock-lax-condition}
+f'(u^l)>s>f'(u^r).
+\end{equation}
+因此, 激波也满足熵条件.\item \textbf{初始条件向上跳跃.} 此时引入连续的\PDEIndexMark{idx:scalar-riemann-three-cases}\emph{稀疏波} (与这一领域中的许多术语一样, 这一术语来自气体动力学), 它推广了上述例子 \eqref{eq:burgers-rarefaction-wave}. 为给出下文稀疏波公式的一些数学动机, 注意到初始数据的跳跃发生在 $x=0$, 所以可取 \eqref{eq:scalar-conservation-law-quasilinear} 的任意弱解 $u(x,t)$, 并通过公式
+\begin{equation}\label{eq:scalar-riemann-scaled-solution}
+u^\lambda(x,t):=u(\lambda x,\lambda t).
+\end{equation}
+构造一个参数化解族. 若期待问题具有唯一解, 则 $u$ 应具有形式
+\begin{equation}\label{eq:scalar-riemann-self-similar-form}
+u(x,t)=\tilde u(x/t).
+\end{equation}
+将其代入 \eqref{eq:scalar-conservation-law-quasilinear}, 得到
+\begin{equation}\label{eq:scalar-rarefaction-similarity-equation}
+-\tilde u'\dfrac{x}{t^2}+f'(\tilde u)\tilde u'\dfrac1t=0.
+\end{equation}
+因此, 或者 $\tilde u$ 为常数, 或者
+\begin{equation}\label{eq:scalar-rarefaction-speed-value}
+f'(\tilde u(x/t))=x/t.
+\end{equation}
+在这种情形下, 利用 $f''>0$ 推出 $f'$ 可逆, 得到
+\begin{equation}\label{eq:scalar-rarefaction-source-inverse-notation}
+\tilde u(x/t)=f'(x/t)^{-1}.
+\end{equation}
+由此说明以下经典稀疏解公式的合理性
+\begin{equation}\label{eq:scalar-riemann-classical-rarefaction}
+u(x,t):=\begin{cases}u^l,&x<f'(u^l)t\\f'(x/t)^{-1},&f'(u^l)t\leq x<f'(u^r)t\\u^r,&f'(u^r)t\leq x.\end{cases}
+\end{equation}
+\end{enumerate}

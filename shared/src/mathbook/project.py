@@ -264,7 +264,13 @@ class BookPaths:
 
     @property
     def build_cache(self) -> Path:
-        return self.root / '.build' if self.delivered else self.root / 'workspace/temporary'
+        if self.delivered:
+            binding = load_json_yaml(self.binding_file)
+            relative = Path(binding.get('build_directory', '.build'))
+            if relative.is_absolute() or '..' in relative.parts or relative == Path('.'):
+                raise ProjectError('Build directory must be contained inside this book.')
+            return self.assert_write_path(self.root / relative)
+        return self.root / 'workspace/temporary'
 
     def resolve_recorded_path(self, relative: str) -> Path:
         """Resolve old provenance without rewriting accepted source/QA records."""
@@ -418,9 +424,14 @@ def validate_project_structure() -> list[str]:
             except ProjectError as exc:
                 missing.append(str(exc))
                 continue
+            output_directory = 'output'
+            if book.delivered:
+                binding = load_json_yaml(book.binding_file)
+                output_directory = book.resolve_recorded_path(
+                    binding.get('final_output', 'output/book.pdf')).parent.relative_to(book.root).as_posix()
             required = (
-                ('input/source','tex','template','output') if book.delivered and book.records!=book.root/'records' else
-                ('input/source','tex','template','output','records/config/book.yaml',
+                ('input/source','tex','template',output_directory) if book.delivered and book.records!=book.root/'records' else
+                ('input/source','tex','template',output_directory,'records/config/book.yaml',
                  'records/config/library-binding.json','records/PROJECT_STATUS.md','records/qa/issues.jsonl')
                 if book.delivered else (*BookPaths.REQUIRED_DIRECTORIES, "PROJECT_STATUS.md", "PLANS.md", "config/book.yaml")
             )

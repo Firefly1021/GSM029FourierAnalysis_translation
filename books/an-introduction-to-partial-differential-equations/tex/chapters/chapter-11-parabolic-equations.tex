@@ -1,0 +1,257 @@
+\section{演化问题的能量方法}\label{chap:energy-methods-evolution-problems}
+
+\subsection{抛物型方程}\label{sec:parabolic-equations}
+
+本节考虑如下形式的演化问题\[u_t=A(t)u,\]其中 $u$ 依赖于 $t\in[0,T]$ 和 $\bm{x}\in\Omega\subset\mathbb{R}^n$, 而 $A(t)$ 为某个椭圆微分算子. 将把此类问题表述为 Hilbert 空间 (例如 $L^2(\Omega)$) 中的抽象演化问题. 为此, 必须先引入取值于 Banach 空间的函数空间.
+
+\subsubsection{Banach 空间值函数与分布}\label{subsec:banach-valued-functions-distributions}
+
+设 $X$ 为 Banach 空间, $I$ 为区间 (更一般地, $I$ 也可为 $\mathbb{R}^n$ 中的集合). 将 $C(I,X)$ 定义为如下形式的有界连续函数
+\begin{equation}\label{eq:banach-valued-continuous-function-domain}
+\mathbb{R}\supset I\ni t\mapsto u(t)\in X.
+\end{equation}
+在该空间上赋予范数
+\begin{equation}\label{eq:banach-valued-continuous-function-sup-norm}
+\|u\|=\sup_{t\in I}\|u(t)\|_X.
+\end{equation}
+空间 $C^n(I,X)$ 包含其直至 $n$ 阶的 (在 $I$ 中的) 导数都属于 $C(I,X)$ 的函数.
+
+\begin{Example}
+\label{ex:banach-valued-time-spatial-functions}
+这里的想法是将同时依赖于空间和时间的函数\[\mathbb{R}\times\mathbb{R}^n\supset I\times\Omega\ni(t,\bm{x})\mapsto u(t,\bm{x})\in\mathbb{R},\]看作以时间为参数的一族空间函数. 例如, 上面描述的函数可以具有如下形式\[\mathbb{R}\supset I\in t\mapsto u(t,\cdot)\in L^2(\Omega).\]注意, 比如 $C([0,1],L^2(\Omega))$ 中的函数不必关于 $\bm{x}$ 连续. 只需该函数在相近时刻的任意两个 ``快照\textquotesingle\textquotesingle\ 在 $L^2(\Omega)$ 中接近. 例如, 若 $v\in L^2(\Omega)$ 且 $g\in C^n(I)$, 则\[u(t,\bm{x}):=g(t)v(\bm{x})\]属于 $C^n(I,L^2(\Omega))$, 而不论 $v$ 有多少个不连续点.
+\end{Example}
+
+现在设 $I$ 为开区间, 将 $\mathcal{D}(I,X)$ 定义为从 $I$ 到 $X$ 且在 $I$ 中具有紧支集的所有 $C^\infty$ 函数构成的空间. 与 Chapter~\ref{chap:distributions} 类似, 定义 $\mathcal{D}(I,X)$ 中的收敛概念; 即若某序列的支集都包含在 $I$ 的同一个紧子集中, 且各阶导数均一致收敛, 则称该序列收敛.\par 设 $X^*$ 为 $X$ 的对偶空间. 将从 $\mathcal{D}(I,X)$ 到标量域 (即 $\mathbb{R}$ 或 $\mathbb{C}$) 的连续线性映射的集合记为 $\mathcal{D}^{\prime}(I,X^*)$. 将 $\mathcal{D}^{\prime}(I,X^*)$ 的元素称为 $X^*$ 值分布. 显然, $C(I,X^*)$ 包含于 $\mathcal{D}^{\prime}(I,X^*)$. 此外, 分布导数的定义很容易推广到 Banach 空间值分布.
+
+现在可将 $L^p(I,X)$ 定义为 $C(I,X)$ 关于范数
+\begin{equation}\label{eq:banach-valued-lp-completion-norm}
+\|u\|=\left(\int_I\|u(t)\|_X^p\,\mathrm{d}t\right)^{1/p}.
+\end{equation}
+的完备化. 显然, $L^p(I,X)$ 的元素为 $X^{**}$ 值分布. 此外, 可像前面一样定义 $X$ 值函数的 Sobolev 空间. 在大多数应用中, $X$ 为 Hilbert 空间. 在这种情形下, 稠密性定理, 延拓定理, 嵌入定理 (嵌入的紧性除外) 和迹定理都可采用与标量值函数相同的方法建立; 将使用这些定理, 而不再重新陈述和证明.\par 对自反 Banach 空间 $X$, 用记号 $L^\infty(I,X)$ 表示 $L^1(I,X^*)$ 的对偶空间.
+
+\begin{Example}
+\label{ex:time-spatial-function-spaces-norms}
+设 $\Omega\subset\mathbb{R}^n$ 为区域, 给定 $T>0$. 空间 $C([0,T],L^2(\Omega))$ 的范数为
+\begin{equation}\label{eq:time-continuous-ltwo-spatial-function-norm}
+\|u\|=\sup_{t\in[0,T]}\left\{\int_\Omega|u(\bm{x},t)|^2\,\mathrm{d}\bm{x}\right\}^{1/2}.
+\end{equation}
+空间 $L^2((0,T),L^2(\Omega))$ 的范数为
+\begin{equation}\label{eq:time-ltwo-ltwo-spatial-function-norm}
+\|u\|=\left\{\int_0^T\left[\int_\Omega|u(\bm{x},t)|^2\,\mathrm{d}\bm{x}\right]\,\mathrm{d}t\right\}^{1/2}.
+\end{equation}
+空间 $H^1((0,T),L^2(\Omega))$ 的范数为
+\begin{equation}\label{eq:time-hone-ltwo-spatial-function-norm}
+\|u\|=\left\{\int_0^T\left[\int_\Omega|u(\bm{x},t)|^2+|u_t(\bm{x},t)|^2\,\mathrm{d}\bm{x}\right]\,\mathrm{d}t\right\}^{1/2}.
+\end{equation}
+空间 $L^2((0,T),H^{-1}(\Omega))$ 的范数为
+\begin{equation}\label{eq:time-ltwo-negative-spatial-sobolev-norm}
+\|u\|=\left\{\int_0^T\left[\sup_{\substack{\phi\in H_0^1(\Omega)\\\|\phi\|_{1,2}=1}}\int_\Omega u(\bm{x},t)\phi(\bm{x})\,\mathrm{d}\bm{x}\right]^2\,\mathrm{d}t\right\}^{1/2}.
+\end{equation}
+
+\end{Example}
+
+\subsubsection{抽象抛物型初值问题}\label{subsec:abstract-parabolic-initial-value-problems}
+
+考虑一个可分实 Hilbert 空间 $H$ 和另一个连续且稠密地嵌入于 $H$ 的可分 Hilbert 空间 $V$. 将 $H$ 与其自身的对偶空间等同; $V$ 的对偶空间记为 $V^*$. 因而有 $V\subset H\subset V^*$, 且这些嵌入连续并稠密. (例如, 可取 $H_0^1(\Omega)\subset L^2(\Omega)\subset H^{-1}(\Omega)$.) 对 $H$ 中的内积以及 $V^*$ 与 $V$ 之间的配对, 使用同一记号 $(\cdot,\cdot)$. 假设 $A(t)\in\mathcal{L}(V,V^*)$ 连续地依赖于 $t\in[0,T]$. 与 $A(t)$ 关联的是定义在 $\mathbb{R}\times V\times V$ 上的含参二次型
+\begin{equation}\label{eq:abstract-parabolic-parameterized-quadratic-form}
+a(t,u,v)=-(A(t)u,v)
+\end{equation}
+假设该型满足强制性条件
+\begin{equation}\label{eq:abstract-parabolic-form-coercivity}
+a(t,u,u)\geq a\|u\|_V^2-b\|u\|_H^2,
+\end{equation}
+其中正常数 $a$ 和 $b$ 不依赖于 $t\in[0,T]$.
+
+现在考虑演化问题
+\begin{equation}\label{eq:abstract-parabolic-evolution-initial-value-problem}
+\dfrac{\mathrm{d}u}{\mathrm{d}t}=A(t)u+f(t),\quad u(0)=u_0.
+\end{equation}
+将建立如下结果.
+
+\begin{Theorem}
+\label{thm:abstract-parabolic-existence-uniqueness}
+设 $H$, $V$ 和 $A(t)$ 如上. 假设给定函数 $f\in L^2((0,T),V^*)$ 和 $u_0\in H$. 则 \eqref{eq:abstract-parabolic-evolution-initial-value-problem} 有唯一解 $u\in L^2((0,T),V)\cap H^1((0,T),V^*)$.
+\end{Theorem}
+
+在这个结果中, \eqref{eq:abstract-parabolic-evolution-initial-value-problem} 中的微分方程当然按 $V^*$ 值分布的意义理解. 此外, 由 Sobolev 嵌入定理, 有 $u\in C([0,T],V^*)$, 因而可以解释初始条件. 实际上, 还能得到更强的结论.
+
+\begin{Lemma}
+\label{lem:parabolic-energy-space-hilbert-continuity}
+设 $u\in L^2((0,T),V)\cap H^1((0,T),V^*)$. 则实际上 $u\in C([0,T],H)$.
+\end{Lemma}
+
+这说明 Theorem~\ref{thm:abstract-parabolic-existence-uniqueness} 是最优的; 即若希望解具有该定理所保证的正则性, 则对 $f$ 和 $u_0$ 所作的假设是必要的.\par 现在证明该引理.
+
+\begin{Proof}
+首先设 $u$ 属于 $C^1([0,T],H)$. 得到估计
+\begin{equation}\label{eq:parabolic-energy-space-continuity-identity}
+\|u(t)\|_H^2=\|u(t^*)\|^2+2\int_{t^*}^t(\dot u(s),u(s))\,\mathrm{d}s.
+\end{equation}
+现在选取 $t^*$, 使 $\|u(t^*)\|^2$ 等于 $\|u(t)\|^2$ 的平均值; 此外, 用 $\|\dot u\|_{V^*}\|u\|_V$ 估计 $(\dot u,u)$. 由此得到
+\begin{equation}\label{eq:parabolic-energy-space-continuity-integral-bound}
+\|u(t)\|_H^2\leq\dfrac{1}{T}\int_0^T\|u(t)\|_H^2\,\mathrm{d}t+2\int_0^T\|\dot u\|_{V^*}\|u\|_V\,\mathrm{d}t.
+\end{equation}
+利用 Cauchy-Schwarz 不等式, 得到
+\begin{equation}\label{eq:parabolic-energy-space-hilbert-continuous-bound}
+\max_{t\in[0,T]}\|u(t)\|_H^2\leq\dfrac{1}{T}\|u\|_{L^2((0,T),H)}^2+2\|u\|_{H^1((0,T),V^*)}\|u\|_{L^2((0,T),V)}.
+\end{equation}
+其余部分由稠密性论证得到.
+\end{Proof}
+
+现在转向该定理的证明. 不失一般性, 假设 \eqref{eq:abstract-parabolic-form-coercivity} 中的常数 $b$ 为零; 通过代换 $u=v\exp(bt)$ 总能做到这一点.\par 首先证明唯一性. 设 $u$ 为一个解. 利用 \eqref{eq:abstract-parabolic-evolution-initial-value-problem}, 与 $u$ 作内积并从 0 到 $T$ 积分, 得到
+\begin{equation}\label{eq:abstract-parabolic-solution-energy-identity}
+\dfrac{1}{2}(\|u(T)\|_H^2-\|u_0\|_H^2)+\int_0^T a(t,u,u)\,\mathrm{d}t=\int_0^T(f,u)\,\mathrm{d}t.
+\end{equation}
+将其与条件 \eqref{eq:abstract-parabolic-evolution-initial-value-problem} 结合, 得到如下形式的先验估计
+\begin{equation}\label{eq:abstract-parabolic-solution-apriori-bound}
+\|u\|_{L^2((0,T),V)}\leq C(\|f\|_{L^2((0,T),V^*)}+\|u_0\|_H).
+\end{equation}
+由此及线性性, 解的唯一性是显然的.
+
+\PDEIndexMark{idx:abstract-parabolic-apriori-to-existence-strategy}认识到像 \eqref{eq:abstract-parabolic-solution-apriori-bound} 这样的先验估计确实可以作为存在性证明而不仅仅是唯一性证明的基础, 是现代 PDE 理论的里程碑之一. 在 Chapter~\ref{chap:nonlinear-elliptic-equations} 的 Browder-Minty 定理的证明中, 已经遇到这一思想 (采用 Galerkin 方法的形式). 更一般地, 这一技巧按如下方式进行. 首先构造一族近似问题, 它们满足类似于 \eqref{eq:abstract-parabolic-solution-apriori-bound} 的先验估计, 且很容易证明有解. 这就得到一个具有一致界的近似解序列. 一致界蕴含弱收敛子序列的存在性. 再证明该弱极限就是所求的解.
+
+为对上述抽象抛物型问题实施这一方案, 需要一组 $V$ 中的线性无关元素 $\{\phi_n\mid n\in\mathbb{N}\}$, 使这些 $\phi_n$ 的线性张成在 $V$ 中稠密. 设 $V_n$ 为 $\phi_1,\phi_2,\ldots,\phi_n$ 的张成, $P_n$ 为从 $H$ (不是 $V$!) 到 $V_n$ 的正交投影. 现在令 $u_n(t)=\sum_{i=1}^n\alpha_i(t)\phi_i$ 为如下问题的解:
+\begin{equation}\label{eq:abstract-parabolic-galerkin-ode-system}
+\begin{gathered}\left(\dfrac{\mathrm{d}u_n}{\mathrm{d}t},\phi_i\right)=(A(t)u_n,\phi_i)+(f(t),\phi_i),\quad i=1,\ldots,n,\\u_n(0)=P_nu_0.\end{gathered}
+\end{equation}
+方程组 \eqref{eq:abstract-parabolic-galerkin-ode-system} 只是关于系数 $\alpha_i(t)$ 的线性 ODE 组, 显然有唯一解. 与 \eqref{eq:abstract-parabolic-solution-energy-identity} 完全类似, 得到
+\begin{equation}\label{eq:abstract-parabolic-galerkin-energy-identity}
+\dfrac{1}{2}(\|u_n(T)\|_H^2-\|P_nu_0\|_H^2)+\int_0^T a(t,u_n,u_n)\,\mathrm{d}t=\int_0^T(f,u_n)\,\mathrm{d}t.
+\end{equation}
+由此得到 $u_n$ 在 $L^2((0,T),\allowbreak V)$ 中的范数的先验界 (不依赖于 $n$). 因而某个子序列在 $L^2((0,T),\allowbreak V)$ 中弱收敛到极限 $u$. 设 $\phi\in\mathcal{D}((0,T),V)$ 对某个 $N$ 具有如下形式
+\begin{equation}\label{eq:abstract-parabolic-finite-span-time-test-function}
+\phi(t)=\sum_{i=1}^N\beta_i(t)\phi_i
+\end{equation}
+其中 $\beta_i\in\mathcal{D}((0,T),\mathbb{R})$. 对 $n\geq N$, 有
+\begin{equation}\label{eq:abstract-parabolic-galerkin-finite-test-identity}
+\left(\dfrac{\mathrm{d}u_n}{\mathrm{d}t},\phi\right)=(A(t)u_n,\phi)+(f,\phi);
+\end{equation}
+关于时间积分并取极限, 得到
+\begin{equation}\label{eq:abstract-parabolic-galerkin-distributional-limit}
+\int_0^T\left(\dfrac{\mathrm{d}u}{\mathrm{d}t},\phi\right)\,\mathrm{d}t=\int_0^T(A(t)u,\phi)+(f,\phi)\,\mathrm{d}t.
+\end{equation}
+由于形如 \eqref{eq:abstract-parabolic-finite-span-time-test-function} 的试验函数在 $\mathcal{D}((0,T),V)$ 中稠密, 可知 \eqref{eq:abstract-parabolic-evolution-initial-value-problem} 在 $V^*$ 值分布的意义下成立. 特别地, 这蕴含 $u\in H^1((0,T),V^*)$, 从而 $u\in C([0,T],H)$.
+
+现在更一般地考虑满足 $\phi(T)=0$ 的 $\phi\in H^1((0,T),V)$. 同样, 形如 \eqref{eq:abstract-parabolic-finite-span-time-test-function} 的函数在该函数空间中稠密. 此外, 若 $\phi$ 具有 \eqref{eq:abstract-parabolic-finite-span-time-test-function} 的形式且 $n\geq N$, 则
+\begin{equation}\label{eq:abstract-parabolic-galerkin-initial-trace-identity}
+-\int_0^T(u_n(t),\dot\phi(t))\,\mathrm{d}t-(u_n(0),\phi(0))=\int_0^T(A(t)u_n(t)+f(t),\phi(t))\,\mathrm{d}t.
+\end{equation}
+取极限得到
+\begin{equation}\label{eq:abstract-parabolic-limit-prescribed-initial-value}
+-\int_0^T(u(t),\dot\phi(t))\,\mathrm{d}t-(u_0,\phi(0))=\int_0^T(A(t)u(t)+f(t),\phi(t))\,\mathrm{d}t.
+\end{equation}
+另一方面, 将 \eqref{eq:abstract-parabolic-evolution-initial-value-problem} 乘以 $\phi$ 并积分, 得到
+\begin{equation}\label{eq:abstract-parabolic-limit-solution-initial-value}
+-\int_0^T(u(t),\dot\phi(t))\,\mathrm{d}t-(u(0),\phi(0))=\int_0^T(A(t)u(t)+f(t),\phi(t))\,\mathrm{d}t.
+\end{equation}
+比较 \eqref{eq:abstract-parabolic-limit-prescribed-initial-value} 与 \eqref{eq:abstract-parabolic-limit-solution-initial-value}, 可得 $u(0)=u_0$.
+
+\subsubsection{应用}\label{subsec:parabolic-pde-applications}
+
+\begin{Example}
+\label{ex:parabolic-divergence-dirichlet-problem}
+设 $H=L^2(\Omega)$, $V=H_0^1(\Omega)$, 且
+\begin{equation}\label{eq:parabolic-dirichlet-spatial-divergence-operator}
+A(t)u=\dfrac{\partial}{\partial x_j}\left(a_{ij}(\bm{x},t)\dfrac{\partial u}{\partial x_i}\right)+b_i(\bm{x},t)\dfrac{\partial u}{\partial x_i}+c(\bm{x},t)u.
+\end{equation}
+若系数连续且矩阵 $a_{ij}$ 严格正定, 则上述假设适用 (参见 Theorem~\ref{thm:garding-elliptic-energy-inequality}). 这就给出初边值问题
+\begin{equation}\label{eq:parabolic-dirichlet-initial-boundary-value-problem}
+\begin{aligned}
+\dfrac{\partial u}{\partial t}&=\dfrac{\partial}{\partial x_j}\left(a_{ij}(\bm{x},t)\dfrac{\partial u}{\partial x_i}\right)+b_i(\bm{x},t)\dfrac{\partial u}{\partial x_i}+c(\bm{x},t)u+f(\bm{x},t),\\
+&\hspace{3em}\bm{x}\in\Omega,\ t\in(0,T),\\
+u(\bm{x},t)&=0,\ \bm{x}\in\partial\Omega,\ t\in(0,T),\\
+u(\bm{x},0)&=u_0(\bm{x}),\ \bm{x}\in\Omega.
+\end{aligned}
+\end{equation}
+的存在性结果. 这里必须假设 $f\in L^2((0,T),H^{-1}(\Omega))$, $u_0\in L^2(\Omega)$.
+\end{Example}
+
+\begin{Example}
+\label{ex:biharmonic-parabolic-clamped-problem}
+设 $H=L^2(\Omega)$, $V=H_0^2(\Omega)$, 且 $Au=-\Delta\Delta u$. 则关联的二次型为 $a(u,u)=(\Delta u,\Delta u)$. 利用 Laplace 方程的椭圆正则性结果 (见 Chapter~\ref{chap:linear-elliptic-equations}), 可以证明, 只要 $\partial\Omega$ 足够光滑 (例如为 $C^2$ 类) 且 $\Omega$ 有界, 该二次型就等价于 $H_0^2(\Omega)$ 中的内积. 上述结果再次适用, 给出问题
+\begin{equation}\label{eq:biharmonic-parabolic-clamped-initial-boundary-problem}
+\begin{aligned}u_t&=-\Delta\Delta u,\ \bm{x}\in\Omega,\ t\in(0,T),\\u&=\dfrac{\partial u}{\partial n}=0,\ \bm{x}\in\partial\Omega,\ t\in(0,T),\\u(\bm{x},0)&=u_0(\bm{x}),\ \bm{x}\in\Omega.\end{aligned}
+\end{equation}
+的存在性结果.
+\end{Example}
+
+\begin{Example}
+\label{ex:parabolic-natural-boundary-problem}
+设
+\begin{equation}\label{eq:parabolic-natural-boundary-quadratic-form}
+a(t,u,v)=\int_\Omega a_{ij}(\bm{x},t)\dfrac{\partial u}{\partial x_i}\dfrac{\partial v}{\partial x_j}-b_i(\bm{x},t)\dfrac{\partial u}{\partial x_i}v-c(\bm{x},t)uv\,\mathrm{d}\bm{x}.
+\end{equation}
+假设系数在 $\overline\Omega\times[0,T]$ 上连续, 且矩阵 $a_{ij}$ 严格正定. 取 $V=H^1(\Omega)$ 和 $H=L^2(\Omega)$. 设 $A(t)$ 为由 $(A(t)u,v)=-a(t,u,v)$ 定义的从 $V$ 到 $V^*$ 的算子. 上述定理的假设再次满足. 即对每个 $u_0\in L^2(\Omega)$ 和每个 $f\in L^2((0,T),V^*)$, 带有初始条件 $u(0)=u_0$ 的问题 $\dot u=A(t)u+f$ 有唯一解. 然而, 由于 $V^*$ 不是 $\Omega$ 上的分布空间, 需要稍加考虑如何解释这一方程. 若 $\Omega$ 足够光滑, 则 $H^1(\Omega)$ 中的每个函数都在 $\partial\Omega$ 上有迹, 且迹属于 $H^{1/2}(\partial\Omega)$. 例如, 若取 $g\in L^2(\Omega)$ 和 $h\in H^{-1/2}(\partial\Omega)$, 则由
+\begin{equation}\label{eq:parabolic-natural-boundary-sum-functional}
+(g\oplus h,v)=(g,v)+\int_{\partial\Omega}h(\bm{x})v(\bm{x})\,\mathrm{d}S
+\end{equation}
+定义的泛函 $g\oplus h$ 当然属于 $V^*$. 假设 $f(t)$ 具有这种形式. 则形式地有\[\begin{aligned}
+(A(t)u+f(t),v)&=-a(t,u,v)+(g,v)+\int_{\partial\Omega}h(\bm{x})v(\bm{x})\,\mathrm{d}S\\
+&=-\int_\Omega a_{ij}(\bm{x},t)\dfrac{\partial u}{\partial x_i}\dfrac{\partial v}{\partial x_j}-b_i(\bm{x},t)\dfrac{\partial u}{\partial x_i}v-c(\bm{x},t)uv\,\mathrm{d}\bm{x}\\
+&\quad+(g,v)+\int_{\partial\Omega}h(\bm{x})v(\bm{x})\,\mathrm{d}S\\
+&=\int_\Omega\left(\dfrac{\partial}{\partial x_j}\left(a_{ij}(\bm{x},t)\dfrac{\partial u}{\partial x_i}\right)+b_i(\bm{x},t)\dfrac{\partial u}{\partial x_i}+c(\bm{x},t)u+g(\bm{x},t)\right)v\,\mathrm{d}\bm{x}\\
+&\quad+\int_{\partial\Omega}\left(-a_{ij}(\bm{x},t)n_j(\bm{x})\dfrac{\partial u}{\partial x_i}+h(\bm{x},t)\right)v(\bm{x})\,\mathrm{d}S.
+\end{aligned}\]因此, 按形式的或 ``广义的\textquotesingle\textquotesingle\ 意义, $u$ 是 PDE
+\begin{equation}\label{eq:parabolic-natural-boundary-interior-equation}
+\dfrac{\partial u}{\partial t}=\dfrac{\partial}{\partial x_j}\left(a_{ij}(\bm{x},t)\dfrac{\partial u}{\partial x_i}\right)+b_i(\bm{x},t)\dfrac{\partial u}{\partial x_i}+c(\bm{x},t)u+g(\bm{x},t)
+\end{equation}
+的解, 并满足边界条件
+\begin{equation}\label{eq:parabolic-natural-conormal-boundary-condition}
+a_{ij}(\bm{x},t)n_j(\bm{x})\dfrac{\partial u}{\partial x_i}=h(\bm{x},t).
+\end{equation}
+对该边界条件更严格的解释需要更高的正则性, 因为若仅假设 $u\in H^1$, 则 \eqref{eq:parabolic-natural-conormal-boundary-condition} 中的表达式在迹的意义下不存在.
+\end{Example}
+
+\subsubsection{解的正则性}\label{subsec:parabolic-solution-regularity}
+
+证明如 \eqref{eq:abstract-parabolic-evolution-initial-value-problem} 这样的演化问题的解的正则性, 通常先建立时间正则性, 再利用算子 $A$ 的椭圆估计证明空间正则性. 用 $\mathcal{D}(A)$ 表示 $A$ 作为 $H$ 中无界算子的定义域, 即 $\mathcal{D}(A)=\{u\in V\mid Au\in H\}$. 现在假设 $u_0\in\mathcal{D}(A(0))$, 且 $f\in H^1((0,T),V^*)\cap L^2((0,T),V)$. 此外, 假设 $A\in C^1([0,T],\mathcal{L}(V,V^*))$. 则可形式地对方程 \eqref{eq:abstract-parabolic-evolution-initial-value-problem} 关于时间微分, 得到
+\begin{equation}\label{eq:parabolic-formally-differentiated-evolution-problem}
+\ddot u=A(t)\dot u+\dot A(t)u+\dot f(t),\quad\dot u(0)=A(0)u_0+f(0).
+\end{equation}
+
+
+现在将 $\dot u$ 视为新变量 $v$, 并考虑演化问题
+\begin{equation}\label{eq:parabolic-time-derivative-auxiliary-problem}
+\dot v=A(t)v+(\dot A(t)u+\dot f(t)),\quad v(0)=A(0)u_0+f(0).
+\end{equation}
+根据假设, 有 $\dot A(t)u+\dot f(t)\in L^2((0,T),V^*)$ 以及 $A(0)u_0+f(0)\in H$. 因此 Theorem~\ref{thm:abstract-parabolic-existence-uniqueness} 适用, 且 \eqref{eq:parabolic-time-derivative-auxiliary-problem} 有解 $v\in H^1((0,T),V^*)\cap L^2((0,T),V)$. 下面将证明实际上 $v=\dot u$. 一旦知道这一点, 就有 $u\in H^1((0,T),V)\cap H^2((0,T),V^*)$. 此外, 方程 $\dot u=A(t)u+f(t)$ 蕴含 $A(t)u\in H^1((0,T),V^*)\cap L^2((0,T),V)$. 在 $A$ 为椭圆算子的具体例子中, 这就蕴含 $u$ 更高的空间正则性 (见 Problem~\ref{ex:parabolic-regularity-applications}).
+
+还需严格说明 $v$ 确实等于 $\dot u$. 为此, 令
+\begin{equation}\label{eq:parabolic-time-regularity-integrated-auxiliary-solution}
+z(t)=u_0+\int_0^t v(\tau)\,\mathrm{d}\tau.
+\end{equation}
+可知 $\dot z=v$, 且\[\begin{aligned}
+A(t)z(t)&=A(t)u_0+\int_0^t A(t)v(\tau)\,\mathrm{d}\tau\\
+&=\int_0^t A(\tau)v(\tau)\,\mathrm{d}\tau+\int_0^t(A(t)-A(\tau))v(\tau)\,\mathrm{d}\tau+A(t)u_0\\
+&=v(t)-v(0)-f(t)+f(0)-\int_0^t\dot A(\tau)u(\tau)\,\mathrm{d}\tau\\
+&\quad+\int_0^t\dot A(\tau)z(\tau)\,\mathrm{d}\tau-(A(t)-A(0))u_0+A(t)u_0\\
+&=v(t)-f(t)+\int_0^t\dot A(\tau)(z(\tau)-u(\tau))\,\mathrm{d}\tau.
+\end{aligned}\]用 $w$ 表示 $z-u$, 从而得到
+\begin{equation}\label{eq:parabolic-time-regularity-volterra-difference-problem}
+\dot w=A(t)w-\int_0^t\dot A(\tau)w(\tau)\,\mathrm{d}\tau,\quad w(0)=0.
+\end{equation}
+与 $w$ 作内积并积分, 得到
+\begin{equation}\label{eq:parabolic-time-regularity-volterra-energy-identity}
+\begin{aligned}\dfrac{1}{2}(w(t),w(t))+\int_0^t a(s,w(s),w(s))\,\mathrm{d}s&=-\int_0^t\left(\int_0^s\dot A(\tau)w(\tau)\,\mathrm{d}\tau,w(s)\right)\,\mathrm{d}s\end{aligned}
+\end{equation}
+对每个 $t\in[0,T]$ 成立. 由此容易证明 $w=0$; 见 Problem~\ref{ex:parabolic-volterra-energy-zero-solution}.
+
+\Needspace{5\baselineskip}\textbf{Problems}
+
+\begin{enumerate}[label=\thesection.\arabic*.,ref=\thesection.\arabic*,start=1,series=book-problems]
+
+\item\label{ex:banach-valued-sobolev-generalization-obstructions} 正如本节开头所述, 关于 Sobolev 空间的主要结果可以用基本相同的证明推广到 Hilbert 空间值函数. 若要考虑 Banach 空间值函数, 会在哪些地方出现问题?
+
+\item\label{ex:spectral-square-root-parabolic-space-choices} 设 $A$ 为 Hilbert 空间 $K$ 中自伴且严格负定的算子. 假设 $A$ 有紧预解式, 设 $-\lambda_n$ 为 $A$ 的特征值, $\phi_n$ 为对应的特征函数. 如下定义 $(-A)^{1/2}$:
+\begin{equation}\label{eq:negative-self-adjoint-operator-spectral-square-root}
+(-A)^{1/2}\sum_{i=1}^\infty\alpha_i\phi_i=\sum_{i=1}^\infty\alpha_i\lambda_i^{1/2}\phi_i.
+\end{equation}
+基于下列选取, 表述并证明问题\[\dot u=Au+f(t),\quad u(0)=u_0,\]的存在性结果: (a) $H=K$, $V=\mathcal{D}((-A)^{1/2})$, (b) $H=\mathcal{D}((-A)^{1/2})$, $V=\mathcal{D}(A)$.
+
+\item\label{ex:biharmonic-parabolic-alternative-boundary-spaces} 在 Example~\ref{ex:biharmonic-parabolic-clamped-problem} 中, 考虑选择 $V=H_0^1(\Omega)\cap H^2(\Omega)$ 而不是 $H_0^2(\Omega)$. 这对应于哪些边界条件? 是否也可以选择 $V=H^2(\Omega)$?
+
+\item\label{ex:parabolic-regularity-applications} 将 Section~\ref{subsec:parabolic-solution-regularity} 的正则性结果应用于 Section~\ref{subsec:parabolic-pde-applications} 中的例子.
+
+\item\label{ex:parabolic-volterra-energy-zero-solution} 利用 \eqref{eq:parabolic-time-regularity-volterra-energy-identity} 证明 $w=0$.
+
+\end{enumerate}

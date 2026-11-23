@@ -1,0 +1,495 @@
+\chapter{流形上的 Hamilton 力学}
+\label{chap:hamiltonian-manifolds}
+\index{辛流形}
+\index{Hamilton 力学}
+\index{Poisson 括号}
+
+本章把第 2 章中已经在 Euclidean 空间情形介绍的 Hamilton 力学方法推广到一般流形.本章假设读者熟悉光滑流形的基本概念,包括切空间、余切空间、向量场和微分形式.我们将在第~\ref{sec:manifold-calculus} 节非常简短地回顾这些概念,主要目的是固定记号.关于流形的简明介绍可参见文献 [40] 第 2 章,详细论述可参见文献 [29].本章始终使用求和约定,即重复指标总是求和.
+
+\section{流形上的微积分}
+\label{sec:manifold-calculus}
+
+本节中,$M$ 表示一个光滑的 $n$ 维流形.
+
+\subsection{切空间、向量场与流}
+\label{subsec:tangent-vector-fields-flows}
+
+对每个 $x\in M$,都有 $M$ 在 $x$ 处的切空间,记为 $T_xM$.给定一个光滑坐标系 $x^1,\ldots,x^n$,向量
+\[
+ \frac{\partial}{\partial x^1},\ldots,
+ \frac{\partial}{\partial x^n}\label{eq:manifold-coordinate-basis}
+\]
+在每一点构成切空间的一组基.$M$ 上的向量场 $X$ 是一个映射,它为每个点 $x$ 指定一个 $T_xM$ 中的元素 $X_x$.如果 $X$ 在形如式~\eqref{eq:manifold-coordinate-basis} 的基下的系数,对每个光滑坐标系都是光滑函数,则称 $X$ 光滑.正如第 2 章练习 14 中所做的,我们把向量场看作满足 Leibniz 法则的一阶微分算子:
+\[
+ X(fg)=X(f)g+fX(g).
+\]
+
+给定 $M$ 上的光滑向量场 $X$ 与点 $x\in M$,存在曲线 $\gamma_x:(a,b)\to M$,满足 $\gamma_x(0)=x$ 且
+\[
+ \frac{d\gamma_x}{dt}=X_{\gamma_x(t)}.
+\]
+任意两条这样的曲线在它们定义区间的交集上相同.存在一个最大的区间
+\[
+ (a_x^{\max},b_x^{\max})
+\]
+使得曲线可以定义在其上.如果对每个 $x\in M$ 都有 $a_x^{\max}=-\infty$ 且 $b_x^{\max}=+\infty$,则称向量场 $X$ 完备.如果 $M$ 紧,则 $M$ 上每个光滑向量场都完备.
+
+把曲线 $\gamma_x$ 汇集起来,可以得到 $X$ 生成的流 $\Phi$:
+\[
+ \Phi_t(x)=\gamma_x(t),
+\]
+只要 $a_x^{\max}<t<b_x^{\max}$.若 $t$ 不属于这个区间,则 $\Phi_t(x)$ 没有定义.流 $\Phi$ 满足
+\[
+ \Phi_0(x)=x,\label{eq:flow-identity}
+\]
+并且,如果 $x$ 属于 $\Phi_t$ 的定义域,且 $\Phi_t(x)$ 属于 $\Phi_s$ 的定义域,则 $x$ 属于 $\Phi_{s+t}$ 的定义域,并且
+\[
+ \Phi_s(\Phi_t(x))=\Phi_{s+t}(x).\label{eq:flow-composition}
+\]
+
+反过来,给定一族满足式~\eqref{eq:flow-identity}、式~\eqref{eq:flow-composition} 以及适当定义域性质的映射 $\Phi$,存在唯一向量场 $X$,使 $\Phi$ 是 $X$ 生成的流.特别地,如果 $\Phi_t(x)$ 对所有 $x,t$ 都有定义,$\Phi$ 作为 $M\times\mathbb R$ 到 $M$ 的映射光滑,并满足式~\eqref{eq:flow-identity} 与式~\eqref{eq:flow-composition},则存在唯一完备向量场 $X$,使 $\Phi$ 是其生成的流.
+
+\subsection{微分形式}
+\label{subsec:differential-forms}
+
+对每个 $x$,$T_xM$ 是一个 $n$ 维实向量空间.其对偶空间称为 $M$ 在 $x$ 处的余切空间,记为 $T_x^*M$.给定 $M$ 上的光滑函数 $f$,$f$ 在 $x$ 处的微分是 $T_x^*M$ 中的元素,由
+\[
+ df(X)=X(f)
+\]
+对每个 $X\in T_xM$ 定义.在局部坐标 $x^1,\ldots,x^n$ 中,
+\[
+ dx^j\left(\frac{\partial}{\partial x^k}\right)=\delta^j_k.
+\]
+因此 $dx^1,\ldots,dx^n$ 在每一点构成 $T_x^*M$ 的一组基.对任意光滑函数 $f$,
+\[
+ df=\frac{\partial f}{\partial x^j}\,dx^j.\label{eq:manifold-differential}
+\]
+
+$M$ 上的 $k$-形式 $\alpha$ 是一个映射,它为每个点 $x$ 指定 $T_xM$ 上的一个 $k$-线性反对称泛函 $\alpha_x$.如果对每组光滑向量场 $X_1,\ldots,X_k$,函数 $\alpha(X_1,\ldots,X_k)$ 光滑,则称 $\alpha$ 光滑.特别地,若 $f$ 光滑,则 $df$ 是光滑的 1-形式.如果 $\alpha$ 是光滑 $k$-形式,$X$ 是光滑向量场,可以定义 $\alpha$ 关于 $X$ 的内缩 $i_X\alpha$,它是 $(k-1)$-形式:
+\[
+ (i_X\alpha)(X_1,\ldots,X_{k-1})
+ =\alpha(X,X_1,\ldots,X_{k-1}).
+\]
+
+给定向量空间 $V$ 上的 $k$-线性形式 $\varphi$,定义其反对称化
+\[
+ \operatorname{AS}(\varphi)(v_1,\ldots,v_k)
+ =\sum_{\sigma\in S_k}\operatorname{sign}(\sigma)
+ \varphi(v_{\sigma(1)},\ldots,v_{\sigma(k)}).
+\]
+这里 $S_k$ 是 $k$ 个元素上的置换群.给定 $M$ 上的 $k$-形式 $\alpha$ 与 $l$-形式 $\beta$,令 $\alpha\otimes\beta$ 为每个 $T_xM$ 上的 $(k+l)$-线性形式:
+\[
+ (\alpha\otimes\beta)(X_1,\ldots,X_{k+l})
+ =\alpha(X_1,\ldots,X_k)\beta(X_{k+1},\ldots,X_{k+l}).
+\]
+再令
+\[
+ \alpha\wedge\beta=\operatorname{AS}(\alpha\otimes\beta).
+\]
+特别地,如果 $\alpha,\beta$ 是 1-形式,则
+\[
+ (\alpha\wedge\beta)(X,Y)
+ =\alpha(X)\beta(Y)-\alpha(Y)\beta(X).
+\]
+在光滑坐标系 $x^1,\ldots,x^n$ 中,光滑 $k$-形式 $\alpha$ 可以唯一写成
+\[
+ \alpha=a_{j_1,\ldots,j_k}(x)\,
+ dx^{j_1}\wedge\cdots\wedge dx^{j_k}.
+\]
+
+如果 2-形式 $\omega$ 在每个 $T_xM$ 上定义非退化双线性形式,则称 $\omega$ 非退化.更明确地说,这意味着对每个 $x\in M$ 与每个非零 $X\in T_xM$,存在 $Y\in T_xM$ 使
+\[
+ \omega(X,Y)\ne0.
+\]
+
+设 $\alpha$ 是光滑 $k$-形式,$S$ 是 $M$ 中紧的、定向的、带边界的 $k$ 维子流形,则可以定义 $\alpha$ 在 $S$ 上的积分.存在一个把光滑 $k$-形式映到光滑 $(k+1)$-形式的映射 $d$,称为外微分,并满足
+\[
+ \int_Sd\beta=\int_{\partial S}\beta\label{eq:stokes}
+\]
+对每个紧的、定向的、带边界的 $k$ 维子流形 $S$ 与每个 $(k-1)$-形式 $\beta$ 成立.这里 $\partial S$ 带有由 $S$ 的定向自然诱导的定向.式~\eqref{eq:stokes} 称为 Stokes 定理.如果 $d\alpha=0$,则称 $k$-形式 $\alpha$ 闭.
+
+在坐标中,外微分可由
+\[
+ d(f\,dx^{j_1}\wedge\cdots\wedge dx^{j_k})
+ =\frac{\partial f}{\partial x^l}
+ dx^l\wedge dx^{j_1}\wedge\cdots\wedge dx^{j_k}
+\]
+计算.外微分的坐标不变表达式为
+\[
+\begin{aligned}
+ d\alpha(X_1,\ldots,X_{k+1})
+ &=\sum_{j=1}^{k+1}(-1)^{j+1}
+ \alpha(X_1,\ldots,\widehat X_j,\ldots,X_{k+1})\\
+ &\quad+\sum_{j<l}(-1)^{j+l}
+ \alpha([X_j,X_l],X_1,\ldots,\widehat X_j,\ldots,
+ \widehat X_l,\ldots,X_{k+1}).
+\end{aligned}\label{eq:exterior-derivative}
+\]
+这里 $\widehat X_j$ 表示删去 $X_j$,$[X_j,X_l]$ 是把向量场视为一阶微分算子时的交换子.特别地,对 1-形式 $\alpha$,
+\[
+ (d\alpha)(X,Y)=X(\alpha(Y))-Y(\alpha(X))-\alpha([X,Y]).\label{eq:d-one-form}
+\]
+
+外微分满足一个关键恒等式:对所有 $k$-形式 $\alpha$,
+\[
+ d(d\alpha)=0.
+\]
+反过来,如果 $\beta$ 是闭的 $(k+1)$-形式,则它可以局部写成 $\beta=d\alpha$,其中 $\alpha$ 是某个 $k$-形式.更准确地说,如果 $\beta$ 闭,则对每个 $x\in M$,存在 $x$ 的邻域 $U$ 及 $U$ 上的 $k$-形式 $\alpha$,使 $\beta=d\alpha$ 在 $U$ 上成立.如果 $M$ 满足某些拓扑条件,则 $M$ 上每个闭 $k$-形式 $\alpha$ 都可以整体写成 $\alpha=d\beta$.特别地,如果 $M$ 单连通,则每个闭 1-形式 $\beta$ 都可以整体写成 $\beta=df$,其中 $f$ 是光滑函数(即 0-形式).
+
+如果 $X$ 是向量场、$\alpha$ 是 $k$-形式,可以定义 $\alpha$ 沿 $X$ 方向的 Lie 导数 $L_X\alpha$:
+\[
+ L_X\alpha=\left.\frac d{dt}(\Phi_t^*\alpha)\right|_{t=0},
+\]
+其中 $\Phi_t$ 是 $X$ 生成的流,$\Phi_t^*\alpha$ 是 $\Phi_t$ 对 $\alpha$ 的拉回.Lie 导数可以用 Cartan 公式计算:
+\[
+ L_X=i_X\circ d+d\circ i_X.\label{eq:cartan-formula}
+\]
+
+\section{辛流形上的力学}
+\label{sec:symplectic-mechanics}
+
+本主题中的符号约定并不统一,不同作者可能采用不同符号.
+
+\subsection{辛流形}
+\label{subsec:symplectic-manifolds}
+
+粗略地说,辛流形是带有足够附加结构的流形,从而可以定义两个函数的 Poisson 括号.
+
+\begin{definition}[辛流形与辛同胚]\label{def:symplectic-manifold}
+辛流形是一个光滑流形 $N$,连同 $N$ 上一个闭的、非退化的 2-形式 $\omega$.如果 $(N_1,\omega_1)$ 与 $(N_2,\omega_2)$ 是辛流形,则映射 $\Phi:N_1\to N_2$ 称为辛同胚,如果 $\Phi$ 是微分同胚并且
+\[
+ \Phi^*(\omega_2)=\omega_1.
+\]
+\end{definition}
+
+不难看出,每个辛流形都必须是偶数维的;原因很简单:奇数维向量空间不允许存在非退化的斜对称双线性形式.本章中,$N$ 始终表示带辛形式 $\omega$ 的 $2n$ 维辛流形.
+
+现在说明任意流形的余切丛都以一种典范方式成为辛流形.设 $x^1,\ldots,x^n$ 是开集 $U\subset M$ 上的坐标系.在每个 $x\in U$,$T_x^*M$ 中的元素 $\phi$ 唯一写成
+\[
+ \phi=p_j\,dx^j
+\]
+其中 $p_1,\ldots,p_n$ 是实数.量 $x^1,\ldots,x^n,p_1,\ldots,p_n$ 构成 $\pi^{-1}(U)$ 上的坐标系.把这类坐标系称为 $T^*M$ 上的标准坐标系.
+
+\begin{example}[余切丛上的典范 1-形式与 2-形式]\label{ex:cotangent-canonical-forms}
+在余切丛 $T^*M$ 上定义 1-形式 $\theta$:
+\[
+ \theta(X)(x,\phi)=\phi\bigl(\pi_*(X)\bigr)
+\]
+对每个切向量 $X\in T_{(x,\phi)}(T^*M)$ 成立,其中 $\pi:T^*M\to M$ 是典范投影.则 2-形式
+\[
+ \omega:=d\theta
+\]
+闭且非退化.称 $\theta,\omega$ 分别为 $T^*M$ 上的典范 1-形式和典范 2-形式.
+\end{example}
+
+\begin{proof}
+取 $M$ 上的坐标系 $\{x^j\}$,以及 $T^*M$ 上相应的标准坐标系 $\{x^j,p_j\}$.投影为 $\pi(x,p)=x$.同时,$T^*M$ 的切向量可写成 $\partial/\partial x^j$ 与 $\partial/\partial p_j$ 的线性组合.于是
+\[
+ \theta\left(a_k\frac{\partial}{\partial x^k}
+ +b_k\frac{\partial}{\partial p_k}\right)
+ =p_j\,dx^j\left(a_k\frac{\partial}{\partial x^k}\right).
+\]
+这意味着
+\[
+ \theta=p_j\,dx^j,
+\]
+这里的 $x^j$ 现在被看作 $T^*M$ 上的函数.因此
+\[
+ \omega=d\theta=dp_j\wedge dx^j.
+\]
+显然 $\omega$ 非退化(练习 1).
+\end{proof}
+
+\subsection{Poisson 括号与 Hamilton 向量场}
+\label{subsec:poisson-hamiltonian-fields}
+
+如果 $\omega$ 非退化,那么它在每个点 $z$ 给出 $T_zN$ 与 $T_z^*N$ 的典范识别:把向量 $X\in T_zN$ 识别为余切向量 $\omega(X,\cdot)$.借此可以把 $T_zN$ 上的双线性形式 $\omega$ 转移到 $T_z^*N$ 上,得到双线性形式 $\omega^{-1}$.
+
+\begin{definition}[Poisson 括号]\label{def:poisson-bracket-manifold}
+对 $N$ 上的光滑函数 $f,g$,定义它们的 Poisson 括号为
+\[
+ \{f,g\}=-\omega^{-1}(df,dg).
+\]
+\end{definition}
+
+特别地,如果 $1$ 表示 $N$ 上的常函数,则对所有光滑函数 $f$,$\{1,f\}=\{f,1\}=0$.
+
+\begin{example}[余切丛上的 Poisson 括号]\label{ex:cotangent-poisson}
+如果 $\omega$ 是 $T^*M$ 上的典范 2-形式,则在标准坐标中,所有光滑函数 $f,g$ 的 Poisson 括号为
+\[
+ \{f,g\}
+ =\frac{\partial f}{\partial x^j}\frac{\partial g}{\partial p_j}
+ -\frac{\partial f}{\partial p_j}\frac{\partial g}{\partial x^j}.
+\]
+\end{example}
+
+\begin{proof}
+余切向量 $\omega(\partial/\partial x^j,\cdot)$ 在 $\partial/\partial p_j$ 上的值为 $-1$,在其他基本偏导方向上的值为 $0$.因此
+\[
+ \omega\left(\frac{\partial}{\partial x^j},\cdot\right)=-dp_j,
+\qquad
+ \omega\left(\frac{\partial}{\partial p_j},\cdot\right)=dx^j.
+\]
+于是
+\[
+ -1=\omega^{-1}\left(\frac{\partial}{\partial x^j},
+ \frac{\partial}{\partial p_j}\right)
+ =\omega^{-1}(-dp_j,dx^j)
+ =\omega^{-1}(dx^j,dp_j).
+\]
+此外,$\omega^{-1}(dx^j,dx^k)=\omega^{-1}(dp_j,dp_k)=0$,并且当 $j\ne k$ 时 $\omega^{-1}(dp_j,dx^k)=0$.因此
+\[
+\begin{aligned}
+ \{f,g\}
+ &=-\omega^{-1}\left(
+ \frac{\partial f}{\partial x^j}dx^j+\frac{\partial f}{\partial p_j}dp_j,
+ \frac{\partial g}{\partial x^k}dx^k+\frac{\partial g}{\partial p_k}dp_k\right)\\
+ &=\frac{\partial f}{\partial x^j}\frac{\partial g}{\partial p_j}
+ -\frac{\partial f}{\partial p_j}\frac{\partial g}{\partial x^j}.
+\end{aligned}
+\]
+\end{proof}
+
+\begin{proposition}[Poisson 括号的反对称性与乘积法则]\label{prop:poisson-properties}
+对 $N$ 上任意光滑函数 $f,g,h$,
+\[
+ \{g,f\}=-\{f,g\},
+\qquad
+ \{f,gh\}=\{f,g\}h+g\{f,h\}.
+\]
+\end{proposition}
+
+\begin{proof}
+由于 $\omega$ 在每个切空间上斜对称,而 $\omega^{-1}$ 是通过切空间与余切空间的同构从 $\omega$ 得到的,所以 $\omega^{-1}$ 在余切空间上斜对称,Poisson 括号的反对称性随即成立.第二个关系由 $d(gh)$ 的 Leibniz 乘积法则以及 $\omega^{-1}$ 的双线性得到.
+\end{proof}
+
+\begin{definition}[Hamilton 向量场]\label{def:hamiltonian-vector-field}
+对 $N$ 上任意光滑函数 $f$,令 $X_f$ 为满足
+\[
+ df=\omega(X_f,\cdot)\label{eq:hamiltonian-vector-field}
+\]
+的唯一向量场.称 $X_f$ 为 $f$ 关联的 Hamilton 向量场.
+\end{definition}
+
+也就是说,在辛形式给出的切空间与余切空间同构下,$X_f$ 对应于 $df$.
+
+\begin{proposition}[Hamilton 向量场与 Poisson 括号]\label{prop:hamiltonian-vector-field-poisson}
+对所有光滑函数 $f,g$,
+\[
+ X_f(g)=\{f,g\}=-X_g(f).
+\]
+此外,
+\[
+ \omega(X_f,X_g)=-\{f,g\}.
+\]
+\end{proposition}
+
+\begin{proof}
+在每个 $z\in N$,用 $\omega$ 识别 $T_zN$ 与 $T_z^*N$.式~\eqref{eq:hamiltonian-vector-field} 说,在这个识别下 $X_f$ 对应于 $df$.因此
+\[
+ -\omega^{-1}(df,dg)
+ =-\omega(X_f,X_g)
+ =-df(X_g)=-X_g(f).
+\]
+所以 $\{f,g\}=-X_g(f)$.交换 $f,g$ 的角色,得到 $X_f(g)=\{f,g\}$.最后,
+\[
+ \omega(X_f,X_g)=df(X_g)=X_g(f)=-\{f,g\}.
+\]
+\end{proof}
+
+\begin{definition}[Hamilton 流]\label{def:hamiltonian-flow}
+对 $N$ 上任意光滑函数 $f$,由向量场 $-X_f$ 生成的流称为 $f$ 生成的 Hamilton 流,记为 $\Phi_f$.
+\end{definition}
+
+当 $N=T^*\mathbb R^n\cong\mathbb R^{2n}$ 时,这一定义与第 2.5 节的记号一致.
+
+\begin{proposition}[Hamilton 流保持辛形式]\label{prop:hamiltonian-flow-symplectic}
+对 $N$ 上任意光滑函数 $f$,Hamilton 流 $\Phi_f$ 保持 $\omega$.
+\end{proposition}
+
+\begin{proof}
+一般地,流 $\Phi$ 保持微分形式 $\alpha$,当且仅当生成 $\Phi$ 的向量场 $X$ 满足 $L_X\alpha=0$.在本题中 $\omega$ 闭,因此由式~\eqref{eq:cartan-formula},
+\[
+ L_{X_f}\omega=d(i_{X_f}\omega)=d^2f=0,
+\]
+因为按 $X_f$ 的定义,$i_{X_f}\omega=df$.
+\end{proof}
+
+\begin{proposition}[Poisson 括号的 Jacobi 恒等式]\label{prop:poisson-jacobi}
+对 $N$ 上任意光滑函数 $f,g,h$,
+\[
+ \{f,\{g,h\}\}+\{g,\{h,f\}\}+\{h,\{f,g\}\}=0.
+\]
+\end{proposition}
+
+这个结果说明,$N$ 上的光滑函数空间关于 Poisson 括号构成 Lie 代数.命题~\ref{prop:poisson-jacobi} 的证明依赖命题~\ref{prop:hamiltonian-flow-symplectic},而后者又依赖 $\omega$ 闭.
+
+\begin{proof}
+由于 Hamilton 流 $\Phi_f$ 保持 $\omega$,也保持 $\omega^{-1}$,因此
+\[
+ \omega^{-1}(d(g\circ\Phi_f^t),d(h\circ\Phi_f^t))
+ =\omega^{-1}(dg,dh)\circ\Phi_f^t,
+\]
+或者等价地,
+\[
+ \{g\circ\Phi_f^t,h\circ\Phi_f^t\}
+ =\{g,h\}\circ\Phi_f^t.
+\]
+对 $t$ 在 $0$ 处求导,得到
+\[
+ \{-X_f(g),h\}+\{g,-X_f(h)\}
+ =-X_f(\{g,h\}).
+\]
+等价地,
+\[
+ -\{\{f,g\},h\}+\{g,\{f,h\}\}
+ =-\{f,\{g,h\}\}.
+\]
+把 $-\{f,\{g,h\}\}$ 移到左端,并使用 Poisson 括号的反对称性,即得 Jacobi 恒等式.
+\end{proof}
+
+\begin{proposition}[Hamilton 向量场的交换子]\label{prop:hamiltonian-vector-field-bracket}
+对 $N$ 上任意光滑函数 $f,g$,其 Hamilton 向量场满足
+\[
+ [X_f,X_g]=X_{\{f,g\}}.
+\]
+\end{proposition}
+
+\begin{proof}
+见练习 3.
+\end{proof}
+
+\subsection{Hamilton 流与守恒量}
+\label{subsec:hamiltonian-flows-conserved}
+
+我们已经看到(命题~\ref{prop:hamiltonian-flow-symplectic}),若 $f$ 是光滑函数,则 $X_f$ 生成的流保持 $\omega$.下面给出这个结果的一个部分逆命题.
+
+\begin{proposition}[局部 Hamilton 流]\label{prop:locally-hamiltonian-flow}
+设 $\Phi$ 是向量场 $-X$ 生成的流.如果 $\Phi$ 保持 $\omega$,则 $X$ 可以局部写成 $X=X_f$,其中 $f$ 是某个光滑函数.如果 $N$ 单连通,则 $f$ 可以在整个 $N$ 上定义.
+\end{proposition}
+
+\begin{proof}
+流 $\Phi$ 保持 $\omega$ 可以无穷小地写成
+\[
+ L_X\omega=0.
+\]
+由于 $\omega$ 也闭,由式~\eqref{eq:cartan-formula},
+\[
+ d(i_X\omega)=0.
+\]
+因此 $i_X\omega$ 是闭 1-形式,可以局部写成 $i_X\omega=df$,而这正是 $X=X_f$ 的含义.如果 $N$ 单连通,则每个闭 1-形式都可以整体写成某个 $f$ 的微分.
+\end{proof}
+
+命题~\ref{prop:locally-hamiltonian-flow} 中的流称为局部 Hamilton 流.如果其中的函数 $f$ 可以在整个 $N$ 上定义,则称该流为(整体)Hamilton 流(比较定义~\ref{def:hamiltonian-flow}).若 $\Phi$ 是 Hamilton 流,使 $\Phi=\Phi_f$ 的函数 $f$ 称为 $\Phi$ 的 Hamilton 生成元.如果 $N$ 连通,则 $\Phi$ 的任意两个 Hamilton 生成元相差一个常数.
+
+为了看出一般情形中 $f$ 只能局部定义,考虑辛流形 $S^1\times\mathbb R$,辛形式为
+\[
+ \omega=d\varphi\wedge dx,
+\]
+其中 $\varphi$ 是 $S^1$ 上的角坐标,$x$ 是 $\mathbb R$ 上的线性坐标.注意,1-形式 $d\varphi$ 与局部角变量的选择无关,因为任意两个这样的角函数相差一个常数($2\pi$ 的整数倍).因此,$d\varphi$ 是全局定义的光滑 1-形式,虽然不存在全局定义的光滑角函数 $\varphi$.定义流
+\[
+ \Phi_t(\varphi,x)=(\varphi,x+t).
+\]
+由于 $dx$ 在平移下不变,这个流显然保持 $\omega$.流 $\Phi$ 由向量场 $-X=\partial/\partial x$ 生成,并且
+\[
+ \omega\left(-\frac{\partial}{\partial x},\cdot\right)=d\varphi.
+\]
+然而,如上所述,不存在满足 $df=d\varphi$ 的全局定义函数 $\varphi$.
+
+虽然辛流形上的每个光滑函数都会生成一个 Hamilton 流,但在物理例子中,通常有一个特殊函数,其 Hamilton 流被视为系统的“时间演化”.
+
+\begin{definition}[Hamilton 系统与守恒量]\label{def:hamiltonian-system}
+Hamilton 系统是一个辛流形 $N$,连同一个由光滑函数 $H$ 生成的特殊 Hamilton 流 $\Phi_H$;$H$ 称为系统的 Hamilton 函数.如果对每个固定的 $x\in N$,函数 $f(\Phi_{H,t}(x))$ 与 $t$ 无关,则称 $f$ 是 Hamilton 系统 $(N,\Phi_H)$ 的守恒量.
+\end{definition}
+
+正如 $\mathbb R^{2n}$ 的情形,守恒量对于理解动力学性质很有用.见推论~\ref{cor:poisson-conserved-quantity} 后的讨论.
+
+\begin{proposition}[守恒量的 Poisson 判据]\label{prop:hamiltonian-conservation}
+对任意 Hamilton 系统 $(N,\Phi_H)$,
+\[
+ \frac d{dt}f(\Phi_{H,t}(z))
+ =\{f,H\}(\Phi_{H,t}(z)),
+\]
+对所有 $z\in N$ 成立;简写为
+\[
+ \frac{df}{dt}=\{f,H\}.
+\]
+特别地,$N$ 上的光滑函数 $f$ 是 Hamilton 流 $\Phi_H$ 的守恒量,当且仅当 $\{f,H\}=0$.
+\end{proposition}
+
+\begin{proof}
+对任意向量场 $X$ 生成的流,都有
+\[
+ \frac d{dt}f(\Phi_t(z))=X_{\Phi_t(z)}f.
+\]
+如果 $X=-X_H$,则由命题~\ref{prop:hamiltonian-vector-field-poisson} 得到所述结果.
+\end{proof}
+
+\begin{proposition}[守恒量与 Hamilton 流的不变性]\label{prop:conserved-hamiltonian-invariance}
+光滑函数 $f$ 是 Hamilton 系统的守恒量,当且仅当 $H$ 在 $f$ 生成的 Hamilton 流 $\Phi_f$ 下不变.
+\end{proposition}
+
+\begin{proof}
+由前一个命题,$H$ 在 $f$ 生成的流下不变,当且仅当 $\{H,f\}=0$;这等价于 $\{f,H\}=0$,又等价于 $f$ 是守恒量.
+\end{proof}
+
+\subsection{Liouville 形式}
+\label{subsec:liouville-form}
+
+辛流形 $N$ 有一个自然体积形式,可以在 $N$ 上表述 Liouville 定理的类似结果(定理~\ref{thm:liouville}).
+
+\begin{definition}[Liouville 形式]\label{def:liouville-form}
+如果 $N$ 是 $2n$ 维辛流形,则 $N$ 上的 Liouville 形式是 $2n$-形式
+\[
+ \lambda=\frac1{n!}\omega^n,
+\]
+其中 $\omega^n=\omega\wedge\cdots\wedge\omega$.
+\end{definition}
+
+由于按假设 $\omega$ 在每个切空间上非退化,不难验证 $\lambda$ 在每个 $T_zN$ 上都是不为零的 $(2n)$-线性形式.因此 $\lambda$ 确定 $N$ 的一个定向.给定 $N$ 上紧支撑的连续函数 $f$,可以用由 $\lambda$ 确定的定向定义 $f$ 在 $N$ 上的积分.利用局部紧拓扑空间上的 Riesz 表示定理,可以证明存在唯一测度,称为 Liouville 体积测度,使每个紧支撑连续函数 $f$ 的积分由 $\int_Nf\lambda$ 给出.
+
+\begin{theorem}[Liouville 定理]\label{thm:liouville-manifold}
+对 $N$ 上任意光滑函数 $f$,Hamilton 流 $\Phi_f$ 保持 Liouville 形式 $\lambda$.
+\end{theorem}
+
+\begin{proof}
+流 $\Phi_f$ 保持 $\lambda$,当且仅当向量场 $X_f$ 满足 $L_{X_f}\lambda=0$.但是
+\[
+\begin{aligned}
+ L_{X_f}\lambda
+ =\frac1{n!}\bigl[&(L_{X_f}\omega)\wedge\omega\wedge\cdots\wedge\omega
+ +\omega\wedge(L_{X_f}\omega)\wedge\cdots\wedge\omega\\
+ &+\cdots+\omega\wedge\cdots\wedge\omega\wedge(L_{X_f}\omega)\bigr].
+\end{aligned}
+\]
+由命题~\ref{prop:hamiltonian-flow-symplectic},$L_{X_f}\omega=0$,故 $L_{X_f}\lambda=0$.
+\end{proof}
+
+\section{练习}
+\label{sec:chapter21-exercises}
+
+\begin{exercise}[典范 2-形式的非退化性]\label{ex:canonical-two-form-nondegenerate}
+证明余切丛 $T^*M$ 上的典范 2-形式 $\omega$ 非退化.
+
+提示:在标准坐标 $\{x^j,p_j\}$ 中计算.
+\end{exercise}
+
+\begin{exercise}[余切丛上的诱导辛同胚]\label{ex:cotangent-lift-symplectic}
+证明如果 $\Phi:M\to M$ 是微分同胚,则诱导映射 $\Phi^*:T^*M\to T^*M$ 是辛同胚.
+\end{exercise}
+
+\begin{exercise}[Hamilton 向量场的交换子]\label{ex:hamiltonian-vector-field-bracket}
+利用命题~\ref{prop:hamiltonian-vector-field-poisson} 与 Poisson 括号的 Jacobi 恒等式,证明对 $N$ 上任意光滑函数 $f,g$,
+\[
+ [X_f,X_g]=X_{\{f,g\}}.
+\]
+\end{exercise}
+
+\begin{exercise}[紧辛流形上的积分恒等式]\label{ex:integral-poisson-zero}
+如果 $N$ 紧,证明对 $N$ 上任意光滑函数 $f,g$,
+\[
+ \int_N\{f,g\}\lambda=0.
+\]
+
+提示:把 Liouville 定理应用于流 $\Phi_f^t$.
+\end{exercise}

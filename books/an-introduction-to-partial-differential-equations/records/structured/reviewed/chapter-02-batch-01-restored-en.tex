@@ -1,0 +1,225 @@
+\section{Characteristics}\label{chap:characteristics}
+
+\subsection{Classification and Characteristics}\label{sec:classification-characteristics}
+
+The typical problem in partial differential equations consists of finding the solution of a PDE (or a system of PDEs) subject to certain boundary and/or initial conditions. The nature of boundary and initial conditions which lead to well-posed problems depends in a very essential way on the specific PDE under consideration. For example, we saw in the examples in the Introduction that a natural choice of conditions for Laplace's equation,
+\begin{equation}\label{eq:classification-laplace}
+u_{xx}+u_{yy}=f(x,y),\quad0<x<1,\quad0<y<1,
+\end{equation}
+consists of prescribing $u$ on the boundary,
+\begin{equation}\label{eq:classification-laplace-boundary}
+\begin{gathered}
+u(x,0)=\phi_0(x),\quad u(x,1)=\phi_1(x),\\
+u(0,y)=\psi_0(y),\quad u(1,y)=\psi_1(y).
+\end{gathered}
+\end{equation}
+
+
+For the wave equation,
+\begin{equation}\label{eq:classification-wave}
+u_{xx}-u_{yy}=f(x,y),
+\end{equation}
+posed on the same domain (with $y$ taking the role of time) a natural choice of conditions is, for example,
+\begin{equation}\label{eq:classification-wave-data}
+\begin{gathered}
+u(0,y)=\phi_0(y),\quad u(1,y)=\phi_1(y),\\
+u(x,0)=\psi_0(x),\quad u_y(x,0)=\psi_1(x).
+\end{gathered}
+\end{equation}
+Ill-posed problems result if one tries to impose the conditions \eqref{eq:classification-laplace-boundary} on the wave equation or the conditions \eqref{eq:classification-wave-data} on Laplace's equation.
+
+Laplace's equation and the wave equation differ in other important aspects. For example, solutions of \eqref{eq:classification-laplace} will always be smooth in the interior of the domain as long as $f$ is smooth. On the other hand, solutions of \eqref{eq:classification-wave} may have discontinuities even for $f=0$. Indeed, as we mentioned in the previous chapter, any twice differentiable function of the form $u=F(x-y)+G(x+y)$ is a solution of \eqref{eq:classification-wave}, and we shall later introduce "generalized" solutions which dispense with the requirement that $F$ and $G$ have to be twice differentiable.
+
+An important ingredient of a systematic theory of partial differential equations is a classification scheme which identifies classes of equations with common properties. The "type" of an equation determines the nature of boundary and initial conditions which may be imposed, the nature of singularities which solutions may have and the nature of methods which can be used to approximate a solution. In this section, we shall provide the basic definitions underlying the classification of PDEs.
+
+\subsubsection{The Symbol of a Differential Expression}\label{subsec:differential-symbol}
+
+The notation of multi-indices is very convenient in avoiding excessively cumbersome notations in PDEs. A multi-index is a vector
+\[
+\alpha=(\alpha_1,\alpha_2,\ldots,\alpha_n)
+\]
+whose components are non-negative integers. The notation $\alpha\geq\beta$ indicates that $\alpha_i\geq\beta_i$ for each $i$. For any multi-index $\alpha$, we make the following definitions:
+\begin{equation}\label{eq:multi-index-length-factorial}
+|\alpha|=\alpha_1+\alpha_2+\cdots+\alpha_n,\qquad \alpha!=\alpha_1!\alpha_2!\cdots\alpha_n!;
+\end{equation}
+
+
+moreover, for any vector $\bm{x}=(x_1,x_2,\ldots,x_n)\in\mathbb{R}^n$, we set
+\begin{equation}\label{eq:multi-index-monomial}
+\bm{x}^{\alpha}=x_1^{\alpha_1}x_2^{\alpha_2}\cdots x_n^{\alpha_n}.
+\end{equation}
+
+
+The following notation for partial derivatives is extremely convenient in writing partial differential equations:
+\begin{equation}\label{eq:multi-index-derivative}
+D^{\alpha}=\dfrac{\partial^{|\alpha|}}{\partial x_1^{\alpha_1}\partial x_2^{\alpha_2}\cdots\partial x_n^{\alpha_n}}.
+\end{equation}
+For example, if $\alpha=(1,2)$, then
+\begin{equation}\label{eq:multi-index-example}
+D^{\alpha}u=\dfrac{\partial^3u}{\partial x_1\partial x_2^2}.
+\end{equation}
+
+
+We now consider a linear differential expression of the form
+\begin{equation}\label{eq:general-linear-differential-expression}
+L(\bm{x},D)u=\sum_{|\alpha|\leq m}a_{\alpha}(\bm{x})D^{\alpha}u,
+\end{equation}
+where $u:\mathbb{R}^n\to\mathbb{R}$. With this analytic operation on functions we associate an algebraic operation called the symbol.
+
+\begin{Definition}
+\label{def:differential-symbol}
+The \textbf{symbol} of the expression $L(\bm{x},D)$ as given by \eqref{eq:general-linear-differential-expression} is
+\begin{equation}\label{eq:differential-symbol}
+L(\bm{x},i\bm{\xi}):=\sum_{|\alpha|\leq m}a_{\alpha}(\bm{x})(i\bm{\xi})^{\alpha}.
+\end{equation}
+The \textbf{principal part} of the symbol is
+\begin{equation}\label{eq:principal-symbol}
+L^p(\bm{x},i\bm{\xi}):=\sum_{|\alpha|=m}a_{\alpha}(\bm{x})(i\bm{\xi})^{\alpha}.
+\end{equation}
+
+\end{Definition}
+
+\begin{Example}
+\label{ex:classical-differential-symbols}
+The symbol of Laplace's operator $\partial^2/\partial x_1^2+\partial^2/\partial x_2^2$ is $-\xi_1^2-\xi_2^2$, the symbol of the heat operator $\partial/\partial x_1-\partial^2/\partial x_2^2$ is $i\xi_1+\xi_2^2$, and the symbol of the wave operator $\partial^2/\partial x_1^2-\partial^2/\partial x_2^2$ is $-\xi_1^2+\xi_2^2$. For the Laplace and wave operator, the symbols are equal to their principal parts; the principal part for the heat operator is $\xi_2^2$.
+\end{Example}
+
+In an analogous fashion, we can associate a matrix-valued symbol with a system of partial differential equations. The definition of the principal part in this case is more involved; we shall address this issue in a later subsection.
+
+If the coefficients of the partial differential equation are constant, and we are looking at solutions on all of space, the symbol is easily interpreted in terms of the Fourier transform: If
+\begin{equation}\label{eq:classification-fourier-transform}
+\hat u(\bm{\xi}):=(2\pi)^{-n/2}\int_{\mathbb{R}^n}u(\bm{x})\exp(-i\bm{\xi}\cdot\bm{x})\,\mathrm{d}\bm{x}
+\end{equation}
+is the Fourier transform of $u(\bm{x})$, then $L(i\bm{\xi})\hat u(\bm{\xi})$ is the Fourier transform of $L(D)u(\bm{x})$. (We examine Fourier transforms in detail in Chapter~\ref{chap:fourier-transform}.)
+
+In general, the symbol tells us how a differential expression acts on functions which have their support contained in a small neighborhood of a given point $\bm{x}$. If the coefficients are smooth, they are approximately constant in such a small neighborhood. Moreover, if $u$ varies very rapidly, the highest-order derivatives are dominant over lower-order derivatives, and the principal part therefore contains the most important terms. How the differential expression acts on rapidly varying functions of small support is of crucial importance for many basic properties of PDEs. The classification into types is based on the principal part of the symbol.
+
+\subsubsection{Scalar Equations of Second Order}\label{subsec:second-order-scalar-equations}
+
+Let us consider a second-order PDE in two space dimensions,
+\begin{equation}\label{eq:second-order-scalar-expression}
+\begin{aligned}
+Lu&=a(x,y)u_{xx}+b(x,y)u_{xy}+c(x,y)u_{yy}\\
+&\quad+d(x,y)u_x+e(x,y)u_y+f(x,y)u\\
+&=g(x,y).
+\end{aligned}
+\end{equation}
+
+
+The principal part of the symbol of $L$ is
+\begin{equation}\label{eq:second-order-quadratic-symbol}
+L^p(x,y;i\xi,i\eta)=-a(x,y)\xi^2-b(x,y)\xi\eta-c(x,y)\eta^2.
+\end{equation}
+
+
+Second-order PDEs are classified according to the behavior of $L^p$, viewed as a quadratic form in $\xi$ and $\eta$. The quadratic form given by \eqref{eq:second-order-quadratic-symbol} can be represented in matrix form as
+\begin{equation}\label{eq:second-order-symbol-matrix}
+L^p(x,y;i\xi,i\eta)=(\xi,\eta)\begin{pmatrix}-a(x,y)&-\dfrac12b(x,y)\\-\dfrac12b(x,y)&-c(x,y)\end{pmatrix}\begin{pmatrix}\xi\\\eta\end{pmatrix}.
+\end{equation}
+
+
+Recall that a quadratic form is called definite if the associated symmetric matrix is (positive or negative) definite, it is called indefinite if the matrix has eigenvalues of both signs, and it is called degenerate if the matrix is singular.
+
+\begin{Definition}
+\label{def:second-order-scalar-type}
+The differential equation \eqref{eq:second-order-scalar-expression} is called \textbf{elliptic} if the quadratic form given by \eqref{eq:second-order-quadratic-symbol} is strictly definite, \textbf{hyperbolic} if it is indefinite and \textbf{parabolic} if it is degenerate.
+\end{Definition}
+
+The terms elliptic, parabolic and hyperbolic are motivated by the analogy with the classification of conic sections.
+
+\begin{Example}
+\label{ex:classical-pde-types}
+Laplace's equation is elliptic, the heat equation is parabolic and the wave equation is hyperbolic. For these three cases, the matrices associated with the principal part of the symbol are
+\begin{equation}\label{eq:classical-principal-matrices}
+\begin{pmatrix}-1&0\\0&-1\end{pmatrix},\qquad\begin{pmatrix}0&0\\0&1\end{pmatrix},\qquad\begin{pmatrix}-1&0\\0&1\end{pmatrix},
+\end{equation}
+respectively.
+\end{Example}
+
+\begin{Example}
+\label{ex:tricomi-mixed-type}
+In general, equations may have different type in different parts of the region in which they are to be solved. A typical example of this is the Tricomi equation
+\begin{equation}\label{eq:tricomi-equation}
+yu_{xx}+u_{yy}=0.
+\end{equation}
+The symbol is $-y\xi_1^2-\xi_2^2$, hence the equation is elliptic for $y>0$, parabolic for $y=0$ and hyperbolic for $y<0$. Equations which change type arise in some physical applications, for example the study of steady transonic flow. Such problems are generally very difficult to analyze.
+\end{Example}
+
+Consider now a second-order PDE in $n$ space dimensions:
+\begin{equation}\label{eq:ndimensional-second-order-equation}
+Lu=a_{ij}(\bm{x})\dfrac{\partial^2u}{\partial x_i\partial x_j}+b_i(\bm{x})\dfrac{\partial u}{\partial x_i}+c(\bm{x})u=0.
+\end{equation}
+Because the matrix of second partials of $u$ is symmetric, we may assume without loss of generality that $a_{ij}=a_{ji}$. The principal symbol of this second-order PDE is still a quadratic form in $\bm{\xi}$; we can represent this quadratic form as $\bm{\xi}^T\bm{A}(\bm{x})\bm{\xi}$, where $\bm{A}$ is the $n\times n$ matrix with components $-a_{ij}$.
+
+\begin{Definition}
+\label{def:ndimensional-second-order-type}
+Equation \eqref{eq:ndimensional-second-order-equation} is called \textbf{elliptic} if all eigenvalues of $\bm{A}$ have the same sign, \textbf{parabolic} if $\bm{A}$ is singular and \textbf{hyperbolic} if all but one of the eigenvalues of $\bm{A}$ have the same sign and one has the opposite sign. If $\bm{A}$ is nonsingular and there is more than one eigenvalue of each sign, the equation is called \textbf{ultrahyperbolic}.
+\end{Definition}
+
+In this definition, it is understood that eigenvalues are counted according to their multiplicities.
+
+The notion of characteristic surfaces is closely related to that of type. We make the following definition:
+
+\begin{Definition}
+\label{def:second-order-characteristic-surface}
+The surface described by $\phi(x_1,x_2,\ldots,x_n)=0$ is \textbf{characteristic} at the point $\hat{\bm{x}}$, if $\phi(\hat{\bm{x}})=0$ and, in addition,
+\begin{equation}\label{eq:second-order-characteristic-surface}
+a_{ij}(\hat{\bm{x}})\dfrac{\partial\phi}{\partial x_i}(\hat{\bm{x}})\dfrac{\partial\phi}{\partial x_j}(\hat{\bm{x}})=0.
+\end{equation}
+A surface is called characteristic if it is characteristic at each of its points.
+\end{Definition}
+
+In matrix form, condition \eqref{eq:second-order-characteristic-surface} reads $(\nabla\phi)^T\bm{A}(\nabla\phi)=0$. The matrix $\bm{A}$ is strictly definite, i.e., \eqref{eq:ndimensional-second-order-equation} is elliptic if and only if there are no nonzero real vectors with this property. We can therefore characterize elliptic equations as those without (real) characteristic surfaces.
+
+For hyperbolic equations, on the other hand, all but one of the eigenvalues of $\bm{A}$ have the same sign, say one eigenvalue is negative and the rest positive. Let $\bm{n}$ be a unit eigenvector corresponding to the negative eigenvalue. The span of $\bm{n}$ and its orthogonal complement are both invariant subspaces of $\bm{A}$, and, utilizing the decomposition
+\begin{equation}\label{eq:characteristic-gradient-decomposition}
+\nabla\phi=(\bm{n}\cdot\nabla\phi)\bm{n}+(\nabla\phi-(\bm{n}\cdot\nabla\phi)\bm{n}),
+\end{equation}
+we find
+\begin{equation}\label{eq:hyperbolic-characteristic-cone}
+\begin{aligned}
+(\nabla\phi)^T\bm{A}(\nabla\phi)
+&=-\lambda(\bm{n}\cdot\nabla\phi)^2\\
+&\quad+[\nabla\phi-(\bm{n}\cdot\nabla\phi)\bm{n}]^T
+\bm{B}[\nabla\phi-(\bm{n}\cdot\nabla\phi)\bm{n}]=0,
+\end{aligned}
+\end{equation}
+
+
+where $-\lambda$ is the negative eigenvalue of $\bm{A}$ and $\bm{B}$ is positive definite on the $(n-1)$-dimensional subspace perpendicular to $\bm{n}$. Let us now regard $\nabla\phi-(\bm{n}\cdot\nabla\phi)\bm{n}$, i.e., the part of $\nabla\phi$ that is perpendicular to $\bm{n}$, as given. Then $\bm{n}\cdot\nabla\phi$ can be determined from \eqref{eq:hyperbolic-characteristic-cone}. For any nonzero choice of the perpendicular part of $\nabla\phi$, we get two real and distinct solutions for $\bm{n}\cdot\nabla\phi$.
+
+Note that if we take any $C^2$ function $u:\mathbb{R}\to\mathbb{R}$ and compose it with $\phi$, the resulting function satisfies
+\begin{equation}\label{eq:characteristic-composed-function}
+\begin{aligned}
+L^pu(\phi)&=a_{ij}(\bm{x})\dfrac{\partial^2u}{\partial x_i\partial x_j}\\
+&=u''(\phi)\left[a_{ij}(\bm{x})\dfrac{\partial\phi}{\partial x_i}\dfrac{\partial\phi}{\partial x_j}\right]
++u'(\phi)a_{ij}(\bm{x})\dfrac{\partial^2\phi}{\partial x_i\partial x_j},
+\end{aligned}
+\end{equation}
+and if the surfaces $\phi=\mathrm{const.}$ are characteristic, the coefficient of $u''(\phi)$ on the right-hand side vanishes. That is, the function $u(\phi)$ satisfies the equation $Lu=0$ "to leading order." Because of this property, characteristics are important in the study of singularities of solutions of partial differential equations. As we shall see in Chapter~\ref{chap:local-existence}, partial differential equations can have solutions that are (or whose derivatives are) discontinuous across a characteristic surface. For example, we can guess from the results of Problem~\ref{ex:discontinuous-weak-wave-solutions} that $F(x-t)+G(x+t)$ satisfies the weak form of the wave equation $u_{tt}=u_{xx}$ even when $F$ and $G$ are discontinuous. The lines $x\pm t=\mathrm{const.}$ are the characteristics of this equation.
+
+A related property will be important in connection with the Cauchy-Kovalevskaya theorem. Suppose $u$ and its normal derivative $\nabla u\cdot\nabla\phi$ are prescribed on a surface given by $\phi(\bm{x})=0$. (Note that this implies that tangential derivatives of all orders are automatically specified.) Can we use \eqref{eq:ndimensional-second-order-equation}, in conjunction with the given data, to find the second derivative of $u$ in the direction of $\nabla\phi$? To decide this, let $\bm{q}_1,\bm{q}_2,\bm{q}_3,\ldots,\bm{q}_n$ be an orthonormal basis such that $\bm{q}_1$ is in the direction of $\nabla\phi$. To simplify notation, we shall write $\bm{q}$ for $\bm{q}_1$. We have
+\begin{equation}\label{eq:normal-direction-matrix-decomposition}
+\bm{A}=(\bm{q}^T\bm{A}\bm{q})\bm{q}\bm{q}^T+\bm{B},
+\end{equation}
+
+
+where
+\begin{equation}\label{eq:remainder-normal-component-zero}
+\bm{q}^T\bm{B}\bm{q}=0.
+\end{equation}
+The matrix $\bm{B}$ can be represented as
+\begin{equation}\label{eq:remainder-matrix-representation-first}
+\bm{B}=\sum_{i=2}^n(\bm{q}^T\bm{A}\bm{q}_i)\bm{q}\bm{q}_i^T+(\bm{q}_i^T\bm{A}\bm{q})\bm{q}_i\bm{q}^T
+\end{equation}
+
+\begin{equation}\label{eq:remainder-matrix-representation-second}
+{}+\sum_{i,j=2}^n(\bm{q}_i^T\bm{A}\bm{q}_j)\bm{q}_i\bm{q}_j^T.
+\end{equation}
+
+
+Let $D^2u$ denote the matrix of the second derivatives $\partial^2u/\partial x_i\partial x_j$. From \eqref{eq:normal-direction-matrix-decomposition}, we find
+\begin{equation}\label{eq:normal-second-derivative-determination}
+\bm{A}:D^2u:=-a_{ij}\dfrac{\partial^2u}{\partial x_i\partial x_j}=(\bm{q}^T\bm{A}\bm{q})\bm{q}^T(D^2u)\bm{q}+\cdots,
+\end{equation}
+where the second derivatives of $u$ indicated by the dots involve at least one differentiation in a direction perpendicular to $\bm{q}$ (this is clear from \eqref{eq:remainder-matrix-representation-second}). If $u$ and its normal derivative are prescribed, these terms can therefore be considered known. The condition for being able to determine the second normal derivative is therefore that $\bm{q}^T\bm{A}\bm{q}\ne0$, i.e., that the surface $\phi=0$ is noncharacteristic.
