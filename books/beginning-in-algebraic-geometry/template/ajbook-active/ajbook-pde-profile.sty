@@ -1,0 +1,164 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{ajbook-pde-profile}[2026/11/22 Book-local PDE typography]
+\RequirePackage{cases,empheq,etoolbox}
+\RequirePackage[math-style=TeX,mathrm=sym,mathit=sym,mathbf=sym,mathsf=sym,mathtt=sym]{unicode-math}
+% Use TeX Live's bundled New Computer Modern Math.
+\setmathfont{NewCMMath-Regular.otf}
+\setoperatorfont{\symup}
+
+% Unicode math symbols in headings need Hyperref's PDF-string mappings.
+\PassOptionsToPackage{psdextra}{hyperref}
+\AddToHook{package/hyperref/after}{%
+  \pdfstringdefDisableCommands{%
+    \let\bm\@firstofone
+    \let\boldsymbol\@firstofone
+    \let\mathbb\@firstofone
+    \let\mathcal\@firstofone
+    \let\mathbf\@firstofone
+    \let\mathit\@firstofone
+    \let\mathrm\@firstofone
+    \let\mathsf\@firstofone
+    \let\mathtt\@firstofone
+    \let\mathscr\@firstofone
+  }%
+}
+
+% Keep legacy unbraced scripts such as ^\mathrm{T} and _\mathbb R.
+% Yield an explicit group before the Unicode alphabet switch is expanded.
+\ExplSyntaxOn
+\cs_new_protected:Npn \ajbook_math_legacy_scripts:
+  {
+    \cs_set_eq:NN \ajbook_mathrm:n \mathrm
+    \cs_set_eq:NN \ajbook_mathsf:n \mathsf
+    \cs_set_eq:NN \ajbook_mathbb:n \mathbb
+    \cs_set_eq:NN \ajbook_mathcal:n \mathcal
+    \cs_set_protected:Npn \mathrm ##1 { { \ajbook_mathrm:n {##1} } }
+    \cs_set_protected:Npn \mathsf ##1 { { \ajbook_mathsf:n {##1} } }
+    \cs_set_protected:Npn \mathbb ##1 { { \ajbook_mathbb:n {##1} } }
+    \cs_set_protected:Npn \mathcal ##1 { { \ajbook_mathcal:n {##1} } }
+  }
+\AddToHook{begindocument/end}{\ajbook_math_legacy_scripts:}
+\ExplSyntaxOff
+
+% Keep the manuscript commands, but draw their glyphs from this font alone.
+\ExplSyntaxOn
+\DeclareRobustCommand{\bm}[1]{%
+  \regex_match:nnTF { \A [A-Za-z]+ \Z } {#1}
+    { \symbfit{#1} }
+    { \symbf{#1} }
+}
+\ExplSyntaxOff
+\DeclareRobustCommand{\boldsymbol}[1]{\bm{#1}}
+\providecommand{\square}{\mdlgwhtsquare}
+\providecommand{\blacksquare}{\mdlgblksquare}
+\providecommand{\llbracket}{\lBrack}
+\providecommand{\rrbracket}{\rBrack}
+
+% Keep the reference edition's inline style.
+\AtBeginDocument{\everymath{\displaystyle}}
+
+% Use 8 pt at a text/display boundary. Between two directly consecutive
+% displays, use the smaller inter-row spacing without merging their numbers.
+\newlength{\AJDisplayMathSkip}
+\setlength{\AJDisplayMathSkip}{8pt}
+\newlength{\AJAdjacentDisplayMathSkip}
+\setlength{\AJAdjacentDisplayMathSkip}{3pt}
+\newif\ifajbook@adjacentdisplay
+\newcommand{\ajbook@checkdisplayboundary}{%
+  \ajbook@adjacentdisplayfalse
+  \ifvmode
+    % An empty paragraph after a display leaves its marked lower skip at
+    % the tail of the vertical list. No text has been added.
+    \ifdim\gluestretch\lastskip=1sp\relax
+      \ifdim\glueshrink\lastskip=2sp\relax
+        \ajbook@adjacentdisplaytrue
+        \noindent
+      \fi
+    \fi
+  \else
+    % After a display in the same paragraph, TeX resumes with an empty
+    % horizontal list and a nonzero count of preceding lines.
+    \ifhmode
+      \ifnum\lastnodetype<0\relax
+        \ifnum\prevgraf>0\relax
+          \ajbook@adjacentdisplaytrue
+        \fi
+      \fi
+    \fi
+  \fi
+}
+\ExplSyntaxOn
+\clist_map_inline:nn
+  { equation,equation*,gather,gather*,align,align*,alignat,alignat*,
+    flalign,flalign*,multline,multline* }
+  { \AddToHook{env/#1/begin}{\ajbook@checkdisplayboundary} }
+\ExplSyntaxOff
+% AJbook's ntheorem integration uses a direct display for \[...\],
+% rather than entering the amsmath equation* environment.
+\AddToHook{cmd/[/before}{\ajbook@checkdisplayboundary}
+\AddToHook{cmd/]/after}{\ajbook@adjacentdisplayfalse}
+
+% Run after setspace and size selection. The sub-point stretch and shrink
+% identify the lower glue at a paragraph boundary; its natural size is 8 pt.
+\newcommand{\AJApplyDisplayMathSpacing}{%
+  \abovedisplayskip=\AJDisplayMathSkip\relax
+  \ifajbook@adjacentdisplay
+    % The preceding display already contributed its lower skip.
+    \abovedisplayskip=\dimexpr\AJAdjacentDisplayMathSkip-\AJDisplayMathSkip\relax
+  \fi
+  \abovedisplayshortskip=\abovedisplayskip\relax
+  \belowdisplayskip=\dimexpr\AJDisplayMathSkip\relax plus 1sp minus 2sp\relax
+  \belowdisplayshortskip=\belowdisplayskip\relax
+}
+\newcommand{\ajbook@stepadjacentequation}{%
+  \ifdefined\Hy@raisedlink
+    \let\ajbook@savedanchor\Hy@raisedlink
+    % Classify the zero-width anchor as an opening atom, so it cannot add
+    % inter-atom space at the start of the original formula.
+    \def\Hy@raisedlink##1{\mathopen{\ajbook@savedanchor{##1}}}%
+    \incr@eqnum
+    \let\Hy@raisedlink\ajbook@savedanchor
+  \else
+    \incr@eqnum
+  \fi
+}
+\AddToHook{begindocument/end}{%
+  % For consecutive displays, ntheorem's pre-display hyperlink anchor
+  % alone would create a text line. Move it inside only in that case.
+  \patchcmd{\equation}
+    {\incr@eqnum\mathdisplay@push\st@rredfalse\global\@eqnswtrue\mathdisplay{equation}}
+    {\ifajbook@adjacentdisplay\else\incr@eqnum\fi
+     \mathdisplay@push\st@rredfalse\global\@eqnswtrue\mathdisplay{equation}%
+     \ifajbook@adjacentdisplay\ajbook@stepadjacentequation\fi}
+    {}{\PackageWarningNoLine{ajbook-pde-profile}{Could not move the equation anchor into the display}}%
+  \everydisplay\expandafter{\the\everydisplay\AJApplyDisplayMathSpacing}%
+}
+
+\newcommand{\AJStatementHeadingFont}{\sffamily\bfseries\thmheiti}
+\newcommand{\AJStatementFormalFont}{\fangsong}
+\newcommand{\AJStatementInformalFont}{\songti}
+\newcommand{\AJUsePDEPlainTheorems}{%
+  \theoremstyle{plain}\theoremsymbol{}%
+  \theoremheaderfont{\AJStatementHeadingFont}\theoremseparator{\ }%
+  \theorembodyfont{\AJStatementFormalFont}%
+}
+% The plain ntheorem list and heading from the reference, for manuscripts
+% whose own counter and label handling have to stay outside the renderer.
+\newcommand{\AJStatementBegin}[3]{%
+  \trivlist
+  \@topsep\theorempreskipamount
+  \@topsepadd\theorempostskipamount
+  \ifvmode\advance\@topsepadd\partopsep\fi
+  \parshape\@ne\@totalleftmargin\linewidth
+  \item[\hskip\labelsep \AJStatementHeadingFont #1#2%
+    \IfValueT{#3}{\ifstrempty{#3}{}{\space(#3)}}\ ]\ignorespaces
+}
+\newcommand{\AJStatementEnd}{\endtrivlist}
+\newcommand{\AJProofBegin}{%
+  \par\addvspace{\topsep}\noindent
+  {\sffamily\bfseries\CJKfamily{pffont}Proof}\enspace\ignorespaces
+}
+\newcommand{\AJProofEnd}{%
+  \ifhmode\unskip\nobreak\else\noindent\fi\hfill\openbox\par\addvspace{\topsep}%
+}
+\endinput

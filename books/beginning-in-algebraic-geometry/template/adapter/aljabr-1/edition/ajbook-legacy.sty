@@ -1,0 +1,195 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{ajbook-legacy}[2026/11/18 Compatibility for accepted translations]
+\RequirePackage{bm,cases,esint,mathrsfs,physics2,stmaryrd,empheq}
+\RequirePackage[scr=boondoxo]{mathalpha}
+\RequirePackage{flowchart,array,multirow,float,subfigure,tabularx,caption,pgfplots,enumitem}
+\RequirePackage{algorithm,algpseudocode,listings,needspace,multicol}
+\RequirePackage{ajbook-cover}
+\pgfplotsset{compat=newest}
+\graphicspath{{figures/}}
+
+\newif\ifAJlegacyArticle
+\newif\ifAJlegacyChapterSections
+\newif\ifAJlegacyNumberlessChapters
+\newif\ifAJlegacyScanBook
+\newcommand{\AJLegacyCounter}{statement}
+\DeclareOption{article}{\AJlegacyArticletrue}
+\DeclareOption{chaptersections}{\AJlegacyArticletrue\AJlegacyChapterSectionstrue}
+\DeclareOption{numberlesschapters}{\AJlegacyArticletrue\AJlegacyNumberlessChapterstrue}
+\DeclareOption{thmcount}{\renewcommand{\AJLegacyCounter}{thmcount}}
+\DeclareOption{scanbook}{\AJlegacyScanBooktrue}
+\ProcessOptions\relax
+
+% Older manuscripts explicitly set or reference these counter names.
+\newcounter{statement}[section]
+\newcounter{thmcount}[section]
+\newcounter{defcount}[section]
+\renewcommand{\thestatement}{\thesection.\arabic{statement}}
+\renewcommand{\thethmcount}{\thesection.\arabic{thmcount}}
+\renewcommand{\thedefcount}{\thesection.\arabic{defcount}}
+\providecommand{\theHstatement}{\theHsection.\arabic{statement}}
+\providecommand{\theHthmcount}{\theHsection.\arabic{thmcount}}
+\providecommand{\theHdefcount}{\theHsection.\arabic{defcount}}
+\numberwithin{equation}{section}
+
+\ifAJlegacyArticle
+  \renewcommand{\thesection}{\arabic{section}}
+  \counterwithout{figure}{chapter}
+  \counterwithout{table}{chapter}
+  \setcounter{secnumdepth}{3}
+  \setcounter{tocdepth}{3}
+  \renewcommand{\contentsname}{目录}
+  \renewcommand{\appendix}{%
+    \par\setcounter{section}{0}\setcounter{subsection}{0}%
+    \gdef\thesection{\Alph{section}}%
+    \gdef\theHsection{appendix.\Alph{section}}%
+  }
+\fi
+
+\ifAJlegacyChapterSections
+  % Source \section is a chapter, but its counter must remain named section.
+  \titleclass{\section}{top}
+  \titleformat{name=\section}
+    {\filright\sffamily\CJKfamily{hei2}\bfseries\Huge}
+    {}{0mm}{\MakeChapBox{\thesection}{#1}}
+  \titlespacing*{name=\section}{1pc}{*4}{1em}
+  \titleformat{name=\subsection}
+    {\filright\normalfont\sffamily\bfseries\CJKfamily{sectionfont}}
+    {}{0mm}{%
+      \settowidth{\BoxTtlwidth}{\Huge\thesubsection\hspace{0.3em}\Large #1}%
+      \ifdim\BoxTtlwidth<\textwidth
+        \MakeSectBox{\Huge\thesubsection\hspace{0.3em}\Large #1}\vskip-18pt%
+      \else
+        \Huge\underline{\thesubsection}\hspace{0.3em}\Large #1%
+      \fi}
+  \titleformat{name=\subsection,numberless}[hang]
+    {\filright\normalfont\sffamily\bfseries\CJKfamily{sectionfont}}
+    {}{0mm}{\Large #1}
+  \titlespacing*{name=\subsection}{0pt}{*1.3}{*1}
+  \titleformat{name=\subsubsection}[hang]
+    {\filright\normalfont\sffamily\bfseries\CJKfamily{sectionfont}}
+    {\Large\thesubsubsection}{3mm}{#1}
+  \titleformat{name=\subsubsection,numberless}[hang]
+    {\filright\normalfont\sffamily\bfseries\CJKfamily{sectionfont}}
+    {}{0mm}{#1}
+  \titlespacing*{name=\subsubsection}{0pt}{*1}{0.4em}
+  \titlecontents{section}[0pt]{\addvspace{1pc}\heiti}
+    {\contentsmargin{0pt}\large\AJchapterttl{\thecontentslabel}\quad}
+    {\contentsmargin{0pt}\large}{\titlerule*[.7pc]{.}\contentspage}
+  \titlecontents{subsection}[1.5em]{}{\thecontentslabel\quad}{}
+    {\titlerule*[.7pc]{.}\contentspage}
+  \titlecontents{subsubsection}[3.9em]{\small}{\thecontentslabel\quad}{}
+    {\titlerule*[.7pc]{.}\contentspage}
+  \AtEndPreamble{%
+    \renewcommand{\sectionmark}[1]{\markboth{\thesection\quad #1}{}}%
+    \renewcommand{\subsectionmark}[1]{\markright{\S\thesubsection\quad #1}}%
+  }
+\fi
+\ifboolexpr{bool {AJlegacyChapterSections} or bool {AJlegacyNumberlessChapters}}{%
+  \titleformat{name=\section,numberless}
+    {\filright\sffamily\CJKfamily{hei2}\bfseries\Huge}
+    {}{0mm}{\MakeChapBoxSingle{#1}}[\markboth{#1}{#1}]%
+}{}
+
+% Match the accepted amsmath semantics for \tag and \begin{split} inside
+% bracket displays despite AJbook's ntheorem display hooks.
+\AtBeginDocument{%
+  \DeclareRobustCommand{\[}{\begin{equation*}}%
+  \DeclareRobustCommand{\]}{\end{equation*}}%
+}
+
+\ifAJlegacyScanBook
+  % The three old ctexset calls set an Arabic chapter counter and Chinese
+  % heading affixes. Both are already supplied by AJbook and by the source's
+  % explicit \thechapter declarations.
+  \providecommand{\ctexset}[1]{}
+  % The existing source sets the preface between \frontmatter and its TOC.
+  \newcommand{\AJFrontMatterWithoutContents}{%
+    \let\AJSavedContents\tableofcontents
+    \let\tableofcontents\relax
+    \frontmatter
+    \let\tableofcontents\AJSavedContents
+  }
+  \newcommand{\AJUseChineseChapterReference}[1]{%
+    \let\AJLegacyLabel\label
+    \renewcommand{\label}[1]{%
+      \ifstrequal{##1}{#1}{%
+        \begingroup\protected@edef\@currentlabel{\zhnum{chapter}}%
+        \AJLegacyLabel{##1}\endgroup
+      }{\AJLegacyLabel{##1}}%
+    }%
+  }
+\fi
+
+% Non-visual helpers previously provided by the read-only Mystyle package.
+\providecommand{\MathBookSourcePage}[1]{}
+\providecommand{\MathBookFormulaID}[1]{}
+\providecommand{\MathBookReviewStatus}[1]{}
+\providecommand{\MBUnresolvedReference}[2]{#2}
+\providecommand{\ttt}{\mathcal T}
+\providecommand{\A}{\boldsymbol A}
+\providecommand{\R}{\mathbb R}
+\providecommand{\tR}{\tilde{\mathcal R}}
+\providecommand{\m}{m^*}
+\providecommand{\X}{(X,\mathcal M,\mu)}
+\providecommand{\ii}{\mathrm i}
+\providecommand{\dd}{\mathrm d}
+\providecommand{\supp}{\operatorname{supp}}
+\providecommand{\pa}{\partial}
+\providecommand{\paa}{\partial^\alpha}
+\providecommand{\Lp}{L^p(\Omega)}
+\providecommand{\sbev}{W^{k,p}(\Omega)}
+\providecommand{\sch}{\mathcal S(\R^n)}
+\providecommand{\sgn}{\operatorname{sgn}}
+\providecommand{\vecb}[1]{\bm{#1}}
+\providecommand{\tr}{\operatorname{tr}}
+\providecommand{\re}{\operatorname{Re}}
+\providecommand{\im}{\operatorname{Im}}
+\providecommand{\diam}{\operatorname{diam}}
+\providecommand{\curl}{\operatorname{curl}}
+\providecommand{\norm}[1]{\| #1 \|}
+\providecommand{\tnorm}[1]{|\!|\!| #1 |\!|\!|}
+\DeclarePairedDelimiterX{\induct}[2]{\langle}{\rangle}{#1, #2}
+\NewDocumentCommand{\Wkp}{ O{\Omega} m m }{W^{#2,#3}(#1)}
+\def\AJXint#1{\mathchoice
+  {\AJXXint\displaystyle\textstyle{#1}}%
+  {\AJXXint\textstyle\scriptstyle{#1}}%
+  {\AJXXint\scriptstyle\scriptscriptstyle{#1}}%
+  {\AJXXint\scriptscriptstyle\scriptscriptstyle{#1}}%
+  \!\int}
+\def\AJXXint#1#2#3{{\setbox0=\hbox{$#1{#2#3}{\int}$}
+  \vcenter{\hbox{\copy0}}\kern-.5\wd0}}
+\def\ddashint{\AJXint=}
+\def\fint{\AJXint-}
+
+\providecolor{PageColor}{named}{black}
+\providecolor{SectionColor}{named}{black}
+\providecolor{ZhengWen}{named}{black}
+\providecolor{KuangNei}{gray}{0.95}
+\providecolor{BianKuang}{gray}{0.45}
+\ExecuteBibliographyOptions{sorting=nty,backref=false}
+
+% Keep the old optional [name] grammar, and the original refstepcounter.
+% Do not consume a following group: in these accepted files it is body text.
+\newcommand{\AJLegacyStatement}[3]{%
+  \setlength{\emergencystretch}{2em}%
+  \par\addvspace{\topsep}\refstepcounter{\AJLegacyCounter}\noindent
+  {\sffamily\bfseries\thmheiti #1~\csname the\AJLegacyCounter\endcsname
+    \IfValueT{#2}{\space(#2)}}\enspace#3\ignorespaces
+}
+\newcommand{\AJLegacyNewStatement}[3]{%
+  \NewDocumentEnvironment{#1}{o}{\AJLegacyStatement{#2}{##1}{#3}}%
+    {\par\addvspace{\topsep}}%
+}
+\AJLegacyNewStatement{Theorem}{Theorem}{\fangsong}
+\AJLegacyNewStatement{Definition}{Definition}{\fangsong}
+\AJLegacyNewStatement{Lemma}{Lemma}{\fangsong}
+\AJLegacyNewStatement{Proposition}{Proposition}{\fangsong}
+\AJLegacyNewStatement{Corollary}{Corollary}{\fangsong}
+\AJLegacyNewStatement{Example}{Example}{\songti}
+\AJLegacyNewStatement{Remark}{Remark}{\songti}
+\AJLegacyNewStatement{Exercise}{Exercise}{\songti}
+\newenvironment{Proof}
+  {\par\addvspace{\topsep}\noindent{\sffamily\bfseries\CJKfamily{pffont}Proof}\enspace\ignorespaces}
+  {\ifhmode\unskip\nobreak\else\noindent\fi\hfill\openbox\par\addvspace{\topsep}}
+\endinput
