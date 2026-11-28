@@ -1,0 +1,336 @@
+\section{曲率}\label{sec:curvature}
+
+如第~\ref{chap:riemannian-manifolds}~章的 Exercise~\ref{ex:levi-civita-connection}(\ref{ex:spherical-geodesics-and-transport}) 所见, 带标准度量的 2 维球面 $S^2$ 上没有任何开集与 Euclidean 平面上的一个开集等距. 从局部区分这两个 Riemann 流形的几何对象就是所谓的\textbf{曲率算子}, 它也出现在许多其他情形中 [参见第~\ref{chap:riemannian-manifolds}~章的 Exercise~\ref{ex:minimizing-properties-of-geodesics}(\ref{ex:jacobi-fields-and-cut-locus})].
+
+\begin{RiemannDefinition}\label{def:curvature-of-connection}
+联络 $\nabla$ 的\textbf{曲率} $R$ 为每对向量场 $X,Y\in\mathfrak{X}(M)$ 指派映射 $R(X,Y):\mathfrak{X}(M)\to\mathfrak{X}(M)$, 该映射由下式定义:
+\[
+  R(X,Y)Z=\nabla_X\nabla_YZ-\nabla_Y\nabla_XZ-\nabla_{[X,Y]}Z.
+\]
+\end{RiemannDefinition}
+
+因此, $R$ 衡量联络的不交换性. 由于
+\begin{enumerate}[label=(\roman*),leftmargin=*]
+\item $R(fX_1+gX_2,Y)Z=fR(X_1,Y)Z+gR(X_2,Y)Z$,
+\item $R(X,fY_1+gY_2)Z=fR(X,Y_1)Z+gR(X,Y_2)Z$,
+\item $R(X,Y)(fZ_1+gZ_2)=fR(X,Y)Z_1+gR(X,Y)Z_2$,
+\end{enumerate}
+对所有向量场 $X,X_1,X_2,Y,Y_1,Y_2,Z,Z_1,Z_2\in\mathfrak{X}(M)$ 和所有光滑函数 $f,g\in C^\infty(M)$ 成立, $R$ 定义了一个称为 \textbf{Riemann 张量}的 $(3,1)$-张量. 证明留作练习 [参见 Exercise~\ref{ex:curvature}(\ref{ex:tensoriality-of-curvature})]. 在 $M$ 上选取坐标系 $x:V\to\mathbb{R}^n$, 则此张量在局部可写成
+\[
+  R=\sum_{i,j,k,l=1}^n R_{ijk}{}^l\,\mathrm{d}x^i\otimes\mathrm{d}x^j
+  \otimes\mathrm{d}x^k\otimes\frac{\partial}{\partial x^l},
+\]
+其中每个系数 $R_{ijk}{}^l$ 是向量场 $R\bigl(\frac{\partial}{\partial x^i},\frac{\partial}{\partial x^j}\bigr)\frac{\partial}{\partial x^k}$ 的第 $l$ 个坐标, 即
+\[
+  R\left(\frac{\partial}{\partial x^i},\frac{\partial}{\partial x^j}\right)
+  \frac{\partial}{\partial x^k}=\sum_{l=1}^n R_{ijk}{}^l\frac{\partial}{\partial x^l}.
+\]
+利用 $\bigl[\frac{\partial}{\partial x^i},\frac{\partial}{\partial x^j}\bigr]=0$, 有
+\begin{align*}
+  R\left(\frac{\partial}{\partial x^i},\frac{\partial}{\partial x^j}\right)
+  \frac{\partial}{\partial x^k}
+  &=\nabla_{\frac{\partial}{\partial x^i}}\nabla_{\frac{\partial}{\partial x^j}}
+    \frac{\partial}{\partial x^k}
+  -\nabla_{\frac{\partial}{\partial x^j}}\nabla_{\frac{\partial}{\partial x^i}}
+    \frac{\partial}{\partial x^k}\\
+  &=\nabla_{\frac{\partial}{\partial x^i}}
+    \left(\sum_{m=1}^n\Gamma_{jk}^m\frac{\partial}{\partial x^m}\right)
+   -\nabla_{\frac{\partial}{\partial x^j}}
+    \left(\sum_{m=1}^n\Gamma_{ik}^m\frac{\partial}{\partial x^m}\right)\\
+  &=\sum_{m=1}^n\left(\frac{\partial}{\partial x^i}\cdot\Gamma_{jk}^m
+    -\frac{\partial}{\partial x^j}\cdot\Gamma_{ik}^m\right)\frac{\partial}{\partial x^m}\\
+  &\quad+\sum_{l,m=1}^n(\Gamma_{jk}^m\Gamma_{im}^l-\Gamma_{ik}^m\Gamma_{jm}^l)
+    \frac{\partial}{\partial x^l}\\
+  &=\sum_{l=1}^n\left(\frac{\partial\Gamma_{jk}^l}{\partial x^i}
+    -\frac{\partial\Gamma_{ik}^l}{\partial x^j}
+    +\sum_{m=1}^n\Gamma_{jk}^m\Gamma_{im}^l
+    -\sum_{m=1}^n\Gamma_{ik}^m\Gamma_{jm}^l\right)\frac{\partial}{\partial x^l},
+\end{align*}
+所以
+\[
+  R_{ijk}{}^l=\frac{\partial\Gamma_{jk}^l}{\partial x^i}
+  -\frac{\partial\Gamma_{ik}^l}{\partial x^j}
+  +\sum_{m=1}^n\Gamma_{jk}^m\Gamma_{im}^l-\sum_{m=1}^n\Gamma_{ik}^m\Gamma_{jm}^l.
+\]
+
+\begin{RiemannExample}\label{ex:curvature-of-euclidean-space}
+考虑带有 Euclidean 度量及相应 Levi–Civita 联络的 $M=\mathbb{R}^n$ (即 Christoffel 符号 $\Gamma_{ij}^k\equiv0$). 此时 $R_{ijk}{}^l=0$, 曲率 $R$ 为零. 因此, 也可以把曲率解释为衡量给定流形上的联络与 Euclidean 空间的 Levi–Civita 联络有多大差异的量.
+\end{RiemannExample}
+
+若联络对称 (如 Levi–Civita 联络), 则张量 $R$ 满足所谓的 \textbf{Bianchi 恒等式}.
+
+\begin{RiemannProposition}[Bianchi 恒等式]\label{prop:first-bianchi-identity}
+若 $M$ 是带有对称联络的流形, 则相应的曲率满足
+\[
+  R(X,Y)Z+R(Y,Z)X+R(Z,X)Y=0.
+\]
+\end{RiemannProposition}
+
+\begin{RiemannProof}
+这个性质是向量场的 Jacobi 恒等式的直接推论. 事实上,
+\begin{align*}
+  &R(X,Y)Z+R(Y,Z)X+R(Z,X)Y\\
+  &\quad=\nabla_X\nabla_YZ-\nabla_Y\nabla_XZ-\nabla_{[X,Y]}Z
+   +\nabla_Y\nabla_ZX-\nabla_Z\nabla_YX-\nabla_{[Y,Z]}X\\
+  &\qquad{}+\nabla_Z\nabla_XY-\nabla_X\nabla_ZY-\nabla_{[Z,X]}Y\\
+  &\quad=\nabla_X(\nabla_YZ-\nabla_ZY)+\nabla_Y(\nabla_ZX-\nabla_XZ)
+    +\nabla_Z(\nabla_XY-\nabla_YX)\\
+  &\qquad{}-\nabla_{[X,Y]}Z-\nabla_{[Y,Z]}X-\nabla_{[Z,X]}Y,
+\end{align*}
+所以, 由于联络对称, 有
+\begin{align*}
+  &R(X,Y)Z+R(Y,Z)X+R(Z,X)Y\\
+  &\quad=\nabla_X[Y,Z]+\nabla_Y[Z,X]+\nabla_Z[X,Y]
+    -\nabla_{[Y,Z]}X-\nabla_{[Z,X]}Y-\nabla_{[X,Y]}Z\\
+  &\quad=[X,[Y,Z]]+[Y,[Z,X]]+[Z,[X,Y]]=0.
+\end{align*}
+\end{RiemannProof}
+
+以下假定 $(M,g)$ 是 Riemann 流形, $\nabla$ 是其 Levi–Civita 联络. 可以定义一个新的协变 4-张量, 称为\textbf{曲率张量}:
+\[
+  R(X,Y,Z,W):=g(R(X,Y)Z,W).
+\]
+注意, 由于度量非退化, 曲率张量与 Riemann 张量包含相同的信息. 再在 $M$ 上选取坐标系 $x:V\to\mathbb{R}^n$, 可将此张量写成
+\[
+  R(X,Y,Z,W)=\left(\sum_{i,j,k,l=1}^n R_{ijkl}\,\mathrm{d}x^i\otimes\mathrm{d}x^j
+  \otimes\mathrm{d}x^k\otimes\mathrm{d}x^l\right)(X,Y,Z,W)
+\]
+其中
+\begin{align*}
+  R_{ijkl}
+  &=g\left(R\left(\frac{\partial}{\partial x^i},\frac{\partial}{\partial x^j}\right)
+       \frac{\partial}{\partial x^k},\frac{\partial}{\partial x^l}\right)\\
+  &=g\left(\sum_{m=1}^n R_{ijk}{}^m\frac{\partial}{\partial x^m},
+       \frac{\partial}{\partial x^l}\right)=\sum_{m=1}^n R_{ijk}{}^m g_{ml}.
+\end{align*}
+此张量满足以下对称性质.
+
+\begin{RiemannProposition}\label{prop:symmetries-of-riemannian-curvature-tensor}
+若 $X,Y,Z,W$ 是 $M$ 上的向量场, $\nabla$ 是 Levi–Civita 联络, 则
+\begin{enumerate}[label=(\roman*),leftmargin=*]
+\item $R(X,Y,Z,W)+R(Y,Z,X,W)+R(Z,X,Y,W)=0$;
+\item $R(X,Y,Z,W)=-R(Y,X,Z,W)$;
+\item $R(X,Y,Z,W)=-R(X,Y,W,Z)$;
+\item $R(X,Y,Z,W)=R(Z,W,X,Y)$.
+\end{enumerate}
+\end{RiemannProposition}
+
+\begin{RiemannProof}
+性质 (i) 是 Bianchi 恒等式的直接推论, 性质 (ii) 显然成立.
+
+性质 (iii) 等价于 $R(X,Y,Z,Z)=0$. 事实上, 若 (iii) 成立, 则显然 $R(X,Y,Z,Z)=0$. 反之, 若后一式成立, 则有
+\[
+  R(X,Y,Z+W,Z+W)=0\Leftrightarrow R(X,Y,Z,W)+R(X,Y,W,Z)=0.
+\]
+利用 Levi–Civita 联络与度量相容, 有
+\[
+  X\cdot\langle\nabla_YZ,Z\rangle
+  =\langle\nabla_X\nabla_YZ,Z\rangle+\langle\nabla_YZ,\nabla_XZ\rangle
+\]
+以及
+\[
+  [X,Y]\cdot\langle Z,Z\rangle=2\bigl\langle\nabla_{[X,Y]}Z,Z\bigr\rangle.
+\]
+于是,
+\begin{align*}
+  R(X,Y,Z,Z)
+  &=\langle\nabla_X\nabla_YZ,Z\rangle-\langle\nabla_Y\nabla_XZ,Z\rangle
+    -\langle\nabla_{[X,Y]}Z,Z\rangle\\
+  &=X\cdot\langle\nabla_YZ,Z\rangle-\langle\nabla_YZ,\nabla_XZ\rangle
+    -Y\cdot\langle\nabla_XZ,Z\rangle\\
+  &\qquad{}+\langle\nabla_XZ,\nabla_YZ\rangle-\tfrac12[X,Y]\cdot\langle Z,Z\rangle\\
+  &=\tfrac12X\cdot(Y\cdot\langle Z,Z\rangle)-\tfrac12Y\cdot(X\cdot\langle Z,Z\rangle)
+    -\tfrac12[X,Y]\cdot\langle Z,Z\rangle\\
+  &=\tfrac12[X,Y]\cdot\langle Z,Z\rangle-\tfrac12[X,Y]\cdot\langle Z,Z\rangle=0.
+\end{align*}
+
+为证明 (iv), 由 (i) 得
+\begin{align*}
+  R(X,Y,Z,W)+R(Y,Z,X,W)+R(Z,X,Y,W)&=0\\
+  R(Y,Z,W,X)+R(Z,W,Y,X)+R(W,Y,Z,X)&=0\\
+  R(Z,W,X,Y)+R(W,X,Z,Y)+R(X,Z,W,Y)&=0\\
+  R(W,X,Y,Z)+R(X,Y,W,Z)+R(Y,W,X,Z)&=0
+\end{align*}
+将这些等式相加并利用 (iii), 得
+\[
+  R(Z,X,Y,W)+R(W,Y,Z,X)+R(X,Z,W,Y)+R(Y,W,X,Z)=0.
+\]
+再用 (ii) 和 (iii), 得到
+\[
+  2R(Z,X,Y,W)-2R(Y,W,Z,X)=0.
+\]
+\end{RiemannProof}
+
+下面的定义给出一种等价的方式来表述 Riemann 流形的曲率信息.
+
+\begin{RiemannDefinition}\label{def:sectional-curvature}
+设 $\Pi$ 是 $T_pM$ 的一个 2 维子空间, $X_p,Y_p$ 是 $\Pi$ 中两个线性无关的元素. 定义 $\Pi$ 的\textbf{截面曲率}为
+\[
+  K(\Pi):=-\frac{R(X_p,Y_p,X_p,Y_p)}
+  {\lVert X_p\rVert^2\lVert Y_p\rVert^2-\langle X_p,Y_p\rangle^2}.
+\]
+\end{RiemannDefinition}
+
+注意, $\lVert X_p\rVert^2\lVert Y_p\rVert^2-\langle X_p,Y_p\rangle^2$ 是 $T_pM$ 中由 $X_p,Y_p$ 张成的平行四边形的面积的平方. 因而上述截面曲率的定义不依赖于线性无关向量 $X_p,Y_p$ 的选取. 事实上, 改变 $\Pi$ 上的基时, $R(X_p,Y_p,X_p,Y_p)$ 和 $\lVert X_p\rVert^2\lVert Y_p\rVert^2-\langle X_p,Y_p\rangle^2$ 均乘以换基矩阵的行列式的平方 [参见 Exercise~\ref{ex:curvature}(\ref{ex:sectional-curvature-independent-of-basis})]. 接下来说明, 知道 $T_pM$ 中每个截面的截面曲率, 就完全确定了该空间上的曲率张量.
+
+\begin{RiemannProposition}\label{prop:sectional-curvature-determines-curvature-tensor}
+$p$ 处的 Riemann 曲率张量由 $T_pM$ 的截面 (即 2 维子空间) 的截面曲率值唯一确定.
+\end{RiemannProposition}
+
+\begin{RiemannProof}
+考虑 $T_pM$ 上满足 Proposition~\ref{prop:symmetries-of-riemannian-curvature-tensor} 中对称性质的两个协变 4-张量 $R_1,R_2$. 则张量 $T:=R_1-R_2$ 也满足这些对称性质. 将证明, 若对每对 $X_p,Y_p\in T_pM$, 值 $R_1(X_p,Y_p,X_p,Y_p)$ 和 $R_2(X_p,Y_p,X_p,Y_p)$ 一致 (即对每对 $X_p,Y_p\in T_pM$, 有 $T(X_p,Y_p,X_p,Y_p)=0$), 则 $R_1=R_2$ (即 $T\equiv0$). 事实上, 对所有向量 $X_p,Y_p,Z_p\in T_pM$, 有
+\begin{align*}
+  0&=T(X_p+Z_p,Y_p,X_p+Z_p,Y_p)\\
+   &=T(X_p,Y_p,Z_p,Y_p)+T(Z_p,Y_p,X_p,Y_p)\\
+   &=2T(X_p,Y_p,Z_p,Y_p),
+\end{align*}
+所以
+\begin{align*}
+  0&=T(X_p,Y_p+W_p,Z_p,Y_p+W_p)\\
+   &=T(X_p,Y_p,Z_p,W_p)+T(X_p,W_p,Z_p,Y_p)\\
+   &=T(Z_p,W_p,X_p,Y_p)-T(W_p,X_p,Z_p,Y_p),
+\end{align*}
+即 $T(Z_p,W_p,X_p,Y_p)=T(W_p,X_p,Z_p,Y_p)$. 因此 $T$ 在前三项的循环置换下不变, 利用 Bianchi 恒等式有 $3T(X_p,Y_p,Z_p,W_p)=0$.
+\end{RiemannProof}
+
+若 Riemann 流形在每个截面 $\Pi\subset T_pM$ 上的截面曲率均为一个常数 $K_p$, 则称其\textbf{在点 $p\in M$ 处各向同性}. 若它在每一点都各向同性, 则称其\textbf{各向同性}. 注意, 每个 2 维流形显然各向同性. 其截面曲率 $K(p):=K_p$ 称为 \textbf{Gauss 曲率}.
+
+\begin{RiemannRemark}\label{rem:geometric-interpretations-of-gauss-curvature}
+稍后将看到, Gauss 曲率衡量曲面的局部几何与 Euclidean 平面的几何有多大差异. 例如, 它在曲面上的圆盘 $D$ 上的积分给出一个向量沿 $D$ 的边界平行移动一周时旋转的角度 [参见 Exercise~\RGref{ex:cartan-structure-equations}(\RGref{ex:gauss-curvature-by-holonomy})]. 或者, 它在测地三角形 $\Delta$ 的内部的积分等于 $\Delta$ 的内角和与 $\pi$ 的差 [参见 Exercise~\RGref{ex:gauss-bonnet}(\RGref{ex:gauss-curvature-by-geodesic-triangle})]. 还将看到, $n$ 维 Riemann 流形的截面曲率实际上是某些特殊 2 维子流形的 Gauss 曲率, 这些子流形由与截面相切的测地线构成 [参见 Exercise~\RGref{ex:isometric-immersions}(\RGref{ex:sectional-curvature-by-geodesic-surface})].
+\end{RiemannRemark}
+
+\begin{RiemannProposition}\label{prop:curvature-tensor-at-isotropic-point}
+若 $M$ 在 $p$ 处各向同性, $x:V\to\mathbb{R}^n$ 是 $p$ 附近的坐标系, 则 $p$ 处的 Riemann 曲率张量的系数由下式给出:
+\[
+  R_{ijkl}(p)=-K_p(g_{ik}g_{jl}-g_{il}g_{jk}).
+\]
+\end{RiemannProposition}
+
+\begin{RiemannProof}
+首先如下定义 $T_pM$ 上的协变 4-张量 $A$:
+\[
+  A:=\sum_{i,j,k,l=1}^n-K_p(g_{ik}g_{jl}-g_{il}g_{jk})\,
+    \mathrm{d}x^i\otimes\mathrm{d}x^j\otimes\mathrm{d}x^k\otimes\mathrm{d}x^l.
+\]
+验证 $A$ 满足 Proposition~\ref{prop:symmetries-of-riemannian-curvature-tensor} 的对称性质留作练习. 此外,
+\begin{align*}
+  A(X_p,Y_p,X_p,Y_p)
+  &=\sum_{i,j,k,l=1}^n-K_p(g_{ik}g_{jl}-g_{il}g_{jk})X_p^iY_p^jX_p^kY_p^l\\
+  &=-K_p\bigl(\langle X_p,X_p\rangle\langle Y_p,Y_p\rangle-\langle X_p,Y_p\rangle^2\bigr)\\
+  &=R(X_p,Y_p,X_p,Y_p),
+\end{align*}
+所以由 Proposition~\ref{prop:sectional-curvature-determines-curvature-tensor} 得 $A=R$.
+\end{RiemannProof}
+
+\begin{RiemannDefinition}\label{def:manifold-of-constant-curvature}
+若 Riemann 流形各向同性, 且 $K_p$ 在 $M$ 的所有点都相同, 则称其为\textbf{常曲率流形}.
+\end{RiemannDefinition}
+
+\begin{RiemannExample}\label{ex:euclidean-space-of-zero-constant-curvature}
+Euclidean 空间是 $K_p\equiv0$ 的常曲率流形. 第~\RGref{sec:manifolds-of-constant-curvature}~节将给出 (完备连通的) 常曲率流形的完整分类.
+\end{RiemannExample}
+
+广义相对论中另一个很重要的几何对象是所谓的 \textbf{Ricci 张量}.
+
+\begin{RiemannDefinition}\label{def:ricci-curvature-tensor}
+\textbf{Ricci 曲率张量}是局部由下式定义的协变 2-张量:
+\[
+  \mathit{Ric}(X,Y):=\sum_{k=1}^n\mathrm{d}x^k
+  \left(R\left(\frac{\partial}{\partial x^k},X\right)Y\right).
+\]
+\end{RiemannDefinition}
+
+上述定义与坐标的选取无关. 事实上, 可以把 $\mathit{Ric}_p(X_p,Y_p)$ 看作由 $Z_p\mapsto R(Z_p,X_p)Y_p$ 给出的从 $T_pM$ 到 $T_pM$ 的线性映射的迹, 因此它与基的选取无关. 此外, 此张量对称. 事实上, 选取 $T_pM$ 的一组标准正交基 $\{E_1,\ldots,E_n\}$, 有
+\begin{align*}
+  \mathit{Ric}_p(X_p,Y_p)
+  &=\sum_{k=1}^n\bigl\langle R(E_k,X_p)Y_p,E_k\bigr\rangle
+    =\sum_{k=1}^nR(E_k,X_p,Y_p,E_k)\\
+  &=\sum_{k=1}^n R(Y_p,E_k,E_k,X_p)=\sum_{k=1}^nR(E_k,Y_p,X_p,E_k)\\
+  &=\mathit{Ric}_p(Y_p,X_p).
+\end{align*}
+局部可写成
+\[
+  \mathit{Ric}=\sum_{i,j=1}^nR_{ij}\,\mathrm{d}x^i\otimes\mathrm{d}x^j
+\]
+其中系数 $R_{ij}$ 由下式给出:
+\begin{align*}
+  R_{ij}&:=\mathit{Ric}\left(\frac{\partial}{\partial x^i},\frac{\partial}{\partial x^j}\right)\\
+  &=\sum_{k=1}^n\mathrm{d}x^k\left(R\left(\frac{\partial}{\partial x^k},
+    \frac{\partial}{\partial x^i}\right)\frac{\partial}{\partial x^j}\right)
+    =\sum_{k=1}^n R_{kij}{}^k,
+\end{align*}
+即 $R_{ij}=\sum_{k=1}^nR_{kij}{}^k$.
+
+顺带注意到, 我们从一个 $(3,1)$-张量得到了一个 $(2,0)$-张量. 这是一种称为\textbf{缩并}的一般方法的例子, 该方法从一个 $(k,m)$-张量得到一个 $(k-1,m-1)$-张量. 为此, 从 $(k,m)$-张量的分量中选取两个指标, 一个协变, 一个逆变, 令它们相等后对其求和, 从而得到 $(k-1,m-1)$-张量的分量. 在 Ricci 张量的例子中, 取由曲率定义的 $(3,1)$-张量 $\widetilde R$,
+\[
+  \widetilde R(X,Y,Z,\omega)=\omega(R(X,Y)Z),
+\]
+选取第一个协变指标和第一个逆变指标, 令它们相等并对其求和:
+\[
+  \mathit{Ric}(X,Y)=\sum_{k=1}^n\widetilde R
+  \left(\frac{\partial}{\partial x^k},X,Y,\mathrm{d}x^k\right).
+\]
+
+类似地, 可以用缩并从 Ricci 张量 (一个协变 2-张量) 得到一个函数 (0-张量). 为此, 先用度量定义一个新的 $(1,1)$-张量场 $T$:
+\[
+  T(X,\omega):=\mathit{Ric}(X,Y),
+\]
+其中 $Y$ 满足对每个向量场 $Z$, 有 $\omega(Z)=\langle Y,Z\rangle$. 然后令协变指标和逆变指标相等并求和, 得到函数 $S:M\to\mathbb{R}$, 称为\textbf{标量曲率}. 局部选取坐标系 $x:V\to\mathbb{R}^n$, 有
+\[
+  S(p):=\sum_{k=1}^nT\left(\frac{\partial}{\partial x^k},\mathrm{d}x^k\right)
+  =\sum_{k=1}^n\mathit{Ric}\left(\frac{\partial}{\partial x^k},Y_k\right),
+\]
+其中对 $V$ 上的每个向量场 $Z$,
+\[
+  Z^k=\mathrm{d}x^k(Z)=\langle Z,Y_k\rangle=\sum_{i,j=1}^n g_{ij}Z^iY_k^j.
+\]
+因此必有 $Y_k^j=g^{jk}$ (其中 $(g^{ij})=(g_{ij})^{-1}$), 从而 $Y_k=\sum_{i=1}^ng^{ik}\frac{\partial}{\partial x^i}$. 由此得出, 标量曲率在局部由下式给出:
+\[
+  S(p)=\sum_{k=1}^n\mathit{Ric}\left(\frac{\partial}{\partial x^k},
+  \sum_{i=1}^ng^{ik}\frac{\partial}{\partial x^i}\right)
+  =\sum_{i,k=1}^nR_{ki}g^{ik}=\sum_{i,k=1}^n g^{ik}R_{ik}.
+\]
+(因为 $\mathit{Ric}$ 对称.)
+
+\begin{RiemannExercise}\label{ex:curvature}
+\begin{enumerate}[label=(\arabic*),ref=\arabic*,leftmargin=*]
+\item\label{ex:tensoriality-of-curvature}
+\begin{enumerate}[label=(\alph*),leftmargin=*]
+\item 证明曲率算子满足
+\begin{enumerate}[label=(\roman*),leftmargin=*]
+\item $R(fX_1+gX_2,Y)Z=fR(X_1,Y)Z+gR(X_2,Y)Z$;
+\item $R(X,fY_1+gY_2)Z=fR(X,Y_1)Z+gR(X,Y_2)Z$;
+\item $R(X,Y)(fZ_1+gZ_2)=fR(X,Y)Z_1+gR(X,Y)Z_2$,
+\end{enumerate}
+对所有向量场 $X,X_1,X_2,Y,Y_1,Y_2,Z,Z_1,Z_2\in\mathfrak{X}(M)$ 和光滑函数 $f,g\in C^\infty(M)$ 成立.
+\item 证明 $(R(X,Y)Z)_p\in T_pM$ 只依赖于 $X_p,Y_p,Z_p$. 由此推出 $R$ 定义了一个 $(3,1)$-张量.
+{\small (\textbf{提示:} 选取 $p\in M$ 附近的局部坐标).}
+\end{enumerate}
+\item\label{ex:curvature-tensor-in-normal-coordinates} 设 $(M,g)$ 是 $n$ 维 Riemann 流形, $p\in M$. 证明, 若 $(x^1,\ldots,x^n)$ 是以 $p$ 为中心的正规坐标 [参见第~\ref{chap:riemannian-manifolds}~章的 Exercise~\ref{ex:minimizing-properties-of-geodesics}(\ref{ex:metric-and-connection-in-normal-coordinates})], 则
+\[
+  R_{ijkl}(p)=\frac12\left(\frac{\partial^2 g_{jl}}{\partial x^i\partial x^k}
+  -\frac{\partial^2g_{il}}{\partial x^j\partial x^k}
+  -\frac{\partial^2g_{jk}}{\partial x^i\partial x^l}
+  +\frac{\partial^2g_{ik}}{\partial x^j\partial x^l}\right)(p).
+\]
+\item\label{ex:curvature-of-bi-invariant-metric} 回顾, 若 $G$ 是配备双不变 Riemann 度量的 Lie 群, $\nabla$ 是 Levi–Civita 联络, $X,Y$ 是两个左不变向量场, 则
+\[
+  \nabla_XY=\frac12[X,Y]
+\]
+[参见第~\ref{chap:riemannian-manifolds}~章的 Exercise~\ref{ex:minimizing-properties-of-geodesics}(\ref{ex:bi-invariant-metrics-on-lie-groups})]. 证明若 $Z$ 也左不变, 则
+\[
+  R(X,Y)Z=\frac14[Z,[X,Y]].
+\]
+\item\label{ex:sectional-curvature-independent-of-basis} 证明 $\lVert X_p\rVert^2\lVert Y_p\rVert^2-\langle X_p,Y_p\rangle^2$ 等于 $T_pM$ 中由 $X_p,Y_p$ 张成的平行四边形的面积的平方. 由此推出截面曲率不依赖于线性无关向量 $X_p,Y_p$ 的选取, 即改变 $\Pi$ 上的基时, $R(X_p,Y_p,X_p,Y_p)$ 和 $\lVert X_p\rVert^2\lVert Y_p\rVert^2-\langle X_p,Y_p\rangle^2$ 均乘以换基矩阵的行列式的平方.
+\item\label{ex:ricci-as-only-independent-contraction} 证明 $\mathit{Ric}$ 是曲率张量唯一独立的缩并: 另取任意两个指标作缩并, 只会得到 $\pm\mathit{Ric}$ 或 0.
+\item\label{ex:ricci-determines-curvature-in-three-dimensions} 设 $M$ 是 3 维 Riemann 流形. 证明曲率张量完全由 Ricci 张量确定.
+\item\label{ex:ricci-and-scalar-curvature-for-isotropic-manifold} 设 $(M,g)$ 是截面曲率为 $K$ 的 $n$ 维各向同性 Riemann 流形. 证明 $\mathit{Ric}=(n-1)Kg$ 且 $S=n(n-1)K$.
+\item\label{ex:rescaling-metric-and-curvature} 设 $g_1,g_2$ 是流形 $M$ 上的两个 Riemann 度量, 满足 $g_1=\rho g_2$, 其中 $\rho>0$ 为常数. 证明:
+\begin{enumerate}[label=(\alph*),leftmargin=*]
+\item 对 $M$ 的切空间的任意 2 维截面, 相应的截面曲率 $K_1,K_2$ 满足 $K_1(\Pi)=\rho^{-1}K_2(\Pi)$;
+\item 相应的 Ricci 曲率张量满足 $\mathit{Ric}_1=\mathit{Ric}_2$;
+\item 相应的标量曲率满足 $S_1=\rho^{-1}S_2$.
+\end{enumerate}
+\item\label{ex:ricci-for-general-affine-connection} 若 $\nabla$ 不是 Levi–Civita 联络, 还能定义 Ricci 曲率张量 $\mathit{Ric}$ 吗? 它一定对称吗?
+\end{enumerate}
+\end{RiemannExercise}

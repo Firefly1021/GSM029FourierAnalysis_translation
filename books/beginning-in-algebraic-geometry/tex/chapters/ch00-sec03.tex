@@ -1,0 +1,259 @@
+\section{理想与商}\label{sec:ideals-quotients}
+
+对理想取商是环论的核心构造之一. 本节回顾取商构造, 以及关于商的最基本的结果: 第一同构定理. 理想和商环是环论入门课程的标准论题, 因而本节把证明留作习题. 不过, 我们会给出若干有启发性的例子, 说明在多项式环中怎样处理理想和商.
+
+我们从理想的概念开始讨论商环.
+
+\begin{Definition}{理想}\label{def:ideal}
+  $R$ 的\textbf{理想}是满足以下两个性质的非空子集 $I\subseteq R$:
+  \begin{enumerate}[label=(\roman*)]
+    \item $a,b\in I\implies a-b\in I$, 且
+    \item $a\in I$ 且 $r\in R\implies ra\in I$.
+  \end{enumerate}
+\end{Definition}
+
+换言之, 环的一个非空子集是理想, 如果它 (i) 对减法封闭, 且 (ii) 对乘法有吸收性. 在许多情形下, 描述理想最简单的方法是指定一个生成集. 下面的定义明确了这种描述方法.
+
+\begin{Definition}{理想的生成集}\label{def:ideal-generating-set}
+  若 $A\subseteq R$ 是一个子集, 则 \textbf{由 $A$ 生成的理想}, 记作 $\langle A\rangle$, 是 $A$ 中元素的所有 $R$-线性组合所成的集合:
+  \[
+    \langle A\rangle=
+    \left\{\left.\sum_{i=1}^{n}r_{i}a_{i}\ \right|\;
+    n\in\mathbb{N},\ r_{1},\ldots,r_{n}\in R,\ a_{1},\ldots,a_{n}\in A\subseteq R\right\}.
+  \]
+  若 $A=\{a_{1},\ldots,a_{n}\}$ 是有限集, 则写成 $\langle A\rangle=\langle a_{1},\ldots,a_{n}\rangle$. 能由单个元素生成的理想称为\textbf{主理想}.
+\end{Definition}
+
+读者不妨验证, 集合 $\langle A\rangle$ 确实是一个理想. 此外, 它是 $R$ 中包含集合 $A$ 的最小理想 (Exercise~\ref{ex:ideal-generated-by-set}). 下面给出 $R[x_{1},\ldots,x_{n}]$ 中一个理想及其生成集的具体例子.
+
+\begin{Example}{{\textmd{$R[x_{1},\ldots,x_{n}]$} 中一个理想的生成元}}\label{ex:vanishing-constant-ideal}
+  设 $I\subseteq R[x_{1},\ldots,x_{n}]$ 是全体常数项为零的多项式所成的子集. 这些多项式所成的集合对减法封闭, 并且对乘法有吸收性, 因此 $I$ 是理想. 此外, 一个多项式属于 $I$, 当且仅当它的每一项都能提出至少一个变量作为因子. 由此可知 $I=\langle x_{1},\ldots,x_{n}\rangle$.
+\end{Example}
+
+根据定义, 主理想 $\langle a\rangle$ 由其生成元的所有倍数组成:
+\[
+  \langle a\rangle=\{ra\mid r\in R\}=\{b\in R\mid a\text{ 整除 }b\}.
+\]
+主理想特别便于处理, 但多项式环中的理想并不都是主理想; 例如, Example~\ref{ex:vanishing-constant-ideal} 中的理想就不是主理想 (Exercise~\ref{ex:variables-ideal-not-principal}).
+
+给定理想 $I\subseteq R$, 如下定义 $R$ 上的一个关系:
+\[
+  r\sim s\iff r-s\in I.
+\]
+利用 Definition~\ref{def:ideal} 的条件 (i) 可以证明, $\sim$ 是一个等价关系 (Exercise~\ref{ex:coset-relation-equivalence}). 元素 $r\in R$ 在这一等价关系下的等价类称为\textbf{陪集}, 记为
+\[
+  [r]=r+I=\{s\in R\mid s\sim r\}\subseteq R.
+\]
+若上下文中理想 $I$ 已经明确, 我们通常优先采用记号 $[r]$; 在需要强调 $I$ 的作用时, 则用记号 $r+I$. 注意,
+\[
+  [r]=[s]\iff r-s\in I.
+\]
+
+\begin{Example}{陪集}\label{ex:cosets-of-variable-ideal}
+  考虑主理想 $I=\langle x\rangle\subseteq R[x]$. 注意, $[x+2]=[x^{2}+2]$, 因为
+  \[
+    (x+2)-(x^{2}+2)=x-x^{2}\in\langle x\rangle.
+  \]
+  更一般地, $[f(x)]=[g(x)]$ 当且仅当 $f(0)=g(0)\in R$. 换言之, 全体陪集与环 $R$ 通过下面的对应构成自然双射:
+  \[
+    [f(x)]\longmapsto f(0)\in R.
+  \]
+\end{Example}
+
+在上一个例子中, 我们看到全体陪集与系数环 $R$ 双射, 因而可以赋予它环结构. 下一个定义说明, 对任意理想, 怎样在陪集的集合上赋予环结构.
+
+\begin{Definition}{商环}\label{def:quotient-ring}
+  设 $I\subseteq R$ 是理想. \textbf{商环} $R/I$ 是陪集的集合
+  \[
+    R/I=\{[r]\mid r\in R\}.
+  \]
+  陪集的加法和乘法定义为
+  \[
+    [r]+[s]=[r+s]\quad\text{且}\quad[r][s]=[rs].
+  \]
+\end{Definition}
+
+\BookPairedNote{$R/I$ 中的加法和乘法是否良定义, 并不是显然的. 特别是, 同一个陪集可以选择不同的元素来代表, 所以必须核实这两种运算都不依赖于陪集代表元的选取.}%
+  {在商环 $R/I$ 中, 加法单位元为 $0=[0]$, 乘法单位元为 $1=[1]$. 因为 $[a]=0$ 当且仅当 $a\in I$, 所以可以把取商理解为\textquotedbl{}令 $I$ 中的元素等于零\textquotedbl{}.}
+\noindent 这一点可由 Definition~\ref{def:ideal} 的条件 (i) 和 (ii) 得出; 我们把具体计算留给读者 (Exercise~\ref{ex:quotient-operations-well-defined}).
+
+注意, 对任意理想 $I\subseteq R$, 存在一个环同态
+\[
+  \begin{aligned}
+    \pi:R&\to R/I\\
+    a&\mapsto[a].
+  \end{aligned}
+\]
+这个同态称为\textbf{商同态}.
+
+\begin{Example}{商环中的计算}\label{ex:quotient-parabola-computations}
+  考虑主理想 $\langle y-x^{2}\rangle\subseteq R[x,y]$. 由商环中加法和乘法的定义可得
+  \[
+    [y]-[x]^{2}=[y-x^{2}]=0\in\frac{R[x,y]}{\langle y-x^{2}\rangle}.
+  \]
+  特别地, 这说明 $[y]=[x]^{2}$. 再往前一步, 例如可以得到
+  \[
+    [y]^{2}=[x]^{4}\quad\text{且}\quad[x]^{2}[y]^{3}=[x]^{8}.
+  \]
+  一般地, 对任意多项式 $f(x,y)\in R[x,y]$, 注意到
+  \[
+    [f(x,y)]=f([x],[y])=f([x],[x]^{2})=[f(x,x^{2})].
+  \]
+  换言之, 对理想 $\langle y-x^{2}\rangle$ 取商时, 可以把 $y-x^{2}$ 当作零元, 并把所有出现的 $y$ 都换成 $x^{2}$. 特别地, 商环的每个元素都可以仅用变量 $x$ 表示. 如下面的 Example~\ref{ex:quotient-parabola-isomorphism} 所示, 本例中的商环与 $R[x]$ 同构.
+\end{Example}
+
+取商构造最重要的应用, 是提供了一种把同态化为同构的工具. 下面这一基本结果的三点证明都留给读者 (Exercise~\ref{ex:prove-first-ring-isomorphism-theorem}).
+
+\begin{Theorem}{环的第一同构定理}\label{thm:first-isomorphism-theorem-for-rings}
+  若 $\phi:R\to S$ 是环同态, 则
+  \begin{enumerate}[label=(\roman*)]
+    \item $\operatorname{im}(\phi)=\{s\in S\mid s=\phi(r)\text{ 对某个 }r\in R\text{ 成立}\}$ 是 $S$ 的子环,
+    \item $\ker(\phi)=\{r\in R\mid\phi(r)=0\}$ 是 $R$ 的理想, 且
+    \item 函数
+      \[
+        \begin{aligned}
+          [\phi]:\frac{R}{\ker(\phi)}&\to\operatorname{im}(\phi)\\
+          [r]&\mapsto[\phi(r)]
+        \end{aligned}
+      \]
+      是一个良定义的环同构.
+  \end{enumerate}
+\end{Theorem}
+
+本节最后给出若干详细例子, 说明第一同构定理在多项式环中的应用. 更多例子见本节习题.
+
+\begin{Example}{{\textmd{$\langle x_{1},\ldots,x_{n}\rangle\subseteq R[x_{1},\ldots,x_{n}]$}}}
+  \leavevmode\label{ex:quotient-evaluation-origin}\strut\par\nopagebreak[4]\noindent
+  考虑环同态
+  \[
+    \begin{aligned}
+      \phi:R[x_{1},\ldots,x_{n}]&\to R\\
+      f(x_{1},\ldots,x_{n})&\mapsto f(0,\ldots,0).
+    \end{aligned}
+  \]
+  注意, $f(0,\ldots,0)$ 就是 $f$ 的常数项. 稍加思考便可看出, $\phi$ 是满射, 而 $\phi$ 的核由所有常数项为零的多项式组成. 因此, 由 Example~\ref{ex:vanishing-constant-ideal},
+  \[
+    \ker(\phi)=\langle x_{1},\ldots,x_{n}\rangle\subseteq R[x_{1},\ldots,x_{n}],
+  \]
+  再由第一同构定理, 可知 $[\phi]$ 给出一个同构:
+  \[
+    \frac{R[x_{1},\ldots,x_{n}]}{\langle x_{1},\ldots,x_{n}\rangle}\cong R.
+  \]
+  通过类似论证, 可以用多种方式推广本例. 例如, 见 Exercises~\ref{ex:quotient-set-last-variables-zero} 和 \ref{ex:quotient-evaluation-at-point}.
+\end{Example}
+
+\begin{Example}{{\textmd{$\langle y-x^{2}\rangle\subseteq R[x,y]$}}}\label{ex:quotient-parabola-isomorphism}
+  本例验证
+  \[
+    \frac{R[x,y]}{\langle y-x^{2}\rangle}\cong R[x].
+  \]
+  根据 Example~\ref{ex:quotient-parabola-computations} 的计算, 这个结论是合乎情理的: 我们可以把所有出现的 $y$ 换成 $x^{2}$, 从而仅用 $x$ 来写每个陪集. 要借助第一同构定理把这一论证说得确切, 只须构造一个满同态 $\phi:R[x,y]\to R[x]$, 使它的核为 $\langle y-x^{2}\rangle$.
+
+  定义
+  \[
+    \begin{aligned}
+      \phi:R[x,y]&\to R[x]\\
+      f(x,y)&\mapsto f(x,x^{2}),
+    \end{aligned}
+  \]
+  读者可以验证, 这是一个满的环同态. 因此, 只需证明 $\langle y-x^{2}\rangle=\ker(\phi)$. 我们证明两个包含关系.
+
+  ($\subseteq$) 设 $f(x,y)\in\langle y-x^{2}\rangle$. 这意味着存在 $g(x,y)\in R[x,y]$, 使得
+  \[
+    f(x,y)=(y-x^{2})g(x,y).
+  \]
+  对 $f(x,y)$ 应用 $\phi$, 可得
+  \[
+    \phi(f(x,y))=(x^{2}-x^{2})g(x,x^{2})=0,
+  \]
+  所以 $f(x,y)\in\ker(\phi)$.
+
+  ($\supseteq$) 设 $f(x,y)\in\ker(\phi)$. 根据 Example~\ref{ex:quotient-parabola-computations} 的计算, 可知在商环 $R[x,y]/\langle y-x^{2}\rangle$ 中, $[f(x,y)]=[f(x,x^{2})]$, 因而
+  \begin{equation}\label{eq:parabola-substitution-difference}
+    f(x,y)-f(x,x^{2})\in\langle y-x^{2}\rangle.
+  \end{equation}
+  此外, 因为 $f(x,y)\in\ker(\phi)$, 所以
+  \begin{equation}\label{eq:parabola-substitution-zero}
+    0=\phi(f(x,y))=f(x,x^{2})\in R[x]\subseteq R[x,y].
+  \end{equation}
+  结合 \eqref{eq:parabola-substitution-zero} 与 \eqref{eq:parabola-substitution-difference}, 可得
+  \[
+    f(x,y)=f(x,y)-f(x,x^{2})\in\langle y-x^{2}\rangle.
+  \]
+  Exercise~\ref{ex:quotient-substitute-polynomial} 给出了这个结果的一个有用的推广.
+\end{Example}
+
+\BookExerciseHeading
+\begin{BookExercises}
+  \item\label{ex:ideal-containing-unit} 设 $I\subseteq R$ 是理想. 证明: $I=R$ 当且仅当 $I$ 包含一个可逆元.
+  \item\label{ex:ideal-zero-and-addition} 证明理想包含 $0$, 并且对加法封闭.
+  \item\label{ex:ideals-of-field} 证明域 $K$ 只有 $\{0\}$ 和 $K$ 这两个理想.
+  \item\label{ex:ideal-generated-by-set} 设 $A\subseteq R$ 是子集. 证明以下结论.
+    \begin{enumerate}[label=(\alph*)]
+      \item 集合 $\langle A\rangle$ 是 $R$ 的理想.
+      \item 若 $I\subseteq R$ 是包含 $A$ 的任意理想, 则 $\langle A\rangle\subseteq I$.
+    \end{enumerate}
+  \item\label{ex:variables-ideal-not-principal} 证明当 $n>1$ 时, $\langle x_{1},\ldots,x_{n}\rangle\subseteq K[x_{1},\ldots,x_{n}]$ 不是主理想.
+  \item\label{ex:coset-relation-equivalence} 设 $I\subseteq R$ 是理想, 考虑 $R$ 上的关系
+    \[
+      r\sim s\iff r-s\in I.
+    \]
+    \begin{enumerate}[label=(\alph*)]
+      \item 证明 $\sim$ 是自反的: 对所有 $r\in R$, 都有 $r\sim r$.
+      \item 证明 $\sim$ 是对称的: $r\sim s$ 蕴涵 $s\sim r$.
+      \item 证明 $\sim$ 是传递的: 若 $r\sim s$ 且 $s\sim t$, 则 $r\sim t$.
+    \end{enumerate}
+    因此, $\sim$ 是一个等价关系.
+  \item\label{ex:coset-representative-sum} 给定理想 $I\subseteq R$, 证明 $[r]=\{r+a\mid a\in I\}$, 从而说明记号 $[r]=r+I$ 是合理的.
+  \item\label{ex:quotient-operations-well-defined} 设 $I\subseteq R$ 是理想, 且 $r_{1},r_{2},s\in R$. 证明以下结论.
+    \begin{enumerate}[label=(\alph*)]
+      \item 若 $r_{1}\sim r_{2}$, 则 $r_{1}+s\sim r_{2}+s$.
+      \item 若 $r_{1}\sim r_{2}$, 则 $r_{1}s\sim r_{2}s$.
+    \end{enumerate}
+    因此, 商环 $R/I$ 中的加法和乘法是良定义的.
+  \item\label{ex:prove-first-ring-isomorphism-theorem} 论证环的第一同构定理.
+  \item\label{ex:ideal-images-and-preimages} 设 $\phi:R\to S$ 是环同态.
+    \begin{enumerate}[label=(\alph*)]
+      \item 若 $I\subseteq S$ 是理想, 证明 $\phi^{-1}(I)\subseteq R$ 是理想.
+      \item 若 $\phi$ 是满射且 $I\subseteq R$ 是理想, 证明 $\phi(I)\subseteq S$ 是理想.
+      \item 举出一个非满的环同态 $\phi:R\to S$ 和一个理想 $I\subseteq R$, 使得 $\phi(I)$ 不是理想.
+    \end{enumerate}
+  \item\label{ex:quotient-set-last-variables-zero} 证明
+    \[
+      \frac{R[x_{1},\ldots,x_{n}]}{\langle x_{k+1},\ldots,x_{n}\rangle}\cong R[x_{1},\ldots,x_{k}].
+    \]
+  \item\label{ex:quotient-evaluation-at-point} 设 $a_{1},\ldots,a_{n}$ 是 $R$ 的元素. 证明
+    \[
+      \frac{R[x_{1},\ldots,x_{n}]}{\langle x_{1}-a_{1},\ldots,x_{n}-a_{n}\rangle}\cong R.
+    \]
+  \item\label{ex:quotient-substitute-polynomial} 设 $f_{1},\ldots,f_{k}\in R[x_{1},\ldots,x_{n}]$, 且 $g\in R[x_{1},\ldots,x_{n-1}]$. 考虑环同态
+    \[
+      \begin{aligned}
+        \phi:R[x_{1},\ldots,x_{n}]&\to R[x_{1},\ldots,x_{n-1}]\\
+        f(x_{1},\ldots,x_{n-1},x_{n})&\mapsto f(x_{1},\ldots,x_{n-1},g).
+      \end{aligned}
+    \]
+    利用第一同构定理证明
+    \[
+      \frac{R[x_{1},\ldots,x_{n}]}{\langle f_{1},\ldots,f_{k},x_{n}-g\rangle}
+      \cong\frac{R[x_{1},\ldots,x_{n-1}]}{\langle\phi(f_{1}),\ldots,\phi(f_{k})\rangle}.
+    \]
+    (注意, Examples~\ref{ex:quotient-evaluation-origin} 和 \ref{ex:quotient-parabola-isomorphism}, 以及 Exercises~\ref{ex:quotient-set-last-variables-zero} 和 \ref{ex:quotient-evaluation-at-point}, 都是这个结果的推论. 这一结果实质上说明, 对 $x_{n}-g$ 取商等价于把所有出现的 $x_{n}$ 换成 $g$.)
+  \item\label{ex:unit-circle-quotient-normal-form} 证明商环
+    \[
+      \frac{R[x,y]}{\langle x^{2}+y^{2}-1\rangle}
+    \]
+    中的每个元素都能唯一地用形如 $f(x)+yg(x)$ 的多项式表示, 其中 $f(x),g(x)\in R[x]$.
+  \item\label{ex:factorization-domain-not-unique} 考虑商环
+    \[
+      R=\frac{K[x,y]}{\langle x^{2}-y^{3}\rangle}.
+    \]
+    \begin{enumerate}[label=(\alph*)]
+      \item 证明 $R$ 的每个元素都能用形如 $f(y)+xg(y)$ 的多项式表示, 其中 $f(y),g(y)\in K[y]$.
+      \item 证明 $R$ 是整环.
+      \item 证明 $R$ 是分解整环.
+      \item 证明 $[x],[y]\in R$ 都不可约.
+      \item 证明 $[x],[y]\in R$ 都不是素元.
+      \item 找出 $R$ 中一个有两种不同不可约分解的元素.
+    \end{enumerate}
+\end{BookExercises}

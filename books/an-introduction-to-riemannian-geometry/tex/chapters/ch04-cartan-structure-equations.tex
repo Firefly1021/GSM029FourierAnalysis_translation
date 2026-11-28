@@ -1,0 +1,370 @@
+\section{Cartan 结构方程}\label{sec:cartan-structure-equations}
+
+本节用微分形式重新表述 Levi–Civita 联络和 Riemann 曲率张量的性质. 为此, 取 $M$ 的开子集 $V$, 在其上已定义一个\textbf{标架场} $\{X_1,\ldots,X_n\}$, 即一组 $n$ 个向量场, 在 $V$ 的每个点 $p$ 处构成 $T_pM$ 的一组基 (例如, 可以取一个坐标邻域 $V$ 和向量场 $X_i=\frac{\partial}{\partial x^i}$; 但一般而言, $X_i$ 不对应于某一坐标系). 然后考虑一个\textbf{对偶余标架场}, 即 $V$ 上满足 $\omega^i(X_j)=\delta_{ij}$ 的 1-形式 $\{\omega^1,\ldots,\omega^n\}$. 注意, 在每个点 $p\in V$ 处, $\{\omega_p^1,\ldots,\omega_p^n\}$ 是 $T_p^*M$ 的一组基. 由联络的性质, 要定义 $\nabla_XY$, 只需确定
+\[
+  \nabla_{X_i}X_j=\sum_{k=1}^n\Gamma^k_{ij}X_k,
+\]
+其中 $\Gamma^k_{ij}$ 定义为向量场 $\nabla_{X_i}X_j$ 在基 $\{X_i\}_{i=1}^n$ 下的第 $k$ 个分量. 注意, 若 $X_i$ 不对应于某一坐标系, 则 $\Gamma^k_{ij}$ 不能用公式 (\RGref{src:unlocated-cartan-formula}) 计算, 且一般甚至不关于指标 $i,j$ 对称 [参见 Exercise~\ref{ex:cartan-structure-equations}(\ref{ex:structure-functions-of-frame})]. 给定 $\Gamma^k_{ij}$ 在 $V$ 上的值, 可以如下定义 1-形式 $\omega^k_j$ ($j,k=1,\ldots,n$):
+\begin{equation}\label{eq:connection-forms-from-christoffel-symbols}
+  \omega^k_j:=\sum_{i=1}^n\Gamma^k_{ij}\omega^i.
+\end{equation}
+反过来, 给定这些形式, 可由下式得到 $\Gamma^k_{ij}$ 的值:
+\[
+  \Gamma^k_{ij}=\omega^k_j(X_i).
+\]
+于是联络完全由这些形式确定: 给定两个向量场 $X=\sum_{i=1}^na^iX_i$ 和 $Y=\sum_{i=1}^nb^iX_i$, 有
+\begin{equation}\label{eq:covariant-derivative-of-frame-vector}
+\begin{aligned}
+  \nabla_XX_j&=\nabla_{\sum_{i=1}^na^iX_i}X_j
+    =\sum_{i=1}^na^i\nabla_{X_i}X_j=\sum_{i,k=1}^na^i\Gamma^k_{ij}X_k\\
+  &=\sum_{i,k=1}^na^i\omega^k_j(X_i)X_k=\sum_{k=1}^n\omega^k_j(X)X_k
+\end{aligned}
+\end{equation}
+因而
+\begin{equation}\label{eq:covariant-derivative-in-frame}
+\begin{aligned}
+  \nabla_XY&=\nabla_X\left(\sum_{i=1}^n b^iX_i\right)
+  =\sum_{i=1}^n\bigl((X\cdot b^i)X_i+b^i\nabla_XX_i\bigr)\\
+  &=\sum_{j=1}^n\left(X\cdot b^j+\sum_{i=1}^n b^i\omega^j_i(X)\right)X_j.
+\end{aligned}
+\end{equation}
+注意, 形式 $\omega^k_j$ 在 $X$ 上的取值为 $\nabla_XX_j$ 相对于标架场的分量, 即
+\begin{equation}\label{eq:connection-form-as-coframe-evaluation}
+  \omega^i_j(X)=\omega^i(\nabla_XX_j).
+\end{equation}
+$\omega^k_j$ 称为\textbf{联络形式}. 对于 Levi–Civita 联络, 这些形式不能任意选取. 事实上, 它们必须满足对应于对称性和与度量相容性的某些方程.
+
+\begin{RiemannTheorem}[Cartan]\label{thm:cartan-equations-for-levi-civita-connection}
+设 $V$ 是 Riemann 流形 $M$ 的开子集. 设 $\{X_1,\ldots,X_n\}$ 是其上已定义的标架场, $\{\omega^1,\ldots,\omega^n\}$ 为相应的余标架场. 则 Levi–Civita 联络的联络形式是下列方程的唯一解:
+\begin{enumerate}[label=(\roman*),leftmargin=*]
+\item $\mathrm{d}\omega^i=\sum_{j=1}^n\omega^j\wedge\omega^i_j$,
+\item $\mathrm{d}g_{ij}=\sum_{k=1}^n(g_{kj}\omega^k_i+g_{ki}\omega^k_j)$,
+\end{enumerate}
+其中 $g_{ij}=\langle X_i,X_j\rangle$.
+\end{RiemannTheorem}
+
+\begin{RiemannProof}
+先证明由 \eqref{eq:connection-forms-from-christoffel-symbols} 定义的 Levi–Civita 联络形式满足 (i) 和 (ii). 为此, 利用 1-形式的下列性质 [参见第~\ref{chap:differential-forms}~章的 Exercise~\ref{ex:differential-forms}(\ref{ex:intrinsic-exterior-derivative})]:
+\[
+  \mathrm{d}\omega(X,Y)=X\cdot(\omega(Y))-Y\cdot(\omega(X))-\omega([X,Y]).
+\]
+有
+\[
+  \nabla_YX=\nabla_Y\left(\sum_{j=1}^n\omega^j(X)X_j\right)
+  =\sum_{j=1}^n\bigl(Y\cdot\omega^j(X)\,X_j+\omega^j(X)\nabla_YX_j\bigr),
+\]
+从而
+\begin{equation}\label{eq:coframe-of-covariant-derivative}
+  \omega^i(\nabla_YX)=Y\cdot\omega^i(X)+\sum_{j=1}^n\omega^j(X)\omega^i(\nabla_YX_j).
+\end{equation}
+利用 \eqref{eq:connection-form-as-coframe-evaluation} 和 \eqref{eq:coframe-of-covariant-derivative}, 有
+\begin{align*}
+  \left(\sum_{j=1}^n\omega^j\wedge\omega^i_j\right)(X,Y)
+  &=\sum_{j=1}^n\bigl(\omega^j(X)\,\omega^i_j(Y)-\omega^j(Y)\,\omega^i_j(X)\bigr)\\
+  &=\sum_{j=1}^n\bigl(\omega^j(X)\,\omega^i(\nabla_YX_j)-\omega^j(Y)\,\omega^i(\nabla_XX_j)\bigr)\\
+  &=\omega^i(\nabla_YX)-Y\cdot(\omega^i(X))-\omega^i(\nabla_XY)+X\cdot(\omega^i(Y)),
+\end{align*}
+所以
+\begin{align*}
+  &\left(\mathrm{d}\omega^i-\sum_{j=1}^n\omega^j\wedge\omega^i_j\right)(X,Y)\\
+  &\quad=X\cdot(\omega^i(Y))-Y\cdot(\omega^i(X))-\omega^i([X,Y])
+  -\left(\sum_{j=1}^n\omega^j\wedge\omega^i_j\right)(X,Y)\\
+  &\quad=\omega^i(\nabla_XY-\nabla_YX-[X,Y])=0.
+\end{align*}
+注意, 方程 (i) 等价于联络的对称性. 为证明 (ii) 成立, 注意到
+\[
+  \mathrm{d}g_{ij}(Y)=Y\cdot\langle X_i,X_j\rangle,
+\]
+而另一方面,
+\begin{align*}
+  \left(\sum_{k=1}^n g_{kj}\omega_i^k+g_{ki}\omega_j^k\right)(Y)
+  &=\sum_{k=1}^n g_{kj}\omega_i^k(Y)+g_{ki}\omega_j^k(Y)\\
+  &=\left\langle\sum_{k=1}^n\omega_i^k(Y)X_k,X_j\right\rangle
+    +\left\langle\sum_{k=1}^n\omega_j^k(Y)X_k,X_i\right\rangle\\
+  &=\langle\nabla_YX_i,X_j\rangle+\langle\nabla_YX_j,X_i\rangle.
+\end{align*}
+所以, 方程 (ii) 等价于对每个 $i,j$ 均有
+\[
+  Y\cdot\langle X_i,X_j\rangle
+  =\langle\nabla_YX_i,X_j\rangle+\langle X_i,\nabla_YX_j\rangle,
+\]
+即等价于与度量相容 [参见 Exercise~\ref{ex:cartan-structure-equations}(\ref{ex:metric-compatibility-on-frame})]. 因此, Levi–Civita 联络形式满足 (i) 和 (ii).
+
+为证明唯一性, 取满足 (i) 和 (ii) 的 1-形式 $\omega_i^j$ ($i,j=1,\ldots,n$). 利用 \eqref{eq:covariant-derivative-of-frame-vector} 和 \eqref{eq:covariant-derivative-in-frame}, 可以定义一个联络, 该联络必对称且与度量相容. 由 Levi–Civita 联络的唯一性, 满足 (i) 和 (ii) 的一组形式 $\omega_i^j$ 也唯一 (注意, 每个联络唯一确定一组 $n^2$ 个联络形式, 反之亦然).
+\end{RiemannProof}
+
+\begin{RiemannRemark}\label{rem:cartan-first-equation-orthonormal-frame}
+给定某个开集上的一个标架场, 可以通过 Gram–Schmidt 正交化得到光滑的标准正交标架场 $\{E_1,\ldots,E_n\}$. 由于 $g_{ij}=\langle E_i,E_j\rangle=\delta_{ij}$, 上面的方程 (i) 和 (ii) 变为
+\begin{enumerate}[label=(\roman*),leftmargin=*]
+\item $\mathrm{d}\omega^i=\sum_{j=1}^n\omega^j\wedge\omega_j^i$,
+\item $\omega_i^j+\omega_j^i=0$.
+\end{enumerate}
+\end{RiemannRemark}
+
+除联络形式外, 还可以定义\textbf{曲率形式}. 再取 $M$ 的一个开子集 $V$, 在其上有标架场 $\{X_1,\ldots,X_n\}$ (因而也有相应的对偶余标架场 $\{\omega^1,\ldots,\omega^n\}$). 对 $V$ 上的所有向量场 $X,Y$, 定义 2-形式 $\Omega_k^l$ ($k,l=1,\ldots,n$) 为
+\[
+  \Omega_k^l(X,Y):=\omega^l(R(X,Y)X_k),
+\]
+(即 $R(X,Y)X_k=\sum_{l=1}^n\Omega_k^l(X,Y)X_l$). 用 2-形式的基 $\{\omega^i\wedge\omega^j\}_{i<j}$, 有
+\begin{align*}
+  \Omega_k^l
+  &=\sum_{i<j}\Omega_k^l(X_i,X_j)\,\omega^i\wedge\omega^j
+    =\sum_{i<j}\omega^l(R(X_i,X_j)X_k)\,\omega^i\wedge\omega^j\\
+  &=\sum_{i<j}R_{ijk}{}^l\,\omega^i\wedge\omega^j
+    =\frac12\sum_{i,j=1}^nR_{ijk}{}^l\,\omega^i\wedge\omega^j,
+\end{align*}
+其中 $R_{ijk}{}^l$ 是曲率相对于这些标架的系数:
+\[
+  R(X_i,X_j)X_k=\sum_{l=1}^nR_{ijk}{}^lX_l.
+\]
+曲率形式满足下列方程.
+
+\begin{RiemannProposition}\label{prop:cartan-equation-for-curvature-forms}
+沿用上述记号,
+\begin{enumerate}[label=(\roman*),start=3,leftmargin=*]
+\item 对每个 $i,j=1,\ldots,n$, 有 $\Omega_i^j=\mathrm{d}\omega_i^j-\sum_{k=1}^n\omega_i^k\wedge\omega_k^j$.
+\end{enumerate}
+\end{RiemannProposition}
+
+\begin{RiemannProof}
+我们将证明
+\[
+  R(X,Y)X_i=\sum_{j=1}^n\Omega_i^j(X,Y)X_j
+  =\sum_{j=1}^n\left(\left(\mathrm{d}\omega_i^j-\sum_{k=1}^n\omega_i^k\wedge\omega_k^j\right)(X,Y)\right)X_j.
+\]
+事实上,
+\begin{align*}
+  R(X,Y)X_i&=\nabla_X\nabla_YX_i-\nabla_Y\nabla_XX_i-\nabla_{[X,Y]}X_i\\
+  &=\nabla_X\left(\sum_{k=1}^n\omega_i^k(Y)X_k\right)
+    -\nabla_Y\left(\sum_{k=1}^n\omega_i^k(X)X_k\right)
+    -\sum_{k=1}^n\omega_i^k([X,Y])X_k\\
+  &=\sum_{k=1}^n\bigl(X\cdot(\omega_i^k(Y))-Y\cdot(\omega_i^k(X))-\omega_i^k([X,Y])\bigr)X_k+{}\\
+  &\quad+\sum_{k=1}^n\omega_i^k(Y)\nabla_XX_k-\sum_{k=1}^n\omega_i^k(X)\nabla_YX_k\\
+  &=\sum_{k=1}^n\mathrm{d}\omega_i^k(X,Y)X_k
+    +\sum_{k,j=1}^n\left(\omega_i^k(Y)\,\omega_k^j(X)\,X_j-\omega_i^k(X)\,\omega_k^j(Y)\,X_j\right)\\
+  &=\sum_{j=1}^n\left(\mathrm{d}\omega_i^j(X,Y)-\sum_{k=1}^n(\omega_i^k\wedge\omega_k^j)(X,Y)\right)X_j.
+\end{align*}
+\end{RiemannProof}
+
+方程 (i), (ii) 和 (iii) 称为 \textbf{Cartan 结构方程}. 下面将这些方程和主要定义列出.
+\begin{enumerate}[label=(\roman*),leftmargin=*]
+\item $\mathrm{d}\omega^i=\sum_{j=1}^n\omega^j\wedge\omega_j^i$,
+\item $\mathrm{d}g_{ij}=\sum_{k=1}^n(g_{kj}\omega_i^k+g_{ki}\omega_j^k)$,
+\item $\mathrm{d}\omega_i^j=\Omega_i^j+\sum_{k=1}^n\omega_i^k\wedge\omega_k^j$,
+\end{enumerate}
+其中 $\omega^i(X_j)=\delta_{ij}$, $\omega_j^k=\sum_{i=1}^n\Gamma_{ij}^k\omega^i$, 且 $\Omega_i^j=\sum_{k<l}R_{kli}{}^j\,\omega^k\wedge\omega^l$.
+
+\begin{RiemannRemark}\label{rem:cartan-equations-in-orthonormal-frame}
+若考虑一个标准正交标架场 $\{E_1,\ldots,E_n\}$, 则上述方程变为:
+\begin{enumerate}[label=(\roman*),leftmargin=*]
+\item $\mathrm{d}\omega^i=\sum_{j=1}^n\omega^j\wedge\omega_j^i$,
+\item $\omega_i^j+\omega_j^i=0$,
+\item $\mathrm{d}\omega_i^j=\Omega_i^j+\sum_{k=1}^n\omega_i^k\wedge\omega_k^j$ (因而 $\Omega_i^j+\Omega_j^i=0$).
+\end{enumerate}
+\end{RiemannRemark}
+
+\begin{RiemannExample}\label{ex:cartan-equations-in-euclidean-space}
+对带 Euclidean 度量的 $\mathbb{R}^n$ 中的标准正交标架场, 曲率形式必为零 (因为 $R=0$), 得到以下结构方程:
+\begin{enumerate}[label=(\roman*),leftmargin=*]
+\item $\mathrm{d}\omega^i=\sum_{j=1}^n\omega^j\wedge\omega_j^i$,
+\item $\omega_i^j+\omega_j^i=0$,
+\item $\mathrm{d}\omega_i^j=\sum_{k=1}^n\omega_i^k\wedge\omega_k^j$.
+\end{enumerate}
+\end{RiemannExample}
+
+本节最后详细讨论 2 维 Riemann 流形的特殊情形. 在此情形下, 标准正交标架场的结构方程特别简单: 方程 (ii) 蕴含只有一个独立的联络形式 ($\omega_1^1=\omega_2^2=0$ 且 $\omega_2^1=-\omega_1^2$), 可由方程 (i) 计算:
+\begin{align*}
+  \mathrm{d}\omega^1&=-\omega^2\wedge\omega_1^2;\\
+  \mathrm{d}\omega^2&=\omega^1\wedge\omega_1^2.
+\end{align*}
+于是方程 (iii) 给出唯一独立的曲率形式 $\Omega_1^2=\mathrm{d}\omega_1^2$. 这个形式与流形的 Gauss 曲率密切相关.
+
+\begin{RiemannProposition}\label{prop:curvature-form-and-gauss-curvature}
+若 $M$ 是 2 维流形, 则对标准正交标架有 $\Omega_1^2=-K\,\omega^1\wedge\omega^2$, 其中函数 $K$ 是 $M$ 的 Gauss 曲率 (即其截面曲率).
+\end{RiemannProposition}
+
+\begin{RiemannProof}
+设 $p$ 是 $M$ 中的一点, 选取包含 $p$ 且其上已定义标准正交标架场 $\{E_1,E_2\}$ 的开集. 则
+\[
+  K=-R(E_1,E_2,E_1,E_2)=-R_{1212},
+\]
+因而
+\begin{align*}
+  \Omega_1^2&=\Omega_1^2(E_1,E_2)\,\omega^1\wedge\omega^2
+    =\omega^2(R(E_1,E_2)E_1)\,\omega^1\wedge\omega^2\\
+  &=\langle R(E_1,E_2)E_1,E_2\rangle\,\omega^1\wedge\omega^2
+    =R_{1212}\,\omega^1\wedge\omega^2=-K\,\omega^1\wedge\omega^2.
+\end{align*}
+\end{RiemannProof}
+
+注意, $K$ 不依赖于标架场的选取, 因为它是截面曲率 (参见 Definition~\ref{def:sectional-curvature}). 又因 $\omega^1\wedge\omega^2$ 是 Riemann 体积形式, 曲率形式也不依赖于该选取 (至多相差一个符号). 然而, 联络形式依赖于该选取. 设 $\{E_1,E_2\}$, $\{F_1,F_2\}$ 是 $M$ 的开子集 $V$ 上的两个标准正交标架场. 则
+\[
+  \begin{pmatrix}F_1&F_2\end{pmatrix}=\begin{pmatrix}E_1&E_2\end{pmatrix}S
+\]
+其中 $S:V\to O(2)$ 取值于 $2\times2$ 矩阵的正交群. 注意, $S$ 有以下两种形式之一:
+\[
+  S=\begin{pmatrix}a&-b\\b&a\end{pmatrix}
+  \quad\text{或}\quad S=\begin{pmatrix}a&b\\b&-a\end{pmatrix},
+\]
+其中 $a,b:V\to\mathbb{R}$ 满足 $a^2+b^2=1$. $S$ 的行列式为 $\pm1$, 取决于两个标架是否具有相同定向. 有以下命题.
+
+\begin{RiemannProposition}\label{prop:connection-form-under-oriented-frame-change}
+若 $\{E_1,E_2\}$ 和 $\{F_1,F_2\}$ 具有相同定向, 分别记相应的联络形式为 $\omega_1^2$ 和 $\overline\omega{}_1^2$, 则 $\overline\omega{}_1^2-\omega_1^2=\sigma$, 其中 $\sigma:=a\,\mathrm{d}b-b\,\mathrm{d}a$.
+\end{RiemannProposition}
+
+\begin{RiemannProof}
+分别用 $\{\omega^1,\omega^2\}$ 和 $\{\overline\omega{}^1,\overline\omega{}^2\}$ 表示与 $\{E_1,E_2\}$ 和 $\{F_1,F_2\}$ 相应的对偶余标架场, 定义由 1-形式组成的列向量
+\[
+  \omega:=\begin{pmatrix}\omega^1\\\omega^2\end{pmatrix}
+  \quad\text{和}\quad
+  \overline\omega:=\begin{pmatrix}\overline\omega{}^1\\\overline\omega{}^2\end{pmatrix}
+\]
+以及由 1-形式组成的矩阵
+\[
+  A:=\begin{pmatrix}0&-\omega_1^2\\\omega_1^2&0\end{pmatrix}
+  \quad\text{和}\quad
+  \overline A:=\begin{pmatrix}0&-\overline\omega{}_1^2\\\overline\omega{}_1^2&0\end{pmatrix}.
+\]
+两个标架间的关系可写成
+\[
+  \overline\omega=S^{-1}\omega\Leftrightarrow\omega=S\overline\omega
+\]
+(参见第~\ref{chap:differential-forms}~章第~\ref{subsec:notes-tensors}~节), 而 Cartan 结构方程可写成
+\[
+  \mathrm{d}\omega=-A\wedge\omega\quad\text{和}\quad
+  \mathrm{d}\overline\omega=-\overline A\wedge\overline\omega.
+\]
+因此,
+\begin{align*}
+  \mathrm{d}\omega&=S\,\mathrm{d}\overline\omega+\mathrm{d}S\wedge\overline\omega
+    =-S\overline A\wedge\overline\omega+\mathrm{d}S\wedge S^{-1}\omega\\
+  &=-S\overline A\wedge S^{-1}\omega+\mathrm{d}S\wedge S^{-1}\omega
+    =-(S\overline AS^{-1}-\mathrm{d}S\,S^{-1})\wedge\omega,
+\end{align*}
+由 Cartan 结构方程解的唯一性, 得
+\[
+  A=S\overline AS^{-1}-\mathrm{d}S\,S^{-1}.
+\]
+完全写开得
+\[
+  \begin{pmatrix}0&-\omega_1^2\\\omega_1^2&0\end{pmatrix}
+  =\begin{pmatrix}0&-\overline\omega{}_1^2\\\overline\omega{}_1^2&0\end{pmatrix}
+  -\begin{pmatrix}
+    a\,\mathrm{d}a+b\,\mathrm{d}b&b\,\mathrm{d}a-a\,\mathrm{d}b\\
+    a\,\mathrm{d}b-b\,\mathrm{d}a&a\,\mathrm{d}a+b\,\mathrm{d}b
+  \end{pmatrix},
+\]
+结论随之得到 (同时还得到 $a\,\mathrm{d}a+b\,\mathrm{d}b=0$, 这显然也可由 $\det S=a^2+b^2=1$ 得出).
+\end{RiemannProof}
+
+现在给出 $\sigma:=a\,\mathrm{d}b-b\,\mathrm{d}a$ 的几何解释. 局部而言, 可以在每个点 $p\in M$ 定义 $(E_1)_p$ 与 $(F_1)_p$ 之间的夹角 $\theta(p)$. 则换基矩阵 $S$ 具有如下形式:
+\[
+  \begin{pmatrix}a&-b\\b&a\end{pmatrix}
+  =\begin{pmatrix}\cos\theta&-\sin\theta\\\sin\theta&\cos\theta\end{pmatrix}.
+\]
+所以
+\begin{align*}
+  \sigma&=a\,\mathrm{d}b-b\,\mathrm{d}a
+   =\cos\theta\,\mathrm{d}(\sin\theta)-\sin\theta\,\mathrm{d}(\cos\theta)\\
+  &=\cos^2\theta\,\mathrm{d}\theta+\sin^2\theta\,\mathrm{d}\theta=\mathrm{d}\theta.
+\end{align*}
+因此, 沿一条曲线对 $\sigma$ 积分, 就得到沿该曲线 $F_1$ 相对于 $E_1$ 旋转的角度.
+
+特别地, 注意 $\sigma$ 是闭的. 这一点也显然可由下式看出:
+\[
+  \mathrm{d}\sigma=\mathrm{d}\overline\omega{}_1^2-\mathrm{d}\omega_1^2
+  =-K\,\overline\omega{}^1\wedge\overline\omega{}^2+K\,\omega^1\wedge\omega^2=0
+\]
+(因为两个标架场具有相同定向, 所以 $\overline\omega{}^1\wedge\overline\omega{}^2=\omega^1\wedge\omega^2$).
+
+可以用联络形式 $\omega_1^2$ 定义定向 2 维 Riemann 流形 $M$ 上一条曲线的\textbf{测地曲率}. 设 $c:I\to M$ 是 $M$ 中一条由弧长 $s$ 参数化的光滑曲线 (因而 $\lVert\dot c(s)\rVert=1$). 设 $V$ 是曲线上一点 $c(s)$ 的邻域, 其上有满足 $(E_1)_{c(s)}=\dot c(s)$ 的标准正交标架场 $\{E_1,E_2\}$. 注意, 总可以考虑这样的标架场: 先将向量场 $\dot c(s)$ 延拓为定义在 $c(s)$ 的邻域上的单位向量场 $E_1$, 再取与之正交的单位向量场 $E_2$, 使 $\{E_1,E_2\}$ 为正定向. 由于
+\[
+  \nabla_{E_1}E_1=\omega_1^1(E_1)E_1+\omega_1^2(E_1)E_2=\omega_1^2(E_1)E_2,
+\]
+$c$ 的\phantomsection\label{idx:covariant-acceleration}\textbf{协变加速度}为
+\[
+  \nabla_{\dot c(s)}\dot c(s)=\nabla_{E_1(s)}E_1(s)=\omega_1^2(E_1(s))E_2(s).
+\]
+定义曲线 $c$ 的\textbf{测地曲率}为
+\[
+  k_g(s):=\omega_1^2(E_1(s))
+\]
+(因此 $|k_g(s)|=\lVert\nabla_{\dot c(s)}\dot c(s)\rVert$). 它衡量曲线在 $c(s)$ 处偏离测地线的程度. 特别地, $c$ 是测地线当且仅当其测地曲率为零.
+
+\begin{RiemannExercise}\label{ex:cartan-structure-equations}
+\begin{enumerate}[label=(\arabic*),ref=\arabic*,leftmargin=*]
+\item\label{ex:structure-functions-of-frame} 设 $\{X_1,\ldots,X_n\}$ 是 Riemann 流形 $(M,\langle\cdot,\cdot\rangle)$ 的开集 $V$ 上的标架场, $\nabla$ 为其 Levi–Civita 联络. 相应的\textbf{结构函数} $C_{ij}^k$ 由下式定义:
+\[
+  [X_i,X_j]=\sum_{k=1}^n C_{ij}^kX_k.
+\]
+证明:
+\begin{enumerate}[label=(\alph*),leftmargin=*]
+\item $C_{jk}^i=\Gamma_{jk}^i-\Gamma_{kj}^i$;
+\item
+\begin{align*}
+  \Gamma_{jk}^i&=\frac12\sum_{l=1}^n g^{il}(X_j\cdot g_{kl}+X_k\cdot g_{jl}-X_l\cdot g_{jk})\\
+  &\quad+\frac12 C_{jk}^i-\frac12\sum_{l,m=1}^n g^{il}(g_{jm}C_{kl}^m+g_{km}C_{jl}^m);
+\end{align*}
+\item $\mathrm{d}\omega^i+\frac12\sum_{j,k=1}^nC_{jk}^i\,\omega^j\wedge\omega^k=0$, 其中 $\{\omega^1,\ldots,\omega^n\}$ 是对偶余标架场.
+\end{enumerate}
+\item\label{ex:metric-compatibility-on-frame} 设 $\{X_1,\ldots,X_n\}$ 是 Riemann 流形 $(M,\langle\cdot,\cdot\rangle)$ 的开集 $V$ 上的标架场. 证明 $M$ 上的联络 $\nabla$ 在 $V$ 上与度量相容, 当且仅当对所有 $i,j,k$,
+\[
+  X_k\cdot\langle X_i,X_j\rangle
+   =\langle\nabla_{X_k}X_i,X_j\rangle+\langle X_i,\nabla_{X_k}X_j\rangle.
+\]
+\item\label{ex:gauss-curvature-of-sphere-and-hyperbolic-plane} 计算下列流形的 Gauss 曲率:
+\begin{enumerate}[label=(\alph*),leftmargin=*]
+\item 带标准度量的球面 $S^2$;
+\item 双曲平面, 即带有度量
+\[
+  g=\frac1{y^2}(\mathrm{d}x\otimes\mathrm{d}x+\mathrm{d}y\otimes\mathrm{d}y)
+\]
+的上半平面
+\[
+  H=\{(x,y)\in\mathbb{R}^2\mid y>0\}
+\]
+[参见第~\ref{chap:riemannian-manifolds}~章的 Exercise~\ref{ex:levi-civita-connection}(\ref{ex:hyperbolic-plane})].
+\end{enumerate}
+\item\label{ex:surfaces-of-revolution-with-constant-gauss-curvature} 确定所有 Gauss 曲率恒定的旋转曲面.
+\item\label{ex:curvature-preserving-map-not-local-isometry} 设 $M$ 是由
+\[
+  \varphi(u,v)=(u\cos v,u\sin v,v)
+\]
+给出的参数化 $\varphi:(0,+\infty)\times\mathbb{R}\to\mathbb{R}^3$ 的像, $N$ 是由
+\[
+  \psi(u,v)=(u\cos v,u\sin v,\log u).
+\]
+给出的参数化 $\psi:(0,+\infty)\times\mathbb{R}\to\mathbb{R}^3$ 的像. 在 $M$ 和 $N$ 上都取由 $\mathbb{R}^3$ 的 Euclidean 度量诱导的 Riemann 度量. 证明由
+\[
+  f(\varphi(u,v))=\psi(u,v)
+\]
+定义的映射 $f:M\to N$ 保持 Gauss 曲率, 但不是局部等距映射.
+\item\label{ex:ricci-and-scalar-curvature-of-radial-metric} 考虑 $M=I\times S^2$ 上的度量
+\[
+  g=A^2(r)\,\mathrm{d}r\otimes\mathrm{d}r+r^2\,\mathrm{d}\theta\otimes\mathrm{d}\theta
+  +r^2\sin^2\theta\,\mathrm{d}\varphi\otimes\mathrm{d}\varphi
+\]
+其中 $r$ 是 $I\subset\mathbb{R}$ 上的局部坐标, $(\theta,\varphi)$ 是 $S^2$ 上的球面局部坐标.
+\begin{enumerate}[label=(\alph*),leftmargin=*]
+\item 计算这一度量的 Ricci 张量和标量曲率.
+\item 当 $A(r)=(1-r^2)^{-\frac12}$ 时 (即当 $M$ 与 $S^3$ 局部等距时), 结果如何?
+\item 当 $A(r)=(1+r^2)^{-\frac12}$ 时 (即当 $M$ 与\textbf{双曲 3 维空间}局部等距时), 结果又如何?
+\item 对哪些函数 $A(r)$, 标量曲率为常数?
+\end{enumerate}
+\item\label{ex:gauss-curvature-by-holonomy} 设 $M$ 是定向的 2 维 Riemann 流形, $p$ 是 $M$ 中一点. 设 $D$ 是 $p$ 在 $M$ 中一个同胚于圆盘且具有光滑边界 $\partial D$ 的邻域. 取点 $q\in\partial D$ 和单位向量 $X_q\in T_qM$. 设 $X$ 是 $X_q$ 沿 $\partial D$ 正向的平行移动. 当 $X$ 回到 $q$ 时, 它与初始向量 $X_q$ 的夹角为 $\Delta\theta$. 取满足 $F_1=X$ 的两个正定向标准正交标架场 $\{E_1,E_2\}$ 和 $\{F_1,F_2\}$, 证明
+\[
+  \Delta\theta=\int_D K.
+\]
+由此推出 $M$ 在 $p$ 处的 Gauss 曲率满足
+\[
+  K(p)=\lim_{D\to p}\frac{\Delta\theta}{\operatorname{vol}(D)}.
+\]
+\item\label{ex:geodesic-curvature-of-circles} 分别计算以下空间上正定向圆的测地曲率:
+\begin{enumerate}[label=(\alph*),leftmargin=*]
+\item 带 Euclidean 度量和通常定向的 $\mathbb{R}^2$;
+\item 带通常度量和定向的 $S^2$.
+\end{enumerate}
+\item\label{ex:geodesic-curvature-as-angle-derivative} 如测地曲率的定义中那样, 设 $c$ 是定向 2 维流形 $M$ 上一条光滑曲线. 设 $X$ 是沿 $c$ 平行的向量场, $\theta$ 是给定定向下 $X$ 和 $\dot c(s)$ 沿 $c$ 的夹角. 证明 $c$ 的测地曲率 $k_g$ 等于 $\frac{\mathrm{d}\theta}{\mathrm{d}s}$.
+{\small (\textbf{提示:} 考虑两个正定向的标准正交标架场 $\{E_1,E_2\}$ 和 $\{F_1,F_2\}$, 使 $E_1=\frac{X}{\lVert X\rVert}$ 且 $F_1=\dot c$).}
+\end{enumerate}
+\end{RiemannExercise}

@@ -1,0 +1,166 @@
+\section{一元多项式}\label{sec:single-variable-polynomials}
+
+本节考察系数在一个域中的一元多项式环. 我们将介绍若干基本结果, 最后证明 $K[x]$ 是 UFD. 下一节将以此为出发点, 证明 $K[x_{1},\ldots,x_{n}]$ 是 UFD. 本节的结果都直接来自多项式除法算法. 这一算法是许多学生在小学所学的长除法在多项式中的对应算法.
+
+\begin{Theorem}{多项式除法算法}\label{thm:polynomial-division}
+  对任意 $f,g\in K[x]$, 若 $g\ne0$, 则存在唯一的多项式 $q,r\in K[x]$, 使得
+  \[
+    f=qg+r
+  \]
+  且 $r=0$ 或 $\deg(r)<\deg(g)$.
+\end{Theorem}
+
+满足除法算法中条件的多项式 $q$ 和 $r$, 分别称为 $f$ 除以 $g$ 的\textbf{商}和\textbf{余式}. 注意, 余式为零当且仅当 $g\mid f$.
+
+在给出多项式除法算法的证明之前, 我们先仔细算一个例子, 说明怎样一步步求出商和余式. 读者不妨再算一算 Exercise~\ref{ex:polynomial-division-computations} 中的几个例子.
+
+\begin{Example}{多项式长除法}\label{ex:polynomial-long-division}
+  考虑 $\mathbb{Q}[x]$ 中的多项式 $f=x^{3}+x^{2}+1$ 和 $g=x-2$. 我们求 $f$ 除以 $g$ 的商和余式.
+
+  \textbf{第 1 步:} 减去 $g$ 的一个倍式, 使 $f$ 的首项被消去. 这个倍式是唯一的:
+  \[
+    f-x^{2}g=3x^{2}+1.
+  \]
+  \textbf{第 2 步:} 再减去 $g$ 的一个倍式, 使 $3x^{2}+1$ 的首项被消去:
+  \[
+    f-x^{2}g-3xg=6x+1.
+  \]
+  \textbf{第 3 步:} 再减去 $g$ 的一个倍式, 使 $6x+1$ 的首项被消去:
+  \[
+    f-x^{2}g-3xg-6g=13.
+  \]
+  \textbf{最后一步:} 由于多项式 $13$ 的次数严格小于 $g$ 的次数, 到此停止. 移项可见
+  \[
+    f=qg+r
+  \]
+  其中 $q=x^{2}+3x+6$, $r=13$.
+
+  注意, 每一步都降低了右端多项式的次数, 因而这个过程最终一定停止.
+\end{Example}
+
+\begin{Proof}\unskip\textbf{ of Theorem~\ref{thm:polynomial-division}}\quad
+  我们先证明商和余式存在, 再证明它们唯一.
+
+  固定一个非零多项式 $g$. 为了证明任意 $f$ 除以这个固定的 $g$ 都有商和余式, 我们对 $\deg(f)$ 归纳 (若 $f=0$, 则令 $q=r=0$).
+
+  \textbf{(归纳起点)} 设 $\deg(f)=0$. 若 $\deg(g)>0$, 令 $q=0$, $r=f$. 若 $\deg(g)=0$, 则 $g$ 是非零常数. 由于 $K$ 是域, $g$ 有乘法逆元. 令 $q=fg^{-1}$, $r=0$. 读者可以直接验证, 如此选取的 $q$ 和 $r$ 满足除法算法中的条件.
+
+  \textbf{(归纳步骤)} 设 $f\in K[x]$ 是次数为 $d>0$ 的多项式. 若 $\deg(g)>d$, 令 $q=0$, $r=f$. 若 $\deg(g)\le d$, 令 $k=\deg(g)$, 并令 $a_{d}$ 和 $b_{k}$ 分别为 $f$ 和 $g$ 的首项系数. 由构造可知, 多项式
+  \[
+    \widetilde f=f-a_{d}b_{k}^{-1}x^{d-k}g
+  \]
+  等于零或满足 $\deg(\widetilde f)<d$. 若 $\widetilde f=0$, 令 $q=a_{d}b_{k}^{-1}x^{d-k}$, $r=0$. 否则, 由归纳假设, 可选取 $\widetilde q$ 和 $\widetilde r$ 使得 $\widetilde r=0$ 或 $\deg(\widetilde r)<\deg(g)$, 且
+  \[
+    \widetilde f=\widetilde qg+\widetilde r,
+  \]
+  并令 $q=\widetilde q+a_{d}b_{k}^{-1}x^{d-k}$, $r=\widetilde r$. 读者可以验证, 在每种情形下 $q$ 和 $r$ 都满足除法算法中的条件, 从而完成归纳步骤和存在性的证明.
+
+  还须证明唯一性. 若 $q,r$ 和 $\widetilde q,\widetilde r$ 都满足除法算法的结论, 则
+  \[
+    f=qg+r=\widetilde qg+\widetilde r\implies g(\widetilde q-q)=(r-\widetilde r).
+  \]
+  由假设, 或者 $r-\widetilde r=0$, 或者 $\deg(r-\widetilde r)<\deg(g)$. 在后一种情形下, 由次数的可加性, 得 $\deg(\widetilde q-q)<0$, 矛盾. 因此必有 $r=\widetilde r$. 由于 $g\ne0$, 且 $K[x]$ 是整环, 从而有 $q=\widetilde q$.
+\end{Proof}
+
+有了除法算法, 我们现在证明一系列重要结果. 前两个应用涉及一元多项式的零点.
+
+\begin{Corollary}{因式定理}\label{cor:polynomial-factor-theorem}
+  若 $f(x)\in K[x]$ 且 $a\in K$, 则 $f(a)=0$ 当且仅当 $(x-a)\mid f(x)$.
+\end{Corollary}
+
+\begin{Proof}
+  用除法算法, 写成
+  \[
+    f(x)=(x-a)q+r
+  \]
+  其中 $q,r\in K[x]$, 且 $r=0$ 或 $\deg(r)<\deg(x-a)=1$. 在两种情形下, 余式都必为常数: $r\in K$. 在 $x=a$ 处求值, 得
+  \[
+    f(a)=(a-a)q(a)+r=r.
+  \]
+  因此, 由 $(x-a)\mid f(x)$ 当且仅当 $f(x)$ 除以 $x-a$ 的余式为零, 而我们刚证明该余式是 $f(a)$, 即得结论.
+\end{Proof}
+
+\begin{Example}{{\textmd{$x^{n}-1\in K[x]$}}}\label{ex:power-minus-one-factor}
+  考虑多项式 $f(x)=x^{n}-1\in K[x]$. 由于 $f(1)=1^{n}-1=0$, 由 Corollary~\ref{cor:polynomial-factor-theorem} 可知 $(x-1)\mid(x^{n}-1)$. 实际上, 展开下式的右端即可验证
+  \[
+    x^{n}-1=(x-1)(x^{n-1}+x^{n-2}+\cdots+x+1).
+  \]
+\end{Example}
+
+\begin{Corollary}{有限零点定理}\label{cor:polynomial-finite-zeros}
+  若 $f(x)\in K[x]$ 是次数为 $d$ 的非零多项式, 则至多有 $d$ 个值 $a\in K$ 使得 $f(a)=0$.
+\end{Corollary}
+
+\begin{Proof}
+  对 $d$ 归纳.
+
+  \textbf{(归纳起点)} 设 $d=0$. 则对某个非零常数 $b\in K$, 有 $f=b$. 因此, 对所有 $a\in K$ 都有 $f(a)=b\ne0$, 所以 $f$ 没有零点.
+
+  \textbf{(归纳步骤)} 设 $f$ 是次数为 $d>0$ 的多项式. 若 $f$ 没有零点, 则结论成立. 若 $f$ 至少有一个零点 $a\in K$, 则由 Corollary~\ref{cor:polynomial-factor-theorem} 可知
+  \[
+    f=(x-a)g
+  \]
+  其中 $g\in K[x]$. 由次数的可加性, $\deg(g)=d-1$, 故归纳假设说明 $g$ 至多有 $d-1$ 个零点. 由于 $f$ 除 $a$ 之外的每个零点都必是 $g$ 的零点, 所以 $f$ 至多有 $d$ 个零点.
+\end{Proof}
+
+\begin{Example}{{\textmd{$x^{n}-1\in\mathbb{C}[x]$}}}\label{ex:complex-roots-of-unity}
+  \ExampleSideNote{由 Corollary~\ref{cor:polynomial-finite-zeros}, 多项式 $x^{n}-1\in\mathbb{C}[x]$ 至多有 $n$ 个零点. 对 $j=1,\ldots,n$, 考虑复数}%
+    {回顾 Euler 公式可能有助于理解本例:
+    \[
+      e^{\mathrm{i}x}=\cos(x)+\mathrm{i}\sin(x).
+    \]}
+  \[
+    a_{j}=e^{\frac{2\pi\mathrm{i}}{n}j}.
+  \]
+  由于
+  \[
+    (a_{j})^{n}=e^{2\pi\mathrm{i}j}=1^{j}=1,
+  \]
+  可知对每个 $j$, $a_{j}$ 都是 $x^{n}-1$ 的零点. 由于 $\{a_{1},\ldots,a_{n}\}$ 是由 $n$ 个不同零点组成的集合, 它们必是 $x^{n}-1$ 的全部零点.
+\end{Example}
+
+下面是除法算法的另一个重要推论.
+
+\begin{Corollary}{{\textmd{$K[x]$} 是 PID}}\label{cor:univariate-polynomial-ring-pid}
+  一元多项式环 $K[x]$ 是主理想整环.
+\end{Corollary}
+
+\begin{Proof}
+  设 $I\subseteq K[x]$ 是理想, 定义集合
+  \[
+    D=\{\deg(f)\mid f\in I\text{ 且 }f\ne0\}\subseteq\mathbb{N}.
+  \]
+  若 $D=\emptyset$, 则 $I$ 是零理想 $\langle0\rangle$, 因而是主理想. 若 $D\ne\emptyset$, 则由良序原理, $D$ 含有最小元素, 记作 $d$. 取非零元素 $f\in I$ 使得 $\deg(f)=d$. 要证明 $I$ 是主理想, 我们证明 $I=\langle f\rangle$.
+
+  由于 $f\in I$, 立即得到 $\langle f\rangle\subseteq I$. 为证明反向包含, 设 $g\in I$. 应用除法算法, 有
+  \[
+    g=qf+r
+  \]
+  其中 $r=0$ 或 $\deg(r)<\deg(f)=d$. 由于 $f,g\in I$, 可知 $r\in I$. 若 $r\ne0$, 则 $\deg(r)\in D$ 且 $\deg(r)<d$, 这与 $d=\min(D)$ 矛盾. 因此 $r=0$, 从而 $g\in\langle f\rangle$, 证明完毕.
+\end{Proof}
+
+本节最后给出一个重要结论: $K[x]$ 是 UFD. 这是 Corollary~\ref{cor:univariate-polynomial-ring-pid} 和 Proposition~\ref{prop:pid-is-ufd} 的直接推论.
+
+\begin{Corollary}{{\textmd{$K[x]$} 是 UFD}}\label{cor:univariate-polynomial-ring-ufd}
+  一元多项式环 $K[x]$ 是唯一分解整环.
+\end{Corollary}
+
+\BookExerciseHeading
+\begin{BookExercises}
+  \item\label{ex:polynomial-division-computations} 求出 $\mathbb{Q}[x]$ 中下列各对多项式相除的商和余式.
+    \begin{enumerate}[label=(\alph*)]
+      \item $f=2x^{3}+7x^{2}+2x+9$ 且 $g=2x+3$.
+      \item $f=3x^{3}-2x^{2}+5$ 且 $g=x^{2}-1$.
+      \item $f=x^{3}+3x^{2}-4x-12$ 且 $g=x^{2}+x-6$.
+    \end{enumerate}
+  \item\label{ex:factor-and-divide-at-one} 考虑 $f=x^{3}-x^{2}+x-1\in\mathbb{Q}[x]$.
+    \begin{enumerate}[label=(\alph*)]
+      \item 用 Corollary~\ref{cor:polynomial-factor-theorem} 说明 $x-1$ 整除 $f$.
+      \item 求 $f$ 除以 $x-1$ 的商.
+    \end{enumerate}
+  \item\label{ex:division-algorithm-fails-in-zz} 举例说明多项式除法算法在 $\mathbb{Z}[x]$ 中不成立.
+  \item\label{ex:factor-theorem-over-ring} 证明对任意环 $R$, Corollary~\ref{cor:polynomial-factor-theorem} 在 $R[x]$ 中成立. (提示: 尝试把 $f(x)-f(a)$ 写成 $x-a$ 的倍式.)
+  \item\label{ex:finite-zeros-iff-domain} 证明: Corollary~\ref{cor:polynomial-finite-zeros} 在 $R[x]$ 中成立, 当且仅当 $R$ 是整环.
+  \item\label{ex:nonzero-polynomial-infinite-zeros} 举出一个环 $R$ 和一个非零多项式 $f\in R[x]$, 使 $f$ 有无穷多个零点.
+  \item\label{ex:complex-power-minus-one-unique-factorization} 求 $x^{n}-1\in\mathbb{C}[x]$ 的唯一不可约分解.
+\end{BookExercises}

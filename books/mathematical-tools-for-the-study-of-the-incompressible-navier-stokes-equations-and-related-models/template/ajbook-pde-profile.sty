@@ -1,6 +1,6 @@
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{ajbook-pde-profile}[2026/11/22 Book-local PDE typography]
-\RequirePackage{cases,empheq}
+\RequirePackage{cases,empheq,etoolbox}
 \RequirePackage[math-style=TeX,mathrm=sym,mathit=sym,mathbf=sym,mathsf=sym,mathtt=sym]{unicode-math}
 % Use TeX Live's bundled New Computer Modern Math.
 \setmathfont{NewCMMath-Regular.otf}
@@ -57,17 +57,80 @@
 % Keep the reference edition's inline style.
 \AtBeginDocument{\everymath{\displaystyle}}
 
-% Use the same fixed outer space for normal displays and short preceding lines.
-% Append after setspace and size selection; never multiply these skips by 1.3.
+% Use 8 pt at a text/display boundary. Between two directly consecutive
+% displays, use the smaller inter-row spacing without merging their numbers.
 \newlength{\AJDisplayMathSkip}
 \setlength{\AJDisplayMathSkip}{8pt}
+\newlength{\AJAdjacentDisplayMathSkip}
+\setlength{\AJAdjacentDisplayMathSkip}{3pt}
+\newif\ifajbook@adjacentdisplay
+\newcommand{\ajbook@checkdisplayboundary}{%
+  \ajbook@adjacentdisplayfalse
+  \ifvmode
+    % An empty paragraph after a display leaves its marked lower skip at
+    % the tail of the vertical list. No text has been added.
+    \ifdim\gluestretch\lastskip=1sp\relax
+      \ifdim\glueshrink\lastskip=2sp\relax
+        \ajbook@adjacentdisplaytrue
+        \noindent
+      \fi
+    \fi
+  \else
+    % After a display in the same paragraph, TeX resumes with an empty
+    % horizontal list and a nonzero count of preceding lines.
+    \ifhmode
+      \ifnum\lastnodetype<0\relax
+        \ifnum\prevgraf>0\relax
+          \ajbook@adjacentdisplaytrue
+        \fi
+      \fi
+    \fi
+  \fi
+}
+\ExplSyntaxOn
+\clist_map_inline:nn
+  { equation,equation*,gather,gather*,align,align*,alignat,alignat*,
+    flalign,flalign*,multline,multline* }
+  { \AddToHook{env/#1/begin}{\ajbook@checkdisplayboundary} }
+\ExplSyntaxOff
+% AJbook's ntheorem integration uses a direct display for \[...\],
+% rather than entering the amsmath equation* environment.
+\AddToHook{cmd/[/before}{\ajbook@checkdisplayboundary}
+\AddToHook{cmd/]/after}{\ajbook@adjacentdisplayfalse}
+
+% Run after setspace and size selection. The sub-point stretch and shrink
+% identify the lower glue at a paragraph boundary; its natural size is 8 pt.
 \newcommand{\AJApplyDisplayMathSpacing}{%
-  \setlength{\abovedisplayskip}{\AJDisplayMathSkip}%
-  \setlength{\belowdisplayskip}{\AJDisplayMathSkip}%
-  \setlength{\abovedisplayshortskip}{\AJDisplayMathSkip}%
-  \setlength{\belowdisplayshortskip}{\AJDisplayMathSkip}%
+  \abovedisplayskip=\AJDisplayMathSkip\relax
+  \ifajbook@adjacentdisplay
+    % The preceding display already contributed its lower skip.
+    \abovedisplayskip=\dimexpr\AJAdjacentDisplayMathSkip-\AJDisplayMathSkip\relax
+  \fi
+  \abovedisplayshortskip=\abovedisplayskip\relax
+  \belowdisplayskip=\dimexpr\AJDisplayMathSkip\relax plus 1sp minus 2sp\relax
+  \belowdisplayshortskip=\belowdisplayskip\relax
+}
+\newcommand{\ajbook@stepadjacentequation}{%
+  \ifdefined\Hy@raisedlink
+    \let\ajbook@savedanchor\Hy@raisedlink
+    % Classify the zero-width anchor as an opening atom, so it cannot add
+    % inter-atom space at the start of the original formula.
+    \def\Hy@raisedlink##1{\mathopen{\ajbook@savedanchor{##1}}}%
+    \incr@eqnum
+    \let\Hy@raisedlink\ajbook@savedanchor
+  \else
+    \incr@eqnum
+  \fi
 }
 \AddToHook{begindocument/end}{%
+  % For consecutive displays, ntheorem's pre-display hyperlink anchor
+  % alone would create a text line. Move it inside only in that case.
+  \patchcmd{\equation}
+    {\incr@eqnum\mathdisplay@push\st@rredfalse\global\@eqnswtrue\mathdisplay{equation}}
+    {\ifajbook@adjacentdisplay\else\incr@eqnum\fi
+     \mathdisplay@push\st@rredfalse\global\@eqnswtrue\mathdisplay{equation}%
+     \ifajbook@adjacentdisplay\ajbook@stepadjacentequation\fi}
+    {}{\PackageWarningNoLine{ajbook-pde-profile}{Could not move the equation anchor into the display}}%
   \everydisplay\expandafter{\the\everydisplay\AJApplyDisplayMathSpacing}%
 }
 

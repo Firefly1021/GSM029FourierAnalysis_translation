@@ -1,0 +1,192 @@
+\section{模的生成元}\label{sec:module-generators}
+
+上一节介绍了模: 它是一种代数结构, 把向量空间推广到标量构成环而不必构成域的情形. 本节将向量空间中重要的有限维概念推广到模. 作此推广所需的关键概念是线性组合和生成元.
+
+\begin{Definition}{线性组合与生成元}\leavevmode\label{def:module-linear-combination}
+  设 $M$ 是 $R$-模, $S\subseteq M$ 是子集. $S$ 的一个\textbf{线性组合}是 $M$ 中形如
+  \[
+    r_{1}a_{1}+\cdots+r_{n}a_{n}
+  \]
+  的元素, 其中 $n\in\mathbb{N}$, $r_{i}\in R$, $a_{i}\in S$. $S$ 的所有线性组合所成的集合称为 $M$ 中\textbf{由 $S$ 生成的子模}, 记作 $RS$.
+\end{Definition}
+
+值得练习验证的是, $RS$ 确实是 $M$ 的子模, 而且是 $M$ 的包含集合 $S$ 的最小子模 (Exercise~\ref{ex:smallest-submodule-containing-set}). 来看几个例子.
+
+\begin{Example}{{\textmd{$R[x]$} 的子模}}\leavevmode\label{ex:submodules-of-polynomial-ring}
+  将 $R[x]$ 看作 $R$-模. 由 $\{x^{2},x^{3}\}$ 生成的子模为
+  \[
+    R\{x^{2},x^{3}\}=\{ax^{2}+bx^{3}\mid a,b\in R\}\subseteq R[x].
+  \]
+  换句话说, 其中的多项式只有 $x^{2}$ 项和 $x^{3}$ 项的系数可能非零. 类似地,
+  \[
+    R\{1,x^{2},x^{4},x^{6},\ldots\}=
+       \left\{\sum_{i=0}^{n}a_{i}x^{2i}\mathrel{}\middle|\mathrel{}n\in\mathbb{N},\ a_{i}\in R\right\}\subseteq R[x]
+  \]
+  由非零系数只出现在 $x$ 的偶次幂上的多项式组成.
+\end{Example}
+
+\begin{Example}{$\mathbb{Z}$ 的子模}\leavevmode\label{ex:integer-submodule-generators}
+  将 $\mathbb{Z}$ 看作 $\mathbb{Z}$-模. 由 $\{4,6\}$ 生成的子模为
+  \[
+    \mathbb{Z}\{4,6\}=\{a\cdot4+b\cdot6\mid a,b\in\mathbb{Z}\}.
+  \]
+  注意到 $2=(-1)\cdot4+1\cdot6\in\mathbb{Z}\{4,6\}$, 不难看出每个偶整数都能写成 $4$ 与 $6$ 的线性组合. 这证明 $2\mathbb{Z}\subseteq\mathbb{Z}\{4,6\}$. 另一方面, $4$ 与 $6$ 的每个线性组合都是偶数, 所以 $\mathbb{Z}\{4,6\}\subseteq2\mathbb{Z}$. 两者结合, 得
+  \[
+    \mathbb{Z}\{4,6\}=2\mathbb{Z}.
+  \]
+  若改为考虑由 $2$ 和 $3$ 生成的子模, 则有
+  \[
+    1=(-1)\cdot2+1\cdot3\in\mathbb{Z}\{2,3\},
+  \]
+  从而 $\mathbb{Z}\{2,3\}=\mathbb{Z}$.
+\end{Example}
+
+\begin{Example}{{作为 \textmd{$K[x]$}-模的单位圆坐标环}}\leavevmode\label{ex:circle-coordinate-ring-module}
+  考虑单位圆 $X=\mathcal{V}(x^{2}+y^{2}-1)\subseteq\mathbb{A}^{2}$ 的坐标环:
+  \[
+    K[X]=\frac{K[x,y]}{\langle x^{2}+y^{2}-1\rangle}.
+  \]
+  对任意 $f\in K[x]$ 和 $[g]\in K[X]$, 定义
+  \[
+    f\cdot[g]=[fg],
+  \]
+  就能自然地把 $K[X]$ 看作 $K[x]$-模. 反复使用等式 $[y^{2}]=[1-x^{2}]$, 可将 $K[X]$ 的每个元素写成
+  \[
+    [f_{1}(x)+f_{2}(x)y]=f_{1}(x)\cdot[1]+f_{2}(x)\cdot[y],
+  \]
+  这表明 $K[X]=K[x]\{[1],[y]\}$.
+\end{Example}
+
+我们尤其关心模能否由一个有限集合生成. 这推广了向量空间中的有限维概念.
+
+\begin{Definition}{有限生成模}\leavevmode\label{def:finitely-generated-module}
+  若存在 $a_{1},\ldots,a_{n}\in M$, 使得
+  \[
+    M=R\{a_{1},\ldots,a_{n}\},
+  \]
+  则称 $M$ 是\textbf{有限生成 $R$-模}.
+\end{Definition}
+
+Example~\ref{ex:circle-coordinate-ring-module} 表明, 单位圆的坐标环是由 $[1]$ 和 $[y]$ 生成的有限生成 $K[x]$-模. 下一例给出一个熟悉的但并非有限生成的模.
+
+\begin{Example}{{\textmd{$R[x]$} 不是有限生成 $R$-模}}\leavevmode\label{ex:polynomial-ring-not-finite-module}
+  考虑多项式环 $R[x]$. 为证明 $R[x]$ 不是有限生成的, 设 $f_{1},\ldots,f_{n}\in R[x]$ 是任意有限个多项式, 考虑子模
+  \[
+    R\{f_{1},\ldots,f_{n}\}\subseteq R[x].
+  \]
+  必须证明这个子模不是整个 $R[x]$. 为此, 令 $d$ 为多项式 $f_{1},\ldots,f_{n}$ 的最高次数. 则这些多项式的任意线性组合的次数至多为 $d$. 特别地, $x^{d+1}\notin R\{f_{1},\ldots,f_{n}\}$.
+\end{Example}
+
+\BookPairedNote
+  {模在许多方面表现得像向量空间, 但也要注意它们的关键区别. 读者也许记得线性代数中的一个标准结果: 每个有限维 $K$-向量空间都同构于某个 $K^{n}$.}
+  {Exercise~\ref{ex:minimal-module-generators} 讨论模与向量空间的更多区别.}
+\noindent 对模而言并非如此. 例如, 给定任意非平凡的有限群 $M$, 可将它看作 $\mathbb{Z}$-模 (Example~\ref{ex:abelian-group-as-z-module}). 它由其全部元素生成, 因而是有限生成的. 然而, 对任何 $n$ 都没有 $M\cong\mathbb{Z}^{n}$, 因为 $1<|M|<\infty$, 而 $\mathbb{Z}^{n}$ 要么是无限的 (若 $n>0$), 要么只有一个元素 (若 $n=0$).
+
+实际上, 本书中的大多数模都会自然地带有乘法运算, 从而具有代数结构. 给定一个 $R$-代数, 可以讨论其模的性质, 这些性质只涉及加法与数乘 (也就是说, 线性代数); 也可以讨论其代数的性质, 这些性质还涉及乘法运算 (也就是说, 多项式代数). 下一例将对比这两种观点.
+
+\begin{Example}{由集合生成的子模与子代数}\leavevmode\label{ex:generated-submodule-versus-subalgebra}
+  在 Example~\ref{ex:submodules-of-polynomial-ring} 中, 我们看到 $R[x]$ 中由 $x^{2}$ 和 $x^{3}$ 生成的子模为
+  \[
+    R\{x^{2},x^{3}\}=\{ax^{2}+bx^{3}\mid a,b\in R\}.
+  \]
+  为与代数情形作对比, 考虑由同样两个元素生成的子代数. 根据第~\ref{sec:generators-of-k-algebras}~节的定义, 子代数 $R[x^{2},x^{3}]$ 由 $x^{2}$ 和 $x^{3}$ 的所有多项式组合组成. 所以它不仅包含上面的线性组合, 还包含诸如
+  \[
+    (x^{2})^{2}=x^{4},\quad x^{2}\cdot x^{3}=x^{5}
+    \qquad\text{和}\qquad (x^{3})^{2}=x^{6}
+  \]
+  的元素. 实际上, 可以证明 (Exercise~\ref{ex:polynomial-subalgebra-powers-two-three}) $R[x^{2},x^{3}]$ 由 $R[x]$ 中所有一次项系数为零的多项式组成:
+  \[
+    R[x^{2},x^{3}]=R\{1,x^{2},x^{3},x^{4},\ldots\}.
+  \]
+  因此 $x^{2}$ 与 $x^{3}$ 生成的子代数比子模大得多; 它作为模甚至不是有限生成的.
+\end{Example}
+
+若 $A$ 是 $R$-代数, $S\subseteq A$ 是子集, 则
+\[
+  RS\subseteq R[S],
+\]
+因为每个线性组合都是多项式组合的特例. 因此, 若 $A$ 作为模是有限生成的, 则它作为代数也必是有限生成的. 另一方面, 给定一个有限生成代数, 它作为模通常并非有限生成; 例如, 多项式环 $R[x_{1},\ldots,x_{n}]$ 作为 $R$-代数由 $x_{1},\ldots,x_{n}$ 有限生成, 但它不是有限生成 $R$-模. 因此, 模意义下的有限生成比代数意义下的有限生成限制严格得多.
+
+据此, 问给定的有限生成代数作为模是否仍有限生成, 既有趣又有用. 例如, 把 $\mathbb{R}$ 看作 $\mathbb{Z}$-模并取一个实数 $a\in\mathbb{R}$, 则子代数 $\mathbb{Z}[a]$ 作为 $\mathbb{Z}$-代数是有限生成的. 它作为模是否有限生成? 接下来两个例子对两个不同的 $a$ 值考察这个问题.
+
+\begin{Example}{{\textmd{$\mathbb{Z}[\sqrt{2}]$} 是有限生成 $\mathbb{Z}$-模}}\leavevmode\label{ex:square-root-two-finite-module}
+  将实数 $\mathbb{R}$ 看作 $\mathbb{Z}$-代数, 考察有限生成子代数
+  \[
+    \mathbb{Z}[\sqrt{2}]\subseteq\mathbb{R}.
+  \]
+  $\mathbb{Z}[\sqrt{2}]$ 的元素是可以写成多项式组合 $f(\sqrt{2})$ 的实数, 其中 $f\in\mathbb{Z}[x]$. 例如, 考虑多项式
+  \[
+    f=3+5x+4x^{2}-x^{3}.
+  \]
+  按定义, $f(\sqrt{2})\in\mathbb{Z}[\sqrt{2}]$. 化简可得
+  \[
+    \begin{aligned}
+      f(\sqrt{2})&=3+5\sqrt{2}+4(\sqrt{2})^{2}-(\sqrt{2})^{3}\\
+        &=3+5\sqrt{2}+4\cdot2-2\sqrt{2}\\
+        &=11+3\sqrt{2}.
+    \end{aligned}
+  \]
+  因此, 多项式组合 $f(\sqrt{2})$ 等于线性组合 $11+3\sqrt{2}\in\mathbb{Z}\{1,\sqrt{2}\}$. 将同一技巧推广到任意多项式, 就可证明 $\mathbb{Z}[\sqrt{2}]$ 是有限生成 $\mathbb{Z}$-模 (Exercise~\ref{ex:square-root-two-module-generators}):
+  \[
+    \mathbb{Z}[\sqrt{2}]=\mathbb{Z}\{1,\sqrt{2}\}.
+  \]
+\end{Example}
+
+\begin{Example}{{\textmd{$\mathbb{Z}[1/2]$} 不是有限生成 $\mathbb{Z}$-模}}\leavevmode\label{ex:half-not-finite-module}
+  再次将实数 $\mathbb{R}$ 看作 $\mathbb{Z}$-代数, 考察有限生成子代数
+  \[
+    \mathbb{Z}[1/2]\subseteq\mathbb{R}.
+  \]
+  这个子代数由 $1/2$ 的多项式组合组成. 例如, 取 $f=3+5x+4x^{2}-x^{3}$, 则
+  \[
+    f(1/2)=3+5(1/2)+4(1/4)-(1/8)=51/8\in\mathbb{Z}[1/2].
+  \]
+  注意, 对于次数为 $d$ 的多项式 $f$, $f(1/2)$ 的任何一项的分母中出现的最大的 $2$ 的幂是 $2^{d}$. 因此, 合并各项并把有理数 $f(1/2)$ 写成既约分数后, 其分母不会被 $2^{d+1}$ 整除. 现在利用这一观察证明 $\mathbb{Z}[1/2]$ 作为 $\mathbb{Z}$-模不是有限生成的.
+
+  考虑任意有限生成子模 $\mathbb{Z}\{a_{1},\ldots,a_{n}\}\subseteq\mathbb{Z}[1/2]$. 由于每个 $a_{i}$ 都是 $\mathbb{Z}[1/2]$ 的元素, 可知 $a_{i}=f_{i}(1/2)$, 其中 $f_{i}$ 是 $\mathbb{Z}[x]$ 中的某个多项式. 令 $d$ 为各 $f_{i}$ 的最高次数. 将每个 $a_{i}$ 写成既约分数后, 其分母都不被 $2^{d+1}$ 整除. 取 $\mathbb{Z}$-线性组合并约分, 不会在分母中引入更高的 $2$ 的幂, 这就证明
+  \[
+    \frac{1}{2^{d+1}}\notin\mathbb{Z}\{a_{1},\ldots,a_{n}\}.
+  \]
+  然而, 由于对 $f=x^{d+1}\in\mathbb{Z}[x]$ 有 $1/2^{d+1}=f(1/2)$, 可得
+  \[
+    \frac{1}{2^{d+1}}\in\mathbb{Z}[1/2],
+  \]
+  因而
+  \[
+    \mathbb{Z}\{a_{1},\ldots,a_{n}\}\ne\mathbb{Z}[1/2].
+  \]
+  所以 $\mathbb{Z}[1/2]$ 不是有限生成 $\mathbb{Z}$-模, 正如所要证明的.
+\end{Example}
+
+停下来想想前两个例子. 在两个例子中, 我们都考察了由单个实数生成的 $\mathbb{Z}$-代数. 可能会觉得这两个代数应当很相似, 但结果一个是有限生成模, 另一个却不是. 那么, $\sqrt{2}$ 和 $1/2$ 究竟有什么区别, 导致如此不同的表现? 下一节将给出一个一般判据, 用来确定有限生成代数作为模是否仍是有限生成的, 从而回答这个问题.
+
+\BookExerciseHeading
+\begin{BookExercises}
+  \item\label{ex:smallest-submodule-containing-set} 设 $M$ 是 $R$-模, $S\subseteq M$ 是子集. 证明下列结论.
+    \begin{enumerate}[label=(\alph*)]
+      \item 集合 $RS$ 是 $M$ 的子模.
+      \item 若 $N\subseteq M$ 是包含 $S$ 的任意子模, 则 $RS\subseteq N$.
+    \end{enumerate}
+  \item\label{ex:polynomial-subalgebra-powers-two-three} 证明
+    \[
+      R[x^{2},x^{3}]=R\{1,x^{2},x^{3},x^{4},\ldots\}.
+    \]
+  \item\label{ex:gcd-generates-integer-submodule} 将 $\mathbb{Z}$ 看作 $\mathbb{Z}$-模, 设 $a,b\in\mathbb{Z}$. 证明
+    \[
+      \mathbb{Z}\{a,b\}=\gcd(a,b)\mathbb{Z}.
+    \]
+  \item\label{ex:square-root-two-module-generators} 证明 $\mathbb{Z}[\sqrt{2}]=\mathbb{Z}\{1,\sqrt{2}\}$.
+  \item\label{ex:pi-not-finite-module} 证明 $\mathbb{Z}[\pi]$ 作为 $\mathbb{Z}$-模不是有限生成的.
+  \item\label{ex:finite-module-in-tower} 设 $R\subseteq S\subseteq T$ 为环. 证明若 $S$ 是有限生成 $R$-模, $T$ 是有限生成 $S$-模, 则 $T$ 是有限生成 $R$-模.
+  \item\label{ex:minimal-module-generators} 由 Example~\ref{ex:integer-submodule-generators} 回忆, $\mathbb{Z}=\mathbb{Z}\{2,3\}$.
+    \begin{enumerate}[label=(\alph*)]
+      \item 证明 $\{2,3\}$ 是极小生成集, 意即 $\{2,3\}$ 的任何真子集都不能生成 $\mathbb{Z}$-模 $\mathbb{Z}$.
+      \item 证明虽然 $\mathbb{Z}$ 的每个元素都可表示为
+        \[
+          r_{1}\cdot2+r_{2}\cdot3,
+        \]
+        其中 $r_{1},r_{2}\in\mathbb{Z}$, 但这种表示并不唯一.
+      \item 证明 $\{1\}$ 也生成 $\mathbb{Z}$-模 $\mathbb{Z}$, 而且是极小生成集.
+    \end{enumerate}
+    这凸显了 $R$-模与向量空间之间的两个区别. 第一, 若 $V$ 是向量空间, 则 $V$ 的极小生成集必是基. 由 (a) 和 (b) 可知, 对 $R$-模并非如此. 第二, 若 $V$ 是向量空间, 则每个极小生成集的大小都相同. (a) 和 (c) 表明, 对 $R$-模并非如此.
+\end{BookExercises}

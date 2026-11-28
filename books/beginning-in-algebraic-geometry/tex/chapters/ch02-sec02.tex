@@ -1,0 +1,200 @@
+\section{有限生成}\label{sec:finite-generation}
+
+无论 $S$ 是有限集还是无限集, 零点集 $\mathcal{V}(S)$ 都有意义, 但我们往往可以用有限集来替换无限集, 而不影响相应的零点集. 例如, 理想 $\langle y-x^{2}\rangle\subseteq K[x,y]$ 含有无穷多个多项式, 但 $\mathcal{V}(\langle y-x^{2}\rangle)$ 等于 $\mathcal{V}(y-x^{2})$, 即仅由一个多项式给出的零点集.
+
+于是一个自然的问题是: 是否每个仿射簇都等于某个有限集 $S$ 的 $\mathcal{V}(S)$? 答案是肯定的, 给出这一事实的代数证明是本节的主要目标. 先介绍一点代数术语.
+
+\begin{Definition}{有限生成理想}\leavevmode\label{def:finitely-generated-ideal}
+  若 $I=\langle r_{1},\ldots,r_{k}\rangle$, 其中 $r_{1},\ldots,r_{k}\in R$ 是有限多个元素, 则称环 $R$ 的理想 $I$ 是\textbf{有限生成的}.
+\end{Definition}
+
+例如, 理想 $\langle y-x^{2}\rangle\subseteq K[x,y]$ 是有限生成的, 理想 $\langle x,y\rangle\subseteq K[x,y]$ 也是. 事实上, 要找一个不是有限生成的理想的例子, 必须考察一个不太熟悉的环.
+
+\begin{Example}{一个不是有限生成的理想}\leavevmode\label{ex:infinitely-generated-variable-ideal}
+  考虑无穷元多项式环 $K[x_{1},x_{2},x_{3},\ldots]$. 具体来说, $K[x_{1},x_{2},x_{3},\ldots]$ 中的单项式是形如
+  \[
+    x^{\alpha}=x_{1}^{\alpha_{1}}x_{2}^{\alpha_{2}}x_{3}^{\alpha_{3}}\cdots,
+  \]
+  的表达式, 其中 $\alpha=(\alpha_{1},\alpha_{2},\alpha_{3},\ldots)$ 为满足下列条件的指数向量:
+  \begin{enumerate}[label=(\roman*),ref=(\roman*)]
+    \item\label{item:infinite-variable-nonnegative-exponents} 对所有 $i$, 都有 $\alpha_{i}\in\mathbb{N}$;
+    \item\label{item:infinite-variable-finite-support} 除有限多个 $i$ 外, 都有 $\alpha_{i}=0$.
+  \end{enumerate}
+  $R$ 的元素是单项式的有限 $K$-线性组合:
+  \[
+    f=\sum_{\alpha}a_{\alpha}x^{\alpha},
+  \]
+  其中求和遍及满足 \ref{item:infinite-variable-nonnegative-exponents} 和 \ref{item:infinite-variable-finite-support} 的所有指数向量 $\alpha$, 系数 $a_{\alpha}$ 是 $K$ 中的元素, 且除有限多个 $\alpha$ 外, 都有 $a_{\alpha}=0$.
+
+  在 $K[x_{1},x_{2},x_{3},\ldots]$ 中, 由所有变量生成的理想
+  \[
+    I=\langle x_{1},x_{2},x_{3},\ldots\rangle,
+  \]
+  不是有限生成的, 读者不妨自行验证 (Exercise~\ref{ex:infinite-variable-ideal-not-finitely-generated}).
+\end{Example}
+
+尽管有上面的例子, 我们熟悉的许多环都具有这样的性质: 它们的所有理想都是有限生成的. 为纪念 Emmy Noether (1882--1935), 这类环有一个专门的名称. 除了在抽象代数上的开创性工作以外, Noether 还发现了对称性与守恒定律之间的联系, 指引了现代物理学的发展.
+
+\begin{Definition}{Noether 环}\leavevmode\label{def:noetherian-ring}
+  若一个环的所有理想都是有限生成的, 则称它是 \textbf{Noether 环}.
+\end{Definition}
+
+本节的主要目标是证明 $K[x_{1},\ldots,x_{n}]$ 是 Noether 环. 首先来讨论几个我们已经知道是 Noether 环的熟悉例子.
+
+\begin{Example}{域是 Noether 环}\leavevmode\label{ex:fields-are-noetherian}
+  若 $K$ 是任意一个域, 则 $K$ 仅有的理想是 $\{0\}$ 和 $K$. 两者都是有限生成的, 因为 $\{0\}=\langle0\rangle$ 且 $K=\langle1\rangle$. 因此, $K$ 是 Noether 环.
+\end{Example}
+
+\begin{Example}{PID 是 Noether 环}\leavevmode\label{ex:principal-ideal-domains-are-noetherian}
+  根据定义, 主理想整环中的每个理想都由单个元素生成, 因而都是有限生成的. 所以 $\mathbb{Z}$ 和 $K[x]$ 都是 Noether 环的例子.
+\end{Example}
+
+还可以用相互嵌套的理想序列来刻画 Noether 环. 尽管第二种刻画叙述起来没有那么简单, 但正如下面所见, 它在实际运用中很有用.
+
+\begin{Proposition}{升链条件}\leavevmode\label{prop:ascending-chain-condition}
+  环 $R$ 是 Noether 环, 当且仅当给定 $R$ 的任意理想 $I_{1},I_{2},I_{3},\ldots$ 满足
+  \[
+    I_{1}\subseteq I_{2}\subseteq I_{3}\subseteq\cdots,
+  \]
+  就存在正整数 $k$, 使得对所有 $d\geq k$ 都有 $I_{d}=I_{k}$.
+\end{Proposition}
+
+换句话说, Proposition~\ref{prop:ascending-chain-condition} 表明 Noether 环由\textbf{升链条件}刻画: 任何理想的升链最终都必定稳定. 环 $R=K[x_{1},x_{2},x_{3},\ldots]$ 不是 Noether 环, 并不满足升链条件. 例如, 理想链
+\[
+  \langle x_{1}\rangle\subsetneq\langle x_{1},x_{2}\rangle
+  \subsetneq\langle x_{1},x_{2},x_{3}\rangle\subsetneq\cdots
+\]
+每一步都严格增加.
+
+\begin{Proof}\unskip\textbf{ of Proposition~\ref{prop:ascending-chain-condition}}\quad
+  我们证明两个方向.
+
+  ($\Rightarrow$) 假设 $R$ 是 Noether 环, 且
+  \[
+    I_{1}\subseteq I_{2}\subseteq I_{3}\subseteq\cdots
+  \]
+  是 $R$ 中的一条理想升链. 考虑这些相互嵌套的理想的并
+  \[
+    I=\bigcup_{k=1}^{\infty}I_{k},
+  \]
+  根据 Exercise~\ref{ex:ascending-ideal-union}, 这是 $R$ 的一个理想. 由于 $R$ 是 Noether 环, 对某些 $a_{1},\ldots,a_{r}\in R$, 有 $I=\langle a_{1},\ldots,a_{r}\rangle$. 每个 $a_{i}$ 都在各 $I_{k}$ 的并中, 所以它必属于其中一个, 设 $a_{i}\in I_{k_{i}}$. 由于这些理想相互嵌套, 对所有 $d\geq k_{i}$ 都有 $a_{i}\in I_{d}$. 特别地, 令 $k=\max\{k_{1},\ldots,k_{r}\}$, 则对所有 $d\geq k$ 都有 $\{a_{1},\ldots,a_{r}\}\subseteq I_{d}$, 从而对于所有 $d\geq k$ 都有 $I=\langle a_{1},\ldots,a_{r}\rangle\subseteq I_{d}$. 另一方面, 由于 $I$ 是各 $I_{k}$ 的并, 还有 $I\supseteq I_{d}$. 由此得对所有 $d\geq k$, 都有 $I=I_{d}$, 验证了升链条件.
+
+  ($\Leftarrow$) 我们证明这个方向的逆否命题. 假设 $R$ 不是 Noether 环, 选取 $R$ 的一个不是有限生成的理想 $I$. 任取一个元素 $a_{1}\in I$, 定义 $I_{1}=\langle a_{1}\rangle$. 那么 $I_{1}\subseteq I$, 但因为 $I$ 不是有限生成的, 这个包含关系必是严格的. 因而可以选取元素 $a_{2}\in I\setminus I_{1}$, 定义 $I_{2}=\langle a_{1},a_{2}\rangle$. 现在有
+  \[
+    I_{1}\subsetneq I_{2}\subsetneq I;
+  \]
+  第一个包含关系是严格的, 因为 $a_{2}\notin I_{1}$; 第二个包含关系也是严格的, 因为 $I$ 不是有限生成的. 选取 $a_{n+1}\in I\setminus\langle a_{1},\ldots,a_{n}\rangle$ 并定义 $I_{n+1}=\langle a_{1},\ldots,a_{n+1}\rangle$, 就能将这个过程无限继续下去. 这个过程递归地产生一条永不稳定的理想升链, 所以升链条件不成立.
+\end{Proof}
+
+\BookPairedNote
+  {有了用升链来刻画 Noether 性的结果, 现在就能证明多项式环 $K[x_{1},\ldots,x_{n}]$ 是 Noether 环. 证明用归纳法, 每次添加一个变量. 归纳步骤由下面这个关键的代数结果给出.}
+  {\textquotedbl{}基\textquotedbl{}这个词多少有些过时: 在 Hilbert 的时代, 理想的一组生成元称为一组基. 这个术语在某种程度上沿用至今, 例如还出现在\textquotedbl{}Gröbner 基\textquotedbl{}中, 但已相对少见.}
+\noindent 这一结果称为 Hilbert 基定理, 得名于成果颇丰的数学家 David Hilbert (1862--1943). 他于 1890 年在研究不变量理论时首次证明了这个结果.
+
+\begin{Theorem}{Hilbert 基定理}\leavevmode\label{thm:hilbert-basis-theorem}
+  如果 $R$ 是 Noether 环, 那么 $R[x]$ 是 Noether 环.
+\end{Theorem}
+
+\begin{Proof}
+  假设 $R$ 是 Noether 环, 并反设 $R[x]$ 不是 Noether 环. 令 $I\subseteq R[x]$ 为一个不是有限生成的理想. 按如下递归过程定义 $R[x]$ 中的一个无穷多项式序列:
+  \begin{enumerate}[label=\arabic*.]
+    \item 选取 $f_{1}\in I$ 为一个次数最小的非零多项式.
+    \item 选定 $f_{1},\ldots,f_{j}\in I$ 后, 选取 $f_{j+1}\in I\setminus\langle f_{1},\ldots,f_{j}\rangle$ 为一个次数最小的非零多项式.
+  \end{enumerate}
+  不可能有 $\deg(f_{j})>\deg(f_{j+1})$, 否则与 $f_{j}$ 在 $I\setminus\langle f_{1},\ldots,f_{j-1}\rangle$ 中次数最小的选法矛盾. 因此, 序列 $(f_{1},f_{2},f_{3},\ldots)$ 中多项式的次数是非递减的.
+
+  对每个 $j$, 令 $a_{j}$ 为 $f_{j}$ 的首项系数, 并考虑 $R$ 中的如下理想升链:
+  \[
+    \langle a_{1}\rangle\subseteq\langle a_{1},a_{2}\rangle
+    \subseteq\langle a_{1},a_{2},a_{3}\rangle\subseteq\cdots.
+  \]
+  由于 $R$ 是 Noether 环, 这条链最终一定稳定. 假设它在第 $k$ 步稳定. 则 $a_{k+1}\in\langle a_{1},\ldots,a_{k}\rangle$. 选取元素 $r_{1},\ldots,r_{k}\in R$, 使得
+  \[
+    a_{k+1}=r_{1}a_{1}+\cdots+r_{k}a_{k}.
+  \]
+  利用对所有 $i\leq k$ 都有 $\deg(f_{i})\leq\deg(f_{k+1})$ 这一事实, 定义多项式
+  \[
+    g=x^{\deg(f_{k+1})-\deg(f_{1})}r_{1}f_{1}
+      +\cdots+x^{\deg(f_{k+1})-\deg(f_{k})}r_{k}f_{k}\in R[x].
+  \]
+  按照这一构造, $g$ 与 $f_{k+1}$ 有相同的首项, 从而
+  \[
+    \deg(f_{k+1}-g)<\deg(f_{k+1}).
+  \]
+  由于 $f_{k+1}$ 和 $g$ 都是 $I$ 的元素, 可知 $f_{k+1}-g\in I$. 然而, $g$ 是 $\langle f_{1},\ldots,f_{k}\rangle$ 的元素而 $f_{k+1}$ 不是, 故 $f_{k+1}-g$ 不可能属于 $\langle f_{1},\ldots,f_{k}\rangle$. 因此 $f_{k+1}-g\in I\setminus\langle f_{1},\ldots,f_{k}\rangle$, 且 $\deg(f_{k+1}-g)<\deg(f_{k+1})$, 这与选择 $f_{k+1}$ 时的次数最小性矛盾.
+\end{Proof}
+
+这样就得出了多项式环的以下基本性质.
+
+\begin{Corollary}{{\textmd{$K[x_{1},\ldots,x_{n}]$} 是 Noether 环}}\leavevmode\label{cor:polynomial-rings-are-noetherian}
+  \strut\par\nopagebreak[4]\noindent
+  对任意域 $K$, 多项式环 $K[x_{1},\ldots,x_{n}]$ 是 Noether 环.
+\end{Corollary}
+
+\begin{Proof}
+  对 $n$ 作归纳.
+
+  (归纳起点) 如 Example~\ref{ex:fields-are-noetherian} 所述, 任意域 $K$ 都是 Noether 环, 这就证明了 $n=0$ 的情形.
+
+  (归纳步骤) 假设 $K[x_{1},\ldots,x_{n-1}]$ 是 Noether 环. 利用典范同构
+  \[
+    K[x_{1},\ldots,x_{n}]=K[x_{1},\ldots,x_{n-1}][x_{n}]
+  \]
+  并对 $R=K[x_{1},\ldots,x_{n-1}]$ 应用 Hilbert 基定理, 可知 $K[x_{1},\ldots,x_{n}]$ 是 Noether 环.
+\end{Proof}
+
+$K[x_{1},\ldots,x_{n}]$ 是 Noether 环的几何含义是: 每个仿射簇都可以定义为有限多个多项式的零点集. 实际上, 还有一个稍强的结论, 如下一个结果所述.
+
+\begin{Corollary}{仿射簇是有限生成的}\leavevmode\label{cor:affine-varieties-finitely-generated}
+  对任意子集 $S\subseteq K[x_{1},\ldots,x_{n}]$, 都存在有限子集 $T\subseteq S$, 使得
+  \[
+    \mathcal{V}(S)=\mathcal{V}(T).
+  \]
+\end{Corollary}
+
+\begin{Proof}
+  \BookPairedNote
+    {令 $S\subseteq K[x_{1},\ldots,x_{n}]$ 为一个 (可能是无限的) 集合. 根据 Corollary~\ref{cor:polynomial-rings-are-noetherian}, 存在 $f_{1},\ldots,f_{k}\in K[x_{1},\ldots,x_{n}]$, 使得
+    \[
+      \langle S\rangle=\langle f_{1},\ldots,f_{k}\rangle.
+    \]}
+    {这个结果比仅仅说 $\mathcal{V}(S)$ 可以用一个有限多项式集合来定义更强. 它还断言这个有限集可以选为 $S$ 的子集.}
+  \noindent 多项式 $f_{1},\ldots,f_{k}$ 本身未必都属于集合 $S$, 但由 $\langle S\rangle$ 的定义, 我们可以把每个 $f_{i}$ 写成 $S$ 中元素的线性组合:
+  \begin{equation}\label{eq:finite-generators-in-span-of-original-set}
+    f_{i}=\sum_{j=1}^{\ell_{i}}g_{i,j}h_{i,j}
+  \end{equation}
+  其中 $g_{i,j}\in K[x_{1},\ldots,x_{n}]$, $h_{i,j}\in S$. 定义有限子集
+  \[
+    T=\{h_{i,j}\mid1\leq i\leq k,\ 1\leq j\leq\ell_{i}\}\subseteq S.
+  \]
+  等式 \eqref{eq:finite-generators-in-span-of-original-set} 蕴含对所有 $i$, 都有 $f_{i}\in\langle T\rangle$, 所以 $\langle S\rangle=\langle f_{1},\ldots,f_{k}\rangle\subseteq\langle T\rangle$. 反过来, 由于 $T\subseteq S$, 得到 $\langle T\rangle\subseteq\langle S\rangle$. 因此 $\langle S\rangle=\langle T\rangle$, 从而
+  \[
+    \mathcal{V}(S)=\mathcal{V}(\langle S\rangle)=\mathcal{V}(\langle T\rangle)=\mathcal{V}(T).
+  \]
+\end{Proof}
+
+\BookExerciseHeading
+\begin{BookExercises}
+  \item\label{ex:infinite-variable-ideal-not-finitely-generated} 证明 $\langle x_{1},x_{2},x_{3},\ldots\rangle\subseteq K[x_{1},x_{2},x_{3},\ldots]$ 不是有限生成的.
+  \item\label{ex:ascending-chain-of-integer-ideals} 因为 $\mathbb{Z}$ 是主理想整环 (因而是 Noether 环), Proposition~\ref{prop:ascending-chain-condition} 蕴含 $\mathbb{Z}$ 中任何理想升链 $I_{1}\subseteq I_{2}\subseteq I_{3}\subseteq\cdots$ 必定稳定. 具体解释这个现象: 即把各 $I_{i}$ 写成 $I_{i}=\langle a_{i}\rangle$, 其中 $a_{i}$ 为某个整数, 那么 $a_{i}$ 与 $a_{i+1}$ 之间有什么关系? 为什么一定存在 $k\in\mathbb{N}$, 使 $a_{k}=a_{k+1}=a_{k+2}=\cdots$?
+  \item\label{ex:quotient-of-noetherian-ring} 设 $R$ 是 Noether 环, $I\subseteq R$ 是理想. 证明 $R/I$ 是 Noether 环.
+  \item\label{ex:noetherian-ring-as-factorization-domain} 证明每个 Noether 环都是分解整环.
+  \item\label{ex:subring-need-not-be-noetherian} 本题说明 Noether 环的子环不一定是 Noether 环. 记 $K[yz,yz^{2},yz^{3},\ldots]$ 为环同态
+    \[
+      \begin{aligned}
+        \phi:K[x_{1},x_{2},x_{3},\ldots]&\to K[y,z]\\
+        f(x_{1},x_{2},x_{3},\ldots)&\mapsto f(yz,yz^{2},yz^{3},\ldots).
+      \end{aligned}
+    \]
+    的像. 证明 $K[yz,yz^{2},yz^{3},\ldots]$ 是 $K[y,z]$ 的一个不是 Noether 环的子环.
+  \item\label{ex:noetherian-surjective-endomorphism} 设 $R$ 是 Noether 环, 且 $\phi:R\to R$ 是环同态. 证明 $\phi$ 是同构当且仅当 $\phi$ 是满射. (提示: 考察理想 $I_{1}=\ker(\phi)$, $I_{2}=\ker(\phi\circ\phi)$, $I_{3}=\ker(\phi\circ\phi\circ\phi)$ 等.)
+  \item\label{ex:zariski-topology-is-compact} 假设
+    \[
+      \mathbb{A}^{n}=\bigcup_{\alpha\in A}U_{\alpha}
+    \]
+    其中每个 $U_{\alpha}\subseteq\mathbb{A}^{n}$ 都是 Zariski 开集. 证明存在有限子集 $B\subseteq A$, 使得
+    \[
+      \mathbb{A}^{n}=\bigcup_{\alpha\in B}U_{\alpha}.
+    \]
+    (对有一定拓扑学背景的学生来说, 这是说 $\mathbb{A}^{n}$ 上的 Zariski 拓扑是紧的.)
+\end{BookExercises}

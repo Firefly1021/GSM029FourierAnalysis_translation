@@ -1,0 +1,384 @@
+\section{Lagrange 力学}\label{sec:lagrangian-mechanics}
+
+设 $M$ 为可微流形, $p,q\in M$, 且 $a,b\in\mathbb{R}$ 满足 $a<b$. 记 $\mathcal{C}$ 为满足 $c(a)=p$ 和 $c(b)=q$ 的可微曲线 $c:[a,b]\to M$ 所成的集合.
+
+\begin{RiemannDefinition}\label{def:lagrangian-and-action}
+$M$ 上的 \textbf{Lagrange 函数}是可微映射 $L:TM\to\mathbb{R}$. 由 $L$ 在 $\mathcal{C}$ 上确定的\textbf{作用量}是映射 $S:\mathcal{C}\to\mathbb{R}$, 由
+\[
+  S(c):=\int_a^b L(\dot c(t))\,\mathrm{d}t
+\]
+给出.
+\end{RiemannDefinition}
+
+可以通过考虑 $\mathcal{C}$ 中的曲线来寻找作用量的全局极小值 (或极大值).
+
+\begin{RiemannDefinition}\label{def:variation-and-critical-point-of-action}
+$c\in\mathcal{C}$ 的一个\textbf{变分}是映射 $\gamma:(-\varepsilon,\varepsilon)\to\mathcal{C}$ (其中 $\varepsilon>0$), 使 $\gamma(0)=c$, 并且由 $\widetilde\gamma(s,t):=\gamma(s)(t)$ 给出的映射 $\widetilde\gamma:(-\varepsilon,\varepsilon)\times[a,b]\to M$ 可微. 若对 $c$ 的任意变分 $\gamma$ 都有
+\[
+  \left.\frac{\mathrm{d}}{\mathrm{d}s}\right|_{s=0}S(\gamma(s))=0,
+\]
+则称曲线 $c$ 为作用量的\textbf{临界点}.
+\end{RiemannDefinition}
+
+注意, $S$ 的全局极小值 (或极大值) 必在临界点取得. 然而临界点不一定是极小点 (或极大点). 事实上, 作用量的临界点是二阶常微分方程的解.
+
+\begin{RiemannTheorem}\label{thm:euler-lagrange-equations}
+曲线 $c\in\mathcal{C}$ 是 Lagrange 函数 $L:TM\to\mathbb{R}$ 所确定的作用量的临界点, 当且仅当对 $M$ 上的任意局部坐标卡 $(x^1,\ldots,x^n)$, 它都满足 \textbf{Euler–Lagrange 方程}
+\[
+  \frac{\mathrm{d}}{\mathrm{d}t}
+  \left(\frac{\partial L}{\partial v^i}(x(t),\dot x(t))\right)
+  -\frac{\partial L}{\partial x^i}(x(t),\dot x(t))=0
+  \qquad(i=1,\ldots,n),
+\]
+其中 $(x^1,\ldots,x^n,v^1,\ldots,v^n)$ 是在 $TM$ 上诱导的相应局部坐标卡.
+\end{RiemannTheorem}
+
+\begin{RiemannProof}
+先假设 $c$ 的像包含在一个局部坐标卡 $(x^1,\ldots,x^n)$ 的定义域内. 设 $\gamma:(-\varepsilon,\varepsilon)\to\mathcal{C}$ 是 $c$ 的一个变分. 令 $x(s,t):=(x\circ\widetilde\gamma)(s,t)$, 则有
+\[
+  S(\gamma(s))=\int_a^b L\left(x(s,t),\frac{\partial x}{\partial t}(s,t)\right)\,\mathrm{d}t,
+\]
+从而
+\begin{align*}
+  \left.\frac{\mathrm{d}}{\mathrm{d}s}\right|_{s=0}S(\gamma(s))
+  &=\int_a^b\sum_{i=1}^n\frac{\partial L}{\partial x^i}
+    \left(x(0,t),\frac{\partial x}{\partial t}(0,t)\right)
+    \frac{\partial x^i}{\partial s}(0,t)\,\mathrm{d}t\\
+  &\quad+\int_a^b\sum_{i=1}^n\frac{\partial L}{\partial v^i}
+    \left(x(0,t),\frac{\partial x}{\partial t}(0,t)\right)
+    \frac{\partial^2x^i}{\partial s\partial t}(0,t)\,\mathrm{d}t.
+\end{align*}
+将关系 $x(s,a)=x(p)$, $x(s,b)=x(q)$ 对 $s$ 求导, 得到
+\[
+  \frac{\partial x}{\partial s}(0,a)=\frac{\partial x}{\partial s}(0,b)=0.
+\]
+因而上面的第二个积分经分部积分后为
+\[
+  -\int_a^b\sum_{i=1}^n\frac{\mathrm{d}}{\mathrm{d}t}
+  \left(\frac{\partial L}{\partial v^i}\left(x(0,t),\frac{\partial x}{\partial t}(0,t)\right)\right)
+  \frac{\partial x^i}{\partial s}(0,t)\,\mathrm{d}t,
+\]
+所以
+\begin{align*}
+  &\left.\frac{\mathrm{d}}{\mathrm{d}s}\right|_{s=0}S(\gamma(s))\\
+  &\quad=\int_a^b\sum_{i=1}^n\left(\frac{\partial L}{\partial x^i}(x(t),\dot x(t))
+      -\frac{\mathrm{d}}{\mathrm{d}t}\left(\frac{\partial L}{\partial v^i}(x(t),\dot x(t))\right)\right)
+      w^i(t)\,\mathrm{d}t,
+\end{align*}
+其中 $x(t):=(x\circ c)(t)$, $w(t):=\frac{\partial x}{\partial s}(0,t)$. 这表明若 $c$ 满足 Euler–Lagrange 方程, 则 $c$ 是作用量的临界点.
+
+为证明反过来也成立, 注意任意满足 $w(a)=w(b)=0$ 的光滑函数 $w:[a,b]\to\mathbb{R}^n$ 都确定一个变分 $\gamma:(-\varepsilon,\varepsilon)\to\mathcal{C}$, 它在局部坐标下由 $x(s,t)=x(t)+sw(t)$ 给出, 并满足 $\frac{\partial x}{\partial s}(0,t)=w(t)$. 特别地, 若 $\rho:[a,b]\to\mathbb{R}$ 为满足 $\rho(a)=\rho(b)=0$ 的光滑正函数, 则可取
+\[
+  w^i(t):=\rho(t)\left(\frac{\partial L}{\partial x^i}(x(t),\dot x(t))
+    -\frac{\mathrm{d}}{\mathrm{d}t}\left(\frac{\partial L}{\partial v^i}(x(t),\dot x(t))\right)\right).
+\]
+因此若 $c$ 为作用量的临界点, 必有
+\[
+  \int_a^b\sum_{i=1}^n\left(\frac{\partial L}{\partial x^i}(x(t),\dot x(t))
+    -\frac{\mathrm{d}}{\mathrm{d}t}\left(\frac{\partial L}{\partial v^i}(x(t),\dot x(t))\right)\right)^2
+    \rho(t)\,\mathrm{d}t=0,
+\]
+从而 $c$ 必须满足 Euler–Lagrange 方程.
+
+一般情形 (即 $c$ 的像不包含在局部坐标卡的定义域内) 留作习题.
+\end{RiemannProof}
+
+\begin{RiemannCorollary}\label{cor:conservative-motion-as-critical-action}
+任意保守力学系统 $(M,\langle\cdot,\cdot\rangle,-\mathrm{d}U)$ 的运动, 都是 Lagrange 函数 $L:=K-U$ 所确定的作用量的临界点.
+\end{RiemannCorollary}
+
+因此, 例如可以通过寻找作用量的极小点来求保守系统的运动. 这种变分方法往往很有用.
+
+事实上, 保守系统的能量守恒是一条适用于任意 Lagrange 函数的更一般的守恒律的特例. 在陈述它之前, 需要以下定义.
+
+\begin{RiemannDefinition}\label{def:fiber-derivative-of-lagrangian}
+Lagrange 函数 $L:TM\to\mathbb{R}$ 在 $v\in T_pM$ 处的\textbf{纤维导数}是线性映射 $(\mathbb{F}L)_v:T_pM\to\mathbb{R}$, 对所有 $w\in T_pM$ 由
+\[
+  (\mathbb{F}L)_v(w):=\left.\frac{\mathrm{d}}{\mathrm{d}t}\right|_{t=0}L(v+tw)
+\]
+给出.
+\end{RiemannDefinition}
+
+\begin{RiemannDefinition}\label{def:hamiltonian-associated-to-lagrangian}
+若 $L:TM\to\mathbb{R}$ 是 Lagrange 函数, 则与它相伴的 \textbf{Hamilton 函数} $H:TM\to\mathbb{R}$ 定义为
+\[
+  H(v):=(\mathbb{F}L)_v(v)-L(v).
+\]
+\end{RiemannDefinition}
+
+\begin{RiemannTheorem}\label{thm:hamiltonian-conserved-along-euler-lagrange-flow}
+Hamilton 函数沿 Euler–Lagrange 方程的解保持恒定.
+\end{RiemannTheorem}
+
+\begin{RiemannProof}
+在局部坐标下有
+\[
+  H(x,v)=\sum_{i=1}^n v^i\frac{\partial L}{\partial v^i}(x,v)-L(x,v).
+\]
+从而若 $c:I\subset\mathbb{R}\to M$ 是 Euler–Lagrange 方程的解, 在局部坐标下由 $x=x(t)$ 给出, 则
+\begin{align*}
+  \frac{\mathrm{d}}{\mathrm{d}t}(H(\dot c(t)))
+  &=\frac{\mathrm{d}}{\mathrm{d}t}
+    \left(\sum_{i=1}^n\dot x^i(t)\frac{\partial L}{\partial v^i}(x(t),\dot x(t))
+       - L(x(t),\dot x(t))\right)\\
+  &=\sum_{i,j=1}^n\ddot x^i(t)\frac{\partial L}{\partial v^i}(x(t),\dot x(t))
+    +\sum_{i=1}^n\dot x^i(t)\frac{\mathrm{d}}{\mathrm{d}t}
+       \left(\frac{\partial L}{\partial v^i}(x(t),\dot x(t))\right)\\
+  &\quad-\sum_{i=1}^n\dot x^i(t)\frac{\partial L}{\partial x^i}(x(t),\dot x(t))
+     -\sum_{i=1}^n\ddot x^i(t)\frac{\partial L}{\partial v^i}(x(t),\dot x(t))=0.
+\end{align*}
+\end{RiemannProof}
+
+\begin{RiemannExample}\label{ex:hamiltonian-as-mechanical-energy}
+若 $(M,\langle\cdot,\cdot\rangle,-\mathrm{d}U)$ 是保守力学系统, 则其运动是相应于 Lagrange 函数 $L:TM\to\mathbb{R}$ 的 Euler–Lagrange 方程的解, 其中
+\[
+  L(v)=\frac{1}{2}\langle v,v\rangle-U(\pi(v))
+\]
+($\pi:TM\to M$ 为典范投影). 显然,
+\[
+  (\mathbb{F}L)_v(w)=\left.\frac{1}{2}\frac{\mathrm{d}}{\mathrm{d}t}\right|_{t=0}
+  \langle v+tw,v+tw\rangle=\langle v,w\rangle,
+\]
+从而
+\[
+  H(v)=\langle v,v\rangle-\frac{1}{2}\langle v,v\rangle+U(\pi(v))
+     =\frac{1}{2}\langle v,v\rangle+U(\pi(v))
+\]
+就是机械能.
+\end{RiemannExample}
+
+Lagrange 表述特别适合探究对称性与守恒律之间的关系.
+
+\begin{RiemannDefinition}\label{def:group-invariant-lagrangian}
+设 $G$ 为作用在流形 $M$ 上的 Lie 群. 若对所有 $p\in M$, $v\in T_pM$ 和 $g\in G$, 都有
+\[
+  L\bigl((\mathrm{d}g)_pv\bigr)=L(v)
+\]
+(其中 $g:M\to M$ 是映射 $p\mapsto g\cdot p$), 则称 Lagrange 函数 $L:TM\to\mathbb{R}$ 是 \textbf{$G$-不变的}.
+\end{RiemannDefinition}
+
+现在证明, 若 Lagrange 函数是 $G$-不变的, 则每个 $V\in\mathfrak{g}$ 都对应一个守恒量. 为此, 需要下面的定义.
+
+\begin{RiemannDefinition}\label{def:infinitesimal-action-of-lie-algebra}
+设 $G$ 为作用在流形 $M$ 上的 Lie 群. $V\in\mathfrak{g}$ 在 $M$ 上的\textbf{无穷小作用}是由下式定义的向量场 $X^V\in\mathfrak{X}(M)$:
+\[
+  X_p^V:=\left.\frac{\mathrm{d}}{\mathrm{d}t}\right|_{t=0}\bigl(\exp(tV)\cdot p\bigr)
+  =(\mathrm{d}A_p)_eV,
+\]
+其中 $A_p:G\to M$ 是映射 $A_p(g)=g\cdot p$.
+\end{RiemannDefinition}
+
+\begin{RiemannTheorem}[Noether]\label{thm:noether-for-invariant-lagrangians}
+设 $G$ 为作用在流形 $M$ 上的 Lie 群. 若 $L:TM\to\mathbb{R}$ 是 $G$-不变的, 则对所有 $V\in\mathfrak{g}$, 由 $J^V(v):=(\mathbb{F}L)_v(X^V)$ 定义的 $J^V:TM\to\mathbb{R}$ 沿 Euler–Lagrange 方程的解保持恒定.
+\end{RiemannTheorem}
+
+\begin{RiemannProof}
+在 $M$ 上选取局部坐标 $(x^1,\ldots,x^n)$, 并设 $(y^1,\ldots,y^m)$ 是以 $e\in G$ 为中心的局部坐标. 设 $A:G\times M\to M$ 为 $G$ 在 $M$ 上的作用, 在这些局部坐标下写为
+\[
+  \bigl(A^1(x^1,\ldots,x^n,y^1,\ldots,y^m),\ldots,
+         A^n(x^1,\ldots,x^n,y^1,\ldots,y^m)\bigr).
+\]
+则 $V=\sum_{a=1}^m V^a\frac{\partial}{\partial y^a}$ 的无穷小作用的分量为
+\[
+  X^i(x)=\sum_{a=1}^m\frac{\partial A^i}{\partial y^a}(x,0)V^a.
+\]
+由于 $L$ 是 $G$-不变的, 有
+\begin{align*}
+  &L\left(A^1(x,y),\ldots,A^n(x,y),
+    \sum_{i=1}^n\frac{\partial A^1}{\partial x^i}(x,y)v^i,\ldots,
+    \sum_{i=1}^n\frac{\partial A^n}{\partial x^i}(x,y)v^i\right)\\
+  &\qquad=L(x^1,\ldots,x^n,v^1,\ldots,v^n).
+\end{align*}
+在上式中令 $y=y(t)$, 其中 $(y^1(t),\ldots,y^m(t))$ 是曲线 $\exp(tV)$ 在局部坐标下的表示. 对 $t$ 求导并令 $t=0$, 得到
+\begin{align*}
+  &\sum_{i=1}^n\sum_{a=1}^m\frac{\partial L}{\partial x^i}(x,v)
+     \frac{\partial A^i}{\partial y^a}(x,0)V^a
+  +\sum_{i,j=1}^n\sum_{a=1}^m\frac{\partial L}{\partial v^i}(x,v)
+     \frac{\partial^2 A^i}{\partial y^a\partial x^j}(x,0)v^jV^a=0\\
+  &\qquad\iff
+  \sum_{i=1}^n\frac{\partial L}{\partial x^i}(x,v)X^i(x)
+  +\sum_{i,j=1}^n\frac{\partial L}{\partial v^i}(x,v)
+     \frac{\partial X^i}{\partial x^j}(x)v^j=0.
+\end{align*}
+在这些坐标下,
+\[
+  J^V(x,v)=\sum_{i=1}^n\frac{\partial L}{\partial v^i}(x,v)X^i(x).
+\]
+因此, 若 $c:I\subset\mathbb{R}\to M$ 是 Euler–Lagrange 方程的解, 在局部坐标下由 $x=x(t)$ 给出, 则
+\begin{align*}
+  \frac{\mathrm{d}}{\mathrm{d}t}\bigl(J^V(\dot c(t))\bigr)
+  &=\frac{\mathrm{d}}{\mathrm{d}t}
+      \left(\sum_{i=1}^n\frac{\partial L}{\partial v^i}(x(t),\dot x(t))X^i(x(t))\right)\\
+  &=\sum_{i=1}^n\frac{\mathrm{d}}{\mathrm{d}t}
+      \left(\frac{\partial L}{\partial v^i}(x(t),\dot x(t))\right)X^i(x(t))\\
+  &\quad+\sum_{i,j=1}^n\frac{\partial L}{\partial v^i}(x(t),\dot x(t))
+          \frac{\partial X^i}{\partial x^j}(x(t))\dot x^j(t)\\
+  &=\sum_{i=1}^n\frac{\mathrm{d}}{\mathrm{d}t}
+      \left(\frac{\partial L}{\partial v^i}(x(t),\dot x(t))\right)X^i(x(t))
+    -\sum_{i=1}^n\frac{\partial L}{\partial x^i}(x(t),\dot x(t))X^i(x(t))=0.
+\end{align*}
+\end{RiemannProof}
+
+\begin{RiemannRemark}\label{rem:noether-conserved-quantities-and-lie-algebra}
+注意, 映射 $\mathfrak{g}\ni V\mapsto X^V\in\mathfrak{X}(M)$ 是线性的. 由于 $(\mathbb{F}L)_v$ 也是线性的, 可将 $J^V$ 视为线性映射 $\mathfrak{g}\ni V\mapsto J^V\in C^\infty(TM)$. 因此 Noether 定理给出 $m=\dim\mathfrak{g}$ 个独立的守恒量.
+\end{RiemannRemark}
+
+\begin{RiemannExample}\label{ex:noether-total-angular-momentum}
+考虑一个由质量分别为 $m_1,\ldots,m_k$ 的 $k$ 个粒子组成的保守力学系统. 这些粒子在 $\mathbb{R}^3$ 中运动, 受只依赖于粒子间距离的势能 $U:\mathbb{R}^{3k}\to\mathbb{R}$ 作用. 系统的运动是由 Lagrange 函数 $L:T\mathbb{R}^{3k}\to\mathbb{R}$ 导出的 Euler–Lagrange 方程的解, 其中
+\[
+  L(x_1,\ldots,x_k,v_1,\ldots,v_k)
+  =\frac{1}{2}\sum_{i=1}^k m_i\langle v_i,v_i\rangle-U(x_1,\ldots,x_k).
+\]
+这一 Lagrange 函数显然是 $SO(3)$-不变的, 其中 $SO(3)$ 在 $\mathbb{R}^{3k}$ 上的作用由
+\[
+  S\cdot(x_1,\ldots,x_k)=(Sx_1,\ldots,Sx_k)
+\]
+定义. $V\in\mathfrak{so}(3)$ 的无穷小作用是向量场
+\[
+  X^V_{(x_1,\ldots,x_k)}=(Vx_1,\ldots,Vx_k)
+  =(\Omega(V)\times x_1,\ldots,\Omega(V)\times x_k),
+\]
+其中 $\Omega:\mathfrak{so}(3)\to\mathbb{R}^3$ 是 Lemma~\ref{lem:so-three-cross-product-isomorphism} 中的同构. 另一方面,
+\[
+  (\mathbb{F}L)_{(v_1,\ldots,v_k)}(w_1,\ldots,w_k)=\sum_{i=1}^k m_i\langle v_i,w_i\rangle.
+\]
+因此, Noether 定理保证, 对任意 $V\in\mathfrak{so}(3)$, 量
+\begin{align*}
+  J^V&=\sum_{i=1}^k m_i\langle\dot x_i,\Omega(V)\times x_i\rangle
+  =\sum_{i=1}^k m_i\langle\Omega(V),x_i\times\dot x_i\rangle\\
+  &=\left\langle\Omega(V),\sum_{i=1}^km_ix_i\times\dot x_i\right\rangle
+\end{align*}
+沿系统的运动守恒. 换言之, 系统的\phantomsection\label{idx:noether-conserved-total-angular-momentum}\textbf{总角动量}
+\[
+  Q:=\sum_{i=1}^k m_ix_i\times\dot x_i
+\]
+守恒.
+\end{RiemannExample}
+
+\begin{RiemannExercise}\label{ex:lagrangian-mechanics}
+\begin{enumerate}[label=(\arabic*),ref=\arabic*,leftmargin=*]
+\item\label{ex:complete-proof-of-euler-lagrange-equations}
+补全 Theorem~\ref{thm:euler-lagrange-equations} 的证明.
+\item\label{ex:arclength-critical-curves}
+设 $(M,\langle\cdot,\cdot\rangle)$ 为 Riemann 流形. 证明弧长的临界点, 即由 Lagrange 函数 $L:TM\to\mathbb{R}$
+\[
+  L(v)=\langle v,v\rangle^{1/2}
+\]
+确定的作用量的临界点 (须将作用量限制在速度不为零的曲线上), 是重新参数化的测地线.
+\item\label{ex:brachistochrone-curve}
+(\emph{最速降线}) 质量为 $m$ 的粒子在恒定重力场作用下沿曲线 $y=y(x)$ 运动, 相应的势能为 $U=mgy$. 曲线满足 $y(0)=y(d)=0$, 且对 $0<x<d$ 有 $y(x)<0$.
+\begin{enumerate}[label=(\alph*),leftmargin=*]
+\item 假设粒子在原点从静止释放, 证明其在每一点的速率为
+\[
+  v=\sqrt{-2gy},
+\]
+从而从原点到 $(d,0)$ 的运动时间为
+\[
+  S=(2g)^{-1/2}\int_0^d(1+y'^{\,2})^{1/2}(-y)^{-1/2}\,\mathrm{d}x,
+\]
+其中 $y'=\frac{\mathrm{d}y}{\mathrm{d}x}$.
+\item 证明使运动时间最短的曲线 $y=y(x)$ 满足微分方程
+\[
+  \frac{\mathrm{d}}{\mathrm{d}x}\bigl[(1+y'^{\,2})y\bigr]=0.
+\]
+\item 核实满足 $y(0)=y(d)=0$ 的该方程的解由参数方程
+\[
+  \begin{cases}
+    x=R\theta-R\sin\theta\\
+    y=-R+R\cos\theta
+  \end{cases}
+\]
+给出, 其中 $d=2\pi R$. (\textbf{注}: 这条曲线称为\textbf{摆线}, 因为它是一个圆沿 $x$ 轴无滑动滚动时, 圆上一点描出的曲线.)
+\end{enumerate}
+\item\label{ex:charged-particle-in-stationary-field}
+(\emph{静态电磁场中的带电粒子}) 一个质量为 $m>0$, 电荷为 $e\in\mathbb{R}$ 的粒子在静态电磁场中的运动, 由 Lagrange 函数 $L:T\mathbb{R}^3\to\mathbb{R}$ 确定:
+\[
+  L=\frac{1}{2}m\langle v,v\rangle+e\langle A,v\rangle-e\Phi,
+\]
+其中 $\langle\cdot,\cdot\rangle$ 为 Euclidean 内积, $\Phi\in C^\infty(\mathbb{R}^3)$ 为\textbf{电势}, $A\in\mathfrak{X}(\mathbb{R}^3)$ 为\textbf{磁矢势}.
+\begin{enumerate}[label=(\alph*),leftmargin=*]
+\item 证明运动方程为
+\[
+  m\ddot x=eE+e\dot x\times B,
+\]
+其中 $E=-\operatorname{grad}\Phi$ 为\textbf{电场}, $B=\operatorname{curl}A$ 为\textbf{磁场}.
+\item 写出 Hamilton 函数的表达式, 并利用运动方程验证它沿任意运动保持恒定.
+\end{enumerate}
+\item\label{ex:restricted-three-body-problem}
+(\emph{限制性三体问题}) 考虑两个在引力作用下绕共同质心作圆周运动的粒子. 选择单位, 使粒子质量分别为 $0<\mu<1$ 和 $1-\mu$, 两者间距为 $1$, 轨道角速度也为 $1$. 将轨道平面与 $\mathbb{R}^2$ 等同, 并取质心为原点, 则在两个粒子静止的旋转参考系中, 可将它们的位置分别取为 $p_1=(1-\mu,0)$ 和 $p_2=(-\mu,0)$.
+\begin{enumerate}[label=(\alph*),leftmargin=*]
+\item 利用 Exercise~\ref{ex:rigid-body}(\ref{ex:inertial-forces-in-rotating-frame}), 证明在此参考系中, 一个质量 $m$ 可忽略不计的第三粒子在轨道平面内运动的方程为
+\[
+  \begin{cases}
+    \ddot x=\dfrac{F_x}{m}+x+2\dot y\\[.5ex]
+    \ddot y=\dfrac{F_y}{m}+y-2\dot x
+  \end{cases},
+\]
+其中 $(F_x,F_y)$ 是在旋转参考系中测得的作用于 $m$ 的力.
+\item 假设 $m$ 只受由 $\mu$ 和 $1-\mu$ 产生的引力, 则
+\[
+  \begin{cases}
+    \dfrac{F_x}{m}=-\dfrac{\mu}{r_1^3}(x-1+\mu)-\dfrac{1-\mu}{r_2^3}(x+\mu)\\[.5ex]
+    \dfrac{F_y}{m}=-\dfrac{\mu}{r_1^3}y-\dfrac{1-\mu}{r_2^3}y=0
+  \end{cases},
+\]
+其中 $r_1,r_2:\mathbb{R}^2\to\mathbb{R}$ 分别为到 $p_1,p_2$ 的 Euclidean 距离. 证明运动方程是由下列 Lagrange 函数 $L:T(\mathbb{R}^2\setminus\{p_1,p_2\})\to\mathbb{R}$ 确定的 Euler–Lagrange 方程:
+\begin{align*}
+  L(x,y,v^x,v^y)
+  &=\frac{1}{2}\bigl((v^x)^2+(v^y)^2\bigr)+xv^y-yv^x\\
+  &\quad+\frac{1}{2}(x^2+y^2)+\frac{\mu}{r_1}+\frac{1-\mu}{r_2}.
+\end{align*}
+\item 求 Hamilton 函数. (\textbf{注}: 此函数保持恒定, 由此得到所谓的 \textbf{Tisserand 判据}, 可用来辨认一颗彗星在近距离掠过木星前后是否为同一颗彗星.)
+\item 求不在 $x$ 轴上的平衡点 (即对应于定常解的点). $x$ 轴上有多少个平衡点?
+\item 证明系统在不位于 $x$ 轴上的平衡点处的线性化为
+\[
+  \begin{cases}
+    \ddot\xi-2\dot\eta=\dfrac{3}{4}\xi\pm\dfrac{3\sqrt{3}}{4}(1-2\mu)\eta\\[.5ex]
+    \ddot\eta+2\dot\xi=\pm\dfrac{3\sqrt{3}}{4}(1-2\mu)\xi+\dfrac{9}{4}\eta
+  \end{cases},
+\]
+并证明当
+\[
+  \frac{1}{2}\left(1-\frac{\sqrt{69}}{9}\right)<\mu
+  <\frac{1}{2}\left(1+\frac{\sqrt{69}}{9}\right)
+\]
+时, 这些平衡点不稳定.
+\end{enumerate}
+\item\label{ex:noether-total-linear-momentum}
+考虑 Example~\ref{ex:noether-total-angular-momentum} 中的力学系统.
+\begin{enumerate}[label=(\alph*),leftmargin=*]
+\item 利用 Noether 定理证明\textbf{总线动量}
+\[
+  P:=\sum_{i=1}^k m_i\dot x_i
+\]
+沿运动守恒.
+\item 证明系统的\textbf{质心}, 即由
+\[
+  X=\frac{\sum_{i=1}^k m_ix_i}{\sum_{i=1}^k m_i}
+\]
+定义的点, 以恒定速度运动.
+\end{enumerate}
+\item\label{ex:killing-field-conserved-quantity}
+将 Example~\ref{ex:noether-total-angular-momentum} 推广到粒子在任意 Riemann 流形 $(M,\langle\cdot,\cdot\rangle)$ 上运动的情形: 证明给定任意 Killing 向量场 $X\in\mathfrak{X}(M)$ [参见第~\ref{chap:riemannian-manifolds}~章的 Exercise~\ref{ex:levi-civita-connection}(\ref{ex:killing-vector-field})], 量
+\[
+  J_X=\sum_{i=1}^k m_i\langle\dot c_i,X\rangle
+\]
+守恒, 其中 $c_i:I\subset\mathbb{R}\to M$ 是质量为 $m_i$ 的粒子的运动.
+\item\label{ex:noether-for-free-rigid-body}
+考虑 $SO(3)$ 通过左乘在自身上的作用.
+\begin{enumerate}[label=(\alph*),leftmargin=*]
+\item 证明 $B\in\mathfrak{so}(3)$ 的无穷小作用为由 $B$ 确定的\textbf{右}不变向量场.
+\item \phantomsection\label{idx:noether-rigid-body-angular-momentum}利用 Noether 定理证明自由刚体的角动量恒定.
+\end{enumerate}
+\item\label{ex:satellite-with-rotor}
+考虑一颗装有一个小转子的卫星, 转子是可绕自身轴自由旋转的圆柱. 转子锁定时, 卫星可用惯性张量为 $I$ 的自由刚体模拟. 转子轴经过卫星的质心, 其方向由单位向量 $e$ 给出. 转子的质量绕轴对称分布, 产生转动惯量 $J$.
+\begin{enumerate}[label=(\alph*),leftmargin=*]
+\item 证明转子解锁时, 卫星的位形空间是 Lie 群 $SO(3)\times S^1$, 其运动是对应于动能
+\[
+  K=\frac{1}{2}\langle I\Omega,\Omega\rangle+\frac{1}{2}J\varpi^2+J\varpi\langle\Omega,e\rangle
+\]
+的左不变度量的测地线, 其中 $\Omega\in\mathbb{R}^3$ 为在卫星参考系中观察到的卫星角速度, $\varpi\in\mathbb{R}$ 为转子绕其轴的角速率.
+\item 利用 Noether 定理证明, 当转子解锁时, $l=J(\varpi+\langle\Omega,e\rangle)\in\mathbb{R}$ 和 $p=S(I\Omega+J\varpi e)\in\mathbb{R}^3$ 沿卫星的运动守恒, 其中 $S:\mathbb{R}\to SO(3)$ 描述卫星的朝向.
+\end{enumerate}
+\end{enumerate}
+\end{RiemannExercise}

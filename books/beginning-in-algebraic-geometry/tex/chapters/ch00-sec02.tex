@@ -1,0 +1,205 @@
+\section{不可约多项式}\label{sec:irreducible-polynomials}
+
+代数几何主要关注系数取自域 $K$ 的多项式环 $K[x_{1},\ldots,x_{n}]$. (本节乃至全书始终用 $K$ 表示一个域.) 为了研究这些多项式环, 了解其中哪些元素是\textquotedbl{}原子\textquotedbl{}以及每个多项式如何分解成这类元素, 是很有用的. 为了引出这些概念, 不妨先考虑更熟悉的环 $\mathbb{Z}$, 其中的原子元素是素数.
+
+回顾一下, 整数 $p\in\mathbb{Z}_{\geq2}$ 是\textbf{素数}, 如果对所有 $m,n\in\mathbb{Z}$ 都有
+\begin{equation}\label{eq:prime-integer-factor-test}
+  p=mn\implies m=\pm1\quad\text{或}\quad n=\pm1.
+\end{equation}
+换言之, 素数是不能作非平凡分解的整数. 数论 (乃至整个数学) 的核心结果之一是素因数分解的存在性和唯一性: 每个整数 $n\in\mathbb{Z}_{\geq2}$ 都可以写成素数的乘积, 若不计因子的排列顺序, 这种写法是唯一的.
+
+我们希望在更一般的情形下研究这些概念, 特别是在多项式环中. 为此, 先从环论中\textquotedbl{}原子\textquotedbl{}的定义开始, 其中包括可逆元的概念, 它推广了 \eqref{eq:prime-integer-factor-test} 中出现的 $\pm1\in\mathbb{Z}$.
+
+\begin{Definition}{可逆元与(不)可约元}\label{def:units-irreducible-elements}
+  若元素 $u\in R$ 有乘法逆元, 就称它为\textbf{可逆元}. $R$ 中可逆元的集合记为 $R^{*}\subseteq R$. 称元素 $p\in R$ 为\textbf{不可约元}, 如果它既非零也不是可逆元, 并且
+  \[
+    p=ab\implies a\in R^{*}\quad\text{或}\quad b\in R^{*}.
+  \]
+
+  若一个元素既非零, 也不是可逆元或不可约元, 则它是\textbf{可约元}.
+\end{Definition}
+
+\BookPairedNote{换言之, 一个非零元素如果不能分解成两个非可逆元的乘积, 就是不可约元. 对域 $K$ 上的多项式环 $K[x_{1},\ldots,x_{n}]$ 而言, 可逆元是非零常数多项式 (Exercise~\ref{ex:units-polynomial-ring-over-field}):}%
+  {必须区分可逆元与非可逆元, 因为若允许可逆元, 则每个元素都能分解:
+   \[
+     a=u(u^{-1}a).
+   \]}
+\[
+  K[x_{1},\ldots,x_{n}]^{*}=K^{*}=K\setminus\{0\}.
+\]
+因此, 多项式 $f\in K[x_{1},\ldots,x_{n}]$ 不可约, 当且仅当
+\begin{enumerate}[label=(\roman*)]
+  \item $f$ 不是常数多项式, 且
+  \item $f$ 不能写成两个非常数多项式的乘积.
+\end{enumerate}
+
+\begin{Example}{{\textmd{$K[x_{1},\ldots,x_{n}]$} 中的一次多项式不可约}}
+  \leavevmode\label{ex:linear-polynomials-irreducible}\strut\par\nopagebreak[4]\noindent
+  若 $\deg(f)=1$, 就称多项式 $f\in K[x_{1},\ldots,x_{n}]$ 为\textbf{一次多项式}. 若 $f$ 是一次多项式且 $f=gh$, 则由次数的可加性,
+  \[
+    1=\deg(f)=\deg(g)+\deg(h).
+  \]
+  因此, $\deg(g)=0$ 或 $\deg(h)=0$, 这说明 $g$ 或 $h$ 是常数多项式.
+\end{Example}
+
+\begin{Example}{{\textmd{$y-x^{2}$} 在 \textmd{$K[x,y]$} 中不可约}}\label{ex:parabola-polynomial-irreducible}
+  设
+  \[
+    y-x^{2}=gh
+  \]
+  对某些 $g,h\in K[x,y]$ 成立. 作为环 $K[x][y]$ 的元素, 多项式 $y-x^{2}$ 的次数为 $1$, 因此 (作为关于 $y$ 的多项式) $g$ 与 $h$ 中一个的次数必为 $1$, 另一个的次数必为 $0$. 不失一般性, 可写成
+  \[
+    g=ay+b\quad\text{且}\quad h=c
+  \]
+  其中 $a,b,c\in K[x]$. 由此得到 $y-x^{2}=acy+bc$. 比较 $y$ 的系数, 可知 $ac=1$, 从而 $h=c\in K^{*}$. 因此, $y-x^{2}$ 不可约.
+\end{Example}
+
+\begin{Example}{{\textmd{$x^{2}+1\in\mathbb{C}[x]$} 与 \textmd{$x^{2}+1\in\mathbb{R}[x]$}}}\label{ex:quadratic-over-complex-and-real}
+  在 $\mathbb{C}[x]$ 中, 有分解
+  \[
+    x^{2}+1=(x-\mathrm{i})(x+\mathrm{i}),
+  \]
+  这表明 $x^{2}+1$ 在 $\mathbb{C}[x]$ 中可约. 另一方面, 在 $\mathbb{R}[x]$ 中不可能将 $x^{2}+1$ 分解成两个一次因子 (Exercise~\ref{ex:quadratic-no-real-linear-factors}), 所以 $x^{2}+1$ 在 $\mathbb{R}[x]$ 中不可约. 这个例子说明, 多项式环的性质很大程度上取决于系数环的选取.
+\end{Example}
+
+素因数分解是整数环的一项基本性质, 将它推广到整环的情形是有用的. 下面的定义抓住了 $\mathbb{Z}$ 中唯一素因数分解的要点.
+
+\begin{Definition}{唯一分解整环}\label{def:unique-factorization-domain}
+  若满足下述条件, 整环 $R$ 称为\textbf{分解整环} (FD):
+  \begin{enumerate}[label=(\roman*)]
+    \item 对每个非零且不可逆的 $a\in R$, 都存在不可约元 $p_{1},\ldots,p_{\ell}\in R$, 使得 $a=p_{1}\cdots p_{\ell}$.
+  \end{enumerate}
+  若此外还满足下述条件, 就称它为\textbf{唯一分解整环} (UFD):
+  \begin{enumerate}[label=(\roman*),start=2]
+    \item 只要不可约元 $p_{i}$ 和 $q_{j}$ 满足 $p_{1}\cdots p_{\ell}=q_{1}\cdots q_{m}$, 就有 $\ell=m$, 且在必要时重新排列后, 存在可逆元 $u_{i}$, 使对所有 $i$ 都有 $p_{i}=u_{i}q_{i}$.
+  \end{enumerate}
+\end{Definition}
+
+整数环中的唯一素因数分解说明 $\mathbb{Z}$ 是 UFD. $K[x_{1},\ldots,x_{n}]$ 的一个基本性质是它也是 UFD, 这一点我们将在本章陆续看到.
+
+\BookPairedNote{要证明 $K[x_{1},\ldots,x_{n}]$ 是 UFD, 就要证明不可约分解存在且唯一. 本节只证明不可约分解的存在性.}%
+  {一个不是 FD 的整环和一个不是 UFD 的 FD, 分别见 Exercises~\ref{ex:domain-without-factorization} 和 \ref{ex:factorization-domain-not-unique}.}
+
+\begin{Proposition}{{\textmd{$K[x_{1},\ldots,x_{n}]$} 是 FD}}\label{prop:polynomial-factorization-exists}
+  如果 $f\in K[x_{1},\ldots,x_{n}]$ 是非常数多项式, 则存在不可约多项式 $p_{1},\ldots,p_{\ell}\in K[x_{1},\ldots,x_{n}]$, 使得 $f=p_{1}\cdots p_{\ell}$.
+\end{Proposition}
+
+\begin{Proof}
+  对 $f$ 的次数作归纳.
+
+  \textbf{(归纳起点)} 如果 $\deg(f)=1$, 则由 Example~\ref{ex:linear-polynomials-irreducible}, $f$ 不可约. 特别地, $f$ 有一个不可约分解 (其中 $\ell=1$).
+
+  \textbf{(归纳步骤)} 假设每个次数小于 $d$ 的多项式都能分解成不可约多项式的乘积, 并设 $f\in K[x_{1},\ldots,x_{n}]$ 的次数为 $d$. 若 $f$ 不可约, 则它有一个 $\ell=1$ 的不可约分解. 若 $f$ 不是不可约多项式, 则 $f=gh$, 其中 $\deg(g)<d$ 且 $\deg(h)<d$. 由归纳假设, 有不可约分解
+  \[
+    g=p_{1}\cdots p_{\ell}\quad\text{和}\quad h=q_{1}\cdots q_{k}.
+  \]
+  因此, $f$ 有一个不可约分解
+  \[
+    f=p_{1}\cdots p_{\ell}\cdot q_{1}\cdots q_{k}.
+  \]
+\end{Proof}
+
+\begin{Example}{一个不可约分解}\label{ex:irreducible-factorization-complex-quadratic}
+  由 Examples~\ref{ex:linear-polynomials-irreducible} 和 \ref{ex:quadratic-over-complex-and-real} 可知,
+  \[
+    x^{2}+1=(x-\mathrm{i})(x+\mathrm{i})
+  \]
+  是 $x^{2}+1\in\mathbb{C}[x]$ 的一个不可约分解.
+\end{Example}
+
+为了寻找证明不可约分解唯一性的思路, 我们回到熟悉的 $\mathbb{Z}$. 证明整数的素因数分解唯一的关键是 Euclid's Lemma: $p\in\mathbb{Z}_{\geq2}$ 是素数, 当且仅当对所有 $m,n\in\mathbb{Z}$ 都有
+\BookPairedNote{%
+  \[
+    p\mid mn\implies p\mid m\quad\text{或}\quad p\mid n.
+  \]
+  素数的第二种刻画可以自然地推广到环.}%
+  {我们用标准记号 $a\mid b$ 表示\textquotedbl{}$a$ 整除 $b$\textquotedbl{}, 即对某个 $c$, 有 $b=ca$.}
+
+\begin{Definition}{素元}\label{def:prime-element}
+  称元素 $p\in R$ 为\textbf{素元}, 如果它既不是零也不是可逆元, 且对所有 $a,b\in R$ 都有
+  \[
+    p\mid ab\implies p\mid a\quad\text{或}\quad p\mid b.
+  \]
+\end{Definition}
+
+如下面将要看到的, 不可约分解是否唯一的问题, 可以归结为证明 Euclid's Lemma 在环论中的对应结论. 更确切地说, 给定整环 $R$, Euclid's Lemma 可转化为 $R$ 中的素元与不可约元一致的陈述. 下面的结果验证其中一个方向: 在整环中, 所有素元都是不可约元.
+
+\begin{Proposition}{素元必不可约}\label{prop:prime-implies-irreducible}
+  在整环中, 每个素元都是不可约元.
+\end{Proposition}
+
+\begin{Proof}
+  设 $R$ 是整环, $p\in R$ 是素元. 为了证明 $p$ 不可约, 假设
+  \begin{equation}\label{eq:prime-element-factorization}
+    p=ab\quad\text{对某些}\quad a,b\in R;
+  \end{equation}
+  我们必须证明 $a\in R^{*}$ 或 $b\in R^{*}$. 注意, 由 \eqref{eq:prime-element-factorization} 特别可得 $p\mid ab$. 由于 $p$ 是素元, 有 $p\mid a$ 或 $p\mid b$. 不失一般性, 假设 $p\mid a$, 写成 $a=pc$, 其中 $c\in R$. 把这个表达式代入 \eqref{eq:prime-element-factorization}, 得
+  \[
+    p=pcb.
+  \]
+  由于 $R$ 是整环且 $p\ne0$, 可以从等式两边约去 $p$, 得到 $1=cb$, 所以 $b\in R^{*}$.
+\end{Proof}
+
+\BookPairedNote{Proposition~\ref{prop:prime-implies-irreducible} 的逆命题一般不成立. 实际上, 在某种意义上, 逆命题等价于分解的唯一性, 这就是下一个结果的内容.}%
+  {Proposition~\ref{prop:prime-implies-irreducible} 的逆命题不成立的一个例子, 见后面的 Exercise~\ref{ex:factorization-domain-not-unique}.}
+
+\begin{Proposition}{FD 与 UFD}\label{prop:ufd-iff-irreducibles-prime}
+  设 $R$ 是一个分解整环. 则 $R$ 是唯一分解整环, 当且仅当 $R$ 的每个不可约元都是素元.
+\end{Proposition}
+
+\begin{Proof}
+  我们证明两个方向.
+
+  ($\implies$) 假设 $R$ 是 UFD, 设 $p\in R$ 不可约. 为了证明 $p$ 是素元, 假设对某些 $a,b\in R$ 有 $p\mid ab$, 并选取 $c\in R$, 使得 $ab=pc$. 由于 $R$ 是 FD, 每个元素都可以作不可约分解:
+  \[
+    a=p_{1}\cdots p_{k},\quad b=q_{1}\cdots q_{\ell},\quad\text{且}\quad c=r_{1}\cdots r_{m}.
+  \]
+  因此, 有两个不可约分解:
+  \[
+    p_{1}\cdots p_{k}\cdot q_{1}\cdots q_{\ell}=p\cdot r_{1}\cdots r_{m}.
+  \]
+  由于 $R$ 是 UFD, 存在可逆元 $u$, 使得对某个 $i$ 或 $j$ 有 $p=up_{i}$ 或 $p=uq_{j}$. 因而 $p\mid a$ 或 $p\mid b$, 所以 $p$ 是素元.
+
+  ($\impliedby$) 假设 $R$ 的每个不可约元都是素元, 设
+  \begin{equation}\label{eq:two-irreducible-factorizations}
+    p_{1}\cdots p_{\ell}=q_{1}\cdots q_{m}
+  \end{equation}
+  是两个由不可约元 (因而是素元) 给出的分解. 不失一般性, 假设 $\ell\leq m$. 由于 $p_{1}$ 是素元且 $p_{1}\mid q_{1}\cdots q_{m}$, 由 Exercise~\ref{ex:prime-divides-one-of-factors} 可知, 对某个 $j$ 有 $p_{1}\mid q_{j}$. 必要时重新排列, 可设 $j=1$, 并写成 $q_{1}=u_{1}p_{1}$, 其中 $u_{1}\in R$. 因为 $q_{1}$ 不可约, $u_{1}$ 或 $p_{1}$ 必为可逆元. 但 $p_{1}$ 不可约, 不可能是可逆元. 因此, $u_{1}$ 是可逆元. 在 \eqref{eq:two-irreducible-factorizations} 的两边约去 $p_{1}$, 得
+  \[
+    p_{2}\cdots p_{\ell}=u_{1}q_{2}\cdots q_{m}.
+  \]
+  由于 $p_{2}\nmid u_{1}$ (否则 $p_{2}$ 本身就是可逆元), 可以重复上述论证, 得知必要时重新排列后, 存在可逆元 $u_{2}\in R$, 使得 $q_{2}=u_{2}p_{2}$, 且
+  \[
+    p_{3}\cdots p_{\ell}=u_{1}u_{2}q_{3}\cdots q_{m}.
+  \]
+  这样继续进行 $\ell$ 步, 可知有可逆元 $u_{1},\ldots,u_{\ell}$, 使得 $q_{i}=u_{i}p_{i}$, 而且
+  \[
+    1=u_{1}\cdots u_{\ell}q_{\ell+1}\cdots q_{m}.
+  \]
+  由于每个 $q_{j}$ 都不可约, 因而不是可逆元, 于是 $\ell=m$. 这就完成了 $R$ 是 UFD 的证明.
+\end{Proof}
+
+既然已知 $K[x_{1},\ldots,x_{n}]$ 是 FD, Proposition~\ref{prop:ufd-iff-irreducibles-prime} 就给出了证明 $K[x_{1},\ldots,x_{n}]$ 是 UFD 的办法: 只须证明每个不可约多项式都是素元. 为了做到这一点, 我们需要更扎实的代数基础来处理这些概念. 为此, 我们先讨论理想与商 (Section~{\ref{sec:ideals-quotients}}), 素理想与极大理想 (Section~{\ref{sec:prime-maximal-ideals}}), 以及一元多项式这一特殊情形 (Section~{\ref{sec:single-variable-polynomials}}). 然后在 Section~{\ref{sec:unique-factorization-polynomial-rings}} 中回到多项式的唯一分解.
+
+\BookExerciseHeading
+\begin{BookExercises}
+  \item\label{ex:units-form-group} 证明可逆元的集合 $R^{*}\subseteq R$ 在乘法下构成一个群.
+  \item\label{ex:units-polynomial-ring-over-field} 证明 $K[x_{1},\ldots,x_{n}]^{*}=K^{*}=K\setminus\{0\}$.
+  \item\label{ex:quadratic-no-real-linear-factors} 利用对任何实数 $a\in\mathbb{R}$ 都有 $a^{2}+1\ne0$ 这一事实, 证明 $x^{2}+1$ 在 $\mathbb{R}[x]$ 中不能分解成一次因子的乘积.
+  \item\label{ex:quadratic-cubic-irreducible-root-test} 设 $f\in K[x]$ 是次数为 $2$ 或 $3$ 的多项式. 证明: $f$ 不可约, 当且仅当不存在元素 $a\in K$ 使得 $f(a)=0$.
+  \item\label{ex:quartic-no-real-zeros-reducible} 给出一个 $\mathbb{R}[x]$ 中可约且无零点的显式例子, 说明上一题对四次多项式不成立.
+  \item\label{ex:circle-polynomial-irreducible-over-complex} 用次数论证证明 $x^{2}+y^{2}-1$ 在 $\mathbb{C}[x,y]$ 中不可约.
+  \item\label{ex:prime-divides-one-of-factors} 假设 $p\in R$ 是素元. 若 $p\mid a_{1}\cdots a_{n}$, 证明对某个 $i$ 有 $p\mid a_{i}$.
+  \item\label{ex:units-zz-polynomial-and-reducible-linear}
+    \begin{enumerate}[label=(\alph*)]
+      \item 描述 $\mathbb{Z}[x]$ 中的可逆元.
+      \item 给出一个 $\mathbb{Z}[x]$ 中可约的一次多项式的例子.
+    \end{enumerate}
+  \item\label{ex:field-is-ufd} 说明为什么每个域都是 UFD.
+  \item\label{ex:domain-without-factorization} 考虑环 $R=\{f\in\mathbb{Q}[x]\mid f(0)\in\mathbb{Z}\}\subseteq\mathbb{Q}[x]$.
+    \begin{enumerate}[label=(\alph*)]
+      \item 证明 $R$ 是整环.
+      \item 证明元素 $x\in R$ 既不是可逆元也不是不可约元.
+      \item 证明 $x\in R$ 不能分解成不可约元的乘积, 因此 $R$ 不是 FD.
+    \end{enumerate}
+\end{BookExercises}

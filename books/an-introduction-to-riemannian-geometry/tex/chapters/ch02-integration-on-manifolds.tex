@@ -1,0 +1,121 @@
+\section{流形上的积分}\label{sec:integration-on-manifolds}
+
+在讨论如何在流形上对微分形式积分之前, 先研究 $\mathbb{R}^n$ 的情形. 为此, 考虑定义在 $\mathbb{R}^n$ 的开子集 $U$ 上的 $n$-形式 $\omega$. 已知 $\omega$ 可写成
+\[
+  \omega_x=a(x)\,\mathrm{d}x^1\wedge\cdots\wedge\mathrm{d}x^n,
+\]
+其中 $a:U\to\mathbb{R}$ 是光滑函数. 按定义, $\omega$ 的\textbf{支集}是 $\omega\ne0$ 的点所成集合的闭包, 即
+\[
+  \operatorname{supp}\omega=\overline{\{x\in\mathbb{R}^n\mid\omega_x\ne0\}}.
+\]
+假设此集合是紧的 (称 $\omega$ 有\textbf{紧支集}). 定义
+\[
+  \int_U\omega=\int_U a(x)\,\mathrm{d}x^1\wedge\cdots\wedge\mathrm{d}x^n
+  :=\int_U a(x)\,\mathrm{d}x^1\cdots\mathrm{d}x^n,
+\]
+其中右端是 $\mathbb{R}^n$ 的一个子集上的重积分. 对于 $\mathbb{R}^n$ 中的换元, 这个定义几乎完全相容. 事实上, 若 $f:V\to U$ 是 $\mathbb{R}^n$ 中开集之间的微分同胚, 则由 \eqref{eq:pullback-top-form-in-coordinates} 有
+\[
+  f^*\omega=(a\circ f)(\det\mathrm{d}f)\,\mathrm{d}y^1\wedge\cdots\wedge\mathrm{d}y^n,
+\]
+因而
+\[
+  \int_Vf^*\omega=\int_V(a\circ f)(\det\mathrm{d}f)\,\mathrm{d}y^1\cdots\mathrm{d}y^n.
+\]
+若 $f$ 保持定向, 则 $\det(\mathrm{d}f)>0$, 根据 $\mathbb{R}^n$ 中重积分的换元定理 (参见第~\RGref{subsec:notes-integration-on-manifolds}~节), 右端的积分等于 $\int_U\omega$. 因此在流形上对形式积分时, 只考虑可定向流形. 此外, 为避免收敛问题, 始终假设 $\operatorname{supp}\omega$ 是紧的.
+
+设 $M$ 是定向流形, $\mathcal{A}=\{(U_\alpha,\varphi_\alpha)\}$ 是一个各参数化均保持定向的图册. 假设 $\operatorname{supp}\omega$ 包含在某个坐标邻域 $W_\alpha=\varphi_\alpha(U_\alpha)$ 内. 定义
+\[
+  \int_M\omega:=\int_{U_\alpha}\varphi_\alpha^*\omega=\int_{U_\alpha}\omega_\alpha.
+\]
+注意, 这与坐标邻域的选择无关: 若 $\operatorname{supp}\omega$ 包含在另一个坐标邻域 $W_\beta=\varphi_\beta(U_\beta)$ 内, 则 $\omega_\beta=f^*\omega_\alpha$, 其中 $f:=\varphi_\alpha^{-1}\circ\varphi_\beta$ 保持定向, 从而
+\[
+  \int_{U_\beta}\omega_\beta=\int_{U_\beta}f^*\omega_\alpha=\int_{U_\alpha}\omega_\alpha.
+\]
+
+为了定义一般情形下的积分, 取从属于 $M$ 的覆盖 $\{W_\alpha\}$ 的\textbf{单位分解} (参见第~\RGref{subsec:notes-integration-on-manifolds}~节), 即 $M$ 上满足下列条件的一族可微函数 $\{\rho_i\}_{i\in I}$:
+\begin{enumerate}[label=(\roman*),leftmargin=*]
+\item 对每个点 $p\in M$, 存在 $p$ 的一个邻域 $V$, 使得除有限个 $\rho_i$ 外, 均有 $V\cap\operatorname{supp}\rho_i=\varnothing$;
+\item 对每个点 $p\in M$, 有 $\sum_{i\in I}\rho_i(p)=1$;
+\item $0\leq\rho_i\leq1$, 且对覆盖中的某个元素 $W_{\alpha_i}$, 有 $\operatorname{supp}\rho_i\subset W_{\alpha_i}$.
+\end{enumerate}
+由性质 (i), $\operatorname{supp}\omega$ (它是紧的) 只与有限个 $\rho_i$ 的支集相交. 因此可假设 $I$ 是有限集, 并有
+\[
+  \omega=\left(\sum_{i\in I}\rho_i\right)\omega
+  =\sum_{i\in I}\rho_i\omega=\sum_{i\in I}\omega_i
+\]
+其中 $\omega_i:=\rho_i\omega$, 且 $\operatorname{supp}\omega_i\subset W_{\alpha_i}$. 因而定义:
+\[
+  \int_M\omega:=\sum_{i\in I}\int_M\omega_i
+  =\sum_{i\in I}\int_{U_{\alpha_i}}\varphi_{\alpha_i}^*\omega_i.
+\]
+
+\begin{RiemannRemark}\label{rem:well-definedness-of-integration}
+\begin{enumerate}[label=(\arabic*),ref=\arabic*,leftmargin=*]
+\item\label{rem:integral-agrees-on-single-chart} 当 $\operatorname{supp}\omega$ 包含在一个坐标邻域 $W$ 内时, 上述两个定义一致. 事实上,
+\begin{align*}
+  \int_M\omega&=\int_W\omega=\int_W\sum_{i\in I}\omega_i
+   =\int_U\varphi^*\left(\sum_{i\in I}\omega_i\right)\\
+  &=\int_U\sum_{i\in I}\varphi^*\omega_i
+   =\sum_{i\in I}\int_U\varphi^*\omega_i=\sum_{i\in I}\int_M\omega_i,
+\end{align*}
+其中用到了拉回的线性以及 $\mathbb{R}^n$ 上积分的线性.
+\item 积分的定义与单位分解和覆盖的选择无关. 事实上, 若 $\{\widetilde\rho_j\}_{j\in J}$ 是从属于另一个与同一定向相容的覆盖 $\{\widetilde W_\beta\}$ 的单位分解, 则由 (\ref{rem:integral-agrees-on-single-chart}) 有
+\[
+  \sum_{i\in I}\int_M\rho_i\omega
+  =\sum_{i\in I}\sum_{j\in J}\int_M\widetilde\rho_j\rho_i\omega
+\]
+和
+\[
+  \sum_{j\in J}\int_M\widetilde\rho_j\omega
+  =\sum_{j\in J}\sum_{i\in I}\int_M\rho_i\widetilde\rho_j\omega.
+\]
+\item 积分的线性也容易验证, 即
+\[
+  \int_Ma\omega_1+b\omega_2=a\int_M\omega_1+b\int_M\omega_2.
+\]
+其中 $a,b\in\mathbb{R}$, $\omega_1,\omega_2$ 是 $M$ 上的两个 $n$-形式.
+\item 积分的定义很容易推广到定向带边界流形.
+\end{enumerate}
+\end{RiemannRemark}
+
+\begin{RiemannExercise}\label{ex:integration-on-manifolds}
+\begin{enumerate}[label=(\arabic*),ref=\arabic*,leftmargin=*]
+\item\label{ex:zero-measure-on-manifold} 设 $M$ 是 $n$ 维可微流形. 若对极大图册中的每个参数化 $\varphi_\alpha:U_\alpha\to M$, 集合 $\varphi_\alpha^{-1}(N)\subset U_\alpha$ 都是零测集, 则称子集 $N\subset M$ \textbf{测度为零}.
+\begin{enumerate}[label=(\alph*),leftmargin=*]
+\item 证明: 为说明 $N\subset M$ 测度为零, 只需对任意一个图册中的参数化验证集合 $\varphi_\alpha^{-1}(N)\subset U_\alpha$ 的测度为零.
+\item 设 $M$ 已定向. 设 $\omega\in\Omega^n(M)$ 有紧支集, $W=\varphi(U)$ 是一个坐标邻域, 且 $M\setminus W$ 测度为零. 证明
+\[
+  \int_M\omega=\int_U\varphi^*\omega,
+\]
+其中右端的积分按上述方式定义, 且总是存在.
+\end{enumerate}
+\item\label{ex:sphere-integral-by-two-charts} 设 $x,y,z$ 是 $\mathbb{R}^3$ 中的笛卡儿坐标函数在 $S^2$ 上的限制, 并给 $S^2$ 定向, 使 $\{(1,0,0);(0,1,0)\}$ 是 $T_{(0,0,1)}S^2$ 的正定向基. 考虑 2-形式
+\[
+  \omega=x\,\mathrm{d}y\wedge\mathrm{d}z+y\,\mathrm{d}z\wedge\mathrm{d}x
+  +z\,\mathrm{d}x\wedge\mathrm{d}y\in\Omega^2(S^2).
+\]
+分别利用下述参数化求积分
+\[
+  \int_{S^2}\omega
+\]
+\begin{enumerate}[label=(\alph*),leftmargin=*]
+\item 球坐标;
+\item 球极投影.
+\end{enumerate}
+\item\label{ex:integral-on-complement-of-torus-in-sphere} 考虑流形
+\begin{align*}
+  S^3&=\{(x,y,z,w)\in\mathbb{R}^4\mid x^2+y^2+z^2+w^2=2\};\\
+  T^2&=\{(x,y,z,w)\in\mathbb{R}^4\mid x^2+y^2=z^2+w^2=1\}.
+\end{align*}
+子流形 $T^2\subset S^3$ 将 $S^3$ 分成两个连通分支. 设 $M$ 是这两个分支之一, $\omega$ 是 3-形式
+\[
+  \omega=z\,\mathrm{d}x\wedge\mathrm{d}y\wedge\mathrm{d}w
+  -x\,\mathrm{d}y\wedge\mathrm{d}z\wedge\mathrm{d}w.
+\]
+求 $\int_M\omega$ 的两个可能值.
+\item\label{ex:orientation-preserving-pullback-integral} 设 $M,N$ 是 $n$ 维流形, $f:M\to N$ 是保持定向的微分同胚, $\omega\in\Omega^n(N)$ 是具有紧支集的形式. 证明
+\[
+  \int_N\omega=\int_Mf^*\omega.
+\]
+\end{enumerate}
+\end{RiemannExercise}

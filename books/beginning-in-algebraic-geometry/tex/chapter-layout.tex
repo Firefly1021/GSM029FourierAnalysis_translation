@@ -1,0 +1,44 @@
+% The author's numbered displays and statements share a chapter counter.
+\makeatletter
+\AddToHook{begindocument/end}{%
+  \global\let\c@equation\c@statement
+  \renewcommand{\theequation}{\thestatement}%
+  \renewcommand{\theHequation}{\theHchapter.\arabic{equation}}%
+}
+\makeatother
+
+\AtBeginDocument{%
+  \AJUsePDEPlainTheorems
+  \newtheorem{BookPropositionDefinition}[statement]{Proposition/Definition}%
+  \newtheorem{BookKeyIdea}[statement]{Key Idea}%
+  \newtheorem{BookLemmaDefinition}[statement]{Lemma/Definition}%
+  \newtheorem{BookTerminologyChange}[statement]{Terminology Change}%
+  \newtheorem{BookNotation}[statement]{Notation}%
+}
+
+\newlist{BookExercises}{enumerate}{1}
+\setlist[BookExercises]{label=\thesection.\arabic*,ref=\thesection.\arabic*,leftmargin=*,align=left}
+\newcommand{\BookExerciseHeading}{%
+  \par\addvspace{\medskipamount}%
+  \noindent{\sffamily\bfseries Exercises for Section~\thesection}\par\nopagebreak[4]%
+}
+
+
+\newcommand{\BookPairedFigure}[2]{%
+  \par\noindent
+  \begin{minipage}[t]{.69\linewidth}
+    \vspace{0pt}#1
+  \end{minipage}\hfill
+  \begin{minipage}[t]{.27\linewidth}
+    \vspace{0pt}\centering#2
+  \end{minipage}\par
+}
+
+% This full-width note is framed by rules in the source rather than a sidebar.
+\newtcolorbox{BookGroundFieldNote}{%
+  enhanced,breakable,frame hidden,colback=white,boxrule=0pt,sharp corners,
+  borderline north={.6bp}{0pt}{red!45!black},
+  borderline south={.6bp}{0pt}{red!45!black},
+  boxsep=0pt,left=0pt,right=0pt,top=5bp,bottom=5bp,
+  before skip=\medskipamount,after skip=\medskipamount
+}

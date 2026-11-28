@@ -1,0 +1,255 @@
+\section{切空间}\label{sec:tangent-space}
+
+回顾初等向量微积分: 若存在可微曲线 $c:(-\varepsilon,\varepsilon)\to S\subset\mathbb{R}^3$, 使得 $c(0)=p$ 且 $\dot c(0)=v$, 就称向量 $v\in\mathbb{R}^3$ 在点 $p\in S$ 处\textbf{相切}于曲面 $S\subset\mathbb{R}^3$ [参见 Exercise~\ref{ex:exercise-differentiable-structures}(\ref{ex:surfaces-as-local-graphs})]. 所有这些向量的集合 $T_pS$ 是一个 2 维向量空间, 称为 $S$ 在 $p$ 处的\textbf{切空间}, 可以将它与 $\mathbb{R}^3$ 中在 $p$ 处与 $S$ 相切的平面等同 (Fig.~\ref{fig:tangent-vector-to-surface}).
+
+为了将这个概念推广到抽象的 $n$ 维流形, 我们需要找到一种不涉及周围 Euclidean 空间 $\mathbb{R}^3$ 的方式来描述 $v$. 为此, 注意 $v$ 的分量为
+\[
+  v^i=\frac{\mathrm{d}(x^i\circ c)}{\mathrm{d}t}(0),
+\]
+其中 $x^i:\mathbb{R}^3\to\mathbb{R}$ 是第 $i$ 个坐标函数. 若不考虑周围空间, $x^i:S\to\mathbb{R}$ 就只是一个可微函数, 且
+\[
+  v^i=v(x^i),
+\]
+其中对任意可微函数 $f:S\to\mathbb{R}$, 定义
+\[
+  v(f):=\frac{\mathrm{d}(f\circ c)}{\mathrm{d}t}(0).
+\]
+这样就可以把 $v$ 看作算子 $v:C^\infty(S)\to\mathbb{R}$, 显然这个算子完全确定向量 $v$. 我们将用切向量的这一新解释来定义流形的切空间.
+
+\RGfigure[.52\textwidth]{tangent-vector-to-surface}{曲面的切向量}
+
+\begin{RiemannDefinition}\label{def:tangent-vector-and-space}
+设 $c:(-\varepsilon,\varepsilon)\to M$ 是光滑流形 $M$ 上的一条可微曲线. 考虑所有在 $c(0)=p$ 处可微的函数 $f:M\to\mathbb{R}$ 所组成的集合 $C^\infty(p)$. \textbf{曲线 $c$ 在 $p$ 处的切向量}是由
+\[
+  \dot c(0)(f)=\frac{\mathrm{d}(f\circ c)}{\mathrm{d}t}(0)
+\]
+给出的算子 $\dot c(0):C^\infty(p)\to\mathbb{R}$.
+
+$M$ 在 $p$ 处的\textbf{切向量}是某条满足 $c(0)=p$ 的可微曲线 $c:(-\varepsilon,\varepsilon)\to M$ 的切向量. $p$ 处的\textbf{切空间}是 $p$ 处所有切向量组成的空间 $T_pM$.
+\end{RiemannDefinition}
+
+选取 $p$ 附近的参数化 $\varphi:U\subset\mathbb{R}^n\to M$, 则在局部坐标下, 曲线 $c$ 由 $U$ 中的曲线
+\[
+  \widehat c(t):=(\varphi^{-1}\circ c)(t)=(x^1(t),\ldots,x^n(t))
+\]
+给出, 且
+\begin{align*}
+  \dot c(0)(f)
+    &=\frac{\mathrm{d}(f\circ c)}{\mathrm{d}t}(0)
+      =\left.\frac{\mathrm{d}}{\mathrm{d}t}
+      \left(\overbrace{(f\circ\varphi)}^{\widehat f}
+      \circ\overbrace{(\varphi^{-1}\circ c)}^{\widehat c}\right)\right|_{t=0}\\
+    &=\left.\frac{\mathrm{d}}{\mathrm{d}t}
+      \bigl(\widehat f(x^1(t),\ldots,x^n(t))\bigr)\right|_{t=0}
+      =\sum_{i=1}^n
+      \frac{\partial\widehat f}{\partial x^i}(\widehat c(0))
+      \frac{\mathrm{d}x^i}{\mathrm{d}t}(0)\\
+    &=\left(\sum_{i=1}^n\dot x^i(0)
+      \left(\frac{\partial}{\partial x^i}\right)_{\varphi^{-1}(p)}\right)(\widehat f).
+\end{align*}
+因此, 我们可以写成
+\[
+  \dot c(0)=\sum_{i=1}^n\dot x^i(0)\left(\frac{\partial}{\partial x^i}\right)_p,
+\]
+其中 $\bigl(\frac{\partial}{\partial x^i}\bigr)_p$ 表示曲线 $c_i$ 在 $p$ 处的切向量所对应的算子, 这条曲线在局部坐标下由
+\[
+  \widehat c_i(t)=(x^1,\ldots,x^{i-1},x^i+t,x^{i+1},\ldots,x^n)
+\]
+给出, 且 $(x^1,\ldots,x^n)=\varphi^{-1}(p)$.
+
+\begin{RiemannExample}\label{ex:coordinate-tangent-vectors-on-sphere}
+由
+\[
+  \psi(\theta,\varphi)=(\sin\theta\cos\varphi,\sin\theta\sin\varphi,\cos\theta)
+\]
+给出的映射 $\psi:(0,\pi)\times(-\pi,\pi)\to S^2$ 对点 $(1,0,0)=\psi(\frac{\pi}{2},0)$ 的一个邻域作参数化. 因此, $\bigl(\frac{\partial}{\partial\theta}\bigr)_{(1,0,0)}=\dot c_\theta(0)$, 且 $\bigl(\frac{\partial}{\partial\varphi}\bigr)_{(1,0,0)}=\dot c_\varphi(0)$, 其中
+\begin{align*}
+  c_\theta(t)&=\psi\left(\frac{\pi}{2}+t,0\right)=(\cos t,0,-\sin t);\\
+  c_\varphi(t)&=\psi\left(\frac{\pi}{2},t\right)=(\cos t,\sin t,0).
+\end{align*}
+注意, 用上面的记号,
+\[
+  \widehat c_\theta(t)=\left(\frac{\pi}{2}+t,0\right)
+  \quad\text{且}\quad
+  \widehat c_\varphi(t)=\left(\frac{\pi}{2},t\right).
+\]
+此外, 由于 $c_\theta$ 和 $c_\varphi$ 是 $\mathbb{R}^3$ 中的曲线, $\bigl(\frac{\partial}{\partial\theta}\bigr)_{(1,0,0)}$ 和 $\bigl(\frac{\partial}{\partial\varphi}\bigr)_{(1,0,0)}$ 可以分别与向量 $(0,0,-1)$ 和 $(0,1,0)$ 等同.
+\end{RiemannExample}
+
+\begin{RiemannProposition}\label{prop:dimension-of-tangent-space}
+$M$ 在 $p$ 处的切空间是一个 $n$ 维向量空间.
+\end{RiemannProposition}
+
+\begin{RiemannProof}
+考虑 $p$ 附近的一个参数化 $\varphi:U\subset\mathbb{R}^n\to M$, 取由算子 $\bigl(\frac{\partial}{\partial x^i}\bigr)_p$ 张成的向量空间
+\[
+  \mathcal{D}_p:=\operatorname{span}\left\{
+  \left(\frac{\partial}{\partial x^1}\right)_p,\ldots,
+  \left(\frac{\partial}{\partial x^n}\right)_p\right\}.
+\]
+容易证明这些算子线性无关 [参见 Exercise~\ref{ex:tangent-space}(\ref{ex:independence-of-coordinate-tangent-vectors})]. 另外, $M$ 在 $p$ 处的每个切向量都能表示成这些算子的线性组合, 因此切空间 $T_pM$ 是 $\mathcal{D}_p$ 的子集. 现在来说明 $\mathcal{D}_p\subset T_pM$. 令 $v\in\mathcal{D}_p$, 则 $v$ 可以写成
+\[
+  v=\sum_{i=1}^n v^i\left(\frac{\partial}{\partial x^i}\right)_p.
+\]
+若考虑由
+\[
+  c(t)=\varphi(x^1+v^1t,\ldots,x^n+v^nt)
+\]
+定义的曲线 $c:(-\varepsilon,\varepsilon)\to M$ (其中 $(x^1,\ldots,x^n)=\varphi^{-1}(p)$), 则
+\[
+  \widehat c(t)=(x^1+v^1t,\ldots,x^n+v^nt)
+\]
+从而 $\dot x^i(0)=v^i$, 这意味着 $\dot c(0)=v$. 因此 $v\in T_pM$.
+\end{RiemannProof}
+
+\begin{RiemannRemark}\label{rem:associated-basis-and-tangent-space-of-open-set}
+\begin{enumerate}[label=(\arabic*),leftmargin=*]
+\item 由 $p$ 附近选定的参数化确定的基 $\bigl\{\bigl(\frac{\partial}{\partial x^i}\bigr)_p\bigr\}_{i=1}^n$ 称为该参数化的\textbf{关联基}.
+\item 注意, $p$ 处切空间的定义只用到在 $p$ 的一个邻域上可微的函数. 因此, 若 $U$ 是 $M$ 中包含 $p$ 的开集, 则切空间 $T_pU$ 自然地与 $T_pM$ 等同.
+\end{enumerate}
+\end{RiemannRemark}
+
+考虑 $M$ 上所有点 $p$ 的切空间 $T_pM$ 的不交并, 得到空间
+\[
+  TM=\bigcup_{p\in M}T_pM=\{v\in T_pM\mid p\in M\},
+\]
+它具有由 $M$ 的可微结构自然确定的可微结构 [参见 Exercise~\ref{ex:tangent-space}(\ref{ex:tangent-bundle-chart-construction})]. 赋予这一可微结构之后, 此空间称为\textbf{切丛}. 注意, 有一个自然投影 $\pi:TM\to M$, 将 $v\in T_pM$ 送到 $p$ (参见第~\RGref{subsec:notes-tangent-space}~节).
+
+现在已经定义了切空间, 于是可以定义光滑流形之间的可微映射 $f:M\to N$ \textbf{在点 $p$ 处的导数}. 我们希望这个导数是对应切空间之间的线性变换
+\[
+  (\mathrm{d}f)_p:T_pM\to T_{f(p)}N,
+\]
+当 $M$ 和 $N$ 为 Euclidean 空间时, 它就是 $f$ 的通常导数 (Jacobian), 并且满足链式法则.
+
+\begin{RiemannDefinition}\label{def:derivative-of-manifold-map}
+设 $f:M\to N$ 是光滑流形之间的可微映射. 对 $p\in M$, $f$ 在 $p$ 处的导数是映射
+\begin{align*}
+  (\mathrm{d}f)_p:T_pM&\to T_{f(p)}N\\
+  v&\mapsto\frac{\mathrm{d}(f\circ c)}{\mathrm{d}t}(0),
+\end{align*}
+其中 $c:(-\varepsilon,\varepsilon)\to M$ 是满足 $c(0)=p$ 和 $\dot c(0)=v$ 的曲线.
+\end{RiemannDefinition}
+
+\begin{RiemannProposition}\label{prop:linear-derivative-of-manifold-map}
+上面定义的映射 $(\mathrm{d}f)_p:T_pM\to T_{f(p)}N$ 是线性变换, 与曲线 $c$ 的选取无关.
+\end{RiemannProposition}
+
+\begin{RiemannProof}
+设 $(U,\varphi)$ 和 $(V,\psi)$ 是 $p$ 和 $f(p)$ 附近的两个参数化, 使得 $f(\varphi(U))\subset\psi(V)$ (参见 Fig.~\ref{fig:derivative-of-manifold-map}). 考虑向量 $v\in T_pM$ 和满足 $c(0)=p$, $\dot c(0)=v$ 的曲线 $c:(-\varepsilon,\varepsilon)\to M$. 若在局部坐标下曲线 $c$ 由
+\[
+  \widehat c(t):=(\varphi^{-1}\circ c)(t)=(x^1(t),\ldots,x^m(t))
+\]
+给出, 且曲线 $\gamma:=f\circ c:(-\varepsilon,\varepsilon)\to N$ 由
+\begin{align*}
+  \widehat\gamma(t)&:=(\psi^{-1}\circ\gamma)(t)
+      =(\psi^{-1}\circ f\circ\varphi)(x^1(t),\ldots,x^m(t))\\
+    &=(y^1(x(t)),\ldots,y^n(x(t)))
+\end{align*}
+给出, 则 $\dot\gamma(0)$ 是 $T_{f(p)}N$ 中由下式给出的切向量:
+\begin{align*}
+  \dot\gamma(0)
+    &=\sum_{i=1}^n\left.\frac{\mathrm{d}}{\mathrm{d}t}
+      \bigl(y^i(x^1(t),\ldots,x^m(t))\bigr)\right|_{t=0}
+      \left(\frac{\partial}{\partial y^i}\right)_{f(p)}\\
+    &=\sum_{i=1}^n\left\{\sum_{k=1}^m\dot x^k(0)
+      \left(\frac{\partial y^i}{\partial x^k}\right)(x(0))\right\}
+      \left(\frac{\partial}{\partial y^i}\right)_{f(p)}\\
+    &=\sum_{i=1}^n\left\{\sum_{k=1}^m v^k
+      \left(\frac{\partial y^i}{\partial x^k}\right)(x(0))\right\}
+      \left(\frac{\partial}{\partial y^i}\right)_{f(p)},
+\end{align*}
+其中 $v^k$ 是 $v$ 在与 $(U,\varphi)$ 关联的基下的分量. 因此, 只要 $\dot c(0)=v$, $\dot\gamma(0)$ 就与 $c$ 的选取无关. 此外, $w=(\mathrm{d}f)_p(v)$ 在与 $(V,\psi)$ 关联的基下的分量是
+\[
+  w^i=\sum_{j=1}^m\frac{\partial y^i}{\partial x^j}v^j,
+\]
+其中 $\bigl(\frac{\partial y^i}{\partial x^j}\bigr)$ 是一个 $n\times m$ 矩阵 (即 $f$ 的局部表示在 $\varphi^{-1}(p)$ 处的 Jacobian 矩阵). 因此, $(\mathrm{d}f)_p:T_pM\to T_{f(p)}N$ 是线性变换, 在与参数化 $\varphi$ 和 $\psi$ 关联的基下由此矩阵表示.
+\end{RiemannProof}
+
+\RGfigure[.55\textwidth]{derivative-of-manifold-map}{可微映射的导数}
+
+\begin{RiemannRemark}\label{rem:notations-for-derivative-of-manifold-map}
+导数 $(\mathrm{d}f)_p$ 有时称为 $f$ 在 $p$ 处的\textbf{微分}. $\mathrm{d}f$ 也常用其他若干记号表示, 如 $f_*$, $Df$, $Tf$ 和 $f'$.
+\end{RiemannRemark}
+
+\begin{RiemannExample}\label{ex:derivative-of-local-parametrization}
+设 $\varphi:U\subset\mathbb{R}^n\to M$ 是点 $p\in M$ 附近的一个参数化. 可以把 $\varphi$ 看作两个光滑流形之间的可微映射, 并计算其在 $x=\varphi^{-1}(p)$ 处的导数
+\[
+  (\mathrm{d}\varphi)_x:T_xU\to T_pM.
+\]
+对 $v\in T_xU\cong\mathbb{R}^n$, $(\mathrm{d}\varphi)_x(v)$ 的第 $i$ 个分量为
+\[
+  \sum_{j=1}^n\frac{\partial x^i}{\partial x^j}v^j=v^i
+\]
+(其中 $\bigl(\frac{\partial x^i}{\partial x^j}\bigr)$ 是恒等矩阵). 因此, $(\mathrm{d}\varphi)_x(v)$ 是 $T_pM$ 中在与参数化 $\varphi$ 关联的基 $\bigl\{\bigl(\frac{\partial}{\partial x^i}\bigr)_p\bigr\}$ 下由 $v$ 表示的向量.
+\end{RiemannExample}
+
+给定可微映射 $f:M\to N$, 也可以定义对应切丛之间的整体导数 $\mathrm{d}f$ (又称\textbf{前推}, 记为 $f_*$):
+\begin{align*}
+  \mathrm{d}f:TM&\to TN\\
+  T_pM\ni v&\mapsto(\mathrm{d}f)_p(v)\in T_{f(p)}N.
+\end{align*}
+
+\begin{RiemannExercise}\label{ex:tangent-space}
+\begin{enumerate}[label=(\arabic*),ref=\arabic*,leftmargin=*]
+\item\label{ex:independence-of-coordinate-tangent-vectors} 证明算子 $\bigl(\frac{\partial}{\partial x^i}\bigr)_p$ 线性无关.
+\item\label{ex:change-of-tangent-basis} 设 $M$ 是光滑流形, $p$ 是 $M$ 中一点, $v$ 是 $M$ 在 $p$ 处的切向量. 证明: 若在与 $p$ 附近不同参数化关联的两组基下, $v$ 可以写成 $v=\sum_{i=1}^na^i\bigl(\frac{\partial}{\partial x^i}\bigr)_p$ 和 $v=\sum_{i=1}^nb^i\bigl(\frac{\partial}{\partial y^i}\bigr)_p$, 则
+\[
+  b^j=\sum_{i=1}^n\frac{\partial y^j}{\partial x^i}a^i.
+\]
+\item\label{ex:alternative-definitions-of-tangent-space} 设 $M$ 是 $n$ 维可微流形且 $p\in M$. 证明下列集合可以典范地与 $T_pM$ 等同 (因而构成切空间的其他定义):
+\begin{enumerate}[label=(\alph*),leftmargin=*]
+\item $\mathcal{C}_p/\sim$, 其中 $\mathcal{C}_p$ 是满足 $c(0)=p$ 的可微曲线 $c:I\subset\mathbb{R}\to M$ 的集合, $\sim$ 是由
+\[
+  c_1\sim c_2\;\Leftrightarrow\;
+  \frac{\mathrm{d}}{\mathrm{d}t}(\varphi^{-1}\circ c_1)(0)
+  =\frac{\mathrm{d}}{\mathrm{d}t}(\varphi^{-1}\circ c_2)(0)
+\]
+定义的等价关系, 这里 $\varphi:U\subset\mathbb{R}^n\to M$ 是 $p$ 的一个邻域的某个参数化.
+\item $\{(\alpha,v_\alpha)\mid p\in\varphi_\alpha(U_\alpha)\text{ 且 }v_\alpha\in\mathbb{R}^n\}/\sim$, 其中 $\mathcal{A}=\{(U_\alpha,\varphi_\alpha)\}$ 是可微结构, $\sim$ 是由
+\[
+  (\alpha,v_\alpha)\sim(\beta,v_\beta)\;\Leftrightarrow\;
+  v_\beta=\mathrm{d}(\varphi_\beta^{-1}\circ\varphi_\alpha)_{\varphi_\alpha^{-1}(p)}(v_\alpha).
+\]
+定义的等价关系.
+\end{enumerate}
+\item\label{ex:chain-rule-for-manifold-maps} (\emph{链式法则}) 设 $f:M\to N$ 和 $g:N\to P$ 是两个可微映射. 则 $g\circ f:M\to P$ 也可微 [参见 Exercise~\ref{ex:properties-of-differentiable-maps}(\ref{ex:composite-of-smooth-maps})]. 证明对 $p\in M$,
+\[
+  (\mathrm{d}(g\circ f))_p=(\mathrm{d}g)_{f(p)}\circ(\mathrm{d}f)_p.
+\]
+\item\label{ex:cartesian-components-of-spherical-coordinates} 设 $\phi:(0,+\infty)\times(0,\pi)\times(0,2\pi)\to\mathbb{R}^3$ 是 $U=\mathbb{R}^3\setminus\{(x,0,z)\mid x\geq 0\text{ 且 }z\in\mathbb{R}\}$ 的球坐标参数化, 由
+\[
+  \phi(r,\theta,\varphi)=(r\sin\theta\cos\varphi,r\sin\theta\sin\varphi,r\cos\theta)
+\]
+给出. 确定在 $U$ 的每一点, $\frac{\partial}{\partial r}$, $\frac{\partial}{\partial\theta}$ 和 $\frac{\partial}{\partial\varphi}$ 的 Cartesian 分量.
+\item\label{ex:derivative-of-antipodal-map-at-north-pole} 计算对径映射 $f:S^n\to S^n$ 在北极 $N$ 处的导数 $(\mathrm{d}f)_N$.
+\item\label{ex:coordinate-differential-of-scalar-function} 设 $W$ 是 $M$ 上的一个坐标邻域, $x:W\to\mathbb{R}^n$ 是一个坐标图, 考虑光滑函数 $f:M\to\mathbb{R}$. 证明对 $p\in W$, 导数 $(\mathrm{d}f)_p$ 由
+\[
+  (\mathrm{d}f)_p
+  =\frac{\partial\widehat f}{\partial x^1}(x(p))(\mathrm{d}x^1)_p+\cdots
+  +\frac{\partial\widehat f}{\partial x^n}(x(p))(\mathrm{d}x^n)_p
+\]
+给出, 其中 $\widehat f:=f\circ x^{-1}$.
+\item\label{ex:tangent-bundle-chart-construction} (切丛) 设 $\{(U_\alpha,\varphi_\alpha)\}$ 是 $M$ 上的一个可微结构, 考虑映射
+\begin{align*}
+  \Phi_\alpha:U_\alpha\times\mathbb{R}^n&\to TM\\
+  (x,v)&\mapsto(\mathrm{d}\varphi_\alpha)_x(v)\in T_{\varphi_\alpha(x)}M.
+\end{align*}
+证明族 $\{(U_\alpha\times\mathbb{R}^n,\Phi_\alpha)\}$ 定义了 $TM$ 的一个可微结构. 由此得出, 赋予此可微结构的 $TM$ 是维数为 $2\times\dim M$ 的光滑流形.
+\item\label{ex:smoothness-and-inverse-of-pushforward} 设 $f:M\to N$ 是光滑流形之间的可微映射. 证明:
+\begin{enumerate}[label=(\alph*),leftmargin=*]
+\item $\mathrm{d}f:TM\to TN$ 也可微;
+\item 若 $f:M\to M$ 是恒等映射, 则 $\mathrm{d}f:TM\to TM$ 也是恒等映射;
+\item 若 $f$ 是微分同胚, 则 $\mathrm{d}f:TM\to TN$ 也是微分同胚, 且 $(\mathrm{d}f)^{-1}=\mathrm{d}f^{-1}$.
+\end{enumerate}
+\item\label{ex:tangent-bundle-of-product-manifolds} 设 $M_1,M_2$ 是两个可微流形, 且
+\begin{align*}
+  \pi_1 &: M_1\times M_2\to M_1\\
+  \pi_2 &: M_1\times M_2\to M_2
+\end{align*}
+是相应的典范投影.
+\begin{enumerate}[label=(\alph*),leftmargin=*]
+\item 证明 $\mathrm{d}\pi_1\times\mathrm{d}\pi_2$ 是切丛 $T(M_1\times M_2)$ 与乘积流形 $TM_1\times TM_2$ 之间的微分同胚.
+\item 证明: 若 $N$ 是光滑流形且 $f_i:N\to M_i$ ($i=1,2$) 是可微映射, 则 $\mathrm{d}(f_1\times f_2)=\mathrm{d}f_1\times\mathrm{d}f_2$.
+\end{enumerate}
+\end{enumerate}
+\end{RiemannExercise}

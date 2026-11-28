@@ -1,0 +1,554 @@
+\section{刚体}\label{sec:rigid-body}
+
+回顾, 刚体是由质量分别为 $m_1,\ldots,m_k$ 的 $k$ 个粒子构成的系统, 这些粒子由无质量杆连接, 使其相互距离保持不变. 若进一步假设给定的一个粒子固定不动 (例如固定在原点), 就得到完整约束
+\[
+  N=\bigl\{(x_1,\ldots,x_k)\in\mathbb{R}^{3k}\mid x_1=0\ \text{且}\
+    \lVert x_i-x_j\rVert=d_{ij}\ \text{对 }1\leq i<j\leq k\bigr\}.
+\]
+若至少有三个粒子不共线, 则此流形与 $O(3)$ 微分同胚. 事实上, 若固定 $N$ 中一点 $(\xi_1,\ldots,\xi_k)$, 则 $N$ 中任何其他点都形如 $(S\xi_1,\ldots,S\xi_k)$, 其中 $S\in O(3)$ 唯一. 因此, $N$ 中的一个运动可以由曲线 $S:I\subset\mathbb{R}\to O(3)$ 指定. 质量为 $m_i$ 的粒子在 $\mathbb{R}^3$ 中的轨迹由曲线 $S\xi_i:I\subset\mathbb{R}\to\mathbb{R}^3$ 给出, 其速度为 $\dot S\xi_i$ (这里用 $O(3)\subset\mathcal{M}_{3\times3}(\mathbb{R})\cong\mathbb{R}^9$ 将 $T_SO(3)$ 与 $\mathcal{M}_{3\times3}(\mathbb{R})$ 的一个适当子空间等同). 因此, 系统沿运动的动能为
+\[
+  K=\frac12\sum_{i=1}^n m_i\langle\dot S\xi_i,\dot S\xi_i\rangle,
+\]
+其中 $\langle\cdot,\cdot\rangle$ 是 $\mathbb{R}^3$ 上的 Euclidean 内积.
+
+$O(3)$, 从而 $N$, 有两个微分同胚的连通分支, 分别对应于行列式为正或为负的矩阵. 由于任意运动必在一个连通分支内发生, 可以直接取 $SO(3)$ 为位形空间. 为包括连续刚体, 作如下推广.
+
+\begin{RiemannDefinition}\label{def:rigid-body-with-fixed-point}
+\textbf{有定点的刚体}是任何形如 $(SO(3),\langle\!\langle\cdot,\cdot\rangle\!\rangle,\mathcal{F})$ 的力学系统, 其中对所有 $V,W\in T_SSO(3)$ 和所有 $S\in SO(3)$, 有
+\[
+  \langle\!\langle V,W\rangle\!\rangle:=\int_{\mathbb{R}^3}\langle V\xi,W\xi\rangle\,\mathrm{d}m,
+\]
+$\langle\cdot,\cdot\rangle$ 是 $\mathbb{R}^3$ 上通常的 Euclidean 内积, $m$ (称为\textbf{参考位形的质量分布}) 是 $\mathbb{R}^3$ 上的正有限测度, 不支承于任何经过原点的直线, 且满足 $\int_{\mathbb{R}^3}\lVert\xi\rVert^2\,\mathrm{d}m<+\infty$.
+\end{RiemannDefinition}
+
+\begin{RiemannExample}\label{ex:discrete-and-continuous-rigid-bodies}
+\begin{enumerate}[label=(\arabic*),leftmargin=*]
+\item 由质量分别为 $m_1,\ldots,m_k$ 的 $k$ 个粒子构成的刚体对应于测度
+\[
+  m=\sum_{i=1}^k m_i\delta_{\xi_i},
+\]
+其中 $\delta_{\xi_i}$ 为以点 $\xi_i\in\mathbb{R}^3$ 为中心的 Dirac delta.
+\item 具有 (例如) 紧支集的可积密度函数 $\rho:\mathbb{R}^3\to[0,+\infty)$ 的连续刚体, 由 Lebesgue $\sigma$-代数上如下定义的测度 $m$ 描述:
+\[
+  m(A):=\int_A\rho(\xi)\,\mathrm{d}^3\xi.
+\]
+\end{enumerate}
+\end{RiemannExample}
+
+\begin{RiemannRemark}\label{rem:reduction-of-rigid-body-rotation-to-fixed-point}
+一般刚体的转动在许多情形下可化归为有定点刚体的运动 [参见 Exercise~\ref{ex:rigid-body}(\ref{ex:rigid-body-without-fixed-point})]. 除非另有说明, 以下以\textquotedblleft 刚体\textquotedblright 指\textquotedblleft 有定点的刚体\textquotedblright.
+\end{RiemannRemark}
+
+\begin{RiemannProposition}\label{prop:left-invariant-metric-of-rigid-body}
+刚体在 $SO(3)$ 上定义的度量 $\langle\!\langle\cdot,\cdot\rangle\!\rangle$ 是左不变的, 即任何左平移都是等距映射.
+\end{RiemannProposition}
+
+\begin{RiemannProof}
+由于固定矩阵 $R\in SO(3)$ 的左乘是线性映射 $L_R:\mathcal{M}_{3\times3}(\mathbb{R})\to\mathcal{M}_{3\times3}(\mathbb{R})$, 对任意 $V\in T_SSO(3)$ 有 $(\mathrm{d}L_R)_SV=RV\in T_{RS}SO(3)$. 因而
+\begin{align*}
+  \bigl\langle\!\bigl\langle(\mathrm{d}L_R)_SV,(\mathrm{d}L_R)_SW\bigr\rangle\!\bigr\rangle
+  &=\langle\!\langle RV,RW\rangle\!\rangle
+    =\int_{\mathbb{R}^3}\langle RV\xi,RW\xi\rangle\,\mathrm{d}m\\
+  &=\int_{\mathbb{R}^3}\langle V\xi,W\xi\rangle\,\mathrm{d}m
+    =\langle\!\langle V,W\rangle\!\rangle
+\end{align*}
+(因为 $R\in SO(3)$ 保持 Euclidean 内积).
+\end{RiemannProof}
+
+因此, 刚体的数目至多和 $\mathfrak{so}(3)\cong\mathbb{R}^3$ 上内积的数目一样多, 即和 $3\times3$ 实对称正定矩阵的数目一样多 [参见第~\ref{chap:riemannian-manifolds}~章的 Exercise~\ref{ex:riemannian-manifolds}(\ref{ex:left-invariant-metric})]. 事实上, 将看到任何刚体都可以用 3 个正数来指定.
+
+\begin{RiemannProposition}\label{prop:trace-form-of-rigid-body-metric}
+刚体在 $SO(3)$ 上定义的度量 $\langle\!\langle\cdot,\cdot\rangle\!\rangle$ 由
+\[
+  \langle\!\langle V,W\rangle\!\rangle=\operatorname{tr}(VJW^t)
+\]
+给出, 其中
+\[
+  J_{ij}=\int_{\mathbb{R}^3}\xi^i\xi^j\,\mathrm{d}m.
+\]
+\end{RiemannProposition}
+
+\begin{RiemannProof}
+只需注意
+\begin{align*}
+  \langle\!\langle V,W\rangle\!\rangle
+  &=\int_{\mathbb{R}^3}\sum_{i=1}^3
+    \left(\sum_{j=1}^3V_{ij}\xi^j\right)
+    \left(\sum_{k=1}^3W_{ik}\xi^k\right)\mathrm{d}m\\
+  &=\sum_{i,j,k=1}^3 V_{ij}W_{ik}\int_{\mathbb{R}^3}\xi^j\xi^k\,\mathrm{d}m
+    =\sum_{i,j,k=1}^3 V_{ij}J_{jk}W_{ik}.
+\end{align*}
+\end{RiemannProof}
+
+\begin{RiemannProposition}\label{prop:covariant-acceleration-of-rigid-body}
+若 $S:I\subset\mathbb{R}\to SO(3)$ 是一条曲线, $\nabla$ 是 $(SO(3),\langle\!\langle\cdot,\cdot\rangle\!\rangle)$ 上的 Levi–Civita 联络, 则对任意 $V\in T_SSO(3)$, 有
+\[
+  \langle\!\langle\nabla_{\dot S}\dot S,V\rangle\!\rangle
+  =\int_{\mathbb{R}^3}\langle\ddot S\xi,V\xi\rangle\,\mathrm{d}m.
+\]
+\end{RiemannProposition}
+
+\begin{RiemannProof}
+先考虑\textbf{非平面}刚体的情形, 即 $m$ 不支承于任何经过原点的平面. 此时可用同一公式
+\[
+  \langle\!\langle\!\langle V,W\rangle\!\rangle\!\rangle
+  =\int_{\mathbb{R}^3}\langle V\xi,W\xi\rangle\,\mathrm{d}m
+\]
+对所有 $V,W\in T_S\mathcal{M}_{3\times3}(\mathbb{R})$ 及 $S\in\mathcal{M}_{3\times3}(\mathbb{R})$, 将度量 $\langle\!\langle\cdot,\cdot\rangle\!\rangle$ 延拓为 $\mathcal{M}_{3\times3}(\mathbb{R})\cong\mathbb{R}^9$ 上的平直度量. 事实上, 此公式显然在 $\mathcal{M}_{3\times3}(\mathbb{R})$ 上定义了一个对称 2-张量. 为验证正定性, 注意若 $V\in T_S\mathcal{M}_{3\times3}(\mathbb{R})$ 非零, 则它的核包含于一个经过原点的平面. 因而连续函数 $\langle V\xi,V\xi\rangle$ 在一个正测度集合上为正, 从而
+\[
+  \langle\!\langle\!\langle V,V\rangle\!\rangle\!\rangle
+    =\int_{\mathbb{R}^3}\langle V\xi,V\xi\rangle\,\mathrm{d}m>0.
+\]
+容易看出此度量是平直的, 因为度量在 $\mathcal{M}_{3\times3}(\mathbb{R})$ 的自然坐标下的分量是常系数 $J_{ij}$. 因此在这些坐标下所有 Christoffel 符号都为零, 相应的 Levi–Civita 联络 $\widetilde\nabla$ 是平凡联络. 若 $S:I\subset\mathbb{R}\to\mathcal{M}_{3\times3}(\mathbb{R})$ 是一条曲线, 则
+\[
+  \widetilde\nabla_{\dot S}\dot S=\ddot S.
+\]
+由于 $\langle\!\langle\cdot,\cdot\rangle\!\rangle$ 是由 $\langle\!\langle\!\langle\cdot,\cdot\rangle\!\rangle\!\rangle$ 在 $SO(3)$ 上诱导的度量, 对任意曲线 $S:I\subset\mathbb{R}\to SO(3)$, 有
+\[
+  \nabla_{\dot S}\dot S=(\widetilde\nabla_{\dot S}\dot S)^\top=\ddot S^\top,
+\]
+从而对任意 $V\in T_SSO(3)$,
+\[
+  \langle\!\langle\nabla_{\dot S}\dot S,V\rangle\!\rangle
+    =\langle\!\langle\ddot S^\top,V\rangle\!\rangle
+    =\langle\!\langle\!\langle\ddot S,V\rangle\!\rangle\!\rangle
+    =\int_{\mathbb{R}^3}\langle\ddot S\xi,V\xi\rangle\,\mathrm{d}m.
+\]
+对于平面刚体, 该公式可通过取极限得到 [参见 Exercise~\ref{ex:rigid-body}(\ref{ex:acceleration-formula-for-planar-rigid-body})].
+\end{RiemannProof}
+
+可以利用这一结果确定 $(SO(3),\langle\!\langle\cdot,\cdot\rangle\!\rangle)$ 的测地线. 引入下列量后, 可得到一条巧妙的捷径 (其确切性质将在第~\RGref{sec:lagrangian-mechanics}~节讨论).
+
+\begin{RiemannDefinition}\label{def:angular-momentum-of-rigid-body}
+若刚体的运动由 $S:I\subset\mathbb{R}\to SO(3)$ 描述, 则其\textbf{角动量}是向量
+\[
+  p(t):=\int_{\mathbb{R}^3}\bigl[(S(t)\xi)\times\dot S(t)\xi\bigr]\,\mathrm{d}m
+\]
+(其中 $\times$ 是 $\mathbb{R}^3$ 上通常的叉积).
+\end{RiemannDefinition}
+
+\begin{RiemannTheorem}\label{thm:conservation-of-angular-momentum-of-free-rigid-body}
+若 $S:I\subset\mathbb{R}\to SO(3)$ 是 $(SO(3),\langle\!\langle\cdot,\cdot\rangle\!\rangle)$ 的一条测地线, 则 $p(t)$ 为常量.
+\end{RiemannTheorem}
+
+\begin{RiemannProof}
+有
+\[
+  \dot p=\int_{\mathbb{R}^3}\bigl[(\dot S\xi)\times(\dot S\xi)+(S\xi)\times(\ddot S\xi)\bigr]\,\mathrm{d}m
+        =\int_{\mathbb{R}^3}\bigl[(S\xi)\times(\ddot S\xi)\bigr]\,\mathrm{d}m.
+\]
+任取 $v\in\mathbb{R}^3$. 则
+\begin{align*}
+  \langle Sv,\dot p\rangle
+  &=\left\langle Sv,\int_{\mathbb{R}^3}\bigl[(S\xi)\times(\ddot S\xi)\bigr]\,\mathrm{d}m\right\rangle
+    =\int_{\mathbb{R}^3}\langle Sv,(S\xi)\times(\ddot S\xi)\rangle\,\mathrm{d}m\\
+  &=\int_{\mathbb{R}^3}\langle\ddot S\xi,(Sv)\times(S\xi)\rangle\,\mathrm{d}m
+    =\int_{\mathbb{R}^3}\langle\ddot S\xi,S(v\times\xi)\rangle\,\mathrm{d}m,
+\end{align*}
+这里用到了 $\langle\cdot,\cdot\times\cdot\rangle\equiv\det(\cdot,\cdot,\cdot)$ 在其变元的偶置换下不变, 以及叉积在乘以 $S\in SO(3)$ 下的等变性.
+
+为完成证明, 需要下面的引理, 其证明留作练习.
+
+\begin{RiemannLemma}\label{lem:so-three-cross-product-isomorphism}
+存在线性同构 $\Omega:\mathfrak{so}(3)\to\mathbb{R}^3$, 对所有 $\xi\in\mathbb{R}^3$ 和 $A\in\mathfrak{so}(3)$, 有
+\[
+  A\xi=\Omega(A)\times\xi.
+\]
+此外, 对所有 $A,B\in\mathfrak{so}(3)$, 有 $\Omega([A,B])=\Omega(A)\times\Omega(B)$ (即 $\Omega$ 是 $\mathfrak{so}(3)$ 与 $(\mathbb{R}^3,\times)$ 之间的 Lie 代数同构).\hfill\openbox
+\end{RiemannLemma}
+
+回到证明, 设 $V\in\mathfrak{so}(3)$ 满足 $\Omega(V)=v$. 则 $SV\in T_SSO(3)$, 且
+\[
+  \langle Sv,\dot p\rangle
+  =\int_{\mathbb{R}^3}\langle\ddot S\xi,SV\xi\rangle\,\mathrm{d}m
+  =\langle\!\langle\nabla_{\dot S}\dot S,SV\rangle\!\rangle=0
+\]
+(因为 $S:I\subset\mathbb{R}\to SO(3)$ 是测地线). 由于 $v\in\mathbb{R}^3$ 任意, 可知沿运动有 $\dot p=0$.
+\end{RiemannProof}
+
+若 $S:I\subset\mathbb{R}\to SO(3)$ 是一条曲线, 则对某个 $A\in\mathfrak{so}(3)$, 有 $\dot S=SA$. 定义 $\Omega:=\Omega(A)$. 则
+\begin{align*}
+  p&=\int_{\mathbb{R}^3}\bigl[(S\xi)\times(SA\xi)\bigr]\,\mathrm{d}m
+    =\int_{\mathbb{R}^3}S\bigl[\xi\times(A\xi)\bigr]\,\mathrm{d}m\\
+   &=S\int_{\mathbb{R}^3}\bigl[\xi\times(\Omega\times\xi)\bigr]\,\mathrm{d}m.
+\end{align*}
+这提示了如下定义.
+
+\begin{RiemannDefinition}\label{def:moment-of-inertia-tensor}
+由
+\[
+  I(v):=\int_{\mathbb{R}^3}\bigl[\xi\times(v\times\xi)\bigr]\,\mathrm{d}m
+\]
+定义的线性算子 $I:\mathbb{R}^3\to\mathbb{R}^3$ 称为刚体的\textbf{转动惯量张量}.
+\end{RiemannDefinition}
+
+\begin{RiemannProposition}\label{prop:kinetic-energy-via-inertia-tensor}
+任何给定刚体的转动惯量张量都是对称正定线性算子. 对所有 $V\in T_SSO(3)$ 和 $S\in SO(3)$, 相应的动能映射 $K:TSO(3)\to\mathbb{R}$ 由
+\[
+  K(V)=\frac12\langle\!\langle V,V\rangle\!\rangle
+  =\frac12\langle\!\langle SA,SA\rangle\!\rangle
+  =\frac12\langle I\Omega,\Omega\rangle
+\]
+给出, 其中 $V=SA$, $\Omega=\Omega(A)$.
+\end{RiemannProposition}
+
+\begin{RiemannProof}
+先验证 $I$ 对称:
+\begin{align*}
+  \langle Iv,w\rangle
+  &=\left\langle\int_{\mathbb{R}^3}\bigl[\xi\times(v\times\xi)\bigr]\,\mathrm{d}m,w\right\rangle
+    =\int_{\mathbb{R}^3}\langle\xi\times(v\times\xi),w\rangle\,\mathrm{d}m\\
+  &=\int_{\mathbb{R}^3}\langle v\times\xi,w\times\xi\rangle\,\mathrm{d}m
+    =\langle v,Iw\rangle.
+\end{align*}
+特别地, 有
+\begin{align*}
+  \langle I\Omega,\Omega\rangle
+  &=\int_{\mathbb{R}^3}\langle\Omega\times\xi,\Omega\times\xi\rangle\,\mathrm{d}m
+    =\int_{\mathbb{R}^3}\langle A\xi,A\xi\rangle\,\mathrm{d}m\\
+  &=\int_{\mathbb{R}^3}\langle SA\xi,SA\xi\rangle\,\mathrm{d}m=2K(V).
+\end{align*}
+由此式立即得到 $I$ 的正定性.
+\end{RiemannProof}
+
+\begin{RiemannCorollary}\label{cor:existence-of-principal-moments-and-axes}
+给定任意刚体, 存在三个正数 $I_1,I_2,I_3$ (\textbf{主转动惯量}) 和 $\mathbb{R}^3$ 的一组标准正交基 $\{e_1,e_2,e_3\}$ (\textbf{主轴}), 使得 $Ie_i=I_ie_i$ ($i=1,2,3$).
+\end{RiemannCorollary}
+
+三个主转动惯量完全确定了刚体 (因为它们确定惯性张量, 而惯性张量又给出动能). 要计算这三个数, 我们必须求出惯性张量的一个矩阵表示的特征值.
+
+\begin{RiemannProposition}\label{prop:inertia-tensor-in-canonical-basis}
+惯性张量在 $\mathbb{R}^3$ 的标准基下的矩阵表示为
+\[
+  \begin{pmatrix}
+    \int_{\mathbb{R}^3}(y^2+z^2)\,\mathrm{d}m & -\int_{\mathbb{R}^3}xy\,\mathrm{d}m & -\int_{\mathbb{R}^3}xz\,\mathrm{d}m\\[.4ex]
+    -\int_{\mathbb{R}^3}xy\,\mathrm{d}m & \int_{\mathbb{R}^3}(x^2+z^2)\,\mathrm{d}m & -\int_{\mathbb{R}^3}yz\,\mathrm{d}m\\[.4ex]
+    -\int_{\mathbb{R}^3}xz\,\mathrm{d}m & -\int_{\mathbb{R}^3}yz\,\mathrm{d}m & \int_{\mathbb{R}^3}(x^2+y^2)\,\mathrm{d}m
+  \end{pmatrix}.
+\]
+\end{RiemannProposition}
+
+\begin{RiemannProof}
+设 $\{u_1,u_2,u_3\}$ 为 $\mathbb{R}^3$ 的标准基. 则
+\[
+  I_{ij}=\langle Iu_i,u_j\rangle
+  =\int_{\mathbb{R}^3}\langle\xi\times(u_i\times\xi),u_j\rangle\,\mathrm{d}m.
+\]
+利用对所有 $u,v,w\in\mathbb{R}^3$ 成立的向量恒等式
+\[
+  u\times(v\times w)=\langle u,w\rangle v-\langle u,v\rangle w,
+\]
+我们得到
+\[
+  I_{ij}=\int_{\mathbb{R}^3}\langle\|\xi\|^2u_i-\langle\xi,u_i\rangle\xi,u_j\rangle\,\mathrm{d}m
+  =\int_{\mathbb{R}^3}\bigl(\|\xi\|^2\delta_{ij}-\xi^i\xi^j\bigr)\,\mathrm{d}m.
+\]
+\end{RiemannProof}
+
+现在可以写出 $(SO(3),\langle\!\langle\cdot,\cdot\rangle\!\rangle)$ 的测地线方程, 即无外力时刚体的运动方程. 这一力学系统通常称为 \textbf{Euler 陀螺}.
+
+\begin{RiemannProposition}\label{prop:euler-equations-of-free-rigid-body}
+Euler 陀螺的运动方程由 \textbf{Euler 方程}给出:
+\[
+  I\dot\Omega=(I\Omega)\times\Omega.
+\]
+\end{RiemannProposition}
+
+\begin{RiemannProof}
+只需注意到
+\[
+  p=SI\Omega.
+\]
+因此
+\[
+  0=\dot p=\dot S I\Omega+SI\dot\Omega
+  =SAI\Omega+SI\dot\Omega=S\bigl(\Omega\times(I\Omega)+I\dot\Omega\bigr).
+\]
+\end{RiemannProof}
+
+\begin{RiemannRemark}\label{rem:angular-velocity-of-rigid-body}
+刚体中的任一点 $\xi\in\mathbb{R}^3$ 沿曲线 $x(t)=S(t)\xi$ 运动, 其速度为
+\[
+  \dot x=\dot S\xi=SA\xi=S(\Omega\times\xi)=(S\Omega)\times(S\xi)=(S\Omega)\times x.
+\]
+因此 $\omega:=S\Omega$ 是刚体的\textbf{瞬时角速度}: 在每一时刻, 刚体绕 $\omega$ 确定的轴以角速率 $\|\omega\|$ 转动. 因而 $\Omega$ 是从刚体的 (加速的) 随体参考系中观察到的角速度 (参见 Fig.~\ref{fig:angular-velocities-of-rigid-body}).
+\end{RiemannRemark}
+
+在主轴基 $\{e_1,e_2,e_3\}$ 下, Euler 方程写为
+\[
+  \begin{cases}
+    I_1\dot\Omega^1=(I_2-I_3)\Omega^2\Omega^3\\
+    I_2\dot\Omega^2=(I_3-I_1)\Omega^3\Omega^1\\
+    I_3\dot\Omega^3=(I_1-I_2)\Omega^1\Omega^2
+  \end{cases}.
+\]
+
+由于 $I$ 正定 (从而可逆), 可以换用变量 $P:=I\Omega$. 注意 $p=SP$, 即 $P$ 是在刚体的随体参考系中观察到的 (恒定) 角动量向量. 用这一新变量, Euler 方程写为
+\[
+  \dot P=P\times\bigl(I^{-1}P\bigr).
+\]
+在主轴基 $\{e_1,e_2,e_3\}$ 下, 这些方程为
+\[
+  \begin{cases}
+    \dot P^1=\left(\dfrac{1}{I_3}-\dfrac{1}{I_2}\right)P^2P^3\\
+    \dot P^2=\left(\dfrac{1}{I_1}-\dfrac{1}{I_3}\right)P^3P^1\\
+    \dot P^3=\left(\dfrac{1}{I_2}-\dfrac{1}{I_1}\right)P^1P^2
+  \end{cases}.
+\]
+\RGfigure[.83\textwidth]{angular-velocities-of-rigid-body}{角速度}
+
+\begin{RiemannProposition}\label{prop:stable-and-unstable-principal-axis-rotations}
+若 $I_1>I_2>I_3$, 则 Euler 方程的平衡点为
+\[
+  P=\lambda e_i\qquad(\lambda\in\mathbb{R},\ i=1,2,3),
+\]
+且在 $i=1,3$ 时稳定, 在 $i=2$ 时不稳定.
+\end{RiemannProposition}
+
+\begin{RiemannProof}
+由于没有外力, 由下式给出的动能 $K$ 守恒:
+\[
+  2K=\langle I\Omega,\Omega\rangle
+  =\left\langle P,I^{-1}P\right\rangle
+  =\frac{(P^1)^2}{I_1}+\frac{(P^2)^2}{I_2}+\frac{(P^3)^2}{I_3}.
+\]
+这意味着 Euler 方程确定的流沿椭球面运动, 椭球的半轴长为 $\sqrt{2KI_1}>\sqrt{2KI_2}>\sqrt{2KI_3}$. 另一方面, 由于 $p$ 在运动中保持恒定, 我们有第二个守恒量:
+\[
+  \|p\|^2=\|P\|^2=(P^1)^2+(P^2)^2+(P^3)^2.
+\]
+因此流也沿球面运动. 某一球面上的积分曲线可由该球面与对应于不同 $K$ 值的椭球面的交得到, 如 Fig.~\ref{fig:integral-curves-of-euler-equations} 所示.
+\end{RiemannProof}
+\RGfigure[.56\textwidth]{integral-curves-of-euler-equations}{Euler 方程的积分曲线}
+
+\begin{RiemannRemark}\label{rem:rotation-about-the-intermediate-axis}
+由于 $\Omega=I^{-1}P$, 将 Proposition~\ref{prop:stable-and-unstable-principal-axis-rotations} 中的 $P$ 换成 $\Omega$, 其结论仍成立. 平衡点表示绕主轴以恒定的角速率转动, 因为它们满足 $\Omega=I_iP$, 所以 $\omega=I_ip$ 恒定. 如果将刚体置于接近绕 $e_1$ 或 $e_3$ 轴转动的状态, 则 $P$ 会保持在这些轴的附近, 因而 $Se_1$ 或 $Se_3$ 也会保持在固定向量 $p$ 附近. 相反, 如果将刚体置于接近绕 $e_2$ 轴转动的状态, $P$ 就会偏离 $e_2$ (在回到 $e_2$ 前趋近 $-e_2$), 因而 $Se_2$ 也会偏离固定向量 $p$ (在回到 $p$ 前趋近 $-p$). 将一刚体 (如一块砖) 抛向空中即可说明这一点, 因为其绕质心的转动就是有定点刚体的运动 [参见 Exercise~\ref{ex:rigid-body}(\ref{ex:rigid-body-without-fixed-point})]. 当它绕较小或较大的轴转动时 [即与较大或较小转动惯量对应的主轴 --- 参见 Exercise~\ref{ex:rigid-body}(\ref{ex:principal-axes-of-box-and-ellipsoid})], 转动是稳定的; 但绕中间轴转动时, 它会在空中翻转.
+\end{RiemannRemark}
+\RGfigure[.59\textwidth]{euler-angles}{Euler 角}
+
+若刚体不是自由的, 则必须使用 $SO(3)$ 的参数化.
+
+\begin{RiemannDefinition}\label{def:euler-angles}
+\textbf{Euler 角}对应于局部坐标 $(\theta,\varphi,\psi):SO(3)\to(0,\pi)\times(0,2\pi)\times(0,2\pi)$, 由下式定义:
+\[
+  S(\theta,\varphi,\psi)=
+  \begin{pmatrix}
+    \cos\varphi & -\sin\varphi & 0\\
+    \sin\varphi & \cos\varphi & 0\\
+    0 & 0 & 1
+  \end{pmatrix}
+  \begin{pmatrix}
+    1 & 0 & 0\\
+    0 & \cos\theta & -\sin\theta\\
+    0 & \sin\theta & \cos\theta
+  \end{pmatrix}
+  \begin{pmatrix}
+    \cos\psi & -\sin\psi & 0\\
+    \sin\psi & \cos\psi & 0\\
+    0 & 0 & 1
+  \end{pmatrix}.
+\]
+\end{RiemannDefinition}
+
+Euler 角的几何解释如 Fig.~\ref{fig:euler-angles} 所示: 若旋转将标准基 $\{e_x,e_y,e_z\}$ 变为一组新的标准正交基 $\{e_1,e_2,e_3\}$, 则 $\theta$ 是 $e_3$ 与 $e_z$ 的夹角, $\varphi$ 是由 $\{e_1,e_2\}$ 和 $\{e_x,e_y\}$ 分别张成的两个平面的交线 (称为\textbf{交节线}) 与 $x$ 轴的夹角, 而 $\psi$ 是 $e_1$ 与交节线的夹角.
+
+在与 Euler 角对应的 $TSO(3)$ 局部坐标下, 动能的一般表达式相当复杂; 这里只给出 $I_1=I_2$ 这一较简单情形的表达式.
+
+\begin{RiemannProposition}\label{prop:kinetic-energy-of-axisymmetric-rigid-body}
+若 $I_1=I_2$, 则在 $TSO(3)$ 的局部坐标 $(\theta,\varphi,\psi,v^\theta,v^\varphi,v^\psi)$ 下, 刚体的动能为
+\[
+  K=\frac{I_1}{2}\bigl((v^\theta)^2+(v^\varphi)^2\sin^2\theta\bigr)
+  +\frac{I_3}{2}\bigl(v^\psi+v^\varphi\cos\theta\bigr)^2.
+\]
+\end{RiemannProposition}
+
+\begin{RiemannProof}
+Exercise~\ref{ex:rigid-body}(\ref{ex:derive-axisymmetric-kinetic-energy}).
+\end{RiemannProof}
+
+可以用这个表达式研究的一个著名模型称为 \textbf{Lagrange 陀螺}, 即恒定重力场 $g$ 中的轴对称刚体. 相应力学系统的势能为
+\[
+  U:=g\int_{\mathbb{R}^3}\langle S\xi,e_z\rangle\,\mathrm{d}m
+  =Mg\langle S\bar\xi,e_z\rangle,
+\]
+其中 $M=m(\mathbb{R}^3)$ 是总质量, 而
+\[
+  \bar\xi:=\frac{1}{M}\int_{\mathbb{R}^3}\xi\,\mathrm{d}m
+\]
+是\textbf{质心}在随体参考系中的位置. 由轴对称性, 对某个 $l\in\mathbb{R}$ 有 $\bar\xi=le_3$, 所以
+\[
+  U=Mgl\cos\theta.
+\]
+
+\begin{RiemannExercise}\label{ex:rigid-body}
+\begin{enumerate}[label=(\arabic*),ref=\arabic*,leftmargin=*]
+\item\label{ex:rigid-body-metric-is-riemannian} 证明刚体在 $SO(3)$ 上定义的双线性形式 $\langle\!\langle\cdot,\cdot\rangle\!\rangle$ 确实是 Riemann 度量.
+\item\label{ex:rigid-body-without-fixed-point} 一般刚体 (即没有定点的刚体) 是形如 $(\mathbb{R}^3\times SO(3),\langle\!\langle\!\langle\cdot,\cdot\rangle\!\rangle\!\rangle,F)$ 的任意力学系统, 其中
+\[
+  \langle\!\langle\!\langle(v,V),(w,W)\rangle\!\rangle\!\rangle
+  :=\int_{\mathbb{R}^3}\langle v+V\xi,w+W\xi\rangle\,\mathrm{d}m
+\]
+对所有 $(x,S)\in\mathbb{R}^3\times SO(3)$ 和 $(v,V),(w,W)\in T_{(x,S)}(\mathbb{R}^3\times SO(3))$ 成立, $\langle\cdot,\cdot\rangle$ 是 $\mathbb{R}^3$ 上通常的 Euclidean 内积, $m$ 是 $\mathbb{R}^3$ 上不支承于任何直线的正有限测度, 且 $\int_{\mathbb{R}^3}\|\xi\|^2\,\mathrm{d}m<+\infty$.
+\begin{enumerate}[label=(\alph*),leftmargin=*]
+\item 证明总可以对 $m$ 作平移, 使
+\[
+  \int_{\mathbb{R}^3}\xi\,\mathrm{d}m=0
+\]
+(即将参考构形的质心置于原点).
+\item 证明作此选取时, 刚体的动能为
+\[
+  K(v,V)=\frac{1}{2}M\langle v,v\rangle+\frac{1}{2}\langle\!\langle V,V\rangle\!\rangle,
+\]
+其中 $M=m(\mathbb{R}^3)$ 是刚体的总质量, $\langle\!\langle\cdot,\cdot\rangle\!\rangle$ 是 $m$ 确定的有定点刚体的度量.
+\item 假设存在可微函数 $F:\mathbb{R}^3\to\mathbb{R}^3$, 使
+\[
+  F(x,S,v,V)(w,W)=\int_{\mathbb{R}^3}\langle F(x+S\xi),w+W\xi\rangle\,\mathrm{d}m.
+\]
+证明若对所有 $(x,S)\in\mathbb{R}^3\times SO(3)$ 都有
+\[
+  \int_{\mathbb{R}^3}(S\xi)\times F(x+S\xi)\,\mathrm{d}m=0,
+\]
+则任意运动在 $SO(3)$ 上的投影都是 $(SO(3),\langle\!\langle\cdot,\cdot\rangle\!\rangle)$ 的测地线.
+\item 描述刚体在恒定重力场中下落的运动, 此时 $F=-ge_z$ 为常量.
+\end{enumerate}
+\item\label{ex:acceleration-formula-for-planar-rigid-body} 对平面刚体证明 Proposition~\ref{prop:covariant-acceleration-of-rigid-body}. (\textbf{提示}: 将平面刚体纳入一个由非平面刚体组成的光滑单参数族.)
+\item\label{ex:prove-so-three-cross-product-isomorphism} 证明 Lemma~\ref{lem:so-three-cross-product-isomorphism}.
+\item\label{ex:principal-moment-triangle-inequality} 证明 $I_1\leq I_2+I_3$ (以及循环置换所得的不等式). 何时 $I_1=I_2+I_3$?
+\item\label{ex:principal-axes-of-box-and-ellipsoid} 求下列刚体的主轴及对应的主转动惯量:
+\begin{enumerate}[label=(\alph*),leftmargin=*]
+\item 质量为 $M$, 边长为 $2a,2b,2c\in\mathbb{R}^+$, 且中心在原点的均匀长方体;
+\item 质量为 $M$, 半轴长为 $a,b,c\in\mathbb{R}^+$, 且中心在原点的均匀 (实心) 椭球. (\textbf{提示}: 使用坐标变换 $(x,y,z)=(au,bv,cw)$.)
+\end{enumerate}
+\item\label{ex:rigid-body-symmetries} 刚体的\textbf{对称}是指保持质量分布的等距映射 $S\in O(3)$ (即对任意可测集 $A\subset\mathbb{R}^3$ 都有 $m(SA)=m(A)$). 证明:
+\begin{enumerate}[label=(\alph*),leftmargin=*]
+\item $SIS^t=I$, 其中 $I$ 是惯性张量的矩阵表示;
+\item 若 $S$ 是关于某平面的反射, 则存在垂直于该反射平面的主轴;
+\item 若 $S$ 是绕某轴的非平凡旋转, 则该轴为主轴;
+\item 若旋转角还不等于 $\pi$, 则所有垂直于旋转轴的轴都是主轴.
+\end{enumerate}
+\item\label{ex:free-symmetric-top} 考虑满足 $I_1=I_2$ 的刚体. 利用 Euler 方程证明:
+\begin{enumerate}[label=(\alph*),leftmargin=*]
+\item 角速度满足
+\[
+  \dot\omega=\frac{1}{I_1}p\times\omega;
+\]
+\item 若 $I_1=I_2=I_3$, 则刚体绕固定轴以恒定角速率转动 (即 $\omega$ 恒定);
+\item 若 $I_1=I_2\ne I_3$, 则 $\omega$ 绕 $p$ \textbf{进动} (即转动), 其角速度为
+\[
+  \omega_{\mathrm{pr}}:=\frac{p}{I_1}.
+\]
+\end{enumerate}
+\item\label{ex:asteroid-rotation} 许多小行星的形状不规则, 因而满足 $I_1<I_2<I_3$. 其绕质心的转动可由 Euler 方程很好地近似描述. 然而, 在极长的时间尺度上, 它们与太阳及其他行星天体之间的微弱相互作用趋于在保持角动量不变的同时降低动能. 小行星会趋于何种转动状态?
+\item\label{ex:chandler-precession} 由于自转, 地球并非完美的球体, 而是扁球体; 因此其转动惯量并不完全相等, 近似满足
+\[
+  \begin{gathered}
+    I_1=I_2\ne I_3;\\
+    \frac{I_3-I_1}{I_1}\simeq\frac{1}{306}.
+  \end{gathered}
+\]
+地球的自转轴很接近 $e_3$, 但绕 $e_3$ 进动 (\textbf{Chandler 进动}). 求这一进动在地球参考系中的周期.
+\item\label{ex:inertial-forces-in-rotating-frame} 考虑运动由曲线 $S:\mathbb{R}\to SO(3)$ 描述的刚体, 记相应的角速度为 $\Omega$. 考虑质量为 $m$ 的一个粒子, 在\textbf{随体参考系}中其运动由曲线 $\xi:\mathbb{R}\to\mathbb{R}^3$ 给出. 设 $f$ 为作用于粒子的外力, 则其运动方程为
+\[
+  m\frac{\mathrm{d}^2}{\mathrm{d}t^2}(S\xi)=f.
+\]
+\begin{enumerate}[label=(\alph*),leftmargin=*]
+\item 证明运动方程可写成
+\[
+  m\ddot\xi=F-m\Omega\times(\Omega\times\xi)-2m\Omega\times\dot\xi-m\dot\Omega\times\xi,
+\]
+其中 $f=SF$. ($F$ 后面的各项称为\textbf{惯性力}, 依次为\textbf{离心力}, \textbf{Coriolis 力}和 \textbf{Euler 力}.)
+\item 证明若刚体是自由转动的均匀球体 (例如地球), 则 Euler 力为零. 为什么在北半球, 远程火炮必须瞄准目标左侧?
+\end{enumerate}
+\item\label{ex:poinsot-theorem} (\emph{Poinsot 定理}) 惯性张量为 $I$ 的刚体的\textbf{惯性椭球}是集合
+\[
+  E=\bigl\{\xi\in\mathbb{R}^3\mid\langle I\xi,\xi\rangle=1\bigr\}.
+\]
+证明自由运动刚体的惯性椭球在垂直于 $p$ 的固定平面上无滑动地滚动 (即接触点在每一瞬间的速度均为零). (\textbf{提示}: 证明椭球与垂直于 $p$ 的平面相切的任一点 $S(t)\xi(t)$ 满足 $S(t)\xi(t)=\pm\frac{1}{\sqrt{2K}}\omega(t)$.)
+\item\label{ex:derive-axisymmetric-kinetic-energy} 证明 Proposition~\ref{prop:kinetic-energy-of-axisymmetric-rigid-body}. (\textbf{提示}: 注意对称性要求 $K$ 的表达式既不依赖于 $\varphi$, 也不依赖于 $\psi$.)
+\item\label{ex:lagrange-top} 考虑 Lagrange 陀螺.
+\begin{enumerate}[label=(\alph*),leftmargin=*]
+\item 写出运动方程并确定平衡点.
+\item 证明存在 $\theta$, $\dot\varphi$ 和 $\dot\psi$ 为常量的解, 在 $|\dot\varphi|\ll|\dot\psi|$ 的极限下 (\textbf{快陀螺}) 满足
+\[
+  \dot\varphi\simeq\frac{Mgl}{I_3\dot\psi}.
+\]
+\end{enumerate}
+\item\label{ex:precession-of-the-equinoxes} (\emph{岁差}) 由于自转, 地球并非完美的球体, 而是扁椭球; 因此其转动惯量并不完全相等, 近似满足
+\[
+  \begin{gathered}
+    I_1=I_2\ne I_3;\\
+    \frac{I_3-I_1}{I_1}\simeq\frac{1}{306}
+  \end{gathered}
+\]
+[参见 Exercise~\ref{ex:rigid-body}(\ref{ex:chandler-precession})]. 因此, 月球和太阳的共同引力会扰动地球的自转运动. 该扰动可用势能 $U:SO(3)\to\mathbb{R}$ 近似模拟. 在 Euler 角 $(\theta,\varphi,\psi)$ 下, 势能为
+\[
+  U=-\frac{\Omega^2}{2}(I_3-I_1)\cos^2\theta,
+\]
+其中 $\frac{2\pi}{\Omega}\simeq168$ 天.
+\begin{enumerate}[label=(\alph*),leftmargin=*]
+\item 写出运动方程并确定平衡点.
+\item 证明存在 $\theta$, $\dot\varphi$ 和 $\dot\psi$ 为常量的解, 在 $|\dot\varphi|\ll|\dot\psi|$ 的极限下 (地球即属此情形) 满足
+\[
+  \dot\varphi\simeq-\frac{\Omega^2(I_3-I_1)\cos\theta}{I_3\dot\psi}.
+\]
+已知对地球有 $\theta\simeq23^\circ$, 求 $\varphi(t)$ 周期的近似值.
+\end{enumerate}
+\item\label{ex:pseudo-rigid-body} (\emph{伪刚体}) 回顾, (非平面) 刚体的度量是 $GL(3)$ 上下列平坦度量在 $SO(3)$ 上的限制:
+\[
+  \langle\!\langle V,W\rangle\!\rangle=\operatorname{tr}(VJW^t),
+\]
+其中
+\[
+  J_{ij}=\int_{\mathbb{R}^3}\xi^i\xi^j\,\mathrm{d}m.
+\]
+\begin{enumerate}[label=(\alph*),leftmargin=*]
+\item 这一度量的 Levi–Civita 联络的测地线是什么? $(GL(3),\langle\!\langle\cdot,\cdot\rangle\!\rangle)$ 是否测地完备?
+\item 速度场为 $u:\mathbb{R}\times\mathbb{R}^3\to\mathbb{R}^3$, 压强为 $p:\mathbb{R}\times\mathbb{R}^3\to\mathbb{R}$ 的不可压缩流体, 其 \textbf{Euler 方程}和\textbf{连续性方程}为
+\[
+  \begin{aligned}
+    \frac{\partial u}{\partial t}+(u\cdot\nabla)u&=-\nabla p,\\
+    \nabla\cdot u&=0,
+  \end{aligned}
+\]
+其中
+\[
+  \nabla=\left(\frac{\partial}{\partial x^1},\frac{\partial}{\partial x^2},\frac{\partial}{\partial x^3}\right)
+\]
+是通常的向量分析算子.
+
+给定测地线 $S:\mathbb{R}\to GL(3)$, 定义
+\[
+  \begin{aligned}
+    x(t,\xi)&=S(t)\xi,\\
+    u(t,x)&=\dot S(t)\xi=\dot S(t)S^{-1}(t)x.
+  \end{aligned}
+\]
+证明速度场 $u$ 满足 Euler 方程 (取 $p=0$), 但不满足连续性方程.
+\item 设 $f:GL(3)\to\mathbb{R}$ 由 $f(S)=\det S$ 给出. 证明
+\[
+  \frac{\partial f}{\partial S_{ij}}=\operatorname{cof}(S)_{ij}
+\]
+(其中 $\operatorname{cof}(S)$ 是 $S$ 的余因子矩阵), 从而
+\[
+  \frac{\mathrm{d}f}{\mathrm{d}t}=(\det S)\operatorname{tr}\bigl(\dot S S^{-1}\bigr).
+\]
+因此, 若施加约束 $\det S(t)=1$, 连续性方程就得到满足.
+\item 证明完整约束 $SL(3)\subset GL(3)$ 满足 d’Alembert 原理, 当且仅当
+\[
+  \begin{cases}
+    \mu(\ddot S)=\lambda(t)\,\mathrm{d}f\\
+    \det S=1.
+  \end{cases}
+\]
+假设 $J$ 可逆, 证明运动方程可以改写为
+\[
+  \ddot S=\lambda\bigl(S^{-1}\bigr)^tJ^{-1}.
+\]
+\item 证明 $(SL(3),\langle\!\langle\cdot,\cdot\rangle\!\rangle)$ 的测地线给出 Euler 方程的解, 其中
+\[
+  p=-\frac{\lambda}{2}x^t\bigl(S^{-1}\bigr)^tJ^{-1}S^{-1}x,
+\]
+而且这些解也满足连续性方程.
+\end{enumerate}
+(\textbf{注}: 更一般地, 开集 $U\subset\mathbb{R}^n$ 上的 Euler 方程可以解释为 $U$ 的微分同胚群 (这是一个无穷维 Lie 群) 上的力学系统; 连续性方程施加了与保体积微分同胚子群相对应的完整约束, 而压强就是与该约束相关的理想反力.)
+\end{enumerate}
+\end{RiemannExercise}

@@ -1,0 +1,182 @@
+\section{拟射影簇}\label{sec:quasiprojective-varieties}
+
+到目前为止, 我们在代数几何中的讨论还不需要细致研究拓扑. 但在统一仿射情形和射影情形的过程中, 拓扑概念将越来越重要. 本节建立一些基本拓扑概念, 主要关注与代数几何研究关系最密切的 Zariski 拓扑. 这些拓扑概念将使我们能够定义拟射影簇, 从而同时推广仿射簇和射影簇.
+
+为了引出拓扑的定义, 先来看一个熟悉的例子.
+
+\begin{Example}{$\mathbb{R}$ 上的 Euclid 拓扑}\leavevmode\label{ex:euclidean-topology-on-real-line}
+给定两个实数 $a,b\in\mathbb{R}$, 考察区间
+\[
+  (a,b)=\{c\in\mathbb{R}\mid a<c<b\}\qquad\text{和}\qquad
+  [a,b]=\{c\in\mathbb{R}\mid a\le c\le b\}.
+\]
+第一个区间 $(a,b)$ 不含端点, 通常称为\textquotedbl{}开\textquotedbl{}区间; 第二个区间 $[a,b]$ 包含端点, 通常称为\textquotedbl{}闭\textquotedbl{}区间. $\mathbb{R}$ 中的开区间和闭区间引出了 $\mathbb{R}$ 中更一般的开集和闭集概念, 现说明如下.
+
+考察开区间的下列性质: 给定任意 $c\in(a,b)$, 所有充分靠近 $c$ 的数也属于 $(a,b)$. 例如, 给定 $3\in(1,4)$, 所有与 $3$ 的距离严格小于 $1$ 的数也都属于 $(1,4)$. 将此推广, 若集合 $U\subseteq\mathbb{R}$ 具有这一性质, 就称它为\emph{开集}: 对每个 $c\in U$, 都存在正数 $\epsilon$, 使 $(c-\epsilon,c+\epsilon)\subseteq U$. 换句话说, 开集包含其每个元素\textquotedbl{}附近\textquotedbl{}的点, 因而通常把包含 $c$ 的开集称为 $c$ 的\emph{邻域}. 若集合 $Z\subseteq\mathbb{R}$ 的补集 $\mathbb{R}\setminus Z$ 是开的, 就称它为\emph{闭集}. 建议读者自行确认, 区间 $[a,b]$ 确实是闭集, 而半开区间 $[a,b)$ 既不是开集, 也不是闭集.
+
+$\mathbb{R}$ 中的开集满足几个重要性质, 由以上定义容易验证: (i) $\varnothing$ 和 $\mathbb{R}$ 都是 $\mathbb{R}$ 中的开集; (ii) $\mathbb{R}$ 中有限个开集的交仍是开集; (iii) $\mathbb{R}$ 中任意多个 (甚至无穷多个) 开集的并仍是开集. 等价地, 用 de Morgan 律可以把这些性质转成关于闭集的性质: (i) $\varnothing$ 和 $\mathbb{R}$ 都是 $\mathbb{R}$ 中的闭集; (ii) $\mathbb{R}$ 中有限个闭集的并仍是闭集; (iii) $\mathbb{R}$ 中任意多个 (甚至无穷多个) 闭集的交仍是闭集. 我们把这三个性质用开集或闭集表述并作为公理, 就得到拓扑空间的概念.
+\end{Example}
+
+一般来说, 在集合 $X$ 上给定一个拓扑, 就是选定 $X$ 的哪些子集称为\textquotedbl{}开\textquotedbl{}集, 但须满足 Example~\ref{ex:euclidean-topology-on-real-line} 中所述开集的三个性质. 从观念上说, 关键在于, 即使没有实际度量距离的方法, 拓扑仍使我们能够抽象地谈论 $X$ 中点的\textquotedbl{}邻域\textquotedbl{}. 因此, 可以不只把 $X$ 看成点的集, 而把它看成具有结构的邻域的集, 这些邻域沿共同的邻近点粘合在一起. 将拓扑引入射影代数几何后, 可以精确说明如何用同构于仿射簇的邻域覆盖一般的射影簇, 从而把射影簇本质性质 (例如维数和光滑性) 的研究归结为仿射情形中这些性质的研究, 在那里可以利用代数与几何的等价性.
+
+如 Example~\ref{ex:euclidean-topology-on-real-line} 中所说, 既可以通过指定哪些集合是开的来给出拓扑, 也可以通过指定哪些集合是闭的来给出拓扑. 由于代数几何中最常用闭集给出拓扑, 我们采用下面的定义.
+
+\begin{Definition}{拓扑空间}\leavevmode\label{def:topological-space}
+设 $X$ 为集合. $X$ 上的一个\emph{拓扑}是 $X$ 的子集构成的一个集族, 记为 $\mathcal{C}$. 其元素称为\emph{闭集}, 并满足以下三条公理.
+\begin{enumerate}[label=\arabic*.]
+  \item 空集和全集都是闭集: $\varnothing,X\in\mathcal{C}$.
+  \item 有限个闭集的并是闭集:
+  \[
+    Z_{1},\ldots,Z_{n}\in\mathcal{C}\implies
+    \bigcup_{i=1}^{n}Z_{i}\in\mathcal{C}.
+  \]
+  \item 任意多个闭集的交是闭集:
+  \[
+    \{Z_{\alpha}\}_{\alpha\in A}\subseteq\mathcal{C}\implies
+    \bigcap_{\alpha\in A}Z_{\alpha}\in\mathcal{C}.
+  \]
+\end{enumerate}
+配有指定拓扑 $\mathcal{C}$ 的集合 $X$ 称为\emph{拓扑空间}. 若 $X$ 为拓扑空间, 当 $X\setminus U$ 是闭集时, 我们称集合 $U\subseteq X$ 为\emph{开集}.
+\end{Definition}
+
+除 Example~\ref{ex:euclidean-topology-on-real-line} 外, 在第~\ref{sec:inclusions-intersections-unions}~节还遇到过另一个拓扑例子: $\mathbb{A}^{n}$ 上以仿射簇为闭集的 Zariski 拓扑. 注意, 一般来说同一个集合可以赋予多种拓扑. 例如, 建议读者探究 $\mathbb{R}$ 上的 Euclid 拓扑与 $\mathbb{R}=\mathbb{A}^{1}_{\mathbb{R}}$ 上的 Zariski 拓扑有何不同 (见 Exercise~\ref{ex:compare-euclidean-and-zariski-topologies}).
+
+在我们的代数几何研究中, 最重要的拓扑是 $\mathbb{P}^{n}$ 上的 Zariski 拓扑. 我们研究的其他所有拓扑都将从它导出.
+
+\begin{Definition}{$\mathbb{P}^{n}$ 上的 Zariski 拓扑}\leavevmode\label{def:zariski-topology-on-projective-space}
+$\mathbb{P}^{n}$ 上的 \emph{Zariski 拓扑}是以射影簇为闭集的拓扑, 这些闭集有时称为 \emph{Zariski 闭集}.
+\end{Definition}
+
+稍加思考可知, $\mathbb{P}^{n}$ 中的射影簇满足拓扑的公理 (见 Exercise~\ref{ex:projective-varieties-closed-under-unions-and-intersections}). 在 $\mathbb{P}^{1}$ 中, 可以显式描述它们.
+
+\begin{Example}{$\mathbb{P}^{1}$ 上的 Zariski 拓扑}\leavevmode\label{ex:zariski-topology-on-projective-line}
+如 Exercise~\ref{ex:classify-varieties-in-projective-line} 所见, $\mathbb{P}^{1}$ 中的射影簇只有有限集和整个 $\mathbb{P}^{1}$. 这就完整描述了 $\mathbb{P}^{1}$ 上 Zariski 拓扑的闭集. 取补集可见, $\mathbb{P}^{1}$ 中的 Zariski 开集由空集和补集有限的集合组成. 注意, $\mathbb{P}^{1}$ 中的非空开集非常大: 它们只能漏掉有限多个点.
+\end{Example}
+
+初学拓扑时有一点值得思考: 虽然开集是闭集的补集, 但在拓扑空间中是开集并不与是闭集相对立. 特别地, 一个集合同为开集和闭集是可能的, 既不是开集也不是闭集同样可能. 这些从 Examples~\ref{ex:euclidean-topology-on-real-line} 和~\ref{ex:zariski-topology-on-projective-line} 就已经可以看出.
+
+重要的是, 一旦给定集合 $X$ 上的拓扑, 便有一种自然方法在 $X$ 的所有子集上诱导拓扑, 如下所述.
+
+\begin{Definition}{子空间拓扑}\leavevmode\label{def:subspace-topology}
+给定闭集族为 $\mathcal{C}_{Y}$ 的拓扑空间 $Y$, 以及子集 $X\subseteq Y$, $X$ 上由 $\mathcal{C}_{Y}$ 诱导的\emph{子空间拓扑}以 $Y$ 中闭集在 $X$ 中的限制为闭集族 $\mathcal{C}_{X}$:
+\[
+  \mathcal{C}_{X}=\{Z\cap X\mid Z\in\mathcal{C}_{Y}\}.
+\]
+\end{Definition}
+
+建议读者验证子空间拓扑确实是一个拓扑 (Exercise~\ref{ex:subspace-closed-sets-satisfy-topology-axioms}), 并验证 $X$ 的子空间拓扑中的开集是 $Y$ 中开集的限制 (Exercise~\ref{ex:open-sets-in-subspace-topology}). 此外, 一个有用的事实是子空间拓扑的构造关于包含关系具有传递性 (Exercise~\ref{ex:subspace-topology-transitive-under-inclusion}).
+
+既然我们已熟悉射影空间上的 Zariski 拓扑, 现在可在射影空间的每个子集上得到一个拓扑.
+
+\begin{Definition}{射影空间子集上的 Zariski 拓扑}\leavevmode\label{def:zariski-topology-on-projective-subset}
+设 $X\subseteq\mathbb{P}^{n}$ 为子集. $X$ 上的 \emph{Zariski 拓扑}是由 $\mathbb{P}^{n}$ 上的 Zariski 拓扑诱导的子空间拓扑. 更明确地说, 若
+\[
+  Y=Z\cap X
+\]
+对某个射影簇 $Z\subseteq\mathbb{P}^{n}$ 成立, 就称 $Y\subseteq X$ 在 $X$ 中是 \emph{Zariski 闭的}.
+\end{Definition}
+
+注意, 这里的限定语\textquotedbl{}在 $X$ 中\textquotedbl{}很关键. 例如, 若 $X\subseteq\mathbb{P}^{n}$ 本身不是射影簇, 则 $Y=X$ 在 $X$ 中是 Zariski 闭的 (因为 $Y=\mathbb{P}^{n}\cap X$, 且 $\mathbb{P}^{n}$ 是射影簇), 但在 $\mathbb{P}^{n}$ 中不是 Zariski 闭的.
+
+为了更好地理解 Zariski 拓扑, 我们看看射影空间的一些熟悉的子集. 下面两个例子显式描述射影簇和仿射簇上 Zariski 拓扑的闭集. 正如将看到的, 仿射簇或射影簇的 Zariski 闭子集, 分别是那些本身为仿射簇或射影簇的子集.
+
+\begin{Example}{射影簇上的 Zariski 拓扑}\leavevmode\label{ex:zariski-topology-on-projective-varieties}
+设 $X\subseteq\mathbb{P}^{n}$ 为射影簇. 按定义, 子集 $Y\subseteq X$ 在 $X$ 中 Zariski 闭, 当且仅当对某个射影簇 $Z\subseteq\mathbb{P}^{n}$ 有 $Y=Z\cap X$. 由于射影簇的交本身是射影簇, 所以射影簇 $X\subseteq\mathbb{P}^{n}$ 的 Zariski 闭集是那些自身作为 $Y\subseteq\mathbb{P}^{n}$ 是射影簇的子集 $Y\subseteq X$.
+\end{Example}
+
+\begin{Example}{仿射簇上的 Zariski 拓扑}\leavevmode\label{ex:zariski-topology-on-affine-varieties}
+按照我们的定义, 仿射簇上的 Zariski 拓扑需要谨慎处理, 原因只在于首先要指定一种将仿射簇视为射影空间子集的方式. 幸运的是, 用仿射开片便有一种标准做法.
+
+先讨论仿射开片 $\mathbb{A}^{n}_{0}\subseteq\mathbb{P}^{n}$ 上的子空间拓扑. 按定义, 集合 $X\subseteq\mathbb{A}^{n}_{0}$ 在 $\mathbb{A}^{n}_{0}$ 中 Zariski 闭, 当且仅当对某个射影簇 $Z\subseteq\mathbb{P}^{n}$ 有 $X=Z\cap\mathbb{A}^{n}_{0}$. 换句话说, $\mathbb{A}^{n}_{0}$ 中的闭集是射影簇的仿射限制. 我们在第~\ref{sec:affine-restrictions}~节看到, 射影簇的仿射限制是仿射簇; 在第~\ref{sec:projective-closures}~节又看到, 每个仿射簇都是其射影闭包的仿射限制. 结合这两点可知, $\mathbb{A}^{n}_{0}\subseteq\mathbb{P}^{n}$ 的 Zariski 闭集正是仿射簇 $X\subseteq\mathbb{A}^{n}_{0}$. 因此, 通过包含映射
+\[
+  \begin{aligned}
+    j_{0}:\mathbb{A}^{n}&\to\mathbb{P}^{n}\\
+    (a_{1},\ldots,a_{n})&\mapsto[1:a_{1}:\cdots:a_{n}],
+  \end{aligned}
+\]
+将 $\mathbb{A}^{n}$ 与仿射开片 $\mathbb{A}^{n}_{0}\subseteq\mathbb{P}^{n}$ 等同后, 上述论证表明, 在 Definition~\ref{def:zariski-topology-on-projective-subset} 中定义的 $\mathbb{A}^{n}$ 上的 Zariski 拓扑与第~\ref{sec:inclusions-intersections-unions}~节引入的 Zariski 拓扑相同.
+
+现在设 $X\subseteq\mathbb{A}^{n}$ 是仿射簇 (通过包含映射 $j_{0}$ 视为 $\mathbb{P}^{n}$ 的子集). 由于已知 $\mathbb{A}^{n}$ 中的 Zariski 闭集是仿射簇, 可以推出 (Exercise~\ref{ex:subspace-topology-transitive-under-inclusion}) 集合 $Y\subseteq X$ 在 $X$ 中 Zariski 闭, 恰好是当对某个仿射簇 $Z\subseteq\mathbb{A}^{n}$ 有 $Y=Z\cap X$ 时. 由于仿射簇的交本身是仿射簇, 仿射簇 $X\subseteq\mathbb{A}^{n}$ 的 Zariski 闭集就是那些自身作为 $Y\subseteq\mathbb{A}^{n}$ 是仿射簇的子集 $Y\subseteq X$.
+\end{Example}
+
+现在给出本章的核心定义, 它将统一我们对仿射簇和射影簇的研究.
+
+\begin{Definition}{拟射影簇}\leavevmode\label{def:quasiprojective-variety}
+若子集 $X\subseteq\mathbb{P}^{n}$ 可写为 $X=Z\cap U$, 其中 $Z\subseteq\mathbb{P}^{n}$ 是 Zariski 闭集, 且 $U\subseteq\mathbb{P}^{n}$ 是 Zariski 开集, 则称 $X$ 为\emph{拟射影簇}.
+\end{Definition}
+
+注意, $\mathbb{P}^{n}$ 的 Zariski 闭集与 Zariski 开集都是拟射影簇. 然而, 不难找到既不开也不闭的拟射影簇, 如 Exercise~\ref{ex:quasiprojective-variety-neither-open-nor-closed} 中的例子. 还应指出, 射影空间中有许多不是拟射影簇的子集. 例如, $\mathbb{P}^{1}$ 的一个子集是拟射影簇, 当且仅当它是有限集或其补集有限 (Exercise~\ref{ex:characterize-quasiprojective-subsets-of-projective-line}). 因此, 若集合 $X\subseteq\mathbb{P}^{1}$ 与 $\mathbb{P}^{1}\setminus X$ 都是无限集, 则 $X$ 不是拟射影簇.
+
+现在要精确说明的关键观察是, 这种新类型的簇同时推广了仿射簇和射影簇.
+
+\begin{Example}{射影簇是拟射影簇}\leavevmode\label{ex:projective-varieties-are-quasiprojective}
+设 $X\subseteq\mathbb{P}^{n}$ 为射影簇. 可以写 $X=X\cap\mathbb{P}^{n}$. 由于 $X\subseteq\mathbb{P}^{n}$ 是闭的, 而 $\mathbb{P}^{n}\subseteq\mathbb{P}^{n}$ 是开的, 所以 $X$ 是拟射影簇.
+\end{Example}
+
+\begin{Example}{仿射簇是拟射影簇}\leavevmode\label{ex:affine-varieties-are-quasiprojective}
+设 $X\subseteq\mathbb{A}^{n}$ 是仿射簇, 通过包含映射 $j_{0}:\mathbb{A}^{n}\to\mathbb{P}^{n}$ 将它视为射影空间的子集. 可以将 $X$ 写成交集 $\overline{X}\cap\mathbb{A}^{n}_{0}$, 其中 $\overline{X}$ 是 $X$ 的射影闭包. 由于 $\overline{X}$ 是射影簇, 它是闭的. 此外, $\mathbb{A}^{n}_{0}$ 是 $\mathbb{P}^{n}$ 中闭集 $\mathcal{V}_{\mathbb{P}}(x_{0})$ 的补集, 所以是开的. 因而 $X$, 更准确地说 $j_{0}(X)$, 是拟射影簇.
+\end{Example}
+
+尽管拟射影簇包含仿射簇和射影簇作为特例, 仍有许多拟射影簇既不是仿射簇, 也不是射影簇. 例如, $\mathbb{A}^{2}$ 中单个点的补集是一个拟射影簇, 但在建立更有力的拟射影簇研究工具后, 我们将在 Examples~\ref{ex:punctured-affine-plane-is-not-affine} 和~\ref{ex:punctured-affine-plane-is-not-projective} 中论证, 它既不 (同构于) 仿射簇, 也不 (同构于) 射影簇.
+
+拟射影簇中那些自身也是拟射影簇的子集尤其重要, 从而引出下面的概念.
+
+\begin{Definition}{子簇}\leavevmode\label{def:subvariety-of-quasiprojective-variety}
+设 $X\subseteq\mathbb{P}^{n}$ 为拟射影簇. 若 $Y\subseteq\mathbb{P}^{n}$ 本身是拟射影簇, 就称 $Y\subseteq X$ 为 $X$ 的\emph{子簇}.
+\end{Definition}
+
+拟射影簇的子簇也可以用拓扑方式刻画, 与拟射影簇的定义完全平行.
+
+\begin{Proposition}{拟射影簇的子簇}\leavevmode\label{prop:subvariety-is-intersection-of-relatively-closed-and-open}
+设 $X\subseteq\mathbb{P}^{n}$ 为拟射影簇. 子集 $Y\subseteq X$ 是 $X$ 的子簇, 当且仅当 $Y=Z\cap U$, 其中 $Z$ 在 $X$ 中闭, 且 $U$ 在 $X$ 中开.
+\end{Proposition}
+\begin{Proof}
+\BookPairedNoteLeft{
+从现在起, 在\textquotedbl{}Zariski 闭\textquotedbl{}和\textquotedbl{}Zariski 开\textquotedbl{}中通常省略\textquotedbl{}Zariski\textquotedbl{}一词.
+}{
+先假设 $Y\subseteq X$ 是子簇. 则 $Y\subseteq\mathbb{P}^{n}$ 是拟射影簇, 故可写成 $Y=Z\cap U$, 其中 $Z$ 在 $\mathbb{P}^{n}$ 中闭, 且 $U$ 在 $\mathbb{P}^{n}$ 中开. 因为 $Y\subseteq X$, 有
+}
+\[
+  Y=(X\cap Z)\cap(X\cap U),
+\]
+而由 $X$ 上 Zariski 拓扑的定义, 可见 $X\cap Z$ 在 $X$ 中闭, $X\cap U$ 在 $X$ 中开, 这就证明了双向断言的一个方向.
+
+反过来, 假设 $Y\subseteq X$ 且 $Y=Z\cap U$, 其中 $Z$ 在 $X$ 中闭, 而 $U$ 在 $X$ 中开. 由 $X$ 上 Zariski 拓扑的定义, 有
+\[
+  Z=X\cap Z'\qquad\text{且}\qquad U=X\cap U',
+\]
+其中 $Z'$ 在 $\mathbb{P}^{n}$ 中闭, 而 $U'$ 在 $\mathbb{P}^{n}$ 中开. 由于 $X\subseteq\mathbb{P}^{n}$ 为拟射影簇, 它也可写成 $\mathbb{P}^{n}$ 的一个开子集与一个闭子集的交. 因此, $Z$ 和 $U$, 从而 $Z\cap U$, 都可写成 $\mathbb{P}^{n}$ 中有限个开集和闭集的交. 由于有限个开集的交是开的, 有限个闭集的交是闭的, 所以 $Y=Z\cap U$ 是 $\mathbb{P}^{n}$ 中的拟射影簇, 从而是 $X$ 的子簇.
+\end{Proof}
+
+现在已定义拟射影簇, 下一节将研究拟射影簇的不可约性. 我们将用拓扑方式定义它, 自然推广仿射和射影情形中的不可约性概念. 对不可约性的讨论最终将证明: 和仿射与射影情形完全一样, 拟射影簇也有唯一的不可约分解.
+
+\BookExerciseHeading
+\begin{BookExercises}
+  \item\label{ex:compare-euclidean-and-zariski-topologies} 比较 $\mathbb{R}$ 上的 Euclid 拓扑和 Zariski 拓扑. 换句话说, 考察 Euclid 拓扑中的开集是否在 Zariski 拓扑中是开的, 并考察反过来的情况.
+  \item\label{ex:trivial-discrete-and-cofinite-topologies} 每个集合 $X$ 都有几种相当简单的拓扑. 证明下列子集族都定义了任意集合 $X$ 上的拓扑.
+  \begin{enumerate}
+    \item $X$ 上的平凡拓扑: $\mathcal{C}=\{\varnothing,X\}$.
+    \item $X$ 上的离散拓扑: $\mathcal{C}$ 包含 $X$ 的所有子集.
+    \item $X$ 上的余有限拓扑: $\mathcal{C}$ 包含 $X$ 以及 $X$ 中的所有有限子集.
+  \end{enumerate}
+  \item\label{ex:subspace-closed-sets-satisfy-topology-axioms} 证明 Definition~\ref{def:subspace-topology} 中的集合族 $\mathcal{C}_{X}$ 满足拓扑的公理.
+  \item\label{ex:open-sets-in-subspace-topology} 设 $Y$ 为拓扑空间, 且 $X\subseteq Y$. 证明 $X$ 的子空间拓扑中的开集都是 $U\cap X$, 其中 $U$ 为 $Y$ 的开子集.
+  \item\label{ex:subspace-topology-transitive-under-inclusion} 设 $Z$ 为拓扑空间, $X,Y\subseteq Z$ 为满足 $X\subseteq Y$ 的子集. 证明 $X$ 从 $Z$ 继承的子空间拓扑, 等于 $X$ 从 $Y$ 上的子空间拓扑继承的拓扑.
+  \item\label{ex:characterize-quasiprojective-subsets-of-projective-line} 证明子集 $X\subseteq\mathbb{P}^{1}$ 是拟射影簇, 当且仅当 $X$ 有限或 $\mathbb{P}^{1}\setminus X$ 有限.
+  \item\label{ex:equivalent-quasiprojective-variety-definitions} 设 $X\subseteq\mathbb{P}^{n}$ 是一个子集. 证明下列条件等价.
+  \begin{enumerate}[label=(\roman*)]
+    \item $X\subseteq\mathbb{P}^{n}$ 是拟射影簇.
+    \item $X=Y\setminus Z$, 其中 $Y,Z\subseteq\mathbb{P}^{n}$ 都是闭集.
+    \item $X$ 是某个射影簇 $Y\subseteq\mathbb{P}^{n}$ 的开子集.
+  \end{enumerate}
+  \item\label{ex:unions-and-intersections-of-quasiprojective-varieties} 设 $X,Y\subseteq\mathbb{P}^{n}$ 为拟射影簇. 对以下两个断言分别给出证明或反例.
+  \begin{enumerate}
+    \item $X\cap Y$ 是拟射影簇.
+    \item $X\cup Y$ 是拟射影簇.
+  \end{enumerate}
+  \item\label{ex:quasiprojective-variety-neither-open-nor-closed} 证明集合
+  \[
+    X=\{[a:b:c]\in\mathbb{P}^{2}\mid a\ne0\text{ 且 }b=0\}\subseteq\mathbb{P}^{2}
+  \]
+  是 $\mathbb{P}^{2}$ 中一个既不开也不闭的拟射影簇.
+\end{BookExercises}

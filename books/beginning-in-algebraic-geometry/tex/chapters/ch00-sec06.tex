@@ -1,0 +1,200 @@
+\section{多项式环中的唯一分解}\label{sec:unique-factorization-polynomial-rings}
+
+本节完成 $K[x_{1},\ldots,x_{n}]$ 是唯一分解整环的证明. 由 Propositions~\ref{prop:polynomial-factorization-exists} 和 \ref{prop:ufd-iff-irreducibles-prime}, 只剩下证明下面这个与 Euclid's Lemma 类似的结果.
+
+\begin{Proposition}{多项式的 Euclid's Lemma}\label{prop:multivariate-polynomial-euclid-lemma}
+  $K[x_{1},\ldots,x_{n}]$ 中的每个不可约多项式都是素元.
+\end{Proposition}
+
+Proposition~\ref{prop:multivariate-polynomial-euclid-lemma} 的证明对变量个数归纳, 以 $K[x]$ 为归纳起点. 因为证明相当复杂, 我们先概述主要思路, 再逐一展开, 最后在本节末尾把它们合成一个正式的证明.
+
+为引出下面的思路, 回顾一下, 可以把多项式环 $K[x_{1},\ldots,x_{n}]$ 看作 $n-1$ 元的多项式环:
+\[
+  K[x_{1},\ldots,x_{n}]=R[x_{1},\ldots,x_{n-1}],
+\]
+其中 $R=K[x_{n}]$. 本节引入的一个重要概念是\textbf{分式域}: 它为任意整环 $R$ 配上一个域 $\operatorname{Frac}(R)$, 以及一个典范包含 $R\subseteq\operatorname{Frac}(R)$. 特别地, 若 $K'=\operatorname{Frac}(K[x_{n}])$, 则有包含关系
+\[
+  K[x_{1},\ldots,x_{n}]\subseteq K'[x_{1},\ldots,x_{n-1}].
+\]
+
+利用这个包含, 归纳论证的轮廓便开始显现. 具体说, 若归纳假设是任意域上的 $n-1$ 元不可约多项式都是素元, 就可以分以下两步证明 $n$ 元不可约多项式都是素元 (分别见 Lemmas~\ref{lem:irreducible-over-fraction-field} 和 \ref{lem:prime-descends-from-fraction-field}):
+\begin{enumerate}[label=\arabic*.]
+  \item 证明 $K[x_{1},\ldots,x_{n}]$ 中的每个不可约多项式在 $K'[x_{1},\ldots,x_{n-1}]$ 中仍不可约 (因而由归纳假设是素元).
+  \item 证明若 $K[x_{1},\ldots,x_{n}]$ 中的一个不可约多项式恰好在 $K'[x_{1},\ldots,x_{n-1}]$ 中是素元, 则它在 $K[x_{1},\ldots,x_{n}]$ 中也是素元.
+\end{enumerate}
+有了这个概略, 现在正式说明分式域的概念, 从分式的定义开始.
+
+\begin{BookPropositionDefinition}[分式]\label{def:fraction-equivalence}
+  设 $R$ 是整环. $R$ 中元素的\textbf{分式}是形如 $a/b$ 的表达式, 其中 $a,b\in R$, 且 $b\ne0$. 分式相等定义为
+  \[
+    \frac{a}{b}=\frac{c}{d}\iff ad=bc\in R.
+  \]
+  分式相等是一个等价关系. 等价类所成的集合记作 $\operatorname{Frac}(R)$.
+\end{BookPropositionDefinition}
+
+Exercise~\ref{ex:fraction-equality-equivalence} 验证分式相等确实是一个等价关系. 下面考察分式构造的几个熟悉的例子.
+
+\begin{Example}{{\textmd{$\mathbb{Q}=\operatorname{Frac}(\mathbb{Z})$}}}\label{ex:rationals-as-fraction-field}
+  分式相等的定义乍看可能不易理解, 但它仿照了我们熟悉的从整数构造有理数的方法. 具体地说, 正如小学所学, 要检验有理数的一个等式, 例如
+  \[
+    \frac{3}{4}=\frac{6}{8},
+  \]
+  就交叉相乘: $3\cdot8=4\cdot6\in\mathbb{Z}$.
+\end{Example}
+
+\begin{Example}{有理函数}\label{ex:rational-functions}
+  因为多项式环 $K[x_{1},\ldots,x_{n}]$ 在我们的讨论中十分重要, 多项式的分式有一个专名: \textbf{有理函数}. 我们用下面的记号表示有理函数的集合:
+  \[
+    K(x_{1},\ldots,x_{n})=\operatorname{Frac}(K[x_{1},\ldots,x_{n}]).
+  \]
+  例如, 考虑 $K(x,y)$ 中的以下两个元素:
+  \[
+    \frac{2x^{2}+x-2xy-y}{x^{2}-y^{2}}
+    \quad\text{和}\quad\frac{2x+1}{x+y}.
+  \]
+  实际上, 这两个有理函数相等, 因为读者可以验证
+  \[
+    (2x^{2}+x-2xy-y)(x+y)=(2x+1)(x^{2}-y^{2}).
+  \]
+  也可以通过约去分子和分母的相同因子来看这个等式:
+  \[
+    \frac{2x^{2}+x-2xy-y}{x^{2}-y^{2}}
+    =\frac{(x-y)(2x+1)}{(x-y)(x+y)}
+    =\frac{2x+1}{x+y}.
+  \]
+\end{Example}
+
+\begin{BookFlowNote}[l]{%
+实际上, 全体分式不只构成一个集合; 在熟悉的分式加法和乘法下, 它构成一个域. 因为同一个分式可以有多种表示, 必须验证这些运算是良定义的, 即不依赖于代表元的选取.
+}
+\noindent 这里的\textquotedbl{}函数\textquotedbl{}是标准术语, 但容易使人误解. 不必把有理函数看成严格意义上具有定义域, 值域和对应法则的函数. 它只是多项式的形式商.
+
+\noindent 此外, 还应验证在这些运算下, 分式的集合满足域的公理. 下面严格定义加法与乘法, 所需的验证留给 Exercise~\ref{ex:fraction-field-axioms}.
+\end{BookFlowNote}
+
+\begin{BookPropositionDefinition}[分式域]\leavevmode\label{def:fraction-field}
+  设 $R$ 是整环. 下述加法和乘法
+  \[
+    \frac{a}{b}+\frac{c}{d}=\frac{ad+bc}{bd}
+    \quad\text{和}\quad
+    \frac{a}{b}\cdot\frac{c}{d}=\frac{ac}{bd}
+  \]
+  在分式的等价类上是良定义的, 并使 $\operatorname{Frac}(R)$ 具有域结构, 称为 $R$ 的\textbf{分式域}.
+\end{BookPropositionDefinition}
+
+分式域最重要的性质之一, 是它以典范的方式包含 $R$ 作为子环 (Exercise~\ref{ex:canonical-fraction-field-inclusion}):
+\[
+  R=\{a/1\mid a\in R\}\subseteq\operatorname{Frac}(R).
+\]
+特别地, $K[x_{n}]\subseteq K(x_{n})$, 从而 $K[x_{1},\ldots,x_{n}]\subseteq K(x_{n})[x_{1},\ldots,x_{n-1}]$. 此外, 给定任意元素 $f\in K(x_{n})[x_{1},\ldots,x_{n-1}]$, 总可以找到多项式 $r\in K[x_{n}]$ 使得 $rf\in K[x_{1},\ldots,x_{n}]$ (Exercise~\ref{ex:clear-polynomial-denominators}). 用这样的 $r$ 乘 $f$ 称为\textbf{清除 $f$ 的分母}, 这是本节证明中常用的操作.
+
+现在可以证明 Proposition~\ref{prop:multivariate-polynomial-euclid-lemma} 所需的两个引理了.
+
+\begin{Lemma}\label{lem:irreducible-over-fraction-field}
+  若 $f$ 在 $K[x_{1},\ldots,x_{n}]$ 中不可约且 $f\notin K[x_{n}]$, 则 $f$ 作为 $K(x_{n})[x_{1},\ldots,x_{n-1}]$ 的元素不可约.
+\end{Lemma}
+
+\begin{Proof}
+  我们证明逆否命题. 假设 $f\in K[x_{1},\ldots,x_{n}]$ 在 $K(x_{n})[x_{1},\ldots,x_{n-1}]$ 中可约; 我们要证明它在 $K[x_{1},\ldots,x_{n}]$ 中可约.
+
+  由于 $f$ 在 $K(x_{n})[x_{1},\ldots,x_{n-1}]$ 中可约, 可写成 $f=gh$, 其中 $g$ 和 $h$ 都不是 $K(x_{n})$ 的元素. 同时清除 $g$ 和 $h$ 的分母, 可写成
+  \[
+    rf=g_{0}h_{0},
+  \]
+  其中 $r\in K[x_{n}]$, 且 $g_{0},h_{0}\in K[x_{1},\ldots,x_{n}]\setminus K[x_{n}]$. 因为一元多项式环 $K[x_{n}]$ 是 UFD (Corollary~\ref{cor:univariate-polynomial-ring-ufd}), 可写成 $r=p_{1}\cdots p_{\ell}$, 其中每个 $p_{i}$ 都不可约, 因而都是素元. 我们有
+  \[
+    p_{1}\cdots p_{\ell}f=g_{0}h_{0}.
+  \]
+
+  \begingroup\emergencystretch=3em
+  因为 $p_{1}$ 在 $K[x_{n}]$ 中是素元, 由 Exercise~\ref{ex:prime-in-ring-and-polynomial-ring} 可知 $p_{1}$ 在 $K[x_{n}][x_{1},\ldots,x_{n-1}]=K[x_{1},\ldots,x_{n}]$ 中也是素元. 因此, 由素元的定义, $p_{1}\mid g_{0}$ 或 $p_{1}\mid h_{0}$. 不失一般性, 假设 $p_{1}\mid g_{0}$, 写成 $g_{0}=p_{1}g_{1}$, 并令 $h_{1}=h_{0}$, 从而
+  \[
+    p_{2}\cdots p_{\ell}f=g_{1}h_{1}.
+  \]
+  对 $p_{2},\ldots,p_{\ell}$ 重复上述过程, 得 $f=g_{\ell}h_{\ell}$. 由于 $g_{0}$ 和 $h_{0}$ 都不是 $K[x_{n}]$ 的元素, 所以 $g_{\ell}$ 和 $h_{\ell}$ 都不是 $K$ 的元素. 因此, $f$ 在 $K[x_{1},\ldots,x_{n}]$ 中可约.
+  \par\endgroup
+\end{Proof}
+
+\begin{Lemma}\label{lem:prime-descends-from-fraction-field}
+  设 $f\in K[x_{1},\ldots,x_{n}]$, 且 $f$ 作为 $K[x_{1},\ldots,x_{n}]$ 的元素不可约.\linebreak[4]
+  若 $f$ 作为 $K(x_{n})[x_{1},\ldots,x_{n-1}]$ 的元素是素元, 则 $f$ 在 $K[x_{1},\ldots,x_{n}]$ 中是素元.
+\end{Lemma}
+
+\begin{Proof}
+  假设 $f\in K[x_{1},\ldots,x_{n}]$ 不可约, 且 $f$ 在 $K(x_{n})[x_{1},\ldots,x_{n-1}]$ 中是素元. 要证明 $f$ 在 $K[x_{1},\ldots,x_{n}]$ 中是素元, 设 $K[x_{1},\ldots,x_{n}]$ 中有 $f\mid gh$. 由于 $f$ 在 $K(x_{n})[x_{1},\ldots,x_{n-1}]$ 中是素元, 所以在 $K(x_{n})[x_{1},\ldots,x_{n-1}]$ 中有 $f\mid g$ 或 $f\mid h$. 不失一般性, 假设 $f\mid g$, 写成
+  \[
+    af=g
+  \]
+  其中 $a\in K(x_{n})[x_{1},\ldots,x_{n-1}]$. 清除 $a$ 中的分母, 写成
+  \[
+    a_{0}f=rg\in K[x_{1},\ldots,x_{n}]
+  \]
+  其中 $a_{0}\in K[x_{1},\ldots,x_{n}]$, 且 $r\in K[x_{n}]$. 如 Lemma~\ref{lem:irreducible-over-fraction-field} 的证明, 设 $r=p_{1}\cdots p_{\ell}$ 为 $r$ 的素因数分解. 因此 $p_{1}$ 必整除 $a_{0}$ 或 $f$. 因为 $f$ 在 $K[x_{1},\ldots,x_{n}]$ 中不可约, $p_{1}$ 整除 $f$ 的唯一可能性是两者只相差一个常数因子, 这会推出 $f\in K[x_{n}]$. 这样 $f$ 就成了 $K(x_{n})[x_{1},\ldots,x_{n-1}]$ 中的可逆元, 与 $f$ 在其中是素元的假设矛盾. 因此, $p_{1}$ 必整除 $a_{0}$. 写成 $a_{0}=a_{1}p_{1}$, 从而
+  \[
+    a_{1}f=p_{2}\cdots p_{\ell}g.
+  \]
+  对 $p_{2},\ldots,p_{\ell}$ 重复上述过程, 可得
+  \[
+    a_{\ell}f=g\in K[x_{1},\ldots,x_{n}].
+  \]
+  所以 $f\mid g$ 在 $K[x_{1},\ldots,x_{n}]$ 中成立, 从而 $f$ 是素元.
+\end{Proof}
+
+结合前两个引理, 我们现在证明 Proposition~\ref{prop:multivariate-polynomial-euclid-lemma}.
+
+\begin{Proof}\unskip\textbf{ of Proposition~\ref{prop:multivariate-polynomial-euclid-lemma}}\quad
+  对 $n$ 归纳, $n=1$ 的情形就是 Corollary~\ref{cor:univariate-polynomial-ring-ufd}. 对归纳步骤, 假设对某个 $n\ge2$ 及任意域 $K$, $K[x_{1},\ldots,x_{n-1}]$ 中的每个不可约多项式都是素元. 设 $K$ 是域, 且 $f\in K[x_{1},\ldots,x_{n}]$ 不可约; 我们必须证明 $f$ 是素元.
+
+  由于 $f$ 不是可逆元, 它关于至少一个变量的次数为正; 不失一般性, 假设它关于 $x_{n}$ 之外的某个变量次数为正. 于是 $f$ 不可约, 且不是 $K[x_{n}]$ 的元素. 因而由 Lemma~\ref{lem:irreducible-over-fraction-field}, $f$ 作为 $K(x_{n})[x_{1},\ldots,x_{n-1}]$ 的元素不可约. 因为 $K(x_{n})$ 是域, 由归纳假设可知 $f$ 在 $K(x_{n})[x_{1},\ldots,x_{n-1}]$ 中是素元. 再应用 Lemma~\ref{lem:prime-descends-from-fraction-field}, 即得 $f$ 在 $K[x_{1},\ldots,x_{n}]$ 中是素元.
+\end{Proof}
+
+\BookPairedNote{作为 Propositions~\ref{prop:polynomial-factorization-exists}, \ref{prop:ufd-iff-irreducibles-prime} 和 \ref{prop:multivariate-polynomial-euclid-lemma} 的直接推论, 我们现在得出 $K[x_{1},\ldots,x_{n}]$ 是唯一分解整环. 为便于引用, 在本节最后精确表述这个结果.}%
+  {还可以证明一个更一般的结论: 只要 $R$ 是 UFD, $R[x_{1},\ldots,x_{n}]$ 就是 UFD. 对我们的目的而言, 不必用到这种一般性.}
+
+\begin{Theorem}{{\textmd{$K[x_{1},\ldots,x_{n}]$} 是 UFD}}\label{thm:multivariate-polynomial-ring-ufd}
+  若 $f\in K[x_{1},\ldots,x_{n}]$ 非常数, 则存在不可约多项式 $p_{1},\ldots,p_{\ell}\in K[x_{1},\ldots,x_{n}]$ 使得
+  \[
+    f=p_{1}\cdots p_{\ell}.
+  \]
+  若 $f=q_{1}\cdots q_{m}$ 是另一个不可约分解, 则 $\ell=m$, 且在必要时重新排列各项后, 对每个 $i$, $q_{i}$ 都是 $p_{i}$ 的常数倍.
+\end{Theorem}
+
+\BookExerciseHeading
+\begin{BookExercises}
+  \item\label{ex:fraction-equality-equivalence} 证明分式相等是一个等价关系.
+  \item\label{ex:fraction-field-axioms} 设 $R$ 是整环, 且 $a/b,c/d,r/s\in\operatorname{Frac}(R)$, 满足 $a/b=c/d$.
+    \begin{enumerate}[label=(\alph*)]
+      \item 证明
+        \[
+          \frac{a}{b}+\frac{r}{s}=\frac{c}{d}+\frac{r}{s}
+          \quad\text{且}\quad
+          \frac{a}{b}\cdot\frac{r}{s}=\frac{c}{d}\cdot\frac{r}{s}.
+        \]
+      \item 证明 $\operatorname{Frac}(R)$ 满足域的公理.
+    \end{enumerate}
+  \item\label{ex:canonical-fraction-field-inclusion} 设 $R$ 是整环.
+    \begin{enumerate}[label=(\alph*)]
+      \item 证明函数
+        \[
+          \begin{aligned}
+            \phi:R&\to\operatorname{Frac}(R)\\
+            a&\mapsto a/1
+          \end{aligned}
+        \]
+        是单射环同态.
+      \item 设 $K$ 是域且 $R\subseteq K$. 证明 $\operatorname{Frac}(R)\subseteq K$.
+    \end{enumerate}
+  \item\label{ex:fraction-field-needs-domain} 假设 $R$ 不是整环. 说明如果试图构造 $R$ 的分式域, 可能出现什么问题.
+  \item\label{ex:clear-polynomial-denominators} 设 $f\in K(x_{n})[x_{1},\ldots,x_{n-1}]$. 证明存在多项式 $r\in K[x_{n}]$, 使得 $rf\in K[x_{1},\ldots,x_{n}]$.
+  \item\label{ex:prime-in-ring-and-polynomial-ring} 设 $a\in R$, 考虑满同态
+    \[
+      \pi:R[x_{1},\ldots,x_{n}]\to(R/\langle a\rangle)[x_{1},\ldots,x_{n}].
+    \]
+    \begin{enumerate}[label=(\alph*)]
+      \item 证明 $\ker(\pi)=\langle a\rangle\subseteq R[x_{1},\ldots,x_{n}]$, 并由此得出
+        \[
+          \frac{R[x_{1},\ldots,x_{n}]}{\langle a\rangle}\cong(R/\langle a\rangle)[x_{1},\ldots,x_{n}].
+        \]
+      \item 证明 $a$ 在 $R$ 中是素元, 当且仅当 $a$ 在 $R[x_{1},\ldots,x_{n}]$ 中是素元.
+    \end{enumerate}
+\end{BookExercises}

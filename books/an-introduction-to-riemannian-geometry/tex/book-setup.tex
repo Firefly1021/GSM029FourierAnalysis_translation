@@ -1,0 +1,73 @@
+% Keep the existing bold commands on the OpenType mathematical alphabets.
+\ExplSyntaxOn
+\DeclareRobustCommand{\bm}[1]{%
+  \regex_match:nnTF { \A [A-Za-z]+ \Z } {#1}
+    { \symbfit{#1} }
+    { \symbf{#1} }
+}
+\ExplSyntaxOff
+\DeclareRobustCommand{\boldsymbol}[1]{\bm{#1}}
+
+\numberwithin{equation}{chapter}
+\counterwithin{figure}{chapter}
+\AtBeginDocument{%
+  \theoremstyle{plain}%
+  \theoremheaderfont{\sffamily\bfseries\thmheiti}%
+  \theorembodyfont{\fangsong}%
+  \theoremseparator{\enspace}%
+  \theoremsymbol{}%
+  \newtheorem{RiemannDefinition}{Definition}[section]%
+  \renewcommand{\theRiemannDefinition}{\arabic{section}.\arabic{RiemannDefinition}}%
+  \newtheorem{RiemannTheorem}[RiemannDefinition]{Theorem}%
+  \newtheorem{RiemannLemma}[RiemannDefinition]{Lemma}%
+  \newtheorem{RiemannProposition}[RiemannDefinition]{Proposition}%
+  \newtheorem{RiemannCorollary}[RiemannDefinition]{Corollary}%
+  \theorembodyfont{\normalfont}%
+  \newtheorem{RiemannExample}[RiemannDefinition]{Example}%
+  \newtheorem{RiemannRemark}[RiemannDefinition]{Remark}%
+  \newtheorem{RiemannExercise}[RiemannDefinition]{Exercise}%
+  \theoremstyle{nonumberplain}%
+  \theoremheaderfont{\sffamily\bfseries\CJKfamily{pffont}}%
+  \theoremsymbol{\openbox}%
+  \newtheorem{RiemannProof}{Proof}%
+  \setlength{\abovedisplayskip}{8pt}%
+  \setlength{\belowdisplayskip}{8pt}%
+  \setlength{\abovedisplayshortskip}{8pt}%
+  \setlength{\belowdisplayshortskip}{8pt}%
+}
+\makeatletter
+% For stages of the translation where the target is not yet in the manuscript,
+% retain a verified link to its page in the original. No provisional aux labels.
+\newcommand{\RGRegisterSourceRef}[3]{%
+  \expandafter\def\csname RGsourcepage:#1\endcsname{#3}%
+  \expandafter\def\csname RGsourcevalue:#1\endcsname{#2}%
+}
+\newcommand{\RGref}[1]{%
+  \@ifundefined{r@#1}{%
+    \@ifundefined{RGsourcepage:#1}{\ref{#1}}{%
+      \href[page=\csname RGsourcepage:#1\endcsname]{../../input/source/An Introduction to Riemannian Geometry.pdf}{\csname RGsourcevalue:#1\endcsname}%
+    }%
+  }{\ref{#1}}%
+}
+\newcommand{\RGbiblabel}[2][]{%
+  \phantomsection
+  \begingroup\def\@currentlabel{#2}\label{bib:#1#2}\endgroup
+}
+\newcommand{\RGsolution}[2]{%
+  \item[(\ref{#1})]\leavevmode\phantomsection
+  \begingroup\edef\@currentlabel{\getrefnumber{#1}}\label{sol:#2}\endgroup
+}
+\makeatother
+\newcommand{\RGcite}[1]{[\RGref{bib:#1}]}
+\newcommand{\RGReferenceSection}{%
+  \section*{参考文献}%
+  \phantomsection
+  \addcontentsline{toc}{section}{参考文献}%
+}
+\newcommand{\RGfigure}[3][.6\textwidth]{%
+  \begin{figure}[htbp]
+  \centering
+  \includegraphics[width=#1]{figures/#2.pdf}
+  \caption{#3}\label{fig:#2}
+  \end{figure}%
+}

@@ -1,0 +1,377 @@
+\section{非完整约束}\label{sec:nonholonomic-constraints}
+
+有些力学系统受到约束, 使运动必须沿某些允许的方向进行. 为处理此类约束, 首先引入相应的几何概念.
+
+\begin{RiemannDefinition}\label{def:differentiable-distribution}
+可微流形 $M$ 上的 $m$ 维\textbf{分布} $\Sigma$ 是对每个 $p\in M$ 选取一个 $m$ 维子空间 $\Sigma_p\subset T_pM$. 若对所有 $p\in M$, 都存在邻域 $U\ni p$ 和向量场 $X_1,\ldots,X_m\in\mathfrak{X}(U)$, 使对所有 $q\in U$ 有
+\[
+  \Sigma_q=\operatorname{span}\bigl\{(X_1)_q,\ldots,(X_m)_q\bigr\},
+\]
+则称该分布\textbf{可微}.
+\end{RiemannDefinition}
+
+等价地, $\Sigma$ 可微, 当且仅当对所有 $p\in M$, 都存在邻域 $U\ni p$ 和 1-形式 $\omega^1,\ldots,\omega^{n-m}\in\Omega^1(U)$, 使
+\[
+  \Sigma_q=\ker(\omega^1)_q\cap\cdots\cap\ker(\omega^{n-m})_q
+\]
+对所有 $p\in U$ 成立 [参见 Exercise~\ref{ex:nonholonomic-constraints}(\ref{ex:distribution-as-common-kernel})]. 以下假设所有分布均可微.
+
+\begin{RiemannDefinition}\label{def:nonholonomic-constraint}
+力学系统 $(M,\langle\cdot,\cdot\rangle,\mathcal{F})$ 上的\textbf{非完整约束}是 $M$ 上的一个分布 $\Sigma$. 若对所有 $t\in I$, 有 $\dot c(t)\in\Sigma_{c(t)}$, 则称曲线 $c:I\subset\mathbb{R}\to M$ \textbf{与 $\Sigma$ 相容}.
+\end{RiemannDefinition}
+
+\begin{RiemannExample}\label{ex:rolling-wheel-and-skate-constraints}
+\begin{enumerate}[label=(\arabic*),ref=\arabic*,leftmargin=*]
+\item\label{ex:wheel-rolling-without-slipping} (\emph{无滑动滚动的车轮}) 考虑一个半径为 $R$ 的竖直车轮, 它在平面上无滑动地滚动. 假设运动沿直线进行, 则可用接触点的位置 $x$ 和车轮上某条固定半径与经过接触点的半径之间的夹角 $\theta$ 来参数化车轮的任意位置 (参见 Fig.~\ref{fig:wheel-rolling-without-slipping}); 因此位形空间为 $\mathbb{R}\times S^1$.
+
+若车轮无滑动地转动, 则必须要求沿任意运动都有 $\dot x=R\dot\theta$; 等价地, 运动必须与 $\mathbb{R}\times S^1$ 上由向量场
+\[
+  X=R\frac{\partial}{\partial x}+\frac{\partial}{\partial\theta}
+\]
+定义的分布相容, 或者等价地, 与由 1-形式
+\[
+  \omega=\mathrm{d}x-R\,\mathrm{d}\theta
+\]
+的核定义的分布相容.
+\item\label{ex:ice-skate-constraint} (\emph{冰刀}) 冰刀的一个简单模型是一条线段, 它既可以沿自身方向移动, 也可以绕中点转动. 冰刀的位置可由中点的 Cartesian 坐标 $(x,y)$ 和冰刀与 $x$ 轴的夹角 $\theta$ 指定 (参见 Fig.~\ref{fig:ice-skate}); 因此位形空间为 $\mathbb{R}^2\times S^1$.
+
+若冰刀只能沿自身方向移动, 则必须要求 $(\dot x,\dot y)$ 与 $(\cos\theta,\sin\theta)$ 成比例; 等价地, 运动必须与 $\mathbb{R}^2\times S^1$ 上由向量场
+\[
+  X=\cos\theta\frac{\partial}{\partial x}+\sin\theta\frac{\partial}{\partial y},
+  \qquad Y=\frac{\partial}{\partial\theta}
+\]
+定义的分布相容, 或者等价地, 与由 1-形式
+\[
+  \omega=-\sin\theta\,\mathrm{d}x+\cos\theta\,\mathrm{d}y
+\]
+的核定义的分布相容.
+\end{enumerate}
+\end{RiemannExample}
+\RGfigure[.59\textwidth]{wheel-rolling-without-slipping}{无滑动滚动的车轮}
+\RGfigure[.46\textwidth]{ice-skate}{冰刀}
+
+人们或许会问, 完整约束与非完整约束之间是否有联系. 为回答这一问题, 我们需要稍作引申.
+
+\begin{RiemannDefinition}\label{def:foliation}
+$n$ 维可微流形 $M$ 上的 $m$ 维\textbf{叶状结构}是由 $M$ 的子集组成的一个族 $\mathcal{F}=\{L_\alpha\}_{\alpha\in A}$, 这些子集称为\textbf{叶}, 且满足:
+\begin{enumerate}[label=(\arabic*),leftmargin=*]
+\item $M=\bigcup_{\alpha\in A}L_\alpha$;
+\item 若 $\alpha\ne\beta$, 则 $L_\alpha\cap L_\beta=\varnothing$;
+\item 每片叶 $L_\alpha$ 都是\textbf{道路连通的}, 即若 $p,q\in L_\alpha$, 则存在连续曲线 $c:[0,1]\to L_\alpha$, 使 $c(0)=p$, $c(1)=q$;
+\item 对每个点 $p\in M$, 都存在开集 $U\ni p$ 和局部坐标 $(x^1,\ldots,x^n):U\to\mathbb{R}^n$, 使各片叶与 $U$ 的交集的连通分支是 $(x^{m+1},\ldots,x^n):U\to\mathbb{R}^{n-m}$ 的水平集.
+\end{enumerate}
+\end{RiemannDefinition}
+
+\begin{RiemannRemark}\label{rem:leaves-as-injective-immersions}
+坐标 $(x^1,\ldots,x^m)$ 给出各片叶上的局部坐标, 因而这些叶是单射浸入的像. 特别地, 各片叶在每一点都具有良定义的 $m$ 维切空间, 因此任何 $m$ 维叶状结构都定义了一个 $m$ 维分布. 然而要注意, 一般而言, 各片叶并不是 $M$ 的 (嵌入) 子流形 [参见 Exercise~\ref{ex:nonholonomic-constraints}(\ref{ex:irrational-slope-foliation})].
+\end{RiemannRemark}
+
+\begin{RiemannDefinition}\label{def:integrable-distribution}
+若可微流形 $M$ 上存在一个 $m$ 维叶状结构 $\mathcal{F}=\{L_\alpha\}_{\alpha\in A}$, 使对所有 $p\in M$ 都有
+\[
+  \Sigma_p=T_pL_p,
+\]
+其中 $L_p$ 是包含 $p$ 的叶, 则称 $M$ 上的 $m$ 维分布 $\Sigma$ \textbf{可积}. $\mathcal{F}$ 的各片叶称为该分布的\textbf{积分子流形}.
+\end{RiemannDefinition}
+
+可积分布特别简单. 例如, 能够通过与分布相容的曲线从给定点 $p\in M$ 到达的点 $q\in M$ 所组成的集合, 就是经过 $p$ 的叶 $L_p$. 若各片叶是\textbf{嵌入}子流形, 则可积的非完整约束就化为一族完整约束. 为此, 可积分布有时称为\textbf{半完整约束}, 而不可积分布称为\textbf{真正的非完整约束}.
+
+因此, 有必要给出判定分布是否可积的准则.
+
+\begin{RiemannDefinition}\label{def:vector-field-compatible-with-distribution}
+设 $\Sigma$ 为可微流形 $M$ 上的分布. 若对所有 $p\in M$, 都有 $X_p\in\Sigma_p$, 则称向量场 $X\in\mathfrak{X}(M)$ \textbf{与 $\Sigma$ 相容}. 由与 $\Sigma$ 相容的所有向量场构成的 $\mathfrak{X}(M)$ 的线性子空间, 记为 $\mathfrak{X}(\Sigma)$.
+\end{RiemannDefinition}
+
+\begin{RiemannTheorem}[Frobenius]\label{thm:frobenius-integrability}
+分布 $\Sigma$ 可积, 当且仅当 $X,Y\in\mathfrak{X}(\Sigma)\implies[X,Y]\in\mathfrak{X}(\Sigma)$.
+\end{RiemannTheorem}
+
+\begin{RiemannProof}
+本定理的证明可见 \RGcite{ch05-War83} [其中必要性见 Exercise~\ref{ex:nonholonomic-constraints}(\ref{ex:integrability-implies-bracket-closure})].
+\end{RiemannProof}
+
+若 $\Sigma$ 局部由 $m$ 个向量场 $X_1,\ldots,X_m$ 给出, 则只需检验是否存在局部定义的函数 $C_{ij}^k$, 使 $[X_i,X_j]=\sum_{k=1}^m C_{ij}^kX_k$, 就能判定其可积性 [参见 Exercise~\ref{ex:nonholonomic-constraints}(\ref{ex:local-frame-frobenius-criterion})]. 下面的命题给出另一种判据.
+
+\begin{RiemannProposition}\label{prop:integrability-by-exterior-forms}
+$n$ 维流形 $M$ 上的 $m$ 维分布 $\Sigma$ 可积, 当且仅当每一组在局部定义且其核确定 $\Sigma$ 的微分形式 $\{\omega^1,\ldots,\omega^{n-m}\}$ 都满足
+\[
+  \mathrm{d}\omega^i\wedge\omega^1\wedge\cdots\wedge\omega^{n-m}=0
+  \qquad(i=1,\ldots,n-m).
+\]
+\end{RiemannProposition}
+
+\begin{RiemannProof}
+Exercise~\ref{ex:nonholonomic-constraints}(\ref{ex:prove-exterior-forms-integrability}).
+\end{RiemannProof}
+
+由于 Frobenius 定理的条件是局部的, 只需对定义域构成 $M$ 的一个开覆盖的各组微分形式检验该条件.
+
+\begin{RiemannExample}\label{ex:integrability-for-wheel-and-skate}
+\begin{enumerate}[label=(\arabic*),ref=\arabic*,leftmargin=*]
+\item\label{ex:integrability-of-rolling-wheel-constraint} (\emph{无滑动滚动的车轮}) 回顾这一情形, 约束由 1-形式
+\[
+  \omega=\mathrm{d}x-R\,\mathrm{d}\theta
+\]
+的核给出. 由于 $\mathrm{d}\omega=0$, 可知这是一个半完整约束, 对应于一个可积分布. 分布的各片叶是方程为 $x=x_0+R\theta$ 的子流形.
+\item\label{ex:nonintegrability-of-skate-constraint} (\emph{冰刀}) 回顾这一情形, 约束由 1-形式
+\[
+  \omega=-\sin\theta\,\mathrm{d}x+\cos\theta\,\mathrm{d}y
+\]
+的核给出. 由于
+\begin{align*}
+  \mathrm{d}\omega\wedge\omega
+  &=(-\cos\theta\,\mathrm{d}\theta\wedge\mathrm{d}x-\sin\theta\,\mathrm{d}\theta\wedge\mathrm{d}y)
+    \wedge(-\sin\theta\,\mathrm{d}x+\cos\theta\,\mathrm{d}y)\\
+  &=-\mathrm{d}\theta\wedge\mathrm{d}x\wedge\mathrm{d}y\ne 0,
+\end{align*}
+可知这是一个真正的非完整约束.
+\end{enumerate}
+\end{RiemannExample}
+
+在 Riemann 流形 $(M,\langle\cdot,\cdot\rangle)$ 中, 任意分布 $\Sigma$ 都确定一个\textbf{正交分布} $\Sigma^\perp$, 由
+\[
+  \Sigma_p^\perp=(\Sigma_p)^\perp\subset T_pM
+\]
+给出. 因而有两个正交投影 $\top:TM\to\Sigma$ 和 $\perp:TM\to\Sigma^\perp$. 对所有 $v\in TM$ 都满足
+\[
+  \mathcal{F}(v)=\mathcal{F}(v^\top)
+\]
+的外力 $\mathcal{F}:TM\to T^*M$ 所成的集合, 记为 $F_\Sigma$.
+
+\begin{RiemannDefinition}\label{def:reaction-force-for-nonholonomic-constraint}
+带非完整约束的力学系统 $(M,\langle\cdot,\cdot\rangle,\mathcal{F},\Sigma)$ 上的\textbf{约束反力}是力 $\mathcal{R}\in F_\Sigma$, 使得\textbf{广义 Newton 方程}
+\[
+  \mu\left(\frac{D\dot c}{\mathrm{d}t}\right)
+  =(\mathcal{F}+\mathcal{R})(\dot c)
+\]
+的初始条件在 $\Sigma$ 中的解与 $\Sigma$ 相容. 若对所有 $p\in M$ 和 $v\in T_pM$, 都有
+\[
+  \mu^{-1}(\mathcal{R}(v))\in\Sigma_p^\perp,
+\]
+则称约束反力是\textbf{理想的}, 或称它满足 \textbf{d’Alembert 原理}.
+\end{RiemannDefinition}
+
+和完整约束的情形一样, 约束反力是理想的, 当且仅当它沿任意与约束相容的运动既不产生能量, 也不耗散能量.
+
+\begin{RiemannTheorem}\label{thm:perfect-reaction-force-for-nonholonomic-constraint}
+给定一个带非完整约束的力学系统 $(M,\langle\cdot,\cdot\rangle,\mathcal{F},\Sigma)$, 存在唯一一个满足 d’Alembert 原理的约束反力 $\mathcal{R}\in F_\Sigma$.
+\end{RiemannTheorem}
+
+\begin{RiemannProof}
+定义分布 $\Sigma$ 在点 $p\in M$ 的\textbf{第二基本形式}为映射 $B:T_pM\times\Sigma_p\to\Sigma_p^\perp$, 由
+\[
+  B(v,w)=(\nabla_XY)^\perp
+\]
+给出, 其中 $X\in\mathfrak{X}(M)$ 和 $Y\in\mathfrak{X}(\Sigma)$ 满足 $X_p=v$ 和 $Y_p=w$. 为检验 $B$ 良定义, 设 $\{Z_1,\ldots,Z_n\}$ 是一个局部标准正交标架, 其中 $\{Z_1,\ldots,Z_m\}$ 是 $\Sigma$ 的一组基, $\{Z_{m+1},\ldots,Z_n\}$ 是 $\Sigma^\perp$ 的一组基. 则
+\[
+  \nabla_XY=\nabla_X\left(\sum_{i=1}^m Y^iZ_i\right)
+  =\sum_{i=1}^m\left((X\cdot Y^i)Z_i+\sum_{j,k=1}^n\Gamma_{ji}^kX^jY^i Z_k\right),
+\]
+其中函数 $\Gamma_{ij}^k$ 由
+\[
+  \nabla_{Z_i}Z_j=\sum_{k=1}^n\Gamma_{ij}^kZ_k
+\]
+定义. 因而
+\[
+  B(v,w)=(\nabla_XY)^\perp
+  =\sum_{i=1}^n\sum_{j=1}^m\sum_{k=m+1}^n\Gamma_{ij}^kX^iY^jZ_k
+\]
+只依赖于 $v=X_p$ 和 $w=Y_p$, 且是双线性映射. 顺带指出, $B$ 在 $\Sigma_p\times\Sigma_p$ 上的限制对所有 $p\in M$ 都是对称的, 当且仅当对所有 $i,j=1,\ldots,m$ 和 $k=m+1,\ldots,n$ 有
+\[
+  \Gamma_{ij}^k=\Gamma_{ji}^k
+  \iff \langle\nabla_{Z_i}Z_j,Z_k\rangle=\langle\nabla_{Z_j}Z_i,Z_k\rangle
+  \iff \langle[Z_i,Z_j],Z_k\rangle=0,
+\]
+即当且仅当 $\Sigma$ 可积. 在此情形, $B$ 自然就是各片叶的第二基本形式.
+
+假设 $\mathcal{R}$ 存在. 那么, 初始条件在 $\Sigma$ 中的任意运动 $c:I\subset\mathbb{R}\to M$ 都与 $\Sigma$ 相容, 并且满足
+\[
+  \frac{D\dot c}{\mathrm{d}t}=\mu^{-1}(\mathcal{F}(\dot c))+\mu^{-1}(\mathcal{R}(\dot c)).
+\]
+将此方程投影到 $\Sigma^\perp$, 得到
+\[
+  B(\dot c,\dot c)=\bigl(\mu^{-1}(\mathcal{F}(\dot c))\bigr)^\perp
+  +\mu^{-1}(\mathcal{R}(\dot c))
+\]
+(回顾 $\frac{D\dot c}{\mathrm{d}t}=\nabla_{\dot c}\dot c$). 因而, 若 $\mathcal{R}$ 存在, 则对任意 $v\in\Sigma$, 必有
+\[
+  \mathcal{R}(v)=\mu(B(v,v))-\mu\left(\bigl(\mu^{-1}(\mathcal{F}(v))\bigr)^\perp\right),
+\]
+对任意 $v\in TM$, 则由 $\mathcal{R}(v)=\mathcal{R}(v^\top)$ 给出 (因为 $\mathcal{R}\in F_\Sigma$). 这证明了 $\mathcal{R}$ 的唯一性.
+
+为证明存在性, 只需证明这样选取 $\mathcal{R}$ 时, 广义 Newton 方程的初始条件在 $\Sigma$ 中的解与 $\Sigma$ 相容. 考虑方程组
+\begin{equation}\label{eq:nonholonomic-motion-local-ode}
+  \begin{cases}
+    \dot c=\sum_{i=1}^m v^iZ_i\\[.4ex]
+    \dfrac{D\dot c}{\mathrm{d}t}
+    =\mu^{-1}(\mathcal{F}(\dot c))-\bigl(\mu^{-1}(\mathcal{F}(\dot c))\bigr)^\perp
+    +B(\dot c,\dot c)
+  \end{cases}.
+\end{equation}
+用局部坐标写出时, 它是一个含 $n+m$ 个未知量 $x^1(t),\ldots,x^n(t),v^1(t),\ldots,v^m(t)$ 的一阶常微分方程组. 由于第二个方程就是
+\[
+  \frac{D\dot c}{\mathrm{d}t}
+  =\bigl(\mu^{-1}(\mathcal{F}(\dot c))\bigr)^\top
+   +\left(\frac{D\dot c}{\mathrm{d}t}\right)^\perp
+  \iff \left(\frac{D\dot c}{\mathrm{d}t}\right)^\top
+  =\bigl(\mu^{-1}(\mathcal{F}(\dot c))\bigr)^\top,
+\]
+可见它在局部标架 $\{Z_1,\ldots,Z_n\}$ 中只有 $m$ 个非零分量. 因此, \eqref{eq:nonholonomic-motion-local-ode} 是含 $n+m$ 个未知量的 $n+m$ 个一阶常微分方程, 对任意初始条件都有唯一的局部解. 若 $\dot c(0)\in\Sigma_{c(0)}$, 总可选取 $v^1(0),\ldots,v^m(0)$, 使得
+\[
+  \dot c(0)=\sum_{i=1}^m v^i(0)(Z_i)_{c(0)}.
+\]
+由唯一性, \eqref{eq:nonholonomic-motion-local-ode} 的具有初始条件 $(x^1(0),\ldots,x^n(0),v^1(0),\ldots,v^m(0))$ 的解, 必定是
+\[
+  \frac{D\dot c}{\mathrm{d}t}=\mu^{-1}(\mathcal{F}(\dot c))+\mu^{-1}(\mathcal{R}(\dot c))
+\]
+的具有初始条件 $\dot c(0)$ 的解. 另一方面, 按构造它与 $\Sigma$ 相容.
+\end{RiemannProof}
+
+\begin{RiemannExample}[无滑动滚动的车轮]\label{ex:wheel-rolling-down-incline}
+回顾这一情形, 约束由 1-形式
+\[
+  \omega=\mathrm{d}x-R\,\mathrm{d}\theta
+\]
+的核给出. 对于理想约束反力 $\mathcal{R}$, 由于 $\mu^{-1}\mathcal{R}$ 正交于约束, 约束必在 $\mathcal{R}$ 的核中, 从而 $\mathcal{R}=\lambda\omega$, 其中 $\lambda:TM\to\mathbb{R}$ 是某个光滑函数.
+
+若车轮的动能为
+\[
+  K=\frac{M}{2}(v^x)^2+\frac{I}{2}(v^\theta)^2,
+\]
+则
+\[
+  \mu\left(\frac{D\dot c}{\mathrm{d}t}\right)
+  =M\ddot x\,\mathrm{d}x+I\ddot\theta\,\mathrm{d}\theta.
+\]
+
+为使这个问题稍有变化, 考虑恒定的重力加速度 $g$, 并假设车轮滚动的平面与水平面成角 $\alpha$ (Fig.~\ref{fig:wheel-rolling-on-incline}), 于是存在一个保守力, 其势能为
+\[
+  U=Mgx\sin\alpha.
+\]
+因此运动方程为
+\begin{align*}
+  \mu\left(\frac{D\dot c}{\mathrm{d}t}\right)
+  &=-\mathrm{d}U+\mathcal{R}(\dot c)\\
+  &\iff M\ddot x\,\mathrm{d}x+I\ddot\theta\,\mathrm{d}\theta
+  =-Mg\sin\alpha\,\mathrm{d}x+\lambda\,\mathrm{d}x-\lambda R\,\mathrm{d}\theta.
+\end{align*}
+
+车轮的运动由这个方程中同时满足约束方程的解给出, 即由以下常微分方程组的解给出:
+\[
+  \begin{cases}
+    M\ddot x=-Mg\sin\alpha+\lambda\\
+    I\ddot\theta=-R\lambda\\
+    \dot x=R\dot\theta
+  \end{cases}.
+\]
+容易解得
+\[
+  \begin{cases}
+    x(t)=x_0+v_0t-\dfrac{\gamma}{2}t^2\\[.4ex]
+    \theta(t)=\theta_0+\dfrac{v_0}{R}t-\dfrac{\gamma}{2R}t^2\\[.4ex]
+    \lambda=\dfrac{I\gamma}{R^2}
+  \end{cases}
+\]
+其中
+\[
+  \gamma=\frac{g\sin\alpha}{1+\dfrac{I}{MR^2}}
+\]
+且 $x_0,v_0,\theta_0$ 为积分常数.
+
+从物理上说, 约束反力可以解释为平面对车轮施加的摩擦力. 这个力阻碍车轮的平动, 却使其转动加快. 因而, 与直觉相反, 能量并未耗散: 车轮损失的平动动能全部转化为转动动能.
+\end{RiemannExample}
+\RGfigure[.47\textwidth]{wheel-rolling-on-incline}{在斜面上无滑动滚动的车轮}
+
+如预期的那样, 理想约束反力保证能量守恒.
+
+\begin{RiemannTheorem}\label{thm:energy-under-perfect-nonholonomic-reaction}
+设 $(M,\langle\cdot,\cdot\rangle,-\mathrm{d}U,\Sigma)$ 为带非完整约束的保守力学系统. 若约束反力 $\mathcal{R}$ 满足 d’Alembert 原理, 则机械能 $E:=K+U$ 沿任意初始条件在 $\Sigma$ 中的运动保持恒定.
+\end{RiemannTheorem}
+
+\begin{RiemannProof}
+Exercise~\ref{ex:nonholonomic-constraints}(\ref{ex:prove-nonholonomic-energy-conservation}).
+\end{RiemannProof}
+
+\begin{RiemannExercise}\label{ex:nonholonomic-constraints}
+\begin{enumerate}[label=(\arabic*),ref=\arabic*,leftmargin=*]
+\item\label{ex:distribution-as-common-kernel}
+证明 $n$ 维流形 $M$ 上的 $m$ 维分布 $\Sigma$ 可微, 当且仅当对所有 $p\in M$, 都存在邻域 $U\ni p$ 和 1-形式 $\omega^1,\ldots,\omega^{n-m}\in\Omega^1(U)$, 使得对所有 $q\in U$ 有
+\[
+  \Sigma_q=\ker(\omega^1)_q\cap\cdots\cap\ker(\omega^{n-m})_q.
+\]
+\item\label{ex:irrational-slope-foliation}
+证明 $\mathbb{R}^2$ 的叶状结构
+\[
+  \mathcal{F}=\bigl\{(x,y)\in\mathbb{R}^2\mid y=\sqrt{2}x+\alpha\bigr\}_{\alpha\in\mathbb{R}}
+\]
+在 $T^2=\mathbb{R}^2/\mathbb{Z}^2$ 上诱导一个叶状结构 $\mathcal{F}'$, 其叶不是 (嵌入) 子流形.
+\item\label{ex:integrability-implies-bracket-closure}
+设 $\Sigma$ 为可积分布. 证明 $X,Y\in\mathfrak{X}(\Sigma)\implies[X,Y]\in\mathfrak{X}(\Sigma)$.
+\item\label{ex:local-frame-frobenius-criterion}
+利用 Frobenius 定理证明, $m$ 维分布 $\Sigma$ 可积, 当且仅当每组向量场局部基 $\{X_1,\ldots,X_m\}$ 都满足 $[X_i,X_j]=\sum_{k=1}^m C_{ij}^kX_k$, 其中 $C_{ij}^k$ 是局部定义的函数. (\textbf{注}: 由于 Frobenius 定理的条件是局部的, 只需对定义域构成 $M$ 的一个开覆盖的各组局部基检验该条件.)
+\item\label{ex:prove-exterior-forms-integrability}
+证明 Proposition~\ref{prop:integrability-by-exterior-forms}. (\textbf{提示}: 回顾第~\ref{chap:differential-forms}~章的 Exercise~\ref{ex:differential-forms}(\ref{ex:intrinsic-exterior-derivative}): 对任意 $\omega\in\Omega^1(M)$ 和 $X,Y\in\mathfrak{X}(M)$, 有 $\mathrm{d}\omega(X,Y)=X\cdot\omega(Y)-Y\cdot\omega(X)-\omega([X,Y])$.)
+\item\label{ex:parallel-transport-integrable-distribution}
+设 $M$ 为带仿射联络 $\nabla$ 的 $n$ 维可微流形. 证明向量的平行移动由 $TM$ 上的一个分布 $\Sigma$ 确定, 且 $\Sigma$ 可积当且仅当 $\nabla$ 的曲率为零.
+\item\label{ex:prove-nonholonomic-energy-conservation}
+证明 Theorem~\ref{thm:energy-under-perfect-nonholonomic-reaction}.
+\item\label{ex:ice-skate-dynamics}
+(\emph{冰刀}) 回顾, 冰刀模型由 $\mathbb{R}^2\times S^1$ 上以 1-形式 $\omega=-\sin\theta\,\mathrm{d}x+\cos\theta\,\mathrm{d}y$ 的核定义的非完整约束 $\Sigma$ 给出.
+\begin{enumerate}[label=(\alph*),leftmargin=*]
+\item 证明冰刀可以到达位形空间中的所有点: 给定两点 $p,q\in\mathbb{R}^2\times S^1$, 存在与 $\Sigma$ 相容的分段光滑曲线 $c:[0,1]\to\mathbb{R}^2\times S^1$, 使 $c(0)=p$ 且 $c(1)=q$. 为什么由此可知 $\Sigma$ 不可积?
+\item 假设冰刀的动能为
+\[
+  K=\frac{M}{2}\bigl((v^x)^2+(v^y)^2\bigr)+\frac{I}{2}(v^\theta)^2
+\]
+且约束反力是理想的, 证明冰刀沿直线或圆周以恒定速率运动. 约束反力的物理解释是什么?
+\item 确定冰刀在斜面上, 即受势能 $U=Mg\sin\alpha\,x$ 作用时的运动.
+\end{enumerate}
+\item\label{ex:vertical-wheel-dynamics}
+考虑在平面上运动的半径为 $R$ 的竖直车轮.
+\begin{enumerate}[label=(\alph*),leftmargin=*]
+\item 证明与无滑动且无侧滑的滚动条件对应的非完整约束, 是在位形空间 $\mathbb{R}^2\times S^1\times S^1$ 上由 1-形式
+\[
+  \omega^1=\mathrm{d}x-R\cos\varphi\,\mathrm{d}\psi,\qquad
+  \omega^2=\mathrm{d}y-R\sin\varphi\,\mathrm{d}\psi
+\]
+确定的分布, 其中 $(x,y,\psi,\varphi)$ 为 Fig.~\ref{fig:vertical-wheel-on-plane} 所示的局部坐标.
+\item 假设车轮的动能为
+\[
+  K=\frac{M}{2}\bigl((v^x)^2+(v^y)^2\bigr)
+  +\frac{I}{2}(v^\psi)^2+\frac{J}{2}(v^\varphi)^2
+\]
+且约束反力是理想的, 证明车轮沿直线或圆周以恒定速率运动. 约束反力的物理解释是什么?
+\item 确定竖直车轮在斜面上, 即受势能 $U=Mg\sin\alpha\,x$ 作用时的运动.
+\end{enumerate}
+\item\label{ex:rolling-sphere-dynamics}
+考虑在平面上无滑动滚动的半径为 $R$, 质量为 $M$ 的球体.
+\begin{enumerate}[label=(\alph*),leftmargin=*]
+\item 证明无滑动滚动的条件为
+\[
+  \dot x=R\omega^y,\qquad \dot y=-R\omega^x,
+\]
+其中 $(x,y)$ 是平面上接触点的 Cartesian 坐标, $\omega$ 是球体的角速度.
+\item 证明若球体的质量分布对称, 则其动能为
+\[
+  K=\frac{M}{2}(\dot x^2+\dot y^2)+\frac{I}{2}\langle\omega,\omega\rangle,
+\]
+其中 $I$ 是球体的转动惯量, $\langle\cdot,\cdot\rangle$ 是 Euclidean 内积.
+\item 以 $\omega$ 为 $TSO(3)$ 的纤维上的坐标, 证明
+\[
+  \frac{D\dot c}{\mathrm{d}t}=\ddot x\frac{\partial}{\partial x}
+  +\ddot y\frac{\partial}{\partial y}+\dot\omega.
+\]
+(\textbf{提示}: 回顾第~\ref{chap:riemannian-manifolds}~章的 Exercise~\ref{ex:minimizing-properties-of-geodesics}(\ref{ex:bi-invariant-metrics-on-lie-groups}): 带双不变度量的 Lie 群上的左不变向量场的积分曲线是测地线.)
+\item 既然将 $TSO(3)$ 的纤维与 $\mathbb{R}^3$ 等同, 也可以利用 Euclidean 内积将 $T^*SO(3)$ 的纤维与 $\mathbb{R}^3$ 等同. 证明在此等同下, 给出无滑动滚动条件的非完整约束是由下列 1-形式的核确定的分布:
+\[
+  \theta^x:=\mathrm{d}x-Re_y,\qquad\theta^y:=\mathrm{d}y+Re_x
+\]
+(其中 $\{e_x,e_y,e_z\}$ 是 $\mathbb{R}^3$ 的标准基). 该分布可积吗? (\textbf{提示}: 证明 $\mathbb{R}^2\times SO(3)$ 中的任意两点可由与该分布相容的分段光滑曲线连接.)
+\item 证明球体沿直线以恒定速率运动, 其角速度恒定且垂直于运动方向.
+\item 确定球体在斜面上, 即受势能 $U=Mg\sin\alpha\,x$ 作用时的运动.
+\end{enumerate}
+\item\label{ex:golfer-dilemma}
+(\emph{高尔夫球手的难题}) 一个半径为 $R$, 质量为 $M$, 转动惯量为 $I$ 的对称球体, 在半径为 $R+a$ 的竖直圆柱内部无滑动地滚动. 证明其球心以恒定角速度绕圆柱的轴运动, 同时上下振荡, 振荡频率为绕轴运动频率的 $\sqrt{I/(I+MR^2)}$ 倍.
+\end{enumerate}
+\end{RiemannExercise}
+\RGfigure[.54\textwidth]{vertical-wheel-on-plane}{平面上的竖直车轮}

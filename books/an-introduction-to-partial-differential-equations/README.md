@@ -39,6 +39,10 @@ latexmk -cd -xelatex -interaction=nonstopmode -halt-on-error -outdir=build tex/b
 本书通过相对路径查找 `template/` 内的模板和随书 Noto 字体, 不依赖 `shared/` 中的其他模板.
 AJbook 模板与封面设计来自 Wen-Wei Li 的 AlJabr-1, 按模板中的许可文件使用.
 
+行间公式的间距统一由 [ajbook-pde-profile.sty](template/ajbook-pde-profile.sty) 管理.
+正文与公式块之间的额外间距为 8pt. 两个直接相邻的公式块之间只加 3pt 的额外间距,
+源码空行不再把它们撑开. 无须逐式改写环境或添加手工间距; 编号与交叉引用保持原样.
+
 ## QA 与原书问题
 
 翻译验收依据为 [final-book-qa.json](../../shared/book-records/an-introduction-to-partial-differential-equations/qa/final-book-qa.json) 和

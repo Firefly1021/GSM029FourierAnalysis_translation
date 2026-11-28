@@ -1,0 +1,69 @@
+\newtcolorbox{BookSideNote}{
+  enhanced,colback=white,colframe=black,boxrule=.6bp,arc=3bp,
+  boxsep=0pt,left=7bp,right=7bp,top=5bp,bottom=5bp,
+  before skip=0pt,after skip=0pt,drop fuzzy shadow,
+  fontupper=\kaishu\small
+}
+\newcommand{\BookSideNoteClearance}{2bp}
+
+\newsavebox{\BookNoteBody}
+\newsavebox{\BookNoteAside}
+\newdimen\BookNoteLastDepth
+\newdimen\BookNoteResumeDepth
+
+% Enter on the first body baseline. On exit the lower column determines
+% the last line: either the actual body line, or a normal line whose
+% lower edge is at the note bottom. Never add the height difference to
+% prevdepth: that would eat the following baseline glue.
+\newcommand{\BookSideNotePair}[3]{%
+  \par\begingroup
+  \sbox{\BookNoteBody}{%
+    \begin{minipage}[t]{.52\linewidth}
+      \ignorespaces#2\par
+      \global\BookNoteLastDepth=\prevdepth
+    \end{minipage}%
+  }%
+  \sbox{\BookNoteAside}{%
+    \begin{minipage}[t]{.44\linewidth}
+      \vspace{0pt}\begin{BookSideNote}#3\end{BookSideNote}%
+    \end{minipage}%
+  }%
+  \setbox\BookNoteAside=\hbox{\raise\ht\BookNoteBody\box\BookNoteAside}%
+  \BookNoteResumeDepth=\BookNoteLastDepth
+  \ifdim\BookNoteResumeDepth<-999pt
+    \BookNoteResumeDepth=\dp\strutbox
+  \fi
+  \ifdim\dp\BookNoteAside>\dp\BookNoteBody
+    \dp\BookNoteAside=\dimexpr\dp\BookNoteAside+\BookSideNoteClearance\relax
+    \BookNoteResumeDepth=\dp\strutbox
+  \fi
+  \noindent
+  \if l#1\relax
+    \box\BookNoteAside\hfill\box\BookNoteBody
+  \else
+    \box\BookNoteBody\hfill\box\BookNoteAside
+  \fi
+  \par\prevdepth=\BookNoteResumeDepth
+  \endgroup
+}
+
+\newcommand{\BookPairedNote}[2]{\BookSideNotePair{r}{#1}{#2}}
+\newcommand{\BookPairedNoteLeft}[2]{\BookSideNotePair{l}{#2}{#1}}
+
+% In continuous prose, the same note bottom sets the end of the narrow
+% measure. Include its shadow in the height that wrapfig measures.
+\newenvironment{BookFlowNote}[2][r]{%
+  \par
+  \setlength{\intextsep}{0pt}%
+  \setlength{\columnsep}{.04\linewidth}%
+  \begin{wrapfigure}{#1}{.44\linewidth}%
+    \begin{BookSideNote}#2\end{BookSideNote}%
+    \vspace{\BookSideNoteClearance}%
+  \end{wrapfigure}%
+}{\par}
+
+% Keep the note next to the introduction even inside the theorem list.
+\newcommand{\ExampleSideNote}[2]{%
+  \leavevmode\strut\par\smallskip
+  \BookPairedNote{#1}{#2}%
+}

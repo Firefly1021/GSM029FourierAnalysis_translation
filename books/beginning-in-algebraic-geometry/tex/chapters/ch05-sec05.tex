@@ -1,0 +1,175 @@
+\section{零点定理的证明}\label{sec:proof-of-nullstellensatz}
+
+我们现在已经具备了讨论零点定理证明所需的代数工具, 因而可以对第~\ref{chap:varieties-and-ideals}--\ref{chap:polynomial-maps} 章建立的代数与几何的等价性给出完整的论证. 我们先给出两个有用的引理, 借此证明零点定理一个看似较弱的版本. 随后我们将证明, 出人意料的是, 这个弱版本蕴含完整的零点定理.
+
+所需的第一个引理只是告诉我们, 代数闭域没有非平凡的代数域扩张.
+
+\begin{Lemma}{代数闭域上的代数扩张}\leavevmode\label{lem:algebraic-extension-of-algebraically-closed-field}
+设 $K\subseteq L$ 为域, 且 $L$ 在 $K$ 上代数. 若 $K$ 是代数闭的, 则 $L=K$.
+\end{Lemma}
+\begin{Proof}
+\BookPairedNote
+  {反设 $a\in L\setminus K$. 由于 $a$ 在 $K$ 上代数, 存在多项式 $f\in K[x]$ 使得 $f(a)=0$. 这样的多项式可能有很多, 取其中次数最小的一个作为 $f$. 由于 $K$ 是代数闭的, 存在 $b\in K$ 使 $f(b)=0$.}
+  {\textquotedbl{}代数闭\textquotedbl{}这个名称反映了如下事实: 试图向 $K$ 添加一个在 $K$ 上代数的元素时, 所得到的元素其实已在 $K$ 中. 因此 $K$ 对\textquotedbl{}添加代数元\textquotedbl{}是封闭的.}
+由 Corollary~\ref{cor:polynomial-factor-theorem}, 可以将 $f(x)$ 分解为
+\[
+  f(x)=(x-b)g(x),
+\]
+其中 $g\in K[x]$ 且 $\deg(g)<\deg(f)$. 两边在 $x=a$ 处取值, 得
+\[
+  0=(a-b)g(a).
+\]
+我们已假设 $a\notin K$, 且 $b\in K$, 因此 $a\neq b$. 所以上式只有在 $g(a)=0$ 时才成立. 这与 $f$ 是 $K[x]$ 中在 $a$ 处取值为零的次数最小的多项式相矛盾.
+\end{Proof}
+
+下一个结论是本节所需的 Noether 正规化定理的主要推论. 它最早由 Zariski 证明, 不过他的方法与这里的方法不同. 这个结论对任意域 $K$ 都成立.
+
+\begin{Lemma}{Zariski 引理}\leavevmode\label{lem:zariski}
+设 $K\subseteq L$ 为域. 如果 $L$ 是有限生成 $K$-代数, 则 $L$ 在 $K$ 上代数.
+\end{Lemma}
+\begin{Proof}
+设 $K\subseteq L$ 为域, 且 $L$ 是有限生成 $K$-代数. 对 $L$ 应用 Noether 正规化定理, 可知存在 $d\geq0$ 以及在 $K$ 上代数独立的元素 $a_{1},\ldots,a_{d}\in L$, 使得 $L$ 在 $K[a_{1},\ldots,a_{d}]$ 上整, 因而也代数. 要说明 $L$ 在 $K$ 上代数, 只需证明 $d=0$.
+
+反设 $d>0$. 由于 $L$ 是域, 存在 $a_{1}^{-1}\in L$. 由于 $L$ 在 $K[a_{1},\ldots,a_{d}]$ 上整, 元素 $a_{1}^{-1}$ 是一个系数在 $K[a_{1},\ldots,a_{d}]$ 中的首一多项式的根:
+\[
+  (a_{1}^{-1})^{m}+c_{1}(a_{1}^{-1})^{m-1}+\cdots
+  +c_{m-1}(a_{1}^{-1})+c_{m}=0,
+\]
+其中 $c_{1},\ldots,c_{m}\in K[a_{1},\ldots,a_{d}]$. 两边同乘 $a_{1}^{m}$, 得
+\[
+  1+c_{1}a_{1}+\cdots+c_{m-1}a_{1}^{m-1}+c_{m}a_{1}^{m}=0.
+\]
+这是 $a_{1},\ldots,a_{d}$ 之间的一个多项式关系, 与这些元素的代数独立性矛盾. 因此 $d=0$, 这正是所需结论.
+\end{Proof}
+
+下面用前两个引理证明的结论通常称为\textquotedbl{}弱零点定理\textquotedbl{}, 因为如果已经证明了零点定理, 就能相当直接地推出它 (Exercise~\ref{ex:nullstellensatz-implies-weak-nullstellensatz}).
+
+\begin{Proposition}{弱零点定理}\leavevmode\label{prop:weak-nullstellensatz}
+设 $K$ 是代数闭的. 对任意真理想 $I\subsetneq K[x_{1},\ldots,x_{n}]$, 都有 $\mathcal{V}(I)\neq\varnothing$.
+\end{Proposition}
+\begin{Proof}
+设 $K$ 是代数闭的, 且 $I\subsetneq K[x_{1},\ldots,x_{n}]$ 是真理想. 由 Exercise~\ref{ex:proper-ideal-contained-in-maximal-ideal}, $K[x_{1},\ldots,x_{n}]$ 存在一个包含 $I$ 的极大理想 $J$. 由于 $I\subseteq J$ 蕴含 $\mathcal{V}(J)\subseteq\mathcal{V}(I)$, 只需证明 $\mathcal{V}(J)\neq\varnothing$.
+
+由于 $J$ 是极大理想, 商环
+\[
+  L=K[x_{1},\ldots,x_{n}]/J
+\]
+是域. 此外, $L$ 是有限生成 $K$-代数 (由 $[x_{1}],\ldots,[x_{n}]$ 生成), 因此由 Zariski 引理, $L$ 在 $K$ 上代数. 但 $K$ 是代数闭的, 所以 Lemma~\ref{lem:algebraic-extension-of-algebraically-closed-field} 蕴含 $L=K$.
+
+由于 $L=K$, 存在 $K$-代数同构 $\phi:L\to K$. 定义 $a_{i}=\phi([x_{i}])$. 利用 $\phi$ 是 $K$-代数同态这一事实, 得
+\[
+  \phi([x_{i}-a_{i}])=\phi([x_{i}])-\phi([a_{i}])=a_{i}-a_{i}=0.
+\]
+由于 $\phi$ 是单射, 这蕴含对所有 $i$ 都有 $[x_{i}-a_{i}]=0$. 换句话说,
+\[
+  \langle x_{1}-a_{1},\ldots,x_{n}-a_{n}\rangle\subseteq J.
+\]
+由于 $\langle x_{1}-a_{1},\ldots,x_{n}-a_{n}\rangle$ 是极大理想, 且 $J$ 是真理想, 可知 $J=\langle x_{1}-a_{1},\ldots,x_{n}-a_{n}\rangle$. 因而
+\[
+  \mathcal{V}(J)=\{(a_{1},\ldots,a_{n})\}\neq\varnothing,
+\]
+这就是所需结论.
+\end{Proof}
+
+弱零点定理只是一件粗略的工具, 它仅保证 $\mathcal{V}(I)$ 非空. 而 (强) 零点定理却能确切地告诉我们哪些多项式在 $\mathcal{V}(I)$ 上取值为零. 现在我们证明, 这个加强了的结论实际上可由弱零点定理推出. 由于我们在证明弱版本时没有用到强版本, 至此便能完成零点定理的证明.
+
+\begin{Theorem}{回顾零点定理}\leavevmode\label{thm:nullstellensatz-recalled}
+设 $K$ 是代数闭域. 则对任意理想 $I\subseteq K[x_{1},\ldots,x_{n}]$, 有
+\[
+  \mathcal{I}(\mathcal{V}(I))=\sqrt{I}.
+\]
+\end{Theorem}
+\begin{Proof}
+包含关系 $\mathcal{I}(\mathcal{V}(I))\supseteq\sqrt{I}$ 在任意域上都成立, 直接由定义得到; 参见 Exercise~\ref{ex:radical-contained-in-vanishing-ideal}. 因此只须证明包含关系 $\mathcal{I}(\mathcal{V}(I))\subseteq\sqrt{I}$. 由于 $K[x_{1},\ldots,x_{n}]$ 是 Noether 环, 可写成 $I=\langle f_{1},\ldots,f_{m}\rangle$.
+
+设 $g\in\mathcal{I}(\mathcal{V}(I))$. 引入新变量 $x_{n+1}$, 考虑理想
+\[
+  J=\langle f_{1},\ldots,f_{m},h\rangle\subseteq K[x_{1},\ldots,x_{n},x_{n+1}],
+\]
+其中
+\[
+  h(x_{1},\ldots,x_{n+1})=1-x_{n+1}g(x_{1},\ldots,x_{n}).
+\]
+\BookPairedNote
+  {我们断言 $\mathcal{V}(J)=\varnothing\subseteq\mathbb{A}^{n+1}$. 为此, 反设 $a=(a_{1},\ldots,a_{n},a_{n+1})\in\mathcal{V}(J)$. 于是对所有 $i$ 都有 $f_{i}(a)=0$. 但 $f_{i}$ 只涉及变量 $x_{1},\ldots,x_{n}$, 所以这等价于对所有 $i$ 都有 $f_{i}(a_{1},\ldots,a_{n})=0$.}
+  {添加一个变量的技巧, 是把弱零点定理用于 (强) 零点定理的巧妙手段.}
+也就是说, $(a_{1},\ldots,a_{n})\in\mathcal{V}(I)$. 由于 $g\in\mathcal{I}(\mathcal{V}(I))$, 可知 $g(a_{1},\ldots,a_{n})=0$, 因而
+\[
+  h(a)=1-a_{n+1}g(a_{1},\ldots,a_{n})=1\neq0.
+\]
+由于 $h\in J$, 这与 $a\in\mathcal{V}(J)$ 矛盾.
+
+我们已经证明 $\mathcal{V}(J)=\varnothing$, 所以弱零点定理蕴含 $J=K[x_{1},\ldots,x_{n+1}]$. 特别地, 常数多项式 $1$ 可用 $J$ 的生成元表示:
+\begin{equation}\label{eq:nullstellensatz-unit-ideal-relation}
+  1=q_{1}f_{1}+\cdots+q_{m}f_{m}+r(1-x_{n+1}g),
+\end{equation}
+其中 $q_{1},\ldots,q_{m},r\in K[x_{1},\ldots,x_{n+1}]$. 我们希望在这个等式中把 $g$ 单独分离出来, 但这需要除以 $x_{n+1}$. 为此, 考虑较大的环 $K(x_{n+1})[x_{1},\ldots,x_{n}]$, 其中允许出现关于 $x_{n+1}$ 的有理函数 (我们在 Section~\ref{sec:unique-factorization-polynomial-rings} 中已见过这种环). 等式 \eqref{eq:nullstellensatz-unit-ideal-relation} 在这个较大的环中仍成立. 现在可以把等式两边同除以 $x_{n+1}$ 的一个足够高的幂, 使 $x_{n+1}$ 的正次幂不再出现:
+\begin{equation}\label{eq:nullstellensatz-negative-variable-powers}
+  x_{n+1}^{-k}=\widetilde{q}_{1}f_{1}+\cdots+\widetilde{q}_{m}f_{m}
+    +\widetilde{r}(x_{n+1}^{-1}-g),
+\end{equation}
+其中 $\widetilde{q}_{1},\ldots,\widetilde{q}_{m},\widetilde{r}\in K[x_{1},\ldots,x_{n},x_{n+1}^{-1}]\subseteq K(x_{n+1})[x_{1},\ldots,x_{n}]$.
+
+现在已经得到多项式环 $K[x_{1},\ldots,x_{n},x_{n+1}^{-1}]$ 中的一个等式. 代入 $x_{n+1}^{-1}=g\in K[x_{1},\ldots,x_{n}]$, 得到
+\[
+  g^{k}=\widehat{q}_{1}f_{1}+\cdots+\widehat{q}_{m}f_{m},
+\]
+其中 $\widehat{q}_{i}\in K[x_{1},\ldots,x_{n}]$ 是在 $\widetilde{q}_{i}$ 中令 $x_{n+1}^{-1}=g$ 得到的. 最后这个等式表明 $g^{k}\in I$, 所以 $g\in\sqrt{I}$. 证明完毕.
+\end{Proof}
+
+初读时, 证明的最后一步令 $x_{n+1}^{-1}=g$, 常使读者感到可疑: 为什么可以直接给 $x_{n+1}^{-1}$ 选一个值? 我们强调, 这样做成立, 是因为 $x_{n+1}^{-1}$ 在环 $K[x_{1},\ldots,x_{n},x_{n+1}^{-1}]$ 中和其他变量一样, 也是一个变量. 下面在一个小例子中具体展示这一过程.
+
+\begin{Example}{零点定理证明的一个例子}\leavevmode\label{ex:nullstellensatz-proof-illustration}
+令 $J=\langle x^{2},y\rangle\subseteq K[x,y]$, 并令 $g=x+y$. 本例中以 $z$ 表示变量 $x_{n+1}$, 等式 \eqref{eq:nullstellensatz-unit-ideal-relation} 就写成
+\[
+  1=q_{1}(x,y,z)\cdot x^{2}+q_{2}(x,y,z)\cdot y
+    +r(x,y,z)\cdot\bigl(1-z(x+y)\bigr),
+\]
+容易验证, 如下选取 $q_{1},q_{2},r$ 时, 这个等式成立:
+\[
+  1=(z^{2})\cdot x^{2}+(2xz^{2}+yz^{2})\cdot y
+    +(1+xz+yz)\cdot\bigl(1-z(x+y)\bigr).
+\]
+注意这个等式在 $K[x,y,z]$ 中成立. 在较大的环 $K(z)[x,y]$ 中, 可以把两边同除以 $z^{2}$, 消去 $z$ 的所有正次幂, 得到
+\[
+  z^{-2}=(1)\cdot x^{2}+(2x+y)\cdot y
+    +(z^{-1}+x+y)\cdot\bigl(z^{-1}-(x+y)\bigr),
+\]
+这个新等式在子环 $K[x,y,z^{-1}]\subseteq K(z)[x,y]$ 中成立. 这个子环就是一个多项式环, 因而可以用其余变量的表达式代替其中一个变量. 代入 $z^{-1}=g=x+y$, 得到
+\[
+  (x+y)^{2}=(1)\cdot x^{2}+(2x+y)\cdot y,
+\]
+它显然在 $K[x,y]$ 中成立, 也说明 $g^{2}\in J$.
+\end{Example}
+
+\BookExerciseHeading
+\begin{BookExercises}
+  \item\label{ex:nullstellensatz-implies-weak-nullstellensatz} 证明零点定理蕴含弱零点定理.
+  \item\label{ex:weak-nullstellensatz-fails-over-nonclosed-field} 举例说明当 $K$ 不是代数闭的时, 弱零点定理可能不成立. 讨论为什么你的例子虽然不符合弱零点定理, 却仍与 Zariski 引理相容.
+  \item\label{ex:proper-ideal-contained-in-maximal-ideal} 设 $I\subseteq K[x_{1},\ldots,x_{n}]$ 为理想, 且 $I\neq K[x_{1},\ldots,x_{n}]$. 证明存在包含 $I$ 的极大理想. (提示: $K[x_{1},\ldots,x_{n}]$ 是 Noether 环, 所以满足升链条件.)
+  \item\label{ex:maximal-ideal-geometric-interpretation} 设 $K$ 是代数闭的, 且 $I\subsetneq K[x_{1},\ldots,x_{n}]$ 是真理想.
+  \begin{enumerate}
+    \item 用仿射簇 $\mathcal{V}(I)$ 和 $\mathcal{V}(J)$ 解释\textquotedbl{}$J$ 是包含 $I$ 的极大理想\textquotedbl{}这一命题.
+    \item 利用这一仿射簇解释, 找出两个包含 $I=\langle y^{2}-x^{3}-x^{2}\rangle\subseteq K[x,y]$ 的不同极大理想.
+  \end{enumerate}
+  \item\label{ex:nullstellensatz-tangent-varieties} 令 $I=\langle x^{2}+y^{2}-1,y-1\rangle\subseteq K[x,y]$, 并令 $g=x\in K[x,y]$.
+  \begin{enumerate}
+    \item 求 $\mathcal{V}(I)\subseteq\mathbb{A}^{2}$, 并验证 (不引用零点定理) $g\in\mathcal{I}(\mathcal{V}(I))$, 但 $g\notin I$.
+    \item 令 $f_{1}=x^{2}+y^{2}-1$ 和 $f_{2}=y-1$ 为 $I$ 的生成元, 并仿照零点定理的证明取 $J=\langle f_{1},f_{2},1-zx\rangle$. 求 $q_{1},q_{2},r\in K[x,y,z]$, 使等式 \eqref{eq:nullstellensatz-unit-ideal-relation} 成立.
+    \item 在 (b) 的等式中令 $z=1/g$ 并消去分母, 推出一个表明 $g\in\sqrt{I}$ 的等式.
+    \item 你刚刚验证了理想 $I=\langle x^{2}+y^{2}-1,y-1\rangle$ 不是根理想. 另一方面,
+    \[
+      I=\langle x^{2}+y^{2}-1\rangle+\langle y-1\rangle,
+    \]
+    因此
+    \[
+      \mathcal{V}(I)=\mathcal{V}(x^{2}+y^{2}-1)\cap\mathcal{V}(y-1).
+    \]
+    画出实数域上的 $\mathcal{V}(x^{2}+y^{2}-1)$ 和 $\mathcal{V}(y-1)$. 你能否猜出, 这些簇的什么几何特征导致 $\langle x^{2}+y^{2}-1\rangle+\langle y-1\rangle$ 不是根理想?
+  \end{enumerate}
+  \item\label{ex:algebraic-closure-from-maximal-ideals} 证明域 $K$ 是代数闭的, 当且仅当每个极大理想 $I\subseteq K[x_{1},\ldots,x_{n}]$ 都具有形式
+  \[
+    I=\langle x_{1}-a_{1},\ldots,x_{n}-a_{n}\rangle,
+  \]
+  其中 $a_{1},\ldots,a_{n}\in K$.
+\end{BookExercises}

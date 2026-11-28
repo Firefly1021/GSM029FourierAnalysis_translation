@@ -1,0 +1,232 @@
+\section{Lie 群}\label{sec:lie-groups}
+
+\textbf{Lie 群} $G$ 是同时也是群的光滑流形, 并且群运算
+\[
+  \begin{aligned}
+    G\times G&\to G\\
+    (g,h)&\mapsto gh
+  \end{aligned}
+  \quad\text{和}\quad
+  \begin{aligned}
+    G&\to G\\
+    g&\mapsto g^{-1}
+  \end{aligned}
+\]
+都是可微映射 (在 $G\times G$ 上取乘积的标准可微结构, 参见 Exercise~\ref{ex:exercise-differentiable-structures}(\ref{ex:product-differentiable-manifold})).
+
+\begin{RiemannExample}\label{ex:classical-matrix-lie-groups}
+\begin{enumerate}[label=(\arabic*),ref=\arabic*,leftmargin=*]
+\item 显然, $(\mathbb{R}^n,+)$ 是 Abel Lie 群.
+\item \textbf{一般线性群}
+\[
+  GL(n)=\{n\times n\text{ 可逆实矩阵}\}
+\]
+是最基本的非平凡 Lie 群的例子. 我们在 Example~\ref{ex:examples-of-differentiable-structures}(\ref{ex:matrix-space-and-general-linear-group}) 中已看到, 它是一个 $n^2$ 维光滑流形. 此外, 群乘法就是 $n\times n$ 矩阵的通常乘法到
+\[
+  GL(n)\times GL(n)
+\]
+的限制, 其坐标函数是二次多项式; 求逆就是非奇异矩阵的通常求逆到 $GL(n)$ 的限制. 由 Cramer 法则可知, 求逆的坐标函数是分母非零的有理函数 (分母中只出现行列式).
+\item\label{ex:orthogonal-group-regular-level-set} $\mathbb{R}^n$ 的正交变换所成的\textbf{正交群}
+\[
+  O(n)=\{A\in\mathcal M_{n\times n}\mid A^tA=I\}
+\]
+也是 Lie 群. 为说明这一点, 考虑从 $\mathcal M_{n\times n}\cong\mathbb{R}^{n^2}$ 到 $n\times n$ 对称矩阵所成的空间 $\mathcal S_{n\times n}\cong\mathbb{R}^{\frac12 n(n+1)}$ 的映射 $f:A\mapsto A^tA$. 它在点 $A\in O(n)$ 处的导数 $(\mathrm{d}f)_A$ 是从 $T_A\mathcal M_{n\times n}\cong\mathcal M_{n\times n}$ 到 $T_{f(A)}\mathcal S_{n\times n}\cong\mathcal S_{n\times n}$ 的满射. 实际上,
+\begin{align*}
+  (\mathrm{d}f)_A(B)
+  &=\lim_{h\to0}\frac{f(A+hB)-f(A)}{h}\\
+  &=\lim_{h\to0}\frac{(A+hB)^t(A+hB)-A^tA}{h}\\
+  &=B^tA+A^tB,
+\end{align*}
+且令 $B=\frac12(A^{-1})^tS=\frac12 AS$, 就能把任意对称矩阵 $S$ 写成 $B^tA+A^tB$. 特别地, 恒等矩阵 $I$ 是 $f$ 的正则值, 所以由 Theorem~\ref{thm:submanifold-of-regular-level-set} 可知, $O(n)=f^{-1}(I)$ 是 $\mathcal M_{n\times n}$ 的一个维数为 $\frac12 n(n-1)$ 的子流形. 此外, 它也是 Lie 群, 因为群乘法和求逆是 $GL(n)$ 上相应运算到子流形 $O(n)$ 的限制, 且它们的值仍在 $O(n)$ 中 [参见 Exercise~\ref{ex:immersions-embeddings}(\ref{ex:restriction-to-submanifolds})].
+\item\label{ex:special-linear-group-regular-level-set} 由 $f(A)=\det A$ 给出的映射 $f:GL(n)\to\mathbb{R}$ 可微, 且水平集 $f^{-1}(1)$ 是\textbf{特殊线性群}
+\[
+  SL(n)=\{A\in\mathcal M_{n\times n}\mid\det A=1\}.
+\]
+同样, $f$ 在点 $A\in GL(n)$ 处的导数是满射, 这使得 $SL(n)$ 成为 Lie 群. 实际上, 容易看出
+\[
+  (\mathrm{d}f)_I(B)=\lim_{h\to0}\frac{\det(I+hB)-\det I}{h}
+  =\operatorname{tr}B
+\]
+从而
+\begin{align*}
+  (\mathrm{d}f)_A(B)
+  &=\lim_{h\to0}\frac{\det(A+hB)-\det A}{h}\\
+  &=\lim_{h\to0}\frac{(\det A)\det(I+hA^{-1}B)-\det A}{h}\\
+  &=(\det A)\lim_{h\to0}\frac{\det(I+hA^{-1}B)-1}{h}\\
+  &=(\det A)(\mathrm{d}f)_I(A^{-1}B)
+   =(\det A)\operatorname{tr}(A^{-1}B).
+\end{align*}
+由于 $\det(A)=1$, 对任意 $k\in\mathbb{R}$, 取矩阵 $B=\frac{k}{n}A$, 就有 $(\mathrm{d}f)_A(B)=\operatorname{tr}(\frac{k}{n}I)=k$. 因此, 对每个 $A\in SL(n)$, $(\mathrm{d}f)_A$ 都是满射, 所以 $1$ 是 $f$ 的一个正则值. 于是 $SL(n)$ 是 $GL(n)$ 的一个子流形. 和前一个例子一样, 群乘法和求逆可微, 所以 $SL(n)$ 是 Lie 群.
+\item 映射 $A\mapsto\det A$ 是从 $O(n)$ 到 $\{-1,1\}$ 的可微映射, 水平集 $f^{-1}(1)$ 为
+\[
+  SO(n)=\{A\in O(n)\mid\det A=1\},
+\]
+称为 $\mathbb{R}^n$ 中的\textbf{特殊正交群}或\textbf{旋转群}. 它是 $O(n)$ 的开子集, 因而是同维数的 Lie 群.
+\item 还可以考虑复 $n\times n$ 矩阵的空间 $\mathcal M_{n\times n}(\mathbb C)$ 和复可逆 $n\times n$ 矩阵的空间 $GL(n,\mathbb C)$. 后者是实维数为 $2n^2$ 的 Lie 群. 此外, 类似于上面对 $O(n)$ 的处理, 可以取 $\mathbb{C}^n$ 上的酉变换群
+\[
+  U(n)=\{A\in\mathcal M_{n\times n}(\mathbb{C})\mid A^*A=I\},
+\]
+其中 $A^*$ 是 $A$ 的伴随. 这个群是 $\mathcal M_{n\times n}(\mathbb{C})\cong\mathbb{C}^{n^2}\cong\mathbb{R}^{2n^2}$ 的子流形, 也是一个 Lie 群, 称为\textbf{酉群}. 这一点可由下述事实看出: $I$ 是从 $\mathcal M_{n\times n}(\mathbb{C})$ 到自伴矩阵空间的映射 $f:A\mapsto A^*A$ 的一个正则值. 任意 $\mathcal M_{n\times n}(\mathbb{C})$ 的元素都能唯一地写成一个自伴矩阵和一个反自伴矩阵之和, 且 $A\mapsto iA$ 是从自伴矩阵空间到反自伴矩阵空间的同构. 因此这两个空间的实维数均为 $\frac12\dim_{\mathbb{R}}\mathcal M_{n\times n}(\mathbb{C})=n^2$. 所以 $\dim U(n)=n^2$.
+\item \textbf{特殊酉群}
+\[
+  SU(n)=\{A\in U(n)\mid\det A=1\},
+\]
+也是 Lie 群, 此时维数为 $n^2-1$ (注意, $A\mapsto\det(A)$ 现在是从 $U(n)$ 到 $S^1$ 的可微映射).
+\end{enumerate}
+\end{RiemannExample}
+
+按定义, Lie 群 $G$ 是流形, 因而可以考虑它在某一点的切空间. 特别地, 在单位元 $e$ 处的切空间通常记为
+\[
+  \mathfrak g:=T_eG.
+\]
+对 $g\in G$, 有映射
+\[
+  \begin{aligned}
+    L_g:G&\to G\\ h&\mapsto g\cdot h
+  \end{aligned}
+  \quad\text{和}\quad
+  \begin{aligned}
+    R_g:G&\to G\\ h&\mapsto h\cdot g
+  \end{aligned}
+\]
+分别对应于 $g$ 的\textbf{左乘}和\textbf{右乘}.
+
+若对每个 $g\in G$ 都有 $(L_g)_*X=X$, 则称 $G$ 上的向量场 $X$ \textbf{左不变}, 即对每个 $g,h\in G$,
+\[
+  ((L_g)_*X)_{gh}=X_{gh}\quad\text{或}\quad(\mathrm{d}L_g)_hX_h=X_{gh}.
+\]
+当然, $\mathfrak g$ 与 $G$ 上左不变向量场的空间之间存在向量空间同构, 它将每个 $V\in\mathfrak g$ 对应到由
+\[
+  X_g^V:=(\mathrm{d}L_g)_eV
+\]
+定义的向量场 $X^V$, 其中 $g\in G$ 任意. 这一向量场是左不变的, 因为
+\begin{align*}
+  (\mathrm{d}L_g)_hX_h^V
+  &=(\mathrm{d}L_g)_h(\mathrm{d}L_h)_eV
+    =(\mathrm{d}(L_g\circ L_h))_eV\\
+  &=(\mathrm{d}L_{gh})_eV=X_{gh}^V.
+\end{align*}
+注意, 给定左不变向量场 $X$, $\mathfrak g$ 中相应的元素是 $X_e$. 左不变向量场的空间 $\mathfrak{X}_L(G)$ 在向量场的 Lie 括号下封闭 (因为由 Exercise~\ref{ex:vector-fields}(\ref{ex:pushforward-preserves-lie-bracket}), 有 $(L_g)_*[X,Y]=[(L_g)_*X,(L_g)_*Y]$), 因而它是向量场的 Lie 代数的一个 Lie 子代数 (见 Definition~\ref{def:lie-algebra}). 于是, 同构 $\mathfrak{X}_L(G)\cong\mathfrak g$ 在 $\mathfrak g$ 上确定了一个 Lie 代数结构. 我们称 $\mathfrak g$ 为 Lie 群 $G$ 的 \textbf{Lie 代数}.
+
+\begin{RiemannExample}\label{ex:lie-algebras-of-matrix-groups}
+\begin{enumerate}[label=(\arabic*),ref=\arabic*,leftmargin=*]
+\item 若 $G=GL(n)$, 则 $\mathfrak{gl}(n)=T_I GL(n)=\mathcal M_{n\times n}$ 是实系数 $n\times n$ 矩阵的空间, $\mathfrak{gl}(n)$ 上的 Lie 括号是矩阵的交换子
+\[
+  [A,B]=AB-BA.
+\]
+实际上, 若 $A,B\in\mathfrak{gl}(n)$ 是两个 $n\times n$ 矩阵, 相应的左不变向量场由下式给出:
+\begin{align*}
+  X_g^A&=(\mathrm{d}L_g)_I(A)
+       =\sum_{i,k,j}x^{ik}a^{kj}\frac{\partial}{\partial x^{ij}}\\
+  X_g^B&=(\mathrm{d}L_g)_I(B)
+       =\sum_{i,k,j}x^{ik}b^{kj}\frac{\partial}{\partial x^{ij}},
+\end{align*}
+其中 $g\in GL(n)$ 是分量为 $x^{ij}$ 的矩阵. $[X^A,X^B]_g$ 的 $ij$ 分量由 $X_g^A\cdot(X^B)^{ij}-X_g^B\cdot(X^A)^{ij}$ 给出, 即
+\begin{align*}
+  [X^A,X^B]^{ij}(g)
+   &=\left(\sum_{l,m,p}x^{lp}a^{pm}\frac{\partial}{\partial x^{lm}}\right)
+       \left(\sum_k x^{ik}b^{kj}\right)\\
+   &\quad-\left(\sum_{l,m,p}x^{lp}b^{pm}\frac{\partial}{\partial x^{lm}}\right)
+       \left(\sum_k x^{ik}a^{kj}\right)\\
+   &=\sum_{k,l,m,p}x^{lp}a^{pm}\delta_{il}\delta_{km}b^{kj}
+       -\sum_{k,l,m,p}x^{lp}b^{pm}\delta_{il}\delta_{km}a^{kj}\\
+   &=\sum_{m,p}x^{ip}(a^{pm}b^{mj}-b^{pm}a^{mj})\\
+   &=\sum_p x^{ip}(AB-BA)^{pj}
+\end{align*}
+(其中 $\delta_{ij}=1$ 若 $i=j$, $\delta_{ij}=0$ 若 $i\ne j$, 这是 Kronecker 符号). 令 $g=I$, 得
+\[
+  [A,B]=[X^A,X^B]_I=AB-BA.
+\]
+由 Exercise~\ref{ex:vector-fields}(\ref{ex:lie-bracket-tangent-to-submanifold}) 可知, 当 $G$ 是矩阵群, 即对某个 $n$, $G$ 是 $GL(n)$ 的子群时, 这一点总是成立.
+\item\label{ex:lie-algebra-orthogonal-group} 若 $G=O(n)$, 则它的 Lie 代数为
+\[
+  \mathfrak o(n)=\{A\in\mathcal M_{n\times n}\mid A^t+A=0\}.
+\]
+实际上, 我们在 Example~\ref{ex:classical-matrix-lie-groups}(\ref{ex:orthogonal-group-regular-level-set}) 中已看到 $O(n)=f^{-1}(I)$, 其中恒等矩阵 $I$ 是映射
+\begin{align*}
+  f:\mathcal M_{n\times n}&\to\mathcal S_{n\times n}\\ A&\mapsto A^tA
+\end{align*}
+的正则值. 因此, $\mathfrak o(n)=T_IG=\ker(\mathrm{d}f)_I=\{A\in\mathcal M_{n\times n}\mid A^t+A=0\}$ 是反对称矩阵的空间.
+\item 若 $G=SL(n)$, 则它的 Lie 代数为
+\[
+  \mathfrak{sl}(n)=\{A\in\mathcal M_{n\times n}\mid\operatorname{tr}A=0\}.
+\]
+实际上, 我们在 Example~\ref{ex:classical-matrix-lie-groups}(\ref{ex:special-linear-group-regular-level-set}) 中已看到 $SL(n)=f^{-1}(1)$, 其中 $1$ 是映射
+\begin{align*}
+  f:\mathcal M_{n\times n}&\to\mathbb{R}\\ A&\mapsto\det A
+\end{align*}
+的正则值. 因此, $\mathfrak{sl}(n)=T_IG=\ker(\mathrm{d}f)_I=\{A\in\mathcal M_{n\times n}\mid\operatorname{tr}A=0\}$ 是迹为零的矩阵的空间.
+\item 若 $G=SO(n)=\{A\in O(n)\mid\det A=1\}$, 则它的 Lie 代数为
+\[
+  \mathfrak{so}(n)=T_I SO(n)=T_I O(n)=\mathfrak o(n).
+\]
+\item 类似于 Example~\ref{ex:lie-algebras-of-matrix-groups}(\ref{ex:lie-algebra-orthogonal-group}), $U(n)$ 的 Lie 代数为
+\[
+  \mathfrak u(n)=\{A\in\mathcal M_{n\times n}(\mathbb{C})\mid A^*+A=0\},
+\]
+即反 Hermite 矩阵的空间.
+\item 为确定 $SU(n)$ 的 Lie 代数, 注意 $SU(n)$ 是 $f(A)=\det A$ 的水平集 $f^{-1}(1)$, 因而
+\[
+  \mathfrak{su}(n)=\ker(\mathrm{d}f)_I
+  =\{A\in\mathfrak u(n)\mid\operatorname{tr}(A)=0\}.
+\]
+\end{enumerate}
+\end{RiemannExample}
+
+现在研究左不变向量场的流.
+
+\begin{RiemannProposition}\label{prop:global-flow-of-left-invariant-vector-field}
+设 $F$ 是左不变向量场 $X$ 在点 $h\in G$ 处的局部流. 则 $F$ 所定义的映射 $\psi_t$ (即 $\psi_t(g)=F(g,t)$) 满足 $\psi_t=R_{\psi_t(e)}$. 此外, $X$ 的流对所有 $t\in\mathbb{R}$ 全局有定义.
+\end{RiemannProposition}
+
+\begin{RiemannProof}
+对 $g\in G$, 有 $R_{\psi_t(e)}(g)=g\cdot\psi_t(e)=L_g(\psi_t(e))$. 因此,
+\[
+  R_{\psi_0(e)}(g)=g\cdot e=g
+\]
+且
+\begin{align*}
+  \frac{\mathrm{d}}{\mathrm{d}t}\bigl(R_{\psi_t(e)}(g)\bigr)
+    &=\frac{\mathrm{d}}{\mathrm{d}t}\bigl(L_g(\psi_t(e))\bigr)
+      =(\mathrm{d}L_g)_{\psi_t(e)}\left(\frac{\mathrm{d}}{\mathrm{d}t}(\psi_t(e))\right)\\
+    &=(\mathrm{d}L_g)_{\psi_t(e)}\bigl(X_{\psi_t(e)}\bigr)=X_{g\cdot\psi_t(e)}\\
+    &=X_{R_{\psi_t(e)}(g)},
+\end{align*}
+因此 $R_{\psi_t(e)}(g)=c_g(t)=\psi_t(g)$ 是 $X$ 在 $g$ 处的积分曲线. 于是, 若 $\psi_t(e)$ 对 $t\in(-\varepsilon,\varepsilon)$ 有定义, 则 $\psi_t(g)$ 对 $t\in(-\varepsilon,\varepsilon)$, $g\in G$ 有定义. 此外, 第~\ref{sec:vector-fields}~节的条件 \eqref{eq:local-flow-group-law} 对每一组 $-\varepsilon/2<s,t<\varepsilon/2$ 都成立, 因此可以像前面那样把映射 $F$ 延拓到 $G\times\mathbb{R}$: 对任意 $t\in\mathbb{R}$, 写成 $t=k\varepsilon/2+s$, 其中 $k\in\mathbb{Z}$ 且 $0\leq s<\varepsilon/2$, 并定义 $F(g,t):=F^k(F(g,s),\varepsilon/2)=gF(e,s)F^k(e,\varepsilon/2)$.
+\end{RiemannProof}
+
+\begin{RiemannRemark}\label{rem:one-parameter-lie-group-homomorphism}
+若 Lie 群之间的同态 $F:G_1\to G_2$ 除了是群同态之外, 还是可微映射, 就称为 \textbf{Lie 群同态}. 由于
+\[
+  \psi_{t+s}(e)=\psi_s(\psi_t(e))=R_{\psi_s(e)}\psi_t(e)=\psi_t(e)\cdot\psi_s(e),
+\]
+积分曲线 $t\mapsto\psi_t(e)$ 定义了 $(\mathbb{R},+)$ 到 $(G,\cdot)$ 的群同态.
+\end{RiemannRemark}
+
+\begin{RiemannDefinition}\label{def:lie-group-exponential-map}
+\textbf{指数映射} $\exp:\mathfrak g\to G$ 将每个 $V\in\mathfrak g$ 映到 $\psi_1(e)$, 其中 $\psi_t$ 是左不变向量场 $X^V$ 的流.
+\end{RiemannDefinition}
+
+\begin{RiemannRemark}\label{rem:one-parameter-subgroup-via-exponential}
+若 $c_g(t)$ 是 $X$ 在 $g$ 处的积分曲线且 $s\in\mathbb{R}$, 容易验证 $c_g(st)$ 是 $sX$ 在 $g$ 处的积分曲线. 另一方面, 对 $V\in\mathfrak g$ 有 $X^{sV}=sX^V$. 因此,
+\[
+  \psi_t(e)=c_e(t)=c_e(t\cdot 1)=F(e,1)=\exp(tV),
+\]
+其中 $F$ 是 $tX^V=X^{tV}$ 的流.
+\end{RiemannRemark}
+
+\begin{RiemannExample}\label{ex:matrix-lie-group-exponential}
+若 $G$ 是矩阵群, 则对 $A\in\mathfrak g$,
+\[
+  \exp A=e^A=\sum_{k=0}^{\infty}\frac{A^k}{k!}.
+\]
+实际上, 对任意矩阵 $A$, 这一系列都收敛, 而且映射 $h(t)=e^{At}$ 满足
+\begin{align*}
+  h(0)&=e^0=I\\
+  \frac{\mathrm{d}h}{\mathrm{d}t}(t)&=e^{At}A=h(t)A.
+\end{align*}
+因此, $h$ 是 $X^A$ 在单位元处的流 (即 $h(t)=\psi_t(e)$), 故 $\exp A=\psi_1(e)=e^A$.
+\end{RiemannExample}
+
+\input{chapters/ch01-lie-group-actions}
+\input{chapters/ch01-lie-group-exercises}

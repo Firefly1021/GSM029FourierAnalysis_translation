@@ -1,0 +1,285 @@
+\section{模与代数的张量积}\label{sec:tensor-products-of-modules}
+
+本节的目标是定义张量积 $M\otimes_{R}N$, 即从 $R$-模 $M$ 和 $N$ 构造的一个 $R$-模. 此外, 如果 $M$ 和 $N$ 恰好是 $R$-代数, 张量积还将继承 $R$-代数的结构. 典型的情形是 $M=R[x]$ 且 $N=R[y]$, 这时将有
+\[
+  R[x]\otimes_{R}R[y]=R[x,y].
+\]
+为理解怎样把这个例子推广到一般的模, 我们着眼于 $R[x,y]$ 的一条关键性质. 这条性质已经在 Proposition~\ref{prop:vanishing-ideal-of-product} 的证明中遇到: 每个多项式 $h\in R[x,y]$ 都可以 (不唯一地) 表成和
+\[
+  h=f_{1}g_{1}+f_{2}g_{2}+\cdots+f_{k}g_{k},
+\]
+其中 $f_{1},\ldots,f_{k}\in R[x]$, $g_{1},\ldots,g_{k}\in R[y]$. 例如, $3x^{2}y+2x+4xy^{2}$ 可以写成三项之和
+\[
+  (3x^{2})\cdot y+(2x)\cdot1+(4x)\cdot y^{2}.
+\]
+\BookPairedNote
+  {现在设 $M$ 和 $N$ 为任意 $R$-模. 若 $f_{i}\in M$ 且 $g_{i}\in N$, 可以把\textquotedbl{}乘积\textquotedbl{} $f_{i}g_{i}$ 在形式上理解为 $M\times N$ 的一个元素.}
+  {回忆, 在 (带单位元的) 环 $R$ 中, 数 $3$ 表示 $1+1+1$.}
+因此, 定义 $M\otimes_{R}N$ 的第一步是构造一个 $R$-模, 使这样的乘积在其中可以相加. 出发点是形式线性组合的概念.
+
+\begin{Definition}{形式线性组合}\leavevmode\label{def:formal-linear-combination}
+设 $S$ 为集合. $S$ 中元素的一个\emph{形式 $R$-线性组合}是形如
+\[
+  \sum_{s\in S}a_{s}\cdot s
+\]
+的表达式, 其中对所有 $s\in S$, 有 $a_{s}\in R$, 且除有限个 $s$ 外均有 $a_{s}=0$. 两个形式 $R$-线性组合相等, 当且仅当它们的所有系数都相等, 即
+\[
+  \sum_{s\in S}a_{s}\cdot s=\sum_{s\in S}b_{s}\cdot s
+  \quad\Longleftrightarrow\quad a_{s}=b_{s}\text{ 对所有 }s\in S.
+\]
+\end{Definition}
+
+这里强调, $S$ 的元素只是记录其系数信息的符号, 类似于单项式 $x_{1}^{\alpha_{1}}\cdots x_{n}^{\alpha_{n}}$ 中的变量 $x_{1},\ldots,x_{n}$ 只是记录其指数 $\alpha_{1},\ldots,\alpha_{n}$ 的符号. 特别地, $S$ 中元素的一个形式线性组合所包含的信息, 等价于一个函数
+\[
+  \begin{aligned}
+    f:S&\to R,\\
+    f(s)&=a_{s},
+  \end{aligned}
+\]
+其中除有限个 $s\in S$ 外均有 $f(s)=0$. 把这些信息写成线性组合, 只是为了记号方便.
+
+\begin{Example}{有限集中元素的形式线性组合}\leavevmode\label{ex:formal-linear-combinations-on-finite-set}
+\BookPairedNote
+  {令 $S=\{\diamondsuit,\heartsuit,\clubsuit,\spadesuit\}$. 那么
+  \[
+    3\diamondsuit-2\heartsuit+1\clubsuit+7\spadesuit
+  \]
+  和
+  \[
+    0\diamondsuit+4\heartsuit-30\clubsuit+0\spadesuit
+  \]
+  都是 $S$ 中元素的形式 $\mathbb{Z}$-线性组合.}
+  {这里特意选了一个不寻常的集合 $S$, 以强调 $S$ 的元素不必有任何结构, 也不必有其他含义, 只起标识其系数的作用.}
+\end{Example}
+
+\begin{Example}{无限集中元素的形式线性组合}\leavevmode\label{ex:formal-linear-combinations-on-infinite-set}
+令 $S=\{x_{1},x_{2},x_{3},\ldots\}$. 按通常约定, 当 $a_{s}=0$ 时省去项 $a_{s}\cdot s$, 则 $S$ 中元素的形式 $\mathbb{Z}$-线性组合是有限和, 如
+\[
+  7x_{2}+4x_{5}-2x_{6}
+  \quad\text{或}\quad
+  3x_{1}+5x_{17}-12x_{100}-9x_{120}.
+\]
+\end{Example}
+
+即使 $S$ 可能毫无结构, $S$ 中元素的所有形式线性组合组成的集合也自然构成一个 $R$-模.
+
+\begin{Definition}{自由模}\leavevmode\label{def:free-module-on-a-set}
+集合 $S$ 中元素的所有形式 $R$-线性组合组成的集合称为 $S$ 上的\emph{自由 $R$-模}, 记作 $RS$.
+\end{Definition}
+
+\BookPairedNote
+  {在 $RS$ 中, 加法的定义只是将对应的系数相加. 例如, Example~\ref{ex:formal-linear-combinations-on-finite-set} 中两个形式线性组合的和是}
+  {\textquotedbl{}自由\textquotedbl{}是指 $S$ 的元素之间没有关系.}
+\[
+  \begin{aligned}
+    &(3\diamondsuit-2\heartsuit+1\clubsuit+7\spadesuit)
+      +(0\diamondsuit+4\heartsuit-30\clubsuit+0\spadesuit)\\
+    &\qquad=3\diamondsuit+2\heartsuit-29\clubsuit+7\spadesuit.
+  \end{aligned}
+\]
+类似地, 标量乘法也如预期:
+\[
+  -2(3\diamondsuit-2\heartsuit+1\clubsuit+7\spadesuit)
+    =-6\diamondsuit+4\heartsuit-2\clubsuit-14\spadesuit.
+\]
+建议读者在 Exercise~\ref{ex:free-module-operations-satisfy-module-axioms} 中验证, $RS$ 中一般的加法和标量乘法规则满足 $R$-模的公理.
+
+回到定义 $M\otimes_{R}N$ 的目标. 再设 $M$ 和 $N$ 为 $R$-模, 考虑它们的 Cartesian 积上的自由 $R$-模:
+\[
+  R(M\times N)=\left\{
+    a_{1}\cdot(m_{1},n_{1})+\cdots+a_{k}\cdot(m_{k},n_{k})
+    \ \middle|\ 
+    \begin{array}{l}
+      a_{1},\ldots,a_{k}\in R,\\
+      m_{1},\ldots,m_{k}\in M,\\
+      n_{1},\ldots,n_{k}\in N
+    \end{array}
+  \right\}.
+\]
+例如, 集合 $R[x]\times R[y]$ 上的自由 $R$-模中的一个元素可以是
+\[
+  3\cdot(x^{2},y)+2\cdot(x,1)+4\cdot(x,y^{2}).
+\]
+去掉上式中的逗号, 得到与多项式
+\[
+  3x^{2}y+2x+4xy^{2}\in R[x,y]
+\]
+很相似的东西, 读者可能因此希望这个自由 $R$-模同构于 $R[x,y]$.
+
+可惜还不是这样. 虽然有从 $R[x]\times R[y]$ 上的自由 $R$-模到 $R[x,y]$ 的 $R$-模同态, 其定义为
+\[
+  a_{1}\cdot(f_{1},g_{1})+\cdots+a_{k}\cdot(f_{k},g_{k})
+  \longmapsto a_{1}f_{1}g_{1}+\cdots+a_{k}f_{k}g_{k},
+\]
+但这个映射不是单射. 特别地, 以下三个形式线性组合
+\[
+  \begin{gathered}
+    3\cdot(x^{2},y)+2\cdot(x,1)+4\cdot(x,y^{2}),\\
+    1\cdot(3x^{2},y)+1\cdot(2x,1)+1\cdot(4x,y^{2}),\\
+    \text{以及 }1\cdot(x^{2},3y)+1\cdot(x,2+4y^{2})
+  \end{gathered}
+\]
+是定义域中三个不同的元素, 它们都映到 $3x^{2}y+2x+4xy^{2}\in R[x,y]$.
+
+用自由 $R$-模对某个子模取商, 这个子模就是上述同态的核, 则可把在 $R[x,y]$ 中有相同像的元素认同. 这最终给出了张量积的定义. 回到一般的 $R$-模, 陈述精确定义.
+
+\begin{Definition}{$R$-模的张量积}\leavevmode\label{def:tensor-product-of-modules}
+设 $M$ 和 $N$ 为 $R$-模. $M$ 和 $N$ 的\emph{张量积}是商模
+\[
+  M\otimes_{R}N=\frac{R(M\times N)}{H},
+\]
+其中 $H$ 是下列形式的元素生成的子模:
+\[
+  \begin{aligned}
+    &(m,n_{1}+n_{2})-(m,n_{1})-(m,n_{2}),
+       &&m\in M,\ n_{1},n_{2}\in N;\\
+    &(m_{1}+m_{2},n)-(m_{1},n)-(m_{2},n),
+       &&m_{1},m_{2}\in M,\ n\in N;\\
+    &r(m,n)-(rm,n), &&r\in R,\ m\in M,\ n\in N;\\
+    &r(m,n)-(m,rn), &&r\in R,\ m\in M,\ n\in N.
+  \end{aligned}
+\]
+$a_{1}(m_{1},n_{1})+\cdots+a_{k}(m_{k},n_{k})$ 在 $M\otimes_{R}N$ 中的陪集记作
+\begin{equation}\label{eq:tensor-product-coset-notation}
+  a_{1}(m_{1}\otimes n_{1})+\cdots+a_{k}(m_{k}\otimes n_{k}).
+\end{equation}
+\end{Definition}
+
+Definition~\ref{def:tensor-product-of-modules} 有不少内容需要理解, 但要点是: 对 $H$ 取商保证对所有 $m,m_{1},m_{2}\in M$, 所有 $n,n_{1},n_{2}\in N$ 及所有 $r\in R$, 下列等式成立:
+\[
+  \begin{aligned}
+    m\otimes(n_{1}+n_{2})&=m\otimes n_{1}+m\otimes n_{2};\\
+    (m_{1}+m_{2})\otimes n&=m_{1}\otimes n+m_{2}\otimes n;\\
+    r(m\otimes n)&=(rm)\otimes n=m\otimes(rn).
+  \end{aligned}
+\]
+把这些等式称为\textquotedbl{}张量积关系\textquotedbl{}. 下面的例子和习题会展示这些关系如何用于处理张量积中的元素.
+
+\begin{Example}{{\textmd{$R[x]\otimes_{R}R[y]$} 中的元素}}\leavevmode\label{ex:elements-of-tensor-product-of-polynomial-rings}
+张量积 $R[x]\otimes_{R}R[y]$ 中一个元素的例子是
+\[
+  3x\otimes y+x\otimes y^{2}+2x^{2}\otimes1.
+\]
+由张量积关系, 它与下列元素相同:
+\[
+  x\otimes(3y)+x\otimes y^{2}+2x^{2}\otimes1
+  \quad\text{和}\quad
+  x\otimes(3y+y^{2})+2x^{2}\otimes1,
+\]
+也可以用许多其他等价方式表示. 注意, 若把 $\otimes$ 换成 $R[x,y]$ 中的乘法, 上面的二元多项式都相等. 这就是我们如此定义张量积关系的原因.
+\end{Example}
+
+\begin{Example}{$\mathbb{Z}_{2}\otimes_{\mathbb{Z}}\mathbb{Z}_{4}$ 中的元素}\leavevmode\label{ex:elements-of-cyclic-module-tensor-product}
+考虑两个有限 Abel 群 $\mathbb{Z}_{2}=\mathbb{Z}/2\mathbb{Z}$ 和 $\mathbb{Z}_{4}=\mathbb{Z}/4\mathbb{Z}$, 并将它们视为 $\mathbb{Z}$-模. 稍微滥用记号, 把 $\mathbb{Z}_{n}$ 中的元素直接写成整数, 约定每个整数代表一个模 $n$ 的等价类. 那么 $\mathbb{Z}_{2}\otimes_{\mathbb{Z}}\mathbb{Z}_{4}$ 中的一个元素可以写为
+\begin{equation}\label{eq:cyclic-module-tensor-sum-example}
+  1\otimes2+1\otimes3.
+\end{equation}
+用张量积关系可以把它改写成多种形式. 例如, 第一项等于
+\[
+  1\otimes(2\cdot1)=(2\cdot1)\otimes1=0\otimes1
+\]
+而第二项等于
+\[
+  1\otimes(3\cdot1)=(3\cdot1)\otimes1=1\otimes1,
+\]
+所以 \eqref{eq:cyclic-module-tensor-sum-example} 中的元素等于
+\[
+  0\otimes1+1\otimes1=(0+1)\otimes1=1\otimes1.
+\]
+在下一节的 Example~\ref{ex:cyclic-tensor-product-z2-z4} 中, 将完整描述 $\mathbb{Z}_{2}\otimes_{\mathbb{Z}}\mathbb{Z}_{4}$ 中的元素. 有兴趣的读者现在就可以试着描述它们.
+\end{Example}
+
+注意, $M\otimes_{R}N$ 的任意元素都可对某些 $m_{1},\ldots,m_{k}\in M$ 和 $n_{1},\ldots,n_{k}\in N$ 表示为
+\[
+  m_{1}\otimes n_{1}+\cdots+m_{k}\otimes n_{k}.
+\]
+\BookPairedNote
+  {的确, 由定义, $M\otimes_{R}N$ 中的元素对某些 $a_{1},\ldots,a_{k}\in R$ 具有 \eqref{eq:tensor-product-coset-notation} 的形式. 但由张量积关系, 系数可以吸收到 $m_{1},\ldots,m_{k}$ 中.}
+  {注意! 一个常见错误是认为 $M\otimes_{R}N$ 中每个元素都形如 $m\otimes n$. 这是不对的.}
+把 $M\otimes_{R}N$ 中形如 $m\otimes n$ 的元素称为\emph{简单张量}. 所以上面的断言也可表述为: $M\otimes_{R}N$ 的每个元素都是简单张量之和. 但是, 如前面的例子所见, 表示成简单张量之和远非唯一.
+
+按定义, 两个 $R$-模 $M$ 和 $N$ 的张量积是一个 $R$-模对其子模的商, 因此仍是 $R$-模. 不过, 若 $M$ 和 $N$ 恰好都是 $R$-代数, 换句话说, 若它们各自有与其 $R$-模结构相容的乘法, 那么张量积也会自然继承 $R$-代数的结构.
+
+\begin{Proposition}{$R$-代数的张量积是 $R$-代数}\leavevmode\label{prop:tensor-product-of-algebras-is-algebra}
+若 $M$ 和 $N$ 为 $R$-代数, 则张量积 $M\otimes_{R}N$ 是 $R$-代数. 乘法由
+\[
+  (m\otimes n)(m'\otimes n')=(mm')\otimes(nn')
+\]
+定义, 并按线性延拓.
+\end{Proposition}
+
+所谓\textquotedbl{}按线性延拓\textquotedbl{}无非是乘法的通常分配律. 例如在 $R[x]\otimes_{R}R[y]$ 中, 有
+\[
+  \begin{aligned}
+    &(x\otimes y^{2}+x^{3}\otimes y)(1\otimes y+2x^{2}\otimes y^{4})\\
+    &\qquad=x\otimes y^{3}+2x^{3}\otimes y^{6}+x^{3}\otimes y^{2}
+      +2x^{5}\otimes y^{5}.
+  \end{aligned}
+\]
+由于 $M\otimes_{R}N$ 的元素可以用多种方式表示, Proposition~\ref{prop:tensor-product-of-algebras-is-algebra} 中的乘法是否良定义并不显然. 这正是证明中要解决的主要问题.
+
+\begin{Proof}\textbf{of Proposition~\ref{prop:tensor-product-of-algebras-is-algebra}.}\quad
+假设 $M$ 和 $N$ 都是 $R$-代数, 首先注意自由 $R$-模 $R(M\times N)$ 自然继承一种乘法, 它由
+\[
+  (m,n)(m',n')=(mm',nn')
+\]
+定义并按线性延拓. 由于 $R(M\times N)$ 的元素可唯一写成有序对 $(m,n)$ 的形式 $R$-线性组合, 该乘法是良定义的. 稍加思考可知, 它使 $R(M\times N)$ 具有 $R$-代数的结构. 由于 $R$-代数对理想的商是 $R$-代数 (见 Proposition~\ref{prop:quotient-k-algebra}), 只剩证明 Definition~\ref{def:tensor-product-of-modules} 中的子模 $H$ 是理想. 这留给读者在 Exercise~\ref{ex:tensor-product-relations-generate-ideal} 中验证.
+\end{Proof}
+
+现在有了张量积的定义, 我们是否已经达到目标? 特别是, $R[x]\otimes_{R}R[y]=R[x,y]$ 是否成立? 至少有一个典范同构的自然候选:
+\[
+  \begin{gathered}
+    \phi:R[x]\otimes_{R}R[y]\to R[x,y],\\
+    \phi\bigl(f_{1}(x)\otimes g_{1}(y)+\cdots+f_{k}(x)\otimes g_{k}(y)\bigr)
+    =f_{1}(x)g_{1}(y)+\cdots+f_{k}(x)g_{k}(y).
+  \end{gathered}
+\]
+这符合本节前面得到的直观想法. 例如,
+\[
+  \phi(3x^{2}\otimes y+2x\otimes1+4x\otimes y^{2})=3x^{2}y+2x+4xy^{2}.
+\]
+然而由于定义域中的表达式并不唯一, 甚至还不清楚 $\phi$ 是否良定义. 因此还需要更好地理解怎样从张量积构造良定义的映射. 下一节将通过讨论双线性来实现这一点.
+
+\BookExerciseHeading
+\begin{BookExercises}
+  \item\label{ex:free-module-operations-satisfy-module-axioms} 设 $S$ 为集合, 并将 $RS$ 中的加法和标量乘法定义为
+  \[
+    \sum a_{s}\cdot s+\sum b_{s}\cdot s=\sum(a_{s}+b_{s})\cdot s
+    \quad\text{且}\quad r\sum a_{s}\cdot s=\sum(ra_{s})\cdot s.
+  \]
+  证明配备这些运算的 $RS$ 满足 $R$-模的公理.
+  \item\label{ex:free-module-on-suits-is-z-four} 证明函数
+  \[
+    \begin{gathered}
+      \phi:\mathbb{Z}\{\diamondsuit,\heartsuit,\clubsuit,\spadesuit\}\to\mathbb{Z}^{4},\\
+      \phi(a\diamondsuit+b\heartsuit+c\clubsuit+d\spadesuit)=(a,b,c,d)
+    \end{gathered}
+  \]
+  是 $\mathbb{Z}$-模 (或等价地, Abel 群) 的同构.
+  \item\label{ex:free-module-linear-extension} 设 $S$ 为集合, $M$ 为 $R$-模, $f_{0}:S\to M$ 为函数. 证明存在唯一 $R$-模同态 $f:RS\to M$, 使得
+  \[
+    f(1\cdot s)=f_{0}(s)\quad\text{对所有 }s\in S.
+  \]
+  \item\label{ex:rewrite-tensor-in-three-ways} 利用张量积关系, 用至少三种其他方式表示元素
+  \[
+    x^{2}\otimes y^{3}+x\otimes(2y^{3})\in R[x]\otimes_{R}R[y].
+  \]
+  \item\label{ex:tensor-with-zero-is-zero} 设 $M$ 和 $N$ 为 $R$-模. 对任意 $m\in M$ 和 $n\in N$, 说明
+  \[
+    m\otimes0=0=0\otimes n.
+  \]
+  注意第一个 $0$ 是 $N$ 中的加法单位元, 中间的 $0$ 是 $M\otimes_{R}N$ 中的加法单位元, 最后一个 $0$ 是 $M$ 中的加法单位元.
+  \item\label{ex:tensor-product-relations-generate-ideal} 设 $M$ 和 $N$ 为 $R$-代数, 把 $R(M\times N)$ 看成 $R$-代数, 乘法由
+  \[
+    (m,n)(m',n')=(mm',nn')
+  \]
+  定义并按线性延拓. 对 Definition~\ref{def:tensor-product-of-modules} 中子模 $H$ 的任一生成元, 证明它与 $(m',n')$ 的乘积也是其中一个生成元. 用此证明 $H$ 是 $R(M\times N)$ 的理想.
+  \item\label{ex:tensor-product-of-cyclic-modules-only-simple-tensors} 设 $a,b\geq2$ 为整数. 证明 $\mathbb{Z}_{a}\otimes_{\mathbb{Z}}\mathbb{Z}_{b}$ 的每个元素都可以表示为简单张量.
+  \item\label{ex:tensor-product-of-coprime-cyclic-modules} 描述 $\mathbb{Z}_{2}\otimes_{\mathbb{Z}}\mathbb{Z}_{5}$ 中所有简单张量. 哪些彼此相等? 结合上一题, 对群 $\mathbb{Z}_{2}\otimes_{\mathbb{Z}}\mathbb{Z}_{5}$ 能得出什么? 当 $a$ 和 $b$ 互素时, 能否将它推广到 $\mathbb{Z}_{a}\otimes_{\mathbb{Z}}\mathbb{Z}_{b}$?
+  \item\label{ex:finite-cyclic-tensor-rationals-is-zero} 对任意 $n\geq1$, 证明 $\mathbb{Z}_{n}\otimes_{\mathbb{Z}}\mathbb{Q}=\{0\}$.
+  \item\label{ex:tensor-sum-with-independent-factor-lists} 设 $V$ 和 $W$ 为域 $K$ 上的向量空间. 证明 $V\otimes_{K}W$ 的任意元素均可写成
+  \[
+    m_{1}\otimes n_{1}+\cdots+m_{\ell}\otimes n_{\ell},
+  \]
+  其中 $m_{1},\ldots,m_{\ell}$ 和 $n_{1},\ldots,n_{\ell}$ 各自在 $K$ 上线性独立.
+\end{BookExercises}

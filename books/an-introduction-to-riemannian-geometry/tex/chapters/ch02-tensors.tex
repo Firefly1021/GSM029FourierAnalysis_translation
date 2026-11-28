@@ -1,0 +1,328 @@
+\section{张量}\label{sec:tensors}
+
+设 $V$ 为 $n$ 维向量空间. $V$ 上的一个 \textbf{$k$-张量}是在 $V$ 的 $k$ 个副本的乘积 $V\times\cdots\times V$ 上定义的实值多线性函数 (即对每个变量都线性). 全体 $k$-张量所成的集合本身就是向量空间, 通常记为 $\mathcal{T}^k(V^*)$.
+
+\begin{RiemannExample}\label{ex:linear-functions-inner-product-determinant-as-tensors}
+\begin{enumerate}[label=(\arabic*),leftmargin=*]
+\item 1-张量的空间 $\mathcal{T}^1(V^*)$ 等于 $V^*$, 即 $V$ 的\textbf{对偶空间}, 也就是 $V$ 上实值线性函数的空间.
+\item $\mathbb{R}^n$ 上的通常内积是 2-张量的一个例子.
+\item 行列式是 $\mathbb{R}^n$ 上的一个 $n$-张量.
+\end{enumerate}
+\end{RiemannExample}
+
+给定 $k$-张量 $T$ 和 $m$-张量 $S$, 定义它们的\textbf{张量积}为由下式给出的 $(k+m)$-张量 $T\otimes S$:
+\begin{align*}
+  &T\otimes S(v_1,\ldots,v_k,v_{k+1},\ldots,v_{k+m})\\
+  &\qquad:=T(v_1,\ldots,v_k)\cdot S(v_{k+1},\ldots,v_{k+m}).
+\end{align*}
+这一运算是双线性的, 且满足结合律, 但不满足交换律 [参见 Exercise~\ref{ex:tensors}(\ref{ex:tensor-product-properties})].
+
+\begin{RiemannProposition}\label{prop:basis-of-tensor-product-space}
+若 $\{T_1,\ldots,T_n\}$ 是 $\mathcal{T}^1(V^*)=V^*$ (即 $V$ 的对偶空间) 的一组基, 则集合 $\{T_{i_1}\otimes\cdots\otimes T_{i_k}\mid 1\leq i_1,\ldots,i_k\leq n\}$ 是 $\mathcal{T}^k(V^*)$ 的一组基, 因此 $\dim\mathcal{T}^k(V^*)=n^k$.
+\end{RiemannProposition}
+
+\begin{RiemannProof}
+先证明这个集合中的元素线性无关. 若
+\[
+  T:=\sum_{i_1,\ldots,i_k}a_{i_1\ldots i_k}T_{i_1}\otimes\cdots\otimes T_{i_k}=0,
+\]
+取 $\{T_1,\ldots,T_n\}$ 在 $V$ 中的对偶基 $\{v_1,\ldots,v_n\}$, 即 $T_i(v_j)=\delta_{ij}$ (参见第~\RGref{subsec:notes-tensors}~节), 则对每组 $1\leq j_1,\ldots,j_k\leq n$, 有 $T(v_{j_1},\ldots,v_{j_k})=a_{j_1\ldots j_k}=0$.
+
+为说明 $\{T_{i_1}\otimes\cdots\otimes T_{i_k}\mid 1\leq i_1,\ldots,i_k\leq n\}$ 张成 $\mathcal{T}^k(V^*)$, 任取 $T\in\mathcal{T}^k(V^*)$, 考虑由下式定义的 $k$-张量 $S$:
+\[
+  S:=\sum_{i_1,\ldots,i_k}T(v_{i_1},\ldots,v_{i_k})T_{i_1}\otimes\cdots\otimes T_{i_k}.
+\]
+显然, 对每组 $1\leq i_1,\ldots,i_k\leq n$, 有 $S(v_{i_1},\ldots,v_{i_k})=T(v_{i_1},\ldots,v_{i_k})$, 所以由线性性可知 $S=T$.
+\end{RiemannProof}
+
+若考虑 $V^*$ 而不是 $V$ 上的 $k$-张量, 就得到空间 $\mathcal{T}^k(V)$ (注意, 如第~\RGref{subsec:notes-tensors}~节所示, $(V^*)^*=V$). 这些张量称为 $V$ 上的\textbf{逆变张量}, 而 $\mathcal{T}^k(V^*)$ 中的元素称为 $V$ 上的\textbf{协变张量}. 注意, $V$ 上的逆变张量就是 $V^*$ 上的协变张量. 如第~\RGref{subsec:notes-tensors}~节所述, 协变和逆变这两个术语与 $V$ 换基时张量分量的变换方式有关.
+
+也可以考虑 $V$ 上的\textbf{混合 $(k,m)$-张量}, 即定义在 $V$ 的 $k$ 个副本和 $V^*$ 的 $m$ 个副本的乘积
+$V\times\cdots\times V\times V^*\times\cdots\times V^*$ 上的多线性函数. 于是, 一个 $(k,m)$-张量在 $V$ 上是 $k$ 重协变, $m$ 重逆变的. $V$ 上全体 $(k,m)$-张量的空间记为 $\mathcal{T}^{k,m}(V^*,V)$.
+
+\begin{RiemannRemark}\label{rem:mixed-tensors-and-linear-maps}
+\begin{enumerate}[label=(\arabic*),leftmargin=*]
+\item 可以将空间 $\mathcal{T}^{1,1}(V^*,V)$ 与从 $V$ 到 $V$ 的线性映射空间等同. 实际上, 对每个元素 $T\in\mathcal{T}^{1,1}(V^*,V)$, 定义从 $V$ 到 $V$ 的线性映射 $v\mapsto T(v,\cdot)$. 注意, $T(v,\cdot):V^*\to\mathbb{R}$ 是 $V^*$ 上的线性函数, 即 $(V^*)^*=V$ 的一个元素.
+\item 将上面张量积的定义推广到不同向量空间上定义的张量, 就可以定义由 $\mathcal{T}^k(V^*)$ 中的元素与 $\mathcal{T}^m(W^*)$ 中的元素的张量积所生成的空间 $\mathcal{T}^k(V^*)\otimes\mathcal{T}^m(W^*)$. 注意, $\mathcal{T}^{k,m}(V^*,V)=\mathcal{T}^k(V^*)\otimes\mathcal{T}^m(V)$. 求这个空间的一组基留作习题.
+\end{enumerate}
+\end{RiemannRemark}
+
+若一个张量像行列式那样每交换两个变量就变号, 则称它是\phantomsection\label{idx:alternating-tensors}\textbf{交错的}, 即
+\begin{align*}
+  &T(v_1,\ldots,v_i,\ldots,v_j,\ldots,v_k)\\
+  &\qquad=-T(v_1,\ldots,v_j,\ldots,v_i,\ldots,v_k).
+\end{align*}
+全体交错 $k$-张量所成的空间是 $\mathcal{T}^k(V^*)$ 的一个向量子空间 $\Lambda^k(V^*)$. 注意, 对任何交错 $k$-张量 $T$, 若对某组 $i\ne j$ 有 $v_i=v_j$, 则 $T(v_1,\ldots,v_k)=0$.
+
+\begin{RiemannExample}\label{ex:linear-functionals-and-determinant-are-alternating}
+\begin{enumerate}[label=(\arabic*),leftmargin=*]
+\item 显然所有 1-张量都是交错的, 即 $\Lambda^1(V^*)=\mathcal{T}^1(V^*)=V^*$.
+\item 行列式是 $\mathbb{R}^n$ 上的一个交错 $n$-张量.
+\end{enumerate}
+\end{RiemannExample}
+
+设 $S_k$ 为 $\{1,\ldots,k\}$ 的全体置换所成的群. 对 $\sigma\in S_k$, 令
+\[
+  \sigma(v_1,\ldots,v_k)=(v_{\sigma(1)},\ldots,v_{\sigma(k)}).
+\]
+给定 $k$-张量 $T\in\mathcal{T}^k(V^*)$, 可以按如下方式定义一个新的交错 $k$-张量 $\operatorname{Alt}(T)$:
+\[
+  \operatorname{Alt}(T):=\frac{1}{k!}\sum_{\sigma\in S_k}
+    (\operatorname{sgn}\sigma)(T\circ\sigma),
+\]
+其中当 $\sigma$ 是偶置换时 $\operatorname{sgn}\sigma$ 为 $+1$, 是奇置换时为 $-1$. 证明 $\operatorname{Alt}(T)$ 确实交错留作习题.
+
+\begin{RiemannExample}\label{ex:alternation-of-three-tensor}
+若 $T\in\mathcal{T}^3(V^*)$, 则
+\begin{align*}
+  \operatorname{Alt}(T)(v_1,v_2,v_3)
+    &=\tfrac16\bigl(T(v_1,v_2,v_3)+T(v_3,v_1,v_2)+T(v_2,v_3,v_1)\\
+    &\qquad-T(v_1,v_3,v_2)-T(v_2,v_1,v_3)-T(v_3,v_2,v_1)\bigr).
+\end{align*}
+\end{RiemannExample}
+
+现在定义交错张量之间的\textbf{楔积}: 若 $T\in\Lambda^k(V^*)$ 且 $S\in\Lambda^m(V^*)$, 则 $T\wedge S\in\Lambda^{k+m}(V^*)$ 由下式给出:
+\[
+  T\wedge S:=\frac{(k+m)!}{k!\,m!}\operatorname{Alt}(T\otimes S).
+\]
+\begin{RiemannExample}\label{ex:wedge-of-linear-functionals}
+若 $T,S\in\Lambda^1(V^*)=V^*$, 则
+\[
+  T\wedge S=2\operatorname{Alt}(T\otimes S)=T\otimes S-S\otimes T,
+\]
+从而 $T\wedge S=-S\wedge T$ 且 $T\wedge T=0$.
+\end{RiemannExample}
+
+容易验证这一乘积是双线性的. 要证明结合律, 需要下述命题.
+
+\begin{RiemannProposition}\label{prop:alternation-and-tensor-product}
+\begin{enumerate}[label=(\roman*),leftmargin=*]
+\item 设 $T\in\mathcal{T}^k(V^*)$ 且 $S\in\mathcal{T}^m(V^*)$. 若 $\operatorname{Alt}(T)=0$, 则
+\[
+  \operatorname{Alt}(T\otimes S)=\operatorname{Alt}(S\otimes T)=0;
+\]
+\item $\operatorname{Alt}(\operatorname{Alt}(T\otimes S)\otimes R)
+  =\operatorname{Alt}(T\otimes S\otimes R)
+  =\operatorname{Alt}(T\otimes\operatorname{Alt}(S\otimes R))$.
+\end{enumerate}
+\end{RiemannProposition}
+
+\begin{RiemannProof}
+\begin{enumerate}[label=(\roman*),leftmargin=*]
+\item 考虑
+\begin{align*}
+  &(k+m)!\operatorname{Alt}(T\otimes S)(v_1,\ldots,v_{k+m})\\
+  &\quad=\sum_{\sigma\in S_{k+m}}(\operatorname{sgn}\sigma)
+  T(v_{\sigma(1)},\ldots,v_{\sigma(k)})S(v_{\sigma(k+1)},\ldots,v_{\sigma(k+m)}).
+\end{align*}
+取 $S_{k+m}$ 的子群 $G$, 它由 $\{1,\ldots,k+m\}$ 中固定 $k+1,\ldots,k+m$ 的置换组成, 则
+\begin{align*}
+  &\sum_{\sigma\in G}(\operatorname{sgn}\sigma)
+    T(v_{\sigma(1)},\ldots,v_{\sigma(k)})S(v_{\sigma(k+1)},\ldots,v_{\sigma(k+m)})\\
+  &\quad=\left(\sum_{\sigma\in G}(\operatorname{sgn}\sigma)
+    T(v_{\sigma(1)},\ldots,v_{\sigma(k)})\right)S(v_{k+1},\ldots,v_{k+m})\\
+  &\quad=k!(\operatorname{Alt}(T)\otimes S)(v_1,\ldots,v_{k+m})=0.
+\end{align*}
+于是, 由于 $G$ 把 $S_{k+m}$ 分解为不相交的右陪集 $G\cdot\widetilde\sigma:=\{\sigma\widetilde\sigma\mid\sigma\in G\}$, 而且对每个陪集都有
+\begin{align*}
+  &\sum_{\sigma\in G\cdot\widetilde\sigma}(\operatorname{sgn}\sigma)
+     (T\otimes S)(v_{\sigma(1)},\ldots,v_{\sigma(k+m)})\\
+  &\quad=(\operatorname{sgn}\widetilde\sigma)\sum_{\sigma\in G}
+    (\operatorname{sgn}\sigma)(T\otimes S)
+    (v_{\sigma(\widetilde\sigma(1))},\ldots,v_{\sigma(\widetilde\sigma(k+m))})\\
+  &\quad=(\operatorname{sgn}\widetilde\sigma)k!(\operatorname{Alt}(T)\otimes S)
+     (v_{\widetilde\sigma(1)},\ldots,v_{\widetilde\sigma(k+m)})=0,
+\end{align*}
+可得 $\operatorname{Alt}(T\otimes S)=0$. 类似地可证 $\operatorname{Alt}(S\otimes T)=0$.
+\item 由算子 $\operatorname{Alt}$ 的线性性和 $\operatorname{Alt}\circ\operatorname{Alt}=\operatorname{Alt}$ [参见 Exercise~\ref{ex:tensors}(\ref{ex:alternating-projection-properties})], 有
+\[
+  \operatorname{Alt}(\operatorname{Alt}(S\otimes R)-S\otimes R)=0.
+\]
+因此, 由 (i) 得
+\begin{align*}
+  0&=\operatorname{Alt}(T\otimes(\operatorname{Alt}(S\otimes R)-S\otimes R))\\
+   &=\operatorname{Alt}(T\otimes\operatorname{Alt}(S\otimes R))
+     -\operatorname{Alt}(T\otimes S\otimes R),
+\end{align*}
+从而得到所需结果.
+\end{enumerate}
+\end{RiemannProof}
+
+由这些性质可得下述结果.
+
+\begin{RiemannProposition}\label{prop:associativity-of-wedge-product}
+$(T\wedge S)\wedge R=T\wedge(S\wedge R)$.
+\end{RiemannProposition}
+
+\begin{RiemannProof}
+由 Proposition~\ref{prop:alternation-and-tensor-product}, 对 $T\in\Lambda^k(V^*)$, $S\in\Lambda^m(V^*)$ 和 $R\in\Lambda^l(V^*)$, 有
+\begin{align*}
+  (T\wedge S)\wedge R
+  &=\frac{(k+m+l)!}{(k+m)!\,l!}\operatorname{Alt}((T\wedge S)\otimes R)\\
+  &=\frac{(k+m+l)!}{k!\,m!\,l!}\operatorname{Alt}(T\otimes S\otimes R)
+\end{align*}
+以及
+\begin{align*}
+  T\wedge(S\wedge R)
+  &=\frac{(k+m+l)!}{k!\,(m+l)!}\operatorname{Alt}(T\otimes(S\wedge R))\\
+  &=\frac{(k+m+l)!}{k!\,m!\,l!}\operatorname{Alt}(T\otimes S\otimes R).
+\end{align*}
+\end{RiemannProof}
+
+现在可以证明下述定理.
+
+\begin{RiemannTheorem}\label{thm:basis-and-dimension-of-alternating-tensors}
+若 $\{T_1,\ldots,T_n\}$ 是 $V^*$ 的一组基, 则集合
+\[
+  \{T_{i_1}\wedge\cdots\wedge T_{i_k}\mid 1\leq i_1<\cdots<i_k\leq n\}
+\]
+是 $\Lambda^k(V^*)$ 的一组基, 且
+\[
+  \dim\Lambda^k(V^*)=\binom{n}{k}=\frac{n!}{k!(n-k)!}.
+\]
+\end{RiemannTheorem}
+
+\begin{RiemannProof}
+设 $T\in\Lambda^k(V^*)\subset\mathcal{T}^k(V^*)$. 由 Proposition~\ref{prop:basis-of-tensor-product-space},
+\[
+  T=\sum_{i_1,\ldots,i_k}a_{i_1\ldots i_k}T_{i_1}\otimes\cdots\otimes T_{i_k},
+\]
+而且由于 $T$ 是交错的, 有
+\[
+  T=\operatorname{Alt}(T)=\sum_{i_1,\ldots,i_k}a_{i_1\cdots i_k}
+    \operatorname{Alt}(T_{i_1}\otimes\cdots\otimes T_{i_k}).
+\]
+可以用归纳法证明 $\operatorname{Alt}(T_{i_1}\otimes\cdots\otimes T_{i_k})=\frac{1}{k!}T_{i_1}\wedge T_{i_2}\wedge\cdots\wedge T_{i_k}$. 实际上, 当 $k=1$ 时显然成立. 假设它对 $k$ 个基张量成立, 则由 Proposition~\ref{prop:alternation-and-tensor-product} 得
+\begin{align*}
+  \operatorname{Alt}(T_{i_1}\otimes\cdots\otimes T_{i_{k+1}})
+    &=\operatorname{Alt}(\operatorname{Alt}(T_{i_1}\otimes\cdots\otimes T_{i_k})\otimes T_{i_{k+1}})\\
+    &=\frac{k!}{(k+1)!}\operatorname{Alt}(T_{i_1}\otimes\cdots\otimes T_{i_k})\wedge T_{i_{k+1}}\\
+    &=\frac{1}{(k+1)!}T_{i_1}\wedge T_{i_2}\wedge\cdots\wedge T_{i_{k+1}}.
+\end{align*}
+因此,
+\[
+  T=\frac{1}{k!}\sum_{i_1,\ldots,i_k}a_{i_1\ldots i_k}
+     T_{i_1}\wedge T_{i_2}\wedge\cdots\wedge T_{i_k}.
+\]
+然而, 张量 $T_{i_1}\wedge\cdots\wedge T_{i_k}$ 并不线性无关. 实际上, 由反交换性可知, 若两个序列 $(i_1,\ldots,i_k)$ 和 $(j_1,\ldots,j_k)$ 仅排列顺序不同, 则 $T_{i_1}\wedge\cdots\wedge T_{i_k}=\pm T_{j_1}\wedge\cdots\wedge T_{j_k}$. 此外, 若任意两个指标相等, 则 $T_{i_1}\wedge\cdots\wedge T_{i_k}=0$. 因此, 只考虑递增指标序列即可避免重复项:
+\[
+  T=\sum_{i_1<\cdots<i_k}b_{i_1\ldots i_k}T_{i_1}\wedge\cdots\wedge T_{i_k},
+\]
+所以集合 $\{T_{i_1}\wedge\cdots\wedge T_{i_k}\mid 1\leq i_1<\cdots<i_k\leq n\}$ 张成 $\Lambda^k(V^*)$. 此外, 这个集合中的元素线性无关. 实际上, 若
+\[
+  0=T=\sum_{i_1<\cdots<i_k}b_{i_1\ldots i_k}T_{i_1}\wedge\cdots\wedge T_{i_k},
+\]
+取 $\{T_1,\ldots,T_n\}$ 在 $V$ 中的对偶基 $\{v_1,\ldots,v_n\}$ 和递增指标序列 $(j_1,\ldots,j_k)$, 则
+\begin{align*}
+  0=T(v_{j_1},\ldots,v_{j_k})
+    &=k!\sum_{i_1<\cdots<i_k}b_{i_1\ldots i_k}
+      \operatorname{Alt}(T_{i_1}\otimes\cdots\otimes T_{i_k})(v_{j_1},\ldots,v_{j_k})\\
+    &=\sum_{i_1<\cdots<i_k}b_{i_1\ldots i_k}
+      \sum_{\sigma\in S_k}(\operatorname{sgn}\sigma)
+      T_{i_1}(v_{j_{\sigma(1)}})\cdots T_{i_k}(v_{j_{\sigma(k)}}).
+\end{align*}
+由于 $(i_1,\ldots,i_k)$ 和 $(j_1,\ldots,j_k)$ 都是递增的, 第二个和式中唯一可能不为零的项对应于 $\sigma=\mathrm{id}$. 因此,
+\[
+  0=T(v_{j_1},\ldots,v_{j_k})=b_{j_1\ldots j_k}.
+\]
+\end{RiemannProof}
+
+下述结果由 Example~\ref{ex:wedge-of-linear-functionals} 所示的反交换性可立即推出.
+
+\begin{RiemannProposition}\label{prop:graded-commutativity-of-wedge-product}
+若 $T\in\Lambda^k(V^*)$ 且 $S\in\Lambda^m(V^*)$, 则
+\[
+  T\wedge S=(-1)^{km}S\wedge T.
+\]
+\end{RiemannProposition}
+
+\begin{RiemannProof}
+Exercise~\ref{ex:tensors}(\ref{ex:prove-graded-commutativity}).
+\end{RiemannProof}
+
+\begin{RiemannRemark}\label{rem:top-degree-and-zero-degree-alternating-tensors}
+\begin{enumerate}[label=(\arabic*),leftmargin=*]
+\item Theorem~\ref{thm:basis-and-dimension-of-alternating-tensors} 的另一个推论是 $\dim(\Lambda^n(V^*))=1$. 因此, 若 $V=\mathbb{R}^n$, 则 $\mathbb{R}^n$ 上任何交错 $n$-张量都是行列式的倍数.
+\item 显然, 当 $k>n$ 时, $\Lambda^k(V^*)=0$. 此外, 定义集合 $\Lambda^0(V^*)$ 等于 $\mathbb{R}$ (与 $V$ 上的常值函数集合等同).
+\end{enumerate}
+\end{RiemannRemark}
+
+线性变换 $F:V\to W$ 诱导一个线性变换 $F^*:\mathcal{T}^k(W^*)\to\mathcal{T}^k(V^*)$, 由下式定义:
+\[
+  (F^*T)(v_1,\ldots,v_k)=T(F(v_1),\ldots,F(v_k)).
+\]
+此映射有下列性质.
+
+\begin{RiemannProposition}\label{prop:pullback-of-tensors}
+设 $V,W,Z$ 是向量空间, $F:V\to W$ 和 $H:W\to Z$ 是线性映射, 且 $T\in\mathcal{T}^k(W^*)$, $S\in\mathcal{T}^m(W^*)$. 则:
+\begin{enumerate}[label=(\arabic*),leftmargin=*]
+\item $F^*(T\otimes S)=(F^*T)\otimes(F^*S)$;
+\item 若 $T$ 是交错的, 则 $F^*T$ 也是交错的;
+\item $F^*(T\wedge S)=(F^*T)\wedge(F^*S)$;
+\item $(F\circ H)^*=H^*\circ F^*$.
+\end{enumerate}
+\end{RiemannProposition}
+
+\begin{RiemannProof}
+Exercise~\ref{ex:tensors}(\ref{ex:prove-pullback-of-tensors-properties}).
+\end{RiemannProof}
+
+交错张量的另一个重要事实如下.
+
+\begin{RiemannTheorem}\label{thm:pullback-top-degree-determinant}
+设 $F:V\to V$ 是线性映射, 且 $T\in\Lambda^n(V^*)$. 则 $F^*T=(\det A)T$, 其中 $A$ 是表示 $F$ 的任意矩阵.
+\end{RiemannTheorem}
+
+\begin{RiemannProof}
+由于 $\Lambda^n(V^*)$ 是一维的, 且 $F^*$ 是线性映射, $F^*$ 就是乘以某个常数 $C$. 考虑 $V$ 与 $\mathbb{R}^n$ 之间的一个同构 $H$. 则 $H^*\det$ 是 $V$ 上的交错 $n$-张量, 所以 $F^*H^*\det=CH^*\det$. 因此
+\begin{align*}
+  (H^{-1})^*F^*H^*\det=C\det
+  &\Leftrightarrow(H\circ F\circ H^{-1})^*\det=C\det\\
+  &\Leftrightarrow A^*\det=C\det,
+\end{align*}
+其中 $A$ 是由 $H$ 诱导的 $F$ 的矩阵表示. 取 $\mathbb{R}^n$ 的标准基 $\{e_1,\ldots,e_n\}$, 有
+\[
+  A^*\det(e_1,\ldots,e_n)=C\det(e_1,\ldots,e_n)=C,
+\]
+所以
+\[
+  \det(Ae_1,\ldots,Ae_n)=C,
+\]
+从而 $C=\det A$.
+\end{RiemannProof}
+
+\begin{RiemannRemark}\label{rem:equivalent-orientations-and-top-tensors}
+由上面的定理可知, 若 $T\in\Lambda^n(V^*)$ 且 $T\ne0$, 则两组有序基 $\{v_1,\ldots,v_n\}$ 和 $\{w_1,\ldots,w_n\}$ 的定向等价, 当且仅当 $T(v_1,\ldots,v_n)$ 和 $T(w_1,\ldots,w_n)$ 同号.
+\end{RiemannRemark}
+
+\begin{RiemannExercise}\label{ex:tensors}
+\begin{enumerate}[label=(\arabic*),ref=\arabic*,leftmargin=*]
+\item\label{ex:tensor-product-properties} 证明张量积是双线性的, 且满足结合律, 但不满足交换律.
+\item\label{ex:basis-of-mixed-tensors} 求混合 $(k,m)$-张量空间 $\mathcal{T}^{k,m}(V^*,V)$ 的一组基.
+\item\label{ex:alternating-projection-properties} 若 $T\in\mathcal{T}^k(V^*)$, 证明:
+\begin{enumerate}[label=(\alph*),leftmargin=*]
+\item $\operatorname{Alt}(T)$ 是交错张量;
+\item 若 $T$ 是交错的, 则 $\operatorname{Alt}(T)=T$;
+\item $\operatorname{Alt}(\operatorname{Alt}(T))=\operatorname{Alt}(T)$.
+\end{enumerate}
+\item\label{ex:prove-graded-commutativity} 证明 Proposition~\ref{prop:graded-commutativity-of-wedge-product}.
+\item\label{ex:prove-pullback-of-tensors-properties} 证明 Proposition~\ref{prop:pullback-of-tensors}.
+\item\label{ex:wedge-of-linear-functionals-determinant} 设 $T_1,\ldots,T_k\in V^*$. 证明
+\[
+  (T_1\wedge\cdots\wedge T_k)(v_1,\ldots,v_k)=\det[T_i(v_j)].
+\]
+\item\label{ex:linear-independence-by-wedge-product} 证明 $T_1,\ldots,T_k\in\Lambda^1(V^*)=V^*$ 线性无关, 当且仅当 $T_1\wedge\cdots\wedge T_k\ne0$.
+\item\label{ex:contraction-of-alternating-tensors} 设 $T\in\Lambda^k(V^*)$ 且 $v\in V$. 定义 $T$ \textbf{与 $v$ 的缩并} $\iota(v)T$ 为由下式给出的 $(k-1)$-张量:
+\[
+  (\iota(v)T)(v_1,\ldots,v_{k-1})=T(v,v_1,\ldots,v_{k-1}).
+\]
+证明:
+\begin{enumerate}[label=(\alph*),leftmargin=*]
+\item $\iota(v_1)(\iota(v_2)T)=-\iota(v_2)(\iota(v_1)T)$;
+\item 若 $T\in\Lambda^k(V^*)$ 且 $S\in\Lambda^m(V^*)$, 则
+\[
+  \iota(v)(T\wedge S)=(\iota(v)T)\wedge S+(-1)^kT\wedge(\iota(v)S).
+\]
+\end{enumerate}
+\end{enumerate}
+\end{RiemannExercise}

@@ -1,0 +1,308 @@
+\section{维数论基本定理}\label{sec:fundamental-theorem-of-dimension-theory}
+
+现在来到维数论中技术上的核心: 维数论基本定理. 这个结果说, 若 $X\subseteq\mathbb{A}^{n}$ 为不可约仿射簇, $f\in K[x_{1},\ldots,x_{n}]$ 为多项式, 那么或者 $X\cap\mathcal{V}(f)$ 是平凡的交 (为空或为整个 $X$), 或者 $\dim(X\cap\mathcal{V}(f))=\dim(X)-1$.
+
+这个结论的证明颇为繁难, 需要读者拿出一点耐心. 证明借用了前几章介绍的许多思想, 其中一个关键步骤来自 Noether 正规化定理. 此外还需要关于极小多项式的几个新概念, 以及它与代数域扩张中某些线性映射的行列式之间的联系. 我们先讨论这些新的想法. 它们见于 Lemmas~\ref{lemdef:minimal-polynomial}, \ref{lem:minimal-polynomials-and-noether-bases} 和~\ref{lem:determinant-of-multiplication}, 随后都将用于维数论基本定理 (Theorem~\ref{thm:fundamental-theorem-of-dimension-theory}) 的证明.
+
+\begin{BookLemmaDefinition}{极小多项式}\leavevmode\label{lemdef:minimal-polynomial}
+设 $L\subseteq M$ 为域扩张. 对任意在 $L$ 上代数的 $a\in M$, 存在唯一不可约首一多项式 $\mu_{a}\in L[x]$ 使得 $\mu_{a}(a)=0\in M$. 称 $\mu_{a}$ 为 $a$ 在 $L$ 上的\emph{极小多项式}.
+\end{BookLemmaDefinition}
+\begin{Proof}
+设 $L\subseteq M$ 为域扩张, 且 $a\in M$ 在 $L$ 上代数. 由代数性知, 存在 $L[x]$ 中的非零多项式在 $a$ 处取值为零. 可以在这些多项式中选一个次数最小的, 并且除以首项系数后, 还可以使它首一. 设 $\mu_{a}$ 为在 $a$ 处取值为零的次数最小的首一多项式. 由次数的极小性知, $\mu_{a}$ 不可约.
+
+为证明引理, 只剩证明在 $a$ 处取值为零的每个不可约首一多项式都等于 $\mu_{a}$. 设 $g\in L[x]$ 是在 $a$ 处取值为零的不可约首一多项式. 由带余除法,
+\[
+  g=q\mu_{a}+r,
+\]
+其中 $r=0$ 或 $\deg(r)<\deg(\mu_{a})$. 在 $a$ 处取值, 利用 $g(a)=\mu_{a}(a)=0$, 得到 $r(a)=0$. 故 $\mu_{a}$ 次数的极小性蕴含 $r=0$. 因此 $g=q\mu_{a}$, 而 $g$ 的不可约性蕴含 $q$ 是单位. 由于 $g$ 与 $\mu_{a}$ 均为首一, 必有 $q=1$, 所以 $g=\mu_{a}$.
+\end{Proof}
+
+\begin{Example}{$\sqrt{2}$ 在 $\mathbb{Q}$ 上的极小多项式}\leavevmode\label{ex:minimal-polynomial-of-square-root-two}
+$\sqrt{2}$ 在 $\mathbb{Q}$ 上的极小多项式是 $x^{2}-2\in\mathbb{Q}[x]$. 为证明这一点, 只需注意 $x^{2}-2$ 是首一的, 不可约, 并且在 $\sqrt{2}$ 处取值为零. 由 Lemma~\ref{lemdef:minimal-polynomial} 知它就是 $\sqrt{2}$ 在 $\mathbb{Q}$ 上的极小多项式.
+\end{Example}
+
+极小多项式在 Theorem~\ref{thm:fundamental-theorem-of-dimension-theory} 的证明中起关键作用. 在那个情形, 我们有坐标环 $K[X]$ 的一个 Noether 基 $\{F_{1},\ldots,F_{d}\}$, 其中 $X$ 不可约, 并将考虑域扩张
+\[
+  K(F_{1},\ldots,F_{d})\subseteq K(X).
+\]
+所需的关键结论由下面的引理给出: 对任意 $F\in K[X]\subseteq K(X)$, $\mu_{F}$ 的系数都属于 $K[F_{1},\ldots,F_{d}]\subseteq K(F_{1},\ldots,F_{d})$.
+
+\begin{Lemma}{极小多项式与 Noether 基}\leavevmode\label{lem:minimal-polynomials-and-noether-bases}
+设 $A$ 是一个同时也是整环的有限生成 $K$-代数, 且 $\{a_{1},\ldots,a_{d}\}$ 是 $A$ 在 $K$ 上的一个 Noether 基. 则有以下结论.
+\begin{enumerate}
+  \item 域扩张 $K(a_{1},\ldots,a_{d})\subseteq\operatorname{Frac}(A)$ 是代数扩张.
+  \item\label{part:minimal-polynomial-coefficients-in-subalgebra} 对任意元素 $a\in A\subseteq\operatorname{Frac}(A)$, 它在 $K(a_{1},\ldots,a_{d})$ 上的极小多项式 $\mu_{a}$ 满足
+  \[
+    \mu_{a}\in K[a_{1},\ldots,a_{d}][x].
+  \]
+\end{enumerate}
+\end{Lemma}
+
+按定义, 极小多项式 $\mu_{a}$ 是 $K(a_{1},\ldots,a_{d})[x]$ 的元素, 这意味着系数是关于 Noether 基中元素的有理函数. 引理的第二部分断言, 极小多项式的系数实际上是关于 Noether 基中元素的多项式.
+
+\begin{Proof}\textbf{of Lemma~\ref{lem:minimal-polynomials-and-noether-bases}.}\quad
+为证明 $K(a_{1},\ldots,a_{d})\subseteq\operatorname{Frac}(A)$ 是代数扩张, 选取 $A$ 的代数生成元 $b_{1},\ldots,b_{n}$, 于是 $A=K[b_{1},\ldots,b_{n}]$. 过渡到分式域后, 这些代数生成元成为域生成元:
+\[
+  \operatorname{Frac}(A)=K(b_{1},\ldots,b_{n}).
+\]
+由于 $A$ 在 $K[a_{1},\ldots,a_{d}]$ 上整, 每个 $b_{i}$ 都在 $K[a_{1},\ldots,a_{d}]$ 上整. 特别地, 每个 $b_{i}$ 都在 $K(a_{1},\ldots,a_{d})\subseteq\operatorname{Frac}(A)$ 上代数. 因而 Proposition~\ref{prop:extending-fields-by-algebraic-elements} 蕴含域扩张
+\[
+  K(a_{1},\ldots,a_{d})\subseteq\operatorname{Frac}(A)
+\]
+是代数扩张.
+
+为证明第~\ref{part:minimal-polynomial-coefficients-in-subalgebra} 项, 取 $a\in A$. 由 $A$ 在 $K[a_{1},\ldots,a_{d}]$ 上整, 存在首一多项式 $f\in K[a_{1},\ldots,a_{d}][x]$ 使得 $f(a)=0$. 选取 $f$, 使它在所有在 $a$ 处取值为零的首一多项式中次数最小, 此时 $f$ 还必须不可约. 不妨设 $a_{1},\ldots,a_{d}$ 互不相同. Noether 基的定义蕴含 $a_{1},\ldots,a_{d}$ 代数独立, 因此 $f$ 是多元多项式环中的不可约元:
+\[
+  f\in K[a_{1},\ldots,a_{d}][x]=K[a_{1},\ldots,a_{d},x].
+\]
+反复利用 Proposition~\ref{lem:irreducible-over-fraction-field}, 可知首一多项式 $f$ 在更大的环 $K(a_{1},\ldots,a_{d})[x]$ 中仍不可约. 由于它在 $a$ 处取值为零, 它必等于 $a$ 的极小多项式. 因此 $\mu_{a}=f\in K[a_{1},\ldots,a_{d}][x]$.
+\end{Proof}
+
+为了准备证明 Theorem~\ref{thm:fundamental-theorem-of-dimension-theory} 所需的最后一个引理, 设 $L\subseteq M$ 为有限生成代数域扩张. 由 Proposition~\ref{prop:extending-fields-by-algebraic-elements}, $M$ 是 $L$ 上的有限维向量空间. 对任意元素 $a\in M$, 定义
+\[
+  \begin{aligned}
+    T_{a}:M&\to M,\\
+    b&\mapsto ab.
+  \end{aligned}
+\]
+注意, 这个函数是把 $M$ 视为 $L$ 上向量空间时的一个线性映射. 更准确地说, 对任意 $b_{1},b_{2}\in M$ 和 $c\in L$, 可以验证
+\[
+  T_{a}(b_{1}+cb_{2})=a(b_{1}+cb_{2})=ab_{1}+cab_{2}=T_{a}(b_{1})+cT_{a}(b_{2}).
+\]
+由于 $T_{a}:M\to M$ 是 $L$-线性的, 它有一个良定义的行列式 $\det(T_{a})\in L$. 为计算它, 可以选取 $M$ 在 $L$ 上的一组基, 将线性映射写成矩阵, 再用通常的行列式公式任取其一计算该矩阵的行列式. 重要的是, 行列式不依赖于基的选择. 下面的引理把这个行列式与 $a$ 的极小多项式联系起来.
+
+\begin{Lemma}{乘法变换的行列式}\leavevmode\label{lem:determinant-of-multiplication}
+设 $L\subseteq M$ 为有限生成代数域扩张. 则对任意极小多项式为 $\mu_{a}(x)\in L[x]$ 的 $a\in M$, 有
+\[
+  \det(T_{a})=\pm\mu_{a}(0)^{\ell},
+\]
+其中 $\ell$ 为某个正整数.
+\end{Lemma}
+\begin{Proof}
+由于 $L\subseteq M$ 是有限生成代数域扩张, $M$ 是 $L$ 上的有限维向量空间. 给定任意非零 $a\in M$, 其极小多项式为
+\[
+  \mu_{a}(x)=x^{d}+\mu_{a,d-1}x^{d-1}+\cdots+\mu_{a,1}x+\mu_{a,0},
+\]
+Exercise~\ref{ex:multiplication-map-block-diagonal-basis} 表明, 可以对某些 $b_{1},\ldots,b_{\ell}\in M$ 找到 $M$ (作为 $L$ 上向量空间) 的一组如下形式的基:
+\[
+  \{b_{1},b_{1}a,\ldots,b_{1}a^{d-1},b_{2},b_{2}a,\ldots,b_{2}a^{d-1},
+    \ldots,b_{\ell},b_{\ell}a,\ldots,b_{\ell}a^{d-1}\}.
+\]
+在这组基下把线性映射 $T_{a}$ 写成矩阵, 得到分块对角矩阵
+\[
+  T_{a}=\begin{pmatrix}
+    T_{a}' & \cdots & 0\\
+    \vdots & \ddots & \vdots\\
+    0 & \cdots & T_{a}'
+  \end{pmatrix},
+\]
+其中有 $\ell$ 个块, 每块均为
+\[
+  T_{a}'=\begin{pmatrix}
+    0 & 0 & \cdots & 0 & -\mu_{a,0}\\
+    1 & 0 & \cdots & 0 & -\mu_{a,1}\\
+    0 & 1 & \cdots & 0 & -\mu_{a,2}\\
+    \vdots & \vdots & \ddots & \vdots & \vdots\\
+    0 & 0 & \cdots & 1 & -\mu_{a,d-1}
+  \end{pmatrix}.
+\]
+沿 $T_{a}'$ 的第一行展开行列式, 得
+\[
+  \det(T_{a})=\det(T_{a}')^{\ell}=(\pm\mu_{a,0})^{\ell}=\pm\mu_{a}(0)^{\ell}.
+\]
+\end{Proof}
+
+\begin{Example}{$a\in L$ 时的 $\det(T_{a})$}\leavevmode\label{ex:determinant-of-multiplication-by-scalar}
+设 $L\subseteq M$ 为有限生成代数域扩张, 且 $a\in L$. 则 $a$ 的极小多项式是 $\mu_{a}=x-a$. 所以 Lemma~\ref{lem:determinant-of-multiplication} 蕴含 $\det(T_{a})=\pm a^{\ell}$, 其中 $\ell$ 为某个正整数. 也可以直接论证这一结论: 在 $M$ 作为 $L$ 上向量空间的任一组基下, 有 $T_{a}=aI$, 其中 $I$ 为单位矩阵. 因此 $\det(T_{a})=\det(aI)=a^{\ell}$, 其中 $\ell$ 为 $M$ 作为 $L$-向量空间的维数.
+\end{Example}
+
+\begin{Example}{$a=\sqrt{2}\in\mathbb{Q}(\sqrt{2},\sqrt{3})$ 时的 $\det(T_{a})$}\leavevmode\label{ex:determinant-of-multiplication-by-square-root-two}
+考虑 $a=\sqrt{2}\in\mathbb{Q}(\sqrt{2},\sqrt{3})$. $a$ 的极小多项式为 $\mu_{a}=x^{2}-2$, 而 $\mathbb{Q}(\sqrt{2},\sqrt{3})$ 作为 $\mathbb{Q}$ 上向量空间的一组基为
+\[
+  \{1,\sqrt{2},\sqrt{3},\sqrt{2}\sqrt{3}\}.
+\]
+在这组基下, 可以写出
+\[
+  T_{a}=\begin{pmatrix}
+    0&2&0&0\\
+    1&0&0&0\\
+    0&0&0&2\\
+    0&0&1&0
+  \end{pmatrix}.
+\]
+从这个矩阵表达式算出 $\det(T_{a})=(-2)^{2}=\mu_{a}(0)^{2}$.
+\end{Example}
+
+现在已经可以证明本节的主要结论. 下一个结果是 Definition~\ref{def:axioms-for-dimension} 中公理~\ref{ax:dimension-of-a-hypersurface-section} 的重述. 它由此完成了如下证明: 本章所建立的维数概念是仿射簇同构类集合上唯一的维数函数.
+
+\begin{Theorem}{维数论基本定理}\leavevmode\label{thm:fundamental-theorem-of-dimension-theory}
+若 $X\subseteq\mathbb{A}^{n}$ 为不可约仿射簇, 且多项式 $f\in K[x_{1},\ldots,x_{n}]$ 使 $X\cap\mathcal{V}(f)$ 非空且不等于整个 $X$, 则
+\[
+  \dim(X\cap\mathcal{V}(f))=\dim(X)-1.
+\]
+\end{Theorem}
+\begin{Proof}
+设 $X\subseteq\mathbb{A}^{n}$ 为不可约仿射簇, 且 $f\in K[x_{1},\ldots,x_{n}]$ 使 $X\cap\mathcal{V}(f)$ 非空且不等于整个 $X$. 为方便起见, 定义 $Y=X\cap\mathcal{V}(f)$, 并令 $F=f|_{X}\in K[X]$. 要证明
+\[
+  \dim(Y)=\dim(X)-1.
+\]
+由于 $Y$ 是真包含于不可约仿射簇 $X$ 的仿射簇, Proposition~\ref{prop:dimension-monotonicity} 告诉我们 $\dim(Y)\leq\dim(X)-1$. 因此只剩证明
+\[
+  \dim(Y)\geq\dim(X)-1.
+\]
+选取 $K[X]$ 在 $K$ 上的一个 Noether 基 $\{F_{1},\ldots,F_{d}\}\subseteq K[X]$, 并假设 $F_{1},\ldots,F_{d}$ 互不相同. Corollary~\ref{cor:noether-basis-counts-dimension} 蕴含 $\dim(X)=d$. 令 $\mu_{F}$ 为 $F\in K[X]\subseteq K(X)$ 在 $K(F_{1},\ldots,F_{d})$ 上的极小多项式. 由 Lemma~\ref{lem:minimal-polynomials-and-noether-bases},
+\[
+  \mu_{F}\in K[F_{1},\ldots,F_{d}][x].
+\]
+写成
+\[
+  \mu_{F}(x)=x^{k}+\mu_{F,k-1}x^{k-1}+\cdots+\mu_{F,1}x+\mu_{F,0}.
+\]
+由于 $\mu_{F}(F)=0$ 且 $F|_{Y}=0$, 可知 $\mu_{F,0}|_{Y}=0$. 注意 $\mu_{F,0}$ 既不为零也不是单位. 如果它为零, 则 $\mu_{F}(x)$ 将是可约多项式; 如果它是单位, 则 $\mu_{F,0}|_{Y}\neq0$.
+
+下列技术性断言是证明的核心.
+
+\noindent\textbf{断言:} 若 $G\in K[F_{1},\ldots,F_{d}]\subseteq K[X]$, 则
+\[
+  G|_{Y}=0\quad\text{当且仅当}\quad
+  G\in\sqrt{\langle\mu_{F,0}\rangle}\subseteq K[F_{1},\ldots,F_{d}].
+\]
+($\Rightarrow$) 设 $G\in K[F_{1},\ldots,F_{d}]$ 且 $G|_{Y}=0$. 由于 $Y=X\cap\mathcal{V}(f)$, 由零点定理 (Exercise~\ref{ex:radical-ideal-of-hypersurface-section}) 得
+\[
+  G\in\sqrt{\langle f|_{X}\rangle}=\sqrt{\langle F\rangle}\subseteq K[X].
+\]
+因此对某个 $H\in K[X]$ 有 $G^{m}=HF$. 考虑代数域扩张 $K(F_{1},\ldots,F_{d})\subseteq K(X)$, 可知存在正整数 $\ell_{1},\ell_{2},\ell_{3}$, 使得
+\[
+  \begin{aligned}
+    G^{m\ell_{1}}&=\det(T_{G^{m}})\\
+      &=\det(T_{HF})\\
+      &=\det(T_{H})\det(T_{F})\\
+      &=\pm\mu_{H,0}^{\ell_{2}}\mu_{F,0}^{\ell_{3}}.
+  \end{aligned}
+\]
+第一个等号来自 $G^{m}\in K[F_{1},\ldots,F_{d}]$ (如 Example~\ref{ex:determinant-of-multiplication-by-scalar}), 第二个来自 $G^{m}=HF$, 第三个来自行列式的乘法性和 $T_{HF}=T_{H}T_{F}$, 第四个来自 Lemma~\ref{lem:determinant-of-multiplication}. 由于 $H\in K[X]$, Lemma~\ref{lem:minimal-polynomials-and-noether-bases} 蕴含 $\mu_{H,0}\in K[F_{1},\ldots,F_{d}]$. 因此等式
+\[
+  G^{m\ell_{1}}=\pm\mu_{H,0}^{\ell_{2}}\mu_{F,0}^{\ell_{3}}
+\]
+在多项式环 $K[F_{1},\ldots,F_{d}]$ 中成立. 所以 $G\in\sqrt{\langle\mu_{F,0}\rangle}\subseteq K[F_{1},\ldots,F_{d}]$.
+
+($\Leftarrow$) 若对某个正整数 $m$ 和某个 $H\in K[F_{1},\ldots,F_{d}]$ 有 $G^{m}=H\mu_{F,0}$, 则 $\mu_{F,0}|_{Y}=0$ 蕴含 $G^{m}|_{Y}=0$, 从而 $G|_{Y}=0$.
+
+断言得证, 现在证明定理. 考虑限制映射
+\[
+  \begin{aligned}
+    \phi:K[F_{1},\ldots,F_{d}]&\to K[Y],\\
+    G&\mapsto G|_{Y}.
+  \end{aligned}
+\]
+断言蕴含 $\ker(\phi)=\sqrt{\langle\mu_{F,0}\rangle}$. 由于 $F_{1},\ldots,F_{d}$ 代数独立, $K[F_{1},\ldots,F_{d}]$ 是多项式环. 因此 Proposition~\ref{prop:radicals-of-principal-ideals} 蕴含 $\sqrt{\langle\mu_{F,0}\rangle}=\langle Q\rangle$, 其中 $Q$ 是 $\mu_{F,0}$ 的互不相同的不可约因子的乘积. 于是由第一同构定理得到单射
+\[
+  \begin{aligned}
+    [\phi]:\frac{K[F_{1},\ldots,F_{d}]}{\ker(\phi)=\langle Q\rangle}&\to K[Y],\\
+    [G]&\mapsto G|_{Y}.
+  \end{aligned}
+\]
+由于 $\mu_{F,0}$ 不是单位, $Q$ 也不是单位. 因此它必依赖于至少一个生成元, 不妨设它依赖于 $F_{d}$. 那么 $[F_{1}],\ldots,[F_{d-1}]$ 在 $[\phi]$ 的定义域中代数独立. 由单射性知 $F_{1}|_{Y},\ldots,F_{d-1}|_{Y}$ 在 $K[Y]$ 中代数独立. 所以 Proposition~\ref{prop:dimension-bounds-from-coordinate-ring} 蕴含 $\dim(Y)\geq d-1$, 如所需.
+\end{Proof}
+
+虽然 Theorem~\ref{thm:fundamental-theorem-of-dimension-theory} 所证明的这一版维数论基本定理足以唯一确定所有仿射簇的维数, 实际上还可以证明一个更强的版本. Theorem~\ref{thm:fundamental-theorem-of-dimension-theory} 断言 $X\cap\mathcal{V}(f)$ 的不可约分支中至少有一个的维数为 $\dim(X)-1$. 然而实际上, $X\cap\mathcal{V}(f)$ 的每一个不可约分支都有维数 $\dim(X)-1$. 下面验证这一点.
+
+\begin{Theorem}{强维数论基本定理}\leavevmode\label{thm:strong-fundamental-theorem-of-dimension-theory}
+若 $X\subseteq\mathbb{A}^{n}$ 为不可约仿射簇, 且多项式 $f\in K[x_{1},\ldots,x_{n}]$ 使 $X\cap\mathcal{V}(f)$ 非空且不等于整个 $X$, 则 $X\cap\mathcal{V}(f)$ 的每个不可约分支的维数都为 $\dim(X)-1$.
+\end{Theorem}
+\begin{Proof}
+\BookPairedNote
+  {和 Theorem~\ref{thm:fundamental-theorem-of-dimension-theory} 的证明一样, 令 $Y=X\cap\mathcal{V}(f)$. 设 $Y'$ 为 $Y$ 的任意一个不可约分支, 并令 $Y''$ 为其他不可约分支的并.}
+  {在拟射影簇的情形, 这个证明的做法可解释为限制到一个\textquotedbl{}仿射开子集\textquotedbl{}, 它去掉了除一个不可约分支外的所有分支.}
+由于
+\[
+  Y''\subsetneq Y'\cup Y'',
+\]
+可取多项式 $g\in K[x_{1},\ldots,x_{n}]$, 使 $g|_{Y''}=0$ 而 $g|_{Y'}\neq0$. 选取定义方程 $X=\mathcal{V}(f_{1},\ldots,f_{m})$, 并在 $\mathbb{A}^{n+1}$ 中定义两个新的仿射簇:
+\[
+  \begin{aligned}
+    \widetilde{X}&=\mathcal{V}(f_{1},\ldots,f_{m},x_{n+1}g-1),\\
+    \widetilde{Y}&=\mathcal{V}(f_{1},\ldots,f_{m},f,x_{n+1}g-1).
+  \end{aligned}
+\]
+注意 $\widetilde{Y}=\widetilde{X}\cap\mathcal{V}(f)$, 并且 $\widetilde{Y}\neq\varnothing$, 因为它包含所有形如 $(a_{1},\ldots,a_{n},g(a_{1},\ldots,a_{n})^{-1})$ 的点, 其中 $(a_{1},\ldots,a_{n})\in Y'\setminus\mathcal{V}(g)$. 按 $g$ 的选取, 后一个集合非空.
+
+可以证明 (见 Exercise~\ref{ex:adjoin-inverse-on-one-irreducible-component}) $\widetilde{X}$ 和 $\widetilde{Y}$ 不可约, 且
+\[
+  K(\widetilde{X})\cong K(X)
+  \qquad\text{和}\qquad K(\widetilde{Y})\cong K(Y').
+\]
+由于维数只用函数域来定义, 可知
+\[
+  \dim(\widetilde{X})=\dim(X)
+  \qquad\text{和}\qquad\dim(\widetilde{Y})=\dim(Y').
+\]
+因为 $Y'$ 不等于整个 $X$, 有 $\dim(Y')<\dim(X)$. 这又蕴含 $\dim(\widetilde{Y})<\dim(\widetilde{X})$, 因此 $\widetilde{Y}$ 不等于整个 $\widetilde{X}$. 于是 $\widetilde{Y}=\widetilde{X}\cap\mathcal{V}(f)$ 非空且不等于整个 $\widetilde{X}$. 所以对于 $\widetilde{X}$ 和 $\widetilde{Y}$, Theorem~\ref{thm:fundamental-theorem-of-dimension-theory} 的全部假设都满足, 由此得到
+\[
+  \dim(Y')=\dim(\widetilde{Y})=\dim(\widetilde{X})-1=\dim(X)-1.
+\]
+由于 $Y'$ 是在 $X\cap\mathcal{V}(f)$ 的不可约分支中任意选取的, 所以每个不可约分支的维数都是 $\dim(X)-1$.
+\end{Proof}
+
+反复应用 Theorem~\ref{thm:strong-fundamental-theorem-of-dimension-theory}, 得到下面的具体应用. 它说明仿射簇的余维数以定义方程的个数为上界.
+
+\begin{Corollary}{定义方程与维数}\leavevmode\label{cor:dimension-lower-bound-by-number-of-equations}
+若 $X=\mathcal{V}(f_{1},\ldots,f_{k})\subseteq\mathbb{A}^{n}$ 非空, 则 $\dim(X)\geq n-k$.
+\end{Corollary}
+\begin{Proof}
+见 Exercise~\ref{ex:prove-dimension-lower-bound-by-number-of-equations}.
+\end{Proof}
+
+在证明前一个推论时, 读者会体会为什么维数论基本定理的强版本比弱版本有用得多. Theorem~\ref{thm:strong-fundamental-theorem-of-dimension-theory} 还蕴含下面另一种维数刻画. 在许多代数几何教材中, 它被用作定义.
+
+\begin{Corollary}{包含链与维数}\leavevmode\label{cor:dimension-as-maximal-chain-length}
+若 $X\subseteq\mathbb{A}^{n}$ 为仿射簇, 则 $\dim(X)$ 等于最大的 $d$, 使得存在不可约仿射簇 $X_{0},\ldots,X_{d}\subseteq\mathbb{A}^{n}$ 满足
+\[
+  X_{0}\subsetneq X_{1}\subsetneq\cdots\subsetneq X_{d}\subseteq X.
+\]
+\end{Corollary}
+\begin{Proof}
+见 Exercise~\ref{ex:prove-dimension-as-maximal-chain-length}.
+\end{Proof}
+
+在本章结束时指出, 在不代数闭的域 (例如实数域 $\mathbb{R}$) 上研究代数簇的维数是完全合理的. 在这种情形, 维数论基本定理会严重失效 (例如见 Exercise~\ref{ex:real-affine-variety-defined-by-one-equation}). 不过, 第~\ref{sec:dimension-of-affine-varieties}~节所讨论的结论仍成立, 因为它们不需要零点定理. 出人意料的是, 虽然我们证明 Corollary~\ref{cor:dimension-as-maximal-chain-length} 时需要零点定理, 但实际上可以绕开零点定理, 在一般域上证明这一刻画与用超越次数给出的定义等价. 关于这一点以及维数论中更一般的结果, 请读者参阅更高级的交换代数教材.
+
+\BookExerciseHeading
+\begin{BookExercises}
+  \item\label{ex:multiplication-map-block-diagonal-basis} 设 $L\subseteq M$ 为代数扩张, 且 $a$ 为 $M$ 中极小多项式次数为 $d$ 的元素.
+  \begin{enumerate}
+    \item 证明 $\{1,a,\ldots,a^{d-1}\}$ 是 $L(a)$ 作为 $L$ 上向量空间的一组基.
+    \item 若 $b_{1},\ldots,b_{\ell}\subseteq M$ 是 $M$ 作为 $L(a)$ 上向量空间的一组基, 证明 $\{b_{i}a^{j}\mid1\leq i\leq\ell,\ 0\leq j\leq d-1\}$ 是 $M$ 作为 $L$ 上向量空间的一组基.
+    \item 给定 (b) 中形式的一组基, 证明线性映射 $T_{a}:M\to M$ 所对应的矩阵是 Lemma~\ref{lem:determinant-of-multiplication} 的证明中所给形式的分块对角矩阵.
+  \end{enumerate}
+  \item\label{ex:radical-ideal-of-hypersurface-section} 设 $X\subseteq\mathbb{A}^{n}$ 为仿射簇, $f\in K[x_{1},\ldots,x_{n}]$. 用零点定理证明, $F\in K[X]$ 在 $X\cap\mathcal{V}(f)$ 上取值为零, 当且仅当
+  \[
+    F\in\sqrt{\langle f|_{X}\rangle}.
+  \]
+  \item\label{ex:adjoin-inverse-on-one-irreducible-component} 设 $X=\mathcal{V}(f_{1},\ldots,f_{m})\subseteq\mathbb{A}^{n}$, $X'$ 为 $X$ 的任意一个不可约分支. 设 $g\in K[x_{1},\ldots,x_{n}]$ 是在 $X$ 除 $X'$ 外的每个不可约分支上都取值为零的多项式, 并定义
+  \[
+    \widetilde{X}=\mathcal{V}(f_{1},\ldots,f_{m},x_{n+1}g-1)\subseteq\mathbb{A}^{n+1}.
+  \]
+  本题证明 $\widetilde{X}$ 不可约, 且 $K(\widetilde{X})\cong K(X')$.
+  \begin{enumerate}
+    \item 考虑同态
+    \[
+      \begin{aligned}
+        \phi:K[x_{1},\ldots,x_{n},x_{n+1}]&\to K(X'),\\
+        h(x_{1},\ldots,x_{n},x_{n+1})&\mapsto[h(x_{1},\ldots,x_{n},g^{-1})].
+      \end{aligned}
+    \]
+    证明 $\ker(\phi)=\mathcal{I}(\widetilde{X})$.
+    \item 用 (a) 解释为什么 $\widetilde{X}$ 不可约.
+    \item 用 $[\phi]$ 证明 $K(\widetilde{X})\cong K(X')$.
+  \end{enumerate}
+  \item\label{ex:prove-dimension-lower-bound-by-number-of-equations} 证明 Corollary~\ref{cor:dimension-lower-bound-by-number-of-equations}.
+  \item\label{ex:two-polynomials-with-infinitely-many-common-zeros} 设 $f,g\in K[x,y,z]$ 至少有一个公共零点. 证明它们有无穷多个公共零点.
+  \item\label{ex:prove-dimension-as-maximal-chain-length} 证明 Corollary~\ref{cor:dimension-as-maximal-chain-length}.
+  \item\label{ex:real-affine-variety-defined-by-one-equation} 证明 $\mathbb{R}$ 上的每个仿射簇都能实现为一个多项式的零点集. 特别地, 在 $\mathbb{R}$ 上, 簇的维数与定义方程的个数无关.
+  \item\label{ex:krull-dimension-of-coordinate-ring} 设 $X$ 为仿射簇. 证明 $X$ 的维数等于最大的 $d$, 使得存在素理想 $P_{0},\ldots,P_{d}\subseteq K[X]$ 满足
+  \[
+    P_{0}\subsetneq P_{1}\subsetneq\cdots\subsetneq P_{d}\subsetneq K[X].
+  \]
+  环的素理想链长度的上确界称为该环的 \emph{Krull 维数}. 本题证明了仿射簇的维数等于其坐标环的 Krull 维数.
+\end{BookExercises}

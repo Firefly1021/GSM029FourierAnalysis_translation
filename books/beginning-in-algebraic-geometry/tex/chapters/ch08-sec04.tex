@@ -1,0 +1,314 @@
+\section{张量积与双线性}\label{sec:tensor-products-and-bilinearity}
+
+上一节末尾看到, 从张量积构造良定义的映射并不简单, 因为张量积的元素可以用许多不同的方式表示. 特别是, 怎样保证所给的映射对每个元素的所有可能表示都给出同一个值? 本节的主要目标是介绍一种容易构造这类良定义映射的方法.
+
+为进一步说明构造从张量积出发的良定义同态有什么用, 回到上一节的一个具体例子.
+
+\begin{Example}{$\mathbb{Z}_{2}\otimes_{\mathbb{Z}}\mathbb{Z}_{4}$ 含有多少元素?}\leavevmode\label{ex:cyclic-tensor-product-z2-z4}
+张量积 $\mathbb{Z}_{2}\otimes_{\mathbb{Z}}\mathbb{Z}_{4}$ 中的任意元素都可以表示成
+\[
+  m_{1}\otimes n_{1}+\cdots+m_{k}\otimes n_{k},
+\]
+其中 $m_{1},\ldots,m_{k}\in\mathbb{Z}_{2}$, $n_{1},\ldots,n_{k}\in\mathbb{Z}_{4}$. 由 Exercise~\ref{ex:tensor-with-zero-is-zero}, $m_{i}=0$ 的项都为零, 所以可以假设对所有 $i$ 都有 $m_{i}=1$. 但是
+\[
+  1\otimes n_{1}+\cdots+1\otimes n_{k}=1\otimes(n_{1}+\cdots+n_{k}),
+\]
+所以实际上 $\mathbb{Z}_{2}\otimes_{\mathbb{Z}}\mathbb{Z}_{4}$ 的任意元素都等于某个 $n\in\mathbb{Z}_{4}$ 对应的 $1\otimes n$. 这就只剩四种可能:
+\[
+  1\otimes0,\quad1\otimes1,\quad1\otimes2,\quad\text{以及 }1\otimes3.
+\]
+第一种和第三种实际上相等, 因为 $1\otimes0=0$, 并且
+\[
+  1\otimes2=1\otimes(2\cdot1)=(2\cdot1)\otimes1=0\otimes1=0.
+\]
+类似地, $1\otimes1$ 与 $1\otimes3$ 相等, 因为
+\[
+  1\otimes3=1\otimes(3\cdot1)=(3\cdot1)\otimes1=1\otimes1.
+\]
+因此有
+\[
+  \mathbb{Z}_{2}\otimes_{\mathbb{Z}}\mathbb{Z}_{4}=\{0,1\otimes1\}.
+\]
+现在遇到一个难题: 剩下的两个元素相等, 还是互不相同? 解决这一难题并证明两个元素确实不同的一种办法, 是构造一个良定义的同态
+\[
+  \mathbb{Z}_{2}\otimes_{\mathbb{Z}}\mathbb{Z}_{4}\to\mathbb{Z}_{2},
+\]
+将 $1\otimes1$ 映到 $1$. 如果能做到这一点, 就能确定 $1\otimes1\neq0$, 因为任意同态都必将 $0$ 映到 $0$. 这又把我们带回本节的出发问题: 怎样构造这样的良定义映射?
+\end{Example}
+
+能够用来构造从张量积出发的良定义映射的主要工具是双线性函数, 现在引入这个概念.
+
+\begin{Definition}{$R$-双线性映射}\leavevmode\label{def:r-bilinear-map}
+设 $M,N,L$ 为 $R$-模. 若映射
+\[
+  \phi:M\times N\to L
+\]
+满足下列条件, 则称它是 \emph{$R$-双线性的}.
+\begin{itemize}
+  \item 对所有 $m_{1},m_{2}\in M$ 和 $n\in N$, 有 $\phi(m_{1}+m_{2},n)=\phi(m_{1},n)+\phi(m_{2},n)$.
+  \item 对所有 $m\in M$ 和 $n_{1},n_{2}\in N$, 有 $\phi(m,n_{1}+n_{2})=\phi(m,n_{1})+\phi(m,n_{2})$.
+  \item 对所有 $r\in R$, $m\in M$ 和 $n\in N$, 有 $r\phi(m,n)=\phi(rm,n)=\phi(m,rn)$.
+\end{itemize}
+\end{Definition}
+
+换句话说, $\phi$ 是 $R$-双线性的, 当且仅当固定 $M\times N$ 任一因子的输入时, 它在另一因子上诱导一个 $R$-模同态.
+
+\begin{Example}{乘法映射是双线性的}\leavevmode\label{ex:multiplication-maps-are-bilinear}
+将环 $R$ 看成 $R$-模, 其标量乘法是通常的乘法. 由 $R$ 中乘法的分配律, 结合律和交换律, 乘法映射
+\[
+  \begin{gathered}
+    \phi:R\times R\to R,\\
+    \phi(m,n)=mn
+  \end{gathered}
+\]
+是 $R$-双线性的. 更一般地, 若 $A$ 为 $R$-代数, 则由代数公理, 乘法映射
+\[
+  \begin{gathered}
+    \phi:A\times A\to A,\\
+    \phi(m,n)=mn
+  \end{gathered}
+\]
+是 $R$-双线性的.
+\end{Example}
+
+\begin{Example}{线性映射的乘积是双线性的}\leavevmode\label{ex:products-of-linear-maps-are-bilinear}
+将 $R^{2},R^{3},R$ 看成 $R$-模, 则映射
+\[
+  \begin{gathered}
+    \phi:R^{2}\times R^{3}\to R,\\
+    \phi\bigl((x,y),(u,v,w)\bigr)=(2x+3y)\cdot(5u-v+w)
+  \end{gathered}
+\]
+是 $R$-双线性的. 更一般地, 若 $M,N$ 为 $R$-模, $A$ 为 $R$-代数, 且 $\phi_{1}:M\to A$, $\phi_{2}:N\to A$ 是 $R$-模同态, 则
+\[
+  \begin{gathered}
+    \phi:M\times N\to A,\\
+    \phi(m,n)=\phi_{1}(m)\phi_{2}(n)
+  \end{gathered}
+\]
+是 $R$-双线性的 (Exercise~\ref{ex:product-of-linear-maps-bilinear-and-multiplicative}).
+\end{Example}
+
+$R$-双线性的定义大概会让读者想到张量积关系. 所以 $R$-双线性是构造从张量积出发的良定义映射的关键, 也就并不意外. 下面的命题准确说明这一联系.
+
+\begin{Proposition}{从张量积出发的模同态}\leavevmode\label{prop:bilinear-maps-induce-tensor-module-maps}
+设 $M,N,L$ 为 $R$-模. 若 $\phi:M\times N\to L$ 是 $R$-双线性的, 则存在唯一 $R$-模同态 $\widehat{\phi}:M\otimes_{R}N\to L$, 使得
+\[
+  \widehat{\phi}(m\otimes n)=\phi(m,n).
+\]
+\end{Proposition}
+
+在证明命题之前, 先用几个熟悉的例子说明它的用途.
+
+\begin{Example}{$\mathbb{Z}_{2}\otimes_{\mathbb{Z}}\mathbb{Z}_{4}=\mathbb{Z}_{2}$}\leavevmode\label{ex:cyclic-tensor-product-is-z2}
+要定义从 $\mathbb{Z}_{2}\otimes_{\mathbb{Z}}\mathbb{Z}_{4}$ 到 $\mathbb{Z}_{2}$ 的同态, 从映射
+\[
+  \begin{gathered}
+    \phi:\mathbb{Z}_{2}\times\mathbb{Z}_{4}\to\mathbb{Z}_{2},\\
+    \phi(a,b)=a\cdot\pi(b)
+  \end{gathered}
+\]
+出发, 其中 $\pi:\mathbb{Z}_{4}\to\mathbb{Z}_{2}$ 是对输入模 $2$ 取余的映射. 建议读者直接验证 $\phi$ 的双线性; 由于 $\pi$ 是 $\mathbb{Z}$-模同态, 也可以由 Example~\ref{ex:products-of-linear-maps-are-bilinear} 得到. 由此双线性, $\phi$ 诱导同态
+\[
+  \begin{gathered}
+    \widehat{\phi}:\mathbb{Z}_{2}\otimes_{\mathbb{Z}}\mathbb{Z}_{4}\to\mathbb{Z}_{2},\\
+    \widehat{\phi}(a_{1}\otimes b_{1}+\cdots+a_{k}\otimes b_{k})
+      =a_{1}\pi(b_{1})+\cdots+a_{k}\pi(b_{k}),
+  \end{gathered}
+\]
+由 Proposition~\ref{prop:bilinear-maps-induce-tensor-module-maps} 知它是良定义的 $\mathbb{Z}$-模同态. $\widehat{\phi}$ 良定义, 体现在 $\mathbb{Z}_{2}\otimes_{\mathbb{Z}}\mathbb{Z}_{4}$ 中相等的元素映到 $\mathbb{Z}_{2}$ 中的同一元素. 例如, 在 Example~\ref{ex:cyclic-tensor-product-z2-z4} 中看到
+\[
+  1\otimes1=1\otimes3\in\mathbb{Z}_{2}\otimes_{\mathbb{Z}}\mathbb{Z}_{4},
+\]
+而 $\pi(1)=\pi(3)=1\in\mathbb{Z}_{2}$, 所以由 $\widehat{\phi}$ 的定义得到
+\[
+  \widehat{\phi}(1\otimes1)=\widehat{\phi}(1\otimes3)=1\in\mathbb{Z}_{2},
+\]
+与预期一致. $\widehat{\phi}(1\otimes1)\neq0$ 蕴含 $1\otimes1\neq0$, 所以已经解决了 Example~\ref{ex:cyclic-tensor-product-z2-z4} 中提出的问题. 实际上, 由于 $\mathbb{Z}_{2}$ 只有两个元素, $\widehat{\phi}$ 是 $\mathbb{Z}$-模的同构 (或等价地, Abel 群的同构).
+\end{Example}
+
+\begin{Example}{{\textmd{$R[x]\otimes_{R}R[y]=R[x,y]$}}}\leavevmode\label{ex:polynomial-ring-module-tensor-isomorphism}
+来看一个与我们特别相关的例子. 从下列 $R$-双线性映射出发, 定义从 $R[x]\otimes_{R}R[y]$ 到 $R[x,y]$ 的同态:
+\[
+  \begin{gathered}
+    \phi:R[x]\times R[y]\to R[x,y],\\
+    \phi(f,g)=f\cdot g.
+  \end{gathered}
+\]
+同样, 建议读者直接检查 $\phi$ 的 $R$-双线性, 不过它也是 Example~\ref{ex:products-of-linear-maps-are-bilinear} 的特例. Proposition~\ref{prop:bilinear-maps-induce-tensor-module-maps} 给出同态
+\[
+  \widehat{\phi}:R[x]\otimes_{R}R[y]\to R[x,y].
+\]
+更具体地说, 同态 $\widehat{\phi}$ 定义为
+\[
+  \widehat{\phi}(f_{1}\otimes g_{1}+\cdots+f_{k}\otimes g_{k})
+    =f_{1}g_{1}+\cdots+f_{k}g_{k}.
+\]
+例如, 算得
+\[
+  \widehat{\phi}(x^{2}\otimes y+x^{2}\otimes1)=x^{2}y+x^{2}
+  \quad\text{和}\quad
+  \widehat{\phi}(x^{2}\otimes(y+1))=x^{2}(y+1).
+\]
+注意到 $x^{2}\otimes y+x^{2}\otimes1=x^{2}\otimes(y+1)\in R[x]\otimes_{R}R[y]$, 可预期 $\widehat{\phi}$ 把这些元素映到 $R[x,y]$ 中的同一个多项式. 确实有 $x^{2}y+x^{2}=x^{2}(y+1)\in R[x,y]$.
+
+现在考虑映射
+\[
+  \begin{aligned}
+    R[x,y]&\to R[x]\otimes_{R}R[y],\\
+    \sum_{i,j}r_{ij}x^{i}y^{j}&\mapsto\sum_{i,j}r_{ij}x^{i}\otimes y^{j}.
+  \end{aligned}
+\]
+建议读者在 Exercise~\ref{ex:inverse-of-polynomial-ring-module-tensor-map} 中证明这个映射是 $\widehat{\phi}$ 的逆, 由此可知 $\widehat{\phi}$ 是 $R$-模的同构.
+\end{Example}
+
+有了这些例子, 现在转向命题的证明.
+
+\begin{Proof}\textbf{of Proposition~\ref{prop:bilinear-maps-induce-tensor-module-maps}.}\quad
+首先注意, 若 $\widehat{\phi}$ 存在, 它必唯一, 因为它在每个简单张量上的值连同线性性, 决定了它在 $M\otimes_{R}N$ 每个元素上的值. 所以只须证明 $\widehat{\phi}$ 存在.
+
+为证明存在性, 先把映射 $\phi:M\times N\to L$ 线性延拓为映射 $\widetilde{\phi}:R(M\times N)\to L$. 即定义
+\[
+  \begin{aligned}
+    \widetilde{\phi}:R(M\times N)&\to L,\\
+    a_{1}(m_{1},n_{1})+\cdots+a_{k}(m_{k},n_{k})&
+      \mapsto a_{1}\cdot\phi(m_{1},n_{1})+\cdots+a_{k}\cdot\phi(m_{k},n_{k}).
+  \end{aligned}
+\]
+这个映射自动是良定义的 (因为它的定义域没有关系), 稍加思考即可看出它是 $R$-模同态.
+
+现在断言 $\widetilde{\phi}$ 的核包含 Definition~\ref{def:tensor-product-of-modules} 中的子模 $H$. 若是如此, $\widetilde{\phi}$ 就诱导满足命题条件的良定义 $R$-模同态
+\[
+  \widehat{\phi}:\frac{R(M\times N)}{H}\to L.
+\]
+为证明这个断言, 只须证明 $\widetilde{\phi}$ 的核包含 Definition~\ref{def:tensor-product-of-modules} 所列的 $H$ 的生成元. 确实如此. 例如,
+\[
+  \begin{aligned}
+    &\widetilde{\phi}\bigl((m,n_{1}+n_{2})-(m,n_{1})-(m,n_{2})\bigr)\\
+    &\qquad=\phi(m,n_{1}+n_{2})-\phi(m,n_{1})-\phi(m,n_{2}),
+  \end{aligned}
+\]
+由 $R$-双线性的定义, 这等于零. 类似论证适用于其他三类生成元. 因此 $\widetilde{\phi}$ 把 $H$ 的每个生成元映到零, 所以 $H\subseteq\ker(\widetilde{\phi})$, 证明完毕.
+\end{Proof}
+
+到目前为止, 我们已构造了从张量积 $M\otimes_{R}N$ 出发的 $R$-模同态. 但若 $M$ 和 $N$ 恰好都是 $R$-代数, 能否构造从其张量积出发的 $R$-代数同态? 把张量积上的模同态推广为代数同态的关键是下面的定义.
+
+\begin{Definition}{乘法映射}\leavevmode\label{def:multiplicative-map}
+设 $M,N,L$ 为 $R$-代数. 若映射
+\[
+  \phi:M\times N\to L
+\]
+对所有 $m,m'\in M$ 和 $n,n'\in N$ 满足
+\[
+  \phi(mm',nn')=\phi(m,n)\phi(m',n'),
+\]
+就称它是\emph{乘法映射}.
+\end{Definition}
+
+例如, 由
+\[
+  \phi(f,g)=fg
+\]
+定义的函数 $\phi:R[x]\times R[y]\to R[x,y]$ 是乘法映射, 读者易于验证. 更一般地, 若 $M,N,L$ 为 $R$-代数, 且 $\phi_{1}:M\to L$ 与 $\phi_{2}:N\to L$ 为 $R$-代数同态, 则由
+\[
+  \phi(m,n)=\phi_{1}(m)\phi_{2}(n)
+\]
+定义的函数 $\phi:M\times N\to L$ 是乘法映射 (Exercise~\ref{ex:product-of-linear-maps-bilinear-and-multiplicative}).
+
+下一个结果把 Proposition~\ref{prop:bilinear-maps-induce-tensor-module-maps} 推广到代数的情形.
+
+\begin{Proposition}{从张量积出发的代数同态}\leavevmode\label{prop:multiplicative-bilinear-maps-induce-algebra-maps}
+设 $M,N,L$ 为 $R$-代数. 若 $\phi:M\times N\to L$ 是 $R$-双线性的乘法映射, 则存在唯一 $R$-代数同态 $\widehat{\phi}:M\otimes_{R}N\to L$, 使得
+\[
+  \widehat{\phi}(m\otimes n)=\phi(m,n).
+\]
+\end{Proposition}
+\begin{Proof}
+已经知道有唯一的 $R$-模同态 $\widehat{\phi}$, 所以只剩证明 $\widehat{\phi}$ 保持乘法. 注意
+\[
+  \begin{aligned}
+    \widehat{\phi}((m\otimes n)(m'\otimes n'))
+      &=\widehat{\phi}(mm'\otimes nn')\\
+      &=\phi(mm',nn')\\
+      &=\phi(m,n)\phi(m',n')\\
+      &=\widehat{\phi}(m\otimes n)\widehat{\phi}(m'\otimes n'),
+  \end{aligned}
+\]
+第一个等号用到 $M\otimes_{R}N$ 中乘法的定义, 第二个和第四个等号用到 $\widehat{\phi}$ 的定义, 第三个等号用到 $\phi$ 的乘法性. 这个论证证明了 $R$-模同态 $\widehat{\phi}$ 保持简单张量的乘法, 再利用 $\widehat{\phi}$ 的 $R$-线性性, 可以把这一点推广到 $M\otimes_{R}N$ 中一般元素的乘法.
+\end{Proof}
+
+在关于张量积的大部分讨论中, 典范的 $R$-代数同构 $R[x]\otimes_{R}R[y]=R[x,y]$ 一直是我们的出发点. 现在终于可以给出结论, 如下例所示.
+
+\begin{Example}{{作为 $R$-代数的 \textmd{$R[x]\otimes_{R}R[y]=R[x,y]$}}}\leavevmode\label{ex:polynomial-ring-algebra-tensor-isomorphism}
+注意 Example~\ref{ex:polynomial-ring-module-tensor-isomorphism} 中典范的双线性映射 $\phi:R[x]\times R[y]\to R[x,y]$ 是乘法映射. 因而由 Proposition~\ref{prop:multiplicative-bilinear-maps-induce-algebra-maps}, $R$-模同态 $\widehat{\phi}$ 实际上是 $R$-代数同态. 此外, 在 Example~\ref{ex:polynomial-ring-module-tensor-isomorphism} 中看到 $\widehat{\phi}$ 有逆, 因而是 $R$-代数的同构.
+\end{Example}
+
+在 $R=K$ 的特殊情形, 上一个例子给出了典范的 $K$-代数同构
+\[
+  K[\mathbb{A}^{1}]\otimes_{K}K[\mathbb{A}^{1}]=K[\mathbb{A}^{1}\times\mathbb{A}^{1}].
+\]
+因此有理由问这个自然的推广是否成立: 给定仿射簇 $X$ 和 $Y$, 是否有典范的 $K$-代数同构
+\[
+  K[X]\otimes_{K}K[Y]=K[X\times Y]?
+\]
+下一节的目标就是证明事实确实如此.
+
+\BookExerciseHeading
+\begin{BookExercises}
+  \item\label{ex:product-of-linear-maps-bilinear-and-multiplicative}
+  \begin{enumerate}
+    \item 设 $M,N$ 为 $R$-模, $A$ 为 $R$-代数, 并假设 $\phi_{1}:M\to A$ 与 $\phi_{2}:N\to A$ 为 $R$-模同态. 证明映射
+    \[
+      \begin{gathered}
+        \phi:M\times N\to A,\\
+        \phi(m,n)=\phi_{1}(m)\phi_{2}(n)
+      \end{gathered}
+    \]
+    是 $R$-双线性的.
+    \item 进一步假设 $M,N$ 为 $R$-代数, 且 $\phi_{1},\phi_{2}$ 为 $R$-代数同态. 证明 $\phi$ 是乘法映射.
+  \end{enumerate}
+  \item\label{ex:inverse-of-polynomial-ring-module-tensor-map} 设 $\widehat{\phi}:R[x]\otimes_{R}R[y]\to R[x,y]$ 是 Example~\ref{ex:polynomial-ring-module-tensor-isomorphism} 中定义的 $R$-模映射. 证明映射
+  \[
+    \begin{aligned}
+      R[x,y]&\to R[x]\otimes_{R}R[y],\\
+      \sum_{i,j}r_{ij}x^{i}y^{j}&\mapsto\sum_{i,j}r_{ij}x^{i}\otimes y^{j}
+    \end{aligned}
+  \]
+  是 $\widehat{\phi}$ 的逆.
+  \item\label{ex:tensor-isomorphism-of-multivariate-polynomial-rings} 证明存在典范的 $R$-代数同构
+  \[
+    R[x_{1},\ldots,x_{m}]\otimes_{R}R[y_{1},\ldots,y_{n}]
+      =R[x_{1},\ldots,x_{m},y_{1},\ldots,y_{n}].
+  \]
+  \item\label{ex:cyclic-tensor-product-gcd} 证明对任意自然数 $a$ 和 $b$, 存在典范的 $\mathbb{Z}$-代数同构
+  \[
+    \mathbb{Z}_{a}\otimes_{\mathbb{Z}}\mathbb{Z}_{b}=\mathbb{Z}_{\gcd(a,b)}.
+  \]
+  (可先做 Exercise~\ref{ex:tensor-product-of-cyclic-modules-only-simple-tensors}.)
+  \item\label{ex:tensor-product-basis-from-factor-bases} 设 $V$ 是域 $K$ 上的向量空间, 其基为 $\{e_{i}\}_{i\in I}$, $W$ 是域 $K$ 上的向量空间, 其基为 $\{f_{j}\}_{j\in J}$.
+  \begin{enumerate}
+    \item 证明集合
+    \[
+      \{e_{i}\otimes f_{j}\mid i\in I,\ j\in J\}
+    \]
+    是向量空间 $V\otimes_{K}W$ 的一组基.
+    \item 假设 $V,W$ 有限维, 从 (a) 可以得到向量空间的维数 $\dim(V)$, $\dim(W)$ 和 $\dim(V\otimes_{K}W)$ 之间有什么关系?
+  \end{enumerate}
+  \item\label{ex:tensor-product-commutes} 设 $M,N$ 为 $R$-模. 证明 $M\otimes_{R}N=N\otimes_{R}M$.
+  \item\label{ex:ring-is-tensor-unit} 设 $M$ 为 $R$-模. 证明 $R\otimes_{R}M=M\otimes_{R}R=M$.
+  \item\label{ex:tensor-distributes-over-direct-sum} 设 $M,M',N$ 为 $R$-模. 证明
+  \[
+    (M\oplus M')\otimes_{R}N=(M\otimes_{R}N)\oplus(M'\otimes_{R}N).
+  \]
+  \item\label{ex:complexification-of-real-vector-space-and-polynomial-ring}
+  \begin{enumerate}
+    \item 证明 $\mathbb{C}\otimes_{\mathbb{R}}\mathbb{R}^{n}=\mathbb{C}^{n}$.
+    \item 证明 $\mathbb{C}\otimes_{\mathbb{R}}\mathbb{R}[x]=\mathbb{C}[x]$.
+  \end{enumerate}
+  \item\label{ex:extension-of-scalars-has-module-structure} 设 $R,S$ 为满足 $R\subseteq S$ 的环, 通过 $S$ 中的乘法把 $S$ 看成 $R$-模, 并设 $M$ 为 $R$-模. 证明 $S\otimes_{R}M$ (按构造它是 $R$-模) 实际具有 $S$-模的结构, 其中标量乘法由下式给出:
+  \[
+    s\cdot(s_{1}\otimes m_{1}+\cdots+s_{k}\otimes m_{k})
+      =(ss_{1})\otimes m_{1}+\cdots+(ss_{k})\otimes m_{k}.
+  \]
+  从 $M$ 过渡到 $S\otimes_{R}M$ 称为\emph{标量扩张}, Exercise~\ref{ex:complexification-of-real-vector-space-and-polynomial-ring} 中的两个例子说明了这一点.
+\end{BookExercises}

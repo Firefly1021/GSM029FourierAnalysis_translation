@@ -1,0 +1,282 @@
+\section{向量场}\label{sec:vector-fields}
+
+光滑流形 $M$ 上的\textbf{向量场}是一个映射, 它给每个点 $p\in M$ 指派 $M$ 在 $p$ 处的一个切向量:
+\begin{align*}
+  X:M&\to TM\\
+  p&\mapsto X(p):=X_p\in T_pM.
+\end{align*}
+若这个映射可微, 则称该向量场\textbf{可微}. $M$ 上所有可微向量场的集合记为 $\mathfrak{X}(M)$. 在局部有:
+
+\begin{RiemannProposition}\label{prop:local-components-of-vector-field}
+设 $W$ 是 $M$ 上的坐标邻域 (即对某个参数化 $\varphi:U\to M$, 有 $W=\varphi(U)$), 令 $x:=\varphi^{-1}:W\to\mathbb{R}^n$ 为相应的坐标图. 则映射 $X:W\to TW$ 是 $W$ 上的可微向量场, 当且仅当
+\[
+  X_p=X^1(p)\left(\frac{\partial}{\partial x^1}\right)_p+
+    \cdots+X^n(p)\left(\frac{\partial}{\partial x^n}\right)_p
+\]
+对某些可微函数 $X^i:W\to\mathbb{R}$ ($i=1,\ldots,n$) 成立.
+\end{RiemannProposition}
+
+\begin{RiemannProof}
+考虑坐标图 $x=(x^1,\ldots,x^n)$. 由于 $X_p\in T_pM$, 有
+\[
+  X_p=X^1(p)\left(\frac{\partial}{\partial x^1}\right)_p+
+    \cdots+X^n(p)\left(\frac{\partial}{\partial x^n}\right)_p
+\]
+其中 $X^i:W\to\mathbb{R}$ 是一些函数. 在与 $TM$ 的参数化 $(U\times\mathbb{R}^n,\mathrm{d}\varphi)$ 相应的局部坐标图中, 映射 $X$ 的局部表示为
+\[
+  \widehat X(x^1,\ldots,x^n)
+  =\bigl(x^1,\ldots,x^n,\widehat X^1(x^1,\ldots,x^n),
+    \ldots,\widehat X^n(x^1,\ldots,x^n)\bigr).
+\]
+因此, $X$ 可微当且仅当函数 $\widehat X^i:U\to\mathbb{R}$ 可微, 即当且仅当函数 $X^i:W\to\mathbb{R}$ 可微.
+\end{RiemannProof}
+
+向量场 $X$ 可微, 当且仅当给定任意可微函数 $f:M\to\mathbb{R}$, 函数
+\begin{align*}
+  X\cdot f:M&\to\mathbb{R}\\
+  p&\mapsto X_p\cdot f:=X_p(f)
+\end{align*}
+也可微 [参见 Exercise~\ref{ex:vector-fields}(\ref{ex:directional-derivative-characterization})]. 函数 $X\cdot f$ 称为 $f$ \textbf{沿 $X$ 的方向导数}. 因此, 可以把 $X\in\mathfrak{X}(M)$ 看成线性算子 $X:C^\infty(M)\to C^\infty(M)$.
+
+现在取两个向量场 $X,Y\in\mathfrak{X}(M)$. 一般而言, 算子 $X\circ Y$ 和 $Y\circ X$ 涉及二阶导数, 并不对应于向量场. 然而, 交换子 $X\circ Y-Y\circ X$ 确实定义了一个向量场.
+
+\begin{RiemannProposition}\label{prop:commutator-of-vector-fields}
+给定光滑流形 $M$ 上的两个可微向量场 $X,Y\in\mathfrak{X}(M)$, 存在唯一的可微向量场 $Z\in\mathfrak{X}(M)$, 使得
+\[
+  Z\cdot f=(X\circ Y-Y\circ X)\cdot f
+\]
+对每个可微函数 $f\in C^\infty(M)$ 成立.
+\end{RiemannProposition}
+
+\begin{RiemannProof}
+考虑坐标图 $x:W\subset M\to\mathbb{R}^n$, 有
+\[
+  X=\sum_{i=1}^nX^i\frac{\partial}{\partial x^i}
+  \quad\text{且}\quad
+  Y=\sum_{i=1}^nY^i\frac{\partial}{\partial x^i}.
+\]
+于是
+\begin{align*}
+  (X\circ Y-Y\circ X)\cdot f
+  &=X\cdot\left(\sum_{i=1}^nY^i\frac{\partial\widehat f}{\partial x^i}\right)
+    -Y\cdot\left(\sum_{i=1}^nX^i\frac{\partial\widehat f}{\partial x^i}\right)\\
+  &=\sum_{i=1}^n\left((X\cdot Y^i)\frac{\partial\widehat f}{\partial x^i}
+    -(Y\cdot X^i)\frac{\partial\widehat f}{\partial x^i}\right)\\
+  &\quad+\sum_{i,j=1}^n\left(
+    X^jY^i\frac{\partial^2\widehat f}{\partial x^j\partial x^i}
+    -Y^jX^i\frac{\partial^2\widehat f}{\partial x^j\partial x^i}\right)\\
+  &=\left(\sum_{i=1}^n(X\cdot Y^i-Y\cdot X^i)\frac{\partial}{\partial x^i}\right)\cdot f,
+\end{align*}
+因此, 在每个点 $p\in W$ 处, 有 $\bigl((X\circ Y-Y\circ X)\cdot f\bigr)(p)=Z_p\cdot f$, 其中
+\[
+  Z_p=\sum_{i=1}^n(X\cdot Y^i-Y\cdot X^i)(p)
+  \left(\frac{\partial}{\partial x^i}\right)_p.
+\]
+所以算子 $X\circ Y-Y\circ X$ 定义了一个向量场. 注意, 这个向量场可微, 因为对每个光滑函数 $f:M\to\mathbb{R}$, $(X\circ Y-Y\circ X)\cdot f$ 都是光滑的.
+\end{RiemannProof}
+
+向量场 $Z$ 称为 $X$ 与 $Y$ 的 \textbf{Lie 括号}, 记为 $[X,Y]$. 在局部坐标下, 它由下式给出:
+\begin{equation}\label{eq:lie-bracket-in-coordinates}
+  [X,Y]=\sum_{i=1}^n(X\cdot Y^i-Y\cdot X^i)\frac{\partial}{\partial x^i}.
+\end{equation}
+若 $[X,Y]=0$, 则称两个向量场 $X,Y\in\mathfrak{X}(M)$ \textbf{交换}. Lie 括号具有下列性质.
+
+\begin{RiemannProposition}\label{prop:identities-for-lie-bracket}
+给定 $X,Y,Z\in\mathfrak{X}(M)$, 有:
+\begin{enumerate}[label=(\roman*),leftmargin=*]
+\item \textbf{双线性}: 对任意 $\alpha,\beta\in\mathbb{R}$,
+\begin{align*}
+  [\alpha X+\beta Y,Z]&=\alpha[X,Z]+\beta[Y,Z]\\
+  [X,\alpha Y+\beta Z]&=\alpha[X,Y]+\beta[X,Z];
+\end{align*}
+\item \textbf{反对称性}:
+\[
+  [X,Y]=-[Y,X];
+\]
+\item \textbf{Jacobi 恒等式}:
+\[
+  [[X,Y],Z]+[[Y,Z],X]+[[Z,X],Y]=0;
+\]
+\item \textbf{Leibniz 法则}: 对任意 $f,g\in C^\infty(M)$,
+\[
+  [fX,gY]=fg[X,Y]+f(X\cdot g)Y-g(Y\cdot f)X.
+\]
+\end{enumerate}
+\end{RiemannProposition}
+
+\begin{RiemannProof}
+Exercise~\ref{ex:vector-fields}(\ref{ex:prove-lie-bracket-properties}).
+\end{RiemannProof}
+
+$M$ 上向量场的空间 $\mathfrak{X}(M)$ 是 Lie 代数的一个特例:
+
+\begin{RiemannDefinition}\label{def:lie-algebra}
+赋有满足 Jacobi 恒等式的反对称双线性映射 $[\cdot,\cdot]:V\times V\to V$ (称为 \textbf{Lie 括号}) 的向量空间 $V$, 称为 \textbf{Lie 代数}. 若 Lie 代数之间的线性映射 $F:V\to W$ 对所有 $v_1,v_2\in V$ 满足 $F([v_1,v_2])=[F(v_1),F(v_2)]$, 则称 $F$ 为 \textbf{Lie 代数同态}. 若 $F$ 还是双射, 则称其为 \textbf{Lie 代数同构}.
+\end{RiemannDefinition}
+
+给定向量场 $X\in\mathfrak{X}(M)$ 和光滑流形之间的微分同胚 $f:M\to N$, 可以利用 $f$ 的导数自然地在 $N$ 上定义一个向量场. 这个向量场称为 $X$ 的\textbf{前推}, 记为 $f_*X$, 定义如下: 给定 $p\in M$,
+\[
+  (f_*X)_{f(p)}:=(\mathrm{d}f)_pX_p.
+\]
+这样就使下图交换:
+\[
+  \begin{tikzcd}[ampersand replacement=\&]
+    TM\arrow[r,"\mathrm{d}f"]\&TN\\
+    M\arrow[u,"X"]\arrow[r,"f"]\&N\arrow[u,"f_*X"']
+  \end{tikzcd}
+\]
+现在转向积分曲线的定义. 若 $X\in\mathfrak{X}(M)$ 是光滑向量场, 则 $X$ 的一条\textbf{积分曲线}是满足 $\dot c(t)=X_{c(t)}$ 的光滑曲线 $c:(-\varepsilon,\varepsilon)\to M$. 若这条曲线的初值为 $c(0)=p$, 则把它记为 $c_p$, 并称 $c_p$ 是 $X$ \textbf{在 $p$ 处的积分曲线}.
+
+考虑 $M$ 上的参数化 $\varphi:U\subset\mathbb{R}^n\to M$, 则积分曲线 $c$ 局部由 $\widehat c:=\varphi^{-1}\circ c$ 给出. 在定义 $c$ 的方程两边应用 $(\mathrm{d}\varphi^{-1})_{c(t)}$, 得
+\[
+  \dot{\widehat c}(t)=\widehat X(\widehat c(t)),
+\]
+其中 $\widehat X=\mathrm{d}\varphi^{-1}\circ X\circ\varphi$ 是 $X$ 关于 $M$ 和 $TM$ 上的参数化 $(U,\varphi)$ 和 $(TU,\mathrm{d}\varphi)$ 的局部表示 (参见 Fig.~\ref{fig:integral-curves-of-vector-field}). 这个方程就是由 $n$ 个常微分方程组成的方程组:
+\begin{equation}\label{eq:local-ode-for-integral-curve}
+  \frac{\mathrm{d}\widehat c^i}{\mathrm{d}t}(t)
+  =\widehat X^i(\widehat c(t)),\qquad
+  \text{对 } i=1,\ldots,n.
+\end{equation}
+因此, 积分曲线的 (局部) 存在性和唯一性由常微分方程的 Picard–Lindelöf 定理确定 (例如见 \RGcite{Arn92}), 从而有
+
+\begin{RiemannTheorem}\label{thm:local-existence-of-integral-curves}
+设 $M$ 是光滑流形, $X\in\mathfrak{X}(M)$ 是 $M$ 上的光滑向量场. 给定 $p\in M$, 存在 $X$ 在 $p$ 处的一条积分曲线 $c_p:I\to M$ (即对 $t\in I=(-\varepsilon,\varepsilon)$, 有 $\dot c_p(t)=X_{c_p(t)}$, 且 $c_p(0)=p$). 此外, 这条曲线是唯一的, 即任何两条这样的曲线在其定义域的交集上一致.\hfill\openbox
+\end{RiemannTheorem}
+
+\RGfigure[.35\textwidth]{integral-curves-of-vector-field}{向量场的积分曲线}
+
+由求解 \eqref{eq:local-ode-for-integral-curve} 得到的这条积分曲线光滑地依赖于初始点 $p$ (见 \RGcite{Arn92}).
+
+\begin{RiemannTheorem}\label{thm:smooth-dependence-of-local-flow}
+设 $X\in\mathfrak{X}(M)$. 对每个 $p\in M$, 存在 $p$ 的一个邻域 $W$, 一个区间 $I=(-\varepsilon,\varepsilon)$ 和映射 $F:W\times I\to M$, 使得:
+\begin{enumerate}[label=(\roman*),leftmargin=*]
+\item 对给定的 $q\in W$, 曲线 $F(q,t)$ ($t\in I$) 是 $X$ 在 $q$ 处的一条积分曲线, 即 $F(q,0)=q$, 且 $\frac{\partial F}{\partial t}(q,t)=X_{F(q,t)}$;
+\item 映射 $F$ 可微.\hfill\openbox
+\end{enumerate}
+\end{RiemannTheorem}
+
+上面定义的映射 $F:W\times I\to M$ 称为 $X$ \textbf{在 $p$ 处的局部流}. 现在固定 $t\in I$, 考虑由局部流定义的映射
+\begin{align*}
+  \psi_t:W&\to M\\
+  q&\mapsto F(q,t)=c_q(t).
+\end{align*}
+则有下述命题:
+
+\begin{RiemannProposition}\label{prop:composition-of-local-flows}
+上面的映射 $\psi_t:W\to M$ 是局部微分同胚, 并且只要 $t,s,t+s\in I$ 且 $\psi_s(q)\in W$, 就有
+\begin{equation}\label{eq:local-flow-group-law}
+  (\psi_t\circ\psi_s)(q)=\psi_{t+s}(q).
+\end{equation}
+\end{RiemannProposition}
+
+\begin{RiemannProof}
+首先注意到
+\[
+  \frac{\mathrm{d}c_q}{\mathrm{d}t}(t)=X_{c_q(t)}
+\]
+从而
+\[
+  \frac{\mathrm{d}}{\mathrm{d}t}(c_q(t+s))=X_{c_q(t+s)}.
+\]
+因此, 由于 $\left.c_q(t+s)\right|_{t=0}=c_q(s)$, 曲线 $c_{c_q(s)}(t)$ 就是 $c_q(t+s)$, 即 $\psi_{t+s}(q)=\psi_t(\psi_s(q))$. 对所有满足 $t+s\in I$ 的 $s\in I$, 可以用这个公式把 $\psi_t$ 延拓到 $\psi_s(W)$. 特别地, $\psi_{-t}$ 在 $\psi_t(W)$ 上有良好定义, 而且对所有 $q\in W$ 有 $(\psi_{-t}\circ\psi_t)(q)=\psi_0(q)=c_q(0)=q$. 所以 $\psi_{-t}$ 是 $\psi_t$ 的逆, 故 $\psi_t$ 是局部微分同胚 (它将 $W$ 微分同胚地映到自身的像).
+\end{RiemannProof}
+
+设 $I=(-\varepsilon,\varepsilon)$. 满足 \eqref{eq:local-flow-group-law} 的一族微分同胚 $\{\psi_t:M\to M\}_{t\in I}$ 称为\phantomsection\label{idx:local-one-parameter-group-of-diffeomorphisms}\textbf{局部单参数微分同胚群}. 当 $c_q$ 的定义区间 $I$ 为 $\mathbb{R}$ 时, 这个局部单参数微分同胚群成为一个\textbf{微分同胚群}. 若向量场 $X$ 的局部流定义了一个单参数微分同胚群, 则称 $X$ \textbf{完备}. 例如, 向量场 $X$ 具有紧支集时就是如此.
+
+\begin{RiemannTheorem}\label{thm:compactly-supported-vector-fields-are-complete}
+若 $X\in\mathfrak{X}(M)$ 是具有紧支集的光滑向量场, 则 $X$ 完备.
+\end{RiemannTheorem}
+
+\begin{RiemannProof}
+对每个 $p\in M$, 可取一个邻域 $W$ 和区间 $I=(-\varepsilon,\varepsilon)$, 使得 $X$ 在 $p$ 处的局部流 $F(q,t)=c_q(t)$ 在 $W\times I$ 上有定义. 因此, 可以用有限多个这样的邻域 $W_k$ 覆盖 $X$ 的支集 (它是紧的), 并考虑包含在相应区间 $I_k$ 的交集中的区间 $I_0=(-\varepsilon_0,\varepsilon_0)$. 若 $q$ 不在 $\operatorname{supp}(X)$ 中, 则 $X_q=0$, 因而 $c_q(t)$ 在 $I_0$ 上显然有定义. 因此, 可以把映射 $F$ 延拓到 $M\times I_0$. 此外, 条件 \eqref{eq:local-flow-group-law} 对每一组 $-\varepsilon_0/2<s,t<\varepsilon_0/2$ 都成立, 因而可再次延拓映射 $F$, 这次延拓到 $M\times\mathbb{R}$. 实际上, 对任意 $t\in\mathbb{R}$, 可以写成 $t=k\varepsilon_0/2+s$, 其中 $k\in\mathbb{Z}$ 且 $0\leq s<\varepsilon_0/2$, 并定义 $F(q,t):=F^k(F(q,s),\varepsilon_0/2)$.
+\end{RiemannProof}
+
+\begin{RiemannCorollary}\label{cor:completeness-on-compact-manifolds}
+若 $M$ 紧致, 则 $M$ 上的所有光滑向量场均完备.\hfill\openbox
+\end{RiemannCorollary}
+
+最后, 给出本节的一个重要结果.
+
+\begin{RiemannTheorem}\label{thm:commuting-flows-and-lie-brackets}
+设 $X_1,X_2\in\mathfrak{X}(M)$ 是两个完备向量场. 则它们的流 $\psi_1,\psi_2$ \textbf{交换} (即对所有 $s,t\in\mathbb{R}$, 有 $\psi_{1,t}\circ\psi_{2,s}=\psi_{2,s}\circ\psi_{1,t}$), 当且仅当 $[X_1,X_2]=0$.
+\end{RiemannTheorem}
+
+\begin{RiemannProof}
+Exercise~\ref{ex:vector-fields}(\ref{ex:commuting-flows-and-pushforward}).
+\end{RiemannProof}
+
+\begin{RiemannExercise}\label{ex:vector-fields}
+\begin{enumerate}[label=(\arabic*),ref=\arabic*,leftmargin=*]
+\item\label{ex:directional-derivative-characterization} 设 $X:M\to TM$ 是 $M$ 上的一个可微向量场. 对光滑函数 $f:M\to\mathbb{R}$, 考虑由
+\begin{align*}
+  X\cdot f:M&\to\mathbb{R}\\
+  p&\mapsto X_p\cdot f
+\end{align*}
+定义的 $f$ 沿 $X$ 的方向导数. 证明:
+\begin{enumerate}[label=(\alph*),leftmargin=*]
+\item $(X\cdot f)(p)=(\mathrm{d}f)_pX_p$;
+\item 向量场 $X$ 光滑, 当且仅当对任意光滑函数 $f:M\to\mathbb{R}$, $X\cdot f$ 都是可微函数;
+\item 方向导数具有以下性质: 对 $f,g\in C^\infty(M)$ 和 $\alpha\in\mathbb{R}$,
+\begin{enumerate}[label=(\roman*),leftmargin=*]
+\item $X\cdot(f+g)=X\cdot f+X\cdot g$;
+\item $X\cdot(\alpha f)=\alpha(X\cdot f)$;
+\item $X\cdot(fg)=fX\cdot g+gX\cdot f$.
+\end{enumerate}
+\end{enumerate}
+\item\label{ex:prove-lie-bracket-properties} 证明 Proposition~\ref{prop:identities-for-lie-bracket}.
+\item\label{ex:cross-product-lie-algebra} 证明 $(\mathbb{R}^3,\times)$ 是 Lie 代数, 其中 $\times$ 是 $\mathbb{R}^3$ 上的叉积.
+\item\label{ex:flows-of-three-plane-vector-fields} 计算由下式定义的向量场 $X,Y,Z\in\mathfrak{X}(\mathbb{R}^2)$ 的流:
+\[
+  X_{(x,y)}=\frac{\partial}{\partial x};\quad
+  Y_{(x,y)}=x\frac{\partial}{\partial x}+y\frac{\partial}{\partial y};\quad
+  Z_{(x,y)}=-y\frac{\partial}{\partial x}+x\frac{\partial}{\partial y}.
+\]
+\item\label{ex:rotations-as-vector-field-flows} 设 $X_1,X_2,X_3\in\mathfrak{X}(\mathbb{R}^3)$ 为由下式定义的向量场:
+\[
+  X_1=y\frac{\partial}{\partial z}-z\frac{\partial}{\partial y},\quad
+  X_2=z\frac{\partial}{\partial x}-x\frac{\partial}{\partial z},\quad
+  X_3=x\frac{\partial}{\partial y}-y\frac{\partial}{\partial x},
+\]
+其中 $(x,y,z)$ 是通常的 Cartesian 坐标.
+\begin{enumerate}[label=(\alph*),leftmargin=*]
+\item 计算 $i,j=1,2,3$ 时的 Lie 括号 $[X_i,X_j]$.
+\item 证明 $\operatorname{span}\{X_1,X_2,X_3\}$ 是 $\mathfrak{X}(\mathbb{R}^3)$ 的 Lie 子代数, 同构于 $(\mathbb{R}^3,\times)$.
+\item 计算 $X_1,X_2,X_3$ 的流 $\psi_{1,t},\psi_{2,t},\psi_{3,t}$.
+\item 证明当 $i\ne j$ 时, $\psi_{i,\frac{\pi}{2}}\circ\psi_{j,\frac{\pi}{2}}\ne\psi_{j,\frac{\pi}{2}}\circ\psi_{i,\frac{\pi}{2}}$.
+\end{enumerate}
+\item\label{ex:noncomplete-vector-field} 给出一个不完备的向量场的例子.
+\item\label{ex:lie-bracket-tangent-to-submanifold} 设 $N$ 是一个可微流形, $M\subset N$ 是一个子流形, $X,Y\in\mathfrak{X}(N)$ 是与 $M$ 相切的向量场, 即对所有 $p\in M$ 都有 $X_p,Y_p\in T_pM$. 证明 $[X,Y]$ 也与 $M$ 相切, 且它到 $M$ 的限制等于 $X$ 和 $Y$ 到 $M$ 的限制的 Lie 括号.
+\item\label{ex:related-vector-fields} 设 $f:M\to N$ 是流形之间的光滑映射. 若对每个 $q\in N$ 和 $p\in f^{-1}(q)\subset M$, 有 $(\mathrm{d}f)_pX_p=Y_q$, 则称两个向量场 $X\in\mathfrak{X}(M)$ 和 $Y\in\mathfrak{X}(N)$ \textbf{关于 $f$ 相关} (记作 $Y=f_*X$). 证明:
+\begin{enumerate}[label=(\alph*),leftmargin=*]
+\item 给定 $f$ 和 $X$, 可能没有关于 $f$ 与 $X$ 相关的向量场 $Y$;
+\item 向量场 $X$ 关于 $f$ 与 $Y$ 相关, 当且仅当对定义在 $N$ 的某个开子集 $W$ 上的任意可微函数 $g$, 在 $g$ 的定义域的原像 $f^{-1}(W)$ 上有 $(Y\cdot g)\circ f=X\cdot(g\circ f)$;
+\item 对光滑流形之间的可微映射 $f:M\to N$, $g:N\to P$ 以及向量场 $X\in\mathfrak{X}(M)$, $Y\in\mathfrak{X}(N)$ 和 $Z\in\mathfrak{X}(P)$, 若 $X$ 关于 $f$ 与 $Y$ 相关, 且 $Y$ 关于 $g$ 与 $Z$ 相关, 则 $X$ 关于 $g\circ f$ 与 $Z$ 相关.
+\end{enumerate}
+\item\label{ex:pushforward-preserves-lie-bracket} 设 $f:M\to N$ 是光滑流形之间的微分同胚. 证明对每个 $X,Y\in\mathfrak{X}(M)$, 有 $f_*[X,Y]=[f_*X,f_*Y]$. 因此, $f_*$ 诱导 $\mathfrak{X}(M)$ 与 $\mathfrak{X}(N)$ 之间的 Lie 代数同构.
+\item\label{ex:related-vector-fields-and-integral-curves} 设 $f:M\to N$ 是光滑流形之间的可微映射, 并考虑两个向量场 $X\in\mathfrak{X}(M)$ 和 $Y\in\mathfrak{X}(N)$. 证明:
+\begin{enumerate}[label=(\alph*),leftmargin=*]
+\item 若向量场 $Y$ 关于 $f$ 与 $X$ 相关, 则 $f$ 把 $X$ 的任一条积分曲线映为 $Y$ 的一条积分曲线;
+\item 向量场 $Y$ 关于 $f$ 与 $X$ 相关, 当且仅当对所有使两边都有定义的 $(t,p)$, 局部流 $F_X,F_Y$ 满足 $f(F_X(p,t))=F_Y(f(p),t)$.
+\end{enumerate}
+\item\label{ex:lie-derivative-of-function} (\emph{函数的 Lie 导数}) 给定向量场 $X\in\mathfrak{X}(M)$, 定义光滑函数 $f:M\to\mathbb{R}$ \textbf{沿 $X$ 方向的 Lie 导数}为
+\[
+  L_X f(p):=\left.\frac{\mathrm{d}}{\mathrm{d}t}((f\circ\psi_t)(p))\right|_{t=0},
+\]
+其中 $\psi_t=F(\cdot,t)$, $F$ 是 $X$ 在 $p$ 处的局部流. 证明 $L_X f=X\cdot f$, 即 $f$ 沿 $X$ 方向的 Lie 导数就是 $f$ 沿 $X$ 的方向导数.
+\item\label{ex:lie-derivative-of-vector-field} (\emph{向量场的 Lie 导数}) 对两个向量场 $X,Y\in\mathfrak{X}(M)$, 定义 $Y$ \textbf{沿 $X$ 方向的 Lie 导数}为
+\[
+  L_XY:=\left.\frac{\mathrm{d}}{\mathrm{d}t}((\psi_{-t})_*Y)\right|_{t=0},
+\]
+其中 $\{\psi_t\}_{t\in I}$ 是 $X$ 的局部流. 证明:
+\begin{enumerate}[label=(\alph*),leftmargin=*]
+\item $L_XY=[X,Y]$;
+\item 对 $X,Y,Z\in\mathfrak{X}(M)$, 有 $L_X[Y,Z]=[L_XY,Z]+[Y,L_XZ]$;
+\item $L_X\circ L_Y-L_Y\circ L_X=L_{[X,Y]}$.
+\end{enumerate}
+\item\label{ex:commuting-flows-and-pushforward} 设 $X,Y\in\mathfrak{X}(M)$ 是流分别为 $\psi,\phi$ 的两个完备向量场. 证明:
+\begin{enumerate}[label=(\alph*),leftmargin=*]
+\item 给定微分同胚 $f:M\to M$, 有 $f_*X=X$, 当且仅当对所有 $t\in\mathbb{R}$, 有 $f\circ\psi_t=\psi_t\circ f$;
+\item 对所有 $s,t\in\mathbb{R}$ 有 $\psi_t\circ\phi_s=\phi_s\circ\psi_t$, 当且仅当 $[X,Y]=0$.
+\end{enumerate}
+\end{enumerate}
+\end{RiemannExercise}

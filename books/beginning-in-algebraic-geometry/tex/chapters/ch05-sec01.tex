@@ -1,0 +1,246 @@
+\section{模}\label{sec:r-modules}
+
+为了引出模的概念, 先讨论几个熟悉的坐标环的代数结构. 考虑
+\[
+  K[x,y]\qquad\text{与}\qquad K[x,y]/\langle x^{2}+y^{2}-1\rangle,
+\]
+它们分别是仿射平面与单位圆的坐标环. 直觉上, 仿射平面显然不像是与单位圆同构的, 这表明应当有某个代数性质可用来区分这两个 $K$-代数. 我们的目标是用线性代数的思想描述这样一个性质.
+
+首先, 将这些坐标环看成向量空间. 注意, $K[x,y]$ 的每个元素都可唯一写成
+\[
+  B=\{x^{i}y^{j}\mid i,j\in\mathbb{N}\}
+\]
+中元素的 $K$-线性组合, 这说明 $K[x,y]$ 是以 $B$ 为基的无限维 $K$-向量空间. 另一方面, 考虑环 $K[x,y]/\langle x^{2}+y^{2}-1\rangle$, 可以反复使用关系 $[y^{2}]=[1-x^{2}]$, 把每个元素唯一写成
+\[
+  [f(x)+g(x)y]
+\]
+的形式, 其中 $f,g\in K[x]$. 换句话说, $K[x,y]/\langle x^{2}+y^{2}-1\rangle$ 也是无限维 $K$-向量空间, 但它的基由较小的集合
+\[
+  B'=\{[x^{i}y^{j}]\mid i\in\mathbb{N},\, j\in\{0,1\}\}
+\]
+给出. 虽然 $B'$ 可以看作 $B$ 的真子集, 但 $B$ 和 $B'$ 都是可数无限集, 因而这两个向量空间实际上同构. 既然这两个坐标环作为向量空间同构, 仅靠向量空间理论就不足以区分它们.
+
+不过, 如果允许扩大\textquotedbl{}标量\textquotedbl{}的范围, 用环 $R=K[x]$ 代替 $K$, 就会注意到 $K[x,y]$ 的每个元素都可唯一写成无限集
+\[
+  S=\{1,y,y^{2},y^{3},\ldots\}
+\]
+中元素的 $R$-线性组合. 而对环 $K[x,y]/\langle x^{2}+y^{2}-1\rangle$, 要把每个元素写成 $R$-线性组合, 只需要含两个元素的集合
+\[
+  S'=\{[1],[y]\}.
+\]
+换句话说, 如果暂且假装 $R=K[x]$ 是域 (它并不是!), 就会看到 $K[x,y]$ 是无限维的 $R$ 上的\textquotedbl{}向量空间\textquotedbl{}, 而 $K[x,y]/\langle x^{2}+y^{2}-1\rangle$ 是有限维的. 这样, 我们似乎找到了能区分这两个坐标环的性质.
+
+要使这番假设性的论证成为实际论证, 就必须推广向量空间的概念, 允许标量来自环而不一定是域. 重要的代数概念\emph{模}正好刻画了这种情形. 本节先给出模的定义和一些基本概念. 照例, $R$ 表示一个环, 并假设所有环都是带单位元的交换环.
+
+\begin{Definition}{$R$-模}\leavevmode\label{def:r-module}
+  一个 \textbf{$R$-模}是一个 Abel 群 $M$ (运算记为 $+$), 连同一个数乘函数
+  \[
+    \begin{aligned}
+      R\times M&\to M\\
+      (r,a)&\mapsto r\cdot a
+    \end{aligned}
+  \]
+  并且满足以下公理.
+  \begin{enumerate}
+    \item 对所有 $r\in R$ 和所有 $a,b\in M$, 有 $r\cdot(a+b)=r\cdot a+r\cdot b$.
+    \item 对所有 $r,s\in R$ 和所有 $a\in M$, 有 $(r+s)\cdot a=r\cdot a+s\cdot a$.
+    \item 对所有 $r,s\in R$ 和所有 $a\in M$, 有 $(rs)\cdot a=r\cdot(s\cdot a)$.
+    \item 对所有 $a\in M$, 有 $1\cdot a=a$.
+  \end{enumerate}
+\end{Definition}
+
+当 $R=K$ 是域时, Definition~\ref{def:r-module} 正是 $K$-向量空间的定义. 向量空间的许多概念, 但并不是全部, 都可自然推广到模. 先看几个值得记住的例子.
+
+\begin{Example}{$R^{n}$ 是一个 $R$-模}\leavevmode\label{ex:cartesian-power-as-module}
+  $K^{n}$ 是向量空间的标准例子, 它可推广到 $R$-模的情形. 具体来说, 考虑 Cartesian 积
+  \[
+    R^{n}=\{(a_{1},\ldots,a_{n})\mid a_{i}\in R\text{ 对每个 }i\text{ 成立}\}.
+  \]
+  集合 $R^{n}$ 自然构成一个 $R$-模, 加法和数乘的定义与向量空间情形完全相同:
+  \[
+    \begin{aligned}
+      (a_{1},\ldots,a_{n})+(b_{1},\ldots,b_{n})&=(a_{1}+b_{1},\ldots,a_{n}+b_{n}),\\
+      r\cdot(a_{1},\ldots,a_{n})&=(ra_{1},\ldots,ra_{n}).
+    \end{aligned}
+  \]
+\end{Example}
+
+\begin{Example}{多项式环是模}\leavevmode\label{ex:polynomial-ring-as-module}
+  多项式环 $R[x_{1},\ldots,x_{n}]$ 是一个 $R$-模, 其加法和数乘按通常方式定义:
+  \[
+    \begin{aligned}
+      \Bigl(\sum_{\alpha}b_{\alpha}x^{\alpha}\Bigr)+
+      \Bigl(\sum_{\alpha}c_{\alpha}x^{\alpha}\Bigr)
+        &=\sum_{\alpha}(b_{\alpha}+c_{\alpha})x^{\alpha},\\
+      r\cdot\Bigl(\sum_{\alpha}b_{\alpha}x^{\alpha}\Bigr)
+        &=\sum_{\alpha}(rb_{\alpha})x^{\alpha}.
+    \end{aligned}
+  \]
+  模公理可由环公理直接推出.
+\end{Example}
+
+\begin{Example}{扩张环}\leavevmode\label{ex:ring-extension-as-module}
+  推广上一例, 若 $R\subseteq S$ 是子环, 则 $S$ 可看成一个 $R$-模. 对于 $r\in R$ 和 $s\in S$, 用 $S$ 中的环乘法定义 $r\cdot s$. 同样, 模公理是环公理的推论.
+
+  作为本节开头出现的一个特例, 可把 $M=K[x,y]$ 看成子环 $R=K[x]$ 上的模. 也就是说, $K[x,y]$ 中的元素可以照常相加, 其中任何元素也可以乘以 $K[x]$ 中的一个\textquotedbl{}标量\textquotedbl{}.
+\end{Example}
+
+\begin{Example}{Abel 群是 $\mathbb{Z}$-模}\leavevmode\label{ex:abelian-group-as-z-module}
+  设 $M$ 是任意 Abel 群. 则 $M$ 可看成一个 $\mathbb{Z}$-模, 对于 $n\in\mathbb{Z}$ 和 $a\in M$, 数乘定义为
+  \[
+    n\cdot a=
+    \begin{cases}
+      \underbrace{a+\cdots+a}_{n\text{ 次}}, & \text{若 } n>0,\\
+      0, & \text{若 } n=0,\\
+      \underbrace{(-a)+\cdots+(-a)}_{-n\text{ 次}}, & \text{若 } n<0.
+    \end{cases}
+  \]
+  \BookPairedNote
+    {事实上, 从模公理可以验证, 这是能使 $M$ 成为 $\mathbb{Z}$-模的唯一一种数乘定义; 见 Exercise~\ref{ex:unique-z-action-on-abelian-group}. 因此每个 Abel 群都以典范的方式成为一个 $\mathbb{Z}$-模.}
+    {反过来, 忘掉数乘后, 每个 $\mathbb{Z}$-模都是 Abel 群. 所以, $\mathbb{Z}$-模和 Abel 群实际上是同一事物的两个名称.}
+\end{Example}
+
+当然, 讨论 $R$-模还必须引入其间相应的态射. 既然模是带有数乘这一附加结构的 Abel 群, 自然可将模同态定义为保持数乘的群同态.
+
+\begin{Definition}{$R$-模同态}\leavevmode\label{def:module-homomorphism}
+  设 $M,N$ 为 $R$-模. 一个 \textbf{$R$-模同态} $\phi:M\to N$ 是满足
+  \[
+    \phi(r\cdot a)=r\cdot\phi(a)
+  \]
+  的群同态, 其中等式对所有 $r\in R$ 和 $a\in M$ 成立. 若 $\phi$ 有一个同样是 $R$-模同态的逆, 则称 $\phi$ 是一个 $R$-模\textbf{同构}, 并记 $M\cong N$.
+\end{Definition}
+
+换言之, $R$-模同态就是同时保持数乘与加法的函数:
+\[
+  \phi(r\cdot a)=r\cdot\phi(a)
+  \qquad\text{且}\qquad
+  \phi(a+b)=\phi(a)+\phi(b),
+\]
+其中 $a,b\in M$, $r\in R$ 任意. 特别地, 若 $R=K$ 是域, 从而 $M,N$ 是 $K$-向量空间, 则 $K$-模同态恰好是 $K$-向量空间之间的线性映射.
+
+模论的另一个重要概念是子模.
+
+\begin{Definition}{子模}\leavevmode\label{def:submodule}
+  设 $M$ 是一个 $R$-模. \textbf{子模} $N\subseteq M$ 是一个子群, 对所有 $r\in R$ 和 $a\in N$ 都有 $r\cdot a\in N$.
+\end{Definition}
+
+换句话说, 子模是一个还在数乘下封闭的子群, 因而本身构成一个模. 由于加法群的非空子集是子群当且仅当它包含任意两个自身元素的差, 非空子集 $N\subseteq M$ 是子模当且仅当
+\[
+  a-b\in N\qquad\text{且}\qquad r\cdot a\in N
+\]
+对所有 $a,b\in N$ 和 $r\in R$ 成立. 子模的概念是向量空间中线性子空间概念的自然推广.
+
+给定 $R$-模 $M$ 及其子模 $N\subseteq M$, 可以构造商群 $M/N$. 这个商群自然继承一个 $R$-模结构, 数乘定义为
+\[
+  r\cdot[a]=[r\cdot a].
+\]
+建议读者验证这个数乘是良定义的, 而且商 $M/N$ 满足 $R$-模公理 (Exercise~\ref{ex:quotient-module-is-well-defined}). 如同群, 环和 $K$-代数一样, $R$-模也有相应的第一同构定理, 这是 Exercise~\ref{ex:first-isomorphism-theorem-for-modules} 的内容.
+
+在定义 $R$-模时, 我们从一个加法 Abel 群出发. 不过, 在许多有关的情形中, 比如多项式环及其商的情形, 这个加法 Abel 群还有乘法结构, 使它成为一个环. 这时我们称所得的结构为 $R$-代数, 其确切含义见以下定义.
+
+\begin{Definition}{$R$-代数}\leavevmode\label{def:r-algebra}
+  一个 \textbf{$R$-代数}是一个环 $A$, 连同一个数乘函数
+  \[
+    \begin{aligned}
+      R\times A&\to A\\
+      (r,a)&\mapsto r\cdot a
+    \end{aligned}
+  \]
+  它满足 $R$-模的四条公理, 此外还满足
+  \[
+    r\cdot(ab)=(r\cdot a)b=a(r\cdot b)
+  \]
+  对所有 $r\in R$ 和所有 $a,b\in A$ 成立.
+\end{Definition}
+
+读者应当注意, $R$-代数的定义不是新的: 将 $R$ 换成 $K$ 后, 它与第~\ref{sec:k-algebras}~节的 $K$-代数定义完全相同. 事实上, 我们讨论过的关于 $K$-代数的多数概念和结果, 例如同态, 子代数, 理想, 商, 第一同构定理以及生成元, 都可原样移到 $R$-代数的情形, 这里不再重述. 与 $K$-代数的情形一样, $R$-代数的典型例子是多项式环 $R[x_{1},\ldots,x_{n}]$.
+
+但与 $K$-代数的情形不同, 现在不要求标量构成域, 观点就可以更灵活. 例如, 即使我们本来要研究域上的多项式, 现在也可以把其中一个变量当作\textquotedbl{}标量\textquotedbl{}, 写成
+\[
+  K[x_{1},\ldots,x_{n}]=R[x_{1},\ldots,x_{n-1}]
+  \qquad\text{其中 }R=K[x_{n}].
+\]
+这样就有可能在更一般的 $R$-代数背景下用归纳论证, 来证明关于 $K$-代数的结论. 实质上, 正因为如此, $R$-代数的背景具有我们发展代数几何所需的恰当的一般性.
+
+给定一个 $R$-代数, 忘掉乘法结构就得到唯一一个底层 $R$-模. 反过来, 如果从一个 $R$-模出发, 通常可以用多种方式给它添加乘法, 使它成为 $R$-代数. 下一例说明这一点.
+
+\begin{Example}{具有同一底层 $R$-模的不同 $R$-代数}\leavevmode\label{ex:different-algebras-on-same-module}
+  考虑 $R$-模 $M=R^{2}$. 将 $M$ 变成 $R$-代数的一种自然方法是按分量定义乘法:
+  \[
+    (a,b)\cdot(c,d)=(ac,bd).
+  \]
+  不过, 这不是唯一的方法. 也可以按下式定义乘法:
+  \[
+    (a,b)\cdot(c,d)=(ac,ad+bc).
+  \]
+  虽然第二种乘法乍看有些奇怪, 所得的 $R$-代数实际上与熟悉的商 $R[x]/\langle x^{2}\rangle$ 同构, 建议读者在 Exercise~\ref{ex:module-product-dual-numbers} 中验证.
+\end{Example}
+
+下一节讨论模的生成元, 这将允许我们把线性代数中重要的有限维概念推广到模.
+
+\BookExerciseHeading
+\begin{BookExercises}
+  \item\label{ex:module-over-different-rings} 设 $M=K[x,y]$. 找出至少三个不同的环 $R$, 使 $M$ 可自然视为 $R$-模.
+  \item\label{ex:zero-scalar-and-zero-vector} 设 $R$ 为环, $M$ 为 $R$-模. 利用模公理证明
+    \[
+      0\cdot a=0\qquad\text{对所有 }a\in M,
+    \]
+    以及
+    \[
+      r\cdot0=0\qquad\text{对所有 }r\in R.
+    \]
+  \item\label{ex:subgroup-not-submodule} 举出一个环 $R$, 一个 $R$-模 $M$ 和一个不是 $R$-模的子群 $N\subseteq M$.
+  \item\label{ex:submodule-addition-and-scaling} 设 $M$ 是 $R$-模, $N\subseteq M$ 是非空子集. 证明 $N$ 是子模当且仅当它在加法和数乘下封闭:
+    \[
+      a+b\in N\qquad\text{且}\qquad r\cdot a\in N
+      \qquad\text{对所有 }a,b\in N\text{ 和 }r\in R.
+    \]
+  \item\label{ex:ideal-as-submodule-of-ring} 把 $R$ 看作其自身上的一个子模, 数乘为通常的乘法. 证明 $I\subseteq R$ 是理想当且仅当它是子模.
+  \item\label{ex:bijective-module-homomorphism-is-isomorphism} 证明一个 $R$-模同态是同构当且仅当它是双射.
+  \item\label{ex:ring-module-via-polynomial-constant-term} 证明在由下式定义的数乘下, $R$ 是一个 $R[x]$-模:
+    \[
+      (r_{0}+r_{1}x+r_{2}x^{2}+\cdots+r_{n}x^{n})\cdot a=r_{0}a.
+    \]
+  \item\label{ex:quotient-module-is-well-defined} 设 $M$ 是 $R$-模, $N\subseteq M$ 是子模, $M/N$ 是商群.
+    \begin{enumerate}[label=(\alph*)]
+      \item 假设 $[a_{1}]=[a_{2}]\in M/N$. 证明
+        \[
+          [r\cdot a_{1}]=[r\cdot a_{2}].
+        \]
+        从而得出 $M/N$ 中的数乘是良定义的.
+      \item 证明 $M/N$ 满足 $R$-模公理.
+    \end{enumerate}
+  \item\label{ex:first-isomorphism-theorem-for-modules} 设 $\phi:M\to N$ 是 $R$-模同态.
+    \begin{enumerate}[label=(\alph*)]
+      \item 证明 $\ker(\phi)$ 是 $M$ 的子模.
+      \item 证明 $\operatorname{im}(\phi)$ 是 $N$ 的子模.
+      \item 证明函数
+        \[
+          \begin{aligned}
+            [\phi]:M/\ker(\phi)&\to\operatorname{im}(\phi)\\
+            [a]&\mapsto\phi(a)
+          \end{aligned}
+        \]
+        是一个良定义的 $R$-模同构.
+    \end{enumerate}
+  \item\label{ex:module-product-dual-numbers} 设 $A$ 是给 $R^{2}$ 配备如下乘法后定义的 $R$-代数:
+    \[
+      (a,b)\cdot(c,d)=(ac,ad+bc).
+    \]
+    证明作为 $R$-代数有 $A\cong R[x]/\langle x^{2}\rangle$.
+  \item\label{ex:unique-z-action-on-abelian-group} 设 $M$ 为 Abel 群. 证明使 $M$ 成为 $\mathbb{Z}$-模的唯一一种数乘定义, 是 Example~\ref{ex:abelian-group-as-z-module} 中给出的定义.
+\end{BookExercises}
+
+\par\smallskip
+{\footnotesize
+\noindent\textbf{开放获取.} 本章按照
+\href{http://creativecommons.org/licenses/by-nc/4.0/}{Creative Commons Attribution-NonCommercial 4.0 International License}
+的条款授权. 该许可允许以任何媒介或格式进行非商业性使用, 分享, 改编, 分发和复制, 但须对原作者和来源作适当署名, 提供 Creative Commons 许可的链接, 并说明是否作了修改.
+
+\noindent
+\begin{minipage}[t]{.17\linewidth}
+  \vspace{0pt}\includegraphics[width=.9\linewidth]{figures/source-cc-by-nc.png}
+\end{minipage}\hfill
+\begin{minipage}[t]{.81\linewidth}
+  \vspace{0pt}本章的图片或其他第三方材料均纳入本章的 Creative Commons 许可, 除非材料的署名行另有注明. 如果材料未纳入本章的 Creative Commons 许可, 且您拟进行的使用未获法律规定的许可或超出允许使用的范围, 则须直接向著作权持有人取得许可.
+\end{minipage}\par}

@@ -1,0 +1,350 @@
+\section{力学系统}\label{sec:mechanical-systems}
+
+力学研究受已知力作用的粒子或粒子系统的运动.
+
+\begin{RiemannExample}\label{ex:single-particle-in-euclidean-space}
+单个粒子在 $n$ 维空间中的运动由曲线 $x:I\subset\mathbb{R}\to\mathbb{R}^n$ 描述. 通常假设作用于粒子的力只依赖于粒子的位置和速度. \textbf{Newton 第二定律}要求粒子的运动满足二阶常微分方程
+\[
+  m\ddot x=F(x,\dot x),
+\]
+其中 $F:\mathbb{R}^n\times\mathbb{R}^n\to\mathbb{R}^n$ 是作用于粒子的力, $m>0$ 是粒子的质量. 因此该方程的解描述了粒子的可能运动.
+\end{RiemannExample}
+
+作如下推广是有益的.
+
+\begin{RiemannDefinition}\label{def:mechanical-system-and-motion}
+\textbf{力学系统}是一个三元组 $(M,\langle\cdot,\cdot\rangle,\mathcal{F})$, 其中:
+\begin{enumerate}[label=(\roman*),leftmargin=*]
+\item $M$ 是可微流形, 称为\textbf{位形空间};
+\item $\langle\cdot,\cdot\rangle$ 是 $M$ 上的 Riemann 度量, 它给出\textbf{质量算子} $\mu:TM\to T^*M$, 对所有 $v,w\in T_pM$ 和 $p\in M$ 定义为
+\[
+  \mu(v)(w)=\langle v,w\rangle
+\]
+\item $\mathcal{F}:TM\to T^*M$ 是可微映射, 对所有 $p\in M$ 满足 $\mathcal{F}(T_pM)\subset T_p^*M$, 称为\textbf{外力}.
+\end{enumerate}
+力学系统的一个\textbf{运动}是 \textbf{Newton 方程}
+\[
+  \mu\left(\frac{D\dot c}{\mathrm{d}t}\right)=\mathcal{F}(\dot c)
+\]
+的一个解 $c:I\subset\mathbb{R}\to M$.
+\end{RiemannDefinition}
+
+\begin{RiemannRemark}\label{rem:free-particle-geodesics}
+特别地, Riemann 流形 $(M,\langle\cdot,\cdot\rangle)$ 的测地线就是力学系统 $(M,\langle\cdot,\cdot\rangle,0)$ 的运动 (描述 $M$ 上的\textbf{自由粒子}).
+\end{RiemannRemark}
+
+\begin{RiemannExample}\label{ex:mechanical-system-for-single-particle}
+对于由在 $n$ 维空间中运动的单个粒子构成的力学系统, 位形空间显然是 $\mathbb{R}^n$. 若对所有 $v,w\in\mathbb{R}^n$ 令
+\[
+  \langle\!\langle v,w\rangle\!\rangle:=m\langle v,w\rangle
+\]
+其中 $\langle\cdot,\cdot\rangle$ 是 $\mathbb{R}^n$ 上的 Euclidean 内积, 则 $\langle\!\langle\cdot,\cdot\rangle\!\rangle$ 的 Levi–Civita 联络仍是平凡联络, 且
+\[
+  \frac{D\dot x}{\mathrm{d}t}=\ddot x.
+\]
+对所有 $v,w\in\mathbb{R}^n$ 令
+\begin{equation}\label{eq:force-covector-of-single-particle}
+  \mathcal{F}(x,v)(w):=\langle F(x,v),w\rangle
+\end{equation}
+则有
+\begin{align*}
+  \mu\left(\frac{D\dot x}{\mathrm{d}t}\right)=\mathcal{F}(x,\dot x)
+  &\Leftrightarrow \mu\left(\frac{D\dot x}{\mathrm{d}t}\right)(v)=\mathcal{F}(x,\dot x)(v)
+    \quad\text{对所有 }v\in\mathbb{R}^n\\
+  &\Leftrightarrow m\langle\ddot x,v\rangle=\langle F(x,\dot x),v\rangle
+    \quad\text{对所有 }v\in\mathbb{R}^n\\
+  &\Leftrightarrow m\ddot x=F(x,\dot x).
+\end{align*}
+因此粒子的运动就是力学系统 $(\mathbb{R}^n,\langle\!\langle\cdot,\cdot\rangle\!\rangle,\mathcal{F})$ 的运动, 其中 $\mathcal{F}$ 由 \eqref{eq:force-covector-of-single-particle} 定义.
+\end{RiemannExample}
+
+\begin{RiemannDefinition}\label{def:positional-and-conservative-external-force}
+设 $(M,\langle\cdot,\cdot\rangle,\mathcal{F})$ 是力学系统. 称外力 $\mathcal{F}$ 为
+\begin{enumerate}[label=(\roman*),leftmargin=*]
+\item \textbf{位置力}, 若 $\mathcal{F}(v)$ 只依赖于 $\pi(v)$, 其中 $\pi:TM\to M$ 是自然投影;
+\item \textbf{保守力}, 若存在 $U:M\to\mathbb{R}$, 使得对所有 $v\in TM$, 有 $\mathcal{F}(v)=-(\mathrm{d}U)_{\pi(v)}$ (函数 $U$ 称为\textbf{势能}).
+\end{enumerate}
+\end{RiemannDefinition}
+
+\begin{RiemannRemark}\label{rem:conservative-mechanical-system}
+特别地, 任何保守力都是位置力. 外力为保守力的力学系统称为\textbf{保守力学系统}.
+\end{RiemannRemark}
+
+\begin{RiemannDefinition}\label{def:kinetic-energy-of-mechanical-system}
+设 $(M,\langle\cdot,\cdot\rangle,\mathcal{F})$ 是力学系统. \textbf{动能}是可微映射 $K:TM\to\mathbb{R}$, 对所有 $v\in TM$ 由下式给出:
+\[
+  K(v)=\frac12\langle v,v\rangle.
+\]
+\end{RiemannDefinition}
+
+\begin{RiemannExample}\label{ex:kinetic-energy-of-single-particle}
+对于由在 $n$ 维空间中运动的单个粒子构成的力学系统, 有
+\[
+  K(v):=\frac12m\langle v,v\rangle.
+\]
+\end{RiemannExample}
+
+\begin{RiemannTheorem}[能量守恒]\label{thm:conservation-of-mechanical-energy}
+在保守力学系统 $(M,\langle\cdot,\cdot\rangle,-\mathrm{d}U)$ 中, 沿任意运动 $c:I\subset\mathbb{R}\to M$, \textbf{机械能} $E(t)=K(\dot c(t))+U(c(t))$ 为常数.
+\end{RiemannTheorem}
+
+\begin{RiemannProof}
+\begin{align*}
+  \frac{\mathrm{d}E}{\mathrm{d}t}(t)
+  &=\frac{\mathrm{d}}{\mathrm{d}t}\left(\frac12\langle\dot c(t),\dot c(t)\rangle+U(c(t))\right)\\
+  &=\left\langle\frac{D\dot c}{\mathrm{d}t}(t),\dot c(t)\right\rangle+(\mathrm{d}U)_{c(t)}\dot c(t)\\
+  &=\mu\left(\frac{D\dot c}{\mathrm{d}t}\right)(\dot c)-\mathcal{F}(\dot c)(\dot c)=0.
+\end{align*}
+\end{RiemannProof}
+
+保守力学系统的一个特别简单的例子是 $(M,\langle\cdot,\cdot\rangle,0)$, 其运动就是 $(M,\langle\cdot,\cdot\rangle)$ 的测地线. 事实上, 可将\textbf{任何}保守系统的运动适当地重新解释为某个度量的测地线.
+
+\begin{RiemannDefinition}\label{def:jacobi-metric}
+设 $(M,\langle\cdot,\cdot\rangle,-\mathrm{d}U)$ 是保守力学系统, $h\in\mathbb{R}$ 满足
+\[
+  M_h:=\{p\in M\mid U(p)<h\}\ne\varnothing.
+\]
+流形 $M_h$ 上的 \textbf{Jacobi 度量}对所有 $v,w\in T_pM_h$ 和 $p\in M_h$ 由下式给出:
+\[
+  \langle\!\langle v,w\rangle\!\rangle:=2[h-U(p)]\langle v,w\rangle.
+\]
+\end{RiemannDefinition}
+
+\begin{RiemannTheorem}[Jacobi]\label{thm:jacobi-geodesics-as-mechanical-motion}
+保守力学系统 $(M,\langle\cdot,\cdot\rangle,-\mathrm{d}U)$ 中机械能为 $h$ 的运动, 在相差重参数化的意义下, 是 $M_h$ 上 Jacobi 度量的测地线.
+\end{RiemannTheorem}
+
+\begin{RiemannProof}
+需要以下两个引理, 它们的证明留作练习.
+
+\begin{RiemannLemma}\label{lem:levi-civita-under-conformal-change}
+设 $(M,\langle\cdot,\cdot\rangle)$ 是具有 Levi–Civita 联络 $\nabla$ 的 Riemann 流形, $\langle\!\langle\cdot,\cdot\rangle\!\rangle=e^{2\rho}\langle\cdot,\cdot\rangle$ 是与 $\langle\cdot,\cdot\rangle$ 共形相关的度量 (其中 $\rho\in C^\infty(M)$). 则 $\langle\!\langle\cdot,\cdot\rangle\!\rangle$ 的 Levi–Civita 联络 $\widetilde\nabla$ 对所有 $X,Y\in\mathfrak{X}(M)$ 由下式给出:
+\[
+  \widetilde\nabla_XY=\nabla_XY+\mathrm{d}\rho(X)Y+\mathrm{d}\rho(Y)X
+    -\langle X,Y\rangle\operatorname{grad}\rho
+\]
+(其中梯度相对于 $\langle\cdot,\cdot\rangle$ 计算).\hfill\openbox
+\end{RiemannLemma}
+
+\begin{RiemannLemma}\label{lem:criterion-for-reparameterized-geodesic}
+曲线 $c:I\subset\mathbb{R}\to M$ 是 Riemann 流形 $(M,\langle\cdot,\cdot\rangle)$ 的一条重参数化测地线, 当且仅当对某个可微函数 $f:I\to\mathbb{R}$, 有
+\[
+  \frac{D\dot c}{\mathrm{d}t}=f(t)\dot c.
+\]
+\mbox{}\hfill\openbox
+\end{RiemannLemma}
+
+现在证明 Jacobi 定理. 设 $c:I\subset\mathbb{R}\to M$ 是 $(M,\langle\cdot,\cdot\rangle,-\mathrm{d}U)$ 的一个机械能为 $h$ 的运动. 由 Lemma~\ref{lem:levi-civita-under-conformal-change} 得
+\[
+  \frac{\widetilde D\dot c}{\mathrm{d}t}
+  =\frac{D\dot c}{\mathrm{d}t}+2\,\mathrm{d}\rho(\dot c)\dot c
+    -\langle\dot c,\dot c\rangle\operatorname{grad}\rho,
+\]
+其中 $\frac{\widetilde D}{\mathrm{d}t}$ 是相对于 Jacobi 度量沿 $c$ 的协变导数, 且 $e^{2\rho}=2(h-U)$. 由 Newton 方程得到
+\[
+  \mu\left(\frac{D\dot c}{\mathrm{d}t}\right)=-\mathrm{d}U
+  \Leftrightarrow\frac{D\dot c}{\mathrm{d}t}=-\operatorname{grad}U=e^{2\rho}\operatorname{grad}\rho,
+\]
+而由能量守恒有
+\[
+  \langle\dot c,\dot c\rangle=2K=2(h-U)=e^{2\rho}.
+\]
+因而
+\[
+  \frac{\widetilde D\dot c}{\mathrm{d}t}=2\,\mathrm{d}\rho(\dot c)\dot c,
+\]
+由 Lemma~\ref{lem:criterion-for-reparameterized-geodesic}, 这意味着 $c$ 是 Jacobi 度量的一条重参数化测地线.
+\end{RiemannProof}
+
+要在局部坐标下写出 Newton 方程, 下列表达式十分有用.
+
+\begin{RiemannProposition}\label{prop:newton-equation-using-kinetic-energy-in-coordinates}
+设 $(M,\langle\cdot,\cdot\rangle,\mathcal{F})$ 是力学系统. 取 $M$ 上的局部坐标 $(x^1,\ldots,x^n)$, 以及由此在 $TM$ 上诱导的局部坐标 $(x^1,\ldots,x^n,\allowbreak v^1,\ldots,v^n)$. 则
+\[
+  \mu\left(\frac{D\dot c}{\mathrm{d}t}(t)\right)=
+  \sum_{i=1}^n\left[\frac{\mathrm{d}}{\mathrm{d}t}
+  \left(\frac{\partial K}{\partial v^i}(x(t),\dot x(t))\right)
+  -\frac{\partial K}{\partial x^i}(x(t),\dot x(t))\right]\mathrm{d}x^i.
+\]
+特别地, 若 $\mathcal{F}=-\mathrm{d}U$ 是保守力, 则运动方程为
+\[
+  \frac{\mathrm{d}}{\mathrm{d}t}\left(\frac{\partial K}{\partial v^i}(x(t),\dot x(t))\right)
+  -\frac{\partial K}{\partial x^i}(x(t),\dot x(t))=-\frac{\partial U}{\partial x^i}(x(t))
+\]
+($i=1,\ldots,n$).
+\end{RiemannProposition}
+
+\begin{RiemannProof}
+见 Exercise~\ref{ex:mechanical-systems}(\ref{ex:derive-newton-equation-in-coordinates}).
+\end{RiemannProof}
+
+\begin{RiemannExample}\label{ex:central-fields-and-spherical-christoffel-symbols}
+\begin{enumerate}[label=(\arabic*),ref=\arabic*,leftmargin=*]
+\item\label{ex:particle-in-central-field} (\emph{中心力场中的粒子}) 考虑一个质量为 $m>0$ 的粒子, 它在保守力的作用下在 $\mathbb{R}^2$ 中运动, 势能 $U$ 只依赖于到原点的距离 $r=\sqrt{x^2+y^2}$, 即 $U=u(r)$. 将运动方程写成\textbf{极坐标} $(r,\theta)$ 最容易求解, 这组坐标由下式定义:
+\[
+  \begin{cases}
+    x=r\cos\theta\\
+    y=r\sin\theta
+  \end{cases}.
+\]
+由于
+\begin{align*}
+  \mathrm{d}x&=\cos\theta\,\mathrm{d}r-r\sin\theta\,\mathrm{d}\theta,\\
+  \mathrm{d}y&=\sin\theta\,\mathrm{d}r+r\cos\theta\,\mathrm{d}\theta,
+\end{align*}
+容易看出, Euclidean 度量在这些坐标下写成
+\[
+  \langle\cdot,\cdot\rangle=\mathrm{d}x\otimes\mathrm{d}x+\mathrm{d}y\otimes\mathrm{d}y
+  =\mathrm{d}r\otimes\mathrm{d}r+r^2\,\mathrm{d}\theta\otimes\mathrm{d}\theta,
+\]
+因而
+\[
+  K(r,\theta,v^r,v^\theta)=\frac12m\left[(v^r)^2+r^2(v^\theta)^2\right].
+\]
+所以
+\[
+  \frac{\partial K}{\partial v^r}=mv^r,\quad
+  \frac{\partial K}{\partial v^\theta}=mr^2v^\theta,\quad
+  \frac{\partial K}{\partial r}=mr(v^\theta)^2,\quad
+  \frac{\partial K}{\partial\theta}=0,
+\]
+因而 Newton 方程写成
+\begin{align*}
+  \frac{\mathrm{d}}{\mathrm{d}t}(m\dot r)-mr\dot\theta^2&=-u'(r),\\
+  \frac{\mathrm{d}}{\mathrm{d}t}\left(mr^2\dot\theta\right)&=0.
+\end{align*}
+注意, \textbf{角动量}
+\[
+  p_\theta:=mr^2\dot\theta
+\]
+沿运动为常数. 这一守恒律可以追溯到 $K$ 和 $U$ 都不依赖于 $\theta$ 这一事实.
+\item\label{ex:christoffel-symbols-of-two-sphere} (\emph{2 维球面的 Christoffel 符号}) 2 维球面 $S^2\subset\mathbb{R}^3$ 的度量在通常的局部坐标 $(\theta,\varphi)$ 中写成
+\[
+  \langle\cdot,\cdot\rangle=\mathrm{d}\theta\otimes\mathrm{d}\theta
+    +\sin^2\theta\,\mathrm{d}\varphi\otimes\mathrm{d}\varphi,
+\]
+其中 $(\theta,\varphi)$ 由参数化
+\[
+  \phi(\theta,\varphi)=(\sin\theta\cos\varphi,\sin\theta\sin\varphi,\cos\theta)
+\]
+定义 [参见第~\ref{chap:riemannian-manifolds}~章的 Exercise~\ref{ex:levi-civita-connection}(\ref{ex:spherical-geodesics-and-transport})]. 得到这一坐标系下的 Christoffel 符号的一个快捷方法是写出 $S^2$ 上一个自由粒子 (例如取质量 $m=1$) 的 Newton 方程. 有
+\[
+  K(\theta,\varphi,v^\theta,v^\varphi)=\frac12\left[(v^\theta)^2+\sin^2\theta\,(v^\varphi)^2\right]
+\]
+并且
+\[
+  \frac{\partial K}{\partial v^\theta}=v^\theta,\quad
+  \frac{\partial K}{\partial v^\varphi}=\sin^2\theta\,v^\varphi,\quad
+  \frac{\partial K}{\partial\theta}=\sin\theta\cos\theta\,(v^\varphi)^2,\quad
+  \frac{\partial K}{\partial\varphi}=0.
+\]
+于是 Newton 方程写成
+\begin{align*}
+  \frac{\mathrm{d}}{\mathrm{d}t}(\dot\theta)-\sin\theta\cos\theta\,\dot\varphi^2=0
+  &\Leftrightarrow\ddot\theta-\sin\theta\cos\theta\,\dot\varphi^2=0,\\
+  \frac{\mathrm{d}}{\mathrm{d}t}\left(\sin^2\theta\,\dot\varphi\right)=0
+  &\Leftrightarrow\ddot\varphi+2\cot\theta\,\dot\theta\dot\varphi=0.
+\end{align*}
+由于这些必是 $S^2$ 上测地线的方程, 与测地线方程
+\[
+  \ddot x^i+\sum_{j,k=1}^2\Gamma_{jk}^i\dot x^j\dot x^k=0\qquad(i=1,2)
+\]
+对照, 立即读出不为零的 Christoffel 符号:
+\[
+  \Gamma_{\varphi\varphi}^{\theta}=-\sin\theta\cos\theta,\qquad
+  \Gamma_{\theta\varphi}^{\varphi}=\Gamma_{\varphi\theta}^{\varphi}=\cot\theta.
+\]
+\end{enumerate}
+\end{RiemannExample}
+
+\begin{RiemannExercise}\label{ex:mechanical-systems}
+\begin{enumerate}[label=(\arabic*),ref=\arabic*,leftmargin=*]
+\item\label{ex:mechanical-system-of-many-particles} 将 Example~\ref{ex:single-particle-in-euclidean-space}, Example~\ref{ex:mechanical-system-for-single-particle} 和 Example~\ref{ex:kinetic-energy-of-single-particle} 推广到 $\mathbb{R}^n$ 中运动的 $k$ 个粒子构成的系统.
+\item\label{ex:vector-field-of-newton-flow} 设 $(M,\langle\cdot,\cdot\rangle,\mathcal{F})$ 是力学系统. 证明 Newton 方程在 $TM$ 上确定了一个流, 由向量场 $X\in\mathfrak{X}(TM)$ 生成, 其局部表达式为
+\[
+  X=v^i\frac{\partial}{\partial x^i}
+  +\left(\sum_{j=1}^ng^{ij}(x)F_j(x,v)-\sum_{j,k=1}^n\Gamma^i_{jk}(x)v^jv^k\right)
+    \frac{\partial}{\partial v^i},
+\]
+其中 $(x^1,\ldots,x^n)$ 是 $M$ 上的局部坐标, $(x^1,\ldots,x^n,v^1,\ldots,v^n)$ 是在 $TM$ 上诱导的局部坐标, 并且在这些坐标下有
+\[
+  \mathcal{F}=\sum_{i=1}^n F_i(x,v)\,\mathrm{d}x^i.
+\]
+这个流的不动点是什么?
+\item\label{ex:harmonic-oscillator} (\emph{谐振子}) \textbf{谐振子} (在适当单位下) 是保守力学系统 $(\mathbb{R},\mathrm{d}x\otimes\mathrm{d}x,-\mathrm{d}U)$, 其中 $U:\mathbb{R}\to\mathbb{R}$ 由下式给出:
+\[
+  U(x):=\frac12\omega^2 x^2.
+\]
+\begin{enumerate}[label=(\alph*),ref=\alph*,leftmargin=*]
+\item\label{ex:harmonic-oscillator-motion} 写出运动方程及其通解.
+\item 在这个模型中可以通过考虑外力
+\[
+  \mathcal{F}\left(u\frac{\mathrm{d}}{\mathrm{d}x}\right)
+    =-\mathrm{d}U-2ku\,\mathrm{d}x
+\]
+(其中 $k>0$ 为常数) 来计入摩擦. 写出这个新力学系统的运动方程及其通解.
+\item 将 (\ref{ex:harmonic-oscillator-motion}) 推广到 $n$ 维谐振子, 其势能 $U:\mathbb{R}^n\to\mathbb{R}$ 由下式给出:
+\[
+  U(x^1,\ldots,x^n):=\frac12\omega^2\left((x^1)^2+\cdots+(x^n)^2\right).
+\]
+\end{enumerate}
+\item\label{ex:one-dimensional-conservative-dynamics} 考虑保守力学系统 $(\mathbb{R},\mathrm{d}x\otimes\mathrm{d}x,-\mathrm{d}U)$. 证明:
+\begin{enumerate}[label=(\alph*),leftmargin=*]
+\item Newton 方程在 $T\mathbb{R}\cong\mathbb{R}^2$ 上确定的流由向量场
+\[
+  X=v\frac{\partial}{\partial x}-U'(x)\frac{\partial}{\partial v}\in\mathfrak{X}(\mathbb{R}^2)
+\]
+生成;
+\item 该流的不动点形如 $(x_0,0)$, 其中 $x_0$ 是 $U$ 的临界点;
+\item 若 $x_0$ 是 $U$ 的极大值点且 $U''(x_0)<0$, 则 $(x_0,0)$ 是不稳定不动点;
+\item 若 $x_0$ 是 $U$ 的极小值点且 $U''(x_0)>0$, 则 $(x_0,0)$ 是稳定不动点, 并且有由周期轨道组成的任意小的邻域;
+\item 当这些轨道趋近 $(x_0,0)$ 时, 其周期趋于 $2\pi U''(x_0)^{-\frac12}$;
+\item $\dim M=1$ 的任何保守力学系统 $(M,\langle\cdot,\cdot\rangle,-\mathrm{d}U)$ 局部都具有上述形式.
+\end{enumerate}
+\item\label{ex:prove-levi-civita-under-conformal-change} 证明 Lemma~\ref{lem:levi-civita-under-conformal-change}.
+{\small (\textbf{提示:} 使用 Koszul 公式).}
+\item\label{ex:prove-criterion-for-reparameterized-geodesic} 证明 Lemma~\ref{lem:criterion-for-reparameterized-geodesic}.
+\item\label{ex:periodic-motion-of-compact-system} 已知若 $(M,\langle\cdot,\cdot\rangle)$ 是紧 Riemann 流形, 则存在非平凡的周期测地线. 利用这个事实证明, 若 $M$ 紧, 则任何保守力学系统 $(M,\langle\cdot,\cdot\rangle,-\mathrm{d}U)$ 都容许非平凡的周期运动.
+\item\label{ex:derive-newton-equation-in-coordinates} 证明 Proposition~\ref{prop:newton-equation-using-kinetic-energy-in-coordinates}.
+\item\label{ex:christoffel-symbols-of-hyperbolic-plane-by-newton-equation} 回顾, 双曲平面是上半平面
+\[
+  H=\{(x,y)\in\mathbb{R}^2\mid y>0\}
+\]
+赋以 Riemann 度量
+\[
+  \langle\cdot,\cdot\rangle=\frac1{y^2}(\mathrm{d}x\otimes\mathrm{d}x+\mathrm{d}y\otimes\mathrm{d}y)
+\]
+[参见第~\ref{chap:riemannian-manifolds}~章的 Exercise~\ref{ex:levi-civita-connection}(\ref{ex:hyperbolic-plane})]. 利用 Proposition~\ref{prop:newton-equation-using-kinetic-energy-in-coordinates} 计算 $(H,\langle\cdot,\cdot\rangle)$ 的 Levi–Civita 联络在坐标 $(x,y)$ 下的 Christoffel 符号.
+\item\label{ex:kepler-problem} (\emph{Kepler 问题}) \textbf{Kepler 问题} (在适当单位下) 是确定质量为 $m=1$ 的粒子在中心势
+\[
+  U=-\frac1r
+\]
+中的运动.
+\begin{enumerate}[label=(\alph*),leftmargin=*]
+\item 证明运动方程可积分为
+\begin{align*}
+  r^2\dot\theta&=p_\theta,\\
+  \frac{\dot r^2}{2}+\frac{p_\theta^2}{2r^2}-\frac1r&=E,
+\end{align*}
+其中 $E$ 和 $p_\theta$ 是积分常数.
+\item 利用这些方程证明 $u=\frac1r$ 满足线性常微分方程
+\[
+  \frac{\mathrm{d}^2u}{\mathrm{d}\theta^2}+u=\frac1{p_\theta^2}.
+\]
+\item 假设\textbf{近心点} (即粒子轨道上离吸引中心 $r=0$ 最近的点) 出现在 $\theta=0$, 证明粒子轨道的方程是
+\[
+  r=\frac{p_\theta^2}{1+\varepsilon\cos\theta},
+\]
+其中
+\[
+  \varepsilon=\sqrt{1+2p_\theta^2E}.
+\]
+{\small (\textbf{Remark:} 这是偏心率为 $\varepsilon$ 的圆锥曲线的极坐标方程).}
+\item 刻画带 Riemann 度量
+\[
+  \langle\cdot,\cdot\rangle=\frac1{\sqrt{x^2+y^2}}(\mathrm{d}x\otimes\mathrm{d}x+\mathrm{d}y\otimes\mathrm{d}y)
+\]
+的 $\mathbb{R}^2\setminus\{(0,0)\}$ 上的所有测地线. 证明此流形与开角为 $\frac\pi3$ 的圆锥面等距.
+\end{enumerate}
+\end{enumerate}
+\end{RiemannExercise}

@@ -27,4 +27,6 @@ try {
 
 直接编译时, PDF 和辅助文件写入 `tex/build/`; 不另设 `output/`. 封面和模板均从本书相对路径加载, 不依赖其他书籍.
 
-迁入的是已有译稿, 未重译也未逐页对照英文原书. 迁入项目未附原书英文 PDF, `input/source/` 预留; 英文源文件登记前请用本页的直接编译方式. AJbook 类文件与封面设计出自 Wen-Wei Li 的 AlJabr-1, 许可见 [template/LICENSE](template/LICENSE).
+迁入的是已有译稿, 未重译也未逐页对照英文原书. 正文和附录中的 120 处插图直接选取 `input/source/` 内原书 PDF 的页面区域. 编译时须保留该 PDF 的文件名和相对路径.
+
+AJbook 类文件与封面设计出自 Wen-Wei Li 的 AlJabr-1, 许可见 [template/LICENSE](template/LICENSE).
